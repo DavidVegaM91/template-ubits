@@ -394,6 +394,14 @@ body {
     background-color: transparent !important;
     border: none !important;
     box-shadow: none !important;
+    padding: 0 40px !important; /* Padding horizontal de 40px, vertical 0 */
+}
+
+/* Modo oscuro - Content Area sin fondo */
+[data-theme="dark"] .content-area.no-background {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
 }
 
 .content-placeholder {
@@ -551,8 +559,11 @@ body {
    ======================================== */
 
 .ubits-ai-dashboard {
-    padding: 20px;
+    padding: 0;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 48px; /* gap-12 del Figma */
 }
 
 /* Quitar fondo y borde del content-area cuando estemos en UBITS AI */
@@ -568,13 +579,14 @@ body {
     font-size: 24px;
     line-height: 1;
     color: #303a47;
-    margin-bottom: 48px;
+    margin: 0;
     text-align: center;
+    font-style: normal;
 }
 
 .ai-cards-container {
     display: flex;
-    gap: 24px;
+    gap: 24px; /* gap-6 del Figma */
     justify-content: center;
     flex-wrap: wrap;
 }
@@ -582,7 +594,7 @@ body {
 .ai-card {
     background: #ffffff;
     border-radius: 10px;
-    padding: 16px;
+    padding: 8px 16px; /* py-2 px-4 del Figma */
     min-width: 200px;
     flex: 1;
     max-width: 250px;
@@ -603,14 +615,15 @@ body {
 }
 
 .card-title {
-    font-family: 'Noto Sans', sans-serif;
-    font-weight: 700;
-    font-size: 16px;
-    line-height: 24px;
-    color: #303a47;
-    margin: 0;
+    font-family: 'Noto Sans', sans-serif !important;
+    font-weight: 700 !important;
+    font-size: 16px !important;
+    line-height: 24px !important;
+    color: #303a47 !important;
+    margin: 0 !important;
     flex: 1;
-    text-align: left;
+    text-align: left !important;
+    font-style: normal !important;
 }
 
 .card-icon {
@@ -629,13 +642,14 @@ body {
 }
 
 .card-description {
-    font-family: 'Noto Sans', sans-serif;
-    font-weight: 400;
-    font-size: 13px;
-    line-height: 19.5px;
-    color: #303a47;
-    margin: 0;
-    text-align: left;
+    font-family: 'Noto Sans', sans-serif !important;
+    font-weight: 400 !important;
+    font-size: 13px !important;
+    line-height: 19.5px !important;
+    color: #303a47 !important;
+    margin: 0 !important;
+    text-align: left !important;
+    font-style: normal !important;
 }
 
 /* Responsive para UBITS AI */
