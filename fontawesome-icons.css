@@ -1,0 +1,523 @@
+/* 🎨 FontAwesome 6 Pro - Iconos Locales
+ * Usando las fuentes de la carpeta Fonts/
+ * No más dependencias de CDNs externos
+ */
+
+/* Importar fuentes locales */
+@font-face {
+    font-family: 'Font Awesome 6 Pro';
+    font-style: normal;
+    font-weight: 100;
+    font-display: block;
+    src: url('./Fonts/Font Awesome 6 Pro-Thin-100.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'Font Awesome 6 Pro';
+    font-style: normal;
+    font-weight: 300;
+    font-display: block;
+    src: url('./Fonts/Font Awesome 6 Pro-Light-300.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'Font Awesome 6 Pro';
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url('./Fonts/Font Awesome 6 Pro-Regular-400.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'Font Awesome 6 Pro';
+    font-style: normal;
+    font-weight: 900;
+    font-display: block;
+    src: url('./Fonts/Font Awesome 6 Pro-Solid-900.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'Font Awesome 6 Brands';
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url('./Fonts/Font Awesome 6 Brands-Regular-400.otf') format('opentype');
+}
+
+/* Clase base para todos los iconos */
+.fa,
+.fas,
+.far,
+.fal,
+.fat,
+.fab {
+    font-family: 'Font Awesome 6 Pro';
+    font-style: normal;
+    font-variant: normal;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Pesos específicos */
+.fas { font-weight: 900; }  /* Solid */
+.far { font-weight: 400; }  /* Regular */
+.fal { font-weight: 300; }  /* Light */
+.fat { font-weight: 100; }  /* Thin */
+.fab { 
+    font-family: 'Font Awesome 6 Brands';
+    font-weight: 400;
+}
+
+/* ===== ICONOS MÁS USADOS ===== */
+
+/* 🏠 Navegación y Hogar */
+.fa-home::before { content: "\f015"; }
+.fa-dashboard::before { content: "\f3fd"; }
+.fa-tachometer-alt::before { content: "\f3fd"; }
+.fa-compass::before { content: "\f14e"; }
+.fa-map::before { content: "\f279"; }
+
+/* 📊 Analytics y Gráficos */
+.fa-chart-line::before { content: "\f201"; }
+.fa-chart-bar::before { content: "\f080"; }
+.fa-chart-pie::before { content: "\f200"; }
+.fa-chart-area::before { content: "\f1fe"; }
+.fa-chart-column::before { content: "\f3e3"; }
+.fa-trending-up::before { content: "\f062"; }
+.fa-trending-down::before { content: "\f063"; }
+.fa-analytics::before { content: "\f3fd"; }
+
+/* 👥 Usuarios y Perfiles */
+.fa-user::before { content: "\f007"; }
+.fa-users::before { content: "\f0c0"; }
+.fa-user-friends::before { content: "\f500"; }
+.fa-user-shield::before { content: "\f505"; }
+.fa-user-tie::before { content: "\f508"; }
+.fa-user-graduate::before { content: "\f501"; }
+.fa-user-cog::before { content: "\f4fe"; }
+.fa-user-edit::before { content: "\f4ff"; }
+.fa-user-plus::before { content: "\f234"; }
+.fa-user-minus::before { content: "\f503"; }
+
+/* ⚙️ Configuración y Herramientas */
+.fa-cog::before { content: "\f013"; }
+.fa-cogs::before { content: "\f085"; }
+.fa-wrench::before { content: "\f0ad"; }
+.fa-tools::before { content: "\f7d9"; }
+.fa-sliders-h::before { content: "\f1de"; }
+.fa-sliders-v::before { content: "\f3f1"; }
+.fa-toggle-on::before { content: "\f205"; }
+.fa-toggle-off::before { content: "\f204"; }
+
+/* 📁 Archivos y Documentos */
+.fa-file::before { content: "\f15b"; }
+.fa-file-alt::before { content: "\f15c"; }
+.fa-file-pdf::before { content: "\f1c1"; }
+.fa-file-word::before { content: "\f1c2"; }
+.fa-file-excel::before { content: "\f1c3"; }
+.fa-file-powerpoint::before { content: "\f1c4"; }
+.fa-file-image::before { content: "\f1c5"; }
+.fa-file-video::before { content: "\f1c8"; }
+.fa-file-audio::before { content: "\f1c7"; }
+.fa-file-archive::before { content: "\f1c6"; }
+
+/* 📊 Reportes y Estadísticas */
+.fa-chart-simple::before { content: "\f473"; }
+.fa-chart-line::before { content: "\f201"; }
+.fa-chart-bar::before { content: "\f080"; }
+.fa-chart-pie::before { content: "\f200"; }
+.fa-chart-area::before { content: "\f1fe"; }
+.fa-chart-column::before { content: "\f3e3"; }
+.fa-chart-gantt::before { content: "\f0e4"; }
+.fa-chart-scatter::before { content: "\f63e"; }
+
+/* ⭐ Planes y Destacados */
+.fa-star::before { content: "\f005"; }
+.fa-star-half-alt::before { content: "\f5c0"; }
+.fa-star-of-life::before { content: "\f621"; }
+.fa-award::before { content: "\f559"; }
+.fa-trophy::before { content: "\f091"; }
+.fa-medal::before { content: "\f5a2"; }
+.fa-certificate::before { content: "\f0a3"; }
+.fa-badge::before { content: "\f335"; }
+
+/* 🔐 Seguridad y Autenticación */
+.fa-lock::before { content: "\f023"; }
+.fa-unlock::before { content: "\f09c"; }
+.fa-shield-alt::before { content: "\f3ed"; }
+.fa-shield-halved::before { content: "\f3ed"; }
+.fa-key::before { content: "\f084"; }
+.fa-fingerprint::before { content: "\f577"; }
+.fa-user-lock::before { content: "\f502"; }
+.fa-user-shield::before { content: "\f505"; }
+
+/* 📱 Notificaciones y Comunicación */
+.fa-bell::before { content: "\f0f3"; }
+.fa-bell-slash::before { content: "\f1f6"; }
+.fa-envelope::before { content: "\f0e0"; }
+.fa-envelope-open::before { content: "\f2b6"; }
+.fa-comment::before { content: "\f075"; }
+.fa-comments::before { content: "\f086"; }
+.fa-phone::before { content: "\f095"; }
+.fa-mobile-alt::before { content: "\f3cd"; }
+
+/* 🛒 Comercio y E-commerce */
+.fa-shopping-cart::before { content: "\f07a"; }
+.fa-shopping-bag::before { content: "\f290"; }
+.fa-credit-card::before { content: "\f09d"; }
+.fa-wallet::before { content: "\f555"; }
+.fa-money-bill::before { content: "\f0d6"; }
+.fa-coins::before { content: "\f51e"; }
+.fa-receipt::before { content: "\f543"; }
+.fa-tag::before { content: "\f02b"; }
+
+/* 🚪 Salida y Cerrar Sesión */
+.fa-sign-out-alt::before { content: "\f2f5"; }
+.fa-sign-in-alt::before { content: "\f2f6"; }
+.fa-power-off::before { content: "\f011"; }
+.fa-logout::before { content: "\f2f5"; }
+.fa-login::before { content: "\f2f6"; }
+.fa-times::before { content: "\f00d"; }
+.fa-times-circle::before { content: "\f057"; }
+
+/* 🔍 Búsqueda y Filtros */
+.fa-search::before { content: "\f002"; }
+.fa-search-plus::before { content: "\f00e"; }
+.fa-search-minus::before { content: "\f010"; }
+.fa-filter::before { content: "\f0b0"; }
+.fa-funnel::before { content: "\f31b"; }
+.fa-sort::before { content: "\f0dc"; }
+.fa-sort-up::before { content: "\f0de"; }
+.fa-sort-down::before { content: "\f0dd"; }
+
+/* ➕ Acciones Básicas */
+.fa-plus::before { content: "\f067"; }
+.fa-minus::before { content: "\f068"; }
+.fa-edit::before { content: "\f044"; }
+.fa-trash::before { content: "\f1f8"; }
+.fa-copy::before { content: "\f0c5"; }
+.fa-paste::before { content: "\f0ea"; }
+.fa-download::before { content: "\f019"; }
+.fa-upload::before { content: "\f093"; }
+
+/* 📍 Ubicación y Navegación */
+.fa-map-marker-alt::before { content: "\f3c5"; }
+.fa-location-arrow::before { content: "\f124"; }
+.fa-compass::before { content: "\f14e"; }
+.fa-route::before { content: "\f4d7"; }
+.fa-directions::before { content: "\f5eb"; }
+.fa-flag::before { content: "\f024"; }
+.fa-map-pin::before { content: "\f276"; }
+
+/* 🕒 Tiempo y Calendario */
+.fa-clock::before { content: "\f017"; }
+.fa-calendar::before { content: "\f133"; }
+.fa-calendar-alt::before { content: "\f073"; }
+.fa-calendar-check::before { content: "\f274"; }
+.fa-calendar-plus::before { content: "\f271"; }
+.fa-calendar-minus::before { content: "\f272"; }
+.fa-calendar-times::before { content: "\f273"; }
+.fa-hourglass::before { content: "\f254"; }
+
+/* 📱 Dispositivos y Tecnología */
+.fa-desktop::before { content: "\f108"; }
+.fa-laptop::before { content: "\f109"; }
+.fa-tablet-alt::before { content: "\f3fa"; }
+.fa-mobile-alt::before { content: "\f3cd"; }
+.fa-server::before { content: "\f233"; }
+.fa-database::before { content: "\f1c0"; }
+.fa-cloud::before { content: "\f0c2"; }
+.fa-wifi::before { content: "\f1eb"; }
+
+/* 🔗 Enlaces y Redes */
+.fa-link::before { content: "\f0c1"; }
+.fa-external-link-alt::before { content: "\f35d"; }
+.fa-share::before { content: "\f064"; }
+.fa-share-alt::before { content: "\f1e0"; }
+.fa-share-square::before { content: "\f14d"; }
+.fa-retweet::before { content: "\f079"; }
+.fa-reply::before { content: "\f3e5"; }
+
+/* 📊 Datos y Información */
+.fa-database::before { content: "\f1c0"; }
+.fa-table::before { content: "\f0ce"; }
+.fa-list::before { content: "\f03a"; }
+.fa-list-alt::before { content: "\f022"; }
+.fa-list-ol::before { content: "\f0cb"; }
+.fa-list-ul::before { content: "\f0ca"; }
+.fa-th::before { content: "\f00a"; }
+.fa-th-large::before { content: "\f009"; }
+
+/* 🎯 Objetivos y Metas */
+.fa-bullseye::before { content: "\f140"; }
+.fa-target::before { content: "\f140"; }
+.fa-flag-checkered::before { content: "\f11e"; }
+.fa-flag::before { content: "\f024"; }
+.fa-check::before { content: "\f00c"; }
+.fa-check-circle::before { content: "\f058"; }
+.fa-check-square::before { content: "\f14a"; }
+
+/* ⚠️ Alertas y Estados */
+.fa-exclamation::before { content: "\f12a"; }
+.fa-exclamation-triangle::before { content: "\f071"; }
+.fa-exclamation-circle::before { content: "\f06a"; }
+.fa-info::before { content: "\f129"; }
+.fa-info-circle::before { content: "\f05a"; }
+.fa-question::before { content: "\f128"; }
+.fa-question-circle::before { content: "\f059"; }
+
+/* 🔄 Actualización y Sincronización */
+.fa-sync::before { content: "\f021"; }
+.fa-sync-alt::before { content: "\f2f1"; }
+.fa-redo::before { content: "\f01e"; }
+.fa-undo::before { content: "\f0e2"; }
+.fa-refresh::before { content: "\f021"; }
+.fa-reload::before { content: "\f021"; }
+.fa-rotate::before { content: "\f2f1"; }
+
+/* 📈 Progreso y Crecimiento */
+.fa-arrow-up::before { content: "\f062"; }
+.fa-arrow-down::before { content: "\f063"; }
+.fa-arrow-left::before { content: "\f060"; }
+.fa-arrow-right::before { content: "\f061"; }
+.fa-chevron-up::before { content: "\f077"; }
+.fa-chevron-down::before { content: "\f078"; }
+.fa-chevron-left::before { content: "\f053"; }
+.fa-chevron-right::before { content: "\f054"; }
+
+/* 🎨 Personalización y Temas */
+.fa-palette::before { content: "\f53f"; }
+.fa-paint-brush::before { content: "\f1fc"; }
+.fa-brush::before { content: "\f55d"; }
+.fa-fill-drip::before { content: "\f576"; }
+.fa-eye::before { content: "\f06e"; }
+.fa-eye-slash::before { content: "\f070"; }
+.fa-adjust::before { content: "\f042"; }
+
+/* 🔧 Herramientas Avanzadas */
+.fa-code::before { content: "\f121"; }
+.fa-terminal::before { content: "\f120"; }
+.fa-bug::before { content: "\f188"; }
+.fa-code-branch::before { content: "\f126"; }
+.fa-git::before { content: "\f1d3"; }
+.fa-github::before { content: "\f09b"; }
+.fa-gitlab::before { content: "\f296"; }
+
+/* 📚 Educación y Aprendizaje */
+.fa-graduation-cap::before { content: "\f19d"; }
+.fa-book::before { content: "\f02d"; }
+.fa-book-open::before { content: "\f518"; }
+.fa-newspaper::before { content: "\f1ea"; }
+.fa-lightbulb::before { content: "\f0eb"; }
+.fa-question::before { content: "\f128"; }
+.fa-brain::before { content: "\f5dc"; }
+
+/* 🏢 Negocios y Empresas */
+.fa-building::before { content: "\f1ad"; }
+.fa-industry::before { content: "\f275"; }
+.fa-briefcase::before { content: "\f0b1"; }
+.fa-suitcase::before { content: "\f0f2"; }
+.fa-handshake::before { content: "\f2b5"; }
+.fa-hand-holding-usd::before { content: "\f4c0"; }
+.fa-chart-line::before { content: "\f201"; }
+
+/* 🎵 Multimedia y Entretenimiento */
+.fa-play::before { content: "\f04b"; }
+.fa-pause::before { content: "\f04c"; }
+.fa-stop::before { content: "\f04d"; }
+.fa-volume-up::before { content: "\f028"; }
+.fa-volume-mute::before { content: "\f6a9"; }
+.fa-volume-off::before { content: "\f026"; }
+.fa-music::before { content: "\f001"; }
+
+/* 🍽️ Comida y Restaurantes */
+.fa-utensils::before { content: "\f0f5"; }
+.fa-coffee::before { content: "\f0f4"; }
+.fa-pizza-slice::before { content: "\f818"; }
+.fa-hamburger::before { content: "\f805"; }
+.fa-ice-cream::before { content: "\f810"; }
+.fa-cookie::before { content: "\f563"; }
+.fa-birthday-cake::before { content: "\f1fd"; }
+
+/* 🚗 Transporte y Viajes */
+.fa-car::before { content: "\f1b9"; }
+.fa-plane::before { content: "\f072"; }
+.fa-train::before { content: "\f238"; }
+.fa-bus::before { content: "\f207"; }
+.fa-ship::before { content: "\f21a"; }
+.fa-bicycle::before { content: "\f206"; }
+.fa-motorcycle::before { content: "\f21c"; }
+
+/* 🏥 Salud y Medicina */
+.fa-heart::before { content: "\f004"; }
+.fa-heartbeat::before { content: "\f21e"; }
+.fa-stethoscope::before { content: "\f0f1"; }
+.fa-user-md::before { content: "\f82c"; }
+.fa-hospital::before { content: "\f0f8"; }
+.fa-pills::before { content: "\f484"; }
+.fa-thermometer::before { content: "\f491"; }
+
+/* 🏠 Casa y Hogar */
+.fa-home::before { content: "\f015"; }
+.fa-couch::before { content: "\f4b8"; }
+.fa-bed::before { content: "\f236"; }
+.fa-bath::before { content: "\f2cd"; }
+.fa-kitchen-set::before { content: "\f51a"; }
+.fa-couch::before { content: "\f4b8"; }
+.fa-door-open::before { content: "\f52b"; }
+
+/* 🎮 Juegos y Entretenimiento */
+.fa-gamepad::before { content: "\f11b"; }
+.fa-dice::before { content: "\f522"; }
+.fa-chess::before { content: "\f439"; }
+.fa-puzzle-piece::before { content: "\f12e"; }
+.fa-trophy::before { content: "\f091"; }
+.fa-medal::before { content: "\f5a2"; }
+.fa-award::before { content: "\f559"; }
+
+/* 🌍 Mundo y Navegación */
+.fa-globe::before { content: "\f0ac"; }
+.fa-globe-americas::before { content: "\f57d"; }
+.fa-globe-europe::before { content: "\f57e"; }
+.fa-globe-asia::before { content: "\f57f"; }
+.fa-flag::before { content: "\f024"; }
+.fa-map::before { content: "\f279"; }
+.fa-compass::before { content: "\f14e"; }
+
+/* 💰 Finanzas y Dinero */
+.fa-dollar-sign::before { content: "\f155"; }
+.fa-euro-sign::before { content: "\f153"; }
+.fa-pound-sign::before { content: "\f154"; }
+.fa-yen-sign::before { content: "\f157"; }
+.fa-ruble-sign::before { content: "\f158"; }
+.fa-won-sign::before { content: "\f159"; }
+.fa-lira-sign::before { content: "\f195"; }
+
+/* 🔐 Criptomonedas */
+.fa-bitcoin::before { content: "\f379"; }
+.fa-ethereum::before { content: "\f42e"; }
+.fa-coins::before { content: "\f51e"; }
+.fa-wallet::before { content: "\f555"; }
+.fa-chart-line::before { content: "\f201"; }
+.fa-exchange-alt::before { content: "\f362"; }
+.fa-university::before { content: "\f19c"; }
+
+/* 📱 Redes Sociales */
+.fa-facebook::before { content: "\f39e"; }
+.fa-twitter::before { content: "\f099"; }
+.fa-instagram::before { content: "\f16d"; }
+.fa-linkedin::before { content: "\f08c"; }
+.fa-youtube::before { content: "\f167"; }
+.fa-tiktok::before { content: "\e07b"; }
+.fa-discord::before { content: "\f392"; }
+
+/* 🎨 Marcas y Logos */
+.fa-apple::before { content: "\f179"; }
+.fa-google::before { content: "\f1a0"; }
+.fa-microsoft::before { content: "\f3ca"; }
+.fa-amazon::before { content: "\f270"; }
+.fa-spotify::before { content: "\f1bc"; }
+.fa-netflix::before { content: "\f3e5"; }
+.fa-steam::before { content: "\f1b6"; }
+
+/* 📊 Iconos de Navegación del Template */
+.fa-cube::before { content: "\f1b2"; }           /* Logo principal */
+.fa-chart-line::before { content: "\f201"; }     /* Tabs de navegación */
+.fa-user-shield::before { content: "\f505"; }    /* Botón administrador */
+.fa-sign-out-alt::before { content: "\f2f5"; }   /* Botón logout */
+
+/* 🎯 Iconos Específicos del Dashboard */
+.fa-tachometer-alt::before { content: "\f3fd"; } /* Dashboard */
+.fa-chart-bar::before { content: "\f080"; }      /* Analytics */
+.fa-users::before { content: "\f0c0"; }          /* Usuarios */
+.fa-cog::before { content: "\f013"; }            /* Configuración */
+.fa-file-alt::before { content: "\f15c"; }       /* Reportes */
+.fa-star::before { content: "\f005"; }           /* Planes */
+
+/* 🔧 Utilidades y Estados */
+.fa-spinner::before { content: "\f110"; }        /* Loading */
+.fa-circle-notch::before { content: "\f1ce"; }   /* Loading alternativo */
+.fa-check::before { content: "\f00c"; }          /* Éxito */
+.fa-times::before { content: "\f00d"; }          /* Error */
+.fa-exclamation::before { content: "\f12a"; }    /* Advertencia */
+.fa-info::before { content: "\f129"; }           /* Información */
+
+/* 📱 Responsive y Mobile */
+.fa-bars::before { content: "\f0c9"; }           /* Menú hamburguesa */
+.fa-times::before { content: "\f00d"; }          /* Cerrar */
+.fa-ellipsis-h::before { content: "\f141"; }     /* Más opciones */
+.fa-ellipsis-v::before { content: "\f142"; }     /* Más opciones vertical */
+
+/* 🎨 Clases de utilidad */
+.fa-fw { width: 1.25em; text-align: center; }
+.fa-li { position: absolute; left: -2em; text-align: center; width: 2em; }
+.fa-stack { display: inline-block; height: 2em; line-height: 2em; position: relative; vertical-align: middle; width: 2em; }
+
+/* 📏 Tamaños predefinidos */
+.fa-xs { font-size: 0.75em; }
+.fa-sm { font-size: 0.875em; }
+.fa-lg { font-size: 1.25em; }
+.fa-2x { font-size: 2em; }
+.fa-3x { font-size: 3em; }
+.fa-4x { font-size: 4em; }
+.fa-5x { font-size: 5em; }
+.fa-6x { font-size: 6em; }
+.fa-7x { font-size: 7em; }
+.fa-8x { font-size: 8em; }
+.fa-9x { font-size: 9em; }
+.fa-10x { font-size: 10em; }
+
+/* 🎭 Animaciones */
+.fa-spin { animation: fa-spin 2s linear infinite; }
+.fa-pulse { animation: fa-spin 1s steps(8) infinite; }
+
+@keyframes fa-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 🔄 Rotaciones */
+.fa-rotate-90 { transform: rotate(90deg); }
+.fa-rotate-180 { transform: rotate(180deg); }
+.fa-rotate-270 { transform: rotate(270deg); }
+.fa-flip-horizontal { transform: scale(-1, 1); }
+.fa-flip-vertical { transform: scale(1, -1); }
+.fa-flip-both { transform: scale(-1, -1); }
+
+/* 📱 Media queries para responsive */
+@media (max-width: 768px) {
+    .fa-lg { font-size: 1.125em; }
+    .fa-2x { font-size: 1.75em; }
+    .fa-3x { font-size: 2.5em; }
+}
+
+/* 🎨 Estados interactivos */
+.fa-clickable { cursor: pointer; transition: all 0.2s ease; }
+.fa-clickable:hover { transform: scale(1.1); }
+.fa-clickable:active { transform: scale(0.95); }
+
+/* 🌈 Colores temáticos */
+.fa-primary { color: #0c5bef; }
+.fa-secondary { color: #5c646f; }
+.fa-success { color: #28a745; }
+.fa-warning { color: #ffc107; }
+.fa-danger { color: #dc3545; }
+.fa-info { color: #17a2b8; }
+.fa-light { color: #f8f9fa; }
+.fa-dark { color: #343a40; }
+
+/* 📝 Nota importante */
+.fa-note::before { content: "⚠️"; }
+.fa-note { 
+    font-family: inherit; 
+    font-style: italic; 
+    color: #6c757d; 
+}
+
+/* 🎯 Iconos Específicos del Sidebar UBITS */
+.fa-chart-mixed::before { content: "\f643"; }           /* Diagnóstico */
+.fa-bars-progress::before { content: "\f828"; }         /* Desempeño */
+.fa-clipboard-list-check::before { content: "\f737"; }  /* Encuestas */
+.fa-layer-group::before { content: "\f5fd"; }           /* Tareas */
+.fa-moon::before { content: "\f186"; }                  /* Modo oscuro */

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template UBITS - Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="fontawesome-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,opsz,wght@0,16,400;0,16,600;1,16,400;1,16,600&display=swap" rel="stylesheet">
+</head>
+<body data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <!-- Contenedor principal para header y body -->
+            <div class="sidebar-main">
+                <!-- Header -->
+                <div class="sidebar-header">
+                    <div class="logo">
+                        <img src="images/Ubits-logo.svg" alt="UBITS Logo" />
+                    </div>
+                </div>
+                
+                <!-- Body -->
+                <div class="sidebar-body">
+                    <button class="nav-button active" data-section="aprendizaje" data-tooltip="Aprendizaje">
+                        <i class="far fa-graduation-cap"></i>
+                    </button>
+                    <button class="nav-button" data-section="diagnostico" data-tooltip="Diagnóstico">
+                        <i class="far fa-chart-mixed"></i>
+                    </button>
+                    <button class="nav-button" data-section="desempeno" data-tooltip="Desempeño">
+                        <i class="far fa-bars-progress"></i>
+                    </button>
+                    <button class="nav-button" data-section="encuestas" data-tooltip="Encuestas">
+                        <i class="far fa-clipboard-list-check"></i>
+                    </button>
+                    <button class="nav-button" data-section="reclutamiento" data-tooltip="Reclutamiento">
+                        <i class="far fa-users"></i>
+                    </button>
+                    <button class="nav-button" data-section="tareas" data-tooltip="Tareas">
+                        <i class="far fa-layer-group"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Footer -->
+            <div class="sidebar-footer">
+                <button class="nav-button" data-section="perfil" data-tooltip="Mi perfil">
+                    <div class="user-avatar">
+                        <i class="far fa-user"></i>
+                    </div>
+                </button>
+                <button class="nav-button" data-section="darkmode" data-tooltip="Modo oscuro">
+                    <i class="far fa-moon"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navigation -->
+            <nav class="top-nav" id="topNav">
+                <div class="nav-tabs">
+                    <button class="nav-tab active" data-tab="section1">
+                        <i class="far fa-chart-line"></i>
+                        <span>Sección 1</span>
+                    </button>
+                    <button class="nav-tab" data-tab="section2">
+                        <i class="far fa-chart-line"></i>
+                        <span>Sección 2</span>
+                    </button>
+                    <button class="nav-tab" data-tab="section3">
+                        <i class="far fa-chart-line"></i>
+                        <span>Sección 3</span>
+                    </button>
+                    <button class="nav-tab" data-tab="section4">
+                        <i class="far fa-chart-line"></i>
+                        <span>Sección 4</span>
+                    </button>
+                    <button class="nav-tab" data-tab="section5">
+                        <i class="far fa-chart-line"></i>
+                        <span>Sección 5</span>
+                    </button>
+                </div>
+            </nav>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <div class="content-placeholder">
+                    <h2>Área de Contenido</h2>
+                    <p>Aquí va el contenido principal de tu aplicación</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
