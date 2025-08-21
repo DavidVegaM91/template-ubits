@@ -60,6 +60,29 @@ colors: {
 </button>
 ```
 
+### **Contenido Personalizado:**
+Para personalizar el contenido de cada sección, modifica la función `getCustomContent()` en `script.js`:
+
+```javascript
+function getCustomContent(section) {
+    if (section === 'aprendizaje') {
+        return `
+            <div class="my-custom-content">
+                <h2>Mi Dashboard Personalizado</h2>
+                <div class="my-cards">
+                    <div class="card">Mi Card 1</div>
+                    <div class="card">Mi Card 2</div>
+                </div>
+            </div>
+        `;
+    }
+    
+    return null; // null = usar contenido por defecto
+}
+```
+
+**Ver ejemplo completo en:** `examples/custom-content-example.js`
+
 ## 🔧 Funciones Disponibles
 
 ### **Exportar Configuración:**

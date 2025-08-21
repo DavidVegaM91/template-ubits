@@ -143,11 +143,30 @@ document.addEventListener('DOMContentLoaded', function() {
         // Agregar clase active al tab clickeado
         tab.classList.add('active');
         
-        // Aquí puedes agregar lógica para cambiar el contenido
-        console.log(`Cambiando a tab: ${tabName}`);
+        // NO cambiar el contenido principal, solo actualizar el indicador de subsección
+        console.log(`Cambiando a subsección: ${tabName}`);
         
-        // Ejemplo: cambiar el contenido del área principal
-        updateContentArea(tabName);
+        // Actualizar solo el indicador de subsección activa
+        updateSubsectionIndicator(tabName);
+    }
+    
+    // Función para actualizar solo el indicador de subsección
+    function updateSubsectionIndicator(subsection) {
+        const contentPlaceholder = contentArea.querySelector('.content-placeholder');
+        
+        if (contentPlaceholder) {
+            // Mantener el contenido principal, solo actualizar el indicador
+            const currentContent = contentPlaceholder.innerHTML;
+            
+            // Buscar y actualizar solo la línea de "Subsección activa"
+            if (currentContent.includes('Subsección activa:')) {
+                const updatedContent = currentContent.replace(
+                    /Subsección activa: .*?<\/p>/,
+                    `Subsección activa: ${subsection.charAt(0).toUpperCase() + subsection.slice(1)}</p>`
+                );
+                contentPlaceholder.innerHTML = updatedContent;
+            }
+        }
     }
 
     // Función para actualizar el área de contenido
@@ -155,14 +174,48 @@ document.addEventListener('DOMContentLoaded', function() {
         const contentPlaceholder = contentArea.querySelector('.content-placeholder');
         
         if (contentPlaceholder) {
-            const sectionName = section.charAt(0).toUpperCase() + section.slice(1);
-            contentPlaceholder.innerHTML = `
-                <h2>${sectionName}</h2>
-                <p>Contenido de la sección: ${sectionName}</p>
-                <p>Subsección activa: Sección 1</p>
-                <p>Personaliza este contenido según tus necesidades</p>
+            // Verificar si hay contenido personalizado
+            const customContent = getCustomContent(section);
+            
+            if (customContent) {
+                // Usar contenido personalizado si existe
+                contentPlaceholder.innerHTML = customContent;
+            } else {
+                // Contenido por defecto del template
+                const sectionName = section.charAt(0).toUpperCase() + section.slice(1);
+                contentPlaceholder.innerHTML = `
+                    <h2>${sectionName}</h2>
+                    <p>Contenido de la sección: ${sectionName}</p>
+                    <p>Subsección activa: Sección 1</p>
+                    <p>Personaliza este contenido según tus necesidades</p>
+                `;
+            }
+        }
+    }
+    
+    // Función para obtener contenido personalizado
+    function getCustomContent(section) {
+        // AQUÍ TU COMPAÑERO PERSONALIZA EL CONTENIDO
+        // Retorna null para usar contenido por defecto
+        // O retorna HTML personalizado para cada sección
+        
+        // Ejemplo de personalización:
+        /*
+        if (section === 'aprendizaje') {
+            return `
+                <div class="custom-content">
+                    <h2>Mi Dashboard de Aprendizaje</h2>
+                    <div class="cards-grid">
+                        <div class="card">Card 1</div>
+                        <div class="card">Card 2</div>
+                        <div class="card">Card 3</div>
+                    </div>
+                </div>
             `;
         }
+        */
+        
+        return null; // null = usar contenido por defecto del template
     }
 
     // Función para manejar el responsive
