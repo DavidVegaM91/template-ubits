@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
         localStorage.setItem('theme', newTheme);
         
         // Cambiar icono del botón
-        const darkModeButton = document.querySelector('[data-section="darkmode"] i');
+        const darkModeButton = document.querySelector('#darkmode-toggle i');
         if (darkModeButton) {
             if (newTheme === 'dark') {
                 darkModeButton.className = 'far fa-sun';
@@ -68,7 +68,18 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
+        // Cambiar tooltip del botón
+        const darkModeButtonContainer = document.querySelector('#darkmode-toggle');
+        if (darkModeButtonContainer) {
+            if (newTheme === 'dark') {
+                darkModeButtonContainer.setAttribute('data-tooltip', 'Modo claro');
+            } else {
+                darkModeButtonContainer.setAttribute('data-tooltip', 'Modo oscuro');
+            }
+        }
+        
         console.log(`Modo ${newTheme === 'dark' ? 'oscuro' : 'claro'} activado`);
+        console.log('🎯 Estado de navegación mantenido - no se cambió de sección');
     }
 
     // Función para cargar tema guardado
@@ -77,11 +88,17 @@ document.addEventListener('DOMContentLoaded', function() {
         if (savedTheme) {
             document.body.setAttribute('data-theme', savedTheme);
             
-            // Actualizar icono si es modo oscuro
+            // Actualizar icono y tooltip si es modo oscuro
             if (savedTheme === 'dark') {
-                const darkModeButton = document.querySelector('[data-section="darkmode"] i');
+                const darkModeButton = document.querySelector('#darkmode-toggle i');
+                const darkModeButtonContainer = document.querySelector('#darkmode-toggle');
+                
                 if (darkModeButton) {
                     darkModeButton.className = 'far fa-sun';
+                }
+                
+                if (darkModeButtonContainer) {
+                    darkModeButtonContainer.setAttribute('data-tooltip', 'Modo claro');
                 }
             }
         }
@@ -89,26 +106,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Función para ajustar el nav superior según el ancho de la pantalla
     function adjustTopNavWidth() {
-        const windowWidth = window.innerWidth;
-        const isMobile = windowWidth <= 768;
-        
-        const sidebarLeft = isMobile ? 8 : 11; // Posición izquierda del sidebar
-        const sidebarWidth = isMobile ? 80 : 96; // Ancho del sidebar
-        const gap = 24; // Gap entre sidebar y contenedor principal (siempre 24px)
-        const rightMargin = 12; // Margen derecho del contenedor principal
-        
-        const topNavWidth = windowWidth - sidebarLeft - sidebarWidth - gap - rightMargin;
-        
-        // Asegurar que el ancho sea válido
-        if (topNavWidth > 0) {
-            topNav.style.width = `${topNavWidth}px`;
-            topNav.style.maxWidth = `${topNavWidth}px`;
-            topNav.style.minWidth = `${topNavWidth}px`;
-            
-            console.log(`Top Nav ajustado: ${topNavWidth}px (${windowWidth} - ${sidebarLeft} - ${sidebarWidth} - ${gap} - ${rightMargin})`);
-        } else {
-            console.warn('Top Nav width calculado es inválido:', topNavWidth);
-        }
+        // Ya no es necesaria - el CSS se encarga del ancho
+        console.log('🎯 Top Nav: CSS se encarga del ancho automáticamente');
     }
 
     // Función para manejar la navegación del sidebar
@@ -181,6 +180,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const mainContent = document.querySelector('.main-content');
             if (mainContent) {
                 mainContent.style.left = '108px';
+                mainContent.style.right = '12px';
             }
         } else {
             sidebar.style.width = '96px';
@@ -191,6 +191,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const mainContent = document.querySelector('.main-content');
             if (mainContent) {
                 mainContent.style.left = '131px';
+                mainContent.style.right = '12px';
             }
         }
         
@@ -203,15 +204,17 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Reajustar dimensiones
         adjustSidebarHeight();
-        adjustTopNavWidth();
         adjustMainContentHeight();
     }
 
     // Event listeners
     navButtons.forEach(button => {
-        button.addEventListener('click', handleSidebarNavigation);
+        // Solo agregar navegación a botones que tengan data-section
+        if (button.dataset.section) {
+            button.addEventListener('click', handleSidebarNavigation);
+        }
         
-        // Tooltip hover
+        // Tooltip hover para todos los botones
         button.addEventListener('mouseenter', function(e) {
             const tooltipText = this.getAttribute('data-tooltip');
             tooltip.textContent = tooltipText;
@@ -228,9 +231,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         // Manejo especial para el botón de modo oscuro
-        if (button.dataset.section === 'darkmode') {
+        if (button.id === 'darkmode-toggle') {
             button.addEventListener('click', function(e) {
                 e.preventDefault(); // Prevenir navegación normal
+                e.stopPropagation(); // Evitar que se propague el evento
                 toggleDarkMode();
             });
         }
@@ -244,7 +248,6 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('resize', () => {
         handleResponsive();
         adjustMainContentHeight();
-        adjustTopNavWidth(); // Asegurar que el top nav se ajuste
     });
     window.addEventListener('orientationchange', () => {
         handleResponsive();
@@ -256,7 +259,6 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('🚀 Inicializando Template UBITS...');
         
         adjustSidebarHeight();
-        adjustTopNavWidth();
         adjustMainContentHeight();
         handleResponsive();
         

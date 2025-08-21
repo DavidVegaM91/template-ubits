@@ -521,3 +521,4 @@
 .fa-clipboard-list-check::before { content: "\f737"; }  /* Encuestas */
 .fa-layer-group::before { content: "\f5fd"; }           /* Tareas */
 .fa-moon::before { content: "\f186"; }                  /* Modo oscuro */
+.fa-sun::before { content: "\f185"; }                   /* Modo claro */
