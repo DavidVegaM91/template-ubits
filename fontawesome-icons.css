@@ -522,3 +522,6 @@
 .fa-layer-group::before { content: "\f5fd"; }           /* Tareas */
 .fa-moon::before { content: "\f186"; }                  /* Modo oscuro */
 .fa-sun::before { content: "\f185"; }                   /* Modo claro */
+.fa-stars::before { content: "\f5a0"; }                 /* Estrellas */
+.fa-sparkles::before { content: "\f5de"; }              /* Chispas/Sparkles - Código correcto */
+.fa-magic-wand-sparkles::before { content: "\f72b"; }   /* Varita mágica con chispas */

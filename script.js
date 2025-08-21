@@ -121,11 +121,21 @@ document.addEventListener('DOMContentLoaded', function() {
         // Agregar clase active al botón clickeado del sidebar
         button.classList.add('active');
         
-        // Activar siempre la Sección 1 del nav superior
-        navTabs.forEach(tab => tab.classList.remove('active'));
-        const section1Tab = document.querySelector('[data-tab="section1"]');
-        if (section1Tab) {
-            section1Tab.classList.add('active');
+        // Ocultar/mostrar top nav según la sección
+        const topNav = document.querySelector('.top-nav');
+        if (topNav) {
+            if (section === 'ubits-ai') {
+                topNav.style.display = 'none';
+            } else {
+                topNav.style.display = 'flex';
+                
+                // Activar siempre la Sección 1 del nav superior
+                navTabs.forEach(tab => tab.classList.remove('active'));
+                const section1Tab = document.querySelector('[data-tab="section1"]');
+                if (section1Tab) {
+                    section1Tab.classList.add('active');
+                }
+            }
         }
         
         // Actualizar el contenido con la sección del sidebar + sección 1
@@ -172,6 +182,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Función para actualizar el área de contenido
     function updateContentArea(section) {
         const contentPlaceholder = contentArea.querySelector('.content-placeholder');
+        const contentAreaElement = document.querySelector('.content-area');
         
         if (contentPlaceholder) {
             // Verificar si hay contenido personalizado
@@ -180,6 +191,13 @@ document.addEventListener('DOMContentLoaded', function() {
             if (customContent) {
                 // Usar contenido personalizado si existe
                 contentPlaceholder.innerHTML = customContent;
+                
+                // Aplicar estilos especiales para UBITS AI
+                if (section === 'ubits-ai') {
+                    contentAreaElement.classList.add('no-background');
+                } else {
+                    contentAreaElement.classList.remove('no-background');
+                }
             } else {
                 // Contenido por defecto del template
                 const sectionName = section.charAt(0).toUpperCase() + section.slice(1);
@@ -189,6 +207,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     <p>Subsección activa: Sección 1</p>
                     <p>Personaliza este contenido según tus necesidades</p>
                 `;
+                
+                // Remover estilos especiales
+                contentAreaElement.classList.remove('no-background');
             }
         }
     }
@@ -198,6 +219,57 @@ document.addEventListener('DOMContentLoaded', function() {
         // AQUÍ TU COMPAÑERO PERSONALIZA EL CONTENIDO
         // Retorna null para usar contenido por defecto
         // O retorna HTML personalizado para cada sección
+        
+        // PERSONALIZACIÓN PARA UBITS AI
+        if (section === 'ubits-ai') {
+            return `
+                <div class="ubits-ai-dashboard">
+                    <h2 class="ai-title">Hola, ¿en qué puedo ayudarte?</h2>
+                    
+                    <div class="ai-cards-container">
+                        <div class="ai-card">
+                            <div class="card-header">
+                                <h3 class="card-title">AI Insights</h3>
+                                <div class="card-icon">
+                                    <i class="far fa-arrow-right"></i>
+                                </div>
+                            </div>
+                            <p class="card-description">Quiero sumar personas a la estructura de la compañía.</p>
+                        </div>
+                        
+                        <div class="ai-card">
+                            <div class="card-header">
+                                <h3 class="card-title">Customer Support</h3>
+                                <div class="card-icon">
+                                    <i class="far fa-headset"></i>
+                                </div>
+                            </div>
+                            <p class="card-description">Haz una comparación de precios vs. el mercado laboral.</p>
+                        </div>
+                        
+                        <div class="ai-card">
+                            <div class="card-header">
+                                <h3 class="card-title">Evaluación financiera</h3>
+                                <div class="card-icon">
+                                    <i class="far fa-chart-line"></i>
+                                </div>
+                            </div>
+                            <p class="card-description">Haz una comparación de precios vs. el mercado laboral.</p>
+                        </div>
+                        
+                        <div class="ai-card">
+                            <div class="card-header">
+                                <h3 class="card-title">¿Qué quieres aprender?</h3>
+                                <div class="card-icon">
+                                    <i class="far fa-graduation-cap"></i>
+                                </div>
+                            </div>
+                            <p class="card-description">Haz una comparación de precios vs. el mercado laboral.</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
         
         // Ejemplo de personalización:
         /*

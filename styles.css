@@ -389,6 +389,13 @@ body {
     box-sizing: border-box;
 }
 
+/* Content Area sin fondo para UBITS AI */
+.content-area.no-background {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
 .content-placeholder {
     text-align: center;
     color: #5c646f;
@@ -511,6 +518,141 @@ body {
 
 [data-theme="dark"] .user-avatar:hover {
     background: #9ca3af !important;
+}
+
+/* Modo oscuro - UBITS AI */
+[data-theme="dark"] .ai-title {
+    color: #EDEEEF !important;
+}
+
+[data-theme="dark"] .ai-card {
+    background: #202837 !important;
+    box-shadow: 0 2px 44px rgba(0,0,0,0.3) !important;
+}
+
+[data-theme="dark"] .ai-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4) !important;
+}
+
+[data-theme="dark"] .card-title {
+    color: #EDEEEF !important;
+}
+
+[data-theme="dark"] .card-description {
+    color: #D0D2D5 !important;
+}
+
+[data-theme="dark"] .card-icon i {
+    color: #D0D2D5 !important;
+}
+
+/* ========================================
+   ESTILOS PARA UBITS AI
+   ======================================== */
+
+.ubits-ai-dashboard {
+    padding: 20px;
+    text-align: center;
+}
+
+/* Quitar fondo y borde del content-area cuando estemos en UBITS AI */
+.ubits-ai-dashboard .content-area {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.ai-title {
+    font-family: 'Noto Sans', sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 1;
+    color: #303a47;
+    margin-bottom: 48px;
+    text-align: center;
+}
+
+.ai-cards-container {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.ai-card {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 16px;
+    min-width: 200px;
+    flex: 1;
+    max-width: 250px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
+}
+
+.ai-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.card-title {
+    font-family: 'Noto Sans', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 24px;
+    color: #303a47;
+    margin: 0;
+    flex: 1;
+    text-align: left;
+}
+
+.card-icon {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: transparent;
+}
+
+.card-icon i {
+    font-size: 16px;
+    color: #303a47;
+}
+
+.card-description {
+    font-family: 'Noto Sans', sans-serif;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 19.5px;
+    color: #303a47;
+    margin: 0;
+    text-align: left;
+}
+
+/* Responsive para UBITS AI */
+@media (max-width: 768px) {
+    .ai-cards-container {
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    .ai-card {
+        max-width: 100%;
+    }
+    
+    .ai-title {
+        font-size: 20px;
+        margin-bottom: 32px;
+    }
 }
 
 [data-theme="dark"] .content-placeholder h2 {
