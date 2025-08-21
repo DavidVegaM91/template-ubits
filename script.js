@@ -99,8 +99,16 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const topNavWidth = windowWidth - sidebarLeft - sidebarWidth - gap - rightMargin;
         
-        topNav.style.width = `${topNavWidth}px`;
-        topNav.style.maxWidth = `${topNavWidth}px`;
+        // Asegurar que el ancho sea válido
+        if (topNavWidth > 0) {
+            topNav.style.width = `${topNavWidth}px`;
+            topNav.style.maxWidth = `${topNavWidth}px`;
+            topNav.style.minWidth = `${topNavWidth}px`;
+            
+            console.log(`Top Nav ajustado: ${topNavWidth}px (${windowWidth} - ${sidebarLeft} - ${sidebarWidth} - ${gap} - ${rightMargin})`);
+        } else {
+            console.warn('Top Nav width calculado es inválido:', topNavWidth);
+        }
     }
 
     // Función para manejar la navegación del sidebar
@@ -236,6 +244,7 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('resize', () => {
         handleResponsive();
         adjustMainContentHeight();
+        adjustTopNavWidth(); // Asegurar que el top nav se ajuste
     });
     window.addEventListener('orientationchange', () => {
         handleResponsive();
@@ -244,6 +253,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Inicialización
     function init() {
+        console.log('🚀 Inicializando Template UBITS...');
+        
         adjustSidebarHeight();
         adjustTopNavWidth();
         adjustMainContentHeight();
