@@ -62,9 +62,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const darkModeButton = document.querySelector('#darkmode-toggle i');
         if (darkModeButton) {
             if (newTheme === 'dark') {
-                darkModeButton.className = 'far fa-sun';
+                darkModeButton.className = 'fa fa-sun-bright';
             } else {
-                darkModeButton.className = 'far fa-moon';
+                darkModeButton.className = 'fa fa-moon';
             }
         }
         
@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const darkModeButtonContainer = document.querySelector('#darkmode-toggle');
                 
                 if (darkModeButton) {
-                    darkModeButton.className = 'far fa-sun';
+                    darkModeButton.className = 'fa fa-sun-bright';
                 }
                 
                 if (darkModeButtonContainer) {
@@ -231,7 +231,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <div class="card-header">
                                 <h3 class="card-title">AI Insights</h3>
                                 <div class="card-icon">
-                                    <i class="far fa-arrow-right"></i>
+                                    <i class="fa fa-lightbulb"></i>
                                 </div>
                             </div>
                             <p class="card-description">Quiero sumar personas a la estructura de la compañía.</p>
@@ -241,7 +241,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <div class="card-header">
                                 <h3 class="card-title">Customer Support</h3>
                                 <div class="card-icon">
-                                    <i class="far fa-headset"></i>
+                                    <i class="fa fa-headset"></i>
                                 </div>
                             </div>
                             <p class="card-description">Haz una comparación de precios vs. el mercado laboral.</p>
@@ -251,7 +251,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <div class="card-header">
                                 <h3 class="card-title">Evaluación financiera</h3>
                                 <div class="card-icon">
-                                    <i class="far fa-chart-line"></i>
+                                    <i class="fa fa-chart-line"></i>
                                 </div>
                             </div>
                             <p class="card-description">Haz una comparación de precios vs. el mercado laboral.</p>
@@ -261,7 +261,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <div class="card-header">
                                 <h3 class="card-title">¿Qué quieres aprender?</h3>
                                 <div class="card-icon">
-                                    <i class="far fa-graduation-cap"></i>
+                                    <i class="fa fa-graduation-cap"></i>
                                 </div>
                             </div>
                             <p class="card-description">Haz una comparación de precios vs. el mercado laboral.</p>
