@@ -113,6 +113,7 @@
 /* 📁 Archivos y Documentos */
 .fa-file::before { content: "\f15b"; }
 .fa-file-alt::before { content: "\f15c"; }
+.fa-folder::before { content: "\f07b"; }
 .fa-file-pdf::before { content: "\f1c1"; }
 .fa-file-word::before { content: "\f1c2"; }
 .fa-file-excel::before { content: "\f1c3"; }
@@ -186,7 +187,7 @@
 .fa-search-plus::before { content: "\f00e"; }
 .fa-search-minus::before { content: "\f010"; }
 .fa-filter::before { content: "\f0b0"; }
-.fa-funnel::before { content: "\f31b"; }
+.fa-funnel::before { content: "\f0b0"; }
 .fa-sort::before { content: "\f0dc"; }
 .fa-sort-up::before { content: "\f0de"; }
 .fa-sort-down::before { content: "\f0dd"; }
@@ -300,9 +301,6 @@
 .fa-terminal::before { content: "\f120"; }
 .fa-bug::before { content: "\f188"; }
 .fa-code-branch::before { content: "\f126"; }
-.fa-git::before { content: "\f1d3"; }
-.fa-github::before { content: "\f09b"; }
-.fa-gitlab::before { content: "\f296"; }
 
 /* 📚 Educación y Aprendizaje */
 .fa-graduation-cap::before { content: "\f19d"; }
@@ -402,24 +400,6 @@
 .fa-chart-line::before { content: "\f201"; }
 .fa-exchange-alt::before { content: "\f362"; }
 .fa-university::before { content: "\f19c"; }
-
-/* 📱 Redes Sociales */
-.fa-facebook::before { content: "\f39e"; }
-.fa-twitter::before { content: "\f099"; }
-.fa-instagram::before { content: "\f16d"; }
-.fa-linkedin::before { content: "\f08c"; }
-.fa-youtube::before { content: "\f167"; }
-.fa-tiktok::before { content: "\e07b"; }
-.fa-discord::before { content: "\f392"; }
-
-/* 🎨 Marcas y Logos */
-.fa-apple::before { content: "\f179"; }
-.fa-google::before { content: "\f1a0"; }
-.fa-microsoft::before { content: "\f3ca"; }
-.fa-amazon::before { content: "\f270"; }
-.fa-spotify::before { content: "\f1bc"; }
-.fa-netflix::before { content: "\f3e5"; }
-.fa-steam::before { content: "\f1b6"; }
 
 /* 📊 Iconos de Navegación del Template */
 .fa-cube::before { content: "\f1b2"; }           /* Logo principal */
@@ -522,8 +502,5 @@
 .fa-layer-group::before { content: "\f5fd"; }           /* Tareas */
 .fa-moon::before { content: "\f186"; }                  /* Modo oscuro */
 .fa-sun::before { content: "\f185"; }                   /* Modo claro */
-.fa-sun-bright::before { content: "\f5e0"; }            /* Sol brillante - Código correcto */
-.fa-stars::before { content: "\f5a0"; }                 /* Estrellas */
-.fa-sparkles::before { content: "\f5de"; }              /* Chispas/Sparkles - Código correcto */
 .fa-magic-wand-sparkles::before { content: "\f72b"; }   /* Varita mágica con chispas */
 .fa-headset::before { content: "\f590"; }               /* Headset/Auriculares */
