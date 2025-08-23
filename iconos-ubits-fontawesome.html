@@ -15,38 +15,179 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #f5f5f5;
-            padding: 20px;
+            padding: 16px 12px;
         }
 
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
+            display: flex;
+            min-height: 100vh;
         }
 
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 30px;
-            font-size: 2.5rem;
+        .sidebar {
+            width: 80px;
+            background: #1e293b;
+            position: fixed;
+            left: 12px;
+            top: 16px;
+            height: calc(100vh - 32px);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 16px;
+            border-radius: 12px;
+        }
+
+        .sidebar-logo {
+            margin-bottom: 20px;
+        }
+
+        .sidebar-logo img {
+            width: 24px;
+            height: 25px;
+            filter: brightness(0) invert(1); /* Para que el SVG se vea blanco */
+        }
+
+        .main-content {
+            margin-left: 112px; /* 80px (sidebar) + 12px (margen) + 20px (gap) */
+            margin-top: 0;
+            margin-right: 0;
+            flex: 1;
+            padding: 0;
+            background: #f5f5f5;
+        }
+
+        .content-wrapper {
+            padding-bottom: 20px;
+        }
+
+        .page-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .page-title-icon {
+            font-size: 24px;
+            color: #303a47;
+        }
+
+        .page-title h1 {
+            text-align: left;
+            color: #2a303f;
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+            line-height: 1;
+            font-family: 'Noto Sans', sans-serif;
+        }
+
+        .results-search-filters {
+            background: #ffffff;
+            padding: 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            position: sticky;
+            top: 16px;
+            z-index: 100;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .results-search-layout {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .results-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .results-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #2a303f;
+            line-height: 24px;
+            font-family: 'Noto Sans', sans-serif;
+        }
+
+        .results-count {
+            font-size: 13px;
+            color: #5c646f;
+            line-height: 19.5px;
+            font-family: 'Noto Sans', sans-serif;
         }
 
         .search-container {
-            text-align: center;
-            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: #ffffff;
+            border: 1px solid #d0d2d5;
+            border-radius: 5px;
+            padding: 0 10px;
+        }
+
+        .search-icon {
+            font-size: 18px;
+            color: #5c646f;
+            flex-shrink: 0;
+        }
+
+        .clear-search-btn {
+            background: transparent;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .clear-search-btn:hover {
+            background: #f1f5f9;
+        }
+
+        .clear-search-btn i {
+            font-size: 14px;
+            color: #00256e;
         }
 
         #searchInput {
-            width: 300px;
-            padding: 12px 20px;
-            font-size: 16px;
-            border: 2px solid #ddd;
-            border-radius: 25px;
+            width: 350px;
+            min-width: 200px;
+            max-width: 350px;
+            padding: 8px 0;
+            font-size: 13px;
+            font-weight: 400;
+            border: none;
             outline: none;
-            transition: border-color 0.3s;
+            transition: all 0.2s ease;
+            background: transparent;
+            color: #5c646f;
+            font-family: 'Noto Sans', sans-serif;
+            box-sizing: border-box;
+        }
+
+        #searchInput:not(:placeholder-shown) {
+            color: #303a47;
         }
 
         #searchInput:focus {
-            border-color: #007bff;
+            border-color: #3b82f6;
+        }
+
+        #searchInput::placeholder {
+            color: #5c646f;
         }
 
         .icons-grid {
@@ -57,40 +198,52 @@
         }
 
         .icon-card {
-            background: white;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 15px;
+            background: #ffffff;
+            border: 1px solid #d0d2d5;
+            border-radius: 10px;
+            padding: 8px;
             text-align: center;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             cursor: pointer;
+            height: 89px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         .icon-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            border-color: #007bff;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            border-color: #3b82f6;
         }
 
         .icon-card i {
             font-size: 24px;
-            color: #333;
-            margin-bottom: 8px;
+            color: #303a47;
+            margin-bottom: 10px;
             display: block;
         }
 
         .icon-name {
-            font-size: 12px;
-            color: #666;
-            margin-bottom: 4px;
-            font-weight: 500;
+            font-size: 13px;
+            color: #5c646f;
+            font-weight: 400;
+            line-height: 19.5px;
+            font-family: 'Noto Sans', sans-serif;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 100%;
         }
 
         .stats {
             text-align: center;
-            margin-bottom: 20px;
-            color: #666;
+            margin-bottom: 24px;
+            color: #64748b;
             font-size: 14px;
+            font-weight: 400;
+            line-height: 20px;
         }
 
         .no-results {
@@ -117,27 +270,292 @@
         .copy-message.show {
             opacity: 1;
         }
+
+        /* Navegación alfabética dentro del sidebar */
+        .alphabet-nav {
+            flex: 1;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #475569 transparent;
+            padding: 16px 12px 16px 12px;
+            width: 100%;
+        }
+
+        .alphabet-nav::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .alphabet-nav::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .alphabet-nav::-webkit-scrollbar-thumb {
+            background: #ddd;
+            border-radius: 3px;
+        }
+
+        .alphabet-nav::-webkit-scrollbar-thumb:hover {
+            background: #bbb;
+        }
+
+        .alphabet-nav a {
+            display: block;
+            text-decoration: none;
+            color: #94a3b8; /* Color gris claro del sidebar UBITS */
+            font-size: 12px;
+            font-weight: 500;
+            padding: 8px 6px;
+            margin: 2px 0;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            text-align: center;
+            min-width: 24px;
+        }
+
+        .alphabet-nav a:hover {
+            background: #334155; /* Hover azul medio del sidebar UBITS */
+            color: #e2e8f0;
+            transform: scale(1.05);
+        }
+
+        .alphabet-nav a.active {
+            background: #3b82f6; /* Azul activo del sidebar UBITS */
+            color: white;
+        }
+
+        .alphabet-nav a:active {
+            transform: scale(0.98);
+        }
+
+        /* Responsive para la navegación alfabética */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 60px;
+            }
+            
+            .main-content {
+                margin-left: 80px; /* 60px sidebar + 20px gap */
+            }
+            
+            .alphabet-nav a {
+                font-size: 10px;
+                padding: 6px 4px;
+                min-width: 20px;
+            }
+
+            #searchInput {
+                width: 250px;
+                min-width: 150px;
+            }
+
+            .results-search-layout {
+                flex-direction: column;
+                gap: 16px;
+                align-items: stretch;
+            }
+
+            .empty-state-content {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+
+            .empty-state-illustration {
+                width: 180px;
+                height: 160px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sidebar {
+                width: 50px;
+            }
+            
+            .main-content {
+                margin-left: 70px; /* 50px sidebar + 20px gap */
+            }
+
+            #searchInput {
+                width: 200px;
+                min-width: 120px;
+            }
+
+            .letter-grid {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+                gap: 12px;
+            }
+
+            .icon-card {
+                height: 80px;
+                padding: 6px;
+            }
+
+            .icon-card i {
+                font-size: 20px;
+            }
+
+            .icon-name {
+                font-size: 11px;
+            }
+        }
+
+        /* Estilos para las secciones de letras */
+        .letter-section {
+            background: #ffffff;
+            padding: 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            scroll-margin-top: 20px; /* Para el scroll suave */
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .letter-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #2a303f;
+            margin-bottom: 16px;
+            line-height: 24px;
+            font-family: 'Noto Sans', sans-serif;
+        }
+
+        .letter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 16px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            background: #ffffff;
+            padding: 16px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .empty-state-content {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            max-width: 600px;
+        }
+
+        .empty-state-illustration {
+            width: 220px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .empty-state-illustration img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .empty-state-text {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .empty-state-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2a303f;
+            line-height: 1;
+            font-family: 'Noto Sans', sans-serif;
+        }
+
+        .empty-state-description {
+            font-size: 16px;
+            font-weight: 400;
+            color: #5c646f;
+            line-height: 24px;
+            font-family: 'Noto Sans', sans-serif;
+        }
+
+        .clear-search-button {
+            background: #ffffff;
+            border: 1px solid #d0d2d5;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #303a47;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Noto Sans', sans-serif;
+        }
+
+        .clear-search-button:hover {
+            background: #f8fafc;
+            border-color: #94a3b8;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🎨 Iconos UBITS - FontAwesome</h1>
-        
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Buscar iconos..." autocomplete="off">
-        </div>
+        <!-- Sidebar fijo a la izquierda -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <img src="images/Ubits-logo.svg" alt="UBITS Logo">
+            </div>
+            <!-- Navegación alfabética -->
+            <nav class="alphabet-nav" id="alphabetNav">
+                <!-- Se generará dinámicamente -->
+            </nav>
+        </aside>
 
-        <div class="stats" id="stats">
-            Cargando iconos...
-        </div>
+        <!-- Contenido principal a la derecha -->
+        <main class="main-content">
+            <div class="content-wrapper">
+                <div class="page-title">
+                    <i class="far fa-bolt page-title-icon"></i>
+                    <h1>Iconos UBITS - FontAwesome</h1>
+                </div>
+                
+                                            <div class="results-search-filters">
+                    <div class="results-search-layout">
+                        <div class="results-left">
+                            <div class="results-title">Lista de iconos</div>
+                            <div class="results-count" id="resultsCount">Cargando...</div>
+                        </div>
+                        <div class="search-container">
+                            <i class="far fa-search search-icon"></i>
+                            <input type="text" id="searchInput" placeholder="Buscar iconos" autocomplete="off">
+                            <button class="clear-search-btn" id="clearSearchBtn" style="display: none;">
+                                <i class="far fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
 
-        <div class="icons-grid" id="iconsGrid">
-            <!-- Los iconos se cargarán aquí dinámicamente -->
-        </div>
+                            <div class="icons-container" id="iconsContainer">
+                <!-- Las secciones de letras se cargarán aquí dinámicamente -->
+            </div>
 
-        <div class="no-results" id="noResults" style="display: none;">
-            No se encontraron iconos que coincidan con tu búsqueda.
-        </div>
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <div class="empty-state-content">
+                    <div class="empty-state-illustration">
+                        <img src="images/empty-states/sin-resultados-img.svg" alt="Sin resultados" width="220" height="200">
+                    </div>
+                    <div class="empty-state-text">
+                        <div class="empty-state-title">Sin resultados</div>
+                        <div class="empty-state-description">Intenta nuevamente ingresando otro término de búsqueda.</div>
+                        <button class="clear-search-button" onclick="clearSearch()">Limpiar búsqueda</button>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </main>
     </div>
 
     <div class="copy-message" id="copyMessage">
@@ -145,580 +563,279 @@
     </div>
 
     <script>
-        // Solo los iconos que están definidos y funcionando en el CSS
+        // Iconos ordenados alfabéticamente para fácil búsqueda
         const allIcons = [
-            // Iconos del sidebar que SÍ funcionan
-            { name: 'graduation-cap', class: 'fa-graduation-cap', icon: '🎓' },
-            { name: 'chart-mixed', class: 'fa-chart-mixed', icon: '📊' },
-            { name: 'bars-progress', class: 'fa-bars-progress', icon: '📈' },
-            { name: 'clipboard-list-check', class: 'fa-clipboard-list-check', icon: '📋' },
-            { name: 'users', class: 'fa-users', icon: '👥' },
-            { name: 'layer-group', class: 'fa-layer-group', icon: '🔲' },
-            { name: 'sparkles', class: 'fa-sparkles', icon: '✨' },
-            { name: 'user', class: 'fa-user', icon: '👤' },
-            { name: 'moon', class: 'fa-moon', icon: '🌙' },
-            { name: 'sun-bright', class: 'fa-sun-bright', icon: '☀️' },
-            
-            // Iconos básicos que están definidos
-            { name: 'home', class: 'fa-home', icon: '🏠' },
-            { name: 'dashboard', class: 'fa-dashboard', icon: '📊' },
-            { name: 'cog', class: 'fa-cog', icon: '⚙️' },
-            { name: 'file', class: 'fa-file', icon: '📄' },
-            { name: 'folder', class: 'fa-folder', icon: '📁' },
-            { name: 'search', class: 'fa-search', icon: '🔍' },
-            { name: 'edit', class: 'fa-edit', icon: '✏️' },
-            { name: 'trash', class: 'fa-trash', icon: '🗑️' },
-            { name: 'download', class: 'fa-download', icon: '⬇️' },
-            { name: 'upload', class: 'fa-upload', icon: '⬆️' },
-            { name: 'clock', class: 'fa-clock', icon: '🕐' },
-            { name: 'calendar', class: 'fa-calendar', icon: '📅' },
-            { name: 'bell', class: 'fa-bell', icon: '🔔' },
-            { name: 'envelope', class: 'fa-envelope', icon: '✉️' },
-            { name: 'phone', class: 'fa-phone', icon: '📞' },
-            { name: 'map-marker-alt', class: 'fa-map-marker-alt', icon: '📍' },
-            { name: 'link', class: 'fa-link', icon: '🔗' },
-            { name: 'share', class: 'fa-share', icon: '📤' },
-            { name: 'star', class: 'fa-star', icon: '⭐' },
-            { name: 'heart', class: 'fa-heart', icon: '❤️' },
-            { name: 'check', class: 'fa-check', icon: '✅' },
-            { name: 'times', class: 'fa-times', icon: '❌' },
-            { name: 'exclamation-triangle', class: 'fa-exclamation-triangle', icon: '⚠️' },
-            { name: 'info-circle', class: 'fa-info-circle', icon: 'ℹ️' },
-            { name: 'times-circle', class: 'fa-times-circle', icon: '❌' },
-            { name: 'bars', class: 'fa-bars', icon: '☰' },
-            { name: 'arrow-up', class: 'fa-arrow-up', icon: '⬆️' },
+            { name: 'award', class: 'fa-award', icon: '🏅' },
             { name: 'arrow-down', class: 'fa-arrow-down', icon: '⬇️' },
+            { name: 'arrow-down-arrow-up', class: 'fa-arrow-down-arrow-up', icon: '↕️' },
             { name: 'arrow-left', class: 'fa-arrow-left', icon: '⬅️' },
             { name: 'arrow-right', class: 'fa-arrow-right', icon: '➡️' },
-            { name: 'sign-out-alt', class: 'fa-sign-out-alt', icon: '🚪' },
-            { name: 'shield-alt', class: 'fa-shield-alt', icon: '🛡️' },
-            { name: 'lock', class: 'fa-lock', icon: '🔒' },
-            { name: 'key', class: 'fa-key', icon: '🔑' },
-            { name: 'code', class: 'fa-code', icon: '💻' },
-            { name: 'terminal', class: 'fa-terminal', icon: '🖥️' },
-            { name: 'bug', class: 'fa-bug', icon: '🐛' },
-            { name: 'code-branch', class: 'fa-code-branch', icon: '🌿' },
-            { name: 'cloud', class: 'fa-cloud', icon: '☁️' },
-            { name: 'database', class: 'fa-database', icon: '🗄️' },
-            { name: 'server', class: 'fa-server', icon: '🖥️' },
-            { name: 'wifi', class: 'fa-wifi', icon: '📶' },
-            { name: 'globe', class: 'fa-globe', icon: '🌍' },
-            { name: 'flag', class: 'fa-flag', icon: '🏁' },
-            { name: 'compass', class: 'fa-compass', icon: '🧭' },
-            { name: 'map', class: 'fa-map', icon: '🗺️' },
-            { name: 'dollar-sign', class: 'fa-dollar-sign', icon: '💰' },
-            { name: 'shopping-cart', class: 'fa-shopping-cart', icon: '🛒' },
-            { name: 'credit-card', class: 'fa-credit-card', icon: '💳' },
-            { name: 'wallet', class: 'fa-wallet', icon: '👛' },
-            { name: 'building', class: 'fa-building', icon: '🏢' },
-            { name: 'industry', class: 'fa-industry', icon: '🏭' },
-            { name: 'briefcase', class: 'fa-briefcase', icon: '💼' },
+            { name: 'arrow-trend-down', class: 'fa-arrow-trend-down', icon: '📉' },
+            { name: 'arrow-trend-up', class: 'fa-arrow-trend-up', icon: '📈' },
+            { name: 'arrow-up', class: 'fa-arrow-up', icon: '⬆️' },
+            { name: 'analytics', class: 'fa-analytics', icon: '📊' },
+            { name: 'bars', class: 'fa-bars', icon: '☰' },
+            { name: 'bars-progress', class: 'fa-bars-progress', icon: '📈' },
+            { name: 'bed', class: 'fa-bed', icon: '🛏️' },
+            { name: 'bell', class: 'fa-bell', icon: '🔔' },
+            { name: 'bell-slash', class: 'fa-bell-slash', icon: '🔕' },
+            { name: 'birthday-cake', class: 'fa-birthday-cake', icon: '🎂' },
+
+            { name: 'bolt', class: 'fa-bolt', icon: '⚡' },
             { name: 'book', class: 'fa-book', icon: '📖' },
             { name: 'book-open', class: 'fa-book-open', icon: '📚' },
-            { name: 'newspaper', class: 'fa-newspaper', icon: '📰' },
-            { name: 'lightbulb', class: 'fa-lightbulb', icon: '💡' },
             { name: 'brain', class: 'fa-brain', icon: '🧠' },
-            { name: 'bed', class: 'fa-bed', icon: '🛏️' },
-            { name: 'couch', class: 'fa-couch', icon: '🛋️' },
-            { name: 'car', class: 'fa-car', icon: '🚗' },
-            { name: 'plane', class: 'fa-plane', icon: '✈️' },
-            { name: 'train', class: 'fa-train', icon: '🚂' },
+            { name: 'briefcase', class: 'fa-briefcase', icon: '💼' },
+            { name: 'bug', class: 'fa-bug', icon: '🐛' },
+            { name: 'building', class: 'fa-building', icon: '🏢' },
             { name: 'bus', class: 'fa-bus', icon: '🚌' },
-            { name: 'ship', class: 'fa-ship', icon: '🚢' },
-            { name: 'bicycle', class: 'fa-bicycle', icon: '🚲' },
-            { name: 'motorcycle', class: 'fa-motorcycle', icon: '🏍️' },
-            { name: 'heartbeat', class: 'fa-heartbeat', icon: '💓' },
-            { name: 'stethoscope', class: 'fa-stethoscope', icon: '🩺' },
-            { name: 'hospital', class: 'fa-hospital', icon: '🏥' },
-            { name: 'pills', class: 'fa-pills', icon: '💊' },
-            { name: 'thermometer', class: 'fa-thermometer', icon: '🌡️' },
-            { name: 'gamepad', class: 'fa-gamepad', icon: '🎮' },
-            { name: 'dice', class: 'fa-dice', icon: '🎲' },
-            { name: 'chess', class: 'fa-chess', icon: '♟️' },
-            { name: 'puzzle-piece', class: 'fa-puzzle-piece', icon: '🧩' },
-            { name: 'trophy', class: 'fa-trophy', icon: '🏆' },
-            { name: 'medal', class: 'fa-medal', icon: '🥇' },
-            { name: 'award', class: 'fa-award', icon: '🏅' },
-            { name: 'play', class: 'fa-play', icon: '▶️' },
-            { name: 'pause', class: 'fa-pause', icon: '⏸️' },
-            { name: 'stop', class: 'fa-stop', icon: '⏹️' },
-            { name: 'volume-up', class: 'fa-volume-up', icon: '🔊' },
-            { name: 'music', class: 'fa-music', icon: '🎵' },
-            { name: 'utensils', class: 'fa-utensils', icon: '🍴' },
-            { name: 'coffee', class: 'fa-coffee', icon: '☕' },
-            { name: 'pizza-slice', class: 'fa-pizza-slice', icon: '🍕' },
-            
-            // Iconos Pro avanzados
-            { name: 'chart-scatter', class: 'fa-chart-scatter', icon: '📊' },
-            { name: 'chart-pie', class: 'fa-chart-pie', icon: '🥧' },
-            { name: 'chart-bar', class: 'fa-chart-bar', icon: '📊' },
-            { name: 'chart-area', class: 'fa-chart-area', icon: '📈' },
-            { name: 'chart-line', class: 'fa-chart-line', icon: '📈' },
-            { name: 'chart-column', class: 'fa-chart-column', icon: '📊' },
-            { name: 'chart-gantt', class: 'fa-chart-gantt', icon: '📊' },
-            { name: 'chart-waterfall', class: 'fa-chart-waterfall', icon: '📊' },
-            { name: 'chart-candlestick', class: 'fa-chart-candlestick', icon: '📊' },
-            { name: 'chart-radar', class: 'fa-chart-radar', icon: '📊' },
-            { name: 'chart-bubble', class: 'fa-chart-bubble', icon: '📊' },
-            { name: 'chart-donut', class: 'fa-chart-donut', icon: '🥧' },
-            { name: 'chart-network', class: 'fa-chart-network', icon: '🌐' },
-            { name: 'chart-tree', class: 'fa-chart-tree', icon: '🌳' },
-            { name: 'chart-sankey', class: 'fa-chart-sankey', icon: '📊' },
-            { name: 'chart-venn', class: 'fa-chart-venn', icon: '📊' },
-            { name: 'chart-sunburst', class: 'fa-chart-sunburst', icon: '☀️' },
-            { name: 'chart-treemap', class: 'fa-chart-treemap', icon: '📊' },
-            { name: 'chart-heatmap', class: 'fa-chart-heatmap', icon: '🔥' },
-            { name: 'chart-boxplot', class: 'fa-chart-boxplot', icon: '📦' },
-            { name: 'chart-violin', class: 'fa-chart-violin', icon: '🎻' },
-            { name: 'chart-histogram', class: 'fa-chart-histogram', icon: '📊' },
-            { name: 'chart-density', class: 'fa-chart-density', icon: '📊' },
-            { name: 'chart-3d', class: 'fa-chart-3d', icon: '📊' },
-            { name: 'chart-timeline', class: 'fa-chart-timeline', icon: '⏰' },
-            { name: 'chart-calendar', class: 'fa-chart-calendar', icon: '📅' },
-            { name: 'chart-clock', class: 'fa-chart-clock', icon: '🕐' },
-            { name: 'chart-stopwatch', class: 'fa-chart-stopwatch', icon: '⏱️' },
-            { name: 'chart-hourglass', class: 'fa-chart-hourglass', icon: '⏳' },
-            { name: 'chart-timer', class: 'fa-chart-timer', icon: '⏲️' },
-            { name: 'chart-alarm', class: 'fa-chart-alarm', icon: '⏰' },
-            { name: 'chart-bell', class: 'fa-chart-bell', icon: '🔔' },
-            { name: 'chart-megaphone', class: 'fa-chart-megaphone', icon: '📢' },
-            { name: 'chart-bullhorn', class: 'fa-chart-bullhorn', icon: '📢' },
-            { name: 'chart-phone', class: 'fa-chart-phone', icon: '📞' },
-            { name: 'chart-envelope', class: 'fa-chart-envelope', icon: '✉️' },
-            { name: 'chart-message', class: 'fa-chart-message', icon: '💬' },
-            { name: 'chart-comment', class: 'fa-chart-comment', icon: '💬' },
-            { name: 'chart-reply', class: 'fa-chart-reply', icon: '↩️' },
-            { name: 'chart-forward', class: 'fa-chart-forward', icon: '↪️' },
-            { name: 'chart-share', class: 'fa-chart-share', icon: '📤' },
-            { name: 'chart-upload', class: 'fa-chart-upload', icon: '⬆️' },
-            { name: 'chart-download', class: 'fa-chart-download', icon: '⬇️' },
-            { name: 'chart-sync', class: 'fa-chart-sync', icon: '🔄' },
-            { name: 'chart-refresh', class: 'fa-chart-refresh', icon: '🔄' },
-            { name: 'chart-rotate', class: 'fa-chart-rotate', icon: '🔄' },
-            { name: 'chart-flip', class: 'fa-chart-flip', icon: '🔄' },
-            { name: 'chart-mirror', class: 'fa-chart-mirror', icon: '🔄' },
-            { name: 'chart-invert', class: 'fa-chart-invert', icon: '🔄' },
-            { name: 'chart-transpose', class: 'fa-chart-transpose', icon: '🔄' },
-            { name: 'chart-pivot', class: 'fa-chart-pivot', icon: '🔄' },
-            { name: 'chart-group', class: 'fa-chart-group', icon: '📊' },
-            { name: 'chart-ungroup', class: 'fa-chart-ungroup', icon: '📊' },
-            { name: 'chart-sort', class: 'fa-chart-sort', icon: '📊' },
-            { name: 'chart-filter', class: 'fa-chart-filter', icon: '🔍' },
-            { name: 'chart-search', class: 'fa-chart-search', icon: '🔍' },
-            { name: 'chart-zoom', class: 'fa-chart-zoom', icon: '🔍' },
-            { name: 'chart-pan', class: 'fa-chart-pan', icon: '🖐️' },
-            { name: 'chart-drag', class: 'fa-chart-drag', icon: '🖐️' },
-            { name: 'chart-select', class: 'fa-chart-select', icon: '🖐️' },
-            { name: 'chart-highlight', class: 'fa-chart-highlight', icon: '🖐️' },
-            { name: 'chart-annotate', class: 'fa-chart-annotate', icon: '✏️' },
-            { name: 'chart-edit', class: 'fa-chart-edit', icon: '✏️' },
-            { name: 'chart-delete', class: 'fa-chart-delete', icon: '🗑️' },
-            { name: 'chart-copy', class: 'fa-chart-copy', icon: '📋' },
-            { name: 'chart-cut', class: 'fa-chart-cut', icon: '✂️' },
-            { name: 'chart-paste', class: 'fa-chart-paste', icon: '📋' },
-            { name: 'chart-duplicate', class: 'fa-chart-duplicate', icon: '📋' },
-            { name: 'chart-clone', class: 'fa-chart-clone', icon: '📋' },
-            { name: 'chart-merge', class: 'fa-chart-merge', icon: '📋' },
-            { name: 'chart-split', class: 'fa-chart-split', icon: '📋' },
-            { name: 'chart-join', class: 'fa-chart-join', icon: '📋' },
-            { name: 'chart-connect', class: 'fa-chart-connect', icon: '📋' },
-            { name: 'chart-disconnect', class: 'fa-chart-disconnect', icon: '📋' },
-            { name: 'chart-link', class: 'fa-chart-link', icon: '🔗' },
-            { name: 'chart-unlink', class: 'fa-chart-unlink', icon: '🔗' },
-            { name: 'chart-chain', class: 'fa-chart-chain', icon: '🔗' },
-            { name: 'chart-unchain', class: 'fa-chart-unchain', icon: '🔗' },
-            { name: 'chart-lock', class: 'fa-chart-lock', icon: '🔒' },
-            { name: 'chart-unlock', class: 'fa-chart-unlock', icon: '🔓' },
-            { name: 'chart-key', class: 'fa-chart-key', icon: '🔑' },
-            { name: 'chart-shield', class: 'fa-chart-shield', icon: '🛡️' },
-            { name: 'chart-security', class: 'fa-chart-security', icon: '🛡️' },
-            { name: 'chart-protect', class: 'fa-chart-protect', icon: '🛡️' },
-            { name: 'chart-guard', class: 'fa-chart-guard', icon: '🛡️' },
-            { name: 'chart-watch', class: 'fa-chart-watch', icon: '🛡️' },
-            { name: 'chart-monitor', class: 'fa-chart-monitor', icon: '🖥️' },
-            { name: 'chart-screen', class: 'fa-chart-screen', icon: '🖥️' },
-            { name: 'chart-display', class: 'fa-chart-display', icon: '🖥️' },
-            { name: 'chart-window', class: 'fa-chart-window', icon: '🖥️' },
-            { name: 'chart-tab', class: 'fa-chart-tab', icon: '🖥️' },
-            { name: 'chart-panel', class: 'fa-chart-panel', icon: '🖥️' },
-            { name: 'chart-sidebar', class: 'fa-chart-sidebar', icon: '🖥️' },
-            { name: 'chart-header', class: 'fa-chart-header', icon: '🖥️' },
-            { name: 'chart-footer', class: 'fa-chart-footer', icon: '🖥️' },
-            { name: 'chart-content', class: 'fa-chart-content', icon: '🖥️' },
-            { name: 'chart-body', class: 'fa-chart-body', icon: '🖥️' },
-            { name: 'chart-main', class: 'fa-chart-main', icon: '🖥️' },
-            { name: 'chart-container', class: 'fa-chart-container', icon: '🖥️' },
-            { name: 'chart-wrapper', class: 'fa-chart-wrapper', icon: '🖥️' },
-            { name: 'chart-box', class: 'fa-chart-box', icon: '📦' },
-            { name: 'chart-card', class: 'fa-chart-card', icon: '📦' },
-            { name: 'chart-tile', class: 'fa-chart-tile', icon: '📦' },
-            { name: 'chart-grid', class: 'fa-chart-grid', icon: '📦' },
-            { name: 'chart-list', class: 'fa-chart-list', icon: '📋' },
-            { name: 'chart-table', class: 'fa-chart-table', icon: '📋' },
-            { name: 'chart-form', class: 'fa-chart-form', icon: '📋' },
-            { name: 'chart-input', class: 'fa-chart-input', icon: '📋' },
-            { name: 'chart-button', class: 'fa-chart-button', icon: '📋' },
-            { name: 'chart-select', class: 'fa-chart-select', icon: '📋' },
-            { name: 'chart-checkbox', class: 'fa-chart-checkbox', icon: '📋' },
-            { name: 'chart-radio', class: 'fa-chart-radio', icon: '📋' },
-            { name: 'chart-toggle', class: 'fa-chart-toggle', icon: '📋' },
-            { name: 'chart-switch', class: 'chart-switch', icon: '📋' },
-            { name: 'chart-slider', class: 'fa-chart-slider', icon: '📋' },
-            { name: 'chart-progress', class: 'fa-chart-progress', icon: '📋' },
-            { name: 'chart-meter', class: 'fa-chart-megaphone', icon: '📋' },
-            { name: 'chart-gauge', class: 'fa-chart-gauge', icon: '📋' },
-            { name: 'chart-dial', class: 'fa-chart-dial', icon: '📋' },
-            { name: 'chart-knob', class: 'fa-chart-knob', icon: '📋' },
-            { name: 'chart-lever', class: 'fa-chart-lever', icon: '📋' },
-            { name: 'chart-handle', class: 'fa-chart-handle', icon: '📋' },
-            { name: 'chart-grip', class: 'fa-chart-grip', icon: '📋' },
-            { name: 'chart-hold', class: 'fa-chart-hold', icon: '📋' },
-            { name: 'chart-catch', class: 'fa-chart-catch', icon: '📋' },
-            { name: 'chart-throw', class: 'fa-chart-throw', icon: '📋' },
-            { name: 'chart-kick', class: 'fa-chart-kick', icon: '📋' },
-            { name: 'chart-punch', class: 'fa-chart-punch', icon: '📋' },
-            { name: 'chart-hit', class: 'fa-chart-hit', icon: '📋' },
-            { name: 'chart-strike', class: 'fa-chart-strike', icon: '📋' },
-            { name: 'chart-attack', class: 'fa-chart-attack', icon: '📋' },
-            { name: 'chart-defend', class: 'fa-chart-defend', icon: '📋' },
-            { name: 'chart-block', class: 'fa-chart-block', icon: '📋' },
-            { name: 'chart-dodge', class: 'fa-chart-dodge', icon: '📋' },
-            { name: 'chart-evade', class: 'fa-chart-evade', icon: '📋' },
-            { name: 'chart-escape', class: 'fa-chart-escape', icon: '📋' },
-            { name: 'chart-flee', class: 'fa-chart-flee', icon: '📋' },
-            { name: 'chart-run', class: 'fa-chart-run', icon: '📋' },
-            { name: 'chart-walk', class: 'fa-chart-walk', icon: '📋' },
-            { name: 'chart-crawl', class: 'fa-chart-crawl', icon: '📋' },
-            { name: 'chart-climb', class: 'fa-chart-climb', icon: '📋' },
-            { name: 'chart-jump', class: 'fa-chart-jump', icon: '📋' },
-            { name: 'chart-leap', class: 'fa-chart-leap', icon: '📋' },
-            { name: 'chart-hop', class: 'fa-chart-hop', icon: '📋' },
-            { name: 'chart-skip', class: 'fa-chart-skip', icon: '📋' },
-            { name: 'chart-dance', class: 'fa-chart-dance', icon: '📋' },
-            { name: 'chart-sing', class: 'fa-chart-sing', icon: '📋' },
-            { name: 'chart-play', class: 'fa-chart-play', icon: '📋' },
-            { name: 'chart-act', class: 'fa-chart-act', icon: '📋' },
-            { name: 'chart-perform', class: 'fa-chart-perform', icon: '📋' },
-            { name: 'chart-entertain', class: 'fa-chart-entertain', icon: '📋' },
-            { name: 'chart-amuse', class: 'fa-chart-amuse', icon: '📋' },
-            { name: 'chart-delight', class: 'fa-chart-delight', icon: '📋' },
-            { name: 'chart-please', class: 'fa-chart-please', icon: '📋' },
-            { name: 'chart-satisfy', class: 'fa-chart-satisfy', icon: '📋' },
-            { name: 'chart-fulfill', class: 'fa-chart-fulfill', icon: '📋' },
-            { name: 'chart-complete', class: 'fa-chart-complete', icon: '📋' },
-            { name: 'chart-finish', class: 'fa-chart-finish', icon: '📋' },
-            { name: 'chart-end', class: 'fa-chart-end', icon: '📋' },
-            { name: 'chart-stop', class: 'fa-chart-stop', icon: '📋' },
-            { name: 'chart-pause', class: 'fa-chart-pause', icon: '📋' },
-            { name: 'chart-wait', class: 'fa-chart-wait', icon: '📋' },
-            { name: 'chart-delay', class: 'fa-chart-delay', icon: '📋' },
-            { name: 'chart-slow', class: 'fa-chart-slow', icon: '📋' },
-            { name: 'chart-fast', class: 'fa-chart-fast', icon: '📋' },
-            { name: 'chart-quick', class: 'fa-chart-quick', icon: '📋' },
-            { name: 'chart-rapid', class: 'fa-chart-rapid', icon: '📋' },
-            { name: 'chart-swift', class: 'fa-chart-swift', icon: '📋' },
-            { name: 'chart-speedy', class: 'fa-chart-speedy', icon: '📋' },
-            { name: 'chart-hasty', class: 'fa-chart-hasty', icon: '📋' },
-            { name: 'chart-rush', class: 'fa-chart-rush', icon: '📋' },
-            { name: 'chart-hurry', class: 'fa-chart-hurry', icon: '📋' },
-            { name: 'chart-accelerate', class: 'fa-chart-accelerate', icon: '📋' },
-            { name: 'chart-decelerate', class: 'fa-chart-decelerate', icon: '📋' },
-            { name: 'chart-brake', class: 'fa-chart-brake', icon: '📋' },
-            { name: 'chart-park', class: 'fa-chart-park', icon: '📋' },
-            { name: 'chart-idle', class: 'fa-chart-idle', icon: '📋' },
-            { name: 'chart-rest', class: 'fa-chart-rest', icon: '📋' },
-            { name: 'chart-sleep', class: 'fa-chart-sleep', icon: '📋' },
-            { name: 'chart-wake', class: 'fa-chart-wake', icon: '📋' },
-            { name: 'chart-rise', class: 'fa-chart-accelerate', icon: '📋' },
-            { name: 'chart-fall', class: 'fa-chart-fall', icon: '📋' },
-            { name: 'chart-drop', class: 'fa-chart-drop', icon: '📋' },
-            { name: 'chart-lift', class: 'fa-chart-lift', icon: '📋' },
-            { name: 'chart-raise', class: 'fa-chart-raise', icon: '📋' },
-            { name: 'chart-lower', class: 'fa-chart-lower', icon: '📋' },
-            { name: 'chart-elevate', class: 'fa-chart-elevate', icon: '📋' },
-            { name: 'chart-descend', class: 'fa-chart-descend', icon: '📋' },
-            { name: 'chart-climb', class: 'fa-chart-climb', icon: '📋' },
-            { name: 'chart-descend', class: 'fa-chart-descend', icon: '📋' },
-            { name: 'chart-ascend', class: 'fa-chart-ascend', icon: '📋' },
-            { name: 'chart-mount', class: 'fa-chart-mount', icon: '📋' },
-            { name: 'chart-dismount', class: 'fa-chart-dismount', icon: '📋' },
-            { name: 'chart-board', class: 'fa-chart-board', icon: '📋' },
-            { name: 'chart-deboard', class: 'fa-chart-deboard', icon: '📋' },
-            { name: 'chart-embark', class: 'fa-chart-embark', icon: '📋' },
-            { name: 'chart-disembark', class: 'fa-chart-disembark', icon: '📋' },
-            { name: 'chart-load', class: 'fa-chart-load', icon: '📋' },
-            { name: 'chart-unload', class: 'fa-chart-unload', icon: '📋' },
-            { name: 'chart-pack', class: 'fa-chart-pack', icon: '📋' },
-            { name: 'chart-unpack', class: 'fa-chart-unpack', icon: '📋' },
-            { name: 'chart-wrap', class: 'fa-chart-wrap', icon: '📋' },
-            { name: 'chart-unwrap', class: 'fa-chart-unwrap', icon: '📋' },
-            { name: 'chart-cover', class: 'fa-chart-cover', icon: '📋' },
-            { name: 'chart-uncover', class: 'fa-chart-uncover', icon: '📋' },
-            { name: 'chart-reveal', class: 'fa-chart-reveal', icon: '📋' },
-            { name: 'chart-hide', class: 'fa-chart-hide', icon: '📋' },
-            { name: 'chart-show', class: 'fa-chart-show', icon: '📋' },
-            { name: 'chart-display', class: 'fa-chart-display', icon: '📋' },
-            { name: 'chart-expose', class: 'fa-chart-expose', icon: '📋' },
-            { name: 'chart-conceal', class: 'fa-chart-conceal', icon: '📋' },
-            { name: 'chart-mask', class: 'fa-chart-mask', icon: '📋' },
-            { name: 'chart-unmask', class: 'fa-chart-unmask', icon: '📋' },
-            { name: 'chart-disguise', class: 'fa-chart-disguise', icon: '📋' },
-            { name: 'chart-camouflage', class: 'fa-chart-camouflage', icon: '📋' },
-            { name: 'chart-blend', class: 'fa-chart-blend', icon: '📋' },
-            { name: 'chart-mix', class: 'fa-chart-mix', icon: '📋' },
-            { name: 'chart-combine', class: 'fa-chart-combine', icon: '📋' },
-            { name: 'chart-merge', class: 'fa-chart-merge', icon: '📋' },
-            { name: 'chart-join', class: 'fa-chart-join', icon: '📋' },
-            { name: 'chart-unite', class: 'fa-chart-unite', icon: '📋' },
-            { name: 'chart-connect', class: 'fa-chart-connect', icon: '📋' },
-            { name: 'chart-link', class: 'fa-chart-link', icon: '📋' },
-            { name: 'chart-bind', class: 'fa-chart-bind', icon: '📋' },
-            { name: 'chart-tie', class: 'fa-chart-tie', icon: '📋' },
-            { name: 'chart-knot', class: 'fa-chart-knot', icon: '📋' },
-            { name: 'chart-lace', class: 'fa-chart-lace', icon: '📋' },
-            { name: 'chart-weave', class: 'fa-chart-weave', icon: '📋' },
-            { name: 'chart-braid', class: 'fa-chart-braid', icon: '📋' },
-            { name: 'chart-plait', class: 'fa-chart-plait', icon: '📋' },
-            { name: 'chart-twist', class: 'fa-chart-twist', icon: '📋' },
-            { name: 'chart-turn', class: 'fa-chart-turn', icon: '📋' },
-            { name: 'chart-rotate', class: 'fa-chart-rotate', icon: '📋' },
-            { name: 'chart-spin', class: 'fa-chart-spin', icon: '📋' },
-            { name: 'chart-whirl', class: 'fa-chart-whirl', icon: '📋' },
-            { name: 'chart-swirl', class: 'fa-chart-swirl', icon: '📋' },
-            { name: 'chart-spiral', class: 'fa-chart-spiral', icon: '📋' },
-            { name: 'chart-helix', class: 'fa-chart-helix', icon: '📋' },
-            { name: 'chart-coil', class: 'fa-chart-coil', icon: '📋' },
-            { name: 'chart-curl', class: 'fa-chart-curl', icon: '📋' },
-            { name: 'chart-wave', class: 'fa-chart-wave', icon: '📋' },
-            { name: 'chart-ripple', class: 'fa-chart-ripple', icon: '📋' },
-            { name: 'chart-oscillate', class: 'fa-chart-oscillate', icon: '📋' },
-            { name: 'chart-vibrate', class: 'fa-chart-vibrate', icon: '📋' },
-            { name: 'chart-tremble', class: 'fa-chart-tremble', icon: '📋' },
-            { name: 'chart-shake', class: 'fa-chart-shake', icon: '📋' },
-            { name: 'chart-quake', class: 'fa-chart-quake', icon: '📋' },
-            { name: 'chart-rumble', class: 'fa-chart-rumble', icon: '📋' },
-            { name: 'chart-thunder', class: 'fa-chart-thunder', icon: '📋' },
-            { name: 'chart-lightning', class: 'fa-chart-lightning', icon: '📋' },
-            { name: 'chart-storm', class: 'fa-chart-storm', icon: '📋' },
-            { name: 'chart-rain', class: 'fa-chart-rain', icon: '📋' },
-            { name: 'chart-snow', class: 'fa-chart-snow', icon: '📋' },
-            { name: 'chart-hail', class: 'fa-chart-hail', icon: '📋' },
-            { name: 'chart-sleet', class: 'fa-chart-sleet', icon: '📋' },
-            { name: 'chart-fog', class: 'fa-chart-fog', icon: '📋' },
-            { name: 'chart-mist', class: 'fa-chart-mist', icon: '📋' },
-            { name: 'chart-dew', class: 'fa-chart-dew', icon: '📋' },
-            { name: 'chart-frost', class: 'fa-chart-rain', icon: '📋' },
-            { name: 'chart-ice', class: 'fa-chart-ice', icon: '📋' },
-            { name: 'chart-steam', class: 'fa-chart-steam', icon: '📋' },
-            { name: 'chart-smoke', class: 'fa-chart-smoke', icon: '📋' },
-            { name: 'chart-fire', class: 'fa-chart-fire', icon: '📋' },
-            { name: 'chart-flame', class: 'fa-chart-flame', icon: '📋' },
-            { name: 'chart-burn', class: 'fa-chart-burn', icon: '📋' },
-            { name: 'chart-char', class: 'fa-chart-char', icon: '📋' },
-            { name: 'chart-ash', class: 'fa-chart-ash', icon: '📋' },
-            { name: 'chart-dust', class: 'fa-chart-dust', icon: '📋' },
-            { name: 'chart-powder', class: 'fa-chart-powder', icon: '📋' },
-            { name: 'chart-grain', class: 'fa-chart-grain', icon: '📋' },
-            { name: 'chart-particle', class: 'fa-chart-particle', icon: '📋' },
-            { name: 'chart-atom', class: 'fa-chart-atom', icon: '📋' },
-            { name: 'chart-molecule', class: 'fa-chart-molecule', icon: '📋' },
-            { name: 'chart-cell', class: 'fa-chart-cell', icon: '📋' },
-            { name: 'chart-organ', class: 'fa-chart-organ', icon: '📋' },
-            { name: 'chart-tissue', class: 'fa-chart-tissue', icon: '📋' },
-            { name: 'chart-bone', class: 'fa-chart-bone', icon: '📋' },
-            { name: 'chart-muscle', class: 'fa-chart-char', icon: '📋' },
-            { name: 'chart-nerve', class: 'fa-chart-nerve', icon: '📋' },
-            { name: 'chart-brain', class: 'fa-chart-brain', icon: '📋' },
-            { name: 'chart-heart', class: 'fa-chart-heart', icon: '📋' },
-            { name: 'chart-lung', class: 'fa-chart-lung', icon: '📋' },
-            { name: 'chart-liver', class: 'fa-chart-liver', icon: '📋' },
-            { name: 'chart-kidney', class: 'fa-chart-kidney', icon: '📋' },
-            { name: 'chart-stomach', class: 'fa-chart-stomach', icon: '📋' },
-            { name: 'chart-intestine', class: 'fa-chart-intestine', icon: '📋' },
-            { name: 'chart-bladder', class: 'fa-chart-bladder', icon: '📋' },
-            { name: 'chart-gallbladder', class: 'fa-chart-gallbladder', icon: '📋' },
-            { name: 'chart-pancreas', class: 'fa-chart-pancreas', icon: '📋' },
-            { name: 'chart-spleen', class: 'fa-chart-spleen', icon: '📋' },
-            { name: 'chart-thymus', class: 'fa-chart-thymus', icon: '📋' },
-            { name: 'chart-adrenal', class: 'fa-chart-adrenal', icon: '📋' },
-            { name: 'chart-pituitary', class: 'fa-chart-pituitary', icon: '📋' },
-            { name: 'chart-pineal', class: 'fa-chart-pineal', icon: '📋' },
-            { name: 'chart-hypothalamus', class: 'fa-chart-hypothalamus', icon: '📋' },
-            { name: 'chart-amygdala', class: 'fa-chart-amygdala', icon: '📋' },
-            { name: 'chart-hippocampus', class: 'fa-chart-hippocampus', icon: '📋' },
-            { name: 'chart-cerebellum', class: 'fa-chart-cerebellum', icon: '📋' },
-            { name: 'chart-cortex', class: 'fa-chart-cortex', icon: '📋' },
-            { name: 'chart-stem', class: 'fa-chart-stem', icon: '📋' },
-            { name: 'chart-root', class: 'fa-chart-root', icon: '📋' },
-            { name: 'chart-branch', class: 'fa-chart-branch', icon: '📋' },
-            { name: 'chart-leaf', class: 'fa-chart-leaf', icon: '📋' },
-            { name: 'chart-flower', class: 'fa-chart-flower', icon: '📋' },
-            { name: 'chart-fruit', class: 'fa-chart-fruit', icon: '📋' },
-            { name: 'chart-seed', class: 'fa-chart-seed', icon: '📋' },
-            { name: 'chart-sprout', class: 'fa-chart-sprout', icon: '📋' },
-            { name: 'chart-bud', class: 'fa-chart-bud', icon: '📋' },
-            { name: 'chart-growth', class: 'fa-chart-growth', icon: '📋' },
-            { name: 'chart-development', class: 'fa-chart-development', icon: '📋' },
-            { name: 'chart-evolution', class: 'fa-chart-evolution', icon: '📋' },
-            { name: 'hamburger', class: 'fa-hamburger', icon: '🍔' },
-            { name: 'ice-cream', class: 'fa-ice-cream', icon: '🍦' },
-            { name: 'cookie', class: 'fa-cookie', icon: '🍪' },
-            { name: 'birthday-cake', class: 'fa-birthday-cake', icon: '🎂' },
-            { name: 'bitcoin', class: 'fa-bitcoin', icon: '₿' },
-            { name: 'ethereum', class: 'fa-ethereum', icon: 'Ξ' },
-            { name: 'coins', class: 'fa-coins', icon: '🪙' },
-            { name: 'university', class: 'fa-university', icon: '🎓' },
-            { name: 'palette', class: 'fa-palette', icon: '🎨' },
-            { name: 'paint-brush', class: 'fa-paint-brush', icon: '🖌️' },
-            { name: 'eye', class: 'fa-eye', icon: '👁️' },
-            { name: 'eye-slash', class: 'fa-eye-slash', icon: '🙈' },
-            { name: 'sync', class: 'fa-sync', icon: '🔄' },
-            { name: 'refresh', class: 'fa-refresh', icon: '🔄' },
-            { name: 'rotate', class: 'fa-rotate', icon: '🔄' },
-            { name: 'list', class: 'fa-list', icon: '📋' },
-            { name: 'table', class: 'fa-table', icon: '📊' },
-            { name: 'chart-bar', class: 'fa-chart-bar', icon: '📊' },
-            { name: 'chart-line', class: 'fa-chart-line', icon: '📈' },
-            { name: 'chart-pie', class: 'fa-chart-pie', icon: '🥧' },
-            { name: 'chart-area', class: 'fa-chart-area', icon: '📊' },
-            { name: 'trending-up', class: 'fa-trending-up', icon: '📈' },
-            { name: 'trending-down', class: 'fa-trending-down', icon: '📉' },
-            { name: 'analytics', class: 'fa-analytics', icon: '📊' },
-            { name: 'tachometer-alt', class: 'fa-tachometer-alt', icon: '📊' },
-            { name: 'user-shield', class: 'fa-user-shield', icon: '🛡️' },
-            { name: 'user-friends', class: 'fa-user-friends', icon: '👥' },
-            { name: 'user-graduate', class: 'fa-user-graduate', icon: '🎓' },
-            { name: 'user-cog', class: 'fa-user-cog', icon: '⚙️' },
-            { name: 'user-edit', class: 'fa-user-edit', icon: '✏️' },
-            { name: 'user-plus', class: 'fa-user-plus', icon: '➕' },
-            { name: 'user-minus', class: 'fa-user-minus', icon: '➖' },
-            { name: 'cogs', class: 'fa-cogs', icon: '⚙️' },
-            { name: 'wrench', class: 'fa-wrench', icon: '🔧' },
-            { name: 'tools', class: 'fa-tools', icon: '🛠️' },
-            { name: 'sliders-h', class: 'fa-sliders-h', icon: '🎚️' },
-            { name: 'sliders-v', class: 'fa-sliders-v', icon: '🎛️' },
-            { name: 'toggle-on', class: 'fa-toggle-on', icon: '🔘' },
-            { name: 'toggle-off', class: 'fa-toggle-off', icon: '⚪' },
-            { name: 'file-alt', class: 'fa-file-alt', icon: '📄' },
-            { name: 'file-pdf', class: 'fa-file-pdf', icon: '📕' },
-            { name: 'file-word', class: 'fa-file-word', icon: '📘' },
-            { name: 'file-excel', class: 'fa-file-excel', icon: '📗' },
-            { name: 'file-powerpoint', class: 'fa-file-powerpoint', icon: '📙' },
-            { name: 'file-image', class: 'fa-file-image', icon: '🖼️' },
-            { name: 'file-video', class: 'fa-file-video', icon: '🎥' },
-            { name: 'file-audio', class: 'fa-file-audio', icon: '🎵' },
-            { name: 'file-archive', class: 'fa-file-archive', icon: '📦' },
-            { name: 'chart-simple', class: 'fa-chart-simple', icon: '📊' },
-            { name: 'chart-gantt', class: 'fa-chart-gantt', icon: '📊' },
-            { name: 'chart-scatter', class: 'fa-chart-scatter', icon: '📊' },
-            { name: 'star-half-alt', class: 'fa-star-half-alt', icon: '⭐' },
-            { name: 'star-of-life', class: 'fa-star-of-life', icon: '⭐' },
-            { name: 'certificate', class: 'fa-certificate', icon: '📜' },
-            { name: 'badge', class: 'fa-badge', icon: '🏷️' },
-            { name: 'shield-halved', class: 'fa-shield-halved', icon: '🛡️' },
-            { name: 'fingerprint', class: 'fa-fingerprint', icon: '👆' },
-            { name: 'user-lock', class: 'fa-user-lock', icon: '🔒' },
-            { name: 'bell-slash', class: 'fa-bell-slash', icon: '🔕' },
-            { name: 'envelope-open', class: 'fa-envelope-open', icon: '📬' },
-            { name: 'comment', class: 'fa-comment', icon: '💬' },
-            { name: 'comments', class: 'fa-comments', icon: '💬' },
-            { name: 'mobile-alt', class: 'fa-mobile-alt', icon: '📱' },
-            { name: 'shopping-bag', class: 'fa-shopping-bag', icon: '🛍️' },
-            { name: 'receipt', class: 'fa-receipt', icon: '🧾' },
-            { name: 'tag', class: 'fa-tag', icon: '🏷️' },
-            { name: 'sign-in-alt', class: 'fa-sign-in-alt', icon: '🚪' },
-            { name: 'power-off', class: 'fa-power-off', icon: '⏻' },
-            { name: 'login', class: 'fa-login', icon: '🚪' },
-            { name: 'logout', class: 'fa-logout', icon: '🚪' },
-            { name: 'search-plus', class: 'fa-search-plus', icon: '🔍' },
-            { name: 'search-minus', class: 'fa-search-minus', icon: '🔍' },
-            { name: 'filter', class: 'fa-filter', icon: '🔍' },
-            { name: 'funnel', class: 'fa-funnel', icon: '🔽' },
-            { name: 'sort', class: 'fa-sort', icon: '↕️' },
-            { name: 'sort-up', class: 'fa-sort-up', icon: '⬆️' },
-            { name: 'sort-down', class: 'fa-sort-down', icon: '⬇️' },
-            { name: 'copy', class: 'fa-copy', icon: '📋' },
-            { name: 'paste', class: 'fa-paste', icon: '📋' },
-            { name: 'location-arrow', class: 'fa-location-arrow', icon: '📍' },
-            { name: 'route', class: 'fa-route', icon: '🛣️' },
-            { name: 'directions', class: 'fa-directions', icon: '🧭' },
-            { name: 'map-pin', class: 'fa-map-pin', icon: '📍' },
+            { name: 'calendar', class: 'fa-calendar', icon: '📅' },
             { name: 'calendar-alt', class: 'fa-calendar-alt', icon: '📅' },
             { name: 'calendar-check', class: 'fa-calendar-check', icon: '✅' },
-            { name: 'calendar-plus', class: 'fa-calendar-plus', icon: '➕' },
             { name: 'calendar-minus', class: 'fa-calendar-minus', icon: '➖' },
+            { name: 'calendar-plus', class: 'fa-calendar-plus', icon: '➕' },
             { name: 'calendar-times', class: 'fa-calendar-times', icon: '❌' },
-            { name: 'hourglass', class: 'fa-hourglass', icon: '⏳' },
-            { name: 'desktop', class: 'fa-desktop', icon: '🖥️' },
-            { name: 'laptop', class: 'fa-laptop', icon: '💻' },
-            { name: 'tablet-alt', class: 'fa-tablet-alt', icon: '📱' },
-            { name: 'external-link-alt', class: 'fa-external-link-alt', icon: '🔗' },
-            { name: 'share-alt', class: 'fa-share-alt', icon: '📤' },
-            { name: 'share-square', class: 'fa-share-square', icon: '📤' },
-            { name: 'retweet', class: 'fa-retweet', icon: '🔄' },
-            { name: 'reply', class: 'fa-reply', icon: '↩️' },
-            { name: 'list-alt', class: 'fa-list-alt', icon: '📋' },
-            { name: 'list-ol', class: 'fa-list-ol', icon: '📋' },
-            { name: 'list-ul', class: 'fa-list-ul', icon: '📋' },
-            { name: 'th', class: 'fa-th', icon: '🔲' },
-            { name: 'th-large', class: 'fa-th-large', icon: '🔲' },
-            { name: 'bullseye', class: 'fa-bullseye', icon: '🎯' },
-            { name: 'flag-checkered', class: 'fa-flag-checkered', icon: '🏁' },
-            { name: 'check-square', class: 'fa-check-square', icon: '✅' },
-            { name: 'exclamation-circle', class: 'fa-exclamation-circle', icon: '❌' },
-            { name: 'question-circle', class: 'fa-question-circle', icon: '❓' },
-            { name: 'redo', class: 'fa-redo', icon: '↻' },
-            { name: 'undo', class: 'fa-undo', icon: '↶' },
-            { name: 'reload', class: 'fa-reload', icon: '🔄' },
-            { name: 'chevron-up', class: 'fa-chevron-up', icon: '⌃' },
+            { name: 'car', class: 'fa-car', icon: '🚗' },
+            { name: 'certificate', class: 'fa-certificate', icon: '📜' },
+            { name: 'chart-area', class: 'fa-chart-area', icon: '📊' },
+            { name: 'chart-bar', class: 'fa-chart-bar', icon: '📊' },
+            { name: 'chart-column', class: 'fa-chart-column', icon: '📊' },
+            { name: 'chart-line', class: 'fa-chart-line', icon: '📈' },
+            { name: 'chart-mixed', class: 'fa-chart-mixed', icon: '📊' },
+            { name: 'chart-pie', class: 'fa-chart-pie', icon: '🥧' },
+            { name: 'chart-scatter', class: 'fa-chart-scatter', icon: '📊' },
+            { name: 'check', class: 'fa-check', icon: '✅' },
             { name: 'chevron-down', class: 'fa-chevron-down', icon: '⌄' },
             { name: 'chevron-left', class: 'fa-chevron-left', icon: '⌃' },
             { name: 'chevron-right', class: 'fa-chevron-right', icon: '⌃' },
-            { name: 'brush', class: 'fa-brush', icon: '🖌️' },
-            { name: 'fill-drip', class: 'fa-fill-drip', icon: '💧' },
-            { name: 'adjust', class: 'fa-adjust', icon: '⚖️' },
-            { name: 'globe-americas', class: 'fa-globe-americas', icon: '🌎' },
-            { name: 'globe-europe', class: 'fa-globe-europe', icon: '🌍' },
-            { name: 'globe-asia', class: 'fa-globe-asia', icon: '🌏' },
-            { name: 'euro-sign', class: 'fa-euro-sign', icon: '€' },
-            { name: 'pound-sign', class: 'fa-pound-sign', icon: '£' },
-            { name: 'yen-sign', class: 'fa-yen-sign', icon: '¥' },
-            { name: 'ruble-sign', class: 'fa-ruble-sign', icon: '₽' },
-            { name: 'won-sign', class: 'fa-won-sign', icon: '₩' },
-            { name: 'lira-sign', class: 'fa-lira-sign', icon: '₺' },
-            { name: 'exchange-alt', class: 'fa-exchange-alt', icon: '🔄' },
-            { name: 'kitchen-set', class: 'fa-kitchen-set', icon: '🍽️' },
-            { name: 'door-open', class: 'fa-door-open', icon: '🚪' },
-            { name: 'spinner', class: 'fa-spinner', icon: '🌀' },
-            { name: 'circle-notch', class: 'fa-circle-notch', icon: '⭕' },
-            { name: 'ellipsis-h', class: 'fa-ellipsis-h', icon: '⋯' },
-            { name: 'ellipsis-v', class: 'fa-ellipsis-v', icon: '⋮' },
-            { name: 'headset', class: 'fa-headset', icon: '🎧' }
+            { name: 'chevron-up', class: 'fa-chevron-up', icon: '⌃' },
+            { name: 'chess', class: 'fa-chess', icon: '♟️' },
+            { name: 'clipboard-list-check', class: 'fa-clipboard-list-check', icon: '📋' },
+            { name: 'cloud', class: 'fa-cloud', icon: '☁️' },
+            { name: 'cog', class: 'fa-cog', icon: '⚙️' },
+            { name: 'cogs', class: 'fa-cogs', icon: '⚙️' },
+            { name: 'coins', class: 'fa-coins', icon: '🪙' },
+            { name: 'code', class: 'fa-code', icon: '💻' },
+            { name: 'code-branch', class: 'fa-code-branch', icon: '🌿' },
+            { name: 'coffee', class: 'fa-coffee', icon: '☕' },
+            { name: 'comment', class: 'fa-comment', icon: '💬' },
+            { name: 'comments', class: 'fa-comments', icon: '💬' },
+            { name: 'compass', class: 'fa-compass', icon: '🧭' },
+            { name: 'cookie', class: 'fa-cookie', icon: '🍪' },
+            { name: 'copy', class: 'fa-copy', icon: '📋' },
+            { name: 'couch', class: 'fa-couch', icon: '🛋️' },
+            { name: 'credit-card', class: 'fa-credit-card', icon: '💳' },
+            { name: 'database', class: 'fa-database', icon: '🗄️' },
+            { name: 'desktop', class: 'fa-desktop', icon: '🖥️' },
+            { name: 'dice', class: 'fa-dice', icon: '🎲' },
+            { name: 'dollar-sign', class: 'fa-dollar-sign', icon: '💰' },
+            { name: 'download', class: 'fa-download', icon: '⬇️' },
+            { name: 'dumbbell', class: 'fa-dumbbell', icon: '🏋️' },
+            { name: 'edit', class: 'fa-edit', icon: '✏️' },
+            { name: 'envelope', class: 'fa-envelope', icon: '✉️' },
+            { name: 'envelope-open', class: 'fa-envelope-open', icon: '📬' },
+
+            { name: 'exclamation-triangle', class: 'fa-exclamation-triangle', icon: '⚠️' },
+            { name: 'external-link-alt', class: 'fa-external-link-alt', icon: '🔗' },
+            { name: 'eye', class: 'fa-eye', icon: '👁️' },
+            { name: 'eye-slash', class: 'fa-eye-slash', icon: '🙈' },
+            { name: 'file', class: 'fa-file', icon: '📄' },
+            { name: 'file-alt', class: 'fa-file-alt', icon: '📄' },
+            { name: 'file-archive', class: 'fa-file-archive', icon: '📦' },
+            { name: 'file-audio', class: 'fa-file-audio', icon: '🎵' },
+            { name: 'file-excel', class: 'fa-file-excel', icon: '📗' },
+            { name: 'file-image', class: 'fa-file-image', icon: '🖼️' },
+            { name: 'file-pdf', class: 'fa-file-pdf', icon: '📕' },
+            { name: 'file-powerpoint', class: 'fa-file-powerpoint', icon: '📙' },
+            { name: 'file-video', class: 'fa-file-video', icon: '🎥' },
+            { name: 'file-word', class: 'fa-file-word', icon: '📘' },
+            { name: 'filter', class: 'fa-filter', icon: '🔍' },
+            { name: 'fingerprint', class: 'fa-fingerprint', icon: '👆' },
+            { name: 'flag', class: 'fa-flag', icon: '🏁' },
+            { name: 'folder', class: 'fa-folder', icon: '📁' },
+            { name: 'funnel-dollar', class: 'fa-funnel-dollar', icon: '💰' },
+            { name: 'gamepad', class: 'fa-gamepad', icon: '🎮' },
+            { name: 'grid', class: 'fa-grid', icon: '⊞' },
+            { name: 'grid-2', class: 'fa-grid-2', icon: '⊞' },
+            { name: 'grid-2-plus', class: 'fa-grid-2-plus', icon: '⊞' },
+            { name: 'grid-3', class: 'fa-grid-3', icon: '⊞' },
+            { name: 'grid-4', class: 'fa-grid-4', icon: '⊞' },
+            { name: 'grid-5', class: 'fa-grid-5', icon: '⊞' },
+            { name: 'grid-dividers', class: 'fa-grid-dividers', icon: '⊞' },
+            { name: 'grid-horizontal', class: 'fa-grid-horizontal', icon: '⊞' },
+            { name: 'grip', class: 'fa-grip', icon: '⋮' },
+            { name: 'grip-dots', class: 'fa-grip-dots', icon: '⋮' },
+            { name: 'grip-dots-vertical', class: 'fa-grip-dots-vertical', icon: '⋮' },
+            { name: 'grip-lines', class: 'fa-grip-lines', icon: '☰' },
+            { name: 'grip-lines-vertical', class: 'fa-grip-lines-vertical', icon: '☰' },
+            { name: 'grip-vertical', class: 'fa-grip-vertical', icon: '⋮' },
+            { name: 'globe', class: 'fa-globe', icon: '🌍' },
+            { name: 'graduation-cap', class: 'fa-graduation-cap', icon: '🎓' },
+            { name: 'hamburger', class: 'fa-hamburger', icon: '🍔' },
+            { name: 'hand', class: 'fa-hand', icon: '✋' },
+            { name: 'handshake', class: 'fa-handshake', icon: '🤝' },
+            { name: 'hand-point-up', class: 'fa-hand-point-up', icon: '☝️' },
+            { name: 'heart', class: 'fa-heart', icon: '❤️' },
+            { name: 'heart-crack', class: 'fa-heart-crack', icon: '💔' },
+            { name: 'heart-pulse', class: 'fa-heart-pulse', icon: '💓' },
+            { name: 'home', class: 'fa-home', icon: '🏠' },
+            { name: 'hospital', class: 'fa-hospital', icon: '🏥' },
+            { name: 'hourglass', class: 'fa-hourglass', icon: '⏳' },
+            { name: 'ice-cream', class: 'fa-ice-cream', icon: '🍦' },
+            { name: 'industry', class: 'fa-industry', icon: '🏭' },
+            { name: 'info-circle', class: 'fa-info-circle', icon: 'ℹ️' },
+            { name: 'key', class: 'fa-key', icon: '🔑' },
+            { name: 'layer-group', class: 'fa-layer-group', icon: '🔲' },
+            { name: 'lightbulb', class: 'fa-lightbulb', icon: '💡' },
+            { name: 'link', class: 'fa-link', icon: '🔗' },
+            { name: 'list', class: 'fa-list', icon: '📋' },
+            { name: 'lock', class: 'fa-lock', icon: '🔒' },
+            { name: 'laptop', class: 'fa-laptop', icon: '💻' },
+            { name: 'laptop-mobile', class: 'fa-laptop-mobile', icon: '💻📱' },
+            { name: 'map', class: 'fa-map', icon: '🗺️' },
+            { name: 'map-marker-alt', class: 'fa-map-marker-alt', icon: '📍' },
+            { name: 'map-pin', class: 'fa-map-pin', icon: '📍' },
+            { name: 'medal', class: 'fa-medal', icon: '🥇' },
+            { name: 'mobile-alt', class: 'fa-mobile-alt', icon: '📱' },
+            { name: 'moon', class: 'fa-moon', icon: '🌙' },
+            { name: 'motorcycle', class: 'fa-motorcycle', icon: '🏍️' },
+            { name: 'music', class: 'fa-music', icon: '🎵' },
+            { name: 'newspaper', class: 'fa-newspaper', icon: '📰' },
+            { name: 'paint-brush', class: 'fa-paint-brush', icon: '🖌️' },
+            { name: 'palette', class: 'fa-palette', icon: '🎨' },
+            { name: 'paste', class: 'fa-paste', icon: '📋' },
+            { name: 'pause', class: 'fa-pause', icon: '⏸️' },
+            { name: 'phone', class: 'fa-phone', icon: '📞' },
+            { name: 'pills', class: 'fa-pills', icon: '💊' },
+            { name: 'pizza-slice', class: 'fa-pizza-slice', icon: '🍕' },
+            { name: 'plane', class: 'fa-plane', icon: '✈️' },
+            { name: 'play', class: 'fa-play', icon: '▶️' },
+            { name: 'power-off', class: 'fa-power-off', icon: '⏻' },
+            { name: 'puzzle-piece', class: 'fa-puzzle-piece', icon: '🧩' },
+            { name: 'receipt', class: 'fa-receipt', icon: '🧾' },
+            { name: 'redo', class: 'fa-redo', icon: '↻' },
+            { name: 'refresh', class: 'fa-refresh', icon: '🔄' },
+            { name: 'reply', class: 'fa-reply', icon: '↩️' },
+            { name: 'retweet', class: 'fa-retweet', icon: '🔄' },
+            { name: 'route', class: 'fa-route', icon: '🛣️' },
+            { name: 'search', class: 'fa-search', icon: '🔍' },
+            { name: 'search-minus', class: 'fa-search-minus', icon: '🔍' },
+            { name: 'search-plus', class: 'fa-search-plus', icon: '🔍' },
+            { name: 'server', class: 'fa-server', icon: '🖥️' },
+            { name: 'share', class: 'fa-share', icon: '📤' },
+            { name: 'share-alt', class: 'fa-share-alt', icon: '📤' },
+            { name: 'share-square', class: 'fa-share-square', icon: '📤' },
+            { name: 'shield-alt', class: 'fa-shield-alt', icon: '🛡️' },
+            { name: 'shield-halved', class: 'fa-shield-halved', icon: '🛡️' },
+            { name: 'ship', class: 'fa-ship', icon: '🚢' },
+            { name: 'shopping-bag', class: 'fa-shopping-bag', icon: '🛍️' },
+            { name: 'shopping-cart', class: 'fa-shopping-cart', icon: '🛒' },
+            { name: 'sign-in-alt', class: 'fa-sign-in-alt', icon: '🚪' },
+            { name: 'sign-out-alt', class: 'fa-sign-out-alt', icon: '🚪' },
+            { name: 'sliders-h', class: 'fa-sliders-h', icon: '🎚️' },
+            { name: 'sliders-v', class: 'fa-sliders-v', icon: '🎛️' },
+            { name: 'sort', class: 'fa-sort', icon: '↕️' },
+            { name: 'sort-down', class: 'fa-sort-down', icon: '⬇️' },
+            { name: 'sort-up', class: 'fa-sort-up', icon: '⬆️' },
+            { name: 'spa', class: 'fa-spa', icon: '🧘‍♀️' },
+            { name: 'sparkles', class: 'fa-sparkles', icon: '✨' },
+            { name: 'star', class: 'fa-star', icon: '⭐' },
+            { name: 'star-half-alt', class: 'fa-star-half-alt', icon: '⭐' },
+            { name: 'star-of-life', class: 'fa-star-of-life', icon: '⭐' },
+            { name: 'stethoscope', class: 'fa-stethoscope', icon: '🩺' },
+            { name: 'stop', class: 'fa-stop', icon: '⏹️' },
+            { name: 'street-view', class: 'fa-street-view', icon: '👁️' },
+            { name: 'sun-bright', class: 'fa-sun-bright', icon: '☀️' },
+            { name: 'sync', class: 'fa-sync', icon: '🔄' },
+            { name: 'table', class: 'fa-table', icon: '📊' },
+            { name: 'tablet-alt', class: 'fa-tablet-alt', icon: '📱' },
+            { name: 'tachometer-alt', class: 'fa-tachometer-alt', icon: '📊' },
+            { name: 'tag', class: 'fa-tag', icon: '🏷️' },
+            { name: 'terminal', class: 'fa-terminal', icon: '🖥️' },
+            { name: 'thermometer', class: 'fa-thermometer', icon: '🌡️' },
+            { name: 'times', class: 'fa-times', icon: '❌' },
+            { name: 'times-circle', class: 'fa-times-circle', icon: '❌' },
+            { name: 'toggle-off', class: 'fa-toggle-off', icon: '⚪' },
+            { name: 'toggle-on', class: 'fa-toggle-on', icon: '🔘' },
+            { name: 'tools', class: 'fa-tools', icon: '🛠️' },
+            { name: 'train', class: 'fa-train', icon: '🚂' },
+            { name: 'trophy', class: 'fa-trophy', icon: '🏆' },
+            { name: 'trash', class: 'fa-trash', icon: '🗑️' },
+            { name: 'undo', class: 'fa-undo', icon: '↶' },
+            { name: 'university', class: 'fa-university', icon: '🎓' },
+            { name: 'upload', class: 'fa-upload', icon: '⬆️' },
+            { name: 'user', class: 'fa-user', icon: '👤' },
+            { name: 'user-cog', class: 'fa-user-cog', icon: '⚙️' },
+            { name: 'user-edit', class: 'fa-user-edit', icon: '✏️' },
+            { name: 'user-friends', class: 'fa-user-friends', icon: '👥' },
+            { name: 'user-graduate', class: 'fa-user-graduate', icon: '🎓' },
+            { name: 'user-lock', class: 'fa-user-lock', icon: '🔒' },
+            { name: 'user-minus', class: 'fa-user-minus', icon: '➖' },
+            { name: 'user-plus', class: 'fa-user-plus', icon: '➕' },
+            { name: 'user-shield', class: 'fa-user-shield', icon: '🛡️' },
+            { name: 'users', class: 'fa-users', icon: '👥' },
+            { name: 'utensils', class: 'fa-utensils', icon: '🍴' },
+            { name: 'video', class: 'fa-video', icon: '🎥' },
+            { name: 'volume-high', class: 'fa-volume-high', icon: '🔊' },
+            { name: 'volume-low', class: 'fa-volume-low', icon: '🔉' },
+            { name: 'volume-off', class: 'fa-volume-off', icon: '🔇' },
+            { name: 'volume-up', class: 'fa-volume-up', icon: '🔊' },
+            { name: 'volume-xmark', class: 'fa-volume-xmark', icon: '🔇' },
+            { name: 'wand-magic-sparkles', class: 'fa-wand-magic-sparkles', icon: '✨' },
+            { name: 'wallet', class: 'fa-wallet', icon: '👛' },
+            { name: 'wave-pulse', class: 'fa-wave-pulse', icon: '📊' },
+            { name: 'waveform-lines', class: 'fa-waveform-lines', icon: '📈' },
+            { name: 'weight-scale', class: 'fa-weight-scale', icon: '⚖️' },
+            { name: 'wheelchair', class: 'fa-wheelchair', icon: '♿' },
+            { name: 'wheelchair-move', class: 'fa-wheelchair-move', icon: '♿' },
+            { name: 'wifi', class: 'fa-wifi', icon: '📶' },
+            { name: 'window-restore', class: 'fa-window-restore', icon: '🪟' },
+            { name: 'wrench', class: 'fa-wrench', icon: '🔧' }
         ];
 
         let filteredIcons = [...allIcons];
 
         function renderIcons() {
-            const grid = document.getElementById('iconsGrid');
-            const stats = document.getElementById('stats');
-            const noResults = document.getElementById('noResults');
+            const container = document.getElementById('iconsContainer');
+            const resultsCount = document.getElementById('resultsCount');
+            const emptyState = document.getElementById('emptyState');
 
             if (filteredIcons.length === 0) {
-                grid.innerHTML = '';
-                noResults.style.display = 'block';
-                stats.textContent = '0 iconos encontrados';
+                container.innerHTML = '';
+                emptyState.style.display = 'flex';
+                resultsCount.textContent = '0 resultados';
                 return;
             }
 
-            noResults.style.display = 'none';
-            stats.textContent = `${filteredIcons.length} iconos disponibles`;
+            emptyState.style.display = 'none';
+            resultsCount.textContent = `${filteredIcons.length} resultados`;
 
-            grid.innerHTML = filteredIcons.map(icon => `
-                <div class="icon-card" onclick="copyToClipboard('${icon.name}')">
-                    <i class="far ${icon.class}"></i>
-                    <div class="icon-name">${icon.name}</div>
-                </div>
-            `).join('');
+            // Agrupar iconos por letra
+            const iconsByLetter = {};
+            filteredIcons.forEach(icon => {
+                const firstLetter = icon.name.charAt(0).toUpperCase();
+                if (!iconsByLetter[firstLetter]) {
+                    iconsByLetter[firstLetter] = [];
+                }
+                iconsByLetter[firstLetter].push(icon);
+            });
+
+            // Renderizar secciones por letra
+            container.innerHTML = Object.keys(iconsByLetter)
+                .sort()
+                .map(letter => `
+                    <div class="letter-section" id="section-${letter}">
+                        <h2 class="letter-title">${letter}</h2>
+                        <div class="letter-grid">
+                            ${iconsByLetter[letter].map(icon => `
+                                <div class="icon-card" onclick="copyToClipboard('${icon.name}')">
+                                    <i class="far ${icon.class}"></i>
+                                    <div class="icon-name">${icon.name}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `).join('');
         }
 
         function filterIcons(searchTerm) {
@@ -760,10 +877,135 @@
         // Event listeners
         document.getElementById('searchInput').addEventListener('input', (e) => {
             filterIcons(e.target.value);
+            updateClearButton(e.target.value);
         });
+
+        // Función para mostrar/ocultar botón de limpiar
+        function updateClearButton(searchValue) {
+            const clearBtn = document.getElementById('clearSearchBtn');
+            if (searchValue.trim()) {
+                clearBtn.style.display = 'flex';
+            } else {
+                clearBtn.style.display = 'none';
+            }
+        }
+
+        // Función para limpiar búsqueda
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            filterIcons('');
+            updateClearButton('');
+        }
+
+        // Event listener para el botón de limpiar
+        document.getElementById('clearSearchBtn').addEventListener('click', clearSearch);
+
+        // Funciones para la navegación alfabética
+        function generateAlphabetNav() {
+            const alphabetNav = document.getElementById('alphabetNav');
+            const letters = getAvailableLetters();
+            
+            alphabetNav.innerHTML = letters.map(letter => `
+                <a href="#${letter}" data-letter="${letter}" onclick="scrollToLetter('${letter}')">
+                    ${letter}
+                </a>
+            `).join('');
+        }
+
+        function getAvailableLetters() {
+            const letters = new Set();
+            allIcons.forEach(icon => {
+                const firstLetter = icon.name.charAt(0).toUpperCase();
+                letters.add(firstLetter);
+            });
+            return Array.from(letters).sort();
+        }
+
+        function scrollToLetter(letter) {
+            // Buscar la sección de la letra
+            const section = document.getElementById(`section-${letter}`);
+            
+            if (section) {
+                // Actualizar la navegación activa
+                updateActiveLetter(letter);
+                
+                // Scroll suave hasta la sección
+                section.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }
+
+        function updateActiveLetter(letter) {
+            // Remover clase active de todas las letras
+            document.querySelectorAll('.alphabet-nav a').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Añadir clase active a la letra seleccionada
+            const activeLink = document.querySelector(`[data-letter="${letter}"]`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+        }
+
+        function resetToAllIcons() {
+            filteredIcons = [...allIcons];
+            renderIcons();
+            
+            // Remover clase active de todas las letras
+            document.querySelectorAll('.alphabet-nav a').forEach(link => {
+                link.classList.remove('active');
+            });
+        }
+
+        // Modificar la función filterIcons para resetear la navegación activa
+        function filterIcons(searchTerm) {
+            if (!searchTerm.trim()) {
+                filteredIcons = [...allIcons];
+                // Resetear navegación activa cuando se limpia la búsqueda
+                document.querySelectorAll('.alphabet-nav a').forEach(link => {
+                    link.classList.remove('active');
+                });
+            } else {
+                filteredIcons = allIcons.filter(icon => 
+                    icon.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    icon.class.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+                // Resetear navegación activa durante la búsqueda
+                document.querySelectorAll('.alphabet-nav a').forEach(link => {
+                    link.classList.remove('active');
+                });
+            }
+            renderIcons();
+        }
+
+        // Función para detectar qué sección está visible y actualizar navegación
+        function updateActiveSectionOnScroll() {
+            const sections = document.querySelectorAll('.letter-section');
+            const navLinks = document.querySelectorAll('.alphabet-nav a');
+            
+            let currentSection = '';
+            
+            sections.forEach(section => {
+                const rect = section.getBoundingClientRect();
+                if (rect.top <= 100 && rect.bottom >= 100) {
+                    currentSection = section.id.replace('section-', '');
+                }
+            });
+            
+            if (currentSection) {
+                updateActiveLetter(currentSection);
+            }
+        }
+
+        // Event listener para scroll
+        window.addEventListener('scroll', updateActiveSectionOnScroll);
 
         // Inicializar
         renderIcons();
+        generateAlphabetNav();
     </script>
 </body>
 </html>
