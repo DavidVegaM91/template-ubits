@@ -422,7 +422,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // ===== FUNCIONALIDAD DEL CHAT DE AI =====
     
     // Elementos del chat
-    const aiInsightsCard = document.getElementById('ai-insights-card');
+    const simonAiCard = document.getElementById('simon-ai');
     const aiChatInterface = document.getElementById('ai-chat-interface');
     const backToAiButton = document.getElementById('back-to-ai');
     const chatInputField = document.getElementById('chat-input-field');
@@ -498,9 +498,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Event listeners para el chat
-    if (aiInsightsCard) {
-        aiInsightsCard.addEventListener('click', openAiChat);
-        aiInsightsCard.classList.add('clickable');
+    if (simonAiCard) {
+        simonAiCard.addEventListener('click', openAiChat);
+        simonAiCard.classList.add('clickable');
     }
     
     if (backToAiButton) {
