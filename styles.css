@@ -376,9 +376,9 @@ body {
 
 /* Content Area */
 .content-area {
-    background-color: #ffffff;
+    background-color: transparent !important;
     border-radius: 10px;
-    border: 1px solid #d0d2d5;
+    border: none !important;
     flex: 1;
     min-height: 0;
     display: flex;
@@ -387,6 +387,7 @@ body {
     overflow: auto;
     padding: 16px;
     box-sizing: border-box;
+    box-shadow: none !important;
 }
 
 /* Content Area sin fondo para UBITS AI */
@@ -398,10 +399,11 @@ body {
 }
 
 /* Modo oscuro - Content Area sin fondo */
-[data-theme="dark"] .content-area.no-background {
+body[data-theme="dark"] .content-area.no-background {
     background-color: transparent !important;
     border: none !important;
     box-shadow: none !important;
+    padding: 0 40px !important; /* Padding horizontal de 40px, vertical 0 */
 }
 
 .content-placeholder {
@@ -507,8 +509,8 @@ body {
 }
 
 [data-theme="dark"] .content-area {
-    background-color: #202837 !important;
-    border-color: #4F5561 !important;
+    background-color: transparent !important;
+    border-color: transparent !important;
 }
 
 [data-theme="dark"] .nav-tab span {
@@ -566,12 +568,7 @@ body {
     gap: 48px; /* gap-12 del Figma */
 }
 
-/* Quitar fondo y borde del content-area cuando estemos en UBITS AI */
-.ubits-ai-dashboard .content-area {
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-}
+
 
 .ai-title {
     font-family: 'Noto Sans', sans-serif;
@@ -696,8 +693,8 @@ body[data-theme="dark"] .top-nav {
 }
 
 body[data-theme="dark"] .content-area {
-    background-color: #202837 !important;
-    border-color: #4F5561 !important;
+    background-color: transparent !important;
+    border-color: transparent !important;
 }
 
 body[data-theme="dark"] .nav-tab span {
@@ -721,7 +718,7 @@ body[data-theme="dark"] .content-placeholder p {
     display: flex;
     flex-direction: column;
     height: 100%;
-    background-color: #f3f3f4;
+    background-color: transparent !important;
     border-radius: 10px;
     overflow: hidden;
     position: relative;
@@ -900,8 +897,9 @@ body[data-theme="dark"] .content-placeholder p {
 /* Sistema de Toast con 4 tipos */
 .toast-container {
     position: fixed;
-    top: 20px;
-    right: 20px;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 10000;
     display: flex;
     flex-direction: column;
@@ -914,7 +912,7 @@ body[data-theme="dark"] .content-placeholder p {
     border-radius: 10px;
     padding: 10px 15px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    animation: slideInRight 0.3s ease-out;
+    animation: slideInDown 0.3s ease-out;
     border: 1px solid;
 }
 
@@ -1011,38 +1009,39 @@ body[data-theme="dark"] .content-placeholder p {
 }
 
 /* Animaciones */
-@keyframes slideInRight {
+@keyframes slideInDown {
     from {
-        transform: translateX(100%);
+        transform: translateY(-100%);
         opacity: 0;
     }
     to {
-        transform: translateX(0);
+        transform: translateY(0);
         opacity: 1;
     }
 }
 
-@keyframes slideOutRight {
+@keyframes slideOutUp {
     from {
-        transform: translateX(0);
+        transform: translateY(0);
         opacity: 1;
     }
     to {
-        transform: translateX(100%);
+        transform: translateY(-100%);
         opacity: 0;
     }
 }
 
 .toast.hiding {
-    animation: slideOutRight 0.3s ease-in forwards;
+    animation: slideOutUp 0.3s ease-in forwards;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
     .toast-container {
         top: 16px;
-        right: 16px;
         left: 16px;
+        right: 16px;
+        transform: none;
     }
     
     .toast {
@@ -1130,7 +1129,7 @@ body[data-theme="dark"] .content-placeholder p {
 
 /* Modo oscuro para el chat */
 [data-theme="dark"] .ai-chat-interface {
-    background-color: #202837;
+    background-color: transparent !important;
 }
 
 [data-theme="dark"] .chat-user-name {
