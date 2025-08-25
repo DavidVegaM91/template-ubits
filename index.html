@@ -12,6 +12,7 @@
 <body data-theme="light">
     <div class="dashboard-container">
         <div class="tooltip" id="tooltip"></div>
+        <div class="toast" id="toast">Texto copiado</div>
         <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
             <!-- Contenedor principal para header y body -->
@@ -90,7 +91,130 @@
 
             <!-- Content Area -->
             <div class="content-area">
-                <div class="content-placeholder">
+                <!-- UBITS AI Dashboard -->
+                <div class="ubits-ai-dashboard" id="ubits-ai-dashboard">
+                    <h1 class="ai-title">¿En qué puedo ayudarte?</h1>
+                    <div class="ai-cards-container">
+                        <div class="ai-card" id="ai-insights-card">
+                            <div class="card-header">
+                                <h3 class="card-title">AI Insights</h3>
+                                <div class="card-icon">
+                                    <i class="fa fa-lightbulb"></i>
+                                </div>
+                            </div>
+                            <p class="card-description">Quiero sumar personas a la estructura de la compañía.</p>
+                        </div>
+                        <div class="ai-card">
+                            <div class="card-header">
+                                <h3 class="card-title">Customer Support</h3>
+                                <div class="card-icon">
+                                    <i class="fa fa-headset"></i>
+                                </div>
+                            </div>
+                            <p class="card-description">Haz una comparación de precios vs. el mercado laboral.</p>
+                        </div>
+                        <div class="ai-card">
+                            <div class="card-header">
+                                <h3 class="card-title">Evaluación financiera</h3>
+                                <div class="card-icon">
+                                    <i class="fa fa-chart-line"></i>
+                                </div>
+                            </div>
+                            <p class="card-description">Haz una comparación de precios vs. el mercado laboral.</p>
+                        </div>
+                        <div class="ai-card">
+                            <div class="card-header">
+                                <h3 class="card-title">¿Qué quieres aprender?</h3>
+                                <div class="card-icon">
+                                    <i class="fa fa-graduation-cap"></i>
+                                </div>
+                            </div>
+                            <p class="card-description">Haz una comparación de precios vs. el mercado laboral.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Chat Interface -->
+                <div class="ai-chat-interface" id="ai-chat-interface" style="display: none;">
+                    <!-- Header del chat -->
+                    <div class="chat-header">
+                        <button class="back-button" id="back-to-ai">
+                            <i class="fa fa-chevron-left"></i>
+                        </button>
+                        <div class="chat-user-info">
+                            <h2 class="chat-user-name">Simon</h2>
+                            <p class="chat-user-description">Análisis inteligente para optimizar tu empresa.</p>
+                        </div>
+                    </div>
+
+                    <!-- Mensajes del chat -->
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="message ai-message">
+                            <div class="message-content">
+                                <p>Hola, soy tu asistente de AI Insights. Puedo ayudarte a analizar objetivos, encuestas y la matriz de talento de tu empresa. ¿Qué te gustaría explorar?</p>
+                            </div>
+                            <div class="message-actions">
+                                <div class="action-buttons">
+                                    <button class="action-btn like-btn" title="Me gusta">
+                                        <i class="far fa-thumbs-up"></i>
+                                    </button>
+                                    <button class="action-btn dislike-btn" title="No me gusta">
+                                        <i class="far fa-thumbs-down"></i>
+                                    </button>
+                                    <button class="action-btn copy-btn" title="Copiar mensaje">
+                                        <i class="far fa-copy"></i>
+                                    </button>
+                                </div>
+                                <div class="message-time">03:35 PM</div>
+                            </div>
+                        </div>
+                        
+                        <div class="message user-message">
+                            <div class="message-content">
+                                <p>Quiero explorar objetivos</p>
+                            </div>
+                        </div>
+                        
+                        <div class="message ai-message">
+                            <div class="message-content">
+                                <p>¿Quieres recomendaciones personalizadas para mejorar tus indicadores?</p>
+                            </div>
+                            <div class="message-actions">
+                                <div class="action-buttons">
+                                    <button class="action-btn like-btn" title="Me gusta">
+                                        <i class="far fa-thumbs-up"></i>
+                                    </button>
+                                    <button class="action-btn dislike-btn" title="No me gusta">
+                                        <i class="far fa-thumbs-down"></i>
+                                    </button>
+                                    <button class="action-btn copy-btn" title="Copiar mensaje">
+                                        <i class="far fa-copy"></i>
+                                    </button>
+                                </div>
+                                <div class="message-time">03:35 PM</div>
+                            </div>
+                        </div>
+                        
+                        <div class="message user-message">
+                            <div class="message-content">
+                                <p>Quiero un chart sobre objetivos</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Input del chat -->
+                    <div class="chat-input-container">
+                        <div class="chat-input">
+                            <input type="text" placeholder="Escribe tu pregunta o solicitud..." id="chat-input-field">
+                            <button class="send-button" id="send-message">
+                                <i class="fa fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Placeholder (por defecto oculto) -->
+                <div class="content-placeholder" id="content-placeholder" style="display: none;">
                     <h2>Área de Contenido</h2>
                     <p>Aquí va el contenido principal de tu aplicación</p>
                 </div>

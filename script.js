@@ -181,32 +181,43 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Función para actualizar el área de contenido
     function updateContentArea(section) {
-        const contentPlaceholder = contentArea.querySelector('.content-placeholder');
+        // Ocultar todas las vistas
+        const ubitsAiDashboard = document.getElementById('ubits-ai-dashboard');
+        const aiChatInterface = document.getElementById('ai-chat-interface');
+        const contentPlaceholder = document.getElementById('content-placeholder');
         const contentAreaElement = document.querySelector('.content-area');
         
-        if (contentPlaceholder) {
-            // Verificar si hay contenido personalizado
-            const customContent = getCustomContent(section);
-            
-            if (customContent) {
-                // Usar contenido personalizado si existe
-                contentPlaceholder.innerHTML = customContent;
+        // Ocultar todas las vistas primero
+        if (ubitsAiDashboard) ubitsAiDashboard.style.display = 'none';
+        if (aiChatInterface) aiChatInterface.style.display = 'none';
+        if (contentPlaceholder) contentPlaceholder.style.display = 'none';
+        
+        if (section === 'ubits-ai') {
+            // Mostrar dashboard de UBITS AI
+            if (ubitsAiDashboard) {
+                ubitsAiDashboard.style.display = 'flex';
+                contentAreaElement.classList.add('no-background');
+            }
+        } else {
+            // Mostrar contenido por defecto
+            if (contentPlaceholder) {
+                contentPlaceholder.style.display = 'block';
                 
-                // Aplicar estilos especiales para UBITS AI
-                if (section === 'ubits-ai') {
-                    contentAreaElement.classList.add('no-background');
+                // Verificar si hay contenido personalizado
+                const customContent = getCustomContent(section);
+                
+                if (customContent) {
+                    contentPlaceholder.innerHTML = customContent;
                 } else {
-                    contentAreaElement.classList.remove('no-background');
+                    // Contenido por defecto del template
+                    const sectionName = section.charAt(0).toUpperCase() + section.slice(1);
+                    contentPlaceholder.innerHTML = `
+                        <h2>${sectionName}</h2>
+                        <p>Contenido de la sección: ${sectionName}</p>
+                        <p>Subsección activa: Sección 1</p>
+                        <p>Personaliza este contenido según tus necesidades</p>
+                    `;
                 }
-            } else {
-                // Contenido por defecto del template
-                const sectionName = section.charAt(0).toUpperCase() + section.slice(1);
-                contentPlaceholder.innerHTML = `
-                    <h2>${sectionName}</h2>
-                    <p>Contenido de la sección: ${sectionName}</p>
-                    <p>Subsección activa: Sección 1</p>
-                    <p>Personaliza este contenido según tus necesidades</p>
-                `;
                 
                 // Remover estilos especiales
                 contentAreaElement.classList.remove('no-background');
@@ -407,6 +418,186 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Inicializar la aplicación
     init();
+
+    // ===== FUNCIONALIDAD DEL CHAT DE AI =====
+    
+    // Elementos del chat
+    const aiInsightsCard = document.getElementById('ai-insights-card');
+    const aiChatInterface = document.getElementById('ai-chat-interface');
+    const backToAiButton = document.getElementById('back-to-ai');
+    const chatInputField = document.getElementById('chat-input-field');
+    const sendMessageButton = document.getElementById('send-message');
+    const chatMessages = document.getElementById('chat-messages');
+    
+    // Función para abrir el chat
+    function openAiChat() {
+        const ubitsAiDashboard = document.getElementById('ubits-ai-dashboard');
+        if (ubitsAiDashboard) ubitsAiDashboard.style.display = 'none';
+        if (aiChatInterface) aiChatInterface.style.display = 'flex';
+    }
+    
+    // Función para volver al dashboard de AI
+    function backToAiDashboard() {
+        if (aiChatInterface) aiChatInterface.style.display = 'none';
+        const ubitsAiDashboard = document.getElementById('ubits-ai-dashboard');
+        if (ubitsAiDashboard) ubitsAiDashboard.style.display = 'flex';
+    }
+    
+    // Función para enviar mensaje
+    function sendMessage() {
+        const message = chatInputField.value.trim();
+        if (message) {
+            // Crear mensaje del usuario
+            const userMessage = document.createElement('div');
+            userMessage.className = 'message user-message';
+            userMessage.innerHTML = `
+                <div class="message-content">
+                    <p>${message}</p>
+                </div>
+            `;
+            
+            // Agregar mensaje del usuario
+            chatMessages.appendChild(userMessage);
+            
+            // Limpiar input
+            chatInputField.value = '';
+            
+            // Simular respuesta de AI (aquí puedes integrar con tu API de AI)
+            setTimeout(() => {
+                const aiMessage = document.createElement('div');
+                aiMessage.className = 'message ai-message';
+                aiMessage.innerHTML = `
+                    <div class="message-content">
+                        <p>Entiendo que quieres "${message}". Déjame analizar esa información para ti...</p>
+                    </div>
+                    <div class="message-actions">
+                        <div class="action-buttons">
+                            <button class="action-btn like-btn" title="Me gusta">
+                                <i class="far fa-thumbs-up"></i>
+                            </button>
+                            <button class="action-btn dislike-btn" title="No me gusta">
+                                <i class="far fa-thumbs-down"></i>
+                            </button>
+                            <button class="action-btn copy-btn" title="Copiar mensaje">
+                                <i class="far fa-copy"></i>
+                            </button>
+                        </div>
+                        <div class="message-time">${new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}</div>
+                    </div>
+                `;
+                
+                chatMessages.appendChild(aiMessage);
+                
+                // Scroll al final del chat
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 1000);
+            
+            // Scroll al final del chat
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+    }
+    
+    // Event listeners para el chat
+    if (aiInsightsCard) {
+        aiInsightsCard.addEventListener('click', openAiChat);
+        aiInsightsCard.classList.add('clickable');
+    }
+    
+    if (backToAiButton) {
+        backToAiButton.addEventListener('click', backToAiDashboard);
+    }
+    
+    if (sendMessageButton) {
+        sendMessageButton.addEventListener('click', sendMessage);
+    }
+    
+    if (chatInputField) {
+        chatInputField.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    }
+    
+    // ===== FUNCIONALIDAD DE LOS BOTONES DE ACCIONES =====
+    
+    // Función para manejar like
+    function handleLike(button) {
+        const message = button.closest('.message');
+        const likeBtn = message.querySelector('.like-btn');
+        const dislikeBtn = message.querySelector('.dislike-btn');
+        
+        // Si ya está liked, quitar like
+        if (likeBtn.classList.contains('liked')) {
+            likeBtn.classList.remove('liked');
+            likeBtn.title = 'Me gusta';
+        } else {
+            // Quitar dislike si existe
+            dislikeBtn.classList.remove('disliked');
+            dislikeBtn.title = 'No me gusta';
+            
+            // Agregar like
+            likeBtn.classList.add('liked');
+            likeBtn.title = 'Te gustó';
+        }
+    }
+    
+    // Función para manejar dislike
+    function handleDislike(button) {
+        const message = button.closest('.message');
+        const likeBtn = message.querySelector('.like-btn');
+        const dislikeBtn = message.querySelector('.dislike-btn');
+        
+        // Si ya está disliked, quitar dislike
+        if (dislikeBtn.classList.contains('disliked')) {
+            dislikeBtn.classList.remove('disliked');
+            dislikeBtn.title = 'No me gusta';
+        } else {
+            // Quitar like si existe
+            likeBtn.classList.remove('liked');
+            likeBtn.title = 'Me gusta';
+            
+            // Agregar dislike
+            dislikeBtn.classList.add('disliked');
+            dislikeBtn.title = 'No te gustó';
+        }
+    }
+    
+    // Función para mostrar toast
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        if (toast) {
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+    }
+    
+    // Función para copiar mensaje
+    function copyMessage(button) {
+        const messageContent = button.closest('.message').querySelector('.message-content p').textContent;
+        
+        navigator.clipboard.writeText(messageContent).then(() => {
+            showToast('Texto copiado');
+        }).catch(err => {
+            console.error('Error al copiar:', err);
+            showToast('Error al copiar');
+        });
+    }
+    
+    // Event listeners para los botones de acciones (usando delegación de eventos)
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.like-btn')) {
+            handleLike(e.target.closest('.like-btn'));
+        } else if (e.target.closest('.dislike-btn')) {
+            handleDislike(e.target.closest('.dislike-btn'));
+        } else if (e.target.closest('.copy-btn')) {
+            copyMessage(e.target.closest('.copy-btn'));
+        }
+    });
 
     // Función para exportar configuración (útil para el equipo)
     window.exportConfig = function() {
