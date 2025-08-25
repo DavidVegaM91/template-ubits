@@ -563,28 +563,53 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Función para mostrar toast
-    function showToast(message) {
-        const toast = document.getElementById('toast');
-        if (toast) {
-            toast.textContent = message;
-            toast.classList.add('show');
+    // Función para mostrar toast con tipos
+    function showToast(type, message, duration = 3000) {
+        const toast = document.getElementById(`toast-${type}`);
+        const messageElement = document.getElementById(`toast-${type}-message`);
+        
+        if (toast && messageElement) {
+            // Actualizar el mensaje
+            messageElement.textContent = message;
             
+            // Mostrar el toast
+            toast.style.display = 'block';
+            
+            // Auto-ocultar después del tiempo especificado
             setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
+                hideToast(type);
+            }, duration);
         }
     }
     
-    // Función para copiar mensaje
+    // Función para ocultar toast
+    function hideToast(type) {
+        const toast = document.getElementById(`toast-${type}`);
+        if (toast) {
+            toast.classList.add('hiding');
+            setTimeout(() => {
+                toast.style.display = 'none';
+                toast.classList.remove('hiding');
+            }, 300);
+        }
+    }
+
+    // Función para copiar mensaje (actualizada)
     function copyMessage(button) {
         const messageContent = button.closest('.message').querySelector('.message-content p').textContent;
         
         navigator.clipboard.writeText(messageContent).then(() => {
-            showToast('Texto copiado');
+            showToast('success', 'Texto copiado con éxito');
         }).catch(err => {
             console.error('Error al copiar:', err);
-            showToast('Error al copiar');
+            // Fallback para navegadores antiguos
+            const textArea = document.createElement('textarea');
+            textArea.value = messageContent;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            showToast('success', 'Texto copiado con éxito');
         });
     }
     

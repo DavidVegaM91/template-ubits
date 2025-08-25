@@ -12,7 +12,61 @@
 <body data-theme="light">
     <div class="dashboard-container">
         <div class="tooltip" id="tooltip"></div>
-        <div class="toast" id="toast">Texto copiado</div>
+        
+        <!-- Sistema de Toast con 4 tipos -->
+        <div class="toast-container" id="toast-container">
+            <!-- Toast de Success -->
+            <div class="toast toast-success" id="toast-success" style="display: none;">
+                <div class="toast-content">
+                    <div class="toast-icon">
+                        <i class="far fa-check"></i>
+                    </div>
+                    <div class="toast-message" id="toast-success-message">Texto copiado con éxito</div>
+                    <button class="toast-close" onclick="hideToast('success')">
+                        <i class="far fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Toast de Info -->
+            <div class="toast toast-info" id="toast-info" style="display: none;">
+                <div class="toast-content">
+                    <div class="toast-icon">
+                        <i class="far fa-info-circle"></i>
+                    </div>
+                    <div class="toast-message" id="toast-info-message">Mensaje informativo</div>
+                    <button class="toast-close" onclick="hideToast('info')">
+                        <i class="far fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Toast de Warning -->
+            <div class="toast toast-warning" id="toast-warning" style="display: none;">
+                <div class="toast-content">
+                    <div class="toast-icon">
+                        <i class="far fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="toast-message" id="toast-warning-message">Mensaje de advertencia</div>
+                    <button class="toast-close" onclick="hideToast('warning')">
+                        <i class="far fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Toast de Error -->
+            <div class="toast toast-error" id="toast-error" style="display: none;">
+                <div class="toast-content">
+                    <div class="toast-icon">
+                        <i class="far fa-times-circle"></i>
+                    </div>
+                    <div class="toast-message" id="toast-error-message">Mensaje de error</div>
+                    <button class="toast-close" onclick="hideToast('error')">
+                        <i class="far fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
         <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
             <!-- Contenedor principal para header y body -->

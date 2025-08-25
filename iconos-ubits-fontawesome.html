@@ -259,23 +259,7 @@
             margin-top: 40px;
         }
 
-        .copy-message {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #28a745;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-size: 14px;
-            opacity: 0;
-            transition: opacity 0.3s;
-            z-index: 1000;
-        }
 
-        .copy-message.show {
-            opacity: 1;
-        }
 
         /* Navegación alfabética dentro del sidebar */
         .alphabet-nav {
@@ -517,6 +501,160 @@
             background: #f8fafc;
             border-color: #94a3b8;
         }
+
+        /* Sistema de Toast con 4 tipos */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .toast {
+            min-width: 320px;
+            max-width: 400px;
+            border-radius: 10px;
+            padding: 10px 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            animation: slideInRight 0.3s ease-out;
+            border: 1px solid;
+        }
+
+        .toast-content {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toast-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 14px;
+            letter-spacing: 0.2px;
+        }
+
+        .toast-message {
+            flex: 1;
+            font-size: 14px;
+            line-height: 18px;
+            font-weight: 400;
+            font-family: 'Noto Sans', sans-serif;
+        }
+
+        .toast-close {
+            width: 24px;
+            height: 24px;
+            border: none;
+            background: transparent;
+            border-radius: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+            font-size: 12px;
+        }
+
+        .toast-close:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Toast Success */
+        .toast-success {
+            background: #e8f8e4;
+            border-color: #41c433;
+        }
+
+        .toast-success .toast-icon,
+        .toast-success .toast-message,
+        .toast-success .toast-close {
+            color: #223b16;
+        }
+
+        /* Toast Info */
+        .toast-info {
+            background: #f3f2ff;
+            border-color: #97a5fd;
+        }
+
+        .toast-info .toast-icon,
+        .toast-info .toast-message,
+        .toast-info .toast-close {
+            color: #20335f;
+        }
+
+        /* Toast Warning */
+        .toast-warning {
+            background: #fff1e0;
+            border-color: #ec9907;
+        }
+
+        .toast-warning .toast-icon,
+        .toast-warning .toast-message,
+        .toast-warning .toast-close {
+            color: #4c2e15;
+        }
+
+        /* Toast Error */
+        .toast-error {
+            background: #fff0ee;
+            border-color: #fd8a82;
+        }
+
+        .toast-error .toast-icon,
+        .toast-error .toast-message,
+        .toast-error .toast-close {
+            color: #65181e;
+        }
+
+        /* Animaciones */
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        .toast.hiding {
+            animation: slideOutRight 0.3s ease-in forwards;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .toast-container {
+                top: 16px;
+                right: 16px;
+                left: 16px;
+            }
+            
+            .toast {
+                min-width: auto;
+                max-width: none;
+            }
+        }
     </style>
 </head>
 <body>
@@ -576,8 +714,59 @@
         </main>
     </div>
 
-    <div class="copy-message" id="copyMessage">
-        ¡Nombre copiado! 😉
+    <!-- Sistema de Toast con 4 tipos -->
+    <div class="toast-container" id="toast-container">
+        <!-- Toast de Success -->
+        <div class="toast toast-success" id="toast-success" style="display: none;">
+            <div class="toast-content">
+                <div class="toast-icon">
+                    <i class="far fa-check"></i>
+                </div>
+                <div class="toast-message" id="toast-success-message">¡Nombre copiado! 😉</div>
+                <button class="toast-close" onclick="hideToast('success')">
+                    <i class="far fa-times"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Toast de Info -->
+        <div class="toast toast-info" id="toast-info" style="display: none;">
+            <div class="toast-content">
+                <div class="toast-icon">
+                    <i class="far fa-info-circle"></i>
+                </div>
+                <div class="toast-message" id="toast-info-message">Mensaje informativo</div>
+                <button class="toast-close" onclick="hideToast('info')">
+                    <i class="far fa-times"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Toast de Warning -->
+        <div class="toast toast-warning" id="toast-warning" style="display: none;">
+            <div class="toast-content">
+                <div class="toast-icon">
+                    <i class="far fa-exclamation-triangle"></i>
+                </div>
+                <div class="toast-message" id="toast-warning-message">Mensaje de advertencia</div>
+                <button class="toast-close" onclick="hideToast('warning')">
+                    <i class="far fa-times"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Toast de Error -->
+        <div class="toast toast-error" id="toast-error" style="display: none;">
+            <div class="toast-content">
+                <div class="toast-icon">
+                    <i class="far fa-times-circle"></i>
+                </div>
+                <div class="toast-message" id="toast-error-message">Mensaje de error</div>
+                <button class="toast-close" onclick="hideToast('error')">
+                    <i class="far fa-times"></i>
+                </button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -873,7 +1062,7 @@
 
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(() => {
-                showCopyMessage();
+                showToast('success', '¡Nombre copiado! 😉');
             }).catch(err => {
                 console.error('Error al copiar:', err);
                 // Fallback para navegadores antiguos
@@ -883,16 +1072,26 @@
                 textArea.select();
                 document.execCommand('copy');
                 document.body.removeChild(textArea);
-                showCopyMessage();
+                showToast('success', '¡Nombre copiado! 😉'); // Fallback to success
             });
         }
 
-        function showCopyMessage() {
-            const message = document.getElementById('copyMessage');
-            message.classList.add('show');
+        function showToast(type, message) {
+            const toastContainer = document.getElementById('toast-container');
+            const toast = document.getElementById(`toast-${type}`);
+            const toastMessage = document.getElementById(`toast-${type}-message`);
+
+            toastMessage.textContent = message;
+            toast.style.display = 'block';
+
             setTimeout(() => {
-                message.classList.remove('show');
-            }, 2000);
+                hideToast(type);
+            }, 3000); // 3 segundos de duración
+        }
+
+        function hideToast(type) {
+            const toast = document.getElementById(`toast-${type}`);
+            toast.style.display = 'none';
         }
 
         // Event listeners
