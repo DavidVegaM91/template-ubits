@@ -119,11 +119,12 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     flex-shrink: 0;
     width: 40px;
     height: 40px;
+    overflow: hidden;
 }
 
 .nav-button i {
@@ -136,6 +137,24 @@ body {
     justify-content: center;
     overflow: hidden;
     flex-shrink: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Efecto de brillo para todos los nav-button */
+.nav-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s ease;
+    pointer-events: none;
+}
+
+.nav-button:hover::before {
+    left: 100%;
 }
 
 /* Estados de los botones */
@@ -183,20 +202,25 @@ body {
 
 /* Hover State - Solo cuando el mouse está encima */
 .nav-button:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.15);
+    transform: scale(1.08);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
 }
 
 .nav-button:hover i {
     color: #edeeef;
+    transform: scale(1.1);
 }
 
 /* Pressed State - Solo cuando mantienes presionado el mouse */
 .nav-button:active {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(0.95);
 }
 
 .nav-button:active i {
     color: #edeeef;
+    transform: scale(0.9);
 }
 
 /* Active State - Estado seleccionado */
@@ -334,7 +358,9 @@ body {
     gap: 8px;
     align-items: center;
     position: relative;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    border-radius: 8px;
 }
 
 .nav-tab i {
@@ -346,6 +372,24 @@ body {
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Efecto de brillo para los nav-tab */
+.nav-tab::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(12, 91, 239, 0.2), transparent);
+    transition: left 0.6s ease;
+    pointer-events: none;
+}
+
+.nav-tab:hover::before {
+    left: 100%;
 }
 
 .nav-tab span {
@@ -372,6 +416,22 @@ body {
     height: 3px;
     background-color: #0c5bef;
     border-radius: 2px;
+}
+
+/* Hover effects para nav-tab */
+.nav-tab:hover {
+    background: rgba(12, 91, 239, 0.05);
+    transform: translateY(-2px);
+}
+
+.nav-tab:hover i {
+    color: #0c5bef;
+    transform: scale(1.1);
+}
+
+.nav-tab:hover span {
+    color: #0c5bef;
+    transform: scale(1.02);
 }
 
 /* Content Area */
@@ -1193,4 +1253,63 @@ body[data-theme="dark"] .content-placeholder p {
 
 [data-theme="dark"] .action-btn.disliked:hover {
     background-color: rgba(12, 91, 239, 0.2) !important;
+}
+
+/* Botón de modo oscuro con animaciones */
+#darkmode-toggle {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#darkmode-toggle i {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: center;
+}
+
+/* Efecto de brillo en hover */
+#darkmode-toggle::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+#darkmode-toggle:hover::before {
+    left: 100%;
+}
+
+/* Animación de rotación y cambio de icono */
+#darkmode-toggle[data-theme="dark"] i {
+    transform: rotate(180deg) scale(1.1);
+    color: #fbbf24;
+}
+
+#darkmode-toggle[data-theme="light"] i {
+    transform: rotate(0deg) scale(1);
+    color: #1e293b;
+}
+
+/* Efecto de pulso sutil en hover */
+#darkmode-toggle:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+
+/* Transición suave para el cambio de tema */
+body {
+    transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Transición para todos los elementos que cambian con el tema */
+*[data-theme] {
+    transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }

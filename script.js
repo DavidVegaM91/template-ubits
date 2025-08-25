@@ -73,8 +73,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (darkModeButtonContainer) {
             if (newTheme === 'dark') {
                 darkModeButtonContainer.setAttribute('data-tooltip', 'Modo claro');
+                darkModeButtonContainer.setAttribute('data-theme', 'dark');
             } else {
                 darkModeButtonContainer.setAttribute('data-tooltip', 'Modo oscuro');
+                darkModeButtonContainer.setAttribute('data-theme', 'light');
             }
         }
         
@@ -99,6 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 if (darkModeButtonContainer) {
                     darkModeButtonContainer.setAttribute('data-tooltip', 'Modo claro');
+                    darkModeButtonContainer.setAttribute('data-theme', 'dark');
                 }
             }
         }
