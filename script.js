@@ -447,7 +447,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Si tiene elementos HTML complejos, tiene contenido
-        if (widget.querySelector('h1, h2, h3, h4, img, button, .learn-header, .plan-activo, .recomendado, .learn-body')) {
+        if (widget.querySelector('h1, h2, h3, h4, img, button, .learn-header, .plan-activo, .recomendado, .learn-body, .plan-card, .recomendado-card')) {
             return true;
         }
         
@@ -457,7 +457,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Si el HTML contiene elementos complejos
-        if (widget.innerHTML.includes('<div class="learn-') || widget.innerHTML.includes('<img') || widget.innerHTML.includes('<h2')) {
+        if (widget.innerHTML.includes('<div class="learn-') || widget.innerHTML.includes('<img') || widget.innerHTML.includes('<h2') || widget.innerHTML.includes('<div class="plan-') || widget.innerHTML.includes('<div class="recomendado')) {
             return true;
         }
         

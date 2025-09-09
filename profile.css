@@ -1132,3 +1132,106 @@ body {
 [data-theme="dark"] .see-more-link:hover {
     color: #e5e7eb;
 }
+
+/* Estilos para el contenido del widget de aprendizaje */
+.learn-body {
+    display: flex;
+    gap: 24px;
+}
+
+.plan-section,
+.recomendado-section {
+    flex: 1;
+}
+
+.plan-header,
+.recomendado-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.plan-card {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.progress-bar {
+    background-color: #e9ecef;
+    border-radius: 4px;
+    margin-bottom: 16px;
+}
+
+.plan-dates {
+    margin-bottom: 12px;
+}
+
+.plan-dates div {
+    margin-bottom: 4px;
+}
+
+.plan-counter {
+    margin-bottom: 16px;
+}
+
+.btn-secondary {
+    background-color: transparent;
+    border: 1px solid #4F5561;
+    color: #4F5561;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+    background-color: #4F5561;
+    color: white;
+}
+
+.recomendado-card {
+    background-color: white;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 16px;
+}
+
+/* Iconos con dark mode */
+.learn-icon {
+    font-size: 24px;
+    color: #4F5561;
+}
+
+.plan-icon,
+.recomendado-icon {
+    margin-right: 8px;
+    color: #4F5561;
+}
+
+/* Dark mode para iconos */
+[data-theme="dark"] .learn-icon,
+[data-theme="dark"] .plan-icon,
+[data-theme="dark"] .recomendado-icon {
+    color: #e5e7eb;
+}
+
+/* Dark mode para tarjetas */
+[data-theme="dark"] .plan-card {
+    background-color: #374151;
+}
+
+[data-theme="dark"] .recomendado-card {
+    background-color: #374151;
+    border-color: #4b5563;
+}
