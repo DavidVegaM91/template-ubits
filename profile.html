@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil - UBITS Dashboard</title>
+    <link rel="stylesheet" href="profile.css">
+    <link rel="stylesheet" href="ubits-typography.css">
+    <link rel="stylesheet" href="fontawesome-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="tooltip" id="tooltip"></div>
+    
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <!-- Contenedor principal para header y body -->
+        <div class="sidebar-main">
+            <!-- Header -->
+            <div class="sidebar-header">
+                <div class="logo">
+                    <img src="images/Ubits-logo.svg" alt="UBITS Logo" />
+                </div>
+            </div>
+            
+            <!-- Body -->
+            <div class="sidebar-body">
+                <button class="nav-button" data-section="aprendizaje" data-tooltip="Aprendizaje">
+                    <i class="fa fa-graduation-cap"></i>
+                </button>
+                <button class="nav-button" data-section="diagnóstico" data-tooltip="Diagnóstico">
+                    <i class="fa fa-chart-mixed"></i>
+                </button>
+                <button class="nav-button" data-section="desempeño" data-tooltip="Desempeño">
+                    <i class="fa fa-bars-progress"></i>
+                </button>
+                <button class="nav-button" data-section="encuestas" data-tooltip="Encuestas">
+                    <i class="fa fa-clipboard-list-check"></i>
+                </button>
+                <button class="nav-button" data-section="reclutamiento" data-tooltip="Reclutamiento">
+                    <i class="fa fa-users"></i>
+                </button>
+                <button class="nav-button" data-section="tareas" data-tooltip="Tareas">
+                    <i class="fa fa-layer-group"></i>
+                </button>
+                <button class="nav-button" data-section="ubits-ai" data-tooltip="UBITS AI">
+                    <i class="fa fa-sparkles"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="sidebar-footer">
+            <div class="user-avatar active" data-tooltip="Mi perfil">
+                <img src="images/Profile-image.jpg" alt="Usuario" class="avatar-image">
+            </div>
+            <button class="nav-button" id="darkmode-toggle" data-tooltip="Modo oscuro" data-theme="light">
+                <i class="fa fa-moon"></i>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Contenido principal -->
+    <div class="main-content profile-content">
+        <!-- Contenedor izquierdo -->
+        <div class="left-wrapper">
+            <!-- Primera fila: Personal y Organización -->
+            <div class="personal-org">
+                <div class="widget-user-info">
+                    <p class="ubits-body-sm-regular">Información Personal</p>
+                </div>
+                <div class="widget-org">
+                    <p class="ubits-body-sm-regular">Organización</p>
+                </div>
+            </div>
+
+            <!-- Segunda fila: Aprendizaje -->
+            <div class="widget-learn">
+                <p class="ubits-body-sm-regular">Aprendizaje</p>
+            </div>
+
+            <!-- Tercera fila: Objetivos y Encuestas -->
+            <div class="objetivos-encuestas">
+                <div class="widget-objectives">
+                    <p class="ubits-body-sm-regular">Objetivos</p>
+                </div>
+                <div class="widget-surveys">
+                    <p class="ubits-body-sm-regular">Encuestas</p>
+                </div>
+            </div>
+
+            <!-- Cuarta fila: Assessments y Evaluaciones -->
+            <div class="assessments-evaluaciones">
+                <div class="widget-assessments">
+                    <p class="ubits-body-sm-regular">Assessments</p>
+                </div>
+                <div class="widget-evaluations">
+                    <p class="ubits-body-sm-regular">Evaluaciones</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar derecho fijo -->
+        <div class="right-sidebar-fixed">
+            <p class="ubits-body-sm-regular">Sidebar Derecho</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+</body>
+</html>

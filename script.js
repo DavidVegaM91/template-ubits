@@ -404,23 +404,73 @@ document.addEventListener('DOMContentLoaded', function() {
         // Cargar tema guardado
         loadSavedTheme();
         
-        // Establecer estado inicial
-        const defaultSection = document.querySelector('[data-section="aprendizaje"]');
-        if (defaultSection) {
-            defaultSection.classList.add('active');
-        }
+        // Establecer estado inicial - sin sección activa por defecto
+        // El avatar ya tiene la clase 'active' en el HTML
         
         const defaultTab = document.querySelector('[data-tab="section1"]');
         if (defaultTab) {
             defaultTab.classList.add('active');
         }
         
-        // Cargar contenido inicial
-        updateContentArea('aprendizaje');
+        // Cargar contenido inicial - sin sección específica
+        // El contenido se carga cuando el usuario interactúa con el sidebar
     }
 
     // Inicializar la aplicación
     init();
+    
+    // ===== SISTEMA DE WIDGETS INTELIGENTE =====
+    
+    // Sistema de widgets simple y funcional
+    function initWidgetSystem() {
+        const widgets = document.querySelectorAll('.widget-user-info, .widget-org, .widget-learn, .widget-objectives, .widget-surveys, .widget-assessments, .widget-evaluations');
+        
+        widgets.forEach(widget => {
+            // Verificar si tiene contenido real (más que solo el placeholder)
+            const hasRealContent = checkWidgetContent(widget);
+            
+            if (hasRealContent) {
+                widget.classList.add('has-content');
+            } else {
+                widget.classList.remove('has-content');
+            }
+        });
+    }
+
+    function checkWidgetContent(widget) {
+        const placeholderTexts = ['Información Personal', 'Organización', 'Aprendizaje', 'Objetivos', 'Encuestas', 'Assessments', 'Evaluaciones'];
+        const widgetText = widget.textContent.trim();
+        
+        // Si solo tiene texto placeholder, no tiene contenido real
+        if (placeholderTexts.includes(widgetText)) {
+            return false;
+        }
+        
+        // Si tiene elementos HTML complejos, tiene contenido
+        if (widget.querySelector('h1, h2, h3, h4, img, button, .learn-header, .plan-activo, .recomendado, .learn-body')) {
+            return true;
+        }
+        
+        // Si tiene más de un elemento hijo (no solo el párrafo placeholder)
+        if (widget.children.length > 1) {
+            return true;
+        }
+        
+        // Si el HTML contiene elementos complejos
+        if (widget.innerHTML.includes('<div class="learn-') || widget.innerHTML.includes('<img') || widget.innerHTML.includes('<h2')) {
+            return true;
+        }
+        
+        return false;
+    }
+    
+    // Función global para forzar actualización
+    window.forceUpdateAllWidgets = initWidgetSystem;
+    
+    // Inicializar si estamos en profile
+    if (window.location.pathname.includes('profile')) {
+        initWidgetSystem();
+    }
 
     // ===== FUNCIONALIDAD DEL CHAT DE AI =====
     
@@ -718,3 +768,63 @@ function showTemplateInfo() {
 
 // Mostrar información al cargar
 document.addEventListener('DOMContentLoaded', showTemplateInfo);
+
+// ===== FUNCIONALIDAD DE TOOLTIPS PARA PROFILE =====
+
+// Función para inicializar tooltips en la página de perfil
+function initProfileTooltips() {
+    const tooltip = document.getElementById('tooltip');
+    const navButtons = document.querySelectorAll('.nav-button');
+    const userAvatar = document.querySelector('.user-avatar');
+    
+    if (!tooltip) return;
+    
+    // Función para mostrar tooltip
+    function showTooltip(element, text) {
+        tooltip.textContent = text;
+        tooltip.style.opacity = '1';
+        
+        // Posicionar tooltip a la derecha del elemento
+        const rect = element.getBoundingClientRect();
+        tooltip.style.left = (rect.right + 20) + 'px';
+        tooltip.style.top = (rect.top + rect.height/2 - tooltip.offsetHeight/2) + 'px';
+    }
+    
+    // Función para ocultar tooltip
+    function hideTooltip() {
+        tooltip.style.opacity = '0';
+    }
+    
+    // Agregar tooltips a los botones de navegación
+    navButtons.forEach(button => {
+        const tooltipText = button.getAttribute('data-tooltip');
+        if (tooltipText) {
+            button.addEventListener('mouseenter', function(e) {
+                showTooltip(this, tooltipText);
+            });
+            
+            button.addEventListener('mouseleave', function() {
+                hideTooltip();
+            });
+        }
+    });
+    
+    // Agregar tooltip al avatar del usuario
+    if (userAvatar) {
+        const avatarTooltip = userAvatar.getAttribute('data-tooltip');
+        if (avatarTooltip) {
+            userAvatar.addEventListener('mouseenter', function(e) {
+                showTooltip(this, avatarTooltip);
+            });
+            
+            userAvatar.addEventListener('mouseleave', function() {
+                hideTooltip();
+            });
+        }
+    }
+}
+
+// Inicializar tooltips cuando se carga la página de perfil
+if (window.location.pathname.includes('profile.html')) {
+    document.addEventListener('DOMContentLoaded', initProfileTooltips);
+}

@@ -1,177 +1,137 @@
-# 🎨 Template UBITS - Instrucciones para Cursor
+# 🤖 Instrucciones para Cursor AI
 
-## 🚀 **Cómo Usar Este Template con Cursor**
+## 🎯 Propósito del Proyecto
 
-### **Paso 1: Clonar el Template**
-```bash
-# En Cursor, abre la terminal y ejecuta:
-git clone https://github.com/tu-usuario/template-ubits.git mi-nuevo-proyecto
-cd mi-nuevo-proyecto
+Este es un **sistema de diseño UBITS** que permite crear interfaces consistentes usando **Cursor AI**. El objetivo es que cualquier PM, diseñador o desarrollador pueda personalizar widgets sin romper el diseño.
+
+## 📋 Reglas Importantes
+
+### ✅ **SIEMPRE Hacer:**
+1. **Usar las clases CSS existentes** - No crear estilos nuevos innecesariamente
+2. **Mantener la estructura de widgets** - Respetar las clases `.widget-[nombre]`
+3. **Usar la tipografía UBITS** - Aplicar clases como `ubits-h3`, `ubits-body-md-regular`
+4. **Probar en `profile-demo.html`** - Siempre usar este archivo para pruebas
+5. **Mantener el padding de 16px** - No cambiar el espaciado interno
+6. **Usar `box-sizing: border-box`** - Para cálculos correctos de tamaño
+
+### ❌ **NUNCA Hacer:**
+1. **Cambiar las clases principales** - No modificar `.widget-[nombre]`
+2. **Usar `position: absolute`** - A menos que sea absolutamente necesario
+3. **Romper el layout flex** - Mantener `display: flex` y `flex-direction: column`
+4. **Cambiar colores base** - Usar los colores oficiales de UBITS
+5. **Eliminar `overflow: hidden`** - Es crucial para el control de contenido
+
+## 🎨 Sistema de Clases
+
+### **Widgets Principales:**
+```css
+.widget-user-info     /* Información Personal */
+.widget-org          /* Organización */
+.widget-learn        /* Aprendizaje */
+.widget-objectives   /* Objetivos */
+.widget-surveys      /* Encuestas */
+.widget-assessments  /* Assessments */
+.widget-evaluations  /* Evaluaciones */
+.right-sidebar-fixed /* Sidebar Derecho */
 ```
 
-### **Paso 2: Abrir en Cursor**
-- Abre la carpeta `mi-nuevo-proyecto` en Cursor
-- Cursor detectará automáticamente que es un proyecto web
-
-### **Paso 3: Personalizar el Proyecto**
-Ahora puedes pedirle a Cursor que:
-
-#### **🎯 Cambie la Navegación:**
-```
-"Cambia la navegación del sidebar para un proyecto de e-commerce con: 
-- Dashboard, Productos, Ventas, Clientes, Inventario, Reportes"
+### **Tipografía UBITS:**
+```css
+ubits-h1, ubits-h2, ubits-h3     /* Títulos */
+ubits-body-md-regular            /* Texto normal */
+ubits-body-sm-regular            /* Texto pequeño */
+ubits-body-xs-regular            /* Texto muy pequeño */
 ```
 
-#### **🎨 Personalice los Colores:**
-```
-"Cambia los colores del template para que use la paleta de mi marca:
-- Primario: #FF6B6B (rojo coral)
-- Secundario: #4ECDC4 (turquesa)
-- Fondo: #F7F7F7 (gris claro)"
-```
-
-#### **📱 Agregue Nuevas Funcionalidades:**
-```
-"Agrega una nueva sección llamada 'Analytics' con gráficos de ventas y métricas"
+### **Colores Oficiales:**
+```css
+#303a47  /* Texto principal */
+#0a243f  /* Texto oscuro */
+#62717e  /* Texto secundario */
+#febe24  /* Amarillo UBITS */
+#6b7b8a  /* Gris medio */
 ```
 
-#### **🔧 Modifique el Contenido:**
-```
-"Cambia el contenido del área principal para mostrar un dashboard de métricas de ventas"
-```
+## 🛠️ Proceso de Personalización
 
-## 🎨 **Qué Puedes Personalizar Fácilmente:**
-
-### **Sidebar (Navegación Izquierda):**
-- **Iconos**: Cambia los iconos FontAwesome
-- **Nombres**: Modifica los nombres de las secciones
-- **Cantidad**: Agrega o quita botones de navegación
-- **Colores**: Personaliza los estados de los botones
-
-### **Navegación Superior:**
-- **Tabs**: Cambia los nombres de las pestañas
-- **Iconos**: Personaliza los iconos de cada tab
-- **Cantidad**: Agrega o quita pestañas según necesites
-
-### **Área de Contenido:**
-- **Layout**: Cambia completamente el diseño interno
-- **Componentes**: Agrega tablas, gráficos, formularios
-- **Estilos**: Personaliza colores, fuentes, espaciados
-
-### **Funcionalidades:**
-- **Modo Oscuro**: Ya está implementado, solo personaliza colores
-- **Responsive**: Ya funciona en móvil, personaliza breakpoints
-- **Tooltips**: Ya funcionan, solo cambia los textos
-
-## 💡 **Ejemplos de Prompts para Cursor:**
-
-### **Para un Dashboard de Marketing:**
-```
-"Convierte este template en un dashboard de marketing digital con:
-- Métricas de redes sociales
-- Análisis de campañas
-- Reportes de ROI
-- Gráficos de conversión"
+### **1. Para Llenar Widgets:**
+```html
+<!-- Reemplaza el contenido placeholder -->
+<div class="widget-[nombre]">
+    <h3 class="ubits-h3">Tu Título</h3>
+    <p class="ubits-body-md-regular">Tu contenido</p>
+    <!-- Más contenido... -->
+</div>
 ```
 
-### **Para un Sistema de Gestión:**
-```
-"Transforma este template en un sistema de gestión de proyectos con:
-- Kanban board
-- Gestión de tareas
-- Reportes de tiempo
-- Dashboard de equipo"
+### **2. Para Agregar Imágenes:**
+```html
+<img src="images/tu-imagen.jpg" 
+     alt="Descripción" 
+     style="width: 100%; max-width: 100%; height: auto; border-radius: 8px;">
 ```
 
-### **Para un E-commerce:**
-```
-"Adapta este template para un panel de administración de e-commerce:
-- Gestión de productos
-- Análisis de ventas
-- Gestión de inventario
-- Reportes de clientes"
+### **3. Para Agregar Botones:**
+```html
+<button style="background: #febe24; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer;">
+    Mi Botón
+</button>
 ```
 
-## 🔧 **Archivos Principales a Modificar:**
+## 📁 Archivos Importantes
 
-### **`index.html`** - Estructura Principal:
-- Cambia los nombres de las secciones
-- Modifica los iconos
-- Agrega/quita elementos de navegación
+- **`profile-demo.html`** - Usar para todas las pruebas
+- **`profile.css`** - Estilos principales (NO modificar sin necesidad)
+- **`ubits-typography.css`** - Sistema de tipografía
+- **`WIDGET-GUIDE.md`** - Guía completa de widgets
+- **`iconos-ubits-fontawesome.html`** - Catálogo de iconos
 
-### **`styles.css`** - Apariencia Visual:
-- Personaliza colores
-- Cambia fuentes
-- Modifica espaciados
-- Ajusta tamaños
+## 🚨 Solución de Problemas
 
-### **`script.js`** - Funcionalidad:
-- Agrega nuevas secciones
-- Modifica el comportamiento
-- Integra librerías externas
+### **Si un widget se ve mal:**
+1. Verificar que tiene `display: flex` y `flex-direction: column`
+2. Asegurar que tiene `padding: 16px`
+3. Confirmar que tiene `box-sizing: border-box`
+4. Revisar que no hay `height` fija, solo `min-height`
 
-### **`config.js`** - Configuración:
-- Cambia colores del tema
-- Modifica breakpoints responsive
-- Personaliza espaciados
+### **Si el contenido se sale:**
+1. Agregar `overflow: hidden` al widget
+2. Verificar que las imágenes tienen `width: 100%`
+3. Asegurar que el texto no es demasiado largo
 
-## 🚨 **Importante - NO Modificar:**
+### **Si los colores no coinciden:**
+1. Usar las clases de tipografía UBITS
+2. Verificar que estás usando los colores oficiales
+3. Revisar el archivo `ubits-typography.css`
 
-### **Estructura Base:**
-- No cambies las clases CSS principales
-- Mantén la estructura del sidebar
-- Preserva el sistema de navegación
+## 🎯 Ejemplos de Prompts para Cursor
 
-### **Funcionalidades Core:**
-- No elimines el modo oscuro
-- Mantén el responsive design
-- Preserva los tooltips
-
-## 🎯 **Flujo de Trabajo Recomendado:**
-
-1. **Clona el template** en una nueva carpeta
-2. **Abre en Cursor** y explora la estructura
-3. **Pide a Cursor** que personalice según tus necesidades
-4. **Itera** con más prompts específicos
-5. **Prueba** en el navegador
-6. **Refina** con más instrucciones a Cursor
-
-## 💬 **Prompts de Ejemplo Completos:**
-
-### **Prompt 1 - Cambio de Marca:**
+### **Llenar un Widget:**
 ```
-"Necesito cambiar completamente la identidad visual de este template. 
-Mi marca usa colores azules y verdes, y se llama 'TechFlow'. 
-Cambia todos los colores, el logo, y adapta la navegación para un 
-sistema de gestión de flujos de trabajo. Mantén toda la funcionalidad 
-pero con mi identidad visual."
+"Llena el widget de objetivos en profile.html con una lista de 3 objetivos usando las clases UBITS"
 ```
 
-### **Prompt 2 - Nueva Funcionalidad:**
+### **Agregar una Imagen:**
 ```
-"Agrega una nueva sección llamada 'Analytics' en el sidebar, 
-con icono de gráfico, y crea un dashboard completo con:
-- 4 tarjetas de métricas principales
-- Un gráfico de líneas para tendencias
-- Una tabla de datos recientes
-- Filtros por fecha
-Todo debe ser responsive y mantener el diseño del template."
+"Agrega una imagen del curso en el widget de aprendizaje de profile.html usando la imagen de cards-learn"
 ```
 
-### **Prompt 3 - Integración Externa:**
+### **Crear un Botón:**
 ```
-"Integra Chart.js en este template para crear gráficos reales. 
-Reemplaza los placeholders con gráficos de barras, líneas y 
-doughnut. Asegúrate de que funcionen en modo oscuro y claro, 
-y sean completamente responsive."
+"Agrega un botón 'Ver más' en el widget de encuestas de profile.html con el estilo UBITS"
 ```
 
-## 🎉 **¡Listo para Usar!**
+### **IMPORTANTE - Después de llenar cualquier widget:**
+```
+"Después de agregar el contenido, ejecuta en la consola: forceUpdateAllWidgets() para que el widget se expanda correctamente"
+```
 
-Con estas instrucciones, cualquier diseñador de tu equipo puede:
-- Clonar el template
-- Abrirlo en Cursor
-- Pedirle que lo personalice
-- Construir su proyecto desde cero
+## 📚 Recursos Adicionales
 
-**¡El template está diseñado para ser la base perfecta de cualquier proyecto web! 🚀**
+- **Iconos:** Abre `iconos-ubits-fontawesome.html` para ver todos los iconos disponibles
+- **Tipografía:** Consulta `UBITS-TYPOGRAPHY-GUIDE.md` para ver todos los estilos
+- **Widgets:** Revisa `WIDGET-GUIDE.md` para ejemplos detallados
+
+---
+
+**¡Recuerda: Mantén la consistencia con el diseño UBITS! 🎨**

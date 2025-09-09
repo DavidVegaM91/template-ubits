@@ -1,0 +1,347 @@
+/* ========================================
+   SISTEMA DE TIPOGRAFÍA OFICIAL UBITS
+   ======================================== */
+
+/* Variables CSS para personalización */
+:root {
+    --ubits-text-color: #303a47;
+    --ubits-text-color-light: #6b7280;
+    --ubits-text-color-dark: #1f2937;
+    --ubits-text-color-white: #ffffff;
+}
+
+/* ========================================
+   DISPLAY STYLES (Títulos grandes)
+   ======================================== */
+
+/* Display/d1 */
+.ubits-display-d1-regular {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 40px;
+    font-weight: 400;
+    line-height: 60px;
+    color: var(--ubits-text-color);
+}
+
+.ubits-display-d1-semibold {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 40px;
+    font-weight: 600;
+    line-height: 60px;
+    color: var(--ubits-text-color);
+}
+
+.ubits-display-d1-bold {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 60px;
+    color: var(--ubits-text-color);
+}
+
+/* Display/d2 */
+.ubits-display-d2-regular {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 36px;
+    font-weight: 400;
+    line-height: 54px;
+    color: var(--ubits-text-color);
+}
+
+.ubits-display-d2-semibold {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 36px;
+    font-weight: 600;
+    line-height: 54px;
+    color: var(--ubits-text-color);
+}
+
+.ubits-display-d2-bold {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 54px;
+    color: var(--ubits-text-color);
+}
+
+/* Display/d3 */
+.ubits-display-d3-regular {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 48px;
+    color: var(--ubits-text-color);
+}
+
+.ubits-display-d3-semibold {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 32px;
+    font-weight: 600;
+    line-height: 48px;
+    color: var(--ubits-text-color);
+}
+
+.ubits-display-d3-bold {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 48px;
+    color: var(--ubits-text-color);
+}
+
+/* Display/d4 */
+.ubits-display-d4-regular {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 28px;
+    font-weight: 400;
+    line-height: 42px;
+    color: var(--ubits-text-color);
+}
+
+.ubits-display-d4-semibold {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 42px;
+    color: var(--ubits-text-color);
+}
+
+.ubits-display-d4-bold {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 42px;
+    color: var(--ubits-text-color);
+}
+
+/* ========================================
+   HEADING STYLES (Encabezados)
+   ======================================== */
+
+.ubits-heading-h1 {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--ubits-text-color);
+}
+
+.ubits-heading-h2 {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--ubits-text-color);
+}
+
+/* ========================================
+   BODY STYLES (Texto de contenido)
+   ======================================== */
+
+/* Body/md */
+.ubits-body-md-regular {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    color: var(--ubits-text-color);
+}
+
+.ubits-body-md-semibold {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    color: var(--ubits-text-color);
+}
+
+.ubits-body-md-bold {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 24px;
+    color: var(--ubits-text-color);
+}
+
+/* Body/sm */
+.ubits-body-sm-regular {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 19.5px;
+    color: var(--ubits-text-color);
+}
+
+.ubits-body-sm-semibold {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 19.5px;
+    color: var(--ubits-text-color);
+}
+
+.ubits-body-sm-bold {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 19.5px;
+    color: var(--ubits-text-color);
+}
+
+/* Body/xs */
+.ubits-body-xs-regular {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    line-height: 16.5px;
+    color: var(--ubits-text-color);
+}
+
+.ubits-body-xs-semibold {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 16.5px;
+    color: var(--ubits-text-color);
+}
+
+.ubits-body-xs-bold {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 16.5px;
+    color: var(--ubits-text-color);
+}
+
+/* ========================================
+   VARIANTES DE COLOR
+   ======================================== */
+
+/* Variante clara */
+.ubits-text-light {
+    color: var(--ubits-text-color-light) !important;
+}
+
+/* Variante oscura */
+.ubits-text-dark {
+    color: var(--ubits-text-color-dark) !important;
+}
+
+/* Variante blanca */
+.ubits-text-white {
+    color: var(--ubits-text-color-white) !important;
+}
+
+/* ========================================
+   UTILIDADES ADICIONALES
+   ======================================== */
+
+/* Para sobrescribir el color en casos específicos */
+.ubits-text-custom {
+    color: inherit;
+}
+
+/* Clases de peso para aplicar sobre cualquier estilo */
+.ubits-weight-regular {
+    font-weight: 400 !important;
+}
+
+.ubits-weight-semibold {
+    font-weight: 600 !important;
+}
+
+.ubits-weight-bold {
+    font-weight: 700 !important;
+}
+
+/* Clases de tamaño para aplicar sobre cualquier estilo */
+.ubits-size-xs {
+    font-size: 11px !important;
+    line-height: 16.5px !important;
+}
+
+.ubits-size-sm {
+    font-size: 13px !important;
+    line-height: 19.5px !important;
+}
+
+.ubits-size-md {
+    font-size: 16px !important;
+    line-height: 24px !important;
+}
+
+.ubits-size-h2 {
+    font-size: 20px !important;
+    line-height: 1 !important;
+}
+
+.ubits-size-h1 {
+    font-size: 24px !important;
+    line-height: 1 !important;
+}
+
+.ubits-size-d4 {
+    font-size: 28px !important;
+    line-height: 42px !important;
+}
+
+.ubits-size-d3 {
+    font-size: 32px !important;
+    line-height: 48px !important;
+}
+
+.ubits-size-d2 {
+    font-size: 36px !important;
+    line-height: 54px !important;
+}
+
+.ubits-size-d1 {
+    font-size: 40px !important;
+    line-height: 60px !important;
+}
+
+/* ========================================
+   MODO OSCURO
+   ======================================== */
+
+[data-theme="dark"] {
+    --ubits-text-color: #e5e7eb;
+    --ubits-text-color-light: #9ca3af;
+    --ubits-text-color-dark: #f9fafb;
+    --ubits-text-color-white: #000000;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+/* Ajustes para pantallas pequeñas */
+@media (max-width: 768px) {
+    .ubits-display-d1-regular,
+    .ubits-display-d1-semibold,
+    .ubits-display-d1-bold {
+        font-size: 32px;
+        line-height: 48px;
+    }
+    
+    .ubits-display-d2-regular,
+    .ubits-display-d2-semibold,
+    .ubits-display-d2-bold {
+        font-size: 28px;
+        line-height: 42px;
+    }
+    
+    .ubits-display-d3-regular,
+    .ubits-display-d3-semibold,
+    .ubits-display-d3-bold {
+        font-size: 24px;
+        line-height: 36px;
+    }
+    
+    .ubits-display-d4-regular,
+    .ubits-display-d4-semibold,
+    .ubits-display-d4-bold {
+        font-size: 20px;
+        line-height: 30px;
+    }
+}

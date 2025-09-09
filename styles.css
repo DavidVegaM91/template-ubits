@@ -31,9 +31,9 @@ body {
     justify-content: flex-start;
     overflow: hidden;
     border-radius: 8px;
-    position: absolute;
+    position: fixed;
     left: 11px;
-    top: 16px;
+    top: 0;
     z-index: 10;
     box-sizing: border-box;
 }
@@ -1312,4 +1312,107 @@ body {
                 color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
                 border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
                 box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ========================================
+   ESTILOS ESPECÍFICOS PARA LA PÁGINA DE PERFIL
+   ======================================== */
+
+/* Layout principal del perfil */
+.profile-content {
+    display: flex;
+    margin-left: 131px;
+    padding: 16px;
+    gap: 16px;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Contenedor izquierdo */
+.left-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+/* Primera fila: Personal y Organización */
+.personal-org {
+    display: flex;
+    gap: 24px;
+}
+
+.widget-user-info,
+.widget-org {
+    flex: 1;
+    height: 207px;
+    background-color: #ffffff;
+    border: 1px solid #d0d2d5;
+    border-radius: 8px;
+}
+
+/* Segunda fila: Aprendizaje */
+.widget-learn {
+    height: 497px;
+    background-color: #ffffff;
+    border: 1px solid #d0d2d5;
+    border-radius: 8px;
+}
+
+/* Tercera fila: Objetivos y Encuestas */
+.objetivos-encuestas {
+    display: flex;
+    gap: 24px;
+}
+
+.widget-objectives,
+.widget-surveys {
+    flex: 1;
+    height: 392px;
+    background-color: #ffffff;
+    border: 1px solid #d0d2d5;
+    border-radius: 8px;
+}
+
+/* Cuarta fila: Assessments y Evaluaciones */
+.assessments-evaluaciones {
+    display: flex;
+    gap: 24px;
+}
+
+.widget-assessments,
+.widget-evaluations {
+    flex: 1;
+    height: 392px;
+    background-color: #ffffff;
+    border: 1px solid #d0d2d5;
+    border-radius: 8px;
+}
+
+/* Sidebar derecho fijo */
+.right-sidebar-fixed {
+    width: 392px;
+    height: 100vh;
+    background-color: #ffffff;
+    border: 1px solid #d0d2d5;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+/* Modo oscuro */
+[data-theme="dark"] .profile-content {
+    background-color: #1a1a1a;
+}
+
+[data-theme="dark"] .widget-user-info,
+[data-theme="dark"] .widget-org,
+[data-theme="dark"] .widget-learn,
+[data-theme="dark"] .widget-objectives,
+[data-theme="dark"] .widget-surveys,
+[data-theme="dark"] .widget-assessments,
+[data-theme="dark"] .widget-evaluations,
+[data-theme="dark"] .right-sidebar-fixed {
+    background-color: #2d2d2d;
+    border-color: #404040;
 }

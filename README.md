@@ -1,218 +1,158 @@
-# 🚀 Template UBITS - Dashboard Profesional
+# 🎯 UBITS Design System Template
 
-Un template completo y reutilizable para crear dashboards empresariales con sidebar responsive y navegación superior.
+> **Plantilla completa para crear interfaces UBITS con Cursor AI**
 
-## ✨ Características
+## 🚀 ¿Qué es esto?
 
-- **🎨 Diseño Figma**: Replica exactamente el diseño de UBITS
-- **📱 Responsive**: Se adapta a cualquier tamaño de pantalla
-- **🌙 Modo Oscuro**: Toggle completo con persistencia
-- **🎯 Estados de Botones**: Default, Hover, Active, Focus, Pressed
-- **🔧 Configurable**: Fácil personalización de colores y estilos
-- **📚 FontAwesome 6 Pro**: Iconos profesionales incluidos
-- **🎭 Tooltips**: Información contextual en hover
+Una plantilla completa que permite a **Product Managers**, **Diseñadores** y **Desarrolladores** crear nuevas interfaces UBITS usando **Cursor AI** con la garantía de que mantendrán el estilo y funcionalidad correctos.
 
-## 🚀 Instalación
+## 📁 Estructura del Proyecto
 
-1. **Clona el repositorio:**
+```
+Template UBITS/
+├── 📄 index.html              # Dashboard principal
+├── 📄 profile.html            # Página de perfil (vacía)
+├── 📄 profile-demo.html       # Página de perfil para demos
+├── 🎨 styles.css              # Estilos del dashboard principal
+├── 🎨 profile.css             # Estilos de la página de perfil
+├── 🎨 ubits-typography.css    # Sistema de tipografía UBITS
+├── 🎨 fontawesome-icons.css   # Iconos FontAwesome
+├── ⚙️ script.js               # Funcionalidad JavaScript
+├── 🖼️ images/                 # Recursos visuales
+│   ├── Ubits-logo.svg
+│   ├── Profile-image.jpg
+│   ├── cards-learn/
+│   └── empty-states/
+├── 📚 Fonts/                  # Fuentes FontAwesome
+├── 📖 iconos-ubits-fontawesome.html  # Catálogo de iconos
+├── 📋 WIDGET-GUIDE.md         # Guía para llenar widgets
+└── 📝 UBITS-TYPOGRAPHY-GUIDE.md      # Guía de tipografía
+```
+
+## 🎨 Componentes Disponibles
+
+### **Páginas Listas para Usar:**
+- **`index.html`** - Dashboard principal con sidebar y navegación
+- **`profile.html`** - Página de perfil con widgets vacíos
+- **`profile-demo.html`** - Página de perfil para demostraciones
+
+### **Sistema de Diseño:**
+- **Tipografía UBITS** - Clases predefinidas para todos los textos
+- **Iconos FontAwesome** - Catálogo completo con búsqueda
+- **Widgets Flexibles** - Se adaptan automáticamente al contenido
+- **Modo Oscuro** - Soporte completo para tema oscuro
+
+## 🛠️ Cómo Usar con Cursor AI
+
+### **1. Para Product Managers:**
 ```bash
-git clone https://github.com/tu-usuario/template-ubits.git
-cd template-ubits
+# Abre Cursor en esta carpeta
+# Usa el prompt:
+"Llena el widget de [nombre] en profile-demo.html con [tu contenido]"
 ```
 
-2. **Abre en tu navegador:**
+### **2. Para Diseñadores:**
 ```bash
-# Opción 1: Doble clic en index.html
-# Opción 2: Servidor local
-python -m http.server 8000
-# Opción 3: Live Server (VS Code)
+# Consulta los estilos disponibles:
+# - Abre UBITS-TYPOGRAPHY-GUIDE.md
+# - Abre iconos-ubits-fontawesome.html
+# - Usa las clases predefinidas
 ```
 
-## 🎨 Personalización
-
-### **Colores Principales:**
-```javascript
-// En config.js
-colors: {
-    primary: '#0c5bef',      // Azul principal
-    secondary: '#5c646f',    // Gris secundario
-    background: '#f3f3f4',   // Fondo principal
-    white: '#ffffff',        // Superficies blancas
-    dark: '#202837',         // Sidebar
-    lightGray: '#98a6b3',    // Gris claro
-    border: '#d0d2d5'        // Bordes
-}
+### **3. Para Desarrolladores:**
+```bash
+# Personaliza los estilos:
+# - Modifica profile.css para nuevos widgets
+# - Usa ubits-typography.css para textos
+# - Agrega funcionalidad en script.js
 ```
 
-### **Navegación del Sidebar:**
+## 📋 Widgets Disponibles
+
+| Widget | Clase CSS | Descripción |
+|--------|-----------|-------------|
+| **Información Personal** | `.widget-user-info` | Datos del usuario |
+| **Organización** | `.widget-org` | Información de la empresa |
+| **Aprendizaje** | `.widget-learn` | Contenido educativo |
+| **Objetivos** | `.widget-objectives` | Metas y objetivos |
+| **Encuestas** | `.widget-surveys` | Formularios y encuestas |
+| **Assessments** | `.widget-assessments` | Evaluaciones |
+| **Evaluaciones** | `.widget-evaluations` | Resultados |
+| **Sidebar Derecho** | `.right-sidebar-fixed` | Panel lateral |
+
+## 🎯 Características Principales
+
+### ✅ **Robusto y Flexible:**
+- Los widgets se adaptan automáticamente al contenido
+- No se rompe sin importar qué pongas dentro
+- Altura mínima garantizada
+- Overflow controlado
+
+### ✅ **Mantiene el Estilo UBITS:**
+- Colores oficiales de UBITS
+- Tipografía consistente
+- Espaciado correcto
+- Bordes y sombras apropiados
+
+### ✅ **Fácil de Personalizar:**
+- Clases CSS claras y descriptivas
+- Documentación completa
+- Ejemplos de código
+- Guías paso a paso
+
+## 🚀 Ejemplos de Uso
+
+### **Llenar un Widget Simple:**
 ```html
-<!-- En index.html -->
-<button class="nav-button" data-section="tu-seccion" data-tooltip="Tu Sección">
-    <i class="far fa-tu-icono"></i>
-</button>
+<div class="widget-objectives">
+    <h3 class="ubits-h3">Mis Objetivos</h3>
+    <p class="ubits-body-md-regular">Completar el curso de liderazgo</p>
+    <button class="ubits-button">Ver Detalles</button>
+</div>
 ```
 
-### **Tabs Superiores:**
+### **Agregar una Imagen:**
 ```html
-<button class="nav-tab" data-tab="tu-tab">
-    <i class="far fa-tu-icono"></i>
-    <span>Tu Tab</span>
-</button>
+<div class="widget-learn">
+    <img src="images/mi-imagen.jpg" alt="Curso" style="width: 100%; border-radius: 8px;">
+    <h3 class="ubits-h3">Nuevo Curso</h3>
+</div>
 ```
 
-### **Contenido Personalizado:**
-Para personalizar el contenido de cada sección, modifica la función `getCustomContent()` en `script.js`:
+## 📚 Documentación
 
-```javascript
-function getCustomContent(section) {
-    if (section === 'aprendizaje') {
-        return `
-            <div class="my-custom-content">
-                <h2>Mi Dashboard Personalizado</h2>
-                <div class="my-cards">
-                    <div class="card">Mi Card 1</div>
-                    <div class="card">Mi Card 2</div>
-                </div>
-            </div>
-        `;
-    }
-    
-    return null; // null = usar contenido por defecto
-}
-```
+- **`WIDGET-GUIDE.md`** - Guía completa para llenar widgets
+- **`UBITS-TYPOGRAPHY-GUIDE.md`** - Sistema de tipografía
+- **`iconos-ubits-fontawesome.html`** - Catálogo de iconos
 
-**Ver ejemplo completo en:** `examples/custom-content-example.js`
+## 🎨 Personalización Avanzada
 
-## 🔧 Funciones Disponibles
-
-### **Exportar Configuración:**
-```javascript
-// En consola del navegador
-exportConfig()
-```
-
-### **Personalizar Colores:**
-```javascript
-// En consola del navegador
-customizeColors('#tu-color', '#tu-color-secundario')
-```
-
-### **Modo Oscuro:**
-- Click en el botón luna del sidebar
-- Se guarda automáticamente en localStorage
-- Cambia todos los colores de la plataforma
-
-## 📱 Responsive Breakpoints
-
-- **Desktop**: > 768px (96px sidebar)
-- **Mobile**: ≤ 768px (80px sidebar)
-- **Baja altura**: ≤ 600px (padding reducido)
-
-## 🎯 Estados de Botones
-
-- **Default**: Estado normal
-- **Hover**: Mouse encima
-- **Active**: Seleccionado
-- **Focus**: Navegación por teclado
-- **Pressed**: Mouse presionado
-- **Disabled**: Deshabilitado
-
-## 🎨 Iconos Disponibles
-
-### **Navegación Principal:**
-- `fa-graduation-cap` - Aprendizaje
-- `fa-chart-mixed` - Diagnóstico
-- `fa-bars-progress` - Desempeño
-- `fa-clipboard-list-check` - Encuestas
-- `fa-users` - Reclutamiento
-- `fa-layer-group` - Tareas
-
-### **Footer:**
-- `fa-user` - Perfil
-- `fa-moon` - Modo oscuro
-
-## 📁 Estructura de Archivos
-
-```
-├── index.html              # Estructura HTML principal
-├── styles.css              # Estilos CSS completos
-├── script.js               # Funcionalidad JavaScript
-├── config.js               # Configuración centralizada
-├── fontawesome-icons.css   # Definiciones de iconos
-├── Fonts/                  # Fuentes FontAwesome locales
-│   ├── Font Awesome 6 Pro-Thin.otf
-│   ├── Font Awesome 6 Pro-Light.otf
-│   ├── Font Awesome 6 Pro-Regular.otf
-│   ├── Font Awesome 6 Pro-Solid.otf
-│   └── Font Awesome 6 Pro-Brands.otf
-├── images/                 # Imágenes del proyecto
-│   └── Ubits-logo.svg     # Logo UBITS
-└── README.md               # Esta documentación
-```
-
-## 🚀 Casos de Uso
-
-### **Para Desarrolladores:**
-- Base para dashboards empresariales
-- Template de administración
-- Panel de control de aplicaciones
-- Sistema de gestión de usuarios
-
-### **Para Diseñadores:**
-- Referencia de componentes UI
-- Sistema de diseño consistente
-- Guía de espaciados y colores
-- Patrones de navegación
-
-## 🔧 Desarrollo
-
-### **Agregar Nueva Sección:**
-1. Agregar botón en sidebar con `data-section="nueva-seccion"`
-2. Crear contenido en `updateContentArea()`
-3. Personalizar estilos si es necesario
+### **Agregar Nuevos Widgets:**
+1. Crea el HTML en `profile.html`
+2. Agrega los estilos en `profile.css`
+3. Sigue el patrón de los widgets existentes
 
 ### **Modificar Colores:**
-1. Editar variables en `config.js`
-2. O usar `customizeColors()` en consola
-3. Los cambios se aplican en tiempo real
+1. Busca las variables CSS en `profile.css`
+2. Cambia los valores de color
+3. Aplica a todos los widgets
 
-### **Agregar Iconos:**
-1. Verificar disponibilidad en `fontawesome-icons.css`
-2. Usar clase `far fa-nombre-del-icono`
-3. Tamaño recomendado: 16px
+### **Agregar Funcionalidad:**
+1. Modifica `script.js`
+2. Agrega event listeners
+3. Mantén la compatibilidad con el sistema
 
-## 📚 Recursos
+## 🤝 Soporte
 
-- [FontAwesome 6 Pro](https://fontawesome.com/pro) - Iconos profesionales
-- [Noto Sans](https://fonts.google.com/specimen/Noto+Sans) - Tipografía
-- [Tailwind CSS](https://tailwindcss.com/) - Framework CSS (opcional)
-
-## 🤝 Contribución
-
-1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
+- **Documentación:** Revisa las guías incluidas
+- **Ejemplos:** Usa `profile-demo.html` como referencia
+- **Iconos:** Consulta `iconos-ubits-fontawesome.html`
+- **Estilos:** Revisa `ubits-typography.css`
 
 ## 📄 Licencia
 
-Este proyecto está bajo la Licencia MIT. Ver `LICENSE` para más detalles.
-
-## 👥 Equipo
-
-- **Desarrollo**: Tu Equipo
-- **Diseño**: UBITS
-- **Template**: Dashboard Profesional
-
-## 📞 Soporte
-
-- **Issues**: [GitHub Issues](https://github.com/tu-usuario/template-ubits/issues)
-- **Documentación**: [Wiki del Repo](https://github.com/tu-usuario/template-ubits/wiki)
-- **Contacto**: tu-email@empresa.com
+Este proyecto está bajo la licencia incluida en el archivo `LICENSE`.
 
 ---
 
-**¡Construye algo increíble con este template! 🚀**
-
-*Hecho con ❤️ por el equipo de UBITS*
+**¡Listo para crear interfaces UBITS increíbles! 🚀**
