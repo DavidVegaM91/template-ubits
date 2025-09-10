@@ -43,25 +43,25 @@ function loadSidebar(activeButton = null) {
                 <!-- Body -->
                 <div class="sidebar-body">
                     <button class="nav-button" data-section="aprendizaje" data-tooltip="Aprendizaje">
-                        <i class="fa fa-graduation-cap"></i>
+                        <i class="far fa-graduation-cap"></i>
                     </button>
                     <button class="nav-button" data-section="diagnóstico" data-tooltip="Diagnóstico">
-                        <i class="fa fa-chart-mixed"></i>
+                        <i class="far fa-chart-mixed"></i>
                     </button>
                     <button class="nav-button" data-section="desempeño" data-tooltip="Desempeño">
-                        <i class="fa fa-bars-progress"></i>
+                        <i class="far fa-bars-progress"></i>
                     </button>
                     <button class="nav-button" data-section="encuestas" data-tooltip="Encuestas">
-                        <i class="fa fa-clipboard-list-check"></i>
+                        <i class="far fa-clipboard"></i>
                     </button>
                     <button class="nav-button" data-section="reclutamiento" data-tooltip="Reclutamiento">
-                        <i class="fa fa-users"></i>
+                        <i class="far fa-users"></i>
                     </button>
                     <button class="nav-button" data-section="tareas" data-tooltip="Tareas">
-                        <i class="fa fa-layer-group"></i>
+                        <i class="far fa-layer-group"></i>
                     </button>
                     <button class="nav-button" data-section="ubits-ai" data-tooltip="UBITS AI" onclick="window.location.href='ubits-ai.html'" style="cursor: pointer;">
-                        <i class="fa fa-sparkles"></i>
+                        <i class="far fa-sparkles"></i>
                     </button>
                 </div>
             </div>
@@ -72,7 +72,7 @@ function loadSidebar(activeButton = null) {
                     <img src="images/Profile-image.jpg" alt="Usuario" class="avatar-image">
                 </div>
                 <button class="nav-button" id="darkmode-toggle" data-tooltip="Modo oscuro" data-theme="light">
-                    <i class="fa fa-moon"></i>
+                    <i class="far fa-moon"></i>
                 </button>
             </div>
         </aside>

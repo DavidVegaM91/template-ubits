@@ -44,9 +44,19 @@ Template UBITS/
 - **`ubits-ai.html`** - Plantilla específica para UBITS AI
 - **`simon-chat.html`** - Chat específico de Simon
 
+### **Componentes Reutilizables:**
+- **Sidebar** - Componente de navegación lateral (`components/sidebar.js`)
+- **Top-Nav** - Componente de navegación superior (`components/top-nav.js`)
+  - **Variantes disponibles:**
+    - `template` - Plantilla con 5 secciones de ejemplo (personalizable)
+    - `learning` - Aprendizaje (Home, Catálogo, Universidad, etc.)
+    - `performance` - Desempeño (Evaluaciones 360, Objetivos)
+    - `surveys` - Encuestas (una sola pestaña)
+    - `tasks` - Tareas (Planes, Tareas)
+
 ### **Sistema de Diseño:**
 - **Tipografía UBITS** - Clases predefinidas para todos los textos
-- **Iconos FontAwesome** - Catálogo completo con búsqueda
+- **Iconos FontAwesome** - Catálogo completo con búsqueda (preferir variantes outline/alt)
 - **Widgets Flexibles** - Se adaptan automáticamente al contenido
 - **Scroll de Página** - Funciona correctamente en todas las páginas
 - **CSS organizado** - Estilos del sidebar en `styles.css`, específicos en `profile.css`
@@ -60,8 +70,9 @@ Template UBITS/
 1. **Usar la tipografía UBITS** - Aplicar clases como `ubits-h3`, `ubits-body-md-regular`
 2. **Usar los colores oficiales UBITS** - Mantener la identidad visual
 3. **Usar `box-sizing: border-box`** - Para cálculos correctos de tamaño
-4. **Probar en `index.html`** - Usar este archivo como referencia
-5. **Mantener la funcionalidad** - No romper el JavaScript existente
+4. **Usar iconos outline** - Usar `far` (FontAwesome Regular) para iconos outline (ej: `far fa-home`, `far fa-book`)
+5. **Probar en `index.html`** - Usar este archivo como referencia
+6. **Mantener la funcionalidad** - No romper el JavaScript existente
 
 #### ⚠️ **RECOMENDADO (pero flexible):**
 1. **Usar las clases CSS existentes** - Para mantener consistencia
@@ -73,6 +84,22 @@ Template UBITS/
 1. **Cambiar colores base** - Usar los colores oficiales de UBITS
 2. **Cambiar fuentes** - Mantener la tipografía UBITS
 3. **Romper el JavaScript** - Mantener la funcionalidad del sidebar y tooltips
+
+### **🔧 Personalización del Top-Nav:**
+Para personalizar el top-nav, usa la variante `template` que incluye 5 secciones de ejemplo:
+
+```javascript
+// Cargar top-nav personalizado
+loadTopNav('top-nav-container', 'template', [
+    { id: 'mi-seccion', label: 'Mi Sección', icon: 'far fa-home' },
+    { id: 'otra-seccion', label: 'Otra Sección', icon: 'far fa-book' }
+]);
+```
+
+**Instrucciones para Cursor:**
+- "Cambia las secciones del top-nav por: [lista de secciones con nombres e iconos]"
+- "Usa iconos outline con `far` (ej: `far fa-home`, `far fa-book`)"
+- "Mantén la estructura de datos: { id, label, icon }"
 
 ## 🎨 Sistema de Clases
 

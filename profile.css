@@ -45,7 +45,7 @@ body[data-theme="dark"] {
     max-height: none;
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 20px;
     z-index: 5;
 }
 
