@@ -10,8 +10,7 @@ Una plantilla completa que permite a **Product Managers**, **Diseñadores** y **
 
 ```
 Template UBITS/
-├── 📄 index.html              # Dashboard principal (restaurado, igual a plantilla)
-├── 📄 index-copia.html        # Copia del dashboard original
+├── 📄 index.html              # Dashboard principal (plantilla base)
 ├── 📄 profile.html            # Página de perfil (vacía)
 ├── 📄 ubits-ai.html           # Plantilla para UBITS AI
 ├── 📄 simon-chat.html         # Chat específico de Simon
@@ -39,7 +38,6 @@ Template UBITS/
 
 ### **Páginas Listas para Usar:**
 - **`index.html`** - Dashboard principal con content-wrapper (plantilla base)
-- **`index-copia.html`** - Copia del dashboard original con todas las secciones
 - **`profile.html`** - Página de perfil con widgets vacíos y sidebar derecho
 - **`ubits-ai.html`** - Plantilla específica para UBITS AI
 - **`simon-chat.html`** - Chat específico de Simon
