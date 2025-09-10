@@ -10,8 +10,14 @@ Una plantilla completa que permite a **Product Managers**, **Diseñadores** y **
 
 ```
 Template UBITS/
-├── 📄 index.html              # Dashboard principal
+├── 📄 index.html              # Dashboard principal (restaurado, igual a plantilla)
+├── 📄 index-copia.html        # Copia del dashboard original
 ├── 📄 profile.html            # Página de perfil (vacía)
+├── 📄 ubits-ai.html           # Plantilla para UBITS AI
+├── 📄 simon-chat.html         # Chat específico de Simon
+├── 📁 components/             # Sistema de componentes
+│   ├── sidebar.html           # Componente sidebar
+│   └── sidebar.js             # Cargador del sidebar
 ├── 🎨 styles.css              # Estilos del dashboard principal
 ├── 🎨 profile.css             # Estilos de la página de perfil
 ├── 🎨 ubits-typography.css    # Sistema de tipografía UBITS
@@ -32,13 +38,18 @@ Template UBITS/
 ## 🎨 Componentes Disponibles
 
 ### **Páginas Listas para Usar:**
-- **`index.html`** - Dashboard principal con sidebar y navegación
-- **`profile.html`** - Página de perfil con widgets vacíos
+- **`index.html`** - Dashboard principal con content-wrapper (plantilla base)
+- **`index-copia.html`** - Copia del dashboard original con todas las secciones
+- **`profile.html`** - Página de perfil con widgets vacíos y sidebar derecho
+- **`ubits-ai.html`** - Plantilla específica para UBITS AI
+- **`simon-chat.html`** - Chat específico de Simon
 
 ### **Sistema de Diseño:**
 - **Tipografía UBITS** - Clases predefinidas para todos los textos
 - **Iconos FontAwesome** - Catálogo completo con búsqueda
 - **Widgets Flexibles** - Se adaptan automáticamente al contenido
+- **Scroll de Página** - Funciona correctamente en todas las páginas
+- **CSS organizado** - Estilos del sidebar en `styles.css`, específicos en `profile.css`
 - **Modo Oscuro** - Soporte completo para tema oscuro
 
 ## 🤖 Instrucciones para Cursor AI
@@ -46,19 +57,22 @@ Template UBITS/
 ### **📋 Reglas Importantes**
 
 #### ✅ **SIEMPRE Hacer:**
-1. **Usar las clases CSS existentes** - No crear estilos nuevos innecesariamente
-2. **Mantener la estructura de widgets** - Respetar las clases `.widget-[nombre]`
-3. **Usar la tipografía UBITS** - Aplicar clases como `ubits-h3`, `ubits-body-md-regular`
-4. **Probar en `profile.html`** - Usar este archivo como referencia
-5. **Mantener el padding de 16px** - No cambiar el espaciado interno
-6. **Usar `box-sizing: border-box`** - Para cálculos correctos de tamaño
+1. **Usar la tipografía UBITS** - Aplicar clases como `ubits-h3`, `ubits-body-md-regular`
+2. **Usar los colores oficiales UBITS** - Mantener la identidad visual
+3. **Usar `box-sizing: border-box`** - Para cálculos correctos de tamaño
+4. **Probar en `index.html`** - Usar este archivo como referencia
+5. **Mantener la funcionalidad** - No romper el JavaScript existente
 
-#### ❌ **NUNCA Hacer:**
-1. **Cambiar las clases principales** - No modificar `.widget-[nombre]`
-2. **Usar `position: absolute`** - A menos que sea absolutamente necesario
-3. **Romper el layout flex** - Mantener `display: flex` y `flex-direction: column`
-4. **Cambiar colores base** - Usar los colores oficiales de UBITS
-5. **Eliminar `overflow: hidden`** - Es crucial para el control de contenido
+#### ⚠️ **RECOMENDADO (pero flexible):**
+1. **Usar las clases CSS existentes** - Para mantener consistencia
+2. **Mantener el padding de 16px** - Para espaciado uniforme
+3. **Usar `display: flex`** - Para layouts flexibles
+4. **Mantener `overflow: hidden`** - Para control de contenido
+
+#### ❌ **EVITAR (solo si es absolutamente necesario):**
+1. **Cambiar colores base** - Usar los colores oficiales de UBITS
+2. **Cambiar fuentes** - Mantener la tipografía UBITS
+3. **Romper el JavaScript** - Mantener la funcionalidad del sidebar y tooltips
 
 ## 🎨 Sistema de Clases
 
@@ -72,6 +86,7 @@ Template UBITS/
 .widget-assessments  /* Assessments */
 .widget-evaluations  /* Evaluaciones */
 .right-sidebar-fixed /* Sidebar Derecho */
+.content-wrapper     /* Contenedor principal (index.html) */
 ```
 
 ### **Tipografía UBITS:**
@@ -136,6 +151,7 @@ ubits-body-xs-regular            /* Texto muy pequeño */
 - No se rompe sin importar qué pongas dentro
 - Altura mínima garantizada con `<br>` tags
 - Overflow controlado
+- **Scroll de página** - Funciona correctamente en todas las resoluciones
 
 ### ✅ **Mantiene el Estilo UBITS:**
 - Colores oficiales de UBITS
@@ -148,6 +164,29 @@ ubits-body-xs-regular            /* Texto muy pequeño */
 - Documentación completa
 - Ejemplos de código
 - Guías paso a paso
+
+### ✅ **Sidebar Personalizable:**
+- **Sin elementos activos por defecto** - Cada PM puede activar el botón de su área
+- **Navegación integrada:**
+  - **Logo UBITS** → Navega a `index.html`
+  - **Avatar de usuario** → Navega a `profile.html`
+  - **Botón UBITS AI** → Navega a `ubits-ai.html`
+  - **Card Simon** (en ubits-ai.html) → Navega a `simon-chat.html`
+- **Ejemplo de uso**: PM de Aprendizaje activa el botón "Aprendizaje"
+- **Flexible**: Se adapta a cualquier equipo o departamento
+- **Consistente**: Mantiene el diseño UBITS en todas las áreas
+
+### ✅ **Altamente Personalizable:**
+- **Estructura flexible** - Puedes modificar layouts, agregar secciones, cambiar tamaños
+- **Widgets adaptables** - Se expanden automáticamente al contenido
+- **CSS modular** - Fácil de personalizar sin romper la funcionalidad
+- **Solo respeta** colores y tipografía UBITS (pero incluso estos son modificables si es necesario)
+
+### ✅ **Sistema de Componentes:**
+- **Componentes reutilizables** - Modifica una vez, se actualiza en todos lados
+- **KISS (Keep It Simple)** - Fácil de entender y usar
+- **Escalable** - Fácil agregar nuevos componentes
+- **Sin dependencias** - Solo HTML + JavaScript vanilla
 
 ## 🚀 Ejemplos de Uso
 
@@ -176,6 +215,37 @@ ubits-body-xs-regular            /* Texto muy pequeño */
     Ver más
     <i class="fas fa-arrow-up-right" style="margin-left: 8px;"></i>
 </button>
+```
+
+### **Activar Sidebar para tu Área:**
+```html
+<!-- Para PM de Aprendizaje -->
+<button class="nav-button active" data-section="aprendizaje" data-tooltip="Aprendizaje">
+    <i class="fa fa-graduation-cap"></i>
+</button>
+
+<!-- Para PM de Encuestas -->
+<button class="nav-button active" data-section="encuestas" data-tooltip="Encuestas">
+    <i class="fa fa-clipboard-list-check"></i>
+</button>
+```
+
+### **Usar el Sistema de Componentes:**
+```html
+<!-- En cualquier archivo HTML -->
+<div id="sidebar-container"></div>
+
+<script src="components/sidebar.js"></script>
+<script>
+    // Cargar sidebar sin botón activo
+    loadSidebar();
+    
+    // O cargar sidebar con botón activo
+    loadSidebar('ubits-ai');
+    
+    // Cambiar botón activo dinámicamente
+    updateActiveSidebarButton('aprendizaje');
+</script>
 ```
 
 ## 🎯 Ejemplos de Prompts para Cursor
@@ -222,19 +292,34 @@ ubits-body-xs-regular            /* Texto muy pequeño */
 ## 🎨 Personalización Avanzada
 
 ### **Agregar Nuevos Widgets:**
-1. Crea el HTML en `profile.html`
-2. Agrega los estilos en `profile.css`
+1. Crea el HTML en `index.html`
+2. Agrega los estilos en `styles.css` o `profile.css`
 3. Sigue el patrón de los widgets existentes
+4. **Flexible**: Puedes crear cualquier estructura que necesites
 
-### **Modificar Colores:**
-1. Busca las variables CSS en `profile.css`
-2. Cambia los valores de color
-3. Aplica a todos los widgets
+### **Modificar Layouts:**
+1. **Cambiar tamaños** - Modifica `width`, `height`, `padding`, `margin`
+2. **Agregar secciones** - Crea nuevas filas o columnas
+3. **Reorganizar elementos** - Mueve widgets donde necesites
+4. **Responsive** - Ajusta para diferentes pantallas
+
+### **Personalizar Estilos:**
+1. **Colores** - Usa los oficiales UBITS, pero puedes cambiarlos si es necesario
+2. **Tipografía** - Usa las clases UBITS, pero puedes modificar si es requerido
+3. **Espaciado** - Ajusta `padding`, `margin`, `gap` según necesites
+4. **Bordes y sombras** - Personaliza `border-radius`, `box-shadow`
 
 ### **Agregar Funcionalidad:**
 1. Modifica `script.js`
 2. Agrega event listeners
 3. Mantén la compatibilidad con el sistema
+4. **JavaScript modular** - Fácil de extender
+
+### **Reglas de Oro:**
+- **Sé creativo** - La plantilla está diseñada para ser flexible
+- **Mantén la funcionalidad** - No rompas el JavaScript del sidebar
+- **Usa UBITS como base** - Pero no te limites si necesitas algo diferente
+- **Prueba todo** - Usa `index.html` para experimentar
 
 ## 🤝 Soporte
 
@@ -242,6 +327,14 @@ ubits-body-xs-regular            /* Texto muy pequeño */
 - **Ejemplos:** Usa `profile.html` como referencia
 - **Iconos:** Consulta `iconos-ubits-fontawesome.html`
 - **Estilos:** Revisa `ubits-typography.css`
+
+## 🗺️ Navegación del Proyecto
+
+### **Páginas Principales:**
+- **[index.html](index.html)** - Dashboard principal (plantilla base)
+- **[profile.html](profile.html)** - Página de perfil
+- **[ubits-ai.html](ubits-ai.html)** - Dashboard de IA
+- **[simon-chat.html](simon-chat.html)** - Chat de Simon
 
 ## 📄 Licencia
 

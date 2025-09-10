@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil - UBITS Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="profile.css">
     <link rel="stylesheet" href="ubits-typography.css">
     <link rel="stylesheet" href="fontawesome-icons.css">
@@ -11,59 +12,15 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
-    <div class="tooltip" id="tooltip"></div>
-    
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
-        <!-- Contenedor principal para header y body -->
-        <div class="sidebar-main">
-            <!-- Header -->
-            <div class="sidebar-header">
-                <div class="logo">
-                    <img src="images/Ubits-logo.svg" alt="UBITS Logo" />
-                </div>
-            </div>
-            
-            <!-- Body -->
-            <div class="sidebar-body">
-                <button class="nav-button" data-section="aprendizaje" data-tooltip="Aprendizaje">
-                    <i class="fa fa-graduation-cap"></i>
-                </button>
-                <button class="nav-button" data-section="diagnóstico" data-tooltip="Diagnóstico">
-                    <i class="fa fa-chart-mixed"></i>
-                </button>
-                <button class="nav-button" data-section="desempeño" data-tooltip="Desempeño">
-                    <i class="fa fa-bars-progress"></i>
-                </button>
-                <button class="nav-button" data-section="encuestas" data-tooltip="Encuestas">
-                    <i class="fa fa-clipboard-list-check"></i>
-                </button>
-                <button class="nav-button" data-section="reclutamiento" data-tooltip="Reclutamiento">
-                    <i class="fa fa-users"></i>
-                </button>
-                <button class="nav-button" data-section="tareas" data-tooltip="Tareas">
-                    <i class="fa fa-layer-group"></i>
-                </button>
-                <button class="nav-button" data-section="ubits-ai" data-tooltip="UBITS AI">
-                    <i class="fa fa-sparkles"></i>
-                </button>
-            </div>
-        </div>
+<body data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
         
-        <!-- Footer -->
-        <div class="sidebar-footer">
-            <div class="user-avatar active" data-tooltip="Mi perfil">
-                <img src="images/Profile-image.jpg" alt="Usuario" class="avatar-image">
-            </div>
-            <button class="nav-button" id="darkmode-toggle" data-tooltip="Modo oscuro" data-theme="light">
-                <i class="fa fa-moon"></i>
-            </button>
-        </div>
-    </aside>
+        <!-- Sidebar Container -->
+        <div id="sidebar-container"></div>
 
-    <!-- Contenido principal -->
-    <div class="main-content profile-content">
+        <!-- Contenido principal -->
+    <div class="main-content-profile profile-content">
         <!-- Contenedor izquierdo -->
         <div class="left-wrapper">
             <!-- Primera fila: Personal y Organización -->
@@ -108,14 +65,29 @@
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Sidebar derecho fijo -->
-        <div class="right-sidebar-fixed">
-            <p class="ubits-body-sm-regular">Sidebar Derecho</p>
-        </div>
+    <!-- Sidebar derecho fijo -->
+    <div class="right-sidebar-fixed">
+        <p class="ubits-body-sm-regular">Sidebar Derecho</p>
     </div>
 
     <!-- Scripts -->
+    <script src="components/sidebar.js"></script>
     <script src="script.js"></script>
+    <script>
+        // Cargar sidebar con botón Mi perfil activo
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSidebar();
+            // Activar el avatar del usuario
+            setTimeout(() => {
+                const userAvatar = document.querySelector('.user-avatar');
+                if (userAvatar) {
+                    userAvatar.classList.add('active');
+                }
+            }, 100);
+        });
+    </script>
+    </div>
 </body>
 </html>

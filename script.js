@@ -1,5 +1,53 @@
 // Template UBITS - Dashboard JavaScript
 
+// Función global para alternar modo oscuro
+function toggleDarkMode() {
+    const body = document.body;
+    const currentTheme = body.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    
+    body.setAttribute('data-theme', newTheme);
+    
+    // Guardar preferencia en localStorage
+    localStorage.setItem('theme', newTheme);
+    
+    // Cambiar icono del botón
+    const darkModeButton = document.querySelector('#darkmode-toggle i');
+    if (darkModeButton) {
+        if (newTheme === 'dark') {
+            darkModeButton.className = 'fa fa-sun-bright';
+        } else {
+            darkModeButton.className = 'fa fa-moon';
+        }
+    }
+    
+    // Cambiar tooltip del botón
+    const darkModeButtonContainer = document.querySelector('#darkmode-toggle');
+    if (darkModeButtonContainer) {
+        if (newTheme === 'dark') {
+            darkModeButtonContainer.setAttribute('data-tooltip', 'Modo claro');
+            darkModeButtonContainer.setAttribute('data-theme', 'dark');
+        } else {
+            darkModeButtonContainer.setAttribute('data-tooltip', 'Modo oscuro');
+            darkModeButtonContainer.setAttribute('data-theme', 'light');
+        }
+    }
+    
+    console.log(`Modo ${newTheme === 'dark' ? 'oscuro' : 'claro'} activado`);
+}
+
+// Función global para inicializar dark mode toggle
+function initDarkModeToggle() {
+    const darkModeButton = document.querySelector('#darkmode-toggle');
+    if (darkModeButton) {
+        darkModeButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleDarkMode();
+        });
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     // Elementos del DOM
     const sidebar = document.getElementById('sidebar');
@@ -47,42 +95,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Función para alternar modo oscuro
-    function toggleDarkMode() {
-        const body = document.body;
-        const currentTheme = body.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        
-        body.setAttribute('data-theme', newTheme);
-        
-        // Guardar preferencia en localStorage
-        localStorage.setItem('theme', newTheme);
-        
-        // Cambiar icono del botón
-        const darkModeButton = document.querySelector('#darkmode-toggle i');
-        if (darkModeButton) {
-            if (newTheme === 'dark') {
-                darkModeButton.className = 'fa fa-sun-bright';
-            } else {
-                darkModeButton.className = 'fa fa-moon';
-            }
-        }
-        
-        // Cambiar tooltip del botón
-        const darkModeButtonContainer = document.querySelector('#darkmode-toggle');
-        if (darkModeButtonContainer) {
-            if (newTheme === 'dark') {
-                darkModeButtonContainer.setAttribute('data-tooltip', 'Modo claro');
-                darkModeButtonContainer.setAttribute('data-theme', 'dark');
-            } else {
-                darkModeButtonContainer.setAttribute('data-tooltip', 'Modo oscuro');
-                darkModeButtonContainer.setAttribute('data-theme', 'light');
-            }
-        }
-        
-        console.log(`Modo ${newTheme === 'dark' ? 'oscuro' : 'claro'} activado`);
-        console.log('🎯 Estado de navegación mantenido - no se cambió de sección');
-    }
 
     // Función para cargar tema guardado
     function loadSavedTheme() {

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template UBITS - Dashboard</title>
+    
+    <!-- Estilos locales -->
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="fontawesome-icons.css">
+</head>
+<body data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        
+        <!-- Sistema de Toast con 4 tipos -->
+        <div class="toast-container" id="toast-container">
+            <!-- Toast de Success -->
+            <div class="toast toast-success" id="toast-success" style="display: none;">
+                <div class="toast-content">
+                    <div class="toast-icon">
+                        <i class="far fa-check"></i>
+                    </div>
+                    <div class="toast-message" id="toast-success-message">Texto copiado con éxito</div>
+                    <button class="toast-close" onclick="hideToast('success')">
+                        <i class="far fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Toast de Info -->
+            <div class="toast toast-info" id="toast-info" style="display: none;">
+                <div class="toast-content">
+                    <div class="toast-icon">
+                        <i class="far fa-info-circle"></i>
+                    </div>
+                    <div class="toast-message" id="toast-info-message">Mensaje informativo</div>
+                    <button class="toast-close" onclick="hideToast('info')">
+                        <i class="far fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Toast de Warning -->
+            <div class="toast toast-warning" id="toast-warning" style="display: none;">
+                <div class="toast-content">
+                    <div class="toast-icon">
+                        <i class="far fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="toast-message" id="toast-warning-message">Mensaje de advertencia</div>
+                    <button class="toast-close" onclick="hideToast('warning')">
+                        <i class="far fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Toast de Error -->
+            <div class="toast toast-error" id="toast-error" style="display: none;">
+                <div class="toast-content">
+                    <div class="toast-icon">
+                        <i class="far fa-times-circle"></i>
+                    </div>
+                    <div class="toast-message" id="toast-error-message">Mensaje de error</div>
+                    <button class="toast-close" onclick="hideToast('error')">
+                        <i class="far fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <!-- Contenedor principal para header y body -->
+            <div class="sidebar-main">
+                <!-- Header -->
+                <div class="sidebar-header">
+                    <div class="logo">
+                        <img src="images/Ubits-logo.svg" alt="UBITS Logo" />
+                    </div>
+                </div>
+                
+                <!-- Body -->
+                <div class="sidebar-body">
+                    <button class="nav-button active" data-section="aprendizaje" data-tooltip="Aprendizaje">
+                        <i class="fa fa-graduation-cap"></i>
+                    </button>
+                    <button class="nav-button" data-section="diagnóstico" data-tooltip="Diagnóstico">
+                        <i class="fa fa-chart-mixed"></i>
+                    </button>
+                    <button class="nav-button" data-section="desempeño" data-tooltip="Desempeño">
+                        <i class="fa fa-bars-progress"></i>
+                    </button>
+                    <button class="nav-button" data-section="encuestas" data-tooltip="Encuestas">
+                        <i class="fa fa-clipboard-list-check"></i>
+                    </button>
+                    <button class="nav-button" data-section="reclutamiento" data-tooltip="Reclutamiento">
+                        <i class="fa fa-users"></i>
+                    </button>
+                    <button class="nav-button" data-section="tareas" data-tooltip="Tareas">
+                        <i class="fa fa-layer-group"></i>
+                    </button>
+                    <button class="nav-button" data-section="ubits-ai" data-tooltip="UBITS AI">
+                        <i class="fa fa-sparkles"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Footer -->
+            <div class="sidebar-footer">
+                            <div class="user-avatar" data-tooltip="Mi perfil" onclick="window.open('profile.html', '_blank')">
+                <img src="images/Profile-image.jpg" alt="Usuario" class="avatar-image">
+            </div>
+                <button class="nav-button" id="darkmode-toggle" data-tooltip="Modo oscuro" data-theme="light">
+                    <i class="fa fa-moon"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navigation -->
+            <nav class="top-nav" id="topNav">
+                <div class="nav-tabs">
+                    <button class="nav-tab active" data-tab="section1">
+                        <i class="fa fa-chart-line"></i>
+                        <span>Sección 1</span>
+                    </button>
+                    <button class="nav-tab" data-tab="section2">
+                        <i class="fa fa-chart-line"></i>
+                        <span>Sección 2</span>
+                    </button>
+                    <button class="nav-tab" data-tab="section3">
+                        <i class="fa fa-chart-line"></i>
+                        <span>Sección 3</span>
+                    </button>
+                    <button class="nav-tab" data-tab="section4">
+                        <i class="fa fa-chart-line"></i>
+                        <span>Sección 4</span>
+                    </button>
+                    <button class="nav-tab" data-tab="section5">
+                        <i class="fa fa-chart-line"></i>
+                        <span>Sección 5</span>
+                    </button>
+                </div>
+            </nav>
+
+            <!-- Content Area -->
+            <div class="content-area no-background">
+                <!-- UBITS AI Dashboard -->
+                <div class="ubits-ai-dashboard" id="ubits-ai-dashboard">
+                    <h1 class="ai-title">¿En qué puedo ayudarte?</h1>
+                    <div class="ai-cards-container">
+                        <div class="ai-card" id="simon-ai">
+                            <div class="card-header">
+                                <h3 class="card-title">Simon</h3>
+                                <div class="card-icon">
+                                    <i class="far fa-message"></i>
+                                </div>
+                            </div>
+                            <p class="card-description">Asistente y coach de liderazgo.</p>
+                        </div>
+                        <div class="ai-card">
+                            <div class="card-header">
+                                <h3 class="card-title">Customer Support</h3>
+                                <div class="card-icon">
+                                    <i class="fa fa-headset"></i>
+                                </div>
+                            </div>
+                            <p class="card-description">Haz una comparación de precios vs. el mercado laboral.</p>
+                        </div>
+                        <div class="ai-card">
+                            <div class="card-header">
+                                <h3 class="card-title">Evaluación financiera</h3>
+                                <div class="card-icon">
+                                    <i class="fa fa-chart-line"></i>
+                                </div>
+                            </div>
+                            <p class="card-description">Haz una comparación de precios vs. el mercado laboral.</p>
+                        </div>
+                        <div class="ai-card">
+                            <div class="card-header">
+                                <h3 class="card-title">¿Qué quieres aprender?</h3>
+                                <div class="card-icon">
+                                    <i class="fa fa-graduation-cap"></i>
+                                </div>
+                            </div>
+                            <p class="card-description">Haz una comparación de precios vs. el mercado laboral.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Chat Interface -->
+                <div class="ai-chat-interface" id="ai-chat-interface" style="display: none;">
+                    <!-- Header del chat -->
+                    <div class="chat-header">
+                        <button class="back-button" id="back-to-ai">
+                            <i class="fa fa-chevron-left"></i>
+                        </button>
+                        <div class="chat-user-info">
+                            <h2 class="chat-user-name">Simon</h2>
+                            <p class="chat-user-description">Análisis inteligente para optimizar tu empresa.</p>
+                        </div>
+                    </div>
+
+                    <!-- Mensajes del chat -->
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="message ai-message">
+                            <div class="message-content">
+                                <p>Hola, soy tu asistente de AI Insights. Puedo ayudarte a analizar objetivos, encuestas y la matriz de talento de tu empresa. ¿Qué te gustaría explorar?</p>
+                            </div>
+                            <div class="message-actions">
+                                <div class="action-buttons">
+                                    <button class="action-btn like-btn" title="Me gusta">
+                                        <i class="far fa-thumbs-up"></i>
+                                    </button>
+                                    <button class="action-btn dislike-btn" title="No me gusta">
+                                        <i class="far fa-thumbs-down"></i>
+                                    </button>
+                                    <button class="action-btn copy-btn" title="Copiar mensaje">
+                                        <i class="far fa-copy"></i>
+                                    </button>
+                                </div>
+                                <div class="message-time">03:35 PM</div>
+                            </div>
+                        </div>
+                        
+                        <div class="message user-message">
+                            <div class="message-content">
+                                <p>Quiero explorar objetivos</p>
+                            </div>
+                        </div>
+                        
+                        <div class="message ai-message">
+                            <div class="message-content">
+                                <p>¿Quieres recomendaciones personalizadas para mejorar tus indicadores?</p>
+                            </div>
+                            <div class="message-actions">
+                                <div class="action-buttons">
+                                    <button class="action-btn like-btn" title="Me gusta">
+                                        <i class="far fa-thumbs-up"></i>
+                                    </button>
+                                    <button class="action-btn dislike-btn" title="No me gusta">
+                                        <i class="far fa-thumbs-down"></i>
+                                    </button>
+                                    <button class="action-btn copy-btn" title="Copiar mensaje">
+                                        <i class="far fa-copy"></i>
+                                    </button>
+                                </div>
+                                <div class="message-time">03:35 PM</div>
+                            </div>
+                        </div>
+                        
+                        <div class="message user-message">
+                            <div class="message-content">
+                                <p>Quiero un chart sobre objetivos</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Input del chat -->
+                    <div class="chat-input-container">
+                        <div class="chat-input">
+                            <input type="text" placeholder="Escribe tu pregunta o solicitud..." id="chat-input-field">
+                            <button class="send-button" id="send-message">
+                                <i class="fa fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Placeholder (por defecto oculto) -->
+                <div class="content-placeholder" id="content-placeholder" style="display: none;">
+                    <h2>Área de Contenido</h2>
+                    <p>Aquí va el contenido principal de tu aplicación</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

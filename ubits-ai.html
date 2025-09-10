@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template UBITS - Plantilla</title>
+    
+    <!-- Estilos locales -->
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="fontawesome-icons.css">
+    <link rel="stylesheet" href="ubits-typography.css">
+</head>
+<body data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        
+        <!-- Sidebar Container -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Content Area -->
+            <div class="content-area no-background" style="align-items: center;">
+                <!-- UBITS AI Dashboard -->
+                <div class="ubits-ai-dashboard" id="ubits-ai-dashboard">
+                    <h1 class="ai-title">¿En qué puedo ayudarte?</h1>
+                    <div class="ai-cards-container">
+                        <div class="ai-card" id="simon-ai" onclick="window.location.href='simon-chat.html'" style="cursor: pointer;">
+                            <div class="card-header">
+                                <h3 class="card-title">Simon</h3>
+                                <div class="card-icon">
+                                    <i class="far fa-message"></i>
+                                </div>
+                            </div>
+                            <p class="card-description">Asistente y coach de liderazgo.</p>
+                        </div>
+                        <div class="ai-card">
+                            <div class="card-header">
+                                <h3 class="card-title">Customer Support</h3>
+                                <div class="card-icon">
+                                    <i class="fa fa-headset"></i>
+                                </div>
+                            </div>
+                            <p class="card-description">Haz una comparación de precios vs. el mercado laboral.</p>
+                        </div>
+                        <div class="ai-card">
+                            <div class="card-header">
+                                <h3 class="card-title">Evaluación financiera</h3>
+                                <div class="card-icon">
+                                    <i class="fa fa-chart-line"></i>
+                                </div>
+                            </div>
+                            <p class="card-description">Haz una comparación de precios vs. el mercado laboral.</p>
+                        </div>
+                        <div class="ai-card">
+                            <div class="card-header">
+                                <h3 class="card-title">¿Qué quieres aprender?</h3>
+                                <div class="card-icon">
+                                    <i class="fa fa-graduation-cap"></i>
+                                </div>
+                            </div>
+                            <p class="card-description">Haz una comparación de precios vs. el mercado laboral.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="components/sidebar.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Cargar sidebar con botón UBITS AI activo
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSidebar('ubits-ai');
+        });
+    </script>
+</body>
+</html>

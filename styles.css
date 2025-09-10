@@ -5,15 +5,18 @@
 body {
     font-family: 'Noto Sans', sans-serif;
     background-color: #f3f3f4;
-    height: 100vh;
-    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 /* Contenedor principal */
 .dashboard-container {
     display: flex;
-    height: 100vh;
-    width: 100vw;
+    min-height: 100vh;
+    width: 100%;
+    overflow: visible;
 }
 
 /* Sidebar - Dimensiones fijas que NO cambian con el tema */
@@ -33,7 +36,7 @@ body {
     border-radius: 8px;
     position: fixed;
     left: 11px;
-    top: 0;
+    top: 16px;
     z-index: 10;
     box-sizing: border-box;
 }
@@ -62,6 +65,15 @@ body {
     align-items: center;
     justify-content: flex-start;
     flex-shrink: 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 4px;
+    border-radius: 6px;
+}
+
+.logo:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.05);
 }
 
 .logo img {
@@ -317,11 +329,12 @@ body {
 
 /* Main Content */
 .main-content {
-    position: absolute;
-    left: 131px;
-    top: 16px;
-    bottom: 16px;
-    right: 12px;
+    position: relative;
+    flex: 1;
+    margin: 16px 12px 0 131px;
+    width: calc(100% - 131px - 12px);
+    overflow: visible;
+    max-height: none;
     display: flex;
     flex-direction: column;
     gap: 24px;
@@ -375,21 +388,23 @@ body {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Efecto de brillo para los nav-tab */
+/* Efecto sutil para los nav-tab */
 .nav-tab::before {
     content: '';
     position: absolute;
     top: 0;
-    left: -100%;
+    left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(12, 91, 239, 0.2), transparent);
-    transition: left 0.6s ease;
+    background: rgba(12, 91, 239, 0.03);
+    border-radius: 6px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
     pointer-events: none;
 }
 
 .nav-tab:hover::before {
-    left: 100%;
+    opacity: 1;
 }
 
 .nav-tab span {
@@ -421,17 +436,14 @@ body {
 /* Hover effects para nav-tab */
 .nav-tab:hover {
     background: rgba(12, 91, 239, 0.05);
-    transform: translateY(-2px);
 }
 
 .nav-tab:hover i {
     color: #0c5bef;
-    transform: scale(1.1);
 }
 
 .nav-tab:hover span {
     color: #0c5bef;
-    transform: scale(1.02);
 }
 
 /* Content Area */
@@ -442,11 +454,11 @@ body {
     flex: 1;
     min-height: 0;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
-    overflow: auto;
-    padding: 16px;
+    overflow: visible;
     box-sizing: border-box;
+    max-height: none;
     box-shadow: none !important;
 }
 
@@ -492,11 +504,12 @@ body[data-theme="dark"] .content-area.no-background {
     }
     
     .main-content {
-        left: 108px;
-        right: 12px;
+        margin: 16px 12px 0 108px;
+        width: calc(100% - 108px - 12px);
         gap: 16px;
-        top: 12px;
-        bottom: 12px;
+        position: relative;
+        overflow: visible;
+        max-height: none;
     }
     
     .nav-button {
@@ -668,6 +681,13 @@ body[data-theme="dark"] .content-area.no-background {
     cursor: pointer;
 }
 
+/* Efecto especial para cards clickeables */
+.ai-card[onclick]:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 20px rgba(12, 91, 239, 0.2);
+    border: 1px solid rgba(12, 91, 239, 0.3);
+}
+
 .card-header {
     display: flex;
     justify-content: space-between;
@@ -771,6 +791,24 @@ body[data-theme="dark"] .content-placeholder h2 {
 
 body[data-theme="dark"] .content-placeholder p {
     color: #D0D2D5 !important;
+}
+
+/* Widget de plantilla */
+.content-wrapper {
+    background-color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    padding: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    min-height: 400px;
+}
+
+/* Dark mode para widget de plantilla */
+[data-theme="dark"] .content-wrapper {
+    background-color: #374151;
 }
 
 /* ===== AI CHAT INTERFACE ===== */

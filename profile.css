@@ -1,34 +1,6 @@
-/* ========================================
-   ESTILOS PARA LA PÁGINA DE PERFIL
-   ======================================== */
+/* Profile.css - Estilos específicos del perfil */
 
-/* Tooltip */
-.tooltip {
-    position: fixed;
-    background: #202837;
-    color: #ffffff;
-    padding: 8px 12px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 500;
-    pointer-events: none;
-    z-index: 1000;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    white-space: nowrap;
-}
-
-.tooltip::before {
-    content: '';
-    position: absolute;
-    left: -6px;
-    top: 50%;
-    transform: translateY(-50%);
-    border: 6px solid transparent;
-    border-right-color: #202837;
-}
-
-/* Reset básico */
+/* Reset para el perfil */
 * {
     margin: 0;
     padding: 0;
@@ -38,238 +10,15 @@
 body {
     font-family: 'Noto Sans', sans-serif;
     background-color: #f3f3f4;
-    overflow: visible;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 /* Dark mode para el body */
 body[data-theme="dark"] {
     background-color: #0E1825 !important;
-}
-
-/* Estilos del sidebar copiados del dashboard principal */
-.sidebar {
-    background-color: #202837;
-    width: 96px;
-    min-width: 96px;
-    max-width: 96px;
-    height: 578px;
-    padding: 16px 28px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    align-items: center;
-    justify-content: flex-start;
-    overflow: hidden;
-    border-radius: 8px;
-    position: fixed;
-    left: 11px;
-    top: 0;
-    z-index: 10;
-    box-sizing: border-box;
-}
-
-.sidebar-main {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    align-items: center;
-    flex-shrink: 0;
-}
-
-.sidebar-header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    flex-shrink: 0;
-}
-
-.logo {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    justify-content: flex-start;
-    flex-shrink: 0;
-}
-
-.logo img {
-    width: 24px;
-    height: 25px;
-    object-fit: contain;
-}
-
-.sidebar-body {
-    flex: none;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    align-items: center;
-    justify-content: flex-start;
-    min-height: 0;
-    min-width: 0;
-    flex-shrink: 0;
-}
-
-.sidebar-footer {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    align-items: center;
-    justify-content: flex-start;
-    margin-top: auto;
-    padding: 16px 0 0 0;
-    width: 100%;
-    flex-shrink: 0;
-    border-top: 1px solid #4b5563;
-    position: relative;
-}
-
-.nav-button {
-    background: rgba(255, 255, 255, 0);
-    border: none;
-    padding: 8px;
-    border-radius: 1000px;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    flex-shrink: 0;
-    width: 40px;
-    height: 40px;
-    overflow: hidden;
-}
-
-.nav-button i {
-    font-size: 16px;
-    color: #d0d2d5;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    flex-shrink: 0;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Efecto de brillo para todos los nav-button */
-.nav-button::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-    transition: left 0.6s ease;
-    pointer-events: none;
-}
-
-.nav-button:hover::before {
-    left: 100%;
-}
-
-/* Hover State - Solo cuando el mouse está encima */
-.nav-button:hover {
-    background: rgba(255, 255, 255, 0.15);
-    transform: scale(1.08);
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
-}
-
-.nav-button:hover i {
-    color: #ffffff;
-}
-
-.nav-button.active {
-    background-color: #ffffff;
-}
-
-.nav-button.active i {
-    color: #202837;
-}
-
-/* Botón de modo oscuro con animaciones */
-#darkmode-toggle {
-    position: relative;
-    overflow: hidden;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-#darkmode-toggle i {
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    transform-origin: center;
-}
-
-/* Efecto de brillo en hover */
-#darkmode-toggle::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s ease;
-}
-
-#darkmode-toggle:hover::before {
-    left: 100%;
-}
-
-/* Animación de rotación y cambio de icono */
-#darkmode-toggle[data-theme="dark"] i {
-    transform: rotate(180deg) scale(1.1);
-}
-
-#darkmode-toggle[data-theme="light"] i {
-    transform: rotate(0deg) scale(1);
-}
-
-/* Efecto de pulso sutil en hover */
-#darkmode-toggle:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
-}
-
-/* Transición suave para el cambio de tema */
-body {
-    transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Transición para todos los elementos que cambian con el tema */
-*[data-theme] {
-    transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.user-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    overflow: hidden;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.user-avatar:hover {
-    transform: scale(1.05);
-}
-
-.user-avatar.active {
-    border: 2px solid #ffffff;
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2);
-}
-
-.avatar-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
 }
 
 /* Layout principal */
@@ -279,18 +28,294 @@ body {
     min-height: 100vh;
     gap: 16px;
     padding: 0;
-    margin: 16px 0 16px 131px;
+    margin: 0 170px 0 0 !important;
+    width: calc(100% - 392px - 170px);
     overflow: visible;
+    max-height: none;
+    overflow-y: visible;
+}
+
+/* Main content específico para profile */
+.main-content-profile {
+    position: relative;
+    flex: 1;
+    margin: 16px 336px 0 131px !important;
+    width: calc(100% - 336px - 131px);
+    overflow: visible;
+    max-height: none;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    z-index: 5;
 }
 
 /* Contenedor izquierdo */
 .left-wrapper {
     display: flex;
     flex-direction: column;
-    gap: 0;
+    gap: 16px;
     flex: 1;
+    min-width: 0;
+    width: 100%;
     overflow: visible;
-    max-width: calc(100vw - 131px - 408px - 32px);
+    max-height: none;
+}
+
+/* Contenedor derecho */
+.right-sidebar-fixed {
+    width: 300px;
+    height: calc(100vh - 32px);
+    background-color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 44px rgba(0,0,0,0.1);
+    position: fixed;
+    right: 16px;
+    top: 16px;
+    z-index: 5;
+}
+
+/* Widgets del perfil */
+.widget-user-info,
+.widget-org,
+.widget-learn,
+.widget-objectives,
+.widget-surveys,
+.widget-assessments,
+.widget-evaluations {
+    background-color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    padding: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    min-height: 207px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.widget-user-info:hover,
+.widget-org:hover,
+.widget-learn:hover,
+.widget-objectives:hover,
+.widget-surveys:hover,
+.widget-assessments:hover,
+.widget-evaluations:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transform: translateY(-1px);
+}
+
+/* Widget de aprendizaje específico */
+.widget-learn {
+    background-color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    padding: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    min-height: 207px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.widget-learn:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transform: translateY(-1px);
+}
+
+/* Contenido del widget de aprendizaje */
+.learn-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.learn-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #374151;
+    margin: 0;
+}
+
+.learn-icon {
+    font-size: 24px;
+    color: #4F5561;
+}
+
+.learn-body {
+    display: flex;
+    gap: 16px;
+    flex: 1;
+}
+
+.plan-section,
+.recomendado-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.plan-title,
+.recomendado-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 8px;
+}
+
+.plan-icon,
+.recomendado-icon {
+    margin-right: 8px;
+    color: #4F5561;
+}
+
+.plan-card {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.recomendado-card {
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.progress-text {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.progress-percentage {
+    font-size: 12px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #e5e7eb;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #febe24;
+    border-radius: 4px;
+    width: 50%;
+}
+
+.dates-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 8px;
+}
+
+.date-item {
+    font-size: 11px;
+    color: #6b7280;
+}
+
+.countdown {
+    font-size: 11px;
+    color: #374151;
+    font-weight: 600;
+}
+
+.countdown strong {
+    color: #dc2626;
+}
+
+.plan-button {
+    background: #f3f4f6;
+    border: 1px solid #d1d5db;
+    color: #374151;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    align-self: flex-start;
+}
+
+.plan-button:hover {
+    background: #e5e7eb;
+    border-color: #9ca3af;
+}
+
+.course-image {
+    width: 100%;
+    height: 162px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 8px;
+}
+
+.course-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.recomendado-button {
+    background: #f3f4f6;
+    border: 1px solid #d1d5db;
+    color: #374151;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    align-self: flex-start;
+}
+
+.recomendado-button:hover {
+    background: #e5e7eb;
+    border-color: #9ca3af;
 }
 
 /* Espaciador para alinear con los sidebars */
@@ -310,312 +335,28 @@ body {
     margin-bottom: 0;
 }
 
-/* Primera fila: Personal y Organización */
-.personal-org {
-    display: flex;
-    gap: 24px;
-}
-
-.widget-user-info,
-.widget-org {
-    flex: 1;
-    background-color: #ffffff;
-    border: none;
-    border-radius: 8px;
-    padding: 16px;
-    box-sizing: border-box;
-}
-
-/* Segunda fila: Aprendizaje */
-.widget-learn {
-    background-color: #ffffff;
-    border: none;
-    border-radius: 8px;
-    padding: 20px;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-/* Estilos del widget de aprendizaje */
-.learn-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 16px;
-}
-
-.learn-title {
-    font-family: 'Noto Sans', sans-serif;
-    font-weight: 700;
-    font-size: 20px;
-    color: #303a47;
-    margin: 0;
-}
-
-.learn-icon {
-    width: 48px;
-    height: 48px;
-    background: #febe24;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #ba841b;
-    font-size: 18px;
-}
-
-.learn-body {
-    display: flex;
-    gap: 48px;
-    width: 100%;
-}
-
-/* Plan Activo */
-.plan-activo {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.plan-title {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.plan-title i {
-    color: #6b7b8a;
-    font-size: 18px;
-}
-
-.plan-title h3 {
-    font-family: 'Noto Sans', sans-serif;
-    font-weight: 700;
-    font-size: 16px;
-    color: #0a243f;
-    margin: 0;
-}
-
-.plan-card {
-    background: #f8f8f8;
-    border-radius: 10px;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.progress-section {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.progress-text {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 14px;
-}
-
-.progress-label {
-    font-family: 'Open Sans', sans-serif;
-    font-weight: 700;
-    color: #62717e;
-}
-
-.progress-detail {
-    font-family: 'Open Sans', sans-serif;
-    font-weight: 400;
-    color: #62717e;
-    flex: 1;
-}
-
-.progress-percentage {
-    font-family: 'Open Sans', sans-serif;
-    font-weight: 700;
-    color: #0a243f;
-    text-align: right;
-}
-
-.progress-bar {
-    width: 100%;
-    height: 10px;
-    background: #d8d8d8;
-    border-radius: 10px;
-    position: relative;
-    overflow: hidden;
-}
-
-.progress-fill {
-    width: 50%;
-    height: 100%;
-    background: #febe24;
-    border-radius: 10px;
-}
-
-.plan-dates p {
-    font-family: 'Open Sans', sans-serif;
-    font-weight: 400;
-    font-size: 14px;
-    color: #62717e;
-    margin: 0;
-    line-height: 22px;
-}
-
-.plan-dates p strong {
-    font-weight: 700;
-}
-
-.plan-action {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #6b7b8a;
-    font-size: 14px;
-    cursor: pointer;
-}
-
-.plan-action i {
-    font-size: 18px;
-}
-
-/* Recomendado */
-.recomendado {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    width: 288px;
-    flex-shrink: 0;
-}
-
-.recomendado-title {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.recomendado-title i {
-    color: #6b7b8a;
-    font-size: 18px;
-}
-
-.recomendado-title h3 {
-    font-family: 'Noto Sans', sans-serif;
-    font-weight: 700;
-    font-size: 16px;
-    color: #0a243f;
-    margin: 0;
-}
-
-.recomendado-card {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.course-image {
-    width: 100%;
-    height: 162px;
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.course-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.course-title {
-    font-family: 'Noto Sans', sans-serif;
-    font-weight: 600;
-    font-size: 14px;
-    color: #0a243f;
-    margin: 0;
-    line-height: normal;
-}
-
-.recomendado-action {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #6b7b8a;
-    font-size: 14px;
-    cursor: pointer;
-}
-
-.recomendado-action i {
-    font-size: 18px;
-}
-
-/* Tercera fila: Objetivos y Encuestas */
-.objetivos-encuestas {
-    display: flex;
-    gap: 24px;
-}
-
-.widget-objectives,
-.widget-surveys {
-    flex: 1;
-    background-color: #ffffff;
-    border: none;
-    border-radius: 8px;
-    padding: 16px;
-    box-sizing: border-box;
-}
-
-/* Cuarta fila: Assessments y Evaluaciones */
-.assessments-evaluaciones {
-    display: flex;
-    gap: 24px;
-}
-
-.widget-assessments,
-.widget-evaluations {
-    flex: 1;
-    background-color: #ffffff;
-    border: none;
-    border-radius: 8px;
-    padding: 16px;
-    box-sizing: border-box;
-}
-
-/* Sidebar derecho */
-.right-sidebar-fixed {
-    width: 392px;
-    height: calc(100vh - 32px);
-    background-color: #ffffff;
-    border: none;
-    border-radius: 8px;
-    flex-shrink: 0;
-    position: fixed;
-    right: 11px;
-    top: 16px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    padding: 16px;
-    box-sizing: border-box;
-    overflow: hidden;
-}
-
-/* Modo oscuro */
-[data-theme="dark"] body {
-    background-color: #0E1825 !important;
-}
-
-[data-theme="dark"] .profile-content {
-    background-color: #0E1825 !important;
-}
-
+/* Dark mode para widgets */
 [data-theme="dark"] .widget-user-info,
 [data-theme="dark"] .widget-org,
 [data-theme="dark"] .widget-learn,
 [data-theme="dark"] .widget-objectives,
 [data-theme="dark"] .widget-surveys,
+[data-theme="dark"] .widget-assessments,
+[data-theme="dark"] .widget-evaluations {
+    background-color: #374151 !important;
+    box-shadow: 0 2px 44px rgba(0,0,0,0.3) !important;
+}
+
+[data-theme="dark"] .widget-user-info:hover,
+[data-theme="dark"] .widget-org:hover,
+[data-theme="dark"] .widget-learn:hover,
+[data-theme="dark"] .widget-objectives:hover,
+[data-theme="dark"] .widget-surveys:hover,
+[data-theme="dark"] .widget-assessments:hover,
+[data-theme="dark"] .widget-evaluations:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4) !important;
+}
+
 [data-theme="dark"] .widget-assessments,
 [data-theme="dark"] .widget-evaluations,
 [data-theme="dark"] .right-sidebar-fixed {
@@ -645,568 +386,6 @@ body {
     color: #f9fafb;
 }
 
-[data-theme="dark"] .tooltip::before {
-    border-right-color: #374151;
-}
-
-/* ========================================
-   ESTILOS PARA EJEMPLOS DE WIDGETS
-   ======================================== */
-
-.widget-content {
-    padding: 24px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.widget-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 8px;
-}
-
-.widget-image {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid #e5e7eb;
-}
-
-.widget-image:hover {
-    border-color: #0c5bef;
-    transition: border-color 0.2s ease;
-}
-
-/* Botones básicos */
-.btn {
-    padding: 12px 24px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    text-decoration: none;
-    display: inline-block;
-    text-align: center;
-}
-
-.btn-primary {
-    background-color: #0c5bef;
-    color: #ffffff;
-}
-
-.btn-primary:hover {
-    background-color: #0a4fd4;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(12, 91, 239, 0.3);
-}
-
-.btn-secondary {
-    background-color: #f3f4f6;
-    color: #374151;
-    border: 1px solid #d1d5db;
-}
-
-.btn-secondary:hover {
-    background-color: #e5e7eb;
-    border-color: #9ca3af;
-}
-
-/* Modo oscuro para widgets */
-[data-theme="dark"] .widget-content {
-    color: #e5e7eb;
-}
-
-[data-theme="dark"] .widget-image {
-    border-color: #4b5563;
-}
-
-[data-theme="dark"] .widget-image:hover {
-    border-color: #0c5bef;
-}
-
-[data-theme="dark"] .btn-secondary {
-    background-color: #374151;
-    color: #e5e7eb;
-    border-color: #4b5563;
-}
-
-[data-theme="dark"] .btn-secondary:hover {
-    background-color: #4b5563;
-    border-color: #6b7280;
-}
-
-/* ========================================
-   COMPONENTES ADICIONALES PARA V2
-   ======================================== */
-
-/* Stats Grid */
-.stats-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-top: 16px;
-}
-
-.stat-item {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-/* Organization Members */
-.org-members {
-    display: flex;
-    gap: -8px;
-    margin-top: 12px;
-}
-
-.member-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: 2px solid #ffffff;
-    margin-left: -8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #f3f4f6;
-    color: #6b7280;
-}
-
-.member-avatar:first-child {
-    margin-left: 0;
-}
-
-.member-avatar .widget-image {
-    width: 100%;
-    height: 100%;
-    border: none;
-}
-
-/* Progress Bar */
-.progress-bar {
-    width: 100%;
-    height: 8px;
-    background-color: #e5e7eb;
-    border-radius: 4px;
-    overflow: hidden;
-    margin: 12px 0;
-}
-
-.progress-fill {
-    height: 100%;
-    background-color: #0c5bef;
-    border-radius: 4px;
-    transition: width 0.3s ease;
-}
-
-/* Button Group */
-.button-group {
-    display: flex;
-    gap: 12px;
-    margin-top: 16px;
-}
-
-/* Objective Item */
-.objective-item {
-    margin-bottom: 16px;
-}
-
-.objective-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-}
-
-/* Survey Item */
-.survey-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 0;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-.survey-item:last-child {
-    border-bottom: none;
-}
-
-.survey-icon {
-    width: 32px;
-    height: 32px;
-    background-color: #f3f4f6;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #0c5bef;
-}
-
-/* Assessment Score */
-.assessment-score {
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-    margin: 16px 0;
-}
-
-/* Skill Tags */
-.skill-tags {
-    display: flex;
-    gap: 8px;
-    margin: 16px 0;
-    flex-wrap: wrap;
-}
-
-.skill-tag {
-    background-color: #f3f4f6;
-    color: #374151;
-    padding: 4px 12px;
-    border-radius: 16px;
-    font-size: 12px;
-    font-weight: 500;
-}
-
-/* Evaluation Stats */
-.evaluation-stats {
-    margin: 16px 0;
-}
-
-.evaluation-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-}
-
-.rating {
-    display: flex;
-    gap: 2px;
-    color: #fbbf24;
-}
-
-.rating .far {
-    color: #d1d5db;
-}
-
-/* Activity List */
-.activity-list {
-    margin-top: 16px;
-}
-
-.activity-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 0;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-.activity-item:last-child {
-    border-bottom: none;
-}
-
-.activity-icon {
-    width: 32px;
-    height: 32px;
-    background-color: #f3f4f6;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #0c5bef;
-}
-
-/* Modo oscuro para componentes adicionales */
-[data-theme="dark"] .member-avatar {
-    background-color: #374151;
-    border-color: #4b5563;
-}
-
-[data-theme="dark"] .progress-bar {
-    background-color: #374151;
-}
-
-[data-theme="dark"] .survey-item,
-[data-theme="dark"] .activity-item {
-    border-bottom-color: #4b5563;
-}
-
-[data-theme="dark"] .survey-icon,
-[data-theme="dark"] .activity-icon {
-    background-color: #374151;
-}
-
-[data-theme="dark"] .skill-tag {
-    background-color: #374151;
-    color: #e5e7eb;
-}
-
-[data-theme="dark"] .rating .far {
-    color: #4b5563;
-}
-
-/* ========================================
-   WIDGET LEARN ESPECÍFICO (FIGMA)
-   ======================================== */
-
-.learn-widget {
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    min-height: 200px;
-}
-
-.learn-header {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 8px;
-}
-
-.learn-header-icon {
-    width: 48px;
-    height: 48px;
-    background-color: #f8f8f8;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #ba841b;
-    font-size: 18px;
-}
-
-.learn-body {
-    display: flex;
-    gap: 48px;
-    flex: 1;
-    min-height: 0;
-}
-
-.plan-section {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.recommended-section {
-    width: 288px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.section-title {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 8px;
-}
-
-.section-title i {
-    color: #6b7b8a;
-    font-size: 18px;
-}
-
-.plan-card {
-    background-color: #f8f8f8;
-    padding: 20px;
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.progress-section {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.progress-text {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 14px;
-    color: #62717e;
-}
-
-.progress-bar-container {
-    width: 100%;
-    height: 10px;
-    background-color: #d8d8d8;
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.progress-bar-fill {
-    height: 100%;
-    background-color: #febe24;
-    border-radius: 10px;
-    transition: width 0.3s ease;
-}
-
-.plan-dates {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    font-size: 14px;
-    color: #62717e;
-}
-
-.plan-time-left {
-    font-size: 14px;
-    color: #62717e;
-}
-
-.plan-time-left strong {
-    font-weight: bold;
-}
-
-.see-more-link {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #6b7b8a;
-    text-decoration: none;
-    font-size: 14px;
-    margin-top: 8px;
-}
-
-.see-more-link:hover {
-    color: #0a243f;
-}
-
-.recommended-card {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.recommended-image {
-    width: 100%;
-    height: 162px;
-    background-image: url('images/Profile-image.jpg');
-    background-size: cover;
-    background-position: center;
-    border-radius: 10px;
-}
-
-.recommended-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: #0a243f;
-    line-height: 1.4;
-}
-
-/* Modo oscuro para widget learn */
-[data-theme="dark"] .learn-header-icon {
-    background-color: #374151;
-}
-
-[data-theme="dark"] .plan-card {
-    background-color: #374151;
-}
-
-[data-theme="dark"] .progress-text,
-[data-theme="dark"] .plan-dates,
-[data-theme="dark"] .plan-time-left {
-    color: #9ca3af;
-}
-
-[data-theme="dark"] .recommended-title {
-    color: #e5e7eb;
-}
-
-[data-theme="dark"] .see-more-link {
-    color: #9ca3af;
-}
-
-[data-theme="dark"] .see-more-link:hover {
-    color: #e5e7eb;
-}
-
-/* Estilos para el contenido del widget de aprendizaje */
-.learn-body {
-    display: flex;
-    gap: 24px;
-}
-
-.plan-section,
-.recomendado-section {
-    flex: 1;
-}
-
-.plan-header,
-.recomendado-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 16px;
-}
-
-.plan-card {
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    padding: 16px;
-}
-
-.progress-info {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 8px;
-}
-
-.progress-bar {
-    background-color: #e9ecef;
-    border-radius: 4px;
-    margin-bottom: 16px;
-}
-
-.plan-dates {
-    margin-bottom: 12px;
-}
-
-.plan-dates div {
-    margin-bottom: 4px;
-}
-
-.plan-counter {
-    margin-bottom: 16px;
-}
-
-.btn-secondary {
-    background-color: transparent;
-    border: 1px solid #4F5561;
-    color: #4F5561;
-    padding: 8px 16px;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    transition: all 0.2s ease;
-}
-
-.btn-secondary:hover {
-    background-color: #4F5561;
-    color: white;
-}
-
-.recomendado-card {
-    background-color: white;
-    border: 1px solid #e9ecef;
-    border-radius: 8px;
-    padding: 16px;
-}
-
 /* Iconos con dark mode */
 .learn-icon {
     font-size: 24px;
@@ -1234,4 +413,30 @@ body {
 [data-theme="dark"] .recomendado-card {
     background-color: #374151;
     border-color: #4b5563;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .profile-content {
+        margin: 16px 0 16px 91px;
+    }
+    
+    .right-sidebar-fixed {
+        width: 300px;
+        right: 8px;
+    }
+    
+    .learn-body {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    .profile-content {
+        margin: 16px 0 16px 80px;
+    }
+    
+    .right-sidebar-fixed {
+        display: none;
+    }
 }
