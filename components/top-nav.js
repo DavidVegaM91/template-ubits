@@ -69,14 +69,14 @@ function getTopNavHTML(variant = 'template', customTabs = []) {
         tabsHTML = tabs.map(tab => `
             <button class="nav-tab" data-tab="${tab.id}">
                 <i class="fa ${tab.icon}"></i>
-                <span>${tab.label}</span>
+                <span class="ubits-body-sm-regular">${tab.label}</span>
             </button>
         `).join('');
         
         // Para la variante template, agregar mensaje de personalización
         if (variant === 'template') {
             tabsHTML += `
-                <div style="color: #5c646f; font-size: 12px; font-style: italic; margin-left: 16px; margin-top: 4px;">
+                <div class="ubits-body-xs-regular" style="color: #5c646f; font-style: italic; margin-left: 16px; margin-top: 4px;">
                     Personalizable - Indica a Cursor cuántos tabs necesitas
                 </div>
             `;
@@ -84,7 +84,7 @@ function getTopNavHTML(variant = 'template', customTabs = []) {
     } else {
         // Para otras variantes sin tabs, mostrar mensaje
         tabsHTML = `
-            <div style="color: #5c646f; font-size: 14px; font-style: italic;">
+            <div class="ubits-body-sm-regular" style="color: #5c646f; font-style: italic;">
                 Top-nav personalizable - Agrega tus tabs aquí
             </div>
         `;

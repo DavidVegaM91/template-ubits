@@ -158,46 +158,28 @@ body[data-theme="dark"] {
     margin-bottom: 16px;
 }
 
-.learn-title {
-    font-size: 18px;
-    font-weight: 600;
-    color: #374151;
-    margin: 0;
-}
-
-.learn-icon {
-    font-size: 24px;
-    color: #4F5561;
-}
-
 .learn-body {
     display: flex;
     gap: 16px;
     flex: 1;
 }
 
-.plan-section,
-.recomendado-section {
+/* Sección izquierda - Plan Activo */
+.plan-activo {
     flex: 1;
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
 
-.plan-title,
-.recomendado-title {
+.plan-title {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    color: #374151;
     margin-bottom: 8px;
 }
 
-.plan-icon,
-.recomendado-icon {
-    margin-right: 8px;
+.plan-title i {
     color: #4F5561;
 }
 
@@ -211,7 +193,61 @@ body[data-theme="dark"] {
     gap: 12px;
 }
 
-.recomendado-card {
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #e5e7eb;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #febe24;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.plan-dates {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.plan-counter {
+    margin-top: auto;
+}
+
+.plan-counter strong {
+    color: #dc2626;
+}
+
+/* Sección derecha - Recomendado */
+.recomendado {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.recomendado-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.recomendado-title i {
+    color: #4F5561;
+}
+
+.course-card {
     background: #f8fafc;
     border: 1px solid #e5e7eb;
     border-radius: 8px;
@@ -222,118 +258,12 @@ body[data-theme="dark"] {
     gap: 12px;
 }
 
-.progress-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-}
-
-.progress-text {
-    font-size: 12px;
-    color: #6b7280;
-}
-
-.progress-percentage {
-    font-size: 12px;
-    font-weight: 600;
-    color: #374151;
-}
-
-.progress-bar {
-    width: 100%;
-    height: 8px;
-    background: #e5e7eb;
-    border-radius: 4px;
-    overflow: hidden;
-    margin-bottom: 8px;
-}
-
-.progress-fill {
-    height: 100%;
-    background: #febe24;
-    border-radius: 4px;
-    width: 50%;
-}
-
-.dates-info {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    margin-bottom: 8px;
-}
-
-.date-item {
-    font-size: 11px;
-    color: #6b7280;
-}
-
-.countdown {
-    font-size: 11px;
-    color: #374151;
-    font-weight: 600;
-}
-
-.countdown strong {
-    color: #dc2626;
-}
-
-.plan-button {
-    background: #f3f4f6;
-    border: 1px solid #d1d5db;
-    color: #374151;
-    padding: 8px 12px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    align-self: flex-start;
-}
-
-.plan-button:hover {
-    background: #e5e7eb;
-    border-color: #9ca3af;
-}
-
 .course-image {
     width: 100%;
     height: 162px;
     object-fit: cover;
     border-radius: 10px;
     margin-bottom: 8px;
-}
-
-.course-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: #374151;
-    margin-bottom: 8px;
-    line-height: 1.4;
-}
-
-.recomendado-button {
-    background: #f3f4f6;
-    border: 1px solid #d1d5db;
-    color: #374151;
-    padding: 8px 12px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    align-self: flex-start;
-}
-
-.recomendado-button:hover {
-    background: #e5e7eb;
-    border-color: #9ca3af;
 }
 
 /* Espaciador para alinear con los sidebars */
@@ -428,9 +358,14 @@ body[data-theme="dark"] {
     background-color: #374151;
 }
 
-[data-theme="dark"] .recomendado-card {
+[data-theme="dark"] .course-card {
     background-color: #374151;
     border-color: #4b5563;
+}
+
+[data-theme="dark"] .plan-title i,
+[data-theme="dark"] .recomendado-title i {
+    color: #e5e7eb;
 }
 
 /* Responsive */
