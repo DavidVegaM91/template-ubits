@@ -2,9 +2,12 @@
    TOP NAVIGATION COMPONENT
    ======================================== */
 
+/* Importar tokens de color UBITS */
+@import url('../ubits-colors.css');
+
 /* Top Navigation Base */
 .top-nav {
-    background-color: #ffffff;
+    background-color: var(--ubits-bg-1);
     height: 40px;
     border-radius: 8px;
     padding: 0 12px;

@@ -1,5 +1,8 @@
 /* Profile.css - Estilos específicos del perfil */
 
+/* Importar tokens de color UBITS */
+@import url('./ubits-colors.css');
+
 /* Reset para el perfil */
 * {
     margin: 0;
@@ -83,7 +86,7 @@ body[data-theme="dark"] {
 .right-sidebar-fixed {
     width: 300px;
     height: calc(100vh - 32px);
-    background-color: #ffffff;
+    background-color: var(--ubits-bg-1);
     border: none;
     border-radius: 8px;
     flex-shrink: 0;
@@ -106,7 +109,7 @@ body[data-theme="dark"] {
 .widget-surveys,
 .widget-assessments,
 .widget-evaluations {
-    background-color: #ffffff;
+    background-color: var(--ubits-bg-1);
     border: none;
     border-radius: 8px;
     padding: 16px;
@@ -132,7 +135,7 @@ body[data-theme="dark"] {
 
 /* Widget de aprendizaje específico */
 .widget-learn {
-    background-color: #ffffff;
+    background-color: var(--ubits-bg-1);
     border: none;
     border-radius: 8px;
     padding: 16px;
@@ -202,7 +205,7 @@ body[data-theme="dark"] {
 .progress-bar {
     width: 100%;
     height: 8px;
-    background: #e5e7eb;
+    background: var(--ubits-fg-2-medium);
     border-radius: 4px;
     overflow: hidden;
 }
@@ -249,7 +252,7 @@ body[data-theme="dark"] {
 
 .course-card {
     background: #f8fafc;
-    border: 1px solid #e5e7eb;
+    border: 1px solid var(--ubits-fg-2-medium);
     border-radius: 8px;
     padding: 16px;
     flex: 1;
@@ -291,7 +294,7 @@ body[data-theme="dark"] {
 [data-theme="dark"] .widget-surveys,
 [data-theme="dark"] .widget-assessments,
 [data-theme="dark"] .widget-evaluations {
-    background-color: #374151 !important;
+    background-color: var(--ubits-bg-1) !important;
     box-shadow: 0 2px 44px rgba(0,0,0,0.3) !important;
 }
 
@@ -330,8 +333,8 @@ body[data-theme="dark"] {
 
 /* Tooltip en modo oscuro */
 [data-theme="dark"] .tooltip {
-    background: #374151;
-    color: #f9fafb;
+    background: var(--ubits-bg-1);
+    color: var(--ubits-fg-bold);
 }
 
 /* Iconos con dark mode */
@@ -350,22 +353,22 @@ body[data-theme="dark"] {
 [data-theme="dark"] .learn-icon,
 [data-theme="dark"] .plan-icon,
 [data-theme="dark"] .recomendado-icon {
-    color: #e5e7eb;
+    color: var(--ubits-fg-2-medium);
 }
 
 /* Dark mode para tarjetas */
 [data-theme="dark"] .plan-card {
-    background-color: #374151;
+    background-color: var(--ubits-bg-1);
 }
 
 [data-theme="dark"] .course-card {
-    background-color: #374151;
+    background-color: var(--ubits-bg-1);
     border-color: #4b5563;
 }
 
 [data-theme="dark"] .plan-title i,
 [data-theme="dark"] .recomendado-title i {
-    color: #e5e7eb;
+    color: var(--ubits-fg-2-medium);
 }
 
 /* Responsive */

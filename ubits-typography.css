@@ -2,12 +2,15 @@
    SISTEMA DE TIPOGRAFÍA OFICIAL UBITS
    ======================================== */
 
+/* Importar tokens de color UBITS */
+@import url('./ubits-colors.css');
+
 /* Variables CSS para personalización */
 :root {
-    --ubits-text-color: #303a47;
-    --ubits-text-color-light: #6b7280;
-    --ubits-text-color-dark: #1f2937;
-    --ubits-text-color-white: #ffffff;
+    --ubits-text-color: var(--ubits-fg-1-high);
+    --ubits-text-color-light: var(--ubits-fg-1-medium);
+    --ubits-text-color-dark: var(--ubits-fg-2-high);
+    --ubits-text-color-white: var(--ubits-fg-bold);
 }
 
 /* ========================================

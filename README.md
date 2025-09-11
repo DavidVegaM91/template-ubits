@@ -6,6 +6,13 @@
 
 Una plantilla completa que permite a **Product Managers**, **Diseñadores** y **Desarrolladores** crear nuevas interfaces UBITS usando **Cursor AI** con la garantía de que mantendrán el estilo y funcionalidad correctos.
 
+## 🚨 **ANTES DE EMPEZAR - LEE ESTO:**
+
+1. **📋 Lee `CURSOR-RULES.md`** - Reglas obligatorias para Cursor AI
+2. **🎯 Usa `index.html`** - Como base para cualquier página nueva
+3. **👀 Mira `ejemplos-tokens.html`** - Ejemplos que funcionan (copia, no inventes)
+4. **🎨 Usa SOLO tokens UBITS** - `var(--ubits-...)` NUNCA colores hardcodeados
+
 ## 📁 Estructura del Proyecto
 
 ```
@@ -60,17 +67,28 @@ Template UBITS/
 - **CSS organizado** - Estilos del sidebar en `styles.css`, específicos en `profile.css`
 - **Modo Oscuro** - Soporte completo para tema oscuro
 
+## 🎨 **VALOR DIFERENCIAL DEL PROYECTO**
+
+> **🚨 REGLA FUNDAMENTAL: SIEMPRE usar tokens de color UBITS y tipografía UBITS**
+> 
+> **Este es el valor diferencial del proyecto.** Cualquiera puede usar Cursor AI, pero la ventaja de esta plantilla es que garantiza que todas las interfaces creadas mantengan la identidad visual oficial de UBITS con:
+> - **Tokens de color** que cambian automáticamente entre modo claro y oscuro
+> - **Tipografía oficial** UBITS con todas las variantes
+> - **Iconos FontAwesome** integrados y organizados
+> - **Consistencia visual** en todas las experiencias creadas
+
 ## 🤖 Instrucciones para Cursor AI
 
 ### **📋 Reglas Importantes**
 
-#### ✅ **SIEMPRE Hacer:**
-1. **Usar la tipografía UBITS** - Aplicar clases como `ubits-h3`, `ubits-body-md-regular`
-2. **Usar los colores oficiales UBITS** - Mantener la identidad visual
+#### ✅ **SIEMPRE Hacer (OBLIGATORIO):**
+1. **Usar tokens de color UBITS** - `var(--ubits-fg-1-high)`, `var(--ubits-bg-1)`, etc. NUNCA colores hardcodeados
+2. **Usar la tipografía UBITS** - Aplicar clases como `ubits-h3`, `ubits-body-md-regular`
 3. **Usar `box-sizing: border-box`** - Para cálculos correctos de tamaño
 4. **Usar iconos outline** - Usar `far` (FontAwesome Regular) para iconos outline (ej: `far fa-home`, `far fa-book`)
 5. **Probar en `index.html`** - Usar este archivo como referencia
 6. **Mantener la funcionalidad** - No romper el JavaScript existente
+7. **Importar `ubits-colors.css`** - En cualquier nuevo archivo HTML que crees
 
 #### ⚠️ **RECOMENDADO (pero flexible):**
 1. **Usar las clases CSS existentes** - Para mantener consistencia
@@ -79,9 +97,10 @@ Template UBITS/
 4. **Mantener `overflow: hidden`** - Para control de contenido
 
 #### ❌ **EVITAR (solo si es absolutamente necesario):**
-1. **Cambiar colores base** - Usar los colores oficiales de UBITS
+1. **Usar colores hardcodeados** - SIEMPRE usar tokens UBITS (`var(--ubits-...)`)
 2. **Cambiar fuentes** - Mantener la tipografía UBITS
 3. **Romper el JavaScript** - Mantener la funcionalidad del sidebar y tooltips
+4. **Crear interfaces sin tokens** - Esto elimina el valor diferencial del proyecto
 
 ### **🔧 Personalización del Top-Nav:**
 Para personalizar el top-nav, usa la variante `template` que incluye 5 secciones de ejemplo:
@@ -122,13 +141,24 @@ ubits-body-sm-regular            /* Texto pequeño */
 ubits-body-xs-regular            /* Texto muy pequeño */
 ```
 
-### **Colores Oficiales:**
+### **Tokens de Color UBITS (OBLIGATORIO):**
 ```css
-#303a47  /* Texto principal */
-#0a243f  /* Texto oscuro */
-#62717e  /* Texto secundario */
-#febe24  /* Amarillo UBITS */
-#6b7b8a  /* Gris medio */
+/* NUNCA usar colores hardcodeados, SIEMPRE usar estos tokens: */
+var(--ubits-fg-1-high)        /* Texto principal */
+var(--ubits-fg-1-medium)      /* Texto secundario */
+var(--ubits-fg-2-high)        /* Texto destacado */
+var(--ubits-fg-2-medium)      /* Texto gris */
+var(--ubits-bg-1)             /* Fondo principal (blanco/oscuro) */
+var(--ubits-bg-2)             /* Fondo secundario */
+var(--ubits-accent-brand)     /* Azul UBITS */
+var(--ubits-sidebar-bg)       /* Fondo del sidebar */
+var(--ubits-sidebar-button-fg-default)  /* Iconos sidebar */
+/* Y muchos más... ver ubits-colors.css */
+```
+
+### **Importar Tokens (OBLIGATORIO en nuevos archivos):**
+```html
+<link rel="stylesheet" href="ubits-colors.css">
 ```
 
 ## 🛠️ Cómo Usar con Cursor AI
@@ -304,9 +334,10 @@ ubits-body-xs-regular            /* Texto muy pequeño */
 3. Asegurar que el texto no es demasiado largo
 
 ### **Si los colores no coinciden:**
-1. Usar las clases de tipografía UBITS
-2. Verificar que estás usando los colores oficiales
-3. Revisar el archivo `ubits-typography.css`
+1. **Verificar que usas tokens UBITS** - `var(--ubits-fg-1-high)` en lugar de `#303a47`
+2. **Importar `ubits-colors.css`** - En cualquier archivo HTML nuevo
+3. **Usar las clases de tipografía UBITS** - `ubits-h3`, `ubits-body-md-regular`
+4. **Revisar el archivo `ubits-colors.css`** - Para ver todos los tokens disponibles
 
 ## 📚 Documentación
 
@@ -341,10 +372,16 @@ ubits-body-xs-regular            /* Texto muy pequeño */
 4. **JavaScript modular** - Fácil de extender
 
 ### **Reglas de Oro:**
-- **Sé creativo** - La plantilla está diseñada para ser flexible
+- **SÉ CREATIVO** - La plantilla está diseñada para ser flexible
+- **USA TOKENS UBITS** - Este es el valor diferencial del proyecto
 - **Mantén la funcionalidad** - No rompas el JavaScript del sidebar
-- **Usa UBITS como base** - Pero no te limites si necesitas algo diferente
+- **Consistencia visual** - Garantiza que todas las interfaces se vean como UBITS
 - **Prueba todo** - Usa `index.html` para experimentar
+
+### **Reglas de Escritura:**
+- **Títulos**: Solo la primera letra en mayúscula (ej: "Sistema de diseño completo")
+- **Nombres propios**: Primera letra de cada palabra en mayúscula (ej: "Cursor AI", "FontAwesome")
+- **UBITS**: Siempre todo en mayúsculas (ej: "Template UBITS", "tokens UBITS")
 
 ## 🤝 Soporte
 

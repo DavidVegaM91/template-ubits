@@ -3,8 +3,9 @@
 ## 📋 **Pendientes Actuales**
 
 ### 🔧 **Desarrollo de Componentes**
-- [ ] **Citar a Burbano a reunión** para que nos muestre los componentes que ha hecho y jalarlos a este proyecto
-- [ ] **Importar tokens de color** de Figma y aplicarlos a todos los componentes y páginas
+
+- [ ] **Importar tokens de espaciado** de Figma y aplicarlos a todos los componentes y páginas
+- [ ] **Complementar la documentación** con más secciones y ejemplos
 - [ ] **Hacer la variante de sidebar de admin** y hacer un sidebar plantilla
 
 ---

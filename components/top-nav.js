@@ -14,6 +14,16 @@ const TOP_NAV_VARIANTS = {
             { id: 'section5', label: 'Sección 5', icon: 'far fa-layer-group' }
         ]
     },
+    documentacion: {
+        name: 'Documentación',
+        tabs: [
+            { id: 'section1', label: 'Inicio', icon: 'far fa-home', url: 'documentacion.html' },
+            { id: 'section2', label: 'Sección 2', icon: 'far fa-book' },
+            { id: 'section3', label: 'Sección 3', icon: 'far fa-chart-line' },
+            { id: 'section4', label: 'Sección 4', icon: 'far fa-clipboard' },
+            { id: 'section5', label: 'Iconos', icon: 'far fa-icons', url: 'iconos.html' }
+        ]
+    },
     learning: {
         name: 'Aprendizaje',
         tabs: [
@@ -76,7 +86,7 @@ function getTopNavHTML(variant = 'template', customTabs = []) {
         // Para la variante template, agregar mensaje de personalización
         if (variant === 'template') {
             tabsHTML += `
-                <div class="ubits-body-xs-regular" style="color: #5c646f; font-style: italic; margin-left: 16px; margin-top: 4px;">
+                <div class="ubits-body-xs-regular" style="color: var(--ubits-fg-1-medium); font-style: italic; margin-left: 16px; margin-top: 4px;">
                     Personalizable - Indica a Cursor cuántos tabs necesitas
                 </div>
             `;
@@ -84,14 +94,14 @@ function getTopNavHTML(variant = 'template', customTabs = []) {
     } else {
         // Para otras variantes sin tabs, mostrar mensaje
         tabsHTML = `
-            <div class="ubits-body-sm-regular" style="color: #5c646f; font-style: italic;">
+            <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); font-style: italic;">
                 Top-nav personalizable - Agrega tus tabs aquí
             </div>
         `;
     }
 
     return `
-        <div class="top-nav">
+        <div class="top-nav" data-variant="${variant}">
             <div class="nav-tabs">
                 ${tabsHTML}
             </div>
@@ -139,8 +149,22 @@ function addTopNavEventListeners(container) {
             // Agregar clase active al tab clickeado
             this.classList.add('active');
             
-            // Disparar evento personalizado
+            // Obtener la configuración del tab
             const tabId = this.getAttribute('data-tab');
+            const variant = container.closest('.top-nav')?.getAttribute('data-variant') || 'template';
+            const variantConfig = getTopNavVariant(variant);
+            
+            // Buscar el tab en la configuración para obtener la URL
+            if (variantConfig && variantConfig.tabs) {
+                const tabConfig = variantConfig.tabs.find(t => t.id === tabId);
+                if (tabConfig && tabConfig.url) {
+                    // Navegar a la URL
+                    window.location.href = tabConfig.url;
+                    return;
+                }
+            }
+            
+            // Disparar evento personalizado si no hay URL
             const event = new CustomEvent('topNavTabClick', {
                 detail: { tabId: tabId, tabElement: this }
             });

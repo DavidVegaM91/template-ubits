@@ -1,0 +1,2724 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Revisión Completa de Tokens UBITS - Light vs Dark</title>
+    <link rel="stylesheet" href="ubits-colors.css">
+    <link rel="stylesheet" href="ubits-typography.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans', sans-serif;
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .column {
+            flex: 1;
+            padding: 15px;
+        }
+        
+        .light-column {
+            background-color: #ffffff;
+            border-right: 2px solid #000000;
+        }
+        
+        .dark-column {
+            background-color: #0E1825;
+        }
+        
+        .section {
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 6px;
+        }
+        
+        .light-section {
+            background-color: #f8f9fa;
+            border: 1px solid #d0d2d5;
+        }
+        
+        .dark-section {
+            background-color: #202837;
+            border: 1px solid #4f5561;
+            color: #ffffff;
+        }
+        
+        .token-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            padding: 4px;
+            border-radius: 3px;
+            font-size: 10px;
+        }
+        
+        .light-token {
+            background-color: #ffffff;
+        }
+        
+        .dark-token {
+            background-color: #202837;
+            color: #ffffff;
+        }
+        
+        .color-box {
+            width: 20px;
+            height: 12px;
+            border-radius: 2px;
+            margin-right: 6px;
+            border: 1px solid #ccc;
+        }
+        
+        .token-name {
+            font-family: 'Courier New', monospace;
+            font-size: 9px;
+            margin-right: 6px;
+            min-width: 150px;
+        }
+        
+        .hex-value {
+            font-family: 'Courier New', monospace;
+            font-size: 9px;
+            font-weight: bold;
+        }
+        
+        .category-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin: 20px 0 10px 0;
+            padding: 8px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+        }
+        
+        .dark-category-title {
+            background-color: #202837;
+            color: #ffffff;
+        }
+        
+        .light-title {
+            color: #303a47;
+        }
+        
+        .dark-title {
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <!-- COLUMNA IZQUIERDA - LIGHT MODE -->
+    <div class="column light-column" data-theme="light">
+        <h1 class="light-title">LIGHT MODE - TODOS LOS TOKENS</h1>
+        
+        <div class="category-title light-title">BRAND COLORS</div>
+        <div class="section light-section">
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #0c5bef;"></div>
+                <span class="token-name">--ubits-accent-brand</span>
+                <span class="hex-value">#0c5bef</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #3865f5;"></div>
+                <span class="token-name">--ubits-accent-brand-inverted</span>
+                <span class="hex-value">#3865f5</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #0c5bef;"></div>
+                <span class="token-name">--ubits-accent-brand-static</span>
+                <span class="hex-value">#0c5bef</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #3865f5;"></div>
+                <span class="token-name">--ubits-accent-brand-static-inverted</span>
+                <span class="hex-value">#3865f5</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #0d1f57;"></div>
+                <span class="token-name">--ubits-logo</span>
+                <span class="hex-value">#0d1f57</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #ffffff;"></div>
+                <span class="token-name">--ubits-logo-inverted</span>
+                <span class="hex-value">#ffffff</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #0d1f57;"></div>
+                <span class="token-name">--ubits-logo-static</span>
+                <span class="hex-value">#0d1f57</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #ffffff;"></div>
+                <span class="token-name">--ubits-logo-static-inverted</span>
+                <span class="hex-value">#ffffff</span>
+            </div>
+        </div>
+
+        <div class="category-title light-title">FOREGROUND COLORS</div>
+        <div class="section light-section">
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #303a47;"></div>
+                <span class="token-name">--ubits-fg-1-high</span>
+                <span class="hex-value">#303a47</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #edeeef;"></div>
+                <span class="token-name">--ubits-fg-1-high-inverted</span>
+                <span class="hex-value">#edeeef</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #303a47;"></div>
+                <span class="token-name">--ubits-fg-1-high-static</span>
+                <span class="hex-value">#303a47</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #edeeef;"></div>
+                <span class="token-name">--ubits-fg-1-high-static-inverted</span>
+                <span class="hex-value">#edeeef</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #5c646f;"></div>
+                <span class="token-name">--ubits-fg-1-medium</span>
+                <span class="hex-value">#5c646f</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #d0d2d5;"></div>
+                <span class="token-name">--ubits-fg-1-medium-inverted</span>
+                <span class="hex-value">#d0d2d5</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #5c646f;"></div>
+                <span class="token-name">--ubits-fg-1-medium-static</span>
+                <span class="hex-value">#5c646f</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #d0d2d5;"></div>
+                <span class="token-name">--ubits-fg-1-medium-static-inverted</span>
+                <span class="hex-value">#d0d2d5</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #2a303f;"></div>
+                <span class="token-name">--ubits-fg-2-high</span>
+                <span class="hex-value">#2a303f</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #ffffff;"></div>
+                <span class="token-name">--ubits-fg-2-high-inverted</span>
+                <span class="hex-value">#ffffff</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #2a303f;"></div>
+                <span class="token-name">--ubits-fg-2-high-static</span>
+                <span class="hex-value">#2a303f</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #ffffff;"></div>
+                <span class="token-name">--ubits-fg-2-high-static-inverted</span>
+                <span class="hex-value">#ffffff</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #5a5e6a;"></div>
+                <span class="token-name">--ubits-fg-2-medium</span>
+                <span class="hex-value">#5a5e6a</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #d0d2d5;"></div>
+                <span class="token-name">--ubits-fg-2-medium-inverted</span>
+                <span class="hex-value">#d0d2d5</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #5a5e6a;"></div>
+                <span class="token-name">--ubits-fg-2-medium-static</span>
+                <span class="hex-value">#5a5e6a</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #d0d2d5;"></div>
+                <span class="token-name">--ubits-fg-2-medium-static-inverted</span>
+                <span class="hex-value">#d0d2d5</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #a2a6ad;"></div>
+                <span class="token-name">--ubits-fg-disabled</span>
+                <span class="hex-value">#a2a6ad</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #777c86;"></div>
+                <span class="token-name">--ubits-fg-disabled-inverted</span>
+                <span class="hex-value">#777c86</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #a2a6ad;"></div>
+                <span class="token-name">--ubits-fg-disabled-static</span>
+                <span class="hex-value">#a2a6ad</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #777c86;"></div>
+                <span class="token-name">--ubits-fg-disabled-static-inverted</span>
+                <span class="hex-value">#777c86</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #8d9199;"></div>
+                <span class="token-name">--ubits-fg-on-disabled</span>
+                <span class="hex-value">#8d9199</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #828690;"></div>
+                <span class="token-name">--ubits-fg-on-disabled-inverted</span>
+                <span class="hex-value">#828690</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #8d9199;"></div>
+                <span class="token-name">--ubits-fg-on-disabled-static</span>
+                <span class="hex-value">#8d9199</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #828690;"></div>
+                <span class="token-name">--ubits-fg-on-disabled-static-inverted</span>
+                <span class="hex-value">#828690</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #ffffff;"></div>
+                <span class="token-name">--ubits-fg-bold</span>
+                <span class="hex-value">#ffffff</span>
+            </div>
+        </div>
+
+        <div class="category-title light-title">BLUE FOREGROUNDS</div>
+        <div class="section light-section">
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #212f70;"></div>
+                <span class="token-name">--ubits-fg-blue-subtle</span>
+                <span class="hex-value">#212f70</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #d6dbff;"></div>
+                <span class="token-name">--ubits-fg-blue-subtle-inverted</span>
+                <span class="hex-value">#d6dbff</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #c3c1fd;"></div>
+                <span class="token-name">--ubits-fg-blue-subtle-hover</span>
+                <span class="hex-value">#c3c1fd</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #141e3f;"></div>
+                <span class="token-name">--ubits-fg-blue-subtle-inverted-hover</span>
+                <span class="hex-value">#141e3f</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #d6dbff;"></div>
+                <span class="token-name">--ubits-fg-blue-subtle-static</span>
+                <span class="hex-value">#d6dbff</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #212f70;"></div>
+                <span class="token-name">--ubits-fg-blue-subtle-static-inverted</span>
+                <span class="hex-value">#212f70</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #c3c1fd;"></div>
+                <span class="token-name">--ubits-fg-blue-subtle-static-hover</span>
+                <span class="hex-value">#c3c1fd</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #141e3f;"></div>
+                <span class="token-name">--ubits-fg-blue-subtle-static-inverted-hover</span>
+                <span class="hex-value">#141e3f</span>
+            </div>
+        </div>
+
+        <div class="category-title light-title">GRAY FOREGROUNDS</div>
+        <div class="section light-section">
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #2b3543;"></div>
+                <span class="token-name">--ubits-fg-gray-subtle</span>
+                <span class="hex-value">#2b3543</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #2b3543;"></div>
+                <span class="token-name">--ubits-fg-gray-subtle-inverted</span>
+                <span class="hex-value">#2b3543</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #c5c6cb;"></div>
+                <span class="token-name">--ubits-fg-gray-subtle-hover</span>
+                <span class="hex-value">#c5c6cb</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #16202f;"></div>
+                <span class="token-name">--ubits-fg-gray-subtle-inverted-hover</span>
+                <span class="hex-value">#16202f</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #2b3543;"></div>
+                <span class="token-name">--ubits-fg-gray-subtle-static</span>
+                <span class="hex-value">#2b3543</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #dbdde0;"></div>
+                <span class="token-name">--ubits-fg-gray-subtle-static-inverted</span>
+                <span class="hex-value">#dbdde0</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #16202f;"></div>
+                <span class="token-name">--ubits-fg-gray-subtle-static-hover</span>
+                <span class="hex-value">#16202f</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #c5c6cb;"></div>
+                <span class="token-name">--ubits-fg-gray-subtle-static-inverted-hover</span>
+                <span class="hex-value">#c5c6cb</span>
+            </div>
+        </div>
+
+        <div class="category-title light-title">YELLOW FOREGROUNDS</div>
+        <div class="section light-section">
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #433214;"></div>
+                <span class="token-name">--ubits-fg-yellow-subtle</span>
+                <span class="hex-value">#433214</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #ffd555;"></div>
+                <span class="token-name">--ubits-fg-yellow-subtle-inverted</span>
+                <span class="hex-value">#ffd555</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #e9c410;"></div>
+                <span class="token-name">--ubits-fg-yellow-subtle-hover</span>
+                <span class="hex-value">#e9c410</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #251f0e;"></div>
+                <span class="token-name">--ubits-fg-yellow-subtle-inverted-hover</span>
+                <span class="hex-value">#251f0e</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #251f0e;"></div>
+                <span class="token-name">--ubits-fg-yellow-bold</span>
+                <span class="hex-value">#251f0e</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #2f2711;"></div>
+                <span class="token-name">--ubits-fg-yellow-bold-inverted</span>
+                <span class="hex-value">#2f2711</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #1c170a;"></div>
+                <span class="token-name">--ubits-fg-yellow-bold-hover</span>
+                <span class="hex-value">#1c170a</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #251f0e;"></div>
+                <span class="token-name">--ubits-fg-yellow-bold-inverted-hover</span>
+                <span class="hex-value">#251f0e</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #433214;"></div>
+                <span class="token-name">--ubits-fg-yellow-subtle-static</span>
+                <span class="hex-value">#433214</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #ffd555;"></div>
+                <span class="token-name">--ubits-fg-yellow-subtle-static-inverted</span>
+                <span class="hex-value">#ffd555</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #2f2711;"></div>
+                <span class="token-name">--ubits-fg-yellow-bold-static</span>
+                <span class="hex-value">#2f2711</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #251f0e;"></div>
+                <span class="token-name">--ubits-fg-yellow-bold-static-inverted</span>
+                <span class="hex-value">#251f0e</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #251f0e;"></div>
+                <span class="token-name">--ubits-fg-yellow-subtle-static-hover</span>
+                <span class="hex-value">#251f0e</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #e9c410;"></div>
+                <span class="token-name">--ubits-fg-yellow-subtle-static-inverted-hover</span>
+                <span class="hex-value">#e9c410</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #251f0e;"></div>
+                <span class="token-name">--ubits-fg-yellow-bold-static-hover</span>
+                <span class="hex-value">#251f0e</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #1c170a;"></div>
+                <span class="token-name">--ubits-fg-yellow-bold-static-inverted-hover</span>
+                <span class="hex-value">#1c170a</span>
+            </div>
+        </div>
+
+        <div class="category-title light-title">GREEN FOREGROUNDS</div>
+        <div class="section light-section">
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #183b28;"></div>
+                <span class="token-name">--ubits-fg-green-subtle</span>
+                <span class="hex-value">#183b28</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #bce7c3;"></div>
+                <span class="token-name">--ubits-fg-green-subtle-inverted</span>
+                <span class="hex-value">#bce7c3</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #82d8a5;"></div>
+                <span class="token-name">--ubits-fg-green-subtle-hover</span>
+                <span class="hex-value">#82d8a5</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #142318;"></div>
+                <span class="token-name">--ubits-fg-green-subtle-inverted-hover</span>
+                <span class="hex-value">#142318</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #183b28;"></div>
+                <span class="token-name">--ubits-fg-green-subtle-static</span>
+                <span class="hex-value">#183b28</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #bce7c3;"></div>
+                <span class="token-name">--ubits-fg-green-subtle-static-inverted</span>
+                <span class="hex-value">#bce7c3</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #142318;"></div>
+                <span class="token-name">--ubits-fg-green-subtle-static-hover</span>
+                <span class="hex-value">#142318</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #82d8a5;"></div>
+                <span class="token-name">--ubits-fg-green-subtle-static-inverted-hover</span>
+                <span class="hex-value">#82d8a5</span>
+            </div>
+        </div>
+
+        <div class="category-title light-title">TEAL FOREGROUNDS</div>
+        <div class="section light-section">
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #183a3b;"></div>
+                <span class="token-name">--ubits-fg-teal-subtle</span>
+                <span class="hex-value">#183a3b</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #c9e2e3;"></div>
+                <span class="token-name">--ubits-fg-teal-subtle-inverted</span>
+                <span class="hex-value">#c9e2e3</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #a4ced4;"></div>
+                <span class="token-name">--ubits-fg-teal-subtle-hover</span>
+                <span class="hex-value">#a4ced4</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #122224;"></div>
+                <span class="token-name">--ubits-fg-teal-subtle-inverted-hover</span>
+                <span class="hex-value">#122224</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #183a3b;"></div>
+                <span class="token-name">--ubits-fg-teal-subtle-static</span>
+                <span class="hex-value">#183a3b</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #c9e2e3;"></div>
+                <span class="token-name">--ubits-fg-teal-subtle-static-inverted</span>
+                <span class="hex-value">#c9e2e3</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #122224;"></div>
+                <span class="token-name">--ubits-fg-teal-subtle-static-hover</span>
+                <span class="hex-value">#122224</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #a4ced4;"></div>
+                <span class="token-name">--ubits-fg-teal-subtle-static-inverted-hover</span>
+                <span class="hex-value">#a4ced4</span>
+            </div>
+        </div>
+
+        <div class="category-title light-title">PURPLE FOREGROUNDS</div>
+        <div class="section light-section">
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #272a79;"></div>
+                <span class="token-name">--ubits-fg-purple-subtle-default</span>
+                <span class="hex-value">#272a79</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #e3d7ff;"></div>
+                <span class="token-name">--ubits-fg-purple-subtle-inverted-default</span>
+                <span class="hex-value">#e3d7ff</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #272a79;"></div>
+                <span class="token-name">--ubits-fg-purple-subtle-inverted</span>
+                <span class="hex-value">#272a79</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #d8bafd;"></div>
+                <span class="token-name">--ubits-fg-purple-subtle-hover</span>
+                <span class="hex-value">#d8bafd</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #221940;"></div>
+                <span class="token-name">--ubits-fg-purple-subtle-inverted-hover</span>
+                <span class="hex-value">#221940</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #272a79;"></div>
+                <span class="token-name">--ubits-fg-purple-subtle-static</span>
+                <span class="hex-value">#272a79</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #e3d7ff;"></div>
+                <span class="token-name">--ubits-fg-purple-subtle-static-inverted</span>
+                <span class="hex-value">#e3d7ff</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #221940;"></div>
+                <span class="token-name">--ubits-fg-purple-subtle-static-hover</span>
+                <span class="hex-value">#221940</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #d8bafd;"></div>
+                <span class="token-name">--ubits-fg-purple-subtle-static-inverted-hover</span>
+                <span class="hex-value">#d8bafd</span>
+            </div>
+        </div>
+
+        <div class="category-title light-title">PINK FOREGROUNDS</div>
+        <div class="section light-section">
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #542440;"></div>
+                <span class="token-name">--ubits-fg-pink-subtle-default</span>
+                <span class="hex-value">#542440</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #fcd1e5;"></div>
+                <span class="token-name">--ubits-fg-pink-subtle-inverted-default</span>
+                <span class="hex-value">#fcd1e5</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #542440;"></div>
+                <span class="token-name">--ubits-fg-pink-subtle-inverted</span>
+                <span class="hex-value">#542440</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #fab2ce;"></div>
+                <span class="token-name">--ubits-fg-pink-subtle-hover</span>
+                <span class="hex-value">#fab2ce</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #301824;"></div>
+                <span class="token-name">--ubits-fg-pink-subtle-inverted-hover</span>
+                <span class="hex-value">#301824</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #542440;"></div>
+                <span class="token-name">--ubits-fg-pink-subtle-static</span>
+                <span class="hex-value">#542440</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #fcd1e5;"></div>
+                <span class="token-name">--ubits-fg-pink-subtle-static-inverted</span>
+                <span class="hex-value">#fcd1e5</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #301824;"></div>
+                <span class="token-name">--ubits-fg-pink-subtle-static-hover</span>
+                <span class="hex-value">#301824</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #fab2ce;"></div>
+                <span class="token-name">--ubits-fg-pink-subtle-static-inverted-hover</span>
+                <span class="hex-value">#fab2ce</span>
+            </div>
+        </div>
+
+        <div class="category-title light-title">ROSE FOREGROUNDS</div>
+        <div class="section light-section">
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #4a255b;"></div>
+                <span class="token-name">--ubits-fg-rose-subtle-default</span>
+                <span class="hex-value">#4a255b</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #f0d4f6;"></div>
+                <span class="token-name">--ubits-fg-rose-subtle-inverted-default</span>
+                <span class="hex-value">#f0d4f6</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #4a255b;"></div>
+                <span class="token-name">--ubits-fg-rose-subtle-inverted</span>
+                <span class="hex-value">#4a255b</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #ecb5ea;"></div>
+                <span class="token-name">--ubits-fg-rose-subtle-hover</span>
+                <span class="hex-value">#ecb5ea</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #2d1731;"></div>
+                <span class="token-name">--ubits-fg-rose-subtle-inverted-hover</span>
+                <span class="hex-value">#2d1731</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #4a255b;"></div>
+                <span class="token-name">--ubits-fg-rose-subtle-static</span>
+                <span class="hex-value">#4a255b</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #f0d4f6;"></div>
+                <span class="token-name">--ubits-fg-rose-subtle-static-inverted</span>
+                <span class="hex-value">#f0d4f6</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #2d1731;"></div>
+                <span class="token-name">--ubits-fg-rose-subtle-static-hover</span>
+                <span class="hex-value">#2d1731</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #ecb5ea;"></div>
+                <span class="token-name">--ubits-fg-rose-subtle-static-inverted-hover</span>
+                <span class="hex-value">#ecb5ea</span>
+            </div>
+        </div>
+
+        <div class="category-title light-title">BACKGROUND COLORS</div>
+        <div class="section light-section">
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: rgba(12, 91, 239, 0.2);"></div>
+                <span class="token-name">--ubits-bg-active</span>
+                <span class="hex-value">rgba(12, 91, 239, 0.2)</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #ffffff;"></div>
+                <span class="token-name">--ubits-bg-1</span>
+                <span class="hex-value">#ffffff</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #F3F3F4;"></div>
+                <span class="token-name">--ubits-bg-2</span>
+                <span class="hex-value">#F3F3F4</span>
+            </div>
+        </div>
+
+        <div class="category-title light-title">BORDER COLORS - MAIN</div>
+        <div class="section light-section">
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #d0d2d5;"></div>
+                <span class="token-name">--ubits-border-1</span>
+                <span class="hex-value">#d0d2d5</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #c5c6cb;"></div>
+                <span class="token-name">--ubits-border-2</span>
+                <span class="hex-value">#c5c6cb</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #e1e2e5;"></div>
+                <span class="token-name">--ubits-border-disabled</span>
+                <span class="hex-value">#e1e2e5</span>
+            </div>
+        </div>
+
+        <div class="category-title light-title">SIDEBAR COLORS</div>
+        <div class="section light-section">
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #202837;"></div>
+                <span class="token-name">--ubits-sidebar-bg</span>
+                <span class="hex-value">#202837</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #ffffff;"></div>
+                <span class="token-name">--ubits-sidebar-logo</span>
+                <span class="hex-value">#ffffff</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #3b4350;"></div>
+                <span class="token-name">--ubits-sidebar-button-bg-pressed</span>
+                <span class="hex-value">#3b4350</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #3b4350;"></div>
+                <span class="token-name">--ubits-sidebar-button-bg-disabled</span>
+                <span class="hex-value">#3b4350</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #ffffff;"></div>
+                <span class="token-name">--ubits-sidebar-button-bg-active</span>
+                <span class="hex-value">#ffffff</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #d0d2d5;"></div>
+                <span class="token-name">--ubits-sidebar-button-fg-default</span>
+                <span class="hex-value">#d0d2d5</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #edeeef;"></div>
+                <span class="token-name">--ubits-sidebar-button-fg-hover</span>
+                <span class="hex-value">#edeeef</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #edeeef;"></div>
+                <span class="token-name">--ubits-sidebar-button-fg-pressed</span>
+                <span class="hex-value">#edeeef</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #303a47;"></div>
+                <span class="token-name">--ubits-sidebar-button-fg-active</span>
+                <span class="hex-value">#303a47</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #828690;"></div>
+                <span class="token-name">--ubits-sidebar-button-fg-disabled</span>
+                <span class="hex-value">#828690</span>
+            </div>
+        </div>
+
+        <div class="category-title light-title">FEEDBACK SUCCESS</div>
+        <div class="section light-section">
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #328e2c;"></div>
+                <span class="token-name">--ubits-feedback-accent-success</span>
+                <span class="hex-value">#328e2c</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #368226;"></div>
+                <span class="token-name">--ubits-feedback-accent-success-inverted</span>
+                <span class="hex-value">#368226</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #bde9ac;"></div>
+                <span class="token-name">--ubits-feedback-fg-success-subtle</span>
+                <span class="hex-value">#bde9ac</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #223b16;"></div>
+                <span class="token-name">--ubits-feedback-fg-success-subtle-inverted</span>
+                <span class="hex-value">#223b16</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #7ddb7f;"></div>
+                <span class="token-name">--ubits-feedback-fg-success-subtle-hover</span>
+                <span class="hex-value">#7ddb7f</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #152311;"></div>
+                <span class="token-name">--ubits-feedback-fg-success-subtle-inverted-hover</span>
+                <span class="hex-value">#152311</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #328e2c;"></div>
+                <span class="token-name">--ubits-feedback-accent-success-static</span>
+                <span class="hex-value">#328e2c</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #368226;"></div>
+                <span class="token-name">--ubits-feedback-accent-success-static-inverted</span>
+                <span class="hex-value">#368226</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #223b16;"></div>
+                <span class="token-name">--ubits-feedback-fg-success-subtle-static</span>
+                <span class="hex-value">#223b16</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #bde9ac;"></div>
+                <span class="token-name">--ubits-feedback-fg-success-subtle-static-inverted</span>
+                <span class="hex-value">#bde9ac</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #152311;"></div>
+                <span class="token-name">--ubits-feedback-fg-success-subtle-static-hover</span>
+                <span class="hex-value">#152311</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #7ddb7f;"></div>
+                <span class="token-name">--ubits-feedback-fg-success-subtle-static-inverted-hover</span>
+                <span class="hex-value">#7ddb7f</span>
+            </div>
+        </div>
+
+        <div class="category-title light-title">FEEDBACK INFO</div>
+        <div class="section light-section">
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #4a74ee;"></div>
+                <span class="token-name">--ubits-feedback-accent-info</span>
+                <span class="hex-value">#4a74ee</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #3a6cda;"></div>
+                <span class="token-name">--ubits-feedback-accent-info-inverted</span>
+                <span class="hex-value">#3a6cda</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #d7daff;"></div>
+                <span class="token-name">--ubits-feedback-fg-info-subtle</span>
+                <span class="hex-value">#d7daff</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #20335f;"></div>
+                <span class="token-name">--ubits-feedback-fg-info-subtle-inverted</span>
+                <span class="hex-value">#20335f</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #c4c1fc;"></div>
+                <span class="token-name">--ubits-feedback-fg-info-subtle-hover</span>
+                <span class="hex-value">#c4c1fc</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #1b1e34;"></div>
+                <span class="token-name">--ubits-feedback-fg-info-subtle-inverted-hover</span>
+                <span class="hex-value">#1b1e34</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #4a74ee;"></div>
+                <span class="token-name">--ubits-feedback-accent-info-static</span>
+                <span class="hex-value">#4a74ee</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #3a6cda;"></div>
+                <span class="token-name">--ubits-feedback-accent-info-static-inverted</span>
+                <span class="hex-value">#3a6cda</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #20335f;"></div>
+                <span class="token-name">--ubits-feedback-fg-info-subtle-static</span>
+                <span class="hex-value">#20335f</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #d7daff;"></div>
+                <span class="token-name">--ubits-feedback-fg-info-subtle-static-inverted</span>
+                <span class="hex-value">#d7daff</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #1b1e34;"></div>
+                <span class="token-name">--ubits-feedback-fg-info-subtle-static-hover</span>
+                <span class="hex-value">#1b1e34</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #c4c1fc;"></div>
+                <span class="token-name">--ubits-feedback-fg-info-subtle-static-inverted-hover</span>
+                <span class="hex-value">#c4c1fc</span>
+            </div>
+        </div>
+
+        <div class="category-title light-title">FEEDBACK WARNING</div>
+        <div class="section light-section">
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #d68b0d;"></div>
+                <span class="token-name">--ubits-feedback-accent-warning</span>
+                <span class="hex-value">#d68b0d</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #b16c19;"></div>
+                <span class="token-name">--ubits-feedback-accent-warning-inverted</span>
+                <span class="hex-value">#b16c19</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #4c2e15;"></div>
+                <span class="token-name">--ubits-feedback-fg-warning-subtle</span>
+                <span class="hex-value">#4c2e15</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #ffd4a0;"></div>
+                <span class="token-name">--ubits-feedback-fg-warning-subtle-inverted</span>
+                <span class="hex-value">#ffd4a0</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #ffb954;"></div>
+                <span class="token-name">--ubits-feedback-fg-warning-subtle-hover</span>
+                <span class="hex-value">#ffb954</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #2a1d0d;"></div>
+                <span class="token-name">--ubits-feedback-fg-warning-subtle-inverted-hover</span>
+                <span class="hex-value">#2a1d0d</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #35250f;"></div>
+                <span class="token-name">--ubits-feedback-fg-warning-bold</span>
+                <span class="hex-value">#35250f</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #ffd4a0;"></div>
+                <span class="token-name">--ubits-feedback-fg-warning-bold-inverted</span>
+                <span class="hex-value">#ffd4a0</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #2a1d0d;"></div>
+                <span class="token-name">--ubits-feedback-fg-warning-bold-hover</span>
+                <span class="hex-value">#2a1d0d</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #ffb954;"></div>
+                <span class="token-name">--ubits-feedback-fg-warning-bold-inverted-hover</span>
+                <span class="hex-value">#ffb954</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #4c2e15;"></div>
+                <span class="token-name">--ubits-feedback-fg-warning-subtle-static</span>
+                <span class="hex-value">#4c2e15</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #ffd4a0;"></div>
+                <span class="token-name">--ubits-feedback-fg-warning-subtle-static-inverted</span>
+                <span class="hex-value">#ffd4a0</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #2a1d0d;"></div>
+                <span class="token-name">--ubits-feedback-fg-warning-subtle-static-hover</span>
+                <span class="hex-value">#2a1d0d</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #ffb954;"></div>
+                <span class="token-name">--ubits-feedback-fg-warning-subtle-static-inverted-hover</span>
+                <span class="hex-value">#ffb954</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #35250f;"></div>
+                <span class="token-name">--ubits-feedback-fg-warning-bold-static</span>
+                <span class="hex-value">#35250f</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #2a1d0d;"></div>
+                <span class="token-name">--ubits-feedback-fg-warning-bold-static-inverted</span>
+                <span class="hex-value">#2a1d0d</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #2a1d0d;"></div>
+                <span class="token-name">--ubits-feedback-fg-warning-bold-static-hover</span>
+                <span class="hex-value">#2a1d0d</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #1f1609;"></div>
+                <span class="token-name">--ubits-feedback-fg-warning-bold-static-inverted-hover</span>
+                <span class="hex-value">#1f1609</span>
+            </div>
+        </div>
+
+        <div class="category-title light-title">FEEDBACK ERROR</div>
+        <div class="section light-section">
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #f96f6f;"></div>
+                <span class="token-name">--ubits-feedback-accent-error</span>
+                <span class="hex-value">#f96f6f</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #e9343c;"></div>
+                <span class="token-name">--ubits-feedback-accent-error-inverted</span>
+                <span class="hex-value">#e9343c</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #65181e;"></div>
+                <span class="token-name">--ubits-feedback-fg-error-subtle</span>
+                <span class="hex-value">#65181e</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #ffd2cd;"></div>
+                <span class="token-name">--ubits-feedback-fg-error-subtle-inverted</span>
+                <span class="hex-value">#ffd2cd</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #ffb4a6;"></div>
+                <span class="token-name">--ubits-feedback-fg-error-subtle-hover</span>
+                <span class="hex-value">#ffb4a6</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #391411;"></div>
+                <span class="token-name">--ubits-feedback-fg-error-subtle-inverted-hover</span>
+                <span class="hex-value">#391411</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #65181e;"></div>
+                <span class="token-name">--ubits-feedback-fg-error-subtle-static</span>
+                <span class="hex-value">#65181e</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #ffd2cd;"></div>
+                <span class="token-name">--ubits-feedback-fg-error-subtle-static-inverted</span>
+                <span class="hex-value">#ffd2cd</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #391411;"></div>
+                <span class="token-name">--ubits-feedback-fg-error-subtle-static-hover</span>
+                <span class="hex-value">#391411</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #ffb4a6;"></div>
+                <span class="token-name">--ubits-feedback-fg-error-subtle-static-inverted-hover</span>
+                <span class="hex-value">#ffb4a6</span>
+            </div>
+        </div>
+
+        <div class="category-title light-title">BORDER COLORS - COLORED</div>
+        <div class="section light-section">
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #3865f5;"></div>
+                <span class="token-name">--ubits-border-blue</span>
+                <span class="hex-value">#3865f5</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #6c727d;"></div>
+                <span class="token-name">--ubits-border-gray</span>
+                <span class="hex-value">#6c727d</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #1e8251;"></div>
+                <span class="token-name">--ubits-border-green</span>
+                <span class="hex-value">#1e8251</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #177e84;"></div>
+                <span class="token-name">--ubits-border-teal</span>
+                <span class="hex-value">#177e84</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #3a6cda;"></div>
+                <span class="token-name">--ubits-border-indigo</span>
+                <span class="hex-value">#3a6cda</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #6457ff;"></div>
+                <span class="token-name">--ubits-border-purple</span>
+                <span class="hex-value">#6457ff</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #bf418a;"></div>
+                <span class="token-name">--ubits-border-pink</span>
+                <span class="hex-value">#bf418a</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #8e6d1b;"></div>
+                <span class="token-name">--ubits-border-yellow</span>
+                <span class="hex-value">#8e6d1b</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #ad3fcb;"></div>
+                <span class="token-name">--ubits-border-rose</span>
+                <span class="hex-value">#ad3fcb</span>
+            </div>
+        </div>
+
+        <div class="category-title light-title">BORDER COLORS - INVERTED</div>
+        <div class="section light-section">
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #d0d2d5;"></div>
+                <span class="token-name">--ubits-border-1-inverted</span>
+                <span class="hex-value">#d0d2d5</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #c5c6cb;"></div>
+                <span class="token-name">--ubits-border-2-inverted</span>
+                <span class="hex-value">#c5c6cb</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #e1e2e5;"></div>
+                <span class="token-name">--ubits-border-disabled-inverted</span>
+                <span class="hex-value">#e1e2e5</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #a2a3fb;"></div>
+                <span class="token-name">--ubits-border-blue-inverted</span>
+                <span class="hex-value">#a2a3fb</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #a8abb2;"></div>
+                <span class="token-name">--ubits-border-gray-inverted</span>
+                <span class="hex-value">#a8abb2</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #25c37a;"></div>
+                <span class="token-name">--ubits-border-green-inverted</span>
+                <span class="hex-value">#25c37a</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #74b6bb;"></div>
+                <span class="token-name">--ubits-border-teal-inverted</span>
+                <span class="hex-value">#74b6bb</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #97a5fd;"></div>
+                <span class="token-name">--ubits-border-indigo-inverted</span>
+                <span class="hex-value">#97a5fd</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #b59bff;"></div>
+                <span class="token-name">--ubits-border-purple-inverted</span>
+                <span class="hex-value">#b59bff</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #f08bbe;"></div>
+                <span class="token-name">--ubits-border-pink-inverted</span>
+                <span class="hex-value">#f08bbe</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #c9a916;"></div>
+                <span class="token-name">--ubits-border-yellow-inverted</span>
+                <span class="hex-value">#c9a916</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #d991e5;"></div>
+                <span class="token-name">--ubits-border-rose-inverted</span>
+                <span class="hex-value">#d991e5</span>
+            </div>
+        </div>
+
+        <div class="category-title light-title">BORDER COLORS - STATIC</div>
+        <div class="section light-section">
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #d0d2d5;"></div>
+                <span class="token-name">--ubits-border-1-static</span>
+                <span class="hex-value">#d0d2d5</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #c5c6cb;"></div>
+                <span class="token-name">--ubits-border-2-static</span>
+                <span class="hex-value">#c5c6cb</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #e1e2e5;"></div>
+                <span class="token-name">--ubits-border-disabled-static</span>
+                <span class="hex-value">#e1e2e5</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #a2a3fb;"></div>
+                <span class="token-name">--ubits-border-blue-static</span>
+                <span class="hex-value">#a2a3fb</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #a8abb2;"></div>
+                <span class="token-name">--ubits-border-gray-static</span>
+                <span class="hex-value">#a8abb2</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #25c37a;"></div>
+                <span class="token-name">--ubits-border-green-static</span>
+                <span class="hex-value">#25c37a</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #74b6bb;"></div>
+                <span class="token-name">--ubits-border-teal-static</span>
+                <span class="hex-value">#74b6bb</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #97a5fd;"></div>
+                <span class="token-name">--ubits-border-indigo-static</span>
+                <span class="hex-value">#97a5fd</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #b59bff;"></div>
+                <span class="token-name">--ubits-border-purple-static</span>
+                <span class="hex-value">#b59bff</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #f08bbe;"></div>
+                <span class="token-name">--ubits-border-pink-static</span>
+                <span class="hex-value">#f08bbe</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #c9a916;"></div>
+                <span class="token-name">--ubits-border-yellow-static</span>
+                <span class="hex-value">#c9a916</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #d991e5;"></div>
+                <span class="token-name">--ubits-border-rose-static</span>
+                <span class="hex-value">#d991e5</span>
+            </div>
+        </div>
+
+        <div class="category-title light-title">BORDER COLORS - STATIC INVERTED</div>
+        <div class="section light-section">
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #4f5561;"></div>
+                <span class="token-name">--ubits-border-1-static-inverted</span>
+                <span class="hex-value">#4f5561</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #353e4c;"></div>
+                <span class="token-name">--ubits-border-2-static-inverted</span>
+                <span class="hex-value">#353e4c</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #545a66;"></div>
+                <span class="token-name">--ubits-border-disabled-static-inverted</span>
+                <span class="hex-value">#545a66</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #3865f5;"></div>
+                <span class="token-name">--ubits-border-blue-static-inverted</span>
+                <span class="hex-value">#3865f5</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #6c727d;"></div>
+                <span class="token-name">--ubits-border-gray-static-inverted</span>
+                <span class="hex-value">#6c727d</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #1e8251;"></div>
+                <span class="token-name">--ubits-border-green-static-inverted</span>
+                <span class="hex-value">#1e8251</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #177e84;"></div>
+                <span class="token-name">--ubits-border-teal-static-inverted</span>
+                <span class="hex-value">#177e84</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #3a6cda;"></div>
+                <span class="token-name">--ubits-border-indigo-static-inverted</span>
+                <span class="hex-value">#3a6cda</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #6457ff;"></div>
+                <span class="token-name">--ubits-border-purple-static-inverted</span>
+                <span class="hex-value">#6457ff</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #bf418a;"></div>
+                <span class="token-name">--ubits-border-pink-static-inverted</span>
+                <span class="hex-value">#bf418a</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #8e6d1b;"></div>
+                <span class="token-name">--ubits-border-yellow-static-inverted</span>
+                <span class="hex-value">#8e6d1b</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #ad3fcb;"></div>
+                <span class="token-name">--ubits-border-rose-static-inverted</span>
+                <span class="hex-value">#ad3fcb</span>
+            </div>
+        </div>
+
+        <div class="category-title light-title">FEEDBACK BORDERS</div>
+        <div class="section light-section">
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #368226;"></div>
+                <span class="token-name">--ubits-feedback-border-success</span>
+                <span class="hex-value">#368226</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #3a6cda;"></div>
+                <span class="token-name">--ubits-feedback-border-info</span>
+                <span class="hex-value">#3a6cda</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #a4621b;"></div>
+                <span class="token-name">--ubits-feedback-border-warning</span>
+                <span class="hex-value">#a4621b</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #e20d34;"></div>
+                <span class="token-name">--ubits-feedback-border-error</span>
+                <span class="hex-value">#e20d34</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #41c433;"></div>
+                <span class="token-name">--ubits-feedback-border-success-inverted</span>
+                <span class="hex-value">#41c433</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #97a5fd;"></div>
+                <span class="token-name">--ubits-feedback-border-info-inverted</span>
+                <span class="hex-value">#97a5fd</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #ec9907;"></div>
+                <span class="token-name">--ubits-feedback-border-warning-inverted</span>
+                <span class="hex-value">#ec9907</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #fd8a82;"></div>
+                <span class="token-name">--ubits-feedback-border-error-inverted</span>
+                <span class="hex-value">#fd8a82</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #41c433;"></div>
+                <span class="token-name">--ubits-feedback-border-success-static</span>
+                <span class="hex-value">#41c433</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #97a5fd;"></div>
+                <span class="token-name">--ubits-feedback-border-info-static</span>
+                <span class="hex-value">#97a5fd</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #ec9907;"></div>
+                <span class="token-name">--ubits-feedback-border-warning-static</span>
+                <span class="hex-value">#ec9907</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #fd8a82;"></div>
+                <span class="token-name">--ubits-feedback-border-error-static</span>
+                <span class="hex-value">#fd8a82</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #368226;"></div>
+                <span class="token-name">--ubits-feedback-border-success-static-inverted</span>
+                <span class="hex-value">#368226</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #3a6cda;"></div>
+                <span class="token-name">--ubits-feedback-border-info-static-inverted</span>
+                <span class="hex-value">#3a6cda</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #a4621b;"></div>
+                <span class="token-name">--ubits-feedback-border-warning-static-inverted</span>
+                <span class="hex-value">#a4621b</span>
+            </div>
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #a4621b;"></div>
+                <span class="token-name">--ubits-feedback-border-error-static-inverted</span>
+                <span class="hex-value">#a4621b</span>
+            </div>
+        </div>
+
+        <div class="category-title light-title">CHART COLORS</div>
+        <div class="section light-section">
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #ffffff;"></div>
+                <span class="token-name">--ubits-chart-bg-level-1</span>
+                <span class="hex-value">#ffffff</span>
+            </div>
+        </div>
+
+        <div class="category-title light-title">TOAST COLORS</div>
+        <div class="section light-section">
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #ffffff;"></div>
+                <span class="token-name">--ubits-toast-feedback-bg</span>
+                <span class="hex-value">#ffffff</span>
+            </div>
+        </div>
+
+        <div class="category-title light-title">BOTTOM NAV COLORS</div>
+        <div class="section light-section">
+            <div class="token-item light-token">
+                <div class="color-box" style="background-color: #00000000;"></div>
+                <span class="token-name">--ubits-bottom-nav-shadow-opacity</span>
+                <span class="hex-value">#00000000</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- COLUMNA DERECHA - DARK MODE -->
+    <div class="column dark-column" data-theme="dark">
+        <h1 class="dark-title">DARK MODE - TODOS LOS TOKENS</h1>
+        
+        <div class="category-title dark-category-title">BRAND COLORS</div>
+        <div class="section dark-section">
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #b6b5fc;"></div>
+                <span class="token-name">--ubits-accent-brand</span>
+                <span class="hex-value">#b6b5fc</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #0c5bef;"></div>
+                <span class="token-name">--ubits-accent-brand-inverted</span>
+                <span class="hex-value">#0c5bef</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #0c5bef;"></div>
+                <span class="token-name">--ubits-accent-brand-static</span>
+                <span class="hex-value">#0c5bef</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #3865f5;"></div>
+                <span class="token-name">--ubits-accent-brand-static-inverted</span>
+                <span class="hex-value">#3865f5</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #ffffff;"></div>
+                <span class="token-name">--ubits-logo</span>
+                <span class="hex-value">#ffffff</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #ffffff;"></div>
+                <span class="token-name">--ubits-logo-inverted</span>
+                <span class="hex-value">#ffffff</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #0d1f57;"></div>
+                <span class="token-name">--ubits-logo-static</span>
+                <span class="hex-value">#0d1f57</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #ffffff;"></div>
+                <span class="token-name">--ubits-logo-static-inverted</span>
+                <span class="hex-value">#ffffff</span>
+            </div>
+        </div>
+
+        <div class="category-title dark-category-title">FOREGROUND COLORS</div>
+        <div class="section dark-section">
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #edeeef;"></div>
+                <span class="token-name">--ubits-fg-1-high</span>
+                <span class="hex-value">#edeeef</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #303a47;"></div>
+                <span class="token-name">--ubits-fg-1-high-inverted</span>
+                <span class="hex-value">#303a47</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #303a47;"></div>
+                <span class="token-name">--ubits-fg-1-high-static</span>
+                <span class="hex-value">#303a47</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #edeeef;"></div>
+                <span class="token-name">--ubits-fg-1-high-static-inverted</span>
+                <span class="hex-value">#edeeef</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #d0d2d5;"></div>
+                <span class="token-name">--ubits-fg-1-medium</span>
+                <span class="hex-value">#d0d2d5</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #5c646f;"></div>
+                <span class="token-name">--ubits-fg-1-medium-inverted</span>
+                <span class="hex-value">#5c646f</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #5c646f;"></div>
+                <span class="token-name">--ubits-fg-1-medium-static</span>
+                <span class="hex-value">#5c646f</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #d0d2d5;"></div>
+                <span class="token-name">--ubits-fg-1-medium-static-inverted</span>
+                <span class="hex-value">#d0d2d5</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #ffffff;"></div>
+                <span class="token-name">--ubits-fg-2-high</span>
+                <span class="hex-value">#ffffff</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #2a303f;"></div>
+                <span class="token-name">--ubits-fg-2-high-inverted</span>
+                <span class="hex-value">#2a303f</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #2a303f;"></div>
+                <span class="token-name">--ubits-fg-2-high-static</span>
+                <span class="hex-value">#2a303f</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #ffffff;"></div>
+                <span class="token-name">--ubits-fg-2-high-static-inverted</span>
+                <span class="hex-value">#ffffff</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #d0d2d5;"></div>
+                <span class="token-name">--ubits-fg-2-medium</span>
+                <span class="hex-value">#d0d2d5</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #5a5e6a;"></div>
+                <span class="token-name">--ubits-fg-2-medium-inverted</span>
+                <span class="hex-value">#5a5e6a</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #5a5e6a;"></div>
+                <span class="token-name">--ubits-fg-2-medium-static</span>
+                <span class="hex-value">#5a5e6a</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #d0d2d5;"></div>
+                <span class="token-name">--ubits-fg-2-medium-static-inverted</span>
+                <span class="hex-value">#d0d2d5</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #777c86;"></div>
+                <span class="token-name">--ubits-fg-disabled</span>
+                <span class="hex-value">#777c86</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #a2a6ad;"></div>
+                <span class="token-name">--ubits-fg-disabled-inverted</span>
+                <span class="hex-value">#a2a6ad</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #a2a6ad;"></div>
+                <span class="token-name">--ubits-fg-disabled-static</span>
+                <span class="hex-value">#a2a6ad</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #777c86;"></div>
+                <span class="token-name">--ubits-fg-disabled-static-inverted</span>
+                <span class="hex-value">#777c86</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #828690;"></div>
+                <span class="token-name">--ubits-fg-on-disabled</span>
+                <span class="hex-value">#828690</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #8d9199;"></div>
+                <span class="token-name">--ubits-fg-on-disabled-inverted</span>
+                <span class="hex-value">#8d9199</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #8d9199;"></div>
+                <span class="token-name">--ubits-fg-on-disabled-static</span>
+                <span class="hex-value">#8d9199</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #828690;"></div>
+                <span class="token-name">--ubits-fg-on-disabled-static-inverted</span>
+                <span class="hex-value">#828690</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #ffffff;"></div>
+                <span class="token-name">--ubits-fg-bold</span>
+                <span class="hex-value">#ffffff</span>
+            </div>
+        </div>
+
+        <div class="category-title dark-category-title">BLUE FOREGROUNDS</div>
+        <div class="section dark-section">
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #d6dbff;"></div>
+                <span class="token-name">--ubits-fg-blue-subtle</span>
+                <span class="hex-value">#d6dbff</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #212f70;"></div>
+                <span class="token-name">--ubits-fg-blue-subtle-inverted</span>
+                <span class="hex-value">#212f70</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #c3c1fd;"></div>
+                <span class="token-name">--ubits-fg-blue-subtle-hover</span>
+                <span class="hex-value">#c3c1fd</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #141e3f;"></div>
+                <span class="token-name">--ubits-fg-blue-subtle-inverted-hover</span>
+                <span class="hex-value">#141e3f</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #d6dbff;"></div>
+                <span class="token-name">--ubits-fg-blue-subtle-static</span>
+                <span class="hex-value">#d6dbff</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #212f70;"></div>
+                <span class="token-name">--ubits-fg-blue-subtle-static-inverted</span>
+                <span class="hex-value">#212f70</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #c3c1fd;"></div>
+                <span class="token-name">--ubits-fg-blue-subtle-static-hover</span>
+                <span class="hex-value">#c3c1fd</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #141e3f;"></div>
+                <span class="token-name">--ubits-fg-blue-subtle-static-inverted-hover</span>
+                <span class="hex-value">#141e3f</span>
+            </div>
+        </div>
+
+        <div class="category-title dark-category-title">GRAY FOREGROUNDS</div>
+        <div class="section dark-section">
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #dbdde0;"></div>
+                <span class="token-name">--ubits-fg-gray-subtle</span>
+                <span class="hex-value">#dbdde0</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #dbdde0;"></div>
+                <span class="token-name">--ubits-fg-gray-subtle-inverted</span>
+                <span class="hex-value">#dbdde0</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #c5c6cb;"></div>
+                <span class="token-name">--ubits-fg-gray-subtle-hover</span>
+                <span class="hex-value">#c5c6cb</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #16202f;"></div>
+                <span class="token-name">--ubits-fg-gray-subtle-inverted-hover</span>
+                <span class="hex-value">#16202f</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #2b3543;"></div>
+                <span class="token-name">--ubits-fg-gray-subtle-static</span>
+                <span class="hex-value">#2b3543</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #dbdde0;"></div>
+                <span class="token-name">--ubits-fg-gray-subtle-static-inverted</span>
+                <span class="hex-value">#dbdde0</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #16202f;"></div>
+                <span class="token-name">--ubits-fg-gray-subtle-static-hover</span>
+                <span class="hex-value">#16202f</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #c5c6cb;"></div>
+                <span class="token-name">--ubits-fg-gray-subtle-static-inverted-hover</span>
+                <span class="hex-value">#c5c6cb</span>
+            </div>
+        </div>
+
+        <div class="category-title dark-category-title">YELLOW FOREGROUNDS</div>
+        <div class="section dark-section">
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #ffd555;"></div>
+                <span class="token-name">--ubits-fg-yellow-subtle</span>
+                <span class="hex-value">#ffd555</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #433214;"></div>
+                <span class="token-name">--ubits-fg-yellow-subtle-inverted</span>
+                <span class="hex-value">#433214</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #e9c410;"></div>
+                <span class="token-name">--ubits-fg-yellow-subtle-hover</span>
+                <span class="hex-value">#e9c410</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #251f0e;"></div>
+                <span class="token-name">--ubits-fg-yellow-subtle-inverted-hover</span>
+                <span class="hex-value">#251f0e</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #251f0e;"></div>
+                <span class="token-name">--ubits-fg-yellow-bold</span>
+                <span class="hex-value">#251f0e</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #2f2711;"></div>
+                <span class="token-name">--ubits-fg-yellow-bold-inverted</span>
+                <span class="hex-value">#2f2711</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #1c170a;"></div>
+                <span class="token-name">--ubits-fg-yellow-bold-hover</span>
+                <span class="hex-value">#1c170a</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #251f0e;"></div>
+                <span class="token-name">--ubits-fg-yellow-bold-inverted-hover</span>
+                <span class="hex-value">#251f0e</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #433214;"></div>
+                <span class="token-name">--ubits-fg-yellow-subtle-static</span>
+                <span class="hex-value">#433214</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #ffd555;"></div>
+                <span class="token-name">--ubits-fg-yellow-subtle-static-inverted</span>
+                <span class="hex-value">#ffd555</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #2f2711;"></div>
+                <span class="token-name">--ubits-fg-yellow-bold-static</span>
+                <span class="hex-value">#2f2711</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #251f0e;"></div>
+                <span class="token-name">--ubits-fg-yellow-bold-static-inverted</span>
+                <span class="hex-value">#251f0e</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #251f0e;"></div>
+                <span class="token-name">--ubits-fg-yellow-subtle-static-hover</span>
+                <span class="hex-value">#251f0e</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #e9c410;"></div>
+                <span class="token-name">--ubits-fg-yellow-subtle-static-inverted-hover</span>
+                <span class="hex-value">#e9c410</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #251f0e;"></div>
+                <span class="token-name">--ubits-fg-yellow-bold-static-hover</span>
+                <span class="hex-value">#251f0e</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #1c170a;"></div>
+                <span class="token-name">--ubits-fg-yellow-bold-static-inverted-hover</span>
+                <span class="hex-value">#1c170a</span>
+            </div>
+        </div>
+
+        <div class="category-title dark-category-title">GREEN FOREGROUNDS</div>
+        <div class="section dark-section">
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #bce7c3;"></div>
+                <span class="token-name">--ubits-fg-green-subtle</span>
+                <span class="hex-value">#bce7c3</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #183b28;"></div>
+                <span class="token-name">--ubits-fg-green-subtle-inverted</span>
+                <span class="hex-value">#183b28</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #82d8a5;"></div>
+                <span class="token-name">--ubits-fg-green-subtle-hover</span>
+                <span class="hex-value">#82d8a5</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #142318;"></div>
+                <span class="token-name">--ubits-fg-green-subtle-inverted-hover</span>
+                <span class="hex-value">#142318</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #bce7c3;"></div>
+                <span class="token-name">--ubits-fg-green-subtle-static</span>
+                <span class="hex-value">#bce7c3</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #183b28;"></div>
+                <span class="token-name">--ubits-fg-green-subtle-static-inverted</span>
+                <span class="hex-value">#183b28</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #82d8a5;"></div>
+                <span class="token-name">--ubits-fg-green-subtle-static-hover</span>
+                <span class="hex-value">#82d8a5</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #142318;"></div>
+                <span class="token-name">--ubits-fg-green-subtle-static-inverted-hover</span>
+                <span class="hex-value">#142318</span>
+            </div>
+        </div>
+
+        <div class="category-title dark-category-title">TEAL FOREGROUNDS</div>
+        <div class="section dark-section">
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #c9e2e3;"></div>
+                <span class="token-name">--ubits-fg-teal-subtle</span>
+                <span class="hex-value">#c9e2e3</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #183a3b;"></div>
+                <span class="token-name">--ubits-fg-teal-subtle-inverted</span>
+                <span class="hex-value">#183a3b</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #a4ced4;"></div>
+                <span class="token-name">--ubits-fg-teal-subtle-hover</span>
+                <span class="hex-value">#a4ced4</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #122224;"></div>
+                <span class="token-name">--ubits-fg-teal-subtle-inverted-hover</span>
+                <span class="hex-value">#122224</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #c9e2e3;"></div>
+                <span class="token-name">--ubits-fg-teal-subtle-static</span>
+                <span class="hex-value">#c9e2e3</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #183a3b;"></div>
+                <span class="token-name">--ubits-fg-teal-subtle-static-inverted</span>
+                <span class="hex-value">#183a3b</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #a4ced4;"></div>
+                <span class="token-name">--ubits-fg-teal-subtle-static-hover</span>
+                <span class="hex-value">#a4ced4</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #122224;"></div>
+                <span class="token-name">--ubits-fg-teal-subtle-static-inverted-hover</span>
+                <span class="hex-value">#122224</span>
+            </div>
+        </div>
+
+        <div class="category-title dark-category-title">PURPLE FOREGROUNDS</div>
+        <div class="section dark-section">
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #e3d7ff;"></div>
+                <span class="token-name">--ubits-fg-purple-subtle-default</span>
+                <span class="hex-value">#e3d7ff</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #272a79;"></div>
+                <span class="token-name">--ubits-fg-purple-subtle-inverted-default</span>
+                <span class="hex-value">#272a79</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #272a79;"></div>
+                <span class="token-name">--ubits-fg-purple-subtle-inverted</span>
+                <span class="hex-value">#272a79</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #d8bafd;"></div>
+                <span class="token-name">--ubits-fg-purple-subtle-hover</span>
+                <span class="hex-value">#d8bafd</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #221940;"></div>
+                <span class="token-name">--ubits-fg-purple-subtle-inverted-hover</span>
+                <span class="hex-value">#221940</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #272a79;"></div>
+                <span class="token-name">--ubits-fg-purple-subtle-static</span>
+                <span class="hex-value">#272a79</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #e3d7ff;"></div>
+                <span class="token-name">--ubits-fg-purple-subtle-static-inverted</span>
+                <span class="hex-value">#e3d7ff</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #221940;"></div>
+                <span class="token-name">--ubits-fg-purple-subtle-static-hover</span>
+                <span class="hex-value">#221940</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #d8bafd;"></div>
+                <span class="token-name">--ubits-fg-purple-subtle-static-inverted-hover</span>
+                <span class="hex-value">#d8bafd</span>
+            </div>
+        </div>
+
+        <div class="category-title dark-category-title">PINK FOREGROUNDS</div>
+        <div class="section dark-section">
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #fcd1e5;"></div>
+                <span class="token-name">--ubits-fg-pink-subtle-default</span>
+                <span class="hex-value">#fcd1e5</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #542440;"></div>
+                <span class="token-name">--ubits-fg-pink-subtle-inverted-default</span>
+                <span class="hex-value">#542440</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #542440;"></div>
+                <span class="token-name">--ubits-fg-pink-subtle-inverted</span>
+                <span class="hex-value">#542440</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #fab2ce;"></div>
+                <span class="token-name">--ubits-fg-pink-subtle-hover</span>
+                <span class="hex-value">#fab2ce</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #301824;"></div>
+                <span class="token-name">--ubits-fg-pink-subtle-inverted-hover</span>
+                <span class="hex-value">#301824</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #542440;"></div>
+                <span class="token-name">--ubits-fg-pink-subtle-static</span>
+                <span class="hex-value">#542440</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #fcd1e5;"></div>
+                <span class="token-name">--ubits-fg-pink-subtle-static-inverted</span>
+                <span class="hex-value">#fcd1e5</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #301824;"></div>
+                <span class="token-name">--ubits-fg-pink-subtle-static-hover</span>
+                <span class="hex-value">#301824</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #fab2ce;"></div>
+                <span class="token-name">--ubits-fg-pink-subtle-static-inverted-hover</span>
+                <span class="hex-value">#fab2ce</span>
+            </div>
+        </div>
+
+        <div class="category-title dark-category-title">ROSE FOREGROUNDS</div>
+        <div class="section dark-section">
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #f0d4f6;"></div>
+                <span class="token-name">--ubits-fg-rose-subtle-default</span>
+                <span class="hex-value">#f0d4f6</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #4a255b;"></div>
+                <span class="token-name">--ubits-fg-rose-subtle-inverted-default</span>
+                <span class="hex-value">#4a255b</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #4a255b;"></div>
+                <span class="token-name">--ubits-fg-rose-subtle-inverted</span>
+                <span class="hex-value">#4a255b</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #ecb5ea;"></div>
+                <span class="token-name">--ubits-fg-rose-subtle-hover</span>
+                <span class="hex-value">#ecb5ea</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #2d1731;"></div>
+                <span class="token-name">--ubits-fg-rose-subtle-inverted-hover</span>
+                <span class="hex-value">#2d1731</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #4a255b;"></div>
+                <span class="token-name">--ubits-fg-rose-subtle-static</span>
+                <span class="hex-value">#4a255b</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #f0d4f6;"></div>
+                <span class="token-name">--ubits-fg-rose-subtle-static-inverted</span>
+                <span class="hex-value">#f0d4f6</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #2d1731;"></div>
+                <span class="token-name">--ubits-fg-rose-subtle-static-hover</span>
+                <span class="hex-value">#2d1731</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #ecb5ea;"></div>
+                <span class="token-name">--ubits-fg-rose-subtle-static-inverted-hover</span>
+                <span class="hex-value">#ecb5ea</span>
+            </div>
+        </div>
+
+        <div class="category-title dark-category-title">BACKGROUND COLORS</div>
+        <div class="section dark-section">
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: rgba(12, 91, 239, 0.2);"></div>
+                <span class="token-name">--ubits-bg-active</span>
+                <span class="hex-value">rgba(12, 91, 239, 0.2)</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #202837;"></div>
+                <span class="token-name">--ubits-bg-1</span>
+                <span class="hex-value">#202837</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #0E1825;"></div>
+                <span class="token-name">--ubits-bg-2</span>
+                <span class="hex-value">#0E1825</span>
+            </div>
+        </div>
+
+        <div class="category-title dark-category-title">BORDER COLORS - MAIN</div>
+        <div class="section dark-section">
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #4f5561;"></div>
+                <span class="token-name">--ubits-border-1</span>
+                <span class="hex-value">#4f5561</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #404754;"></div>
+                <span class="token-name">--ubits-border-2</span>
+                <span class="hex-value">#404754</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #545a66;"></div>
+                <span class="token-name">--ubits-border-disabled</span>
+                <span class="hex-value">#545a66</span>
+            </div>
+        </div>
+
+        <div class="category-title dark-category-title">SIDEBAR COLORS</div>
+        <div class="section dark-section">
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #202837;"></div>
+                <span class="token-name">--ubits-sidebar-bg</span>
+                <span class="hex-value">#202837</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #ffffff;"></div>
+                <span class="token-name">--ubits-sidebar-logo</span>
+                <span class="hex-value">#ffffff</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #3b4350;"></div>
+                <span class="token-name">--ubits-sidebar-button-bg-pressed</span>
+                <span class="hex-value">#3b4350</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #3b4350;"></div>
+                <span class="token-name">--ubits-sidebar-button-bg-disabled</span>
+                <span class="hex-value">#3b4350</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #ffffff;"></div>
+                <span class="token-name">--ubits-sidebar-button-bg-active</span>
+                <span class="hex-value">#ffffff</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #d0d2d5;"></div>
+                <span class="token-name">--ubits-sidebar-button-fg-default</span>
+                <span class="hex-value">#d0d2d5</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #edeeef;"></div>
+                <span class="token-name">--ubits-sidebar-button-fg-hover</span>
+                <span class="hex-value">#edeeef</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #edeeef;"></div>
+                <span class="token-name">--ubits-sidebar-button-fg-pressed</span>
+                <span class="hex-value">#edeeef</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #303a47;"></div>
+                <span class="token-name">--ubits-sidebar-button-fg-active</span>
+                <span class="hex-value">#303a47</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #828690;"></div>
+                <span class="token-name">--ubits-sidebar-button-fg-disabled</span>
+                <span class="hex-value">#828690</span>
+            </div>
+        </div>
+
+        <div class="category-title dark-category-title">FEEDBACK SUCCESS</div>
+        <div class="section dark-section">
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #4ab028;"></div>
+                <span class="token-name">--ubits-feedback-accent-success</span>
+                <span class="hex-value">#4ab028</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #328e2c;"></div>
+                <span class="token-name">--ubits-feedback-accent-success-inverted</span>
+                <span class="hex-value">#328e2c</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #4ab028;"></div>
+                <span class="token-name">--ubits-feedback-accent-success-static</span>
+                <span class="hex-value">#4ab028</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #328e2c;"></div>
+                <span class="token-name">--ubits-feedback-accent-success-static-inverted</span>
+                <span class="hex-value">#328e2c</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #bde9ac;"></div>
+                <span class="token-name">--ubits-feedback-fg-success-subtle</span>
+                <span class="hex-value">#bde9ac</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #223b16;"></div>
+                <span class="token-name">--ubits-feedback-fg-success-subtle-inverted</span>
+                <span class="hex-value">#223b16</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #7ddb7f;"></div>
+                <span class="token-name">--ubits-feedback-fg-success-subtle-hover</span>
+                <span class="hex-value">#7ddb7f</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #152311;"></div>
+                <span class="token-name">--ubits-feedback-fg-success-subtle-inverted-hover</span>
+                <span class="hex-value">#152311</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #223b16;"></div>
+                <span class="token-name">--ubits-feedback-fg-success-subtle-static</span>
+                <span class="hex-value">#223b16</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #bde9ac;"></div>
+                <span class="token-name">--ubits-feedback-fg-success-subtle-static-inverted</span>
+                <span class="hex-value">#bde9ac</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #152311;"></div>
+                <span class="token-name">--ubits-feedback-fg-success-subtle-static-hover</span>
+                <span class="hex-value">#152311</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #7ddb7f;"></div>
+                <span class="token-name">--ubits-feedback-fg-success-subtle-static-inverted-hover</span>
+                <span class="hex-value">#7ddb7f</span>
+            </div>
+        </div>
+
+        <div class="category-title dark-category-title">FEEDBACK INFO</div>
+        <div class="section dark-section">
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #7397fe;"></div>
+                <span class="token-name">--ubits-feedback-accent-info</span>
+                <span class="hex-value">#7397fe</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #4a74ee;"></div>
+                <span class="token-name">--ubits-feedback-accent-info-inverted</span>
+                <span class="hex-value">#4a74ee</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #7397fe;"></div>
+                <span class="token-name">--ubits-feedback-accent-info-static</span>
+                <span class="hex-value">#7397fe</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #4a74ee;"></div>
+                <span class="token-name">--ubits-feedback-accent-info-static-inverted</span>
+                <span class="hex-value">#4a74ee</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #d7daff;"></div>
+                <span class="token-name">--ubits-feedback-fg-info-subtle</span>
+                <span class="hex-value">#d7daff</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #20335f;"></div>
+                <span class="token-name">--ubits-feedback-fg-info-subtle-inverted</span>
+                <span class="hex-value">#20335f</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #c4c1fc;"></div>
+                <span class="token-name">--ubits-feedback-fg-info-subtle-hover</span>
+                <span class="hex-value">#c4c1fc</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #1b1e34;"></div>
+                <span class="token-name">--ubits-feedback-fg-info-subtle-inverted-hover</span>
+                <span class="hex-value">#1b1e34</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #20335f;"></div>
+                <span class="token-name">--ubits-feedback-fg-info-subtle-static</span>
+                <span class="hex-value">#20335f</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #d7daff;"></div>
+                <span class="token-name">--ubits-feedback-fg-info-subtle-static-inverted</span>
+                <span class="hex-value">#d7daff</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #1b1e34;"></div>
+                <span class="token-name">--ubits-feedback-fg-info-subtle-static-hover</span>
+                <span class="hex-value">#1b1e34</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #c4c1fc;"></div>
+                <span class="token-name">--ubits-feedback-fg-info-subtle-static-inverted-hover</span>
+                <span class="hex-value">#c4c1fc</span>
+            </div>
+        </div>
+
+        <div class="category-title dark-category-title">FEEDBACK WARNING</div>
+        <div class="section dark-section">
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #d68b0d;"></div>
+                <span class="token-name">--ubits-feedback-accent-warning</span>
+                <span class="hex-value">#d68b0d</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #b16c19;"></div>
+                <span class="token-name">--ubits-feedback-accent-warning-inverted</span>
+                <span class="hex-value">#b16c19</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #ffd4a0;"></div>
+                <span class="token-name">--ubits-feedback-fg-warning-subtle</span>
+                <span class="hex-value">#ffd4a0</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #4c2e15;"></div>
+                <span class="token-name">--ubits-feedback-fg-warning-subtle-inverted</span>
+                <span class="hex-value">#4c2e15</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #ffb954;"></div>
+                <span class="token-name">--ubits-feedback-fg-warning-subtle-hover</span>
+                <span class="hex-value">#ffb954</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #2a1d0d;"></div>
+                <span class="token-name">--ubits-feedback-fg-warning-subtle-inverted-hover</span>
+                <span class="hex-value">#2a1d0d</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #2a1d0d;"></div>
+                <span class="token-name">--ubits-feedback-fg-warning-bold</span>
+                <span class="hex-value">#2a1d0d</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #35250f;"></div>
+                <span class="token-name">--ubits-feedback-fg-warning-bold-inverted</span>
+                <span class="hex-value">#35250f</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #1f1609;"></div>
+                <span class="token-name">--ubits-feedback-fg-warning-bold-hover</span>
+                <span class="hex-value">#1f1609</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #2a1d0d;"></div>
+                <span class="token-name">--ubits-feedback-fg-warning-bold-inverted-hover</span>
+                <span class="hex-value">#2a1d0d</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #4c2e15;"></div>
+                <span class="token-name">--ubits-feedback-fg-warning-subtle-static</span>
+                <span class="hex-value">#4c2e15</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #ffd4a0;"></div>
+                <span class="token-name">--ubits-feedback-fg-warning-subtle-static-inverted</span>
+                <span class="hex-value">#ffd4a0</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #2a1d0d;"></div>
+                <span class="token-name">--ubits-feedback-fg-warning-subtle-static-hover</span>
+                <span class="hex-value">#2a1d0d</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #ffb954;"></div>
+                <span class="token-name">--ubits-feedback-fg-warning-subtle-static-inverted-hover</span>
+                <span class="hex-value">#ffb954</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #35250f;"></div>
+                <span class="token-name">--ubits-feedback-fg-warning-bold-static</span>
+                <span class="hex-value">#35250f</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #2a1d0d;"></div>
+                <span class="token-name">--ubits-feedback-fg-warning-bold-static-inverted</span>
+                <span class="hex-value">#2a1d0d</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #2a1d0d;"></div>
+                <span class="token-name">--ubits-feedback-fg-warning-bold-static-hover</span>
+                <span class="hex-value">#2a1d0d</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #1f1609;"></div>
+                <span class="token-name">--ubits-feedback-fg-warning-bold-static-inverted-hover</span>
+                <span class="hex-value">#1f1609</span>
+            </div>
+        </div>
+
+        <div class="category-title dark-category-title">FEEDBACK ERROR</div>
+        <div class="section dark-section">
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #f96f6f;"></div>
+                <span class="token-name">--ubits-feedback-accent-error</span>
+                <span class="hex-value">#f96f6f</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #e9343c;"></div>
+                <span class="token-name">--ubits-feedback-accent-error-inverted</span>
+                <span class="hex-value">#e9343c</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #ffd2cd;"></div>
+                <span class="token-name">--ubits-feedback-fg-error-subtle</span>
+                <span class="hex-value">#ffd2cd</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #65181e;"></div>
+                <span class="token-name">--ubits-feedback-fg-error-subtle-inverted</span>
+                <span class="hex-value">#65181e</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #ffb4a6;"></div>
+                <span class="token-name">--ubits-feedback-fg-error-subtle-hover</span>
+                <span class="hex-value">#ffb4a6</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #391411;"></div>
+                <span class="token-name">--ubits-feedback-fg-error-subtle-inverted-hover</span>
+                <span class="hex-value">#391411</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #65181e;"></div>
+                <span class="token-name">--ubits-feedback-fg-error-subtle-static</span>
+                <span class="hex-value">#65181e</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #ffd2cd;"></div>
+                <span class="token-name">--ubits-feedback-fg-error-subtle-static-inverted</span>
+                <span class="hex-value">#ffd2cd</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #391411;"></div>
+                <span class="token-name">--ubits-feedback-fg-error-subtle-static-hover</span>
+                <span class="hex-value">#391411</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #ffb4a6;"></div>
+                <span class="token-name">--ubits-feedback-fg-error-subtle-static-inverted-hover</span>
+                <span class="hex-value">#ffb4a6</span>
+            </div>
+        </div>
+
+        <div class="category-title dark-category-title">BORDER COLORS - COLORED</div>
+        <div class="section dark-section">
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #a2a3fb;"></div>
+                <span class="token-name">--ubits-border-blue</span>
+                <span class="hex-value">#a2a3fb</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #a8abb2;"></div>
+                <span class="token-name">--ubits-border-gray</span>
+                <span class="hex-value">#a8abb2</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #25c37a;"></div>
+                <span class="token-name">--ubits-border-green</span>
+                <span class="hex-value">#25c37a</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #74b6bb;"></div>
+                <span class="token-name">--ubits-border-teal</span>
+                <span class="hex-value">#74b6bb</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #97a5fd;"></div>
+                <span class="token-name">--ubits-border-indigo</span>
+                <span class="hex-value">#97a5fd</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #b59bff;"></div>
+                <span class="token-name">--ubits-border-purple</span>
+                <span class="hex-value">#b59bff</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #f08bbe;"></div>
+                <span class="token-name">--ubits-border-pink</span>
+                <span class="hex-value">#f08bbe</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #c9a916;"></div>
+                <span class="token-name">--ubits-border-yellow</span>
+                <span class="hex-value">#c9a916</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #d991e5;"></div>
+                <span class="token-name">--ubits-border-rose</span>
+                <span class="hex-value">#d991e5</span>
+            </div>
+        </div>
+
+        <div class="category-title dark-category-title">BORDER COLORS - INVERTED</div>
+        <div class="section dark-section">
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #4f5561;"></div>
+                <span class="token-name">--ubits-border-1-inverted</span>
+                <span class="hex-value">#4f5561</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #353e4c;"></div>
+                <span class="token-name">--ubits-border-2-inverted</span>
+                <span class="hex-value">#353e4c</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #545a66;"></div>
+                <span class="token-name">--ubits-border-disabled-inverted</span>
+                <span class="hex-value">#545a66</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #3865f5;"></div>
+                <span class="token-name">--ubits-border-blue-inverted</span>
+                <span class="hex-value">#3865f5</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #6c727d;"></div>
+                <span class="token-name">--ubits-border-gray-inverted</span>
+                <span class="hex-value">#6c727d</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #1e8251;"></div>
+                <span class="token-name">--ubits-border-green-inverted</span>
+                <span class="hex-value">#1e8251</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #177e84;"></div>
+                <span class="token-name">--ubits-border-teal-inverted</span>
+                <span class="hex-value">#177e84</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #3a6cda;"></div>
+                <span class="token-name">--ubits-border-indigo-inverted</span>
+                <span class="hex-value">#3a6cda</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #6457ff;"></div>
+                <span class="token-name">--ubits-border-purple-inverted</span>
+                <span class="hex-value">#6457ff</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #bf418a;"></div>
+                <span class="token-name">--ubits-border-pink-inverted</span>
+                <span class="hex-value">#bf418a</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #8e6d1b;"></div>
+                <span class="token-name">--ubits-border-yellow-inverted</span>
+                <span class="hex-value">#8e6d1b</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #ad3fcb;"></div>
+                <span class="token-name">--ubits-border-rose-inverted</span>
+                <span class="hex-value">#ad3fcb</span>
+            </div>
+        </div>
+
+        <div class="category-title dark-category-title">BORDER COLORS - STATIC</div>
+        <div class="section dark-section">
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #d0d2d5;"></div>
+                <span class="token-name">--ubits-border-1-static</span>
+                <span class="hex-value">#d0d2d5</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #c5c6cb;"></div>
+                <span class="token-name">--ubits-border-2-static</span>
+                <span class="hex-value">#c5c6cb</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #e1e2e5;"></div>
+                <span class="token-name">--ubits-border-disabled-static</span>
+                <span class="hex-value">#e1e2e5</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #a2a3fb;"></div>
+                <span class="token-name">--ubits-border-blue-static</span>
+                <span class="hex-value">#a2a3fb</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #a8abb2;"></div>
+                <span class="token-name">--ubits-border-gray-static</span>
+                <span class="hex-value">#a8abb2</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #25c37a;"></div>
+                <span class="token-name">--ubits-border-green-static</span>
+                <span class="hex-value">#25c37a</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #74b6bb;"></div>
+                <span class="token-name">--ubits-border-teal-static</span>
+                <span class="hex-value">#74b6bb</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #97a5fd;"></div>
+                <span class="token-name">--ubits-border-indigo-static</span>
+                <span class="hex-value">#97a5fd</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #b59bff;"></div>
+                <span class="token-name">--ubits-border-purple-static</span>
+                <span class="hex-value">#b59bff</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #f08bbe;"></div>
+                <span class="token-name">--ubits-border-pink-static</span>
+                <span class="hex-value">#f08bbe</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #c9a916;"></div>
+                <span class="token-name">--ubits-border-yellow-static</span>
+                <span class="hex-value">#c9a916</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #d991e5;"></div>
+                <span class="token-name">--ubits-border-rose-static</span>
+                <span class="hex-value">#d991e5</span>
+            </div>
+        </div>
+
+        <div class="category-title dark-category-title">BORDER COLORS - STATIC INVERTED</div>
+        <div class="section dark-section">
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #4f5561;"></div>
+                <span class="token-name">--ubits-border-1-static-inverted</span>
+                <span class="hex-value">#4f5561</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #353e4c;"></div>
+                <span class="token-name">--ubits-border-2-static-inverted</span>
+                <span class="hex-value">#353e4c</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #545a66;"></div>
+                <span class="token-name">--ubits-border-disabled-static-inverted</span>
+                <span class="hex-value">#545a66</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #3865f5;"></div>
+                <span class="token-name">--ubits-border-blue-static-inverted</span>
+                <span class="hex-value">#3865f5</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #6c727d;"></div>
+                <span class="token-name">--ubits-border-gray-static-inverted</span>
+                <span class="hex-value">#6c727d</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #1e8251;"></div>
+                <span class="token-name">--ubits-border-green-static-inverted</span>
+                <span class="hex-value">#1e8251</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #177e84;"></div>
+                <span class="token-name">--ubits-border-teal-static-inverted</span>
+                <span class="hex-value">#177e84</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #3a6cda;"></div>
+                <span class="token-name">--ubits-border-indigo-static-inverted</span>
+                <span class="hex-value">#3a6cda</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #6457ff;"></div>
+                <span class="token-name">--ubits-border-purple-static-inverted</span>
+                <span class="hex-value">#6457ff</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #bf418a;"></div>
+                <span class="token-name">--ubits-border-pink-static-inverted</span>
+                <span class="hex-value">#bf418a</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #8e6d1b;"></div>
+                <span class="token-name">--ubits-border-yellow-static-inverted</span>
+                <span class="hex-value">#8e6d1b</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #ad3fcb;"></div>
+                <span class="token-name">--ubits-border-rose-static-inverted</span>
+                <span class="hex-value">#ad3fcb</span>
+            </div>
+        </div>
+
+        <div class="category-title dark-category-title">FEEDBACK BORDERS</div>
+        <div class="section dark-section">
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #41c433;"></div>
+                <span class="token-name">--ubits-feedback-border-success</span>
+                <span class="hex-value">#41c433</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #97a5fd;"></div>
+                <span class="token-name">--ubits-feedback-border-info</span>
+                <span class="hex-value">#97a5fd</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #ec9907;"></div>
+                <span class="token-name">--ubits-feedback-border-warning</span>
+                <span class="hex-value">#ec9907</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #fd8a82;"></div>
+                <span class="token-name">--ubits-feedback-border-error</span>
+                <span class="hex-value">#fd8a82</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #368226;"></div>
+                <span class="token-name">--ubits-feedback-border-success-inverted</span>
+                <span class="hex-value">#368226</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #3a6cda;"></div>
+                <span class="token-name">--ubits-feedback-border-info-inverted</span>
+                <span class="hex-value">#3a6cda</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #a4621b;"></div>
+                <span class="token-name">--ubits-feedback-border-warning-inverted</span>
+                <span class="hex-value">#a4621b</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #e20d34;"></div>
+                <span class="token-name">--ubits-feedback-border-error-inverted</span>
+                <span class="hex-value">#e20d34</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #41c433;"></div>
+                <span class="token-name">--ubits-feedback-border-success-static</span>
+                <span class="hex-value">#41c433</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #97a5fd;"></div>
+                <span class="token-name">--ubits-feedback-border-info-static</span>
+                <span class="hex-value">#97a5fd</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #ec9907;"></div>
+                <span class="token-name">--ubits-feedback-border-warning-static</span>
+                <span class="hex-value">#ec9907</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #fd8a82;"></div>
+                <span class="token-name">--ubits-feedback-border-error-static</span>
+                <span class="hex-value">#fd8a82</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #368226;"></div>
+                <span class="token-name">--ubits-feedback-border-success-static-inverted</span>
+                <span class="hex-value">#368226</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #3a6cda;"></div>
+                <span class="token-name">--ubits-feedback-border-info-static-inverted</span>
+                <span class="hex-value">#3a6cda</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #a4621b;"></div>
+                <span class="token-name">--ubits-feedback-border-warning-static-inverted</span>
+                <span class="hex-value">#a4621b</span>
+            </div>
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #a4621b;"></div>
+                <span class="token-name">--ubits-feedback-border-error-static-inverted</span>
+                <span class="hex-value">#a4621b</span>
+            </div>
+        </div>
+
+        <div class="category-title dark-category-title">CHART COLORS</div>
+        <div class="section dark-section">
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #ffffff;"></div>
+                <span class="token-name">--ubits-chart-bg-level-1</span>
+                <span class="hex-value">#ffffff</span>
+            </div>
+        </div>
+
+        <div class="category-title dark-category-title">TOAST COLORS</div>
+        <div class="section dark-section">
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #ffffff;"></div>
+                <span class="token-name">--ubits-toast-feedback-bg</span>
+                <span class="hex-value">#ffffff</span>
+            </div>
+        </div>
+
+        <div class="category-title dark-category-title">BOTTOM NAV COLORS</div>
+        <div class="section dark-section">
+            <div class="token-item dark-token">
+                <div class="color-box" style="background-color: #0000005c;"></div>
+                <span class="token-name">--ubits-bottom-nav-shadow-opacity</span>
+                <span class="hex-value">#0000005c</span>
+            </div>
+        </div>
+
+
+    </div>
+</body>
+</html>

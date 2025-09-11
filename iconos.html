@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template UBITS - Iconos</title>
+    
+    <!-- Estilos locales -->
+    <link rel="stylesheet" href="ubits-colors.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="fontawesome-icons.css">
+    <link rel="stylesheet" href="ubits-typography.css">
+    <link rel="stylesheet" href="components/top-nav.css">
+</head>
+<body class="iconos-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navigation -->
+            <div id="top-nav-container"></div>
+            <!-- Content Area -->
+            <div class="content-area" style="display: block; width: 100%;">
+                <!-- Página de Iconos FontAwesome integrada -->
+                <div class="page-title">
+                    <i class="far fa-icons page-title-icon"></i>
+                    <h1>Iconos UBITS - FontAwesome</h1>
+                </div>
+                
+                <div class="results-search-filters">
+                    <div class="results-search-layout">
+                        <div class="results-left">
+                            <div class="results-title">Lista de iconos</div>
+                            <div class="results-count" id="resultsCount">Cargando...</div>
+                        </div>
+                        <div class="search-container">
+                            <i class="far fa-search search-icon"></i>
+                            <input type="text" id="searchInput" placeholder="Buscar iconos" autocomplete="off">
+                            <button class="clear-search-btn" id="clearSearchBtn" style="display: none;">
+                                <i class="far fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="icons-container" id="iconsContainer">
+                    <!-- Las secciones de letras se cargarán aquí dinámicamente -->
+                </div>
+
+                <div class="empty-state" id="emptyState" style="display: none;">
+                    <div class="empty-state-content">
+                        <div class="empty-state-illustration">
+                            <img src="images/empty-states/sin-resultados-img.svg" alt="Sin resultados" width="220" height="200">
+                        </div>
+                        <div class="empty-state-text">
+                            <div class="empty-state-title">Sin resultados</div>
+                            <div class="empty-state-description">Intenta nuevamente ingresando otro término de búsqueda.</div>
+                            <button class="clear-search-button" onclick="clearSearch()">Limpiar búsqueda</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Navegación alfabética lateral para iconos -->
+        <aside class="alphabet-nav-icons" id="alphabetNavIcons">
+            <!-- Se generará dinámicamente -->
+        </aside>
+    </div>
+
+    <script src="components/sidebar.js"></script>
+    <script src="components/top-nav.js"></script>
+    <script src="script.js"></script>
+    
+    <!-- Sistema de Toast con 4 tipos -->
+    <div class="toast-container" id="toast-container">
+        <!-- Toast de Success -->
+        <div class="toast toast-success" id="toast-success" style="display: none;">
+            <div class="toast-content">
+                <div class="toast-icon">
+                    <i class="far fa-check"></i>
+                </div>
+                <div class="toast-message" id="toast-success-message">¡Nombre copiado! 😉</div>
+                <button class="toast-close" onclick="hideToast('success')">
+                    <i class="far fa-times"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Toast de Info -->
+        <div class="toast toast-info" id="toast-info" style="display: none;">
+            <div class="toast-content">
+                <div class="toast-icon">
+                    <i class="far fa-info-circle"></i>
+                </div>
+                <div class="toast-message" id="toast-info-message">Mensaje informativo</div>
+                <button class="toast-close" onclick="hideToast('info')">
+                    <i class="far fa-times"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Toast de Warning -->
+        <div class="toast toast-warning" id="toast-warning" style="display: none;">
+            <div class="toast-content">
+                <div class="toast-icon">
+                    <i class="far fa-exclamation-triangle"></i>
+                </div>
+                <div class="toast-message" id="toast-warning-message">Mensaje de advertencia</div>
+                <button class="toast-close" onclick="hideToast('warning')">
+                    <i class="far fa-times"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Toast de Error -->
+        <div class="toast toast-error" id="toast-error" style="display: none;">
+            <div class="toast-content">
+                <div class="toast-icon">
+                    <i class="far fa-times-circle"></i>
+                </div>
+                <div class="toast-message" id="toast-error-message">Mensaje de error</div>
+                <button class="toast-close" onclick="hideToast('error')">
+                    <i class="far fa-times"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Cargar top-nav con variante documentación
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTopNav('top-nav-container', 'documentacion');
+
+            // Iconos ordenados alfabéticamente para fácil búsqueda
+            const allIcons = [
+                { name: 'award', class: 'fa-award', icon: '🏅' },
+                { name: 'arrow-down', class: 'fa-arrow-down', icon: '⬇️' },
+                { name: 'arrow-down-arrow-up', class: 'fa-arrow-down-arrow-up', icon: '↕️' },
+                { name: 'arrow-left', class: 'fa-arrow-left', icon: '⬅️' },
+                { name: 'arrow-right', class: 'fa-arrow-right', icon: '➡️' },
+                { name: 'arrow-trend-down', class: 'fa-arrow-trend-down', icon: '📉' },
+                { name: 'arrow-trend-up', class: 'fa-arrow-trend-up', icon: '📈' },
+                { name: 'arrow-up', class: 'fa-arrow-up', icon: '⬆️' },
+                { name: 'analytics', class: 'fa-analytics', icon: '📊' },
+                { name: 'bars', class: 'fa-bars', icon: '☰' },
+                { name: 'bars-progress', class: 'fa-bars-progress', icon: '📈' },
+                { name: 'bed', class: 'fa-bed', icon: '🛏️' },
+                { name: 'bell', class: 'fa-bell', icon: '🔔' },
+                { name: 'bell-slash', class: 'fa-bell-slash', icon: '🔕' },
+                { name: 'birthday-cake', class: 'fa-birthday-cake', icon: '🎂' },
+                { name: 'bolt', class: 'fa-bolt', icon: '⚡' },
+                { name: 'book', class: 'fa-book', icon: '📖' },
+                { name: 'book-open', class: 'fa-book-open', icon: '📚' },
+                { name: 'brain', class: 'fa-brain', icon: '🧠' },
+                { name: 'briefcase', class: 'fa-briefcase', icon: '💼' },
+                { name: 'bug', class: 'fa-bug', icon: '🐛' },
+                { name: 'building', class: 'fa-building', icon: '🏢' },
+                { name: 'bus', class: 'fa-bus', icon: '🚌' },
+                { name: 'calendar', class: 'fa-calendar', icon: '📅' },
+                { name: 'calendar-check', class: 'fa-calendar-check', icon: '✅' },
+                { name: 'calendar-days', class: 'fa-calendar-days', icon: '📆' },
+                { name: 'camera', class: 'fa-camera', icon: '📷' },
+                { name: 'car', class: 'fa-car', icon: '🚗' },
+                { name: 'chart-line', class: 'fa-chart-line', icon: '📈' },
+                { name: 'chart-pie', class: 'fa-chart-pie', icon: '🥧' },
+                { name: 'check', class: 'fa-check', icon: '✅' },
+                { name: 'check-circle', class: 'fa-check-circle', icon: '✅' },
+                { name: 'clock', class: 'fa-clock', icon: '🕐' },
+                { name: 'cloud', class: 'fa-cloud', icon: '☁️' },
+                { name: 'code', class: 'fa-code', icon: '💻' },
+                { name: 'cog', class: 'fa-cog', icon: '⚙️' },
+                { name: 'comment', class: 'fa-comment', icon: '💬' },
+                { name: 'comments', class: 'fa-comments', icon: '💬' },
+                { name: 'copy', class: 'fa-copy', icon: '📋' },
+                { name: 'credit-card', class: 'fa-credit-card', icon: '💳' },
+                { name: 'database', class: 'fa-database', icon: '🗄️' },
+                { name: 'download', class: 'fa-download', icon: '⬇️' },
+                { name: 'edit', class: 'fa-edit', icon: '✏️' },
+                { name: 'envelope', class: 'fa-envelope', icon: '✉️' },
+                { name: 'exclamation-triangle', class: 'fa-exclamation-triangle', icon: '⚠️' },
+                { name: 'eye', class: 'fa-eye', icon: '👁️' },
+                { name: 'file', class: 'fa-file', icon: '📄' },
+                { name: 'file-alt', class: 'fa-file-alt', icon: '📄' },
+                { name: 'filter', class: 'fa-filter', icon: '🔍' },
+                { name: 'fire', class: 'fa-fire', icon: '🔥' },
+                { name: 'flag', class: 'fa-flag', icon: '🏁' },
+                { name: 'folder', class: 'fa-folder', icon: '📁' },
+                { name: 'folder-open', class: 'fa-folder-open', icon: '📂' },
+                { name: 'globe', class: 'fa-globe', icon: '🌍' },
+                { name: 'heart', class: 'fa-heart', icon: '❤️' },
+                { name: 'home', class: 'fa-home', icon: '🏠' },
+                { name: 'image', class: 'fa-image', icon: '🖼️' },
+                { name: 'info-circle', class: 'fa-info-circle', icon: 'ℹ️' },
+                { name: 'key', class: 'fa-key', icon: '🔑' },
+                { name: 'lightbulb', class: 'fa-lightbulb', icon: '💡' },
+                { name: 'link', class: 'fa-link', icon: '🔗' },
+                { name: 'list', class: 'fa-list', icon: '📋' },
+                { name: 'lock', class: 'fa-lock', icon: '🔒' },
+                { name: 'mail', class: 'fa-mail', icon: '📧' },
+                { name: 'map', class: 'fa-map', icon: '🗺️' },
+                { name: 'microphone', class: 'fa-microphone', icon: '🎤' },
+                { name: 'mobile', class: 'fa-mobile', icon: '📱' },
+                { name: 'money-bill', class: 'fa-money-bill', icon: '💰' },
+                { name: 'moon', class: 'fa-moon', icon: '🌙' },
+                { name: 'music', class: 'fa-music', icon: '🎵' },
+                { name: 'paint-brush', class: 'fa-paint-brush', icon: '🎨' },
+                { name: 'paper-plane', class: 'fa-paper-plane', icon: '✈️' },
+                { name: 'pause', class: 'fa-pause', icon: '⏸️' },
+                { name: 'play', class: 'fa-play', icon: '▶️' },
+                { name: 'plus', class: 'fa-plus', icon: '➕' },
+                { name: 'print', class: 'fa-print', icon: '🖨️' },
+                { name: 'question-circle', class: 'fa-question-circle', icon: '❓' },
+                { name: 'rocket', class: 'fa-rocket', icon: '🚀' },
+                { name: 'search', class: 'fa-search', icon: '🔍' },
+                { name: 'settings', class: 'fa-settings', icon: '⚙️' },
+                { name: 'share', class: 'fa-share', icon: '📤' },
+                { name: 'shield', class: 'fa-shield', icon: '🛡️' },
+                { name: 'star', class: 'fa-star', icon: '⭐' },
+                { name: 'stop', class: 'fa-stop', icon: '⏹️' },
+                { name: 'sun', class: 'fa-sun', icon: '☀️' },
+                { name: 'tablet', class: 'fa-tablet', icon: '📱' },
+                { name: 'tag', class: 'fa-tag', icon: '🏷️' },
+                { name: 'thumbs-up', class: 'fa-thumbs-up', icon: '👍' },
+                { name: 'times', class: 'fa-times', icon: '❌' },
+                { name: 'trash', class: 'fa-trash', icon: '🗑️' },
+                { name: 'upload', class: 'fa-upload', icon: '⬆️' },
+                { name: 'user', class: 'fa-user', icon: '👤' },
+                { name: 'users', class: 'fa-users', icon: '👥' },
+                { name: 'video', class: 'fa-video', icon: '📹' },
+                { name: 'volume-up', class: 'fa-volume-up', icon: '🔊' },
+                { name: 'wifi', class: 'fa-wifi', icon: '📶' },
+                { name: 'wrench', class: 'fa-wrench', icon: '🔧' }
+            ];
+
+            let filteredIcons = [...allIcons];
+
+            function renderIcons() {
+                const container = document.getElementById('iconsContainer');
+                const resultsCount = document.getElementById('resultsCount');
+                const emptyState = document.getElementById('emptyState');
+
+                if (filteredIcons.length === 0) {
+                    container.innerHTML = '';
+                    emptyState.style.display = 'flex';
+                    resultsCount.textContent = '0 resultados';
+                    return;
+                }
+
+                emptyState.style.display = 'none';
+                resultsCount.textContent = `${filteredIcons.length} resultados`;
+
+                // Agrupar iconos por letra
+                const iconsByLetter = {};
+                filteredIcons.forEach(icon => {
+                    const firstLetter = icon.name.charAt(0).toUpperCase();
+                    if (!iconsByLetter[firstLetter]) {
+                        iconsByLetter[firstLetter] = [];
+                    }
+                    iconsByLetter[firstLetter].push(icon);
+                });
+
+                // Renderizar secciones por letra
+                container.innerHTML = Object.keys(iconsByLetter)
+                    .sort()
+                    .map(letter => `
+                        <div class="letter-section" id="section-${letter}">
+                            <h2 class="letter-title">${letter}</h2>
+                            <div class="letter-grid">
+                                ${iconsByLetter[letter].map(icon => `
+                                    <div class="icon-card" onclick="copyToClipboard('${icon.name}')">
+                                        <i class="far ${icon.class}"></i>
+                                        <div class="icon-name">${icon.name}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `).join('');
+            }
+
+            function filterIcons(searchTerm) {
+                if (!searchTerm.trim()) {
+                    filteredIcons = [...allIcons];
+                } else {
+                    filteredIcons = allIcons.filter(icon => 
+                        icon.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        icon.class.toLowerCase().includes(searchTerm.toLowerCase())
+                    );
+                }
+                renderIcons();
+            }
+
+            window.copyToClipboard = function(text) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showToast('success', '¡Nombre copiado! 😉');
+                }).catch(err => {
+                    console.error('Error al copiar:', err);
+                    // Fallback para navegadores antiguos
+                    const textArea = document.createElement('textarea');
+                    textArea.value = text;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    showToast('success', '¡Nombre copiado! 😉');
+                });
+            }
+
+            function showToast(type, message) {
+                const toastContainer = document.getElementById('toast-container');
+                const toast = document.getElementById(`toast-${type}`);
+                const toastMessage = document.getElementById(`toast-${type}-message`);
+
+                toastMessage.textContent = message;
+                toast.style.display = 'block';
+
+                setTimeout(() => {
+                    hideToast(type);
+                }, 3000);
+            }
+
+            window.hideToast = function(type) {
+                const toast = document.getElementById(`toast-${type}`);
+                toast.style.display = 'none';
+            }
+
+            function updateClearButton(searchValue) {
+                const clearBtn = document.getElementById('clearSearchBtn');
+                if (searchValue.trim()) {
+                    clearBtn.style.display = 'flex';
+                } else {
+                    clearBtn.style.display = 'none';
+                }
+            }
+
+            window.clearSearch = function() {
+                document.getElementById('searchInput').value = '';
+                filterIcons('');
+                updateClearButton('');
+            }
+
+            // Event listeners
+            document.getElementById('searchInput').addEventListener('input', (e) => {
+                filterIcons(e.target.value);
+                updateClearButton(e.target.value);
+            });
+
+            document.getElementById('clearSearchBtn').addEventListener('click', clearSearch);
+
+            // Funciones para la navegación alfabética
+            function generateAlphabetNav() {
+                const alphabetNav = document.getElementById('alphabetNavIcons');
+                const letters = getAvailableLetters();
+                
+                alphabetNav.innerHTML = letters.map(letter => `
+                    <a href="#${letter}" data-letter="${letter}" onclick="scrollToLetter('${letter}')">
+                        ${letter}
+                    </a>
+                `).join('');
+            }
+
+            function getAvailableLetters() {
+                const letters = new Set();
+                allIcons.forEach(icon => {
+                    const firstLetter = icon.name.charAt(0).toUpperCase();
+                    letters.add(firstLetter);
+                });
+                return Array.from(letters).sort();
+            }
+
+            window.scrollToLetter = function(letter) {
+                const section = document.getElementById(`section-${letter}`);
+                
+                if (section) {
+                    updateActiveLetter(letter);
+                    const offset = 100; // Ajustar según la altura del buscador fijo
+                    const elementPosition = section.offsetTop;
+                    const offsetPosition = elementPosition - offset;
+                    
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            }
+
+            function updateActiveLetter(letter) {
+                // Remover clase active de todas las letras
+                document.querySelectorAll('.alphabet-nav-icons a').forEach(link => {
+                    link.classList.remove('active');
+                });
+                
+                // Añadir clase active a la letra seleccionada
+                const activeLink = document.querySelector(`[data-letter="${letter}"]`);
+                if (activeLink) {
+                    activeLink.classList.add('active');
+                }
+            }
+
+            // Función para detectar qué sección está visible y actualizar navegación
+            function updateActiveSectionOnScroll() {
+                const sections = document.querySelectorAll('.letter-section');
+                const navLinks = document.querySelectorAll('.alphabet-nav-icons a');
+                
+                let currentSection = '';
+                
+                sections.forEach(section => {
+                    const rect = section.getBoundingClientRect();
+                    if (rect.top <= 120 && rect.bottom >= 120) {
+                        currentSection = section.id.replace('section-', '');
+                    }
+                });
+                
+                if (currentSection) {
+                    updateActiveLetter(currentSection);
+                }
+            }
+
+            // Event listener para scroll
+            window.addEventListener('scroll', updateActiveSectionOnScroll);
+
+            // Inicializar
+            renderIcons();
+            generateAlphabetNav();
+        });
+    </script>
+</body>
+</html>

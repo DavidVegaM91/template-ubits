@@ -694,23 +694,23 @@ document.addEventListener('DOMContentLoaded', function() {
         const config = {
             sidebar: {
                 width: '96px',
-                backgroundColor: '#202837',
+                backgroundColor: 'var(--ubits-sidebar-bg)',
                 borderRadius: '8px',
                 shadow: '0px 1px 2px 0px rgba(0,0,0,0.14), 0px 0px 2px 0px rgba(0,0,0,0.12)'
             },
             topNav: {
                 height: '40px',
-                backgroundColor: '#ffffff',
+                backgroundColor: 'var(--ubits-bg-1)',
                 borderRadius: '8px'
             },
             colors: {
-                primary: '#0c5bef',
-                secondary: '#5c646f',
-                background: '#f3f3f4',
-                white: '#ffffff',
-                dark: '#202837',
-                lightGray: '#98a6b3',
-                border: '#d0d2d5'
+                primary: 'var(--ubits-accent-brand)',
+                secondary: 'var(--ubits-fg-1-medium)',
+                background: 'var(--ubits-bg-2)',
+                white: 'var(--ubits-bg-1)',
+                dark: 'var(--ubits-sidebar-bg)',
+                lightGray: 'var(--ubits-fg-1-medium)',
+                border: 'var(--ubits-fg-2-medium)'
             },
             fonts: {
                 primary: 'Noto Sans',
@@ -730,16 +730,16 @@ document.addEventListener('DOMContentLoaded', function() {
     // Función para personalizar colores (útil para el equipo)
     window.customizeColors = function(primaryColor, secondaryColor) {
         const root = document.documentElement;
-        root.style.setProperty('--primary-color', primaryColor || '#0c5bef');
-        root.style.setProperty('--secondary-color', secondaryColor || '#5c646f');
+        root.style.setProperty('--primary-color', primaryColor || 'var(--ubits-accent-brand)');
+        root.style.setProperty('--secondary-color', secondaryColor || 'var(--ubits-fg-1-medium)');
         
         // Aplicar cambios dinámicamente
         document.querySelectorAll('.nav-button.active').forEach(btn => {
-            btn.style.backgroundColor = primaryColor || '#0c5bef';
+            btn.style.backgroundColor = primaryColor || 'var(--ubits-accent-brand)';
         });
         
         document.querySelectorAll('.nav-tab.active::after').forEach(tab => {
-            tab.style.backgroundColor = primaryColor || '#0c5bef';
+            tab.style.backgroundColor = primaryColor || 'var(--ubits-accent-brand)';
         });
     };
 });
@@ -840,3 +840,4 @@ function initProfileTooltips() {
 if (window.location.pathname.includes('profile.html')) {
     document.addEventListener('DOMContentLoaded', initProfileTooltips);
 }
+

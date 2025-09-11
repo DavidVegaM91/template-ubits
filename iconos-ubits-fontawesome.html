@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iconos UBITS - FontAwesome</title>
     <link rel="stylesheet" href="fontawesome-icons.css">
+    <link rel="stylesheet" href="ubits-colors.css">
     <style>
         * {
             margin: 0;
@@ -14,7 +15,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f5f5f5;
+            background: var(--ubits-bg-2);
             padding: 16px 12px;
         }
 
@@ -25,7 +26,7 @@
 
         .sidebar {
             width: 80px;
-            background: #1e293b;
+            background: var(--ubits-sidebar-bg);
             position: fixed;
             left: 12px;
             top: 16px;
@@ -54,7 +55,7 @@
             margin-right: 0;
             flex: 1;
             padding: 0;
-            background: #f5f5f5;
+            background: var(--ubits-bg-2);
         }
 
         .content-wrapper {
@@ -70,12 +71,12 @@
 
         .page-title-icon {
             font-size: 24px;
-            color: #303a47;
+            color: var(--ubits-fg-1-high);
         }
 
         .page-title h1 {
             text-align: left;
-            color: #2a303f;
+            color: var(--ubits-fg-2-high);
             margin: 0;
             font-size: 24px;
             font-weight: 700;
@@ -84,14 +85,13 @@
         }
 
         .results-search-filters {
-            background: #ffffff;
+            background: var(--ubits-bg-1);
             padding: 16px;
             border-radius: 10px;
             margin-bottom: 20px;
             position: sticky;
             top: 16px;
             z-index: 100;
-            border: 1px solid #e2e8f0;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
@@ -111,14 +111,14 @@
         .results-title {
             font-size: 16px;
             font-weight: 700;
-            color: #2a303f;
+            color: var(--ubits-fg-2-high);
             line-height: 24px;
             font-family: 'Noto Sans', sans-serif;
         }
 
         .results-count {
             font-size: 13px;
-            color: #5c646f;
+            color: var(--ubits-fg-1-medium);
             line-height: 19.5px;
             font-family: 'Noto Sans', sans-serif;
         }
@@ -127,8 +127,8 @@
             display: flex;
             align-items: center;
             gap: 5px;
-            background: #ffffff;
-            border: 1px solid #d0d2d5;
+            background: var(--ubits-bg-1);
+            border: 1px solid var(--ubits-fg-2-medium);
             border-radius: 5px;
             padding: 0 10px;
             width: 350px;
@@ -138,7 +138,7 @@
 
         .search-icon {
             font-size: 18px;
-            color: #5c646f;
+            color: var(--ubits-fg-1-medium);
             flex-shrink: 0;
         }
 
@@ -157,12 +157,12 @@
         }
 
         .clear-search-btn:hover {
-            background: #f1f5f9;
+            background: var(--ubits-fg-2-medium);
         }
 
         .clear-search-btn i {
             font-size: 14px;
-            color: #00256e;
+            color: var(--ubits-accent-brand);
         }
 
         #searchInput {
@@ -175,25 +175,25 @@
             outline: none;
             transition: all 0.2s ease;
             background: transparent;
-            color: #5c646f;
+            color: var(--ubits-fg-1-medium);
             font-family: 'Noto Sans', sans-serif;
             box-sizing: border-box;
         }
 
         #searchInput:not(:placeholder-shown) {
-            color: #303a47;
+            color: var(--ubits-fg-1-high);
         }
 
         #searchInput:focus {
-            border-color: #3b82f6;
+            border-color: var(--ubits-accent-brand);
         }
 
         .search-container:hover {
-            border-color: #3b82f6;
+            border-color: var(--ubits-accent-brand);
         }
 
         #searchInput::placeholder {
-            color: #5c646f;
+            color: var(--ubits-fg-1-medium);
         }
 
         .icons-grid {
@@ -204,8 +204,8 @@
         }
 
         .icon-card {
-            background: #ffffff;
-            border: 1px solid #d0d2d5;
+            background: var(--ubits-bg-1);
+            border: 1px solid var(--ubits-fg-2-medium);
             border-radius: 10px;
             padding: 8px;
             text-align: center;
@@ -221,19 +221,19 @@
         .icon-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-            border-color: #3b82f6;
+            border-color: var(--ubits-accent-brand);
         }
 
         .icon-card i {
             font-size: 24px;
-            color: #303a47;
+            color: var(--ubits-fg-1-high);
             margin-bottom: 10px;
             display: block;
         }
 
         .icon-name {
             font-size: 13px;
-            color: #5c646f;
+            color: var(--ubits-fg-1-medium);
             font-weight: 400;
             line-height: 19.5px;
             font-family: 'Noto Sans', sans-serif;
@@ -246,7 +246,7 @@
         .stats {
             text-align: center;
             margin-bottom: 24px;
-            color: #64748b;
+            color: var(--ubits-fg-1-medium);
             font-size: 14px;
             font-weight: 400;
             line-height: 20px;
@@ -254,7 +254,7 @@
 
         .no-results {
             text-align: center;
-            color: #666;
+            color: var(--ubits-fg-1-medium);
             font-size: 18px;
             margin-top: 40px;
         }
@@ -266,7 +266,7 @@
             flex: 1;
             overflow-y: auto;
             scrollbar-width: thin;
-            scrollbar-color: #475569 transparent;
+            scrollbar-color: var(--ubits-fg-1-medium) transparent;
             padding: 16px 12px 16px 12px;
             width: 100%;
         }
@@ -280,18 +280,18 @@
         }
 
         .alphabet-nav::-webkit-scrollbar-thumb {
-            background: #ddd;
+            background: var(--ubits-fg-2-medium);
             border-radius: 3px;
         }
 
         .alphabet-nav::-webkit-scrollbar-thumb:hover {
-            background: #bbb;
+            background: var(--ubits-fg-1-medium);
         }
 
         .alphabet-nav a {
             display: block;
             text-decoration: none;
-            color: #94a3b8; /* Color gris claro del sidebar UBITS */
+            color: var(--ubits-sidebar-button-fg-default);
             font-size: 12px;
             font-weight: 500;
             padding: 8px 6px;
@@ -303,14 +303,14 @@
         }
 
         .alphabet-nav a:hover {
-            background: #334155; /* Hover azul medio del sidebar UBITS */
-            color: #e2e8f0;
+            background: var(--ubits-sidebar-button-bg-pressed);
+            color: var(--ubits-sidebar-button-fg-hover);
             transform: scale(1.05);
         }
 
         .alphabet-nav a.active {
-            background: #3b82f6; /* Azul activo del sidebar UBITS */
-            color: white;
+            background: var(--ubits-accent-brand);
+            color: var(--ubits-fg-bold);
         }
 
         .alphabet-nav a:active {
@@ -403,19 +403,18 @@
 
         /* Estilos para las secciones de letras */
         .letter-section {
-            background: #ffffff;
+            background: var(--ubits-bg-1);
             padding: 16px;
             border-radius: 10px;
             margin-bottom: 20px;
             scroll-margin-top: 120px; /* Ajustado para el header sticky */
-            border: 1px solid #e2e8f0;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
         .letter-title {
             font-size: 16px;
             font-weight: 700;
-            color: #2a303f;
+            color: var(--ubits-fg-2-high);
             margin-bottom: 16px;
             line-height: 24px;
             font-family: 'Noto Sans', sans-serif;
@@ -429,7 +428,7 @@
 
         /* Empty State */
         .empty-state {
-            background: #ffffff;
+            background: var(--ubits-bg-1);
             padding: 16px;
             border-radius: 10px;
             display: flex;
@@ -471,7 +470,7 @@
         .empty-state-title {
             font-size: 20px;
             font-weight: 700;
-            color: #2a303f;
+            color: var(--ubits-fg-2-high);
             line-height: 1;
             font-family: 'Noto Sans', sans-serif;
         }
@@ -479,27 +478,27 @@
         .empty-state-description {
             font-size: 16px;
             font-weight: 400;
-            color: #5c646f;
+            color: var(--ubits-fg-1-medium);
             line-height: 24px;
             font-family: 'Noto Sans', sans-serif;
         }
 
         .clear-search-button {
-            background: #ffffff;
-            border: 1px solid #d0d2d5;
+            background: var(--ubits-bg-1);
+            border: 1px solid var(--ubits-fg-2-medium);
             border-radius: 8px;
             padding: 12px;
             font-size: 16px;
             font-weight: 600;
-            color: #303a47;
+            color: var(--ubits-fg-1-high);
             cursor: pointer;
             transition: all 0.2s ease;
             font-family: 'Noto Sans', sans-serif;
         }
 
         .clear-search-button:hover {
-            background: #f8fafc;
-            border-color: #94a3b8;
+            background: var(--ubits-fg-2-medium);
+            border-color: var(--ubits-fg-1-medium);
         }
 
         /* Sistema de Toast con 4 tipos */
@@ -570,50 +569,50 @@
 
         /* Toast Success */
         .toast-success {
-            background: #e8f8e4;
-            border-color: #41c433;
+            background: var(--ubits-feedback-fg-success-subtle);
+            border-color: var(--ubits-feedback-accent-success);
         }
 
         .toast-success .toast-icon,
         .toast-success .toast-message,
         .toast-success .toast-close {
-            color: #223b16;
+            color: var(--ubits-feedback-fg-success-subtle-inverted);
         }
 
         /* Toast Info */
         .toast-info {
-            background: #f3f2ff;
-            border-color: #97a5fd;
+            background: var(--ubits-feedback-fg-info-subtle);
+            border-color: var(--ubits-feedback-accent-info);
         }
 
         .toast-info .toast-icon,
         .toast-info .toast-message,
         .toast-info .toast-close {
-            color: #20335f;
+            color: var(--ubits-feedback-fg-info-subtle-inverted);
         }
 
         /* Toast Warning */
         .toast-warning {
-            background: #fff1e0;
-            border-color: #ec9907;
+            background: var(--ubits-feedback-fg-warning-subtle);
+            border-color: var(--ubits-feedback-accent-warning);
         }
 
         .toast-warning .toast-icon,
         .toast-warning .toast-message,
         .toast-warning .toast-close {
-            color: #4c2e15;
+            color: var(--ubits-feedback-fg-warning-subtle-inverted);
         }
 
         /* Toast Error */
         .toast-error {
-            background: #fff0ee;
-            border-color: #fd8a82;
+            background: var(--ubits-feedback-fg-error-subtle);
+            border-color: var(--ubits-feedback-accent-error);
         }
 
         .toast-error .toast-icon,
         .toast-error .toast-message,
         .toast-error .toast-close {
-            color: #65181e;
+            color: var(--ubits-feedback-fg-error-subtle-inverted);
         }
 
         /* Animaciones */
@@ -1151,10 +1150,14 @@
                 // Actualizar la navegación activa
                 updateActiveLetter(letter);
                 
-                // Scroll suave hasta la sección
-                section.scrollIntoView({ 
-                    behavior: 'smooth',
-                    block: 'start'
+                // Scroll suave hasta la sección con offset para evitar que se vean iconos de la letra anterior
+                const offset = 80; // Ajustar según la altura del buscador fijo
+                const elementPosition = section.offsetTop;
+                const offsetPosition = elementPosition - offset;
+                
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
                 });
             }
         }

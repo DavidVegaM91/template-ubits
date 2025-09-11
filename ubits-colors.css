@@ -1,0 +1,511 @@
+/* ========================================
+   UBITS COLOR TOKENS
+   Sistema de colores oficial de UBITS
+   ======================================== */
+
+:root {
+  /* ========================================
+     BRAND COLORS
+     ======================================== */
+  
+  /* Accent Brand */
+  --ubits-accent-brand: #0c5bef;
+  --ubits-accent-brand-inverted: #0c5bef;
+  --ubits-accent-brand-static: #0c5bef;
+  --ubits-accent-brand-static-inverted: #3865f5;
+  
+  /* UBITS Logo */
+  --ubits-logo: #ffffff;
+  --ubits-logo-inverted: #ffffff;
+  --ubits-logo-static: #0d1f57;
+  --ubits-logo-static-inverted: #ffffff;
+  
+  /* ========================================
+     FOREGROUND COLORS
+     ======================================== */
+  
+  /* Primary Text */
+  --ubits-fg-1-high: #303a47;
+  --ubits-fg-1-medium: #5c646f;
+  --ubits-fg-1-high-static: #303a47;
+  --ubits-fg-1-high-static-inverted: #edeeef;
+  --ubits-fg-1-medium-static: #5c646f;
+  --ubits-fg-1-medium-static-inverted: #d0d2d5;
+  
+  /* Secondary Text */
+  --ubits-fg-2-high: #2a303f;
+  --ubits-fg-2-medium: #5a5e6a;
+  --ubits-fg-2-high-static: #2a303f;
+  --ubits-fg-2-medium-static: #5a5e6a;
+  --ubits-fg-2-medium-static-inverted: #d0d2d5;
+  
+  /* Disabled Text */
+  --ubits-fg-disabled: #a2a6ad;
+  --ubits-fg-on-disabled: #828690;
+  --ubits-fg-disabled-static: #a2a6ad;
+  --ubits-fg-on-disabled-static: #828690;
+  
+  /* Bold Text */
+  --ubits-fg-bold: #ffffff;
+  
+  /* ========================================
+     COLORED FOREGROUNDS
+     ======================================== */
+  
+  /* Blue */
+  --ubits-fg-blue-subtle: #d6dbff;
+  --ubits-fg-blue-subtle-inverted: #212f70;
+  --ubits-fg-blue-subtle-hover: #c3c1fd;
+  --ubits-fg-blue-subtle-inverted-hover: #141e3f;
+  
+  /* Gray */
+  --ubits-fg-gray-subtle: #dbdde0;
+  --ubits-fg-gray-subtle-inverted: #2b3543;
+  --ubits-fg-gray-subtle-hover: #c5c6cb;
+  --ubits-fg-gray-subtle-inverted-hover: #16202f;
+  
+  /* Yellow */
+  --ubits-fg-yellow-subtle: #ffd555;
+  --ubits-fg-yellow-subtle-inverted: #433214;
+  --ubits-fg-yellow-subtle-hover: #e9c410;
+  --ubits-fg-yellow-subtle-inverted-hover: #251f0e;
+  --ubits-fg-yellow-bold: #251f0e;
+  --ubits-fg-yellow-bold-inverted: #2f2711;
+  --ubits-fg-yellow-bold-hover: #1c170a;
+  --ubits-fg-yellow-bold-inverted-hover: #251f0e;
+  
+  /* Green */
+  --ubits-fg-green-subtle: #bce7c3;
+  --ubits-fg-green-subtle-inverted: #183b28;
+  --ubits-fg-green-subtle-hover: #82d8a5;
+  --ubits-fg-green-subtle-inverted-hover: #142318;
+  
+  /* Teal */
+  --ubits-fg-teal-subtle: #c9e2e3;
+  --ubits-fg-teal-subtle-inverted: #183a3b;
+  --ubits-fg-teal-subtle-hover: #a4ced4;
+  --ubits-fg-teal-subtle-inverted-hover: #122224;
+  
+  /* Purple */
+  --ubits-fg-purple-subtle: #e3d7ff;
+  --ubits-fg-purple-subtle-inverted: #272a79;
+  --ubits-fg-purple-subtle-hover: #d8bafd;
+  --ubits-fg-purple-subtle-inverted-hover: #221940;
+  
+  /* Pink */
+  --ubits-fg-pink-subtle: #fcd1e5;
+  --ubits-fg-pink-subtle-inverted: #542440;
+  --ubits-fg-pink-subtle-hover: #fab2ce;
+  --ubits-fg-pink-subtle-inverted-hover: #301824;
+  
+  /* Rose */
+  --ubits-fg-rose-subtle: #f0d4f6;
+  --ubits-fg-rose-subtle-inverted: #4a255b;
+  --ubits-fg-rose-subtle-hover: #ecb5ea;
+  --ubits-fg-rose-subtle-inverted-hover: #2d1731;
+  
+  /* ========================================
+     FEEDBACK COLORS
+     ======================================== */
+  
+  /* Success */
+  --ubits-feedback-accent-success: #4ab028;
+  --ubits-feedback-accent-success-inverted: #328e2c;
+  --ubits-feedback-fg-success-subtle: #bde9ac;
+  --ubits-feedback-fg-success-subtle-inverted: #223b16;
+  --ubits-feedback-fg-success-subtle-hover: #7ddb7f;
+  --ubits-feedback-fg-success-subtle-inverted-hover: #152311;
+  
+  /* Info */
+  --ubits-feedback-accent-info: #7397fe;
+  --ubits-feedback-accent-info-inverted: #4a74ee;
+  --ubits-feedback-fg-info-subtle: #d7daff;
+  --ubits-feedback-fg-info-subtle-inverted: #20335f;
+  --ubits-feedback-fg-info-subtle-hover: #c4c1fc;
+  --ubits-feedback-fg-info-subtle-inverted-hover: #1b1e34;
+  
+  /* Warning */
+  --ubits-feedback-accent-warning: #d68b0d;
+  --ubits-feedback-accent-warning-inverted: #b16c19;
+  --ubits-feedback-fg-warning-subtle: #ffd4a0;
+  --ubits-feedback-fg-warning-subtle-inverted: #4c2e15;
+  --ubits-feedback-fg-warning-subtle-hover: #ffb954;
+  --ubits-feedback-fg-warning-subtle-inverted-hover: #2a1d0d;
+  --ubits-feedback-fg-warning-bold: #2a1d0d;
+  --ubits-feedback-fg-warning-bold-inverted: #35250f;
+  --ubits-feedback-fg-warning-bold-hover: #1f1609;
+  --ubits-feedback-fg-warning-bold-inverted-hover: #2a1d0d;
+  
+  /* Error */
+  --ubits-feedback-accent-error: #f96f6f;
+  --ubits-feedback-accent-error-inverted: #e9343c;
+  --ubits-feedback-fg-error-subtle: #ffd2cd;
+  --ubits-feedback-fg-error-subtle-inverted: #65181e;
+  --ubits-feedback-fg-error-subtle-hover: #ffb4a6;
+  --ubits-feedback-fg-error-subtle-inverted-hover: #391411;
+  
+  /* ========================================
+     BACKGROUND COLORS
+     ======================================== */
+  
+  --ubits-bg-active: rgba(12, 91, 239, 0.2);
+  --ubits-bg-level-1: var(--ubits-bg-1);
+  --ubits-bg-1: #ffffff;
+  --ubits-bg-2: #F3F3F4;
+  
+  /* ========================================
+     BORDER COLORS
+     ======================================== */
+  
+  /* Main Borders */
+  --ubits-border-1: #d0d2d5;
+  --ubits-border-2: #c5c6cb;
+  --ubits-border-disabled: #e1e2e5;
+  
+  /* Colored Borders */
+  --ubits-border-blue: #3865f5;
+  --ubits-border-gray: #6c727d;
+  --ubits-border-green: #1e8251;
+  --ubits-border-teal: #177e84;
+  --ubits-border-indigo: #3a6cda;
+  --ubits-border-purple: #6457ff;
+  --ubits-border-pink: #bf418a;
+  --ubits-border-yellow: #8e6d1b;
+  --ubits-border-rose: #ad3fcb;
+  
+  /* Inverted Borders */
+  --ubits-border-1-inverted: #d0d2d5;
+  --ubits-border-2-inverted: #c5c6cb;
+  --ubits-border-disabled-inverted: #e1e2e5;
+  --ubits-border-blue-inverted: #a2a3fb;
+  --ubits-border-gray-inverted: #a8abb2;
+  --ubits-border-green-inverted: #25c37a;
+  --ubits-border-teal-inverted: #74b6bb;
+  --ubits-border-indigo-inverted: #97a5fd;
+  --ubits-border-purple-inverted: #b59bff;
+  --ubits-border-pink-inverted: #f08bbe;
+  --ubits-border-yellow-inverted: #c9a916;
+  --ubits-border-rose-inverted: #d991e5;
+  
+  /* Static Borders */
+  --ubits-border-1-static: #d0d2d5;
+  --ubits-border-2-static: #c5c6cb;
+  --ubits-border-disabled-static: #e1e2e5;
+  --ubits-border-blue-static: #a2a3fb;
+  --ubits-border-gray-static: #a8abb2;
+  --ubits-border-green-static: #25c37a;
+  --ubits-border-teal-static: #74b6bb;
+  --ubits-border-indigo-static: #97a5fd;
+  --ubits-border-purple-static: #b59bff;
+  --ubits-border-pink-static: #f08bbe;
+  --ubits-border-yellow-static: #c9a916;
+  --ubits-border-rose-static: #d991e5;
+  
+  /* Static Inverted Borders */
+  --ubits-border-1-static-inverted: #4f5561;
+  --ubits-border-2-static-inverted: #353e4c;
+  --ubits-border-disabled-static-inverted: #545a66;
+  --ubits-border-blue-static-inverted: #3865f5;
+  --ubits-border-gray-static-inverted: #6c727d;
+  --ubits-border-green-static-inverted: #1e8251;
+  --ubits-border-teal-static-inverted: #177e84;
+  --ubits-border-indigo-static-inverted: #3a6cda;
+  --ubits-border-purple-static-inverted: #6457ff;
+  --ubits-border-pink-static-inverted: #bf418a;
+  --ubits-border-yellow-static-inverted: #8e6d1b;
+  --ubits-border-rose-static-inverted: #ad3fcb;
+  
+  /* Feedback Borders */
+  --ubits-feedback-border-success: #368226;
+  --ubits-feedback-border-info: #3a6cda;
+  --ubits-feedback-border-warning: #a4621b;
+  --ubits-feedback-border-error: #e20d34;
+  --ubits-feedback-border-success-inverted: #41c433;
+  --ubits-feedback-border-info-inverted: #97a5fd;
+  --ubits-feedback-border-warning-inverted: #ec9907;
+  --ubits-feedback-border-error-inverted: #fd8a82;
+  --ubits-feedback-border-success-static: #41c433;
+  --ubits-feedback-border-info-static: #97a5fd;
+  --ubits-feedback-border-warning-static: #ec9907;
+  --ubits-feedback-border-error-static: #fd8a82;
+  --ubits-feedback-border-success-static-inverted: #368226;
+  --ubits-feedback-border-info-static-inverted: #3a6cda;
+  --ubits-feedback-border-warning-static-inverted: #a4621b;
+  --ubits-feedback-border-error-static-inverted: #a4621b;
+  
+  /* ========================================
+     SIDEBAR COLORS
+     ======================================== */
+  
+  --ubits-sidebar-bg: #202837;
+  --ubits-sidebar-logo: #ffffff;
+  --ubits-sidebar-button-bg-pressed: #3b4350;
+  --ubits-sidebar-button-bg-disabled: #3b4350;
+  --ubits-sidebar-button-bg-active: #ffffff;
+  --ubits-sidebar-button-fg-default: #d0d2d5;
+  --ubits-sidebar-button-fg-hover: #edeeef;
+  --ubits-sidebar-button-fg-pressed: #edeeef;
+  --ubits-sidebar-button-fg-active: #303a47;
+  --ubits-sidebar-button-fg-disabled: #828690;
+  
+  /* ========================================
+     CHART COLORS
+     ======================================== */
+  
+  --ubits-chart-bg-level-1: #ffffff;
+  
+  /* ========================================
+     TOAST COLORS
+     ======================================== */
+  
+  --ubits-toast-feedback-bg: #ffffff;
+  
+  /* ========================================
+     BOTTOM NAVIGATION
+     ======================================== */
+  
+  --ubits-bottom-nav-shadow-opacity: rgba(0, 0, 0, 0.36);
+}
+
+/* ========================================
+   DARK MODE OVERRIDES
+   ======================================== */
+
+[data-theme="dark"] {
+  /* ========================================
+     BRAND COLORS - DARK MODE
+     ======================================== */
+  
+  --ubits-accent-brand: #b6b5fc;
+  --ubits-accent-brand-inverted: #0c5bef;
+  --ubits-accent-brand-static: #0c5bef;
+  --ubits-accent-brand-static-inverted: #3865f5;
+  
+  /* ========================================
+     FOREGROUND COLORS - DARK MODE
+     ======================================== */
+  
+  --ubits-fg-1-high: #edeeef;
+  --ubits-fg-1-medium: #d0d2d5;
+  --ubits-fg-1-high-static: #edeeef;
+  --ubits-fg-1-high-static-inverted: #edeeef;
+  --ubits-fg-1-medium-static: #d0d2d5;
+  --ubits-fg-1-medium-static-inverted: #d0d2d5;
+  
+  --ubits-fg-2-high: #ffffff;
+  --ubits-fg-2-medium: #d0d2d5;
+  --ubits-fg-2-high-static: #ffffff;
+  --ubits-fg-2-medium-static: #d0d2d5;
+  --ubits-fg-2-medium-static-inverted: #d0d2d5;
+  
+  --ubits-fg-disabled: #777c86;
+  --ubits-fg-on-disabled: #828690;
+  --ubits-fg-disabled-static: #777c86;
+  --ubits-fg-on-disabled-static: #828690;
+  
+  /* ========================================
+     COLORED FOREGROUNDS - DARK MODE
+     ======================================== */
+  
+  --ubits-fg-blue-subtle: #d6dbff;
+  --ubits-fg-blue-subtle-inverted: #212f70;
+  --ubits-fg-blue-subtle-hover: #c3c1fd;
+  --ubits-fg-blue-subtle-inverted-hover: #141e3f;
+  
+  --ubits-fg-gray-subtle: #dbdde0;
+  --ubits-fg-gray-subtle-inverted: #2b3543;
+  --ubits-fg-gray-subtle-hover: #c5c6cb;
+  --ubits-fg-gray-subtle-inverted-hover: #16202f;
+  
+  --ubits-fg-yellow-subtle: #ffd555;
+  --ubits-fg-yellow-subtle-inverted: #433214;
+  --ubits-fg-yellow-subtle-hover: #e9c410;
+  --ubits-fg-yellow-subtle-inverted-hover: #251f0e;
+  --ubits-fg-yellow-bold: #251f0e;
+  --ubits-fg-yellow-bold-inverted: #2f2711;
+  --ubits-fg-yellow-bold-hover: #1c170a;
+  --ubits-fg-yellow-bold-inverted-hover: #251f0e;
+  
+  --ubits-fg-green-subtle: #bce7c3;
+  --ubits-fg-green-subtle-inverted: #183b28;
+  --ubits-fg-green-subtle-hover: #82d8a5;
+  --ubits-fg-green-subtle-inverted-hover: #142318;
+  
+  --ubits-fg-teal-subtle: #c9e2e3;
+  --ubits-fg-teal-subtle-inverted: #183a3b;
+  --ubits-fg-teal-subtle-hover: #a4ced4;
+  --ubits-fg-teal-subtle-inverted-hover: #122224;
+  
+  --ubits-fg-purple-subtle: #e3d7ff;
+  --ubits-fg-purple-subtle-inverted: #272a79;
+  --ubits-fg-purple-subtle-hover: #d8bafd;
+  --ubits-fg-purple-subtle-inverted-hover: #221940;
+  
+  --ubits-fg-pink-subtle: #fcd1e5;
+  --ubits-fg-pink-subtle-inverted: #542440;
+  --ubits-fg-pink-subtle-hover: #fab2ce;
+  --ubits-fg-pink-subtle-inverted-hover: #301824;
+  
+  --ubits-fg-rose-subtle: #f0d4f6;
+  --ubits-fg-rose-subtle-inverted: #4a255b;
+  --ubits-fg-rose-subtle-hover: #ecb5ea;
+  --ubits-fg-rose-subtle-inverted-hover: #2d1731;
+  
+  /* ========================================
+     FEEDBACK COLORS - DARK MODE
+     ======================================== */
+  
+  --ubits-feedback-accent-success: #4ab028;
+  --ubits-feedback-accent-success-inverted: #328e2c;
+  --ubits-feedback-fg-success-subtle: #bde9ac;
+  --ubits-feedback-fg-success-subtle-inverted: #223b16;
+  --ubits-feedback-fg-success-subtle-hover: #7ddb7f;
+  --ubits-feedback-fg-success-subtle-inverted-hover: #152311;
+  
+  --ubits-feedback-accent-info: #7397fe;
+  --ubits-feedback-accent-info-inverted: #4a74ee;
+  --ubits-feedback-fg-info-subtle: #d7daff;
+  --ubits-feedback-fg-info-subtle-inverted: #20335f;
+  --ubits-feedback-fg-info-subtle-hover: #c4c1fc;
+  --ubits-feedback-fg-info-subtle-inverted-hover: #1b1e34;
+  
+  --ubits-feedback-accent-warning: #d68b0d;
+  --ubits-feedback-accent-warning-inverted: #b16c19;
+  --ubits-feedback-fg-warning-subtle: #ffd4a0;
+  --ubits-feedback-fg-warning-subtle-inverted: #4c2e15;
+  --ubits-feedback-fg-warning-subtle-hover: #ffb954;
+  --ubits-feedback-fg-warning-subtle-inverted-hover: #2a1d0d;
+  --ubits-feedback-fg-warning-bold: #2a1d0d;
+  --ubits-feedback-fg-warning-bold-inverted: #35250f;
+  --ubits-feedback-fg-warning-bold-hover: #1f1609;
+  --ubits-feedback-fg-warning-bold-inverted-hover: #2a1d0d;
+  
+  --ubits-feedback-accent-error: #f96f6f;
+  --ubits-feedback-accent-error-inverted: #e9343c;
+  --ubits-feedback-fg-error-subtle: #ffd2cd;
+  --ubits-feedback-fg-error-subtle-inverted: #65181e;
+  --ubits-feedback-fg-error-subtle-hover: #ffb4a6;
+  --ubits-feedback-fg-error-subtle-inverted-hover: #391411;
+  
+  /* ========================================
+     BACKGROUND COLORS - DARK MODE
+     ======================================== */
+  
+  --ubits-bg-active: rgba(12, 91, 239, 0.2);
+  --ubits-bg-level-1: var(--ubits-bg-1);
+  --ubits-bg-1: #202837;
+  --ubits-bg-2: #0E1825;
+  
+  /* ========================================
+     BORDER COLORS - DARK MODE
+     ======================================== */
+  
+  /* Main Borders */
+  --ubits-border-1: #4f5561;
+  --ubits-border-2: #404754;
+  --ubits-border-disabled: #545a66;
+  
+  /* Colored Borders */
+  --ubits-border-blue: #a2a3fb;
+  --ubits-border-gray: #a8abb2;
+  --ubits-border-green: #25c37a;
+  --ubits-border-teal: #74b6bb;
+  --ubits-border-indigo: #97a5fd;
+  --ubits-border-purple: #b59bff;
+  --ubits-border-pink: #f08bbe;
+  --ubits-border-yellow: #c9a916;
+  --ubits-border-rose: #d991e5;
+  
+  /* Inverted Borders */
+  --ubits-border-1-inverted: #4f5561;
+  --ubits-border-2-inverted: #353e4c;
+  --ubits-border-disabled-inverted: #545a66;
+  --ubits-border-blue-inverted: #3865f5;
+  --ubits-border-gray-inverted: #6c727d;
+  --ubits-border-green-inverted: #1e8251;
+  --ubits-border-teal-inverted: #177e84;
+  --ubits-border-indigo-inverted: #3a6cda;
+  --ubits-border-purple-inverted: #6457ff;
+  --ubits-border-pink-inverted: #bf418a;
+  --ubits-border-yellow-inverted: #8e6d1b;
+  --ubits-border-rose-inverted: #ad3fcb;
+  
+  /* Static Borders */
+  --ubits-border-1-static: #d0d2d5;
+  --ubits-border-2-static: #c5c6cb;
+  --ubits-border-disabled-static: #e1e2e5;
+  --ubits-border-blue-static: #a2a3fb;
+  --ubits-border-gray-static: #a8abb2;
+  --ubits-border-green-static: #25c37a;
+  --ubits-border-teal-static: #74b6bb;
+  --ubits-border-indigo-static: #97a5fd;
+  --ubits-border-purple-static: #b59bff;
+  --ubits-border-pink-static: #f08bbe;
+  --ubits-border-yellow-static: #c9a916;
+  --ubits-border-rose-static: #d991e5;
+  
+  /* Static Inverted Borders */
+  --ubits-border-1-static-inverted: #4f5561;
+  --ubits-border-2-static-inverted: #353e4c;
+  --ubits-border-disabled-static-inverted: #545a66;
+  --ubits-border-blue-static-inverted: #3865f5;
+  --ubits-border-gray-static-inverted: #6c727d;
+  --ubits-border-green-static-inverted: #1e8251;
+  --ubits-border-teal-static-inverted: #177e84;
+  --ubits-border-indigo-static-inverted: #3a6cda;
+  --ubits-border-purple-static-inverted: #6457ff;
+  --ubits-border-pink-static-inverted: #bf418a;
+  --ubits-border-yellow-static-inverted: #8e6d1b;
+  --ubits-border-rose-static-inverted: #ad3fcb;
+  
+  /* Feedback Borders */
+  --ubits-feedback-border-success: #41c433;
+  --ubits-feedback-border-info: #97a5fd;
+  --ubits-feedback-border-warning: #ec9907;
+  --ubits-feedback-border-error: #fd8a82;
+  --ubits-feedback-border-success-inverted: #368226;
+  --ubits-feedback-border-info-inverted: #3a6cda;
+  --ubits-feedback-border-warning-inverted: #a4621b;
+  --ubits-feedback-border-error-inverted: #e20d34;
+  --ubits-feedback-border-success-static: #41c433;
+  --ubits-feedback-border-info-static: #97a5fd;
+  --ubits-feedback-border-warning-static: #ec9907;
+  --ubits-feedback-border-error-static: #fd8a82;
+  --ubits-feedback-border-success-static-inverted: #368226;
+  --ubits-feedback-border-info-static-inverted: #3a6cda;
+  --ubits-feedback-border-warning-static-inverted: #a4621b;
+  --ubits-feedback-border-error-static-inverted: #a4621b;
+  
+  /* ========================================
+     SIDEBAR COLORS - DARK MODE
+     ======================================== */
+  
+  --ubits-sidebar-bg: #202837;
+  --ubits-sidebar-logo: #ffffff;
+  --ubits-sidebar-button-bg-pressed: #3b4350;
+  --ubits-sidebar-button-bg-disabled: #3b4350;
+  --ubits-sidebar-button-bg-active: #ffffff;
+  --ubits-sidebar-button-fg-default: #d0d2d5;
+  --ubits-sidebar-button-fg-hover: #edeeef;
+  --ubits-sidebar-button-fg-pressed: #edeeef;
+  --ubits-sidebar-button-fg-active: #303a47;
+  --ubits-sidebar-button-fg-disabled: #828690;
+  
+  /* ========================================
+     CHART COLORS - DARK MODE
+     ======================================== */
+  
+  --ubits-chart-bg-level-1: #ffffff;
+  
+  /* ========================================
+     TOAST COLORS - DARK MODE
+     ======================================== */
+  
+  --ubits-toast-feedback-bg: #ffffff;
+  
+  /* ========================================
+     BOTTOM NAVIGATION - DARK MODE
+     ======================================== */
+  
+  --ubits-bottom-nav-shadow-opacity: rgba(0, 0, 0, 0.36);
+}
