@@ -11,6 +11,27 @@ body {
     padding: 0;
     overflow-x: hidden;
     overflow-y: auto;
+    /* Forzar scroll más claro */
+    scrollbar-width: thin;
+    scrollbar-color: var(--ubits-fg-2-medium-static) var(--ubits-bg-5);
+}
+
+/* Scroll más claro para WebKit (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--ubits-bg-5);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--ubits-fg-2-medium-static);
+    border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--ubits-fg-2-high-static);
 }
 
 /* Contenedor principal */
@@ -1663,32 +1684,7 @@ body {
     animation: slideOutUp 0.3s ease-in forwards;
 }
 
-/* Scroll personalizado global */
-::-webkit-scrollbar {
-    width: 12px;
-    height: 12px;
-}
 
-::-webkit-scrollbar-track {
-    background: var(--ubits-bg-2);
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--ubits-fg-1-medium);
-    border-radius: 4px;
-    transition: background 0.2s ease;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: var(--ubits-fg-1-high);
-}
-
-/* Scroll para Firefox */
-* {
-    scrollbar-width: thin;
-    scrollbar-color: var(--ubits-fg-1-medium) var(--ubits-bg-2);
-}
 
 /* Navegación alfabética lateral para iconos */
 .alphabet-nav-icons {
@@ -2373,4 +2369,5 @@ body {
     
     /* Responsive adjustments for documentation */
 }
+
 

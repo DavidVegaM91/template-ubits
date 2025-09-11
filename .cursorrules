@@ -1,0 +1,142 @@
+# UBITS Template - Cursor AI Rules
+
+## 🎯 PROJECT PURPOSE
+This is a UBITS template for creating interfaces quickly with Cursor AI. The value is maintaining UBITS visual identity while enabling rapid prototyping.
+
+## 👥 TARGET USERS
+- **Product Managers** - No technical knowledge
+- **Designers** - No coding experience  
+- **Non-technical users** - Need Cursor AI to handle all development tasks
+
+## 🚨 CRITICAL: NEVER ASK USERS TO DO TECHNICAL TASKS
+- ❌ NEVER ask users to run terminal commands
+- ❌ NEVER ask users to install dependencies
+- ❌ NEVER ask users to modify code files directly
+- ❌ NEVER ask users to use Git commands
+- ❌ NEVER ask users to debug code or check console errors
+- ✅ ALWAYS handle all technical tasks yourself
+- ✅ ALWAYS provide complete, ready-to-use solutions
+- ✅ ALWAYS explain what you're doing in simple terms
+
+## 🚨 CRITICAL RULES (NON-NEGOTIABLE)
+
+### 1. ALWAYS USE UBITS TOKENS
+```css
+/* ❌ NEVER use hardcoded colors */
+color: #303a47;
+background: #ffffff;
+border: 1px solid #d0d2d5;
+
+/* ✅ ALWAYS use UBITS tokens */
+color: var(--ubits-fg-1-high);
+background: var(--ubits-bg-1);
+border: 1px solid var(--ubits-border-1);
+```
+
+### 2. ALWAYS USE UBITS TYPOGRAPHY
+```html
+<!-- ❌ NEVER use default HTML tags -->
+<h1>My Title</h1>
+<p>My text</p>
+
+<!-- ✅ ALWAYS use UBITS typography classes -->
+<h1 class="ubits-h1">My Title</h1>
+<p class="ubits-body-md-regular">My text</p>
+```
+
+### 3. ALWAYS IMPORT UBITS FILES
+```html
+<!-- REQUIRED in any new HTML file -->
+<link rel="stylesheet" href="ubits-colors.css">
+<link rel="stylesheet" href="ubits-typography.css">
+```
+
+### 4. ALWAYS USE UBITS BORDERS
+```css
+/* ❌ NEVER use text tokens for borders */
+border: 1px solid var(--ubits-fg-1-medium);
+border: 1px solid var(--ubits-fg-2-medium);
+
+/* ✅ ALWAYS use border tokens */
+border: 1px solid var(--ubits-border-1);
+```
+
+## 🎨 DESIGN PRINCIPLES
+
+### Use outline icons (prefer `far` over `fas`)
+```html
+<i class="far fa-home"></i>  <!-- ✅ Good -->
+<i class="fas fa-home"></i>  <!-- ❌ Avoid -->
+```
+
+### Use content-area class for main content
+```html
+<div class="content-area">
+    <!-- Main content here -->
+</div>
+```
+
+### Use box-sizing: border-box
+```css
+* {
+    box-sizing: border-box;
+}
+```
+
+## 🚀 WORKFLOW
+
+1. Use `index.html` as base for new pages
+2. Always maintain UBITS visual identity
+3. Keep it simple (KISS principle)
+4. Test in both light and dark modes
+5. **Handle ALL technical tasks** - Users are non-technical
+6. **Provide complete solutions** - Never ask users to code
+7. **Explain in simple terms** - Use designer-friendly language
+
+## ⚠️ VERIFICATION CHECKLIST
+
+Before finishing any task, verify:
+- [ ] No hardcoded colors (#303a47, #ffffff, etc.)
+- [ ] All text uses UBITS typography classes
+- [ ] ubits-colors.css is imported
+- [ ] ubits-typography.css is imported
+- [ ] Colors change in dark mode
+- [ ] Borders use var(--ubits-border-1) by default
+- [ ] No text tokens used for borders
+
+## 🚫 LANDING HEADERS - DO NOT USE IN PRODUCT
+
+### LARGE HEADERS WITH HERO SECTIONS
+```html
+<!-- ❌ DO NOT use in product interfaces -->
+<div class="hero-section">
+    <h1 class="ubits-display-d2-bold">Main Title</h1>
+    <h2 class="ubits-display-d3-semibold">Subtitle</h2>
+    <p class="ubits-body-lg-regular">Long description...</p>
+</div>
+```
+
+**When TO use:**
+- ✅ Documentation pages
+- ✅ Marketing landing pages
+- ✅ Presentation pages
+
+**When NOT to use:**
+- ❌ Product interfaces (dashboards, forms, lists)
+- ❌ Reusable components
+- ❌ Functional application pages
+
+**For product interfaces use:**
+```html
+<!-- ✅ Use in product interfaces -->
+<div class="page-header">
+    <h1 class="ubits-h1">Page title</h1>
+    <p class="ubits-body-md-regular">Brief description only if needed</p>
+</div>
+```
+
+## 🎯 REMEMBER
+
+**The value of this template is speed and ease of use.**
+**Without tokens = No UBITS identity.**
+**With tokens = Authentic UBITS interfaces in record time.**

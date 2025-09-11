@@ -1,10 +1,12 @@
-# 🎯 UBITS Design System Template
+# 🎯 Template UBITS - Crea interfaces en tiempo récord
 
-> **Plantilla completa para crear interfaces UBITS con Cursor AI**
+> **Plantilla para crear interfaces UBITS con Cursor AI en tiempo récord**
 
 ## 🚀 ¿Qué es esto?
 
-Una plantilla completa que permite a **Product Managers**, **Diseñadores** y **Desarrolladores** crear nuevas interfaces UBITS usando **Cursor AI** con la garantía de que mantendrán el estilo y funcionalidad correctos.
+Una **plantilla lista para usar** que permite a **Product Managers**, **Diseñadores** y **Desarrolladores** crear interfaces UBITS auténticas usando **Cursor AI** sin conocimientos técnicos avanzados.
+
+**El objetivo:** Validar ideas rápidamente, prototipar interfaces en tiempo récord y obtener feedback real de usuarios.
 
 ## 🚨 **ANTES DE EMPEZAR - LEE ESTO:**
 
@@ -41,15 +43,23 @@ Template UBITS/
 └── 📄 LICENSE                 # Licencia MIT
 ```
 
-## 🎨 Componentes Disponibles
+## 🎯 Casos de uso reales
 
-### **Páginas Listas para Usar:**
+- **Product Managers:** Crear mockups de nuevas funcionalidades
+- **Diseñadores:** Prototipar interfaces sin código
+- **Equipos de producto:** Validar ideas con usuarios reales
+- **Consultores:** Mostrar propuestas de interfaz a clientes
+- **Desarrolladores:** Crear MVPs visuales rápidamente
+
+## 🎨 Componentes UBITS incluidos
+
+### **Páginas base:**
 - **`index.html`** - Dashboard principal con content-wrapper (plantilla base)
 - **`profile.html`** - Página de perfil con widgets vacíos y sidebar derecho
 - **`ubits-ai.html`** - Plantilla específica para UBITS AI
 - **`simon-chat.html`** - Chat específico de Simon
 
-### **Componentes Reutilizables:**
+### **Componentes reutilizables:**
 - **Sidebar** - Componente de navegación lateral (`components/sidebar.js`)
 - **Top-Nav** - Componente de navegación superior (`components/top-nav.js`)
   - **Variantes disponibles:**
@@ -59,10 +69,11 @@ Template UBITS/
     - `surveys` - Encuestas (una sola pestaña)
     - `tasks` - Tareas (Planes, Tareas)
 
-### **Sistema de Diseño:**
-- **Tipografía UBITS** - Clases predefinidas para todos los textos
-- **Iconos FontAwesome** - Catálogo completo con búsqueda (preferir variantes outline/alt)
-- **Widgets Flexibles** - Se adaptan automáticamente al contenido
+### **Plantilla con componentes UBITS:**
+- **Widgets flexibles** - Se adaptan automáticamente al contenido
+- **Tokens de color** - Cambian automáticamente entre modo claro/oscuro
+- **Tipografía oficial** - Noto Sans con todas las variantes
+- **Iconos FontAwesome** - Catálogo completo integrado
 - **Scroll de Página** - Funciona correctamente en todas las páginas
 - **CSS organizado** - Estilos del sidebar en `styles.css`, específicos en `profile.css`
 - **Modo Oscuro** - Soporte completo para tema oscuro
@@ -71,7 +82,7 @@ Template UBITS/
 
 > **🚨 REGLA FUNDAMENTAL: SIEMPRE usar tokens de color UBITS y tipografía UBITS**
 > 
-> **Este es el valor diferencial del proyecto.** Cualquiera puede usar Cursor AI, pero la ventaja de esta plantilla es que garantiza que todas las interfaces creadas mantengan la identidad visual oficial de UBITS con:
+> **Este es el valor diferencial del template.** Cualquiera puede usar Cursor AI, pero la ventaja de esta plantilla es que garantiza que todas las interfaces creadas mantengan la identidad visual oficial de UBITS con:
 > - **Tokens de color** que cambian automáticamente entre modo claro y oscuro
 > - **Tipografía oficial** UBITS con todas las variantes
 > - **Iconos FontAwesome** integrados y organizados
@@ -373,7 +384,7 @@ var(--ubits-sidebar-button-fg-default)  /* Iconos sidebar */
 
 ### **Reglas de Oro:**
 - **SÉ CREATIVO** - La plantilla está diseñada para ser flexible
-- **USA TOKENS UBITS** - Este es el valor diferencial del proyecto
+- **USA TOKENS UBITS** - Este es el valor diferencial del template
 - **Mantén la funcionalidad** - No rompas el JavaScript del sidebar
 - **Consistencia visual** - Garantiza que todas las interfaces se vean como UBITS
 - **Prueba todo** - Usa `index.html` para experimentar

@@ -3,7 +3,39 @@
 ## ⚠️ **LEE ESTO ANTES DE CREAR CUALQUIER INTERFAZ**
 
 ### **🎯 VALOR DIFERENCIAL DEL PROYECTO**
-Este proyecto existe para garantizar que **TODAS** las interfaces creadas mantengan la identidad visual oficial de UBITS. Si no usas los tokens, estás eliminando el valor del proyecto.
+Este template existe para que **CUALQUIERA** pueda crear interfaces UBITS auténticas en tiempo récord usando Cursor AI. Si no usas los tokens, estás perdiendo el valor de la plantilla.
+
+### **👥 USUARIOS OBJETIVO**
+- **Product Managers** - Sin conocimientos técnicos
+- **Diseñadores** - Sin experiencia en código
+- **Usuarios no técnicos** - Necesitan que Cursor AI maneje todas las tareas de desarrollo
+
+### **🚨 CRÍTICO: NUNCA PEDIR TAREAS TÉCNICAS A LOS USUARIOS**
+- ❌ NUNCA pedir comandos de terminal
+- ❌ NUNCA pedir instalar dependencias
+- ❌ NUNCA pedir modificar archivos de código directamente
+- ❌ NUNCA pedir comandos de Git
+- ❌ NUNCA pedir hacer debug de código o revisar errores de consola
+- ✅ SIEMPRE manejar todas las tareas técnicas tú mismo
+- ✅ SIEMPRE proporcionar soluciones completas y listas para usar
+- ✅ SIEMPRE explicar en términos simples
+
+## 🎯 **CASOS DE USO PRINCIPALES**
+
+### **Para Product Managers:**
+- Crear mockups de nuevas funcionalidades
+- Validar ideas con usuarios reales
+- Mostrar propuestas a stakeholders
+
+### **Para Diseñadores:**
+- Prototipar interfaces sin código
+- Iterar rápidamente en diseños
+- Crear presentaciones visuales
+
+### **Para Desarrolladores:**
+- Crear MVPs visuales rápidamente
+- Mostrar propuestas a clientes
+- Prototipar antes de desarrollar
 
 ---
 
@@ -92,9 +124,21 @@ border: 1px solid var(--ubits-border-1);
 
 ---
 
-## 🚀 **PLANTILLA BASE**
+## 🚀 **PLANTILLA UBITS INCLUIDA**
 
 **USA ESTE ARCHIVO COMO BASE:** `index.html`
+
+### **Páginas listas para usar:**
+- `index.html` - Dashboard principal
+- `profile.html` - Página de perfil
+- `ubits-ai.html` - Dashboard de IA
+- `simon-chat.html` - Chat específico
+
+### **Componentes incluidos:**
+- Sidebar personalizable
+- Top-nav con variantes
+- Widgets que se adaptan al contenido
+- Sistema de navegación completo
 
 Este archivo ya tiene:
 - ✅ Todos los tokens importados
@@ -103,6 +147,14 @@ Este archivo ya tiene:
 - ✅ Content wrapper listo para usar
 
 ---
+
+## 🚀 **FLUJO DE TRABAJO TÍPICO**
+
+1. **Clona el template** en tu carpeta de proyecto
+2. **Abre Cursor AI** y pídele que modifique el contenido
+3. **Personaliza** widgets, páginas o crea nuevas secciones
+4. **Comparte** con usuarios para obtener feedback
+5. **Itera** rápidamente basado en el feedback
 
 ## ⚡ **PROMPTS PARA CURSOR**
 
@@ -136,8 +188,39 @@ Antes de terminar, verifica que:
 
 ---
 
+## 🚫 **ENCABEZADOS DE LANDING - NO USAR EN PRODUCTO**
+
+### **ENCABEZADOS GRANDES CON HERO SECTIONS**
+```html
+<!-- ❌ NO usar en interfaces de producto -->
+<div class="hero-section">
+    <h1 class="ubits-display-d2-bold">Título Principal</h1>
+    <h2 class="ubits-display-d3-semibold">Subtítulo</h2>
+    <p class="ubits-body-lg-regular">Descripción larga...</p>
+</div>
+```
+
+**¿Cuándo SÍ usar?**
+- ✅ Páginas de documentación
+- ✅ Landing pages de marketing
+- ✅ Páginas de presentación
+
+**¿Cuándo NO usar?**
+- ❌ Interfaces de producto (dashboards, formularios, listas)
+- ❌ Componentes reutilizables
+- ❌ Páginas funcionales de la aplicación
+
+**Para interfaces de producto usar:**
+```html
+<!-- ✅ Usar en interfaces de producto -->
+<div class="page-header">
+    <h1 class="ubits-h1">Título de la página</h1>
+    <p class="ubits-body-md-regular">Descripción breve solo si es necesaria</p>
+</div>
+```
+
 ## 🎯 **RECUERDA**
 
-**El valor de este proyecto es la consistencia visual UBITS.**
-**Sin tokens = Sin valor.**
-**Con tokens = Experiencia UBITS perfecta.**
+**El valor de este template es la velocidad y facilidad.**
+**Sin tokens = Sin identidad UBITS.**
+**Con tokens = Interfaces UBITS auténticas en tiempo récord.**

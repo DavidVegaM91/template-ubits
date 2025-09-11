@@ -20,7 +20,7 @@ const TOP_NAV_VARIANTS = {
             { id: 'section1', label: 'Inicio', icon: 'far fa-home', url: 'documentacion.html' },
             { id: 'section2', label: 'Sección 2', icon: 'far fa-book' },
             { id: 'section3', label: 'Sección 3', icon: 'far fa-chart-line' },
-            { id: 'section4', label: 'Sección 4', icon: 'far fa-clipboard' },
+            { id: 'section4', label: 'Colores', icon: 'far fa-palette', url: 'colores.html' },
             { id: 'section5', label: 'Iconos', icon: 'far fa-icons', url: 'iconos.html' }
         ]
     },
@@ -138,6 +138,9 @@ function activateCurrentPageTab(container, variant) {
     if (currentPage === 'iconos.html') {
         const iconosTab = container.querySelector('[data-tab="section5"]');
         if (iconosTab) iconosTab.classList.add('active');
+    } else if (currentPage === 'colores.html') {
+        const coloresTab = container.querySelector('[data-tab="section4"]');
+        if (coloresTab) coloresTab.classList.add('active');
     } else if (currentPage === 'documentacion.html') {
         const inicioTab = container.querySelector('[data-tab="section1"]');
         if (inicioTab) inicioTab.classList.add('active');
