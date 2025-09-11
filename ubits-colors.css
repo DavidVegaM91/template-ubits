@@ -152,6 +152,11 @@
   --ubits-bg-level-1: var(--ubits-bg-1);
   --ubits-bg-1: #ffffff;
   --ubits-bg-2: #F3F3F4;
+  --ubits-bg-3: #e7e8ea;
+  --ubits-bg-4: #dbdde0;
+  --ubits-bg-5: #ced0d5;
+  --ubits-bg-dim: #00000080;
+  --ubits-bg-disabled: #edeeef;
   
   /* ========================================
      BORDER COLORS
@@ -159,7 +164,7 @@
   
   /* Main Borders */
   --ubits-border-1: #d0d2d5;
-  --ubits-border-2: #c5c6cb;
+  --ubits-border-2: #b9bbc1;
   --ubits-border-disabled: #e1e2e5;
   
   /* Colored Borders */
@@ -174,32 +179,55 @@
   --ubits-border-rose: #ad3fcb;
   
   /* Inverted Borders */
-  --ubits-border-1-inverted: #d0d2d5;
-  --ubits-border-2-inverted: #c5c6cb;
-  --ubits-border-disabled-inverted: #e1e2e5;
-  --ubits-border-blue-inverted: #a2a3fb;
-  --ubits-border-gray-inverted: #a8abb2;
-  --ubits-border-green-inverted: #25c37a;
-  --ubits-border-teal-inverted: #74b6bb;
-  --ubits-border-indigo-inverted: #97a5fd;
-  --ubits-border-purple-inverted: #b59bff;
-  --ubits-border-pink-inverted: #f08bbe;
-  --ubits-border-yellow-inverted: #c9a916;
-  --ubits-border-rose-inverted: #d991e5;
+  --ubits-border-1-inverted: #4f5561;
+  --ubits-border-2-inverted: #353e4c;
+  --ubits-border-disabled-inverted: #545a66;
   
   /* Static Borders */
   --ubits-border-1-static: #d0d2d5;
   --ubits-border-2-static: #c5c6cb;
   --ubits-border-disabled-static: #e1e2e5;
-  --ubits-border-blue-static: #a2a3fb;
-  --ubits-border-gray-static: #a8abb2;
-  --ubits-border-green-static: #25c37a;
-  --ubits-border-teal-static: #74b6bb;
+  
+  /* Static Inverted Borders */
+  --ubits-border-1-static-inverted: #4f5561;
+  --ubits-border-2-static-inverted: #353e4c;
+  --ubits-border-disabled-static-inverted: #545a66;
+  --ubits-border-blue-inverted: #3865f5;
+  --ubits-border-gray-inverted: #6c727d;
+  --ubits-border-green-inverted: #1e8251;
+  --ubits-border-teal-inverted: #177e84;
+  --ubits-border-indigo-inverted: #3a6cda;
+  --ubits-border-purple-inverted: #6457ff;
+  --ubits-border-pink-inverted: #bf418a;
+  --ubits-border-yellow-inverted: #8e6d1b;
+  --ubits-border-rose-inverted: #ad3fcb;
+  
+  /* Colored Border Static */
+  --ubits-border-blue-static: #3865f5;
+  --ubits-border-gray-static: #6c727d;
+  --ubits-border-green-static: #1e8251;
+  --ubits-border-teal-static: #177e84;
   --ubits-border-indigo-static: #97a5fd;
   --ubits-border-purple-static: #b59bff;
   --ubits-border-pink-static: #f08bbe;
-  --ubits-border-yellow-static: #c9a916;
+  --ubits-border-yellow-static: #8e6d1b;
   --ubits-border-rose-static: #d991e5;
+  
+  /* Colored Border Static Inverted */
+  --ubits-border-blue-static-inverted: #3865f5;
+  --ubits-border-gray-static-inverted: #6c727d;
+  --ubits-border-green-static-inverted: #1e8251;
+  --ubits-border-teal-static-inverted: #177e84;
+  --ubits-border-indigo-static-inverted: #3a6cda;
+  --ubits-border-purple-static-inverted: #6457ff;
+  --ubits-border-pink-static-inverted: #bf418a;
+  --ubits-border-yellow-static-inverted: #8e6d1b;
+  --ubits-border-rose-static-inverted: #ad3fcb;
+  
+  /* Static Borders */
+  --ubits-border-1-static: #d0d2d5;
+  --ubits-border-2-static: #c5c6cb;
+  --ubits-border-disabled-static: #e1e2e5;
   
   /* Static Inverted Borders */
   --ubits-border-1-static-inverted: #4f5561;
@@ -216,14 +244,14 @@
   --ubits-border-rose-static-inverted: #ad3fcb;
   
   /* Feedback Borders */
-  --ubits-feedback-border-success: #368226;
-  --ubits-feedback-border-info: #3a6cda;
-  --ubits-feedback-border-warning: #a4621b;
-  --ubits-feedback-border-error: #e20d34;
-  --ubits-feedback-border-success-inverted: #41c433;
-  --ubits-feedback-border-info-inverted: #97a5fd;
-  --ubits-feedback-border-warning-inverted: #ec9907;
-  --ubits-feedback-border-error-inverted: #fd8a82;
+  --ubits-feedback-border-success: #41c433;
+  --ubits-feedback-border-info: #97a5fd;
+  --ubits-feedback-border-warning: #ec9907;
+  --ubits-feedback-border-error: #fd8a82;
+  --ubits-feedback-border-success-inverted: #368226;
+  --ubits-feedback-border-info-inverted: #3a6cda;
+  --ubits-feedback-border-warning-inverted: #a4621b;
+  --ubits-feedback-border-error-inverted: #e20d34;
   --ubits-feedback-border-success-static: #41c433;
   --ubits-feedback-border-info-static: #97a5fd;
   --ubits-feedback-border-warning-static: #ec9907;
@@ -395,6 +423,11 @@
   --ubits-bg-level-1: var(--ubits-bg-1);
   --ubits-bg-1: #202837;
   --ubits-bg-2: #0E1825;
+  --ubits-bg-3: #0c121c;
+  --ubits-bg-4: #050b15;
+  --ubits-bg-5: #000000;
+  --ubits-bg-dim: #000000b2;
+  --ubits-bg-disabled: #3b4350;
   
   /* ========================================
      BORDER COLORS - DARK MODE
@@ -406,43 +439,34 @@
   --ubits-border-disabled: #545a66;
   
   /* Colored Borders */
-  --ubits-border-blue: #a2a3fb;
-  --ubits-border-gray: #a8abb2;
-  --ubits-border-green: #25c37a;
-  --ubits-border-teal: #74b6bb;
-  --ubits-border-indigo: #97a5fd;
-  --ubits-border-purple: #b59bff;
-  --ubits-border-pink: #f08bbe;
-  --ubits-border-yellow: #c9a916;
-  --ubits-border-rose: #d991e5;
+  --ubits-border-blue: #3865f5;
+  --ubits-border-gray: #6c727d;
+  --ubits-border-green: #1e8251;
+  --ubits-border-teal: #177e84;
+  --ubits-border-indigo: #3a6cda;
+  --ubits-border-purple: #6457ff;
+  --ubits-border-pink: #bf418a;
+  --ubits-border-yellow: #8e6d1b;
+  --ubits-border-rose: #ad3fcb;
   
   /* Inverted Borders */
   --ubits-border-1-inverted: #4f5561;
   --ubits-border-2-inverted: #353e4c;
   --ubits-border-disabled-inverted: #545a66;
-  --ubits-border-blue-inverted: #3865f5;
-  --ubits-border-gray-inverted: #6c727d;
-  --ubits-border-green-inverted: #1e8251;
-  --ubits-border-teal-inverted: #177e84;
-  --ubits-border-indigo-inverted: #3a6cda;
-  --ubits-border-purple-inverted: #6457ff;
-  --ubits-border-pink-inverted: #bf418a;
-  --ubits-border-yellow-inverted: #8e6d1b;
-  --ubits-border-rose-inverted: #ad3fcb;
+  --ubits-border-blue-inverted: #a2a3fb;
+  --ubits-border-gray-inverted: #a8abb2;
+  --ubits-border-green-inverted: #25c37a;
+  --ubits-border-teal-inverted: #74b6bb;
+  --ubits-border-indigo-inverted: #97a5fd;
+  --ubits-border-purple-inverted: #b59bff;
+  --ubits-border-pink-inverted: #f08bbe;
+  --ubits-border-yellow-inverted: #c9a916;
+  --ubits-border-rose-inverted: #d991e5;
   
   /* Static Borders */
   --ubits-border-1-static: #d0d2d5;
   --ubits-border-2-static: #c5c6cb;
   --ubits-border-disabled-static: #e1e2e5;
-  --ubits-border-blue-static: #a2a3fb;
-  --ubits-border-gray-static: #a8abb2;
-  --ubits-border-green-static: #25c37a;
-  --ubits-border-teal-static: #74b6bb;
-  --ubits-border-indigo-static: #97a5fd;
-  --ubits-border-purple-static: #b59bff;
-  --ubits-border-pink-static: #f08bbe;
-  --ubits-border-yellow-static: #c9a916;
-  --ubits-border-rose-static: #d991e5;
   
   /* Static Inverted Borders */
   --ubits-border-1-static-inverted: #4f5561;
@@ -458,15 +482,26 @@
   --ubits-border-yellow-static-inverted: #8e6d1b;
   --ubits-border-rose-static-inverted: #ad3fcb;
   
+  /* Colored Border Static - Dark Mode */
+  --ubits-border-blue-static: #a2a3fb;
+  --ubits-border-gray-static: #a8abb2;
+  --ubits-border-green-static: #25c37a;
+  --ubits-border-teal-static: #74b6bb;
+  --ubits-border-indigo-static: #97a5fd;
+  --ubits-border-purple-static: #b59bff;
+  --ubits-border-pink-static: #f08bbe;
+  --ubits-border-yellow-static: #c9a916;
+  --ubits-border-rose-static: #d991e5;
+  
   /* Feedback Borders */
-  --ubits-feedback-border-success: #41c433;
-  --ubits-feedback-border-info: #97a5fd;
-  --ubits-feedback-border-warning: #ec9907;
-  --ubits-feedback-border-error: #fd8a82;
-  --ubits-feedback-border-success-inverted: #368226;
-  --ubits-feedback-border-info-inverted: #3a6cda;
-  --ubits-feedback-border-warning-inverted: #a4621b;
-  --ubits-feedback-border-error-inverted: #e20d34;
+  --ubits-feedback-border-success: #368226;
+  --ubits-feedback-border-info: #3a6cda;
+  --ubits-feedback-border-warning: #a4621b;
+  --ubits-feedback-border-error: #e20d34;
+  --ubits-feedback-border-success-inverted: #41c433;
+  --ubits-feedback-border-info-inverted: #97a5fd;
+  --ubits-feedback-border-warning-inverted: #ec9907;
+  --ubits-feedback-border-error-inverted: #fd8a82;
   --ubits-feedback-border-success-static: #41c433;
   --ubits-feedback-border-info-static: #97a5fd;
   --ubits-feedback-border-warning-static: #ec9907;
