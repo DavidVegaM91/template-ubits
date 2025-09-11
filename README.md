@@ -35,7 +35,7 @@ Template UBITS/
 │   ├── cards-learn/
 │   └── empty-states/
 ├── 📚 Fonts/                  # Fuentes FontAwesome
-├── 📖 iconos-ubits-fontawesome.html  # Catálogo de iconos
+├── 📖 iconos.html                    # Catálogo de iconos
 ├── 📋 WIDGET-GUIDE.md         # Guía para llenar widgets
 ├── 📝 UBITS-TYPOGRAPHY-GUIDE.md      # Guía de tipografía
 └── 📄 LICENSE                 # Licencia MIT
@@ -174,7 +174,7 @@ var(--ubits-sidebar-button-fg-default)  /* Iconos sidebar */
 ```bash
 # Consulta los estilos disponibles:
 # - Abre UBITS-TYPOGRAPHY-GUIDE.md
-# - Abre iconos-ubits-fontawesome.html
+# - Abre iconos.html
 # - Usa las clases predefinidas
 ```
 
@@ -343,7 +343,7 @@ var(--ubits-sidebar-button-fg-default)  /* Iconos sidebar */
 
 - **`WIDGET-GUIDE.md`** - Guía completa para llenar widgets
 - **`UBITS-TYPOGRAPHY-GUIDE.md`** - Sistema de tipografía
-- **`iconos-ubits-fontawesome.html`** - Catálogo de iconos
+- **`iconos.html`** - Catálogo de iconos
 
 ## 🎨 Personalización Avanzada
 
@@ -383,11 +383,17 @@ var(--ubits-sidebar-button-fg-default)  /* Iconos sidebar */
 - **Nombres propios**: Primera letra de cada palabra en mayúscula (ej: "Cursor AI", "FontAwesome")
 - **UBITS**: Siempre todo en mayúsculas (ej: "Template UBITS", "tokens UBITS")
 
+### **Principio KISS:**
+- **Keep It Simple, Stupid** - Siempre busca la solución más simple
+- **Código limpio y directo** - Evita complejidad innecesaria
+- **Funciones pequeñas** - Una función, una responsabilidad
+- **Nombres claros** - `navigateToTab()` mejor que `handleNavigationEvent()`
+
 ## 🤝 Soporte
 
 - **Documentación:** Revisa las guías incluidas
 - **Ejemplos:** Usa `profile.html` como referencia
-- **Iconos:** Consulta `iconos-ubits-fontawesome.html`
+- **Iconos:** Consulta `iconos.html`
 - **Estilos:** Revisa `ubits-typography.css`
 
 ## 🗺️ Navegación del Proyecto

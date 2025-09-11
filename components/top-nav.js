@@ -77,7 +77,7 @@ function getTopNavHTML(variant = 'template', customTabs = []) {
     
     if (tabs.length > 0) {
         tabsHTML = tabs.map(tab => `
-            <button class="nav-tab" data-tab="${tab.id}">
+            <button class="nav-tab" data-tab="${tab.id}" onclick="navigateToTab('${tab.id}', '${variant}')">
                 <i class="fa ${tab.icon}"></i>
                 <span class="ubits-body-sm-regular">${tab.label}</span>
             </button>
@@ -127,10 +127,24 @@ function loadTopNav(containerId, variant = 'template', customTabs = []) {
     // Agregar event listeners a los tabs
     addTopNavEventListeners(container);
     
-    // Activar el primer tab por defecto
-    const firstTab = container.querySelector('.nav-tab');
-    if (firstTab) {
-        firstTab.classList.add('active');
+    // Activar el tab correcto basado en la página actual
+    activateCurrentPageTab(container, variant);
+}
+
+function activateCurrentPageTab(container, variant) {
+    const currentPage = window.location.pathname.split('/').pop();
+    
+    // Activar tab basado en la página actual
+    if (currentPage === 'iconos.html') {
+        const iconosTab = container.querySelector('[data-tab="section5"]');
+        if (iconosTab) iconosTab.classList.add('active');
+    } else if (currentPage === 'documentacion.html') {
+        const inicioTab = container.querySelector('[data-tab="section1"]');
+        if (inicioTab) inicioTab.classList.add('active');
+    } else {
+        // Activar el primero por defecto
+        const firstTab = container.querySelector('.nav-tab');
+        if (firstTab) firstTab.classList.add('active');
     }
 }
 
@@ -142,7 +156,11 @@ function addTopNavEventListeners(container) {
     const tabs = container.querySelectorAll('.nav-tab');
     
     tabs.forEach(tab => {
-        tab.addEventListener('click', function() {
+        tab.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            console.log('Tab clicked:', this.getAttribute('data-tab'));
+            
             // Remover clase active de todos los tabs
             tabs.forEach(t => t.classList.remove('active'));
             
@@ -154,15 +172,21 @@ function addTopNavEventListeners(container) {
             const variant = container.closest('.top-nav')?.getAttribute('data-variant') || 'template';
             const variantConfig = getTopNavVariant(variant);
             
+            console.log('Variant:', variant, 'Config:', variantConfig);
+            
             // Buscar el tab en la configuración para obtener la URL
             if (variantConfig && variantConfig.tabs) {
                 const tabConfig = variantConfig.tabs.find(t => t.id === tabId);
+                console.log('Tab config:', tabConfig);
                 if (tabConfig && tabConfig.url) {
+                    console.log('Navigating to:', tabConfig.url);
                     // Navegar a la URL
                     window.location.href = tabConfig.url;
                     return;
                 }
             }
+            
+            console.log('No URL found, dispatching event');
             
             // Disparar evento personalizado si no hay URL
             const event = new CustomEvent('topNavTabClick', {
@@ -190,8 +214,26 @@ function getAllTopNavVariants() {
     return TOP_NAV_VARIANTS;
 }
 
+// Función simple para navegación
+window.navigateToTab = function(tabId, variant) {
+    console.log('Navigating:', tabId, variant);
+    
+    const variantConfig = getTopNavVariant(variant);
+    if (variantConfig && variantConfig.tabs) {
+        const tabConfig = variantConfig.tabs.find(t => t.id === tabId);
+        if (tabConfig && tabConfig.url) {
+            console.log('Going to:', tabConfig.url);
+            window.location.href = tabConfig.url;
+            return;
+        }
+    }
+    console.log('No URL found for tab:', tabId);
+};
+
 // Exportar funciones para uso global
 window.getTopNavHTML = getTopNavHTML;
 window.loadTopNav = loadTopNav;
 window.getTopNavVariant = getTopNavVariant;
 window.getAllTopNavVariants = getAllTopNavVariants;
+window.addTopNavEventListeners = addTopNavEventListeners;
+window.activateCurrentPageTab = activateCurrentPageTab;

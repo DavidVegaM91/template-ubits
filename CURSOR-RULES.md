@@ -9,6 +9,14 @@ Este proyecto existe para garantizar que **TODAS** las interfaces creadas manten
 
 ## 🔥 **REGLAS NO NEGOCIABLES**
 
+### **0. PRINCIPIO KISS (OBLIGATORIO)**
+- **Keep It Simple, Stupid** - Siempre busca la solución más simple
+- **Código limpio y directo** - Evita complejidad innecesaria
+- **Funciones pequeñas** - Una función, una responsabilidad
+- **Nombres claros** - `navigateToTab()` mejor que `handleNavigationEvent()`
+- **Menos abstracciones** - `onclick` directo mejor que event listeners complejos
+- **Debugging fácil** - Console.log simples para verificar funcionamiento
+
 ### **1. TOKENS DE COLOR (OBLIGATORIO)**
 ```css
 /* ❌ NUNCA HAGAS ESTO: */
