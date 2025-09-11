@@ -1251,7 +1251,7 @@ body {
 /* Página de iconos - Con sidebar lateral */
 .iconos-page .content-area {
     margin-right: 12px;
-    padding-right: 80px; /* Espacio para el sidebar lateral */
+    padding-left: 131px; /* Espacio para el sidebar lateral */
 }
 
 /* Estilos para la página de Iconos FontAwesome */
@@ -1666,10 +1666,10 @@ body {
 /* Navegación alfabética lateral para iconos */
 .alphabet-nav-icons {
     position: fixed;
-    right: 20px;
+    left: 20px;
     top: 50%;
     transform: translateY(-50%);
-    width: 40px;
+    width: 96px;
     background: var(--ubits-bg-1);
     border-radius: 20px;
     padding: 8px 4px;
@@ -1738,6 +1738,32 @@ body {
     
     .alphabet-nav-icons {
         display: none; /* Ocultar en móvil para no interferir */
+    }
+    
+    /* Página de iconos - Responsive */
+    .iconos-page .content-area {
+        padding-left: 12px; /* Reducir padding en móvil */
+    }
+    
+    /* Layout del buscador en móvil */
+    .results-search-layout {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .results-left {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .search-container {
+        width: 100%;
+        max-width: none;
+        min-width: auto;
+        box-sizing: border-box; /* Incluir padding y border en el ancho */
     }
 }
 
