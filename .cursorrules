@@ -61,6 +61,22 @@ border: 1px solid var(--ubits-fg-2-medium);
 border: 1px solid var(--ubits-border-1);
 ```
 
+### 5. DEFAULT TEXT COLORS (MANDATORY)
+```css
+/* By default, ALL texts must use these tokens: */
+/* Headings and Display: */
+color: var(--ubits-fg-1-high);
+
+/* Body and normal texts: */
+color: var(--ubits-fg-1-medium);
+```
+
+**Apply automatically:**
+- **Titles (h1, h2, h3, h4, h5, h6)**: `var(--ubits-fg-1-high)`
+- **Display (ubits-display-*)**: `var(--ubits-fg-1-high)`
+- **Body (ubits-body-*)**: `var(--ubits-fg-1-medium)`
+- **Normal texts**: `var(--ubits-fg-1-medium)`
+
 ## 🎨 DESIGN PRINCIPLES
 
 ### Use outline icons (prefer `far` over `fas`)

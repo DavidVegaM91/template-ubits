@@ -167,6 +167,22 @@ var(--ubits-sidebar-button-fg-default)  /* Iconos sidebar */
 /* Y muchos más... ver ubits-colors.css */
 ```
 
+### **🎨 REGLA DE COLORES POR DEFECTO (OBLIGATORIO):**
+```css
+/* Por defecto, TODOS los textos deben usar estos tokens: */
+/* Headings y Display: */
+color: var(--ubits-fg-1-high);
+
+/* Body y textos normales: */
+color: var(--ubits-fg-1-medium);
+```
+
+**Aplicar automáticamente:**
+- **Títulos (h1, h2, h3, h4, h5, h6)**: `var(--ubits-fg-1-high)`
+- **Display (ubits-display-*)**: `var(--ubits-fg-1-high)`
+- **Body (ubits-body-*)**: `var(--ubits-fg-1-medium)`
+- **Textos normales**: `var(--ubits-fg-1-medium)`
+
 ### **Importar Tokens (OBLIGATORIO en nuevos archivos):**
 ```html
 <link rel="stylesheet" href="ubits-colors.css">

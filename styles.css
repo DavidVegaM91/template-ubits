@@ -1272,7 +1272,7 @@ body {
 /* Página de iconos - Con sidebar lateral */
 .iconos-page .content-area {
     margin-right: 12px;
-    padding-left: 131px; /* Espacio para el sidebar lateral */
+    padding-left: 0; /* Sin padding ya que el sidebar está en layout flex */
 }
 
 /* Estilos para la página de Iconos FontAwesome */
@@ -1688,10 +1688,9 @@ body {
 
 /* Navegación alfabética lateral para iconos */
 .alphabet-nav-icons {
-    position: fixed;
-    left: 12px;
-    top: 80px;
-    bottom: 16px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
     width: 96px;
     background: var(--ubits-bg-1);
     border-radius: 20px;
@@ -1701,6 +1700,8 @@ body {
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: var(--ubits-fg-1-medium) transparent;
+    flex-shrink: 0;
+    margin-right: 24px;
 }
 
 .alphabet-nav-icons::-webkit-scrollbar {

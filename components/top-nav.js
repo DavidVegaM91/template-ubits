@@ -18,9 +18,10 @@ const TOP_NAV_VARIANTS = {
         name: 'Documentación',
         tabs: [
             { id: 'section1', label: 'Inicio', icon: 'far fa-home', url: 'documentacion.html' },
-            { id: 'section2', label: 'Componentes', icon: 'far fa-cube', url: 'componentes.html' },
-            { id: 'section3', label: 'Colores', icon: 'far fa-palette', url: 'colores.html' },
-            { id: 'section4', label: 'Iconos', icon: 'far fa-icons', url: 'iconos.html' }
+            { id: 'section2', label: 'Guía de prompts', icon: 'far fa-comments', url: 'guia-prompts.html' },
+            { id: 'section3', label: 'Componentes', icon: 'far fa-cube', url: 'componentes.html' },
+            { id: 'section4', label: 'Colores', icon: 'far fa-palette', url: 'colores.html' },
+            { id: 'section5', label: 'Iconos', icon: 'far fa-icons', url: 'iconos.html' }
         ]
     },
     learning: {
@@ -135,14 +136,17 @@ function activateCurrentPageTab(container, variant) {
     
     // Activar tab basado en la página actual
     if (currentPage === 'iconos.html') {
-        const iconosTab = container.querySelector('[data-tab="section4"]');
+        const iconosTab = container.querySelector('[data-tab="section5"]');
         if (iconosTab) iconosTab.classList.add('active');
     } else if (currentPage === 'colores.html') {
-        const coloresTab = container.querySelector('[data-tab="section3"]');
+        const coloresTab = container.querySelector('[data-tab="section4"]');
         if (coloresTab) coloresTab.classList.add('active');
     } else if (currentPage === 'componentes.html') {
-        const componentesTab = container.querySelector('[data-tab="section2"]');
+        const componentesTab = container.querySelector('[data-tab="section3"]');
         if (componentesTab) componentesTab.classList.add('active');
+    } else if (currentPage === 'guia-prompts.html') {
+        const guiaTab = container.querySelector('[data-tab="section2"]');
+        if (guiaTab) guiaTab.classList.add('active');
     } else if (currentPage === 'documentacion.html') {
         const inicioTab = container.querySelector('[data-tab="section1"]');
         if (inicioTab) inicioTab.classList.add('active');

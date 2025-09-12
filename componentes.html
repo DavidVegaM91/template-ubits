@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="fontawesome-icons.css">
     <link rel="stylesheet" href="ubits-typography.css">
     <link rel="stylesheet" href="components/top-nav.css">
+    <link rel="stylesheet" href="components-sidebar.css">
 </head>
 <body class="componentes-page" data-theme="light">
     <div class="dashboard-container">
@@ -21,8 +22,37 @@
         <main class="main-content" style="margin-left: 12px;">
             <!-- Top Navigation -->
             <div id="top-nav-container"></div>
+            
+            <!-- Content with Sidebar -->
+            <div style="display: flex;">
+            <!-- Sidebar de Componentes -->
+            <aside class="components-sidebar">
+                <div class="sidebar-content">
+                    <div class="sidebar-section">
+                        <div class="sidebar-item active" data-section="introduccion">
+                            <span class="sidebar-text">Introducción</span>
+                        </div>
+                    </div>
+                    
+                    <div class="sidebar-section">
+                        <div class="sidebar-title">Componentes</div>
+                        <div class="sidebar-subsection">
+                            <div class="sidebar-subtitle">Navegación</div>
+                            <div class="sidebar-item" data-section="sidebar">
+                                <span class="sidebar-text">Sidebar</span>
+                            </div>
+                            <div class="sidebar-item" data-section="top-nav">
+                                <span class="sidebar-text">Top-nav</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
             <!-- Content Area -->
-            <div class="content-area" style="display: block; width: 100%;">
+            <div class="components-content">
+                <!-- Content Area -->
+                <div class="content-area" style="display: block; width: 100%;">
                 <!-- Hero Section -->
                 <div style="text-align: center; margin-bottom: 60px;">
                     <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
@@ -119,6 +149,8 @@
                     </div>
                 </div>
             </div>
+            </div>
+            </div>
         </main>
     </div>
 
@@ -129,7 +161,39 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Cargar top-nav con variante documentación
             loadTopNav('top-nav-container', 'documentacion');
+            
+            // Inicializar sidebar de componentes
+            initComponentsSidebar();
         });
+
+        function initComponentsSidebar() {
+            const sidebarItems = document.querySelectorAll('.sidebar-item[data-section]');
+            
+            sidebarItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const section = this.getAttribute('data-section');
+                    
+                    // Remover active de todos los items
+                    sidebarItems.forEach(i => i.classList.remove('active'));
+                    
+                    // Agregar active al item clickeado
+                    this.classList.add('active');
+                    
+                    // Navegación según la sección
+                    if (section === 'introduccion') {
+                        // Si ya estamos en componentes.html, solo hacer scroll al top
+                        if (window.location.pathname.includes('componentes.html')) {
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                        } else {
+                            // Si estamos en otra página, navegar a componentes.html
+                            window.location.href = 'componentes.html';
+                        }
+                    } else if (section === 'sidebar' || section === 'top-nav') {
+                        alert(`Próximamente: Sección ${section}`);
+                    }
+                });
+            });
+        }
     </script>
 </body>
 </html>

@@ -91,6 +91,22 @@ border: 1px solid var(--ubits-fg-1-medium);
 border: 1px solid var(--ubits-border-1);
 ```
 
+### **5. COLORES POR DEFECTO (OBLIGATORIO)**
+```css
+/* Por defecto, TODOS los textos deben usar estos tokens: */
+/* Headings y Display: */
+color: var(--ubits-fg-1-high);
+
+/* Body y textos normales: */
+color: var(--ubits-fg-1-medium);
+```
+
+**Aplicar automáticamente:**
+- **Títulos (h1, h2, h3, h4, h5, h6)**: `var(--ubits-fg-1-high)`
+- **Display (ubits-display-*)**: `var(--ubits-fg-1-high)`
+- **Body (ubits-body-*)**: `var(--ubits-fg-1-medium)`
+- **Textos normales**: `var(--ubits-fg-1-medium)`
+
 ---
 
 ## 🎨 **TOKENS DISPONIBLES**

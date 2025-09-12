@@ -18,11 +18,21 @@
         
 
         <!-- Main Content -->
-        <main class="main-content">
+        <main class="main-content" style="margin-left: 12px;">
             <!-- Top Navigation -->
             <div id="top-nav-container"></div>
+            
+            <!-- Content with Sidebar -->
+            <div style="display: flex;">
+            <!-- Sidebar de Iconos -->
+            <aside class="alphabet-nav-icons" id="alphabetNavIcons">
+                <!-- Se generará dinámicamente -->
+            </aside>
+
             <!-- Content Area -->
-            <div class="content-area" style="display: block; width: 100%;">
+            <div class="icons-content" style="flex: 1; min-width: 0;">
+                <!-- Content Area -->
+                <div class="content-area" style="display: block; width: 100%;">
                 <!-- Hero Section -->
                 <div style="text-align: center; margin-bottom: 60px;">
                     <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
@@ -66,12 +76,9 @@
                     </div>
                 </div>
             </div>
+            </div>
+            </div>
         </main>
-        
-        <!-- Navegación alfabética lateral para iconos -->
-        <aside class="alphabet-nav-icons" id="alphabetNavIcons">
-            <!-- Se generará dinámicamente -->
-        </aside>
     </div>
 
     <script src="components/sidebar.js"></script>
