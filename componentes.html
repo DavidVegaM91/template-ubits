@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template UBITS - Componentes</title>
+    
+    <!-- Estilos locales -->
+    <link rel="stylesheet" href="ubits-colors.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="fontawesome-icons.css">
+    <link rel="stylesheet" href="ubits-typography.css">
+    <link rel="stylesheet" href="components/top-nav.css">
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        
+
+        <!-- Main Content -->
+        <main class="main-content" style="margin-left: 12px;">
+            <!-- Top Navigation -->
+            <div id="top-nav-container"></div>
+            <!-- Content Area -->
+            <div class="content-area" style="display: block; width: 100%;">
+                <!-- Hero Section -->
+                <div style="text-align: center; margin-bottom: 60px;">
+                    <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                        Componentes UBITS
+                    </h1>
+                    <p class="ubits-body-lg-regular" style="max-width: 800px; margin: 0 auto 32px; color: var(--ubits-fg-1-medium); line-height: 1.6;">
+                        Una colección completa de componentes UBITS listos para usar. Botones, cards, formularios y más, todos con la identidad visual oficial.
+                    </p>
+                </div>
+
+                <!-- Value Proposition Cards -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+                    <!-- Card 1: Componentes listos -->
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1);">
+                        <div style="font-size: 48px; margin-bottom: 16px; color: var(--ubits-accent-brand);"><i class="far fa-cube"></i></div>
+                        <h3 class="ubits-heading-h2" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">
+                            Componentes pre-construidos
+                        </h3>
+                        <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.5;">
+                            Botones, cards, formularios, navegación y más. Todos los componentes con estilos UBITS aplicados y listos para copiar y pegar.
+                        </p>
+                    </div>
+
+                    <!-- Card 2: Fácil personalización -->
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1);">
+                        <div style="font-size: 48px; margin-bottom: 16px; color: var(--ubits-accent-brand);"><i class="far fa-sliders-h"></i></div>
+                        <h3 class="ubits-heading-h2" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">
+                            Fácil personalización
+                        </h3>
+                            <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.5;">
+                                Modifica colores, tamaños y comportamientos con variables CSS. Sin tocar el código base, solo ajusta los tokens.
+                            </p>
+                    </div>
+
+                    <!-- Card 3: Consistencia garantizada -->
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1);">
+                        <div style="font-size: 48px; margin-bottom: 16px; color: var(--ubits-accent-brand);"><i class="far fa-check-circle"></i></div>
+                        <h3 class="ubits-heading-h2" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">
+                            Consistencia garantizada
+                        </h3>
+                        <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.5;">
+                            <strong>Todos los componentes</strong> siguen los mismos principios de diseño. 
+                            <strong>Espaciado uniforme</strong> y tipografía consistente. 
+                            <strong>Modo claro y oscuro</strong> automático.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- How It Works Section -->
+                <div style="background: var(--ubits-bg-2); padding: 48px; border-radius: 16px; margin-bottom: 60px;">
+                    <h2 class="ubits-display-d3-semibold" style="text-align: center; margin-bottom: 40px; color: var(--ubits-fg-1-high);">
+                        ¿Cómo usar los componentes?
+                    </h2>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 32px;">
+                        <!-- Step 1 -->
+                        <div style="text-align: center;">
+                            <div style="background: var(--ubits-accent-brand); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; margin: 0 auto 16px;">
+                                1
+                            </div>
+                            <h3 class="ubits-heading-h2" style="margin-bottom: 8px; color: var(--ubits-fg-1-high);">
+                                Selecciona el componente
+                            </h3>
+                            <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium);">
+                                Navega por la biblioteca y encuentra el componente que necesitas para tu interfaz.
+                            </p>
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div style="text-align: center;">
+                            <div style="background: var(--ubits-accent-brand); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; margin: 0 auto 16px;">
+                                2
+                            </div>
+                            <h3 class="ubits-heading-h2" style="margin-bottom: 8px; color: var(--ubits-fg-1-high);">
+                                Copia el código
+                            </h3>
+                            <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium);">
+                                Copia el HTML y CSS del componente directamente a tu proyecto. Sin instalaciones ni configuraciones.
+                            </p>
+                        </div>
+
+                        <!-- Step 3 -->
+                        <div style="text-align: center;">
+                            <div style="background: var(--ubits-accent-brand); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; margin: 0 auto 16px;">
+                                3
+                            </div>
+                            <h3 class="ubits-heading-h2" style="margin-bottom: 8px; color: var(--ubits-fg-1-high);">
+                                Personaliza y usa
+                            </h3>
+                            <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium);">
+                                Ajusta los textos, colores y comportamientos según tus necesidades específicas.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="components/sidebar.js"></script>
+    <script src="components/top-nav.js"></script>
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cargar top-nav con variante documentación
+            loadTopNav('top-nav-container', 'documentacion');
+        });
+    </script>
+</body>
+</html>
