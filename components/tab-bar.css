@@ -1,0 +1,175 @@
+/* ========================================
+   TAB BAR COMPONENT - RESPONSIVE
+   ======================================== */
+
+.tab-bar {
+    display: none; /* Oculto por defecto, se muestra solo en responsive */
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: var(--ubits-sidebar-bg);
+    border-top: 1px solid var(--ubits-sidebar-button-fg-default);
+    z-index: 1000;
+    padding: 8px 0;
+}
+
+.tab-bar-content {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 100%;
+    max-width: 100%;
+}
+
+.tab-bar-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 4px 8px;
+    border-radius: 8px;
+    min-width: 60px;
+    flex: 1;
+    max-width: 120px;
+}
+
+.tab-bar-item:hover {
+    background: var(--ubits-sidebar-button-bg-pressed);
+}
+
+.tab-bar-item.active {
+    background: transparent;
+}
+
+.tab-bar-item.active .tab-bar-text {
+    color: var(--ubits-sidebar-button-bg-active);
+    font-weight: 700;
+}
+
+.tab-bar-icon {
+    font-size: 20px;
+    color: var(--ubits-sidebar-button-fg-default);
+    margin-bottom: 2px;
+    transition: color 0.2s ease;
+}
+
+.tab-bar-item:hover .tab-bar-icon {
+    color: var(--ubits-sidebar-button-fg-hover);
+}
+
+.tab-bar-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 2px;
+    border: 2px solid transparent;
+    transition: border-color 0.2s ease;
+}
+
+.tab-bar-item:hover .tab-bar-avatar {
+    border-color: var(--ubits-sidebar-button-fg-hover);
+}
+
+.tab-bar-item.active .tab-bar-avatar {
+    border-color: var(--ubits-sidebar-button-bg-active);
+}
+
+.tab-bar-text {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 10px;
+    color: var(--ubits-sidebar-button-fg-default);
+    text-align: center;
+    line-height: 1.2;
+    transition: color 0.2s ease;
+}
+
+.tab-bar-item:hover .tab-bar-text {
+    color: var(--ubits-sidebar-button-fg-hover);
+}
+
+/* Responsive - Mostrar tab-bar solo en resoluciones menores a 1024px */
+@media (max-width: 1023px) {
+    .tab-bar {
+        display: block;
+    }
+    
+    /* Ocultar top-nav y sidebars en móvil */
+    .top-nav {
+        display: none !important;
+    }
+    
+    .components-sidebar {
+        display: none !important;
+    }
+    
+    .alphabet-nav-icons {
+        display: none !important;
+    }
+    
+    /* Ocultar sidebar principal */
+    #sidebar-container {
+        display: none !important;
+    }
+    
+    .sidebar {
+        display: none !important;
+    }
+    
+    /* Ajustar contenido para el tab-bar */
+    .main-content {
+        padding-bottom: 60px;
+        margin-left: 12px !important;
+        margin-top: 0 !important;
+    }
+    
+    .content-area {
+        padding-bottom: 60px;
+    }
+}
+
+/* Modo oscuro - Los colores del sidebar ya cambian automáticamente con los tokens */
+[data-theme="dark"] .tab-bar {
+    background: var(--ubits-sidebar-bg);
+    border-color: var(--ubits-sidebar-button-fg-default);
+}
+
+[data-theme="dark"] .tab-bar-item:hover {
+    background: var(--ubits-sidebar-button-bg-pressed);
+}
+
+[data-theme="dark"] .tab-bar-icon {
+    color: var(--ubits-sidebar-button-fg-default);
+}
+
+[data-theme="dark"] .tab-bar-item:hover .tab-bar-icon {
+    color: var(--ubits-sidebar-button-fg-hover);
+}
+
+[data-theme="dark"] .tab-bar-text {
+    color: var(--ubits-sidebar-button-fg-default);
+}
+
+[data-theme="dark"] .tab-bar-item:hover .tab-bar-text {
+    color: var(--ubits-sidebar-button-fg-hover);
+}
+
+[data-theme="dark"] .tab-bar-item.active .tab-bar-text {
+    color: var(--ubits-sidebar-button-bg-active);
+}
+
+[data-theme="dark"] .tab-bar-avatar {
+    border-color: transparent;
+}
+
+[data-theme="dark"] .tab-bar-item:hover .tab-bar-avatar {
+    border-color: var(--ubits-sidebar-button-fg-hover);
+}
+
+[data-theme="dark"] .tab-bar-item.active .tab-bar-avatar {
+    border-color: var(--ubits-sidebar-button-bg-active);
+}

@@ -37,8 +37,25 @@
     
     <!-- Footer -->
     <div class="sidebar-footer">
-        <div class="user-avatar" data-tooltip="Mi perfil" onclick="window.open('profile.html', '_blank')">
-            <img src="images/Profile-image.jpg" alt="Usuario" class="avatar-image">
+        <div class="user-avatar-container">
+            <div class="user-avatar" onmouseenter="document.getElementById('sidebar-profile-menu').classList.add('show')" onmouseleave="document.getElementById('sidebar-profile-menu').classList.remove('show')">
+                <img src="images/Profile-image.jpg" alt="Usuario" class="avatar-image">
+            </div>
+            <!-- Profile menu para sidebar -->
+            <div class="sidebar-profile-menu" id="sidebar-profile-menu" onmouseenter="document.getElementById('sidebar-profile-menu').classList.add('show')" onmouseleave="document.getElementById('sidebar-profile-menu').classList.remove('show')">
+                <div class="profile-menu-item" onclick="window.open('profile.html', '_blank')">
+                    <i class="far fa-user"></i>
+                    <span>Ver mi perfil</span>
+                </div>
+                <div class="profile-menu-item" onclick="handlePasswordChange()">
+                    <i class="far fa-key"></i>
+                    <span>Cambio de contraseña</span>
+                </div>
+                <div class="profile-menu-item" onclick="handleLogout()">
+                    <i class="far fa-sign-out"></i>
+                    <span>Cerrar sesión</span>
+                </div>
+            </div>
         </div>
         <button class="nav-button" id="darkmode-toggle" data-tooltip="Modo oscuro" data-theme="light">
             <i class="fa fa-moon"></i>

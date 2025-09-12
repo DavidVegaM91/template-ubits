@@ -68,19 +68,38 @@ function loadSidebar(activeButton = null) {
             
             <!-- Footer -->
             <div class="sidebar-footer">
-                <div class="user-avatar" data-tooltip="Mi perfil" onclick="window.location.href='profile.html'" style="cursor: pointer;">
-                    <img src="images/Profile-image.jpg" alt="Usuario" class="avatar-image">
+                <div class="user-avatar-container">
+                    <div class="user-avatar" onmouseenter="showSidebarProfileMenu(this)" onmouseleave="hideSidebarProfileMenu()" onclick="window.location.href='profile.html'">
+                        <img src="images/Profile-image.jpg" alt="Usuario" class="avatar-image">
+                    </div>
                 </div>
                 <button class="nav-button" id="darkmode-toggle" data-tooltip="Modo oscuro" data-theme="light">
                     <i class="far fa-moon"></i>
                 </button>
             </div>
         </aside>
+        
+        <!-- Profile menu para sidebar -->
+        <div class="sidebar-profile-menu" id="sidebar-profile-menu" onmouseenter="showSidebarProfileMenu(this)" onmouseleave="hideSidebarProfileMenu()">
+            <div class="profile-menu-item" onclick="window.location.href='profile.html'">
+                <i class="far fa-user"></i>
+                <span>Ver mi perfil</span>
+            </div>
+            <div class="profile-menu-item" onclick="handlePasswordChange()">
+                <i class="far fa-key"></i>
+                <span>Cambio de contraseña</span>
+            </div>
+            <div class="profile-menu-item" onclick="handleLogout()">
+                <i class="far fa-sign-out"></i>
+                <span>Cerrar sesión</span>
+            </div>
+        </div>
     `;
     
     // Insertar el HTML
     sidebarContainer.innerHTML = sidebarHTML;
     console.log('HTML insertado en sidebar container');
+    
     
     // Ajustar altura del sidebar dinámicamente
     adjustSidebarHeight();
@@ -140,3 +159,22 @@ function updateActiveSidebarButton(activeButton) {
         }
     }
 }
+
+// Funciones para el profile menu del sidebar
+function showSidebarProfileMenu(avatarElement) {
+    const menu = document.getElementById('sidebar-profile-menu');
+    if (menu) {
+        menu.classList.add('show');
+    }
+}
+
+function hideSidebarProfileMenu() {
+    const menu = document.getElementById('sidebar-profile-menu');
+    if (menu) {
+        menu.classList.remove('show');
+    }
+}
+
+// Exportar funciones globalmente
+window.showSidebarProfileMenu = showSidebarProfileMenu;
+window.hideSidebarProfileMenu = hideSidebarProfileMenu;

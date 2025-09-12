@@ -11,13 +11,33 @@ function toggleDarkMode() {
     // Guardar preferencia en localStorage
     localStorage.setItem('theme', newTheme);
     
-    // Cambiar icono del botón
+    // Cambiar icono del botón del sidebar
     const darkModeButton = document.querySelector('#darkmode-toggle i');
     if (darkModeButton) {
         if (newTheme === 'dark') {
             darkModeButton.className = 'fa fa-sun-bright';
         } else {
             darkModeButton.className = 'fa fa-moon';
+        }
+    }
+    
+    // Cambiar icono del tab-bar
+    const tabBarIcon = document.querySelector('[data-tab="modo-oscuro"] .tab-bar-icon');
+    if (tabBarIcon) {
+        if (newTheme === 'dark') {
+            tabBarIcon.className = 'fa fa-sun-bright tab-bar-icon';
+        } else {
+            tabBarIcon.className = 'far fa-moon tab-bar-icon';
+        }
+    }
+    
+    // Cambiar texto del tab-bar
+    const tabBarText = document.querySelector('[data-tab="modo-oscuro"] .tab-bar-text');
+    if (tabBarText) {
+        if (newTheme === 'dark') {
+            tabBarText.textContent = 'Modo claro';
+        } else {
+            tabBarText.textContent = 'Modo oscuro';
         }
     }
     
@@ -365,21 +385,23 @@ document.addEventListener('DOMContentLoaded', function() {
             button.addEventListener('click', handleSidebarNavigation);
         }
         
-        // Tooltip hover para todos los botones
-        button.addEventListener('mouseenter', function(e) {
-            const tooltipText = this.getAttribute('data-tooltip');
-            tooltip.textContent = tooltipText;
-            tooltip.style.opacity = '1';
+        // Tooltip hover para todos los botones (excepto el avatar del sidebar)
+        if (!button.classList.contains('user-avatar')) {
+            button.addEventListener('mouseenter', function(e) {
+                const tooltipText = this.getAttribute('data-tooltip');
+                tooltip.textContent = tooltipText;
+                tooltip.style.opacity = '1';
+                
+                // Posicionar tooltip a la derecha del botón
+                const rect = this.getBoundingClientRect();
+                tooltip.style.left = (rect.right + 20) + 'px';
+                tooltip.style.top = (rect.top + rect.height/2 - tooltip.offsetHeight/2) + 'px';
+            });
             
-            // Posicionar tooltip a la derecha del botón
-            const rect = this.getBoundingClientRect();
-            tooltip.style.left = (rect.right + 20) + 'px';
-            tooltip.style.top = (rect.top + rect.height/2 - tooltip.offsetHeight/2) + 'px';
-        });
-        
-        button.addEventListener('mouseleave', function() {
-            tooltip.style.opacity = '0';
-        });
+            button.addEventListener('mouseleave', function() {
+                tooltip.style.opacity = '0';
+            });
+        }
         
         // Manejo especial para el botón de modo oscuro
         if (button.id === 'darkmode-toggle') {
@@ -821,8 +843,8 @@ function initProfileTooltips() {
         }
     });
     
-    // Agregar tooltip al avatar del usuario
-    if (userAvatar) {
+    // Agregar tooltip al avatar del usuario (solo si no es el del sidebar)
+    if (userAvatar && !userAvatar.closest('.sidebar')) {
         const avatarTooltip = userAvatar.getAttribute('data-tooltip');
         if (avatarTooltip) {
             userAvatar.addEventListener('mouseenter', function(e) {
@@ -839,5 +861,51 @@ function initProfileTooltips() {
 // Inicializar tooltips cuando se carga la página de perfil
 if (window.location.pathname.includes('profile.html')) {
     document.addEventListener('DOMContentLoaded', initProfileTooltips);
+}
+
+// ===== FUNCIONES PARA EL PROFILE MENU DEL SIDEBAR =====
+
+// Variables para el delay del profile menu del sidebar
+let sidebarProfileMenuTimeout;
+
+// Funciones para el profile menu del sidebar
+function showSidebarProfileMenu() {
+    // Cancelar timeout si existe
+    if (sidebarProfileMenuTimeout) {
+        clearTimeout(sidebarProfileMenuTimeout);
+        sidebarProfileMenuTimeout = null;
+    }
+    
+    const menu = document.getElementById('sidebar-profile-menu');
+    if (menu) {
+        menu.classList.add('show');
+        console.log('Mostrando profile menu del sidebar');
+    }
+}
+
+function hideSidebarProfileMenu() {
+    // Agregar delay para evitar que se oculte inmediatamente
+    sidebarProfileMenuTimeout = setTimeout(() => {
+        const menu = document.getElementById('sidebar-profile-menu');
+        if (menu) {
+            menu.classList.remove('show');
+            console.log('Ocultando profile menu del sidebar');
+        }
+    }, 100);
+}
+
+// Exportar funciones globalmente
+window.showSidebarProfileMenu = showSidebarProfileMenu;
+window.hideSidebarProfileMenu = hideSidebarProfileMenu;
+
+// Funciones para el profile menu (reutilizadas del tab-bar)
+function handlePasswordChange() {
+    console.log('Cambio de contraseña');
+    // Aquí iría la lógica para cambiar contraseña
+}
+
+function handleLogout() {
+    console.log('Cerrar sesión');
+    // Aquí iría la lógica para cerrar sesión
 }
 

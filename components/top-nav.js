@@ -27,25 +27,25 @@ const TOP_NAV_VARIANTS = {
     learning: {
         name: 'Aprendizaje',
         tabs: [
-            { id: 'home', label: 'Home', icon: 'far fa-home' },
-            { id: 'catalog', label: 'Catálogo', icon: 'far fa-book' },
-            { id: 'university', label: 'Universidad Corporativa', icon: 'far fa-university' },
-            { id: 'study', label: 'Zona de Estudio', icon: 'far fa-book-open' },
-            { id: 'shorts', label: 'Shorts', icon: 'far fa-video' },
-            { id: 'playlist', label: 'Playlist', icon: 'far fa-list' }
+            { id: 'home', label: 'Inicio', icon: 'far fa-home', url: 'index.html' },
+            { id: 'catalog', label: 'Catálogo', icon: 'far fa-book', url: 'catalogo.html' },
+            { id: 'my-courses', label: 'Mis Cursos', icon: 'far fa-play-circle', url: 'mis-cursos.html' }
         ]
     },
     performance: {
         name: 'Desempeño',
         tabs: [
-            { id: 'evaluations', label: 'Evaluaciones 360', icon: 'far fa-chart-pie' },
-            { id: 'objectives', label: 'Objetivos', icon: 'far fa-bullseye' }
+            { id: 'evaluations', label: 'Evaluaciones 360', icon: 'far fa-chart-pie', url: 'evaluaciones.html' },
+            { id: 'objectives', label: 'Objetivos', icon: 'far fa-bullseye', url: 'objetivos.html' },
+            { id: 'metrics', label: 'Métricas', icon: 'far fa-chart-line', url: 'metricas.html' },
+            { id: 'reports', label: 'Reportes', icon: 'far fa-file-chart', url: 'reportes.html' }
         ]
     },
     surveys: {
         name: 'Encuestas',
         tabs: [
-            { id: 'surveys', label: 'Encuestas', icon: 'far fa-clipboard' }
+            { id: 'create', label: 'Crear Encuesta', icon: 'far fa-plus', url: 'crear-encuesta.html' },
+            { id: 'manage', label: 'Gestionar', icon: 'far fa-cog', url: 'gestionar-encuestas.html' }
         ]
     },
     tasks: {

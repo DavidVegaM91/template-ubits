@@ -2371,4 +2371,92 @@ body {
     /* Responsive adjustments for documentation */
 }
 
+/* ========================================
+   SIDEBAR PROFILE MENU
+   ======================================== */
+
+/* Contenedor del sidebar para posicionar el menu */
+#sidebar-container {
+    position: relative;
+}
+
+/* Contenedor del avatar para posicionar el menu */
+.user-avatar-container {
+    position: relative;
+}
+
+/* Profile menu del sidebar */
+.sidebar-profile-menu {
+    display: none;
+    position: fixed;
+    left: 120px;
+    bottom: 80px;
+    width: 200px;
+    background: var(--ubits-sidebar-bg);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 2000;
+    padding: 8px 0;
+}
+
+.sidebar-profile-menu.show {
+    display: block !important;
+}
+
+.sidebar-profile-menu .profile-menu-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    color: var(--ubits-sidebar-button-fg-default);
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+}
+
+.sidebar-profile-menu .profile-menu-item:hover {
+    background: var(--ubits-sidebar-button-bg-pressed);
+    color: var(--ubits-sidebar-button-fg-hover);
+}
+
+.sidebar-profile-menu .profile-menu-item:active {
+    background: var(--ubits-sidebar-button-bg-active);
+    color: var(--ubits-sidebar-button-bg-active);
+}
+
+.sidebar-profile-menu .profile-menu-item i {
+    font-size: 14px;
+    margin-right: 10px;
+    color: var(--ubits-sidebar-button-fg-default);
+    width: 16px;
+    text-align: center;
+}
+
+.sidebar-profile-menu .profile-menu-item:hover i {
+    color: var(--ubits-sidebar-button-fg-hover);
+}
+
+/* Dark mode para el profile menu del sidebar */
+[data-theme="dark"] .sidebar-profile-menu {
+    background: var(--ubits-sidebar-bg);
+    border-color: var(--ubits-border-1);
+}
+
+[data-theme="dark"] .sidebar-profile-menu .profile-menu-item {
+    color: var(--ubits-sidebar-button-fg-default);
+}
+
+[data-theme="dark"] .sidebar-profile-menu .profile-menu-item:hover {
+    color: var(--ubits-sidebar-button-fg-hover);
+}
+
+[data-theme="dark"] .sidebar-profile-menu .profile-menu-item i {
+    color: var(--ubits-sidebar-button-fg-default);
+}
+
+[data-theme="dark"] .sidebar-profile-menu .profile-menu-item:hover i {
+    color: var(--ubits-sidebar-button-fg-hover);
+}
+
 
