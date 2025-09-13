@@ -15,7 +15,7 @@
   --ubits-accent-brand-static-inverted: #3865f5;
   
   /* UBITS Logo */
-  --ubits-logo: #ffffff;
+  --ubits-logo: #0d1f57;
   --ubits-logo-inverted: #ffffff;
   --ubits-logo-static: #0d1f57;
   --ubits-logo-static-inverted: #ffffff;
@@ -26,7 +26,9 @@
   
   /* Primary Text */
   --ubits-fg-1-high: #303a47;
+  --ubits-fg-1-high-inverted: #edeeef;
   --ubits-fg-1-medium: #5c646f;
+  --ubits-fg-1-medium-inverted: #d0d2d5;
   --ubits-fg-1-high-static: #303a47;
   --ubits-fg-1-high-static-inverted: #edeeef;
   --ubits-fg-1-medium-static: #5c646f;
@@ -34,17 +36,20 @@
   
   /* Secondary Text */
   --ubits-fg-2-high: #2a303f;
+  --ubits-fg-2-high-inverted: #ffffff;
   --ubits-fg-2-medium: #5a5e6a;
+  --ubits-fg-2-medium-inverted: #d0d2d5;
   --ubits-fg-2-high-static: #2a303f;
   --ubits-fg-2-medium-static: #5a5e6a;
-  --ubits-fg-2-high-inverted: #ffffff;
   --ubits-fg-2-medium-static-inverted: #d0d2d5;
   
   /* Disabled Text */
   --ubits-fg-disabled: #a2a6ad;
-  --ubits-fg-on-disabled: #828690;
+  --ubits-fg-disabled-inverted: #777c86;
+  --ubits-fg-on-disabled: #8d9199;
+  --ubits-fg-on-disabled-inverted: #828690;
   --ubits-fg-disabled-static: #a2a6ad;
-  --ubits-fg-on-disabled-static: #828690;
+  --ubits-fg-on-disabled-static: #8d9199;
   
   /* Bold Text */
   --ubits-fg-bold: #ffffff;
@@ -54,56 +59,95 @@
      ======================================== */
   
   /* Blue */
-  --ubits-fg-blue-subtle: #d6dbff;
-  --ubits-fg-blue-subtle-inverted: #212f70;
+  --ubits-fg-blue-subtle: #212f70;
+  --ubits-fg-blue-subtle-inverted: #d6dbff;
   --ubits-fg-blue-subtle-hover: #c3c1fd;
   --ubits-fg-blue-subtle-inverted-hover: #141e3f;
+  --ubits-fg-blue-subtle-static: #d6dbff;
+  --ubits-fg-blue-subtle-static-inverted: #212f70;
+  --ubits-fg-blue-subtle-static-hover: #c3c1fd;
+  --ubits-fg-blue-subtle-static-inverted-hover: #141e3f;
   
   /* Gray */
-  --ubits-fg-gray-subtle: #dbdde0;
+  --ubits-fg-gray-subtle: #2b3543;
   --ubits-fg-gray-subtle-inverted: #2b3543;
   --ubits-fg-gray-subtle-hover: #c5c6cb;
   --ubits-fg-gray-subtle-inverted-hover: #16202f;
+  --ubits-fg-gray-subtle-static: #2b3543;
+  --ubits-fg-gray-subtle-static-inverted: #dbdde0;
+  --ubits-fg-gray-subtle-static-hover: #16202f;
+  --ubits-fg-gray-subtle-static-inverted-hover: #c5c6cb;
   
   /* Yellow */
-  --ubits-fg-yellow-subtle: #ffd555;
-  --ubits-fg-yellow-subtle-inverted: #433214;
+  --ubits-fg-yellow-subtle: #433214;
+  --ubits-fg-yellow-subtle-inverted: #ffd555;
   --ubits-fg-yellow-subtle-hover: #e9c410;
   --ubits-fg-yellow-subtle-inverted-hover: #251f0e;
   --ubits-fg-yellow-bold: #251f0e;
   --ubits-fg-yellow-bold-inverted: #2f2711;
   --ubits-fg-yellow-bold-hover: #1c170a;
   --ubits-fg-yellow-bold-inverted-hover: #251f0e;
+  --ubits-fg-yellow-subtle-static: #433214;
+  --ubits-fg-yellow-subtle-static-inverted: #ffd555;
+  --ubits-fg-yellow-subtle-static-hover: #251f0e;
+  --ubits-fg-yellow-subtle-static-inverted-hover: #e9c410;
+  --ubits-fg-yellow-bold-static: #2f2711;
+  --ubits-fg-yellow-bold-static-inverted: #251f0e;
+  --ubits-fg-yellow-bold-static-hover: #251f0e;
+  --ubits-fg-yellow-bold-static-inverted-hover: #1c170a;
   
   /* Green */
-  --ubits-fg-green-subtle: #bce7c3;
-  --ubits-fg-green-subtle-inverted: #183b28;
+  --ubits-fg-green-subtle: #183b28;
+  --ubits-fg-green-subtle-inverted: #bce7c3;
   --ubits-fg-green-subtle-hover: #82d8a5;
   --ubits-fg-green-subtle-inverted-hover: #142318;
+  --ubits-fg-green-subtle-static: #183b28;
+  --ubits-fg-green-subtle-static-inverted: #bce7c3;
+  --ubits-fg-green-subtle-static-hover: #142318;
+  --ubits-fg-green-subtle-static-inverted-hover: #82d8a5;
   
   /* Teal */
-  --ubits-fg-teal-subtle: #c9e2e3;
-  --ubits-fg-teal-subtle-inverted: #183a3b;
+  --ubits-fg-teal-subtle: #183a3b;
+  --ubits-fg-teal-subtle-inverted: #c9e2e3;
   --ubits-fg-teal-subtle-hover: #a4ced4;
   --ubits-fg-teal-subtle-inverted-hover: #122224;
+  --ubits-fg-teal-subtle-static: #183a3b;
+  --ubits-fg-teal-subtle-static-inverted: #c9e2e3;
+  --ubits-fg-teal-subtle-static-hover: #122224;
+  --ubits-fg-teal-subtle-static-inverted-hover: #a4ced4;
   
   /* Purple */
-  --ubits-fg-purple-subtle: #e3d7ff;
+  --ubits-fg-purple-subtle-default: #272a79;
+  --ubits-fg-purple-subtle-inverted-default: #e3d7ff;
   --ubits-fg-purple-subtle-inverted: #272a79;
   --ubits-fg-purple-subtle-hover: #d8bafd;
   --ubits-fg-purple-subtle-inverted-hover: #221940;
+  --ubits-fg-purple-subtle-static: #272a79;
+  --ubits-fg-purple-subtle-static-inverted: #e3d7ff;
+  --ubits-fg-purple-subtle-static-hover: #221940;
+  --ubits-fg-purple-subtle-static-inverted-hover: #d8bafd;
   
   /* Pink */
-  --ubits-fg-pink-subtle: #fcd1e5;
+  --ubits-fg-pink-subtle-default: #542440;
+  --ubits-fg-pink-subtle-inverted-default: #fcd1e5;
   --ubits-fg-pink-subtle-inverted: #542440;
   --ubits-fg-pink-subtle-hover: #fab2ce;
   --ubits-fg-pink-subtle-inverted-hover: #301824;
+  --ubits-fg-pink-subtle-static: #542440;
+  --ubits-fg-pink-subtle-static-inverted: #fcd1e5;
+  --ubits-fg-pink-subtle-static-hover: #301824;
+  --ubits-fg-pink-subtle-static-inverted-hover: #fab2ce;
   
   /* Rose */
-  --ubits-fg-rose-subtle: #f0d4f6;
+  --ubits-fg-rose-subtle-default: #4a255b;
+  --ubits-fg-rose-subtle-inverted-default: #f0d4f6;
   --ubits-fg-rose-subtle-inverted: #4a255b;
   --ubits-fg-rose-subtle-hover: #ecb5ea;
   --ubits-fg-rose-subtle-inverted-hover: #2d1731;
+  --ubits-fg-rose-subtle-static: #4a255b;
+  --ubits-fg-rose-subtle-static-inverted: #f0d4f6;
+  --ubits-fg-rose-subtle-static-hover: #2d1731;
+  --ubits-fg-rose-subtle-static-inverted-hover: #ecb5ea;
   
   /* ========================================
      FEEDBACK COLORS
@@ -116,6 +160,12 @@
   --ubits-feedback-fg-success-subtle-inverted: #223b16;
   --ubits-feedback-fg-success-subtle-hover: #7ddb7f;
   --ubits-feedback-fg-success-subtle-inverted-hover: #152311;
+  --ubits-feedback-accent-success-static: #328e2c;
+  --ubits-feedback-accent-success-static-inverted: #368226;
+  --ubits-feedback-fg-success-subtle-static: #223b16;
+  --ubits-feedback-fg-success-subtle-static-inverted: #bde9ac;
+  --ubits-feedback-fg-success-subtle-static-hover: #152311;
+  --ubits-feedback-fg-success-subtle-static-inverted-hover: #7ddb7f;
   
   /* Info */
   --ubits-feedback-accent-info: #7397fe;
@@ -124,6 +174,12 @@
   --ubits-feedback-fg-info-subtle-inverted: #20335f;
   --ubits-feedback-fg-info-subtle-hover: #c4c1fc;
   --ubits-feedback-fg-info-subtle-inverted-hover: #1b1e34;
+  --ubits-feedback-accent-info-static: #4a74ee;
+  --ubits-feedback-accent-info-static-inverted: #3a6cda;
+  --ubits-feedback-fg-info-subtle-static: #20335f;
+  --ubits-feedback-fg-info-subtle-static-inverted: #d7daff;
+  --ubits-feedback-fg-info-subtle-static-hover: #1b1e34;
+  --ubits-feedback-fg-info-subtle-static-inverted-hover: #c4c1fc;
   
   /* Warning */
   --ubits-feedback-accent-warning: #d68b0d;
@@ -136,6 +192,10 @@
   --ubits-feedback-fg-warning-bold-inverted: #35250f;
   --ubits-feedback-fg-warning-bold-hover: #1f1609;
   --ubits-feedback-fg-warning-bold-inverted-hover: #2a1d0d;
+  --ubits-feedback-fg-warning-subtle-static: #4c2e15;
+  --ubits-feedback-fg-warning-subtle-static-inverted: #ffd4a0;
+  --ubits-feedback-fg-warning-subtle-static-hover: #2a1d0d;
+  --ubits-feedback-fg-warning-subtle-static-inverted-hover: #ffb954;
   
   /* Error */
   --ubits-feedback-accent-error: #f96f6f;
@@ -144,6 +204,10 @@
   --ubits-feedback-fg-error-subtle-inverted: #65181e;
   --ubits-feedback-fg-error-subtle-hover: #ffb4a6;
   --ubits-feedback-fg-error-subtle-inverted-hover: #391411;
+  --ubits-feedback-fg-error-subtle-static: #65181e;
+  --ubits-feedback-fg-error-subtle-static-inverted: #ffd2cd;
+  --ubits-feedback-fg-error-subtle-static-hover: #391411;
+  --ubits-feedback-fg-error-subtle-static-inverted-hover: #ffb4a6;
   
   /* ========================================
      BACKGROUND COLORS
@@ -169,15 +233,15 @@
   --ubits-border-disabled: #e1e2e5;
   
   /* Colored Borders */
-  --ubits-border-blue: #3865f5;
-  --ubits-border-gray: #6c727d;
-  --ubits-border-green: #1e8251;
-  --ubits-border-teal: #177e84;
-  --ubits-border-indigo: #3a6cda;
-  --ubits-border-purple: #6457ff;
-  --ubits-border-pink: #bf418a;
-  --ubits-border-yellow: #8e6d1b;
-  --ubits-border-rose: #ad3fcb;
+  --ubits-border-blue: #a2a3fb;
+  --ubits-border-gray: #a8abb2;
+  --ubits-border-green: #25c37a;
+  --ubits-border-teal: #74b6bb;
+  --ubits-border-indigo: #97a5fd;
+  --ubits-border-purple: #b59bff;
+  --ubits-border-pink: #f08bbe;
+  --ubits-border-yellow: #c9a916;
+  --ubits-border-rose: #d991e5;
   
   /* Inverted Borders */
   --ubits-border-1-inverted: #4f5561;
@@ -204,14 +268,14 @@
   --ubits-border-rose-inverted: #ad3fcb;
   
   /* Colored Border Static */
-  --ubits-border-blue-static: #3865f5;
-  --ubits-border-gray-static: #6c727d;
-  --ubits-border-green-static: #1e8251;
-  --ubits-border-teal-static: #177e84;
+  --ubits-border-blue-static: #a2a3fb;
+  --ubits-border-gray-static: #a8abb2;
+  --ubits-border-green-static: #25c37a;
+  --ubits-border-teal-static: #74b6bb;
   --ubits-border-indigo-static: #97a5fd;
   --ubits-border-purple-static: #b59bff;
   --ubits-border-pink-static: #f08bbe;
-  --ubits-border-yellow-static: #8e6d1b;
+  --ubits-border-yellow-static: #c9a916;
   --ubits-border-rose-static: #d991e5;
   
   /* Colored Border Static Inverted */
@@ -260,7 +324,7 @@
   --ubits-feedback-border-success-static-inverted: #368226;
   --ubits-feedback-border-info-static-inverted: #3a6cda;
   --ubits-feedback-border-warning-static-inverted: #a4621b;
-  --ubits-feedback-border-error-static-inverted: #a4621b;
+  --ubits-feedback-border-error-static-inverted: #e20d34;
   
   /* ========================================
      SIDEBAR COLORS
@@ -310,28 +374,42 @@
   --ubits-accent-brand-static: #0c5bef;
   --ubits-accent-brand-static-inverted: #3865f5;
   
+  /* UBITS Logo - DARK MODE */
+  --ubits-logo: #ffffff;
+  --ubits-logo-inverted: #ffffff;
+  --ubits-logo-static: #0d1f57;
+  --ubits-logo-static-inverted: #ffffff;
+  
   /* ========================================
      FOREGROUND COLORS - DARK MODE
      ======================================== */
   
   --ubits-fg-1-high: #edeeef;
-  --ubits-fg-1-medium: #d0d2d5;
-  --ubits-fg-1-high-static: #edeeef;
+  --ubits-fg-1-high-inverted: #303a47;
+  --ubits-fg-1-high-static: #303a47;
   --ubits-fg-1-high-static-inverted: #edeeef;
-  --ubits-fg-1-medium-static: #d0d2d5;
+  --ubits-fg-1-medium: #d0d2d5;
+  --ubits-fg-1-medium-inverted: #5c646f;
+  --ubits-fg-1-medium-static: #5c646f;
   --ubits-fg-1-medium-static-inverted: #d0d2d5;
   
   --ubits-fg-2-high: #ffffff;
-  --ubits-fg-2-medium: #d0d2d5;
-  --ubits-fg-2-high-static: #ffffff;
-  --ubits-fg-2-medium-static: #d0d2d5;
   --ubits-fg-2-high-inverted: #2a303f;
+  --ubits-fg-2-high-static: #2a303f;
+  --ubits-fg-2-high-static-inverted: #ffffff;
+  --ubits-fg-2-medium: #d0d2d5;
+  --ubits-fg-2-medium-inverted: #5a5e6a;
+  --ubits-fg-2-medium-static: #5a5e6a;
   --ubits-fg-2-medium-static-inverted: #d0d2d5;
   
   --ubits-fg-disabled: #777c86;
+  --ubits-fg-disabled-inverted: #a2a6ad;
+  --ubits-fg-disabled-static: #a2a6ad;
+  --ubits-fg-disabled-static-inverted: #777c86;
   --ubits-fg-on-disabled: #828690;
-  --ubits-fg-disabled-static: #777c86;
-  --ubits-fg-on-disabled-static: #828690;
+  --ubits-fg-on-disabled-inverted: #8d9199;
+  --ubits-fg-on-disabled-static: #8d9199;
+  --ubits-fg-on-disabled-static-inverted: #828690;
   
   /* ========================================
      COLORED FOREGROUNDS - DARK MODE
@@ -341,11 +419,19 @@
   --ubits-fg-blue-subtle-inverted: #212f70;
   --ubits-fg-blue-subtle-hover: #c3c1fd;
   --ubits-fg-blue-subtle-inverted-hover: #141e3f;
+  --ubits-fg-blue-subtle-static: #d6dbff;
+  --ubits-fg-blue-subtle-static-inverted: #212f70;
+  --ubits-fg-blue-subtle-static-hover: #c3c1fd;
+  --ubits-fg-blue-subtle-static-inverted-hover: #141e3f;
   
   --ubits-fg-gray-subtle: #dbdde0;
-  --ubits-fg-gray-subtle-inverted: #2b3543;
+  --ubits-fg-gray-subtle-inverted: #dbdde0;
   --ubits-fg-gray-subtle-hover: #c5c6cb;
   --ubits-fg-gray-subtle-inverted-hover: #16202f;
+  --ubits-fg-gray-subtle-static: #2b3543;
+  --ubits-fg-gray-subtle-static-inverted: #dbdde0;
+  --ubits-fg-gray-subtle-static-hover: #16202f;
+  --ubits-fg-gray-subtle-static-inverted-hover: #c5c6cb;
   
   --ubits-fg-yellow-subtle: #ffd555;
   --ubits-fg-yellow-subtle-inverted: #433214;
@@ -355,31 +441,62 @@
   --ubits-fg-yellow-bold-inverted: #2f2711;
   --ubits-fg-yellow-bold-hover: #1c170a;
   --ubits-fg-yellow-bold-inverted-hover: #251f0e;
+  --ubits-fg-yellow-subtle-static: #433214;
+  --ubits-fg-yellow-subtle-static-inverted: #ffd555;
+  --ubits-fg-yellow-bold-static: #2f2711;
+  --ubits-fg-yellow-bold-static-inverted: #251f0e;
+  --ubits-fg-yellow-subtle-static-hover: #251f0e;
+  --ubits-fg-yellow-subtle-static-inverted-hover: #e9c410;
+  --ubits-fg-yellow-bold-static-hover: #251f0e;
+  --ubits-fg-yellow-bold-static-inverted-hover: #1c170a;
   
   --ubits-fg-green-subtle: #bce7c3;
   --ubits-fg-green-subtle-inverted: #183b28;
   --ubits-fg-green-subtle-hover: #82d8a5;
   --ubits-fg-green-subtle-inverted-hover: #142318;
+  --ubits-fg-green-subtle-static: #bce7c3;
+  --ubits-fg-green-subtle-static-inverted: #183b28;
+  --ubits-fg-green-subtle-static-hover: #82d8a5;
+  --ubits-fg-green-subtle-static-inverted-hover: #142318;
   
   --ubits-fg-teal-subtle: #c9e2e3;
   --ubits-fg-teal-subtle-inverted: #183a3b;
   --ubits-fg-teal-subtle-hover: #a4ced4;
   --ubits-fg-teal-subtle-inverted-hover: #122224;
+  --ubits-fg-teal-subtle-static: #c9e2e3;
+  --ubits-fg-teal-subtle-static-inverted: #183a3b;
+  --ubits-fg-teal-subtle-static-hover: #a4ced4;
+  --ubits-fg-teal-subtle-static-inverted-hover: #122224;
   
-  --ubits-fg-purple-subtle: #e3d7ff;
+  --ubits-fg-purple-subtle-default: #e3d7ff;
+  --ubits-fg-purple-subtle-inverted-default: #272a79;
   --ubits-fg-purple-subtle-inverted: #272a79;
   --ubits-fg-purple-subtle-hover: #d8bafd;
   --ubits-fg-purple-subtle-inverted-hover: #221940;
+  --ubits-fg-purple-subtle-static: #272a79;
+  --ubits-fg-purple-subtle-static-inverted: #e3d7ff;
+  --ubits-fg-purple-subtle-static-hover: #221940;
+  --ubits-fg-purple-subtle-static-inverted-hover: #d8bafd;
   
-  --ubits-fg-pink-subtle: #fcd1e5;
+  --ubits-fg-pink-subtle-default: #fcd1e5;
+  --ubits-fg-pink-subtle-inverted-default: #542440;
   --ubits-fg-pink-subtle-inverted: #542440;
   --ubits-fg-pink-subtle-hover: #fab2ce;
   --ubits-fg-pink-subtle-inverted-hover: #301824;
+  --ubits-fg-pink-subtle-static: #542440;
+  --ubits-fg-pink-subtle-static-inverted: #fcd1e5;
+  --ubits-fg-pink-subtle-static-hover: #301824;
+  --ubits-fg-pink-subtle-static-inverted-hover: #fab2ce;
   
-  --ubits-fg-rose-subtle: #f0d4f6;
+  --ubits-fg-rose-subtle-default: #f0d4f6;
+  --ubits-fg-rose-subtle-inverted-default: #4a255b;
   --ubits-fg-rose-subtle-inverted: #4a255b;
   --ubits-fg-rose-subtle-hover: #ecb5ea;
   --ubits-fg-rose-subtle-inverted-hover: #2d1731;
+  --ubits-fg-rose-subtle-static: #4a255b;
+  --ubits-fg-rose-subtle-static-inverted: #f0d4f6;
+  --ubits-fg-rose-subtle-static-hover: #2d1731;
+  --ubits-fg-rose-subtle-static-inverted-hover: #ecb5ea;
   
   /* ========================================
      FEEDBACK COLORS - DARK MODE
@@ -391,6 +508,12 @@
   --ubits-feedback-fg-success-subtle-inverted: #223b16;
   --ubits-feedback-fg-success-subtle-hover: #7ddb7f;
   --ubits-feedback-fg-success-subtle-inverted-hover: #152311;
+  --ubits-feedback-accent-success-static: #4ab028;
+  --ubits-feedback-accent-success-static-inverted: #328e2c;
+  --ubits-feedback-fg-success-subtle-static: #223b16;
+  --ubits-feedback-fg-success-subtle-static-inverted: #bde9ac;
+  --ubits-feedback-fg-success-subtle-static-hover: #152311;
+  --ubits-feedback-fg-success-subtle-static-inverted-hover: #7ddb7f;
   
   --ubits-feedback-accent-info: #7397fe;
   --ubits-feedback-accent-info-inverted: #4a74ee;
@@ -398,6 +521,12 @@
   --ubits-feedback-fg-info-subtle-inverted: #20335f;
   --ubits-feedback-fg-info-subtle-hover: #c4c1fc;
   --ubits-feedback-fg-info-subtle-inverted-hover: #1b1e34;
+  --ubits-feedback-accent-info-static: #7397fe;
+  --ubits-feedback-accent-info-static-inverted: #4a74ee;
+  --ubits-feedback-fg-info-subtle-static: #20335f;
+  --ubits-feedback-fg-info-subtle-static-inverted: #d7daff;
+  --ubits-feedback-fg-info-subtle-static-hover: #1b1e34;
+  --ubits-feedback-fg-info-subtle-static-inverted-hover: #c4c1fc;
   
   --ubits-feedback-accent-warning: #d68b0d;
   --ubits-feedback-accent-warning-inverted: #b16c19;
@@ -409,6 +538,10 @@
   --ubits-feedback-fg-warning-bold-inverted: #35250f;
   --ubits-feedback-fg-warning-bold-hover: #1f1609;
   --ubits-feedback-fg-warning-bold-inverted-hover: #2a1d0d;
+  --ubits-feedback-fg-warning-subtle-static: #4c2e15;
+  --ubits-feedback-fg-warning-subtle-static-inverted: #ffd4a0;
+  --ubits-feedback-fg-warning-subtle-static-hover: #2a1d0d;
+  --ubits-feedback-fg-warning-subtle-static-inverted-hover: #ffb954;
   
   --ubits-feedback-accent-error: #f96f6f;
   --ubits-feedback-accent-error-inverted: #e9343c;
@@ -416,6 +549,10 @@
   --ubits-feedback-fg-error-subtle-inverted: #65181e;
   --ubits-feedback-fg-error-subtle-hover: #ffb4a6;
   --ubits-feedback-fg-error-subtle-inverted-hover: #391411;
+  --ubits-feedback-fg-error-subtle-static: #65181e;
+  --ubits-feedback-fg-error-subtle-static-inverted: #ffd2cd;
+  --ubits-feedback-fg-error-subtle-static-hover: #391411;
+  --ubits-feedback-fg-error-subtle-static-inverted-hover: #ffb4a6;
   
   /* ========================================
      BACKGROUND COLORS - DARK MODE
@@ -452,9 +589,9 @@
   --ubits-border-rose: #ad3fcb;
   
   /* Inverted Borders */
-  --ubits-border-1-inverted: #4f5561;
-  --ubits-border-2-inverted: #353e4c;
-  --ubits-border-disabled-inverted: #545a66;
+  --ubits-border-1-inverted: #d0d2d5;
+  --ubits-border-2-inverted: #c5c6cb;
+  --ubits-border-disabled-inverted: #e1e2e5;
   --ubits-border-blue-inverted: #a2a3fb;
   --ubits-border-gray-inverted: #a8abb2;
   --ubits-border-green-inverted: #25c37a;
@@ -511,7 +648,7 @@
   --ubits-feedback-border-success-static-inverted: #368226;
   --ubits-feedback-border-info-static-inverted: #3a6cda;
   --ubits-feedback-border-warning-static-inverted: #a4621b;
-  --ubits-feedback-border-error-static-inverted: #a4621b;
+  --ubits-feedback-border-error-static-inverted: #e20d34;
   
   /* ========================================
      SIDEBAR COLORS - DARK MODE
