@@ -1669,7 +1669,7 @@ body {
     
     /* Página de iconos - Responsive */
     .iconos-page .content-area {
-        padding-left: 12px; /* Reducir padding en móvil */
+        padding-left: 0; /* Sin padding en móvil */
     }
     
     /* Layout del buscador en móvil */

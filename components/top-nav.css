@@ -13,6 +13,7 @@
     padding: 0 12px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     width: 100%;
     max-width: 100%;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -24,6 +25,124 @@
     gap: 8px;
     align-items: center;
     height: 100%;
+    flex: 1;
+}
+
+/* Nav Right Container */
+.nav-right {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    position: relative;
+}
+
+/* Posicionar dropdown desde el top-nav principal */
+.top-nav {
+    position: relative;
+}
+
+/* Nav Title */
+.nav-title {
+    font-family: 'Noto Sans', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 24px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* Hamburger Menu */
+.hamburger-menu {
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    display: none; /* Oculto por defecto en desktop */
+    align-items: center;
+    justify-content: center;
+    color: var(--ubits-fg-1-medium);
+    transition: color 0.3s ease;
+}
+
+.hamburger-menu:hover {
+    color: var(--ubits-fg-1-high);
+}
+
+.hamburger-menu i {
+    font-size: 18px;
+}
+
+/* Hamburger Dropdown */
+.hamburger-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    width: 100%;
+    background-color: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    display: none;
+    flex-direction: column;
+    padding: 8px 0;
+    margin-top: 4px;
+}
+
+.hamburger-dropdown.show {
+    display: flex;
+}
+
+/* Hamburger Items */
+.hamburger-item {
+    background: none;
+    border: none;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    text-align: left;
+    transition: background-color 0.2s ease;
+    color: var(--ubits-fg-1-medium);
+}
+
+.hamburger-item:hover {
+    background-color: var(--ubits-bg-2);
+    color: var(--ubits-fg-1-high);
+}
+
+.hamburger-item.active {
+    background-color: var(--ubits-bg-active);
+    color: var(--ubits-accent-brand) !important;
+    font-weight: 600;
+}
+
+.hamburger-item.active i {
+    color: var(--ubits-accent-brand) !important;
+}
+
+.hamburger-item.active span {
+    color: var(--ubits-accent-brand) !important;
+}
+
+.hamburger-item i {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.hamburger-item span {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    white-space: nowrap;
 }
 
 /* Individual Nav Tab */
@@ -45,7 +164,7 @@
 /* Nav Tab Icon */
 .nav-tab i {
     font-size: 16px;
-    color: #5c646f;
+    color: var(--ubits-fg-1-medium);
     width: 16px;
     height: 16px;
     display: flex;
@@ -74,7 +193,7 @@
 .nav-tab span {
     font-family: 'Noto Sans', sans-serif;
     font-size: 16px;
-    color: #5c646f;
+    color: var(--ubits-fg-1-medium);
     text-align: left;
     line-height: 24px;
     white-space: nowrap;
@@ -82,6 +201,10 @@
 }
 
 /* Active State */
+.nav-tab.active {
+    background: transparent;
+}
+
 .nav-tab.active span {
     font-weight: 600;
 }
@@ -93,40 +216,51 @@
     left: 0;
     right: 0;
     height: 3px;
-    background-color: #0c5bef;
+    background-color: var(--ubits-fg-1-high);
     border-radius: 2px;
 }
 
 /* Hover States */
 .nav-tab:hover {
-    background: transparent;
+    background-color: var(--ubits-bg-2);
+    border-radius: 6px;
 }
 
 .nav-tab:hover i {
-    color: #0c5bef;
+    color: var(--ubits-fg-1-high);
 }
 
 .nav-tab:hover span {
-    color: #0c5bef;
+    color: var(--ubits-fg-1-high);
 }
 
 /* Active Tab States */
 .nav-tab.active i {
-    color: #0c5bef;
+    color: var(--ubits-fg-1-high);
 }
 
 .nav-tab.active span {
-    color: #0c5bef;
+    color: var(--ubits-fg-1-high);
 }
 
 /* ========================================
    RESPONSIVE DESIGN
    ======================================== */
 
-@media (max-width: 768px) {
+@media (max-width: 840px) {
     .top-nav {
         padding: 0 8px;
         height: 36px;
+        position: relative;
+        justify-content: space-between;
+    }
+    
+    .nav-tabs {
+        flex: 1;
+    }
+    
+    .nav-right {
+        flex-shrink: 0;
     }
     
     .nav-tab {
@@ -143,6 +277,28 @@
         width: 14px;
         height: 14px;
     }
+    
+    .nav-title {
+        font-size: 14px;
+        line-height: 20px;
+        margin-right: 12px;
+    }
+    
+    /* Mostrar hamburger menu en móvil para documentación */
+    .hamburger-menu {
+        display: flex;
+    }
+    
+    /* Ocultar tabs normales en móvil para documentación */
+    [data-variant="documentacion"] .nav-tab {
+        display: none;
+    }
+    
+    /* Ajustar dropdown para móvil */
+    .hamburger-dropdown {
+        width: 100%;
+        border-radius: 0 0 6px 6px;
+    }
 }
 
 /* ========================================
@@ -150,30 +306,86 @@
    ======================================== */
 
 [data-theme="dark"] .top-nav {
-    background-color: #374151;
+    background-color: var(--ubits-bg-2);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 [data-theme="dark"] .nav-tab span {
-    color: #D0D2D5 !important;
+    color: var(--ubits-fg-1-medium) !important;
 }
 
 [data-theme="dark"] .nav-tab i {
-    color: #D0D2D5 !important;
+    color: var(--ubits-fg-1-medium) !important;
 }
 
 [data-theme="dark"] .nav-tab:hover span {
-    color: #0c5bef !important;
+    color: var(--ubits-fg-1-high) !important;
 }
 
 [data-theme="dark"] .nav-tab:hover i {
-    color: #0c5bef !important;
+    color: var(--ubits-fg-1-high) !important;
 }
 
 [data-theme="dark"] .nav-tab.active span {
-    color: #0c5bef !important;
+    color: var(--ubits-fg-1-high) !important;
 }
 
 [data-theme="dark"] .nav-tab.active i {
-    color: #0c5bef !important;
+    color: var(--ubits-fg-1-high) !important;
+}
+
+/* Dark mode para hamburger menu */
+[data-theme="dark"] .hamburger-menu {
+    color: var(--ubits-fg-1-medium) !important;
+}
+
+[data-theme="dark"] .hamburger-menu:hover {
+    color: var(--ubits-fg-1-high) !important;
+}
+
+[data-theme="dark"] .hamburger-dropdown {
+    background-color: var(--ubits-bg-2);
+    border-color: var(--ubits-border-1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .hamburger-item {
+    color: var(--ubits-fg-1-medium) !important;
+}
+
+[data-theme="dark"] .hamburger-item:hover {
+    background-color: var(--ubits-bg-3);
+    color: var(--ubits-fg-1-high) !important;
+}
+
+[data-theme="dark"] .hamburger-item.active {
+    background-color: var(--ubits-bg-active);
+    color: var(--ubits-accent-brand) !important;
+}
+
+[data-theme="dark"] .hamburger-item.active i {
+    color: var(--ubits-accent-brand) !important;
+}
+
+[data-theme="dark"] .hamburger-item.active span {
+    color: var(--ubits-accent-brand) !important;
+}
+
+/* ========================================
+   DESKTOP BEHAVIOR
+   ======================================== */
+
+/* En desktop, mostrar tabs normales y ocultar hamburger */
+@media (min-width: 841px) {
+    .hamburger-menu {
+        display: none !important;
+    }
+    
+    .hamburger-dropdown {
+        display: none !important;
+    }
+    
+    [data-variant="documentacion"] .nav-tab {
+        display: flex !important;
+    }
 }
