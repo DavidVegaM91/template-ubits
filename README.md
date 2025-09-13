@@ -38,6 +38,7 @@ Template UBITS/
 │   └── empty-states/
 ├── 📚 Fonts/                  # Fuentes FontAwesome
 ├── 📖 iconos.html                    # Catálogo de iconos
+├── 🎨 colores.html                   # Catálogo de tokens de color UBITS
 ├── 📋 WIDGET-GUIDE.md         # Guía para llenar widgets
 ├── 📝 UBITS-TYPOGRAPHY-GUIDE.md      # Guía de tipografía
 └── 📄 LICENSE                 # Licencia MIT
@@ -59,6 +60,10 @@ Template UBITS/
 - **`ubits-ai.html`** - Plantilla específica para UBITS AI
 - **`simon-chat.html`** - Chat específico de Simon
 
+### **Catálogos de recursos:**
+- **`colores.html`** - Catálogo completo de tokens de color UBITS (light + dark mode)
+- **`iconos.html`** - Catálogo de iconos FontAwesome organizados por categorías
+
 ### **Componentes reutilizables:**
 - **Sidebar** - Componente de navegación lateral (`components/sidebar.js`)
 - **Top-Nav** - Componente de navegación superior (`components/top-nav.js`)
@@ -68,6 +73,10 @@ Template UBITS/
     - `performance` - Desempeño (Evaluaciones 360, Objetivos)
     - `surveys` - Encuestas (una sola pestaña)
     - `tasks` - Tareas (Planes, Tareas)
+- **Tab-Bar** - Componente de navegación móvil (`components/tab-bar.js`)
+  - **Navegación móvil** - Se muestra automáticamente en pantallas pequeñas
+  - **Tabs incluidos:** Módulos, Mi perfil, Modo oscuro
+  - **Responsive** - Reemplaza el sidebar en dispositivos móviles
 
 ### **Plantilla con componentes UBITS:**
 - **Widgets flexibles** - Se adaptan automáticamente al contenido
@@ -77,6 +86,20 @@ Template UBITS/
 - **Scroll de Página** - Funciona correctamente en todas las páginas
 - **CSS organizado** - Estilos del sidebar en `styles.css`, específicos en `profile.css`
 - **Modo Oscuro** - Soporte completo para tema oscuro
+
+### **Diseño Responsive:**
+- **Páginas responsive** - `index.html`, `profile.html`, `ubits-ai.html` adaptadas a móviles
+- **Tab-bar móvil** - Navegación optimizada para pantallas pequeñas
+- **Breakpoints** - 1023px (tablet), 768px (móvil), 480px (móvil pequeño)
+- **Sidebar adaptativo** - Se oculta en móviles, reemplazado por tab-bar
+- **Layout flexible** - Se adapta automáticamente a cualquier tamaño de pantalla
+
+### **Catálogo de colores UBITS:**
+- **`colores.html`** - Catálogo visual completo de todos los tokens de color
+- **Layout mejorado** - Cuadrito de color + nombre del token a la izquierda, hexadecimal a la derecha
+- **Modo dual** - Visualización simultánea de light y dark mode
+- **Fácil consulta** - Todos los tokens organizados por categorías (BRAND, FOREGROUND, BACKGROUND, BORDER, FEEDBACK, etc.)
+- **Referencia rápida** - Para Product Managers y Diseñadores que necesitan ver los colores disponibles
 
 ## 🎨 **VALOR DIFERENCIAL DEL PROYECTO**
 
@@ -202,6 +225,7 @@ color: var(--ubits-fg-1-medium);
 # Consulta los estilos disponibles:
 # - Abre UBITS-TYPOGRAPHY-GUIDE.md
 # - Abre iconos.html
+# - Abre colores.html (catálogo visual de tokens)
 # - Usa las clases predefinidas
 ```
 
@@ -264,6 +288,13 @@ color: var(--ubits-fg-1-medium);
 - **CSS modular** - Fácil de personalizar sin romper la funcionalidad
 - **Solo respeta** colores y tipografía UBITS (pero incluso estos son modificables si es necesario)
 
+### ✅ **Completamente Responsive:**
+- **Páginas móviles** - `index.html`, `profile.html`, `ubits-ai.html` optimizadas para móviles
+- **Tab-bar automático** - Navegación móvil que reemplaza el sidebar en pantallas pequeñas
+- **Breakpoints inteligentes** - Adaptación automática a diferentes tamaños de pantalla
+- **Touch-friendly** - Botones y elementos optimizados para dispositivos táctiles
+- **Performance móvil** - Carga rápida y navegación fluida en dispositivos móviles
+
 ### ✅ **Sistema de Componentes:**
 - **Componentes reutilizables** - Modifica una vez, se actualiza en todos lados
 - **KISS (Keep It Simple)** - Fácil de entender y usar
@@ -316,11 +347,16 @@ color: var(--ubits-fg-1-medium);
 ```html
 <!-- En cualquier archivo HTML -->
 <div id="sidebar-container"></div>
+<div id="tab-bar-container"></div>
 
 <script src="components/sidebar.js"></script>
+<script src="components/tab-bar.js"></script>
 <script>
     // Cargar sidebar sin botón activo
     loadSidebar();
+    
+    // Cargar tab-bar (se muestra automáticamente en móviles)
+    loadTabBar('tab-bar-container');
     
     // O cargar sidebar con botón activo
     loadSidebar('ubits-ai');
@@ -371,6 +407,7 @@ color: var(--ubits-fg-1-medium);
 - **`WIDGET-GUIDE.md`** - Guía completa para llenar widgets
 - **`UBITS-TYPOGRAPHY-GUIDE.md`** - Sistema de tipografía
 - **`iconos.html`** - Catálogo de iconos
+- **`colores.html`** - Catálogo visual de tokens de color UBITS
 
 ## 🎨 Personalización Avanzada
 
@@ -430,6 +467,10 @@ color: var(--ubits-fg-1-medium);
 - **[profile.html](profile.html)** - Página de perfil
 - **[ubits-ai.html](ubits-ai.html)** - Dashboard de IA
 - **[simon-chat.html](simon-chat.html)** - Chat de Simon
+
+### **Catálogos de Recursos:**
+- **[colores.html](colores.html)** - Catálogo visual de tokens de color UBITS
+- **[iconos.html](iconos.html)** - Catálogo de iconos FontAwesome
 
 ## 📄 Licencia
 

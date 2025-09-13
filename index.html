@@ -31,7 +31,6 @@
                 <!-- Content wrapper que ocupa todo el ancho -->
                 <div class="content-wrapper">
                     <p class="ubits-body-md-regular">Pídele a Cursor que reemplace este Content wrapper con la interfaz que necesitas</p>
-                    <br><br><br><br><br>
                 </div>
             </div>
         </main>
@@ -53,7 +52,7 @@
     <script src="components/profile-menu.js"></script>
     <script src="script.js"></script>
     <script>
-        // Cargar sidebar sin botones activos
+        // Cargar componentes dinámicamente
         document.addEventListener('DOMContentLoaded', function() {
             loadSidebar();
             loadTopNav('top-nav-container', 'template');
@@ -61,27 +60,6 @@
             loadFloatingMenu('floating-menu-container');
             loadProfileMenu('profile-menu-container');
         });
-
-        // Funciones simples para los modales
-        function showFloatingMenu() {
-            const menu = document.getElementById('floating-menu');
-            if (menu) menu.classList.add('show');
-        }
-
-        function hideFloatingMenu() {
-            const menu = document.getElementById('floating-menu');
-            if (menu) menu.classList.remove('show');
-        }
-
-        function showProfileMenu() {
-            const menu = document.getElementById('profile-menu');
-            if (menu) menu.classList.add('show');
-        }
-
-        function hideProfileMenu() {
-            const menu = document.getElementById('profile-menu');
-            if (menu) menu.classList.remove('show');
-        }
     </script>
 </body>
 </html>

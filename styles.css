@@ -5,7 +5,6 @@
 /* Reset y estilos base */
 
 body {
-    font-family: 'Noto Sans', sans-serif;
     background-color: var(--ubits-bg-2);
     margin: 0;
     padding: 0;
@@ -295,15 +294,15 @@ body {
     color: var(--ubits-fg-1-high-static-inverted);
     padding: 8px 12px;
     border-radius: 6px;
-    font-family: 'Noto Sans', sans-serif;
-    font-size: 14px;
-    font-weight: 400;
     white-space: nowrap;
     z-index: 10000;
     box-shadow: 0px 2px 8px rgba(0,0,0,0.15);
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.2s ease;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
 }
 
 .tooltip::before {
@@ -431,13 +430,9 @@ body {
 }
 
 .nav-tab span {
-    font-family: 'Noto Sans', sans-serif;
-    font-size: 16px;
     color: var(--ubits-fg-1-medium);
     text-align: left;
-    line-height: 24px;
     white-space: nowrap;
-    font-weight: 400;
 }
 
 /* Estado activo del tab */
@@ -667,14 +662,8 @@ body[data-theme="dark"] .content-area.no-background {
 
 
 .ai-title {
-    font-family: 'Noto Sans', sans-serif;
-    font-weight: 700;
-    font-size: 24px;
-    line-height: 1;
-    color: var(--ubits-fg-1-high);
     margin: 0;
     text-align: center;
-    font-style: normal;
 }
 
 /* Centrar solo el título principal */
@@ -724,15 +713,9 @@ body[data-theme="dark"] .content-area.no-background {
 }
 
 .card-title {
-    font-family: 'Noto Sans', sans-serif !important;
-    font-weight: 700 !important;
-    font-size: 16px !important;
-    line-height: 24px !important;
-    color: var(--ubits-fg-1-high) !important;
     margin: 0 !important;
     flex: 1;
     text-align: left !important;
-    font-style: normal !important;
 }
 
 /* Reset para h3 dentro de ai-cards */
@@ -756,14 +739,8 @@ body[data-theme="dark"] .content-area.no-background {
 }
 
 .card-description {
-    font-family: 'Noto Sans', sans-serif !important;
-    font-weight: 400 !important;
-    font-size: 13px !important;
-    line-height: 19.5px !important;
-    color: var(--ubits-fg-1-high) !important;
     margin: 0 !important;
     text-align: left !important;
-    font-style: normal !important;
 }
 
 /* Responsive para UBITS AI */
@@ -844,6 +821,14 @@ body[data-theme="dark"] .content-placeholder p {
     background-color: var(--ubits-bg-1);
 }
 
+/* ===== STEP NUMBERS ===== */
+.step-number {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1;
+}
+
 /* ===== AI CHAT INTERFACE ===== */
 .ai-chat-interface {
     display: flex;
@@ -887,21 +872,13 @@ body[data-theme="dark"] .content-placeholder p {
 }
 
 .chat-user-name {
-    font-family: 'Noto Sans', sans-serif;
-    font-weight: 700;
-    font-size: 20px;
-    line-height: 1;
-    color: var(--ubits-fg-1-high);
     margin: 0 0 4px 0;
+    color: var(--ubits-fg-1-high);
 }
 
 .chat-user-description {
-    font-family: 'Noto Sans', sans-serif;
-    font-weight: 400;
-    font-size: 13px;
-    line-height: 19.5px;
-    color: var(--ubits-fg-1-high);
     margin: 0;
+    color: var(--ubits-fg-1-medium);
 }
 
 /* Chat Messages */
@@ -938,20 +915,21 @@ body[data-theme="dark"] .content-placeholder p {
 
 .message.ai-message .message-content {
     background: var(--ubits-bg-1);
-    color: var(--ubits-fg-1-high);
+    color: var(--ubits-fg-1-high-static-inverted);
+    border: 1px solid var(--ubits-fg-1-medium);
 }
 
 .message.user-message .message-content {
     background: var(--ubits-accent-brand);
-    color: var(--ubits-fg-bold);
+    color: var(--ubits-fg-2-high-inverted);
 }
 
 .message-content p {
-    font-family: 'Noto Sans', sans-serif;
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 24px;
     margin: 0;
+}
+
+.message.user-message .message-content p {
+    color: inherit;
 }
 
 /* Message Actions */
@@ -986,8 +964,8 @@ body[data-theme="dark"] .content-placeholder p {
 }
 
 .action-btn:hover {
-    background-color: rgba(92, 100, 111, 0.1);
-    color: var(--ubits-fg-1-high);
+    background-color: rgba(156, 163, 175, 0.1);
+    color: var(--ubits-fg-2-medium-static-inverted);
 }
 
 .action-btn.like-btn:hover {
@@ -1027,11 +1005,6 @@ body[data-theme="dark"] .content-placeholder p {
 
 
 .message-time {
-    font-family: 'Noto Sans', sans-serif;
-    font-weight: 400;
-    font-size: 13px;
-    line-height: 24px;
-    color: var(--ubits-fg-2-medium);
     margin-left: 8px;
 }
 
@@ -1045,7 +1018,7 @@ body[data-theme="dark"] .content-placeholder p {
     display: flex;
     align-items: center;
     background: var(--ubits-bg-1);
-    border: 1px solid var(--ubits-fg-2-medium);
+    border: 1px solid var(--ubits-fg-1-medium);
     border-radius: 4px;
     padding: 12px;
     gap: 8px;
@@ -1055,10 +1028,8 @@ body[data-theme="dark"] .content-placeholder p {
     flex: 1;
     border: none;
     outline: none;
-    font-family: 'Noto Sans', sans-serif;
-    font-size: 16px;
-    color: var(--ubits-fg-1-medium);
     background: transparent;
+    color: var(--ubits-fg-2-medium-static-inverted);
 }
 
 .chat-input input::placeholder {
@@ -1070,7 +1041,7 @@ body[data-theme="dark"] .content-placeholder p {
     border: none;
     cursor: pointer;
     padding: 4px;
-    color: var(--ubits-fg-1-medium);
+    color: var(--ubits-fg-2-medium-static-inverted);
     font-size: 16px;
     display: flex;
     align-items: center;
@@ -1103,73 +1074,6 @@ body[data-theme="dark"] .content-placeholder p {
     }
 }
 
-/* Modo oscuro para el chat */
-[data-theme="dark"] .ai-chat-interface {
-    background-color: transparent !important;
-}
-
-[data-theme="dark"] .chat-user-name {
-    color: var(--ubits-fg-1-high-static-inverted);
-}
-
-[data-theme="dark"] .chat-user-description {
-    color: var(--ubits-fg-2-medium-static-inverted);
-}
-
-[data-theme="dark"] .message.ai-message .message-content {
-    background: var(--ubits-bg-1);
-    color: var(--ubits-fg-1-high-static-inverted);
-    border: 1px solid var(--ubits-fg-1-medium);
-}
-
-[data-theme="dark"] .chat-input {
-    background: var(--ubits-bg-1);
-    border-color: var(--ubits-fg-1-medium);
-}
-
-[data-theme="dark"] .chat-input input {
-    color: var(--ubits-fg-2-medium-static-inverted);
-}
-
-[data-theme="dark"] .chat-input input::placeholder {
-    color: var(--ubits-fg-1-medium);
-}
-
-[data-theme="dark"] .send-button {
-    color: var(--ubits-fg-2-medium-static-inverted);
-}
-
-[data-theme="dark"] .send-button:hover {
-    color: var(--ubits-accent-brand);
-}
-
-/* Modo oscuro para los botones de acciones */
-[data-theme="dark"] .action-btn {
-    color: var(--ubits-fg-1-medium);
-}
-
-[data-theme="dark"] .action-btn:hover {
-    background-color: rgba(156, 163, 175, 0.1);
-    color: var(--ubits-fg-2-medium-static-inverted);
-}
-
-[data-theme="dark"] .action-btn.liked {
-    background-color: rgba(12, 91, 239, 0.15) !important;
-    color: var(--ubits-accent-brand) !important;
-}
-
-[data-theme="dark"] .action-btn.disliked {
-    background-color: rgba(12, 91, 239, 0.15) !important;
-    color: var(--ubits-accent-brand) !important;
-}
-
-[data-theme="dark"] .action-btn.liked:hover {
-    background-color: rgba(12, 91, 239, 0.2) !important;
-}
-
-[data-theme="dark"] .action-btn.disliked:hover {
-    background-color: rgba(12, 91, 239, 0.2) !important;
-}
 
 /* Botón de modo oscuro con animaciones */
 #darkmode-toggle {
@@ -2412,7 +2316,14 @@ body {
     text-decoration: none;
     cursor: pointer;
     transition: all 0.2s ease;
-    font-size: 14px;
+}
+
+.sidebar-profile-menu .profile-menu-item span {
+    color: inherit;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 19.5px;
 }
 
 .sidebar-profile-menu .profile-menu-item:hover {

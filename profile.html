@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="profile.css">
     <link rel="stylesheet" href="ubits-typography.css">
     <link rel="stylesheet" href="fontawesome-icons.css">
+    <link rel="stylesheet" href="components/tab-bar.css">
+    <link rel="stylesheet" href="components/floating-menu.css">
+    <link rel="stylesheet" href="components/profile-menu.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -66,20 +69,38 @@
                 </div>
             </div>
         </div>
+
+        <!-- Sidebar derecho fijo -->
+        <div class="right-sidebar-fixed">
+            <p class="ubits-body-md-regular">Sidebar Derecho</p>
+        </div>
     </div>
 
-    <!-- Sidebar derecho fijo -->
-    <div class="right-sidebar-fixed">
-        <p class="ubits-body-md-regular">Sidebar Derecho</p>
-    </div>
+    <!-- Tab Bar Container -->
+    <div id="tab-bar-container"></div>
+
+    <!-- Floating Menu Container -->
+    <div id="floating-menu-container"></div>
+    
+    <!-- Profile Menu Container -->
+    <div id="profile-menu-container"></div>
 
     <!-- Scripts -->
     <script src="components/sidebar.js"></script>
+    <script src="components/tab-bar.js"></script>
+    <script src="components/floating-menu.js"></script>
+    <script src="components/profile-menu.js"></script>
     <script src="script.js"></script>
     <script>
         // Cargar sidebar con botón Mi perfil activo
         document.addEventListener('DOMContentLoaded', function() {
             loadSidebar();
+            // Cargar tab-bar
+            loadTabBar('tab-bar-container');
+            // Cargar floating-menu
+            loadFloatingMenu('floating-menu-container');
+            // Cargar profile-menu
+            loadProfileMenu('profile-menu-container');
             // Activar el avatar del usuario
             setTimeout(() => {
                 const userAvatar = document.querySelector('.user-avatar');

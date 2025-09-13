@@ -4,6 +4,8 @@
 
 ### 🔧 **Desarrollo de Componentes**
 
+- [x] **Catálogo de colores UBITS** - Creado colores.html con layout mejorado y todos los tokens
+- [x] **Diseño responsive** - Implementado tab-bar móvil y responsividad en index, profile y ubits-ai
 - [ ] **Importar tokens de espaciado** de Figma y aplicarlos a todos los componentes y páginas
 - [ ] **Complementar la documentación** con más secciones y ejemplos
 - [ ] **Hacer la variante de sidebar de admin** y hacer un sidebar plantilla

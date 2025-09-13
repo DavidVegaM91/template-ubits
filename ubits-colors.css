@@ -37,6 +37,7 @@
   --ubits-fg-2-medium: #5a5e6a;
   --ubits-fg-2-high-static: #2a303f;
   --ubits-fg-2-medium-static: #5a5e6a;
+  --ubits-fg-2-high-inverted: #ffffff;
   --ubits-fg-2-medium-static-inverted: #d0d2d5;
   
   /* Disabled Text */
@@ -324,6 +325,7 @@
   --ubits-fg-2-medium: #d0d2d5;
   --ubits-fg-2-high-static: #ffffff;
   --ubits-fg-2-medium-static: #d0d2d5;
+  --ubits-fg-2-high-inverted: #2a303f;
   --ubits-fg-2-medium-static-inverted: #d0d2d5;
   
   --ubits-fg-disabled: #777c86;

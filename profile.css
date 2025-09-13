@@ -3,15 +3,15 @@
 /* Importar tokens de color UBITS */
 @import url('./ubits-colors.css');
 
-/* Reset para el perfil */
-* {
+/* Reset para el perfil - Solo elementos específicos del perfil */
+.profile-content,
+.profile-content * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
 body {
-    font-family: 'Noto Sans', sans-serif;
     background-color: #f3f3f4;
     margin: 0;
     padding: 0;
@@ -183,7 +183,7 @@ body[data-theme="dark"] {
 }
 
 .plan-title i {
-    color: #4F5561;
+    color: var(--ubits-fg-2-medium);
 }
 
 .plan-card {
@@ -228,7 +228,7 @@ body[data-theme="dark"] {
 }
 
 .plan-counter strong {
-    color: #dc2626;
+    color: var(--ubits-feedback-accent-error);
 }
 
 /* Sección derecha - Recomendado */
@@ -247,7 +247,7 @@ body[data-theme="dark"] {
 }
 
 .recomendado-title i {
-    color: #4F5561;
+    color: var(--ubits-fg-2-medium);
 }
 
 .course-card {
@@ -311,7 +311,7 @@ body[data-theme="dark"] {
 [data-theme="dark"] .widget-assessments,
 [data-theme="dark"] .widget-evaluations,
 [data-theme="dark"] .right-sidebar-fixed {
-    background-color: #202837 !important;
+    background-color: var(--ubits-bg-1) !important;
     border: none !important;
     box-shadow: 0 2px 44px rgba(0,0,0,0.3) !important;
 }
@@ -340,13 +340,13 @@ body[data-theme="dark"] {
 /* Iconos con dark mode */
 .learn-icon {
     font-size: 24px;
-    color: #4F5561;
+    color: var(--ubits-fg-2-medium);
 }
 
 .plan-icon,
 .recomendado-icon {
     margin-right: 8px;
-    color: #4F5561;
+    color: var(--ubits-fg-2-medium);
 }
 
 /* Dark mode para iconos */
@@ -363,7 +363,7 @@ body[data-theme="dark"] {
 
 [data-theme="dark"] .course-card {
     background-color: var(--ubits-bg-1);
-    border-color: #4b5563;
+    border-color: var(--ubits-border-1);
 }
 
 [data-theme="dark"] .plan-title i,
@@ -371,28 +371,89 @@ body[data-theme="dark"] {
     color: var(--ubits-fg-2-medium);
 }
 
-/* Responsive */
-@media (max-width: 768px) {
+/* Responsive - Layout principal para móviles */
+@media (max-width: 1023px) {
     .profile-content {
-        margin: 16px 0 16px 91px;
+        flex-direction: column;
+        margin: 16px 12px !important;
+        padding-bottom: 60px;
+        width: calc(100% - 24px);
     }
     
+    .main-content-profile {
+        margin: 0 !important;
+        width: 100%;
+        padding-bottom: 60px;
+    }
+    
+    .left-wrapper {
+        padding-bottom: 0;
+    }
+    
+    /* Sidebar derecho se convierte en bloque normal debajo de los widgets */
     .right-sidebar-fixed {
-        width: 300px;
-        right: 8px;
+        position: static;
+        width: 100%;
+        height: auto;
+        min-height: 200px;
+        margin-top: 0px;
+        right: auto;
+        top: auto;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    /* Ajustar widgets para que se vean bien en móvil */
+    .personal-org,
+    .objetivos-encuestas,
+    .assessments-evaluaciones {
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    .widget-user-info,
+    .widget-org,
+    .widget-objectives,
+    .widget-surveys,
+    .widget-assessments,
+    .widget-evaluations {
+        min-height: 150px;
+    }
+}
+
+@media (max-width: 768px) {
+    .profile-content {
+        margin: 16px 8px !important;
+        width: calc(100% - 16px);
     }
     
     .learn-body {
         flex-direction: column;
     }
+    
+    .right-sidebar-fixed {
+        margin-top: 16px;
+        min-height: 150px;
+    }
 }
 
 @media (max-width: 480px) {
     .profile-content {
-        margin: 16px 0 16px 80px;
+        margin: 16px 4px !important;
+        width: calc(100% - 8px);
     }
     
     .right-sidebar-fixed {
-        display: none;
+        margin-top: 12px;
+        min-height: 120px;
+    }
+    
+    .widget-user-info,
+    .widget-org,
+    .widget-objectives,
+    .widget-surveys,
+    .widget-assessments,
+    .widget-evaluations {
+        min-height: 120px;
+        padding: 12px;
     }
 }

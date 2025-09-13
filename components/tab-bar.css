@@ -80,8 +80,6 @@
 }
 
 .tab-bar-text {
-    font-family: 'Noto Sans', sans-serif;
-    font-size: 10px;
     color: var(--ubits-sidebar-button-fg-default);
     text-align: center;
     line-height: 1.2;

@@ -7,15 +7,15 @@ function getProfileMenuHTML() {
         <div class="profile-menu" id="profile-menu">
             <a href="profile.html" class="profile-menu-item">
                 <i class="far fa-user profile-menu-icon"></i>
-                <span class="profile-menu-text">Ver mi perfil</span>
+                <span class="profile-menu-text ubits-body-sm-regular">Ver mi perfil</span>
             </a>
             <a href="#" class="profile-menu-item" onclick="handlePasswordChange(event)">
                 <i class="far fa-key profile-menu-icon"></i>
-                <span class="profile-menu-text">Cambio de contraseña</span>
+                <span class="profile-menu-text ubits-body-sm-regular">Cambio de contraseña</span>
             </a>
             <a href="#" class="profile-menu-item" onclick="handleLogout(event)">
                 <i class="far fa-sign-out-alt profile-menu-icon"></i>
-                <span class="profile-menu-text">Cerrar sesión</span>
+                <span class="profile-menu-text ubits-body-sm-regular">Cerrar sesión</span>
             </a>
         </div>
     `;

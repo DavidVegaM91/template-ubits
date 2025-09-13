@@ -10,6 +10,9 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="fontawesome-icons.css">
     <link rel="stylesheet" href="ubits-typography.css">
+    <link rel="stylesheet" href="components/tab-bar.css">
+    <link rel="stylesheet" href="components/floating-menu.css">
+    <link rel="stylesheet" href="components/profile-menu.css">
 </head>
 <body data-theme="light">
     <div class="dashboard-container">
@@ -24,43 +27,43 @@
             <div class="content-area no-background" style="align-items: center;">
                 <!-- UBITS AI Dashboard -->
                 <div class="ubits-ai-dashboard" id="ubits-ai-dashboard">
-                    <h1 class="ubits-display-d3-semibold">¿En qué puedo ayudarte?</h1>
+                    <h1 class="ubits-display-d3-semibold ai-title">¿En qué puedo ayudarte?</h1>
                     <div class="ai-cards-container">
                         <div class="ai-card" id="simon-ai" onclick="window.location.href='simon-chat.html'" style="cursor: pointer;">
                             <div class="card-header">
-                                <h3 class="ubits-body-md-semibold">Simon</h3>
+                                <h3 class="ubits-body-md-semibold card-title" style="color: var(--ubits-fg-1-high);">Simon</h3>
                                 <div class="card-icon">
                                     <i class="far fa-message"></i>
                                 </div>
                             </div>
-                            <p class="ubits-body-md-regular">Asistente y coach de liderazgo.</p>
+                            <p class="ubits-body-sm-regular card-description">Asistente y coach de liderazgo.</p>
                         </div>
                         <div class="ai-card">
                             <div class="card-header">
-                                <h3 class="ubits-body-md-semibold">Customer Support</h3>
+                                <h3 class="ubits-body-md-semibold card-title" style="color: var(--ubits-fg-1-high);">Customer Support</h3>
                                 <div class="card-icon">
                                     <i class="far fa-headset"></i>
                                 </div>
                             </div>
-                            <p class="ubits-body-md-regular">Haz una comparación de precios vs. el mercado laboral.</p>
+                            <p class="ubits-body-sm-regular card-description">Haz una comparación de precios vs. el mercado laboral.</p>
                         </div>
                         <div class="ai-card">
                             <div class="card-header">
-                                <h3 class="ubits-body-md-semibold">Evaluación financiera</h3>
+                                <h3 class="ubits-body-md-semibold card-title" style="color: var(--ubits-fg-1-high);">Evaluación financiera</h3>
                                 <div class="card-icon">
                                     <i class="far fa-chart-line"></i>
                                 </div>
                             </div>
-                            <p class="ubits-body-md-regular">Haz una comparación de precios vs. el mercado laboral.</p>
+                            <p class="ubits-body-sm-regular card-description">Haz una comparación de precios vs. el mercado laboral.</p>
                         </div>
                         <div class="ai-card">
                             <div class="card-header">
-                                <h3 class="ubits-body-md-semibold">¿Qué quieres aprender?</h3>
+                                <h3 class="ubits-body-md-semibold card-title" style="color: var(--ubits-fg-1-high);">¿Qué quieres aprender?</h3>
                                 <div class="card-icon">
                                     <i class="far fa-graduation-cap"></i>
                                 </div>
                             </div>
-                            <p class="ubits-body-md-regular">Haz una comparación de precios vs. el mercado laboral.</p>
+                            <p class="ubits-body-sm-regular card-description">Haz una comparación de precios vs. el mercado laboral.</p>
                         </div>
                     </div>
                 </div>
@@ -68,12 +71,30 @@
         </main>
     </div>
 
+    <!-- Tab Bar Container -->
+    <div id="tab-bar-container"></div>
+
+    <!-- Floating Menu Container -->
+    <div id="floating-menu-container"></div>
+    
+    <!-- Profile Menu Container -->
+    <div id="profile-menu-container"></div>
+
     <script src="components/sidebar.js"></script>
+    <script src="components/tab-bar.js"></script>
+    <script src="components/floating-menu.js"></script>
+    <script src="components/profile-menu.js"></script>
     <script src="script.js"></script>
     <script>
         // Cargar sidebar con botón UBITS AI activo
         document.addEventListener('DOMContentLoaded', function() {
             loadSidebar('ubits-ai');
+            // Cargar tab-bar
+            loadTabBar('tab-bar-container');
+            // Cargar floating-menu
+            loadFloatingMenu('floating-menu-container');
+            // Cargar profile-menu
+            loadProfileMenu('profile-menu-container');
         });
     </script>
 </body>

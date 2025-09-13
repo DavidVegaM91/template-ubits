@@ -38,13 +38,27 @@ function loadTabBar(containerId) {
         return;
     }
 
-    container.innerHTML = getTabBarHTML();
-    
-    // Agregar event listeners
-    addTabBarEventListeners();
-    
-    // Activar el tab correcto basado en la página actual
-    activateCurrentPageTab();
+    // Cargar el componente HTML
+    fetch('components/tab-bar.html')
+        .then(response => response.text())
+        .then(html => {
+            container.innerHTML = html;
+            
+            // Agregar event listeners
+            addTabBarEventListeners();
+            
+            // Activar el tab correcto basado en la página actual
+            activateCurrentPageTab();
+            
+            console.log('Tab bar component loaded successfully');
+        })
+        .catch(error => {
+            console.error('Error loading tab-bar component:', error);
+            // Fallback al HTML generado
+            container.innerHTML = getTabBarHTML();
+            addTabBarEventListeners();
+            activateCurrentPageTab();
+        });
 }
 
 /**
@@ -137,8 +151,43 @@ function navigateToTab(tabId) {
  * Activa el tab correcto basado en la página actual
  */
 function activateCurrentPageTab() {
-    // NO activar ningún tab por ahora (hasta que implementemos en otras páginas)
-    // Los tabs solo abren/cierran modales o cambian tema
+    // Obtener la URL actual
+    const currentPath = window.location.pathname;
+    const currentPage = currentPath.split('/').pop().replace('.html', '');
+    
+    console.log('Current page detected:', currentPage);
+    
+    // Remover clase active de todos los tabs
+    const allTabs = document.querySelectorAll('.tab-bar-item');
+    allTabs.forEach(tab => {
+        tab.classList.remove('active');
+    });
+    
+    // Activar el tab correspondiente a la página actual
+    let tabToActivate = null;
+    
+    switch(currentPage) {
+        case 'profile':
+            tabToActivate = document.querySelector('[data-tab="perfil"]');
+            break;
+        case 'ubits-ai':
+            // UBITS AI es parte de los módulos, activar tab de módulos
+            tabToActivate = document.querySelector('[data-tab="modulos"]');
+            break;
+        case 'index':
+        case '':
+            // Página principal - no activar ningún tab específico
+            break;
+        default:
+            console.log('Página no reconocida para activación de tab:', currentPage);
+            break;
+    }
+    
+    // Activar el tab si se encontró
+    if (tabToActivate) {
+        tabToActivate.classList.add('active');
+        console.log('Tab activado:', tabToActivate.getAttribute('data-tab'));
+    }
 }
 
 // Exportar funciones para uso global

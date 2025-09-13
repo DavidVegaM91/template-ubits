@@ -91,6 +91,15 @@
     color: var(--ubits-sidebar-button-fg-default);
 }
 
+.accordion-title span {
+    color: inherit;
+}
+
+.accordion-title.active span {
+    color: var(--ubits-sidebar-button-fg-active);
+    font-weight: 700;
+}
+
 .accordion-title i {
     font-size: 16px;
     margin-right: 12px;
@@ -134,6 +143,15 @@
     text-align: center;
 }
 
+.accordion-link span {
+    color: inherit;
+}
+
+.accordion-link.active span {
+    color: var(--ubits-sidebar-button-fg-active);
+    font-weight: 600;
+}
+
 /* Enlaces directos (no acordeón) */
 .accordion-link.direct-link {
     justify-content: space-between;
@@ -148,6 +166,36 @@
     margin-left: auto;
     width: 16px;
     text-align: center;
+}
+
+.accordion-link.direct-link.disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.accordion-link.direct-link.disabled:hover {
+    background: transparent;
+    color: var(--ubits-sidebar-button-fg-default);
+}
+
+.accordion-header.disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.accordion-header.disabled:hover {
+    background: transparent;
+    color: var(--ubits-sidebar-button-fg-default);
+}
+
+.accordion-link.disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.accordion-link.disabled:hover {
+    background: transparent;
+    color: var(--ubits-sidebar-button-fg-default);
 }
 
 .floating-menu-section {
@@ -172,8 +220,9 @@
     background: transparent;
 }
 
-.floating-menu-item.active .floating-menu-text {
-    color: var(--ubits-sidebar-button-bg-active);
+.floating-menu-item.active .floating-menu-text,
+.floating-menu-item.active .floating-menu-text span {
+    color: var(--ubits-sidebar-button-fg-active) !important;
     font-weight: 700;
 }
 
@@ -190,16 +239,16 @@
     color: var(--ubits-sidebar-button-fg-hover);
 }
 
-.floating-menu-text {
-    font-family: 'Noto Sans', sans-serif;
-    font-size: 16px;
-    color: var(--ubits-sidebar-button-fg-default);
+.floating-menu-text,
+.floating-menu-text span {
+    color: var(--ubits-sidebar-button-fg-default) !important;
     flex: 1;
     transition: color 0.2s ease;
 }
 
-.floating-menu-item:hover .floating-menu-text {
-    color: var(--ubits-sidebar-button-fg-hover);
+.floating-menu-item:hover .floating-menu-text,
+.floating-menu-item:hover .floating-menu-text span {
+    color: var(--ubits-sidebar-button-fg-hover) !important;
 }
 
 .floating-menu-chevron {
@@ -246,22 +295,26 @@
     background: transparent;
 }
 
-.floating-menu-subitem.active .floating-menu-subtext {
-    color: var(--ubits-sidebar-button-bg-active);
+.floating-menu-subitem.active .floating-menu-subtext,
+.floating-menu-subitem.active .floating-menu-subtext span {
+    color: var(--ubits-sidebar-button-fg-active) !important;
     font-weight: 600;
 }
 
 /* Modo oscuro para acordeones */
-[data-theme="dark"] .accordion-title {
-    color: var(--ubits-sidebar-button-fg-default);
+[data-theme="dark"] .accordion-title,
+.accordion-title span {
+    color: var(--ubits-sidebar-button-fg-default) !important;
 }
 
-[data-theme="dark"] .accordion-link {
-    color: var(--ubits-sidebar-button-fg-default);
+[data-theme="dark"] .accordion-link,
+.accordion-link span {
+    color: var(--ubits-sidebar-button-fg-default) !important;
 }
 
-[data-theme="dark"] .accordion-link:hover {
-    color: var(--ubits-sidebar-button-fg-hover);
+[data-theme="dark"] .accordion-link:hover,
+.accordion-link:hover span {
+    color: var(--ubits-sidebar-button-fg-hover) !important;
 }
 
 .floating-menu-subicon {
@@ -277,16 +330,16 @@
     color: var(--ubits-sidebar-button-fg-hover);
 }
 
-.floating-menu-subtext {
-    font-family: 'Noto Sans', sans-serif;
-    font-size: 14px;
-    color: var(--ubits-sidebar-button-fg-default);
+.floating-menu-subtext,
+.floating-menu-subtext span {
+    color: var(--ubits-sidebar-button-fg-default) !important;
     flex: 1;
     transition: color 0.2s ease;
 }
 
-.floating-menu-subitem:hover .floating-menu-subtext {
-    color: var(--ubits-sidebar-button-fg-hover);
+.floating-menu-subitem:hover .floating-menu-subtext,
+.floating-menu-subitem:hover .floating-menu-subtext span {
+    color: var(--ubits-sidebar-button-fg-hover) !important;
 }
 
 /* Scroll personalizado */
@@ -317,7 +370,7 @@
 }
 
 [data-theme="dark"] .floating-menu-title {
-    color: var(--ubits-sidebar-button-bg-active);
+    color: var(--ubits-sidebar-button-fg-active);
 }
 
 [data-theme="dark"] .floating-menu-close {

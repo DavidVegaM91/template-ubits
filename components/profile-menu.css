@@ -51,10 +51,13 @@
 }
 
 .profile-menu-text {
-    font-family: 'Noto Sans', sans-serif;
-    font-size: 14px;
-    font-weight: 500;
     margin: 0;
+    color: var(--ubits-sidebar-button-fg-default);
+    transition: color 0.2s ease;
+}
+
+.profile-menu-item:hover .profile-menu-text {
+    color: var(--ubits-sidebar-button-fg-hover);
 }
 
 /* Dark mode */

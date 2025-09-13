@@ -10,6 +10,9 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="fontawesome-icons.css">
     <link rel="stylesheet" href="ubits-typography.css">
+    <link rel="stylesheet" href="components/tab-bar.css">
+    <link rel="stylesheet" href="components/floating-menu.css">
+    <link rel="stylesheet" href="components/profile-menu.css">
 </head>
 <body data-theme="light">
     <div class="dashboard-container">
@@ -104,12 +107,31 @@
         </main>
     </div>
 
+    <!-- Tab Bar Container -->
+    <div id="tab-bar-container"></div>
+
+    <!-- Floating Menu Container -->
+    <div id="floating-menu-container"></div>
+    
+    <!-- Profile Menu Container -->
+    <div id="profile-menu-container"></div>
+
     <script src="components/sidebar.js"></script>
+    <script src="components/tab-bar.js"></script>
+    <script src="components/floating-menu.js"></script>
+    <script src="components/profile-menu.js"></script>
     <script src="script.js"></script>
+
     <script>
         // Cargar sidebar con botón UBITS AI activo
         document.addEventListener('DOMContentLoaded', function() {
             loadSidebar('ubits-ai');
+            // Cargar tab-bar
+            loadTabBar('tab-bar-container');
+            // Cargar floating-menu
+            loadFloatingMenu('floating-menu-container');
+            // Cargar profile-menu
+            loadProfileMenu('profile-menu-container');
         });
     </script>
 </body>

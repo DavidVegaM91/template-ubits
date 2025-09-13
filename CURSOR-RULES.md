@@ -150,6 +150,10 @@ color: var(--ubits-fg-1-medium);
 - `ubits-ai.html` - Dashboard de IA
 - `simon-chat.html` - Chat específico
 
+### **Catálogos de recursos:**
+- `colores.html` - Catálogo visual de todos los tokens de color UBITS
+- `iconos.html` - Catálogo de iconos FontAwesome organizados
+
 ### **Componentes incluidos:**
 - Sidebar personalizable
 - Top-nav con variantes

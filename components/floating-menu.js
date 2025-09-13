@@ -31,13 +31,14 @@ const FLOATING_MENU_SECTIONS = [
             { id: 'reportes', title: 'Reportes', icon: 'far fa-file-chart', url: 'reportes.html' }
         ]
     },
-    {
-        id: 'encuestas',
-        title: 'Encuestas',
-        icon: 'far fa-clipboard-list-check',
-        url: 'encuestas.html',
-        isLink: true
-    },
+            {
+                id: 'encuestas',
+                title: 'Encuestas',
+                icon: 'far fa-clipboard-list-check',
+                url: 'encuestas.html',
+                isLink: true,
+                clickable: false
+            },
     {
         id: 'tareas',
         title: 'Tareas',
@@ -47,42 +48,53 @@ const FLOATING_MENU_SECTIONS = [
             { id: 'tareas', title: 'Tareas', icon: 'far fa-tasks', url: 'tareas.html' }
         ]
     },
-    {
-        id: 'ubits-ai',
-        title: 'UBITS AI',
-        icon: 'far fa-sparkles',
-        url: 'ubits-ai.html',
-        isLink: true
-    }
+            {
+                id: 'ubits-ai',
+                title: 'UBITS AI',
+                icon: 'far fa-sparkles',
+                url: 'ubits-ai.html',
+                isLink: true,
+                clickable: true
+            }
 ];
 
 function getFloatingMenuHTML() {
     const sectionsHTML = FLOATING_MENU_SECTIONS.map(section => {
         // Si es un enlace directo (no acordeón)
         if (section.isLink) {
-            return `
-                <a href="${section.url}" class="accordion-link direct-link">
-                    <i class="${section.icon}"></i>
-                    <span>${section.title}</span>
-                    <i class="far fa-chevron-right accordion-chevron"></i>
-                </a>
-            `;
+            if (section.clickable) {
+                return `
+                    <a href="${section.url}" class="accordion-link direct-link">
+                        <i class="${section.icon}"></i>
+                        <span class="ubits-body-md-regular">${section.title}</span>
+                        <i class="far fa-chevron-right accordion-chevron"></i>
+                    </a>
+                `;
+            } else {
+                return `
+                    <div class="accordion-link direct-link disabled">
+                        <i class="${section.icon}"></i>
+                        <span class="ubits-body-md-regular">${section.title}</span>
+                        <i class="far fa-chevron-right accordion-chevron"></i>
+                    </div>
+                `;
+            }
         }
         
         // Si es acordeón normal
         const subitemsHTML = section.subitems.map(subitem => `
-            <a href="${subitem.url}" class="accordion-link">
+            <div class="accordion-link disabled">
                 <i class="${subitem.icon}"></i>
-                <span>${subitem.title}</span>
-            </a>
+                <span class="ubits-body-sm-regular">${subitem.title}</span>
+            </div>
         `).join('');
 
         return `
             <div class="accordion-item">
-                <div class="accordion-header" onclick="toggleAccordion('${section.id}')">
+                <div class="accordion-header disabled" onclick="toggleAccordion('${section.id}')">
                     <div class="accordion-title">
                         <i class="${section.icon}"></i>
-                        <span>${section.title}</span>
+                        <span class="ubits-body-md-regular">${section.title}</span>
                     </div>
                     <i class="far fa-chevron-down accordion-chevron" id="chevron-${section.id}"></i>
                 </div>
@@ -96,7 +108,7 @@ function getFloatingMenuHTML() {
     return `
         <div class="floating-menu" id="floating-menu">
             <div class="floating-menu-header">
-                <h2 class="floating-menu-title">Módulos</h2>
+                <h2 class="floating-menu-title ubits-heading-h2">Módulos</h2>
                 <button class="floating-menu-close" onclick="hideFloatingMenu()">
                     <i class="far fa-times"></i>
                 </button>
