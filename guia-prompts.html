@@ -186,7 +186,7 @@
                         Guía de Prompts UBITS
                     </h1>
                     <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto; line-height: 1.6;">
-                        Prompts listos para usar en Cursor AI. Sin conocimiento técnico necesario, solo copia, pega y personaliza.
+                        Prompts para usar en Cursor AI. Sin conocimiento técnico necesario, solo copia, pega y personaliza.
                     </p>
                 </div>
 
@@ -210,14 +210,12 @@
                     </p>
                     <div class="prompt-code-container">
                         <div class="prompt-code" id="prompt-clone">
-Necesito clonar el repositorio de UBITS Template para empezar a trabajar. Por favor:
+Quiero trabajar contigo usando el UBITS Template que está en este repositorio: 
+https://github.com/DavidVegaM91/template-ubits.git 
 
-1. Clona el repositorio desde: https://github.com/DavidVegaM91/template-ubits.git
-2. Abre el proyecto en Cursor AI
-3. Instala las dependencias si las hay
-4. Verifica que todo funcione correctamente
-
-El repositorio contiene un template completo de UBITS con componentes, colores, tipografía y páginas de ejemplo listas para usar.
+1. Importa el repositorio. 
+2. Lee los archivos README.md y .cursorrules para entender el contexto del proyecto.  
+3. Confírmame que comprendiste la configuración y pregúntame qué página quiero editar o qué nuevo flujo quiero crear.
                         </div>
                         <div class="copy-button" onclick="copyPrompt('clone')">
                             <i class="far fa-copy"></i>
@@ -226,27 +224,49 @@ El repositorio contiene un template completo de UBITS con componentes, colores, 
                     </div>
                 </div>
 
-                <!-- Prompt 2: Actualizar repositorio -->
-                <div class="prompt-card" data-prompt="update">
+                <!-- Prompt 2: Crear página de inicio -->
+                <div class="prompt-card" data-prompt="homepage">
                     <div class="prompt-header">
-                        <h3 class="ubits-heading-h2">2. Actualizar el repositorio UBITS</h3>
+                        <h3 class="ubits-heading-h2">2. Crear página de inicio del proyecto</h3>
                     </div>
                     <p class="prompt-description ubits-body-md-regular">
-                        Usa este prompt cuando quieras obtener las últimas actualizaciones del template sin perder tus cambios personalizados.
+                        Usa este prompt para configurar la página principal de tu proyecto UBITS.
                     </p>
-                    <div class="prompt-code-container">
-                        <div class="prompt-code" id="prompt-update">
-Necesito actualizar mi proyecto UBITS con las últimas versiones del repositorio, pero sin perder mis cambios personalizados. Por favor:
-
-1. Haz un backup de mis archivos personalizados (todos los que he modificado)
-2. Actualiza el repositorio con: git pull origin main
-3. Si hay conflictos, resuélvelos preservando mis cambios personalizados
-4. Restaura mis archivos personalizados después de la actualización
-5. Verifica que todo funcione correctamente
-
-Mi objetivo es tener las últimas mejoras del template UBITS manteniendo mis personalizaciones.
+                    
+                    <!-- Warning Alert -->
+                    <div class="ubits-alert ubits-alert--warning ubits-alert--no-close" style="margin-bottom: 16px;">
+                        <div class="ubits-alert-content">
+                            <div class="ubits-alert-icon">
+                                <i class="far fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="ubits-alert-text">IMPORTANTE: Antes de enviar este prompt a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.</div>
                         </div>
-                        <div class="copy-button" onclick="copyPrompt('update')">
+                    </div>
+                    
+                    <div class="prompt-code-container">
+                        <div class="prompt-code" id="prompt-homepage">
+Necesito crear la página de inicio de mi proyecto UBITS. Por favor:
+
+1. **CONTEXTO DEL PROYECTO:**
+   - [Dale el contexto completo del proyecto a crear - puede ser directo en el chat o subir un archivo .txt y decirle que lo lea]
+
+2. **CONFIGURACIÓN DE LA PÁGINA INICIAL:**
+   - Edita `index.html` (esta será mi página principal)
+   - Quiero que el sidebar tenga activo: [opciones: aprendizaje, diagnóstico, desempeño, encuestas, reclutamiento, tareas, ubits-ai, ninguno]
+   - [Especifica qué variante del TopNav usar: template, aprendizaje, desempeno, encuestas, tareas, o crear una nueva]
+   - [Para responsive, indica qué tab del tab-bar quieres activo: modulos, perfil, modo-oscuro]
+
+3. **CONTENIDO PRINCIPAL:**
+   - Reemplaza el content-wrapper con: [dile qué contenido quieres en tu página de inicio]
+   - Usa componentes UBITS existentes o crea nuevos según necesites
+   - Asegúrate de que sea responsive y funcione en modo claro/oscuro
+
+4. **VERIFICACIÓN:**
+   - Confirma que todos los tokens UBITS estén aplicados correctamente
+   - Verifica que la navegación funcione correctamente
+   - Prueba en diferentes tamaños de pantalla
+                        </div>
+                        <div class="copy-button" onclick="copyPrompt('homepage')">
                             <i class="far fa-copy"></i>
                             Copiar
                         </div>
@@ -288,20 +308,20 @@ Asegúrate de usar las clases de tipografía UBITS (ubits-heading-h1, ubits-body
                         <h3 class="ubits-heading-h2">4. Crear una nueva página UBITS</h3>
                     </div>
                     <p class="prompt-description ubits-body-md-regular">
-                        Usa este prompt para crear una página completamente nueva siguiendo la estructura y diseño de UBITS.
+                        Usa este prompt para crear una nueva página usando plantilla-ubits.html como base.
                     </p>
                     <div class="prompt-code-container">
                         <div class="prompt-code" id="prompt-newpage">
-Necesito crear una nueva página HTML para mi proyecto UBITS. Por favor:
+Necesito crear una nueva página UBITS. Por favor:
 
-1. Crea un archivo HTML nuevo con la estructura base de UBITS
-2. Incluye todos los estilos necesarios (ubits-colors.css, ubits-typography.css, etc.)
-3. Añade el top-nav con la variante apropiada
-4. Crea un content-area con mi contenido personalizado
-5. Asegúrate de que sea responsive y siga las reglas de UBITS
-6. Usa las clases de tipografía y tokens de color correctos
+1. Abre el archivo plantilla-ubits.html
+2. Crea una copia con el nombre: [nombre-de-mi-pagina].html
+3. Modifica el título de la página según mi necesidad
+4. Personaliza el contenido del content-area con lo que necesito
+5. Asegúrate de que mantenga todos los tokens UBITS y la estructura correcta
+6. Verifica que sea responsive y funcione en modo claro y oscuro
 
-Nombre del archivo: [NOMBRE_DE_LA_PAGINA].html
+Usa plantilla-ubits.html como base para mantener la consistencia del template.
 Título de la página: [TITULO_DE_LA_PAGINA]
 Contenido: [DESCRIBE_EL_CONTENIDO_QUE_QUIERES]
 
@@ -317,7 +337,7 @@ Sigue la estructura de las páginas existentes como index.html o profile.html.
                 <!-- Prompt 5: Personalizar colores -->
                 <div class="prompt-card" data-prompt="colors">
                     <div class="prompt-header">
-                        <h3 class="ubits-heading-h2">5. Personalizar colores UBITS</h3>
+                        <h3 class="ubits-heading-h2">4. Personalizar colores UBITS</h3>
                     </div>
                     <p class="prompt-description ubits-body-md-regular">
                         Usa este prompt para cambiar los colores del sistema UBITS manteniendo la consistencia del diseño.
@@ -340,6 +360,33 @@ Colores que quiero cambiar:
 Asegúrate de que los nuevos colores tengan buen contraste y accesibilidad.
                         </div>
                         <div class="copy-button" onclick="copyPrompt('colors')">
+                            <i class="far fa-copy"></i>
+                            Copiar
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Prompt 5: Actualizar repositorio -->
+                <div class="prompt-card" data-prompt="update">
+                    <div class="prompt-header">
+                        <h3 class="ubits-heading-h2">5. Actualizar el repositorio UBITS</h3>
+                    </div>
+                    <p class="prompt-description ubits-body-md-regular">
+                        Usa este prompt cuando quieras obtener las últimas actualizaciones del template sin perder tus cambios personalizados.
+                    </p>
+                    <div class="prompt-code-container">
+                        <div class="prompt-code" id="prompt-update">
+Necesito actualizar mi proyecto UBITS con las últimas versiones del repositorio, pero sin perder mis cambios personalizados. Por favor:
+
+1. Haz un backup de mis archivos personalizados (todos los que he modificado)
+2. Actualiza el repositorio con: git pull origin main
+3. Si hay conflictos, resuélvelos preservando mis cambios personalizados
+4. Restaura mis archivos personalizados después de la actualización
+5. Verifica que todo funcione correctamente
+
+Mi objetivo es tener las últimas mejoras del template UBITS manteniendo mis personalizaciones.
+                        </div>
+                        <div class="copy-button" onclick="copyPrompt('update')">
                             <i class="far fa-copy"></i>
                             Copiar
                         </div>

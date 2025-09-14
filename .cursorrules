@@ -143,13 +143,54 @@ color: var(--ubits-fg-1-medium);
 
 ## 🚀 WORKFLOW
 
-1. Use `index.html` as base for new pages
-2. Always maintain UBITS visual identity
-3. Keep it simple (KISS principle)
-4. Test in both light and dark modes
-5. **Handle ALL technical tasks** - Users are non-technical
-6. **Provide complete solutions** - Never ask users to code
-7. **Explain in simple terms** - Use designer-friendly language
+1. **For main project:** Edit `index.html` directly (this will be deployed as main page)
+2. **For new pages:** Use `plantilla-ubits.html` as base and create copies
+3. Always maintain UBITS visual identity
+4. Keep it simple (KISS principle)
+5. Test in both light and dark modes
+6. **Handle ALL technical tasks** - Users are non-technical
+7. **Provide complete solutions** - Never ask users to code
+8. **Explain in simple terms** - Use designer-friendly language
+
+## 📄 FILE USAGE RULES
+
+### **index.html:**
+- **Purpose:** Main project page (deploys to Netlify as homepage)
+- **Usage:** Edit directly for your main project
+- **Deployment:** This is what users see when they visit your site
+
+### **plantilla-ubits.html:**
+- **Purpose:** Template base for creating new pages
+- **Usage:** Clone this file when user needs new pages
+- **Command:** "Open plantilla-ubits.html and create a copy named [new-page].html"
+
+## 🎯 TOP-NAV VARIANTES DISPONIBLES
+
+### **Variantes para usuarios:**
+- **`template`** - Plantilla (personalizable)
+- **`aprendizaje`** - Aprendizaje (cursos, catálogos)
+- **`desempeno`** - Desempeño (evaluaciones, métricas)
+- **`encuestas`** - Encuestas (gestión de encuestas)
+- **`tareas`** - Tareas (planes, proyectos)
+
+### **Variante reservada:**
+- **`documentacion`** - Solo para el desarrollador principal
+
+## 🎯 SIDEBAR Y TAB-BAR OPCIONES
+
+### **Sidebar activo:**
+- **Opciones:** `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`, `reclutamiento`, `tareas`, `ubits-ai`, `ninguno`
+
+### **Tab-bar responsive:**
+- **Opciones:** `modulos`, `perfil`, `modo-oscuro`
+
+## 📝 PROMPTS Y PERSONALIZACIÓN
+
+### **Guía de Prompts:**
+- **Ubicación:** `guia-prompts.html`
+- **Uso:** Algunos prompts requieren personalización antes de usar
+- **Personalización:** Reemplazar textos entre [corchetes] con información específica
+- **Flujo:** Copiar → Personalizar → Enviar a Cursor AI
 
 ## ⚠️ VERIFICATION CHECKLIST
 

@@ -24,7 +24,7 @@ const TOP_NAV_VARIANTS = {
             { id: 'section5', label: 'Iconos', icon: 'far fa-icons', url: 'iconos.html' }
         ]
     },
-    learning: {
+    aprendizaje: {
         name: 'Aprendizaje',
         tabs: [
             { id: 'home', label: 'Inicio', icon: 'far fa-home', url: 'index.html' },
@@ -32,7 +32,7 @@ const TOP_NAV_VARIANTS = {
             { id: 'my-courses', label: 'Mis Cursos', icon: 'far fa-play-circle', url: 'mis-cursos.html' }
         ]
     },
-    performance: {
+    desempeno: {
         name: 'Desempeño',
         tabs: [
             { id: 'evaluations', label: 'Evaluaciones 360', icon: 'far fa-chart-pie', url: 'evaluaciones.html' },
@@ -41,14 +41,13 @@ const TOP_NAV_VARIANTS = {
             { id: 'reports', label: 'Reportes', icon: 'far fa-file-chart', url: 'reportes.html' }
         ]
     },
-    surveys: {
+    encuestas: {
         name: 'Encuestas',
         tabs: [
-            { id: 'create', label: 'Crear Encuesta', icon: 'far fa-plus', url: 'crear-encuesta.html' },
-            { id: 'manage', label: 'Gestionar', icon: 'far fa-cog', url: 'gestionar-encuestas.html' }
+            { id: 'encuestas', label: 'Encuestas', icon: 'far fa-clipboard-list-check', url: 'encuestas.html' }
         ]
     },
-    tasks: {
+    tareas: {
         name: 'Tareas',
         tabs: [
             { id: 'plans', label: 'Planes', icon: 'far fa-layer-group' },
@@ -59,7 +58,7 @@ const TOP_NAV_VARIANTS = {
 
 /**
  * Genera el HTML del top-nav según la variante especificada
- * @param {string} variant - Variante del top-nav (template, learning, performance, surveys, tasks)
+ * @param {string} variant - Variante del top-nav (template, documentacion, aprendizaje, desempeno, encuestas, tareas)
  * @param {Array} customTabs - Array opcional de tabs personalizados para la variante template
  * @returns {string} HTML del top-nav
  */

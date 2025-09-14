@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alert Prueba - UBITS Template</title>
+    <title>TopNav Variantes - UBITS Template</title>
     
     <!-- UBITS CSS -->
     <link rel="stylesheet" href="ubits-colors.css">
     <link rel="stylesheet" href="ubits-typography.css">
     <link rel="stylesheet" href="fontawesome-icons.css">
-    <link rel="stylesheet" href="components/alert.css">
+    <link rel="stylesheet" href="components/top-nav.css">
     
     <style>
         * {
@@ -25,7 +25,7 @@
         }
         
         .preview-container {
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
         }
         
@@ -35,118 +35,149 @@
             text-align: center;
         }
         
-        .alert-preview {
-            margin-bottom: 24px;
+        .variant-preview {
+            margin-bottom: 48px;
+            border: 1px solid var(--ubits-border-1);
+            border-radius: 8px;
+            overflow: hidden;
         }
         
-        .alert-preview h3 {
+        .variant-preview h3 {
             color: var(--ubits-fg-1-high);
-            margin-bottom: 12px;
+            margin: 0;
+            padding: 16px 20px;
+            background: var(--ubits-bg-2);
+            border-bottom: 1px solid var(--ubits-border-1);
+        }
+        
+        .variant-content {
+            padding: 20px;
+            background: var(--ubits-bg-1);
+        }
+        
+        .variant-info {
+            margin-bottom: 16px;
+            padding: 12px;
+            background: var(--ubits-bg-2);
+            border-radius: 6px;
+            border-left: 4px solid var(--ubits-accent-brand);
+        }
+        
+        .variant-info strong {
+            color: var(--ubits-fg-1-high);
+        }
+        
+        .top-nav-container {
+            border: 1px solid var(--ubits-border-1);
+            border-radius: 6px;
+            overflow: hidden;
         }
     </style>
 </head>
 <body>
     <div class="preview-container">
-        <h1 class="ubits-display-d3-bold preview-title">Componente Alert - Preview</h1>
+        <h1 class="ubits-display-d3-bold preview-title">Variantes del TopNav - Preview</h1>
         <p class="ubits-body-md-regular" style="text-align: center; margin-bottom: 32px; color: var(--ubits-fg-1-medium);">
-            Con botón de cerrar (default) y sin botón de cerrar
+            Todas las variantes disponibles del componente TopNav
         </p>
         
-        <!-- Success Alert -->
-        <div class="alert-preview">
-            <h3 class="ubits-heading-h2">Success Alert</h3>
-            <div class="ubits-alert ubits-alert--success">
-                <div class="ubits-alert-content">
-                    <div class="ubits-alert-icon">
-                        <i class="far fa-check-circle"></i>
-                    </div>
-                    <div class="ubits-alert-text">¡Acción completada con éxito!</div>
+        <!-- Template Variant -->
+        <div class="variant-preview">
+            <h3 class="ubits-heading-h2">1. Template (Plantilla)</h3>
+            <div class="variant-content">
+                <div class="variant-info">
+                    <strong>Propósito:</strong> Variante base personalizable<br>
+                    <strong>Uso:</strong> Ideal para nuevos proyectos que necesitan personalización completa
                 </div>
-                <button class="ubits-alert-close" onclick="this.parentElement.remove()">
-                    <i class="far fa-times"></i>
-                </button>
-            </div>
-            <div class="ubits-alert ubits-alert--success ubits-alert--no-close" style="margin-top: 12px;">
-                <div class="ubits-alert-content">
-                    <div class="ubits-alert-icon">
-                        <i class="far fa-check-circle"></i>
-                    </div>
-                    <div class="ubits-alert-text">¡Acción completada con éxito!</div>
-                </div>
+                <div class="top-nav-container" id="template-nav"></div>
             </div>
         </div>
         
-        <!-- Info Alert -->
-        <div class="alert-preview">
-            <h3 class="ubits-heading-h2">Info Alert</h3>
-            <div class="ubits-alert ubits-alert--info">
-                <div class="ubits-alert-content">
-                    <div class="ubits-alert-icon">
-                        <i class="far fa-info-circle"></i>
-                    </div>
-                    <div class="ubits-alert-text">Esta es una alerta informativa para el usuario</div>
+        <!-- Documentacion Variant -->
+        <div class="variant-preview">
+            <h3 class="ubits-heading-h2">2. Documentación</h3>
+            <div class="variant-content">
+                <div class="variant-info">
+                    <strong>Propósito:</strong> Para páginas de documentación del template<br>
+                    <strong>Características:</strong> Título "DOCUMENTACIÓN", menú hamburguesa responsive
                 </div>
-                <button class="ubits-alert-close" onclick="this.parentElement.remove()">
-                    <i class="far fa-times"></i>
-                </button>
-            </div>
-            <div class="ubits-alert ubits-alert--info ubits-alert--no-close" style="margin-top: 12px;">
-                <div class="ubits-alert-content">
-                    <div class="ubits-alert-icon">
-                        <i class="far fa-info-circle"></i>
-                    </div>
-                    <div class="ubits-alert-text">Esta es una alerta informativa para el usuario</div>
-                </div>
+                <div class="top-nav-container" id="documentacion-nav"></div>
             </div>
         </div>
         
-        <!-- Warning Alert -->
-        <div class="alert-preview">
-            <h3 class="ubits-heading-h2">Warning Alert</h3>
-            <div class="ubits-alert ubits-alert--warning">
-                <div class="ubits-alert-content">
-                    <div class="ubits-alert-icon">
-                        <i class="far fa-exclamation-triangle"></i>
-                    </div>
-                    <div class="ubits-alert-text">Ten cuidado con esta acción, puede tener consecuencias</div>
+        <!-- Aprendizaje Variant -->
+        <div class="variant-preview">
+            <h3 class="ubits-heading-h2">3. Aprendizaje</h3>
+            <div class="variant-content">
+                <div class="variant-info">
+                    <strong>Propósito:</strong> Para plataformas de aprendizaje<br>
+                    <strong>Uso:</strong> Cursos, catálogos, gestión de aprendizaje
                 </div>
-                <button class="ubits-alert-close" onclick="this.parentElement.remove()">
-                    <i class="far fa-times"></i>
-                </button>
-            </div>
-            <div class="ubits-alert ubits-alert--warning ubits-alert--no-close" style="margin-top: 12px;">
-                <div class="ubits-alert-content">
-                    <div class="ubits-alert-icon">
-                        <i class="far fa-exclamation-triangle"></i>
-                    </div>
-                    <div class="ubits-alert-text">Ten cuidado con esta acción, puede tener consecuencias</div>
-                </div>
+                <div class="top-nav-container" id="aprendizaje-nav"></div>
             </div>
         </div>
         
-        <!-- Error Alert -->
-        <div class="alert-preview">
-            <h3 class="ubits-heading-h2">Error Alert</h3>
-            <div class="ubits-alert ubits-alert--error">
-                <div class="ubits-alert-content">
-                    <div class="ubits-alert-icon">
-                        <i class="far fa-times-circle"></i>
-                    </div>
-                    <div class="ubits-alert-text">Algo salió mal. Por favor, intenta nuevamente</div>
+        <!-- Desempeño Variant -->
+        <div class="variant-preview">
+            <h3 class="ubits-heading-h2">4. Desempeño</h3>
+            <div class="variant-content">
+                <div class="variant-info">
+                    <strong>Propósito:</strong> Para sistemas de evaluación de desempeño<br>
+                    <strong>Uso:</strong> Evaluaciones 360, objetivos, métricas, reportes
                 </div>
-                <button class="ubits-alert-close" onclick="this.parentElement.remove()">
-                    <i class="far fa-times"></i>
-                </button>
+                <div class="top-nav-container" id="desempeno-nav"></div>
             </div>
-            <div class="ubits-alert ubits-alert--error ubits-alert--no-close" style="margin-top: 12px;">
-                <div class="ubits-alert-content">
-                    <div class="ubits-alert-icon">
-                        <i class="far fa-times-circle"></i>
-                    </div>
-                    <div class="ubits-alert-text">Algo salió mal. Por favor, intenta nuevamente</div>
+        </div>
+        
+        <!-- Encuestas Variant -->
+        <div class="variant-preview">
+            <h3 class="ubits-heading-h2">5. Encuestas</h3>
+            <div class="variant-content">
+                <div class="variant-info">
+                    <strong>Propósito:</strong> Para sistemas de encuestas<br>
+                    <strong>Uso:</strong> Creación y gestión de encuestas
                 </div>
+                <div class="top-nav-container" id="encuestas-nav"></div>
+            </div>
+        </div>
+        
+        <!-- Tareas Variant -->
+        <div class="variant-preview">
+            <h3 class="ubits-heading-h2">6. Tareas</h3>
+            <div class="variant-content">
+                <div class="variant-info">
+                    <strong>Propósito:</strong> Para sistemas de gestión de tareas<br>
+                    <strong>Uso:</strong> Planes, tareas, gestión de proyectos
+                </div>
+                <div class="top-nav-container" id="tareas-nav"></div>
             </div>
         </div>
     </div>
+
+    <!-- TopNav JavaScript -->
+    <script src="components/top-nav.js"></script>
+    
+    <script>
+        // Cargar todas las variantes
+        document.addEventListener('DOMContentLoaded', function() {
+            // Template
+            loadTopNav('template-nav', 'template');
+            
+            // Documentación
+            loadTopNav('documentacion-nav', 'documentacion');
+            
+            // Aprendizaje
+            loadTopNav('aprendizaje-nav', 'aprendizaje');
+            
+            // Desempeño
+            loadTopNav('desempeno-nav', 'desempeno');
+            
+            // Encuestas
+            loadTopNav('encuestas-nav', 'encuestas');
+            
+            // Tareas
+            loadTopNav('tareas-nav', 'tareas');
+        });
+    </script>
 </body>
 </html>

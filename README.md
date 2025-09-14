@@ -11,9 +11,21 @@ Una **plantilla lista para usar** que permite a **Product Managers**, **Diseñad
 ## 🚨 **ANTES DE EMPEZAR - LEE ESTO:**
 
 1. **📋 Lee `CURSOR-RULES.md`** - Reglas obligatorias para Cursor AI
-2. **🎯 Usa `index.html`** - Como base para cualquier página nueva
-3. **👀 Mira `ejemplos-tokens.html`** - Ejemplos que funcionan (copia, no inventes)
-4. **🎨 Usa SOLO tokens UBITS** - `var(--ubits-...)` NUNCA colores hardcodeados
+2. **🎯 Edita `index.html`** - Tu página principal (se despliega en Netlify)
+3. **📄 Usa `plantilla-ubits.html`** - Para crear páginas nuevas
+4. **👀 Mira `ejemplos-tokens.html`** - Ejemplos que funcionan (copia, no inventes)
+5. **🎨 Usa SOLO tokens UBITS** - `var(--ubits-...)` NUNCA colores hardcodeados
+
+## 📋 Flujo de Trabajo
+
+### **Para tu proyecto principal:**
+- **Edita `index.html`** directamente - Esta será tu página principal
+- **Se despliega automáticamente** en Netlify como página de inicio
+
+### **Para páginas adicionales:**
+- **Usa `plantilla-ubits.html`** como base
+- **Cursor AI puede clonarla** y crear nuevas páginas
+- **Mantén la consistencia** del template UBITS
 
 ## 📁 Estructura del Proyecto
 
@@ -104,10 +116,11 @@ Template UBITS/
 - **Referencia rápida** - Para Product Managers y Diseñadores que necesitan ver los colores disponibles
 
 ### **Guía de prompts UBITS:**
-- **`guia-prompts.html`** - Prompts listos para usar en Cursor AI
-- **5 prompts esenciales** - Clonar, actualizar, reemplazar, crear, personalizar
+- **`guia-prompts.html`** - Prompts para usar en Cursor AI
+- **5 prompts especializados** - Clonar, crear página inicio, reemplazar, crear páginas, actualizar
 - **Copy to clipboard** - Botones de copia con feedback visual
 - **Toast notifications** - Confirmación de copia exitosa
+- **Personalización requerida** - Algunos prompts necesitan ajustes antes de usar
 - **Sin conocimiento técnico** - Para Product Managers y Diseñadores
 - **Diseño 100% UBITS** - Colores, tipografía y componentes oficiales
 
@@ -488,7 +501,8 @@ color: var(--ubits-fg-1-medium);
 ## 🗺️ Navegación del Proyecto
 
 ### **Páginas Principales:**
-- **[index.html](index.html)** - Dashboard principal (plantilla base)
+- **[index.html](index.html)** - Página principal (edita aquí tu proyecto)
+- **[plantilla-ubits.html](plantilla-ubits.html)** - Plantilla base para crear nuevas páginas
 - **[profile.html](profile.html)** - Página de perfil
 - **[ubits-ai.html](ubits-ai.html)** - Dashboard de IA
 - **[simon-chat.html](simon-chat.html)** - Chat de Simon
