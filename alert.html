@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UBITS Alert Component - Template UBITS</title>
+    
+    <!-- UBITS Core Styles -->
+    <link rel="stylesheet" href="ubits-colors.css">
+    <link rel="stylesheet" href="ubits-typography.css">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="fontawesome-icons.css">
+    
+    <!-- Component Styles -->
+    <link rel="stylesheet" href="components/alert.css">
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Top Navigation -->
+    <link rel="stylesheet" href="components/top-nav.css">
+</head>
+<body>
+    <!-- Top Navigation -->
+    <div id="top-nav-container"></div>
+    
+    <div class="content-area">
+        <div class="page-header">
+            <h1 class="ubits-h1">Componente Alert</h1>
+            <p class="ubits-body-md-regular">Sistema de alertas con 4 variaciones usando tokens UBITS</p>
+        </div>
+
+        <!-- Alert Examples Section -->
+        <section class="component-section">
+            <h2 class="ubits-heading-h2">Variaciones del Alert</h2>
+            
+            <!-- Success Alert -->
+            <div class="example-group">
+                <h3 class="ubits-heading-h3">Success Alert</h3>
+                <div class="example-container">
+                    <div class="ubits-alert ubits-alert--success">
+                        <div class="ubits-alert-content">
+                            <div class="ubits-alert-icon">
+                                <i class="far fa-check-circle"></i>
+                            </div>
+                            <div class="ubits-alert-text ubits-body-sm-regular">
+                                Se archivó tu contenido de forma exitosa
+                            </div>
+                        </div>
+                        <button class="ubits-alert-close" aria-label="Cerrar alerta">
+                            <i class="far fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Alert -->
+            <div class="example-group">
+                <h3 class="ubits-heading-h3">Info Alert</h3>
+                <div class="example-container">
+                    <div class="ubits-alert ubits-alert--info">
+                        <div class="ubits-alert-content">
+                            <div class="ubits-alert-icon">
+                                <i class="far fa-info-circle"></i>
+                            </div>
+                            <div class="ubits-alert-text ubits-body-sm-regular">
+                                Esta es una información importante que debes conocer
+                            </div>
+                        </div>
+                        <button class="ubits-alert-close" aria-label="Cerrar alerta">
+                            <i class="far fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Warning Alert -->
+            <div class="example-group">
+                <h3 class="ubits-heading-h3">Warning Alert</h3>
+                <div class="example-container">
+                    <div class="ubits-alert ubits-alert--warning">
+                        <div class="ubits-alert-content">
+                            <div class="ubits-alert-icon">
+                                <i class="far fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="ubits-alert-text ubits-body-sm-regular">
+                                Este es un mensaje de advertencia importante
+                            </div>
+                        </div>
+                        <button class="ubits-alert-close" aria-label="Cerrar alerta">
+                            <i class="far fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error Alert -->
+            <div class="example-group">
+                <h3 class="ubits-heading-h3">Error Alert</h3>
+                <div class="example-container">
+                    <div class="ubits-alert ubits-alert--error">
+                        <div class="ubits-alert-content">
+                            <div class="ubits-alert-icon">
+                                <i class="far fa-times-circle"></i>
+                            </div>
+                            <div class="ubits-alert-text ubits-body-sm-regular">
+                                Este es un mensaje de error que requiere atención
+                            </div>
+                        </div>
+                        <button class="ubits-alert-close" aria-label="Cerrar alerta">
+                            <i class="far fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Demo Section -->
+        <section class="component-section">
+            <h2 class="ubits-heading-h2">Demo Interactivo</h2>
+            <p class="ubits-body-md-regular">Prueba crear alertas dinámicamente con diferentes opciones:</p>
+            
+            <div class="demo-controls">
+                <div class="control-group">
+                    <label class="ubits-body-sm-semibold">Tipo de alerta:</label>
+                    <select id="alert-type" class="demo-select">
+                        <option value="success">Success</option>
+                        <option value="info">Info</option>
+                        <option value="warning">Warning</option>
+                        <option value="error">Error</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <label class="ubits-body-sm-semibold">Mensaje:</label>
+                    <input type="text" id="alert-message" class="demo-input" 
+                           placeholder="Escribe tu mensaje aquí..." 
+                           value="Este es un mensaje de prueba">
+                </div>
+                
+                <div class="control-group">
+                    <label class="ubits-body-sm-semibold">Opciones:</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="alert-closable" checked>
+                            <span class="ubits-body-sm-regular">Permitir cerrar</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="alert-auto-close">
+                            <span class="ubits-body-sm-regular">Cerrar automáticamente</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label class="ubits-body-sm-semibold">Duración (ms):</label>
+                    <input type="number" id="alert-duration" class="demo-input" 
+                           placeholder="3000" value="3000" min="1000" max="10000">
+                </div>
+                
+                <button id="create-alert" class="demo-button">
+                    <i class="far fa-plus"></i>
+                    Crear Alert
+                </button>
+                
+                <button id="clear-alerts" class="demo-button demo-button--secondary">
+                    <i class="far fa-trash"></i>
+                    Limpiar Todos
+                </button>
+            </div>
+            
+            <div id="alert-container" class="alert-demo-container">
+                <!-- Dynamic alerts will appear here -->
+            </div>
+        </section>
+
+        <!-- Usage Examples Section -->
+        <section class="component-section">
+            <h2 class="ubits-heading-h2">Ejemplos de Uso</h2>
+            
+            <div class="code-example">
+                <h3 class="ubits-heading-h3">HTML Básico</h3>
+                <div class="code-block">
+                    <pre><code>&lt;div class="ubits-alert ubits-alert--success"&gt;
+    &lt;div class="ubits-alert-content"&gt;
+        &lt;div class="ubits-alert-icon"&gt;
+            &lt;i class="far fa-check-circle"&gt;&lt;/i&gt;
+        &lt;/div&gt;
+        &lt;div class="ubits-alert-text ubits-body-sm-regular"&gt;
+            Tu mensaje aquí
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;button class="ubits-alert-close"&gt;
+        &lt;i class="far fa-times"&gt;&lt;/i&gt;
+    &lt;/button&gt;
+&lt;/div&gt;</code></pre>
+                </div>
+            </div>
+            
+            <div class="code-example">
+                <h3 class="ubits-heading-h3">JavaScript</h3>
+                <div class="code-block">
+                    <pre><code>// Crear alerta simple
+UBITSAlertManager.success('Operación exitosa');
+
+// Crear alerta con opciones
+UBITSAlertManager.error('Error al guardar', {
+    closable: true,
+    duration: 5000,
+    onClose: () => console.log('Alerta cerrada')
+});
+
+// Crear alerta en contenedor específico
+UBITSAlertManager.createInContainer(
+    document.getElementById('mi-contenedor'),
+    {
+        type: 'warning',
+        message: 'Advertencia importante',
+        closable: false
+    }
+);</code></pre>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Scripts -->
+    <script src="components/top-nav.js"></script>
+    <script src="components/alert.js"></script>
+    <script>
+        // Initialize top navigation
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize top nav
+            const topNavContainer = document.getElementById('top-nav-container');
+            if (topNavContainer) {
+                topNavContainer.innerHTML = createTopNav('documentacion');
+                addTopNavEventListeners(topNavContainer);
+                activateCurrentPageTab(topNavContainer, 'documentacion');
+            }
+            
+            // Initialize alert demo
+            initAlertDemo();
+        });
+
+        function initAlertDemo() {
+            const createBtn = document.getElementById('create-alert');
+            const clearBtn = document.getElementById('clear-alert');
+            const container = document.getElementById('alert-container');
+            
+            // Create alert button
+            createBtn.addEventListener('click', function() {
+                const type = document.getElementById('alert-type').value;
+                const message = document.getElementById('alert-message').value;
+                const closable = document.getElementById('alert-closable').checked;
+                const autoClose = document.getElementById('alert-auto-close').checked;
+                const duration = parseInt(document.getElementById('alert-duration').value) || 3000;
+                
+                if (!message.trim()) {
+                    UBITSAlertManager.warning('Por favor escribe un mensaje');
+                    return;
+                }
+                
+                const options = {
+                    type: type,
+                    message: message,
+                    closable: closable,
+                    duration: autoClose ? duration : 0,
+                    container: container
+                };
+                
+                UBITSAlertManager.createInContainer(container, options);
+            });
+            
+            // Clear all alerts button
+            clearBtn.addEventListener('click', function() {
+                container.innerHTML = '';
+            });
+            
+            // Add close functionality to existing alerts
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.ubits-alert-close')) {
+                    const alert = e.target.closest('.ubits-alert');
+                    if (alert) {
+                        alert.classList.add('ubits-alert--closing');
+                        setTimeout(() => {
+                            if (alert.parentNode) {
+                                alert.parentNode.removeChild(alert);
+                            }
+                        }, 300);
+                    }
+                }
+            });
+        }
+    </script>
+
+    <style>
+        /* Demo specific styles */
+        .component-section {
+            margin-bottom: 40px;
+        }
+        
+        .example-group {
+            margin-bottom: 24px;
+        }
+        
+        .example-container {
+            margin-top: 12px;
+        }
+        
+        .demo-controls {
+            background: var(--ubits-bg-2);
+            border: 1px solid var(--ubits-border-1);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .control-group {
+            margin-bottom: 16px;
+        }
+        
+        .control-group:last-child {
+            margin-bottom: 0;
+        }
+        
+        .control-group label {
+            display: block;
+            margin-bottom: 6px;
+        }
+        
+        .demo-select,
+        .demo-input {
+            width: 100%;
+            max-width: 300px;
+            padding: 8px 12px;
+            border: 1px solid var(--ubits-border-1);
+            border-radius: 4px;
+            background: var(--ubits-bg-1);
+            color: var(--ubits-fg-1-medium);
+            font-family: 'Noto Sans', sans-serif;
+            font-size: 14px;
+        }
+        
+        .demo-select:focus,
+        .demo-input:focus {
+            outline: none;
+            border-color: var(--ubits-accent-brand);
+        }
+        
+        .checkbox-group {
+            display: flex;
+            gap: 16px;
+        }
+        
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        
+        .checkbox-label input[type="checkbox"] {
+            margin: 0;
+        }
+        
+        .demo-button {
+            background: var(--ubits-accent-brand);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Noto Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-right: 8px;
+            margin-top: 8px;
+        }
+        
+        .demo-button:hover {
+            background: var(--ubits-accent-brand-hover);
+        }
+        
+        .demo-button--secondary {
+            background: var(--ubits-bg-3);
+            color: var(--ubits-fg-1-medium);
+        }
+        
+        .demo-button--secondary:hover {
+            background: var(--ubits-bg-4);
+        }
+        
+        .alert-demo-container {
+            margin-top: 20px;
+            min-height: 50px;
+        }
+        
+        .code-example {
+            margin-bottom: 24px;
+        }
+        
+        .code-block {
+            background: var(--ubits-bg-2);
+            border: 1px solid var(--ubits-border-1);
+            border-radius: 4px;
+            padding: 16px;
+            margin-top: 8px;
+            overflow-x: auto;
+        }
+        
+        .code-block pre {
+            margin: 0;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 13px;
+            line-height: 1.4;
+            color: var(--ubits-fg-1-medium);
+        }
+        
+        .code-block code {
+            background: none;
+            padding: 0;
+            border: none;
+            font-family: inherit;
+        }
+    </style>
+</body>
+</html>
+

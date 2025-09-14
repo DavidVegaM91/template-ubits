@@ -7,6 +7,7 @@
 - [x] **Catálogo de colores UBITS** - Creado colores.html con layout mejorado y todos los tokens
 - [x] **Diseño responsive** - Implementado tab-bar móvil y responsividad en index, profile y ubits-ai
 - [x] **Responsive de componentes** - Implementado selector móvil para sidebar de componentes
+- [x] **Componente Alert** - Crear componente de alertas con 4 variaciones (Success, Info, Warning, Error)
 - [ ] **Componente de botones** - Crear componente de botones con todas las variantes UBITS
 - [ ] **Páginas de secciones de componentes** - Crear páginas individuales para sidebar, top-nav, etc.
 - [ ] **Vincular sidebar y selector responsive** - Conectar navegación entre sidebar y selector móvil

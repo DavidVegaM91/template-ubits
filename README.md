@@ -39,6 +39,8 @@ Template UBITS/
 ├── 📚 Fonts/                  # Fuentes FontAwesome
 ├── 📖 iconos.html                    # Catálogo de iconos
 ├── 🎨 colores.html                   # Catálogo de tokens de color UBITS
+├── 📝 guia-prompts.html              # Guía de prompts para Cursor AI
+├── 🚨 alert.html                     # Demostración del componente Alert
 ├── 📋 WIDGET-GUIDE.md         # Guía para llenar widgets
 ├── 📝 UBITS-TYPOGRAPHY-GUIDE.md      # Guía de tipografía
 └── 📄 LICENSE                 # Licencia MIT
@@ -100,6 +102,29 @@ Template UBITS/
 - **Modo dual** - Visualización simultánea de light y dark mode
 - **Fácil consulta** - Todos los tokens organizados por categorías (BRAND, FOREGROUND, BACKGROUND, BORDER, FEEDBACK, etc.)
 - **Referencia rápida** - Para Product Managers y Diseñadores que necesitan ver los colores disponibles
+
+### **Guía de prompts UBITS:**
+- **`guia-prompts.html`** - Prompts listos para usar en Cursor AI
+- **5 prompts esenciales** - Clonar, actualizar, reemplazar, crear, personalizar
+- **Copy to clipboard** - Botones de copia con feedback visual
+- **Toast notifications** - Confirmación de copia exitosa
+- **Sin conocimiento técnico** - Para Product Managers y Diseñadores
+- **Diseño 100% UBITS** - Colores, tipografía y componentes oficiales
+
+### **Componente Alert UBITS:**
+- **`alert.html`** - Demostración del componente Alert con 4 variaciones
+- **4 variaciones** - Success (verde), Info (azul), Warning (amarillo), Error (rojo)
+- **JavaScript completo** - Clase UBITSAlert con métodos para crear, cerrar y gestionar alertas
+- **Demo interactivo** - Crea alertas dinámicamente con diferentes opciones
+- **Tokens UBITS** - Usa colores oficiales de feedback del sistema UBITS
+- **Responsive** - Se adapta perfectamente a móviles y desktop
+
+### **Sistema de tipografía UBITS:**
+- **`ubits-typography.css`** - Todas las clases de tipografía disponibles
+- **Display:** d1, d2, d3, d4 (regular, semibold, bold)
+- **Headings:** h1, h2
+- **Body:** md, sm (regular, semibold, bold)
+- **Regla crítica:** SIEMPRE verificar que la clase existe antes de usarla
 
 ## 🎨 **VALOR DIFERENCIAL DEL PROYECTO**
 

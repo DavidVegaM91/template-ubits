@@ -1,0 +1,214 @@
+/* ========================================
+   UBITS ALERT COMPONENT
+   ======================================== */
+
+.ubits-alert {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    padding: 8px;
+    border-radius: 10px;
+    position: relative;
+    font-family: 'Noto Sans', sans-serif;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.ubits-alert::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 1px solid;
+    border-radius: 10px;
+    pointer-events: none;
+}
+
+.ubits-alert-content {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+}
+
+.ubits-alert-icon {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1;
+}
+
+.ubits-alert-text {
+    flex: 1;
+    font-size: 13px;
+    line-height: 19.5px;
+    font-weight: 400;
+    min-width: 0;
+}
+
+.ubits-alert-close {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+}
+
+.ubits-alert-close:hover {
+    opacity: 1;
+}
+
+/* ========================================
+   ALERT VARIANTS
+   ======================================== */
+
+/* Success Alert */
+.ubits-alert--success {
+    background-color: var(--ubits-feedback-bg-success-subtle);
+    color: var(--ubits-feedback-fg-success-subtle);
+}
+
+.ubits-alert--success::before {
+    border-color: var(--ubits-feedback-border-success);
+}
+
+.ubits-alert--success .ubits-alert-icon {
+    color: var(--ubits-feedback-fg-success-subtle);
+}
+
+.ubits-alert--success .ubits-alert-close {
+    color: var(--ubits-feedback-fg-success-subtle);
+}
+
+/* Info Alert */
+.ubits-alert--info {
+    background-color: var(--ubits-feedback-bg-info-subtle);
+    color: var(--ubits-feedback-fg-info-subtle);
+}
+
+.ubits-alert--info::before {
+    border-color: var(--ubits-feedback-border-info);
+}
+
+.ubits-alert--info .ubits-alert-icon {
+    color: var(--ubits-feedback-fg-info-subtle);
+}
+
+.ubits-alert--info .ubits-alert-close {
+    color: var(--ubits-feedback-fg-info-subtle);
+}
+
+/* Warning Alert */
+.ubits-alert--warning {
+    background-color: var(--ubits-feedback-bg-warning-subtle);
+    color: var(--ubits-feedback-fg-warning-subtle);
+}
+
+.ubits-alert--warning::before {
+    border-color: var(--ubits-feedback-border-warning);
+}
+
+.ubits-alert--warning .ubits-alert-icon {
+    color: var(--ubits-feedback-fg-warning-subtle);
+}
+
+.ubits-alert--warning .ubits-alert-close {
+    color: var(--ubits-feedback-fg-warning-subtle);
+}
+
+/* Error Alert */
+.ubits-alert--error {
+    background-color: var(--ubits-feedback-bg-error-subtle);
+    color: var(--ubits-feedback-fg-error-subtle);
+}
+
+.ubits-alert--error::before {
+    border-color: var(--ubits-feedback-border-error);
+}
+
+.ubits-alert--error .ubits-alert-icon {
+    color: var(--ubits-feedback-fg-error-subtle);
+}
+
+.ubits-alert--error .ubits-alert-close {
+    color: var(--ubits-feedback-fg-error-subtle);
+}
+
+/* ========================================
+   ALERT VARIATIONS
+   ======================================== */
+
+/* Alert without close button */
+.ubits-alert--no-close .ubits-alert-close {
+    display: none;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 768px) {
+    .ubits-alert {
+        padding: 12px;
+        gap: 10px;
+    }
+    
+    .ubits-alert-content {
+        gap: 10px;
+    }
+    
+    .ubits-alert-text {
+        font-size: 14px;
+        line-height: 20px;
+    }
+}
+
+/* ========================================
+   ANIMATIONS
+   ======================================== */
+
+.ubits-alert {
+    animation: alertSlideIn 0.3s ease-out;
+}
+
+@keyframes alertSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.ubits-alert--closing {
+    animation: alertSlideOut 0.3s ease-in forwards;
+}
+
+@keyframes alertSlideOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+

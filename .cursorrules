@@ -44,6 +44,26 @@ border: 1px solid var(--ubits-border-1);
 <p class="ubits-body-md-regular">My text</p>
 ```
 
+**CRITICAL:** ALL text elements MUST use UBITS typography classes. NEVER create custom font styles.
+
+**BEFORE using any typography class, ALWAYS check `ubits-typography.css` to verify it exists.**
+
+**Available UBITS typography classes:**
+- **Display:** `ubits-display-d1-regular`, `ubits-display-d1-semibold`, `ubits-display-d1-bold`
+- **Display:** `ubits-display-d2-regular`, `ubits-display-d2-semibold`, `ubits-display-d2-bold`
+- **Display:** `ubits-display-d3-regular`, `ubits-display-d3-semibold`, `ubits-display-d3-bold`
+- **Display:** `ubits-display-d4-regular`, `ubits-display-d4-semibold`, `ubits-display-d4-bold`
+- **Headings:** `ubits-heading-h1`, `ubits-heading-h2`
+- **Body:** `ubits-body-md-regular`, `ubits-body-md-semibold`, `ubits-body-md-bold`
+- **Body:** `ubits-body-sm-regular`, `ubits-body-sm-semibold`, `ubits-body-sm-bold`
+
+**If you MUST create custom CSS, ALWAYS include:**
+```css
+font-family: 'Noto Sans', sans-serif;
+font-size: [appropriate size];
+line-height: [appropriate line-height];
+```
+
 ### 3. ALWAYS IMPORT UBITS FILES
 ```html
 <!-- REQUIRED in any new HTML file -->
@@ -76,6 +96,28 @@ color: var(--ubits-fg-1-medium);
 - **Display (ubits-display-*)**: `var(--ubits-fg-1-high)`
 - **Body (ubits-body-*)**: `var(--ubits-fg-1-medium)`
 - **Normal texts**: `var(--ubits-fg-1-medium)`
+
+### 6. ALERT COMPONENT VARIATIONS
+```html
+<!-- ✅ ALWAYS use the correct Alert variant -->
+<!-- With close button (default): -->
+<div class="ubits-alert ubits-alert--success">
+
+<!-- Without close button: -->
+<div class="ubits-alert ubits-alert--success ubits-alert--no-close">
+```
+
+**CRITICAL:** When user asks to remove close button from alerts, NEVER hide it with CSS. ALWAYS use the `ubits-alert--no-close` variant instead.
+
+**Available Alert types:**
+- `ubits-alert--success` (green)
+- `ubits-alert--info` (blue) 
+- `ubits-alert--warning` (yellow)
+- `ubits-alert--error` (red)
+
+**Variations:**
+- Default: Includes close button
+- `ubits-alert--no-close`: No close button (use when user requests removal)
 
 ## 🎨 DESIGN PRINCIPLES
 

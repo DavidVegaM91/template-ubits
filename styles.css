@@ -1381,15 +1381,12 @@ body {
     margin-bottom: 40px;
 }
 
-.letter-title {
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--ubits-fg-1-high);
+.letter-section h2 {
     margin-bottom: 16px;
     padding-bottom: 8px;
     border-bottom: 2px solid var(--ubits-border-1);
-    font-family: 'Noto Sans', sans-serif;
 }
+
 
 .letter-grid {
     display: grid;
@@ -1640,7 +1637,7 @@ body {
 }
 
 .alphabet-nav-icons a:hover {
-    background: var(--ubits-fg-2-medium);
+    background: var(--ubits-bg-2);
     color: var(--ubits-fg-1-high);
 }
 

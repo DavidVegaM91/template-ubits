@@ -156,10 +156,18 @@
   /* Success */
   --ubits-feedback-accent-success: #4ab028;
   --ubits-feedback-accent-success-inverted: #328e2c;
-  --ubits-feedback-fg-success-subtle: #bde9ac;
-  --ubits-feedback-fg-success-subtle-inverted: #223b16;
-  --ubits-feedback-fg-success-subtle-hover: #7ddb7f;
-  --ubits-feedback-fg-success-subtle-inverted-hover: #152311;
+  --ubits-feedback-bg-success-subtle: #e8f8e4;
+  --ubits-feedback-bg-success-subtle-inverted: #223b16;
+  --ubits-feedback-bg-success-subtle-hover: #d4f0d0;
+  --ubits-feedback-bg-success-subtle-inverted-hover: #152311;
+  --ubits-feedback-bg-success-subtle-static: #e8f8e4;
+  --ubits-feedback-bg-success-subtle-static-inverted: #223b16;
+  --ubits-feedback-bg-success-subtle-static-hover: #d4f0d0;
+  --ubits-feedback-bg-success-subtle-static-inverted-hover: #152311;
+  --ubits-feedback-fg-success-subtle: #223b16;
+  --ubits-feedback-fg-success-subtle-inverted: #bde9ac;
+  --ubits-feedback-fg-success-subtle-hover: #152311;
+  --ubits-feedback-fg-success-subtle-inverted-hover: #7ddb7f;
   --ubits-feedback-accent-success-static: #328e2c;
   --ubits-feedback-accent-success-static-inverted: #368226;
   --ubits-feedback-fg-success-subtle-static: #223b16;
@@ -170,7 +178,15 @@
   /* Info */
   --ubits-feedback-accent-info: #7397fe;
   --ubits-feedback-accent-info-inverted: #4a74ee;
-  --ubits-feedback-fg-info-subtle: #d7daff;
+  --ubits-feedback-bg-info-subtle: #f3f2ff;
+  --ubits-feedback-bg-info-subtle-inverted: #20335f;
+  --ubits-feedback-bg-info-subtle-hover: #e6e4ff;
+  --ubits-feedback-bg-info-subtle-inverted-hover: #0f1a3a;
+  --ubits-feedback-bg-info-subtle-static: #f3f2ff;
+  --ubits-feedback-bg-info-subtle-static-inverted: #20335f;
+  --ubits-feedback-bg-info-subtle-static-hover: #e6e4ff;
+  --ubits-feedback-bg-info-subtle-static-inverted-hover: #0f1a3a;
+  --ubits-feedback-fg-info-subtle: #20335f;
   --ubits-feedback-fg-info-subtle-inverted: #20335f;
   --ubits-feedback-fg-info-subtle-hover: #c4c1fc;
   --ubits-feedback-fg-info-subtle-inverted-hover: #1b1e34;
@@ -184,7 +200,15 @@
   /* Warning */
   --ubits-feedback-accent-warning: #d68b0d;
   --ubits-feedback-accent-warning-inverted: #b16c19;
-  --ubits-feedback-fg-warning-subtle: #ffd4a0;
+  --ubits-feedback-bg-warning-subtle: #fff1e0;
+  --ubits-feedback-bg-warning-subtle-inverted: #4c2e15;
+  --ubits-feedback-bg-warning-subtle-hover: #ffe8c7;
+  --ubits-feedback-bg-warning-subtle-inverted-hover: #2d1a0c;
+  --ubits-feedback-bg-warning-subtle-static: #fff1e0;
+  --ubits-feedback-bg-warning-subtle-static-inverted: #4c2e15;
+  --ubits-feedback-bg-warning-subtle-static-hover: #ffe8c7;
+  --ubits-feedback-bg-warning-subtle-static-inverted-hover: #2d1a0c;
+  --ubits-feedback-fg-warning-subtle: #4c2e15;
   --ubits-feedback-fg-warning-subtle-inverted: #4c2e15;
   --ubits-feedback-fg-warning-subtle-hover: #ffb954;
   --ubits-feedback-fg-warning-subtle-inverted-hover: #2a1d0d;
@@ -200,7 +224,15 @@
   /* Error */
   --ubits-feedback-accent-error: #f96f6f;
   --ubits-feedback-accent-error-inverted: #e9343c;
-  --ubits-feedback-fg-error-subtle: #ffd2cd;
+  --ubits-feedback-bg-error-subtle: #fff0ee;
+  --ubits-feedback-bg-error-subtle-inverted: #65181e;
+  --ubits-feedback-bg-error-subtle-hover: #ffe0dd;
+  --ubits-feedback-bg-error-subtle-inverted-hover: #3d0e12;
+  --ubits-feedback-bg-error-subtle-static: #fff0ee;
+  --ubits-feedback-bg-error-subtle-static-inverted: #65181e;
+  --ubits-feedback-bg-error-subtle-static-hover: #ffe0dd;
+  --ubits-feedback-bg-error-subtle-static-inverted-hover: #3d0e12;
+  --ubits-feedback-fg-error-subtle: #65181e;
   --ubits-feedback-fg-error-subtle-inverted: #65181e;
   --ubits-feedback-fg-error-subtle-hover: #ffb4a6;
   --ubits-feedback-fg-error-subtle-inverted-hover: #391411;
@@ -504,7 +536,15 @@
   
   --ubits-feedback-accent-success: #4ab028;
   --ubits-feedback-accent-success-inverted: #328e2c;
-  --ubits-feedback-fg-success-subtle: #bde9ac;
+  --ubits-feedback-bg-success-subtle: #e8f8e4;
+  --ubits-feedback-bg-success-subtle-inverted: #223b16;
+  --ubits-feedback-bg-success-subtle-hover: #d4f0d0;
+  --ubits-feedback-bg-success-subtle-inverted-hover: #152311;
+  --ubits-feedback-bg-success-subtle-static: #e8f8e4;
+  --ubits-feedback-bg-success-subtle-static-inverted: #223b16;
+  --ubits-feedback-bg-success-subtle-static-hover: #d4f0d0;
+  --ubits-feedback-bg-success-subtle-static-inverted-hover: #152311;
+  --ubits-feedback-fg-success-subtle: #223b16;
   --ubits-feedback-fg-success-subtle-inverted: #223b16;
   --ubits-feedback-fg-success-subtle-hover: #7ddb7f;
   --ubits-feedback-fg-success-subtle-inverted-hover: #152311;
@@ -517,7 +557,15 @@
   
   --ubits-feedback-accent-info: #7397fe;
   --ubits-feedback-accent-info-inverted: #4a74ee;
-  --ubits-feedback-fg-info-subtle: #d7daff;
+  --ubits-feedback-bg-info-subtle: #f3f2ff;
+  --ubits-feedback-bg-info-subtle-inverted: #20335f;
+  --ubits-feedback-bg-info-subtle-hover: #e6e4ff;
+  --ubits-feedback-bg-info-subtle-inverted-hover: #0f1a3a;
+  --ubits-feedback-bg-info-subtle-static: #f3f2ff;
+  --ubits-feedback-bg-info-subtle-static-inverted: #20335f;
+  --ubits-feedback-bg-info-subtle-static-hover: #e6e4ff;
+  --ubits-feedback-bg-info-subtle-static-inverted-hover: #0f1a3a;
+  --ubits-feedback-fg-info-subtle: #20335f;
   --ubits-feedback-fg-info-subtle-inverted: #20335f;
   --ubits-feedback-fg-info-subtle-hover: #c4c1fc;
   --ubits-feedback-fg-info-subtle-inverted-hover: #1b1e34;
@@ -530,7 +578,15 @@
   
   --ubits-feedback-accent-warning: #d68b0d;
   --ubits-feedback-accent-warning-inverted: #b16c19;
-  --ubits-feedback-fg-warning-subtle: #ffd4a0;
+  --ubits-feedback-bg-warning-subtle: #fff1e0;
+  --ubits-feedback-bg-warning-subtle-inverted: #4c2e15;
+  --ubits-feedback-bg-warning-subtle-hover: #ffe8c7;
+  --ubits-feedback-bg-warning-subtle-inverted-hover: #2d1a0c;
+  --ubits-feedback-bg-warning-subtle-static: #fff1e0;
+  --ubits-feedback-bg-warning-subtle-static-inverted: #4c2e15;
+  --ubits-feedback-bg-warning-subtle-static-hover: #ffe8c7;
+  --ubits-feedback-bg-warning-subtle-static-inverted-hover: #2d1a0c;
+  --ubits-feedback-fg-warning-subtle: #4c2e15;
   --ubits-feedback-fg-warning-subtle-inverted: #4c2e15;
   --ubits-feedback-fg-warning-subtle-hover: #ffb954;
   --ubits-feedback-fg-warning-subtle-inverted-hover: #2a1d0d;
@@ -545,7 +601,15 @@
   
   --ubits-feedback-accent-error: #f96f6f;
   --ubits-feedback-accent-error-inverted: #e9343c;
-  --ubits-feedback-fg-error-subtle: #ffd2cd;
+  --ubits-feedback-bg-error-subtle: #fff0ee;
+  --ubits-feedback-bg-error-subtle-inverted: #65181e;
+  --ubits-feedback-bg-error-subtle-hover: #ffe0dd;
+  --ubits-feedback-bg-error-subtle-inverted-hover: #3d0e12;
+  --ubits-feedback-bg-error-subtle-static: #fff0ee;
+  --ubits-feedback-bg-error-subtle-static-inverted: #65181e;
+  --ubits-feedback-bg-error-subtle-static-hover: #ffe0dd;
+  --ubits-feedback-bg-error-subtle-static-inverted-hover: #3d0e12;
+  --ubits-feedback-fg-error-subtle: #65181e;
   --ubits-feedback-fg-error-subtle-inverted: #65181e;
   --ubits-feedback-fg-error-subtle-hover: #ffb4a6;
   --ubits-feedback-fg-error-subtle-inverted-hover: #391411;

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alert Prueba - UBITS Template</title>
+    
+    <!-- UBITS CSS -->
+    <link rel="stylesheet" href="ubits-colors.css">
+    <link rel="stylesheet" href="ubits-typography.css">
+    <link rel="stylesheet" href="fontawesome-icons.css">
+    <link rel="stylesheet" href="components/alert.css">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            padding: 20px;
+            background: var(--ubits-bg-1);
+            color: var(--ubits-fg-1-medium);
+            font-family: 'Noto Sans', sans-serif;
+        }
+        
+        .preview-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .preview-title {
+            color: var(--ubits-fg-1-high);
+            margin-bottom: 32px;
+            text-align: center;
+        }
+        
+        .alert-preview {
+            margin-bottom: 24px;
+        }
+        
+        .alert-preview h3 {
+            color: var(--ubits-fg-1-high);
+            margin-bottom: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="preview-container">
+        <h1 class="ubits-display-d3-bold preview-title">Componente Alert - Preview</h1>
+        <p class="ubits-body-md-regular" style="text-align: center; margin-bottom: 32px; color: var(--ubits-fg-1-medium);">
+            Con botón de cerrar (default) y sin botón de cerrar
+        </p>
+        
+        <!-- Success Alert -->
+        <div class="alert-preview">
+            <h3 class="ubits-heading-h2">Success Alert</h3>
+            <div class="ubits-alert ubits-alert--success">
+                <div class="ubits-alert-content">
+                    <div class="ubits-alert-icon">
+                        <i class="far fa-check-circle"></i>
+                    </div>
+                    <div class="ubits-alert-text">¡Acción completada con éxito!</div>
+                </div>
+                <button class="ubits-alert-close" onclick="this.parentElement.remove()">
+                    <i class="far fa-times"></i>
+                </button>
+            </div>
+            <div class="ubits-alert ubits-alert--success ubits-alert--no-close" style="margin-top: 12px;">
+                <div class="ubits-alert-content">
+                    <div class="ubits-alert-icon">
+                        <i class="far fa-check-circle"></i>
+                    </div>
+                    <div class="ubits-alert-text">¡Acción completada con éxito!</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Info Alert -->
+        <div class="alert-preview">
+            <h3 class="ubits-heading-h2">Info Alert</h3>
+            <div class="ubits-alert ubits-alert--info">
+                <div class="ubits-alert-content">
+                    <div class="ubits-alert-icon">
+                        <i class="far fa-info-circle"></i>
+                    </div>
+                    <div class="ubits-alert-text">Esta es una alerta informativa para el usuario</div>
+                </div>
+                <button class="ubits-alert-close" onclick="this.parentElement.remove()">
+                    <i class="far fa-times"></i>
+                </button>
+            </div>
+            <div class="ubits-alert ubits-alert--info ubits-alert--no-close" style="margin-top: 12px;">
+                <div class="ubits-alert-content">
+                    <div class="ubits-alert-icon">
+                        <i class="far fa-info-circle"></i>
+                    </div>
+                    <div class="ubits-alert-text">Esta es una alerta informativa para el usuario</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Warning Alert -->
+        <div class="alert-preview">
+            <h3 class="ubits-heading-h2">Warning Alert</h3>
+            <div class="ubits-alert ubits-alert--warning">
+                <div class="ubits-alert-content">
+                    <div class="ubits-alert-icon">
+                        <i class="far fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="ubits-alert-text">Ten cuidado con esta acción, puede tener consecuencias</div>
+                </div>
+                <button class="ubits-alert-close" onclick="this.parentElement.remove()">
+                    <i class="far fa-times"></i>
+                </button>
+            </div>
+            <div class="ubits-alert ubits-alert--warning ubits-alert--no-close" style="margin-top: 12px;">
+                <div class="ubits-alert-content">
+                    <div class="ubits-alert-icon">
+                        <i class="far fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="ubits-alert-text">Ten cuidado con esta acción, puede tener consecuencias</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Error Alert -->
+        <div class="alert-preview">
+            <h3 class="ubits-heading-h2">Error Alert</h3>
+            <div class="ubits-alert ubits-alert--error">
+                <div class="ubits-alert-content">
+                    <div class="ubits-alert-icon">
+                        <i class="far fa-times-circle"></i>
+                    </div>
+                    <div class="ubits-alert-text">Algo salió mal. Por favor, intenta nuevamente</div>
+                </div>
+                <button class="ubits-alert-close" onclick="this.parentElement.remove()">
+                    <i class="far fa-times"></i>
+                </button>
+            </div>
+            <div class="ubits-alert ubits-alert--error ubits-alert--no-close" style="margin-top: 12px;">
+                <div class="ubits-alert-content">
+                    <div class="ubits-alert-icon">
+                        <i class="far fa-times-circle"></i>
+                    </div>
+                    <div class="ubits-alert-text">Algo salió mal. Por favor, intenta nuevamente</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
