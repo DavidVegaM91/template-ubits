@@ -233,8 +233,11 @@
                                 <i class="far fa-sitemap" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                                 Estructura del componente
                             </h2>
-                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: 1px solid var(--ubits-border-1);">
-                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>&lt;aside class="sidebar" id="sidebar"&gt;
+                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: 1px solid var(--ubits-border-1); position: relative;">
+                                <button class="copy-code-btn" onclick="copyCode('structure-code')" style="position: absolute; top: 12px; right: 12px; background: transparent; color: var(--ubits-fg-1-medium); border: 1px solid var(--ubits-border-1); padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; transition: all 0.2s ease;">
+                                    <i class="far fa-copy"></i> Copiar
+                                </button>
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="structure-code">&lt;aside class="sidebar" id="sidebar"&gt;
   &lt;div class="sidebar-main"&gt;
     &lt;div class="sidebar-header"&gt;
       &lt;div class="logo" onclick="window.location.href='index.html'"&gt;
@@ -271,8 +274,11 @@
                                 <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                                 Cómo implementar
                             </h2>
-                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
-                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code>&lt;!-- HTML --&gt;
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1); position: relative;">
+                                <button class="copy-code-btn" onclick="copyCode('implement-code')" style="position: absolute; top: 12px; right: 12px; background: transparent; color: var(--ubits-fg-1-medium); border: 1px solid var(--ubits-border-1); padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; transition: all 0.2s ease;">
+                                    <i class="far fa-copy"></i> Copiar
+                                </button>
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="implement-code">&lt;!-- HTML --&gt;
 &lt;div id="sidebar-container"&gt;&lt;/div&gt;
 
 &lt;!-- CSS --&gt;
@@ -412,20 +418,82 @@ updateActiveSidebarButton('desempeño'); // Cambiar botón activo</code></pre>
         // Función para el acordeón de documentación técnica
         function toggleTechnicalDocs() {
             const content = document.getElementById('technical-docs-content');
-            const chevron = document.getElementById('tech-docs-chevron');
-            const button = document.querySelector('[onclick="toggleTechnicalDocs()"] span');
+            const button = document.querySelector('[onclick="toggleTechnicalDocs()"]');
             
-            if (content.style.display === 'none') {
+            if (content.style.display === 'none' || content.style.display === '') {
                 // Expandir
                 content.style.display = 'block';
-                chevron.style.transform = 'rotate(180deg)';
-                button.innerHTML = '<i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i> Ocultar';
+                button.innerHTML = '<i class="far fa-chevron-up" id="tech-docs-chevron" style="color: var(--ubits-accent-brand);"></i> <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand);">Ocultar</span>';
             } else {
                 // Contraer
                 content.style.display = 'none';
-                chevron.style.transform = 'rotate(0deg)';
-                button.innerHTML = '<i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i> Mostrar';
+                button.innerHTML = '<i class="far fa-chevron-down" id="tech-docs-chevron" style="color: var(--ubits-accent-brand);"></i> <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand);">Mostrar</span>';
             }
+        }
+
+        // Función para copiar código
+        function copyCode(codeId) {
+            const codeElement = document.getElementById(codeId);
+            const codeText = codeElement.textContent;
+            
+            // Copiar al portapapeles
+            navigator.clipboard.writeText(codeText).then(function() {
+                // Mostrar feedback visual
+                const button = document.querySelector(`[onclick="copyCode('${codeId}')"]`);
+                
+                // Cambiar estado del botón
+                button.innerHTML = '<i class="far fa-check"></i> Copiado';
+                button.style.background = 'var(--ubits-bg-1)';
+                button.style.borderColor = 'var(--ubits-accent-brand)';
+                button.style.color = 'var(--ubits-accent-brand)';
+                
+                // Mostrar toast
+                showCodeToast('¡Código copiado! 🎉');
+                
+                // Restaurar estado después de 2 segundos
+                setTimeout(function() {
+                    button.innerHTML = '<i class="far fa-copy"></i> Copiar';
+                    button.style.background = 'transparent';
+                    button.style.borderColor = 'var(--ubits-border-1)';
+                    button.style.color = 'var(--ubits-fg-1-medium)';
+                }, 2000);
+                
+            }).catch(function(err) {
+                console.error('Error al copiar: ', err);
+                showCodeToast('Error al copiar el código', 'error');
+            });
+        }
+
+        // Función para mostrar toast de código
+        function showCodeToast(message, type = 'success') {
+            // Crear elemento toast
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? 'var(--ubits-accent-brand)' : 'var(--ubits-feedback-bg-error-subtle)'};
+                color: white;
+                padding: 16px 24px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+                z-index: 10000;
+                font-family: 'Noto Sans', sans-serif;
+                font-size: 14px;
+                font-weight: 500;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            // Remover después de 3 segundos
+            setTimeout(function() {
+                toast.style.animation = 'slideOut 0.3s ease';
+                setTimeout(function() {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 3000);
         }
     </script>
 </body>
