@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="ubits-typography.css">
     <link rel="stylesheet" href="components/top-nav.css">
     <link rel="stylesheet" href="components-sidebar.css">
+    <link rel="stylesheet" href="docs/docs-sidebar.css">
 </head>
 <body class="componentes-page" data-theme="light">
     <div class="dashboard-container">
@@ -47,35 +48,23 @@
                                 <div class="dropdown-item" data-section="top-nav">
                                     <span class="dropdown-item-text ubits-body-md-regular">Top-nav</span>
                                 </div>
+                                <div class="dropdown-item" data-section="tab-bar">
+                                    <span class="dropdown-item-text ubits-body-md-regular">Tab Bar</span>
+                                </div>
+                            </div>
+                            <div class="dropdown-subgroup">
+                                <div class="dropdown-subgroup-title ubits-body-sm-regular">Feedback</div>
+                                <div class="dropdown-item" data-section="alert">
+                                    <span class="dropdown-item-text ubits-body-md-regular">Alert</span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <!-- Sidebar de Componentes -->
-            <aside class="components-sidebar">
-                <div class="sidebar-content">
-                    <div class="sidebar-section">
-                        <div class="sidebar-item active" data-section="introduccion">
-                            <span class="sidebar-text">Introducción</span>
-                        </div>
-                    </div>
-                    
-                    <div class="sidebar-section">
-                        <div class="sidebar-title">Componentes</div>
-                        <div class="sidebar-subsection">
-                            <div class="sidebar-subtitle">Navegación</div>
-                            <div class="sidebar-item" data-section="sidebar">
-                                <span class="sidebar-text">Sidebar</span>
-                            </div>
-                            <div class="sidebar-item" data-section="top-nav">
-                                <span class="sidebar-text">Top-nav</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </aside>
+            <!-- Sidebar de Documentación -->
+            <div id="docs-sidebar-container"></div>
 
             <!-- Content Area -->
             <div class="components-content">
@@ -184,92 +173,17 @@
 
     <script src="components/sidebar.js"></script>
     <script src="components/top-nav.js"></script>
+    <script src="docs/docs-sidebar.js"></script>
     <script src="script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Cargar top-nav con variante documentación
             loadTopNav('top-nav-container', 'documentacion');
             
-            // Inicializar sidebar de componentes
-            initComponentsSidebar();
+            // Cargar sidebar de documentación
+            loadDocsSidebar('introduccion');
         });
 
-        function initComponentsSidebar() {
-            const sidebarItems = document.querySelectorAll('.sidebar-item[data-section]');
-            const dropdown = document.getElementById('components-dropdown');
-            const dropdownTrigger = dropdown.querySelector('.dropdown-trigger');
-            const dropdownMenu = dropdown.querySelector('.dropdown-menu');
-            const dropdownItems = dropdown.querySelectorAll('.dropdown-item[data-section]');
-            const dropdownText = dropdown.querySelector('.dropdown-text');
-            
-            // Función para manejar la navegación
-            function handleNavigation(section) {
-                // Remover active de todos los items del sidebar
-                sidebarItems.forEach(i => i.classList.remove('active'));
-                
-                // Agregar active al item correspondiente
-                const activeItem = document.querySelector(`.sidebar-item[data-section="${section}"]`);
-                if (activeItem) activeItem.classList.add('active');
-                
-                // Actualizar el dropdown
-                const selectedItem = dropdown.querySelector(`.dropdown-item[data-section="${section}"]`);
-                if (selectedItem) {
-                    dropdownText.textContent = selectedItem.querySelector('.dropdown-item-text').textContent;
-                    
-                    // Remover active de todos los items del dropdown
-                    dropdownItems.forEach(i => i.classList.remove('active'));
-                    
-                    // Agregar active al item seleccionado
-                    selectedItem.classList.add('active');
-                }
-                
-                // Cerrar dropdown
-                dropdownTrigger.classList.remove('active');
-                dropdownMenu.classList.remove('open');
-                
-                // Navegación según la sección
-                if (section === 'introduccion') {
-                    // Si ya estamos en componentes.html, solo hacer scroll al top
-                    if (window.location.pathname.includes('componentes.html')) {
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                    } else {
-                        // Si estamos en otra página, navegar a componentes.html
-                        window.location.href = 'componentes.html';
-                    }
-                } else if (section === 'sidebar' || section === 'top-nav') {
-                    alert(`Próximamente: Sección ${section}`);
-                }
-            }
-            
-            // Event listeners para sidebar
-            sidebarItems.forEach(item => {
-                item.addEventListener('click', function() {
-                    const section = this.getAttribute('data-section');
-                    handleNavigation(section);
-                });
-            });
-            
-            // Event listeners para dropdown custom
-            dropdownTrigger.addEventListener('click', function() {
-                dropdownTrigger.classList.toggle('active');
-                dropdownMenu.classList.toggle('open');
-            });
-            
-            dropdownItems.forEach(item => {
-                item.addEventListener('click', function() {
-                    const section = this.getAttribute('data-section');
-                    handleNavigation(section);
-                });
-            });
-            
-            // Cerrar dropdown al hacer click fuera
-            document.addEventListener('click', function(event) {
-                if (!dropdown.contains(event.target)) {
-                    dropdownTrigger.classList.remove('active');
-                    dropdownMenu.classList.remove('open');
-                }
-            });
-        }
     </script>
 </body>
 </html>

@@ -35,9 +35,14 @@ Template UBITS/
 ├── 📄 profile.html            # Página de perfil (vacía)
 ├── 📄 ubits-ai.html           # Plantilla para UBITS AI
 ├── 📄 simon-chat.html         # Chat específico de Simon
+├── 📄 componentes.html        # Página de documentación de componentes
+├── 📄 sidebar.html            # Documentación del componente Sidebar
 ├── 📁 components/             # Sistema de componentes
 │   ├── sidebar.html           # Componente sidebar
 │   └── sidebar.js             # Cargador del sidebar
+├── 📁 docs/                   # Componentes de documentación
+│   ├── docs-sidebar.js        # Sidebar de navegación para documentación
+│   └── docs-sidebar.css       # Estilos del sidebar de documentación
 ├── 🎨 styles.css              # Estilos del dashboard principal
 ├── 🎨 profile.css             # Estilos de la página de perfil
 ├── 🎨 ubits-typography.css    # Sistema de tipografía UBITS
@@ -57,6 +62,24 @@ Template UBITS/
 ├── 📝 UBITS-TYPOGRAPHY-GUIDE.md      # Guía de tipografía
 └── 📄 LICENSE                 # Licencia MIT
 ```
+
+## 📚 Páginas de Documentación
+
+### **componentes.html**
+- **Propósito:** Página principal de documentación de componentes
+- **Contenido:** Introducción y navegación a todos los componentes
+- **Sidebar:** Navegación entre secciones de documentación
+
+### **sidebar.html**
+- **Propósito:** Documentación específica del componente Sidebar
+- **Contenido:** Preview interactivo, características y documentación técnica
+- **Features:** Preview funcional con controles, acordeón técnico colapsable
+
+### **Sistema de Documentación**
+- **Sidebar de navegación:** Componente reutilizable para páginas de docs
+- **Responsive:** Se adapta a móvil con dropdown
+- **Scroll behavior:** Se estira cuando el top-nav se oculta
+- **Navegación fluida:** Entre páginas de documentación
 
 ## 🎯 Casos de uso reales
 
@@ -117,7 +140,7 @@ Template UBITS/
 
 ### **Guía de prompts UBITS:**
 - **`guia-prompts.html`** - Prompts para usar en Cursor AI
-- **5 prompts especializados** - Clonar, crear página inicio, reemplazar, crear páginas, actualizar
+- **4 prompts especializados** - Clonar, crear página inicio, crear páginas, actualizar
 - **Copy to clipboard** - Botones de copia con feedback visual
 - **Toast notifications** - Confirmación de copia exitosa
 - **Personalización requerida** - Algunos prompts necesitan ajustes antes de usar
@@ -135,9 +158,16 @@ Template UBITS/
 ### **Sistema de tipografía UBITS:**
 - **`ubits-typography.css`** - Todas las clases de tipografía disponibles
 - **Display:** d1, d2, d3, d4 (regular, semibold, bold)
-- **Headings:** h1, h2
+- **Headings:** h1, h2 (SOLO ESTOS DOS EXISTEN)
 - **Body:** md, sm (regular, semibold, bold)
 - **Regla crítica:** SIEMPRE verificar que la clase existe antes de usarla
+
+### **⚠️ REGLAS CRÍTICAS DE TIPOGRAFÍA:**
+- ❌ **NUNCA usar:** `ubits-heading-h3`, `ubits-heading-h4`, `ubits-heading-h5`, `ubits-heading-h6` (NO EXISTEN)
+- ✅ **Para subtítulos:** Usar `ubits-body-md-bold` o `ubits-body-sm-bold`
+- ✅ **Para títulos de sección:** Usar `ubits-body-md-bold` para títulos pequeños
+- ✅ **Para títulos de pasos:** Usar `ubits-body-md-bold` para pasos de proceso
+- ✅ **Para títulos de cards:** Usar `ubits-body-md-bold` para títulos de componentes
 
 ## 🎨 **VALOR DIFERENCIAL DEL PROYECTO**
 

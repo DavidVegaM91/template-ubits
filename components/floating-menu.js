@@ -48,14 +48,14 @@ const FLOATING_MENU_SECTIONS = [
             { id: 'tareas', title: 'Tareas', icon: 'far fa-tasks', url: 'tareas.html' }
         ]
     },
-            {
-                id: 'ubits-ai',
-                title: 'UBITS AI',
-                icon: 'far fa-sparkles',
-                url: 'ubits-ai.html',
-                isLink: true,
-                clickable: true
-            }
+    {
+        id: 'ubits-ai',
+        title: 'UBITS AI',
+        icon: 'far fa-sparkles',
+        url: 'ubits-ai.html',
+        isLink: true,
+        clickable: true
+    }
 ];
 
 function getFloatingMenuHTML() {

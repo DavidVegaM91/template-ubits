@@ -53,9 +53,16 @@ border: 1px solid var(--ubits-border-1);
 - **Display:** `ubits-display-d2-regular`, `ubits-display-d2-semibold`, `ubits-display-d2-bold`
 - **Display:** `ubits-display-d3-regular`, `ubits-display-d3-semibold`, `ubits-display-d3-bold`
 - **Display:** `ubits-display-d4-regular`, `ubits-display-d4-semibold`, `ubits-display-d4-bold`
-- **Headings:** `ubits-heading-h1`, `ubits-heading-h2`
+- **Headings:** `ubits-heading-h1`, `ubits-heading-h2` (SOLO ESTOS DOS EXISTEN)
 - **Body:** `ubits-body-md-regular`, `ubits-body-md-semibold`, `ubits-body-md-bold`
 - **Body:** `ubits-body-sm-regular`, `ubits-body-sm-semibold`, `ubits-body-sm-bold`
+
+**CRITICAL TYPOGRAPHY RULES:**
+- ❌ **NEVER use:** `ubits-heading-h3`, `ubits-heading-h4`, `ubits-heading-h5`, `ubits-heading-h6` (DO NOT EXIST)
+- ✅ **For subheadings:** Use `ubits-body-md-bold` or `ubits-body-sm-bold` instead
+- ✅ **For section titles:** Use `ubits-body-md-bold` for smaller titles
+- ✅ **For step titles:** Use `ubits-body-md-bold` for process steps
+- ✅ **For card titles:** Use `ubits-body-md-bold` for component titles
 
 **If you MUST create custom CSS, ALWAYS include:**
 ```css
@@ -164,6 +171,24 @@ color: var(--ubits-fg-1-medium);
 - **Usage:** Clone this file when user needs new pages
 - **Command:** "Open plantilla-ubits.html and create a copy named [new-page].html"
 
+### **componentes.html:**
+- **Purpose:** Main documentation page for components
+- **Content:** Introduction and navigation to all components
+- **Sidebar:** Documentation navigation sidebar
+- **Usage:** Entry point for component documentation
+
+### **sidebar.html:**
+- **Purpose:** Specific documentation for Sidebar component
+- **Content:** Interactive preview, characteristics, and technical documentation
+- **Features:** Functional preview with controls, collapsible technical accordion
+- **Usage:** Detailed component documentation with live examples
+
+### **docs/ folder:**
+- **Purpose:** Documentation system components
+- **Files:** docs-sidebar.js, docs-sidebar.css
+- **Usage:** Reusable navigation for documentation pages
+- **Features:** Responsive, scroll behavior, smooth navigation
+
 ## 🎯 TOP-NAV VARIANTES DISPONIBLES
 
 ### **Variantes para usuarios:**
@@ -188,6 +213,7 @@ color: var(--ubits-fg-1-medium);
 
 ### **Guía de Prompts:**
 - **Ubicación:** `guia-prompts.html`
+- **4 prompts disponibles:** Clonar repositorio, Crear página inicio, Crear nueva página, Actualizar repositorio
 - **Uso:** Algunos prompts requieren personalización antes de usar
 - **Personalización:** Reemplazar textos entre [corchetes] con información específica
 - **Flujo:** Copiar → Personalizar → Enviar a Cursor AI
@@ -197,6 +223,7 @@ color: var(--ubits-fg-1-medium);
 Before finishing any task, verify:
 - [ ] No hardcoded colors (#303a47, #ffffff, etc.)
 - [ ] All text uses UBITS typography classes
+- [ ] NO headings h3, h4, h5, h6 (use ubits-body-md-bold instead)
 - [ ] ubits-colors.css is imported
 - [ ] ubits-typography.css is imported
 - [ ] Colors change in dark mode
@@ -233,6 +260,23 @@ Before finishing any task, verify:
     <p class="ubits-body-md-regular">Brief description only if needed</p>
 </div>
 ```
+
+### 6. TÍTULOS Y TEXTO (SENTENCE CASE)
+```html
+<!-- ❌ NO usar títulos en mayúsculas -->
+<h1>Mi Título Importante</h1>
+<h2>Sección de Navegación</h2>
+
+<!-- ✅ SIEMPRE usar sentence case -->
+<h1>Mi título importante</h1>
+<h2>Sección de navegación</h2>
+```
+
+**REGLAS OBLIGATORIAS:**
+- ✅ **Solo la primera letra** en mayúscula
+- ✅ **Nombres propios** se mantienen (ej: "UBITS", "JavaScript")
+- ✅ **Acrónimos** se mantienen (ej: "API", "CSS", "HTML")
+- ✅ **Aplicar a:** títulos, subtítulos, etiquetas, botones, enlaces
 
 ## 🎯 REMEMBER
 

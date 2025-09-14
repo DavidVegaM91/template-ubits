@@ -133,9 +133,13 @@
             flex: 1;
         }
         
+        .step-item {
+            margin-bottom: 8px;
+        }
+        
         .step-title {
             color: var(--ubits-fg-1-high);
-            margin-bottom: 8px;
+            margin-bottom: 0;
         }
         
         .step-description {
@@ -200,10 +204,58 @@
                     </div>
                 </div>
 
+                <!-- Cómo usar la guía -->
+                <div style="background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: 12px; padding: 32px; margin-bottom: 40px;">
+                    <h2 class="ubits-body-md-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                        <i class="far fa-lightbulb" style="margin-right: 12px;"></i>
+                        Cómo usar esta guía
+                    </h2>
+                    
+                    <div class="step-item" style="display: flex;">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <div class="step-title ubits-body-md-bold">Copia el prompt</div>
+                            <div class="step-description ubits-body-md-regular">
+                                Haz clic en el botón "Copiar" del prompt que necesites. Se copiará automáticamente a tu portapapeles.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-item" style="display: flex;">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <div class="step-title ubits-body-md-bold">Personaliza el prompt</div>
+                            <div class="step-description ubits-body-md-regular">
+                                Reemplaza los textos entre corchetes [TEXTO] con tu información específica antes de usar el prompt.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-item" style="display: flex;">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <div class="step-title ubits-body-md-bold">Pega en Cursor AI</div>
+                            <div class="step-description ubits-body-md-regular">
+                                Abre Cursor AI, pega el prompt en el chat y presiona Enter. Cursor hará todo el trabajo por ti.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-item" style="display: flex;">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <div class="step-title ubits-body-md-bold">Revisa y ajusta</div>
+                            <div class="step-description ubits-body-md-regular">
+                                Revisa los cambios que hizo Cursor y pide ajustes si es necesario. ¡Es así de fácil!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Prompt 1: Clonar repositorio -->
                 <div class="prompt-card" data-prompt="clone">
                     <div class="prompt-header">
-                        <h3 class="ubits-heading-h2">1. Clonar el repositorio UBITS</h3>
+                        <h3 class="ubits-body-md-bold">1. Clonar el repositorio UBITS</h3>
                     </div>
                     <p class="prompt-description ubits-body-md-regular">
                         Usa este prompt para obtener el template UBITS completo en tu computadora por primera vez.
@@ -227,7 +279,7 @@ https://github.com/DavidVegaM91/template-ubits.git
                 <!-- Prompt 2: Crear página de inicio -->
                 <div class="prompt-card" data-prompt="homepage">
                     <div class="prompt-header">
-                        <h3 class="ubits-heading-h2">2. Crear página de inicio del proyecto</h3>
+                        <h3 class="ubits-body-md-bold">2. Crear página de inicio del proyecto</h3>
                     </div>
                     <p class="prompt-description ubits-body-md-regular">
                         Usa este prompt para configurar la página principal de tu proyecto UBITS.
@@ -273,59 +325,37 @@ Necesito crear la página de inicio de mi proyecto UBITS. Por favor:
                     </div>
                 </div>
 
-                <!-- Prompt 3: Reemplazar contenido -->
-                <div class="prompt-card" data-prompt="replace">
-                    <div class="prompt-header">
-                        <h3 class="ubits-heading-h2">3. Reemplazar el contenido del wrapper</h3>
-                    </div>
-                    <p class="prompt-description ubits-body-md-regular">
-                        Usa este prompt para cambiar el contenido dentro del content-area por tu propio contenido personalizado.
-                    </p>
-                    <div class="prompt-code-container">
-                        <div class="prompt-code" id="prompt-replace">
-Necesito reemplazar el contenido dentro del content-area de mi página UBITS. Por favor:
-
-1. Identifica el archivo HTML que quiero modificar
-2. Localiza el elemento con clase "content-area"
-3. Reemplaza todo el contenido dentro de ese elemento con mi nuevo contenido
-4. Mantén la estructura UBITS (colores, tipografía, componentes)
-5. Asegúrate de que el diseño sea responsive y siga las reglas de UBITS
-
-Mi nuevo contenido es: [AQUÍ PEGA TU CONTENIDO]
-
-Asegúrate de usar las clases de tipografía UBITS (ubits-heading-h1, ubits-body-md-regular, etc.) y los tokens de color correctos.
-                        </div>
-                        <div class="copy-button" onclick="copyPrompt('replace')">
-                            <i class="far fa-copy"></i>
-                            Copiar
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Prompt 4: Crear nueva página -->
+                <!-- Prompt 3: Crear nueva página -->
                 <div class="prompt-card" data-prompt="newpage">
                     <div class="prompt-header">
-                        <h3 class="ubits-heading-h2">4. Crear una nueva página UBITS</h3>
+                        <h3 class="ubits-body-md-bold">3. Crear una nueva página UBITS</h3>
                     </div>
                     <p class="prompt-description ubits-body-md-regular">
                         Usa este prompt para crear una nueva página usando plantilla-ubits.html como base.
                     </p>
+                    
+                    <!-- Warning Alert -->
+                    <div class="ubits-alert ubits-alert--warning ubits-alert--no-close" style="margin-bottom: 16px;">
+                        <div class="ubits-alert-content">
+                            <div class="ubits-alert-icon">
+                                <i class="far fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="ubits-alert-text">IMPORTANTE: Antes de enviar este prompt a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.</div>
+                        </div>
+                    </div>
+                    
                     <div class="prompt-code-container">
                         <div class="prompt-code" id="prompt-newpage">
 Necesito crear una nueva página UBITS. Por favor:
 
-1. Abre el archivo plantilla-ubits.html
-2. Crea una copia con el nombre: [nombre-de-mi-pagina].html
-3. Modifica el título de la página según mi necesidad
-4. Personaliza el contenido del content-area con lo que necesito
-5. Asegúrate de que mantenga todos los tokens UBITS y la estructura correcta
-6. Verifica que sea responsive y funcione en modo claro y oscuro
-
-Usa plantilla-ubits.html como base para mantener la consistencia del template.
-Título de la página: [TITULO_DE_LA_PAGINA]
-Contenido: [DESCRIBE_EL_CONTENIDO_QUE_QUIERES]
-
-Sigue la estructura de las páginas existentes como index.html o profile.html.
+1. Duplica plantilla-ubits.html
+2. A esta copia ponle el nombre: [nombre-de-mi-pagina].html
+3. Personaliza el contenido del content-area con [DESCRIBE_EL_CONTENIDO_QUE_QUIERES]
+4. Quiero que el sidebar tenga activo: [opciones: aprendizaje, diagnóstico, desempeño, encuestas, reclutamiento, tareas, ubits-ai, ninguno]
+5. [Especifica qué variante del TopNav usar: template, aprendizaje, desempeno, encuestas, tareas, o crear una nueva]
+6. [Para responsive, indica qué tab del tab-bar quieres activo: modulos, perfil, modo-oscuro]
+7. Asegúrate de que mantenga todos los tokens UBITS y la estructura correcta
+8. Verifica que sea responsive y funcione en modo claro y oscuro
                         </div>
                         <div class="copy-button" onclick="copyPrompt('newpage')">
                             <i class="far fa-copy"></i>
@@ -334,42 +364,12 @@ Sigue la estructura de las páginas existentes como index.html o profile.html.
                     </div>
                 </div>
 
-                <!-- Prompt 5: Personalizar colores -->
-                <div class="prompt-card" data-prompt="colors">
-                    <div class="prompt-header">
-                        <h3 class="ubits-heading-h2">4. Personalizar colores UBITS</h3>
-                    </div>
-                    <p class="prompt-description ubits-body-md-regular">
-                        Usa este prompt para cambiar los colores del sistema UBITS manteniendo la consistencia del diseño.
-                    </p>
-                    <div class="prompt-code-container">
-                        <div class="prompt-code" id="prompt-colors">
-Necesito personalizar los colores de mi proyecto UBITS. Por favor:
 
-1. Identifica qué colores quiero cambiar (ej: color principal, secundario, etc.)
-2. Modifica los tokens correspondientes en ubits-colors.css
-3. Asegúrate de actualizar tanto el modo claro como el oscuro
-4. Verifica que todos los componentes usen los nuevos colores
-5. Mantén la consistencia visual en toda la aplicación
 
-Colores que quiero cambiar:
-- Color principal: [NUEVO_COLOR_PRINCIPAL]
-- Color secundario: [NUEVO_COLOR_SECUNDARIO]
-- Otros colores: [DESCRIBE_OTROS_COLORES]
-
-Asegúrate de que los nuevos colores tengan buen contraste y accesibilidad.
-                        </div>
-                        <div class="copy-button" onclick="copyPrompt('colors')">
-                            <i class="far fa-copy"></i>
-                            Copiar
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Prompt 5: Actualizar repositorio -->
+                <!-- Prompt 4: Actualizar repositorio -->
                 <div class="prompt-card" data-prompt="update">
                     <div class="prompt-header">
-                        <h3 class="ubits-heading-h2">5. Actualizar el repositorio UBITS</h3>
+                        <h3 class="ubits-body-md-bold">4. Actualizar el repositorio UBITS</h3>
                     </div>
                     <p class="prompt-description ubits-body-md-regular">
                         Usa este prompt cuando quieras obtener las últimas actualizaciones del template sin perder tus cambios personalizados.
@@ -393,53 +393,6 @@ Mi objetivo es tener las últimas mejoras del template UBITS manteniendo mis per
                     </div>
                 </div>
 
-                <!-- Cómo usar la guía -->
-                <div style="background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: 12px; padding: 32px; margin-top: 40px;">
-                    <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
-                        <i class="far fa-lightbulb" style="margin-right: 12px;"></i>
-                        Cómo usar esta guía
-                    </h2>
-                    
-                    <div style="display: flex; margin-bottom: 20px;">
-                        <div class="step-number">1</div>
-                        <div class="step-content">
-                            <div class="step-title ubits-heading-h4">Copia el prompt</div>
-                            <div class="step-description ubits-body-md-regular">
-                                Haz clic en el botón "Copiar" del prompt que necesites. Se copiará automáticamente a tu portapapeles.
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div style="display: flex; margin-bottom: 20px;">
-                        <div class="step-number">2</div>
-                        <div class="step-content">
-                            <div class="step-title ubits-heading-h4">Personaliza el prompt</div>
-                            <div class="step-description ubits-body-md-regular">
-                                Reemplaza los textos entre corchetes [TEXTO] con tu información específica antes de usar el prompt.
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div style="display: flex; margin-bottom: 20px;">
-                        <div class="step-number">3</div>
-                        <div class="step-content">
-                            <div class="step-title ubits-heading-h4">Pega en Cursor AI</div>
-                            <div class="step-description ubits-body-md-regular">
-                                Abre Cursor AI, pega el prompt en el chat y presiona Enter. Cursor hará todo el trabajo por ti.
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div style="display: flex;">
-                        <div class="step-number">4</div>
-                        <div class="step-content">
-                            <div class="step-title ubits-heading-h4">Revisa y ajusta</div>
-                            <div class="step-description ubits-body-md-regular">
-                                Revisa los cambios que hizo Cursor y pide ajustes si es necesario. ¡Es así de fácil!
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </main>
     </div>

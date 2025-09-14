@@ -1,0 +1,273 @@
+/**
+ * UBITS Docs Sidebar Component
+ * Sidebar de navegación para páginas de documentación
+ */
+
+// Configuración del sidebar de documentación
+const DOCS_SIDEBAR_SECTIONS = [
+    {
+        id: 'introduccion',
+        title: 'Introducción',
+        group: 'main'
+    },
+    {
+        id: 'sidebar',
+        title: 'Sidebar',
+        group: 'navegacion'
+    },
+    {
+        id: 'top-nav',
+        title: 'Top-nav',
+        group: 'navegacion'
+    },
+    {
+        id: 'tab-bar',
+        title: 'Tab-bar',
+        group: 'navegacion'
+    },
+    {
+        id: 'alert',
+        title: 'Alert',
+        group: 'ui'
+    }
+];
+
+// HTML del sidebar de documentación
+const docsSidebarHTML = `
+    <div class="docs-sidebar">
+        <div class="docs-sidebar-content">
+            <div class="docs-sidebar-section">
+                <div class="docs-sidebar-item" data-section="introduccion">
+                    <span class="docs-sidebar-text">Introducción</span>
+                </div>
+            </div>
+            
+            <div class="docs-sidebar-section">
+                <div class="docs-sidebar-title">Componentes</div>
+                <div class="docs-sidebar-subsection">
+                    <div class="docs-sidebar-subtitle">NAVEGACIÓN</div>
+                    <div class="docs-sidebar-item" data-section="sidebar">
+                        <span class="docs-sidebar-text">Sidebar</span>
+                    </div>
+                    <div class="docs-sidebar-item" data-section="top-nav">
+                        <span class="docs-sidebar-text">Top-nav</span>
+                    </div>
+                    <div class="docs-sidebar-item" data-section="tab-bar">
+                        <span class="docs-sidebar-text">Tab-bar</span>
+                    </div>
+                </div>
+                <div class="docs-sidebar-subsection">
+                    <div class="docs-sidebar-subtitle">UI</div>
+                    <div class="docs-sidebar-item" data-section="alert">
+                        <span class="docs-sidebar-text">Alert</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+`;
+
+// HTML del dropdown móvil
+const docsDropdownHTML = `
+    <div class="docs-dropdown" id="docs-dropdown">
+        <div class="docs-dropdown-trigger">
+            <span class="docs-dropdown-text ubits-body-md-regular">Introducción</span>
+            <i class="far fa-chevron-down docs-dropdown-icon"></i>
+        </div>
+        <div class="docs-dropdown-menu">
+            <div class="docs-dropdown-item" data-section="introduccion">
+                <span class="docs-dropdown-item-text ubits-body-md-regular">Introducción</span>
+            </div>
+            <div class="docs-dropdown-group">
+                <div class="docs-dropdown-group-title ubits-body-sm-regular">Componentes</div>
+                <div class="docs-dropdown-subgroup">
+                    <div class="docs-dropdown-subgroup-title ubits-body-sm-regular">NAVEGACIÓN</div>
+                    <div class="docs-dropdown-item" data-section="sidebar">
+                        <span class="docs-dropdown-item-text ubits-body-md-regular">Sidebar</span>
+                    </div>
+                    <div class="docs-dropdown-item" data-section="top-nav">
+                        <span class="docs-dropdown-item-text ubits-body-md-regular">Top-nav</span>
+                    </div>
+                    <div class="docs-dropdown-item" data-section="tab-bar">
+                        <span class="docs-dropdown-item-text ubits-body-md-regular">Tab-bar</span>
+                    </div>
+                </div>
+                <div class="docs-dropdown-subgroup">
+                    <div class="docs-dropdown-subgroup-title ubits-body-sm-regular">UI</div>
+                    <div class="docs-dropdown-item" data-section="alert">
+                        <span class="docs-dropdown-item-text ubits-body-md-regular">Alert</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+`;
+
+/**
+ * Cargar sidebar de documentación
+ * @param {string} activeSection - Sección activa por defecto
+ */
+function loadDocsSidebar(activeSection = 'introduccion') {
+    // Cargar sidebar lateral
+    const sidebarContainer = document.getElementById('docs-sidebar-container');
+    if (sidebarContainer) {
+        sidebarContainer.innerHTML = docsSidebarHTML;
+    }
+    
+    // Cargar dropdown móvil
+    const dropdownContainer = document.getElementById('docs-dropdown-container');
+    if (dropdownContainer) {
+        dropdownContainer.innerHTML = docsDropdownHTML;
+    }
+    
+    // Inicializar funcionalidad
+    initDocsSidebar(activeSection);
+    
+    // Inicializar scroll listener
+    initScrollListener();
+}
+
+/**
+ * Inicializar funcionalidad del sidebar de documentación
+ * @param {string} activeSection - Sección activa
+ */
+function initDocsSidebar(activeSection) {
+    const sidebarItems = document.querySelectorAll('.docs-sidebar-item');
+    const dropdownItems = document.querySelectorAll('.docs-dropdown-item');
+    const dropdown = document.getElementById('docs-dropdown');
+    const dropdownTrigger = document.querySelector('.docs-dropdown-trigger');
+    const dropdownMenu = document.querySelector('.docs-dropdown-menu');
+    
+    // Función para manejar navegación
+    function handleDocsNavigation(section) {
+        // Cerrar dropdown
+        if (dropdownTrigger && dropdownMenu) {
+            dropdownTrigger.classList.remove('active');
+            dropdownMenu.classList.remove('open');
+        }
+        
+        // Navegación según la sección
+        if (section === 'introduccion') {
+            // Si ya estamos en componentes.html, solo hacer scroll al top
+            if (window.location.pathname.includes('componentes.html')) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                // Si estamos en otra página, navegar a componentes.html
+                window.location.href = 'componentes.html';
+            }
+        } else if (section === 'sidebar') {
+            // Si ya estamos en sidebar.html, solo hacer scroll al top
+            if (window.location.pathname.includes('sidebar.html')) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                // Si estamos en otra página, navegar a sidebar.html
+                window.location.href = 'sidebar.html';
+            }
+        } else if (section === 'top-nav' || section === 'tab-bar' || section === 'alert') {
+            alert(`Próximamente: Sección ${section}`);
+        }
+    }
+    
+    // Event listeners para sidebar
+    sidebarItems.forEach(item => {
+        item.addEventListener('click', function() {
+            const section = this.getAttribute('data-section');
+            handleDocsNavigation(section);
+        });
+    });
+    
+    // Event listeners para dropdown
+    if (dropdownTrigger && dropdownMenu) {
+        dropdownTrigger.addEventListener('click', function() {
+            dropdownTrigger.classList.toggle('active');
+            dropdownMenu.classList.toggle('open');
+        });
+    }
+    
+    dropdownItems.forEach(item => {
+        item.addEventListener('click', function() {
+            const section = this.getAttribute('data-section');
+            handleDocsNavigation(section);
+        });
+    });
+    
+    // Cerrar dropdown al hacer click fuera
+    if (dropdown) {
+        document.addEventListener('click', function(event) {
+            if (!dropdown.contains(event.target)) {
+                if (dropdownTrigger && dropdownMenu) {
+                    dropdownTrigger.classList.remove('active');
+                    dropdownMenu.classList.remove('open');
+                }
+            }
+        });
+    }
+    
+    // Activar sección por defecto
+    setActiveDocsSection(activeSection);
+}
+
+/**
+ * Establecer sección activa en el sidebar de documentación
+ * @param {string} section - Sección a activar
+ */
+function setActiveDocsSection(section) {
+    // Activar en sidebar lateral
+    const sidebarItems = document.querySelectorAll('.docs-sidebar-item');
+    sidebarItems.forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('data-section') === section) {
+            item.classList.add('active');
+        }
+    });
+    
+    // Actualizar dropdown
+    const dropdownText = document.querySelector('.docs-dropdown-text');
+    if (dropdownText) {
+        const sectionData = DOCS_SIDEBAR_SECTIONS.find(s => s.id === section);
+        if (sectionData) {
+            dropdownText.textContent = sectionData.title;
+        }
+    }
+}
+
+/**
+ * Agregar nueva sección al sidebar de documentación
+ * @param {Object} sectionData - Datos de la nueva sección
+ */
+function addDocsSection(sectionData) {
+    // Agregar a la configuración
+    DOCS_SIDEBAR_SECTIONS.push(sectionData);
+    
+    // Recargar sidebar si ya está cargado
+    const sidebarContainer = document.getElementById('docs-sidebar-container');
+    if (sidebarContainer && sidebarContainer.innerHTML.trim() !== '') {
+        loadDocsSidebar();
+    }
+}
+
+/**
+ * Inicializar scroll listener para el sidebar
+ */
+function initScrollListener() {
+    let lastScrollTop = 0;
+    const scrollThreshold = 20; // Píxeles de scroll para activar el cambio (más sensible)
+    
+    window.addEventListener('scroll', function() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const sidebar = document.querySelector('.docs-sidebar');
+        
+        if (!sidebar) return;
+        
+        // Si el scroll es hacia abajo y supera el threshold
+        if (scrollTop > lastScrollTop && scrollTop > scrollThreshold) {
+            sidebar.classList.add('scrolled');
+        }
+        // Si el scroll es hacia arriba o está cerca del top
+        else if (scrollTop < lastScrollTop || scrollTop <= scrollThreshold) {
+            sidebar.classList.remove('scrolled');
+        }
+        
+        lastScrollTop = scrollTop;
+    });
+}
