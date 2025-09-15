@@ -9,9 +9,7 @@ const TOP_NAV_VARIANTS = {
         tabs: [
             { id: 'section1', label: 'Sección 1', icon: 'far fa-home' },
             { id: 'section2', label: 'Sección 2', icon: 'far fa-book' },
-            { id: 'section3', label: 'Sección 3', icon: 'far fa-chart-line' },
-            { id: 'section4', label: 'Sección 4', icon: 'far fa-clipboard' },
-            { id: 'section5', label: 'Sección 5', icon: 'far fa-layer-group' }
+            { id: 'section3', label: 'Sección 3', icon: 'far fa-chart-line' }
         ]
     },
     documentacion: {
@@ -38,7 +36,7 @@ const TOP_NAV_VARIANTS = {
             { id: 'evaluations', label: 'Evaluaciones 360', icon: 'far fa-chart-pie', url: 'evaluaciones.html' },
             { id: 'objectives', label: 'Objetivos', icon: 'far fa-bullseye', url: 'objetivos.html' },
             { id: 'metrics', label: 'Métricas', icon: 'far fa-chart-line', url: 'metricas.html' },
-            { id: 'reports', label: 'Reportes', icon: 'far fa-file-chart', url: 'reportes.html' }
+            { id: 'reports', label: 'Reportes', icon: 'far fa-file-chart-line', url: 'reportes.html' }
         ]
     },
     encuestas: {
@@ -109,13 +107,14 @@ function getTopNavHTML(variant = 'template', customTabs = []) {
             `).join('');
             
             // Para la variante template, agregar mensaje de personalización
-            if (variant === 'template') {
-                tabsHTML += `
-                    <div class="ubits-body-xs-regular" style="color: var(--ubits-fg-1-medium); font-style: italic; margin-left: 16px; margin-top: 4px;">
-                        Personalizable - Indica a Cursor cuántos tabs necesitas
-                    </div>
-                `;
-            }
+            // Texto de personalización oculto para el preview
+            // if (variant === 'template') {
+            //     tabsHTML += `
+            //         <div class="ubits-body-xs-regular" style="color: var(--ubits-fg-1-medium); font-style: italic; margin-left: 16px; margin-top: 4px;">
+            //             Personalizable - Indica a Cursor cuántos tabs necesitas
+            //         </div>
+            //     `;
+            // }
         }
     } else {
         // Para otras variantes sin tabs, mostrar mensaje

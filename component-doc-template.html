@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Template UBITS - Sidebar Component</title>
+    <title>[NOMBRE_COMPONENTE] - [DESCRIPCIÓN_BREVE] | UBITS Template</title>
     
     <!-- Estilos locales -->
     <link rel="stylesheet" href="ubits-colors.css">
@@ -27,31 +27,13 @@
             color: white !important;
         }
         
-        /* Sidebar preview container */
-        #sidebar-preview-container .sidebar {
+        /* Component preview container - reemplaza con estilos específicos del componente */
+        .component-preview {
             position: relative !important;
-            width: 96px !important;
-            height: 550px !important;
             border-radius: 8px !important;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
-            top: 0 !important;
-            left: 0 !important;
-            margin: 0 !important;
-            padding: 16px 28px !important;
-            display: flex !important;
-            flex-direction: column !important;
-            gap: 16px !important;
-            align-items: center !important;
-            justify-content: flex-start !important;
-            overflow: visible !important;
-            box-sizing: border-box !important;
-        }
-        
-        /* Asegurar que el sidebar se vea */
-        #sidebar-preview-container {
-            width: 96px !important;
-            height: 550px !important;
-            overflow: visible !important;
+            background: var(--ubits-bg-1) !important;
+            border: 1px solid var(--ubits-border-1) !important;
         }
     </style>
 </head>
@@ -81,10 +63,10 @@
                 <!-- Hero Section -->
                 <div style="text-align: center; margin-bottom: 60px;">
                     <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
-                        Sidebar
+                        [NOMBRE_COMPONENTE]
                     </h1>
                     <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
-                        Componente de navegación lateral que proporciona acceso rápido a las diferentes secciones de la aplicación. Diseñado para desktop con funcionalidad responsive.
+                        [DESCRIPCIÓN_DETALLADA_DEL_COMPONENTE] - Reemplaza este texto con una descripción específica del componente que estés documentando.
                     </p>
                 </div>
 
@@ -95,7 +77,7 @@
                         Preview del componente
                     </h2>
                     <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
-                        Aquí puedes ver el componente Sidebar en acción. Haz clic en los botones para ver los estados activos y hover.
+                        Aquí va el preview interactivo del componente. Reemplaza esta sección con el ejemplo específico del componente que estés documentando.
                     </p>
                     
                     <!-- Preview Container -->
@@ -105,85 +87,22 @@
                             PREVIEW
                         </div>
                         
-                        <!-- Sidebar Real de UBITS -->
-                        <div style="display: flex; justify-content: center; align-items: center; height: 550px;">
-                            <div id="sidebar-preview-container" style="position: relative; width: 96px; height: 550px;">
-                                <!-- Sidebar Real de UBITS -->
-                                <aside class="sidebar" id="sidebar-preview" style="position: relative; width: 96px; height: 550px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-                                    <!-- Contenedor principal para header y body -->
-                                    <div class="sidebar-main">
-                                        <!-- Header -->
-                                        <div class="sidebar-header">
-                                            <div class="logo" style="cursor: pointer;">
-                                                <img src="images/Ubits-logo.svg" alt="UBITS Logo" />
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- Body -->
-                                        <div class="sidebar-body">
-                                            <button class="nav-button active" data-section="aprendizaje" data-tooltip="Aprendizaje">
-                                                <i class="far fa-graduation-cap"></i>
-                                            </button>
-                                            <button class="nav-button" data-section="diagnóstico" data-tooltip="Diagnóstico">
-                                                <i class="far fa-chart-mixed"></i>
-                                            </button>
-                                            <button class="nav-button" data-section="desempeño" data-tooltip="Desempeño">
-                                                <i class="far fa-bars-progress"></i>
-                                            </button>
-                                            <button class="nav-button" data-section="encuestas" data-tooltip="Encuestas">
-                                                <i class="far fa-clipboard"></i>
-                                            </button>
-                                            <button class="nav-button" data-section="reclutamiento" data-tooltip="Reclutamiento">
-                                                <i class="far fa-users"></i>
-                                            </button>
-                                            <button class="nav-button" data-section="tareas" data-tooltip="Tareas">
-                                                <i class="far fa-layer-group"></i>
-                                            </button>
-                                            <button class="nav-button" data-section="ubits-ai" data-tooltip="UBITS AI" style="cursor: pointer;">
-                                                <i class="far fa-sparkles"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Footer -->
-                                    <div class="sidebar-footer">
-                                        <div class="user-avatar-container">
-                                            <div class="user-avatar">
-                                                <img src="images/Profile-image.jpg" alt="Usuario" class="avatar-image">
-                                            </div>
-                                        </div>
-                                        <button class="nav-button" id="darkmode-toggle-preview" data-tooltip="Modo oscuro" data-theme="light">
-                                            <i class="far fa-moon"></i>
-                                        </button>
-                                    </div>
-                                </aside>
+                        <!-- Component Preview Placeholder -->
+                        <div style="display: flex; justify-content: center; align-items: center; min-height: 400px; text-align: center;">
+                            <div>
+                                <i class="far fa-cube" style="font-size: 48px; color: var(--ubits-fg-1-medium); margin-bottom: 16px;"></i>
+                                <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium); margin: 0;">
+                                    Reemplaza este contenido con el preview específico del componente
+                                </p>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- Preview Controls -->
+                    <!-- Preview Controls Placeholder -->
                     <div style="margin-top: 16px; display: flex; gap: 12px; flex-wrap: wrap;">
-                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" onclick="setPreviewActive('aprendizaje')">
-                            <span class="ubits-button__text">Aprendizaje</span>
-                        </button>
-                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewActive('diagnóstico')">
-                            <span class="ubits-button__text">Diagnóstico</span>
-                        </button>
-                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewActive('desempeño')">
-                            <span class="ubits-button__text">Desempeño</span>
-                        </button>
-                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewActive('encuestas')">
-                            <span class="ubits-button__text">Encuestas</span>
-                        </button>
-                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewActive('tareas')">
-                            <span class="ubits-button__text">Tareas</span>
-                        </button>
-                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewActive('reclutamiento')">
-                            <span class="ubits-button__text">Reclutamiento</span>
-                        </button>
-                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewActive('ubits-ai')">
-                            <span class="ubits-button__text">UBITS AI</span>
-                        </button>
+                        <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin: 0;">
+                            Reemplaza estos controles con los específicos del componente (variantes, estados, etc.)
+                        </p>
                     </div>
                 </div>
 
@@ -193,21 +112,24 @@
                         <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                         Características generales
                     </h2>
+                    <p class="ubits-body-md-regular" style="margin-bottom: 24px; color: var(--ubits-fg-1-medium);">
+                        Reemplaza esta sección con las características específicas del componente que estés documentando.
+                    </p>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
                         <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                            <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-desktop"></i></div>
-                            <div class="ubits-body-sm-bold">Desktop</div>
-                            <div class="ubits-body-sm-regular">Fijo lateral</div>
+                            <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-cube"></i></div>
+                            <div class="ubits-body-sm-bold">Característica 1</div>
+                            <div class="ubits-body-sm-regular">Descripción de la característica</div>
                         </div>
                         <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                            <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-mobile"></i></div>
-                            <div class="ubits-body-sm-bold">Móvil</div>
-                            <div class="ubits-body-sm-regular">Oculto (se reemplaza por el tab-bar)</div>
+                            <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-cube"></i></div>
+                            <div class="ubits-body-sm-bold">Característica 2</div>
+                            <div class="ubits-body-sm-regular">Descripción de la característica</div>
                         </div>
                         <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                            <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-palette"></i></div>
-                            <div class="ubits-body-sm-bold">Temas</div>
-                            <div class="ubits-body-sm-regular">Claro/Oscuro (mismos colores en ambos)</div>
+                            <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-cube"></i></div>
+                            <div class="ubits-body-sm-bold">Característica 3</div>
+                            <div class="ubits-body-sm-regular">Descripción de la característica</div>
                         </div>
                     </div>
                 </div>
@@ -220,6 +142,9 @@
                             <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                             Documentación técnica
                         </h2>
+                        <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
+                            Reemplaza esta sección con la documentación técnica específica del componente.
+                        </p>
                     </div>
                     
                     <!-- Botón de expansión -->
@@ -245,34 +170,10 @@
                                 </button>
                             </div>
                             <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: 1px solid var(--ubits-border-1);">
-                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="structure-code">&lt;aside class="sidebar" id="sidebar"&gt;
-  &lt;div class="sidebar-main"&gt;
-    &lt;div class="sidebar-header"&gt;
-      &lt;div class="logo" onclick="window.location.href='index.html'"&gt;
-        &lt;img src="images/Ubits-logo.svg" alt="UBITS Logo" /&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-    &lt;div class="sidebar-body"&gt;
-      &lt;button class="nav-button" data-section="aprendizaje" data-tooltip="Aprendizaje"&gt;
-        &lt;i class="far fa-graduation-cap"&gt;&lt;/i&gt;
-      &lt;/button&gt;
-      &lt;button class="nav-button" data-section="diagnóstico" data-tooltip="Diagnóstico"&gt;
-        &lt;i class="far fa-chart-mixed"&gt;&lt;/i&gt;
-      &lt;/button&gt;
-      &lt;!-- Más botones de navegación --&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class="sidebar-footer"&gt;
-    &lt;div class="user-avatar-container"&gt;
-      &lt;div class="user-avatar" onmouseenter="showSidebarProfileMenu(this)"&gt;
-        &lt;img src="images/Profile-image.jpg" alt="Usuario" class="avatar-image" /&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-    &lt;button class="nav-button" id="darkmode-toggle" data-tooltip="Modo oscuro"&gt;
-      &lt;i class="far fa-moon"&gt;&lt;/i&gt;
-    &lt;/button&gt;
-  &lt;/div&gt;
-&lt;/aside&gt;</code></pre>
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="structure-code">&lt;!-- Reemplaza con la estructura HTML del componente --&gt;
+&lt;div class="component-name"&gt;
+  &lt;!-- Contenido del componente --&gt;
+&lt;/div&gt;</code></pre>
                             </div>
                         </div>
 
@@ -289,17 +190,15 @@
                                 </button>
                             </div>
                             <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
-                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="implement-code">&lt;!-- HTML --&gt;
-&lt;div id="sidebar-container"&gt;&lt;/div&gt;
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="implement-code">&lt;!-- Reemplaza con las instrucciones de implementación del componente --&gt;
+&lt;!-- HTML --&gt;
+&lt;div id="component-container"&gt;&lt;/div&gt;
 
 &lt;!-- CSS --&gt;
-&lt;link rel="stylesheet" href="styles.css"&gt;
-&lt;link rel="stylesheet" href="ubits-colors.css"&gt;
-&lt;link rel="stylesheet" href="ubits-typography.css"&gt;
+&lt;link rel="stylesheet" href="components/component-name.css"&gt;
 
 &lt;!-- JavaScript --&gt;
-loadSidebar(); // Cargar sidebar
-updateActiveSidebarButton('desempeño'); // Cambiar botón activo</code></pre>
+loadComponent(); // Cargar componente</code></pre>
                             </div>
                         </div>
 
@@ -310,26 +209,26 @@ updateActiveSidebarButton('desempeño'); // Cambiar botón activo</code></pre>
                                 API y funciones
                             </h2>
                             <div style="margin-bottom: 24px;">
-                                <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">loadSidebar()</h3>
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">loadComponent()</h3>
                                 <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
-                                    Carga el componente sidebar en el contenedor especificado. El sidebar se carga con el botón activo por defecto.
+                                    Reemplaza con la descripción de la función principal del componente.
                                 </p>
                                 <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: 6px; border-left: 4px solid var(--ubits-accent-brand);">
                                     <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
-                                        <strong>Parámetros:</strong> Ninguno<br>
-                                        <strong>Ejemplo:</strong> loadSidebar()
+                                        <strong>Parámetros:</strong> [Descripción de parámetros]<br>
+                                        <strong>Ejemplo:</strong> loadComponent()
                                     </div>
                                 </div>
                             </div>
                             <div style="margin-bottom: 24px;">
-                                <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">updateActiveSidebarButton(activeButton)</h3>
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">updateComponentState(state)</h3>
                                 <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
-                                    Actualiza el botón activo del sidebar sin recargar el componente.
+                                    Reemplaza con la descripción de la función de actualización del componente.
                                 </p>
                                 <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: 6px; border-left: 4px solid var(--ubits-accent-brand);">
                                     <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
-                                        <strong>Parámetros:</strong> activeButton (string) - ID del nuevo botón activo<br>
-                                        <strong>Ejemplo:</strong> updateActiveSidebarButton('desempeño')
+                                        <strong>Parámetros:</strong> state (string) - Nuevo estado del componente<br>
+                                        <strong>Ejemplo:</strong> updateComponentState('active')
                                     </div>
                                 </div>
                             </div>
@@ -343,20 +242,21 @@ updateActiveSidebarButton('desempeño'); // Cambiar botón activo</code></pre>
                             </h2>
                             <div style="margin-bottom: 24px;">
                                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Agregar nuevos botones</h3>
-                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('add-buttons-code')">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Agregar nuevas funcionalidades</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('add-features-code')">
                                         <i class="ubits-button__icon far fa-copy"></i>
                                         <span class="ubits-button__text">Copiar</span>
                                     </button>
                                 </div>
                                 <p class="ubits-body-md-regular" style="margin-bottom: 12px; line-height: 1.5;">
-                                    Para agregar nuevos botones de navegación, edita el HTML del sidebar en <code>components/sidebar.js</code>:
+                                    Reemplaza con instrucciones específicas para personalizar el componente:
                                 </p>
                                 <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="add-buttons-code">// En sidebar.js, dentro del sidebarHTML (línea 45-66)
-&lt;button class="nav-button" data-section="nueva-seccion" data-tooltip="Nueva Sección"&gt;
-  &lt;i class="far fa-nuevo-icono"&gt;&lt;/i&gt;
-&lt;/button&gt;</code></pre>
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="add-features-code">// Reemplaza con código de personalización específico
+// Ejemplo: Agregar nuevas opciones
+&lt;div class="component-option"&gt;
+  &lt;!-- Nueva funcionalidad --&gt;
+&lt;/div&gt;</code></pre>
                                 </div>
                             </div>
                             <div>
@@ -368,23 +268,20 @@ updateActiveSidebarButton('desempeño'); // Cambiar botón activo</code></pre>
                                     </button>
                                 </div>
                                 <p class="ubits-body-md-regular" style="margin-bottom: 12px; line-height: 1.5;">
-                                    Los estilos se pueden personalizar editando las variables CSS en <code>styles.css</code>:
+                                    Reemplaza con instrucciones específicas para modificar estilos:
                                 </p>
                                 <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="modify-styles-code">/* Personalizar colores del sidebar */
-.sidebar {
-  background-color: var(--ubits-sidebar-bg);
-  width: 96px;
-  height: 578px;
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="modify-styles-code">/* Reemplaza con estilos específicos del componente */
+.component-name {
+  background-color: var(--ubits-bg-1);
+  border: 1px solid var(--ubits-border-1);
+  border-radius: 8px;
 }
 
-/* Personalizar botones de navegación */
-.nav-button {
-  background: rgba(255, 255, 255, 0);
-  border: none;
-  padding: 8px;
-  border-radius: 1000px;
-  cursor: pointer;
+/* Personalizar elementos del componente */
+.component-element {
+  color: var(--ubits-fg-1-medium);
+  padding: 12px;
 }</code></pre>
                                 </div>
                             </div>
@@ -412,18 +309,10 @@ updateActiveSidebarButton('desempeño'); // Cambiar botón activo</code></pre>
             loadDocsSidebar('sidebar');
         });
 
-        // Funciones para el preview del sidebar
+        // Funciones para el preview del componente
         function setPreviewActive(section) {
-            // Actualizar botones del sidebar preview
-            const previewButtons = document.querySelectorAll('#sidebar-preview .nav-button');
-            previewButtons.forEach(button => {
-                button.classList.remove('active');
-            });
-            
-            const activeButton = document.querySelector(`#sidebar-preview .nav-button[data-section="${section}"]`);
-            if (activeButton) {
-                activeButton.classList.add('active');
-            }
+            // Reemplaza con la lógica específica del componente
+            console.log('Preview activo:', section);
             
             // Actualizar controles
             const controlButtons = document.querySelectorAll('.preview-control-btn');

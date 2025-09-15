@@ -163,7 +163,15 @@ function initDocsSidebar(activeSection) {
                 // Si estamos en otra página, navegar a sidebar.html
                 window.location.href = 'sidebar.html';
             }
-        } else if (section === 'sub-nav' || section === 'tab-bar' || section === 'alert') {
+        } else if (section === 'sub-nav') {
+            // Si ya estamos en subnav.html, solo hacer scroll al top
+            if (window.location.pathname.includes('subnav.html')) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                // Si estamos en otra página, navegar a subnav.html
+                window.location.href = 'subnav.html';
+            }
+        } else if (section === 'tab-bar' || section === 'alert') {
             alert(`Próximamente: Sección ${section}`);
         }
     }
