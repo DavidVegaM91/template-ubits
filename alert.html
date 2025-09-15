@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="styles.css">
     
     <!-- Top Navigation -->
-    <link rel="stylesheet" href="components/top-nav.css">
+    <link rel="stylesheet" href="components/sub-nav.css">
 </head>
 <body>
     <!-- Top Navigation -->
@@ -224,17 +224,17 @@ UBITSAlertManager.createInContainer(
     </div>
 
     <!-- Scripts -->
-    <script src="components/top-nav.js"></script>
+    <script src="components/sub-nav.js"></script>
     <script src="components/alert.js"></script>
     <script>
         // Initialize top navigation
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize top nav
-            const topNavContainer = document.getElementById('top-nav-container');
-            if (topNavContainer) {
-                topNavContainer.innerHTML = createTopNav('documentacion');
-                addTopNavEventListeners(topNavContainer);
-                activateCurrentPageTab(topNavContainer, 'documentacion');
+            // Initialize sub nav
+            const subNavContainer = document.getElementById('top-nav-container');
+            if (subNavContainer) {
+                subNavContainer.innerHTML = getTopNavHTML('documentacion');
+                addTopNavEventListeners(subNavContainer);
+                activateCurrentPageTab(subNavContainer, 'documentacion');
             }
             
             // Initialize alert demo

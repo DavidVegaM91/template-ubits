@@ -19,7 +19,7 @@
     transition: all 0.3s ease;
 }
 
-/* Cuando el top-nav se oculta al hacer scroll */
+/* Cuando el sub-nav se oculta al hacer scroll */
 .docs-sidebar.scrolled {
     top: 16px;
     height: calc(100vh - 16px - 16px);

@@ -10,6 +10,7 @@
 - [x] **Componente Alert** - Crear componente de alertas con 4 variaciones (Success, Info, Warning, Error)
 - [ ] **Componente de botones** - Crear componente de botones con todas las variantes UBITS
 - [ ] **Páginas de secciones de componentes** - Crear páginas individuales para sidebar, top-nav, etc.
+- [ ] **Crear páginas plantilla de secciones** - Crear plantillas para Learn, Diagnóstico, Desempeño, Encuestas, Reclutamiento, Tareas, UBITS AI
 - [ ] **Vincular sidebar y selector responsive** - Conectar navegación entre sidebar y selector móvil
 - [ ] **Importar tokens de espaciado** de Figma y aplicarlos a todos los componentes y páginas
 - [ ] **Complementar la documentación** con más secciones y ejemplos

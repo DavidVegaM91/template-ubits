@@ -16,8 +16,8 @@ const DOCS_SIDEBAR_SECTIONS = [
         group: 'navegacion'
     },
     {
-        id: 'top-nav',
-        title: 'Top-nav',
+        id: 'sub-nav',
+        title: 'Sub-nav',
         group: 'navegacion'
     },
     {
@@ -49,8 +49,8 @@ const docsSidebarHTML = `
                     <div class="docs-sidebar-item" data-section="sidebar">
                         <span class="docs-sidebar-text">Sidebar</span>
                     </div>
-                    <div class="docs-sidebar-item" data-section="top-nav">
-                        <span class="docs-sidebar-text">Top-nav</span>
+                    <div class="docs-sidebar-item" data-section="sub-nav">
+                        <span class="docs-sidebar-text">Sub-nav</span>
                     </div>
                     <div class="docs-sidebar-item" data-section="tab-bar">
                         <span class="docs-sidebar-text">Tab-bar</span>
@@ -85,8 +85,8 @@ const docsDropdownHTML = `
                     <div class="docs-dropdown-item" data-section="sidebar">
                         <span class="docs-dropdown-item-text ubits-body-md-regular">Sidebar</span>
                     </div>
-                    <div class="docs-dropdown-item" data-section="top-nav">
-                        <span class="docs-dropdown-item-text ubits-body-md-regular">Top-nav</span>
+                    <div class="docs-dropdown-item" data-section="sub-nav">
+                        <span class="docs-dropdown-item-text ubits-body-md-regular">Sub-nav</span>
                     </div>
                     <div class="docs-dropdown-item" data-section="tab-bar">
                         <span class="docs-dropdown-item-text ubits-body-md-regular">Tab-bar</span>
@@ -163,7 +163,7 @@ function initDocsSidebar(activeSection) {
                 // Si estamos en otra página, navegar a sidebar.html
                 window.location.href = 'sidebar.html';
             }
-        } else if (section === 'top-nav' || section === 'tab-bar' || section === 'alert') {
+        } else if (section === 'sub-nav' || section === 'tab-bar' || section === 'alert') {
             alert(`Próximamente: Sección ${section}`);
         }
     }

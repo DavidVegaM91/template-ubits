@@ -5,8 +5,8 @@
 /* Importar tokens de color UBITS */
 @import url('../ubits-colors.css');
 
-/* Top Navigation Base */
-.top-nav {
+/* Sub Navigation Base */
+.sub-nav {
     background-color: var(--ubits-bg-1);
     height: 40px;
     border-radius: 8px;
@@ -36,8 +36,8 @@
     position: relative;
 }
 
-/* Posicionar dropdown desde el top-nav principal */
-.top-nav {
+/* Posicionar dropdown desde el sub-nav principal */
+.sub-nav {
     position: relative;
 }
 
@@ -248,7 +248,7 @@
    ======================================== */
 
 @media (max-width: 840px) {
-    .top-nav {
+    .sub-nav {
         padding: 0 8px;
         height: 36px;
         position: relative;
@@ -305,7 +305,7 @@
    DARK MODE
    ======================================== */
 
-[data-theme="dark"] .top-nav {
+[data-theme="dark"] .sub-nav {
     background-color: var(--ubits-bg-2);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }

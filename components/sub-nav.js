@@ -144,7 +144,7 @@ function getTopNavHTML(variant = 'template', customTabs = []) {
     }
 
     return `
-        <div class="top-nav" data-variant="${variant}">
+        <div class="sub-nav" data-variant="${variant}">
             <div class="nav-tabs">
                 ${leftContent}
             </div>
@@ -160,7 +160,7 @@ function getTopNavHTML(variant = 'template', customTabs = []) {
  * @param {string} variant - Variante del top-nav
  * @param {Array} customTabs - Array opcional de tabs personalizados
  */
-function loadTopNav(containerId, variant = 'template', customTabs = []) {
+function loadSubNav(containerId, variant = 'template', customTabs = []) {
     const container = document.getElementById(containerId);
     if (!container) {
         console.error(`Contenedor '${containerId}' no encontrado`);
@@ -241,7 +241,7 @@ function addTopNavEventListeners(container) {
             
             // Obtener la configuración del tab
             const tabId = this.getAttribute('data-tab');
-            const variant = container.closest('.top-nav')?.getAttribute('data-variant') || 'template';
+            const variant = container.closest('.sub-nav')?.getAttribute('data-variant') || 'template';
             const variantConfig = getTopNavVariant(variant);
             
             console.log('Variant:', variant, 'Config:', variantConfig);
@@ -296,7 +296,7 @@ function addTopNavEventListeners(container) {
                 
                 // Obtener la configuración del tab
                 const tabId = this.getAttribute('data-tab');
-                const variant = container.closest('.top-nav')?.getAttribute('data-variant') || 'template';
+                const variant = container.closest('.sub-nav')?.getAttribute('data-variant') || 'template';
                 const variantConfig = getTopNavVariant(variant);
                 
                 // Buscar el tab en la configuración para obtener la URL
@@ -362,7 +362,7 @@ window.navigateToTab = function(tabId, variant) {
 
 // Exportar funciones para uso global
 window.getTopNavHTML = getTopNavHTML;
-window.loadTopNav = loadTopNav;
+window.loadSubNav = loadSubNav;
 window.getTopNavVariant = getTopNavVariant;
 window.getAllTopNavVariants = getAllTopNavVariants;
 window.addTopNavEventListeners = addTopNavEventListeners;

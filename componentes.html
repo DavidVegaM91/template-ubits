@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="fontawesome-icons.css">
     <link rel="stylesheet" href="ubits-typography.css">
-    <link rel="stylesheet" href="components/top-nav.css">
+    <link rel="stylesheet" href="components/sub-nav.css">
     <link rel="stylesheet" href="components-sidebar.css">
     <link rel="stylesheet" href="docs/docs-sidebar.css">
 </head>
@@ -45,8 +45,8 @@
                                 <div class="dropdown-item" data-section="sidebar">
                                     <span class="dropdown-item-text ubits-body-md-regular">Sidebar</span>
                                 </div>
-                                <div class="dropdown-item" data-section="top-nav">
-                                    <span class="dropdown-item-text ubits-body-md-regular">Top-nav</span>
+                                <div class="dropdown-item" data-section="sub-nav">
+                                    <span class="dropdown-item-text ubits-body-md-regular">Sub-nav</span>
                                 </div>
                                 <div class="dropdown-item" data-section="tab-bar">
                                     <span class="dropdown-item-text ubits-body-md-regular">Tab Bar</span>
@@ -172,13 +172,13 @@
     </div>
 
     <script src="components/sidebar.js"></script>
-    <script src="components/top-nav.js"></script>
+    <script src="components/sub-nav.js"></script>
     <script src="docs/docs-sidebar.js"></script>
     <script src="script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Cargar top-nav con variante documentación
-            loadTopNav('top-nav-container', 'documentacion');
+            loadSubNav('top-nav-container', 'documentacion');
             
             // Cargar sidebar de documentación
             loadDocsSidebar('introduccion');

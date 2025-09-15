@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="fontawesome-icons.css">
     <link rel="stylesheet" href="ubits-typography.css">
-    <link rel="stylesheet" href="components/top-nav.css">
+    <link rel="stylesheet" href="components/sub-nav.css">
     <link rel="stylesheet" href="components-sidebar.css">
     <link rel="stylesheet" href="docs/docs-sidebar.css">
     <style>
@@ -377,13 +377,13 @@ updateActiveSidebarButton('desempeño'); // Cambiar botón activo</code></pre>
     </div>
 
     <script src="components/sidebar.js"></script>
-    <script src="components/top-nav.js"></script>
+    <script src="components/sub-nav.js"></script>
     <script src="docs/docs-sidebar.js"></script>
     <script src="script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Cargar top-nav con variante documentación
-            loadTopNav('top-nav-container', 'documentacion');
+            loadSubNav('top-nav-container', 'documentacion');
             
             // Cargar sidebar de documentación
             loadDocsSidebar('sidebar');

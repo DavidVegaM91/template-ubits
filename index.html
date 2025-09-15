@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="fontawesome-icons.css">
     <link rel="stylesheet" href="ubits-typography.css">
-    <link rel="stylesheet" href="components/top-nav.css">
+    <link rel="stylesheet" href="components/sub-nav.css">
     <link rel="stylesheet" href="components/tab-bar.css">
     <link rel="stylesheet" href="components/floating-menu.css">
     <link rel="stylesheet" href="components/profile-menu.css">
@@ -46,7 +46,7 @@
     <div id="profile-menu-container"></div>
 
     <script src="components/sidebar.js"></script>
-    <script src="components/top-nav.js"></script>
+    <script src="components/sub-nav.js"></script>
     <script src="components/tab-bar.js"></script>
     <script src="components/floating-menu.js"></script>
     <script src="components/profile-menu.js"></script>
@@ -55,7 +55,7 @@
         // Cargar componentes dinámicamente
         document.addEventListener('DOMContentLoaded', function() {
             loadSidebar();
-            loadTopNav('top-nav-container', 'template');
+            loadSubNav('top-nav-container', 'template');
             loadTabBar('tab-bar-container');
             loadFloatingMenu('floating-menu-container');
             loadProfileMenu('profile-menu-container');
