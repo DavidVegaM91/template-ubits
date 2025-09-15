@@ -1512,14 +1512,14 @@ body {
 
 /* Toast Success */
 .toast-success {
-    background: var(--ubits-feedback-fg-success-subtle);
-    border-color: var(--ubits-feedback-accent-success);
+    background: var(--ubits-feedback-bg-success-subtle);
+    border-color: var(--ubits-feedback-border-success);
 }
 
 .toast-success .toast-icon,
 .toast-success .toast-message,
 .toast-success .toast-close {
-    color: var(--ubits-feedback-fg-success-subtle-inverted);
+    color: var(--ubits-feedback-fg-success-subtle);
 }
 
 /* Toast Info */

@@ -216,7 +216,7 @@
     left: 0;
     right: 0;
     height: 3px;
-    background-color: var(--ubits-fg-1-high);
+    background-color: var(--ubits-accent-brand);
     border-radius: 2px;
 }
 

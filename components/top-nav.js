@@ -195,6 +195,8 @@ function activateCurrentPageTab(container, variant) {
         activateTab('section4');
     } else if (currentPage === 'componentes.html') {
         activateTab('section3');
+    } else if (currentPage === 'sidebar.html') {
+        activateTab('section3');
     } else if (currentPage === 'guia-prompts.html') {
         activateTab('section2');
     } else if (currentPage === 'documentacion.html') {
