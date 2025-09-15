@@ -23,7 +23,7 @@
             border-color: var(--ubits-accent-brand) !important;
         }
         
-        .preview-control-btn.active .ubits-button__text {
+        .preview-control-btn.active span {
             color: white !important;
         }
         
@@ -81,14 +81,10 @@
                     </p>
                     
                     <!-- Preview Container -->
-                    <div style="background: var(--ubits-bg-2); padding: 40px; border-radius: 12px; border: 1px solid var(--ubits-border-1); position: relative; min-height: 500px;">
-                        <!-- Preview Info -->
-                        <div class="ubits-body-sm-bold" style="position: absolute; top: 20px; right: 20px; color: var(--ubits-fg-1-medium); font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase;">
-                            PREVIEW
-                        </div>
+                    <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: 1px solid var(--ubits-border-1); position: relative;">
                         
                         <!-- Component Preview Placeholder -->
-                        <div style="display: flex; justify-content: center; align-items: center; min-height: 400px; text-align: center;">
+                        <div style="display: flex; justify-content: center; align-items: center; text-align: center;">
                             <div>
                                 <i class="far fa-cube" style="font-size: 48px; color: var(--ubits-fg-1-medium); margin-bottom: 16px;"></i>
                                 <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium); margin: 0;">
@@ -166,7 +162,7 @@
                                 </h2>
                                 <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('structure-code')">
                                     <i class="ubits-button__icon far fa-copy"></i>
-                                    <span class="ubits-button__text">Copiar</span>
+                                    <span class="span">Copiar</span>
                                 </button>
                             </div>
                             <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: 1px solid var(--ubits-border-1);">
@@ -186,7 +182,7 @@
                                 </h2>
                                 <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('implement-code')">
                                     <i class="ubits-button__icon far fa-copy"></i>
-                                    <span class="ubits-button__text">Copiar</span>
+                                    <span class="span">Copiar</span>
                                 </button>
                             </div>
                             <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
@@ -245,7 +241,7 @@ loadComponent(); // Cargar componente</code></pre>
                                     <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Agregar nuevas funcionalidades</h3>
                                     <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('add-features-code')">
                                         <i class="ubits-button__icon far fa-copy"></i>
-                                        <span class="ubits-button__text">Copiar</span>
+                                        <span class="span">Copiar</span>
                                     </button>
                                 </div>
                                 <p class="ubits-body-md-regular" style="margin-bottom: 12px; line-height: 1.5;">
@@ -264,7 +260,7 @@ loadComponent(); // Cargar componente</code></pre>
                                     <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Modificar estilos</h3>
                                     <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('modify-styles-code')">
                                         <i class="ubits-button__icon far fa-copy"></i>
-                                        <span class="ubits-button__text">Copiar</span>
+                                        <span class="span">Copiar</span>
                                     </button>
                                 </div>
                                 <p class="ubits-body-md-regular" style="margin-bottom: 12px; line-height: 1.5;">
@@ -304,6 +300,20 @@ loadComponent(); // Cargar componente</code></pre>
         document.addEventListener('DOMContentLoaded', function() {
             // Cargar top-nav con variante documentación
             loadSubNav('top-nav-container', 'documentacion');
+            
+            // Forzar activación de Componentes en todas las páginas de documentación
+            setTimeout(() => {
+                // Quitar todas las clases active primero
+                document.querySelectorAll('.nav-tab.active, .hamburger-item.active').forEach(item => {
+                    item.classList.remove('active');
+                });
+                
+                // Activar solo Componentes
+                const navTab = document.querySelector('.nav-tab[data-tab="section3"]');
+                const hamburgerItem = document.querySelector('.hamburger-item[data-tab="section3"]');
+                if (navTab) navTab.classList.add('active');
+                if (hamburgerItem) hamburgerItem.classList.add('active');
+            }, 200);
             
             // Cargar sidebar de documentación
             loadDocsSidebar('sidebar');
@@ -353,7 +363,7 @@ loadComponent(); // Cargar componente</code></pre>
                 // Mostrar feedback visual
                 const button = document.querySelector(`[onclick="copyCode('${codeId}')"]`);
                 const icon = button.querySelector('.ubits-button__icon');
-                const text = button.querySelector('.ubits-button__text');
+                const text = button.querySelector('.span');
                 
                 // Cambiar estado del botón
                 icon.className = 'ubits-button__icon far fa-check';

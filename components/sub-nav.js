@@ -9,7 +9,9 @@ const TOP_NAV_VARIANTS = {
         tabs: [
             { id: 'section1', label: 'Sección 1', icon: 'far fa-home' },
             { id: 'section2', label: 'Sección 2', icon: 'far fa-book' },
-            { id: 'section3', label: 'Sección 3', icon: 'far fa-chart-line' }
+            { id: 'section3', label: 'Sección 3', icon: 'far fa-chart-line' },
+            { id: 'section4', label: 'Sección 4', icon: 'far fa-cog' },
+            { id: 'section5', label: 'Sección 5', icon: 'far fa-star' }
         ]
     },
     documentacion: {
@@ -27,7 +29,8 @@ const TOP_NAV_VARIANTS = {
         tabs: [
             { id: 'home', label: 'Inicio', icon: 'far fa-home', url: 'index.html' },
             { id: 'catalog', label: 'Catálogo', icon: 'far fa-book', url: 'catalogo.html' },
-            { id: 'my-courses', label: 'Mis Cursos', icon: 'far fa-play-circle', url: 'mis-cursos.html' }
+            { id: 'corporate', label: 'U. Corporativa', icon: 'far fa-building-columns', url: 'universidad-corporativa.html' },
+            { id: 'study-zone', label: 'Zona de estudio', icon: 'far fa-books', url: 'zona-estudio.html' }
         ]
     },
     desempeno: {
@@ -107,14 +110,13 @@ function getTopNavHTML(variant = 'template', customTabs = []) {
             `).join('');
             
             // Para la variante template, agregar mensaje de personalización
-            // Texto de personalización oculto para el preview
-            // if (variant === 'template') {
-            //     tabsHTML += `
-            //         <div class="ubits-body-xs-regular" style="color: var(--ubits-fg-1-medium); font-style: italic; margin-left: 16px; margin-top: 4px;">
-            //             Personalizable - Indica a Cursor cuántos tabs necesitas
-            //         </div>
-            //     `;
-            // }
+            if (variant === 'template') {
+                tabsHTML += `
+                    <div class="ubits-body-xs-regular" style="color: var(--ubits-fg-1-medium); font-style: italic; margin-left: 16px; margin-top: 4px;">
+                        Personalizable - Indica a Cursor cuántos tabs necesitas
+                    </div>
+                `;
+            }
         }
     } else {
         // Para otras variantes sin tabs, mostrar mensaje
@@ -172,7 +174,9 @@ function loadSubNav(containerId, variant = 'template', customTabs = []) {
     addTopNavEventListeners(container);
     
     // Activar el tab correcto basado en la página actual
-    activateCurrentPageTab(container, variant);
+    requestAnimationFrame(() => {
+        activateCurrentPageTab(container, variant);
+    });
 }
 
 function activateCurrentPageTab(container, variant) {
@@ -195,6 +199,10 @@ function activateCurrentPageTab(container, variant) {
     } else if (currentPage === 'componentes.html') {
         activateTab('section3');
     } else if (currentPage === 'sidebar.html') {
+        activateTab('section3');
+    } else if (currentPage === 'subnav.html') {
+        activateTab('section3');
+    } else if (currentPage === 'tab-bar.html') {
         activateTab('section3');
     } else if (currentPage === 'guia-prompts.html') {
         activateTab('section2');

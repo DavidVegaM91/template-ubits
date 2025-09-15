@@ -23,7 +23,7 @@
             border-color: var(--ubits-accent-brand) !important;
         }
         
-        .preview-control-btn.active .ubits-button__text {
+        .preview-control-btn.active .span {
             color: white !important;
         }
         
@@ -99,11 +99,7 @@
                     </p>
                     
                     <!-- Preview Container -->
-                    <div style="background: var(--ubits-bg-2); padding: 40px; border-radius: 12px; border: 1px solid var(--ubits-border-1); position: relative; min-height: 500px;">
-                        <!-- Preview Info -->
-                        <div class="ubits-body-sm-bold" style="position: absolute; top: 20px; right: 20px; color: var(--ubits-fg-1-medium); font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase;">
-                            PREVIEW
-                        </div>
+                    <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: 1px solid var(--ubits-border-1); position: relative;">
                         
                         <!-- Sidebar Real de UBITS -->
                         <div style="display: flex; justify-content: center; align-items: center; height: 550px;">
@@ -164,25 +160,25 @@
                     <!-- Preview Controls -->
                     <div style="margin-top: 16px; display: flex; gap: 12px; flex-wrap: wrap;">
                         <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" onclick="setPreviewActive('aprendizaje')">
-                            <span class="ubits-button__text">Aprendizaje</span>
+                            <span class="span">Aprendizaje</span>
                         </button>
                         <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewActive('diagnóstico')">
-                            <span class="ubits-button__text">Diagnóstico</span>
+                            <span class="span">Diagnóstico</span>
                         </button>
                         <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewActive('desempeño')">
-                            <span class="ubits-button__text">Desempeño</span>
+                            <span class="span">Desempeño</span>
                         </button>
                         <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewActive('encuestas')">
-                            <span class="ubits-button__text">Encuestas</span>
+                            <span class="span">Encuestas</span>
                         </button>
                         <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewActive('tareas')">
-                            <span class="ubits-button__text">Tareas</span>
+                            <span class="span">Tareas</span>
                         </button>
                         <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewActive('reclutamiento')">
-                            <span class="ubits-button__text">Reclutamiento</span>
+                            <span class="span">Reclutamiento</span>
                         </button>
                         <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewActive('ubits-ai')">
-                            <span class="ubits-button__text">UBITS AI</span>
+                            <span class="span">UBITS AI</span>
                         </button>
                     </div>
                 </div>
@@ -241,7 +237,7 @@
                                 </h2>
                                 <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('structure-code')">
                                     <i class="ubits-button__icon far fa-copy"></i>
-                                    <span class="ubits-button__text">Copiar</span>
+                                    <span class="span">Copiar</span>
                                 </button>
                             </div>
                             <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: 1px solid var(--ubits-border-1);">
@@ -285,7 +281,7 @@
                                 </h2>
                                 <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('implement-code')">
                                     <i class="ubits-button__icon far fa-copy"></i>
-                                    <span class="ubits-button__text">Copiar</span>
+                                    <span class="span">Copiar</span>
                                 </button>
                             </div>
                             <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
@@ -346,7 +342,7 @@ updateActiveSidebarButton('desempeño'); // Cambiar botón activo</code></pre>
                                     <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Agregar nuevos botones</h3>
                                     <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('add-buttons-code')">
                                         <i class="ubits-button__icon far fa-copy"></i>
-                                        <span class="ubits-button__text">Copiar</span>
+                                        <span class="span">Copiar</span>
                                     </button>
                                 </div>
                                 <p class="ubits-body-md-regular" style="margin-bottom: 12px; line-height: 1.5;">
@@ -364,7 +360,7 @@ updateActiveSidebarButton('desempeño'); // Cambiar botón activo</code></pre>
                                     <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Modificar estilos</h3>
                                     <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('modify-styles-code')">
                                         <i class="ubits-button__icon far fa-copy"></i>
-                                        <span class="ubits-button__text">Copiar</span>
+                                        <span class="span">Copiar</span>
                                     </button>
                                 </div>
                                 <p class="ubits-body-md-regular" style="margin-bottom: 12px; line-height: 1.5;">
@@ -464,7 +460,7 @@ updateActiveSidebarButton('desempeño'); // Cambiar botón activo</code></pre>
                 // Mostrar feedback visual
                 const button = document.querySelector(`[onclick="copyCode('${codeId}')"]`);
                 const icon = button.querySelector('.ubits-button__icon');
-                const text = button.querySelector('.ubits-button__text');
+                const text = button.querySelector('.span');
                 
                 // Cambiar estado del botón
                 icon.className = 'ubits-button__icon far fa-check';

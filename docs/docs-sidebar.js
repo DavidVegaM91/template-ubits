@@ -171,8 +171,22 @@ function initDocsSidebar(activeSection) {
                 // Si estamos en otra página, navegar a subnav.html
                 window.location.href = 'subnav.html';
             }
-        } else if (section === 'tab-bar' || section === 'alert') {
-            alert(`Próximamente: Sección ${section}`);
+        } else if (section === 'tab-bar') {
+            // Si ya estamos en tab-bar.html, solo hacer scroll al top
+            if (window.location.pathname.includes('tab-bar.html')) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                // Si estamos en otra página, navegar a tab-bar.html
+                window.location.href = 'tab-bar.html';
+            }
+        } else if (section === 'alert') {
+            // Si ya estamos en alert.html, solo hacer scroll al top
+            if (window.location.pathname.includes('alert.html')) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                // Si estamos en otra página, navegar a alert.html
+                window.location.href = 'alert.html';
+            }
         }
     }
     

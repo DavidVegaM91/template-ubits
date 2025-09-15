@@ -259,7 +259,7 @@
                         <h3 class="ubits-body-md-bold">1. Clonar el repositorio UBITS</h3>
                         <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('clone')">
                             <i class="ubits-button__icon far fa-copy"></i>
-                            <span class="ubits-button__text">Copiar</span>
+                            <span class="span">Copiar</span>
                         </button>
                     </div>
                     <p class="prompt-description ubits-body-md-regular">
@@ -283,7 +283,7 @@ https://github.com/DavidVegaM91/template-ubits.git
                         <h3 class="ubits-body-md-bold">2. Crear página de inicio del proyecto</h3>
                         <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('homepage')">
                             <i class="ubits-button__icon far fa-copy"></i>
-                            <span class="ubits-button__text">Copiar</span>
+                            <span class="span">Copiar</span>
                         </button>
                     </div>
                     <p class="prompt-description ubits-body-md-regular">
@@ -332,7 +332,7 @@ Necesito crear la página de inicio de mi proyecto UBITS. Por favor:
                         <h3 class="ubits-body-md-bold">3. Crear una nueva página UBITS</h3>
                         <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('newpage')">
                             <i class="ubits-button__icon far fa-copy"></i>
-                            <span class="ubits-button__text">Copiar</span>
+                            <span class="span">Copiar</span>
                         </button>
                     </div>
                     <p class="prompt-description ubits-body-md-regular">
@@ -373,7 +373,7 @@ Necesito crear una nueva página UBITS. Por favor:
                         <h3 class="ubits-body-md-bold">4. Actualizar el repositorio UBITS</h3>
                         <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('update')">
                             <i class="ubits-button__icon far fa-copy"></i>
-                            <span class="ubits-button__text">Copiar</span>
+                            <span class="span">Copiar</span>
                         </button>
                     </div>
                     <p class="prompt-description ubits-body-md-regular">
@@ -416,7 +416,7 @@ Mi objetivo es tener las últimas mejoras del template UBITS manteniendo mis per
                 const card = document.querySelector(`[data-prompt="${promptId}"]`);
                 const button = card.querySelector('.ubits-button');
                 const icon = button.querySelector('.ubits-button__icon');
-                const text = button.querySelector('.ubits-button__text');
+                const text = button.querySelector('.span');
                 
                 // Cambiar estado del botón
                 icon.className = 'ubits-button__icon far fa-check';

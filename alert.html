@@ -3,428 +3,474 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UBITS Alert Component - Template UBITS</title>
+    <title>Alert - Notificaciones del sistema | UBITS Template</title>
     
-    <!-- UBITS Core Styles -->
+    <!-- Estilos locales -->
     <link rel="stylesheet" href="ubits-colors.css">
-    <link rel="stylesheet" href="ubits-typography.css">
-    
-    <!-- FontAwesome -->
-    <link rel="stylesheet" href="fontawesome-icons.css">
-    
-    <!-- Component Styles -->
-    <link rel="stylesheet" href="components/alert.css">
     <link rel="stylesheet" href="styles.css">
-    
-    <!-- Top Navigation -->
+    <link rel="stylesheet" href="fontawesome-icons.css">
+    <link rel="stylesheet" href="ubits-typography.css">
     <link rel="stylesheet" href="components/sub-nav.css">
-</head>
-<body>
-    <!-- Top Navigation -->
-    <div id="top-nav-container"></div>
-    
-    <div class="content-area">
-        <div class="page-header">
-            <h1 class="ubits-h1">Componente Alert</h1>
-            <p class="ubits-body-md-regular">Sistema de alertas con 4 variaciones usando tokens UBITS</p>
-        </div>
-
-        <!-- Alert Examples Section -->
-        <section class="component-section">
-            <h2 class="ubits-heading-h2">Variaciones del Alert</h2>
-            
-            <!-- Success Alert -->
-            <div class="example-group">
-                <h3 class="ubits-heading-h3">Success Alert</h3>
-                <div class="example-container">
-                    <div class="ubits-alert ubits-alert--success">
-                        <div class="ubits-alert-content">
-                            <div class="ubits-alert-icon">
-                                <i class="far fa-check-circle"></i>
-                            </div>
-                            <div class="ubits-alert-text ubits-body-sm-regular">
-                                Se archivó tu contenido de forma exitosa
-                            </div>
-                        </div>
-                        <button class="ubits-alert-close" aria-label="Cerrar alerta">
-                            <i class="far fa-times"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Info Alert -->
-            <div class="example-group">
-                <h3 class="ubits-heading-h3">Info Alert</h3>
-                <div class="example-container">
-                    <div class="ubits-alert ubits-alert--info">
-                        <div class="ubits-alert-content">
-                            <div class="ubits-alert-icon">
-                                <i class="far fa-info-circle"></i>
-                            </div>
-                            <div class="ubits-alert-text ubits-body-sm-regular">
-                                Esta es una información importante que debes conocer
-                            </div>
-                        </div>
-                        <button class="ubits-alert-close" aria-label="Cerrar alerta">
-                            <i class="far fa-times"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Warning Alert -->
-            <div class="example-group">
-                <h3 class="ubits-heading-h3">Warning Alert</h3>
-                <div class="example-container">
-                    <div class="ubits-alert ubits-alert--warning">
-                        <div class="ubits-alert-content">
-                            <div class="ubits-alert-icon">
-                                <i class="far fa-exclamation-triangle"></i>
-                            </div>
-                            <div class="ubits-alert-text ubits-body-sm-regular">
-                                Este es un mensaje de advertencia importante
-                            </div>
-                        </div>
-                        <button class="ubits-alert-close" aria-label="Cerrar alerta">
-                            <i class="far fa-times"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Error Alert -->
-            <div class="example-group">
-                <h3 class="ubits-heading-h3">Error Alert</h3>
-                <div class="example-container">
-                    <div class="ubits-alert ubits-alert--error">
-                        <div class="ubits-alert-content">
-                            <div class="ubits-alert-icon">
-                                <i class="far fa-times-circle"></i>
-                            </div>
-                            <div class="ubits-alert-text ubits-body-sm-regular">
-                                Este es un mensaje de error que requiere atención
-                            </div>
-                        </div>
-                        <button class="ubits-alert-close" aria-label="Cerrar alerta">
-                            <i class="far fa-times"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Interactive Demo Section -->
-        <section class="component-section">
-            <h2 class="ubits-heading-h2">Demo Interactivo</h2>
-            <p class="ubits-body-md-regular">Prueba crear alertas dinámicamente con diferentes opciones:</p>
-            
-            <div class="demo-controls">
-                <div class="control-group">
-                    <label class="ubits-body-sm-semibold">Tipo de alerta:</label>
-                    <select id="alert-type" class="demo-select">
-                        <option value="success">Success</option>
-                        <option value="info">Info</option>
-                        <option value="warning">Warning</option>
-                        <option value="error">Error</option>
-                    </select>
-                </div>
-                
-                <div class="control-group">
-                    <label class="ubits-body-sm-semibold">Mensaje:</label>
-                    <input type="text" id="alert-message" class="demo-input" 
-                           placeholder="Escribe tu mensaje aquí..." 
-                           value="Este es un mensaje de prueba">
-                </div>
-                
-                <div class="control-group">
-                    <label class="ubits-body-sm-semibold">Opciones:</label>
-                    <div class="checkbox-group">
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="alert-closable" checked>
-                            <span class="ubits-body-sm-regular">Permitir cerrar</span>
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="alert-auto-close">
-                            <span class="ubits-body-sm-regular">Cerrar automáticamente</span>
-                        </label>
-                    </div>
-                </div>
-                
-                <div class="control-group">
-                    <label class="ubits-body-sm-semibold">Duración (ms):</label>
-                    <input type="number" id="alert-duration" class="demo-input" 
-                           placeholder="3000" value="3000" min="1000" max="10000">
-                </div>
-                
-                <button id="create-alert" class="demo-button">
-                    <i class="far fa-plus"></i>
-                    Crear Alert
-                </button>
-                
-                <button id="clear-alerts" class="demo-button demo-button--secondary">
-                    <i class="far fa-trash"></i>
-                    Limpiar Todos
-                </button>
-            </div>
-            
-            <div id="alert-container" class="alert-demo-container">
-                <!-- Dynamic alerts will appear here -->
-            </div>
-        </section>
-
-        <!-- Usage Examples Section -->
-        <section class="component-section">
-            <h2 class="ubits-heading-h2">Ejemplos de Uso</h2>
-            
-            <div class="code-example">
-                <h3 class="ubits-heading-h3">HTML Básico</h3>
-                <div class="code-block">
-                    <pre><code>&lt;div class="ubits-alert ubits-alert--success"&gt;
-    &lt;div class="ubits-alert-content"&gt;
-        &lt;div class="ubits-alert-icon"&gt;
-            &lt;i class="far fa-check-circle"&gt;&lt;/i&gt;
-        &lt;/div&gt;
-        &lt;div class="ubits-alert-text ubits-body-sm-regular"&gt;
-            Tu mensaje aquí
-        &lt;/div&gt;
-    &lt;/div&gt;
-    &lt;button class="ubits-alert-close"&gt;
-        &lt;i class="far fa-times"&gt;&lt;/i&gt;
-    &lt;/button&gt;
-&lt;/div&gt;</code></pre>
-                </div>
-            </div>
-            
-            <div class="code-example">
-                <h3 class="ubits-heading-h3">JavaScript</h3>
-                <div class="code-block">
-                    <pre><code>// Crear alerta simple
-UBITSAlertManager.success('Operación exitosa');
-
-// Crear alerta con opciones
-UBITSAlertManager.error('Error al guardar', {
-    closable: true,
-    duration: 5000,
-    onClose: () => console.log('Alerta cerrada')
-});
-
-// Crear alerta en contenedor específico
-UBITSAlertManager.createInContainer(
-    document.getElementById('mi-contenedor'),
-    {
-        type: 'warning',
-        message: 'Advertencia importante',
-        closable: false
-    }
-);</code></pre>
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <!-- Scripts -->
-    <script src="components/sub-nav.js"></script>
-    <script src="components/alert.js"></script>
-    <script>
-        // Initialize top navigation
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize sub nav
-            const subNavContainer = document.getElementById('top-nav-container');
-            if (subNavContainer) {
-                subNavContainer.innerHTML = getTopNavHTML('documentacion');
-                addTopNavEventListeners(subNavContainer);
-                activateCurrentPageTab(subNavContainer, 'documentacion');
-            }
-            
-            // Initialize alert demo
-            initAlertDemo();
-        });
-
-        function initAlertDemo() {
-            const createBtn = document.getElementById('create-alert');
-            const clearBtn = document.getElementById('clear-alert');
-            const container = document.getElementById('alert-container');
-            
-            // Create alert button
-            createBtn.addEventListener('click', function() {
-                const type = document.getElementById('alert-type').value;
-                const message = document.getElementById('alert-message').value;
-                const closable = document.getElementById('alert-closable').checked;
-                const autoClose = document.getElementById('alert-auto-close').checked;
-                const duration = parseInt(document.getElementById('alert-duration').value) || 3000;
-                
-                if (!message.trim()) {
-                    UBITSAlertManager.warning('Por favor escribe un mensaje');
-                    return;
-                }
-                
-                const options = {
-                    type: type,
-                    message: message,
-                    closable: closable,
-                    duration: autoClose ? duration : 0,
-                    container: container
-                };
-                
-                UBITSAlertManager.createInContainer(container, options);
-            });
-            
-            // Clear all alerts button
-            clearBtn.addEventListener('click', function() {
-                container.innerHTML = '';
-            });
-            
-            // Add close functionality to existing alerts
-            document.addEventListener('click', function(e) {
-                if (e.target.closest('.ubits-alert-close')) {
-                    const alert = e.target.closest('.ubits-alert');
-                    if (alert) {
-                        alert.classList.add('ubits-alert--closing');
-                        setTimeout(() => {
-                            if (alert.parentNode) {
-                                alert.parentNode.removeChild(alert);
-                            }
-                        }, 300);
-                    }
-                }
-            });
-        }
-    </script>
-
+    <link rel="stylesheet" href="components-sidebar.css">
+    <link rel="stylesheet" href="docs/docs-sidebar.css">
+    <link rel="stylesheet" href="components/button.css">
+    <link rel="stylesheet" href="components/alert.css">
     <style>
-        /* Demo specific styles */
-        .component-section {
-            margin-bottom: 40px;
+        /* Preview Styles */
+        /* Preview control buttons - override UBITS button styles for active state */
+        .preview-control-btn.active {
+            background: var(--ubits-accent-brand) !important;
+            color: white !important;
+            border-color: var(--ubits-accent-brand) !important;
         }
         
-        .example-group {
-            margin-bottom: 24px;
+        .preview-control-btn.active span {
+            color: white !important;
         }
         
-        .example-container {
-            margin-top: 12px;
-        }
-        
-        .demo-controls {
-            background: var(--ubits-bg-2);
-            border: 1px solid var(--ubits-border-1);
-            border-radius: 8px;
-            padding: 20px;
-            margin: 20px 0;
-        }
-        
-        .control-group {
-            margin-bottom: 16px;
-        }
-        
-        .control-group:last-child {
-            margin-bottom: 0;
-        }
-        
-        .control-group label {
-            display: block;
-            margin-bottom: 6px;
-        }
-        
-        .demo-select,
-        .demo-input {
-            width: 100%;
-            max-width: 300px;
-            padding: 8px 12px;
-            border: 1px solid var(--ubits-border-1);
-            border-radius: 4px;
-            background: var(--ubits-bg-1);
-            color: var(--ubits-fg-1-medium);
-            font-family: 'Noto Sans', sans-serif;
-            font-size: 14px;
-        }
-        
-        .demo-select:focus,
-        .demo-input:focus {
-            outline: none;
-            border-color: var(--ubits-accent-brand);
-        }
-        
-        .checkbox-group {
-            display: flex;
-            gap: 16px;
-        }
-        
-        .checkbox-label {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-        }
-        
-        .checkbox-label input[type="checkbox"] {
-            margin: 0;
-        }
-        
-        .demo-button {
-            background: var(--ubits-accent-brand);
-            color: white;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-family: 'Noto Sans', sans-serif;
-            font-size: 14px;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            margin-right: 8px;
-            margin-top: 8px;
-        }
-        
-        .demo-button:hover {
-            background: var(--ubits-accent-brand-hover);
-        }
-        
-        .demo-button--secondary {
-            background: var(--ubits-bg-3);
-            color: var(--ubits-fg-1-medium);
-        }
-        
-        .demo-button--secondary:hover {
-            background: var(--ubits-bg-4);
-        }
-        
-        .alert-demo-container {
-            margin-top: 20px;
-            min-height: 50px;
-        }
-        
-        .code-example {
-            margin-bottom: 24px;
-        }
-        
-        .code-block {
-            background: var(--ubits-bg-2);
-            border: 1px solid var(--ubits-border-1);
-            border-radius: 4px;
-            padding: 16px;
-            margin-top: 8px;
-            overflow-x: auto;
-        }
-        
-        .code-block pre {
-            margin: 0;
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-            font-size: 13px;
-            line-height: 1.4;
-            color: var(--ubits-fg-1-medium);
-        }
-        
-        .code-block code {
-            background: none;
-            padding: 0;
-            border: none;
-            font-family: inherit;
+        /* Component preview container */
+        .component-preview {
+            position: relative !important;
+            border-radius: 8px !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+            background: var(--ubits-bg-1) !important;
+            border: 1px solid var(--ubits-border-1) !important;
+            padding: 24px !important;
         }
     </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        
+
+        <!-- Main Content -->
+        <main class="main-content" style="margin-left: 12px;">
+            <!-- Top Navigation -->
+            <div id="top-nav-container"></div>
+            
+            <!-- Content with Sidebar -->
+            <div style="display: flex;">
+            
+            <!-- Dropdown Móvil para Documentación -->
+            <div id="docs-dropdown-container"></div>
+            
+            <!-- Sidebar de Documentación -->
+            <div id="docs-sidebar-container"></div>
+
+            <!-- Content Area -->
+            <div class="components-content">
+                <!-- Content Area -->
+                <div class="content-area" style="display: block; width: 100%;">
+                    <!-- Hero Section -->
+                    <div style="text-align: center; margin-bottom: 60px;">
+                        <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                            Alert
+                        </h1>
+                        <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                            Componente de notificaciones del sistema que muestra mensajes informativos, de éxito, advertencia y error.
+                        </p>
+                    </div>
+
+                    <!-- Preview Section -->
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1); margin-bottom: 40px;">
+                        <h2 class="ubits-heading-h1" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Preview del componente
+                        </h2>
+                        <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                            Aquí puedes ver el componente Alert en acción. Haz clic en los botones para ver los diferentes tipos disponibles.
+                        </p>
+                        
+                        <!-- Preview Container -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: 1px solid var(--ubits-border-1); position: relative;">
+                            
+                            <!-- Alert Preview -->
+                            <div id="alert-preview">
+                                <!-- Alert Success -->
+                                <div class="ubits-alert ubits-alert--success" id="alert-success-preview" style="margin: 0;">
+                                    <div class="ubits-alert__icon">
+                                        <i class="far fa-check-circle"></i>
+                                    </div>
+                                    <div class="ubits-alert__content">
+                                        <div class="ubits-alert__title">Operación exitosa</div>
+                                        <div class="ubits-alert__message">Los cambios se han guardado correctamente.</div>
+                                    </div>
+                                    <button class="ubits-alert__close" onclick="hideAlert('success')">
+                                        <i class="far fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Preview Controls -->
+                        <div style="margin-top: 16px; display: flex; gap: 12px; flex-wrap: wrap;">
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" onclick="setPreviewType('success')">
+                                <span>Success</span>
+                            </button>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewType('info')">
+                                <span>Info</span>
+                            </button>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewType('warning')">
+                                <span>Warning</span>
+                            </button>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewType('error')">
+                                <span>Error</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Characteristics Section -->
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1); margin-bottom: 40px;">
+                        <h2 class="ubits-heading-h1" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Características generales
+                        </h2>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-palette"></i></div>
+                                <div class="ubits-body-sm-bold">Tipos</div>
+                                <div class="ubits-body-sm-regular">Success, Info, Warning, Error</div>
+                            </div>
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-times-circle"></i></div>
+                                <div class="ubits-body-sm-bold">Cierre</div>
+                                <div class="ubits-body-sm-regular">Con y sin botón de cerrar</div>
+                            </div>
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-mobile"></i></div>
+                                <div class="ubits-body-sm-bold">Responsive</div>
+                                <div class="ubits-body-sm-regular">Adaptable a todos los dispositivos</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Technical Documentation -->
+                    <div style="background: var(--ubits-bg-1); border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1); margin-bottom: 40px; overflow: hidden;">
+                        <!-- Header del acordeón -->
+                        <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                            <h2 class="ubits-heading-h1" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Documentación técnica
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
+                                Reemplaza esta sección con la documentación técnica específica del componente.
+                            </p>
+                        </div>
+                        
+                        <!-- Botón de expansión -->
+                        <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                            <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                <i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>
+                                Mostrar
+                            </span>
+                        </div>
+                        
+                        <!-- Contenido del acordeón (inicialmente oculto) -->
+                        <div id="technical-docs-content" style="display: none; padding: 0;">
+                            <!-- Estructura del Componente -->
+                            <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                    <h2 class="ubits-heading-h1" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                        <i class="far fa-sitemap" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                        Estructura del componente
+                                    </h2>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('structure-code')">
+                                        <i class="ubits-button__icon far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="structure-code">&lt;div class="ubits-alert ubits-alert--success"&gt;
+  &lt;div class="ubits-alert__icon"&gt;
+    &lt;i class="far fa-check-circle"&gt;&lt;/i&gt;
+  &lt;/div&gt;
+  &lt;div class="ubits-alert__content"&gt;
+    &lt;div class="ubits-alert__title"&gt;Título del mensaje&lt;/div&gt;
+    &lt;div class="ubits-alert__message"&gt;Descripción del mensaje&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;button class="ubits-alert__close" onclick="hideAlert('success')"&gt;
+    &lt;i class="far fa-times"&gt;&lt;/i&gt;
+  &lt;/button&gt;
+&lt;/div&gt;</code></pre>
+                                </div>
+                            </div>
+
+                            <!-- Cómo implementar -->
+                            <div style="margin-bottom: 32px;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">Cómo implementar</h3>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                        <span class="ubits-body-md-regular">Implementación básica</span>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('implement-code')">
+                                            <i class="ubits-button__icon far fa-copy"></i>
+                                            <span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="implement-code">&lt;!-- HTML --&gt;
+&lt;div class="ubits-alert ubits-alert--success"&gt;
+  &lt;div class="ubits-alert__icon"&gt;
+    &lt;i class="far fa-check-circle"&gt;&lt;/i&gt;
+  &lt;/div&gt;
+  &lt;div class="ubits-alert__content"&gt;
+    &lt;div class="ubits-alert__title"&gt;Éxito&lt;/div&gt;
+    &lt;div class="ubits-alert__message"&gt;Operación completada correctamente.&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;button class="ubits-alert__close" onclick="hideAlert('success')"&gt;
+    &lt;i class="far fa-times"&gt;&lt;/i&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+&lt;!-- CSS --&gt;
+&lt;link rel="stylesheet" href="components/alert.css"&gt;
+
+&lt;!-- JavaScript --&gt;
+&lt;script src="components/alert.js"&gt;&lt;/script&gt;</code></pre>
+                                </div>
+                            </div>
+
+                            <!-- API y funciones -->
+                            <div style="margin-bottom: 32px;">
+                                <h2 class="ubits-heading-h2" style="margin-bottom: 24px;">
+                                    API y funciones
+                                </h2>
+                                <div style="margin-bottom: 24px;">
+                                    <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">showAlert(type, title, message, options)</h3>
+                                    <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
+                                        Muestra una alerta en el sistema con el tipo, título y mensaje especificados.
+                                    </p>
+                                    <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: 6px; border-left: 4px solid var(--ubits-accent-brand);">
+                                        <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                            <strong>Parámetros:</strong> type (string) - Tipo de alerta, title (string) - Título, message (string) - Mensaje, options (object) - Opciones adicionales<br>
+                                            <strong>Ejemplo:</strong> showAlert('success', 'Éxito', 'Operación completada', { closable: true })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Personalización -->
+                            <div style="margin-bottom: 32px;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">Personalización</h3>
+                                <p class="ubits-body-md-regular" style="margin-bottom: 12px; line-height: 1.5;">
+                                    Los estilos se pueden personalizar editando las variables CSS en <code>components/alert.css</code>:
+                                </p>
+                                <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                        <span class="ubits-body-md-regular">Variables CSS personalizables</span>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('customize-code')">
+                                            <i class="ubits-button__icon far fa-copy"></i>
+                                            <span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="customize-code">/* Personalizar colores de alertas */
+.ubits-alert--success {
+  background-color: var(--ubits-bg-success);
+  border-color: var(--ubits-border-success);
+  color: var(--ubits-fg-success);
+}
+
+.ubits-alert--info {
+  background-color: var(--ubits-bg-info);
+  border-color: var(--ubits-border-info);
+  color: var(--ubits-fg-info);
+}
+
+.ubits-alert--warning {
+  background-color: var(--ubits-bg-warning);
+  border-color: var(--ubits-border-warning);
+  color: var(--ubits-fg-warning);
+}
+
+.ubits-alert--error {
+  background-color: var(--ubits-bg-error);
+  border-color: var(--ubits-border-error);
+  color: var(--ubits-fg-error);
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Messages -->
+    <div class="toast-container">
+        <!-- Toast de Success -->
+        <div class="toast toast-success" id="toast-success" style="display: none;">
+            <div class="toast-content">
+                <div class="toast-icon">
+                    <i class="far fa-check"></i>
+                </div>
+                <div class="toast-message ubits-body-sm-regular" id="toast-success-message">Mensaje de éxito</div>
+                <button class="toast-close" onclick="hideToast('success')">
+                    <i class="far fa-times"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Toast de Info -->
+        <div class="toast toast-info" id="toast-info" style="display: none;">
+            <div class="toast-content">
+                <div class="toast-icon">
+                    <i class="far fa-info-circle"></i>
+                </div>
+                <div class="toast-message ubits-body-sm-regular" id="toast-info-message">Mensaje informativo</div>
+                <button class="toast-close" onclick="hideToast('info')">
+                    <i class="far fa-times"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Toast de Warning -->
+        <div class="toast toast-warning" id="toast-warning" style="display: none;">
+            <div class="toast-content">
+                <div class="toast-icon">
+                    <i class="far fa-exclamation-triangle"></i>
+                </div>
+                <div class="toast-message ubits-body-sm-regular" id="toast-warning-message">Mensaje de advertencia</div>
+                <button class="toast-close" onclick="hideToast('warning')">
+                    <i class="far fa-times"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Toast de Error -->
+        <div class="toast toast-error" id="toast-error" style="display: none;">
+            <div class="toast-content">
+                <div class="toast-icon">
+                    <i class="far fa-times-circle"></i>
+                </div>
+                <div class="toast-message ubits-body-sm-regular" id="toast-error-message">Mensaje de error</div>
+                <button class="toast-close" onclick="hideToast('error')">
+                    <i class="far fa-times"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="components/sidebar.js"></script>
+    <script src="components/sub-nav.js"></script>
+    <script src="components/alert.js"></script>
+    <script src="docs/docs-sidebar.js"></script>
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cargar top-nav con variante documentación
+            loadSubNav('top-nav-container', 'documentacion');
+            
+            // Forzar activación de Componentes en todas las páginas de documentación
+            setTimeout(() => {
+                // Quitar todas las clases active primero
+                document.querySelectorAll('.nav-tab.active, .hamburger-item.active').forEach(item => {
+                    item.classList.remove('active');
+                });
+                
+                // Activar solo Componentes
+                const navTab = document.querySelector('.nav-tab[data-tab="section3"]');
+                const hamburgerItem = document.querySelector('.hamburger-item[data-tab="section3"]');
+                if (navTab) navTab.classList.add('active');
+                if (hamburgerItem) hamburgerItem.classList.add('active');
+            }, 200);
+            
+            // Cargar sidebar de documentación
+            loadDocsSidebar('alert');
+        });
+
+        // Funciones para el preview del componente
+        function setPreviewType(type) {
+            // Quitar active de todos los botones
+            document.querySelectorAll('.preview-control-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Activar el botón seleccionado
+            event.target.closest('.preview-control-btn').classList.add('active');
+            
+            // Actualizar preview
+            const preview = document.getElementById('alert-preview');
+            const alertConfig = {
+                success: {
+                    class: 'ubits-alert--success',
+                    icon: 'far fa-check-circle',
+                    title: 'Operación exitosa',
+                    message: 'Los cambios se han guardado correctamente.'
+                },
+                info: {
+                    class: 'ubits-alert--info',
+                    icon: 'far fa-info-circle',
+                    title: 'Información',
+                    message: 'Esta es una notificación informativa del sistema.'
+                },
+                warning: {
+                    class: 'ubits-alert--warning',
+                    icon: 'far fa-exclamation-triangle',
+                    title: 'Advertencia',
+                    message: 'Por favor, revisa los datos antes de continuar.'
+                },
+                error: {
+                    class: 'ubits-alert--error',
+                    icon: 'far fa-times-circle',
+                    title: 'Error',
+                    message: 'Ha ocurrido un error al procesar la solicitud.'
+                }
+            };
+            
+            const config = alertConfig[type];
+            preview.innerHTML = `
+                <div class="ubits-alert ${config.class}">
+                    <div class="ubits-alert__icon">
+                        <i class="${config.icon}"></i>
+                    </div>
+                    <div class="ubits-alert__content">
+                        <div class="ubits-alert__title">${config.title}</div>
+                        <div class="ubits-alert__message">${config.message}</div>
+                    </div>
+                    <button class="ubits-alert__close" onclick="hideAlert('${type}')">
+                        <i class="far fa-times"></i>
+                    </button>
+                </div>
+            `;
+        }
+
+        // Función para el acordeón de documentación técnica
+        function toggleTechnicalDocs() {
+            const content = document.getElementById('technical-docs-content');
+            const button = document.querySelector('[onclick="toggleTechnicalDocs()"]');
+            
+            if (content.style.display === 'none' || content.style.display === '') {
+                // Expandir
+                content.style.display = 'block';
+                button.innerHTML = '<i class="far fa-chevron-up" id="tech-docs-chevron" style="color: var(--ubits-accent-brand);"></i> <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand);">Ocultar</span>';
+            } else {
+                // Contraer
+                content.style.display = 'none';
+                button.innerHTML = '<i class="far fa-chevron-down" id="tech-docs-chevron" style="color: var(--ubits-accent-brand);"></i> <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand);">Mostrar</span>';
+            }
+        }
+
+        // Función para copiar código
+        function copyCode(codeId) {
+            const codeElement = document.getElementById(codeId);
+            const codeText = codeElement.textContent;
+            
+            navigator.clipboard.writeText(codeText).then(() => {
+                showToast('success', 'Código copiado al portapapeles');
+            }).catch(err => {
+                console.error('Error al copiar: ', err);
+                showToast('error', 'Error al copiar el código');
+            });
+        }
+
+        // Función para ocultar alerta
+        function hideAlert(type) {
+            const alert = document.querySelector(`.ubits-alert--${type}`);
+            if (alert) {
+                alert.style.display = 'none';
+            }
+        }
+    </script>
 </body>
 </html>
-
