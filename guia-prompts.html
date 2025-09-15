@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="ubits-typography.css">
     <link rel="stylesheet" href="components/sub-nav.css">
     <link rel="stylesheet" href="components/alert.css">
+    <link rel="stylesheet" href="components/button.css">
     
     <style>
         .prompt-card {
@@ -256,6 +257,10 @@
                 <div class="prompt-card" data-prompt="clone">
                     <div class="prompt-header">
                         <h3 class="ubits-body-md-bold">1. Clonar el repositorio UBITS</h3>
+                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('clone')">
+                            <i class="ubits-button__icon far fa-copy"></i>
+                            <span class="ubits-button__text">Copiar</span>
+                        </button>
                     </div>
                     <p class="prompt-description ubits-body-md-regular">
                         Usa este prompt para obtener el template UBITS completo en tu computadora por primera vez.
@@ -266,12 +271,8 @@ Quiero trabajar contigo usando el UBITS Template que está en este repositorio:
 https://github.com/DavidVegaM91/template-ubits.git 
 
 1. Importa el repositorio. 
-2. Lee los archivos README.md y .cursorrules para entender el contexto del proyecto.  
+2. Lee los archivos README.md y .cursor/rules/cursor-rules.mdc para entender el contexto del proyecto.  
 3. Confírmame que comprendiste la configuración y pregúntame qué página quiero editar o qué nuevo flujo quiero crear.
-                        </div>
-                        <div class="copy-button" onclick="copyPrompt('clone')">
-                            <i class="far fa-copy"></i>
-                            Copiar
                         </div>
                     </div>
                 </div>
@@ -280,6 +281,10 @@ https://github.com/DavidVegaM91/template-ubits.git
                 <div class="prompt-card" data-prompt="homepage">
                     <div class="prompt-header">
                         <h3 class="ubits-body-md-bold">2. Crear página de inicio del proyecto</h3>
+                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('homepage')">
+                            <i class="ubits-button__icon far fa-copy"></i>
+                            <span class="ubits-button__text">Copiar</span>
+                        </button>
                     </div>
                     <p class="prompt-description ubits-body-md-regular">
                         Usa este prompt para configurar la página principal de tu proyecto UBITS.
@@ -318,10 +323,6 @@ Necesito crear la página de inicio de mi proyecto UBITS. Por favor:
    - Verifica que la navegación funcione correctamente
    - Prueba en diferentes tamaños de pantalla
                         </div>
-                        <div class="copy-button" onclick="copyPrompt('homepage')">
-                            <i class="far fa-copy"></i>
-                            Copiar
-                        </div>
                     </div>
                 </div>
 
@@ -329,6 +330,10 @@ Necesito crear la página de inicio de mi proyecto UBITS. Por favor:
                 <div class="prompt-card" data-prompt="newpage">
                     <div class="prompt-header">
                         <h3 class="ubits-body-md-bold">3. Crear una nueva página UBITS</h3>
+                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('newpage')">
+                            <i class="ubits-button__icon far fa-copy"></i>
+                            <span class="ubits-button__text">Copiar</span>
+                        </button>
                     </div>
                     <p class="prompt-description ubits-body-md-regular">
                         Usa este prompt para crear una nueva página usando plantilla-ubits.html como base.
@@ -357,10 +362,6 @@ Necesito crear una nueva página UBITS. Por favor:
 7. Asegúrate de que mantenga todos los tokens UBITS y la estructura correcta
 8. Verifica que sea responsive y funcione en modo claro y oscuro
                         </div>
-                        <div class="copy-button" onclick="copyPrompt('newpage')">
-                            <i class="far fa-copy"></i>
-                            Copiar
-                        </div>
                     </div>
                 </div>
 
@@ -370,6 +371,10 @@ Necesito crear una nueva página UBITS. Por favor:
                 <div class="prompt-card" data-prompt="update">
                     <div class="prompt-header">
                         <h3 class="ubits-body-md-bold">4. Actualizar el repositorio UBITS</h3>
+                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('update')">
+                            <i class="ubits-button__icon far fa-copy"></i>
+                            <span class="ubits-button__text">Copiar</span>
+                        </button>
                     </div>
                     <p class="prompt-description ubits-body-md-regular">
                         Usa este prompt cuando quieras obtener las últimas actualizaciones del template sin perder tus cambios personalizados.
@@ -385,10 +390,6 @@ Necesito actualizar mi proyecto UBITS con las últimas versiones del repositorio
 5. Verifica que todo funcione correctamente
 
 Mi objetivo es tener las últimas mejoras del template UBITS manteniendo mis personalizaciones.
-                        </div>
-                        <div class="copy-button" onclick="copyPrompt('update')">
-                            <i class="far fa-copy"></i>
-                            Copiar
                         </div>
                     </div>
                 </div>
@@ -413,13 +414,14 @@ Mi objetivo es tener las últimas mejoras del template UBITS manteniendo mis per
             navigator.clipboard.writeText(promptText).then(function() {
                 // Mostrar feedback visual
                 const card = document.querySelector(`[data-prompt="${promptId}"]`);
-                const button = card.querySelector('.copy-button');
+                const button = card.querySelector('.ubits-button');
+                const icon = button.querySelector('.ubits-button__icon');
+                const text = button.querySelector('.ubits-button__text');
                 
                 // Cambiar estado del botón
-                button.innerHTML = '<i class="far fa-check"></i> Copiado';
-                button.classList.add('copied');
-                
-                // Cambiar estado de la tarjeta
+                icon.className = 'ubits-button__icon far fa-check';
+                text.textContent = 'Copiado';
+                button.classList.add('ubits-button--active');
                 card.classList.add('copied');
                 
                 // Mostrar toast
@@ -427,8 +429,9 @@ Mi objetivo es tener las últimas mejoras del template UBITS manteniendo mis per
                 
                 // Restaurar estado después de 2 segundos
                 setTimeout(function() {
-                    button.innerHTML = '<i class="far fa-copy"></i> Copiar';
-                    button.classList.remove('copied');
+                    icon.className = 'ubits-button__icon far fa-copy';
+                    text.textContent = 'Copiar';
+                    button.classList.remove('ubits-button--active');
                     card.classList.remove('copied');
                 }, 2000);
                 

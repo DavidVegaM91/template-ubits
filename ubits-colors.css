@@ -14,6 +14,26 @@
   --ubits-accent-brand-static: #0c5bef;
   --ubits-accent-brand-static-inverted: #3865f5;
   
+  /* Button Colors */
+  --ubits-button-primary-bg-default: #0c5bef;
+  --ubits-button-primary-hover: #223a91;
+  --ubits-button-primary-pressed: #1e4abf;
+  --ubits-button-active-bg: rgba(12, 91, 239, 0.15);
+  --ubits-button-focus-ring: rgba(82, 151, 244, 0.3);
+  --ubits-button-badge: #cf0e34;
+
+  /* Secondary Button Colors - LIGHT MODE */
+  --ubits-btn-secondary-bg-default: #ffffff;
+  --ubits-btn-secondary-bg-hover: #f3f3f4;
+  --ubits-btn-secondary-bg-pressed: #e7e8ea;
+  --ubits-btn-secondary-fg-default: #303a47;
+  --ubits-btn-secondary-border: #d0d2d5;
+
+  /* Tertiary Button Colors - LIGHT MODE */
+  --ubits-btn-tertiary-fg: #5c646f;
+  --ubits-btn-tertiary-bg-hover: rgba(231, 232, 234, 0.5);
+  --ubits-btn-tertiary-bg-pressed: rgba(231, 232, 234, 0.7);
+  
   /* UBITS Logo */
   --ubits-logo: #0d1f57;
   --ubits-logo-inverted: #ffffff;
@@ -47,6 +67,7 @@
   --ubits-fg-disabled: #a2a6ad;
   --ubits-fg-disabled-inverted: #777c86;
   --ubits-fg-on-disabled: #8d9199;
+  --ubits-fg-on-disabled-button: #8d9199;
   --ubits-fg-on-disabled-inverted: #828690;
   --ubits-fg-disabled-static: #a2a6ad;
   --ubits-fg-on-disabled-static: #8d9199;
@@ -254,6 +275,7 @@
   --ubits-bg-5: #ced0d5;
   --ubits-bg-dim: #00000080;
   --ubits-bg-disabled: #edeeef;
+  --ubits-bg-disabled-button: #edeeef;
   
   /* ========================================
      BORDER COLORS
@@ -263,6 +285,7 @@
   --ubits-border-1: #d0d2d5;
   --ubits-border-2: #b9bbc1;
   --ubits-border-disabled: #e1e2e5;
+  --ubits-border-disabled-button: #e1e2e5;
   
   /* Colored Borders */
   --ubits-border-blue: #a2a3fb;
@@ -406,6 +429,26 @@
   --ubits-accent-brand-static: #0c5bef;
   --ubits-accent-brand-static-inverted: #3865f5;
   
+  /* Button Colors - DARK MODE */
+  --ubits-button-primary-bg-default: #3865f5;
+  --ubits-button-primary-hover: #223a91;
+  --ubits-button-primary-pressed: #1e4abf;
+  --ubits-button-active-bg: #0c5bef33;
+  --ubits-button-focus-ring: rgba(82, 151, 244, 0.3);
+  --ubits-button-badge: #cf0e34;
+
+  /* Secondary Button Colors - DARK MODE */
+  --ubits-btn-secondary-bg-default: #202837;
+  --ubits-btn-secondary-bg-hover: #0e1825;
+  --ubits-btn-secondary-bg-pressed: #0c121c;
+  --ubits-btn-secondary-fg-default: #edeeef;
+  --ubits-btn-secondary-border: #4f5561;
+
+  /* Tertiary Button Colors - DARK MODE */
+  --ubits-btn-tertiary-fg: #d0d2d5;
+  --ubits-btn-tertiary-bg-hover: rgba(231, 232, 234, 0.5);
+  --ubits-btn-tertiary-bg-pressed: rgba(231, 232, 234, 0.7);
+  
   /* UBITS Logo - DARK MODE */
   --ubits-logo: #ffffff;
   --ubits-logo-inverted: #ffffff;
@@ -439,6 +482,7 @@
   --ubits-fg-disabled-static: #a2a6ad;
   --ubits-fg-disabled-static-inverted: #777c86;
   --ubits-fg-on-disabled: #828690;
+  --ubits-fg-on-disabled-button: #828690;
   --ubits-fg-on-disabled-inverted: #8d9199;
   --ubits-fg-on-disabled-static: #8d9199;
   --ubits-fg-on-disabled-static-inverted: #828690;
@@ -631,6 +675,7 @@
   --ubits-bg-5: #000000;
   --ubits-bg-dim: #000000b2;
   --ubits-bg-disabled: #3b4350;
+  --ubits-bg-disabled-button: #3b4350;
   
   /* ========================================
      BORDER COLORS - DARK MODE
@@ -640,6 +685,7 @@
   --ubits-border-1: #4f5561;
   --ubits-border-2: #404754;
   --ubits-border-disabled: #545a66;
+  --ubits-border-disabled-button: #545a66;
   
   /* Colored Borders */
   --ubits-border-blue: #3865f5;

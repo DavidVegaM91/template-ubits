@@ -163,6 +163,15 @@
     color: var(--ubits-fg-1-medium);
 }
 
+/* Body/lg - Solo para botones LG (no usar en layouts) */
+.ubits-body-lg-semibold {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 30px;
+    color: var(--ubits-fg-1-medium);
+}
+
 /* Body/sm */
 .ubits-body-sm-regular {
     font-family: 'Noto Sans', sans-serif;
