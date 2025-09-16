@@ -63,6 +63,14 @@ Template UBITS/
 └── 📄 LICENSE                 # Licencia MIT
 ```
 
+## 🚀 Cómo usar esta plantilla
+
+1. **Descarga:** Haz clon o descarga como ZIP
+2. **Personaliza:** Modifica según tus necesidades
+3. **Usa:** Despliega en tu propio hosting
+
+> **Nota:** Esta es una plantilla de solo lectura. Para personalizarla, clona o haz fork del repositorio.
+
 ## 📚 Páginas de Documentación
 
 ### **componentes.html**

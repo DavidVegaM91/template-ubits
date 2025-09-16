@@ -375,6 +375,13 @@
    DESKTOP BEHAVIOR
    ======================================== */
 
+/* Ocultar SubNav en resoluciones menores a 1024px (excepto documentación) */
+@media (max-width: 1023px) {
+    .sub-nav:not([data-variant="documentacion"]) {
+        display: none !important;
+    }
+}
+
 /* En desktop, mostrar tabs normales y ocultar hamburger */
 @media (min-width: 841px) {
     .hamburger-menu {
