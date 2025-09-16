@@ -11,7 +11,7 @@ function getTabBarHTML() {
         <div class="tab-bar" id="tab-bar">
             <div class="tab-bar-content">
                 <div class="tab-bar-item" data-tab="modulos" onclick="navigateToTab('modulos')">
-                    <i class="far fa-th-large tab-bar-icon"></i>
+                    <i class="far fa-grid-2 tab-bar-icon"></i>
                     <span class="tab-bar-text">Módulos</span>
                 </div>
                 <div class="tab-bar-item" data-tab="perfil" onclick="navigateToTab('perfil')">

@@ -40,6 +40,15 @@
             margin: 0 auto !important;
         }
         
+        /* Asegurar altura correcta de iconos en Tab-bar hardcodeado */
+        #tab-bar-preview-real .tab-bar-icon {
+            width: 24px !important;
+            height: 24px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        
         /* Component preview container - reemplaza con estilos específicos del componente */
         .component-preview {
             position: relative !important;
@@ -103,7 +112,7 @@
                                 <div class="tab-bar" id="tab-bar-preview-real">
                                     <div class="tab-bar-content">
                                         <div class="tab-bar-item active" data-tab="modulos" onclick="navigateToTab('modulos')">
-                                            <i class="far fa-th-large tab-bar-icon"></i>
+                                            <i class="far fa-grid-2 tab-bar-icon"></i>
                                             <span class="tab-bar-text ubits-body-xs-regular">Módulos</span>
                                         </div>
                                         <div class="tab-bar-item" data-tab="perfil" onclick="navigateToTab('perfil')">
@@ -127,9 +136,6 @@
                         </button>
                         <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewOption('perfil')">
                             <span class="span">Mi perfil</span>
-                        </button>
-                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewOption('modo-oscuro')">
-                            <span class="span">Modo oscuro</span>
                         </button>
                     </div>
                 </div>
@@ -201,7 +207,7 @@
                                 <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="structure-code">&lt;div class="tab-bar" id="tab-bar"&gt;
   &lt;div class="tab-bar-content"&gt;
     &lt;div class="tab-bar-item" data-tab="modulos" onclick="navigateToTab('modulos')"&gt;
-      &lt;i class="far fa-th-large tab-bar-icon"&gt;&lt;/i&gt;
+      &lt;i class="far fa-grid-2 tab-bar-icon"&gt;&lt;/i&gt;
       &lt;span class="tab-bar-text ubits-body-xs-regular"&gt;Módulos&lt;/span&gt;
     &lt;/div&gt;
     &lt;div class="tab-bar-item" data-tab="perfil" onclick="navigateToTab('perfil')"&gt;
