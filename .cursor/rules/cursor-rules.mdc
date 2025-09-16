@@ -45,6 +45,10 @@ This is a UBITS template for creating interfaces quickly with Cursor AI. The val
 1. **❌ NEVER ask users to run servers** - Files must work by double-clicking
 2. **❌ NEVER center titles in product interfaces** - Only left-align in product interfaces
 3. **❌ NEVER create custom buttons** - Always use UBITS Button component
+   - ❌ NEVER create `<button class="my-button">` or similar custom buttons
+   - ❌ NEVER override UBITS button styles with custom CSS
+   - ✅ ALWAYS use: `<button class="ubits-button ubits-button--primary ubits-button--md">`
+   - ✅ ALWAYS import: `components/button.css` and `fontawesome-icons.css`
 4. **❌ NEVER use custom colors or gradients** - Always use UBITS color tokens
 5. **❌ NEVER create custom components** - Always use existing UBITS components
 
@@ -448,6 +452,14 @@ showAlert('success', 'Your message here', { noClose: true });
 **Required files:**
 - `components/button.css`
 - `fontawesome-icons.css` (CRITICAL for icons)
+
+**CRITICAL BUTTON RULES:**
+- ❌ **NEVER create custom buttons** like `<button class="my-button">`
+- ❌ **NEVER override button styles** with custom CSS
+- ❌ **NEVER create button variants** that don't exist
+- ✅ **ALWAYS use existing UBITS button classes**
+- ✅ **ALWAYS import required CSS files**
+- ✅ **ALWAYS test button rendering** before finishing
 
 #### **6. DOCS SIDEBAR (Documentation Navigation)**
 ```html
