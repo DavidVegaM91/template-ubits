@@ -7,6 +7,14 @@ alwaysApply: true
 ## 🎯 PROJECT PURPOSE
 This is a UBITS template for creating interfaces quickly with Cursor AI. The value is maintaining UBITS visual identity while enabling rapid prototyping.
 
+## 🚨 MANDATORY: CHECK COMPONENTS FIRST
+**BEFORE creating ANY UI element (buttons, alerts, etc.), you MUST:**
+1. **ALWAYS check `componentes.html`** to see what UBITS components are available
+2. **NEVER create custom components** when UBITS ones exist
+3. **ALWAYS use existing UBITS components** from the template
+
+**This is MANDATORY and will be checked in every response.**
+
 ## 👥 TARGET USERS & ROLES
 - **Product Managers** - No technical knowledge
 - **Designers** - No coding experience  
@@ -49,6 +57,7 @@ This is a UBITS template for creating interfaces quickly with Cursor AI. The val
    - ❌ NEVER override UBITS button styles with custom CSS
    - ✅ ALWAYS use: `<button class="ubits-button ubits-button--primary ubits-button--md">`
    - ✅ ALWAYS import: `components/button.css` and `fontawesome-icons.css`
+   - 🚨 **MANDATORY:** Before creating ANY button, you MUST check `componentes.html` to see available button variants
 4. **❌ NEVER use custom colors or gradients** - Always use UBITS color tokens
 5. **❌ NEVER create custom components** - Always use existing UBITS components
 6. **❌ NEVER use fictitious CSS classes** - These classes DO NOT EXIST and will break functionality
@@ -517,10 +526,15 @@ document.addEventListener('DOMContentLoaded', function() {
 ### **COMPONENT USAGE RULES**
 
 #### **1. ALWAYS CHECK COMPONENTS FIRST**
-Before creating any UI element, check if a UBITS component exists:
-1. Check `componentes.html` for available components
-2. Check component documentation pages (e.g., `button.html`, `alert.html`)
-3. Use existing components instead of creating custom ones
+**🚨 MANDATORY PROCESS - NO EXCEPTIONS:**
+Before creating ANY UI element, you MUST:
+1. **ALWAYS check `componentes.html`** for available components
+2. **ALWAYS check component documentation pages** (e.g., `button.html`, `alert.html`)
+3. **ALWAYS use existing components** instead of creating custom ones
+4. **NEVER create custom buttons** - UBITS Button component exists
+5. **NEVER create custom alerts** - UBITS Alert component exists
+
+**If you create a custom component when a UBITS one exists, you have FAILED this task.**
 
 #### **2. PROPER COMPONENT LOADING**
 ```html
@@ -647,12 +661,22 @@ document.addEventListener('DOMContentLoaded', function() {
 - **Personalización:** Reemplazar textos entre [corchetes] con información específica
 - **Flujo:** Copiar → Personalizar → Enviar a Cursor AI
 
+### **🚨 MANDATORY: COMPONENT CHECK IN PROMPTS**
+**ALL prompts MUST include this verification step:**
+- **ALWAYS check `componentes.html`** before creating any UI element
+- **NEVER create custom buttons** - UBITS Button component exists
+- **NEVER create custom alerts** - UBITS Alert component exists
+- **ALWAYS use existing UBITS components** from the template
+
 ## ⚠️ VERIFICATION CHECKLIST
 
 Before finishing any task, verify:
 - [ ] **NO SERVER REQUIRED:** Files work by double-clicking (no npm, yarn, or server needed)
 - [ ] **TITLE ALIGNMENT:** Product interfaces have left-aligned titles (NOT centered)
 - [ ] **COMPONENTS:** Using existing UBITS components (NOT custom buttons/alerts)
+- [ ] **COMPONENTS:** Checked `componentes.html` before creating any UI element
+- [ ] **COMPONENTS:** NO custom buttons created (UBITS Button component exists)
+- [ ] **COMPONENTS:** NO custom alerts created (UBITS Alert component exists)
 - [ ] **COLORS:** Using UBITS tokens ONLY (NO custom colors or gradients)
 - [ ] No hardcoded colors (#303a47, #ffffff, etc.)
 - [ ] **TYPOGRAPHY:** All text uses UBITS typography classes from official list
