@@ -27,10 +27,11 @@ const TOP_NAV_VARIANTS = {
     aprendizaje: {
         name: 'Aprendizaje',
         tabs: [
-            { id: 'home', label: 'Inicio', icon: 'far fa-home', url: 'index.html' },
-            { id: 'catalog', label: 'Catálogo', icon: 'far fa-book', url: 'catalogo.html' },
-            { id: 'corporate', label: 'U. Corporativa', icon: 'far fa-building-columns', url: 'universidad-corporativa.html' },
-            { id: 'study-zone', label: 'Zona de estudio', icon: 'far fa-books', url: 'zona-estudio.html' }
+            { id: 'home', label: 'Inicio', icon: 'far fa-home' },
+            { id: 'catalog', label: 'Catálogo', icon: 'far fa-book' },
+            { id: 'corporate', label: 'U. Corporativa', icon: 'far fa-building-columns' },
+            { id: 'study-zone', label: 'Zona de estudio', icon: 'far fa-books' },
+            { id: 'favorites', label: 'Favoritos', icon: 'far fa-heart', active: true }
         ]
     },
     desempeno: {
@@ -102,12 +103,16 @@ function getTopNavHTML(variant = 'template', customTabs = []) {
             tabsHTML = normalTabs + hamburgerMenu;
         } else {
             // Para otras variantes, usar solo tabs normales
-            tabsHTML = tabs.map(tab => `
-                <button class="nav-tab" data-tab="${tab.id}" onclick="navigateToTab('${tab.id}', '${variant}')">
-                    <i class="fa ${tab.icon}"></i>
-                    <span class="ubits-body-sm-regular">${tab.label}</span>
-                </button>
-            `).join('');
+            tabsHTML = tabs.map(tab => {
+                const activeClass = tab.active ? ' active' : '';
+                const clickHandler = tab.url ? `onclick="navigateToTab('${tab.id}', '${variant}')"` : '';
+                return `
+                    <button class="nav-tab${activeClass}" data-tab="${tab.id}" ${clickHandler}>
+                        <i class="fa ${tab.icon}"></i>
+                        <span class="ubits-body-sm-regular">${tab.label}</span>
+                    </button>
+                `;
+            }).join('');
             
             // Para la variante template, agregar mensaje de personalización
             if (variant === 'template') {
@@ -350,6 +355,24 @@ function getAllTopNavVariants() {
 window.navigateToTab = function(tabId, variant) {
     console.log('Navigating:', tabId, variant);
     
+    // Para la variante aprendizaje, no cambiar estados activos
+    // Solo permitir navegación si tiene URL
+    if (variant === 'aprendizaje') {
+        const variantConfig = getTopNavVariant(variant);
+        if (variantConfig && variantConfig.tabs) {
+            const tabConfig = variantConfig.tabs.find(t => t.id === tabId);
+            if (tabConfig && tabConfig.url) {
+                console.log('Going to:', tabConfig.url);
+                window.location.href = tabConfig.url;
+                return;
+            }
+        }
+        // Si no tiene URL, no hacer nada (mantener estado actual)
+        console.log('Tab clicked but no action taken (no URL):', tabId);
+        return;
+    }
+    
+    // Para otras variantes, comportamiento normal
     const variantConfig = getTopNavVariant(variant);
     if (variantConfig && variantConfig.tabs) {
         const tabConfig = variantConfig.tabs.find(t => t.id === tabId);

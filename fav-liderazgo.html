@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liderazgo - Mis Favoritos | UBITS</title>
+    
+    <!-- Estilos locales -->
+    <link rel="stylesheet" href="ubits-colors.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="fontawesome-icons.css">
+    <link rel="stylesheet" href="ubits-typography.css">
+    <link rel="stylesheet" href="components/sub-nav.css">
+    <link rel="stylesheet" href="components/button.css">
+    <link rel="stylesheet" href="favorites-interface.css">
+</head>
+<body class="favorites-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+
+        <!-- Sidebar Container -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navigation -->
+            <div id="top-nav-container"></div>
+            
+            <!-- Content Area -->
+            <div class="content-area">
+                <div class="favorites-interface">
+                    <!-- Vista de Cursos de Liderazgo -->
+                    <div class="courses-view">
+                        <div class="courses-header">
+                            <button class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only" onclick="window.location.href='index.html'">
+                                <i class="far fa-arrow-left"></i>
+                            </button>
+                            <div class="courses-title">
+                                <h1 class="ubits-heading-h1">Liderazgo</h1>
+                                <p class="ubits-body-md-regular">5 cursos guardados</p>
+                            </div>
+                            <div class="courses-actions">
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" id="sort-btn">
+                                    <i class="far fa-sort"></i>
+                                    <span>Ordenar</span>
+                                </button>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" id="filter-btn">
+                                    <i class="far fa-filter"></i>
+                                    <span>Filtrar</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="courses-grid">
+                            <!-- Curso 1 -->
+                            <div class="course-card" data-progress="60">
+                                <div class="course-thumbnail-wrapper">
+                                    <div class="course-thumbnail">
+                                        <img src="images/cards-learn/Conecta_tus_ideas_en_ingles_1af766ab79.jpg" alt="Liderazgo en equipos remotos" class="course-image">
+                                    </div>
+                                    <div class="course-progress-overlay">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 60%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="course-content">
+                                    <div class="course-header">
+                                        <div class="course-type-status">
+                                            <span class="course-type ubits-body-xs-regular">Curso</span>
+                                            <span class="course-status course-status--progress ubits-body-xs-bold">En progreso</span>
+                                        </div>
+                                    </div>
+                                    <h3 class="course-title ubits-body-sm-bold">Liderazgo en equipos remotos</h3>
+                                    <div class="course-provider">
+                                        <div class="provider-avatar">
+                                            <img src="images/Favicons/Advanced-English.jpg" alt="Advanced English" class="provider-icon">
+                                        </div>
+                                        <span class="provider-name ubits-body-xs-regular">Advanced English</span>
+                                    </div>
+                                    <div class="course-competency">
+                                        <i class="far fa-tag"></i>
+                                        <span class="ubits-body-xs-regular">Liderazgo</span>
+                                    </div>
+                                    <div class="course-specs">
+                                        <div class="spec-item">
+                                            <i class="far fa-signal"></i>
+                                            <span class="ubits-body-xs-regular">Avanzado</span>
+                                        </div>
+                                        <div class="spec-item">
+                                            <i class="far fa-clock"></i>
+                                            <span class="ubits-body-xs-regular">3h 15m</span>
+                                        </div>
+                                        <div class="spec-item">
+                                            <i class="far fa-globe"></i>
+                                            <span class="ubits-body-xs-regular">Español</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Curso 2 -->
+                            <div class="course-card" data-progress="100">
+                                <div class="course-thumbnail-wrapper">
+                                    <div class="course-thumbnail">
+                                        <img src="images/cards-learn/n589__comunicacion_al_interior_del_equipo_de_trabajo.jpg" alt="Comunicación asertiva" class="course-image">
+                                    </div>
+                                    <div class="course-progress-overlay">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 100%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="course-content">
+                                    <div class="course-header">
+                                        <div class="course-type-status">
+                                            <span class="course-type ubits-body-xs-regular">Curso</span>
+                                            <span class="course-status course-status--completed ubits-body-xs-bold">Completado</span>
+                                        </div>
+                                    </div>
+                                    <h3 class="course-title ubits-body-sm-bold">Comunicación asertiva</h3>
+                                    <div class="course-provider">
+                                        <div class="provider-avatar">
+                                            <img src="images/Favicons/Hubspot.jpg" alt="Hubspot" class="provider-icon">
+                                        </div>
+                                        <span class="provider-name ubits-body-xs-regular">Hubspot</span>
+                                    </div>
+                                    <div class="course-competency">
+                                        <i class="far fa-tag"></i>
+                                        <span class="ubits-body-xs-regular">Liderazgo</span>
+                                    </div>
+                                    <div class="course-specs">
+                                        <div class="spec-item">
+                                            <i class="far fa-signal"></i>
+                                            <span class="ubits-body-xs-regular">Intermedio</span>
+                                        </div>
+                                        <div class="spec-item">
+                                            <i class="far fa-clock"></i>
+                                            <span class="ubits-body-xs-regular">2h 20m</span>
+                                        </div>
+                                        <div class="spec-item">
+                                            <i class="far fa-globe"></i>
+                                            <span class="ubits-body-xs-regular">Español</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Curso 3 -->
+                            <div class="course-card" data-progress="30">
+                                <div class="course-thumbnail-wrapper">
+                                    <div class="course-thumbnail">
+                                        <img src="images/cards-learn/Portada_164_El-proceso-natural-de-la-gestión-del-cambio.jpg" alt="Gestión del cambio" class="course-image">
+                                    </div>
+                                    <div class="course-progress-overlay">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 30%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="course-content">
+                                    <div class="course-header">
+                                        <div class="course-type-status">
+                                            <span class="course-type ubits-body-xs-regular">Curso</span>
+                                            <span class="course-status course-status--progress ubits-body-xs-bold">En progreso</span>
+                                        </div>
+                                    </div>
+                                    <h3 class="course-title ubits-body-sm-bold">Gestión del cambio</h3>
+                                    <div class="course-provider">
+                                        <div class="provider-avatar">
+                                            <img src="images/Favicons/Universidad-de-Los Andes.jpg" alt="Universidad de Los Andes" class="provider-icon">
+                                        </div>
+                                        <span class="provider-name ubits-body-xs-regular">Universidad de Los Andes</span>
+                                    </div>
+                                    <div class="course-competency">
+                                        <i class="far fa-tag"></i>
+                                        <span class="ubits-body-xs-regular">Liderazgo</span>
+                                    </div>
+                                    <div class="course-specs">
+                                        <div class="spec-item">
+                                            <i class="far fa-signal"></i>
+                                            <span class="ubits-body-xs-regular">Avanzado</span>
+                                        </div>
+                                        <div class="spec-item">
+                                            <i class="far fa-clock"></i>
+                                            <span class="ubits-body-xs-regular">4h 00m</span>
+                                        </div>
+                                        <div class="spec-item">
+                                            <i class="far fa-globe"></i>
+                                            <span class="ubits-body-xs-regular">Español</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Curso 4 -->
+                            <div class="course-card" data-progress="0">
+                                <div class="course-thumbnail-wrapper">
+                                    <div class="course-thumbnail">
+                                        <img src="images/cards-learn/4686247901d58a1c931b15b46c503709.jpeg" alt="Delegación efectiva" class="course-image">
+                                    </div>
+                                </div>
+                                <div class="course-content">
+                                    <div class="course-header">
+                                        <div class="course-type-status">
+                                            <span class="course-type ubits-body-xs-regular">Curso</span>
+                                        </div>
+                                    </div>
+                                    <h3 class="course-title ubits-body-sm-bold">Delegación efectiva</h3>
+                                    <div class="course-provider">
+                                        <div class="provider-avatar">
+                                            <img src="images/Favicons/All Ears English.jpg" alt="All Ears English" class="provider-icon">
+                                        </div>
+                                        <span class="provider-name ubits-body-xs-regular">All Ears English</span>
+                                    </div>
+                                    <div class="course-competency">
+                                        <i class="far fa-tag"></i>
+                                        <span class="ubits-body-xs-regular">Liderazgo</span>
+                                    </div>
+                                    <div class="course-specs">
+                                        <div class="spec-item">
+                                            <i class="far fa-signal"></i>
+                                            <span class="ubits-body-xs-regular">Intermedio</span>
+                                        </div>
+                                        <div class="spec-item">
+                                            <i class="far fa-clock"></i>
+                                            <span class="ubits-body-xs-regular">1h 50m</span>
+                                        </div>
+                                        <div class="spec-item">
+                                            <i class="far fa-globe"></i>
+                                            <span class="ubits-body-xs-regular">Español</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Curso 5 -->
+                            <div class="course-card" data-progress="0">
+                                <div class="course-thumbnail-wrapper">
+                                    <div class="course-thumbnail">
+                                        <img src="images/cards-learn/d725ff2ff267bc0768d7a031a1e49fba.jpeg" alt="Motivación de equipos" class="course-image">
+                                    </div>
+                                </div>
+                                <div class="course-content">
+                                    <div class="course-header">
+                                        <div class="course-type-status">
+                                            <span class="course-type ubits-body-xs-regular">Curso</span>
+                                        </div>
+                                    </div>
+                                    <h3 class="course-title ubits-body-sm-bold">Motivación de equipos</h3>
+                                    <div class="course-provider">
+                                        <div class="provider-avatar">
+                                            <img src="images/Favicons/Hackers-del-Talento.jpg" alt="Hackers del Talento" class="provider-icon">
+                                        </div>
+                                        <span class="provider-name ubits-body-xs-regular">Hackers del Talento</span>
+                                    </div>
+                                    <div class="course-competency">
+                                        <i class="far fa-tag"></i>
+                                        <span class="ubits-body-xs-regular">Liderazgo</span>
+                                    </div>
+                                    <div class="course-specs">
+                                        <div class="spec-item">
+                                            <i class="far fa-signal"></i>
+                                            <span class="ubits-body-xs-regular">Intermedio</span>
+                                        </div>
+                                        <div class="spec-item">
+                                            <i class="far fa-clock"></i>
+                                            <span class="ubits-body-xs-regular">2h 30m</span>
+                                        </div>
+                                        <div class="spec-item">
+                                            <i class="far fa-globe"></i>
+                                            <span class="ubits-body-xs-regular">Español</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Tab Bar Container -->
+    <div id="tab-bar-container"></div>
+
+    <!-- Floating Menu Container -->
+    <div id="floating-menu-container"></div>
+    
+    <script src="components/sidebar.js"></script>
+    <script src="components/sub-nav.js"></script>
+    <script src="script.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cargar sidebar con variante aprendizaje
+            loadSidebar('sidebar-container', 'aprendizaje');
+            // Cargar sub-nav con variante aprendizaje
+            loadSubNav('top-nav-container', 'aprendizaje');
+            // Cargar tab-bar con variante modulos
+            loadTabBar('tab-bar-container', 'modulos');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diseño - Mis Favoritos | UBITS</title>
+    
+    <!-- Estilos locales -->
+    <link rel="stylesheet" href="ubits-colors.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="fontawesome-icons.css">
+    <link rel="stylesheet" href="ubits-typography.css">
+    <link rel="stylesheet" href="components/sub-nav.css">
+    <link rel="stylesheet" href="components/button.css">
+    <link rel="stylesheet" href="favorites-interface.css">
+</head>
+<body class="favorites-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+
+        <!-- Sidebar Container -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navigation -->
+            <div id="top-nav-container"></div>
+            
+            <!-- Content Area -->
+            <div class="content-area">
+                <div class="favorites-interface">
+                    <!-- Vista de Cursos de Diseño -->
+                    <div class="courses-view">
+                        <div class="courses-header">
+                            <button class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only" onclick="window.location.href='index.html'">
+                                <i class="far fa-arrow-left"></i>
+                            </button>
+                            <div class="courses-title">
+                                <h1 class="ubits-heading-h1">Diseño</h1>
+                                <p class="ubits-body-md-regular">8 cursos guardados</p>
+                            </div>
+                            <div class="courses-actions">
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" id="sort-btn">
+                                    <i class="far fa-sort"></i>
+                                    <span>Ordenar</span>
+                                </button>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" id="filter-btn">
+                                    <i class="far fa-filter"></i>
+                                    <span>Filtrar</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="courses-grid">
+                            <!-- Curso 1 -->
+                            <div class="course-card" data-progress="75">
+                                <div class="course-thumbnail-wrapper">
+                                    <div class="course-thumbnail">
+                                        <img src="images/cards-learn/image-course.jpg" alt="Diseño de interfaces avanzado" class="course-image">
+                                    </div>
+                                    <div class="course-progress-overlay">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 75%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="course-content">
+                                    <div class="course-header">
+                                        <div class="course-type-status">
+                                            <span class="course-type ubits-body-xs-regular">Curso</span>
+                                            <span class="course-status course-status--progress ubits-body-xs-bold">En progreso</span>
+                                        </div>
+                                    </div>
+                                    <h3 class="course-title ubits-body-sm-bold">Diseño de interfaces avanzado</h3>
+                                    <div class="course-provider">
+                                        <div class="provider-avatar">
+                                            <img src="images/Favicons/UBITS.jpg" alt="UBITS" class="provider-icon">
+                                        </div>
+                                        <span class="provider-name ubits-body-xs-regular">UBITS</span>
+                                    </div>
+                                    <div class="course-competency">
+                                        <i class="far fa-tag"></i>
+                                        <span class="ubits-body-xs-regular">Product Design</span>
+                                    </div>
+                                    <div class="course-specs">
+                                        <div class="spec-item">
+                                            <i class="far fa-signal"></i>
+                                            <span class="ubits-body-xs-regular">Intermedio</span>
+                                        </div>
+                                        <div class="spec-item">
+                                            <i class="far fa-clock"></i>
+                                            <span class="ubits-body-xs-regular">2h 30m</span>
+                                        </div>
+                                        <div class="spec-item">
+                                            <i class="far fa-globe"></i>
+                                            <span class="ubits-body-xs-regular">Español</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Curso 2 -->
+                            <div class="course-card" data-progress="100">
+                                <div class="course-thumbnail-wrapper">
+                                    <div class="course-thumbnail">
+                                        <img src="images/cards-learn/4686247901d58a1c931b15b46c503709.jpeg" alt="Principios de diseño visual" class="course-image">
+                                    </div>
+                                    <div class="course-progress-overlay">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 100%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="course-content">
+                                    <div class="course-header">
+                                        <div class="course-type-status">
+                                            <span class="course-type ubits-body-xs-regular">Curso</span>
+                                            <span class="course-status course-status--completed ubits-body-xs-bold">Completado</span>
+                                        </div>
+                                    </div>
+                                    <h3 class="course-title ubits-body-sm-bold">Principios de diseño visual</h3>
+                                    <div class="course-provider">
+                                        <div class="provider-avatar">
+                                            <img src="images/Favicons/Harvard-Business-Publishing.jpg" alt="Harvard Business Publishing" class="provider-icon">
+                                        </div>
+                                        <span class="provider-name ubits-body-xs-regular">Harvard Business Publishing</span>
+                                    </div>
+                                    <div class="course-competency">
+                                        <i class="far fa-tag"></i>
+                                        <span class="ubits-body-xs-regular">Product Design</span>
+                                    </div>
+                                    <div class="course-specs">
+                                        <div class="spec-item">
+                                            <i class="far fa-signal"></i>
+                                            <span class="ubits-body-xs-regular">Principiante</span>
+                                        </div>
+                                        <div class="spec-item">
+                                            <i class="far fa-clock"></i>
+                                            <span class="ubits-body-xs-regular">1h 45m</span>
+                                        </div>
+                                        <div class="spec-item">
+                                            <i class="far fa-globe"></i>
+                                            <span class="ubits-body-xs-regular">Español</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Curso 3 -->
+                            <div class="course-card" data-progress="25">
+                                <div class="course-thumbnail-wrapper">
+                                    <div class="course-thumbnail">
+                                        <img src="images/cards-learn/9f325d8da443022860867d6a43a571fa.jpeg" alt="Prototipado con Figma" class="course-image">
+                                    </div>
+                                    <div class="course-progress-overlay">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 25%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="course-content">
+                                    <div class="course-header">
+                                        <div class="course-type-status">
+                                            <span class="course-type ubits-body-xs-regular">Curso</span>
+                                            <span class="course-status course-status--progress ubits-body-xs-bold">En progreso</span>
+                                        </div>
+                                    </div>
+                                    <h3 class="course-title ubits-body-sm-bold">Prototipado con Figma</h3>
+                                    <div class="course-provider">
+                                        <div class="provider-avatar">
+                                            <img src="images/Favicons/Microsoft.jpg" alt="Microsoft" class="provider-icon">
+                                        </div>
+                                        <span class="provider-name ubits-body-xs-regular">Microsoft</span>
+                                    </div>
+                                    <div class="course-competency">
+                                        <i class="far fa-tag"></i>
+                                        <span class="ubits-body-xs-regular">Product Design</span>
+                                    </div>
+                                    <div class="course-specs">
+                                        <div class="spec-item">
+                                            <i class="far fa-signal"></i>
+                                            <span class="ubits-body-xs-regular">Intermedio</span>
+                                        </div>
+                                        <div class="spec-item">
+                                            <i class="far fa-clock"></i>
+                                            <span class="ubits-body-xs-regular">3h 15m</span>
+                                        </div>
+                                        <div class="spec-item">
+                                            <i class="far fa-globe"></i>
+                                            <span class="ubits-body-xs-regular">Español</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Curso 4 -->
+                            <div class="course-card" data-progress="50">
+                                <div class="course-thumbnail-wrapper">
+                                    <div class="course-thumbnail">
+                                        <img src="images/cards-learn/d725ff2ff267bc0768d7a031a1e49fba.jpeg" alt="Diseño responsive" class="course-image">
+                                    </div>
+                                    <div class="course-progress-overlay">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 50%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="course-content">
+                                    <div class="course-header">
+                                        <div class="course-type-status">
+                                            <span class="course-type ubits-body-xs-regular">Curso</span>
+                                            <span class="course-status course-status--progress ubits-body-xs-bold">En progreso</span>
+                                        </div>
+                                    </div>
+                                    <h3 class="course-title ubits-body-sm-bold">Diseño responsive</h3>
+                                    <div class="course-provider">
+                                        <div class="provider-avatar">
+                                            <img src="images/Favicons/TED.jpg" alt="TED" class="provider-icon">
+                                        </div>
+                                        <span class="provider-name ubits-body-xs-regular">TED</span>
+                                    </div>
+                                    <div class="course-competency">
+                                        <i class="far fa-tag"></i>
+                                        <span class="ubits-body-xs-regular">Product Design</span>
+                                    </div>
+                                    <div class="course-specs">
+                                        <div class="spec-item">
+                                            <i class="far fa-signal"></i>
+                                            <span class="ubits-body-xs-regular">Intermedio</span>
+                                        </div>
+                                        <div class="spec-item">
+                                            <i class="far fa-clock"></i>
+                                            <span class="ubits-body-xs-regular">2h 00m</span>
+                                        </div>
+                                        <div class="spec-item">
+                                            <i class="far fa-globe"></i>
+                                            <span class="ubits-body-xs-regular">Español</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Curso 5 -->
+                            <div class="course-card" data-progress="0">
+                                <div class="course-thumbnail-wrapper">
+                                    <div class="course-thumbnail">
+                                        <img src="images/cards-learn/e949a565568e1386ee3b3f051209a7cd.jpeg" alt="Sistemas de diseño" class="course-image">
+                                    </div>
+                                </div>
+                                <div class="course-content">
+                                    <div class="course-header">
+                                        <div class="course-type-status">
+                                            <span class="course-type ubits-body-xs-regular">Curso</span>
+                                        </div>
+                                    </div>
+                                    <h3 class="course-title ubits-body-sm-bold">Sistemas de diseño</h3>
+                                    <div class="course-provider">
+                                        <div class="provider-avatar">
+                                            <img src="images/Favicons/AWS.jpg" alt="AWS" class="provider-icon">
+                                        </div>
+                                        <span class="provider-name ubits-body-xs-regular">AWS</span>
+                                    </div>
+                                    <div class="course-competency">
+                                        <i class="far fa-tag"></i>
+                                        <span class="ubits-body-xs-regular">Product Design</span>
+                                    </div>
+                                    <div class="course-specs">
+                                        <div class="spec-item">
+                                            <i class="far fa-signal"></i>
+                                            <span class="ubits-body-xs-regular">Avanzado</span>
+                                        </div>
+                                        <div class="spec-item">
+                                            <i class="far fa-clock"></i>
+                                            <span class="ubits-body-xs-regular">4h 20m</span>
+                                        </div>
+                                        <div class="spec-item">
+                                            <i class="far fa-globe"></i>
+                                            <span class="ubits-body-xs-regular">Español</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Curso 6 -->
+                            <div class="course-card" data-progress="0">
+                                <div class="course-thumbnail-wrapper">
+                                    <div class="course-thumbnail">
+                                        <img src="images/cards-learn/Gestion_vial_360_Asegura_tu_entorno_laboral_682d62c97d.jpg" alt="Animaciones en UI" class="course-image">
+                                    </div>
+                                </div>
+                                <div class="course-content">
+                                    <div class="course-header">
+                                        <div class="course-type-status">
+                                            <span class="course-type ubits-body-xs-regular">Curso</span>
+                                        </div>
+                                    </div>
+                                    <h3 class="course-title ubits-body-sm-bold">Animaciones en UI</h3>
+                                    <div class="course-provider">
+                                        <div class="provider-avatar">
+                                            <img src="images/Favicons/WOBI.jpg" alt="WOBI" class="provider-icon">
+                                        </div>
+                                        <span class="provider-name ubits-body-xs-regular">WOBI</span>
+                                    </div>
+                                    <div class="course-competency">
+                                        <i class="far fa-tag"></i>
+                                        <span class="ubits-body-xs-regular">Product Design</span>
+                                    </div>
+                                    <div class="course-specs">
+                                        <div class="spec-item">
+                                            <i class="far fa-signal"></i>
+                                            <span class="ubits-body-xs-regular">Intermedio</span>
+                                        </div>
+                                        <div class="spec-item">
+                                            <i class="far fa-clock"></i>
+                                            <span class="ubits-body-xs-regular">1h 30m</span>
+                                        </div>
+                                        <div class="spec-item">
+                                            <i class="far fa-globe"></i>
+                                            <span class="ubits-body-xs-regular">Español</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Curso 7 -->
+                            <div class="course-card" data-progress="0">
+                                <div class="course-thumbnail-wrapper">
+                                    <div class="course-thumbnail">
+                                        <img src="images/cards-learn/n591_-_administracion_efectiva_del_tiempo.jpg" alt="Accesibilidad en diseño" class="course-image">
+                                    </div>
+                                </div>
+                                <div class="course-content">
+                                    <div class="course-header">
+                                        <div class="course-type-status">
+                                            <span class="course-type ubits-body-xs-regular">Curso</span>
+                                        </div>
+                                    </div>
+                                    <h3 class="course-title ubits-body-sm-bold">Accesibilidad en diseño</h3>
+                                    <div class="course-provider">
+                                        <div class="provider-avatar">
+                                            <img src="images/Favicons/Bureau-Veritas.jpg" alt="Bureau Veritas" class="provider-icon">
+                                        </div>
+                                        <span class="provider-name ubits-body-xs-regular">Bureau Veritas</span>
+                                    </div>
+                                    <div class="course-competency">
+                                        <i class="far fa-tag"></i>
+                                        <span class="ubits-body-xs-regular">Product Design</span>
+                                    </div>
+                                    <div class="course-specs">
+                                        <div class="spec-item">
+                                            <i class="far fa-signal"></i>
+                                            <span class="ubits-body-xs-regular">Intermedio</span>
+                                        </div>
+                                        <div class="spec-item">
+                                            <i class="far fa-clock"></i>
+                                            <span class="ubits-body-xs-regular">2h 45m</span>
+                                        </div>
+                                        <div class="spec-item">
+                                            <i class="far fa-globe"></i>
+                                            <span class="ubits-body-xs-regular">Español</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Curso 8 -->
+                            <div class="course-card" data-progress="0">
+                                <div class="course-thumbnail-wrapper">
+                                    <div class="course-thumbnail">
+                                        <img src="images/cards-learn/image-course.jpg" alt="Design thinking" class="course-image">
+                                    </div>
+                                </div>
+                                <div class="course-content">
+                                    <div class="course-header">
+                                        <div class="course-type-status">
+                                            <span class="course-type ubits-body-xs-regular">Curso</span>
+                                        </div>
+                                    </div>
+                                    <h3 class="course-title ubits-body-sm-bold">Design thinking</h3>
+                                    <div class="course-provider">
+                                        <div class="provider-avatar">
+                                            <img src="images/Favicons/IE-University-Publishing.jpg" alt="IE University" class="provider-icon">
+                                        </div>
+                                        <span class="provider-name ubits-body-xs-regular">IE University</span>
+                                    </div>
+                                    <div class="course-competency">
+                                        <i class="far fa-tag"></i>
+                                        <span class="ubits-body-xs-regular">Product Design</span>
+                                    </div>
+                                    <div class="course-specs">
+                                        <div class="spec-item">
+                                            <i class="far fa-signal"></i>
+                                            <span class="ubits-body-xs-regular">Principiante</span>
+                                        </div>
+                                        <div class="spec-item">
+                                            <i class="far fa-clock"></i>
+                                            <span class="ubits-body-xs-regular">3h 30m</span>
+                                        </div>
+                                        <div class="spec-item">
+                                            <i class="far fa-globe"></i>
+                                            <span class="ubits-body-xs-regular">Español</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Tab Bar Container -->
+    <div id="tab-bar-container"></div>
+
+    <!-- Floating Menu Container -->
+    <div id="floating-menu-container"></div>
+    
+    <script src="components/sidebar.js"></script>
+    <script src="components/sub-nav.js"></script>
+    <script src="script.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cargar sidebar con variante aprendizaje
+            loadSidebar('sidebar-container', 'aprendizaje');
+            // Cargar sub-nav con variante aprendizaje
+            loadSubNav('top-nav-container', 'aprendizaje');
+            // Cargar tab-bar con variante modulos
+            loadTabBar('tab-bar-container', 'modulos');
+        });
+    </script>
+</body>
+</html>

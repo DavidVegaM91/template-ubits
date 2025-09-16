@@ -14,6 +14,8 @@
     <link rel="stylesheet" href="components/tab-bar.css">
     <link rel="stylesheet" href="components/floating-menu.css">
     <link rel="stylesheet" href="components/profile-menu.css">
+    <link rel="stylesheet" href="components/button.css">
+    <link rel="stylesheet" href="favorites-interface.css">
 </head>
 <body data-theme="light">
     <div class="dashboard-container">
@@ -28,9 +30,194 @@
             <div id="top-nav-container"></div>
             <!-- Content Area -->
             <div class="content-area">
-                <!-- Content wrapper que ocupa todo el ancho -->
-                <div class="content-wrapper">
-                    <p class="ubits-body-md-regular">Pídele a Cursor que reemplace este Content wrapper con la interfaz que necesitas</p>
+                <!-- Interfaz de Favoritos -->
+                <div class="favorites-interface">
+                    <!-- Vista de Colecciones (Carpetas) -->
+                    <div class="collections-view" id="collections-view">
+                        <div class="collections-header">
+                            <h1 class="ubits-heading-h1">Mis favoritos</h1>
+                            <button class="ubits-button ubits-button--primary ubits-button--md" id="create-collection-btn">
+                                <i class="far fa-plus"></i>
+                                <span>Nueva colección</span>
+                            </button>
+                        </div>
+                        
+                        <div class="collections-grid">
+                            <!-- Colección 1: Diseño -->
+                            <a href="fav-diseño.html" class="collection-card" data-collection="diseño">
+                                <div class="collection-icon">
+                                    <i class="far fa-palette"></i>
+                                </div>
+                                <div class="collection-info">
+                                    <h3 class="ubits-body-md-bold">Diseño</h3>
+                                    <p class="ubits-body-sm-regular">8 cursos guardados</p>
+                                </div>
+                                <div class="collection-actions">
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" title="Editar">
+                                        <i class="far fa-edit"></i>
+                                    </button>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" title="Eliminar">
+                                        <i class="far fa-trash"></i>
+                                    </button>
+                                </div>
+                            </a>
+
+                            <!-- Colección 2: Liderazgo -->
+                            <a href="fav-liderazgo.html" class="collection-card" data-collection="liderazgo">
+                                <div class="collection-icon">
+                                    <i class="far fa-users"></i>
+                                </div>
+                                <div class="collection-info">
+                                    <h3 class="ubits-body-md-bold">Liderazgo</h3>
+                                    <p class="ubits-body-sm-regular">5 cursos guardados</p>
+                                </div>
+                                <div class="collection-actions">
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" title="Editar">
+                                        <i class="far fa-edit"></i>
+                                    </button>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" title="Eliminar">
+                                        <i class="far fa-trash"></i>
+                                    </button>
+                                </div>
+                            </a>
+
+                            <!-- Colección 3: Productividad -->
+                            <a href="fav-productividad.html" class="collection-card" data-collection="productividad">
+                                <div class="collection-icon">
+                                    <i class="far fa-rocket"></i>
+                                </div>
+                                <div class="collection-info">
+                                    <h3 class="ubits-body-md-bold">Productividad</h3>
+                                    <p class="ubits-body-sm-regular">0 cursos guardados</p>
+                                </div>
+                                <div class="collection-actions">
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" title="Editar">
+                                        <i class="far fa-edit"></i>
+                                    </button>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" title="Eliminar">
+                                        <i class="far fa-trash"></i>
+                                    </button>
+                                </div>
+                            </a>
+
+                            <!-- Colección 4: Comunicación -->
+                            <a href="fav-comunicacion.html" class="collection-card" data-collection="comunicacion">
+                                <div class="collection-icon">
+                                    <i class="far fa-comments"></i>
+                                </div>
+                                <div class="collection-info">
+                                    <h3 class="ubits-body-md-bold">Comunicación</h3>
+                                    <p class="ubits-body-sm-regular">0 cursos guardados</p>
+                                </div>
+                                <div class="collection-actions">
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" title="Editar">
+                                        <i class="far fa-edit"></i>
+                                    </button>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" title="Eliminar">
+                                        <i class="far fa-trash"></i>
+                                    </button>
+                                </div>
+                            </a>
+
+                            <!-- Colección 5: Tecnología -->
+                            <a href="fav-tecnologia.html" class="collection-card" data-collection="tecnologia">
+                                <div class="collection-icon">
+                                    <i class="far fa-code"></i>
+                                </div>
+                                <div class="collection-info">
+                                    <h3 class="ubits-body-md-bold">Tecnología</h3>
+                                    <p class="ubits-body-sm-regular">0 cursos guardados</p>
+                                </div>
+                                <div class="collection-actions">
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" title="Editar">
+                                        <i class="far fa-edit"></i>
+                                    </button>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" title="Eliminar">
+                                        <i class="far fa-trash"></i>
+                                    </button>
+                                </div>
+                            </a>
+
+                            <!-- Colección 6: Marketing -->
+                            <a href="fav-marketing.html" class="collection-card" data-collection="marketing">
+                                <div class="collection-icon">
+                                    <i class="far fa-bullhorn"></i>
+                                </div>
+                                <div class="collection-info">
+                                    <h3 class="ubits-body-md-bold">Marketing</h3>
+                                    <p class="ubits-body-sm-regular">0 cursos guardados</p>
+                                </div>
+                                <div class="collection-actions">
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" title="Editar">
+                                        <i class="far fa-edit"></i>
+                                    </button>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" title="Eliminar">
+                                        <i class="far fa-trash"></i>
+                                    </button>
+                                </div>
+                            </a>
+
+                        </div>
+                        
+                        <div class="empty-state" id="collections-empty-state" style="display: none;">
+                            <div class="empty-state-content">
+                                <div class="empty-state-illustration">
+                                    <img src="images/empty-states/sin-resultados-img.svg" alt="Sin colecciones" width="220" height="200">
+                                </div>
+                                <div class="empty-state-text">
+                                    <div class="empty-state-title ubits-heading-h2">No tienes colecciones aún</div>
+                                    <div class="empty-state-description ubits-body-md-regular">Crea tu primera colección para organizar tus cursos favoritos y acceder a ellos fácilmente.</div>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--md" onclick="createCollection()">
+                                        <i class="far fa-plus"></i>
+                                        <span>Crear colección</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vista de Cursos dentro de una Colección -->
+                    <div class="courses-view" id="courses-view" style="display: none;">
+                        <div class="courses-header">
+                            <button class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only" id="back-to-collections">
+                                <i class="far fa-arrow-left"></i>
+                            </button>
+                            <div class="courses-title">
+                                <h1 class="ubits-heading-h1" id="current-collection-name">Diseño</h1>
+                                <p class="ubits-body-md-regular" id="current-collection-count">8 cursos guardados</p>
+                            </div>
+                            <div class="courses-actions">
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" id="sort-btn">
+                                    <i class="far fa-sort"></i>
+                                    <span>Ordenar</span>
+                                </button>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" id="filter-btn">
+                                    <i class="far fa-filter"></i>
+                                    <span>Filtrar</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="courses-grid" id="courses-grid">
+                            <!-- Los cursos se cargarán dinámicamente -->
+                        </div>
+                        
+                        <div class="empty-state" id="courses-empty-state" style="display: none;">
+                            <div class="empty-state-content">
+                                <div class="empty-state-illustration">
+                                    <img src="images/empty-states/sin-resultados-img.svg" alt="Sin cursos" width="220" height="200">
+                                </div>
+                                <div class="empty-state-text">
+                                    <div class="empty-state-title ubits-heading-h2">Esta colección está vacía</div>
+                                    <div class="empty-state-description ubits-body-md-regular">Aún no has guardado ningún curso en esta colección. Explora los cursos disponibles y añádelos a tus favoritos.</div>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--md" onclick="exploreCourses()">
+                                        <i class="far fa-search"></i>
+                                        <span>Explorar cursos</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
@@ -54,11 +241,311 @@
     <script>
         // Cargar componentes dinámicamente
         document.addEventListener('DOMContentLoaded', function() {
-            loadSidebar();
-            loadSubNav('top-nav-container', 'template');
-            loadTabBar('tab-bar-container');
+            loadSidebar('sidebar-container', 'aprendizaje');
+            loadSubNav('top-nav-container', 'aprendizaje');
+            loadTabBar('tab-bar-container', 'modulos');
             loadFloatingMenu('floating-menu-container');
             loadProfileMenu('profile-menu-container');
+            
+            // Funcionalidad de la interfaz de favoritos
+            const collectionsView = document.getElementById('collections-view');
+            const coursesView = document.getElementById('courses-view');
+            const backToCollectionsBtn = document.getElementById('back-to-collections');
+            const createCollectionBtn = document.getElementById('create-collection-btn');
+            const collectionCards = document.querySelectorAll('.collection-card');
+            
+            // Datos de ejemplo para los cursos
+            const coursesData = {
+                'diseño': [
+                    {
+                        title: 'Diseño de interfaces avanzado',
+                        description: 'Aprende a crear interfaces modernas y funcionales usando las últimas tendencias en UX/UI design.',
+                        duration: '2h 30m',
+                        level: 'Intermedio',
+                        competency: 'Product Design',
+                        progress: 75,
+                        image: 'images/cards-learn/image-course.jpg',
+                        provider: 'UBITS',
+                        providerIcon: 'images/Favicons/UBITS.jpg'
+                    },
+                    {
+                        title: 'Principios de diseño visual',
+                        description: 'Fundamentos del diseño visual, teoría del color, tipografía y composición.',
+                        duration: '1h 45m',
+                        level: 'Principiante',
+                        competency: 'Product Design',
+                        progress: 100,
+                        image: 'images/cards-learn/4686247901d58a1c931b15b46c503709.jpeg',
+                        provider: 'Harvard Business Publishing',
+                        providerIcon: 'images/Favicons/Harvard-Business-Publishing.jpg'
+                    },
+                    {
+                        title: 'Prototipado con Figma',
+                        description: 'Domina las herramientas de prototipado y colaboración en Figma para equipos de diseño.',
+                        duration: '3h 15m',
+                        level: 'Intermedio',
+                        competency: 'Product Design',
+                        progress: 25,
+                        image: 'images/cards-learn/9f325d8da443022860867d6a43a571fa.jpeg',
+                        provider: 'Microsoft',
+                        providerIcon: 'images/Favicons/Microsoft.jpg'
+                    },
+                    {
+                        title: 'Diseño responsive',
+                        description: 'Crea diseños que se adapten perfectamente a todos los dispositivos y pantallas.',
+                        duration: '2h 00m',
+                        level: 'Intermedio',
+                        competency: 'Product Design',
+                        progress: 50,
+                        image: 'images/cards-learn/d725ff2ff267bc0768d7a031a1e49fba.jpeg',
+                        provider: 'TED',
+                        providerIcon: 'images/Favicons/TED.jpg'
+                    },
+                    {
+                        title: 'Sistemas de diseño',
+                        description: 'Construye y mantén sistemas de diseño escalables para productos digitales.',
+                        duration: '4h 20m',
+                        level: 'Avanzado',
+                        competency: 'Product Design',
+                        progress: 0,
+                        image: 'images/cards-learn/e949a565568e1386ee3b3f051209a7cd.jpeg',
+                        provider: 'AWS',
+                        providerIcon: 'images/Favicons/AWS.jpg'
+                    },
+                    {
+                        title: 'Animaciones en UI',
+                        description: 'Añade vida a tus interfaces con animaciones sutiles y efectivas.',
+                        duration: '1h 30m',
+                        level: 'Intermedio',
+                        competency: 'Product Design',
+                        progress: 0,
+                        image: 'images/cards-learn/Gestion_vial_360_Asegura_tu_entorno_laboral_682d62c97d.jpg',
+                        provider: 'WOBI',
+                        providerIcon: 'images/Favicons/WOBI.jpg'
+                    },
+                    {
+                        title: 'Accesibilidad en diseño',
+                        description: 'Diseña interfaces inclusivas que funcionen para todos los usuarios.',
+                        duration: '2h 45m',
+                        level: 'Intermedio',
+                        competency: 'Product Design',
+                        progress: 0,
+                        image: 'images/cards-learn/n591_-_administracion_efectiva_del_tiempo.jpg',
+                        provider: 'Bureau Veritas',
+                        providerIcon: 'images/Favicons/Bureau-Veritas.jpg'
+                    },
+                    {
+                        title: 'Design thinking',
+                        description: 'Metodología centrada en el usuario para resolver problemas complejos.',
+                        duration: '3h 30m',
+                        level: 'Principiante',
+                        competency: 'Product Design',
+                        progress: 0,
+                        image: 'images/cards-learn/image-course.jpg',
+                        provider: 'IE University',
+                        providerIcon: 'images/Favicons/IE-University-Publishing.jpg'
+                    }
+                ],
+                'liderazgo': [
+                    {
+                        title: 'Liderazgo en equipos remotos',
+                        description: 'Estrategias efectivas para liderar equipos distribuidos y mantener la productividad.',
+                        duration: '3h 15m',
+                        level: 'Avanzado',
+                        competency: 'Liderazgo',
+                        progress: 60,
+                        image: 'images/cards-learn/Conecta_tus_ideas_en_ingles_1af766ab79.jpg',
+                        provider: 'Advanced English',
+                        providerIcon: 'images/Favicons/Advanced-English.jpg'
+                    },
+                    {
+                        title: 'Comunicación asertiva',
+                        description: 'Desarrolla habilidades de comunicación clara y efectiva en el entorno laboral.',
+                        duration: '2h 20m',
+                        level: 'Intermedio',
+                        competency: 'Liderazgo',
+                        progress: 100,
+                        image: 'images/cards-learn/n589__comunicacion_al_interior_del_equipo_de_trabajo.jpg',
+                        provider: 'Hubspot',
+                        providerIcon: 'images/Favicons/Hubspot.jpg'
+                    },
+                    {
+                        title: 'Gestión del cambio',
+                        description: 'Lidera procesos de transformación organizacional de manera exitosa.',
+                        duration: '4h 00m',
+                        level: 'Avanzado',
+                        competency: 'Liderazgo',
+                        progress: 30,
+                        image: 'images/cards-learn/Portada_164_El-proceso-natural-de-la-gestión-del-cambio.jpg',
+                        provider: 'Universidad de Los Andes',
+                        providerIcon: 'images/Favicons/Universidad-de-Los Andes.jpg'
+                    },
+                    {
+                        title: 'Delegación efectiva',
+                        description: 'Aprende a delegar tareas y responsabilidades de manera eficiente.',
+                        duration: '1h 50m',
+                        level: 'Intermedio',
+                        competency: 'Liderazgo',
+                        progress: 0,
+                        image: 'images/cards-learn/4686247901d58a1c931b15b46c503709.jpeg',
+                        provider: 'All Ears English',
+                        providerIcon: 'images/Favicons/All Ears English.jpg'
+                    },
+                    {
+                        title: 'Motivación de equipos',
+                        description: 'Técnicas para mantener a tu equipo motivado y comprometido.',
+                        duration: '2h 30m',
+                        level: 'Intermedio',
+                        competency: 'Liderazgo',
+                        progress: 0,
+                        image: 'images/cards-learn/d725ff2ff267bc0768d7a031a1e49fba.jpeg',
+                        provider: 'Hackers del Talento',
+                        providerIcon: 'images/Favicons/Hackers-del-Talento.jpg'
+                    }
+                ]
+            };
+            
+            // Función para mostrar cursos de una colección
+            function showCourses(collectionName) {
+                console.log('showCourses ejecutado para:', collectionName);
+                const courses = coursesData[collectionName] || [];
+                console.log('Cursos encontrados:', courses.length);
+                const coursesGrid = document.getElementById('courses-grid');
+                const coursesEmptyState = document.getElementById('courses-empty-state');
+                const collectionNameEl = document.getElementById('current-collection-name');
+                const collectionCountEl = document.getElementById('current-collection-count');
+                
+                // Actualizar título y contador
+                collectionNameEl.textContent = collectionName.charAt(0).toUpperCase() + collectionName.slice(1);
+                collectionCountEl.textContent = `${courses.length} cursos guardados`;
+                
+                // Limpiar grid de cursos
+                coursesGrid.innerHTML = '';
+                
+                // Mostrar empty state si no hay cursos
+                if (courses.length === 0) {
+                    coursesEmptyState.style.display = 'flex';
+                    return;
+                }
+                
+                // Ocultar empty state
+                coursesEmptyState.style.display = 'none';
+                
+                // Crear cards de cursos
+                courses.forEach(course => {
+                    const courseCard = document.createElement('div');
+                    courseCard.className = 'course-card';
+                    courseCard.setAttribute('data-progress', course.progress);
+                    
+                    courseCard.innerHTML = `
+                        <div class="course-thumbnail-wrapper">
+                            <div class="course-thumbnail">
+                                ${course.image ? 
+                                    `<img src="${course.image}" alt="${course.title}" class="course-image">` :
+                                    `<i class="far ${course.icon || 'fa-book'}"></i>`
+                                }
+                            </div>
+                            ${course.progress > 0 ? `
+                                <div class="course-progress-overlay">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: ${course.progress}%"></div>
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+                        <div class="course-content">
+                            <div class="course-header">
+                                <div class="course-type-status">
+                                    <span class="course-type ubits-body-xs-regular">Curso</span>
+                                    ${course.progress === 100 ? 
+                                        '<span class="course-status course-status--completed ubits-body-xs-bold">Completado</span>' :
+                                        course.progress > 0 ?
+                                        '<span class="course-status course-status--progress ubits-body-xs-bold">En progreso</span>' :
+                                        ''
+                                    }
+                                </div>
+                            </div>
+                            <h3 class="course-title ubits-body-sm-bold">${course.title}</h3>
+                            <div class="course-provider">
+                                <div class="provider-avatar">
+                                    ${course.providerIcon ? 
+                                        `<img src="${course.providerIcon}" alt="${course.provider}" class="provider-icon">` :
+                                        ''
+                                    }
+                                </div>
+                                <span class="provider-name ubits-body-xs-regular">${course.provider || 'UBITS'}</span>
+                            </div>
+                            <div class="course-competency">
+                                <i class="far fa-tag"></i>
+                                <span class="ubits-body-xs-regular">${course.competency}</span>
+                            </div>
+                            <div class="course-specs">
+                                <div class="spec-item">
+                                    <i class="far fa-signal"></i>
+                                    <span class="ubits-body-xs-regular">${course.level}</span>
+                                </div>
+                                <div class="spec-item">
+                                    <i class="far fa-clock"></i>
+                                    <span class="ubits-body-xs-regular">${course.duration}</span>
+                                </div>
+                                <div class="spec-item">
+                                    <i class="far fa-globe"></i>
+                                    <span class="ubits-body-xs-regular">Español</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    coursesGrid.appendChild(courseCard);
+                });
+                
+                // Mostrar vista de cursos
+                collectionsView.style.display = 'none';
+                coursesView.style.display = 'block';
+            }
+            
+            // Función para volver a colecciones
+            function showCollections() {
+                coursesView.style.display = 'none';
+                collectionsView.style.display = 'block';
+            }
+            
+            // Función para crear colección (empty state)
+            window.createCollection = function() {
+                // Simular creación de colección
+                alert('Función de crear colección - Por implementar');
+            }
+            
+            // Función para explorar cursos (empty state)
+            window.exploreCourses = function() {
+                // Simular exploración de cursos
+                alert('Función de explorar cursos - Por implementar');
+            }
+            
+            // Event listeners - agregar a cada colección individualmente
+            const allCollectionCards = document.querySelectorAll('.collection-card');
+            allCollectionCards.forEach(card => {
+                card.addEventListener('click', function(e) {
+                    // Evitar que se active al hacer clic en botones
+                    if (e.target.closest('.collection-actions')) {
+                        return;
+                    }
+                    
+                    const collectionName = this.getAttribute('data-collection');
+                    console.log('Colección clickeada:', collectionName);
+                    showCourses(collectionName);
+                });
+            });
+            
+            if (backToCollectionsBtn) {
+                backToCollectionsBtn.addEventListener('click', showCollections);
+            }
+            
+            if (createCollectionBtn) {
+                createCollectionBtn.addEventListener('click', function() {
+                    alert('Función de crear nueva colección - Por implementar');
+                });
+            }
         });
     </script>
 </body>
