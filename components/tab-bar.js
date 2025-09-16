@@ -138,14 +138,7 @@ function addTabBarEventListeners() {
  * Navega a la página correspondiente
  * @param {string} tabId - ID del tab clickeado
  */
-function navigateToTab(tabId) {
-    console.log('Navigating to:', tabId);
-    
-    switch(tabId) {
-        default:
-            console.log('Tab no reconocido:', tabId);
-    }
-}
+// Función navigateToTab removida - usar la del subnav
 
 /**
  * Activa el tab correcto basado en la página actual
@@ -194,5 +187,5 @@ function activateCurrentPageTab() {
 window.getTabBarHTML = getTabBarHTML;
 window.loadTabBar = loadTabBar;
 window.addTabBarEventListeners = addTabBarEventListeners;
-window.navigateToTab = navigateToTab;
+// window.navigateToTab removido - usar la del subnav
 window.activateCurrentPageTab = activateCurrentPageTab;

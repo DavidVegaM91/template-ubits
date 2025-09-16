@@ -79,7 +79,7 @@ function getTopNavHTML(variant = 'template', customTabs = []) {
         if (variant === 'documentacion') {
             // Para documentación, crear AMBOS: tabs normales Y hamburger menu
             const normalTabs = tabs.map(tab => `
-                <button class="nav-tab" data-tab="${tab.id}">
+                <button class="nav-tab" data-tab="${tab.id}" onclick="navigateToTab('${tab.id}', '${variant}')">
                     <i class="fa ${tab.icon}"></i>
                     <span class="ubits-body-sm-regular">${tab.label}</span>
                 </button>
@@ -91,7 +91,7 @@ function getTopNavHTML(variant = 'template', customTabs = []) {
                 </button>
                 <div class="hamburger-dropdown" id="hamburger-dropdown">
                     ${tabs.map(tab => `
-                        <button class="hamburger-item" data-tab="${tab.id}">
+                        <button class="hamburger-item" data-tab="${tab.id}" onclick="navigateToTab('${tab.id}', '${variant}')">
                             <i class="fa ${tab.icon}"></i>
                             <span class="ubits-body-sm-regular">${tab.label}</span>
                         </button>
@@ -103,7 +103,7 @@ function getTopNavHTML(variant = 'template', customTabs = []) {
         } else {
             // Para otras variantes, usar solo tabs normales
             tabsHTML = tabs.map(tab => `
-                <button class="nav-tab" data-tab="${tab.id}">
+                <button class="nav-tab" data-tab="${tab.id}" onclick="navigateToTab('${tab.id}', '${variant}')">
                     <i class="fa ${tab.icon}"></i>
                     <span class="ubits-body-sm-regular">${tab.label}</span>
                 </button>
@@ -174,9 +174,9 @@ function loadSubNav(containerId, variant = 'template', customTabs = []) {
     addTopNavEventListeners(container);
     
     // Activar el tab correcto basado en la página actual
-    requestAnimationFrame(() => {
+    setTimeout(() => {
         activateCurrentPageTab(container, variant);
-    });
+    }, 100);
 }
 
 function activateCurrentPageTab(container, variant) {
@@ -203,6 +203,8 @@ function activateCurrentPageTab(container, variant) {
     } else if (currentPage === 'subnav.html') {
         activateTab('section3');
     } else if (currentPage === 'tab-bar.html') {
+        activateTab('section3');
+    } else if (currentPage === 'button.html') {
         activateTab('section3');
     } else if (currentPage === 'guia-prompts.html') {
         activateTab('section2');
@@ -238,8 +240,6 @@ function addTopNavEventListeners(container) {
         tab.addEventListener('click', function(e) {
             e.preventDefault();
             
-            console.log('Tab clicked:', this.getAttribute('data-tab'));
-            
             // Remover clase active de todos los tabs
             tabs.forEach(t => t.classList.remove('active'));
             
@@ -248,24 +248,19 @@ function addTopNavEventListeners(container) {
             
             // Obtener la configuración del tab
             const tabId = this.getAttribute('data-tab');
-            const variant = container.closest('.sub-nav')?.getAttribute('data-variant') || 'template';
+            const subNavElement = container.closest('.sub-nav');
+            const variant = subNavElement?.getAttribute('data-variant') || 'template';
             const variantConfig = getTopNavVariant(variant);
-            
-            console.log('Variant:', variant, 'Config:', variantConfig);
             
             // Buscar el tab en la configuración para obtener la URL
             if (variantConfig && variantConfig.tabs) {
                 const tabConfig = variantConfig.tabs.find(t => t.id === tabId);
-                console.log('Tab config:', tabConfig);
                 if (tabConfig && tabConfig.url) {
-                    console.log('Navigating to:', tabConfig.url);
                     // Navegar a la URL
                     window.location.href = tabConfig.url;
                     return;
                 }
             }
-            
-            console.log('No URL found, dispatching event');
             
             // Disparar evento personalizado si no hay URL
             const event = new CustomEvent('topNavTabClick', {

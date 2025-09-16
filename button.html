@@ -341,31 +341,28 @@
     <script src="components/floating-menu.js"></script>
     <script src="components/profile-menu.js"></script>
     <script src="docs/docs-sidebar.js"></script>
+    <script src="script.js"></script>
     <script>
-        // Cargar componentes
         document.addEventListener('DOMContentLoaded', function() {
             // Cargar top-nav con variante documentación
             loadSubNav('top-nav-container', 'documentacion');
             
-            // Cargar sidebar de documentación
-            loadDocsSidebar('botones');
-            
-            // Cargar tab-bar
-            
-            // Forzar activación de Componentes en botones.html
+            // Forzar activación de Componentes en todas las páginas de documentación
             setTimeout(() => {
                 // Quitar todas las clases active primero
                 document.querySelectorAll('.nav-tab.active, .hamburger-item.active').forEach(item => {
                     item.classList.remove('active');
                 });
                 
-                // Activar la sección de Componentes (section3)
+                // Activar solo Componentes
                 const navTab = document.querySelector('.nav-tab[data-tab="section3"]');
                 const hamburgerItem = document.querySelector('.hamburger-item[data-tab="section3"]');
-                
                 if (navTab) navTab.classList.add('active');
                 if (hamburgerItem) hamburgerItem.classList.add('active');
-            }, 100);
+            }, 200);
+            
+            // Cargar sidebar de documentación
+            loadDocsSidebar('button');
         });
 
         // Función para toggle de iconos
