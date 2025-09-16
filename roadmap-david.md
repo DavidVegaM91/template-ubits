@@ -13,7 +13,7 @@
 ## 📈 **Backlog del proyecto**: 10/22 (45.5%)
 
 
-### **Páginas de Documentación: 10/15 (66.7%)**
+### **Páginas de Documentación**: 10/15 (66.7%)*
 - ✅ Introducción (faltan videos) - [`documentacion.html`]
 - ✅ Guía de Prompts (faltan prompts) - [`guia-prompts.html`]
 - ✅ Componentes (libreria) - [`componentes.html`]
@@ -49,11 +49,13 @@
 - [ ] Espaciados - [`espaciados.html`]
 - [ ] Border-radius - [`border-radius.html`]
 
-### **Páginas Plantilla: 0/7 (0%)**
+### **Páginas Plantilla**: 1/9 (11.1%)
+- [ ] Plantilla principal - [`index.html`]
 - [ ] Learn - [`learn.html`]
 - [ ] Diagnóstico - [`diagnostico.html`]
 - [ ] Desempeño - [`desempeno.html`]
 - [ ] Encuestas - [`encuestas.html`]
 - [ ] Reclutamiento - [`reclutamiento.html`]
 - [ ] Tareas - [`tareas.html`]
-- [ ] UBITS AI - [`ubits-ai.html`]
+- ✅  UBITS AI - [`ubits-ai.html`]
+- [ ] Copia de plantilla (por si editan la index esta es la copia de seguridad) - [`plantilla-ubits.html`]
