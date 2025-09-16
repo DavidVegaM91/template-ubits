@@ -1,199 +1,242 @@
-# 🎨 Sistema de Tipografía UBITS
+# UBITS Typography Guide
 
-## 📋 Descripción
-Sistema de tipografía oficial de UBITS basado en Figma, con Noto Sans como fuente principal y tokens de color UBITS.
+## 🎯 **PROPÓSITO**
+Guía completa del sistema de tipografía UBITS con tokens de color, clases válidas y reglas de validación obligatoria para prevenir errores.
 
-## 🎯 Características
-- **Fuente**: Noto Sans
-- **Colores**: Tokens UBITS (--ubits-fg-1-high, --ubits-fg-1-medium, etc.)
-- **Responsive**: Ajustes automáticos para móviles
-- **Modo oscuro**: Colores adaptados automáticamente
-- **Consistencia**: Todas las clases usan `!important` para sobrescribir estilos existentes
+## 📋 **CLASES VÁLIDAS OFICIALES**
 
-## 📱 DISPLAY STYLES (Títulos grandes solo para landing-pages)
+### **DISPLAY (Títulos principales)**
+- `ubits-display-d1-regular` - Display D1 Regular (40px)
+- `ubits-display-d1-semibold` - Display D1 Semibold (40px)
+- `ubits-display-d1-bold` - Display D1 Bold (40px)
+- `ubits-display-d2-regular` - Display D2 Regular (32px)
+- `ubits-display-d2-semibold` - Display D2 Semibold (32px)
+- `ubits-display-d2-bold` - Display D2 Bold (32px)
+- `ubits-display-d3-regular` - Display D3 Regular (28px)
+- `ubits-display-d3-semibold` - Display D3 Semibold (28px)
+- `ubits-display-d3-bold` - Display D3 Bold (28px)
+- `ubits-display-d4-regular` - Display D4 Regular (24px)
+- `ubits-display-d4-semibold` - Display D4 Semibold (24px)
+- `ubits-display-d4-bold` - Display D4 Bold (24px)
 
-### Display/d1 (40px)
+### **HEADINGS (Solo estos dos existen)**
+- `ubits-heading-h1` - Heading H1 (20px)
+- `ubits-heading-h2` - Heading H2 (18px)
+
+### **BODY (Textos normales)**
+- `ubits-body-md-regular` - Body Medium Regular (16px)
+- `ubits-body-md-semibold` - Body Medium Semibold (16px)
+- `ubits-body-md-bold` - Body Medium Bold (16px)
+- `ubits-body-sm-regular` - Body Small Regular (14px)
+- `ubits-body-sm-semibold` - Body Small Semibold (14px)
+- `ubits-body-sm-bold` - Body Small Bold (14px)
+- `ubits-body-lg-regular` - Body Large Regular (20px) - Solo para botones LG
+
+## 🚨 **CLASES PROHIBIDAS (NUNCA USAR)**
+
+### **❌ CLASES INVENTADAS QUE NO EXISTEN:**
+- `ubits-h1` ❌
+- `ubits-h2` ❌
+- `ubits-h3` ❌
+- `ubits-h4` ❌
+- `ubits-h5` ❌
+- `ubits-h6` ❌
+- `ubits-title` ❌
+- `ubits-subtitle` ❌
+- `ubits-text` ❌
+- `ubits-paragraph` ❌
+- `ubits-label` ❌
+- `ubits-caption` ❌
+
+### **❌ CLASES HTML ESTÁNDAR (NO USAR):**
+- `<h1>`, `<h2>`, `<h3>`, `<h4>`, `<h5>`, `<h6>` ❌
+- `<p>` sin clase ❌
+- `<span>` sin clase ❌
+
+## 🔍 **SISTEMA DE VALIDACIÓN OBLIGATORIA**
+
+### **ANTES DE USAR CUALQUIER CLASE:**
+1. **VERIFICA** que esté en la lista de clases válidas
+2. **NUNCA** inventes clases que no existan
+3. **USA SOLO** las clases oficiales de UBITS
+4. **SI NO ESTÁ** en la lista, NO la uses
+
+### **REGLAS DE VALIDACIÓN:**
+- ✅ **SOLO** clases de la lista oficial
+- ✅ **VERIFICA** cada clase antes de usarla
+- ✅ **USA** `ubits-body-md-bold` para subtítulos
+- ✅ **USA** `ubits-body-sm-bold` para títulos pequeños
+- ❌ **NUNCA** inventes clases
+- ❌ **NUNCA** uses HTML tags sin clase UBITS
+
+## 📝 **EJEMPLOS CORRECTOS**
+
+### **Títulos principales:**
 ```html
-<h1 class="ubits-display-d1-regular">Título grande regular</h1>
-<h1 class="ubits-display-d1-semibold">Título grande semibold</h1>
-<h1 class="ubits-display-d1-bold">Título grande bold</h1>
+<!-- ✅ CORRECTO -->
+<h1 class="ubits-display-d2-bold">Mi título principal</h1>
+<h2 class="ubits-display-d3-semibold">Mi subtítulo</h2>
+
+<!-- ❌ INCORRECTO -->
+<h1 class="ubits-h1">Mi título</h1>
+<h2 class="ubits-h2">Mi subtítulo</h2>
 ```
 
-### Display/d2 (36px)
+### **Textos normales:**
 ```html
-<h2 class="ubits-display-d2-regular">Título mediano regular</h2>
-<h2 class="ubits-display-d2-semibold">Título mediano semibold</h2>
-<h2 class="ubits-display-d2-bold">Título mediano bold</h2>
+<!-- ✅ CORRECTO -->
+<p class="ubits-body-md-regular">Mi texto normal</p>
+<p class="ubits-body-md-bold">Mi texto en negrita</p>
+
+<!-- ❌ INCORRECTO -->
+<p class="ubits-text">Mi texto</p>
+<p class="ubits-paragraph">Mi párrafo</p>
 ```
 
-### Display/d3 (32px)
+### **Subtítulos y títulos pequeños:**
 ```html
-<h3 class="ubits-display-d3-regular">Título pequeño regular</h3>
-<h3 class="ubits-display-d3-semibold">Título pequeño semibold</h3>
-<h3 class="ubits-display-d3-bold">Título pequeño bold</h3>
+<!-- ✅ CORRECTO -->
+<p class="ubits-body-md-bold">Subtítulo de sección</p>
+<p class="ubits-body-sm-bold">Título pequeño</p>
+
+<!-- ❌ INCORRECTO -->
+<h3 class="ubits-h3">Subtítulo</h3>
+<h4 class="ubits-h4">Título pequeño</h4>
 ```
 
-### Display/d4 (28px)
-```html
-<h4 class="ubits-display-d4-regular">Título extra pequeño regular</h4>
-<h4 class="ubits-display-d4-semibold">Título extra pequeño semibold</h4>
-<h4 class="ubits-display-d4-bold">Título extra pequeño bold</h4>
+## 🎨 **TOKENS DE COLOR**
+
+### **Colores por defecto:**
+```css
+/* Títulos y Display */
+color: var(--ubits-fg-1-high);
+
+/* Body y textos normales */
+color: var(--ubits-fg-1-medium);
 ```
 
-## 📋 HEADING STYLES (Encabezados)
+### **Variantes de color:**
+```css
+/* Texto principal */
+color: var(--ubits-fg-1-high);
 
-```html
-<h1 class="ubits-heading-h1">Heading H1 (24px)</h1>
-<h2 class="ubits-heading-h2">Heading H2 (20px)</h2>
+/* Texto secundario */
+color: var(--ubits-fg-1-medium);
+
+/* Texto terciario */
+color: var(--ubits-fg-1-low);
+
+/* Texto deshabilitado */
+color: var(--ubits-fg-2-medium);
 ```
 
-**CRITICAL:** Solo existen H1 y H2. Para subheadings usa `ubits-body-md-bold` o `ubits-body-sm-bold`.
+## 📱 **RESPONSIVE Y TAMAÑOS**
 
-## 📝 BODY STYLES (Texto de contenido)
+### **Tamaños disponibles:**
+- **Display D1:** 40px (títulos muy grandes)
+- **Display D2:** 32px (títulos grandes)
+- **Display D3:** 28px (títulos medianos)
+- **Display D4:** 24px (títulos pequeños)
+- **Heading H1:** 20px (subtítulos grandes)
+- **Heading H2:** 18px (subtítulos medianos)
+- **Body Large:** 20px (botones LG)
+- **Body Medium:** 16px (texto normal)
+- **Body Small:** 14px (texto pequeño)
 
-### Body/md (16px)
-```html
-<p class="ubits-body-md-regular">Texto regular mediano</p>
-<p class="ubits-body-md-semibold">Texto semibold mediano</p>
-<p class="ubits-body-md-bold">Texto bold mediano</p>
+### **Cambiar tamaño:**
+```css
+/* Cambiar tamaño de texto */
+font-size: 18px; /* Tamaño personalizado */
+line-height: 1.5; /* Interlineado personalizado */
 ```
 
-### Body/lg (20px) - Solo para botones LG
+## 🌙 **MODO OSCURO**
+
+### **Adaptación automática:**
+Los tokens de color se adaptan automáticamente:
+- **Modo claro:** Colores claros
+- **Modo oscuro:** Colores oscuros
+- **Sin configuración adicional** necesaria
+
+### **Ejemplo:**
 ```html
-<p class="ubits-body-lg-semibold">Texto semibold grande (solo botones)</p>
+<!-- Se adapta automáticamente -->
+<h1 class="ubits-display-d2-bold">Título que cambia de color</h1>
+<p class="ubits-body-md-regular">Texto que se adapta al tema</p>
 ```
 
-### Body/sm (13px)
+## 🎯 **CASOS DE USO**
+
+### **Landing Page:**
 ```html
-<p class="ubits-body-sm-regular">Texto regular pequeño</p>
-<p class="ubits-body-sm-semibold">Texto semibold pequeño</p>
-<p class="ubits-body-sm-bold">Texto bold pequeño</p>
+<h1 class="ubits-display-d1-bold">Bienvenido a UBITS</h1>
+<h2 class="ubits-display-d3-semibold">Transforma tu aprendizaje</h2>
+<p class="ubits-body-md-regular">Descubre una nueva forma de aprender</p>
 ```
 
-### Body/xs (11px)
+### **Interfaz de producto:**
 ```html
-<span class="ubits-body-xs-regular">Texto regular extra pequeño</span>
-<span class="ubits-body-xs-semibold">Texto semibold extra pequeño</span>
-<span class="ubits-body-xs-bold">Texto bold extra pequeño</span>
+<h1 class="ubits-heading-h1">Dashboard</h1>
+<p class="ubits-body-md-bold">Resumen de actividades</p>
+<p class="ubits-body-md-regular">Tienes 3 tareas pendientes</p>
 ```
 
-## 🎨 VARIANTES DE COLOR
-
-### Tokens UBITS (Recomendado)
+### **Formularios:**
 ```html
-<!-- Color por defecto (--ubits-fg-1-high para títulos, --ubits-fg-1-medium para texto) -->
-<h1 class="ubits-heading-h1">Título (fg-1-high)</h1>
-<p class="ubits-body-md-regular">Texto normal (fg-1-medium)</p>
-
-<!-- Color claro (--ubits-fg-1-medium) -->
-<p class="ubits-body-md-regular ubits-text-light">Texto claro</p>
-
-<!-- Color oscuro (--ubits-fg-2-high) -->
-<p class="ubits-body-md-regular ubits-text-dark">Texto oscuro</p>
-
-<!-- Color blanco (--ubits-fg-bold) -->
-<p class="ubits-body-md-regular ubits-text-white">Texto blanco</p>
+<label class="ubits-body-md-bold">Nombre completo</label>
+<input type="text" class="ubits-body-md-regular">
+<p class="ubits-body-sm-regular">Campo obligatorio</p>
 ```
 
-### Color personalizado (Solo si es necesario)
-```html
-<!-- Para usar un color específico -->
-<p class="ubits-body-md-regular" style="color: #ff0000;">Texto rojo personalizado</p>
-```
+## ⚠️ **NOTAS IMPORTANTES**
 
-## 🔧 UTILIDADES ADICIONALES
+### **CRÍTICO:**
+- **NUNCA** inventes clases que no existan
+- **VERIFICA** cada clase antes de usarla
+- **USA SOLO** las clases oficiales de UBITS
+- **SI NO ESTÁ** en la lista, NO la uses
 
-### Cambiar peso de fuente
-```html
-<p class="ubits-body-md-regular ubits-weight-bold">Texto que se vuelve bold</p>
-<p class="ubits-display-d1-regular ubits-weight-semibold">Display que se vuelve semibold</p>
-```
+### **REGLAS CRÍTICAS:**
+1. **SOLO** clases de la lista oficial
+2. **VERIFICA** cada clase antes de usarla
+3. **USA** `ubits-body-md-bold` para subtítulos
+4. **USA** `ubits-body-sm-bold` para títulos pequeños
+5. **NUNCA** inventes clases como `ubits-h1`, `ubits-h2`, etc.
 
-### Cambiar tamaño
-```html
-<p class="ubits-body-md-regular ubits-size-d4">Texto que se vuelve tamaño d4 (28px)</p>
-<span class="ubits-body-sm-regular ubits-size-h1">Texto pequeño que se vuelve h1 (24px)</span>
-<span class="ubits-body-sm-regular ubits-size-h2">Texto pequeño que se vuelve h2 (20px)</span>
-<span class="ubits-body-sm-regular ubits-size-md">Texto pequeño que se vuelve md (16px)</span>
-<span class="ubits-body-sm-regular ubits-size-sm">Texto pequeño que se vuelve sm (13px)</span>
-<span class="ubits-body-sm-regular ubits-size-xs">Texto pequeño que se vuelve xs (11px)</span>
-```
+### **CONSECUENCIAS DE INVENTAR CLASES:**
+- ❌ **Fuente por defecto del navegador** (serifada horrible)
+- ❌ **Pérdida de identidad visual UBITS**
+- ❌ **Inconsistencia en el diseño**
+- ❌ **Experiencia de usuario degradada**
 
-## 🌙 MODO OSCURO
+## 🔧 **VERIFICACIÓN OBLIGATORIA**
 
-El sistema se adapta automáticamente al modo oscuro usando tokens UBITS:
-```html
-<body data-theme="dark">
-    <h1 class="ubits-heading-h1">Título (--ubits-fg-1-high)</h1>
-    <p class="ubits-body-md-regular">Texto normal (--ubits-fg-1-medium)</p>
-</body>
-```
+### **ANTES DE FINALIZAR CUALQUIER TAREA:**
+1. **REVISA** cada clase de tipografía usada
+2. **VERIFICA** que esté en la lista oficial
+3. **CONFIRMA** que no hay clases inventadas
+4. **ASEGÚRATE** de que todas las fuentes se rendericen correctamente
 
-**Los tokens de color se adaptan automáticamente:**
-- `--ubits-fg-1-high` cambia según el tema
-- `--ubits-fg-1-medium` cambia según el tema
-- `--ubits-fg-2-high` cambia según el tema
-- `--ubits-fg-bold` cambia según el tema
+### **CHECKLIST DE VALIDACIÓN:**
+- [ ] **TODAS** las clases están en la lista oficial
+- [ ] **NO HAY** clases inventadas como `ubits-h1`, `ubits-h2`
+- [ ] **NO HAY** HTML tags sin clase UBITS
+- [ ] **TODAS** las fuentes se renderizan correctamente
+- [ ] **IDENTIDAD** visual UBITS mantenida
 
-## 📱 RESPONSIVE
+## 📚 **REFERENCIAS**
 
-Los estilos se ajustan automáticamente en pantallas pequeñas:
-- Display/d1: 40px → 32px
-- Display/d2: 36px → 28px
-- Display/d3: 32px → 24px
-- Display/d4: 28px → 20px
+### **Archivos relacionados:**
+- `ubits-typography.css` - Estilos de tipografía
+- `ubits-colors.css` - Tokens de color
+- `cursor-rules.mdc` - Reglas para AI agents
 
-## 🎯 EJEMPLOS DE USO
+### **Componentes que usan tipografía:**
+- **Button:** `ubits-body-lg-regular` (LG), `ubits-body-md-regular` (MD), `ubits-body-sm-regular` (SM)
+- **Alert:** `ubits-body-md-regular` para texto
+- **Sidebar:** `ubits-body-md-regular` para opciones
+- **SubNav:** `ubits-body-md-regular` para secciones
 
-### Tarjeta de perfil
-```html
-<div class="profile-card">
-    <h1 class="ubits-heading-h1">Juan Pérez</h1>
-    <p class="ubits-body-md-regular ubits-text-light">Desarrollador Frontend</p>
-    <p class="ubits-body-sm-regular">Experiencia: 5 años</p>
-</div>
-```
+---
 
-### Dashboard
-```html
-<div class="dashboard">
-    <h1 class="ubits-heading-h1">Mi Dashboard</h1>
-    <h2 class="ubits-heading-h2">Estadísticas</h2>
-    <p class="ubits-body-md-regular">Aquí puedes ver tus métricas...</p>
-    <span class="ubits-body-xs-regular ubits-text-light">Última actualización: hoy</span>
-</div>
-```
-
-### Landing Page
-```html
-<div class="hero-section">
-    <h1 class="ubits-display-d1-bold">Bienvenido a UBITS</h1>
-    <h2 class="ubits-display-d2-semibold">Plataforma de aprendizaje</h2>
-    <p class="ubits-body-md-regular">Descubre cursos increíbles</p>
-</div>
-```
-
-## 🔄 MIGRACIÓN
-
-Para migrar texto existente:
-1. Reemplaza las clases de texto existentes
-2. Usa las nuevas clases UBITS
-3. Ajusta colores usando tokens UBITS
-4. Prueba en modo oscuro
-
-## 📝 NOTAS IMPORTANTES
-
-- **Todas las clases usan `!important`** para sobrescribir estilos existentes
-- **Solo existen H1 y H2** - Para subheadings usa `ubits-body-md-bold` o `ubits-body-sm-bold`
-- **Display styles** son solo para landing pages, no para interfaces de producto
-- **Body/lg** es solo para botones LG, no usar en layouts
-- **Los colores se adaptan automáticamente** usando tokens UBITS
-- **Siempre importa** `ubits-typography.css` en tus archivos HTML
-
-## 🚨 REGLAS CRÍTICAS
-
-- ❌ **NUNCA uses** `<h3>`, `<h4>`, `<h5>`, `<h6>` - No existen en UBITS
-- ❌ **NUNCA uses** colores hardcodeados - Usa tokens UBITS
-- ❌ **NUNCA uses** Display styles en interfaces de producto
-- ✅ **SIEMPRE usa** clases UBITS para todo el texto
-- ✅ **SIEMPRE verifica** que las clases existan en `ubits-typography.css`
+**¡RECUERDA!** Esta guía es **OBLIGATORIA** para mantener la identidad visual de UBITS. **NUNCA** inventes clases que no existan.

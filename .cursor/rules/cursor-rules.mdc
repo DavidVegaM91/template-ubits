@@ -88,8 +88,12 @@ border: 1px solid var(--ubits-border-1);
 <h1>My Title</h1>
 <p>My text</p>
 
-<!-- ✅ ALWAYS use UBITS typography classes -->
+<!-- ❌ NEVER invent classes that don't exist -->
 <h1 class="ubits-h1">My Title</h1>
+<h2 class="ubits-h2">My Subtitle</h2>
+
+<!-- ✅ ALWAYS use UBITS typography classes -->
+<h1 class="ubits-heading-h1">My Title</h1>
 <p class="ubits-body-md-regular">My text</p>
 ```
 
@@ -108,10 +112,17 @@ border: 1px solid var(--ubits-border-1);
 
 **CRITICAL TYPOGRAPHY RULES:**
 - ❌ **NEVER use:** `ubits-heading-h3`, `ubits-heading-h4`, `ubits-heading-h5`, `ubits-heading-h6` (DO NOT EXIST)
+- ❌ **NEVER invent:** `ubits-h1`, `ubits-h2`, `ubits-title`, `ubits-text`, `ubits-paragraph` (DO NOT EXIST)
 - ✅ **For subheadings:** Use `ubits-body-md-bold` or `ubits-body-sm-bold` instead
 - ✅ **For section titles:** Use `ubits-body-md-bold` for smaller titles
 - ✅ **For step titles:** Use `ubits-body-md-bold` for process steps
 - ✅ **For card titles:** Use `ubits-body-md-bold` for component titles
+
+**VALIDATION OBLIGATORY:**
+- ✅ **VERIFY** each typography class exists in the official list
+- ✅ **USE ONLY** classes from the official UBITS typography guide
+- ❌ **NEVER** invent classes that don't exist
+- ❌ **NEVER** use HTML tags without UBITS classes
 
 **If you MUST create custom CSS, ALWAYS include:**
 ```css
@@ -592,8 +603,10 @@ Before finishing any task, verify:
 - [ ] **COMPONENTS:** Using existing UBITS components (NOT custom buttons/alerts)
 - [ ] **COLORS:** Using UBITS tokens ONLY (NO custom colors or gradients)
 - [ ] No hardcoded colors (#303a47, #ffffff, etc.)
-- [ ] All text uses UBITS typography classes
-- [ ] NO headings h3, h4, h5, h6 (use ubits-body-md-bold instead)
+- [ ] **TYPOGRAPHY:** All text uses UBITS typography classes from official list
+- [ ] **TYPOGRAPHY:** NO invented classes like ubits-h1, ubits-h2, ubits-title, ubits-text
+- [ ] **TYPOGRAPHY:** NO headings h3, h4, h5, h6 (use ubits-body-md-bold instead)
+- [ ] **TYPOGRAPHY:** All classes verified against official UBITS typography guide
 - [ ] ubits-colors.css is imported
 - [ ] ubits-typography.css is imported
 - [ ] **fontawesome-icons.css is imported** (CRITICAL for components with icons)
