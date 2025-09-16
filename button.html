@@ -251,7 +251,7 @@
                                         Estructura del componente
                                     </h2>
                                     <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('structure-code')">
-                                        <i class="ubits-button__icon far fa-copy"></i>
+                                        <i class="far fa-copy"></i>
                                         <span>Copiar</span>
                                     </button>
                                 </div>
@@ -271,7 +271,7 @@
                                         Clases disponibles
                                     </h2>
                                     <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('classes-code')">
-                                        <i class="ubits-button__icon far fa-copy"></i>
+                                        <i class="far fa-copy"></i>
                                         <span>Copiar</span>
                                     </button>
                                 </div>
@@ -296,7 +296,7 @@
                                         Cómo implementar
                                     </h2>
                                     <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('implementation-code')">
-                                        <i class="ubits-button__icon far fa-copy"></i>
+                                        <i class="far fa-copy"></i>
                                         <span>Copiar</span>
                                     </button>
                                 </div>
@@ -518,15 +518,21 @@
             navigator.clipboard.writeText(text).then(function() {
                 // Mostrar feedback visual
                 const button = event.target.closest('button');
-                const originalText = button.querySelector('span').textContent;
-                button.querySelector('span').textContent = 'Copiado!';
-                button.style.background = 'var(--ubits-accent-brand)';
-                button.style.color = 'white';
+                const icon = button.querySelector('i');
+                const span = button.querySelector('span');
+                const originalIconClass = icon.className;
+                const originalText = span.textContent;
                 
+                // Cambiar estado del botón
+                icon.className = 'far fa-check';
+                span.textContent = 'Copiado!';
+                button.classList.add('ubits-button--active');
+                
+                // Restaurar estado después de 2 segundos
                 setTimeout(() => {
-                    button.querySelector('span').textContent = originalText;
-                    button.style.background = '';
-                    button.style.color = '';
+                    icon.className = originalIconClass;
+                    span.textContent = originalText;
+                    button.classList.remove('ubits-button--active');
                 }, 2000);
             });
         }

@@ -132,10 +132,10 @@
                     <!-- Preview Controls -->
                     <div style="margin-top: 16px; display: flex; gap: 12px; flex-wrap: wrap;">
                         <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" onclick="setPreviewOption('modulos')">
-                            <span class="span">Módulos</span>
+                            <span>Módulos</span>
                         </button>
                         <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewOption('perfil')">
-                            <span class="span">Mi perfil</span>
+                            <span>Mi perfil</span>
                         </button>
                     </div>
                 </div>
@@ -199,8 +199,8 @@
                                     Estructura del componente
                                 </h2>
                                 <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('structure-code')">
-                                    <i class="ubits-button__icon far fa-copy"></i>
-                                    <span class="span">Copiar</span>
+                                    <i class="far fa-copy"></i>
+                                    <span>Copiar</span>
                                 </button>
                             </div>
                             <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: 1px solid var(--ubits-border-1);">
@@ -231,8 +231,8 @@
                                     Cómo implementar
                                 </h2>
                                 <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('implement-code')">
-                                    <i class="ubits-button__icon far fa-copy"></i>
-                                    <span class="span">Copiar</span>
+                                    <i class="far fa-copy"></i>
+                                    <span>Copiar</span>
                                 </button>
                             </div>
                             <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
@@ -290,8 +290,8 @@ updateActiveTabBarItem('modulos'); // Cambiar item activo</code></pre>
                                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
                                     <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Agregar nuevas funcionalidades</h3>
                                     <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('add-features-code')">
-                                        <i class="ubits-button__icon far fa-copy"></i>
-                                        <span class="span">Copiar</span>
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
                                     </button>
                                 </div>
                                 <p class="ubits-body-md-regular" style="margin-bottom: 12px; line-height: 1.5;">
@@ -309,8 +309,8 @@ updateActiveTabBarItem('modulos'); // Cambiar item activo</code></pre>
                                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
                                     <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Modificar estilos</h3>
                                     <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('modify-styles-code')">
-                                        <i class="ubits-button__icon far fa-copy"></i>
-                                        <span class="span">Copiar</span>
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
                                     </button>
                                 </div>
                                 <p class="ubits-body-md-regular" style="margin-bottom: 12px; line-height: 1.5;">
@@ -417,11 +417,11 @@ updateActiveTabBarItem('modulos'); // Cambiar item activo</code></pre>
             navigator.clipboard.writeText(codeText).then(function() {
                 // Mostrar feedback visual
                 const button = document.querySelector(`[onclick="copyCode('${codeId}')"]`);
-                const icon = button.querySelector('.ubits-button__icon');
-                const text = button.querySelector('.span');
+                const icon = button.querySelector('i');
+                const text = button.querySelector('span');
                 
                 // Cambiar estado del botón
-                icon.className = 'ubits-button__icon far fa-check';
+                icon.className = 'far fa-check';
                 text.textContent = 'Copiado';
                 button.classList.add('ubits-button--active');
                 
@@ -430,7 +430,7 @@ updateActiveTabBarItem('modulos'); // Cambiar item activo</code></pre>
                 
                 // Restaurar estado después de 2 segundos
                 setTimeout(function() {
-                    icon.className = 'ubits-button__icon far fa-copy';
+                    icon.className = 'far fa-copy';
                     text.textContent = 'Copiar';
                     button.classList.remove('ubits-button--active');
                 }, 2000);

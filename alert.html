@@ -175,7 +175,7 @@
                                         Estructura del componente
                                     </h2>
                                     <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('structure-code')">
-                                        <i class="ubits-button__icon far fa-copy"></i>
+                                        <i class="far fa-copy"></i>
                                         <span>Copiar</span>
                                     </button>
                                 </div>
@@ -201,7 +201,7 @@
                                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                                         <span class="ubits-body-md-regular">Implementación básica</span>
                                         <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('implement-code')">
-                                            <i class="ubits-button__icon far fa-copy"></i>
+                                            <i class="far fa-copy"></i>
                                             <span>Copiar</span>
                                         </button>
                                     </div>
@@ -255,7 +255,7 @@
                                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                                         <span class="ubits-body-md-regular">Variables CSS personalizables</span>
                                         <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('customize-code')">
-                                            <i class="ubits-button__icon far fa-copy"></i>
+                                            <i class="far fa-copy"></i>
                                             <span>Copiar</span>
                                         </button>
                                     </div>
@@ -453,7 +453,27 @@
             const codeText = codeElement.textContent;
             
             navigator.clipboard.writeText(codeText).then(() => {
+                // Mostrar feedback visual
+                const button = event.target.closest('button');
+                const icon = button.querySelector('i');
+                const span = button.querySelector('span');
+                const originalIconClass = icon.className;
+                const originalText = span.textContent;
+                
+                // Cambiar estado del botón
+                icon.className = 'far fa-check';
+                span.textContent = 'Copiado!';
+                button.classList.add('ubits-button--active');
+                
+                // Mostrar toast
                 showToast('success', 'Código copiado al portapapeles');
+                
+                // Restaurar estado después de 2 segundos
+                setTimeout(() => {
+                    icon.className = originalIconClass;
+                    span.textContent = originalText;
+                    button.classList.remove('ubits-button--active');
+                }, 2000);
             }).catch(err => {
                 console.error('Error al copiar: ', err);
                 showToast('error', 'Error al copiar el código');

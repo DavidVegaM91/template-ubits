@@ -51,6 +51,11 @@ This is a UBITS template for creating interfaces quickly with Cursor AI. The val
    - ✅ ALWAYS import: `components/button.css` and `fontawesome-icons.css`
 4. **❌ NEVER use custom colors or gradients** - Always use UBITS color tokens
 5. **❌ NEVER create custom components** - Always use existing UBITS components
+6. **❌ NEVER use fictitious CSS classes** - These classes DO NOT EXIST and will break functionality
+   - ❌ **`ubits-button__icon`** - DOES NOT EXIST, breaks FontAwesome icons
+   - ❌ **`span`** - Not a valid class name
+   - ❌ **`ubits-button__text`** - DOES NOT EXIST
+   - ❌ **`ubits-button__label`** - DOES NOT EXIST
 
 **If you catch yourself doing ANY of these, STOP and fix immediately.**
 
@@ -457,9 +462,32 @@ showAlert('success', 'Your message here', { noClose: true });
 - ❌ **NEVER create custom buttons** like `<button class="my-button">`
 - ❌ **NEVER override button styles** with custom CSS
 - ❌ **NEVER create button variants** that don't exist
+- ❌ **NEVER use the fictitious class `ubits-button__icon`** - This class DOES NOT EXIST and will break icon rendering
+- ❌ **NEVER use the fictitious class `span`** - This is not a valid class name
 - ✅ **ALWAYS use existing UBITS button classes**
 - ✅ **ALWAYS import required CSS files**
 - ✅ **ALWAYS test button rendering** before finishing
+
+**CRITICAL: PROHIBITED BUTTON CLASSES:**
+- ❌ **`ubits-button__icon`** - DOES NOT EXIST, will break FontAwesome icons
+- ❌ **`span`** - Not a valid class name, use `<span>` without class
+- ❌ **`ubits-button__text`** - DOES NOT EXIST
+- ❌ **`ubits-button__label`** - DOES NOT EXIST
+
+**CORRECT BUTTON STRUCTURE:**
+```html
+<!-- ✅ CORRECT: Use official UBITS button structure -->
+<button class="ubits-button ubits-button--primary ubits-button--md">
+    <i class="far fa-check"></i>
+    <span>Button text</span>
+</button>
+
+<!-- ❌ WRONG: Using fictitious classes -->
+<button class="ubits-button ubits-button--primary ubits-button--md">
+    <i class="ubits-button__icon far fa-check"></i>
+    <span class="span">Button text</span>
+</button>
+```
 
 #### **6. DOCS SIDEBAR (Documentation Navigation)**
 ```html
@@ -645,6 +673,9 @@ Before finishing any task, verify:
 - [ ] **COMPONENTS:** Proper component loading with correct JavaScript functions
 - [ ] **COMPONENTS:** Correct component variants and options
 - [ ] **COMPONENTS:** Required CSS and JS files are imported
+- [ ] **CLASSES:** NO fictitious classes like ubits-button__icon, span, ubits-button__text
+- [ ] **CLASSES:** All button elements use correct structure: <i class="far fa-icon"></i> <span>text</span>
+- [ ] **CLASSES:** JavaScript selectors use correct element names: querySelector('i'), querySelector('span')
 
 ## 🚫 LANDING HEADERS - DO NOT USE IN PRODUCT
 
