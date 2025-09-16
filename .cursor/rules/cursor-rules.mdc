@@ -124,6 +124,18 @@ border: 1px solid var(--ubits-border-1);
 - ❌ **NEVER** invent classes that don't exist
 - ❌ **NEVER** use HTML tags without UBITS classes
 
+**CRITICAL: BEFORE USING ANY TYPOGRAPHY CLASS:**
+1. **CHECK** if it exists in the official list
+2. **VERIFY** it's not invented (ubits-h1, ubits-h2, ubits-title, etc.)
+3. **CONFIRM** it's from the official UBITS typography guide
+4. **IF NOT SURE** - DON'T USE IT, use a safe alternative
+
+**MANDATORY TYPOGRAPHY VALIDATION:**
+- ❌ **NEVER use:** `ubits-h1`, `ubits-h2`, `ubits-h3`, `ubits-h4`, `ubits-h5`, `ubits-h6`
+- ❌ **NEVER use:** `ubits-title`, `ubits-subtitle`, `ubits-text`, `ubits-paragraph`
+- ❌ **NEVER use:** `ubits-label`, `ubits-caption`, `ubits-heading`
+- ✅ **ALWAYS use:** `ubits-heading-h1`, `ubits-heading-h2`, `ubits-body-md-regular`, etc.
+
 **If you MUST create custom CSS, ALWAYS include:**
 ```css
 font-family: 'Noto Sans', sans-serif;
@@ -604,9 +616,11 @@ Before finishing any task, verify:
 - [ ] **COLORS:** Using UBITS tokens ONLY (NO custom colors or gradients)
 - [ ] No hardcoded colors (#303a47, #ffffff, etc.)
 - [ ] **TYPOGRAPHY:** All text uses UBITS typography classes from official list
-- [ ] **TYPOGRAPHY:** NO invented classes like ubits-h1, ubits-h2, ubits-title, ubits-text
+- [ ] **TYPOGRAPHY:** NO invented classes like ubits-h1, ubits-h2, ubits-title, ubits-text, ubits-paragraph
 - [ ] **TYPOGRAPHY:** NO headings h3, h4, h5, h6 (use ubits-body-md-bold instead)
 - [ ] **TYPOGRAPHY:** All classes verified against official UBITS typography guide
+- [ ] **TYPOGRAPHY:** BEFORE using any class, CHECKED it exists in official list
+- [ ] **TYPOGRAPHY:** NO HTML tags without UBITS classes
 - [ ] ubits-colors.css is imported
 - [ ] ubits-typography.css is imported
 - [ ] **fontawesome-icons.css is imported** (CRITICAL for components with icons)
