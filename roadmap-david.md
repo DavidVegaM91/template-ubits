@@ -33,7 +33,7 @@ Crear una plantilla reutilizable que permita a equipos no técnicos (PMs, diseñ
 #### **1.1 Sistema de Tokens UBITS**
 - ✅ **Tokens de color** - Implementado `ubits-colors.css` con todos los tokens
 - ✅ **Tokens de tipografía** - Implementado `ubits-typography.css` con clases consistentes
-- ✅ **Tokens de espaciado** - Aplicados en todos los componentes
+- [ ] **Tokens de espaciado** - Importar de Figma y aplicar a todos los componentes
 - ✅ **Documentación de colores** - Página `colores.html` con layout mejorado
 
 #### **1.2 Arquitectura de Componentes**
@@ -118,25 +118,9 @@ Crear una plantilla reutilizable que permita a equipos no técnicos (PMs, diseñ
 
 ## 🎯 **HITOS PENDIENTES** 📋
 
-### **🚀 Fase 6: Expansión de Componentes (EN PROGRESO)**
+### **📱 Fase 6: Páginas Plantilla (PENDIENTE)**
 
-#### **6.1 Componentes de UI Adicionales**
-- [ ] **Input Component** - Campos de texto, email, password con validación
-- [ ] **Select Component** - Dropdowns con búsqueda y múltiple selección
-- [ ] **Checkbox/Radio Component** - Elementos de formulario consistentes
-- [ ] **Modal Component** - Ventanas emergentes con overlay
-- [ ] **Card Component** - Contenedores de contenido reutilizables
-- [ ] **Table Component** - Tablas de datos con paginación y filtros
-
-#### **6.2 Componentes de Layout**
-- [ ] **Grid System** - Sistema de columnas responsive
-- [ ] **Container Component** - Contenedores con max-width y centrado
-- [ ] **Spacer Component** - Elementos de espaciado consistente
-- [ ] **Divider Component** - Líneas separadoras y secciones
-
-### **📱 Fase 7: Páginas Plantilla (PENDIENTE)**
-
-#### **7.1 Páginas de Secciones**
+#### **6.1 Páginas de Secciones**
 - [ ] **Learn Page** - Página de aprendizaje con catálogo de cursos
 - [ ] **Diagnóstico Page** - Página de evaluaciones y diagnósticos
 - [ ] **Desempeño Page** - Dashboard de métricas y KPIs
@@ -145,11 +129,27 @@ Crear una plantilla reutilizable que permita a equipos no técnicos (PMs, diseñ
 - [ ] **Tareas Page** - Gestión de proyectos y tareas
 - [ ] **UBITS AI Page** - Interfaz de inteligencia artificial
 
-#### **7.2 Páginas de Administración**
+#### **6.2 Páginas de Administración**
 - [ ] **Admin Dashboard** - Panel de administración completo
 - [ ] **User Management** - Gestión de usuarios y permisos
 - [ ] **Settings Page** - Configuración del sistema
 - [ ] **Analytics Page** - Métricas y reportes avanzados
+
+### **🚀 Fase 7: Expansión de Componentes (EN PROGRESO)**
+
+#### **7.1 Componentes de UI Adicionales**
+- [ ] **Card Component** - Contenedores de contenido reutilizables (PRIORITARIO)
+- [ ] **Input Component** - Campos de texto, email, password con validación
+- [ ] **Select Component** - Dropdowns con búsqueda y múltiple selección
+- [ ] **Checkbox/Radio Component** - Elementos de formulario consistentes
+- [ ] **Modal Component** - Ventanas emergentes con overlay
+- [ ] **Table Component** - Tablas de datos con paginación y filtros
+
+#### **7.2 Componentes de Layout**
+- [ ] **Grid System** - Sistema de columnas responsive
+- [ ] **Container Component** - Contenedores con max-width y centrado
+- [ ] **Spacer Component** - Elementos de espaciado consistente
+- [ ] **Divider Component** - Líneas separadoras y secciones
 
 ### **📚 Fase 8: Documentación Avanzada (PENDIENTE)**
 
@@ -183,13 +183,14 @@ Crear una plantilla reutilizable que permita a equipos no técnicos (PMs, diseñ
 
 ## 📈 **Métricas de Progreso**
 
-### **Componentes Completados: 6/15 (40%)**
+### **Componentes Completados: 6/16 (37.5%)**
 - ✅ SubNav (100%)
 - ✅ Sidebar (100%)
 - ✅ TabBar (100%)
 - ✅ Alert (100%)
 - ✅ Button (100%)
 - ✅ Docs Sidebar (100%)
+- [ ] Card (0%) - PRIORITARIO
 
 ### **Páginas de Documentación: 8/8 (100%)**
 - ✅ Introducción
@@ -215,18 +216,18 @@ Crear una plantilla reutilizable que permita a equipos no técnicos (PMs, diseñ
 ## 🎯 **Próximos Pasos Inmediatos**
 
 ### **Sprint 1 (Próximas 2 semanas)**
-1. **Input Component** - Crear componente de campos de texto
-2. **Select Component** - Implementar dropdowns avanzados
-3. **Modal Component** - Ventanas emergentes básicas
+1. **Card Component** - Contenedores de contenido reutilizables (PRIORITARIO)
+2. **Tokens de espaciado** - Importar de Figma y aplicar
+3. **Input Component** - Crear componente de campos de texto
 
 ### **Sprint 2 (Siguientes 2 semanas)**
 1. **Learn Page** - Primera página plantilla completa
-2. **Card Component** - Contenedores de contenido
+2. **Select Component** - Implementar dropdowns avanzados
 3. **Grid System** - Sistema de columnas responsive
 
 ### **Sprint 3 (Siguientes 2 semanas)**
 1. **Diagnóstico Page** - Segunda página plantilla
-2. **Table Component** - Tablas de datos
+2. **Modal Component** - Ventanas emergentes básicas
 3. **Video Tutorial** - Primer recurso de aprendizaje
 
 ---
