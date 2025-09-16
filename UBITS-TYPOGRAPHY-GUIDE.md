@@ -1,16 +1,16 @@
 # 🎨 Sistema de Tipografía UBITS
 
 ## 📋 Descripción
-Sistema de tipografía oficial de UBITS basado en Figma, con Noto Sans como fuente principal y colores personalizables.
+Sistema de tipografía oficial de UBITS basado en Figma, con Noto Sans como fuente principal y tokens de color UBITS.
 
 ## 🎯 Características
 - **Fuente**: Noto Sans
-- **Color por defecto**: `#303a47` (gris azulado oscuro)
-- **Colores personalizables**: Claro, oscuro, blanco
+- **Colores**: Tokens UBITS (--ubits-fg-1-high, --ubits-fg-1-medium, etc.)
 - **Responsive**: Ajustes automáticos para móviles
 - **Modo oscuro**: Colores adaptados automáticamente
+- **Consistencia**: Todas las clases usan `!important` para sobrescribir estilos existentes
 
-## 📱 DISPLAY STYLES (Títulos grandes)
+## 📱 DISPLAY STYLES (Títulos grandes solo para landing-pages)
 
 ### Display/d1 (40px)
 ```html
@@ -47,6 +47,8 @@ Sistema de tipografía oficial de UBITS basado en Figma, con Noto Sans como fuen
 <h2 class="ubits-heading-h2">Heading H2 (20px)</h2>
 ```
 
+**CRITICAL:** Solo existen H1 y H2. Para subheadings usa `ubits-body-md-bold` o `ubits-body-sm-bold`.
+
 ## 📝 BODY STYLES (Texto de contenido)
 
 ### Body/md (16px)
@@ -54,6 +56,11 @@ Sistema de tipografía oficial de UBITS basado en Figma, con Noto Sans como fuen
 <p class="ubits-body-md-regular">Texto regular mediano</p>
 <p class="ubits-body-md-semibold">Texto semibold mediano</p>
 <p class="ubits-body-md-bold">Texto bold mediano</p>
+```
+
+### Body/lg (20px) - Solo para botones LG
+```html
+<p class="ubits-body-lg-semibold">Texto semibold grande (solo botones)</p>
 ```
 
 ### Body/sm (13px)
@@ -72,22 +79,23 @@ Sistema de tipografía oficial de UBITS basado en Figma, con Noto Sans como fuen
 
 ## 🎨 VARIANTES DE COLOR
 
-### Colores predefinidos
+### Tokens UBITS (Recomendado)
 ```html
-<!-- Color por defecto (#303a47) -->
-<p class="ubits-body-md-regular">Texto normal</p>
+<!-- Color por defecto (--ubits-fg-1-high para títulos, --ubits-fg-1-medium para texto) -->
+<h1 class="ubits-heading-h1">Título (fg-1-high)</h1>
+<p class="ubits-body-md-regular">Texto normal (fg-1-medium)</p>
 
-<!-- Color claro (#6b7280) -->
+<!-- Color claro (--ubits-fg-1-medium) -->
 <p class="ubits-body-md-regular ubits-text-light">Texto claro</p>
 
-<!-- Color oscuro (#1f2937) -->
+<!-- Color oscuro (--ubits-fg-2-high) -->
 <p class="ubits-body-md-regular ubits-text-dark">Texto oscuro</p>
 
-<!-- Color blanco (#ffffff) -->
+<!-- Color blanco (--ubits-fg-bold) -->
 <p class="ubits-body-md-regular ubits-text-white">Texto blanco</p>
 ```
 
-### Color personalizado
+### Color personalizado (Solo si es necesario)
 ```html
 <!-- Para usar un color específico -->
 <p class="ubits-body-md-regular" style="color: #ff0000;">Texto rojo personalizado</p>
@@ -103,18 +111,29 @@ Sistema de tipografía oficial de UBITS basado en Figma, con Noto Sans como fuen
 
 ### Cambiar tamaño
 ```html
-<p class="ubits-body-md-regular ubits-size-d4">Texto que se vuelve tamaño d4</p>
-<span class="ubits-body-sm-regular ubits-size-h1">Texto pequeño que se vuelve h1</span>
+<p class="ubits-body-md-regular ubits-size-d4">Texto que se vuelve tamaño d4 (28px)</p>
+<span class="ubits-body-sm-regular ubits-size-h1">Texto pequeño que se vuelve h1 (24px)</span>
+<span class="ubits-body-sm-regular ubits-size-h2">Texto pequeño que se vuelve h2 (20px)</span>
+<span class="ubits-body-sm-regular ubits-size-md">Texto pequeño que se vuelve md (16px)</span>
+<span class="ubits-body-sm-regular ubits-size-sm">Texto pequeño que se vuelve sm (13px)</span>
+<span class="ubits-body-sm-regular ubits-size-xs">Texto pequeño que se vuelve xs (11px)</span>
 ```
 
 ## 🌙 MODO OSCURO
 
-El sistema se adapta automáticamente al modo oscuro:
+El sistema se adapta automáticamente al modo oscuro usando tokens UBITS:
 ```html
 <body data-theme="dark">
-    <p class="ubits-body-md-regular">Este texto será claro en modo oscuro</p>
+    <h1 class="ubits-heading-h1">Título (--ubits-fg-1-high)</h1>
+    <p class="ubits-body-md-regular">Texto normal (--ubits-fg-1-medium)</p>
 </body>
 ```
+
+**Los tokens de color se adaptan automáticamente:**
+- `--ubits-fg-1-high` cambia según el tema
+- `--ubits-fg-1-medium` cambia según el tema
+- `--ubits-fg-2-high` cambia según el tema
+- `--ubits-fg-bold` cambia según el tema
 
 ## 📱 RESPONSIVE
 
@@ -129,7 +148,7 @@ Los estilos se ajustan automáticamente en pantallas pequeñas:
 ### Tarjeta de perfil
 ```html
 <div class="profile-card">
-    <h1 class="ubits-display-d2-bold">Juan Pérez</h1>
+    <h1 class="ubits-heading-h1">Juan Pérez</h1>
     <p class="ubits-body-md-regular ubits-text-light">Desarrollador Frontend</p>
     <p class="ubits-body-sm-regular">Experiencia: 5 años</p>
 </div>
@@ -138,10 +157,19 @@ Los estilos se ajustan automáticamente en pantallas pequeñas:
 ### Dashboard
 ```html
 <div class="dashboard">
-    <h1 class="ubits-display-d1-semibold">Mi Dashboard</h1>
+    <h1 class="ubits-heading-h1">Mi Dashboard</h1>
     <h2 class="ubits-heading-h2">Estadísticas</h2>
     <p class="ubits-body-md-regular">Aquí puedes ver tus métricas...</p>
     <span class="ubits-body-xs-regular ubits-text-light">Última actualización: hoy</span>
+</div>
+```
+
+### Landing Page
+```html
+<div class="hero-section">
+    <h1 class="ubits-display-d1-bold">Bienvenido a UBITS</h1>
+    <h2 class="ubits-display-d2-semibold">Plataforma de aprendizaje</h2>
+    <p class="ubits-body-md-regular">Descubre cursos increíbles</p>
 </div>
 ```
 
@@ -150,12 +178,22 @@ Los estilos se ajustan automáticamente en pantallas pequeñas:
 Para migrar texto existente:
 1. Reemplaza las clases de texto existentes
 2. Usa las nuevas clases UBITS
-3. Ajusta colores si es necesario
+3. Ajusta colores usando tokens UBITS
 4. Prueba en modo oscuro
 
-## 📝 NOTAS
+## 📝 NOTAS IMPORTANTES
 
-- Todas las clases usan `!important` para sobrescribir estilos existentes
-- El color por defecto se puede cambiar modificando `--ubits-text-color`
-- Los estilos son compatibles con el sistema existente
-- Se incluye soporte completo para modo oscuro
+- **Todas las clases usan `!important`** para sobrescribir estilos existentes
+- **Solo existen H1 y H2** - Para subheadings usa `ubits-body-md-bold` o `ubits-body-sm-bold`
+- **Display styles** son solo para landing pages, no para interfaces de producto
+- **Body/lg** es solo para botones LG, no usar en layouts
+- **Los colores se adaptan automáticamente** usando tokens UBITS
+- **Siempre importa** `ubits-typography.css` en tus archivos HTML
+
+## 🚨 REGLAS CRÍTICAS
+
+- ❌ **NUNCA uses** `<h3>`, `<h4>`, `<h5>`, `<h6>` - No existen en UBITS
+- ❌ **NUNCA uses** colores hardcodeados - Usa tokens UBITS
+- ❌ **NUNCA uses** Display styles en interfaces de producto
+- ✅ **SIEMPRE usa** clases UBITS para todo el texto
+- ✅ **SIEMPRE verifica** que las clases existan en `ubits-typography.css`
