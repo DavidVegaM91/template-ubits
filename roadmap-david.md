@@ -10,7 +10,7 @@
 
 ---
 
-## 📈 **Backlog del proyecto**: 5/25 (20%)
+## 📈 **Backlog del proyecto**: 10/22 (45.5%)
 
 
 ### **Páginas de Documentación: 10/15 (66.7%)**
