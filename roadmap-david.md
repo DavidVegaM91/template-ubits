@@ -10,10 +10,10 @@
 
 ---
 
-## 📈 **Backlog del proyecto**: 10/22 (45.5%)
+## 📈 **Backlog del proyecto**: 13/43 (30.23%)
 
 
-### **Páginas de Documentación**: 10/15 (66.7%)*
+### **Páginas de Documentación**: 10/15 (66.7%)
 - ✅ Introducción (faltan videos) - [`documentacion.html`]
 - ✅ Guía de Prompts (faltan prompts) - [`guia-prompts.html`]
 - ✅ Componentes (libreria) - [`componentes.html`]
@@ -22,7 +22,7 @@
     - ✅ TabBar - [`tab-bar.html`]
     - ✅ Button - [`button.html`]
     - ✅ Alert - [`alert.html`]
-    - [ ] Card (0%) - PRIORITARIO
+    - [ ] Card - PRIORITARIO
     - [ ] Input - Campos de texto, email, password con validación
     - [ ] Select - Dropdowns con búsqueda y múltiple selección
     - [ ] Checkbox - Elementos de selección múltiple
@@ -50,7 +50,7 @@
 - [ ] Border-radius - [`border-radius.html`]
 
 ### **Páginas Plantilla**: 1/9 (11.1%)
-- [ ] Plantilla principal - [`index.html`]
+- ✅  Plantilla principal - [`index.html`]
 - [ ] Learn - [`learn.html`]
 - [ ] Diagnóstico - [`diagnostico.html`]
 - [ ] Desempeño - [`desempeno.html`]
@@ -58,4 +58,4 @@
 - [ ] Reclutamiento - [`reclutamiento.html`]
 - [ ] Tareas - [`tareas.html`]
 - ✅  UBITS AI - [`ubits-ai.html`]
-- [ ] Copia de plantilla (por si editan la index esta es la copia de seguridad) - [`plantilla-ubits.html`]
+- ✅  Copia de plantilla (por si editan la index esta es la copia de seguridad) - [`plantilla-ubits.html`]
