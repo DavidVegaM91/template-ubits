@@ -79,7 +79,7 @@ function getTopNavHTML(variant = 'template', customTabs = []) {
         if (variant === 'documentacion') {
             // Para documentación, crear AMBOS: tabs normales Y hamburger menu
             const normalTabs = tabs.map(tab => `
-                <button class="nav-tab" data-tab="${tab.id}" onclick="navigateToTab('${tab.id}', '${variant}')">
+                <button class="nav-tab" data-tab="${tab.id}">
                     <i class="fa ${tab.icon}"></i>
                     <span class="ubits-body-sm-regular">${tab.label}</span>
                 </button>
@@ -91,7 +91,7 @@ function getTopNavHTML(variant = 'template', customTabs = []) {
                 </button>
                 <div class="hamburger-dropdown" id="hamburger-dropdown">
                     ${tabs.map(tab => `
-                        <button class="hamburger-item" data-tab="${tab.id}" onclick="navigateToTab('${tab.id}', '${variant}')">
+                        <button class="hamburger-item" data-tab="${tab.id}">
                             <i class="fa ${tab.icon}"></i>
                             <span class="ubits-body-sm-regular">${tab.label}</span>
                         </button>
@@ -103,7 +103,7 @@ function getTopNavHTML(variant = 'template', customTabs = []) {
         } else {
             // Para otras variantes, usar solo tabs normales
             tabsHTML = tabs.map(tab => `
-                <button class="nav-tab" data-tab="${tab.id}" onclick="navigateToTab('${tab.id}', '${variant}')">
+                <button class="nav-tab" data-tab="${tab.id}">
                     <i class="fa ${tab.icon}"></i>
                     <span class="ubits-body-sm-regular">${tab.label}</span>
                 </button>
