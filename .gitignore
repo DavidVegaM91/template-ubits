@@ -41,5 +41,6 @@ build/
 .env.test.local
 .env.production.local
 
-# Archivos de Cursor
-.cursor/
+# Archivos de Cursor (excepto reglas)
+.cursor/*
+!.cursor/rules/
