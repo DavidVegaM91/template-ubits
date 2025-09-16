@@ -26,8 +26,8 @@ const DOCS_SIDEBAR_SECTIONS = [
         group: 'navegacion'
     },
     {
-        id: 'botones',
-        title: 'Botones',
+        id: 'button',
+        title: 'Button',
         group: 'ui'
     },
     {
@@ -63,8 +63,8 @@ const docsSidebarHTML = `
                 </div>
                 <div class="docs-sidebar-subsection">
                     <div class="docs-sidebar-subtitle">UI</div>
-                    <div class="docs-sidebar-item" data-section="botones">
-                        <span class="docs-sidebar-text">Botones</span>
+                    <div class="docs-sidebar-item" data-section="button">
+                        <span class="docs-sidebar-text">Button</span>
                     </div>
                     <div class="docs-sidebar-item" data-section="alert">
                         <span class="docs-sidebar-text">Alert</span>
@@ -102,8 +102,8 @@ const docsDropdownHTML = `
                 </div>
                 <div class="docs-dropdown-subgroup">
                     <div class="docs-dropdown-subgroup-title ubits-body-sm-regular">UI</div>
-                    <div class="docs-dropdown-item" data-section="botones">
-                        <span class="docs-dropdown-item-text ubits-body-md-regular">Botones</span>
+                    <div class="docs-dropdown-item" data-section="button">
+                        <span class="docs-dropdown-item-text ubits-body-md-regular">Button</span>
                     </div>
                     <div class="docs-dropdown-item" data-section="alert">
                         <span class="docs-dropdown-item-text ubits-body-md-regular">Alert</span>
@@ -190,13 +190,13 @@ function initDocsSidebar(activeSection) {
                 // Si estamos en otra página, navegar a tab-bar.html
                 window.location.href = 'tab-bar.html';
             }
-        } else if (section === 'botones') {
-            // Si ya estamos en botones.html, solo hacer scroll al top
-            if (window.location.pathname.includes('botones.html')) {
+        } else if (section === 'button') {
+            // Si ya estamos en button.html, solo hacer scroll al top
+            if (window.location.pathname.includes('button.html')) {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } else {
-                // Si estamos en otra página, navegar a botones.html
-                window.location.href = 'botones.html';
+                // Si estamos en otra página, navegar a button.html
+                window.location.href = 'button.html';
             }
         } else if (section === 'alert') {
             // Si ya estamos en alert.html, solo hacer scroll al top
