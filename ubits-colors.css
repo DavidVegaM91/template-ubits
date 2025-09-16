@@ -21,6 +21,7 @@
   --ubits-button-active-bg: rgba(12, 91, 239, 0.15);
   --ubits-button-focus-ring: rgba(82, 151, 244, 0.3);
   --ubits-button-badge: #cf0e34;
+  --ubits-btn-primary-fg: #ffffff;
 
   /* Secondary Button Colors - LIGHT MODE */
   --ubits-btn-secondary-bg-default: #ffffff;
@@ -436,6 +437,7 @@
   --ubits-button-active-bg: #0c5bef33;
   --ubits-button-focus-ring: rgba(82, 151, 244, 0.3);
   --ubits-button-badge: #cf0e34;
+  --ubits-btn-primary-fg: #ffffff;
 
   /* Secondary Button Colors - DARK MODE */
   --ubits-btn-secondary-bg-default: #202837;

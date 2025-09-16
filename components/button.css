@@ -28,7 +28,7 @@
     
     /* Default state */
     background: var(--ubits-button-primary-bg-default);
-    color: #ffffff;
+    color: var(--ubits-btn-primary-fg);
     border: 1px solid var(--ubits-button-primary-bg-default);
 }
 
@@ -270,6 +270,15 @@
 .ubits-button__icon {
     font-size: 16px;
     line-height: 1;
+}
+
+/* PROTECCIÓN ESPECÍFICA PARA BOTONES PRIMARIOS */
+.ubits-button--primary {
+    color: var(--ubits-btn-primary-fg) !important;
+}
+
+.ubits-button--primary i {
+    font-family: "Font Awesome 6 Pro", "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
 }
 
 .ubits-button--small .ubits-button__icon {
