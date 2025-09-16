@@ -36,7 +36,7 @@ Una **plantilla lista para usar** que permite a **Product Managers**, **Diseñad
 - **Alert** - Notificaciones (tipos: success, info, warning, error; con/sin botón cerrar)
 
 ### **Componentes de documentación:**
-- **Docs Sidebar** - Navegación para documentación (secciones: introduccion, sidebar, sub-nav, tab-bar, botones, alert)
+- **Docs Sidebar** - Navegación para documentación (secciones: introduccion, sidebar, sub-nav, tab-bar, button, alert)
 
 ## 📁 Estructura del proyecto
 
@@ -45,7 +45,7 @@ Template UBITS/
 ├── 📄 index.html              # Página principal (edita aquí tu proyecto)
 ├── 📄 plantilla-ubits.html    # Plantilla base para crear nuevas páginas
 ├── 📄 componentes.html        # Documentación de componentes
-├── 📄 botones.html            # Documentación del componente Button
+├── 📄 button.html             # Documentación del componente Button
 ├── 📄 alert.html              # Documentación del componente Alert
 ├── 📄 sidebar.html            # Documentación del componente Sidebar
 ├── 📄 subnav.html             # Documentación del componente SubNav
@@ -185,7 +185,7 @@ loadSidebar('sidebar-container', 'ninguno');
 ## 📚 Documentación
 
 - **`componentes.html`** - Página principal con todos los componentes disponibles
-- **`botones.html`** - Documentación del componente Button
+- **`button.html`** - Documentación del componente Button
 - **`alert.html`** - Documentación del componente Alert
 - **`sidebar.html`** - Documentación del componente Sidebar
 - **`subnav.html`** - Documentación del componente SubNav
