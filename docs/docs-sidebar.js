@@ -26,6 +26,11 @@ const DOCS_SIDEBAR_SECTIONS = [
         group: 'navegacion'
     },
     {
+        id: 'botones',
+        title: 'Botones',
+        group: 'ui'
+    },
+    {
         id: 'alert',
         title: 'Alert',
         group: 'ui'
@@ -58,6 +63,9 @@ const docsSidebarHTML = `
                 </div>
                 <div class="docs-sidebar-subsection">
                     <div class="docs-sidebar-subtitle">UI</div>
+                    <div class="docs-sidebar-item" data-section="botones">
+                        <span class="docs-sidebar-text">Botones</span>
+                    </div>
                     <div class="docs-sidebar-item" data-section="alert">
                         <span class="docs-sidebar-text">Alert</span>
                     </div>
@@ -94,6 +102,9 @@ const docsDropdownHTML = `
                 </div>
                 <div class="docs-dropdown-subgroup">
                     <div class="docs-dropdown-subgroup-title ubits-body-sm-regular">UI</div>
+                    <div class="docs-dropdown-item" data-section="botones">
+                        <span class="docs-dropdown-item-text ubits-body-md-regular">Botones</span>
+                    </div>
                     <div class="docs-dropdown-item" data-section="alert">
                         <span class="docs-dropdown-item-text ubits-body-md-regular">Alert</span>
                     </div>
@@ -178,6 +189,14 @@ function initDocsSidebar(activeSection) {
             } else {
                 // Si estamos en otra página, navegar a tab-bar.html
                 window.location.href = 'tab-bar.html';
+            }
+        } else if (section === 'botones') {
+            // Si ya estamos en botones.html, solo hacer scroll al top
+            if (window.location.pathname.includes('botones.html')) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                // Si estamos en otra página, navegar a botones.html
+                window.location.href = 'botones.html';
             }
         } else if (section === 'alert') {
             // Si ya estamos en alert.html, solo hacer scroll al top

@@ -129,7 +129,7 @@ function getTopNavHTML(variant = 'template', customTabs = []) {
 
     // Añadir texto de título para la variante documentacion
     const titleText = variant === 'documentacion' ? 
-        `<div class="nav-title ubits-heading-h3" style="color: var(--ubits-accent-brand); margin-right: 16px;">DOCUMENTACIÓN</div>` : '';
+        `<div class="nav-title ubits-heading-h3" style="color: var(--ubits-accent-brand);">DOCUMENTACIÓN</div>` : '';
 
     // Para documentación, separar hamburger del resto
     let leftContent = titleText + tabsHTML;

@@ -363,6 +363,18 @@ body {
     z-index: 5;
 }
 
+/* Ajustar gap en móvil cuando no hay subnav */
+@media (max-width: 1023px) {
+    .main-content {
+        gap: 20px;
+    }
+    
+    /* Eliminar margen superior del primer elemento para compensar el gap */
+    .main-content > *:first-child {
+        margin-top: -20px;
+    }
+}
+
 /* Top Navigation */
 .top-nav {
     background-color: var(--ubits-bg-1);

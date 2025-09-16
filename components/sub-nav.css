@@ -294,6 +294,16 @@
         display: none;
     }
     
+    /* Ajustar margen derecho del nav-title para documentación en móvil */
+    .sub-nav[data-variant="documentacion"] .nav-title {
+        margin-right: 6px !important;
+    }
+    
+    /* Ajustar padding del sub-nav para documentación en móvil */
+    .sub-nav[data-variant="documentacion"] {
+        padding: 0 12px 0 12px !important;
+    }
+    
     /* Ajustar dropdown para móvil */
     .hamburger-dropdown {
         width: 100%;
@@ -379,6 +389,16 @@
 @media (max-width: 1023px) {
     .sub-nav:not([data-variant="documentacion"]) {
         display: none !important;
+    }
+    
+    /* Ajustar margen derecho del nav-title para documentación en resoluciones 841px-1023px */
+    .sub-nav[data-variant="documentacion"] .nav-title {
+        margin-right: 6px !important;
+    }
+    
+    /* Ajustar padding del sub-nav para documentación en resoluciones 841px-1023px */
+    .sub-nav[data-variant="documentacion"] {
+        padding: 0 12px 0 12px !important;
     }
 }
 

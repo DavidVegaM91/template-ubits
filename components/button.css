@@ -152,21 +152,21 @@
 .ubits-button--tertiary {
     background: transparent;
     color: var(--ubits-btn-tertiary-fg);
-    border: none;
+    border: 1px solid transparent;
 }
 
 /* Tertiary Button Hover */
 .ubits-button--tertiary:hover:not(:disabled) {
     background: var(--ubits-btn-tertiary-bg-hover);
     color: var(--ubits-btn-tertiary-fg);
-    border: none;
+    border: 1px solid transparent;
 }
 
 /* Tertiary Button Pressed */
 .ubits-button--tertiary:active:not(:disabled) {
     background: var(--ubits-btn-tertiary-bg-pressed);
     color: var(--ubits-btn-tertiary-fg);
-    border: none;
+    border: 1px solid transparent;
     transform: translateY(1px);
 }
 
@@ -174,26 +174,26 @@
 .ubits-button--tertiary.ubits-button--active {
     background: var(--ubits-button-active-bg);
     color: var(--ubits-accent-brand);
-    border: none;
+    border: 1px solid transparent;
 }
 
 .ubits-button--tertiary.ubits-button--active:hover:not(:disabled) {
     background: var(--ubits-button-active-bg);
     color: var(--ubits-accent-brand);
-    border: none;
+    border: 1px solid transparent;
 }
 
 .ubits-button--tertiary.ubits-button--active:active:not(:disabled) {
     background: var(--ubits-button-active-bg);
     color: var(--ubits-accent-brand);
-    border: none;
+    border: 1px solid transparent;
 }
 
 /* Tertiary Button Focus State */
 .ubits-button--tertiary:focus-visible {
     background: transparent;
     color: var(--ubits-btn-tertiary-fg);
-    border: none;
+    border: 1px solid transparent;
     outline: none;
     box-shadow: 0px 0px 0px 4px var(--ubits-button-focus-ring);
 }
@@ -256,7 +256,6 @@
     height: 10px;
     background: var(--ubits-button-badge);
     border-radius: 50%;
-    border: 2px solid #ffffff;
 }
 
 .ubits-button--icon-only .ubits-button__badge {
