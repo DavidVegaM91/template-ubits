@@ -399,6 +399,7 @@
     /* Ajustar padding del sub-nav para documentación en resoluciones 841px-1023px */
     .sub-nav[data-variant="documentacion"] {
         padding: 0 12px 0 12px !important;
+        margin-top: 16px !important;
     }
 }
 
