@@ -46,9 +46,9 @@
 
         <!-- Main Content -->
         <main class="main-content" style="margin-left: 12px;">
-            <!-- Top Navigation -->
-            <div id="top-nav-container"></div>
-            
+    <!-- Top Navigation -->
+    <div id="top-nav-container"></div>
+    
             <!-- Content with Sidebar -->
             <div style="display: flex;">
             
@@ -90,19 +90,18 @@
                                 <!-- Alert Success -->
                                 <div class="ubits-alert ubits-alert--success" id="alert-success-preview" style="margin: 0;">
                                     <div class="ubits-alert__icon">
-                                        <i class="far fa-check-circle"></i>
-                                    </div>
+                                <i class="far fa-check-circle"></i>
+                            </div>
                                     <div class="ubits-alert__content">
-                                        <div class="ubits-alert__title">Operación exitosa</div>
-                                        <div class="ubits-alert__message">Los cambios se han guardado correctamente.</div>
+                                        <div class="ubits-alert__text">Los cambios se han guardado correctamente.</div>
                                     </div>
                                     <button class="ubits-alert__close" onclick="hideAlert('success')">
-                                        <i class="far fa-times"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        
+                            <i class="far fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
                         <!-- Preview Controls -->
                         <div style="margin-top: 16px; display: flex; gap: 12px; flex-wrap: wrap;">
                             <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" onclick="setPreviewType('success')">
@@ -156,7 +155,7 @@
                             <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
                                 Reemplaza esta sección con la documentación técnica específica del componente.
                             </p>
-                        </div>
+                </div>
                         
                         <!-- Botón de expansión -->
                         <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
@@ -164,8 +163,8 @@
                                 <i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>
                                 Mostrar
                             </span>
-                        </div>
-                        
+            </div>
+
                         <!-- Contenido del acordeón (inicialmente oculto) -->
                         <div id="technical-docs-content" style="display: none; padding: 0;">
                             <!-- Estructura del Componente -->
@@ -186,8 +185,7 @@
     &lt;i class="far fa-check-circle"&gt;&lt;/i&gt;
   &lt;/div&gt;
   &lt;div class="ubits-alert__content"&gt;
-    &lt;div class="ubits-alert__title"&gt;Título del mensaje&lt;/div&gt;
-    &lt;div class="ubits-alert__message"&gt;Descripción del mensaje&lt;/div&gt;
+    &lt;div class="ubits-alert__text"&gt;Mensaje del alert&lt;/div&gt;
   &lt;/div&gt;
   &lt;button class="ubits-alert__close" onclick="hideAlert('success')"&gt;
     &lt;i class="far fa-times"&gt;&lt;/i&gt;
@@ -213,8 +211,7 @@
     &lt;i class="far fa-check-circle"&gt;&lt;/i&gt;
   &lt;/div&gt;
   &lt;div class="ubits-alert__content"&gt;
-    &lt;div class="ubits-alert__title"&gt;Éxito&lt;/div&gt;
-    &lt;div class="ubits-alert__message"&gt;Operación completada correctamente.&lt;/div&gt;
+    &lt;div class="ubits-alert__text"&gt;Operación completada correctamente.&lt;/div&gt;
   &lt;/div&gt;
   &lt;button class="ubits-alert__close" onclick="hideAlert('success')"&gt;
     &lt;i class="far fa-times"&gt;&lt;/i&gt;
@@ -235,18 +232,18 @@
                                     API y funciones
                                 </h2>
                                 <div style="margin-bottom: 24px;">
-                                    <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">showAlert(type, title, message, options)</h3>
+                                    <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">showAlert(type, message, options)</h3>
                                     <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
-                                        Muestra una alerta en el sistema con el tipo, título y mensaje especificados.
+                                        Muestra una alerta en el sistema con el tipo y mensaje especificados.
                                     </p>
                                     <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: 6px; border-left: 4px solid var(--ubits-accent-brand);">
                                         <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
-                                            <strong>Parámetros:</strong> type (string) - Tipo de alerta, title (string) - Título, message (string) - Mensaje, options (object) - Opciones adicionales<br>
-                                            <strong>Ejemplo:</strong> showAlert('success', 'Éxito', 'Operación completada', { closable: true })
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                                            <strong>Parámetros:</strong> type (string) - Tipo de alerta, message (string) - Mensaje, options (object) - Opciones adicionales<br>
+                                            <strong>Ejemplo:</strong> showAlert('success', 'Operación completada correctamente', { closable: true })
+                        </div>
+                    </div>
+                </div>
+            </div>
 
                             <!-- Personalización -->
                             <div style="margin-bottom: 32px;">
@@ -286,7 +283,7 @@
   border-color: var(--ubits-border-error);
   color: var(--ubits-fg-error);
 }</code></pre>
-                                </div>
+                            </div>
                             </div>
                         </div>
                     </div>
@@ -294,8 +291,8 @@
             </div>
             </div>
         </main>
-    </div>
-
+                </div>
+                
     <!-- Toast Messages -->
     <div class="toast-container">
         <!-- Toast de Success -->
@@ -308,9 +305,9 @@
                 <button class="toast-close" onclick="hideToast('success')">
                     <i class="far fa-times"></i>
                 </button>
-            </div>
-        </div>
-
+                    </div>
+                </div>
+                
         <!-- Toast de Info -->
         <div class="toast toast-info" id="toast-info" style="display: none;">
             <div class="toast-content">
@@ -322,7 +319,7 @@
                     <i class="far fa-times"></i>
                 </button>
             </div>
-        </div>
+            </div>
 
         <!-- Toast de Warning -->
         <div class="toast toast-warning" id="toast-warning" style="display: none;">
@@ -334,9 +331,9 @@
                 <button class="toast-close" onclick="hideToast('warning')">
                     <i class="far fa-times"></i>
                 </button>
+                </div>
             </div>
-        </div>
-
+            
         <!-- Toast de Error -->
         <div class="toast toast-error" id="toast-error" style="display: none;">
             <div class="toast-content">
@@ -425,8 +422,7 @@
                         <i class="${config.icon}"></i>
                     </div>
                     <div class="ubits-alert__content">
-                        <div class="ubits-alert__title">${config.title}</div>
-                        <div class="ubits-alert__message">${config.message}</div>
+                        <div class="ubits-alert__text">${config.message}</div>
                     </div>
                     <button class="ubits-alert__close" onclick="hideAlert('${type}')">
                         <i class="far fa-times"></i>

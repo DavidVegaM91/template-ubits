@@ -35,16 +35,16 @@ class UBITSAlert {
         
         // Create the content structure
         this.element.innerHTML = `
-            <div class="ubits-alert-content">
-                <div class="ubits-alert-icon">
-                    <i class="far ${iconClass}"></i>
-                </div>
-                <div class="ubits-alert-text ubits-body-sm-regular">
+            <div class="ubits-alert__icon">
+                <i class="far ${iconClass}"></i>
+            </div>
+            <div class="ubits-alert__content">
+                <div class="ubits-alert__text">
                     ${message}
                 </div>
             </div>
             ${closable ? `
-                <button class="ubits-alert-close" aria-label="Cerrar alerta">
+                <button class="ubits-alert__close" aria-label="Cerrar alerta">
                     <i class="far fa-times"></i>
                 </button>
             ` : ''}
@@ -81,7 +81,7 @@ class UBITSAlert {
     addEventListeners() {
         if (!this.element) return;
         
-        const closeButton = this.element.querySelector('.ubits-alert-close');
+        const closeButton = this.element.querySelector('.ubits-alert__close');
         
         if (closeButton) {
             closeButton.addEventListener('click', () => {
@@ -134,7 +134,7 @@ class UBITSAlert {
      */
     updateMessage(newMessage) {
         if (this.element) {
-            const textElement = this.element.querySelector('.ubits-alert-text');
+            const textElement = this.element.querySelector('.ubits-alert__text');
             if (textElement) {
                 textElement.textContent = newMessage;
             }
@@ -153,7 +153,7 @@ class UBITSAlert {
             this.element.classList.add(`ubits-alert--${newType}`);
             
             // Update icon
-            const iconElement = this.element.querySelector('.ubits-alert-icon i');
+            const iconElement = this.element.querySelector('.ubits-alert__icon i');
             if (iconElement) {
                 iconElement.className = `far ${this.getIconClass(newType)}`;
             }

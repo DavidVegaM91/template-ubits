@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TopNav Variantes - UBITS Template</title>
+    <title>Alert Variantes - UBITS Template</title>
     
     <!-- UBITS CSS -->
     <link rel="stylesheet" href="ubits-colors.css">
     <link rel="stylesheet" href="ubits-typography.css">
     <link rel="stylesheet" href="fontawesome-icons.css">
-    <link rel="stylesheet" href="components/sub-nav.css">
+    <link rel="stylesheet" href="components/alert.css">
     
     <style>
         * {
@@ -67,116 +67,171 @@
             color: var(--ubits-fg-1-high);
         }
         
-        .top-nav-container {
-            border: 1px solid var(--ubits-border-1);
-            border-radius: 6px;
-            overflow: hidden;
+        .alert-container {
+            padding: 16px 0;
         }
     </style>
 </head>
 <body>
     <div class="preview-container">
-        <h1 class="ubits-display-d3-bold preview-title">Variantes del TopNav - Preview</h1>
+        <h1 class="ubits-display-d3-bold preview-title">Alert - Preview</h1>
         <p class="ubits-body-md-regular" style="text-align: center; margin-bottom: 32px; color: var(--ubits-fg-1-medium);">
-            Todas las variantes disponibles del componente TopNav
+            Todas las variantes disponibles del componente Alert
         </p>
         
-        <!-- Template Variant -->
+        <!-- Alert Success -->
         <div class="variant-preview">
-            <h3 class="ubits-heading-h2">1. Template (Plantilla)</h3>
+            <h3 class="ubits-heading-h2">1. Alert Success</h3>
             <div class="variant-content">
                 <div class="variant-info">
-                    <strong>Propósito:</strong> Variante base personalizable<br>
-                    <strong>Uso:</strong> Ideal para nuevos proyectos que necesitan personalización completa
+                    <strong>Propósito:</strong> Notificaciones de éxito<br>
+                    <strong>Uso:</strong> Confirmar operaciones exitosas, validaciones positivas
                 </div>
-                <div class="top-nav-container" id="template-nav"></div>
+                <div class="alert-container">
+                    <div id="alert-success-container"></div>
+                </div>
             </div>
         </div>
         
-        <!-- Documentacion Variant -->
+        <!-- Alert Info -->
         <div class="variant-preview">
-            <h3 class="ubits-heading-h2">2. Documentación</h3>
+            <h3 class="ubits-heading-h2">2. Alert Info</h3>
             <div class="variant-content">
                 <div class="variant-info">
-                    <strong>Propósito:</strong> Para páginas de documentación del template<br>
-                    <strong>Características:</strong> Título "DOCUMENTACIÓN", menú hamburguesa responsive
+                    <strong>Propósito:</strong> Notificaciones informativas<br>
+                    <strong>Uso:</strong> Información general, tips, recordatorios
                 </div>
-                <div class="top-nav-container" id="documentacion-nav"></div>
+                <div class="alert-container">
+                    <div id="alert-info-container"></div>
+                </div>
             </div>
         </div>
         
-        <!-- Aprendizaje Variant -->
+        <!-- Alert Warning -->
         <div class="variant-preview">
-            <h3 class="ubits-heading-h2">3. Aprendizaje</h3>
+            <h3 class="ubits-heading-h2">3. Alert Warning</h3>
             <div class="variant-content">
                 <div class="variant-info">
-                    <strong>Propósito:</strong> Para plataformas de aprendizaje<br>
-                    <strong>Uso:</strong> Cursos, catálogos, gestión de aprendizaje
+                    <strong>Propósito:</strong> Notificaciones de advertencia<br>
+                    <strong>Uso:</strong> Alertas importantes, validaciones que requieren atención
                 </div>
-                <div class="top-nav-container" id="aprendizaje-nav"></div>
+                <div class="alert-container">
+                    <div id="alert-warning-container"></div>
+                </div>
             </div>
         </div>
         
-        <!-- Desempeño Variant -->
+        <!-- Alert Error -->
         <div class="variant-preview">
-            <h3 class="ubits-heading-h2">4. Desempeño</h3>
+            <h3 class="ubits-heading-h2">4. Alert Error</h3>
             <div class="variant-content">
                 <div class="variant-info">
-                    <strong>Propósito:</strong> Para sistemas de evaluación de desempeño<br>
-                    <strong>Uso:</strong> Evaluaciones 360, objetivos, métricas, reportes
+                    <strong>Propósito:</strong> Notificaciones de error<br>
+                    <strong>Uso:</strong> Errores del sistema, validaciones fallidas, problemas críticos
                 </div>
-                <div class="top-nav-container" id="desempeno-nav"></div>
+                <div class="alert-container">
+                    <div id="alert-error-container"></div>
+                </div>
             </div>
         </div>
         
-        <!-- Encuestas Variant -->
+        <!-- Alert Sin Cerrar -->
         <div class="variant-preview">
-            <h3 class="ubits-heading-h2">5. Encuestas</h3>
+            <h3 class="ubits-heading-h2">5. Alert Sin Botón de Cerrar</h3>
             <div class="variant-content">
                 <div class="variant-info">
-                    <strong>Propósito:</strong> Para sistemas de encuestas<br>
-                    <strong>Uso:</strong> Creación y gestión de encuestas
+                    <strong>Propósito:</strong> Alertas persistentes<br>
+                    <strong>Uso:</strong> Información importante que no debe ser cerrada por el usuario
                 </div>
-                <div class="top-nav-container" id="encuestas-nav"></div>
-            </div>
-        </div>
-        
-        <!-- Tareas Variant -->
-        <div class="variant-preview">
-            <h3 class="ubits-heading-h2">6. Tareas</h3>
-            <div class="variant-content">
-                <div class="variant-info">
-                    <strong>Propósito:</strong> Para sistemas de gestión de tareas<br>
-                    <strong>Uso:</strong> Planes, tareas, gestión de proyectos
+                <div class="alert-container">
+                    <div id="alert-no-close-container"></div>
                 </div>
-                <div class="top-nav-container" id="tareas-nav"></div>
             </div>
         </div>
     </div>
 
-    <!-- TopNav JavaScript -->
-    <script src="components/sub-nav.js"></script>
-    
+    <!-- JavaScript -->
+    <script src="components/alert.js"></script>
     <script>
-        // Cargar todas las variantes
+        // Función para ocultar alertas
+        function hideAlert(type) {
+            console.log(`Ocultando alerta de tipo: ${type}`);
+        }
+        
+        // Función para renderizar alerts usando el componente real
+        function renderRealAlerts() {
+            console.log('Iniciando renderizado de alerts reales...');
+            console.log('UBITSAlertManager disponible:', typeof UBITSAlertManager);
+            
+            // Alert Success
+            const successContainer = document.getElementById('alert-success-container');
+            console.log('Success container encontrado:', successContainer);
+            if (successContainer) {
+                const successAlert = UBITSAlertManager.success('Los cambios se han guardado correctamente.', {
+                    container: successContainer,
+                    closable: true
+                });
+                console.log('Success alert creado:', successAlert);
+            }
+            
+            // Alert Info
+            const infoContainer = document.getElementById('alert-info-container');
+            if (infoContainer) {
+                const infoAlert = UBITSAlertManager.info('Esta es una notificación informativa del sistema.', {
+                    container: infoContainer,
+                    closable: true
+                });
+            }
+            
+            // Alert Warning
+            const warningContainer = document.getElementById('alert-warning-container');
+            if (warningContainer) {
+                const warningAlert = UBITSAlertManager.warning('Por favor, revisa los datos antes de continuar.', {
+                    container: warningContainer,
+                    closable: true
+                });
+            }
+            
+            // Alert Error
+            const errorContainer = document.getElementById('alert-error-container');
+            if (errorContainer) {
+                const errorAlert = UBITSAlertManager.error('Ha ocurrido un error al procesar la solicitud.', {
+                    container: errorContainer,
+                    closable: true
+                });
+            }
+            
+            // Alert Sin Cerrar
+            const noCloseContainer = document.getElementById('alert-no-close-container');
+            if (noCloseContainer) {
+                const noCloseAlert = UBITSAlertManager.success('La nueva versión está disponible. Reinicia la aplicación para aplicar los cambios.', {
+                    container: noCloseContainer,
+                    closable: false
+                });
+            }
+        }
+        
+        // Inicializar cuando el DOM esté listo
         document.addEventListener('DOMContentLoaded', function() {
-            // Template
-            loadSubNav('template-nav', 'template');
+            console.log('Alert Preview cargado');
             
-            // Documentación
-            loadSubNav('documentacion-nav', 'documentacion');
+            // Prueba rápida del componente
+            console.log('Probando componente real...');
+            const testAlert = UBITSAlertManager.success('Prueba del componente real', {
+                container: document.body,
+                closable: true
+            });
+            console.log('Test alert creado:', testAlert);
             
-            // Aprendizaje
-            loadSubNav('aprendizaje-nav', 'aprendizaje');
+            // Remover el test alert después de 2 segundos
+            setTimeout(() => {
+                if (testAlert && testAlert.element && testAlert.element.parentNode) {
+                    testAlert.element.parentNode.removeChild(testAlert.element);
+                    console.log('Test alert removido');
+                }
+            }, 2000);
             
-            // Desempeño
-            loadSubNav('desempeno-nav', 'desempeno');
-            
-            // Encuestas
-            loadSubNav('encuestas-nav', 'encuestas');
-            
-            // Tareas
-            loadSubNav('tareas-nav', 'tareas');
+            renderRealAlerts();
         });
     </script>
 </body>
