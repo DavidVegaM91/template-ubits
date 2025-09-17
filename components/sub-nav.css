@@ -247,7 +247,7 @@
    RESPONSIVE DESIGN
    ======================================== */
 
-@media (max-width: 840px) {
+@media (max-width: 950px) {
     .sub-nav {
         padding: 0 8px;
         height: 36px;
