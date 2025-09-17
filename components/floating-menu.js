@@ -10,7 +10,8 @@ const FLOATING_MENU_SECTIONS = [
         subitems: [
             { id: 'inicio', title: 'Inicio', icon: 'far fa-home', url: 'index.html' },
             { id: 'catalogo', title: 'Catálogo', icon: 'far fa-book', url: 'catalogo.html' },
-            { id: 'mis-cursos', title: 'Mis Cursos', icon: 'far fa-play-circle', url: 'mis-cursos.html' }
+            { id: 'corporativa', title: 'U. Corporativa', icon: 'far fa-building-columns', url: 'universidad-corporativa.html' },
+            { id: 'zona-estudio', title: 'Zona de estudio', icon: 'far fa-books', url: 'zona-estudio.html' }
         ]
     },
     {
