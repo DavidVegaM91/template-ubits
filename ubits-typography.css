@@ -356,8 +356,8 @@
    FALLBACK TIPOGRÁFICO - PROTECCIÓN BULLETPROOF
    ======================================== */
 
-/* FALLBACK UNIVERSAL - SIEMPRE FUNCIONA (EXCEPTO ICONOS) */
-*:not(.fa):not(.fas):not(.far):not(.fal):not(.fab):not(.fad):not(.fat):not([class*="fa-"]) {
+/* FALLBACK UNIVERSAL - SOLO FONT-FAMILY (NO TAMAÑOS) */
+*:not(.fa):not(.fas):not(.far):not(.fal):not(.fab):not(.fad):not(.fat):not([class*="fa-"]):not(i) {
     font-family: 'Noto Sans', sans-serif !important;
 }
 
@@ -366,25 +366,19 @@ i[class*="fa-"], .fa, .fas, .far, .fal, .fab, .fad, .fat {
     font-family: "Font Awesome 6 Pro", "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
 }
 
-/* Fallback para clases inventadas que no existen - SOLO FUENTE */
+/* Fallback para clases inventadas que no existen - SOLO FONT-FAMILY */
 .ubits-h1, .ubits-h2, .ubits-h3, .ubits-h4, .ubits-h5, .ubits-h6,
 .ubits-title, .ubits-subtitle, .ubits-text, .ubits-paragraph,
 .ubits-label, .ubits-caption, .ubits-heading {
     font-family: 'Noto Sans', sans-serif !important;
-    font-size: 16px !important;
-    line-height: 1.5 !important;
-    font-weight: 400 !important;
 }
 
-/* Fallback para HTML tags sin clase UBITS - SOLO FUENTE */
+/* Fallback para HTML tags sin clase UBITS - SOLO FONT-FAMILY */
 h1:not([class*="ubits-"]), h2:not([class*="ubits-"]), 
 h3:not([class*="ubits-"]), h4:not([class*="ubits-"]), 
 h5:not([class*="ubits-"]), h6:not([class*="ubits-"]),
 p:not([class*="ubits-"]), span:not([class*="ubits-"]) {
     font-family: 'Noto Sans', sans-serif !important;
-    font-size: 16px !important;
-    line-height: 1.5 !important;
-    font-weight: 400 !important;
 }
 
 /* PROTECCIÓN ESPECÍFICA PARA SPANS EN BOTONES */
@@ -392,10 +386,7 @@ p:not([class*="ubits-"]), span:not([class*="ubits-"]) {
     color: inherit !important;
 }
 
-/* Fallback para cualquier clase que empiece con ubits- pero no exista - SOLO FUENTE */
+/* Fallback para cualquier clase que empiece con ubits- pero no exista - SOLO FONT-FAMILY */
 [class*="ubits-"]:not(.ubits-display-d1-regular):not(.ubits-display-d1-semibold):not(.ubits-display-d1-bold):not(.ubits-display-d2-regular):not(.ubits-display-d2-semibold):not(.ubits-display-d2-bold):not(.ubits-display-d3-regular):not(.ubits-display-d3-semibold):not(.ubits-display-d3-bold):not(.ubits-display-d4-regular):not(.ubits-display-d4-semibold):not(.ubits-display-d4-bold):not(.ubits-heading-h1):not(.ubits-heading-h2):not(.ubits-body-md-regular):not(.ubits-body-md-semibold):not(.ubits-body-md-bold):not(.ubits-body-sm-regular):not(.ubits-body-sm-semibold):not(.ubits-body-sm-bold):not(.ubits-body-lg-semibold):not(.ubits-body-xs-regular):not(.ubits-body-xs-semibold):not(.ubits-body-xs-bold):not(.ubits-text-light):not(.ubits-text-dark):not(.ubits-text-white):not(.ubits-text-custom):not(.ubits-weight-regular):not(.ubits-weight-semibold):not(.ubits-weight-bold):not(.ubits-size-xs):not(.ubits-size-sm):not(.ubits-size-md):not(.ubits-size-h2):not(.ubits-size-h1):not(.ubits-size-d4):not(.ubits-size-d3):not(.ubits-size-d2):not(.ubits-size-d1) {
     font-family: 'Noto Sans', sans-serif !important;
-    font-size: 16px !important;
-    line-height: 1.5 !important;
-    font-weight: 400 !important;
 }

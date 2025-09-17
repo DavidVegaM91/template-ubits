@@ -213,35 +213,60 @@
    BUTTON SIZES - KISS: UNA CLASE POR TAMAÑO
    ======================================== */
 
-/* Medium (default) - 16px */
+/* Medium (default) - usa ubits-body-md-semibold */
 .ubits-button {
-    font-size: 16px;
+    height: 40px;
+    /* Hereda de ubits-body-md-semibold: 16px, weight 600, line-height 24px */
 }
 
-/* Small - 12px */
+/* Aplicar tipografía UBITS al texto del botón medium */
+.ubits-button span {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+}
+
+/* Small - usa ubits-body-sm-semibold */
 .ubits-button--sm {
     padding: 9.5px 12px;
-    font-size: 12px;
-    min-height: 32px;
+    height: 32px;
+    /* Hereda de ubits-body-sm-semibold: 13px, weight 600, line-height 19.5px */
+}
+
+/* Aplicar tipografía UBITS al texto del botón small - ubits-body-sm-semibold */
+.ubits-button--sm span {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 19.5px;
 }
 
 .ubits-button--sm.ubits-button--icon-only {
     padding: 9.5px 8px;
-    min-width: 32px;
-    min-height: 32px;
+    width: 32px;
+    height: 32px;
 }
 
-/* Large - 20px */
+/* Large - usa ubits-body-lg-semibold */
 .ubits-button--lg {
     padding: 14px 20px;
+    height: 48px;
+    /* Hereda de ubits-body-lg-semibold: 20px, weight 600, line-height 30px */
+}
+
+/* Aplicar tipografía UBITS al texto del botón large */
+.ubits-button--lg span {
+    font-family: 'Noto Sans', sans-serif;
     font-size: 20px;
-    min-height: 48px;
+    font-weight: 600;
+    line-height: 30px;
 }
 
 .ubits-button--lg.ubits-button--icon-only {
     padding: 14px 16px;
-    min-width: 48px;
-    min-height: 48px;
+    width: 48px;
+    height: 48px;
 }
 
 /* ========================================
