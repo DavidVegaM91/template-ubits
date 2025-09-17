@@ -21,7 +21,8 @@ const TOP_NAV_VARIANTS = {
             { id: 'section2', label: 'Guía de prompts', icon: 'far fa-comments', url: 'guia-prompts.html' },
             { id: 'section3', label: 'Componentes', icon: 'far fa-cube', url: 'componentes.html' },
             { id: 'section4', label: 'Colores', icon: 'far fa-palette', url: 'colores.html' },
-            { id: 'section5', label: 'Iconos', icon: 'far fa-icons', url: 'iconos.html' }
+            { id: 'section5', label: 'Iconos', icon: 'far fa-icons', url: 'iconos.html' },
+            { id: 'section6', label: 'Tipografía', icon: 'far fa-text-size', url: 'tipografia.html' }
         ]
     },
     aprendizaje: {
@@ -192,7 +193,9 @@ function activateCurrentPageTab(container, variant) {
     };
     
     // Activar tab basado en la página actual
-    if (currentPage === 'iconos.html') {
+    if (currentPage === 'tipografia.html') {
+        activateTab('section6');
+    } else if (currentPage === 'iconos.html') {
         activateTab('section5');
     } else if (currentPage === 'colores.html') {
         activateTab('section4');

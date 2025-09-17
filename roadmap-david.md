@@ -10,10 +10,10 @@
 
 ---
 
-## 📈 **Backlog del proyecto**: 13/43 (30.23%)
+## 📈 **Backlog del proyecto**: 14/44 (31.82%)
 
 
-### **Páginas de Documentación**: 10/15 (66.7%)
+### **Páginas de Documentación**: 11/35 (31.43%)
 - ✅ Introducción (faltan videos) - [`documentacion.html`]
 - ✅ Guía de Prompts (faltan prompts) - [`guia-prompts.html`]
 - ✅ Componentes (libreria) - [`componentes.html`]
@@ -45,11 +45,11 @@
     - 🚫 Importar componentes que tenga Burbano (bloqueado por vacaciones de él)
 - ✅ Colores (tokens light y dark) - [`colores.html`]
 - ✅ Iconos (fontawesome) - [`iconos.html`]
-- 🚧 Tipografías - [`tipografias.html`]
+- ✅ Tipografías - [`tipografia.html`]
 - [ ] Espaciados - [`espaciados.html`]
 - [ ] Border-radius - [`border-radius.html`]
 
-### **Páginas Plantilla**: 1/9 (11.1%)
+### **Páginas Plantilla**: 3/9 (33.33%)
 - ✅  Plantilla principal - [`index.html`]
 - [ ] Learn - [`learn.html`]
 - [ ] Diagnóstico - [`diagnostico.html`]
