@@ -184,20 +184,40 @@ function toggleAccordion(sectionId) {
     const icon = document.getElementById(`icon-${sectionId}`);
     
     if (body && chevron && circle && icon) {
-        if (body.style.display === 'block') {
-            // Cerrar acordeón - estado default
-            body.style.display = 'none';
-            chevron.style.transform = 'rotate(0deg)';
-            circle.classList.remove('active');
-            icon.classList.remove('active');
-        } else {
-            // Abrir acordeón - estado activo
+        const isCurrentlyOpen = body.style.display === 'block';
+        
+        // Cerrar todos los acordeones primero
+        closeAllAccordions();
+        
+        if (!isCurrentlyOpen) {
+            // Abrir solo este acordeón - estado activo
             body.style.display = 'block';
             chevron.style.transform = 'rotate(180deg)';
             circle.classList.add('active');
             icon.classList.add('active');
         }
+        // Si ya estaba abierto, se mantiene cerrado después de closeAllAccordions()
     }
+}
+
+// Función para cerrar todos los acordeones
+function closeAllAccordions() {
+    // Obtener todas las secciones que tienen acordeón (no enlaces directos)
+    const accordionSections = FLOATING_MENU_SECTIONS.filter(section => !section.isLink);
+    
+    accordionSections.forEach(section => {
+        const body = document.getElementById(`body-${section.id}`);
+        const chevron = document.getElementById(`chevron-${section.id}`);
+        const circle = document.getElementById(`circle-${section.id}`);
+        const icon = document.getElementById(`icon-${section.id}`);
+        
+        if (body && chevron && circle && icon) {
+            body.style.display = 'none';
+            chevron.style.transform = 'rotate(0deg)';
+            circle.classList.remove('active');
+            icon.classList.remove('active');
+        }
+    });
 }
 
 // Función para activar un accordion-link específico
@@ -226,6 +246,7 @@ window.loadFloatingMenu = loadFloatingMenu;
 window.showFloatingMenu = showFloatingMenu;
 window.hideFloatingMenu = hideFloatingMenu;
 window.toggleAccordion = toggleAccordion;
+window.closeAllAccordions = closeAllAccordions;
 window.setActiveAccordionLink = setActiveAccordionLink;
 
 // También exportar como funciones globales
