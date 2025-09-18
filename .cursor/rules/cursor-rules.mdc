@@ -458,6 +458,11 @@ showAlert('success', 'Your message here', { noClose: true });
     <span>Button text</span>
     <span class="ubits-button__badge"></span>
 </button>
+
+<!-- Icon only button -->
+<button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only">
+    <i class="far fa-trash"></i>
+</button>
 ```
 
 **CRITICAL: REQUIRED IMPORTS**
@@ -478,6 +483,13 @@ showAlert('success', 'Your message here', { noClose: true });
 - `ubits-button--sm` (small - 12px)
 - `ubits-button--md` (medium - 16px)
 - `ubits-button--lg` (large - 20px)
+
+**Available modifiers:**
+- `ubits-button--icon-only` (solo icono, sin texto)
+  - Small: 32x32px
+  - Medium: 40x40px  
+  - Large: 48x48px
+  - Uso: Acciones secundarias, botones de eliminar, controles compactos
 
 **Badge support:**
 - `ubits-button__badge` - Red dot indicator (no text, no border)

@@ -315,7 +315,7 @@
                     </div>
 
                     <!-- Prompt 6: Cambiar funcionalidad del botón -->
-                    <div>
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
                         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
                             <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
                                 Cambiar acción del botón
@@ -327,6 +327,22 @@
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
                             <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="button-prompt-6">Haz que el botón [nombre_del_boton] al hacer clic [describe qué acción debe realizar].</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 7: Convertir a botón de solo icono -->
+                    <div>
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Convertir a botón de solo icono
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('button-prompt-7')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="button-prompt-7">Convierte el botón [nombre_del_boton] a la variante de solo icono. Quita el texto y usa solo el icono [nombre_del_icono]. Agrega la clase ubits-button--icon-only.</code></pre>
                         </div>
                     </div>
                 </div>
@@ -395,7 +411,12 @@
 /* Tamaños */
 .ubits-button--sm        /* Pequeño (13px, 32px alto) */
 .ubits-button--md        /* Mediano (16px, 40px alto) */
-.ubits-button--lg        /* Grande (20px, 48px alto) */</code></pre>
+.ubits-button--lg        /* Grande (20px, 48px alto) */
+
+/* Modificadores */
+.ubits-button--icon-only /* Solo icono, sin texto */
+  /* Small: 32x32px, Medium: 40x40px, Large: 48x48px */
+  /* Uso: Acciones secundarias, eliminar, controles compactos */</code></pre>
                                 </div>
                             </div>
 
@@ -427,6 +448,11 @@
 &lt;button class="ubits-button ubits-button--tertiary ubits-button--lg"&gt;
   &lt;i class="far fa-plus"&gt;&lt;/i&gt;
   &lt;span&gt;Agregar elemento&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- Botón de solo icono --&gt;
+&lt;button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only"&gt;
+  &lt;i class="far fa-trash"&gt;&lt;/i&gt;
 &lt;/button&gt;</code></pre>
                                 </div>
                             </div>
