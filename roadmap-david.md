@@ -10,21 +10,23 @@
 
 ---
 
-## 📈 **Backlog del proyecto**: 15/44 (34.09%)
+## 📈 **Backlog del proyecto**: 16/44 (36%)
 
 
-### **Páginas de Documentación**: 12/35 (34.29%)
+### **Páginas de Documentación**: 12/36 (33%)
 - ✅ Introducción (faltan videos) - [`documentacion.html`]
 - ✅ Guía de Prompts (faltan prompts) - [`guia-prompts.html`]
 - ✅ Componentes (libreria) - [`componentes.html`]
     - ✅ SubNav - [`subnav.html`]
     - ✅ Sidebar - [`sidebar.html`]
-    - ✅ TabBar - [`tab-bar.html`]
+        - [ ] falta el sidebar de admin
+    - ✅ TabBar (y floating menu) - [`tab-bar.html`]
     - ✅ Button - [`button.html`]
     - ✅ Alert - [`alert.html`]
     - ✅ Card Content - [`card-content.html`] **¡NUEVO!** 🚀
     - [ ] Input - Campos de texto, email, password con validación
     - [ ] Select - Dropdowns con búsqueda y múltiple selección
+    - [ ] Toast
     - [ ] Checkbox - Elementos de selección múltiple
     - [ ] Radio - Elementos de selección única
     - [ ] Modal - Ventanas emergentes con overlay
@@ -49,9 +51,13 @@
 - [ ] Espaciados - [`espaciados.html`]
 - [ ] Border-radius - [`border-radius.html`]
 
-### **Páginas Plantilla**: 3/9 (33.33%)
+### **Páginas Plantilla**: 4/12 (33%)
 - ✅  Plantilla principal - [`index.html`]
-- [ ] Learn - [`learn.html`]
+- Learn - [`learn.html`]
+    - ✅ Learn - [`home-learn.html`]
+    - [ ] Catalogo - [`home-learn.html`]
+    - [ ] U.Corporativa - [`u-corporativa.html`]
+    - [ ] Zona de estudio - [`home-learn.html`]
 - [ ] Diagnóstico - [`diagnostico.html`]
 - [ ] Desempeño - [`desempeno.html`]
 - [ ] Encuestas - [`encuestas.html`]

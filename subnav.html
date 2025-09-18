@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="fontawesome-icons.css">
     <link rel="stylesheet" href="ubits-typography.css">
     <link rel="stylesheet" href="components/sub-nav.css">
+    <link rel="stylesheet" href="components/alert.css">
     <link rel="stylesheet" href="components-sidebar.css">
     <link rel="stylesheet" href="docs/docs-sidebar.css">
     <link rel="stylesheet" href="components/button.css">
@@ -148,6 +149,84 @@
                             <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-cog"></i></div>
                             <div class="ubits-body-sm-bold">Personalizable</div>
                             <div class="ubits-body-sm-regular">Fácil de modificar y extender</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROMPTS ÚTILES -->
+                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1); margin-bottom: 40px;">
+                    <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                        <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                        Prompts útiles
+                    </h2>
+                    <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                        Usa estos prompts con Cursor AI para configurar y personalizar el componente Sub-nav de manera eficiente.
+                    </p>
+
+                    <!-- Alert Warning -->
+                    <div id="subnav-warning-alert" style="margin-bottom: 32px;"></div>
+
+                    <!-- Prompt 1: Cambiar variante -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Cambiar variante del Sub-nav
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('subnav-prompt-1')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="subnav-prompt-1">En la página [nombre-pagina.html], cambia el Sub-nav a la variante de [las opciones son: template, aprendizaje, desempeno, encuestas, tareas, documentacion].</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 2: Activar sección -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Activar tab específico
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('subnav-prompt-2')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="subnav-prompt-2">En la página [nombre-pagina.html], activa el tab [nombre_del_tab] en el Sub-nav. Asegúrate de que se vea como seleccionado visualmente.</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 3: Cambiar tab activo -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Cambiar tab activo
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('subnav-prompt-3')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="subnav-prompt-3">En la página [nombre-pagina.html], cambia el tab activo del Sub-nav de [tab_actual] a [nuevo_tab]. Asegúrate de que el nuevo tab se vea seleccionado.</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 4: Ocultar Sub-nav -->
+                    <div>
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Ocultar Sub-nav en página específica
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('subnav-prompt-4')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="subnav-prompt-4">En la página [nombre-pagina.html], oculta el Sub-nav.</code></pre>
                         </div>
                     </div>
                 </div>
@@ -328,6 +407,7 @@ updateActiveSubNavTab('componentes'); // Cambiar pestaña activa</code></pre>
 
     <script src="components/sidebar.js"></script>
     <script src="components/sub-nav.js"></script>
+    <script src="components/alert.js"></script>
     <script src="docs/docs-sidebar.js"></script>
     <script src="script.js"></script>
     <script>
@@ -337,6 +417,12 @@ updateActiveSubNavTab('componentes'); // Cambiar pestaña activa</code></pre>
             
             // Cargar sidebar de documentación
             loadDocsSidebar('sub-nav');
+            
+            // Cargar alert de warning para prompts usando el componente oficial
+            showAlert('warning', 'Importante: Antes de enviar estos prompts a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
+                containerId: 'subnav-warning-alert',
+                noClose: true
+            });
         });
 
         // Funciones para el preview del SubNav
@@ -460,6 +546,39 @@ updateActiveSubNavTab('componentes'); // Cambiar pestaña activa</code></pre>
                 content.style.display = 'none';
                 button.innerHTML = '<i class="far fa-chevron-down" id="tech-docs-chevron" style="color: var(--ubits-accent-brand);"></i> <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand);">Mostrar</span>';
             }
+        }
+
+        // Función para copiar prompts
+        function copyPrompt(promptId) {
+            const promptElement = document.getElementById(promptId);
+            const promptText = promptElement.textContent;
+            
+            // Copiar al portapapeles
+            navigator.clipboard.writeText(promptText).then(function() {
+                // Mostrar feedback visual
+                const button = document.querySelector(`[onclick="copyPrompt('${promptId}')"]`);
+                const icon = button.querySelector('i');
+                const text = button.querySelector('span');
+                
+                // Cambiar estado del botón
+                icon.className = 'far fa-check';
+                text.textContent = 'Copiado';
+                button.classList.add('ubits-button--active');
+                
+                // Mostrar toast
+                showCodeToast('¡Prompt copiado! 🎉');
+                
+                // Restaurar estado después de 2 segundos
+                setTimeout(function() {
+                    icon.className = 'far fa-copy';
+                    text.textContent = 'Copiar';
+                    button.classList.remove('ubits-button--active');
+                }, 2000);
+                
+            }).catch(function(err) {
+                console.error('Error al copiar: ', err);
+                showCodeToast('Error al copiar el prompt', 'error');
+            });
         }
 
         // Función para copiar código

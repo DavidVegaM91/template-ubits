@@ -95,6 +95,11 @@
             loadFloatingMenu('floating-menu-container');
             // Cargar profile-menu
             loadProfileMenu('profile-menu-container');
+            
+            // FORZAR activación de UBITS AI en el floating menu
+            setTimeout(() => {
+                setActiveDirectLink('ubits-ai');
+            }, 500);
         });
     </script>
 </body>

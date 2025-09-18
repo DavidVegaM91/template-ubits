@@ -854,6 +854,113 @@ Before finishing any task, verify:
 - `components/sub-nav.css` + `components/sub-nav.js` - SubNav component
 - `components/sidebar.js` + `components-sidebar.css` - Sidebar component  
 - `components/tab-bar.css` + `components/tab-bar.js` - TabBar component
+- `components/floating-menu.css` + `components/floating-menu.js` - Floating Menu component
 - `components/alert.css` + `components/alert.js` - Alert component
 - `components/button.css` - Button component
 - `docs/docs-sidebar.css` + `docs/docs-sidebar.js` - Docs Sidebar component
+
+## 🎯 FLOATING MENU (Modal Navigation)
+
+### **CRITICAL: ACTIVATING SPECIFIC ITEMS AUTOMATICALLY**
+
+When user requests to show a specific item as active in the floating menu, use this process:
+
+#### **1. FOR DIRECT LINKS (ubits-ai, encuestas):**
+```javascript
+// In the specific HTML page, add this to DOMContentLoaded:
+setTimeout(() => {
+    setActiveDirectLink('ITEM_ID');
+}, 500);
+```
+
+#### **2. FOR ACCORDION SUBITEMS (inicio, catalogo, etc.):**
+```javascript
+// In the specific HTML page, add this to DOMContentLoaded:
+setTimeout(() => {
+    setActiveAccordionLink('ITEM_ID');
+}, 500);
+```
+
+#### **3. AVAILABLE ITEM IDS:**
+**Direct Links:**
+- `ubits-ai` - UBITS AI page
+- `encuestas` - Encuestas page
+
+**Accordion Subitems:**
+- `inicio` - Aprendizaje > Inicio (home-learn.html)
+- `catalogo` - Aprendizaje > Catálogo
+- `corporativa` - Aprendizaje > U. Corporativa
+- `zona-estudio` - Aprendizaje > Zona de estudio
+- `evaluaciones` - Diagnóstico > Evaluaciones 360
+- `objetivos` - Diagnóstico > Objetivos
+- `metricas` - Desempeño > Métricas
+- `reportes` - Desempeño > Reportes
+- `planes` - Tareas > Planes
+- `tareas` - Tareas > Tareas
+
+#### **4. REQUIRED CSS RULES (ALREADY IMPLEMENTED):**
+```css
+/* Direct Links Active States */
+.accordion-link.direct-link.active span {
+    color: var(--ubits-sidebar-button-bg-active) !important;
+    font-weight: 600;
+}
+
+.accordion-link.direct-link.active .accordion-chevron {
+    color: var(--ubits-sidebar-button-bg-active) !important;
+}
+
+.accordion-link.direct-link.active .accordion-icon-circle {
+    background: var(--ubits-sidebar-button-bg-active) !important;
+}
+
+.accordion-link.direct-link.active .accordion-icon-circle i {
+    color: var(--ubits-sidebar-button-fg-active) !important;
+}
+
+/* Regular Accordion Links Active States */
+.accordion-link.active span {
+    color: var(--ubits-sidebar-button-bg-active) !important;
+    font-weight: 600;
+}
+
+.accordion-title.active span {
+    color: var(--ubits-sidebar-button-bg-active) !important;
+    font-weight: 700;
+}
+```
+
+#### **5. EXAMPLE IMPLEMENTATION:**
+```html
+<!-- In ubits-ai.html -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    loadSidebar('ubits-ai');
+    loadTabBar('tab-bar-container');
+    loadFloatingMenu('floating-menu-container');
+    loadProfileMenu('profile-menu-container');
+    
+    // Activate UBITS AI in floating menu
+    setTimeout(() => {
+        setActiveDirectLink('ubits-ai');
+    }, 500);
+});
+</script>
+```
+
+#### **6. FLOATING MENU STRUCTURE:**
+- **Aprendizaje** (accordion with subitems)
+  - Inicio, Catálogo, U. Corporativa, Zona de estudio
+- **Diagnóstico** (accordion with subitems)
+  - Evaluaciones 360, Objetivos
+- **Desempeño** (accordion with subitems)
+  - Métricas, Reportes
+- **Encuestas** (direct link)
+- **Tareas** (accordion with subitems)
+  - Planes, Tareas
+- **UBITS AI** (direct link)
+
+#### **7. TROUBLESHOOTING:**
+- **Item not showing active?** Check if CSS rules exist for that item type
+- **JavaScript not working?** Ensure setTimeout is used (DOM loading timing)
+- **Wrong item ID?** Verify the ID matches the floating menu structure

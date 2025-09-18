@@ -166,6 +166,9 @@ function showFloatingMenu() {
     if (floatingMenu) {
         floatingMenu.classList.add('show');
         document.body.style.overflow = 'hidden';
+        
+        // Activar automáticamente el elemento según la página actual
+        setActiveItemByCurrentPage();
     }
 }
 
@@ -182,8 +185,9 @@ function toggleAccordion(sectionId) {
     const chevron = document.getElementById(`chevron-${sectionId}`);
     const circle = document.getElementById(`circle-${sectionId}`);
     const icon = document.getElementById(`icon-${sectionId}`);
+    const title = document.querySelector(`#body-${sectionId}`).previousElementSibling.querySelector('.accordion-title');
     
-    if (body && chevron && circle && icon) {
+    if (body && chevron && circle && icon && title) {
         const isCurrentlyOpen = body.style.display === 'block';
         
         // Cerrar todos los acordeones primero
@@ -193,6 +197,7 @@ function toggleAccordion(sectionId) {
             // Abrir solo este acordeón - estado activo
             body.style.display = 'block';
             chevron.style.transform = 'rotate(180deg)';
+            title.classList.add('active');
             circle.classList.add('active');
             icon.classList.add('active');
         }
@@ -210,19 +215,85 @@ function closeAllAccordions() {
         const chevron = document.getElementById(`chevron-${section.id}`);
         const circle = document.getElementById(`circle-${section.id}`);
         const icon = document.getElementById(`icon-${section.id}`);
+        const title = document.querySelector(`#body-${section.id}`).previousElementSibling.querySelector('.accordion-title');
         
-        if (body && chevron && circle && icon) {
+        if (body && chevron && circle && icon && title) {
             body.style.display = 'none';
             chevron.style.transform = 'rotate(0deg)';
+            title.classList.remove('active');
             circle.classList.remove('active');
             icon.classList.remove('active');
         }
     });
 }
 
+// Función para activar elemento según la página actual
+function setActiveItemByCurrentPage() {
+    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    
+    // Mapear páginas a IDs de elementos
+    const pageToElementMap = {
+        'ubits-ai.html': 'ubits-ai',
+        'home-learn.html': 'inicio',
+        'catalogo.html': 'catalogo',
+        'universidad-corporativa.html': 'corporativa',
+        'zona-estudio.html': 'zona-estudio',
+        'evaluaciones.html': 'evaluaciones',
+        'objetivos.html': 'objetivos',
+        'metricas.html': 'metricas',
+        'reportes.html': 'reportes',
+        'encuestas.html': 'encuestas',
+        'planes.html': 'planes',
+        'tareas.html': 'tareas'
+    };
+    
+    const activeElementId = pageToElementMap[currentPage];
+    
+    if (activeElementId) {
+        // Usar setTimeout para asegurar que el DOM esté completamente cargado
+        setTimeout(() => {
+            const section = FLOATING_MENU_SECTIONS.find(s => s.id === activeElementId);
+            
+            if (section && section.isLink) {
+                setActiveDirectLink(activeElementId);
+            } else {
+                setActiveAccordionLink(activeElementId);
+            }
+        }, 100);
+    }
+}
+
+// Función para activar un link directo
+function setActiveDirectLink(linkId) {
+    // Remover activo de todos los links directos
+    document.querySelectorAll('.accordion-link.direct-link').forEach(link => {
+        link.classList.remove('active');
+    });
+    document.querySelectorAll('.accordion-link.direct-link .accordion-icon-circle').forEach(circle => {
+        circle.classList.remove('active');
+    });
+    document.querySelectorAll('.accordion-link.direct-link .accordion-icon-circle i').forEach(icon => {
+        icon.classList.remove('active');
+    });
+    
+    // Activar el link directo específico
+    const link = document.getElementById(`link-${linkId}`);
+    const circle = document.getElementById(`circle-${linkId}`);
+    const icon = document.getElementById(`icon-${linkId}`);
+    
+    if (link && circle && icon) {
+        link.classList.add('active');
+        circle.classList.add('active');
+        icon.classList.add('active');
+    }
+}
+
 // Función para activar un accordion-link específico
 function setActiveAccordionLink(linkId) {
     // Remover activo de todos los accordion-links
+    document.querySelectorAll('.accordion-link').forEach(link => {
+        link.classList.remove('active');
+    });
     document.querySelectorAll('.accordion-link .accordion-icon-circle').forEach(circle => {
         circle.classList.remove('active');
     });
@@ -231,10 +302,12 @@ function setActiveAccordionLink(linkId) {
     });
     
     // Activar el link específico
+    const link = document.getElementById(`link-${linkId}`);
     const circle = document.getElementById(`circle-${linkId}`);
     const icon = document.getElementById(`icon-${linkId}`);
     
-    if (circle && icon) {
+    if (link && circle && icon) {
+        link.classList.add('active');
         circle.classList.add('active');
         icon.classList.add('active');
     }
@@ -248,20 +321,7 @@ window.hideFloatingMenu = hideFloatingMenu;
 window.toggleAccordion = toggleAccordion;
 window.closeAllAccordions = closeAllAccordions;
 window.setActiveAccordionLink = setActiveAccordionLink;
+window.setActiveItemByCurrentPage = setActiveItemByCurrentPage;
+window.setActiveDirectLink = setActiveDirectLink;
 
-// También exportar como funciones globales
-function showFloatingMenu() {
-    const floatingMenu = document.getElementById('floating-menu');
-    if (floatingMenu) {
-        floatingMenu.classList.add('show');
-        document.body.style.overflow = 'hidden';
-    }
-}
-
-function hideFloatingMenu() {
-    const floatingMenu = document.getElementById('floating-menu');
-    if (floatingMenu) {
-        floatingMenu.classList.remove('show');
-        document.body.style.overflow = '';
-    }
-}
+// Funciones duplicadas eliminadas - ya están definidas arriba

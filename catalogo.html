@@ -74,14 +74,23 @@
             loadFloatingMenu('floating-menu-container');
             loadProfileMenu('profile-menu-container');
             
-            // Activar el tab "Inicio" específicamente después de cargar el SubNav
+            // Activar el tab "Catálogo" específicamente después de cargar el SubNav
             setTimeout(() => {
-                const homeTab = document.querySelector('.nav-tab[data-tab="home"]');
-                if (homeTab) {
-                    // Remover active de todos los tabs
-                    document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
-                    // Activar el tab home
-                    homeTab.classList.add('active');
+                // Remover active de todos los tabs (desktop y móvil)
+                document.querySelectorAll('.nav-tab, .hamburger-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                
+                // Activar el tab catálogo en desktop
+                const catalogTab = document.querySelector('.nav-tab[data-tab="catalog"]');
+                if (catalogTab) {
+                    catalogTab.classList.add('active');
+                }
+                
+                // Activar el tab catálogo en móvil (hamburger menu)
+                const catalogHamburger = document.querySelector('.hamburger-item[data-tab="catalog"]');
+                if (catalogHamburger) {
+                    catalogHamburger.classList.add('active');
                 }
                 
                 // Activar el botón de aprendizaje en el sidebar
@@ -102,9 +111,9 @@
                     modulosTabBarItem.classList.add('active');
                 }
                 
-                // Activar la opción "Inicio" dentro del grupo "Aprendizaje" del floating menu
+                // Activar la opción "Catálogo" dentro del grupo "Aprendizaje" del floating menu
                 if (typeof setActiveAccordionLink === 'function') {
-                    setActiveAccordionLink('inicio');
+                    setActiveAccordionLink('catalogo');
                 }
             }, 200);
         });

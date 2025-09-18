@@ -144,6 +144,116 @@
                         </div>
                     </div>
 
+                    <!-- PROMPTS ÚTILES -->
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1); margin-bottom: 40px;">
+                        <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Prompts útiles
+                        </h2>
+                        <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                            Usa estos prompts con Cursor AI para configurar y personalizar el componente Alert de manera eficiente.
+                        </p>
+
+                        <!-- Alert Warning -->
+                        <div id="alert-warning-alert" style="margin-bottom: 32px;"></div>
+
+                        <!-- Prompt 1: Crear alert básico -->
+                        <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                    Crear alert de notificación
+                                </h3>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('alert-prompt-1')">
+                                    <i class="far fa-copy"></i>
+                                    <span>Copiar</span>
+                                </button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="alert-prompt-1">Crea un alert de [success, info, warning o error] que diga "[tu_mensaje]" en [ubicación donde quieres el alert].</code></pre>
+                            </div>
+                        </div>
+
+                        <!-- Prompt 2: Alert sin botón cerrar -->
+                        <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                    Alert sin botón de cerrar
+                                </h3>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('alert-prompt-2')">
+                                    <i class="far fa-copy"></i>
+                                    <span>Copiar</span>
+                                </button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="alert-prompt-2">Crea un alert de [success, info, warning o error] que diga "[tu_mensaje]" sin botón de cerrar en [ubicación donde quieres el alert].</code></pre>
+                            </div>
+                        </div>
+
+                        <!-- Prompt 3: Cambiar tipo de alert -->
+                        <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                    Cambiar tipo de alert
+                                </h3>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('alert-prompt-3')">
+                                    <i class="far fa-copy"></i>
+                                    <span>Copiar</span>
+                                </button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="alert-prompt-3">Cambia el alert [descripción_del_alert] de [tipo_actual] a [nuevo_tipo: success, info, warning o error].</code></pre>
+                            </div>
+                        </div>
+
+                        <!-- Prompt 4: Cambiar mensaje del alert -->
+                        <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                    Cambiar mensaje del alert
+                                </h3>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('alert-prompt-4')">
+                                    <i class="far fa-copy"></i>
+                                    <span>Copiar</span>
+                                </button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="alert-prompt-4">Cambia el mensaje del alert [descripción_del_alert] para que diga "[nuevo_mensaje]".</code></pre>
+                            </div>
+                        </div>
+
+                        <!-- Prompt 5: Quitar botón de cerrar -->
+                        <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                    Quitar botón de cerrar
+                                </h3>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('alert-prompt-5')">
+                                    <i class="far fa-copy"></i>
+                                    <span>Copiar</span>
+                                </button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="alert-prompt-5">Quita el botón de cerrar del alert [descripción_del_alert].</code></pre>
+                            </div>
+                        </div>
+
+                        <!-- Prompt 6: Eliminar alert -->
+                        <div>
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                    Eliminar alert
+                                </h3>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('alert-prompt-6')">
+                                    <i class="far fa-copy"></i>
+                                    <span>Copiar</span>
+                                </button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="alert-prompt-6">Elimina el alert [descripción_del_alert].</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Technical Documentation -->
                     <div style="background: var(--ubits-bg-1); border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1); margin-bottom: 40px; overflow: hidden;">
                         <!-- Header del acordeón -->
@@ -386,6 +496,12 @@ showAlert('success', 'Tu mensaje aquí', {
             
             // Cargar sidebar de documentación
             loadDocsSidebar('alert');
+            
+            // Cargar alert de warning para prompts usando el componente oficial
+            showAlert('warning', 'Importante: Antes de enviar estos prompts a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
+                containerId: 'alert-warning-alert',
+                noClose: true
+            });
         });
 
         // Funciones para el preview del componente
@@ -457,6 +573,39 @@ showAlert('success', 'Tu mensaje aquí', {
                 content.style.display = 'none';
                 button.innerHTML = '<i class="far fa-chevron-down" id="tech-docs-chevron" style="color: var(--ubits-accent-brand);"></i> <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand);">Mostrar</span>';
             }
+        }
+
+        // Función para copiar prompts
+        function copyPrompt(promptId) {
+            const promptElement = document.getElementById(promptId);
+            const promptText = promptElement.textContent;
+            
+            // Copiar al portapapeles
+            navigator.clipboard.writeText(promptText).then(function() {
+                // Mostrar feedback visual
+                const button = document.querySelector(`[onclick="copyPrompt('${promptId}')"]`);
+                const icon = button.querySelector('i');
+                const text = button.querySelector('span');
+                
+                // Cambiar estado del botón
+                icon.className = 'far fa-check';
+                text.textContent = 'Copiado';
+                button.classList.add('ubits-button--active');
+                
+                // Mostrar toast
+                showToast('success', '¡Prompt copiado! 🎉');
+                
+                // Restaurar estado después de 2 segundos
+                setTimeout(function() {
+                    icon.className = 'far fa-copy';
+                    text.textContent = 'Copiar';
+                    button.classList.remove('ubits-button--active');
+                }, 2000);
+                
+            }).catch(function(err) {
+                console.error('Error al copiar: ', err);
+                showToast('error', 'Error al copiar el prompt');
+            });
         }
 
         // Función para copiar código

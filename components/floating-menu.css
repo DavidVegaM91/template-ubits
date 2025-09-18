@@ -92,11 +92,11 @@
 }
 
 .accordion-title span {
-    color: inherit;
+    color: var(--ubits-sidebar-button-fg-default);
 }
 
 .accordion-title.active span {
-    color: var(--ubits-sidebar-button-bg-active);
+    color: var(--ubits-sidebar-button-bg-active) !important;
     font-weight: 700;
 }
 
@@ -144,12 +144,30 @@
 }
 
 .accordion-link span {
-    color: inherit;
+    color: var(--ubits-sidebar-button-fg-default);
 }
 
 .accordion-link.active span {
-    color: var(--ubits-sidebar-button-bg-active);
+    color: var(--ubits-sidebar-button-bg-active) !important;
     font-weight: 600;
+}
+
+/* Estados activos para DIRECT LINKS */
+.accordion-link.direct-link.active span {
+    color: var(--ubits-sidebar-button-bg-active) !important;
+    font-weight: 600;
+}
+
+.accordion-link.direct-link.active .accordion-chevron {
+    color: var(--ubits-sidebar-button-bg-active) !important;
+}
+
+.accordion-link.direct-link.active .accordion-icon-circle {
+    background: var(--ubits-sidebar-button-bg-active) !important;
+}
+
+.accordion-link.direct-link.active .accordion-icon-circle i {
+    color: var(--ubits-sidebar-button-fg-active) !important;
 }
 
 /* Enlaces directos (no acordeón) */
@@ -159,6 +177,8 @@
     padding-right: 4px;
     margin-bottom: 4px;
 }
+
+/* Reglas normales para direct-links (sin forzar activo) */
 
 .accordion-link.direct-link .accordion-chevron {
     font-size: 14px;
@@ -301,20 +321,19 @@
     font-weight: 600;
 }
 
-/* Modo oscuro para acordeones */
-[data-theme="dark"] .accordion-title,
-.accordion-title span {
-    color: var(--ubits-sidebar-button-fg-default) !important;
+/* Estados activos movidos al final del archivo */
+
+/* Modo oscuro - SIN sobrescribir estados activos */
+[data-theme="dark"] .accordion-title span:not(.active) {
+    color: var(--ubits-sidebar-button-fg-default);
 }
 
-[data-theme="dark"] .accordion-link,
-.accordion-link span {
-    color: var(--ubits-sidebar-button-fg-default) !important;
+[data-theme="dark"] .accordion-link span:not(.active) {
+    color: var(--ubits-sidebar-button-fg-default);
 }
 
-[data-theme="dark"] .accordion-link:hover,
-.accordion-link:hover span {
-    color: var(--ubits-sidebar-button-fg-hover) !important;
+[data-theme="dark"] .accordion-link:hover span:not(.active) {
+    color: var(--ubits-sidebar-button-fg-hover);
 }
 
 .floating-menu-subicon {
@@ -370,7 +389,7 @@
 }
 
 [data-theme="dark"] .floating-menu-title {
-    color: var(--ubits-sidebar-button-fg-active);
+    color: var(--ubits-sidebar-button-fg-default);
 }
 
 [data-theme="dark"] .floating-menu-close {
@@ -414,3 +433,5 @@
 .accordion-icon-circle.active i {
     color: var(--ubits-sidebar-button-fg-active);
 }
+
+/* Reglas activas movidas junto a sus reglas base */

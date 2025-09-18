@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="components/sub-nav.css">
     <link rel="stylesheet" href="components/tab-bar.css">
     <link rel="stylesheet" href="components/floating-menu.css">
+    <link rel="stylesheet" href="components/alert.css">
     <link rel="stylesheet" href="components-sidebar.css">
     <link rel="stylesheet" href="docs/docs-sidebar.css">
     <link rel="stylesheet" href="components/button.css">
@@ -344,6 +345,68 @@
 
                 </div>
 
+                <!-- PROMPTS ÚTILES -->
+                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1); margin-bottom: 40px;">
+                    <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                        <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                        Prompts útiles
+                    </h2>
+                    <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                        Usa estos prompts con Cursor AI para configurar el Tab-bar y su Floating Menu de manera eficiente.
+                    </p>
+
+                    <!-- Alert Warning -->
+                    <div id="tabbar-warning-alert" style="margin-bottom: 32px;"></div>
+
+                    <!-- Prompt 1: Activar item del Tab-bar -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Activar botón del Tab-bar móvil
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('tabbar-prompt-1')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tabbar-prompt-1">En la página [nombre-pagina.html], activa el botón [Módulos o Mi perfil] del Tab-bar móvil para que se vea seleccionado.</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 2: Activar opción dentro de menú -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Activar opción dentro de menú desplegable
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('tabbar-prompt-2')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tabbar-prompt-2">En la página [nombre-pagina.html], cuando se abra el menú "Módulos", activa la opción [nombre_de_la_opcion] que está dentro del grupo [Aprendizaje, Diagnóstico, Desempeño o Tareas].</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 3: Activar enlace directo -->
+                    <div>
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Activar enlace directo del menú
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('tabbar-prompt-3')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tabbar-prompt-3">En la página [nombre-pagina.html], cuando se abra el menú "Módulos", haz que se vea activa la opción de [nombre de la sección que deseas ver activa].</code></pre>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- ACORDEÓN DE DOCUMENTACIÓN TÉCNICA -->
                 <div style="background: var(--ubits-bg-1); border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1); margin-bottom: 40px; overflow: hidden;">
                     <!-- Header del acordeón -->
@@ -430,6 +493,8 @@ updateActiveTabBarItem('modulos'); // Cambiar item activo</code></pre>
                                 <i class="far fa-cogs" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                                 API y funciones
                             </h2>
+                            
+                            <!-- Tab-bar Functions -->
                             <div style="margin-bottom: 24px;">
                                 <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">loadTabBar(containerId)</h3>
                                 <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
@@ -452,6 +517,63 @@ updateActiveTabBarItem('modulos'); // Cambiar item activo</code></pre>
                                         <strong>Parámetros:</strong> itemId (string) - ID del nuevo item activo<br>
                                         <strong>Ejemplo:</strong> updateActiveTabBarItem('modulos')
                                     </div>
+                                </div>
+                            </div>
+
+                            <!-- Floating Menu Functions -->
+                            <div style="margin-bottom: 24px; border-top: 1px solid var(--ubits-border-1); padding-top: 24px;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-window-maximize" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Funciones del Floating Menu
+                                </h3>
+                            </div>
+                            
+                            <div style="margin-bottom: 24px;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">setActiveDirectLink(linkId)</h3>
+                                <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
+                                    Activa un enlace directo del floating menu (como UBITS AI, Encuestas).
+                                </p>
+                                <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: 6px; border-left: 4px solid var(--ubits-accent-brand);">
+                                    <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                        <strong>Parámetros:</strong> linkId (string) - ID del enlace directo<br>
+                                        <strong>IDs disponibles:</strong> 'ubits-ai', 'encuestas'<br>
+                                        <strong>Ejemplo:</strong> setActiveDirectLink('ubits-ai')
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div style="margin-bottom: 24px;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">setActiveAccordionLink(linkId)</h3>
+                                <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
+                                    Activa un subitem dentro de los accordions del floating menu.
+                                </p>
+                                <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: 6px; border-left: 4px solid var(--ubits-accent-brand);">
+                                    <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                        <strong>Parámetros:</strong> linkId (string) - ID del subitem<br>
+                                        <strong>IDs disponibles:</strong> 'inicio', 'catalogo', 'corporativa', 'zona-estudio', 'evaluaciones', 'objetivos', 'metricas', 'reportes', 'planes', 'tareas'<br>
+                                        <strong>Ejemplo:</strong> setActiveAccordionLink('inicio')
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div style="margin-bottom: 24px;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Implementación práctica</h3>
+                                <p class="ubits-body-md-regular" style="margin-bottom: 12px; line-height: 1.5;">
+                                    Para activar automáticamente un item cuando se carga una página:
+                                </p>
+                                <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);">// En el HTML de la página específica
+document.addEventListener('DOMContentLoaded', function() {
+    // Cargar componentes
+    loadFloatingMenu('floating-menu-container');
+    
+    // Activar item específico con delay para DOM
+    setTimeout(() => {
+        setActiveDirectLink('ubits-ai'); // Para enlaces directos
+        // O
+        setActiveAccordionLink('inicio'); // Para subitems
+    }, 500);
+});</pre>
                                 </div>
                             </div>
                         </div>
@@ -521,6 +643,7 @@ updateActiveTabBarItem('modulos'); // Cambiar item activo</code></pre>
     <script src="components/tab-bar.js"></script>
     <script src="components/floating-menu.js"></script>
     <script src="components/profile-menu.js"></script>
+    <script src="components/alert.js"></script>
     <script src="docs/docs-sidebar.js"></script>
     <script src="script.js"></script>
     <script>
@@ -550,6 +673,12 @@ updateActiveTabBarItem('modulos'); // Cambiar item activo</code></pre>
             
             // Cargar profile menu para el preview
             loadProfileMenu('profile-menu-content');
+            
+            // Cargar alert de warning para prompts usando el componente oficial
+            showAlert('warning', 'Importante: Antes de enviar estos prompts a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
+                containerId: 'tabbar-warning-alert',
+                noClose: true
+            });
             
             // Mostrar floating menu automáticamente en el preview y ocultar profile menu
             setTimeout(() => {
@@ -655,6 +784,39 @@ updateActiveTabBarItem('modulos'); // Cambiar item activo</code></pre>
                 content.style.display = 'none';
                 button.innerHTML = '<i class="far fa-chevron-down" id="tech-docs-chevron" style="color: var(--ubits-accent-brand);"></i> <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand);">Mostrar</span>';
             }
+        }
+
+        // Función para copiar prompts
+        function copyPrompt(promptId) {
+            const promptElement = document.getElementById(promptId);
+            const promptText = promptElement.textContent;
+            
+            // Copiar al portapapeles
+            navigator.clipboard.writeText(promptText).then(function() {
+                // Mostrar feedback visual
+                const button = document.querySelector(`[onclick="copyPrompt('${promptId}')"]`);
+                const icon = button.querySelector('i');
+                const text = button.querySelector('span');
+                
+                // Cambiar estado del botón
+                icon.className = 'far fa-check';
+                text.textContent = 'Copiado';
+                button.classList.add('ubits-button--active');
+                
+                // Mostrar toast
+                showCodeToast('¡Prompt copiado! 🎉');
+                
+                // Restaurar estado después de 2 segundos
+                setTimeout(function() {
+                    icon.className = 'far fa-copy';
+                    text.textContent = 'Copiar';
+                    button.classList.remove('ubits-button--active');
+                }, 2000);
+                
+            }).catch(function(err) {
+                console.error('Error al copiar: ', err);
+                showCodeToast('Error al copiar el prompt', 'error');
+            });
         }
 
         // Función para copiar código
