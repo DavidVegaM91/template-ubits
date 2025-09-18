@@ -316,16 +316,28 @@ function initScrollListener() {
     window.addEventListener('scroll', function() {
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         const sidebar = document.querySelector('.docs-sidebar');
+        const subNav = document.querySelector('.sub-nav');
         
         if (!sidebar) return;
         
-        // Si el scroll es hacia abajo y supera el threshold
-        if (scrollTop > lastScrollTop && scrollTop > scrollThreshold) {
-            sidebar.classList.add('scrolled');
+        // Detectar si el sub-nav está visible
+        let subNavVisible = true;
+        if (subNav) {
+            const subNavRect = subNav.getBoundingClientRect();
+            subNavVisible = subNavRect.bottom > 0; // Si el bottom está por encima de 0, está visible
         }
-        // Si el scroll es hacia arriba o está cerca del top
-        else if (scrollTop < lastScrollTop || scrollTop <= scrollThreshold) {
+        
+        // Ajustar posición del sidebar basado en la visibilidad real del sub-nav
+        if (subNavVisible) {
+            // Sub-nav visible - posición normal
             sidebar.classList.remove('scrolled');
+            sidebar.style.top = '80px';
+            sidebar.style.height = 'calc(100vh - 80px - 16px)';
+        } else {
+            // Sub-nav no visible - posición ajustada
+            sidebar.classList.add('scrolled');
+            sidebar.style.top = '16px';
+            sidebar.style.height = 'calc(100vh - 16px - 16px)';
         }
         
         lastScrollTop = scrollTop;

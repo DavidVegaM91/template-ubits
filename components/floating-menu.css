@@ -96,7 +96,7 @@
 }
 
 .accordion-title.active span {
-    color: var(--ubits-sidebar-button-fg-active);
+    color: var(--ubits-sidebar-button-bg-active);
     font-weight: 700;
 }
 
@@ -148,7 +148,7 @@
 }
 
 .accordion-link.active span {
-    color: var(--ubits-sidebar-button-fg-active);
+    color: var(--ubits-sidebar-button-bg-active);
     font-weight: 600;
 }
 
@@ -222,7 +222,7 @@
 
 .floating-menu-item.active .floating-menu-text,
 .floating-menu-item.active .floating-menu-text span {
-    color: var(--ubits-sidebar-button-fg-active) !important;
+    color: var(--ubits-sidebar-button-bg-active) !important;
     font-weight: 700;
 }
 
@@ -297,7 +297,7 @@
 
 .floating-menu-subitem.active .floating-menu-subtext,
 .floating-menu-subitem.active .floating-menu-subtext span {
-    color: var(--ubits-sidebar-button-fg-active) !important;
+    color: var(--ubits-sidebar-button-bg-active) !important;
     font-weight: 600;
 }
 

@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="ubits-typography.css">
     <link rel="stylesheet" href="components/sub-nav.css">
     <link rel="stylesheet" href="components/tab-bar.css">
+    <link rel="stylesheet" href="components/floating-menu.css">
     <link rel="stylesheet" href="components-sidebar.css">
     <link rel="stylesheet" href="docs/docs-sidebar.css">
     <link rel="stylesheet" href="components/button.css">
@@ -57,6 +58,101 @@
             background: var(--ubits-bg-1) !important;
             border: 1px solid var(--ubits-border-1) !important;
         }
+        
+        /* Floating Menu en preview - forzar visibilidad */
+        #floating-menu-container .floating-menu {
+            position: relative !important;
+            top: auto !important;
+            left: auto !important;
+            right: auto !important;
+            bottom: auto !important;
+            display: block !important;
+            min-height: 500px !important;
+            max-height: 600px !important;
+            overflow-y: auto !important;
+            margin-bottom: 12px !important;
+            border-radius: 12px !important;
+            width: 100% !important;
+            max-width: 400px !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+        }
+        
+        #floating-menu-container .floating-menu.show {
+            display: block !important;
+        }
+        
+        /* Deshabilitar hipervínculos en preview del floating menu */
+        #floating-menu-container .accordion-link {
+            pointer-events: none !important;
+            cursor: default !important;
+        }
+        
+        /* Pero mantener hover effects para demostración */
+        #floating-menu-container .accordion-link:hover {
+            background: var(--ubits-sidebar-button-bg-pressed) !important;
+        }
+        
+        /* Título "Módulos" del floating menu en preview */
+        #floating-menu-container .floating-menu-title {
+            color: var(--ubits-sidebar-button-fg-default) !important;
+        }
+        
+        /* Profile Menu Preview Container */
+        #profile-menu-preview-container {
+            align-items: flex-end !important;
+            justify-content: center !important;
+        }
+        
+        #profile-menu-content {
+            width: 100% !important;
+            display: flex !important;
+            justify-content: center !important;
+        }
+        
+        #profile-menu-preview-container.show {
+            display: flex !important;
+        }
+        
+        /* Asegurar que solo uno sea visible a la vez */
+        #floating-menu-container:not([style*="display: none"]) ~ #profile-menu-preview-container {
+            display: none !important;
+        }
+        
+        /* Profile Menu en preview */
+        #profile-menu-content .profile-menu {
+            position: relative !important;
+            background: var(--ubits-sidebar-bg) !important;
+            border-radius: 8px !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+            padding: 8px 0 !important;
+            width: 100% !important;
+            max-width: 400px !important;
+            display: block !important;
+        }
+        
+        #profile-menu-content .profile-menu-item {
+            display: flex !important;
+            align-items: center !important;
+            padding: 12px 16px !important;
+            text-decoration: none !important;
+            color: var(--ubits-sidebar-button-fg-default) !important;
+            transition: background 0.2s ease !important;
+        }
+        
+        #profile-menu-content .profile-menu-item:hover {
+            background: var(--ubits-sidebar-button-bg-pressed) !important;
+        }
+        
+        #profile-menu-content .profile-menu-icon {
+            margin-right: 12px !important;
+            width: 16px !important;
+            color: var(--ubits-sidebar-button-fg-default) !important;
+        }
+        
+        #profile-menu-content .profile-menu-text {
+            color: var(--ubits-sidebar-button-fg-default) !important;
+        }
     </style>
 </head>
 <body class="componentes-page" data-theme="light">
@@ -88,7 +184,7 @@
                         Tab-bar
                     </h1>
                     <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
-                        Componente de navegación inferior para dispositivos móviles que reemplaza al sidebar en pantallas pequeñas.
+                        Componente de navegación inferior para dispositivos móviles que reemplaza al sidebar en pantallas pequeñas. Incluye el subcomponente <strong>Floating Menu</strong> que se activa desde el botón "Módulos".
                     </p>
                 </div>
 
@@ -99,23 +195,31 @@
                         Preview del componente
                     </h2>
                     <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
-                        Aquí puedes ver el componente Tab-bar en acción. Haz clic en los botones para ver las diferentes opciones disponibles.
+                        Aquí puedes ver el componente Tab-bar en acción. Haz clic en "Módulos" para ver el <strong>Floating Menu</strong> con sus accordions interactivos.
                     </p>
                     
                     <!-- Preview Container -->
                     <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: 1px solid var(--ubits-border-1); position: relative;">
                         
+                        <!-- Floating Menu Container -->
+                        <div id="floating-menu-container"></div>
+                        
+                        <!-- Profile Menu Preview Container -->
+                        <div id="profile-menu-preview-container" style="display: none; height: 532px; width: 100%; max-width: 400px; margin: 0 auto 12px auto; align-items: flex-end; justify-content: center;">
+                            <div id="profile-menu-content"></div>
+                        </div>
+                        
                         <!-- Tab-bar Real de UBITS -->
-                        <div id="tab-bar-preview-container" style="display: flex; justify-content: center; align-items: flex-end; padding-bottom: 20px;">
+                        <div id="tab-bar-preview-container" style="display: flex; justify-content: center; align-items: flex-end;">
                             <div id="tab-bar-preview" style="width: 100%; max-width: 400px;">
                                 <!-- Tab-bar Real de UBITS -->
                                 <div class="tab-bar" id="tab-bar-preview-real">
                                     <div class="tab-bar-content">
-                                        <div class="tab-bar-item active" data-tab="modulos" onclick="navigateToTab('modulos')">
+                                        <div class="tab-bar-item active" data-tab="modulos" onclick="setPreviewOption('modulos')">
                                             <i class="far fa-grid-2 tab-bar-icon"></i>
                                             <span class="tab-bar-text ubits-body-xs-regular">Módulos</span>
                                         </div>
-                                        <div class="tab-bar-item" data-tab="perfil" onclick="navigateToTab('perfil')">
+                                        <div class="tab-bar-item" data-tab="perfil" onclick="setPreviewOption('perfil')">
                                             <img src="images/Profile-image.jpg" alt="Mi perfil" class="tab-bar-avatar">
                                             <span class="tab-bar-text ubits-body-xs-regular">Mi perfil</span>
                                         </div>
@@ -132,7 +236,7 @@
                     <!-- Preview Controls -->
                     <div style="margin-top: 16px; display: flex; gap: 12px; flex-wrap: wrap;">
                         <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" onclick="setPreviewOption('modulos')">
-                            <span>Módulos</span>
+                            <span>Módulos (Floating Menu)</span>
                         </button>
                         <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewOption('perfil')">
                             <span>Mi perfil</span>
@@ -166,6 +270,78 @@
                             <div class="ubits-body-sm-regular">Fácil de modificar y extender</div>
                         </div>
                     </div>
+                </div>
+
+                <!-- FLOATING MENU - SUBCOMPONENTE -->
+                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1); margin-bottom: 40px;">
+                    <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                        <i class="far fa-window-maximize" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                        Floating Menu - Subcomponente
+                    </h2>
+                    <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                        El <strong>Floating Menu</strong> es un modal que se despliega al hacer clic en "Módulos" del Tab-bar. Contiene la navegación principal organizada en accordions y enlaces directos.
+                    </p>
+
+                    <!-- Estructura del Floating Menu -->
+                    <div style="margin-bottom: 32px;">
+                        <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-sitemap" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Estructura y componentes
+                        </h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                                    <div style="width: 32px; height: 32px; background: var(--ubits-accent-brand); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px;">
+                                        <i class="far fa-graduation-cap" style="color: white; font-size: 14px;"></i>
+                                    </div>
+                                    <div class="ubits-body-sm-bold">Accordions</div>
+                                </div>
+                                <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                    Secciones expandibles: Aprendizaje, Diagnóstico, Desempeño, Tareas
+                                </div>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                                    <div style="width: 32px; height: 32px; background: var(--ubits-accent-brand); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px;">
+                                        <i class="far fa-link" style="color: white; font-size: 14px;"></i>
+                                    </div>
+                                    <div class="ubits-body-sm-bold">Enlaces directos</div>
+                                </div>
+                                <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                    Navegación directa: Encuestas, UBITS AI
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Comportamiento -->
+                    <div style="margin-bottom: 32px;">
+                        <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-cogs" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Comportamiento
+                        </h3>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                            <ul style="margin: 0; padding-left: 20px; list-style: none;">
+                                <li style="margin-bottom: 12px; display: flex; align-items: flex-start;">
+                                    <i class="far fa-check-circle" style="color: var(--ubits-accent-brand); margin-right: 8px; margin-top: 2px; flex-shrink: 0;"></i>
+                                    <span class="ubits-body-sm-regular"><strong>Accordion exclusivo:</strong> Solo un accordion puede estar abierto a la vez</span>
+                                </li>
+                                <li style="margin-bottom: 12px; display: flex; align-items: flex-start;">
+                                    <i class="far fa-check-circle" style="color: var(--ubits-accent-brand); margin-right: 8px; margin-top: 2px; flex-shrink: 0;"></i>
+                                    <span class="ubits-body-sm-regular"><strong>Estados visuales:</strong> Círculos activos en íconos cuando se expanden</span>
+                                </li>
+                                <li style="margin-bottom: 12px; display: flex; align-items: flex-start;">
+                                    <i class="far fa-check-circle" style="color: var(--ubits-accent-brand); margin-right: 8px; margin-top: 2px; flex-shrink: 0;"></i>
+                                    <span class="ubits-body-sm-regular"><strong>Navegación funcional:</strong> Todos los enlaces redirigen a sus páginas correspondientes</span>
+                                </li>
+                                <li style="margin-bottom: 0; display: flex; align-items: flex-start;">
+                                    <i class="far fa-check-circle" style="color: var(--ubits-accent-brand); margin-right: 8px; margin-top: 2px; flex-shrink: 0;"></i>
+                                    <span class="ubits-body-sm-regular"><strong>Cierre automático:</strong> Se cierra al hacer clic fuera del modal o con ESC</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
                 </div>
 
                 <!-- ACORDEÓN DE DOCUMENTACIÓN TÉCNICA -->
@@ -343,6 +519,8 @@ updateActiveTabBarItem('modulos'); // Cambiar item activo</code></pre>
     <script src="components/sidebar.js"></script>
     <script src="components/sub-nav.js"></script>
     <script src="components/tab-bar.js"></script>
+    <script src="components/floating-menu.js"></script>
+    <script src="components/profile-menu.js"></script>
     <script src="docs/docs-sidebar.js"></script>
     <script src="script.js"></script>
     <script>
@@ -366,6 +544,28 @@ updateActiveTabBarItem('modulos'); // Cambiar item activo</code></pre>
             
             // Cargar sidebar de documentación
             loadDocsSidebar('tab-bar');
+            
+            // Cargar floating menu para el preview
+            loadFloatingMenu('floating-menu-container');
+            
+            // Cargar profile menu para el preview
+            loadProfileMenu('profile-menu-content');
+            
+            // Mostrar floating menu automáticamente en el preview y ocultar profile menu
+            setTimeout(() => {
+                const floatingMenu = document.getElementById('floating-menu');
+                const profileMenuContainer = document.getElementById('profile-menu-preview-container');
+                
+                if (floatingMenu) {
+                    floatingMenu.classList.add('show');
+                }
+                
+                // Asegurar que profile menu esté oculto inicialmente
+                if (profileMenuContainer) {
+                    profileMenuContainer.classList.remove('show');
+                    profileMenuContainer.style.display = 'none';
+                }
+            }, 500);
         });
 
         // Funciones para el preview del componente
@@ -379,6 +579,44 @@ updateActiveTabBarItem('modulos'); // Cambiar item activo</code></pre>
                 }
             });
             
+            // Manejar cambio de contenido - EXCLUSIVO
+            const floatingMenuContainer = document.getElementById('floating-menu-container');
+            const profileMenuContainer = document.getElementById('profile-menu-preview-container');
+            const floatingMenu = document.getElementById('floating-menu');
+            
+            if (option === 'modulos') {
+                // SOLO mostrar floating menu
+                floatingMenuContainer.style.display = 'block';
+                profileMenuContainer.classList.remove('show');
+                profileMenuContainer.style.display = 'none';
+                
+                setTimeout(() => {
+                    if (floatingMenu) {
+                        floatingMenu.classList.add('show');
+                    }
+                }, 100);
+                
+            } else if (option === 'perfil') {
+                // SOLO mostrar profile menu
+                floatingMenuContainer.style.display = 'none';
+                profileMenuContainer.classList.add('show');
+                
+                // Ocultar floating menu explícitamente
+                if (floatingMenu) {
+                    floatingMenu.classList.remove('show');
+                }
+                
+            } else {
+                // Para otras opciones, ocultar ambos
+                floatingMenuContainer.style.display = 'none';
+                profileMenuContainer.classList.remove('show');
+                profileMenuContainer.style.display = 'none';
+                
+                if (floatingMenu) {
+                    floatingMenu.classList.remove('show');
+                }
+            }
+            
             // Actualizar controles
             const controlButtons = document.querySelectorAll('.preview-control-btn');
             controlButtons.forEach(button => {
@@ -391,6 +629,17 @@ updateActiveTabBarItem('modulos'); // Cambiar item activo</code></pre>
             }
         }
 
+        // Función para mostrar/ocultar floating menu en preview
+        function toggleFloatingMenuPreview() {
+            const floatingMenu = document.getElementById('floating-menu');
+            if (floatingMenu) {
+                if (floatingMenu.classList.contains('show')) {
+                    hideFloatingMenu();
+                } else {
+                    showFloatingMenu();
+                }
+            }
+        }
 
         // Función para el acordeón de documentación técnica
         function toggleTechnicalDocs() {
