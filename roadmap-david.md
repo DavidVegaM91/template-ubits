@@ -10,10 +10,10 @@
 
 ---
 
-## 📈 **Backlog del proyecto**: 14/44 (31.82%)
+## 📈 **Backlog del proyecto**: 15/44 (34.09%)
 
 
-### **Páginas de Documentación**: 11/35 (31.43%)
+### **Páginas de Documentación**: 12/35 (34.29%)
 - ✅ Introducción (faltan videos) - [`documentacion.html`]
 - ✅ Guía de Prompts (faltan prompts) - [`guia-prompts.html`]
 - ✅ Componentes (libreria) - [`componentes.html`]
@@ -22,7 +22,7 @@
     - ✅ TabBar - [`tab-bar.html`]
     - ✅ Button - [`button.html`]
     - ✅ Alert - [`alert.html`]
-    - [ ] Card - PRIORITARIO
+    - ✅ Card Content - [`card-content.html`] **¡NUEVO!** 🚀
     - [ ] Input - Campos de texto, email, password con validación
     - [ ] Select - Dropdowns con búsqueda y múltiple selección
     - [ ] Checkbox - Elementos de selección múltiple

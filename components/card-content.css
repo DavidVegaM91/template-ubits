@@ -1,0 +1,250 @@
+/* ========================================
+   UBITS CARD CONTENT COMPONENT
+   Estilos para course-cards reutilizables
+   ======================================== */
+
+/* Course Card Base */
+.course-card {
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.course-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-color: var(--ubits-accent-brand);
+}
+
+/* Course Thumbnail */
+.course-thumbnail-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+}
+
+.course-thumbnail {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--ubits-accent-brand), var(--ubits-accent-brand-static));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    color: var(--ubits-btn-primary-fg);
+    overflow: hidden;
+}
+
+.course-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.3s ease;
+}
+
+.course-card:hover .course-image {
+    transform: scale(1.05);
+}
+
+/* Progress Overlay */
+.course-progress-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0;
+    height: 5px;
+}
+
+.course-progress-overlay .progress-bar {
+    width: 100%;
+    height: 5px;
+    background: var(--ubits-bg-4-static);
+    border-radius: 0;
+    overflow: hidden;
+}
+
+.course-progress-overlay .progress-fill {
+    height: 100%;
+    background: var(--ubits-accent-brand);
+    border-radius: 0;
+    transition: width 0.3s ease;
+}
+
+/* Barra verde para estado completado */
+.course-card[data-status="completed"] .course-progress-overlay .progress-fill {
+    background: var(--ubits-feedback-accent-success-static);
+}
+
+/* Course Content */
+.course-content {
+    padding: 8px 16px 16px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Course Header */
+.course-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 24px;
+}
+
+.course-type-status {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.course-type {
+    color: var(--ubits-fg-1-medium);
+}
+
+.course-status {
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.course-status--progress {
+    color: var(--ubits-accent-brand);
+}
+
+.course-status--completed {
+    color: var(--ubits-feedback-accent-success-static);
+}
+
+/* Course Title */
+.course-title {
+    color: var(--ubits-fg-1-high);
+    margin: 0;
+    height: 39px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Provider Info */
+.course-provider {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.provider-avatar {
+    width: 35px;
+    height: 35px;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.provider-icon {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 50%;
+}
+
+.provider-name {
+    color: var(--ubits-fg-1-high);
+}
+
+/* Course Competency */
+.course-competency {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--ubits-fg-1-medium);
+}
+
+/* Course Specs */
+.course-specs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.spec-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--ubits-fg-1-medium);
+}
+
+/* Contenedor estándar para todos los iconos de specs - 18x18px */
+.spec-icon {
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* Iconos FontAwesome dentro del contenedor */
+.spec-icon i {
+    font-size: 12px;
+    color: var(--ubits-fg-1-medium);
+}
+
+
+/* Progress States */
+.course-card[data-progress="0"] .progress-fill {
+    width: 0%;
+}
+
+.course-card[data-progress="25"] .progress-fill {
+    width: 25%;
+}
+
+.course-card[data-progress="50"] .progress-fill {
+    width: 50%;
+}
+
+.course-card[data-progress="75"] .progress-fill {
+    width: 75%;
+}
+
+.course-card[data-progress="100"] .progress-fill {
+    width: 100%;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .course-thumbnail {
+        font-size: 36px;
+    }
+    
+    .course-content {
+        padding: 16px;
+    }
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.course-card {
+    animation: fadeIn 0.3s ease;
+}

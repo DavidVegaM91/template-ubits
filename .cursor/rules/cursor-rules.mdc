@@ -498,7 +498,65 @@ showAlert('success', 'Your message here', { noClose: true });
 </button>
 ```
 
-#### **6. DOCS SIDEBAR (Documentation Navigation)**
+#### **6. CARD CONTENT (Learning Content Cards)**
+```html
+<!-- Container for Card Content -->
+<div id="mi-contenedor-cards"></div>
+
+<!-- JavaScript to load Card Content -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const datosCards = [
+        {
+            type: 'Curso',
+            title: 'Mi contenido de aprendizaje',
+            provider: 'UBITS',
+            providerLogo: 'images/Favicons/UBITS.jpg',
+            duration: '60 min',
+            level: 'Intermedio',
+            progress: 75,
+            status: 'progress',
+            image: 'images/cards-learn/mi-imagen.jpg',
+            competency: 'Product design',
+            language: 'Español'
+        }
+    ];
+    
+    loadCardContent('mi-contenedor-cards', datosCards);
+});
+</script>
+```
+
+**Available content types (11 total):**
+- `Curso`, `Cápsula`, `Charla`, `Artículo`, `Podcast`, `Libro`, `Ideas de libro`, `Caso de estudio`, `Documento técnico`, `Ejercicios de práctica`, `Ruta de aprendizaje`
+
+**Available competencies (35 official UBITS):**
+- `Product design`, `Desarrollo de software`, `Liderazgo`, `Marketing digital`, `Inteligencia emocional`, and 30 more
+
+**Available providers (18 official):**
+- `UBITS`, `Microsoft`, `TED`, `AWS`, `Harvard Business Publishing`, `Hubspot`, and 12 more
+
+**Available levels:**
+- `Básico` (far fa-gauge-min), `Intermedio` (far fa-gauge), `Avanzado` (far fa-gauge-max)
+
+**Available statuses:**
+- `default` (no progress), `progress` (blue progress bar), `completed` (green progress bar)
+
+**Required files:**
+- `components/card-content.css`
+- `components/card-content.js`
+- `fontawesome-icons.css` (CRITICAL for icons)
+
+**CRITICAL CARD CONTENT RULES:**
+- ❌ **NEVER create custom card components** when Card Content exists
+- ❌ **NEVER use hardcoded images** - use images from `images/cards-learn/`
+- ❌ **NEVER use invalid competencies** - only use the 35 official UBITS competencies
+- ❌ **NEVER use invalid providers** - only use the 18 official providers with logos
+- ✅ **ALWAYS use existing Card Content component**
+- ✅ **ALWAYS import required CSS and JS files**
+- ✅ **ALWAYS validate data with official options**
+
+#### **7. DOCS SIDEBAR (Documentation Navigation)**
 ```html
 <!-- Container for Docs Sidebar -->
 <div id="docs-sidebar-container"></div>
@@ -518,6 +576,7 @@ document.addEventListener('DOMContentLoaded', function() {
 - `tab-bar` - TabBar component
 - `button` - Button component
 - `alert` - Alert component
+- `card-content` - Card Content component
 
 **Required files:**
 - `docs/docs-sidebar.css`

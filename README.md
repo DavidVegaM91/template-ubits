@@ -34,9 +34,10 @@ Una **plantilla lista para usar** que permite a **Product Managers**, **Diseñad
 ### **Componentes de UI:**
 - **Button** - Botones de acción (variantes: primary, secondary, tertiary; tamaños: sm, md, lg)
 - **Alert** - Notificaciones (tipos: success, info, warning, error; con/sin botón cerrar)
+- **Card Content** - Cards para contenidos de aprendizaje (11 tipos, 35 competencias, 18 aliados, estados de progreso)
 
 ### **Componentes de documentación:**
-- **Docs Sidebar** - Navegación para documentación (secciones: introduccion, sidebar, sub-nav, tab-bar, button, alert)
+- **Docs Sidebar** - Navegación para documentación (secciones: introduccion, sidebar, sub-nav, tab-bar, button, alert, card-content)
 
 ## 📁 Estructura del proyecto
 
@@ -47,6 +48,7 @@ Template UBITS/
 ├── 📄 componentes.html        # Documentación de componentes
 ├── 📄 button.html             # Documentación del componente Button
 ├── 📄 alert.html              # Documentación del componente Alert
+├── 📄 card-content.html       # Documentación del componente Card Content
 ├── 📄 sidebar.html            # Documentación del componente Sidebar
 ├── 📄 subnav.html             # Documentación del componente SubNav
 ├── 📄 tab-bar.html            # Documentación del componente TabBar
@@ -55,6 +57,7 @@ Template UBITS/
 │   ├── sidebar.js + components-sidebar.css
 │   ├── tab-bar.css + tab-bar.js
 │   ├── alert.css + alert.js
+│   ├── card-content.css + card-content.js
 │   └── button.css
 ├── 📁 docs/                   # Sistema de documentación
 │   ├── docs-sidebar.css + docs-sidebar.js
@@ -173,6 +176,26 @@ loadSidebar('sidebar-container', 'ninguno');
         <i class="far fa-times"></i>
     </button>
 </div>
+
+<!-- Card Content -->
+<div id="mi-contenedor-cards"></div>
+<script>
+loadCardContent('mi-contenedor-cards', [
+    {
+        type: 'Curso',
+        title: 'Mi contenido',
+        provider: 'UBITS',
+        providerLogo: 'images/Favicons/UBITS.jpg',
+        duration: '60 min',
+        level: 'Intermedio',
+        progress: 75,
+        status: 'progress',
+        image: 'images/cards-learn/mi-imagen.jpg',
+        competency: 'Product design',
+        language: 'Español'
+    }
+]);
+</script>
 ```
 
 ### **Prompts para Cursor AI:**
@@ -180,6 +203,7 @@ loadSidebar('sidebar-container', 'ninguno');
 "Usa el componente Button de UBITS para crear un botón primario con el texto 'Guardar'"
 "Agrega un Alert de éxito usando el componente UBITS con el mensaje 'Datos guardados'"
 "Implementa el SubNav con la variante 'template' en la página principal"
+"Crea un catálogo de cursos usando el componente Card Content con diferentes tipos y estados"
 ```
 
 ## 📚 Documentación
@@ -187,6 +211,7 @@ loadSidebar('sidebar-container', 'ninguno');
 - **`componentes.html`** - Página principal con todos los componentes disponibles
 - **`button.html`** - Documentación del componente Button
 - **`alert.html`** - Documentación del componente Alert
+- **`card-content.html`** - Documentación del componente Card Content
 - **`sidebar.html`** - Documentación del componente Sidebar
 - **`subnav.html`** - Documentación del componente SubNav
 - **`tab-bar.html`** - Documentación del componente TabBar
@@ -194,7 +219,7 @@ loadSidebar('sidebar-container', 'ninguno');
 ## 🎯 Características principales
 
 ### ✅ **Componentes listos para usar:**
-- 6 componentes UBITS completamente funcionales
+- 7 componentes UBITS completamente funcionales
 - Documentación interactiva con ejemplos
 - Código listo para copiar y pegar
 - Variantes y opciones configurables

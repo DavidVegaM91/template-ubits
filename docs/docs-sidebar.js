@@ -34,6 +34,11 @@ const DOCS_SIDEBAR_SECTIONS = [
         id: 'alert',
         title: 'Alert',
         group: 'ui'
+    },
+    {
+        id: 'card-content',
+        title: 'Card content',
+        group: 'ui'
     }
 ];
 
@@ -68,6 +73,9 @@ const docsSidebarHTML = `
                     </div>
                     <div class="docs-sidebar-item" data-section="alert">
                         <span class="docs-sidebar-text">Alert</span>
+                    </div>
+                    <div class="docs-sidebar-item" data-section="card-content">
+                        <span class="docs-sidebar-text">Card content</span>
                     </div>
                 </div>
             </div>
@@ -107,6 +115,9 @@ const docsDropdownHTML = `
                     </div>
                     <div class="docs-dropdown-item" data-section="alert">
                         <span class="docs-dropdown-item-text ubits-body-md-regular">Alert</span>
+                    </div>
+                    <div class="docs-dropdown-item" data-section="card-content">
+                        <span class="docs-dropdown-item-text ubits-body-md-regular">Card content</span>
                     </div>
                 </div>
             </div>
@@ -205,6 +216,14 @@ function initDocsSidebar(activeSection) {
             } else {
                 // Si estamos en otra página, navegar a alert.html
                 window.location.href = 'alert.html';
+            }
+        } else if (section === 'card-content') {
+            // Si ya estamos en card-content.html, solo hacer scroll al top
+            if (window.location.pathname.includes('card-content.html')) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                // Si estamos en otra página, navegar a card-content.html
+                window.location.href = 'card-content.html';
             }
         }
     }
