@@ -8,7 +8,7 @@ const FLOATING_MENU_SECTIONS = [
         title: 'Aprendizaje',
         icon: 'far fa-graduation-cap',
         subitems: [
-            { id: 'inicio', title: 'Inicio', icon: 'far fa-home', url: 'index.html' },
+            { id: 'inicio', title: 'Inicio', icon: 'far fa-home', url: 'home-learn.html' },
             { id: 'catalogo', title: 'Catálogo', icon: 'far fa-book', url: 'catalogo.html' },
             { id: 'corporativa', title: 'U. Corporativa', icon: 'far fa-building-columns', url: 'universidad-corporativa.html' },
             { id: 'zona-estudio', title: 'Zona de estudio', icon: 'far fa-books', url: 'zona-estudio.html' }
@@ -65,36 +65,44 @@ function getFloatingMenuHTML() {
         if (section.isLink) {
             if (section.clickable) {
                 return `
-                    <a href="${section.url}" class="accordion-link direct-link">
-                        <i class="${section.icon}"></i>
+                    <a href="${section.url}" class="accordion-link direct-link" id="link-${section.id}">
+                        <div class="accordion-icon-circle" id="circle-${section.id}">
+                            <i class="${section.icon}" id="icon-${section.id}"></i>
+                        </div>
                         <span class="ubits-body-md-regular">${section.title}</span>
                         <i class="far fa-chevron-right accordion-chevron"></i>
                     </a>
                 `;
             } else {
                 return `
-                    <div class="accordion-link direct-link disabled">
-                        <i class="${section.icon}"></i>
-                        <span class="ubits-body-md-regular">${section.title}</span>
-                        <i class="far fa-chevron-right accordion-chevron"></i>
+                <a href="${section.url}" class="accordion-link direct-link" id="link-${section.id}">
+                    <div class="accordion-icon-circle" id="circle-${section.id}">
+                        <i class="${section.icon}" id="icon-${section.id}"></i>
                     </div>
+                    <span class="ubits-body-md-regular">${section.title}</span>
+                    <i class="far fa-chevron-right accordion-chevron"></i>
+                </a>
                 `;
             }
         }
         
         // Si es acordeón normal
         const subitemsHTML = section.subitems.map(subitem => `
-            <div class="accordion-link disabled">
-                <i class="${subitem.icon}"></i>
+            <a href="${subitem.url}" class="accordion-link" id="link-${subitem.id}">
+                <div class="accordion-icon-circle" id="circle-${subitem.id}">
+                    <i class="${subitem.icon}" id="icon-${subitem.id}"></i>
+                </div>
                 <span class="ubits-body-sm-regular">${subitem.title}</span>
-            </div>
+            </a>
         `).join('');
 
         return `
             <div class="accordion-item">
-                <div class="accordion-header disabled" onclick="toggleAccordion('${section.id}')">
+                <div class="accordion-header" onclick="toggleAccordion('${section.id}')">
                     <div class="accordion-title">
-                        <i class="${section.icon}"></i>
+                        <div class="accordion-icon-circle" id="circle-${section.id}">
+                            <i class="${section.icon}" id="icon-${section.id}"></i>
+                        </div>
                         <span class="ubits-body-md-regular">${section.title}</span>
                     </div>
                     <i class="far fa-chevron-down accordion-chevron" id="chevron-${section.id}"></i>
@@ -172,15 +180,43 @@ function hideFloatingMenu() {
 function toggleAccordion(sectionId) {
     const body = document.getElementById(`body-${sectionId}`);
     const chevron = document.getElementById(`chevron-${sectionId}`);
+    const circle = document.getElementById(`circle-${sectionId}`);
+    const icon = document.getElementById(`icon-${sectionId}`);
     
-    if (body && chevron) {
+    if (body && chevron && circle && icon) {
         if (body.style.display === 'block') {
+            // Cerrar acordeón - estado default
             body.style.display = 'none';
             chevron.style.transform = 'rotate(0deg)';
+            circle.classList.remove('active');
+            icon.classList.remove('active');
         } else {
+            // Abrir acordeón - estado activo
             body.style.display = 'block';
             chevron.style.transform = 'rotate(180deg)';
+            circle.classList.add('active');
+            icon.classList.add('active');
         }
+    }
+}
+
+// Función para activar un accordion-link específico
+function setActiveAccordionLink(linkId) {
+    // Remover activo de todos los accordion-links
+    document.querySelectorAll('.accordion-link .accordion-icon-circle').forEach(circle => {
+        circle.classList.remove('active');
+    });
+    document.querySelectorAll('.accordion-link .accordion-icon-circle i').forEach(icon => {
+        icon.classList.remove('active');
+    });
+    
+    // Activar el link específico
+    const circle = document.getElementById(`circle-${linkId}`);
+    const icon = document.getElementById(`icon-${linkId}`);
+    
+    if (circle && icon) {
+        circle.classList.add('active');
+        icon.classList.add('active');
     }
 }
 
@@ -190,6 +226,7 @@ window.loadFloatingMenu = loadFloatingMenu;
 window.showFloatingMenu = showFloatingMenu;
 window.hideFloatingMenu = hideFloatingMenu;
 window.toggleAccordion = toggleAccordion;
+window.setActiveAccordionLink = setActiveAccordionLink;
 
 // También exportar como funciones globales
 function showFloatingMenu() {

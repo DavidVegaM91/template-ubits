@@ -42,7 +42,7 @@ function loadSidebar(activeButton = null) {
                 
                 <!-- Body -->
                 <div class="sidebar-body">
-                    <button class="nav-button" data-section="aprendizaje" data-tooltip="Aprendizaje">
+                    <button class="nav-button" data-section="aprendizaje" data-tooltip="Aprendizaje" onclick="window.location.href='home-learn.html'" style="cursor: pointer;">
                         <i class="far fa-graduation-cap"></i>
                     </button>
                     <button class="nav-button" data-section="diagnóstico" data-tooltip="Diagnóstico">

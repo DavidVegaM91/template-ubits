@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template UBITS - Dashboard</title>
+    
+    <!-- 
+    PLANTILLA UBITS - PÁGINA BASE
+    =============================
+    Este archivo es una plantilla base para crear nuevas páginas UBITS.
+    
+    USO:
+    - Cursor AI puede clonar este archivo para crear páginas nuevas
+    - Mantiene toda la estructura y tokens UBITS
+    - Personaliza el título y contenido según necesidades
+    
+    COMANDO PARA CURSOR:
+    "Abre plantilla-ubits.html y crea una copia llamada [nombre-pagina].html"
+    -->
+    
+    <!-- Estilos locales -->
+    <link rel="stylesheet" href="ubits-colors.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="fontawesome-icons.css">
+    <link rel="stylesheet" href="ubits-typography.css">
+    <link rel="stylesheet" href="components/sub-nav.css">
+    <link rel="stylesheet" href="components/tab-bar.css">
+    <link rel="stylesheet" href="components/floating-menu.css">
+    <link rel="stylesheet" href="components/profile-menu.css">
+</head>
+<body data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        
+        <!-- Sidebar Container -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navigation -->
+            <div id="top-nav-container"></div>
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Content wrapper que ocupa todo el ancho -->
+                <div class="content-wrapper">
+                    <p class="ubits-body-md-regular">Pídele a Cursor que reemplace este Content wrapper con la interfaz que necesitas</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Tab Bar Container -->
+    <div id="tab-bar-container"></div>
+
+    <!-- Floating Menu Container -->
+    <div id="floating-menu-container"></div>
+    
+    <!-- Profile Menu Container -->
+    <div id="profile-menu-container"></div>
+
+    <script src="components/sidebar.js"></script>
+    <script src="components/sub-nav.js"></script>
+    <script src="components/tab-bar.js"></script>
+    <script src="components/floating-menu.js"></script>
+    <script src="components/profile-menu.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Cargar componentes dinámicamente
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSidebar('sidebar-container', 'aprendizaje');
+            loadSubNav('top-nav-container', 'aprendizaje');
+            loadTabBar('tab-bar-container');
+            loadFloatingMenu('floating-menu-container');
+            loadProfileMenu('profile-menu-container');
+            
+            // Activar el tab "Inicio" específicamente después de cargar el SubNav
+            setTimeout(() => {
+                const homeTab = document.querySelector('.nav-tab[data-tab="home"]');
+                if (homeTab) {
+                    // Remover active de todos los tabs
+                    document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+                    // Activar el tab home
+                    homeTab.classList.add('active');
+                }
+                
+                // Activar el botón de aprendizaje en el sidebar
+                const aprendizajeButton = document.querySelector('.nav-button[data-section="aprendizaje"]');
+                if (aprendizajeButton) {
+                    // Remover active de todos los botones del sidebar
+                    document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
+                    // Activar el botón de aprendizaje
+                    aprendizajeButton.classList.add('active');
+                }
+            }, 200);
+        });
+    </script>
+</body>
+</html>

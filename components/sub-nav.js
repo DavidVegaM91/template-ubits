@@ -28,7 +28,7 @@ const TOP_NAV_VARIANTS = {
     aprendizaje: {
         name: 'Aprendizaje',
         tabs: [
-            { id: 'home', label: 'Inicio', icon: 'far fa-home', url: 'index.html' },
+            { id: 'home', label: 'Inicio', icon: 'far fa-home', url: 'home-learn.html' },
             { id: 'catalog', label: 'Catálogo', icon: 'far fa-book', url: 'catalogo.html' },
             { id: 'corporate', label: 'U. Corporativa', icon: 'far fa-building-columns', url: 'universidad-corporativa.html' },
             { id: 'study-zone', label: 'Zona de estudio', icon: 'far fa-books', url: 'zona-estudio.html' }
@@ -193,7 +193,9 @@ function activateCurrentPageTab(container, variant) {
     };
     
     // Activar tab basado en la página actual
-    if (currentPage === 'tipografia.html') {
+    if (currentPage === 'home-learn.html') {
+        activateTab('home');
+    } else if (currentPage === 'tipografia.html') {
         activateTab('section6');
     } else if (currentPage === 'iconos.html') {
         activateTab('section5');

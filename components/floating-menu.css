@@ -381,3 +381,36 @@
     color: var(--ubits-sidebar-button-fg-hover);
     background: var(--ubits-sidebar-button-bg-pressed);
 }
+
+/* ========================================
+   CÍRCULOS DE ÍCONOS - ESTADOS ACTIVOS
+   ======================================== */
+
+.accordion-icon-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    transition: all 0.2s ease;
+    background: transparent;
+}
+
+.accordion-icon-circle i {
+    font-size: 16px;
+    color: var(--ubits-sidebar-button-fg-default);
+    transition: color 0.2s ease;
+    margin: 0;
+    width: auto;
+}
+
+/* Estado activo - igual que los botones del sidebar */
+.accordion-icon-circle.active {
+    background: var(--ubits-sidebar-button-bg-active);
+}
+
+.accordion-icon-circle.active i {
+    color: var(--ubits-sidebar-button-fg-active);
+}
