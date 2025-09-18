@@ -199,15 +199,29 @@ color: var(--ubits-fg-1-medium);
 
 ### 6. ALERT COMPONENT VARIATIONS
 ```html
-<!-- ✅ ALWAYS use the correct Alert variant -->
-<!-- With close button (default): -->
-<div class="ubits-alert ubits-alert--success">
-
-<!-- Without close button: -->
+<!-- ✅ OPTION 1: HTML Direct (Recommended for static alerts) -->
 <div class="ubits-alert ubits-alert--success ubits-alert--no-close">
+    <div class="ubits-alert__icon">
+        <i class="far fa-check-circle"></i>
+    </div>
+    <div class="ubits-alert__content">
+        <div class="ubits-alert__text">Your message here</div>
+    </div>
+</div>
+
+<!-- ✅ OPTION 2: JavaScript Component (Recommended for dynamic alerts) -->
+<div id="alert-container"></div>
+<script>
+showAlert('success', 'Your message here', {
+    containerId: 'alert-container',
+    noClose: true
+});
+</script>
 ```
 
-**CRITICAL:** When user asks to remove close button from alerts, NEVER hide it with CSS. ALWAYS use the `ubits-alert--no-close` variant instead.
+**CRITICAL REQUIREMENTS:**
+- **ALWAYS import CSS:** `<link rel="stylesheet" href="components/alert.css">`
+- **For JavaScript option:** `<script src="components/alert.js"></script>`
 
 **Available Alert types:**
 - `ubits-alert--success` (green)
@@ -218,6 +232,11 @@ color: var(--ubits-fg-1-medium);
 **Variations:**
 - Default: Includes close button
 - `ubits-alert--no-close`: No close button (use when user requests removal)
+
+**showAlert() Options:**
+- `containerId`: ID of container where alert should appear
+- `noClose`: true/false - whether to show close button
+- `duration`: milliseconds to auto-hide (0 = no auto-hide)
 
 ### 7. NO SERVER REQUIRED - HTML ONLY
 ```html

@@ -196,14 +196,7 @@
                 </div>
 
                 <!-- Info Alert -->
-                <div class="ubits-alert ubits-alert--info ubits-alert--no-close" style="margin-bottom: 32px;">
-                    <div class="ubits-alert__icon">
-                        <i class="far fa-info-circle"></i>
-                    </div>
-                    <div class="ubits-alert__content">
-                        <div class="ubits-alert__text">Importante: Estos prompts están diseñados para Cursor AI.</div>
-                    </div>
-                </div>
+                <div id="info-alert-container" style="margin-bottom: 32px;"></div>
 
                 <!-- Cómo usar la guía -->
                 <div style="background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: 12px; padding: 32px; margin-bottom: 40px;">
@@ -291,14 +284,7 @@ https://github.com/DavidVegaM91/template-ubits.git
                     </p>
                     
                     <!-- Warning Alert -->
-                    <div class="ubits-alert ubits-alert--warning ubits-alert--no-close" style="margin-bottom: 16px;">
-                        <div class="ubits-alert__content">
-                            <div class="ubits-alert__icon">
-                                <i class="far fa-exclamation-triangle"></i>
-                            </div>
-                            <div class="ubits-alert__text">IMPORTANTE: Antes de enviar este prompt a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.</div>
-                        </div>
-                    </div>
+                    <div id="warning-alert-1" style="margin-bottom: 16px;"></div>
                     
                     <div class="prompt-code-container">
                         <div class="prompt-code" id="prompt-homepage">
@@ -306,7 +292,7 @@ Necesito editar la página principal de mi proyecto UBITS. Por favor:
 
 1. **CONFIGURACIÓN SIDEBAR, SUB-NAV Y TAB-BAR:**
    - Edita `index.html`
-   - Quiero que el sidebar tenga activo: [opciones: aprendizaje, diagnóstico, desempeño, encuestas, reclutamiento, tareas, ubits-ai, ninguno]
+   - Quiero que el sidebar tenga activa la sección de: [opciones: aprendizaje, diagnóstico, desempeño, encuestas, reclutamiento, tareas, ubits-ai, ninguno]
    - Quiero que el sub-nav sea la variante de: [opciones: template, aprendizaje, desempeno, encuestas, tareas]
    - Para responsive, quiero que el tab-bar tenga activo el item de: [opciones: modulos, perfil]
 
@@ -338,14 +324,7 @@ Necesito editar la página principal de mi proyecto UBITS. Por favor:
                     </p>
                     
                     <!-- Warning Alert -->
-                    <div class="ubits-alert ubits-alert--warning ubits-alert--no-close" style="margin-bottom: 16px;">
-                        <div class="ubits-alert__content">
-                            <div class="ubits-alert__icon">
-                                <i class="far fa-exclamation-triangle"></i>
-                            </div>
-                            <div class="ubits-alert__text">IMPORTANTE: Antes de enviar este prompt a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.</div>
-                        </div>
-                    </div>
+                    <div id="warning-alert-2" style="margin-bottom: 16px;"></div>
                     
                     <div class="prompt-code-container">
                         <div class="prompt-code" id="prompt-newpage">
@@ -354,7 +333,7 @@ Necesito crear una nueva página UBITS. Por favor:
 1. Duplica plantilla-ubits.html
 2. A esta copia ponle el nombre: [nombre-de-mi-pagina].html
 3. Personaliza el contenido del content-area con [DESCRIBE_EL_CONTENIDO_QUE_QUIERES]
-4. Quiero que el sidebar tenga activo: [opciones: aprendizaje, diagnóstico, desempeño, encuestas, reclutamiento, tareas, ubits-ai, ninguno]
+4. Quiero que el sidebar tenga activa la sección de: [opciones: aprendizaje, diagnóstico, desempeño, encuestas, reclutamiento, tareas, ubits-ai, ninguno]
 5. [Especifica qué variante del TopNav usar: template, aprendizaje, desempeno, encuestas, tareas, o crear una nueva]
 6. [Para responsive, indica qué tab del tab-bar quieres activo: modulos, perfil, modo-oscuro]
 7. Asegúrate de que mantenga todos los tokens UBITS y la estructura correcta
@@ -399,10 +378,27 @@ Mi objetivo es tener las últimas mejoras del template UBITS manteniendo mis per
     </div>
 
     <script src="components/sub-nav.js"></script>
+    <script src="components/alert.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Cargar top-nav con variante documentación
             loadSubNav('top-nav-container', 'documentacion');
+            
+            // Cargar alerts usando el componente oficial
+            showAlert('info', 'Importante: Estos prompts están diseñados para Cursor AI.', {
+                containerId: 'info-alert-container',
+                noClose: true
+            });
+            
+            showAlert('warning', 'Importante: Antes de enviar este prompt a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
+                containerId: 'warning-alert-1',
+                noClose: true
+            });
+            
+            showAlert('warning', 'Importante: Antes de enviar este prompt a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
+                containerId: 'warning-alert-2',
+                noClose: true
+            });
         });
 
         // Función para copiar prompts

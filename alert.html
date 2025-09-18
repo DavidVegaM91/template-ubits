@@ -205,23 +205,29 @@
                                             <span>Copiar</span>
                                         </button>
                                     </div>
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="implement-code">&lt;!-- HTML --&gt;
-&lt;div class="ubits-alert ubits-alert--success"&gt;
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="implement-code">&lt;!-- OPCIÓN 1: HTML Directo (Recomendado para alerts estáticos) --&gt;
+&lt;div class="ubits-alert ubits-alert--success ubits-alert--no-close"&gt;
   &lt;div class="ubits-alert__icon"&gt;
     &lt;i class="far fa-check-circle"&gt;&lt;/i&gt;
   &lt;/div&gt;
   &lt;div class="ubits-alert__content"&gt;
-    &lt;div class="ubits-alert__text"&gt;Operación completada correctamente.&lt;/div&gt;
+    &lt;div class="ubits-alert__text"&gt;Tu mensaje aquí&lt;/div&gt;
   &lt;/div&gt;
-  &lt;button class="ubits-alert__close" onclick="hideAlert('success')"&gt;
-    &lt;i class="far fa-times"&gt;&lt;/i&gt;
-  &lt;/button&gt;
 &lt;/div&gt;
 
-&lt;!-- CSS --&gt;
+&lt;!-- OPCIÓN 2: JavaScript Component (Recomendado para alerts dinámicos) --&gt;
+&lt;div id="alert-container"&gt;&lt;/div&gt;
+&lt;script&gt;
+showAlert('success', 'Tu mensaje aquí', {
+  containerId: 'alert-container',
+  noClose: true
+});
+&lt;/script&gt;
+
+&lt;!-- CSS REQUERIDO --&gt;
 &lt;link rel="stylesheet" href="components/alert.css"&gt;
 
-&lt;!-- JavaScript --&gt;
+&lt;!-- JavaScript REQUERIDO (solo para Opción 2) --&gt;
 &lt;script src="components/alert.js"&gt;&lt;/script&gt;</code></pre>
                                 </div>
                             </div>
@@ -234,12 +240,18 @@
                                 <div style="margin-bottom: 24px;">
                                     <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">showAlert(type, message, options)</h3>
                                     <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
-                                        Muestra una alerta en el sistema con el tipo y mensaje especificados.
+                                        Función helper para crear alerts fácilmente. Requiere que el CSS y JS del componente estén importados.
                                     </p>
                                     <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: 6px; border-left: 4px solid var(--ubits-accent-brand);">
                                         <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
-                                            <strong>Parámetros:</strong> type (string) - Tipo de alerta, message (string) - Mensaje, options (object) - Opciones adicionales<br>
-                                            <strong>Ejemplo:</strong> showAlert('success', 'Operación completada correctamente', { closable: true })
+                                            <strong>Parámetros:</strong><br>
+                                            • type: 'success', 'info', 'warning', 'error'<br>
+                                            • message: Texto del alert (puede incluir HTML básico)<br>
+                                            • options: { containerId: 'id', noClose: true/false }<br><br>
+                                            <strong>Ejemplo básico:</strong><br>
+                                            showAlert('warning', 'Tu mensaje aquí', { containerId: 'mi-container', noClose: true });<br><br>
+                                            <strong>Ejemplo con HTML:</strong><br>
+                                            showAlert('info', 'Mensaje con &lt;strong&gt;texto destacado&lt;/strong&gt;', { containerId: 'container' });
                         </div>
                     </div>
                 </div>

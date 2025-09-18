@@ -240,8 +240,64 @@ class UBITSAlertManager {
 window.UBITSAlert = UBITSAlert;
 window.UBITSAlertManager = UBITSAlertManager;
 
+// Simple helper function that actually works
+function showAlert(type, message, options = {}) {
+    const containerId = options.containerId;
+    const container = containerId ? document.getElementById(containerId) : document.body;
+    
+    if (!container) {
+        console.error('Alert container not found:', containerId);
+        return null;
+    }
+    
+    // Get icon class
+    const iconMap = {
+        'success': 'fa-check-circle',
+        'info': 'fa-info-circle', 
+        'warning': 'fa-exclamation-triangle',
+        'error': 'fa-times-circle'
+    };
+    
+    const iconClass = iconMap[type] || 'fa-info-circle';
+    const noCloseClass = options.noClose ? ' ubits-alert--no-close' : '';
+    
+    // Create alert HTML directly
+    const alertHTML = `
+        <div class="ubits-alert ubits-alert--${type}${noCloseClass}">
+            <div class="ubits-alert__icon">
+                <i class="far ${iconClass}"></i>
+            </div>
+            <div class="ubits-alert__content">
+                <div class="ubits-alert__text">${message}</div>
+            </div>
+            ${!options.noClose ? `
+                <button class="ubits-alert__close">
+                    <i class="far fa-times"></i>
+                </button>
+            ` : ''}
+        </div>
+    `;
+    
+    container.innerHTML = alertHTML;
+    
+    // Add close functionality if needed
+    if (!options.noClose) {
+        const closeBtn = container.querySelector('.ubits-alert__close');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                container.innerHTML = '';
+            });
+        }
+    }
+    
+    return { element: container.firstElementChild, container };
+}
+
+// Make helper function available globally
+window.showAlert = showAlert;
+
 // Export for module systems
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { UBITSAlert, UBITSAlertManager };
+    module.exports = { UBITSAlert, UBITSAlertManager, showAlert };
 }
 
