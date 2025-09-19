@@ -94,7 +94,6 @@ body[data-theme="dark"] {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 44px rgba(0,0,0,0.1);
     position: fixed;
     right: 16px;
     top: 16px;
@@ -117,21 +116,8 @@ body[data-theme="dark"] {
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    min-height: 207px;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.widget-user-info:hover,
-.widget-org:hover,
-.widget-learn:hover,
-.widget-objectives:hover,
-.widget-surveys:hover,
-.widget-assessments:hover,
-.widget-evaluations:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    transform: translateY(-1px);
-}
 
 /* Widget de aprendizaje específico */
 .widget-learn {
@@ -143,15 +129,8 @@ body[data-theme="dark"] {
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    min-height: 207px;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.widget-learn:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    transform: translateY(-1px);
-}
 
 /* Contenido del widget de aprendizaje */
 .learn-header {
@@ -295,17 +274,6 @@ body[data-theme="dark"] {
 [data-theme="dark"] .widget-assessments,
 [data-theme="dark"] .widget-evaluations {
     background-color: var(--ubits-bg-1) !important;
-    box-shadow: 0 2px 44px rgba(0,0,0,0.3) !important;
-}
-
-[data-theme="dark"] .widget-user-info:hover,
-[data-theme="dark"] .widget-org:hover,
-[data-theme="dark"] .widget-learn:hover,
-[data-theme="dark"] .widget-objectives:hover,
-[data-theme="dark"] .widget-surveys:hover,
-[data-theme="dark"] .widget-assessments:hover,
-[data-theme="dark"] .widget-evaluations:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.4) !important;
 }
 
 [data-theme="dark"] .widget-assessments,
@@ -313,18 +281,8 @@ body[data-theme="dark"] {
 [data-theme="dark"] .right-sidebar-fixed {
     background-color: var(--ubits-bg-1) !important;
     border: none !important;
-    box-shadow: 0 2px 44px rgba(0,0,0,0.3) !important;
 }
 
-[data-theme="dark"] .widget-user-info:hover,
-[data-theme="dark"] .widget-org:hover,
-[data-theme="dark"] .widget-learn:hover,
-[data-theme="dark"] .widget-objectives:hover,
-[data-theme="dark"] .widget-surveys:hover,
-[data-theme="dark"] .widget-assessments:hover,
-[data-theme="dark"] .widget-evaluations:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.4) !important;
-}
 
 [data-theme="dark"] .user-avatar.active {
     border: 2px solid #ffffff !important;
@@ -399,7 +357,6 @@ body[data-theme="dark"] {
         margin-top: 0px;
         right: auto;
         top: auto;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     
     /* Ajustar widgets para que se vean bien en móvil */
@@ -408,15 +365,6 @@ body[data-theme="dark"] {
     .assessments-evaluaciones {
         flex-direction: column;
         gap: 16px;
-    }
-    
-    .widget-user-info,
-    .widget-org,
-    .widget-objectives,
-    .widget-surveys,
-    .widget-assessments,
-    .widget-evaluations {
-        min-height: 150px;
     }
 }
 
@@ -453,7 +401,6 @@ body[data-theme="dark"] {
     .widget-surveys,
     .widget-assessments,
     .widget-evaluations {
-        min-height: 120px;
         padding: 12px;
     }
 }

@@ -5,20 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Template UBITS - Dashboard</title>
     
-    <!-- 
-    PLANTILLA UBITS - PÁGINA BASE
-    =============================
-    Este archivo es una plantilla base para crear nuevas páginas UBITS.
-    
-    USO:
-    - Cursor AI puede clonar este archivo para crear páginas nuevas
-    - Mantiene toda la estructura y tokens UBITS
-    - Personaliza el título y contenido según necesidades
-    
-    COMANDO PARA CURSOR:
-    "Abre plantilla-ubits.html y crea una copia llamada [nombre-pagina].html"
-    -->
-    
     <!-- Estilos locales -->
     <link rel="stylesheet" href="ubits-colors.css">
     <link rel="stylesheet" href="styles.css">
@@ -28,6 +14,124 @@
     <link rel="stylesheet" href="components/tab-bar.css">
     <link rel="stylesheet" href="components/floating-menu.css">
     <link rel="stylesheet" href="components/profile-menu.css">
+    <link rel="stylesheet" href="profile.css">
+    <style>
+        /* Reset para content-sections - idéntico al reset de profile */
+        .content-sections,
+        .content-sections * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Estilos específicos para content-sections - idéntico a left-wrapper */
+        .content-sections {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            flex: 1;
+            min-width: 0;
+            width: 100%;
+            overflow: visible;
+            max-height: none;
+        }
+
+        /* Espaciador para alinear elementos - idéntico a left-wrapper */
+        .content-sections > *:not(:last-child):not(.section-dual):not(.section-single):not(.section-triple):not(.section-quad) {
+            margin-bottom: 16px;
+        }
+
+        /* Espaciador final - idéntico a left-wrapper */
+        .content-sections::after {
+            content: '';
+            height: 0px;
+            flex-shrink: 0;
+        }
+
+        /* Reducir el gap del último elemento - idéntico a left-wrapper */
+        .content-sections > *:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Secciones de widgets */
+        .section-single {
+            display: flex;
+            width: 100%;
+        }
+
+        .section-dual {
+            display: flex;
+            gap: 20px;
+        }
+
+        .section-triple {
+            display: flex;
+            gap: 20px;
+        }
+
+        .section-quad {
+            display: flex;
+            gap: 20px;
+        }
+
+        /* Widgets en secciones - sin altura mínima forzada */
+        .section-single > div,
+        .section-dual > div,
+        .section-triple > div,
+        .section-quad > div {
+            background-color: var(--ubits-bg-1);
+            border: none;
+            border-radius: 8px;
+            padding: 16px !important; /* !important para sobrescribir el reset */
+            width: 100%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Distribución de anchos */
+        .section-single > div {
+            flex: 1;
+        }
+
+        .section-dual > div {
+            flex: 1;
+        }
+
+        .section-triple > div {
+            flex: 1;
+        }
+
+        .section-quad > div {
+            flex: 1;
+        }
+
+        /* Responsive para secciones */
+        @media (max-width: 1023px) {
+            .content-sections {
+                padding-bottom: 0;
+            }
+            
+            .section-dual,
+            .section-triple,
+            .section-quad {
+                flex-direction: column;
+                gap: 16px;
+            }
+            
+            /* Ajustar widgets para móvil - sin altura mínima forzada */
+        }
+
+        @media (max-width: 480px) {
+            /* Padding reducido en móviles pequeños - sin altura mínima forzada */
+            .section-single > div,
+            .section-dual > div,
+            .section-triple > div,
+            .section-quad > div {
+                padding: 12px !important; /* !important para sobrescribir el reset */
+            }
+        }
+    </style>
 </head>
 <body data-theme="light">
     <div class="dashboard-container">
@@ -42,9 +146,79 @@
             <div id="top-nav-container"></div>
             <!-- Content Area -->
             <div class="content-area">
-                <!-- Content wrapper que ocupa todo el ancho -->
-                <div class="content-wrapper">
-                    <p class="ubits-body-md-regular">Pídele a Cursor que reemplace este Content wrapper con la interfaz que necesitas</p>
+                <!-- Content wrapper con secciones de widgets -->
+                <div class="content-sections">
+                    <!-- Nueva sección de 1 columna -->
+                    <div class="section-single">
+                        <div class="widget-banner">
+                            <p class="ubits-body-md-regular">Banner principal</p>
+                            <br><br><br><br><br><br><br><br><br><br><br><br><br>
+                        </div>
+                    </div>
+
+                    <!-- Sección de búsqueda -->
+                    <div class="section-single">
+                        <div class="widget-search">
+                            <p class="ubits-body-md-regular">Búsqueda</p>
+                            <br>
+                        </div>
+                    </div>
+
+                    <!-- Sección de promo cards -->
+                    <div class="section-single">
+                        <div class="widget-promo-cards">
+                            <p class="ubits-body-md-regular">Promo cards verticales 1</p>
+                            <br><br><br><br><br><br><br><br><br>
+                        </div>
+                    </div>
+
+                    <!-- Sección de cards shorts -->
+                    <div class="section-single">
+                        <div class="widget-cards-shorts">
+                            <p class="ubits-body-md-regular">Cards shorts</p>
+                            <br><br><br><br><br><br><br><br><br>
+                        </div>
+                    </div>
+
+                    <!-- Sección de aliados destacados -->
+                    <div class="section-single">
+                        <div class="widget-aliados">
+                            <p class="ubits-body-md-regular">Aliados destacados</p>
+                            <br><br><br><br>
+                        </div>
+                    </div>
+
+                    <!-- Sección continua viendo -->
+                    <div class="section-single">
+                        <div class="widget-continua-viendo">
+                            <p class="ubits-body-md-regular">Continua viendo</p>
+                            <br><br><br><br><br><br><br><br><br>
+                        </div>
+                    </div>
+
+                    <!-- Sección promo cards medianos 1 -->
+                    <div class="section-single">
+                        <div class="widget-promo-medianos">
+                            <p class="ubits-body-md-regular">Promo cards medianos 1</p>
+                            <br><br><br><br><br><br><br><br><br><br><br><br><br>
+                        </div>
+                    </div>
+
+                    <!-- Sección promo cards verticales 2 -->
+                    <div class="section-single">
+                        <div class="widget-promo-verticales-2">
+                            <p class="ubits-body-md-regular">Promo cards verticales 2</p>
+                            <br><br><br><br><br><br><br><br><br>
+                        </div>
+                    </div>
+
+                    <!-- Sección promo cards medianos 2 -->
+                    <div class="section-single">
+                        <div class="widget-promo-medianos-2">
+                            <p class="ubits-body-md-regular">Promo cards medianos 2</p>
+                            <br><br><br><br><br><br><br><br><br><br><br><br><br>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>

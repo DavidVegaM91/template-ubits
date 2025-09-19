@@ -28,7 +28,6 @@
         
         .prompt-card:hover {
             border-color: var(--ubits-border-2);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             transform: translateY(-2px);
         }
         
@@ -156,7 +155,6 @@
         
         [data-theme="dark"] .prompt-card:hover {
             border-color: var(--ubits-border-2);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
         
         [data-theme="dark"] .prompt-code {
@@ -296,8 +294,11 @@ Necesito editar la página principal de mi proyecto UBITS. Por favor:
    - Quiero que el sub-nav sea la variante de: [opciones: template, aprendizaje, desempeno, encuestas, tareas]
    - Para responsive, quiero que el tab-bar tenga activo el item de: [opciones: modulos, perfil]
 
-2. **CONTENIDO PRINCIPAL:**
-   - Reemplaza el content-wrapper con: [dile qué contenido quieres en tu página de inicio, dale todo el contexto que consideres necesario]
+2. **CONTENIDO PRINCIPAL - ESTRUCTURA MODULAR:**
+   - Usa la estructura modular de secciones: section-single (1 columna), section-dual (2 columnas), section-triple (3 columnas), section-quad (4 columnas)
+   - Ejemplo: "Añade una section-dual con widget-bienvenida y widget-estadisticas, luego una section-single con widget-contenido-principal"
+   - Cada widget debe tener un nombre descriptivo y la cantidad de <br> que necesites para la altura
+   - Contenido que quiero: [describe qué secciones y widgets necesitas]
 
 4. **VERIFICACIÓN:**
    - Confirma que todos los tokens ubits-colors estén aplicados correctamente y no haber usado colores hardcodeados
@@ -332,7 +333,11 @@ Necesito crear una nueva página UBITS. Por favor:
 
 1. Duplica plantilla-ubits.html
 2. A esta copia ponle el nombre: [nombre-de-mi-pagina].html
-3. Personaliza el contenido del content-area con [DESCRIBE_EL_CONTENIDO_QUE_QUIERES]
+3. **ESTRUCTURA MODULAR:** Personaliza el content-sections usando la estructura modular:
+   - section-single (1 columna), section-dual (2 columnas), section-triple (3 columnas), section-quad (4 columnas)
+   - Cada widget debe tener un nombre descriptivo (ej: widget-dashboard, widget-estadisticas)
+   - Ajusta la altura con <br> según necesites
+   - Contenido que quiero: [describe qué secciones y widgets necesitas]
 4. Quiero que el sidebar tenga activa la sección de: [opciones: aprendizaje, diagnóstico, desempeño, encuestas, reclutamiento, tareas, ubits-ai, ninguno]
 5. [Especifica qué variante del TopNav usar: template, aprendizaje, desempeno, encuestas, tareas, o crear una nueva]
 6. [Para responsive, indica qué tab del tab-bar quieres activo: modulos, perfil, modo-oscuro]
@@ -373,6 +378,58 @@ Mi objetivo es tener las últimas mejoras del template UBITS manteniendo mis per
                     </div>
                 </div>
 
+                <!-- Prompt 5: Personalizar páginas con estructura modular -->
+                <div class="prompt-card" data-prompt="modular">
+                    <div class="prompt-header">
+                        <h3 class="ubits-body-md-bold">5. Personalizar páginas con estructura modular</h3>
+                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('modular')">
+                            <i class="far fa-copy"></i>
+                            <span>Copiar</span>
+                        </button>
+                    </div>
+                    <p class="prompt-description ubits-body-md-regular">
+                        Usa este prompt para personalizar cualquier página existente usando el sistema modular de secciones y widgets.
+                    </p>
+                    
+                    <!-- Warning Alert -->
+                    <div id="warning-alert-3" style="margin-bottom: 16px;"></div>
+                    
+                    <div class="prompt-code-container">
+                        <div class="prompt-code" id="prompt-modular">
+Quiero personalizar la página [NOMBRE_PAGINA].html usando la estructura modular. Por favor:
+
+**CAMBIOS QUE QUIERO:**
+[Escoge las opciones que necesites:]
+
+**AÑADIR SECCIONES:**
+- "Añade una section-dual con widget-[nombre1] y widget-[nombre2] después de [sección_existente]"
+- "Añade una section-single llamada widget-[nombre] con [X] br de altura"
+- "Añade una section-triple con widget-[nombre1], widget-[nombre2] y widget-[nombre3] al final"
+
+**MODIFICAR SECCIONES EXISTENTES:**
+- "Cambia el nombre del widget-[nombre_actual] a '[nuevo_nombre]'"
+- "Añade [X] br al widget-[nombre] para hacerlo más alto"
+- "Quita [X] br al widget-[nombre] para hacerlo más bajo"
+
+**REEMPLAZAR SECCIONES:**
+- "Reemplaza la section-single de '[nombre]' por una section-dual con widget-[nombre1] y widget-[nombre2]"
+- "Cambia la section-dual de '[nombre1]' y '[nombre2]' por una section-triple con widget-[nombre1], widget-[nombre2] y widget-[nombre3]"
+
+**ELIMINAR SECCIONES:**
+- "Elimina la sección de '[nombre_sección]'"
+- "Elimina todas las secciones que están debajo de '[sección_referencia]'"
+
+**REORGANIZAR:**
+- "Mueve la sección '[nombre]' arriba de '[otra_sección]'"
+- "Intercambia el orden de '[sección1]' y '[sección2]'"
+
+**VERIFICACIÓN:**
+- Mantén todos los tokens UBITS y la navegación correcta
+- Verifica que sea responsive y funcione en modo claro/oscuro
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </main>
     </div>
@@ -397,6 +454,11 @@ Mi objetivo es tener las últimas mejoras del template UBITS manteniendo mis per
             
             showAlert('warning', 'Importante: Antes de enviar este prompt a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
                 containerId: 'warning-alert-2',
+                noClose: true
+            });
+            
+            showAlert('warning', 'Importante: Antes de enviar este prompt a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
+                containerId: 'warning-alert-3',
                 noClose: true
             });
         });
@@ -446,10 +508,10 @@ Mi objetivo es tener las últimas mejoras del template UBITS manteniendo mis per
                 top: 20px;
                 right: 20px;
                 background: ${type === 'success' ? 'var(--ubits-accent-brand)' : 'var(--ubits-feedback-bg-error-subtle)'};
-                color: white;
+                color: var(--ubits-bg-1);
                 padding: 16px 24px;
                 border-radius: 8px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+                border: 1px solid var(--ubits-border-1);
                 z-index: 10000;
                 font-family: 'Noto Sans', sans-serif;
                 font-size: 14px;

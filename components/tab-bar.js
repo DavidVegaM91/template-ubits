@@ -164,7 +164,20 @@ function activateCurrentPageTab() {
             tabToActivate = document.querySelector('[data-tab="perfil"]');
             break;
         case 'ubits-ai':
-            // UBITS AI es parte de los módulos, activar tab de módulos
+        case 'home-learn':
+        case 'catalogo':
+        case 'u-corporativa':
+        case 'zona-estudio':
+        case 'diagnostico':
+        case 'evaluaciones-360':
+        case 'objetivos':
+        case 'metricas':
+        case 'reportes':
+        case 'encuestas':
+        case 'reclutamiento':
+        case 'planes':
+        case 'tareas':
+            // Todas las páginas de módulos activan el tab de módulos
             tabToActivate = document.querySelector('[data-tab="modulos"]');
             break;
         case 'index':

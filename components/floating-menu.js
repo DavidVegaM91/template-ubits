@@ -42,6 +42,14 @@ const FLOATING_MENU_SECTIONS = [
                 clickable: false
             },
     {
+        id: 'reclutamiento',
+        title: 'Reclutamiento',
+        icon: 'far fa-users',
+        url: 'reclutamiento.html',
+        isLink: true,
+        clickable: true
+    },
+    {
         id: 'tareas',
         title: 'Tareas',
         icon: 'far fa-layer-group',
@@ -236,6 +244,7 @@ function setActiveItemByCurrentPage() {
     const pageToElementMap = {
         'ubits-ai.html': 'ubits-ai',
         'diagnostico.html': 'diagnostico',
+        'reclutamiento.html': 'reclutamiento',
         'home-learn.html': 'inicio',
         'catalogo.html': 'catalogo',
         'u-corporativa.html': 'corporativa',

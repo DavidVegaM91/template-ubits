@@ -242,6 +242,79 @@ loadCardContent('mi-contenedor-cards', [
 - Ejemplos de código
 - Guías paso a paso
 
+### ✅ **Estructura modular (NUEVO):**
+- Sistema de secciones y widgets fácil de personalizar
+- Inspirado en el éxito de `profile.html`
+- Permite añadir, modificar y reorganizar contenido fácilmente
+- Compatible con todas las páginas del template
+
+## 🧩 Estructura modular - Fácil personalización
+
+### **¿Qué es la estructura modular?**
+
+Un sistema inspirado en el éxito que tuvo **Kike Peña** personalizando `profile.html`. Permite a **cualquier usuario** (Product Managers, Diseñadores, etc.) personalizar páginas fácilmente usando **Cursor AI** con prompts simples.
+
+### **🎯 Cómo funciona:**
+
+#### **Secciones disponibles:**
+- **`section-single`** - 1 columna (ancho completo)
+- **`section-dual`** - 2 columnas (50% cada una)
+- **`section-triple`** - 3 columnas (33% cada una)
+- **`section-quad`** - 4 columnas (25% cada una)
+
+#### **Widgets personalizables:**
+- Cada widget tiene un **nombre descriptivo** (ej: `widget-dashboard`, `widget-estadisticas`)
+- **Altura flexible** usando `<br>` (sin alturas mínimas forzadas)
+- **Responsive automático** (columnas se apilan en móvil)
+- **Estilos consistentes** con tokens UBITS
+
+### **📝 Ejemplos de prompts que funcionan:**
+
+```
+"Añade una section-dual con widget-progreso y widget-estadisticas después de Banner principal"
+
+"Cambia el nombre del widget-contenido a 'Dashboard personal'"
+
+"Añade 5 br al widget-banner para hacerlo más alto"
+
+"Reemplaza la section-single de 'Bienvenida' por una section-triple con widget-cursos, widget-progreso y widget-notificaciones"
+
+"Elimina todas las secciones que están debajo de 'Contenido principal'"
+```
+
+### **🎯 Páginas con estructura modular:**
+
+#### **Páginas completas:**
+- **`home-learn.html`** - Ejemplo completo con 9 secciones variadas
+- **`profile.html`** - Página original que inspiró el sistema
+
+#### **Páginas básicas:**
+- **`catalogo.html`** - 2 secciones (Encabezado + Lista competencias)
+- **`u-corporativa.html`** - 3 secciones específicas
+- **`zona-estudio.html`** - 2 secciones con tabs
+- **`index.html`** - 1 sección base
+- **`plantilla-ubits.html`** - Template base con estructura
+
+#### **Páginas especializadas:**
+- **`diagnostico.html`** - 1 sección enfocada
+- **`evaluaciones-360.html`** - Contenido específico 360
+- **`objetivos.html`** - Contenido específico objetivos
+- **`metricas.html`** - Contenido específico métricas
+- **`reportes.html`** - Contenido específico reportes
+- **`encuestas.html`** - Contenido específico encuestas
+- **`reclutamiento.html`** - Contenido específico reclutamiento
+- **`planes.html`** - Contenido específico planes
+- **`tareas.html`** - Contenido específico tareas
+
+### **🚀 Ventajas del sistema:**
+
+1. **Fácil de entender** - Nombres semánticos claros
+2. **Flexible** - Cualquier combinación de columnas y alturas
+3. **Reutilizable** - Widgets se pueden usar en cualquier página
+4. **Escalable** - Fácil añadir nuevos tipos de secciones
+5. **Consistente** - Misma experiencia en todas las páginas
+6. **Sin conocimiento técnico** - Solo necesitas describir lo que quieres
+
 ## 🚨 Solución de problemas
 
 ### **Si los colores no coinciden:**

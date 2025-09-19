@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template UBITS - Ejemplos Modulares</title>
+    
+    <!-- Estilos locales -->
+    <link rel="stylesheet" href="ubits-colors.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="fontawesome-icons.css">
+    <link rel="stylesheet" href="ubits-typography.css">
+    <link rel="stylesheet" href="components/sub-nav.css">
+    <link rel="stylesheet" href="components/alert.css">
+    <link rel="stylesheet" href="components/button.css">
+    <link rel="stylesheet" href="profile.css">
+    
+    <style>
+        /* Reset para content-sections - idéntico al reset de profile */
+        .content-sections,
+        .content-sections * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Estilos específicos para content-sections - idéntico a left-wrapper */
+        .content-sections {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            flex: 1;
+            min-width: 0;
+            width: 100%;
+            overflow: visible;
+            max-height: none;
+        }
+
+        /* Espaciador para alinear elementos - idéntico a left-wrapper */
+        .content-sections > *:not(:last-child):not(.section-dual):not(.section-single):not(.section-triple):not(.section-quad) {
+            margin-bottom: 16px;
+        }
+
+        /* Espaciador final - idéntico a left-wrapper */
+        .content-sections::after {
+            content: '';
+            height: 0px;
+            flex-shrink: 0;
+        }
+
+        /* Reducir el gap del último elemento - idéntico a left-wrapper */
+        .content-sections > *:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Secciones de widgets */
+        .section-single {
+            display: flex;
+            width: 100%;
+        }
+
+        .section-dual {
+            display: flex;
+            gap: 20px;
+        }
+
+        .section-triple {
+            display: flex;
+            gap: 20px;
+        }
+
+        .section-quad {
+            display: flex;
+            gap: 20px;
+        }
+
+        /* Widgets en secciones - sin altura mínima forzada */
+        .section-single > div,
+        .section-dual > div,
+        .section-triple > div,
+        .section-quad > div {
+            background-color: var(--ubits-bg-1);
+            border: none;
+            border-radius: 8px;
+            padding: 16px !important; /* !important para sobrescribir el reset */
+            width: 100%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Distribución de anchos */
+        .section-single > div {
+            flex: 1;
+        }
+
+        .section-dual > div {
+            flex: 1;
+        }
+
+        .section-triple > div {
+            flex: 1;
+        }
+
+        .section-quad > div {
+            flex: 1;
+        }
+
+        /* Responsive para secciones */
+        @media (max-width: 1023px) {
+            .content-sections {
+                padding-bottom: 0;
+            }
+            
+            .section-dual,
+            .section-triple,
+            .section-quad {
+                flex-direction: column;
+                gap: 16px;
+            }
+            
+            /* Ajustar widgets para móvil - sin altura mínima forzada */
+        }
+
+        @media (max-width: 480px) {
+            /* Padding reducido en móviles pequeños - sin altura mínima forzada */
+            .section-single > div,
+            .section-dual > div,
+            .section-triple > div,
+            .section-quad > div {
+                padding: 12px !important; /* !important para sobrescribir el reset */
+            }
+        }
+
+        /* Estilos específicos para la página de ejemplos */
+        .example-section {
+            margin-bottom: 40px;
+            padding: 24px;
+            background: var(--ubits-bg-2);
+            border: 1px solid var(--ubits-border-1);
+            border-radius: 12px;
+        }
+
+        .example-title {
+            color: var(--ubits-fg-1-high);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .example-description {
+            color: var(--ubits-fg-1-medium);
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        .code-example {
+            background: var(--ubits-bg-1);
+            border: 1px solid var(--ubits-border-1);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            color: var(--ubits-fg-1-high);
+            overflow-x: auto;
+        }
+
+        .demo-container {
+            border: 2px dashed var(--ubits-border-1);
+            border-radius: 8px;
+            padding: 16px;
+            background: var(--ubits-bg-1);
+        }
+    </style>
+</head>
+<body class="documentacion-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        
+        <!-- Main Content -->
+        <main class="main-content" style="margin-left: 12px;">
+            <!-- Top Navigation -->
+            <div id="top-nav-container"></div>
+            
+            <!-- Content Area -->
+            <div class="content-area" style="display: block; width: 100%;">
+                <!-- Hero Section -->
+                <div style="text-align: center; margin-bottom: 60px;">
+                    <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                        Ejemplos de estructura modular
+                    </h1>
+                    <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto; line-height: 1.6;">
+                        Descubre todas las posibilidades del sistema modular de secciones y widgets. Inspiración para crear tus propias interfaces.
+                    </p>
+                </div>
+
+                <!-- Info Alert -->
+                <div id="info-alert-container" style="margin-bottom: 32px;"></div>
+
+                <!-- Ejemplo 1: Section Single -->
+                <div class="example-section">
+                    <h2 class="example-title ubits-heading-h2">
+                        <i class="far fa-square" style="color: var(--ubits-accent-brand);"></i>
+                        Section Single - 1 columna
+                    </h2>
+                    <p class="example-description ubits-body-md-regular">
+                        Perfecta para banners, encabezados, búsquedas o contenido que necesita todo el ancho disponible.
+                    </p>
+                    
+                    <div class="code-example">
+&lt;div class="section-single"&gt;
+    &lt;div class="widget-banner"&gt;
+        &lt;p class="ubits-body-md-regular"&gt;Banner principal&lt;/p&gt;
+        &lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+                    </div>
+                    
+                    <div class="demo-container">
+                        <div class="content-sections">
+                            <div class="section-single">
+                                <div class="widget-banner">
+                                    <p class="ubits-body-md-regular">Banner principal</p>
+                                    <br><br><br><br><br>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ejemplo 2: Section Dual -->
+                <div class="example-section">
+                    <h2 class="example-title ubits-heading-h2">
+                        <i class="far fa-columns" style="color: var(--ubits-accent-brand);"></i>
+                        Section Dual - 2 columnas
+                    </h2>
+                    <p class="example-description ubits-body-md-regular">
+                        Ideal para mostrar información relacionada lado a lado: estadísticas y progreso, filtros y resultados, etc.
+                    </p>
+                    
+                    <div class="code-example">
+&lt;div class="section-dual"&gt;
+    &lt;div class="widget-progreso"&gt;
+        &lt;p class="ubits-body-md-regular"&gt;Mi progreso&lt;/p&gt;
+        &lt;br&gt;&lt;br&gt;&lt;br&gt;
+    &lt;/div&gt;
+    &lt;div class="widget-estadisticas"&gt;
+        &lt;p class="ubits-body-md-regular"&gt;Estadísticas&lt;/p&gt;
+        &lt;br&gt;&lt;br&gt;&lt;br&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+                    </div>
+                    
+                    <div class="demo-container">
+                        <div class="content-sections">
+                            <div class="section-dual">
+                                <div class="widget-progreso">
+                                    <p class="ubits-body-md-regular">Mi progreso</p>
+                                    <br><br><br>
+                                </div>
+                                <div class="widget-estadisticas">
+                                    <p class="ubits-body-md-regular">Estadísticas</p>
+                                    <br><br><br>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ejemplo 3: Section Triple -->
+                <div class="example-section">
+                    <h2 class="example-title ubits-heading-h2">
+                        <i class="far fa-th" style="color: var(--ubits-accent-brand);"></i>
+                        Section Triple - 3 columnas
+                    </h2>
+                    <p class="example-description ubits-body-md-regular">
+                        Perfecta para dashboards, métricas, banners promocionales o cualquier contenido que se beneficie de 3 columnas.
+                    </p>
+                    
+                    <div class="code-example">
+&lt;div class="section-triple"&gt;
+    &lt;div class="widget-cursos"&gt;
+        &lt;p class="ubits-body-md-regular"&gt;Cursos&lt;/p&gt;
+        &lt;br&gt;&lt;br&gt;
+    &lt;/div&gt;
+    &lt;div class="widget-certificados"&gt;
+        &lt;p class="ubits-body-md-regular"&gt;Certificados&lt;/p&gt;
+        &lt;br&gt;&lt;br&gt;
+    &lt;/div&gt;
+    &lt;div class="widget-insignias"&gt;
+        &lt;p class="ubits-body-md-regular"&gt;Insignias&lt;/p&gt;
+        &lt;br&gt;&lt;br&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+                    </div>
+                    
+                    <div class="demo-container">
+                        <div class="content-sections">
+                            <div class="section-triple">
+                                <div class="widget-cursos">
+                                    <p class="ubits-body-md-regular">Cursos</p>
+                                    <br><br>
+                                </div>
+                                <div class="widget-certificados">
+                                    <p class="ubits-body-md-regular">Certificados</p>
+                                    <br><br>
+                                </div>
+                                <div class="widget-insignias">
+                                    <p class="ubits-body-md-regular">Insignias</p>
+                                    <br><br>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ejemplo 4: Section Quad -->
+                <div class="example-section">
+                    <h2 class="example-title ubits-heading-h2">
+                        <i class="far fa-th-large" style="color: var(--ubits-accent-brand);"></i>
+                        Section Quad - 4 columnas
+                    </h2>
+                    <p class="example-description ubits-body-md-regular">
+                        Ideal para métricas, KPIs, banners pequeños o cualquier contenido que se beneficie de 4 columnas compactas.
+                    </p>
+                    
+                    <div class="code-example">
+&lt;div class="section-quad"&gt;
+    &lt;div class="widget-ventas"&gt;
+        &lt;p class="ubits-body-md-regular"&gt;Ventas&lt;/p&gt;
+        &lt;br&gt;
+    &lt;/div&gt;
+    &lt;div class="widget-usuarios"&gt;
+        &lt;p class="ubits-body-md-regular"&gt;Usuarios&lt;/p&gt;
+        &lt;br&gt;
+    &lt;/div&gt;
+    &lt;div class="widget-ingresos"&gt;
+        &lt;p class="ubits-body-md-regular"&gt;Ingresos&lt;/p&gt;
+        &lt;br&gt;
+    &lt;/div&gt;
+    &lt;div class="widget-conversion"&gt;
+        &lt;p class="ubits-body-md-regular"&gt;Conversión&lt;/p&gt;
+        &lt;br&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+                    </div>
+                    
+                    <div class="demo-container">
+                        <div class="content-sections">
+                            <div class="section-quad">
+                                <div class="widget-ventas">
+                                    <p class="ubits-body-md-regular">Ventas</p>
+                                    <br>
+                                </div>
+                                <div class="widget-usuarios">
+                                    <p class="ubits-body-md-regular">Usuarios</p>
+                                    <br>
+                                </div>
+                                <div class="widget-ingresos">
+                                    <p class="ubits-body-md-regular">Ingresos</p>
+                                    <br>
+                                </div>
+                                <div class="widget-conversion">
+                                    <p class="ubits-body-md-regular">Conversión</p>
+                                    <br>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ejemplo 5: Combinación compleja -->
+                <div class="example-section">
+                    <h2 class="example-title ubits-heading-h2">
+                        <i class="far fa-layer-group" style="color: var(--ubits-accent-brand);"></i>
+                        Combinación compleja - Dashboard completo
+                    </h2>
+                    <p class="example-description ubits-body-md-regular">
+                        Ejemplo de cómo combinar diferentes tipos de secciones para crear un dashboard completo y funcional.
+                    </p>
+                    
+                    <div class="code-example">
+&lt;div class="content-sections"&gt;
+    &lt;!-- Header compacto --&gt;
+    &lt;div class="section-single"&gt;
+        &lt;div class="widget-header"&gt;Header&lt;br&gt;&lt;/div&gt;
+    &lt;/div&gt;
+    
+    &lt;!-- Métricas principales --&gt;
+    &lt;div class="section-quad"&gt;
+        &lt;div class="widget-metric1"&gt;Métrica 1&lt;br&gt;&lt;br&gt;&lt;/div&gt;
+        &lt;div class="widget-metric2"&gt;Métrica 2&lt;br&gt;&lt;br&gt;&lt;/div&gt;
+        &lt;div class="widget-metric3"&gt;Métrica 3&lt;br&gt;&lt;br&gt;&lt;/div&gt;
+        &lt;div class="widget-metric4"&gt;Métrica 4&lt;br&gt;&lt;br&gt;&lt;/div&gt;
+    &lt;/div&gt;
+    
+    &lt;!-- Contenido principal --&gt;
+    &lt;div class="section-dual"&gt;
+        &lt;div class="widget-grafico"&gt;Gráfico principal&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;/div&gt;
+        &lt;div class="widget-actividad"&gt;Actividad reciente&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;/div&gt;
+    &lt;/div&gt;
+    
+    &lt;!-- Banner promocional --&gt;
+    &lt;div class="section-single"&gt;
+        &lt;div class="widget-promo"&gt;Banner promocional&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+                    </div>
+                    
+                    <div class="demo-container">
+                        <div class="content-sections">
+                            <!-- Header compacto -->
+                            <div class="section-single">
+                                <div class="widget-header">
+                                    <p class="ubits-body-md-regular">Header</p>
+                                    <br>
+                                </div>
+                            </div>
+                            
+                            <!-- Métricas principales -->
+                            <div class="section-quad">
+                                <div class="widget-metric1">
+                                    <p class="ubits-body-md-regular">Métrica 1</p>
+                                    <br><br>
+                                </div>
+                                <div class="widget-metric2">
+                                    <p class="ubits-body-md-regular">Métrica 2</p>
+                                    <br><br>
+                                </div>
+                                <div class="widget-metric3">
+                                    <p class="ubits-body-md-regular">Métrica 3</p>
+                                    <br><br>
+                                </div>
+                                <div class="widget-metric4">
+                                    <p class="ubits-body-md-regular">Métrica 4</p>
+                                    <br><br>
+                                </div>
+                            </div>
+                            
+                            <!-- Contenido principal -->
+                            <div class="section-dual">
+                                <div class="widget-grafico">
+                                    <p class="ubits-body-md-regular">Gráfico principal</p>
+                                    <br><br><br><br>
+                                </div>
+                                <div class="widget-actividad">
+                                    <p class="ubits-body-md-regular">Actividad reciente</p>
+                                    <br><br><br><br>
+                                </div>
+                            </div>
+                            
+                            <!-- Banner promocional -->
+                            <div class="section-single">
+                                <div class="widget-promo">
+                                    <p class="ubits-body-md-regular">Banner promocional</p>
+                                    <br><br><br><br><br><br>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ejemplo 6: Alturas variables -->
+                <div class="example-section">
+                    <h2 class="example-title ubits-heading-h2">
+                        <i class="far fa-arrows-v" style="color: var(--ubits-accent-brand);"></i>
+                        Alturas variables - Jerarquía visual
+                    </h2>
+                    <p class="example-description ubits-body-md-regular">
+                        Controla la importancia visual de cada sección ajustando la cantidad de &lt;br&gt; para crear jerarquía.
+                    </p>
+                    
+                    <div class="code-example">
+&lt;!-- Muy alto (13 br) - Máxima prominencia --&gt;
+&lt;div class="widget-hero"&gt;Hero principal&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;/div&gt;
+
+&lt;!-- Alto (9 br) - Contenido importante --&gt;
+&lt;div class="widget-contenido"&gt;Contenido importante&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;/div&gt;
+
+&lt;!-- Estándar (5 br) - Contenido normal --&gt;
+&lt;div class="widget-normal"&gt;Contenido normal&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;/div&gt;
+
+&lt;!-- Compacto (1 br) - Funcional --&gt;
+&lt;div class="widget-busqueda"&gt;Búsqueda&lt;br&gt;&lt;/div&gt;
+                    </div>
+                    
+                    <div class="demo-container">
+                        <div class="content-sections">
+                            <div class="section-single">
+                                <div class="widget-hero">
+                                    <p class="ubits-body-md-regular">Hero principal (13 br)</p>
+                                    <br><br><br><br><br><br><br><br><br><br><br><br><br>
+                                </div>
+                            </div>
+                            <div class="section-single">
+                                <div class="widget-contenido">
+                                    <p class="ubits-body-md-regular">Contenido importante (9 br)</p>
+                                    <br><br><br><br><br><br><br><br><br>
+                                </div>
+                            </div>
+                            <div class="section-single">
+                                <div class="widget-normal">
+                                    <p class="ubits-body-md-regular">Contenido normal (5 br)</p>
+                                    <br><br><br><br><br>
+                                </div>
+                            </div>
+                            <div class="section-single">
+                                <div class="widget-busqueda">
+                                    <p class="ubits-body-md-regular">Búsqueda (1 br)</p>
+                                    <br>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ejemplo 7: Prompts útiles -->
+                <div class="example-section">
+                    <h2 class="example-title ubits-heading-h2">
+                        <i class="far fa-comments" style="color: var(--ubits-accent-brand);"></i>
+                        Prompts útiles para personalizar
+                    </h2>
+                    <p class="example-description ubits-body-md-regular">
+                        Ejemplos de prompts que puedes usar para personalizar cualquier página con estructura modular.
+                    </p>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 16px;">
+                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPromptExample('add-section')" style="align-self: flex-start;">
+                            <i class="far fa-copy"></i>
+                            <span>Copiar: Añadir sección</span>
+                        </button>
+                        <div class="code-example" id="prompt-add-section">
+En [NOMBRE_PAGINA].html añade una section-dual con widget-dashboard y widget-notificaciones después de Banner principal
+                        </div>
+
+                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPromptExample('modify-height')" style="align-self: flex-start;">
+                            <i class="far fa-copy"></i>
+                            <span>Copiar: Modificar altura</span>
+                        </button>
+                        <div class="code-example" id="prompt-modify-height">
+Añade 8 br al widget-contenido-principal para hacerlo más prominente
+                        </div>
+
+                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPromptExample('replace-section')" style="align-self: flex-start;">
+                            <i class="far fa-copy"></i>
+                            <span>Copiar: Reemplazar sección</span>
+                        </button>
+                        <div class="code-example" id="prompt-replace-section">
+Reemplaza la section-single de 'Banner principal' por una section-triple con widget-hero, widget-stats y widget-accesos-rapidos
+                        </div>
+
+                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPromptExample('reorganize')" style="align-self: flex-start;">
+                            <i class="far fa-copy"></i>
+                            <span>Copiar: Reorganizar</span>
+                        </button>
+                        <div class="code-example" id="prompt-reorganize">
+Mueve la sección 'Estadísticas' arriba de 'Banner principal' y elimina la sección 'Contenido secundario'
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ejemplo 8: Páginas de referencia -->
+                <div class="example-section">
+                    <h2 class="example-title ubits-heading-h2">
+                        <i class="far fa-bookmark" style="color: var(--ubits-accent-brand);"></i>
+                        Páginas de referencia
+                    </h2>
+                    <p class="example-description ubits-body-md-regular">
+                        Explora estas páginas para ver diferentes implementaciones del sistema modular en acción.
+                    </p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin-top: 24px;">
+                        <div style="background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: 8px; padding: 16px;">
+                            <h3 class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high); margin-bottom: 8px;">
+                                <i class="far fa-graduation-cap" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                home-learn.html
+                            </h3>
+                            <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 12px;">
+                                Ejemplo completo con 9 secciones de diferentes tipos y alturas.
+                            </p>
+                            <button class="ubits-button ubits-button--tertiary ubits-button--sm" onclick="window.location.href='home-learn.html'">
+                                <i class="far fa-external-link"></i>
+                                <span>Ver página</span>
+                            </button>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: 8px; padding: 16px;">
+                            <h3 class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high); margin-bottom: 8px;">
+                                <i class="far fa-user" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                profile.html
+                            </h3>
+                            <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 12px;">
+                                Página original que inspiró el sistema. Incluye sidebar derecho.
+                            </p>
+                            <button class="ubits-button ubits-button--tertiary ubits-button--sm" onclick="window.location.href='profile.html'">
+                                <i class="far fa-external-link"></i>
+                                <span>Ver página</span>
+                            </button>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: 8px; padding: 16px;">
+                            <h3 class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high); margin-bottom: 8px;">
+                                <i class="far fa-book" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                catalogo.html
+                            </h3>
+                            <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 12px;">
+                                Estructura básica con 2 secciones: encabezado y lista competencias.
+                            </p>
+                            <button class="ubits-button ubits-button--tertiary ubits-button--sm" onclick="window.location.href='catalogo.html'">
+                                <i class="far fa-external-link"></i>
+                                <span>Ver página</span>
+                            </button>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: 8px; padding: 16px;">
+                            <h3 class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high); margin-bottom: 8px;">
+                                <i class="far fa-building-columns" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                u-corporativa.html
+                            </h3>
+                            <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 12px;">
+                                Estructura especializada para Universidad Corporativa con 3 secciones.
+                            </p>
+                            <button class="ubits-button ubits-button--tertiary ubits-button--sm" onclick="window.location.href='u-corporativa.html'">
+                                <i class="far fa-external-link"></i>
+                                <span>Ver página</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="components/sub-nav.js"></script>
+    <script src="components/alert.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cargar top-nav con variante documentación
+            loadSubNav('top-nav-container', 'documentacion');
+            
+            // Cargar alert informativo
+            showAlert('info', 'Esta página muestra ejemplos visuales del sistema modular. Úsala como inspiración para tus propias interfaces.', {
+                containerId: 'info-alert-container',
+                noClose: true
+            });
+        });
+
+        // Función para copiar ejemplos de prompts
+        function copyPromptExample(promptId) {
+            const promptElement = document.getElementById(`prompt-${promptId}`);
+            const promptText = promptElement.textContent.trim();
+            
+            // Copiar al portapapeles
+            navigator.clipboard.writeText(promptText).then(function() {
+                // Mostrar feedback visual
+                const button = document.querySelector(`[onclick="copyPromptExample('${promptId}')"]`);
+                const icon = button.querySelector('i');
+                const text = button.querySelector('span');
+                
+                // Cambiar estado del botón
+                const originalIcon = icon.className;
+                const originalText = text.textContent;
+                
+                icon.className = 'far fa-check';
+                text.textContent = 'Copiado';
+                button.classList.add('ubits-button--primary');
+                
+                // Mostrar toast
+                showToast('¡Prompt copiado! 🎉');
+                
+                // Restaurar estado después de 2 segundos
+                setTimeout(function() {
+                    icon.className = originalIcon;
+                    text.textContent = originalText;
+                    button.classList.remove('ubits-button--primary');
+                }, 2000);
+                
+            }).catch(function(err) {
+                console.error('Error al copiar: ', err);
+                showToast('Error al copiar el prompt', 'error');
+            });
+        }
+
+        // Función para mostrar toast
+        function showToast(message, type = 'success') {
+            // Crear elemento toast
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? 'var(--ubits-accent-brand)' : 'var(--ubits-feedback-bg-error-subtle)'};
+                color: var(--ubits-bg-1);
+                padding: 16px 24px;
+                border-radius: 8px;
+                border: 1px solid var(--ubits-border-1);
+                z-index: 10000;
+                font-family: 'Noto Sans', sans-serif;
+                font-size: 14px;
+                font-weight: 500;
+                opacity: 0;
+                transform: translateX(100%);
+                transition: all 0.3s ease;
+            `;
+            toast.textContent = message;
+            
+            // Añadir al DOM
+            document.body.appendChild(toast);
+            
+            // Animar entrada
+            setTimeout(() => {
+                toast.style.opacity = '1';
+                toast.style.transform = 'translateX(0)';
+            }, 100);
+            
+            // Remover después de 3 segundos
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

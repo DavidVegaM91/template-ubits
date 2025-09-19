@@ -54,10 +54,10 @@ function loadSidebar(activeButton = null) {
                     <button class="nav-button" data-section="encuestas" data-tooltip="Encuestas" onclick="window.location.href='encuestas.html'" style="cursor: pointer;">
                         <i class="far fa-clipboard"></i>
                     </button>
-                    <button class="nav-button" data-section="reclutamiento" data-tooltip="Reclutamiento">
+                    <button class="nav-button" data-section="reclutamiento" data-tooltip="Reclutamiento" onclick="window.location.href='reclutamiento.html'" style="cursor: pointer;">
                         <i class="far fa-users"></i>
                     </button>
-                    <button class="nav-button" data-section="tareas" data-tooltip="Tareas">
+                    <button class="nav-button" data-section="tareas" data-tooltip="Tareas" onclick="window.location.href='planes.html'" style="cursor: pointer;">
                         <i class="far fa-layer-group"></i>
                     </button>
                     <button class="nav-button" data-section="ubits-ai" data-tooltip="UBITS AI" onclick="window.location.href='ubits-ai.html'" style="cursor: pointer;">

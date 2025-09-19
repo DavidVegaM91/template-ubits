@@ -52,8 +52,8 @@ const TOP_NAV_VARIANTS = {
     tareas: {
         name: 'Tareas',
         tabs: [
-            { id: 'plans', label: 'Planes', icon: 'far fa-layer-group' },
-            { id: 'tasks', label: 'Tareas', icon: 'far fa-tasks' }
+            { id: 'plans', label: 'Planes', icon: 'far fa-layer-group', url: 'planes.html' },
+            { id: 'tasks', label: 'Tareas', icon: 'far fa-tasks', url: 'tareas.html' }
         ]
     }
 };

@@ -640,12 +640,8 @@ body[data-theme="dark"] .content-area.no-background {
 
 [data-theme="dark"] .ai-card {
     background: var(--ubits-sidebar-bg) !important;
-    box-shadow: 0 2px 44px rgba(0,0,0,0.3) !important;
 }
 
-[data-theme="dark"] .ai-card:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.4) !important;
-}
 
 [data-theme="dark"] .card-title {
     color: var(--ubits-fg-1-high-static-inverted) !important;
@@ -697,13 +693,11 @@ body[data-theme="dark"] .content-area.no-background {
     min-width: 200px;
     flex: 1;
     max-width: 250px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     transition: all 0.2s ease;
 }
 
 .ai-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
 .ai-card.clickable {
@@ -713,7 +707,6 @@ body[data-theme="dark"] .content-area.no-background {
 /* Efecto especial para cards clickeables */
 .ai-card[onclick]:hover {
     transform: translateY(-4px);
-    box-shadow: 0 6px 20px rgba(12, 91, 239, 0.2);
     border: 1px solid rgba(12, 91, 239, 0.3);
 }
 

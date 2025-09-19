@@ -148,19 +148,11 @@
             <div class="content-area">
                 <!-- Content wrapper con secciones de widgets -->
                 <div class="content-sections">
-                    <!-- Sección encabezado y buscador -->
+                    <!-- Sección contenido planes -->
                     <div class="section-single">
-                        <div class="widget-encabezado-buscador">
-                            <p class="ubits-body-md-regular">Encabezado y buscador</p>
-                            <br><br><br><br><br>
-                        </div>
-                    </div>
-
-                    <!-- Sección lista competencias -->
-                    <div class="section-single">
-                        <div class="widget-lista-competencias">
-                            <p class="ubits-body-md-regular">Lista competencias</p>
-                            <br><br><br><br><br><br><br><br><br><br><br><br><br>
+                        <div class="widget-contenido-planes">
+                            <p class="ubits-body-md-regular">Contenido planes</p>
+                            <br><br><br><br><br><br><br><br><br><br><br>
                         </div>
                     </div>
                 </div>
@@ -186,38 +178,38 @@
     <script>
         // Cargar componentes dinámicamente
         document.addEventListener('DOMContentLoaded', function() {
-            loadSidebar('sidebar-container', 'aprendizaje');
-            loadSubNav('top-nav-container', 'aprendizaje');
+            loadSidebar('sidebar-container', 'tareas');
+            loadSubNav('top-nav-container', 'tareas');
             loadTabBar('tab-bar-container');
             loadFloatingMenu('floating-menu-container');
             loadProfileMenu('profile-menu-container');
             
-            // Activar el tab "Catálogo" específicamente después de cargar el SubNav
+            // Activar el tab "Planes" específicamente después de cargar el SubNav
             setTimeout(() => {
                 // Remover active de todos los tabs (desktop y móvil)
                 document.querySelectorAll('.nav-tab, .hamburger-item').forEach(item => {
                     item.classList.remove('active');
                 });
                 
-                // Activar el tab catálogo en desktop
-                const catalogTab = document.querySelector('.nav-tab[data-tab="catalog"]');
-                if (catalogTab) {
-                    catalogTab.classList.add('active');
+                // Activar el tab Planes en desktop
+                const planesTab = document.querySelector('.nav-tab[data-tab="plans"]');
+                if (planesTab) {
+                    planesTab.classList.add('active');
                 }
                 
-                // Activar el tab catálogo en móvil (hamburger menu)
-                const catalogHamburger = document.querySelector('.hamburger-item[data-tab="catalog"]');
-                if (catalogHamburger) {
-                    catalogHamburger.classList.add('active');
+                // Activar el tab Planes en móvil (hamburger menu)
+                const planesHamburger = document.querySelector('.hamburger-item[data-tab="plans"]');
+                if (planesHamburger) {
+                    planesHamburger.classList.add('active');
                 }
                 
-                // Activar el botón de aprendizaje en el sidebar
-                const aprendizajeButton = document.querySelector('.nav-button[data-section="aprendizaje"]');
-                if (aprendizajeButton) {
+                // Activar el botón de tareas en el sidebar
+                const tareasButton = document.querySelector('.nav-button[data-section="tareas"]');
+                if (tareasButton) {
                     // Remover active de todos los botones del sidebar
                     document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
-                    // Activar el botón de aprendizaje
-                    aprendizajeButton.classList.add('active');
+                    // Activar el botón de tareas
+                    tareasButton.classList.add('active');
                 }
                 
                 // Activar el botón "Módulos" del Tab-bar móvil
@@ -229,9 +221,9 @@
                     modulosTabBarItem.classList.add('active');
                 }
                 
-                // Activar la opción "Catálogo" dentro del grupo "Aprendizaje" del floating menu
+                // Activar la opción "Planes" dentro del acordeón "Tareas" del floating menu
                 if (typeof setActiveAccordionLink === 'function') {
-                    setActiveAccordionLink('catalogo');
+                    setActiveAccordionLink('planes');
                 }
             }, 200);
         });

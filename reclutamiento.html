@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="fontawesome-icons.css">
     <link rel="stylesheet" href="ubits-typography.css">
-    <link rel="stylesheet" href="components/sub-nav.css">
+    <!-- <link rel="stylesheet" href="components/sub-nav.css"> --> <!-- SubNav oculto -->
     <link rel="stylesheet" href="components/tab-bar.css">
     <link rel="stylesheet" href="components/floating-menu.css">
     <link rel="stylesheet" href="components/profile-menu.css">
@@ -142,25 +142,17 @@
 
         <!-- Main Content -->
         <main class="main-content">
-            <!-- Top Navigation -->
-            <div id="top-nav-container"></div>
+            <!-- Top Navigation - OCULTO -->
+            <!-- <div id="top-nav-container"></div> -->
             <!-- Content Area -->
             <div class="content-area">
                 <!-- Content wrapper con secciones de widgets -->
                 <div class="content-sections">
-                    <!-- Sección encabezado y buscador -->
+                    <!-- Sección contenido reclutamiento -->
                     <div class="section-single">
-                        <div class="widget-encabezado-buscador">
-                            <p class="ubits-body-md-regular">Encabezado y buscador</p>
-                            <br><br><br><br><br>
-                        </div>
-                    </div>
-
-                    <!-- Sección lista competencias -->
-                    <div class="section-single">
-                        <div class="widget-lista-competencias">
-                            <p class="ubits-body-md-regular">Lista competencias</p>
-                            <br><br><br><br><br><br><br><br><br><br><br><br><br>
+                        <div class="widget-contenido-reclutamiento">
+                            <p class="ubits-body-md-regular">Contenido reclutamiento</p>
+                            <br><br><br><br><br><br><br><br><br><br><br>
                         </div>
                     </div>
                 </div>
@@ -178,7 +170,7 @@
     <div id="profile-menu-container"></div>
 
     <script src="components/sidebar.js"></script>
-    <script src="components/sub-nav.js"></script>
+    <!-- <script src="components/sub-nav.js"></script> --> <!-- SubNav oculto -->
     <script src="components/tab-bar.js"></script>
     <script src="components/floating-menu.js"></script>
     <script src="components/profile-menu.js"></script>
@@ -186,38 +178,23 @@
     <script>
         // Cargar componentes dinámicamente
         document.addEventListener('DOMContentLoaded', function() {
-            loadSidebar('sidebar-container', 'aprendizaje');
-            loadSubNav('top-nav-container', 'aprendizaje');
+            loadSidebar('sidebar-container', 'reclutamiento');
+            // loadSubNav('top-nav-container', 'aprendizaje'); // OCULTO
             loadTabBar('tab-bar-container');
             loadFloatingMenu('floating-menu-container');
             loadProfileMenu('profile-menu-container');
             
-            // Activar el tab "Catálogo" específicamente después de cargar el SubNav
+            // Configuración de navegación (SubNav oculto)
             setTimeout(() => {
-                // Remover active de todos los tabs (desktop y móvil)
-                document.querySelectorAll('.nav-tab, .hamburger-item').forEach(item => {
-                    item.classList.remove('active');
-                });
+                // SubNav deshabilitado - no se activan tabs
                 
-                // Activar el tab catálogo en desktop
-                const catalogTab = document.querySelector('.nav-tab[data-tab="catalog"]');
-                if (catalogTab) {
-                    catalogTab.classList.add('active');
-                }
-                
-                // Activar el tab catálogo en móvil (hamburger menu)
-                const catalogHamburger = document.querySelector('.hamburger-item[data-tab="catalog"]');
-                if (catalogHamburger) {
-                    catalogHamburger.classList.add('active');
-                }
-                
-                // Activar el botón de aprendizaje en el sidebar
-                const aprendizajeButton = document.querySelector('.nav-button[data-section="aprendizaje"]');
-                if (aprendizajeButton) {
+                // Activar el botón de reclutamiento en el sidebar
+                const reclutamientoButton = document.querySelector('.nav-button[data-section="reclutamiento"]');
+                if (reclutamientoButton) {
                     // Remover active de todos los botones del sidebar
                     document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
-                    // Activar el botón de aprendizaje
-                    aprendizajeButton.classList.add('active');
+                    // Activar el botón de reclutamiento
+                    reclutamientoButton.classList.add('active');
                 }
                 
                 // Activar el botón "Módulos" del Tab-bar móvil
@@ -229,9 +206,9 @@
                     modulosTabBarItem.classList.add('active');
                 }
                 
-                // Activar la opción "Catálogo" dentro del grupo "Aprendizaje" del floating menu
-                if (typeof setActiveAccordionLink === 'function') {
-                    setActiveAccordionLink('catalogo');
+                // Activar la opción "Reclutamiento" como direct link del floating menu
+                if (typeof setActiveDirectLink === 'function') {
+                    setActiveDirectLink('reclutamiento');
                 }
             }, 200);
         });
