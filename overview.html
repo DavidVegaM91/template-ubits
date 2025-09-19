@@ -434,6 +434,67 @@
             gap: 8px;
             align-items: center;
             opacity: 1;
+            position: relative;
+        }
+        
+        /* Botón de link secundario */
+        .tarea-link-btn {
+            display: none;
+        }
+        
+        .tarea-link-btn.has-link {
+            display: inline-flex;
+        }
+        
+        /* Dropdown menu para opciones de tarea */
+        .tarea-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--ubits-bg-1);
+            border: 1px solid var(--ubits-border-1);
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            z-index: 1000;
+            min-width: 160px;
+            overflow: hidden;
+            display: none;
+        }
+        
+        .tarea-dropdown.show {
+            display: block;
+        }
+        
+        .tarea-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: var(--ubits-fg-1-medium);
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            font-size: 14px;
+        }
+        
+        .tarea-dropdown-item:hover {
+            background: var(--ubits-bg-2);
+        }
+        
+        .tarea-dropdown-item.danger {
+            color: var(--ubits-feedback-fg-error);
+        }
+        
+        .tarea-dropdown-item.danger:hover {
+            background: var(--ubits-feedback-bg-error-subtle);
+        }
+        
+        .tarea-dropdown-item i {
+            width: 16px;
+            text-align: center;
         }
         
         /* Botones de icono ahora usan clases oficiales UBITS */
@@ -609,6 +670,88 @@
                 gap: 8px;
             }
         }
+        
+        /* Modal para links */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal {
+            background: var(--ubits-bg-1);
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 16px 48px rgba(0,0,0,0.2);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal-overlay.show .modal {
+            transform: scale(1);
+        }
+        
+        .modal-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .modal-title {
+            color: var(--ubits-fg-1-high);
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .modal-body {
+            margin-bottom: 24px;
+        }
+        
+        .modal-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--ubits-border-1);
+            border-radius: 8px;
+            background: var(--ubits-bg-1);
+            color: var(--ubits-fg-1-medium);
+            font-size: 14px;
+            transition: border-color 0.2s ease;
+            box-sizing: border-box;
+        }
+        
+        .modal-input:focus {
+            outline: none;
+            border-color: var(--ubits-accent-brand);
+        }
+        
+        .modal-input::placeholder {
+            color: var(--ubits-fg-1-low);
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
     </style>
 </head>
 <body data-theme="light">
@@ -752,6 +895,7 @@
                 this.estado = 'por-iniciar';
                 this.containerId = containerId;
                 this.containerType = containerType;
+                this.link = null;
             }
         }
         
@@ -964,9 +1108,32 @@
                                 `<option value="${key}" ${tarea.estado === key ? 'selected' : ''}>${value.label}</option>`
                             ).join('')}
                         </select>
-                        <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" onclick="deleteTarea(${tarea.id})" title="Eliminar">
-                            <i class="far fa-trash"></i>
+                        <button class="ubits-button ubits-button--secondary ubits-button--sm tarea-link-btn ${tarea.link ? 'has-link' : ''}" onclick="openTareaLink('${tarea.link || ''}')" title="Abrir link">
+                            <i class="far fa-link"></i>
                         </button>
+                        <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" onclick="toggleTareaOptions(${tarea.id})" title="Opciones">
+                            <i class="far fa-ellipsis-vertical"></i>
+                        </button>
+                        <div class="tarea-dropdown" id="dropdown-${tarea.id}">
+                            ${tarea.link ? 
+                                `<button class="tarea-dropdown-item" onclick="editTareaLink(${tarea.id})">
+                                    <i class="far fa-pen-to-square"></i>
+                                    <span>Editar link</span>
+                                </button>
+                                <button class="tarea-dropdown-item" onclick="removeTareaLink(${tarea.id})">
+                                    <i class="far fa-link-slash"></i>
+                                    <span>Eliminar link</span>
+                                </button>` :
+                                `<button class="tarea-dropdown-item" onclick="addTareaLink(${tarea.id})">
+                                    <i class="far fa-link"></i>
+                                    <span>Añadir link</span>
+                                </button>`
+                            }
+                            <button class="tarea-dropdown-item danger" onclick="deleteTarea(${tarea.id})">
+                                <i class="far fa-trash"></i>
+                                <span>Eliminar Tarea</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             `;
@@ -1012,9 +1179,32 @@
                                 `<option value="${key}" ${tarea.estado === key ? 'selected' : ''}>${value.label}</option>`
                             ).join('')}
                         </select>
-                        <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" onclick="deleteTarea(${tarea.id})" title="Eliminar">
-                            <i class="far fa-trash"></i>
+                        <button class="ubits-button ubits-button--secondary ubits-button--sm tarea-link-btn ${tarea.link ? 'has-link' : ''}" onclick="openTareaLink('${tarea.link || ''}')" title="Abrir link">
+                            <i class="far fa-link"></i>
                         </button>
+                        <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" onclick="toggleTareaOptions(${tarea.id})" title="Opciones">
+                            <i class="far fa-ellipsis-vertical"></i>
+                        </button>
+                        <div class="tarea-dropdown" id="dropdown-${tarea.id}">
+                            ${tarea.link ? 
+                                `<button class="tarea-dropdown-item" onclick="editTareaLink(${tarea.id})">
+                                    <i class="far fa-pen-to-square"></i>
+                                    <span>Editar link</span>
+                                </button>
+                                <button class="tarea-dropdown-item" onclick="removeTareaLink(${tarea.id})">
+                                    <i class="far fa-link-slash"></i>
+                                    <span>Eliminar link</span>
+                                </button>` :
+                                `<button class="tarea-dropdown-item" onclick="addTareaLink(${tarea.id})">
+                                    <i class="far fa-link"></i>
+                                    <span>Añadir link</span>
+                                </button>`
+                            }
+                            <button class="tarea-dropdown-item danger" onclick="deleteTarea(${tarea.id})">
+                                <i class="far fa-trash"></i>
+                                <span>Eliminar Tarea</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             `;
@@ -1808,6 +1998,142 @@
             autoSave();
         }
         
+        // Variables globales para el modal de links
+        let currentTareaId = null;
+        let isEditingLink = false;
+        
+        // Función para alternar el dropdown de opciones de tarea
+        function toggleTareaOptions(tareaId) {
+            // Cerrar todos los dropdowns abiertos
+            document.querySelectorAll('.tarea-dropdown.show').forEach(dropdown => {
+                dropdown.classList.remove('show');
+            });
+            
+            // Abrir el dropdown actual
+            const dropdown = document.getElementById(`dropdown-${tareaId}`);
+            if (dropdown) {
+                dropdown.classList.add('show');
+            }
+            
+            // Cerrar dropdown al hacer click fuera
+            setTimeout(() => {
+                document.addEventListener('click', function closeDropdown(e) {
+                    if (!e.target.closest('.tarea-dropdown') && !e.target.closest(`[onclick="toggleTareaOptions(${tareaId})"]`)) {
+                        dropdown.classList.remove('show');
+                        document.removeEventListener('click', closeDropdown);
+                    }
+                });
+            }, 0);
+        }
+        
+        // Función para abrir link de tarea
+        function openTareaLink(url) {
+            if (url && url.trim() !== '') {
+                // Agregar https:// si no tiene protocolo
+                let fullUrl = url;
+                if (!url.match(/^https?:\/\//)) {
+                    fullUrl = 'https://' + url;
+                }
+                window.open(fullUrl, '_blank');
+            }
+        }
+        
+        // Función para mostrar modal de añadir link
+        function addTareaLink(tareaId) {
+            currentTareaId = tareaId;
+            isEditingLink = false;
+            
+            document.getElementById('modalTitle').textContent = 'Añadir link';
+            document.getElementById('linkInput').value = '';
+            document.getElementById('linkInput').placeholder = 'https://ejemplo.com';
+            
+            showLinkModal();
+        }
+        
+        // Función para mostrar modal de editar link
+        function editTareaLink(tareaId) {
+            const tarea = findTareaById(tareaId);
+            if (!tarea) return;
+            
+            currentTareaId = tareaId;
+            isEditingLink = true;
+            
+            document.getElementById('modalTitle').textContent = 'Editar link';
+            document.getElementById('linkInput').value = tarea.link || '';
+            document.getElementById('linkInput').placeholder = 'https://ejemplo.com';
+            
+            showLinkModal();
+        }
+        
+        // Función para eliminar link de tarea
+        function removeTareaLink(tareaId) {
+            if (!confirm('¿Estás seguro de eliminar el link de esta tarea?')) return;
+            
+            const tarea = findTareaById(tareaId);
+            if (tarea) {
+                tarea.link = null;
+                renderRoadmap();
+                autoSave();
+            }
+        }
+        
+        // Función para mostrar el modal
+        function showLinkModal() {
+            const modal = document.getElementById('linkModal');
+            modal.classList.add('show');
+            
+            // Focus en el input
+            setTimeout(() => {
+                document.getElementById('linkInput').focus();
+            }, 100);
+            
+            // Cerrar modal con ESC
+            document.addEventListener('keydown', function closeOnEsc(e) {
+                if (e.key === 'Escape') {
+                    closeLinkModal();
+                    document.removeEventListener('keydown', closeOnEsc);
+                }
+            });
+        }
+        
+        // Función para cerrar el modal
+        function closeLinkModal() {
+            const modal = document.getElementById('linkModal');
+            modal.classList.remove('show');
+            currentTareaId = null;
+            isEditingLink = false;
+        }
+        
+        // Función para guardar el link
+        function saveTareaLink() {
+            const url = document.getElementById('linkInput').value.trim();
+            
+            if (!url) {
+                alert('Por favor ingresa una URL válida');
+                return;
+            }
+            
+            // Validar URL básica
+            try {
+                let fullUrl = url;
+                if (!url.match(/^https?:\/\//)) {
+                    fullUrl = 'https://' + url;
+                }
+                new URL(fullUrl);
+            } catch (e) {
+                alert('Por favor ingresa una URL válida');
+                return;
+            }
+            
+            const tarea = findTareaById(currentTareaId);
+            if (tarea) {
+                tarea.link = url;
+                renderRoadmap();
+                autoSave();
+                closeLinkModal();
+            }
+        }
+        
         // ========== PERSISTENCIA ========== 
         function saveToLocalStorage() {
             try {
@@ -1942,6 +2268,37 @@
         window.renderRoadmap = renderRoadmap;
         window.saveToLocalStorage = saveToLocalStorage;
         window.loadFromLocalStorage = loadFromLocalStorage;
+        
+        // Funciones de links de tareas
+        window.toggleTareaOptions = toggleTareaOptions;
+        window.openTareaLink = openTareaLink;
+        window.addTareaLink = addTareaLink;
+        window.editTareaLink = editTareaLink;
+        window.removeTareaLink = removeTareaLink;
+        window.showLinkModal = showLinkModal;
+        window.closeLinkModal = closeLinkModal;
+        window.saveTareaLink = saveTareaLink;
     </script>
+    
+    <!-- Modal para links de tareas -->
+    <div class="modal-overlay" id="linkModal">
+        <div class="modal">
+            <div class="modal-header">
+                <i class="far fa-link"></i>
+                <h3 class="modal-title" id="modalTitle">Añadir link</h3>
+            </div>
+            <div class="modal-body">
+                <input type="url" class="modal-input" id="linkInput" placeholder="https://ejemplo.com" />
+            </div>
+            <div class="modal-actions">
+                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="closeLinkModal()">
+                    <span>Cancelar</span>
+                </button>
+                <button class="ubits-button ubits-button--primary ubits-button--sm" onclick="saveTareaLink()">
+                    <span>Guardar</span>
+                </button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
