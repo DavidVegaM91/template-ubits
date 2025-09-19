@@ -854,23 +854,6 @@ body[data-theme="dark"] .content-placeholder p {
     margin-bottom: 16px;
 }
 
-.back-button {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 9.5px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--ubits-fg-1-high);
-    font-size: 13px;
-    transition: background-color 0.2s ease;
-}
-
-.back-button:hover {
-    background-color: rgba(48, 58, 71, 0.1);
-}
 
 .chat-user-info {
     flex: 1;
@@ -915,13 +898,11 @@ body[data-theme="dark"] .content-placeholder p {
     border-radius: 10px;
     padding: 16px;
     max-width: 80%;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .message.ai-message .message-content {
     background: var(--ubits-bg-1);
     color: var(--ubits-fg-1-high-static-inverted);
-    border: 1px solid var(--ubits-fg-1-medium);
 }
 
 .message.user-message .message-content {

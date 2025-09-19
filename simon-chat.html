@@ -7,9 +7,11 @@
     
     <!-- Estilos locales -->
     <link rel="stylesheet" href="ubits-colors.css">
-    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="fontawesome-icons.css">
     <link rel="stylesheet" href="ubits-typography.css">
+    <link rel="stylesheet" href="components/button.css">
+    <link rel="stylesheet" href="components-sidebar.css">
+    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="components/tab-bar.css">
     <link rel="stylesheet" href="components/floating-menu.css">
     <link rel="stylesheet" href="components/profile-menu.css">
@@ -26,15 +28,15 @@
             <!-- Content Area -->
             <div class="content-area no-background">
                 <!-- AI Chat Interface -->
-                <div class="ai-chat-interface" id="ai-chat-interface">
+                <div class="ai-chat-interface" id="ai-chat-interface" style="background: var(--ubits-bg-1);">
                     <!-- Header del chat -->
                     <div class="chat-header">
-                        <button class="back-button" id="back-to-ai" onclick="window.open('ubits-ai.html', '_self')">
-                            <i class="far fa-chevron-left"></i>
+                        <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="back-to-ai" onclick="window.open('ubits-ai.html', '_self')">
+                            <i class="far fa-arrow-left"></i>
                         </button>
                         <div class="chat-user-info">
-                            <h2 class="ubits-heading-h2">Simon</h2>
-                            <p class="ubits-body-md-regular">Análisis inteligente para optimizar tu empresa.</p>
+                            <h2 class="ubits-heading-h2" style="color: var(--ubits-fg-1-high);">Simon</h2>
+                            <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium);">Análisis inteligente para optimizar tu empresa.</p>
                         </div>
                     </div>
 
@@ -46,13 +48,13 @@
                             </div>
                             <div class="message-actions">
                                 <div class="action-buttons">
-                                    <button class="action-btn like-btn" title="Me gusta">
+                                    <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only action-btn like-btn" title="Me gusta">
                                         <i class="far fa-thumbs-up"></i>
                                     </button>
-                                    <button class="action-btn dislike-btn" title="No me gusta">
+                                    <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only action-btn dislike-btn" title="No me gusta">
                                         <i class="far fa-thumbs-down"></i>
                                     </button>
-                                    <button class="action-btn copy-btn" title="Copiar mensaje">
+                                    <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only action-btn copy-btn" title="Copiar mensaje">
                                         <i class="far fa-copy"></i>
                                     </button>
                                 </div>
@@ -72,13 +74,13 @@
                             </div>
                             <div class="message-actions">
                                 <div class="action-buttons">
-                                    <button class="action-btn like-btn" title="Me gusta">
+                                    <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only action-btn like-btn" title="Me gusta">
                                         <i class="far fa-thumbs-up"></i>
                                     </button>
-                                    <button class="action-btn dislike-btn" title="No me gusta">
+                                    <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only action-btn dislike-btn" title="No me gusta">
                                         <i class="far fa-thumbs-down"></i>
                                     </button>
-                                    <button class="action-btn copy-btn" title="Copiar mensaje">
+                                    <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only action-btn copy-btn" title="Copiar mensaje">
                                         <i class="far fa-copy"></i>
                                     </button>
                                 </div>
@@ -97,7 +99,7 @@
                     <div class="chat-input-container">
                         <div class="chat-input">
                             <input type="text" placeholder="Escribe tu pregunta o solicitud..." id="chat-input-field" class="ubits-body-md-regular">
-                            <button class="send-button" id="send-message">
+                            <button class="ubits-button ubits-button--primary ubits-button--md ubits-button--icon-only send-button" id="send-message">
                                 <i class="far fa-paper-plane"></i>
                             </button>
                         </div>

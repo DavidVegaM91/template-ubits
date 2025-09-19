@@ -165,7 +165,7 @@
                             Validador UBITS
                         </h1>
                         <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto; line-height: 1.6;">
-                            Verifica automáticamente el uso correcto de tokens UBITS, clases de tipografía y estructura modular en tus páginas.
+                            Verifica automáticamente el uso correcto de tokens UBITS, clases de tipografía y componentes en tus páginas.
                         </p>
                     </div>
 
@@ -274,17 +274,6 @@
                                 </ul>
                             </div>
 
-                            <div style="background: var(--ubits-bg-2); border: 1px solid var(--ubits-border-1); border-radius: 8px; padding: 16px;">
-                                <h3 class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high); margin-bottom: 8px;">
-                                    <i class="far fa-cubes" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                    Estructura modular
-                                </h3>
-                                <ul class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6; padding-left: 20px;">
-                                    <li>Verifica uso de content-sections</li>
-                                    <li>Detecta section-single, dual, triple, quad</li>
-                                    <li>Comprueba nombres de widgets descriptivos</li>
-                                </ul>
-                            </div>
 
                             <div style="background: var(--ubits-bg-2); border: 1px solid var(--ubits-border-1); border-radius: 8px; padding: 16px;">
                                 <h3 class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high); margin-bottom: 8px;">
@@ -294,7 +283,8 @@
                                 <ul class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6; padding-left: 20px;">
                                     <li>Detecta componentes custom innecesarios</li>
                                     <li>Verifica uso correcto de componentes UBITS</li>
-                                    <li>Comprueba importaciones necesarias</li>
+                                    <li>Valida que cada componente tenga su CSS importado</li>
+                                    <li>Detecta CSS faltantes para componentes en uso</li>
                                 </ul>
                             </div>
                         </div>
@@ -372,7 +362,7 @@
 
             // Limpiar contenido: remover scripts y configuración del validador para evitar falsos positivos
             let cleanContent = htmlContent;
-            if (fileName === 'validador-ubits.html' || fileName === 'ejemplos-modulares.html') {
+            if (fileName === 'validador-ubits.html') {
                 // Para páginas con JavaScript complejo, solo validar el HTML/CSS real
                 // Extraer solo el contenido HTML visible (head + body sin scripts)
                 const htmlMatch = cleanContent.match(/<html[\s\S]*?<\/html>/);
@@ -400,21 +390,14 @@
             warningCount += typographyValidation.warnings;
             errorCount += typographyValidation.errors;
 
-            // 3. Validar estructura modular
-            const modularValidation = validateModularStructure(cleanContent);
-            results.push(...modularValidation.results);
-            successCount += modularValidation.success;
-            warningCount += modularValidation.warnings;
-            errorCount += modularValidation.errors;
-
-            // 4. Validar componentes UBITS
+            // 3. Validar componentes UBITS
             const componentValidation = validateUBITSComponents(cleanContent);
             results.push(...componentValidation.results);
             successCount += componentValidation.success;
             warningCount += componentValidation.warnings;
             errorCount += componentValidation.errors;
 
-            // 5. Validar importaciones
+            // 4. Validar importaciones
             const importValidation = validateImports(htmlContent); // Usar htmlContent original para imports
             results.push(...importValidation.results);
             successCount += importValidation.success;
@@ -557,75 +540,39 @@
             return { results, success, warnings, errors };
         }
 
-        // Validar estructura modular
-        function validateModularStructure(html) {
-            const results = [];
-            let success = 0, warnings = 0, errors = 0;
-
-            // Verificar uso de content-sections
-            if (html.includes('content-sections')) {
-                results.push({
-                    type: 'success',
-                    title: 'Estructura modular detectada',
-                    description: 'La página usa el sistema modular content-sections.'
-                });
-                success++;
-
-                // Verificar tipos de secciones
-                const sectionTypes = ['section-single', 'section-dual', 'section-triple', 'section-quad'];
-                let sectionsFound = 0;
-                
-                sectionTypes.forEach(sectionType => {
-                    if (html.includes(sectionType)) {
-                        sectionsFound++;
-                    }
-                });
-
-                if (sectionsFound > 0) {
-                    results.push({
-                        type: 'success',
-                        title: 'Secciones modulares encontradas',
-                        description: `Se encontraron ${sectionsFound} tipos de secciones modulares.`
-                    });
-                    success++;
-                }
-
-                // Verificar nombres de widgets descriptivos
-                const widgetMatches = html.match(/widget-[a-zA-Z0-9-]+/g);
-                if (widgetMatches && widgetMatches.length > 0) {
-                    const uniqueWidgets = [...new Set(widgetMatches)];
-                    results.push({
-                        type: 'success',
-                        title: 'Widgets con nombres descriptivos',
-                        description: `Se encontraron ${uniqueWidgets.length} widgets únicos con nombres descriptivos.`
-                    });
-                    success++;
-                }
-
-            } else if (html.includes('content-wrapper')) {
-                results.push({
-                    type: 'warning',
-                    title: 'Estructura modular no implementada',
-                    description: 'La página usa content-wrapper. Considera migrar a la estructura modular content-sections.'
-                });
-                warnings++;
-            }
-
-            return { results, success, warnings, errors };
-        }
 
         // Validar componentes UBITS
         function validateUBITSComponents(html) {
             const results = [];
             let success = 0, warnings = 0, errors = 0;
 
-            // Verificar uso de componentes UBITS
-            const ubitComponents = ['ubits-button', 'ubits-alert', 'loadSubNav', 'loadSidebar', 'loadTabBar'];
-            let componentsFound = 0;
+            // Mapeo de componentes y sus CSS requeridos
+            const componentCSSMap = {
+                'ubits-button': 'components/button.css',
+                'ubits-alert': 'components/alert.css',
+                'loadSubNav': 'components/sub-nav.css',
+                'loadSidebar': 'components-sidebar.css',
+                'loadTabBar': 'components/tab-bar.css',
+                'loadFloatingMenu': 'components/floating-menu.css',
+                'loadProfileMenu': 'components/profile-menu.css',
+                'loadCardContent': 'components/card-content.css'
+            };
 
-            ubitComponents.forEach(component => {
+            // Verificar componentes y sus CSS
+            let componentsFound = 0;
+            let missingCSS = [];
+
+            Object.entries(componentCSSMap).forEach(([component, cssFile]) => {
                 if (html.includes(component)) {
                     componentsFound++;
+                    
+                    // Verificar si el CSS está importado
+                    if (!html.includes(cssFile)) {
+                        missingCSS.push({
+                            component: component,
+                            cssFile: cssFile
+                        });
+                    }
                 }
             });
 
@@ -636,6 +583,18 @@
                     description: `Se encontraron ${componentsFound} componentes UBITS en uso.`
                 });
                 success++;
+            }
+
+            // Reportar CSS faltantes
+            if (missingCSS.length > 0) {
+                missingCSS.forEach(missing => {
+                    results.push({
+                        type: 'error',
+                        title: `CSS faltante para ${missing.component}`,
+                        description: `El componente ${missing.component} requiere: <link rel="stylesheet" href="${missing.cssFile}">`
+                    });
+                    errors++;
+                });
             }
 
             // Detectar botones custom - solo en HTML real, no en JavaScript
@@ -921,9 +880,10 @@
                 instructions.push('• Reemplaza botones/componentes custom con componentes UBITS oficiales.');
             }
             
-            if (warnings.some(w => w.title.includes('modular'))) {
-                instructions.push('• Considera migrar a estructura modular: content-sections con section-single, section-dual, etc.');
+            if (errors.some(e => e.title.includes('CSS faltante'))) {
+                instructions.push('• Agrega las importaciones CSS faltantes para los componentes UBITS que estás usando.');
             }
+            
 
             if (instructions.length === 0) {
                 instructions.push('• Revisa el código siguiendo las reglas UBITS del template.');

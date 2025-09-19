@@ -31,7 +31,7 @@
             border-radius: 8px;
             padding: 20px;
             margin-bottom: 24px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            border: 1px solid var(--ubits-border-1);
             border: 1px solid var(--ubits-border-1);
         }
         
@@ -168,7 +168,7 @@
         }
         
         .entregable:hover {
-            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            border: 1px solid var(--ubits-border-1);
         }
         
         .entregable.dragging {
@@ -203,7 +203,7 @@
         
         .entregables-drop-zone.drag-over {
             border-color: var(--ubits-accent-brand);
-            background: rgba(var(--ubits-accent-brand), 0.05);
+            background: var(--ubits-bg-2);
         }
         
         .entregable-header {
@@ -295,7 +295,7 @@
         }
         
         .grupo-tareas:hover {
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid var(--ubits-border-1);
             transform: translateY(-1px);
         }
         
@@ -359,7 +359,7 @@
         
         .elementos-drop-zone.drag-over {
             border-color: var(--ubits-accent-brand);
-            background: rgba(var(--ubits-accent-brand), 0.05);
+            background: var(--ubits-bg-2);
         }
         
         .elementos-drop-zone:empty::before {
@@ -386,7 +386,7 @@
         }
         
         .tarea-directa:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+            border: 1px solid var(--ubits-border-1);
         }
         
         .tarea-directa.dragging {
@@ -440,7 +440,7 @@
         
         .tareas-list.drag-over {
             border-color: var(--ubits-accent-brand);
-            background: rgba(var(--ubits-accent-brand), 0.05);
+            background: var(--ubits-bg-2);
         }
         
         .tareas-list:empty::before {
@@ -466,7 +466,7 @@
         }
         
         .tarea:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+            border: 1px solid var(--ubits-border-1);
         }
         
         .tarea.dragging {
@@ -478,7 +478,7 @@
         
         .tarea.drag-over {
             border-color: var(--ubits-accent-brand);
-            background: rgba(var(--ubits-accent-brand), 0.05);
+            background: var(--ubits-bg-2);
         }
         
         .tarea-content {
@@ -546,7 +546,7 @@
             background: var(--ubits-bg-1);
             border: 1px solid var(--ubits-border-1);
             border-radius: 8px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            border: 1px solid var(--ubits-border-1);
             z-index: 999999;
             min-width: 160px;
             overflow: hidden;
@@ -619,7 +619,7 @@
             background: var(--ubits-bg-1);
             border: 1px solid var(--ubits-border-1);
             border-radius: 8px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            border: 1px solid var(--ubits-border-1);
             z-index: 500;
             min-width: 200px;
             margin-top: 8px;
@@ -730,7 +730,7 @@
         /* Estados visuales mejorados */
         .entregable.expanded {
             border-color: var(--ubits-accent-brand);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            border: 1px solid var(--ubits-border-1);
         }
         
         .entregable.expanded .entregable-header {
@@ -913,7 +913,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
+            background: var(--ubits-bg-3);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -934,7 +934,7 @@
             padding: 24px;
             max-width: 400px;
             width: 90%;
-            box-shadow: 0 16px 48px rgba(0,0,0,0.2);
+            border: 1px solid var(--ubits-border-1);
             transform: scale(0.9);
             transition: transform 0.3s ease;
         }
@@ -1419,20 +1419,20 @@
                         </button>
                         <div class="tarea-dropdown" id="dropdown-${tarea.id}">
                             ${tarea.link ? 
-                                `<button class="tarea-dropdown-item" onclick="editTareaLink(${tarea.id})">
+                                `<button class="ubits-button ubits-button--tertiary ubits-button--sm" style="width: 100%; justify-content: flex-start; margin-bottom: 4px;" onclick="editTareaLink(${tarea.id})">
                                     <i class="far fa-pen-to-square"></i>
                                     <span>Editar link</span>
                                 </button>
-                                <button class="tarea-dropdown-item" onclick="removeTareaLink(${tarea.id})">
+                                <button class="ubits-button ubits-button--tertiary ubits-button--sm" style="width: 100%; justify-content: flex-start; margin-bottom: 4px;" onclick="removeTareaLink(${tarea.id})">
                                     <i class="far fa-link-slash"></i>
                                     <span>Eliminar link</span>
                                 </button>` :
-                                `<button class="tarea-dropdown-item" onclick="addTareaLink(${tarea.id})">
+                                `<button class="ubits-button ubits-button--tertiary ubits-button--sm" style="width: 100%; justify-content: flex-start; margin-bottom: 4px;" onclick="addTareaLink(${tarea.id})">
                                     <i class="far fa-link"></i>
                                     <span>Añadir link</span>
                                 </button>`
                             }
-                            <button class="tarea-dropdown-item danger" onclick="deleteTarea(${tarea.id})">
+                            <button class="ubits-button ubits-button--tertiary ubits-button--sm" style="width: 100%; justify-content: flex-start; margin-bottom: 4px; color: var(--ubits-feedback-accent-error);" onclick="deleteTarea(${tarea.id})">
                                 <i class="far fa-trash"></i>
                                 <span>Eliminar Tarea</span>
                             </button>
@@ -1493,20 +1493,20 @@
                         </button>
                         <div class="tarea-dropdown" id="dropdown-${tarea.id}">
                             ${tarea.link ? 
-                                `<button class="tarea-dropdown-item" onclick="editTareaLink(${tarea.id})">
+                                `<button class="ubits-button ubits-button--tertiary ubits-button--sm" style="width: 100%; justify-content: flex-start; margin-bottom: 4px;" onclick="editTareaLink(${tarea.id})">
                                     <i class="far fa-pen-to-square"></i>
                                     <span>Editar link</span>
                                 </button>
-                                <button class="tarea-dropdown-item" onclick="removeTareaLink(${tarea.id})">
+                                <button class="ubits-button ubits-button--tertiary ubits-button--sm" style="width: 100%; justify-content: flex-start; margin-bottom: 4px;" onclick="removeTareaLink(${tarea.id})">
                                     <i class="far fa-link-slash"></i>
                                     <span>Eliminar link</span>
                                 </button>` :
-                                `<button class="tarea-dropdown-item" onclick="addTareaLink(${tarea.id})">
+                                `<button class="ubits-button ubits-button--tertiary ubits-button--sm" style="width: 100%; justify-content: flex-start; margin-bottom: 4px;" onclick="addTareaLink(${tarea.id})">
                                     <i class="far fa-link"></i>
                                     <span>Añadir link</span>
                                 </button>`
                             }
-                            <button class="tarea-dropdown-item danger" onclick="deleteTarea(${tarea.id})">
+                            <button class="ubits-button ubits-button--tertiary ubits-button--sm" style="width: 100%; justify-content: flex-start; margin-bottom: 4px; color: var(--ubits-feedback-accent-error);" onclick="deleteTarea(${tarea.id})">
                                 <i class="far fa-trash"></i>
                                 <span>Eliminar Tarea</span>
                             </button>
