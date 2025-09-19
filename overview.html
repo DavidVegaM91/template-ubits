@@ -2592,6 +2592,48 @@
             renderRoadmap();
         }
         
+        // ========== FUNCIONES DE EXPORTACIÓN/IMPORTACIÓN ==========
+        function exportData() {
+            const data = localStorage.getItem('ubits-roadmap-data');
+            if (data) {
+                console.log('=== DATOS PARA COPIAR ===');
+                console.log(data);
+                console.log('=== FIN DE DATOS ===');
+                
+                // Copiar al clipboard si es posible
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(data).then(() => {
+                        alert('✅ Datos copiados al clipboard!\n\nAhora ve a Netlify, abre la consola y ejecuta:\nimportData(`pega aquí los datos`)');
+                    });
+                } else {
+                    alert('📋 Datos mostrados en consola.\n\nCopia los datos de la consola y ve a Netlify para importarlos.');
+                }
+            } else {
+                alert('❌ No hay datos para exportar');
+            }
+        }
+        
+        function importData(jsonString) {
+            try {
+                // Validar que sea JSON válido
+                JSON.parse(jsonString);
+                
+                // Guardar en localStorage
+                localStorage.setItem('ubits-roadmap-data', jsonString);
+                
+                // Recargar la página
+                location.reload();
+                
+                alert('✅ Datos importados correctamente!');
+            } catch (error) {
+                alert('❌ Error: Los datos no son válidos\n' + error.message);
+            }
+        }
+        
+        // Hacer funciones disponibles globalmente
+        window.exportData = exportData;
+        window.importData = importData;
+        
         function createNewEntregable() {
             const entregable = createEntregable('Nuevo entregable');
             // Crear el entregable abierto por defecto
