@@ -153,17 +153,31 @@
         .entregable.dragging {
             opacity: 0.7;
             transform: rotate(0.5deg);
-            z-index: 1000;
+            z-index: 500;
             cursor: grabbing;
         }
         
         /* Zona de drop para entregables */
         .entregables-drop-zone {
-            min-height: 100px;
             border: 2px dashed transparent;
             border-radius: 16px;
             transition: all 0.2s ease;
             padding: 8px;
+        }
+        
+        /* Solo aplicar min-height cuando no hay empty-state */
+        .entregables-drop-zone:not(:has(.empty-state)) {
+            min-height: 100px;
+        }
+        
+        /* Transición suave para evitar parpadeo */
+        .entregable, .grupo-tareas, .tarea, .tarea-directa {
+            opacity: 1;
+            transition: opacity 0.1s ease;
+        }
+        
+        .entregable.updating, .grupo-tareas.updating, .tarea.updating, .tarea-directa.updating {
+            opacity: 0.8;
         }
         
         .entregables-drop-zone.drag-over {
@@ -257,7 +271,7 @@
             opacity: 0.7;
             cursor: grabbing;
             transform: rotate(0.5deg);
-            z-index: 1000;
+            z-index: 500;
         }
         
         /* Zona de drop mixta para grupos y tareas */
@@ -297,15 +311,14 @@
         }
         
         .tarea-directa:hover {
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
         }
         
         .tarea-directa.dragging {
             opacity: 0.7;
             cursor: grabbing;
             transform: rotate(0.5deg);
-            z-index: 1000;
+            z-index: 500;
         }
         
         .grupo-header {
@@ -368,15 +381,14 @@
         }
         
         .tarea:hover {
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
         }
         
         .tarea.dragging {
             opacity: 0.7;
             cursor: grabbing;
             transform: rotate(0.5deg);
-            z-index: 1000;
+            z-index: 500;
         }
         
         .tarea.drag-over {
@@ -448,14 +460,12 @@
         
         /* Dropdown menu para opciones de tarea */
         .tarea-dropdown {
-            position: absolute;
-            top: 100%;
-            right: 0;
+            position: fixed;
             background: var(--ubits-bg-1);
             border: 1px solid var(--ubits-border-1);
             border-radius: 8px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-            z-index: 9999;
+            z-index: 999999;
             min-width: 160px;
             overflow: hidden;
             display: none;
@@ -464,6 +474,8 @@
         .tarea-dropdown.show {
             display: block;
         }
+        
+        /* Ya no necesitamos esto con position: fixed */
         
         .tarea-dropdown-item {
             display: flex;
@@ -526,7 +538,7 @@
             border: 1px solid var(--ubits-border-1);
             border-radius: 8px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-            z-index: 1000;
+            z-index: 500;
             min-width: 200px;
             margin-top: 8px;
         }
@@ -558,14 +570,23 @@
         /* Estado vacío */
         .empty-state {
             text-align: center;
-            padding: 40px 20px;
+            padding: 32px 20px;
             color: var(--ubits-fg-1-medium);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
         }
         
         .empty-state i {
             font-size: 48px;
             color: var(--ubits-border-1);
-            margin-bottom: 16px;
+        }
+        
+        .empty-state h3,
+        .empty-state p {
+            margin: 0;
         }
         
         /* Animaciones para accordions */
@@ -625,7 +646,7 @@
         /* ========== EDICIÓN INLINE SUTIL ========== */
         .inline-input {
             background: var(--ubits-bg-2);
-            border: 1px solid var(--ubits-accent-brand);
+            border: none;
             border-radius: 4px;
             padding: 4px 8px;
             font-family: inherit;
@@ -682,7 +703,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 2000;
+            z-index: 1000;
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
@@ -1002,17 +1023,33 @@
             const container = document.getElementById('entregables-container');
             const emptyState = document.getElementById('empty-state');
             
+            if (!container) {
+                console.error('No se encontró el contenedor entregables-container');
+                return;
+            }
+            
             if (roadmapData.entregables.length === 0) {
-                emptyState.style.display = 'block';
+                if (emptyState) {
+                    emptyState.style.display = 'block';
+                }
                 updateProgresoGeneral();
                 return;
             }
             
-            emptyState.style.display = 'none';
+            if (emptyState) {
+                emptyState.style.display = 'none';
+            }
             
-            // Limpiar entregables existentes
-            const existingEntregables = container.querySelectorAll('.entregable');
-            existingEntregables.forEach(el => el.remove());
+            // Guardar el empty-state antes de limpiar
+            const emptyStateHTML = emptyState ? emptyState.outerHTML : '';
+            
+            // Renderizado simple pero efectivo
+            container.innerHTML = '';
+            
+            // Restaurar el empty-state
+            if (emptyStateHTML) {
+                container.insertAdjacentHTML('afterbegin', emptyStateHTML);
+            }
             
             // Renderizar cada entregable
             roadmapData.entregables.forEach(entregable => {
@@ -1022,10 +1059,54 @@
             
             updateProgresoGeneral();
             
-            // Inicializar drag & drop después del renderizado
-            setTimeout(() => {
+            // Mover todos los dropdowns al contenedor global para evitar overflow issues
+            moveDropdownsToGlobalContainer();
+            
+            // Inicializar drag & drop de forma inmediata
+            requestAnimationFrame(() => {
                 initializeDragAndDrop();
-            }, 100);
+            });
+        }
+        
+        
+        function moveDropdownsToGlobalContainer() {
+            const globalContainer = document.getElementById('dropdowns-container');
+            
+            if (!globalContainer) {
+                console.error('No se encontró el contenedor dropdowns-container');
+                return;
+            }
+            
+            const allDropdowns = document.querySelectorAll('.tarea-dropdown');
+            
+            allDropdowns.forEach(dropdown => {
+                if (dropdown.parentNode !== globalContainer) {
+                    globalContainer.appendChild(dropdown);
+                }
+            });
+            
+            // Limpiar dropdowns huérfanos (de tareas que ya no existen)
+            cleanupOrphanedDropdowns();
+        }
+        
+        function cleanupOrphanedDropdowns() {
+            const globalContainer = document.getElementById('dropdowns-container');
+            
+            if (!globalContainer) {
+                return; // Salir silenciosamente si no existe el contenedor
+            }
+            
+            const allDropdowns = globalContainer.querySelectorAll('.tarea-dropdown');
+            
+            allDropdowns.forEach(dropdown => {
+                const dropdownId = dropdown.id; // formato: "dropdown-123"
+                const tareaId = dropdownId.replace('dropdown-', '');
+                const tareaExists = findTareaById(parseInt(tareaId));
+                
+                if (!tareaExists) {
+                    dropdown.remove();
+                }
+            });
         }
         
         function createEntregableElement(entregable) {
@@ -1111,7 +1192,7 @@
                         <button class="ubits-button ubits-button--secondary ubits-button--sm tarea-link-btn ${tarea.link ? 'has-link' : ''}" onclick="openTareaLink('${tarea.link || ''}')" title="Abrir link">
                             <i class="far fa-link"></i>
                         </button>
-                        <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" onclick="toggleTareaOptions(${tarea.id})" title="Opciones">
+                        <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" onclick="toggleTareaOptions(${tarea.id}, this)" title="Opciones">
                             <i class="far fa-ellipsis-vertical"></i>
                         </button>
                         <div class="tarea-dropdown" id="dropdown-${tarea.id}">
@@ -1182,7 +1263,7 @@
                         <button class="ubits-button ubits-button--secondary ubits-button--sm tarea-link-btn ${tarea.link ? 'has-link' : ''}" onclick="openTareaLink('${tarea.link || ''}')" title="Abrir link">
                             <i class="far fa-link"></i>
                         </button>
-                        <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" onclick="toggleTareaOptions(${tarea.id})" title="Opciones">
+                        <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" onclick="toggleTareaOptions(${tarea.id}, this)" title="Opciones">
                             <i class="far fa-ellipsis-vertical"></i>
                         </button>
                         <div class="tarea-dropdown" id="dropdown-${tarea.id}">
@@ -1979,6 +2060,12 @@
         function deleteTarea(tareaId) {
             if (!confirm('¿Estás seguro de eliminar esta tarea?')) return;
             
+            // Cerrar el dropdown de la tarea que se va a eliminar
+            const dropdown = document.getElementById(`dropdown-${tareaId}`);
+            if (dropdown) {
+                dropdown.classList.remove('show');
+            }
+            
             const tarea = findTareaById(tareaId);
             if (!tarea) return;
             
@@ -2003,7 +2090,7 @@
         let isEditingLink = false;
         
         // Función para alternar el dropdown de opciones de tarea
-        function toggleTareaOptions(tareaId) {
+        function toggleTareaOptions(tareaId, buttonElement) {
             // Cerrar todos los dropdowns abiertos
             document.querySelectorAll('.tarea-dropdown.show').forEach(dropdown => {
                 dropdown.classList.remove('show');
@@ -2011,19 +2098,42 @@
             
             // Abrir el dropdown actual
             const dropdown = document.getElementById(`dropdown-${tareaId}`);
-            if (dropdown) {
-                dropdown.classList.add('show');
-            }
             
-            // Cerrar dropdown al hacer click fuera
-            setTimeout(() => {
-                document.addEventListener('click', function closeDropdown(e) {
-                    if (!e.target.closest('.tarea-dropdown') && !e.target.closest(`[onclick="toggleTareaOptions(${tareaId})"]`)) {
-                        dropdown.classList.remove('show');
-                        document.removeEventListener('click', closeDropdown);
-                    }
-                });
-            }, 0);
+            if (dropdown && buttonElement) {
+                // Posicionar el dropdown basado en la posición del botón
+                const rect = buttonElement.getBoundingClientRect();
+                const dropdownWidth = 160;
+                
+                // Calcular posición óptima
+                let top = rect.bottom + 5;
+                let left = rect.right - dropdownWidth;
+                
+                // Ajustar si se sale de la pantalla por la derecha
+                if (left < 10) {
+                    left = rect.left;
+                }
+                
+                // Ajustar si se sale de la pantalla por abajo
+                const viewportHeight = window.innerHeight;
+                const dropdownHeight = 120; // Estimado
+                if (top + dropdownHeight > viewportHeight - 20) {
+                    top = rect.top - dropdownHeight - 5;
+                }
+                
+                dropdown.style.top = `${top}px`;
+                dropdown.style.left = `${left}px`;
+                dropdown.classList.add('show');
+                
+                // Cerrar dropdown al hacer click fuera
+                setTimeout(() => {
+                    document.addEventListener('click', function closeDropdown(e) {
+                        if (!e.target.closest('.tarea-dropdown') && !e.target.closest(`[onclick*="toggleTareaOptions"]`)) {
+                            dropdown.classList.remove('show');
+                            document.removeEventListener('click', closeDropdown);
+                        }
+                    });
+                }, 0);
+            }
         }
         
         // Función para abrir link de tarea
@@ -2279,6 +2389,9 @@
         window.closeLinkModal = closeLinkModal;
         window.saveTareaLink = saveTareaLink;
     </script>
+    
+    <!-- Contenedor global para dropdowns -->
+    <div id="dropdowns-container"></div>
     
     <!-- Modal para links de tareas -->
     <div class="modal-overlay" id="linkModal">
