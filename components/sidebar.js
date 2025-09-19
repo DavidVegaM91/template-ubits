@@ -45,13 +45,13 @@ function loadSidebar(activeButton = null) {
                     <button class="nav-button" data-section="aprendizaje" data-tooltip="Aprendizaje" onclick="window.location.href='home-learn.html'" style="cursor: pointer;">
                         <i class="far fa-graduation-cap"></i>
                     </button>
-                    <button class="nav-button" data-section="diagnóstico" data-tooltip="Diagnóstico">
+                    <button class="nav-button" data-section="diagnóstico" data-tooltip="Diagnóstico" onclick="window.location.href='diagnostico.html'" style="cursor: pointer;">
                         <i class="far fa-chart-mixed"></i>
                     </button>
-                    <button class="nav-button" data-section="desempeño" data-tooltip="Desempeño">
+                    <button class="nav-button" data-section="desempeño" data-tooltip="Desempeño" onclick="window.location.href='evaluaciones-360.html'" style="cursor: pointer;">
                         <i class="far fa-bars-progress"></i>
                     </button>
-                    <button class="nav-button" data-section="encuestas" data-tooltip="Encuestas">
+                    <button class="nav-button" data-section="encuestas" data-tooltip="Encuestas" onclick="window.location.href='encuestas.html'" style="cursor: pointer;">
                         <i class="far fa-clipboard"></i>
                     </button>
                     <button class="nav-button" data-section="reclutamiento" data-tooltip="Reclutamiento">

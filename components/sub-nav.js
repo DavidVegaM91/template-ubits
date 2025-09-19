@@ -30,14 +30,14 @@ const TOP_NAV_VARIANTS = {
         tabs: [
             { id: 'home', label: 'Inicio', icon: 'far fa-home', url: 'home-learn.html' },
             { id: 'catalog', label: 'Catálogo', icon: 'far fa-book', url: 'catalogo.html' },
-            { id: 'corporate', label: 'U. Corporativa', icon: 'far fa-building-columns', url: 'universidad-corporativa.html' },
+            { id: 'corporate', label: 'U. Corporativa', icon: 'far fa-building-columns', url: 'u-corporativa.html' },
             { id: 'study-zone', label: 'Zona de estudio', icon: 'far fa-books', url: 'zona-estudio.html' }
         ]
     },
     desempeno: {
         name: 'Desempeño',
         tabs: [
-            { id: 'evaluations', label: 'Evaluaciones 360', icon: 'far fa-chart-pie', url: 'evaluaciones.html' },
+            { id: 'evaluations', label: 'Evaluaciones 360', icon: 'far fa-chart-pie', url: 'evaluaciones-360.html' },
             { id: 'objectives', label: 'Objetivos', icon: 'far fa-bullseye', url: 'objetivos.html' },
             { id: 'metrics', label: 'Métricas', icon: 'far fa-chart-line', url: 'metricas.html' },
             { id: 'reports', label: 'Reportes', icon: 'far fa-file-chart-line', url: 'reportes.html' }

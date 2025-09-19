@@ -10,7 +10,7 @@ const FLOATING_MENU_SECTIONS = [
         subitems: [
             { id: 'inicio', title: 'Inicio', icon: 'far fa-home', url: 'home-learn.html' },
             { id: 'catalogo', title: 'Catálogo', icon: 'far fa-book', url: 'catalogo.html' },
-            { id: 'corporativa', title: 'U. Corporativa', icon: 'far fa-building-columns', url: 'universidad-corporativa.html' },
+            { id: 'corporativa', title: 'U. Corporativa', icon: 'far fa-building-columns', url: 'u-corporativa.html' },
             { id: 'zona-estudio', title: 'Zona de estudio', icon: 'far fa-books', url: 'zona-estudio.html' }
         ]
     },
@@ -18,18 +18,19 @@ const FLOATING_MENU_SECTIONS = [
         id: 'diagnostico',
         title: 'Diagnóstico',
         icon: 'far fa-chart-mixed',
-        subitems: [
-            { id: 'evaluaciones', title: 'Evaluaciones 360', icon: 'far fa-chart-pie', url: 'evaluaciones.html' },
-            { id: 'objetivos', title: 'Objetivos', icon: 'far fa-bullseye', url: 'objetivos.html' }
-        ]
+        url: 'diagnostico.html',
+        isLink: true,
+        clickable: true
     },
     {
         id: 'desempeno',
         title: 'Desempeño',
         icon: 'far fa-bars-progress',
         subitems: [
+            { id: 'evaluaciones-360', title: 'Evaluaciones 360', icon: 'far fa-chart-pie', url: 'evaluaciones-360.html' },
+            { id: 'objetivos', title: 'Objetivos', icon: 'far fa-bullseye', url: 'objetivos.html' },
             { id: 'metricas', title: 'Métricas', icon: 'far fa-chart-line', url: 'metricas.html' },
-            { id: 'reportes', title: 'Reportes', icon: 'far fa-file-chart', url: 'reportes.html' }
+            { id: 'reportes', title: 'Reportes', icon: 'far fa-file-chart-line', url: 'reportes.html' }
         ]
     },
             {
@@ -234,11 +235,12 @@ function setActiveItemByCurrentPage() {
     // Mapear páginas a IDs de elementos
     const pageToElementMap = {
         'ubits-ai.html': 'ubits-ai',
+        'diagnostico.html': 'diagnostico',
         'home-learn.html': 'inicio',
         'catalogo.html': 'catalogo',
-        'universidad-corporativa.html': 'corporativa',
+        'u-corporativa.html': 'corporativa',
         'zona-estudio.html': 'zona-estudio',
-        'evaluaciones.html': 'evaluaciones',
+        'evaluaciones-360.html': 'evaluaciones-360',
         'objetivos.html': 'objetivos',
         'metricas.html': 'metricas',
         'reportes.html': 'reportes',

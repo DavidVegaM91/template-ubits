@@ -10,16 +10,12 @@
 
 ---
 
-## 📈 **Backlog del proyecto**: 16/44 (36%)
-
-
-### **Páginas de Documentación**: 12/36 (33%)
+### **Páginas de Documentación**: (ENTREGABLE)
 - ✅ Introducción (faltan videos) - [`documentacion.html`]
 - ✅ Guía de Prompts (faltan prompts) - [`guia-prompts.html`]
-- ✅ Componentes (libreria) - [`componentes.html`]
+- Componentes (libreria) (GRUPO)
     - ✅ SubNav - [`subnav.html`]
     - ✅ Sidebar - [`sidebar.html`]
-        - [ ] falta el sidebar de admin
     - ✅ TabBar (y floating menu) - [`tab-bar.html`]
     - ✅ Button - [`button.html`]
     - ✅ Alert - [`alert.html`]
@@ -48,20 +44,26 @@
 - ✅ Colores (tokens light y dark) - [`colores.html`]
 - ✅ Iconos (fontawesome) - [`iconos.html`]
 - ✅ Tipografías - [`tipografia.html`]
-- [ ] Espaciados - [`espaciados.html`]
-- [ ] Border-radius - [`border-radius.html`]
+- [ ] Espaciados
+- [ ] Border-radius
 
-### **Páginas Plantilla**: 4/12 (33%)
+### **Páginas Plantilla**: (ENTREGABLE)
 - ✅  Plantilla principal - [`index.html`]
-- Learn - [`learn.html`]
-    - ✅ Learn - [`home-learn.html`]
-    - [ ] Catalogo - [`home-learn.html`]
-    - [ ] U.Corporativa - [`u-corporativa.html`]
-    - [ ] Zona de estudio - [`home-learn.html`]
-- [ ] Diagnóstico - [`diagnostico.html`]
-- [ ] Desempeño - [`desempeno.html`]
-- [ ] Encuestas - [`encuestas.html`]
-- [ ] Reclutamiento - [`reclutamiento.html`]
-- [ ] Tareas - [`tareas.html`]
+- Learn (GRUPO)
+    - ✅ Home Learn - [`home-learn.html`]
+    - [ ] Catalogo - [`catalogo.html`]
+    - [ ] U.Corporativa
+    - [ ] Zona de estudio
+- [ ] Diagnóstico
+- [ ] Desempeño (GRUPO)
+    - [ ] Evaluaciones 360
+    - [ ] Objetivos
+    - [ ] Métricas
+    - [ ] Reportes
+- [ ] Encuestas
+- [ ] Reclutamiento
+- [ ] Tareas (GRUPO)
+    - [ ] Planes
+    - [ ] Proyectos
 - ✅  UBITS AI - [`ubits-ai.html`]
 - ✅  Copia de plantilla (por si editan la index esta es la copia de seguridad) - [`plantilla-ubits.html`]
