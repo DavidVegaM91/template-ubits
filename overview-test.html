@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Overview Test - UBITS Template</title>
+    
+    <!-- Estilos UBITS -->
+    <link rel="stylesheet" href="ubits-colors.css">
+    <link rel="stylesheet" href="ubits-typography.css">
+    <link rel="stylesheet" href="fontawesome-icons.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="components/button.css">
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 16px 12px;
+            background: var(--ubits-bg-2);
+            min-height: 100vh;
+            font-family: 'Noto Sans', sans-serif;
+        }
+        
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--ubits-bg-1);
+            border-radius: 8px;
+            padding: 32px;
+            text-align: center;
+        }
+        
+        .test-title {
+            color: var(--ubits-fg-1-high);
+            margin-bottom: 16px;
+        }
+        
+        .test-text {
+            color: var(--ubits-fg-1-medium);
+            margin-bottom: 24px;
+        }
+        
+        .test-button {
+            background: var(--ubits-feedback-bg-info);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1 class="ubits-heading-h1 test-title">🚀 Test de Overview</h1>
+        <p class="ubits-body-md-regular test-text">Si ves esto, significa que los archivos CSS se están cargando correctamente en Netlify.</p>
+        
+        <button class="test-button" onclick="testFunction()">
+            <i class="far fa-check"></i>
+            Probar JavaScript
+        </button>
+        
+        <div id="test-result" style="margin-top: 16px;"></div>
+        
+        <hr style="margin: 32px 0; border: 1px solid var(--ubits-border-1);">
+        
+        <h2 class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high);">Diagnóstico:</h2>
+        <div id="diagnostic" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); text-align: left;">
+            <p>✅ HTML cargado</p>
+            <p id="css-test">⏳ Probando CSS...</p>
+            <p id="js-test">⏳ Probando JavaScript...</p>
+            <p id="storage-test">⏳ Probando localStorage...</p>
+        </div>
+    </div>
+
+    <script>
+        // Probar JavaScript básico
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Overview Test - JavaScript cargado');
+            
+            // Probar CSS
+            const testElement = document.querySelector('.test-container');
+            const styles = window.getComputedStyle(testElement);
+            const bgColor = styles.backgroundColor;
+            
+            if (bgColor && bgColor !== 'rgba(0, 0, 0, 0)') {
+                document.getElementById('css-test').innerHTML = '✅ CSS funcionando';
+                document.getElementById('css-test').style.color = 'var(--ubits-feedback-fg-success)';
+            } else {
+                document.getElementById('css-test').innerHTML = '❌ CSS no funciona';
+                document.getElementById('css-test').style.color = 'var(--ubits-feedback-fg-error)';
+            }
+            
+            // Probar JavaScript
+            document.getElementById('js-test').innerHTML = '✅ JavaScript funcionando';
+            document.getElementById('js-test').style.color = 'var(--ubits-feedback-fg-success)';
+            
+            // Probar localStorage
+            try {
+                localStorage.setItem('test', 'ok');
+                const test = localStorage.getItem('test');
+                localStorage.removeItem('test');
+                
+                if (test === 'ok') {
+                    document.getElementById('storage-test').innerHTML = '✅ localStorage funcionando';
+                    document.getElementById('storage-test').style.color = 'var(--ubits-feedback-fg-success)';
+                } else {
+                    throw new Error('localStorage no funciona');
+                }
+            } catch (error) {
+                document.getElementById('storage-test').innerHTML = '❌ localStorage no funciona: ' + error.message;
+                document.getElementById('storage-test').style.color = 'var(--ubits-feedback-fg-error)';
+            }
+        });
+        
+        function testFunction() {
+            const result = document.getElementById('test-result');
+            result.innerHTML = '<p style="color: var(--ubits-feedback-fg-success); margin: 0;">✅ ¡JavaScript funciona perfectamente!</p>';
+            
+            console.log('✅ Test de función ejecutado correctamente');
+        }
+    </script>
+</body>
+</html>
