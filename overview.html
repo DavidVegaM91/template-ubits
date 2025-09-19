@@ -326,6 +326,10 @@
             margin-bottom: 0; /* Eliminar margen cuando está colapsado */
         }
         
+        .grupo-tareas:not(.expanded) .grupo-bottom-actions {
+            display: none; /* Ocultar botón cuando está colapsado */
+        }
+        
         .grupo-tareas.expanded .tareas-list {
             max-height: 9999px;
             min-height: 60px;
@@ -1434,10 +1438,6 @@
                         <h4 class="grupo-title editable ubits-body-sm-bold" onclick="editTitle(event, ${grupo.id}, 'grupo')">${grupo.titulo}</h4>
                         <div class="grupo-actions">
                             <span style="font-size: 12px; color: var(--ubits-fg-1-medium);">${tareasCompletadas}/${grupo.tareas.length} (${progreso}%)</span>
-                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="createTarea('Nueva tarea', ${grupo.id}, 'grupo'); renderRoadmap(); autoSave();">
-                                <i class="far fa-plus"></i>
-                                <span>Crear tarea</span>
-                            </button>
                             <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" onclick="deleteGrupo(${grupo.id})" title="Eliminar grupo">
                                 <i class="far fa-trash"></i>
                             </button>
@@ -1446,6 +1446,12 @@
                     </div>
                     <div class="tareas-list drop-zone" data-container-id="${grupo.id}" data-container-type="grupo">
                         ${grupo.tareas.map(tarea => createTareaHTML(tarea)).join('')}
+                    </div>
+                    <div class="grupo-bottom-actions" style="margin-top: 8px; text-align: center;">
+                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="createTarea('Nueva tarea', ${grupo.id}, 'grupo'); renderRoadmap(); autoSave();">
+                            <i class="far fa-plus"></i>
+                            <span>Crear tarea</span>
+                        </button>
                     </div>
                 </div>
             `;
