@@ -29,7 +29,7 @@
         .section-card {
             background: var(--ubits-bg-1);
             border-radius: 8px;
-            padding: 32px;
+            padding: 20px;
             margin-bottom: 24px;
             box-shadow: 0 4px 16px rgba(0,0,0,0.08);
             border: 1px solid var(--ubits-border-1);
@@ -154,6 +154,19 @@
             transition: all 0.2s ease;
         }
         
+        /* Indicador visual para entregables que se pueden mover */
+        .entregable:not(.expanded) {
+            cursor: grab;
+        }
+        
+        .entregable:not(.expanded):active {
+            cursor: grabbing;
+        }
+        
+        .entregable.expanded {
+            cursor: default;
+        }
+        
         .entregable:hover {
             box-shadow: 0 4px 16px rgba(0,0,0,0.08);
         }
@@ -170,7 +183,7 @@
             border: 2px dashed transparent;
             border-radius: 16px;
             transition: all 0.2s ease;
-            padding: 8px;
+            padding: 0;
         }
         
         /* Solo aplicar min-height cuando no hay empty-state */
@@ -1321,7 +1334,8 @@
             const div = document.createElement('div');
             div.className = `entregable ${entregable.expanded ? 'expanded' : ''}`;
             div.dataset.id = entregable.id;
-            div.draggable = true;
+            // Solo permitir arrastrar cuando está comprimido (no expandido)
+            div.draggable = !entregable.expanded;
             
             const totalTareas = entregable.getTotalTareas();
             const tareasCompletadas = entregable.getTareasCompletadas();
@@ -1910,7 +1924,8 @@
             
             return draggableElements.reduce((closest, child) => {
                 const box = child.getBoundingClientRect();
-                const offset = y - box.top - box.height / 2;
+                // Usar 75% del alto del elemento para una detección más intuitiva
+                const offset = y - box.top - box.height * 0.75;
                 
                 if (offset < 0 && offset > closest.offset) {
                     return { offset: offset, element: child };
