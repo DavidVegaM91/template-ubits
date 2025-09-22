@@ -1,4 +1,4 @@
-# 🎯 Template UBITS - Crea interfaces en tiempo récord
+# 🎯 UBITS Playground - Crea interfaces en tiempo récord
 
 > **Plantilla para crear interfaces UBITS con Cursor AI en tiempo récord**
 
@@ -42,7 +42,7 @@ Una **plantilla lista para usar** que permite a **Product Managers**, **Diseñad
 ## 📁 Estructura del proyecto
 
 ```
-Template UBITS/
+UBITS Playground/
 ├── 📄 index.html              # Página principal (edita aquí tu proyecto)
 ├── 📄 plantilla-ubits.html    # Plantilla base para crear nuevas páginas
 ├── 📄 componentes.html        # Documentación de componentes

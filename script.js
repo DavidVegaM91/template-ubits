@@ -1,4 +1,4 @@
-// Template UBITS - Dashboard JavaScript
+// UBITS Playground - Dashboard JavaScript
 
 // Función global para alternar modo oscuro
 function toggleDarkMode() {
@@ -429,7 +429,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Inicialización
     function init() {
-        console.log('🚀 Inicializando Template UBITS...');
+        console.log('🚀 Inicializando UBITS Playground...');
         
         adjustSidebarHeight();
         adjustMainContentHeight();
@@ -769,7 +769,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Función para mostrar información del template
 function showTemplateInfo() {
     console.log(`
-    🚀 TEMPLATE UBITS - DASHBOARD
+    🚀 UBITS PLAYGROUND - DASHBOARD
     
     📁 Archivos incluidos:
     - index.html (estructura HTML)

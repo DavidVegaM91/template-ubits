@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Template UBITS - Guía de Prompts</title>
+    <title>UBITS Playground - Guía de Prompts</title>
     
     <!-- Estilos locales -->
     <link rel="stylesheet" href="ubits-colors.css">
@@ -254,11 +254,11 @@
                         </button>
                     </div>
                     <p class="prompt-description ubits-body-md-regular">
-                        Usa este prompt para obtener el template UBITS completo en tu computadora por primera vez.
+                        Usa este prompt para obtener el UBITS Playground completo en tu computadora por primera vez.
                     </p>
                     <div class="prompt-code-container">
                         <div class="prompt-code" id="prompt-clone">
-Quiero trabajar contigo usando el UBITS Template que está en este repositorio: 
+Quiero trabajar contigo usando el UBITS Playground que está en este repositorio: 
 https://github.com/DavidVegaM91/template-ubits.git 
 
 1. Importa el repositorio. 
@@ -286,26 +286,27 @@ https://github.com/DavidVegaM91/template-ubits.git
                     
                     <div class="prompt-code-container">
                         <div class="prompt-code" id="prompt-homepage">
-Necesito editar la página principal de mi proyecto UBITS. Por favor:
+Necesito editar index.html. Esta es una tarea grande que necesito que dividas en pasos y cumplas cada uno sin omitir nada:
 
-1. **CONFIGURACIÓN SIDEBAR, SUB-NAV Y TAB-BAR:**
-   - Edita `index.html`
-   - Quiero que el sidebar tenga activa la sección de: [opciones: aprendizaje, diagnóstico, desempeño, encuestas, reclutamiento, tareas, ubits-ai, ninguno]
-   - Quiero que el sub-nav sea la variante de: [opciones: template, aprendizaje, desempeno, encuestas, tareas]
-   - Para responsive, quiero que el tab-bar tenga activo el item de: [opciones: modulos, perfil]
+1. **CONFIGURACIÓN SIDEBAR:**
+   - Quiero que el sidebar tenga ACTIVO el nav-button de: [opciones: aprendizaje, diagnóstico, desempeño, encuestas, reclutamiento, tareas, ubits-ai, ninguno]
 
-2. **CONTENIDO PRINCIPAL - ESTRUCTURA MODULAR:**
-   - Usa la estructura modular de secciones: section-single (1 columna), section-dual (2 columnas), section-triple (3 columnas), section-quad (4 columnas)
-   - Ejemplo: "Añade una section-dual con widget-bienvenida y widget-estadisticas, luego una section-single con widget-contenido-principal"
-   - Cada widget debe tener un nombre descriptivo y la cantidad de <br> que necesites para la altura
-   - Contenido que quiero: [describe qué secciones y widgets necesitas]
+2. **CONFIGURACIÓN SUB-NAV Y TAB-BAR:**
+   - Quiero que el sub-nav sea la variante oficial del componente de: [opciones: template, aprendizaje, desempeno, encuestas, tareas]
+   - En responsive, quiero que el tab-bar tenga activo el item de: [opciones: modulos, perfil]
+
+3. **CONTENIDO PRINCIPAL:**
+   - Edita la sección de Contenido principal y reemplázala con: [inserta tu idea aquí lo más completa posible].
+   - Asegúrate de cumplir con todos los requerimientos
+   - Contenido que quiero: [describe qué secciones y widgets necesitas].
+   - Usa la estructura modular de secciones según como lo requieras: section-single (1 columna), section-dual (2 columnas), section-triple (3 columnas), section-quad (4 columnas)
+   - Cada widget debe tener un nombre descriptivo
 
 4. **VERIFICACIÓN:**
    - Confirma que todos los tokens ubits-colors estén aplicados correctamente y no haber usado colores hardcodeados
    - Si se usaron botones confirma que usaste los botones de ubits
-   - **VALIDA que TODAS las clases de tipografía sean de la lista oficial de UBITS (ubits-heading-h2, ubits-heading-h2, ubits-body-md-regular, etc.) - NUNCA inventes clases como ubits-h1, ubits-h2, ubits-title, ubits-text, ubits-paragraph**
-   - **ANTES de usar cualquier clase tipográfica, VERIFICA que esté en la lista oficial del UBITS-TYPOGRAPHY-GUIDE.md**
-   - Procura usa componentes UBITS existentes o crea nuevos solo si lo necesitas
+   - **VALIDA que TODAS las clases de tipografía que usaste hacen parte de la lista oficial de UBITS-TYPOGRAPHY-GUIDE.md** NUNCA inventes clases como ubits-h1, ubits-h2, ubits-title, ubits-text, ubits-paragraph**
+   - Procura usar componentes UBITS existentes o crea nuevos solo si lo necesitas
    - Asegúrate de que la interfaz sea responsive y funcione en modo claro/oscuro
                         </div>
                     </div>
@@ -329,22 +330,31 @@ Necesito editar la página principal de mi proyecto UBITS. Por favor:
                     
                     <div class="prompt-code-container">
                         <div class="prompt-code" id="prompt-newpage">
-Necesito crear una nueva página UBITS. Por favor:
+Necesito crear una nueva página. Esta es una tarea grande que necesito que dividas en pasos y cumplas cada uno sin omitir nada:
 
-1. Duplica plantilla-ubits.html
-2. A esta copia ponle el nombre: [nombre-de-mi-pagina].html
-3. **ESTRUCTURA MODULAR:** Personaliza el content-sections usando la estructura modular:
-   - section-single (1 columna), section-dual (2 columnas), section-triple (3 columnas), section-quad (4 columnas)
-   - Cada widget debe tener un nombre descriptivo (ej: widget-dashboard, widget-estadisticas)
-   - Ajusta la altura con <br> según necesites
-   - Contenido que quiero: [describe qué secciones y widgets necesitas]
-4. Quiero que el sidebar tenga activa la sección de: [opciones: aprendizaje, diagnóstico, desempeño, encuestas, reclutamiento, tareas, ubits-ai, ninguno]
-5. [Especifica qué variante del TopNav usar: template, aprendizaje, desempeno, encuestas, tareas, o crear una nueva]
-6. [Para responsive, indica qué tab del tab-bar quieres activo: modulos, perfil, modo-oscuro]
-7. Asegúrate de que mantenga todos los tokens UBITS y la estructura correcta
-8. **VALIDA que TODAS las clases de tipografía sean de la lista oficial de UBITS (ubits-heading-h2, ubits-heading-h2, ubits-body-md-regular, etc.) - NUNCA inventes clases como ubits-h1, ubits-h2, ubits-title, ubits-text, ubits-paragraph**
-9. **ANTES de usar cualquier clase tipográfica, VERIFICA que esté en la lista oficial del UBITS-TYPOGRAPHY-GUIDE.md**
-10. Verifica que sea responsive y funcione en modo claro y oscuro
+1. **DUPLICAR PÁGINA DE PLANTILLA**
+   - Duplica plantilla-ubits.html y ponle el nombre [nombre de la página].html
+
+2. **CONFIGURACIÓN SIDEBAR:**
+   - Quiero que el sidebar tenga ACTIVO el nav-button de: [opciones: aprendizaje, diagnóstico, desempeño, encuestas, reclutamiento, tareas, ubits-ai, ninguno]
+
+3. **CONFIGURACIÓN SUB-NAV Y TAB-BAR:**
+   - Quiero que el sub-nav sea la variante oficial del componente de: [opciones: template, aprendizaje, desempeno, encuestas, tareas]
+   - En responsive, quiero que el tab-bar tenga activo el item de: [opciones: modulos, perfil]
+
+4. **CONTENIDO PRINCIPAL:**
+   - Edita la sección de Contenido principal y reemplázala con: [inserta tu idea aquí lo más completa posible].
+   - Asegúrate de cumplir con todos los requerimientos
+   - Contenido que quiero: [describe qué secciones y widgets necesitas].
+   - Usa la estructura modular de secciones según como lo requieras: section-single (1 columna), section-dual (2 columnas), section-triple (3 columnas), section-quad (4 columnas)
+   - Cada widget debe tener un nombre descriptivo
+
+5. **VERIFICACIÓN:**
+   - Confirma que todos los tokens ubits-colors estén aplicados correctamente y no haber usado colores hardcodeados
+   - Si se usaron botones confirma que usaste los botones de ubits
+   - **VALIDA que TODAS las clases de tipografía que usaste hacen parte de la lista oficial de UBITS-TYPOGRAPHY-GUIDE.md** NUNCA inventes clases como ubits-h1, ubits-h2, ubits-title, ubits-text, ubits-paragraph**
+   - Procura usar componentes UBITS existentes o crea nuevos solo si lo necesitas
+   - Asegúrate de que la interfaz sea responsive y funcione en modo claro/oscuro
                         </div>
                     </div>
                 </div>
@@ -373,59 +383,44 @@ Necesito actualizar mi proyecto UBITS con las últimas versiones del repositorio
 4. Restaura mis archivos personalizados después de la actualización
 5. Verifica que todo funcione correctamente
 
-Mi objetivo es tener las últimas mejoras del template UBITS manteniendo mis personalizaciones.
+Mi objetivo es tener las últimas mejoras del UBITS Playground manteniendo mis personalizaciones.
                         </div>
                     </div>
                 </div>
 
-                <!-- Prompt 5: Personalizar páginas con estructura modular -->
-                <div class="prompt-card" data-prompt="modular">
+                <!-- Prompt 5: Editar widget específico -->
+                <div class="prompt-card" data-prompt="widget">
                     <div class="prompt-header">
-                        <h3 class="ubits-body-md-bold">5. Personalizar páginas con estructura modular</h3>
-                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('modular')">
+                        <h3 class="ubits-body-md-bold">5. Editar widget específico</h3>
+                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('widget')">
                             <i class="far fa-copy"></i>
                             <span>Copiar</span>
                         </button>
                     </div>
                     <p class="prompt-description ubits-body-md-regular">
-                        Usa este prompt para personalizar cualquier página existente usando el sistema modular de secciones y widgets.
+                        Usa este prompt para personalizar el contenido de un widget específico en cualquier página.
                     </p>
                     
                     <!-- Warning Alert -->
-                    <div id="warning-alert-3" style="margin-bottom: 16px;"></div>
+                    <div id="warning-alert-5"></div>
                     
                     <div class="prompt-code-container">
-                        <div class="prompt-code" id="prompt-modular">
-Quiero personalizar la página [NOMBRE_PAGINA].html usando la estructura modular. Por favor:
+                        <div class="prompt-code" id="prompt-widget">
+Necesito editar un widget específico. Esta es una tarea grande que necesito que dividas en pasos y cumplas cada uno sin omitir nada:
 
-**CAMBIOS QUE QUIERO:**
-[Escoge las opciones que necesites:]
+1. **IDENTIFICAR WIDGET:**
+   - Página: [nombre-pagina].html
+   - Widget a editar: [nombre-del-widget]
 
-**AÑADIR SECCIONES:**
-- "Añade una section-dual con widget-[nombre1] y widget-[nombre2] después de [sección_existente]"
-- "Añade una section-single llamada widget-[nombre] con [X] br de altura"
-- "Añade una section-triple con widget-[nombre1], widget-[nombre2] y widget-[nombre3] al final"
+2. **CONTENIDO NUEVO:**
+   - Reemplaza el contenido del widget con: [describe exactamente qué quieres que contenga el widget]
+   - Mantén la estructura modular existente
 
-**MODIFICAR SECCIONES EXISTENTES:**
-- "Cambia el nombre del widget-[nombre_actual] a '[nuevo_nombre]'"
-- "Añade [X] br al widget-[nombre] para hacerlo más alto"
-- "Quita [X] br al widget-[nombre] para hacerlo más bajo"
-
-**REEMPLAZAR SECCIONES:**
-- "Reemplaza la section-single de '[nombre]' por una section-dual con widget-[nombre1] y widget-[nombre2]"
-- "Cambia la section-dual de '[nombre1]' y '[nombre2]' por una section-triple con widget-[nombre1], widget-[nombre2] y widget-[nombre3]"
-
-**ELIMINAR SECCIONES:**
-- "Elimina la sección de '[nombre_sección]'"
-- "Elimina todas las secciones que están debajo de '[sección_referencia]'"
-
-**REORGANIZAR:**
-- "Mueve la sección '[nombre]' arriba de '[otra_sección]'"
-- "Intercambia el orden de '[sección1]' y '[sección2]'"
-
-**VERIFICACIÓN:**
-- Mantén todos los tokens UBITS y la navegación correcta
-- Verifica que sea responsive y funcione en modo claro/oscuro
+3. **VERIFICACIÓN:**
+   - Confirma que todos los tokens ubits-colors estén aplicados correctamente
+   - Si usas botones, confirma que usaste los botones de ubits
+   - **VALIDA que TODAS las clases de tipografía que usaste hacen parte de la lista oficial de UBITS-TYPOGRAPHY-GUIDE.md**
+   - Asegúrate de que la interfaz sea responsive y funcione en modo claro/oscuro
                         </div>
                     </div>
                 </div>
@@ -458,9 +453,10 @@ Quiero personalizar la página [NOMBRE_PAGINA].html usando la estructura modular
             });
             
             showAlert('warning', 'Importante: Antes de enviar este prompt a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
-                containerId: 'warning-alert-3',
+                containerId: 'warning-alert-5',
                 noClose: true
             });
+            
         });
 
         // Función para copiar prompts
