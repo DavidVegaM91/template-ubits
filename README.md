@@ -41,30 +41,87 @@ Una **plantilla lista para usar** que permite a **Product Managers**, **Diseñad
 
 ## 📁 Estructura del proyecto
 
+### **🏠 Páginas principales:**
 ```
 UBITS Playground/
-├── 📄 index.html              # Página principal (edita aquí tu proyecto)
-├── 📄 plantilla-ubits.html    # Plantilla base para crear nuevas páginas
-├── 📄 componentes.html        # Documentación de componentes
+├── 📄 index.html              # Página principal (se deploya como homepage - 1 sección)
+├── 📄 plantilla-ubits.html    # Template base para crear nuevas páginas (1 sección)
+```
+
+### **📚 Páginas funcionales (estructura modular):**
+
+#### **🎓 Módulo de Aprendizaje:**
+- **`home-learn.html`** - Plantilla de Dashboard de aprendizaje (9 secciones)
+- **`catalogo.html`** - Plantilla de Catálogo de contenidos (2 secciones)
+- **`u-corporativa.html`** - Plantilla de Universidad corporativa (3 secciones)
+- **`zona-estudio.html`** - Plantilla de Zona de estudio (2 secciones con tabs)
+
+#### **📊 Módulo de Diagnóstico:**
+- **`diagnostico.html`** - Plantilla de Página de diagnóstico (1 sección)
+
+#### **📈 Módulo de Desempeño:**
+- **`evaluaciones-360.html`** - Plantilla de Evaluaciones 360 (1 sección)
+- **`objetivos.html`** - Plantilla de Objetivos (1 sección)
+- **`metricas.html`** - Plantilla de Métricas (1 sección)
+- **`reportes.html`** - Plantilla de Reportes (1 sección)
+
+#### **📋 Módulo de Encuestas:**
+- **`encuestas.html`** - Plantilla de Encuestas (1 sección)
+
+#### **👥 Módulo de Reclutamiento:**
+- **`reclutamiento.html`** - Reclutamiento (1 sección, sin SubNav)
+
+#### **📝 Módulo de Planes y Tareas:**
+- **`planes.html`** - Plantilla de Planes (1 sección)
+- **`tareas.html`** - Plantilla de Tareas (1 sección)
+
+#### **👤 Perfil:**
+- **`profile.html`** - Plantilla de Perfil/Portal del colaborador
+
+### **📚 Documentación y Herramientas:**
+```
+├── 📄 componentes.html        # Lista completa de componentes UBITS
+├── 📄 guia-prompts.html       # Prompts para personalización con Cursor AI
+├── 📄 validador-ubits.html    # Validador automático de calidad UBITS
+├── 📄 iconos.html             # Galería de iconos FontAwesome
+├── 📄 documentacion.html      # Sistema de documentación
 ├── 📄 button.html             # Documentación del componente Button
 ├── 📄 alert.html              # Documentación del componente Alert
 ├── 📄 card-content.html       # Documentación del componente Card Content
 ├── 📄 sidebar.html            # Documentación del componente Sidebar
 ├── 📄 subnav.html             # Documentación del componente SubNav
 ├── 📄 tab-bar.html            # Documentación del componente TabBar
+├── 📄 colores.html            # Guía de colores UBITS
+└── 📄 tipografia.html         # Guía de tipografía UBITS
+```
+
+### **🧩 Componentes del sistema:**
+```
 ├── 📁 components/             # Componentes reutilizables
 │   ├── sub-nav.css + sub-nav.js
 │   ├── sidebar.js + components-sidebar.css
 │   ├── tab-bar.css + tab-bar.js
+│   ├── floating-menu.css + floating-menu.js
+│   ├── profile-menu.css + profile-menu.js
 │   ├── alert.css + alert.js
-│   ├── card-content.css + card-content.js
-│   └── button.css
+│   ├── button.css
+│   └── card-content.css + card-content.js
 ├── 📁 docs/                   # Sistema de documentación
 │   ├── docs-sidebar.css + docs-sidebar.js
-├── 🎨 ubits-colors.css        # Tokens de color UBITS
-├── 🎨 ubits-typography.css    # Sistema de tipografía UBITS
-├── 🎨 styles.css              # Estilos globales
-└── 📚 Fonts/                  # Fuentes FontAwesome
+└── 📁 images/                 # Recursos visuales
+    ├── cards-learn/           # Imágenes para cards de aprendizaje
+    ├── Favicons/              # Logos de proveedores
+    └── empty-states/          # Estados vacíos
+```
+
+### **🎨 Archivos de diseño:**
+```
+├── 📄 ubits-colors.css        # Tokens de color UBITS oficiales
+├── 📄 ubits-typography.css    # Clases de tipografía UBITS oficiales
+├── 📄 fontawesome-icons.css   # Iconos FontAwesome
+├── 📄 styles.css              # Estilos globales del template
+├── 📄 profile.css             # Estilos específicos del perfil
+└── 📄 script.js               # JavaScript principal
 ```
 
 ## 🎯 Casos de uso reales
