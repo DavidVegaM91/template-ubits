@@ -10,7 +10,7 @@
     border-radius: 8px;
     height: calc(100vh - 80px - 16px);
     position: fixed;
-    left: 12px;
+    left: 24px;
     top: 80px;
     z-index: 1000;
     overflow-y: auto;
