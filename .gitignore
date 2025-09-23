@@ -35,6 +35,13 @@ yarn-error.log*
 node_modules/
 package-lock.json
 
+# 🔒 Instaladores y archivos binarios
+*.pkg
+*.dmg
+*.exe
+*.msi
+AWSCLIV2.pkg
+
 # Archivos de build
 dist/
 build/
