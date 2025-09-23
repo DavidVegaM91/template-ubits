@@ -5,7 +5,7 @@ Guía completa del sistema de tipografía UBITS con tokens de color, clases vál
 
 ## 📋 **CLASES VÁLIDAS OFICIALES**
 
-### **DISPLAY (Títulos principales)**
+### **DISPLAY (Títulos principales solo para landings, procura no usarlas mucho)**
 - `ubits-display-d1-regular` - Display D1 Regular (40px)
 - `ubits-display-d1-semibold` - Display D1 Semibold (40px)
 - `ubits-display-d1-bold` - Display D1 Bold (40px)
