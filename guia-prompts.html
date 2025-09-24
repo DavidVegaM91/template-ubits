@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UBITS Playground - Guía de Prompts</title>
-    
+
     <!-- Estilos locales -->
     <link rel="stylesheet" href="ubits-colors.css">
     <link rel="stylesheet" href="styles.css">
@@ -13,7 +13,8 @@
     <link rel="stylesheet" href="components/sub-nav.css">
     <link rel="stylesheet" href="components/alert.css">
     <link rel="stylesheet" href="components/button.css">
-    
+    <link rel="stylesheet" href="components/toast.css">
+
     <style>
         .prompt-card {
             background: var(--ubits-bg-1);
@@ -25,36 +26,36 @@
             cursor: pointer;
             position: relative;
         }
-        
+
         .prompt-card:hover {
             border-color: var(--ubits-border-2);
             transform: translateY(-2px);
         }
-        
+
         .prompt-card.copied {
             border-color: var(--ubits-accent-brand);
             background: var(--ubits-bg-active);
         }
-        
+
         .prompt-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 16px;
         }
-        
-        
+
+
         .prompt-icon {
             color: var(--ubits-accent-brand);
             font-size: 20px;
         }
-        
+
         .prompt-description {
             color: var(--ubits-fg-1-medium);
             margin-bottom: 16px;
             line-height: 1.5;
         }
-        
+
         .prompt-code-container {
             position: relative;
             background: var(--ubits-bg-2);
@@ -62,7 +63,7 @@
             border-radius: 8px;
             overflow: hidden;
         }
-        
+
         .prompt-code {
             background: transparent;
             border: none;
@@ -77,7 +78,7 @@
             overflow-x: auto;
             margin: 0;
         }
-        
+
         .copy-button {
             position: absolute;
             top: 12px;
@@ -97,23 +98,23 @@
             box-shadow: none;
             z-index: 10;
         }
-        
+
         .copy-button:hover {
             background: var(--ubits-bg-2);
             color: var(--ubits-fg-1-high);
         }
-        
+
         .copy-button.copied {
             background: var(--ubits-accent-brand);
             color: white;
             border-color: var(--ubits-accent-brand);
             outline: none;
         }
-        
+
         .copy-button:focus {
             outline: none;
         }
-        
+
         .step-number {
             background: var(--ubits-accent-brand);
             color: white;
@@ -128,45 +129,45 @@
             margin-right: 16px;
             flex-shrink: 0;
         }
-        
+
         .step-content {
             flex: 1;
         }
-        
+
         .step-item {
             margin-bottom: 8px;
         }
-        
+
         .step-title {
             color: var(--ubits-fg-1-high);
             margin-bottom: 0;
         }
-        
+
         .step-description {
             color: var(--ubits-fg-1-medium);
         }
-        
-        
+
+
         /* Dark mode */
         [data-theme="dark"] .prompt-card {
             background: var(--ubits-bg-1);
             border-color: var(--ubits-border-1);
         }
-        
+
         [data-theme="dark"] .prompt-card:hover {
             border-color: var(--ubits-border-2);
         }
-        
+
         [data-theme="dark"] .prompt-code {
             background: var(--ubits-bg-2);
             border-color: var(--ubits-border-1);
         }
-        
+
         [data-theme="dark"] .copy-button {
             background: var(--ubits-bg-1);
             border-color: var(--ubits-border-1);
         }
-        
+
         [data-theme="dark"] .copy-button:hover {
             background: var(--ubits-bg-2);
         }
@@ -175,12 +176,12 @@
 <body class="documentacion-page" data-theme="light">
     <div class="dashboard-container">
         <div class="tooltip" id="tooltip"></div>
-        
+
         <!-- Main Content -->
         <main class="main-content">
             <!-- Top Navigation -->
             <div id="top-nav-container"></div>
-            
+
             <!-- Content Area -->
             <div class="content-area" style="display: block; width: 100%;">
                 <!-- Hero Section -->
@@ -202,7 +203,7 @@
                         <i class="far fa-lightbulb" style="margin-right: 12px; color: var(--ubits-accent-brand);"></i>
                         Cómo usar esta guía
                     </h2>
-                    
+
                     <div class="step-item" style="display: flex;">
                         <div class="step-number">1</div>
                         <div class="step-content">
@@ -212,7 +213,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="step-item" style="display: flex;">
                         <div class="step-number">2</div>
                         <div class="step-content">
@@ -222,7 +223,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="step-item" style="display: flex;">
                         <div class="step-number">3</div>
                         <div class="step-content">
@@ -232,7 +233,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="step-item" style="display: flex;">
                         <div class="step-number">4</div>
                         <div class="step-content">
@@ -258,11 +259,11 @@
                     </p>
                     <div class="prompt-code-container">
                         <div class="prompt-code" id="prompt-clone">
-Quiero trabajar contigo usando el UBITS Playground que está en este repositorio: 
-https://github.com/DavidVegaM91/template-ubits.git 
+Quiero trabajar contigo usando el UBITS Playground que está en este repositorio:
+https://github.com/DavidVegaM91/template-ubits.git
 
-1. Importa el repositorio. 
-2. Lee los archivos README.md y .cursor/rules/cursor-rules.mdc para entender el contexto del proyecto.  
+1. Importa el repositorio.
+2. Lee los archivos README.md y .cursor/rules/cursor-rules.mdc para entender el contexto del proyecto.
 3. Confírmame que comprendiste la configuración y pregúntame qué página quiero editar o qué nuevo flujo quiero crear.
                         </div>
                     </div>
@@ -280,10 +281,10 @@ https://github.com/DavidVegaM91/template-ubits.git
                     <p class="prompt-description ubits-body-md-regular">
                         Usa este prompt para configurar la página principal de tu proyecto UBITS.
                     </p>
-                    
+
                     <!-- Warning Alert -->
                     <div id="warning-alert-1" style="margin-bottom: 16px;"></div>
-                    
+
                     <div class="prompt-code-container">
                         <div class="prompt-code" id="prompt-homepage">
 Necesito editar index.html. Esta es una tarea grande que necesito que dividas en pasos y cumplas cada uno sin omitir nada:
@@ -324,10 +325,10 @@ Necesito editar index.html. Esta es una tarea grande que necesito que dividas en
                     <p class="prompt-description ubits-body-md-regular">
                         Usa este prompt para crear una nueva página usando plantilla-ubits.html como base.
                     </p>
-                    
+
                     <!-- Warning Alert -->
                     <div id="warning-alert-2" style="margin-bottom: 16px;"></div>
-                    
+
                     <div class="prompt-code-container">
                         <div class="prompt-code" id="prompt-newpage">
 Necesito crear una nueva página. Esta es una tarea grande que necesito que dividas en pasos y cumplas cada uno sin omitir nada:
@@ -400,10 +401,10 @@ Mi objetivo es tener las últimas mejoras del UBITS Playground manteniendo mis p
                     <p class="prompt-description ubits-body-md-regular">
                         Usa este prompt para personalizar el contenido de un widget específico en cualquier página.
                     </p>
-                    
+
                     <!-- Warning Alert -->
-                    <div id="warning-alert-5"></div>
-                    
+                    <div id="warning-alert-5" style="margin-bottom: 16px;"></div>
+
                     <div class="prompt-code-container">
                         <div class="prompt-code" id="prompt-widget">
 Necesito editar un widget específico. Esta es una tarea grande que necesito que dividas en pasos y cumplas cada uno sin omitir nada:
@@ -429,41 +430,45 @@ Necesito editar un widget específico. Esta es una tarea grande que necesito que
         </main>
     </div>
 
+    <!-- Contenedor para Toast UBITS -->
+    <div id="ubits-toast-container"></div>
+
     <script src="components/sub-nav.js"></script>
     <script src="components/alert.js"></script>
+    <script src="components/toast.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Cargar top-nav con variante documentación
             loadSubNav('top-nav-container', 'documentacion');
-            
+
             // Cargar alerts usando el componente oficial
             showAlert('info', 'Importante: Estos prompts están diseñados para Cursor AI.', {
                 containerId: 'info-alert-container',
                 noClose: true
             });
-            
+
             showAlert('warning', 'Importante: Antes de enviar este prompt a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
                 containerId: 'warning-alert-1',
                 noClose: true
             });
-            
+
             showAlert('warning', 'Importante: Antes de enviar este prompt a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
                 containerId: 'warning-alert-2',
                 noClose: true
             });
-            
+
             showAlert('warning', 'Importante: Antes de enviar este prompt a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
                 containerId: 'warning-alert-5',
                 noClose: true
             });
-            
+
         });
 
         // Función para copiar prompts
         function copyPrompt(promptId) {
             const promptElement = document.getElementById(`prompt-${promptId}`);
             const promptText = promptElement.textContent;
-            
+
             // Copiar al portapapeles
             navigator.clipboard.writeText(promptText).then(function() {
                 // Mostrar feedback visual
@@ -471,71 +476,34 @@ Necesito editar un widget específico. Esta es una tarea grande que necesito que
                 const button = card.querySelector('.ubits-button');
                 const icon = button.querySelector('i');
                 const text = button.querySelector('span');
-                
+
                 // Cambiar estado del botón
                 icon.className = 'far fa-check';
                 text.textContent = 'Copiado';
                 button.classList.add('ubits-button--active');
-                card.classList.add('copied');
-                
+
                 // Mostrar toast
-                showToast('¡Prompt copiado! 🎉');
-                
+                showToast('success', '¡Prompt copiado! 🎉', {
+                    containerId: 'ubits-toast-container',
+                    duration: 3500
+                });
+
                 // Restaurar estado después de 2 segundos
                 setTimeout(function() {
                     icon.className = 'far fa-copy';
                     text.textContent = 'Copiar';
                     button.classList.remove('ubits-button--active');
-                    card.classList.remove('copied');
                 }, 2000);
-                
+
             }).catch(function(err) {
                 console.error('Error al copiar: ', err);
-                showToast('Error al copiar el prompt', 'error');
+                showToast('error', 'Error al copiar el prompt', {
+                    containerId: 'ubits-toast-container',
+                    duration: 6500
+                });
             });
         }
 
-        // Función para mostrar toast
-        function showToast(message, type = 'success') {
-            // Crear elemento toast
-            const toast = document.createElement('div');
-            toast.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: ${type === 'success' ? 'var(--ubits-accent-brand)' : 'var(--ubits-feedback-bg-error-subtle)'};
-                color: var(--ubits-bg-1);
-                padding: 16px 24px;
-                border-radius: 8px;
-                border: 1px solid var(--ubits-border-1);
-                z-index: 10000;
-                font-family: 'Noto Sans', sans-serif;
-                font-size: 14px;
-                font-weight: 500;
-                opacity: 0;
-                transform: translateX(100%);
-                transition: all 0.3s ease;
-            `;
-            toast.textContent = message;
-            
-            // Añadir al DOM
-            document.body.appendChild(toast);
-            
-            // Animar entrada
-            setTimeout(() => {
-                toast.style.opacity = '1';
-                toast.style.transform = 'translateX(0)';
-            }, 100);
-            
-            // Remover después de 3 segundos
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateX(100%)';
-                setTimeout(() => {
-                    document.body.removeChild(toast);
-                }, 300);
-            }, 3000);
-        }
     </script>
 </body>
 </html>

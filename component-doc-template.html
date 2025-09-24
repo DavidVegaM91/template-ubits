@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="components-sidebar.css">
     <link rel="stylesheet" href="docs/docs-sidebar.css">
     <link rel="stylesheet" href="components/button.css">
+    <link rel="stylesheet" href="components/toast.css">
     <style>
         /* Preview Styles */
         /* Preview control buttons - override UBITS button styles for active state */
@@ -355,9 +356,13 @@ loadComponent(); // Cargar componente</code></pre>
         </main>
     </div>
 
+    <!-- Contenedor para Toast UBITS -->
+    <div id="ubits-toast-container"></div>
+
     <script src="components/sidebar.js"></script>
     <script src="components/sub-nav.js"></script>
     <script src="components/alert.js"></script>
+    <script src="components/toast.js"></script>
     <script src="docs/docs-sidebar.js"></script>
     <script src="script.js"></script>
     <script>
@@ -441,7 +446,10 @@ loadComponent(); // Cargar componente</code></pre>
                 button.classList.add('ubits-button--active');
                 
                 // Mostrar toast
-                showCodeToast('¡Prompt copiado! 🎉');
+                showToast('success', '¡Prompt copiado! 🎉', {
+                    containerId: 'ubits-toast-container',
+                    duration: 3500
+                });
                 
                 // Restaurar estado después de 2 segundos
                 setTimeout(function() {
@@ -452,7 +460,10 @@ loadComponent(); // Cargar componente</code></pre>
                 
             }).catch(function(err) {
                 console.error('Error al copiar: ', err);
-                showCodeToast('Error al copiar el prompt', 'error');
+                showToast('error', 'Error al copiar el prompt', {
+                    containerId: 'ubits-toast-container',
+                    duration: 6500
+                });
             });
         }
 
@@ -474,7 +485,10 @@ loadComponent(); // Cargar componente</code></pre>
                 button.classList.add('ubits-button--active');
                 
                 // Mostrar toast
-                showCodeToast('¡Código copiado! 🎉');
+                showToast('success', '¡Código copiado! 🎉', {
+                    containerId: 'ubits-toast-container',
+                    duration: 3500
+                });
                 
                 // Restaurar estado después de 2 segundos
                 setTimeout(function() {
@@ -485,41 +499,13 @@ loadComponent(); // Cargar componente</code></pre>
                 
             }).catch(function(err) {
                 console.error('Error al copiar: ', err);
-                showCodeToast('Error al copiar el código', 'error');
+                showToast('error', 'Error al copiar el código', {
+                    containerId: 'ubits-toast-container',
+                    duration: 6500
+                });
             });
         }
 
-        // Función para mostrar toast de código
-        function showCodeToast(message, type = 'success') {
-            // Crear elemento toast
-            const toast = document.createElement('div');
-            toast.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: ${type === 'success' ? 'var(--ubits-accent-brand)' : 'var(--ubits-feedback-bg-error-subtle)'};
-                color: white;
-                padding: 16px 24px;
-                border-radius: 8px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-                z-index: 10000;
-                font-family: 'Noto Sans', sans-serif;
-                font-size: 14px;
-                font-weight: 500;
-                animation: slideIn 0.3s ease;
-            `;
-            
-            toast.textContent = message;
-            document.body.appendChild(toast);
-            
-            // Remover después de 3 segundos
-            setTimeout(function() {
-                toast.style.animation = 'slideOut 0.3s ease';
-                setTimeout(function() {
-                    document.body.removeChild(toast);
-                }, 300);
-            }, 3000);
-        }
     </script>
 </body>
 </html>

@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="components/sub-nav.css">
     <link rel="stylesheet" href="components/alert.css">
     <link rel="stylesheet" href="components/button.css">
+    <link rel="stylesheet" href="components/toast.css">
     
     <style>
         .validator-container {
@@ -297,6 +298,7 @@
 
     <script src="components/sub-nav.js"></script>
     <script src="components/alert.js"></script>
+    <script src="components/toast.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Cargar top-nav con variante documentación
@@ -659,7 +661,10 @@
         // Función para validar archivo subido
         function validateFile(file) {
             if (!file || !file.name.endsWith('.html')) {
-                showToast('Por favor selecciona un archivo HTML válido', 'error');
+                showToast('error', 'Por favor selecciona un archivo HTML válido', {
+                    containerId: 'ubits-toast-container',
+                    duration: 6500
+                });
                 return;
             }
 
@@ -823,9 +828,15 @@
 
             // Mostrar toast con resumen
             if (totalIssues === 0) {
-                showToast(`¡Perfecto! ${validation.fileName} cumple todos los estándares UBITS 🎉`, 'success');
+                showToast('success', `¡Perfecto! ${validation.fileName} cumple todos los estándares UBITS 🎉`, {
+                    containerId: 'ubits-toast-container',
+                    duration: 3500
+                });
             } else {
-                showToast(`Validación completada: ${totalIssues} problemas encontrados en ${validation.fileName}`, 'warning');
+                showToast('warning', `Validación completada: ${totalIssues} problemas encontrados en ${validation.fileName}`, {
+                    containerId: 'ubits-toast-container',
+                    duration: 5000
+                });
             }
         }
 
@@ -913,7 +924,10 @@
         // Función para copiar prompt de Cursor
         function copyCursorPrompt() {
             if (!window.generatedPrompt) {
-                showToast('No hay prompt generado', 'error');
+                showToast('error', 'No hay prompt generado', {
+                    containerId: 'ubits-toast-container',
+                    duration: 6500
+                });
                 return;
             }
 
@@ -931,7 +945,10 @@
                 button.classList.remove('ubits-button--primary');
                 button.classList.add('ubits-button--secondary');
                 
-                showToast('¡Prompt copiado! Pégalo en Cursor para corregir automáticamente 🚀', 'success');
+                showToast('success', '¡Prompt copiado! Pégalo en Cursor para corregir automáticamente 🚀', {
+                    containerId: 'ubits-toast-container',
+                    duration: 3500
+                });
                 
                 // Restaurar estado después de 3 segundos
                 setTimeout(function() {
@@ -943,7 +960,10 @@
                 
             }).catch(function(err) {
                 console.error('Error al copiar: ', err);
-                showToast('Error al copiar el prompt', 'error');
+                showToast('error', 'Error al copiar el prompt', {
+                    containerId: 'ubits-toast-container',
+                    duration: 6500
+                });
             });
         }
 
@@ -967,46 +987,10 @@
             }
         }
 
-        // Función para mostrar toast
-        function showToast(message, type = 'success') {
-            const toast = document.createElement('div');
-            toast.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: ${type === 'success' ? 'var(--ubits-accent-brand)' : type === 'error' ? 'var(--ubits-feedback-accent-error)' : 'var(--ubits-feedback-accent-warning)'};
-                color: var(--ubits-bg-1);
-                padding: 16px 24px;
-                border-radius: 8px;
-                z-index: 10000;
-                font-family: 'Noto Sans', sans-serif;
-                font-size: 14px;
-                font-weight: 500;
-                opacity: 0;
-                transform: translateX(100%);
-                transition: all 0.3s ease;
-                max-width: 400px;
-                word-wrap: break-word;
-            `;
-            toast.textContent = message;
-            
-            document.body.appendChild(toast);
-            
-            setTimeout(() => {
-                toast.style.opacity = '1';
-                toast.style.transform = 'translateX(0)';
-            }, 100);
-            
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateX(100%)';
-                setTimeout(() => {
-                    if (document.body.contains(toast)) {
-                        document.body.removeChild(toast);
-                    }
-                }, 300);
-            }, 4000);
-        }
+        // Toast container
+        const toastContainer = document.createElement('div');
+        toastContainer.id = 'ubits-toast-container';
+        document.body.appendChild(toastContainer);
     </script>
 </body>
 </html>

@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="ubits-typography.css">
     <link rel="stylesheet" href="components/sub-nav.css">
     <link rel="stylesheet" href="components/button.css">
+    <link rel="stylesheet" href="components/toast.css">
 </head>
 <body class="iconos-page" data-theme="light">
     <div class="dashboard-container">
@@ -87,62 +88,11 @@
 
     <script src="components/sidebar.js"></script>
     <script src="components/sub-nav.js"></script>
+    <script src="components/toast.js"></script>
     <script src="script.js"></script>
     
-    <!-- Sistema de Toast con 4 tipos -->
-    <div class="toast-container" id="toast-container">
-        <!-- Toast de Success -->
-        <div class="toast toast-success" id="toast-success" style="display: none;">
-            <div class="toast-content">
-                <div class="toast-icon">
-                    <i class="far fa-check"></i>
-                </div>
-                <div class="toast-message ubits-body-sm-regular" id="toast-success-message">¡Nombre copiado! 😉</div>
-                <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only toast-close" onclick="hideToast('success')">
-                    <i class="far fa-times"></i>
-                </button>
-            </div>
-        </div>
-        
-        <!-- Toast de Info -->
-        <div class="toast toast-info" id="toast-info" style="display: none;">
-            <div class="toast-content">
-                <div class="toast-icon">
-                    <i class="far fa-info-circle"></i>
-                </div>
-                <div class="toast-message ubits-body-sm-regular" id="toast-info-message">Mensaje informativo</div>
-                <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only toast-close" onclick="hideToast('info')">
-                    <i class="far fa-times"></i>
-                </button>
-            </div>
-        </div>
-        
-        <!-- Toast de Warning -->
-        <div class="toast toast-warning" id="toast-warning" style="display: none;">
-            <div class="toast-content">
-                <div class="toast-icon">
-                    <i class="far fa-exclamation-triangle"></i>
-                </div>
-                <div class="toast-message ubits-body-sm-regular" id="toast-warning-message">Mensaje de advertencia</div>
-                <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only toast-close" onclick="hideToast('warning')">
-                    <i class="far fa-times"></i>
-                </button>
-            </div>
-        </div>
-        
-        <!-- Toast de Error -->
-        <div class="toast toast-error" id="toast-error" style="display: none;">
-            <div class="toast-content">
-                <div class="toast-icon">
-                    <i class="far fa-times-circle"></i>
-                </div>
-                <div class="toast-message ubits-body-sm-regular" id="toast-error-message">Mensaje de error</div>
-                <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only toast-close" onclick="hideToast('error')">
-                    <i class="far fa-times"></i>
-                </button>
-            </div>
-        </div>
-    </div>
+    <!-- Contenedor para Toast UBITS -->
+    <div id="ubits-toast-container"></div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -416,7 +366,10 @@
 
             window.copyToClipboard = function(text) {
                 navigator.clipboard.writeText(text).then(() => {
-                    showToast('success', '¡Nombre copiado! 😉');
+                    showToast('success', '¡Nombre copiado! 😉', {
+                        containerId: 'ubits-toast-container',
+                        duration: 3500
+                    });
                 }).catch(err => {
                     console.error('Error al copiar:', err);
                     // Fallback para navegadores antiguos
@@ -426,27 +379,13 @@
                     textArea.select();
                     document.execCommand('copy');
                     document.body.removeChild(textArea);
-                    showToast('success', '¡Nombre copiado! 😉');
+                    showToast('success', '¡Nombre copiado! 😉', {
+                        containerId: 'ubits-toast-container',
+                        duration: 3500
+                    });
                 });
             }
 
-            function showToast(type, message) {
-                const toastContainer = document.getElementById('toast-container');
-                const toast = document.getElementById(`toast-${type}`);
-                const toastMessage = document.getElementById(`toast-${type}-message`);
-
-                toastMessage.textContent = message;
-                toast.style.display = 'block';
-
-                setTimeout(() => {
-                    hideToast(type);
-                }, 3000);
-            }
-
-            window.hideToast = function(type) {
-                const toast = document.getElementById(`toast-${type}`);
-                toast.style.display = 'none';
-            }
 
             function updateClearButton(searchValue) {
                 const clearBtn = document.getElementById('clearSearchBtn');

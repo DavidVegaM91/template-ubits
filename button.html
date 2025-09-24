@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="components-sidebar.css">
     <link rel="stylesheet" href="docs/docs-sidebar.css">
     <link rel="stylesheet" href="components/button.css">
+    <link rel="stylesheet" href="components/toast.css">
     <style>
         /* Preview control buttons - override UBITS button styles for active state */
         .preview-control-btn.active {
@@ -467,6 +468,9 @@
         </main>
     </div>
 
+    <!-- Contenedor para Toast UBITS -->
+    <div id="ubits-toast-container"></div>
+
     <!-- Tab Bar Container -->
 
     <!-- Floating Menu Container -->
@@ -481,6 +485,7 @@
     <script src="components/floating-menu.js"></script>
     <script src="components/profile-menu.js"></script>
     <script src="components/alert.js"></script>
+    <script src="components/toast.js"></script>
     <script src="docs/docs-sidebar.js"></script>
     <script src="script.js"></script>
     <script>
@@ -708,7 +713,10 @@
                 button.classList.add('ubits-button--active');
                 
                 // Mostrar toast
-                showCodeToast('¡Prompt copiado! 🎉');
+                showToast('success', '¡Prompt copiado! 🎉', {
+                    containerId: 'ubits-toast-container',
+                    duration: 3500
+                });
                 
                 // Restaurar estado después de 2 segundos
                 setTimeout(function() {
@@ -719,7 +727,10 @@
                 
             }).catch(function(err) {
                 console.error('Error al copiar: ', err);
-                showCodeToast('Error al copiar el prompt', 'error');
+                showToast('error', 'Error al copiar el prompt', {
+                    containerId: 'ubits-toast-container',
+                    duration: 6500
+                });
             });
         }
 
