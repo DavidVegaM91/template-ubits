@@ -12,11 +12,11 @@
     <link rel="stylesheet" href="ubits-typography.css">
     <link rel="stylesheet" href="components/sub-nav.css">
     <link rel="stylesheet" href="components/button.css">
+    <link rel="stylesheet" href="components/toast.css">
 </head>
 <body class="documentacion-page" data-theme="light">
     <div class="dashboard-container">
         <div class="tooltip" id="tooltip"></div>
-        
 
         <!-- Main Content -->
         <main class="main-content">
@@ -39,29 +39,18 @@
 
                 <!-- Value Proposition Cards -->
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
-                    <!-- Card 1: Garantía UBITS -->
-                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px;  border: 1px solid var(--ubits-border-1);">
-                        <div style="font-size: 48px; margin-bottom: 16px; color: var(--ubits-accent-brand);"><i class="far fa-palette"></i></div>
-                        <h3 class="ubits-heading-h2" style="margin-bottom: 12px;">
-                            Consistencia visual garantizada
-                        </h3>
-                        <p class="ubits-body-md-regular" style="line-height: 1.5;">
-                            Componentes propios, colores que cambian automáticamente entre modo claro y oscuro. Tipografía oficial e iconos listos para usar.
-                        </p>
-                    </div>
-
-                    <!-- Card 2: Fácil de Usar -->
+                    <!-- Card 1: Cero curva de aprendizaje -->
                     <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px;  border: 1px solid var(--ubits-border-1);">
                         <div style="font-size: 48px; margin-bottom: 16px; color: var(--ubits-accent-brand);"><i class="far fa-bolt"></i></div>
                         <h3 class="ubits-heading-h2" style="margin-bottom: 12px;">
                             Cero curva de aprendizaje
                         </h3>
-                            <p class="ubits-body-md-regular" style="line-height: 1.5;">
-                                Sin configuración, sin dependencias, sin complicaciones. Solo abre Cursor, chatea y crea.
-                            </p>
+                        <p class="ubits-body-md-regular" style="line-height: 1.5;">
+                            Sin configuración, sin dependencias, sin complicaciones. Solo abre Cursor, chatea y crea.
+                        </p>
                     </div>
 
-                    <!-- Card 3: Acelera Producto -->
+                    <!-- Card 2: Acelera el desarrollo -->
                     <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px;  border: 1px solid var(--ubits-border-1);">
                         <div style="font-size: 48px; margin-bottom: 16px; color: var(--ubits-accent-brand);"><i class="far fa-rocket"></i></div>
                         <h3 class="ubits-heading-h2" style="margin-bottom: 12px;">
@@ -69,8 +58,19 @@
                         </h3>
                         <p class="ubits-body-md-regular" style="line-height: 1.5;">
                             <strong>Valida ideas rápidamente</strong> con usuarios reales. 
-                            <strong>Prototipa interfaces</strong> en minutos, no días. 
+                            <strong>Prototipa interfaces</strong> en minutos, no semanas. 
                             <strong>Itera y mejora</strong> sin barreras técnicas.
+                        </p>
+                    </div>
+
+                    <!-- Card 3: Consistencia visual garantizada -->
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px;  border: 1px solid var(--ubits-border-1);">
+                        <div style="font-size: 48px; margin-bottom: 16px; color: var(--ubits-accent-brand);"><i class="far fa-palette"></i></div>
+                        <h3 class="ubits-heading-h2" style="margin-bottom: 12px;">
+                            Consistencia visual garantizada
+                        </h3>
+                        <p class="ubits-body-md-regular" style="line-height: 1.5;">
+                            Componentes propios, colores que cambian automáticamente entre modo claro y oscuro. Tipografía oficial e iconos listos para usar.
                         </p>
                     </div>
                 </div>
@@ -182,9 +182,9 @@
                                     <li class="ubits-body-sm-regular">Copiar y pegar</li>
                                 </ul>
                             </div>
-                            <button class="ubits-button ubits-button--secondary ubits-button--md" onclick="window.open('componentes.html', '_blank')" style="width: 100%;">
+                            <button class="ubits-button ubits-button--secondary ubits-button--md" disabled style="width: 100%;">
                                 <i class="far fa-cube"></i>
-                                <span>Ver documentación</span>
+                                <span>Ya estás en la documentación</span>
                             </button>
                         </div>
 
@@ -222,6 +222,7 @@
         </main>
     </div>
 
+
     <script src="components/sidebar.js"></script>
     <script src="components/sub-nav.js"></script>
     <script src="script.js"></script>
@@ -230,6 +231,7 @@
             // Cargar top-nav con variante documentación
             loadSubNav('top-nav-container', 'documentacion');
         });
+
     </script>
 </body>
 </html>

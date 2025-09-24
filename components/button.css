@@ -57,9 +57,20 @@
 
 /* Disabled State */
 .ubits-button:disabled {
-    background: var(--ubits-bg-disabled-button);
-    color: var(--ubits-fg-on-disabled-button);
-    border-color: var(--ubits-border-disabled-button);
+    background: var(--ubits-bg-disabled-button) !important;
+    color: var(--ubits-fg-on-disabled-button) !important;
+    border-color: var(--ubits-border-disabled-button) !important;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Disabled State for all variants */
+.ubits-button--primary:disabled,
+.ubits-button--secondary:disabled,
+.ubits-button--tertiary:disabled {
+    background: var(--ubits-bg-disabled-button) !important;
+    color: var(--ubits-fg-on-disabled-button) !important;
+    border-color: var(--ubits-border-disabled-button) !important;
     cursor: not-allowed;
     pointer-events: none;
 }

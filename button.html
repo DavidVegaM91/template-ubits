@@ -175,6 +175,9 @@
                             <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewOption('tertiary')">
                                 <span>Terciario</span>
                             </button>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewOption('disabled')">
+                                <span>Disabled</span>
+                            </button>
                             
                             <!-- Switch para Iconos -->
                             <div style="display: flex; align-items: center; gap: 8px; margin-left: 16px;">
@@ -521,6 +524,8 @@
                     updatePreview('secondary');
                 } else if (option === 'terciario') {
                     updatePreview('tertiary');
+                } else if (option === 'disabled') {
+                    updatePreview('disabled');
                 }
             }
         }
@@ -535,17 +540,21 @@
                     updatePreview('primary');
                 } else if (option === 'secundario') {
                     updatePreview('secondary');
-                } else if (option === 'terciario') {
+                } else if (option === 'tertiary') {
                     updatePreview('tertiary');
+                } else if (option === 'disabled') {
+                    // Para botones disabled, no mostrar badge (no tiene sentido lógico)
+                    updatePreview('disabled');
                 }
             }
         }
         
         // Función auxiliar para generar HTML de botón con/sin badge y con/sin iconos
-        function generateButtonHTML(variant, size, text, icon, showBadge = false, showIcons = true) {
+        function generateButtonHTML(variant, size, text, icon, showBadge = false, showIcons = true, isDisabled = false) {
             const badgeHTML = showBadge ? `<span class="ubits-button__badge"></span>` : '';
             const iconHTML = showIcons ? `<i class="far fa-${icon}"></i>` : '';
-            return `<button class="ubits-button ubits-button--${variant} ubits-button--${size}">
+            const disabledAttr = isDisabled ? ' disabled' : '';
+            return `<button class="ubits-button ubits-button--${variant} ubits-button--${size}"${disabledAttr}>
                 ${iconHTML}
                 <span>${text}</span>
                 ${badgeHTML}
@@ -620,6 +629,24 @@
                         </div>
                     `;
                     break;
+                case 'disabled':
+                    preview.innerHTML = `
+                        <div style="display: flex; flex-direction: column; gap: 16px; align-items: flex-start;">
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Small (sm)</span>
+                                ${generateButtonHTML('primary', 'sm', 'Botón deshabilitado', 'check', false, showIcons, true)}
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Medium (md)</span>
+                                ${generateButtonHTML('secondary', 'md', 'Botón deshabilitado', 'times', false, showIcons, true)}
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Large (lg)</span>
+                                ${generateButtonHTML('tertiary', 'lg', 'Botón deshabilitado', 'plus', false, showIcons, true)}
+                            </div>
+                        </div>
+                    `;
+                    break;
             }
         }
         
@@ -632,6 +659,15 @@
             
             // Agregar clase active al botón clickeado
             event.target.closest('.preview-control-btn').classList.add('active');
+            
+            // Deshabilitar badge toggle si está en modo disabled
+            const badgeToggle = document.getElementById('badge-toggle');
+            if (option === 'disabled') {
+                badgeToggle.disabled = true;
+                badgeToggle.checked = false;
+            } else {
+                badgeToggle.disabled = false;
+            }
             
             // Actualizar el preview
             updatePreview(option);

@@ -34,6 +34,7 @@ Una **plantilla lista para usar** que permite a **Product Managers**, **Diseñad
 ### **Componentes de UI:**
 - **Button** - Botones de acción (variantes: primary, secondary, tertiary; tamaños: sm, md, lg)
 - **Alert** - Notificaciones (tipos: success, info, warning, error; con/sin botón cerrar)
+- **Toast** - Notificaciones flotantes (tipos: success, info, warning, error; auto-cierre, pausa en hover)
 - **Card Content** - Cards para contenidos de aprendizaje (11 tipos, 35 competencias, 18 aliados, estados de progreso)
 
 ### **Componentes de documentación:**
@@ -98,7 +99,7 @@ Una **plantilla lista para usar** que permite a **Product Managers**, **Diseñad
 - **`guia-prompts.html`** - Prompts para personalización con Cursor AI
 
 ### **3. ✅ VALIDADOR (Control de Calidad Automático)**
-- **`validador-ubits.html`** - Herramienta drag & drop que verifica tokens UBITS, tipografía y componentes, genera prompts para Cursor AI y otorga puntuación UBITS
+- **`validador-ubits.html`** - Herramienta drag & drop que verifica tokens UBITS, tipografía y componentes, genera prompts para Cursor AI y otorga puntuación
 
 ---
 
@@ -113,6 +114,7 @@ Una **plantilla lista para usar** que permite a **Product Managers**, **Diseñad
 │   ├── floating-menu.css + floating-menu.js
 │   ├── profile-menu.css + profile-menu.js
 │   ├── alert.css + alert.js
+│   ├── toast.css + toast.js
 │   ├── button.css
 │   └── card-content.css + card-content.js
 ├── 📁 docs/                   # Sistema de documentación
@@ -392,6 +394,51 @@ Un sistema inspirado en el éxito que tuvo **Kike Peña** personalizando `profil
 1. **Verificar que importas los archivos correctos** - CSS y JS del componente
 2. **Revisar la documentación** - En la página específica del componente
 3. **Usar el código de ejemplo** - Copia exactamente como está documentado
+
+## 🍞 Componente Toast - Guía rápida
+
+### **¿Qué es Toast?**
+Notificaciones flotantes que aparecen arriba, al centro de la pantalla y se cierran automáticamente.
+
+### **Cómo implementar:**
+
+#### **1. Importar archivos necesarios:**
+```html
+<link rel="stylesheet" href="ubits-colors.css">
+<link rel="stylesheet" href="fontawesome-icons.css">
+<link rel="stylesheet" href="components/toast.css">
+<script src="components/toast.js"></script>
+```
+
+#### **2. Crear contenedor:**
+```html
+<div id="ubits-toast-container"></div>
+```
+
+#### **3. Usar la función:**
+```javascript
+// Toast básico
+showToast('success', '¡Operación exitosa!');
+
+// Toast con opciones
+showToast('info', 'Ya estás en la documentación 😆', {
+    containerId: 'ubits-toast-container',
+    duration: 3500,
+    noClose: false
+});
+```
+
+#### **4. Tipos disponibles:**
+- `success` - Verde (3.5s)
+- `info` - Azul (3.5s) 
+- `warning` - Amarillo (5s)
+- `error` - Rojo (6.5s)
+
+#### **5. Características:**
+- ✅ **Auto-cierre** - Se cierran solos después del tiempo especificado
+- ✅ **Pausa en hover** - Se pausan si pasas el cursor por encima
+- ✅ **Apilado** - Máximo 3 toasts visibles a la vez
+- ✅ **Accesible** - Roles ARIA y navegación por teclado
 
 ## 📄 Licencia
 

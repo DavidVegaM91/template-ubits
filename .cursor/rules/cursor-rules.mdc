@@ -44,9 +44,10 @@ This is a UBITS template for creating interfaces quickly with Cursor AI. The val
 ### **WHEN CREATING UI ELEMENTS:**
 1. **🔘 Buttons** → ALWAYS use `ubits-button` + import `components/button.css`
 2. **🚨 Alerts** → ALWAYS use `ubits-alert` + import `components/alert.css`
-3. **🧭 Navigation** → ALWAYS use SubNav/Sidebar + import their CSS
-4. **🎨 Colors** → ALWAYS use `var(--ubits-*)` tokens
-5. **📝 Typography** → ALWAYS use official UBITS classes
+3. **🍞 Toasts** → ALWAYS use `showToast()` + import `components/toast.css`
+4. **🧭 Navigation** → ALWAYS use SubNav/Sidebar + import their CSS
+5. **🎨 Colors** → ALWAYS use `var(--ubits-*)` tokens
+6. **📝 Typography** → ALWAYS use official UBITS classes
 
 ### **VALIDATION MANDATORY:**
 - **🔍 Use `validador-ubits.html`** BEFORE considering task complete
@@ -75,6 +76,9 @@ This is a UBITS template for creating interfaces quickly with Cursor AI. The val
 - **Alert** (Notifications) → `components/alert.css` + `components/alert.js`
   - Types: `success`, `info`, `warning`, `error`
   - Options: with/without close button
+- **Toast** (Floating notifications) → `components/toast.css` + `components/toast.js`
+  - Types: `success`, `info`, `warning`, `error`
+  - Features: auto-close, pause on hover, stacking
 - **Card Content** (Learning cards) → `components/card-content.css` + `components/card-content.js`
   - 11 content types, 35 competencies, 18 providers
 
@@ -535,7 +539,44 @@ showAlert('success', 'Your message here', { noClose: true });
 - `components/alert.css`
 - `components/alert.js`
 
-#### **5. BUTTON (Actions)**
+#### **5. TOAST (Floating Notifications)**
+```html
+<!-- Container for Toast -->
+<div id="ubits-toast-container"></div>
+
+<!-- JavaScript to show Toast -->
+<script>
+// Basic Toast
+showToast('success', '¡Operación exitosa!');
+
+// Toast with options
+showToast('info', 'Ya estás en la documentación 😆', {
+    containerId: 'ubits-toast-container',
+    duration: 3500,
+    noClose: false
+});
+</script>
+```
+
+**Available types:**
+- `success` - Verde (3.5s)
+- `info` - Azul (3.5s)
+- `warning` - Amarillo (5s)
+- `error` - Rojo (6.5s)
+
+**Features:**
+- Auto-close after specified duration
+- Pause on hover/focus
+- Stacking (max 3 visible)
+- Accessible (ARIA roles)
+
+**Required files:**
+- `components/toast.css`
+- `components/toast.js`
+- `ubits-colors.css` (for tokens)
+- `fontawesome-icons.css` (for icons)
+
+#### **6. BUTTON (Actions)**
 ```html
 <!-- Basic Button -->
 <button class="ubits-button ubits-button--primary ubits-button--md">
@@ -683,7 +724,7 @@ document.addEventListener('DOMContentLoaded', function() {
 - ✅ **ALWAYS import required CSS and JS files**
 - ✅ **ALWAYS validate data with official options**
 
-#### **7. DOCS SIDEBAR (Documentation Navigation)**
+#### **8. DOCS SIDEBAR (Documentation Navigation)**
 ```html
 <!-- Container for Docs Sidebar -->
 <div id="docs-sidebar-container"></div>
@@ -1006,6 +1047,10 @@ Before finishing any task, verify:
 <link rel="stylesheet" href="components/alert.css">
 <!-- Required when using: ubits-alert classes or showAlert() -->
 
+<!-- Toast component -->
+<link rel="stylesheet" href="components/toast.css">
+<!-- Required when using: showToast() -->
+
 <!-- SubNav component -->
 <link rel="stylesheet" href="components/sub-nav.css">
 <!-- Required when using: loadSubNav() -->
@@ -1042,6 +1087,7 @@ Before finishing any task, verify:
 - ❌ Using `ubits-button` without `components/button.css` → Deformed buttons
 - ❌ Using `loadSidebar()` without `components-sidebar.css` → Broken sidebar styles
 - ❌ Using `showAlert()` without `components/alert.css` → Unstyled alerts
+- ❌ Using `showToast()` without `components/toast.css` → Unstyled toasts
 - ❌ Importing component CSS AFTER custom CSS → Styles get overridden
 
 ### **CSS IMPORT ORDER (MANDATORY):**
@@ -1181,6 +1227,7 @@ When issues are found, the validator creates a detailed prompt for Cursor with:
 - `components/tab-bar.css` + `components/tab-bar.js` - TabBar component
 - `components/floating-menu.css` + `components/floating-menu.js` - Floating Menu component
 - `components/alert.css` + `components/alert.js` - Alert component
+- `components/toast.css` + `components/toast.js` - Toast component
 - `components/button.css` - Button component
 - `docs/docs-sidebar.css` + `docs/docs-sidebar.js` - Docs Sidebar component
 
@@ -1309,6 +1356,7 @@ document.addEventListener('DOMContentLoaded', function() {
 #### **🧩 COMPONENTES CRÍTICOS:**
 - **Buttons**: `ubits-button` + `components/button.css`
 - **Alerts**: `ubits-alert` + `components/alert.css`
+- **Toasts**: `showToast()` + `components/toast.css`
 - **Navigation**: `loadSidebar()` + `components-sidebar.css`
 - **Typography**: Only official classes (`ubits-heading-h1`, `ubits-body-md-regular`)
 

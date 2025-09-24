@@ -1,0 +1,133 @@
+/* UBITS Toast Component */
+
+/* Container: fixed top-center, no interaction blocking */
+#ubits-toast-container {
+    position: fixed;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: auto;
+    max-width: 560px;
+    z-index: 10000;
+    pointer-events: none;
+}
+
+.ubits-toast {
+    display: flex;
+    gap: 8px; /* match alert */
+    align-items: center;
+    padding: 8px; /* match alert */
+    border-radius: 10px; /* match alert */
+    position: relative; /* for pseudo border */
+    font-family: 'Noto Sans', sans-serif;
+    box-sizing: border-box;
+    background: var(--ubits-bg-1);
+    color: var(--ubits-fg-1-high);
+    width: max-content;
+    max-width: 560px;
+    pointer-events: auto; /* interactuable */
+}
+
+.ubits-toast::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 1px solid var(--ubits-border-1); /* default border */
+    border-radius: 10px;
+    pointer-events: none;
+}
+
+.ubits-toast__icon {
+    flex-shrink: 0;
+    width: 24px; /* match alert */
+    height: 24px; /* match alert */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ubits-toast__content {
+    display: flex;
+    gap: 8px; /* match alert */
+    align-items: center;
+    min-width: 0;
+}
+
+.ubits-toast__text {
+    font-size: 13px; /* match alert */
+    line-height: 19.5px; /* match alert */
+    font-weight: 400;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    min-height: 24px; /* match alert */
+}
+
+.ubits-toast__close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    flex-shrink: 0;
+    width: 24px; /* match alert */
+    height: 24px; /* match alert */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px; /* match alert */
+    color: var(--ubits-fg-1-medium);
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+    border-radius: 4px;
+}
+
+.ubits-toast__close:hover {
+    opacity: 1;
+    background: var(--ubits-bg-invisible);
+}
+
+/* Icon sizing to match alert */
+.ubits-toast__icon i { font-size: 12px; line-height: 1; }
+
+/* Types (use feedback subtle backgrounds to differentiate) */
+.ubits-toast--success { background-color: var(--ubits-feedback-bg-success-subtle); color: var(--ubits-feedback-fg-success-subtle); }
+.ubits-toast--info { background-color: var(--ubits-feedback-bg-info-subtle); color: var(--ubits-feedback-fg-info-subtle); }
+.ubits-toast--warning { background-color: var(--ubits-feedback-bg-warning-subtle); color: var(--ubits-feedback-fg-warning-subtle); }
+.ubits-toast--error { background-color: var(--ubits-feedback-bg-error-subtle); color: var(--ubits-feedback-fg-error-subtle); }
+
+/* Variant borders to match alert look */
+.ubits-toast--success::before { border-color: var(--ubits-feedback-border-success); }
+.ubits-toast--info::before { border-color: var(--ubits-feedback-border-info); }
+.ubits-toast--warning::before { border-color: var(--ubits-feedback-border-warning); }
+.ubits-toast--error::before { border-color: var(--ubits-feedback-border-error); }
+
+/* Variant icon colors to match alert */
+.ubits-toast--success .ubits-toast__icon { color: var(--ubits-feedback-fg-success-subtle); }
+.ubits-toast--info .ubits-toast__icon { color: var(--ubits-feedback-fg-info-subtle); }
+.ubits-toast--warning .ubits-toast__icon { color: var(--ubits-feedback-fg-warning-subtle); }
+.ubits-toast--error .ubits-toast__icon { color: var(--ubits-feedback-fg-error-subtle); }
+
+/* Simple motion (respect reduced motion) */
+@media (prefers-reduced-motion: no-preference) {
+    .ubits-toast {
+        opacity: 0;
+        transform: translateY(-6px);
+        transition: opacity 180ms ease, transform 180ms ease;
+    }
+    .ubits-toast--enter {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    .ubits-toast--exit {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+}
+
+

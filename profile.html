@@ -16,6 +16,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
 </head>
 <body data-theme="light">
     <div class="dashboard-container">
@@ -93,22 +94,26 @@
     <script src="components/profile-menu.js"></script>
     <script src="script.js"></script>
     <script>
-        // Cargar sidebar con botón Mi perfil activo
+        
         document.addEventListener('DOMContentLoaded', function() {
+            // Cargar sidebar
             loadSidebar();
-            // Cargar tab-bar
-            loadTabBar('tab-bar-container');
-            // Cargar floating-menu
-            loadFloatingMenu('floating-menu-container');
-            // Cargar profile-menu
-            loadProfileMenu('profile-menu-container');
-            // Activar el avatar del usuario
-            setTimeout(() => {
-                const userAvatar = document.querySelector('.user-avatar');
-                if (userAvatar) {
-                    userAvatar.classList.add('active');
-                }
-            }, 100);
+            
+            // Activar avatar INMEDIATAMENTE
+            const userAvatar = document.querySelector('.user-avatar');
+            if (userAvatar) {
+                userAvatar.classList.add('active');
+                userAvatar.style.border = '2px solid var(--ubits-sidebar-button-bg-active)';
+            }
+            
+            // Cargar otros componentes
+            try {
+                loadTabBar('tab-bar-container');
+                loadFloatingMenu('floating-menu-container');
+                loadProfileMenu('profile-menu-container');
+            } catch (error) {
+                console.log('Error cargando componentes:', error);
+            }
         });
     </script>
     </div>
