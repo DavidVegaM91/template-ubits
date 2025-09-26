@@ -41,6 +41,11 @@ const DOCS_SIDEBAR_SECTIONS = [
         group: 'ui'
     },
     {
+        id: 'input',
+        title: 'Input',
+        group: 'ui'
+    },
+    {
         id: 'toast',
         title: 'Toast',
         group: 'ui'
@@ -81,6 +86,9 @@ const docsSidebarHTML = `
                     </div>
                     <div class="docs-sidebar-item" data-section="card-content">
                         <span class="docs-sidebar-text">Card content</span>
+                    </div>
+                    <div class="docs-sidebar-item" data-section="input">
+                        <span class="docs-sidebar-text">Input</span>
                     </div>
                     <div class="docs-sidebar-item" data-section="toast">
                         <span class="docs-sidebar-text">Toast</span>
@@ -126,6 +134,9 @@ const docsDropdownHTML = `
                     </div>
                     <div class="docs-dropdown-item" data-section="card-content">
                         <span class="docs-dropdown-item-text ubits-body-md-regular">Card content</span>
+                    </div>
+                    <div class="docs-dropdown-item" data-section="input">
+                        <span class="docs-dropdown-item-text ubits-body-md-regular">Input</span>
                     </div>
                     <div class="docs-dropdown-item" data-section="toast">
                         <span class="docs-dropdown-item-text ubits-body-md-regular">Toast</span>
@@ -235,6 +246,14 @@ function initDocsSidebar(activeSection) {
             } else {
                 // Si estamos en otra página, navegar a card-content.html
                 window.location.href = 'card-content.html';
+            }
+        } else if (section === 'input') {
+            // Si ya estamos en input.html, solo hacer scroll al top
+            if (window.location.pathname.includes('input.html')) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                // Si estamos en otra página, navegar a input.html
+                window.location.href = 'input.html';
             }
         } else if (section === 'toast') {
             // Si ya estamos en toast.html, solo hacer scroll al top
