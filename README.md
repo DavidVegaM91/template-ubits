@@ -35,6 +35,7 @@ Una **plantilla lista para usar** que permite a **Product Managers**, **Diseñad
 - **Button** - Botones de acción (variantes: primary, secondary, tertiary; tamaños: sm, md, lg)
 - **Alert** - Notificaciones (tipos: success, info, warning, error; con/sin botón cerrar)
 - **Toast** - Notificaciones flotantes (tipos: success, info, warning, error; auto-cierre, pausa en hover)
+- **Input** - Campos de entrada (11 tipos: text, email, password, number, tel, url, select, textarea, search, autocomplete, calendar; tamaños: sm, md, lg; estados: default, hover, focus, invalid, disabled; con iconos, contador, helper text, mandatory/optional, validación manual, scroll infinito automático)
 - **Card Content** - Cards para contenidos de aprendizaje (11 tipos, 35 competencias, 18 aliados, estados de progreso)
 
 ### **Componentes de documentación:**
@@ -115,6 +116,7 @@ Una **plantilla lista para usar** que permite a **Product Managers**, **Diseñad
 │   ├── profile-menu.css + profile-menu.js
 │   ├── alert.css + alert.js
 │   ├── toast.css + toast.js
+│   ├── input.css + input.js
 │   ├── button.css
 │   └── card-content.css + card-content.js
 ├── 📁 docs/                   # Sistema de documentación
@@ -394,6 +396,174 @@ Un sistema inspirado en el éxito que tuvo **Kike Peña** personalizando `profil
 1. **Verificar que importas los archivos correctos** - CSS y JS del componente
 2. **Revisar la documentación** - En la página específica del componente
 3. **Usar el código de ejemplo** - Copia exactamente como está documentado
+
+## 📝 Componente Input - Guía rápida
+
+### **¿Qué es Input?**
+Campos de entrada de texto con todas las variantes, estados, iconos y funcionalidades avanzadas. Incluye 6 tipos especiales: SELECT, TEXTAREA, SEARCH, AUTOCOMPLETE, CALENDAR, PASSWORD. **SELECT incluye scroll infinito automático** para listas largas (50+ opciones).
+
+### **Cómo implementar:**
+
+#### **1. Importar archivos necesarios:**
+```html
+<link rel="stylesheet" href="ubits-colors.css">
+<link rel="stylesheet" href="ubits-typography.css">
+<link rel="stylesheet" href="fontawesome-icons.css">
+<link rel="stylesheet" href="components/input.css">
+<script src="components/input.js"></script>
+```
+
+#### **2. Crear contenedor:**
+```html
+<div id="mi-input-container"></div>
+```
+
+#### **3. Usar la función:**
+```javascript
+// Input básico
+createInput({
+    containerId: 'mi-input-container',
+    label: 'Nombre',
+    placeholder: 'Escribe tu nombre'
+});
+
+// Input con iconos y helper text
+createInput({
+    containerId: 'mi-input-container',
+    label: 'Email',
+    placeholder: 'correo@ejemplo.com',
+    type: 'email',
+    leftIcon: 'fa-envelope',
+    helperText: 'Ingresa tu email válido',
+    showHelper: true
+});
+
+// Input con contador de caracteres
+createInput({
+    containerId: 'mi-input-container',
+    label: 'Mensaje',
+    placeholder: 'Escribe tu mensaje',
+    helperText: 'Máximo 100 caracteres',
+    showHelper: true,
+    showCounter: true,
+    maxLength: 100
+});
+
+// Input solo con contador (sin helper text)
+createInput({
+    containerId: 'mi-input-container',
+    label: 'Comentario',
+    placeholder: 'Escribe tu comentario',
+    showCounter: true,
+    maxLength: 200
+});
+
+// SELECT con opciones básicas
+createInput({
+    containerId: 'mi-select',
+    type: 'select',
+    label: 'Categoría',
+    placeholder: 'Selecciona una opción...',
+    selectOptions: [
+        {value: '1', text: 'Opción 1'},
+        {value: '2', text: 'Opción 2'}
+    ]
+});
+
+// SELECT con scroll infinito automático (50+ opciones)
+createInput({
+    containerId: 'mi-select-large',
+    type: 'select',
+    label: 'País',
+    placeholder: 'Selecciona un país...',
+    selectOptions: generateLargeOptionsList() // 50+ opciones
+    // Scroll infinito se activa automáticamente con loading visual
+});
+
+// VALIDACIÓN MANUAL (obligatoria)
+const emailInput = createInput({
+    containerId: 'mi-email',
+    type: 'email',
+    placeholder: 'correo@ejemplo.com',
+    value: 'email-invalido'
+});
+
+// Agregar validación manual
+setTimeout(() => {
+    const input = document.querySelector('#mi-email input');
+    if (input) {
+        input.addEventListener('input', function() {
+            const value = this.value;
+            if (value.includes('@') && value.includes('.')) {
+                this.style.borderColor = 'var(--ubits-border-1)';
+                this.style.borderWidth = '1px';
+            } else if (value.length > 0) {
+                this.style.borderColor = 'red';
+                this.style.borderWidth = '2px';
+            } else {
+                this.style.borderColor = 'var(--ubits-border-1)';
+                this.style.borderWidth = '1px';
+            }
+        });
+    }
+}, 500);
+
+// TEXTAREA multilínea
+createInput({
+    containerId: 'mi-textarea',
+    type: 'textarea',
+    label: 'Comentario',
+    placeholder: 'Escribe tu comentario aquí...'
+});
+
+// SEARCH con limpiar
+createInput({
+    containerId: 'mi-search',
+    type: 'search',
+    label: 'Búsqueda',
+    placeholder: 'Buscar...'
+});
+
+// AUTOCOMPLETE con sugerencias
+createInput({
+    containerId: 'mi-autocomplete',
+    type: 'autocomplete',
+    label: 'Lenguaje',
+    placeholder: 'Escribe un lenguaje...',
+    autocompleteOptions: [
+        {value: '1', text: 'JavaScript'},
+        {value: '2', text: 'TypeScript'}
+    ]
+});
+
+// CALENDAR con date picker
+createInput({
+    containerId: 'mi-calendar',
+    type: 'calendar',
+    label: 'Fecha de nacimiento',
+    placeholder: 'Selecciona una fecha...'
+});
+
+// PASSWORD con toggle mostrar/ocultar
+createInput({
+    containerId: 'mi-password',
+    type: 'password',
+    label: 'Contraseña',
+    placeholder: 'Ingresa tu contraseña...'
+});
+```
+
+### **Características:**
+- **Tamaños**: sm (32px), md (40px), lg (48px) - iguales a botones UBITS
+- **Estados**: default, hover, focus, active, invalid, disabled
+- **Iconos**: FontAwesome con posicionamiento absoluto, padding automático
+- **Contador**: Caracteres automático (independiente del helper text)
+- **Mandatory**: Texto obligatorio/opcional
+- **Tipos**: text, email, password, number, tel, url, select, textarea, search, autocomplete, calendar
+- **Scroll Infinito**: SELECT con carga automática para listas largas (50+ opciones)
+- **Validación Manual**: Implementación obligatoria para email, teléfono y URL
+- **Callbacks**: onChange, onFocus, onBlur
+- **Métodos**: getValue(), setValue(), focus(), blur(), disable(), enable(), setState()
 
 ## 🍞 Componente Toast - Guía rápida
 

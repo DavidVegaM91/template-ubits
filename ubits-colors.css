@@ -244,8 +244,8 @@
   --ubits-feedback-fg-warning-subtle-static-inverted-hover: #ffb954;
   
   /* Error */
-  --ubits-feedback-accent-error: #f96f6f;
-  --ubits-feedback-accent-error-inverted: #e9343c;
+  --ubits-feedback-accent-error: #e9343c;
+  --ubits-feedback-accent-error-inverted: #f96f6f;
   --ubits-feedback-bg-error-subtle: #fff0ee;
   --ubits-feedback-bg-error-subtle-inverted: #65181e;
   --ubits-feedback-bg-error-subtle-hover: #ffe0dd;
@@ -645,8 +645,8 @@
   --ubits-feedback-fg-warning-subtle-static-hover: #2a1d0d;
   --ubits-feedback-fg-warning-subtle-static-inverted-hover: #ffb954;
   
-  --ubits-feedback-accent-error: #f96f6f;
-  --ubits-feedback-accent-error-inverted: #e9343c;
+  --ubits-feedback-accent-error: #e9343c;
+  --ubits-feedback-accent-error-inverted: #f96f6f;
   --ubits-feedback-bg-error-subtle: #fff0ee;
   --ubits-feedback-bg-error-subtle-inverted: #65181e;
   --ubits-feedback-bg-error-subtle-hover: #ffe0dd;

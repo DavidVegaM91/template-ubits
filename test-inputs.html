@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test All Inputs - UBITS Input Component</title>
+    
+    <!-- UBITS Dependencies -->
+    <link rel="stylesheet" href="ubits-colors.css">
+    <link rel="stylesheet" href="ubits-typography.css">
+    <link rel="stylesheet" href="fontawesome-icons.css">
+    <link rel="stylesheet" href="components/input.css">
+    
+    <style>
+        body {
+            font-family: 'Noto Sans', sans-serif;
+            background: var(--ubits-bg-1);
+            color: var(--ubits-fg-1-high);
+            padding: 40px;
+            margin: 0;
+        }
+        
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .test-section {
+            background: var(--ubits-bg-2);
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 32px;
+            border: 1px solid var(--ubits-border-1);
+        }
+        
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .test-subsection {
+            background: var(--ubits-bg-1);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--ubits-border-1);
+        }
+        
+        /* Containers para inputs deben tener position relative */
+        .input-container {
+            position: relative;
+            margin-bottom: 16px;
+        }
+        
+        h1 {
+            color: var(--ubits-fg-1-high);
+            margin-bottom: 32px;
+            text-align: center;
+        }
+        
+        h2 {
+            color: var(--ubits-fg-1-high);
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+        
+        h3 {
+            color: var(--ubits-fg-1-high);
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+        
+        .section-title {
+            color: var(--ubits-fg-1-high);
+            margin-bottom: 16px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Test All Inputs - UBITS Input Component</h1>
+        
+        <!-- Sección 1: Inputs Básicos -->
+        <div class="test-section">
+            <h2>1. Inputs Básicos</h2>
+            <div class="test-grid">
+                <div class="test-subsection">
+                    <h3>Text Input</h3>
+                    <div class="input-container" id="text-basic"></div>
+                    <div class="input-container" id="text-with-label"></div>
+                    <div class="input-container" id="text-with-helper"></div>
+                </div>
+                
+                <div class="test-subsection">
+                    <h3>Email Input</h3>
+                    <div class="input-container" id="email-basic"></div>
+                    <div class="input-container" id="email-with-label"></div>
+                    <div class="input-container" id="email-with-helper"></div>
+                </div>
+                
+                <div class="test-subsection">
+                    <h3>Number Input</h3>
+                    <div class="input-container" id="number-basic"></div>
+                    <div class="input-container" id="number-with-label"></div>
+                    <div class="input-container" id="number-with-helper"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sección 2: Inputs con Iconos -->
+        <div class="test-section">
+            <h2>2. Inputs con Iconos</h2>
+            <div class="test-grid">
+                <div class="test-subsection">
+                    <h3>Left Icons</h3>
+                    <div class="input-container" id="left-icon-user"></div>
+                    <div class="input-container" id="left-icon-email"></div>
+                    <div class="input-container" id="left-icon-phone"></div>
+                </div>
+                
+                <div class="test-subsection">
+                    <h3>Right Icons</h3>
+                    <div class="input-container" id="right-icon-lock"></div>
+                    <div class="input-container" id="right-icon-calendar"></div>
+                    <div class="input-container" id="right-icon-search"></div>
+                </div>
+                
+                <div class="test-subsection">
+                    <h3>Both Icons</h3>
+                    <div class="input-container" id="both-icons"></div>
+                    <div class="input-container" id="both-icons-2"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sección 3: Estados -->
+        <div class="test-section">
+            <h2>3. Estados</h2>
+            <div class="test-grid">
+                <div class="test-subsection">
+                    <h3>Estados Básicos</h3>
+                    <div class="input-container" id="state-default"></div>
+                    <div class="input-container" id="state-hover"></div>
+                    <div class="input-container" id="state-focus"></div>
+                    <div class="input-container" id="state-disabled"></div>
+                </div>
+                
+                <div class="test-subsection">
+                    <h3>Estados con Error</h3>
+                    <div class="input-container" id="state-invalid"></div>
+                    <div class="input-container" id="state-invalid-with-helper"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sección 4: Tamaños -->
+        <div class="test-section">
+            <h2>4. Tamaños</h2>
+            <div class="test-grid">
+                <div class="test-subsection">
+                    <h3>Small (32px)</h3>
+                    <div class="input-container" id="size-sm-1"></div>
+                    <div class="input-container" id="size-sm-2"></div>
+                </div>
+                
+                <div class="test-subsection">
+                    <h3>Medium (40px)</h3>
+                    <div class="input-container" id="size-md-1"></div>
+                    <div class="input-container" id="size-md-2"></div>
+                </div>
+                
+                <div class="test-subsection">
+                    <h3>Large (48px)</h3>
+                    <div class="input-container" id="size-lg-1"></div>
+                    <div class="input-container" id="size-lg-2"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sección 5: Tipos Especiales -->
+        <div class="test-section">
+            <h2>5. Tipos Especiales</h2>
+            <div class="test-grid">
+                <div class="test-subsection">
+                    <h3>SELECT</h3>
+                    <div class="input-container" id="select-basic"></div>
+                    <div class="input-container" id="select-with-label"></div>
+                    <div class="input-container" id="select-disabled"></div>
+                </div>
+                
+                <div class="test-subsection">
+                    <h3>TEXTAREA</h3>
+                    <div class="input-container" id="textarea-basic"></div>
+                    <div class="input-container" id="textarea-with-label"></div>
+                    <div class="input-container" id="textarea-disabled"></div>
+                </div>
+                
+                <div class="test-subsection">
+                    <h3>SEARCH</h3>
+                    <div class="input-container" id="search-basic"></div>
+                    <div class="input-container" id="search-with-label"></div>
+                    <div class="input-container" id="search-disabled"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sección 6: Más Tipos Especiales -->
+        <div class="test-section">
+            <h2>6. Más Tipos Especiales</h2>
+            <div class="test-grid">
+                <div class="test-subsection">
+                    <h3>AUTOCOMPLETE</h3>
+                    <div class="input-container" id="autocomplete-basic"></div>
+                    <div class="input-container" id="autocomplete-with-label"></div>
+                    <div class="input-container" id="autocomplete-disabled"></div>
+                </div>
+                
+                <div class="test-subsection">
+                    <h3>CALENDAR</h3>
+                    <div class="input-container" id="calendar-basic"></div>
+                    <div class="input-container" id="calendar-with-label"></div>
+                    <div class="input-container" id="calendar-disabled"></div>
+                </div>
+                
+                <div class="test-subsection">
+                    <h3>PASSWORD</h3>
+                    <div class="input-container" id="password-basic"></div>
+                    <div class="input-container" id="password-with-label"></div>
+                    <div class="input-container" id="password-disabled"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sección 7: Casos de Uso Reales -->
+        <div class="test-section">
+            <h2>7. Casos de Uso Reales</h2>
+            <div class="test-grid">
+                <div class="test-subsection">
+                    <h3>Formulario de Registro</h3>
+                    <div class="input-container" id="register-name"></div>
+                    <div class="input-container" id="register-email"></div>
+                    <div class="input-container" id="register-password"></div>
+                    <div class="input-container" id="register-confirm-password"></div>
+                </div>
+                
+                <div class="test-subsection">
+                    <h3>Formulario de Búsqueda</h3>
+                    <div class="input-container" id="search-query"></div>
+                    <div class="input-container" id="search-category"></div>
+                    <div class="input-container" id="search-date"></div>
+                </div>
+                
+                <div class="test-subsection">
+                    <h3>Formulario de Contacto</h3>
+                    <div class="input-container" id="contact-name"></div>
+                    <div class="input-container" id="contact-email"></div>
+                    <div class="input-container" id="contact-subject"></div>
+                    <div class="input-container" id="contact-message"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="components/input.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Opciones para SELECT y AUTOCOMPLETE
+            const selectOptions = [
+                { value: '1', text: 'Opción 1' },
+                { value: '2', text: 'Opción 2' },
+                { value: '3', text: 'Opción 3' },
+                { value: '4', text: 'Opción 4' },
+                { value: '5', text: 'Opción 5' }
+            ];
+            
+            const autocompleteOptions = [
+                { value: '1', text: 'JavaScript' },
+                { value: '2', text: 'TypeScript' },
+                { value: '3', text: 'React' },
+                { value: '4', text: 'Vue.js' },
+                { value: '5', text: 'Angular' },
+                { value: '6', text: 'Node.js' },
+                { value: '7', text: 'Python' },
+                { value: '8', text: 'Java' }
+            ];
+            
+            // 1. Inputs Básicos
+            createInput({ containerId: 'text-basic', placeholder: 'Texto básico...' });
+            createInput({ containerId: 'text-with-label', label: 'Nombre', placeholder: 'Ingresa tu nombre...' });
+            createInput({ containerId: 'text-with-helper', label: 'Usuario', placeholder: 'Ingresa tu usuario...', helperText: 'Solo letras y números', showHelper: true });
+            
+            createInput({ containerId: 'email-basic', type: 'email', placeholder: 'email@ejemplo.com' });
+            createInput({ containerId: 'email-with-label', type: 'email', label: 'Email', placeholder: 'tu@email.com' });
+            createInput({ containerId: 'email-with-helper', type: 'email', label: 'Email', placeholder: 'tu@email.com', helperText: 'Usaremos este email para contactarte', showHelper: true });
+            
+            createInput({ containerId: 'number-basic', type: 'number', placeholder: '0' });
+            createInput({ containerId: 'number-with-label', type: 'number', label: 'Edad', placeholder: '25' });
+            createInput({ containerId: 'number-with-helper', type: 'number', label: 'Cantidad', placeholder: '1', helperText: 'Mínimo 1, máximo 100', showHelper: true });
+            
+            // 2. Inputs con Iconos
+            createInput({ containerId: 'left-icon-user', leftIcon: 'fa-user', placeholder: 'Usuario...' });
+            createInput({ containerId: 'left-icon-email', leftIcon: 'fa-envelope', placeholder: 'Email...' });
+            createInput({ containerId: 'left-icon-phone', leftIcon: 'fa-phone', placeholder: 'Teléfono...' });
+            
+            createInput({ containerId: 'right-icon-lock', rightIcon: 'fa-lock', placeholder: 'Contraseña...' });
+            createInput({ containerId: 'right-icon-calendar', rightIcon: 'fa-calendar', placeholder: 'Fecha...' });
+            createInput({ containerId: 'right-icon-search', rightIcon: 'fa-search', placeholder: 'Buscar...' });
+            
+            createInput({ containerId: 'both-icons', leftIcon: 'fa-user', rightIcon: 'fa-check', placeholder: 'Usuario válido...' });
+            createInput({ containerId: 'both-icons-2', leftIcon: 'fa-envelope', rightIcon: 'fa-times', placeholder: 'Email inválido...' });
+            
+            // 3. Estados
+            createInput({ containerId: 'state-default', placeholder: 'Estado por defecto...' });
+            createInput({ containerId: 'state-hover', placeholder: 'Estado hover...' });
+            createInput({ containerId: 'state-focus', placeholder: 'Estado focus...' });
+            createInput({ containerId: 'state-disabled', placeholder: 'Estado disabled...', state: 'disabled' });
+            
+            createInput({ containerId: 'state-invalid', placeholder: 'Estado inválido...', state: 'invalid' });
+            createInput({ containerId: 'state-invalid-with-helper', placeholder: 'Estado inválido...', state: 'invalid', helperText: 'Este campo es requerido', showHelper: true });
+            
+            // 4. Tamaños
+            createInput({ containerId: 'size-sm-1', size: 'sm', placeholder: 'Small input...' });
+            createInput({ containerId: 'size-sm-2', size: 'sm', leftIcon: 'fa-user', placeholder: 'Small con icono...' });
+            
+            createInput({ containerId: 'size-md-1', size: 'md', placeholder: 'Medium input...' });
+            createInput({ containerId: 'size-md-2', size: 'md', leftIcon: 'fa-user', placeholder: 'Medium con icono...' });
+            
+            createInput({ containerId: 'size-lg-1', size: 'lg', placeholder: 'Large input...' });
+            createInput({ containerId: 'size-lg-2', size: 'lg', leftIcon: 'fa-user', placeholder: 'Large con icono...' });
+            
+            // 5. Tipos Especiales
+            createInput({ containerId: 'select-basic', type: 'select', placeholder: 'Selecciona una opción...', selectOptions: selectOptions });
+            createInput({ containerId: 'select-with-label', type: 'select', label: 'Categoría', placeholder: 'Elige una categoría...', selectOptions: selectOptions });
+            createInput({ containerId: 'select-disabled', type: 'select', label: 'Categoría (disabled)', placeholder: 'No disponible...', selectOptions: selectOptions, state: 'disabled' });
+            
+            createInput({ containerId: 'textarea-basic', type: 'textarea', placeholder: 'Escribe tu mensaje aquí...' });
+            createInput({ containerId: 'textarea-with-label', type: 'textarea', label: 'Comentario', placeholder: 'Escribe tu comentario...' });
+            createInput({ containerId: 'textarea-disabled', type: 'textarea', label: 'Comentario (disabled)', placeholder: 'No disponible...', state: 'disabled' });
+            
+            createInput({ containerId: 'search-basic', type: 'search', placeholder: 'Buscar...' });
+            createInput({ containerId: 'search-with-label', type: 'search', label: 'Búsqueda', placeholder: 'Escribe tu búsqueda...' });
+            createInput({ containerId: 'search-disabled', type: 'search', label: 'Búsqueda (disabled)', placeholder: 'No disponible...', state: 'disabled' });
+            
+            // 6. Más Tipos Especiales
+            createInput({ containerId: 'autocomplete-basic', type: 'autocomplete', placeholder: 'Escribe un lenguaje...', autocompleteOptions: autocompleteOptions });
+            createInput({ containerId: 'autocomplete-with-label', type: 'autocomplete', label: 'Lenguaje', placeholder: 'Selecciona un lenguaje...', autocompleteOptions: autocompleteOptions });
+            createInput({ containerId: 'autocomplete-disabled', type: 'autocomplete', label: 'Lenguaje (disabled)', placeholder: 'No disponible...', autocompleteOptions: autocompleteOptions, state: 'disabled' });
+            
+            createInput({ containerId: 'calendar-basic', type: 'calendar', placeholder: 'Selecciona una fecha...' });
+            createInput({ containerId: 'calendar-with-label', type: 'calendar', label: 'Fecha de nacimiento', placeholder: 'Selecciona tu fecha...' });
+            createInput({ containerId: 'calendar-disabled', type: 'calendar', label: 'Fecha (disabled)', placeholder: 'No disponible...', state: 'disabled' });
+            
+            createInput({ containerId: 'password-basic', type: 'password', placeholder: 'Ingresa tu contraseña...' });
+            createInput({ containerId: 'password-with-label', type: 'password', label: 'Contraseña', placeholder: 'Ingresa tu contraseña...' });
+            createInput({ containerId: 'password-disabled', type: 'password', label: 'Contraseña (disabled)', placeholder: 'No disponible...', state: 'disabled' });
+            
+            // 7. Casos de Uso Reales
+            createInput({ containerId: 'register-name', label: 'Nombre completo', placeholder: 'Ingresa tu nombre completo...', mandatory: true, mandatoryType: 'obligatorio' });
+            createInput({ containerId: 'register-email', type: 'email', label: 'Email', placeholder: 'tu@email.com', mandatory: true, mandatoryType: 'obligatorio' });
+            createInput({ containerId: 'register-password', type: 'password', label: 'Contraseña', placeholder: 'Mínimo 8 caracteres...', mandatory: true, mandatoryType: 'obligatorio' });
+            createInput({ containerId: 'register-confirm-password', type: 'password', label: 'Confirmar contraseña', placeholder: 'Repite tu contraseña...', mandatory: true, mandatoryType: 'obligatorio' });
+            
+            createInput({ containerId: 'search-query', type: 'search', label: 'Búsqueda', placeholder: '¿Qué estás buscando?...' });
+            createInput({ containerId: 'search-category', type: 'select', label: 'Categoría', placeholder: 'Todas las categorías...', selectOptions: selectOptions });
+            createInput({ containerId: 'search-date', type: 'calendar', label: 'Fecha', placeholder: 'Selecciona una fecha...' });
+            
+            createInput({ containerId: 'contact-name', label: 'Nombre', placeholder: 'Tu nombre...', mandatory: true, mandatoryType: 'obligatorio' });
+            createInput({ containerId: 'contact-email', type: 'email', label: 'Email', placeholder: 'tu@email.com', mandatory: true, mandatoryType: 'obligatorio' });
+            createInput({ containerId: 'contact-subject', label: 'Asunto', placeholder: '¿De qué se trata?...', mandatory: true, mandatoryType: 'obligatorio' });
+            createInput({ containerId: 'contact-message', type: 'textarea', label: 'Mensaje', placeholder: 'Escribe tu mensaje aquí...', mandatory: true, mandatoryType: 'obligatorio' });
+        });
+    </script>
+</body>
+</html>

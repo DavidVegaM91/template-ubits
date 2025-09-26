@@ -45,9 +45,10 @@ This is a UBITS template for creating interfaces quickly with Cursor AI. The val
 1. **🔘 Buttons** → ALWAYS use `ubits-button` + import `components/button.css`
 2. **🚨 Alerts** → ALWAYS use `ubits-alert` + import `components/alert.css`
 3. **🍞 Toasts** → ALWAYS use `showToast()` + import `components/toast.css`
-4. **🧭 Navigation** → ALWAYS use SubNav/Sidebar + import their CSS
-5. **🎨 Colors** → ALWAYS use `var(--ubits-*)` tokens
-6. **📝 Typography** → ALWAYS use official UBITS classes
+4. **📝 Inputs** → ALWAYS use `createInput()` + import `components/input.css`
+5. **🧭 Navigation** → ALWAYS use SubNav/Sidebar + import their CSS
+6. **🎨 Colors** → ALWAYS use `var(--ubits-*)` tokens
+7. **📝 Typography** → ALWAYS use official UBITS classes
 
 ### **VALIDATION MANDATORY:**
 - **🔍 Use `validador-ubits.html`** BEFORE considering task complete
@@ -79,6 +80,10 @@ This is a UBITS template for creating interfaces quickly with Cursor AI. The val
 - **Toast** (Floating notifications) → `components/toast.css` + `components/toast.js`
   - Types: `success`, `info`, `warning`, `error`
   - Features: auto-close, pause on hover, stacking
+- **Input** (Form fields) → `components/input.css` + `components/input.js`
+  - Types: `text`, `email`, `password`, `number`, `tel`, `url`, `select`, `textarea`, `search`, `autocomplete`, `calendar`
+  - Sizes: `sm` (32px), `md` (40px), `lg` (48px)
+  - Features: icons, counter, helper text, mandatory text, scroll infinito automático
 - **Card Content** (Learning cards) → `components/card-content.css` + `components/card-content.js`
   - 11 content types, 35 competencies, 18 providers
 
@@ -666,7 +671,181 @@ showToast('info', 'Ya estás en la documentación 😆', {
 </button>
 ```
 
-#### **6. CARD CONTENT (Learning Content Cards)**
+#### **6. INPUT (Form Fields)**
+```html
+<!-- Container for Input -->
+<div id="mi-input-container"></div>
+
+<!-- JavaScript to create Input -->
+<script>
+// Basic Input
+createInput({
+    containerId: 'mi-input-container',
+    label: 'Nombre',
+    placeholder: 'Escribe tu nombre'
+});
+
+// Input with icons and helper text
+createInput({
+    containerId: 'mi-input-container',
+    label: 'Email',
+    placeholder: 'correo@ejemplo.com',
+    type: 'email',
+    leftIcon: 'fa-envelope',
+    helperText: 'Ingresa tu email válido',
+    showHelper: true
+});
+
+// SELECT with options
+createInput({
+    containerId: 'mi-select',
+    type: 'select',
+    label: 'Categoría',
+    placeholder: 'Selecciona una opción...',
+    selectOptions: [
+        {value: '1', text: 'Opción 1'},
+        {value: '2', text: 'Opción 2'}
+    ]
+});
+
+// TEXTAREA multiline
+createInput({
+    containerId: 'mi-textarea',
+    type: 'textarea',
+    label: 'Comentario',
+    placeholder: 'Escribe tu comentario aquí...'
+});
+
+// SEARCH with clear
+createInput({
+    containerId: 'mi-search',
+    type: 'search',
+    label: 'Búsqueda',
+    placeholder: 'Buscar...'
+});
+
+// AUTOCOMPLETE with suggestions
+createInput({
+    containerId: 'mi-autocomplete',
+    type: 'autocomplete',
+    label: 'Lenguaje',
+    placeholder: 'Escribe un lenguaje...',
+    autocompleteOptions: [
+        {value: '1', text: 'JavaScript'},
+        {value: '2', text: 'TypeScript'}
+    ]
+});
+
+// CALENDAR with date picker
+createInput({
+    containerId: 'mi-calendar',
+    type: 'calendar',
+    label: 'Fecha de nacimiento',
+    placeholder: 'Selecciona una fecha...'
+});
+
+// PASSWORD with toggle show/hide
+createInput({
+    containerId: 'mi-password',
+    type: 'password',
+    label: 'Contraseña',
+    placeholder: 'Ingresa tu contraseña...'
+});
+</script>
+```
+
+**Available types (11 total):**
+- `text` - Input de texto básico
+- `email` - Input de email con validación manual obligatoria
+- `password` - Input de contraseña con toggle mostrar/ocultar
+- `number` - Input numérico
+- `tel` - Input de teléfono con validación manual obligatoria
+- `url` - Input de URL con validación manual obligatoria
+- `select` - Dropdown personalizado con opciones (scroll infinito automático para 50+ opciones)
+- `textarea` - Área de texto multilínea con redimensionamiento vertical
+- `search` - Input de búsqueda con botón limpiar (X) que aparece al escribir
+- `autocomplete` - Input con sugerencias automáticas y botón limpiar
+- `calendar` - Input con date picker personalizado con navegación por mes/año
+
+**Available sizes:**
+- `sm` - Small (32px height)
+- `md` - Medium (40px height) 
+- `lg` - Large (48px height)
+
+**Available states:**
+- `default` - Estado normal
+- `hover` - Al pasar el mouse (borde azul 1px)
+- `focus` - Al enfocar con teclado (borde azul 1px + box-shadow 2px)
+- `invalid` - Estado de error (borde rojo 1px)
+- `disabled` - Estado deshabilitado (fondo gris, cursor not-allowed)
+
+**Features:**
+- Iconos FontAwesome (left/right) con posicionamiento automático
+- Contador de caracteres independiente del helper text
+- Texto mandatory/optional (obligatorio/opcional)
+- **Scroll infinito automático** en SELECT para listas largas (50+ opciones)
+- **Loading visual** con spinner durante la carga
+- **Carga progresiva** de 10 opciones por vez
+- **Validación manual obligatoria** - La automática no funciona confiablemente
+- **Botón limpiar (X)** en SEARCH y AUTOCOMPLETE que aparece al escribir
+- **Toggle mostrar/ocultar** en PASSWORD
+- **Date picker con navegación** por mes/año en CALENDAR
+- Callbacks: onChange, onFocus, onBlur
+- Métodos: getValue(), setValue(), focus(), blur(), disable(), enable(), setState()
+
+**Required files:**
+- `components/input.css`
+- `components/input.js`
+- `ubits-colors.css` (for tokens)
+- `ubits-typography.css` (for typography)
+- `fontawesome-icons.css` (for icons)
+
+**CRITICAL: VALIDACIÓN MANUAL OBLIGATORIA**
+```javascript
+// El componente Input NO incluye validación automática
+// SIEMPRE implementa validación manual:
+
+const emailInput = createInput({
+    containerId: 'mi-email',
+    type: 'email',
+    placeholder: 'correo@ejemplo.com',
+    value: 'email-invalido'
+});
+
+// Agregar validación manual OBLIGATORIA
+setTimeout(() => {
+    const input = document.querySelector('#mi-email input');
+    if (input) {
+        input.addEventListener('input', function() {
+            const value = this.value;
+            if (value.includes('@') && value.includes('.')) {
+                this.style.borderColor = 'var(--ubits-border-1)';
+                this.style.borderWidth = '1px';
+            } else if (value.length > 0) {
+                this.style.borderColor = 'var(--ubits-feedback-accent-error)';
+                this.style.borderWidth = '2px';
+            } else {
+                this.style.borderColor = 'var(--ubits-border-1)';
+                this.style.borderWidth = '1px';
+            }
+        });
+    }
+}, 500);
+```
+
+**REGLAS DE VALIDACIÓN MANUAL:**
+- ✅ **SIEMPRE** implementa validación manual para email, tel, url
+- ✅ **USA estilos inline** - `input.style.borderColor` para garantizar que funcione
+- ✅ **Timeout de 500ms** - Para asegurar que el input esté creado
+- ✅ **Event listener 'input'** - Para validación en tiempo real
+- ❌ **NO existe** validación automática en el componente
+
+**CRITICAL: POSICIONAMIENTO DE DROPDOWN:**
+- ✅ **JavaScript automático** - Aplica `position: relative` al contenedor
+- ✅ **CSS manual** - Si usas CSS, asegúrate de `position: relative` en el contenedor
+- ❌ **Problema común** - Dropdowns aparecen abajo de la página sin `position: relative`
+
+#### **7. CARD CONTENT (Learning Content Cards)**
 ```html
 <!-- Container for Card Content -->
 <div id="mi-contenedor-cards"></div>
@@ -1332,7 +1511,7 @@ document.addEventListener('DOMContentLoaded', function() {
   - Planes, Tareas
 - **UBITS AI** (direct link)
 
-#### **7. TROUBLESHOOTING:**
+#### **8. TROUBLESHOOTING:**
 - **Item not showing active?** Check if CSS rules exist for that item type
 - **JavaScript not working?** Ensure setTimeout is used (DOM loading timing)
 - **Wrong item ID?** Verify the ID matches the floating menu structure
