@@ -32,7 +32,7 @@
         .component-preview {
             position: relative !important;
             border-radius: 8px !important;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+            box-shadow: 0 4px 12px var(--ubits-shadow-1) !important;
             background: var(--ubits-bg-1) !important;
             border: 1px solid var(--ubits-border-1) !important;
         }
@@ -168,7 +168,7 @@
                 </div>
 
                 <!-- Preview Section -->
-                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1); margin-bottom: 40px;">
+                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px var(--ubits-shadow-1); border: 1px solid var(--ubits-border-1); margin-bottom: 40px;">
                     <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
                         <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                         Preview del componente
@@ -186,9 +186,9 @@
                                 Label <span class="ubits-input-mandatory" id="mandatory-text" style="display: none;">(Obligatorio)</span>
                             </label>
                             <div class="ubits-input-wrapper" id="input-wrapper">
-                                <i class="far fa-user ubits-input-icon-left" id="left-icon" style="display: none;"></i>
+                                <i class="far fa-user" id="left-icon" style="display: none;"></i>
                                 <input type="text" class="ubits-input ubits-input--md" id="preview-input" placeholder="Placeholder label">
-                                <i class="far fa-eye ubits-input-icon-right" id="right-icon" style="display: none;"></i>
+                                <i class="far fa-eye" id="right-icon" style="display: none;"></i>
                             </div>
                             <div class="ubits-input-helper" id="helper-text" style="display: none;">
                                 <span>Helper text</span>
@@ -307,7 +307,7 @@
                 </div>
 
                 <!-- Preview de Tipos de Input -->
-                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1); margin-bottom: 40px;">
+                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px var(--ubits-shadow-1); border: 1px solid var(--ubits-border-1); margin-bottom: 40px;">
                     <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
                         <i class="far fa-list" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                         Preview de tipos de input
@@ -470,7 +470,7 @@
                 </div>
 
                 <!-- Características generales -->
-                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1); margin-bottom: 40px;">
+                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px var(--ubits-shadow-1); border: 1px solid var(--ubits-border-1); margin-bottom: 40px;">
                     <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
                         <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                         Características generales
@@ -543,7 +543,7 @@
                 </div>
 
                 <!-- PROMPTS ÚTILES -->
-                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1); margin-bottom: 40px;">
+                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px var(--ubits-shadow-1); border: 1px solid var(--ubits-border-1); margin-bottom: 40px;">
                     <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
                         <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                         Prompts útiles
@@ -797,7 +797,7 @@
                 </div>
 
                 <!-- ACORDEÓN DE DOCUMENTACIÓN TÉCNICA -->
-                <div style="background: var(--ubits-bg-1); border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1); margin-bottom: 40px; overflow: hidden;">
+                <div style="background: var(--ubits-bg-1); border-radius: 16px; box-shadow: 0 4px 20px var(--ubits-shadow-1); border: 1px solid var(--ubits-border-1); margin-bottom: 40px; overflow: hidden;">
                     <!-- Header del acordeón -->
                     <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
                         <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
@@ -859,7 +859,7 @@ createInput({
     &lt;span class="ubits-input-mandatory"&gt;(obligatorio)&lt;/span&gt;
 &lt;/label&gt;
 &lt;div style="position: relative; display: inline-block; width: 100%;"&gt;
-    &lt;i class="far fa-user ubits-input-icon ubits-input-icon--left"&gt;&lt;/i&gt;
+    &lt;i class="far fa-user"&gt;&lt;/i&gt;
     &lt;input type="text" class="ubits-input ubits-input--md" placeholder="Escribe tu nombre" maxlength="50"&gt;
 &lt;/div&gt;
 &lt;div class="ubits-input-helper"&gt;
