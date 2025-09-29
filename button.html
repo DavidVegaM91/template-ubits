@@ -238,6 +238,35 @@
                     <!-- Alert Warning -->
                     <div id="button-warning-alert" style="margin-bottom: 32px;"></div>
 
+                    <!-- Prompt 0: Crear botón UBITS -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Crear botón UBITS
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('button-prompt-0')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="button-prompt-0">Crea un botón UBITS con estas características:
+- Texto: [especifica texto]
+- Variante: [primary/secondary/tertiary]
+- Tamaño: [sm/md/lg]
+- Icono: [especifica icono FontAwesome]
+- Ubicación: [describe en que parte del layout debe estar el botón]
+
+IMPORTANTE: Usa EXACTAMENTE esta estructura:
+&lt;button class="ubits-button ubits-button--[variante] ubits-button--[tamaño]"&gt;
+    &lt;i class="far fa-[icono]"&gt;&lt;/i&gt;
+    &lt;span&gt;[texto]&lt;/span&gt;
+&lt;/button&gt;
+
+IMPORTA: components/button.css</code></pre>
+                        </div>
+                    </div>
+
                     <!-- Prompt 1: Cambiar variante del botón -->
                     <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
                         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
