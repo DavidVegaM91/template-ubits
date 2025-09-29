@@ -296,6 +296,48 @@ function showAlert(type, message, options = {}) {
 // Make helper function available globally
 window.showAlert = showAlert;
 
+/* ========================================
+   DOCUMENTACIÓN DE RENDERIZADO UBITS
+   ======================================== */
+
+/**
+ * RENDERIZADO DEL COMPONENTE ALERT
+ * 
+ * REQUISITOS OBLIGATORIOS:
+ * 1. CSS: <link rel="stylesheet" href="components/alert.css">
+ * 2. JS: <script src="components/alert.js"></script>
+ * 3. FontAwesome: <link rel="stylesheet" href="fontawesome-icons.css">
+ * 
+ * OPCIÓN 1: HTML DIRECTO (Recomendado para alerts estáticos)
+ * ```html
+ * <div class="ubits-alert ubits-alert--success">
+ *   <div class="ubits-alert__icon">
+ *     <i class="far fa-check-circle"></i>
+ *   </div>
+ *   <div class="ubits-alert__content">
+ *     <div class="ubits-alert__text">Tu mensaje aquí</div>
+ *   </div>
+ *   <button class="ubits-alert__close">
+ *     <i class="far fa-times"></i>
+ *   </button>
+ * </div>
+ * ```
+ * 
+ * OPCIÓN 2: JAVASCRIPT (Recomendado para alerts dinámicos)
+ * ```html
+ * <div id="alert-container"></div>
+ * <script>
+ * showAlert('success', 'Tu mensaje aquí', {
+ *   containerId: 'alert-container',
+ *   noClose: true
+ * });
+ * </script>
+ * ```
+ * 
+ * TIPOS DISPONIBLES: 'success', 'info', 'warning', 'error'
+ * ICONOS: fa-check-circle, fa-info-circle, fa-exclamation-triangle, fa-times-circle
+ */
+
 // Export for module systems
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { UBITSAlert, UBITSAlertManager, showAlert };

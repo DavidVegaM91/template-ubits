@@ -347,3 +347,50 @@ loadCardContent('mi-contenedor', [
 🔍 VER TODAS LAS OPCIONES:
 console.log(window.CARD_CONTENT_OPTIONS);
 `);
+
+/* ========================================
+   DOCUMENTACIÓN DE RENDERIZADO UBITS
+   ======================================== */
+
+/**
+ * RENDERIZADO DEL COMPONENTE CARD CONTENT
+ * 
+ * REQUISITOS OBLIGATORIOS:
+ * 1. CSS: <link rel="stylesheet" href="components/card-content.css">
+ * 2. JS: <script src="components/card-content.js"></script>
+ * 3. FontAwesome: <link rel="stylesheet" href="fontawesome-icons.css">
+ * 4. UBITS Base: <link rel="stylesheet" href="ubits-colors.css">
+ * 5. UBITS Typography: <link rel="stylesheet" href="ubits-typography.css">
+ * 
+ * IMPLEMENTACIÓN BÁSICA:
+ * ```html
+ * <!-- Container para las cards -->
+ * <div id="mi-contenedor-cards"></div>
+ * 
+ * <!-- JavaScript -->
+ * <script>
+ * const cardsData = [
+ *   {
+ *     type: 'Curso',
+ *     title: 'Mi contenido de aprendizaje',
+ *     provider: 'UBITS',
+ *     providerLogo: 'images/Favicons/UBITS.jpg',
+ *     duration: '60 min',
+ *     level: 'Intermedio',
+ *     progress: 75,
+ *     status: 'progress',
+ *     image: 'images/cards-learn/mi-imagen.jpg',
+ *     competency: 'Product design',
+ *     language: 'Español'
+ *   }
+ * ];
+ * loadCardContent('mi-contenedor-cards', cardsData);
+ * </script>
+ * ```
+ * 
+ * TIPOS DE CONTENIDO: Curso, Cápsula, Charla, Artículo, Podcast, Libro, Ideas de libro, Caso de estudio, Documento técnico, Ejercicios de práctica, Ruta de aprendizaje
+ * COMPETENCIAS: 35 competencias oficiales UBITS (Product design, Desarrollo de software, Liderazgo, etc.)
+ * PROVEEDORES: 18 aliados oficiales (UBITS, Microsoft, TED, AWS, etc.)
+ * NIVELES: Básico, Intermedio, Avanzado
+ * ESTADOS: default, progress, completed
+ */

@@ -42,12 +42,130 @@ This is a UBITS template for creating interfaces quickly with Cursor AI. The val
 4. **✅ VALIDATE**: Use `validador-ubits.html` before finishing (MANDATORY)
 
 ### **WHEN CREATING UI ELEMENTS:**
-1. **🔘 Buttons** → ALWAYS use `ubits-button` + import `components/button.css`
-2. **🚨 Alerts** → ALWAYS use `ubits-alert` + import `components/alert.css`
-3. **🍞 Toasts** → ALWAYS use `showToast()` + import `components/toast.css`
-4. **📝 Inputs** → ALWAYS use `createInput()` + import `components/input.css`
-5. **🧭 Navigation** → ALWAYS use SubNav/Sidebar + import their CSS
-6. **🎨 Colors** → ALWAYS use `var(--ubits-*)` tokens
+1. **🔘 Buttons** → ALWAYS use `ubits-button` + import `components/button.css` - **RENDERIZADO: HTML directo**
+2. **🚨 Alerts** → ALWAYS use `ubits-alert` + import `components/alert.css` - **RENDERIZADO: showAlert() o HTML directo**
+3. **🍞 Toasts** → ALWAYS use `showToast()` + import `components/toast.css` - **RENDERIZADO: showToast() function**
+4. **📝 Inputs** → ALWAYS use `createInput()` + import `components/input.css` - **RENDERIZADO: createInput() function**
+5. **🎴 Cards** → ALWAYS use `loadCardContent()` + import `components/card-content.css` - **RENDERIZADO: loadCardContent() function**
+6. **🧭 Navigation** → ALWAYS use SubNav/Sidebar + import their CSS
+7. **🎨 Colors** → ALWAYS use `var(--ubits-*)` tokens
+
+### **🔧 COMPONENT RENDERING REQUIREMENTS:**
+**CRITICAL: Each UBITS component has specific rendering requirements:**
+
+#### **Button Component (HTML Direct):**
+```html
+<!-- CSS Required -->
+<link rel="stylesheet" href="components/button.css">
+<link rel="stylesheet" href="fontawesome-icons.css">
+
+<!-- HTML Structure -->
+<button class="ubits-button ubits-button--primary ubits-button--md">
+    <i class="far fa-check"></i>
+    <span>Button text</span>
+</button>
+```
+
+**🚨 CRITICAL BUTTON RULES:**
+- ❌ **NEVER create custom buttons** like `<button class="my-button">`
+- ❌ **NEVER override button styles** with custom CSS
+- ❌ **NEVER create button variants** that don't exist
+- ✅ **ALWAYS use existing UBITS button classes**
+- ✅ **ALWAYS import required CSS files**
+- ✅ **ALWAYS test button rendering** before finishing
+
+**CRITICAL: PROHIBITED BUTTON CLASSES:**
+- ❌ **`ubits-button__icon`** - DOES NOT EXIST, will break FontAwesome icons
+- ❌ **`span`** - Not a valid class name, use `<span>` without class
+- ❌ **`ubits-button__text`** - DOES NOT EXIST
+- ❌ **`ubits-button__label`** - DOES NOT EXIST
+
+**CORRECT BUTTON STRUCTURE:**
+```html
+<!-- ✅ CORRECT: Use official UBITS button structure -->
+<button class="ubits-button ubits-button--primary ubits-button--md">
+    <i class="far fa-check"></i>
+    <span>Button text</span>
+</button>
+
+<!-- ❌ WRONG: Using fictitious classes -->
+<button class="ubits-button ubits-button--primary ubits-button--md">
+    <i class="ubits-button__icon far fa-check"></i>
+    <span class="span">Button text</span>
+</button>
+```
+
+#### **Alert Component (showAlert() or HTML):**
+```html
+<!-- CSS Required -->
+<link rel="stylesheet" href="components/alert.css">
+<link rel="stylesheet" href="fontawesome-icons.css">
+
+<!-- JavaScript Required -->
+<script src="components/alert.js"></script>
+
+<!-- Usage -->
+<div id="alert-container"></div>
+<script>showAlert('success', 'Message', {containerId: 'alert-container'});</script>
+```
+
+#### **Toast Component (showToast() function):**
+```html
+<!-- CSS Required -->
+<link rel="stylesheet" href="components/toast.css">
+<link rel="stylesheet" href="fontawesome-icons.css">
+
+<!-- JavaScript Required -->
+<script src="components/toast.js"></script>
+
+<!-- Container Required -->
+<div id="ubits-toast-container"></div>
+
+<!-- Usage -->
+<script>showToast('success', 'Message');</script>
+```
+
+#### **Input Component (createInput() function):**
+```html
+<!-- CSS Required -->
+<link rel="stylesheet" href="components/input.css">
+<link rel="stylesheet" href="fontawesome-icons.css">
+
+<!-- JavaScript Required -->
+<script src="components/input.js"></script>
+
+<!-- Usage -->
+<div id="input-container"></div>
+<script>
+createInput({
+    containerId: 'input-container',
+    label: 'Name',
+    placeholder: 'Enter your name',
+    type: 'text'
+});
+</script>
+```
+
+#### **Card Content Component (loadCardContent() function):**
+```html
+<!-- CSS Required -->
+<link rel="stylesheet" href="components/card-content.css">
+<link rel="stylesheet" href="fontawesome-icons.css">
+
+<!-- JavaScript Required -->
+<script src="components/card-content.js"></script>
+
+<!-- Usage -->
+<div id="cards-container"></div>
+<script>
+loadCardContent('cards-container', [{
+    type: 'Curso',
+    title: 'My Course',
+    provider: 'UBITS',
+    // ... other properties
+}]);
+</script>
+```
 7. **📝 Typography** → ALWAYS use official UBITS classes
 
 ### **VALIDATION MANDATORY:**

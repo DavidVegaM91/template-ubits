@@ -566,33 +566,85 @@
             const results = [];
             let success = 0, warnings = 0, errors = 0;
 
-            // Mapeo de componentes y sus CSS requeridos
-            const componentCSSMap = {
-                'ubits-button': 'components/button.css',
-                'ubits-alert': 'components/alert.css',
-                'showToast': 'components/toast.css',
-                'createInput': 'components/input.css',
-                'loadSubNav': 'components/sub-nav.css',
-                'loadSidebar': 'components-sidebar.css',
-                'loadTabBar': 'components/tab-bar.css',
-                'loadFloatingMenu': 'components/floating-menu.css',
-                'loadProfileMenu': 'components/profile-menu.css',
-                'loadCardContent': 'components/card-content.css'
+            // Mapeo de componentes y sus archivos requeridos
+            const componentRequirements = {
+                'ubits-button': { 
+                    css: 'components/button.css', 
+                    js: null, // Button es puramente CSS
+                    type: 'HTML directo'
+                },
+                'ubits-alert': { 
+                    css: 'components/alert.css', 
+                    js: 'components/alert.js',
+                    type: 'HTML directo o showAlert()'
+                },
+                'showToast': { 
+                    css: 'components/toast.css', 
+                    js: 'components/toast.js',
+                    type: 'showToast() function'
+                },
+                'createInput': { 
+                    css: 'components/input.css', 
+                    js: 'components/input.js',
+                    type: 'createInput() function'
+                },
+                'loadSubNav': { 
+                    css: 'components/sub-nav.css', 
+                    js: 'components/sub-nav.js',
+                    type: 'loadSubNav() function'
+                },
+                'loadSidebar': { 
+                    css: 'components-sidebar.css', 
+                    js: 'components/sidebar.js',
+                    type: 'loadSidebar() function'
+                },
+                'loadTabBar': { 
+                    css: 'components/tab-bar.css', 
+                    js: 'components/tab-bar.js',
+                    type: 'loadTabBar() function'
+                },
+                'loadFloatingMenu': { 
+                    css: 'components/floating-menu.css', 
+                    js: 'components/floating-menu.js',
+                    type: 'loadFloatingMenu() function'
+                },
+                'loadProfileMenu': { 
+                    css: 'components/profile-menu.css', 
+                    js: 'components/profile-menu.js',
+                    type: 'loadProfileMenu() function'
+                },
+                'loadCardContent': { 
+                    css: 'components/card-content.css', 
+                    js: 'components/card-content.js',
+                    type: 'loadCardContent() function'
+                }
             };
 
-            // Verificar componentes y sus CSS
+            // Verificar componentes y sus archivos requeridos
             let componentsFound = 0;
-            let missingCSS = [];
+            let missingFiles = [];
 
-            Object.entries(componentCSSMap).forEach(([component, cssFile]) => {
+            Object.entries(componentRequirements).forEach(([component, requirements]) => {
                 if (html.includes(component)) {
                     componentsFound++;
                     
-                    // Verificar si el CSS está importado
-                    if (!html.includes(cssFile)) {
-                        missingCSS.push({
+                    // Verificar CSS
+                    if (!html.includes(requirements.css)) {
+                        missingFiles.push({
                             component: component,
-                            cssFile: cssFile
+                            file: requirements.css,
+                            type: 'CSS',
+                            description: `CSS requerido para ${component}`
+                        });
+                    }
+                    
+                    // Verificar JavaScript (si es requerido)
+                    if (requirements.js && !html.includes(requirements.js)) {
+                        missingFiles.push({
+                            component: component,
+                            file: requirements.js,
+                            type: 'JavaScript',
+                            description: `JavaScript requerido para ${component}`
                         });
                     }
                 }
@@ -607,13 +659,18 @@
                 success++;
             }
 
-            // Reportar CSS faltantes
-            if (missingCSS.length > 0) {
-                missingCSS.forEach(missing => {
+            // Reportar archivos faltantes
+            if (missingFiles.length > 0) {
+                missingFiles.forEach(missing => {
+                    const fileType = missing.type === 'CSS' ? 'CSS' : 'JavaScript';
+                    const importTag = missing.type === 'CSS' ? 
+                        `<link rel="stylesheet" href="${missing.file}">` : 
+                        `<script src="${missing.file}"></script>`;
+                    
                     results.push({
                         type: 'error',
-                        title: `CSS faltante para ${missing.component}`,
-                        description: `El componente ${missing.component} requiere: <link rel="stylesheet" href="${missing.cssFile}">`
+                        title: `${fileType} faltante para ${missing.component}`,
+                        description: `El componente ${missing.component} requiere: ${importTag}`
                     });
                     errors++;
                 });

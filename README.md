@@ -32,11 +32,61 @@ Una **plantilla lista para usar** que permite a **Product Managers**, **Diseñad
 - **TabBar** - Navegación móvil (opciones: modulos, perfil, modo-oscuro)
 
 ### **Componentes de UI:**
-- **Button** - Botones de acción (variantes: primary, secondary, tertiary; tamaños: sm, md, lg)
-- **Alert** - Notificaciones (tipos: success, info, warning, error; con/sin botón cerrar)
-- **Toast** - Notificaciones flotantes (tipos: success, info, warning, error; auto-cierre, pausa en hover)
-- **Input** - Campos de entrada (11 tipos: text, email, password, number, tel, url, select, textarea, search, autocomplete, calendar; tamaños: sm, md, lg; estados: default, hover, focus, invalid, disabled; con iconos, contador, helper text, mandatory/optional, validación manual, scroll infinito automático)
-- **Card Content** - Cards para contenidos de aprendizaje (11 tipos, 35 competencias, 18 aliados, estados de progreso)
+- **Button** - Botones de acción (variantes: primary, secondary, tertiary; tamaños: sm, md, lg) - **RENDERIZADO: HTML directo**
+- **Alert** - Notificaciones (tipos: success, info, warning, error; con/sin botón cerrar) - **RENDERIZADO: showAlert() o HTML directo**
+- **Toast** - Notificaciones flotantes (tipos: success, info, warning, error; auto-cierre, pausa en hover) - **RENDERIZADO: showToast()**
+- **Input** - Campos de entrada (11 tipos: text, email, password, number, tel, url, select, textarea, search, autocomplete, calendar; tamaños: sm, md, lg; estados: default, hover, focus, invalid, disabled; con iconos, contador, helper text, mandatory/optional, validación manual, scroll infinito automático) - **RENDERIZADO: createInput()**
+- **Card Content** - Cards para contenidos de aprendizaje (11 tipos, 35 competencias, 18 aliados, estados de progreso) - **RENDERIZADO: loadCardContent()**
+
+### **🔧 REQUISITOS DE RENDERIZADO:**
+Todos los componentes UBITS requieren imports obligatorios:
+
+```html
+<!-- CSS OBLIGATORIO para cada componente usado -->
+<link rel="stylesheet" href="components/button.css">
+<link rel="stylesheet" href="components/alert.css">
+<link rel="stylesheet" href="components/toast.css">
+<link rel="stylesheet" href="components/input.css">
+<link rel="stylesheet" href="components/card-content.css">
+
+<!-- JavaScript OBLIGATORIO para componentes dinámicos -->
+<script src="components/alert.js"></script>
+<script src="components/toast.js"></script>
+<script src="components/input.js"></script>
+<script src="components/card-content.js"></script>
+
+<!-- Base UBITS SIEMPRE REQUERIDA -->
+<link rel="stylesheet" href="ubits-colors.css">
+<link rel="stylesheet" href="ubits-typography.css">
+<link rel="stylesheet" href="fontawesome-icons.css">
+```
+
+### **🚨 PROBLEMAS COMUNES CON COMPONENTES:**
+
+#### **Button Component - Errores Frecuentes:**
+```html
+<!-- ❌ INCORRECTO - Botones sin estilos -->
+<button class="my-custom-button">Texto</button>
+<button class="btn btn-primary">Texto</button>
+
+<!-- ❌ INCORRECTO - Clases inventadas -->
+<button class="ubits-button ubits-button--primary">
+    <i class="ubits-button__icon far fa-check"></i>
+    <span class="ubits-button__text">Texto</span>
+</button>
+
+<!-- ✅ CORRECTO - Estructura UBITS oficial -->
+<button class="ubits-button ubits-button--primary ubits-button--md">
+    <i class="far fa-check"></i>
+    <span>Texto</span>
+</button>
+```
+
+**REGLAS CRÍTICAS PARA BUTTONS:**
+- ❌ **NUNCA crear botones custom** cuando existe `ubits-button`
+- ❌ **NUNCA usar clases inventadas** como `ubits-button__icon`
+- ✅ **SIEMPRE importar** `components/button.css` y `fontawesome-icons.css`
+- ✅ **SIEMPRE usar estructura oficial** UBITS
 
 ### **Componentes de documentación:**
 - **Docs Sidebar** - Navegación para documentación (secciones: introduccion, sidebar, sub-nav, tab-bar, button, alert, card-content)

@@ -282,6 +282,23 @@
                                     <span>Copiar</span>
                                 </button>
                             </div>
+                            
+                            <!-- REQUISITOS DE RENDERIZADO -->
+                            <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: 1px solid var(--ubits-border-1); margin-bottom: 16px;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">🔧 REQUISITOS OBLIGATORIOS:</h3>
+                                <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.5;">
+                                    <strong>CSS Requerido:</strong><br>
+                                    • <code>components/toast.css</code> - Estilos del componente<br>
+                                    • <code>fontawesome-icons.css</code> - Iconos FontAwesome<br>
+                                    • <code>ubits-colors.css</code> - Tokens de color UBITS<br><br>
+                                    <strong>JavaScript Requerido:</strong><br>
+                                    • <code>components/toast.js</code> - Función showToast()<br><br>
+                                    <strong>Container Requerido:</strong><br>
+                                    • <code>&lt;div id="ubits-toast-container"&gt;&lt;/div&gt;</code> - Container obligatorio<br><br>
+                                    <strong>Renderizado:</strong> showToast() function
+                                </div>
+                            </div>
+                            
                             <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
                                 <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="implement-code">&lt;!-- 1. IMPORTAR ARCHIVOS NECESARIOS --&gt;
 &lt;link rel="stylesheet" href="ubits-colors.css"&gt;

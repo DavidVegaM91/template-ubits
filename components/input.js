@@ -1528,3 +1528,43 @@ function createInput(options = {}) {
 
 // Exportar función para uso global
 window.createInput = createInput;
+
+/* ========================================
+   DOCUMENTACIÓN DE RENDERIZADO UBITS
+   ======================================== */
+
+/**
+ * RENDERIZADO DEL COMPONENTE INPUT
+ * 
+ * REQUISITOS OBLIGATORIOS:
+ * 1. CSS: <link rel="stylesheet" href="components/input.css">
+ * 2. JS: <script src="components/input.js"></script>
+ * 3. FontAwesome: <link rel="stylesheet" href="fontawesome-icons.css">
+ * 4. UBITS Base: <link rel="stylesheet" href="ubits-colors.css">
+ * 5. UBITS Typography: <link rel="stylesheet" href="ubits-typography.css">
+ * 
+ * IMPLEMENTACIÓN BÁSICA:
+ * ```html
+ * <!-- Container para el input -->
+ * <div id="mi-input-container"></div>
+ * 
+ * <!-- JavaScript -->
+ * <script>
+ * createInput({
+ *   containerId: 'mi-input-container',
+ *   label: 'Nombre',
+ *   placeholder: 'Escribe tu nombre',
+ *   type: 'text',
+ *   size: 'md',
+ *   leftIcon: 'fa-user',
+ *   helperText: 'Ingresa tu nombre completo',
+ *   showHelper: true
+ * });
+ * </script>
+ * ```
+ * 
+ * TIPOS DISPONIBLES: text, email, password, number, tel, url, select, textarea, search, autocomplete, calendar
+ * TAMAÑOS: sm (32px), md (40px), lg (48px)
+ * ESTADOS: default, hover, focus, invalid, disabled
+ * FEATURES: iconos, contador, helper text, validación manual, scroll infinito (SELECT)
+ */

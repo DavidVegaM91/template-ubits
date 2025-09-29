@@ -176,6 +176,40 @@
 
   // Expose globally
   window.showToast = showToast;
+
+/* ========================================
+   DOCUMENTACIÓN DE RENDERIZADO UBITS
+   ======================================== */
+
+/**
+ * RENDERIZADO DEL COMPONENTE TOAST
+ * 
+ * REQUISITOS OBLIGATORIOS:
+ * 1. CSS: <link rel="stylesheet" href="components/toast.css">
+ * 2. JS: <script src="components/toast.js"></script>
+ * 3. FontAwesome: <link rel="stylesheet" href="fontawesome-icons.css">
+ * 4. Container: <div id="ubits-toast-container"></div>
+ * 
+ * IMPLEMENTACIÓN BÁSICA:
+ * ```html
+ * <!-- Container obligatorio -->
+ * <div id="ubits-toast-container"></div>
+ * 
+ * <!-- JavaScript -->
+ * <script>
+ * showToast('success', '¡Operación exitosa!');
+ * showToast('info', 'Información importante', { duration: 3500 });
+ * showToast('warning', 'Advertencia', { noClose: true });
+ * showToast('error', 'Error crítico', { 
+ *   action: { label: 'Reintentar', onClick: () => retry() } 
+ * });
+ * </script>
+ * ```
+ * 
+ * TIPOS DISPONIBLES: 'success', 'info', 'warning', 'error'
+ * DURACIONES: success/info (3.5s), warning (5s), error (6.5s)
+ * FEATURES: auto-close, pause on hover, stacking (max 3), accessible
+ */
 })();
 
 

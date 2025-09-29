@@ -436,8 +436,24 @@
                                         <span>Copiar</span>
                                     </button>
                                 </div>
+                                
+                                <!-- REQUISITOS DE RENDERIZADO -->
+                                <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: 1px solid var(--ubits-border-1); margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">🔧 REQUISITOS OBLIGATORIOS:</h3>
+                                    <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.5;">
+                                        <strong>CSS Requerido:</strong><br>
+                                        • <code>components/button.css</code> - Estilos del componente<br>
+                                        • <code>fontawesome-icons.css</code> - Iconos FontAwesome<br>
+                                        • <code>ubits-colors.css</code> - Tokens de color UBITS<br>
+                                        • <code>ubits-typography.css</code> - Tipografía UBITS<br><br>
+                                        <strong>JavaScript:</strong> NO requerido - Componente puramente CSS<br><br>
+                                        <strong>Renderizado:</strong> HTML directo con clases UBITS
+                                    </div>
+                                </div>
+                                
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="implementation-code">&lt;!-- Botón primario mediano --&gt;
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="implementation-code">&lt;!-- IMPLEMENTACIÓN BÁSICA --&gt;
+&lt;!-- Botón primario mediano --&gt;
 &lt;button class="ubits-button ubits-button--primary ubits-button--md"&gt;
   &lt;i class="far fa-check"&gt;&lt;/i&gt;
   &lt;span&gt;Confirmar&lt;/span&gt;
