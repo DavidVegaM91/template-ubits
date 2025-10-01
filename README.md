@@ -364,7 +364,6 @@ loadCardContent('mi-contenedor-cards', [
 
 ### ✅ **Estructura modular (NUEVO):**
 - Sistema de secciones y widgets fácil de personalizar
-- Inspirado en el éxito de `profile.html`
 - Permite añadir, modificar y reorganizar contenido fácilmente
 - Compatible con todas las páginas del template
 
@@ -372,7 +371,7 @@ loadCardContent('mi-contenedor-cards', [
 
 ### **¿Qué es la estructura modular?**
 
-Un sistema inspirado en el éxito que tuvo **Kike Peña** personalizando `profile.html`. Permite a **cualquier usuario** (Product Managers, Diseñadores, etc.) personalizar páginas fácilmente usando **Cursor AI** con prompts simples.
+Un sistema inspirado que permite a **cualquier usuario** (Product Managers, Diseñadores, etc.) personalizar páginas fácilmente usando **Cursor AI** con prompts simples.
 
 ### **🎯 Cómo funciona:**
 
@@ -435,6 +434,64 @@ Un sistema inspirado en el éxito que tuvo **Kike Peña** personalizando `profil
 5. **Consistente** - Misma experiencia en todas las páginas
 6. **Sin conocimiento técnico** - Solo necesitas describir lo que quieres
 
+## 🚨 MANDATORY: VERIFICAR RECURSOS DISPONIBLES
+
+**ANTES de usar CUALQUIER imagen, competencia o proveedor:**
+
+1. **SIEMPRE revisa `images/cards-learn/`** para imágenes de cursos (85 imágenes disponibles)
+2. **SIEMPRE revisa `images/Favicons/`** para logos de proveedores (18 proveedores disponibles)
+3. **SIEMPRE revisa `images/empty-states/`** para imágenes de estados vacíos (2 archivos SVG)
+4. **SIEMPRE revisa `images/Profile-image.jpg`** para avatar de usuario
+5. **SIEMPRE revisa `components/card-content.js`** para lista oficial de competencias (35 competencias)
+6. **NUNCA inventes nombres de recursos** que no existen
+7. **SIEMPRE verifica** las rutas de recursos antes de implementar
+8. **Para otras imágenes** - Usa servicios externos como Unsplash con atribución adecuada
+
+**Esto previene imágenes rotas y datos inválidos.**
+
+## 🎯 COMPETENCIAS OFICIALES UBITS (35 TOTAL)
+
+### **Competencias disponibles:**
+- `Accountability`
+- `Administración de negocios`
+- `Agilidad`
+- `Comunicación`
+- `Cumplimiento (Compliance)`
+- `Data skills`
+- `Desarrollo de software`
+- `Desarrollo web`
+- `Digital skills`
+- `e-Commerce`
+- `Emprendimiento`
+- `Experiencia del cliente`
+- `Gestión de procesos y operaciones`
+- `Gestión de proyectos`
+- `Gestión de recursos tecnológicos`
+- `Gestión del cambio`
+- `Gestión del riesgo`
+- `Gestión financiera`
+- `Herramientas tecnológicas`
+- `Inglés`
+- `Innovación`
+- `Inteligencia emocional`
+- `Lenguajes de Programación`
+- `Liderazgo`
+- `Marketing`
+- `Marketing digital`
+- `Negociación`
+- `People management`
+- `Product design`
+- `Productividad`
+- `Resolución de problemas`
+- `Trabajo en equipo`
+- `Ventas`
+- `Wellness`
+
+### **⚠️ REGLAS CRÍTICAS:**
+- **NUNCA inventes competencias** que no existen
+- **SIEMPRE usa** solo competencias de esta lista oficial
+- **SIEMPRE verifica** la ortografía exacta de la competencia
+
 ## 🚨 Solución de problemas
 
 ### **Si los colores no coinciden:**
@@ -446,6 +503,11 @@ Un sistema inspirado en el éxito que tuvo **Kike Peña** personalizando `profil
 1. **Verificar que importas los archivos correctos** - CSS y JS del componente
 2. **Revisar la documentación** - En la página específica del componente
 3. **Usar el código de ejemplo** - Copia exactamente como está documentado
+
+### **Si las imágenes no cargan:**
+1. **Verificar rutas de imágenes** - Usa solo recursos de las carpetas oficiales
+2. **Revisar nombres de archivos** - Respeta mayúsculas y minúsculas exactas
+3. **Usar competencias oficiales** - Solo las 35 competencias de la lista oficial
 
 ## 📝 Componente Input - Guía rápida
 

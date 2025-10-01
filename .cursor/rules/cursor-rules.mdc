@@ -1681,6 +1681,64 @@ document.addEventListener('DOMContentLoaded', function() {
 - Skipping validation before finishing
 - Asking users to do technical tasks
 
+## 🚨 MANDATORY: VERIFY AVAILABLE RESOURCES
+
+**BEFORE using ANY image, competency, or provider:**
+
+1. **ALWAYS check `images/cards-learn/`** for available course images (85 images available)
+2. **ALWAYS check `images/Favicons/`** for available provider logos (18 providers available)
+3. **ALWAYS check `images/empty-states/`** for available empty state images (2 SVG files)
+4. **ALWAYS check `images/Profile-image.jpg`** for user avatar
+5. **ALWAYS check `components/card-content.js`** for official competencies list (35 competencies)
+6. **NEVER invent resource names** that don't exist
+7. **ALWAYS verify** resource paths before implementation
+8. **For other images** - Use external services like Unsplash with proper attribution
+
+**This prevents broken images and invalid data.**
+
+## 🎯 COMPETENCIES OFFICIAL UBITS (35 TOTAL)
+
+### **Available competencies:**
+- `Accountability`
+- `Administración de negocios`
+- `Agilidad`
+- `Comunicación`
+- `Cumplimiento (Compliance)`
+- `Data skills`
+- `Desarrollo de software`
+- `Desarrollo web`
+- `Digital skills`
+- `e-Commerce`
+- `Emprendimiento`
+- `Experiencia del cliente`
+- `Gestión de procesos y operaciones`
+- `Gestión de proyectos`
+- `Gestión de recursos tecnológicos`
+- `Gestión del cambio`
+- `Gestión del riesgo`
+- `Gestión financiera`
+- `Herramientas tecnológicas`
+- `Inglés`
+- `Innovación`
+- `Inteligencia emocional`
+- `Lenguajes de Programación`
+- `Liderazgo`
+- `Marketing`
+- `Marketing digital`
+- `Negociación`
+- `People management`
+- `Product design`
+- `Productividad`
+- `Resolución de problemas`
+- `Trabajo en equipo`
+- `Ventas`
+- `Wellness`
+
+### **⚠️ CRITICAL RULES:**
+- **NEVER invent competencies** that don't exist
+- **ALWAYS use** only competencies from this official list
+- **ALWAYS verify** competency spelling exactly as listed
+
 ## 🚨 NO SOBRESCRIBIR COMPONENTES OFICIALES UBITS
 
 **CRITICAL RULE:** NUNCA crear estilos custom para componentes oficiales en archivos globales.
