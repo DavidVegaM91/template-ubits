@@ -1677,7 +1677,32 @@ document.addEventListener('DOMContentLoaded', function() {
 - Creating custom buttons when `ubits-button` exists
 - Using hardcoded colors instead of UBITS tokens
 - Using components without importing their CSS
+- **🚨 NEVER override official UBITS components** - Don't create custom styles for `.course-card`, `.ubits-alert`, `.ubits-button`, etc. in global CSS files
 - Skipping validation before finishing
 - Asking users to do technical tasks
+
+## 🚨 NO SOBRESCRIBIR COMPONENTES OFICIALES UBITS
+
+**CRITICAL RULE:** NUNCA crear estilos custom para componentes oficiales en archivos globales.
+
+### **❌ PROHIBIDO:**
+- Crear estilos para `.course-card`, `.course-image`, `.course-content` en `profile.css` o `styles.css`
+- Crear estilos para `.ubits-alert`, `.ubits-button`, `.ubits-input` en archivos globales
+- Sobrescribir cualquier clase que pertenezca a componentes oficiales UBITS
+
+### **✅ PERMITIDO:**
+- Usar componentes oficiales de `/components/` sin modificar
+- Crear clases wrapper específicas (ej: `.mi-seccion .course-card`)
+- Usar selectores contextuales para personalización limitada
+
+### **🔍 ARCHIVOS A REVISAR:**
+- `profile.css` - Puede tener código legacy
+- `styles.css` - Solo estilos globales del layout
+- Cualquier CSS custom debe usar selectores específicos, NO globales
+
+### **🛠️ SI ENCUENTRAS CONFLICTOS:**
+1. **ELIMINA** los estilos legacy que sobrescriben componentes oficiales
+2. **DEJA** un comentario explicativo
+3. **USA** el componente oficial sin modificar
 
 **🎯 REMEMBER: Speed + UBITS Identity = Project Value**

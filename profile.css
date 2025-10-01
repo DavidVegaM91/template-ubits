@@ -1,28 +1,9 @@
 /* Profile.css - Estilos específicos del perfil */
+/* NOTA: ubits-colors.css ya está importado en styles.css */
 
-/* Importar tokens de color UBITS */
-@import url('./ubits-colors.css');
+/* NOTA: Reset global y estilos de body ya están en styles.css */
 
-/* Reset para el perfil - Solo elementos específicos del perfil */
-.profile-content,
-.profile-content * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    background-color: #f3f3f4;
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
-    overflow-y: auto;
-}
-
-/* Dark mode para el body */
-body[data-theme="dark"] {
-    background-color: #0E1825 !important;
-}
+/* NOTA: Modo oscuro del body ya está manejado en styles.css con tokens UBITS */
 
 /* Layout principal */
 .profile-content {
@@ -95,7 +76,7 @@ body[data-theme="dark"] {
     align-items: center;
     justify-content: center;
     position: fixed;
-    right: 16px;
+    right: 24px;
     top: 16px;
     z-index: 5;
 }
@@ -229,24 +210,11 @@ body[data-theme="dark"] {
     color: var(--ubits-fg-2-medium);
 }
 
-.course-card {
-    background: #f8fafc;
-    border: 1px solid var(--ubits-fg-2-medium);
-    border-radius: 8px;
-    padding: 16px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
+/* ELIMINADO: Estilos legacy de .course-card */
+/* El componente Card Content oficial (card-content.css) maneja estos estilos */
 
-.course-image {
-    width: 100%;
-    height: 162px;
-    object-fit: cover;
-    border-radius: 10px;
-    margin-bottom: 8px;
-}
+/* ELIMINADO: Estilos legacy de .course-image */
+/* El componente Card Content oficial (card-content.css) maneja estos estilos */
 
 /* Espaciador para alinear con los sidebars */
 .left-wrapper > *:not(:last-child):not(.personal-org):not(.widget-learn):not(.objetivos-encuestas) {
@@ -319,10 +287,8 @@ body[data-theme="dark"] {
     background-color: var(--ubits-bg-1);
 }
 
-[data-theme="dark"] .course-card {
-    background-color: var(--ubits-bg-1);
-    border-color: var(--ubits-border-1);
-}
+/* ELIMINADO: Modo oscuro para .course-card */
+/* El componente Card Content oficial (card-content.css) maneja estos estilos */
 
 [data-theme="dark"] .plan-title i,
 [data-theme="dark"] .recomendado-title i {
