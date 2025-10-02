@@ -366,12 +366,15 @@ Si tienes dudas sobre mi idea, por favor hazme preguntas para darte mas detalles
                     </p>
                     <div class="prompt-code-container">
                         <div class="prompt-code" id="prompt-update">
-Necesito actualizar mi proyecto UBITS con las últimas versiones del repositorio, pero sin perder mis cambios personalizados. Por favor:
-
 1. Haz un backup de mis archivos personalizados (todos los que he modificado)
-2. Actualiza el repositorio con: git pull origin main
-3. Si hay conflictos, resuélvelos preservando mis cambios personalizados
-4. Restaura mis archivos personalizados después de la actualización
+2. Obtén la versión más reciente del template desde https://github.com/DavidVegaM91/template-ubits
+3. Compara archivo por archivo y actualiza solo:
+   - Archivos del sistema UBITS (components/, ubits-colors.css, ubits-typography.css, fontawesome-icons.css)
+   - Archivos de documentación (documentacion.html, componentes.html, validador-ubits.html, guia-prompts.html)
+   - Páginas de componentes (sidebar.html, subnav.html, tab-bar.html, button.html, alert.html, card-content.html)
+   - Guías de diseño (colores.html, tipografia.html, iconos.html)
+   - Archivos de configuración (.cursor/rules/cursor-rules.mdc, README.md)
+4. NO toques mis archivos personalizados (index.html, mis páginas creadas, mis modificaciones)
 5. Verifica que todo funcione correctamente
 
 Mi objetivo es tener las últimas mejoras del UBITS Playground manteniendo mis personalizaciones.
