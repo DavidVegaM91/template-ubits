@@ -420,6 +420,51 @@ color: var(--ubits-fg-1-medium);
 - **Body (ubits-body-*)**: `var(--ubits-fg-1-medium)`
 - **Normal texts**: `var(--ubits-fg-1-medium)`
 
+### 5.1. CONTRAST RULES (CRITICAL)
+**MANDATORY: Ensure proper text contrast for accessibility and readability**
+
+#### **❌ PROHIBITED COMBINATIONS:**
+```css
+/* ❌ NEVER use light text on light backgrounds */
+color: var(--ubits-fg-1-low); /* Light text */
+background: var(--ubits-bg-1); /* Light background */
+
+/* ❌ NEVER use dark text on dark backgrounds */
+color: var(--ubits-fg-1-high); /* Dark text */
+background: var(--ubits-bg-3); /* Dark background */
+```
+
+#### **✅ CORRECT COMBINATIONS:**
+```css
+/* ✅ ALWAYS use high contrast combinations */
+/* Light backgrounds with dark text */
+background: var(--ubits-bg-1); /* Light background */
+color: var(--ubits-fg-1-high); /* Dark text */
+
+/* Dark backgrounds with light text */
+background: var(--ubits-bg-3); /* Dark background */
+color: var(--ubits-fg-1-low); /* Light text */
+
+/* Medium backgrounds with appropriate text */
+background: var(--ubits-bg-2); /* Medium background */
+color: var(--ubits-fg-1-medium); /* Medium text */
+```
+
+#### **CONTRAST VALIDATION RULES:**
+- **Light backgrounds** (`--ubits-bg-1`, `--ubits-bg-2`) → Use **dark text** (`--ubits-fg-1-high`, `--ubits-fg-1-medium`)
+- **Dark backgrounds** (`--ubits-bg-3`, `--ubits-bg-4`) → Use **light text** (`--ubits-fg-1-low`, `--ubits-fg-2-low`)
+- **Colored backgrounds** → Use **appropriate contrast** based on background brightness
+- **Always test** in both light and dark modes
+
+#### **COMMON MISTAKES TO AVOID:**
+- ❌ **White text on white background** - Invisible
+- ❌ **Black text on black background** - Invisible  
+- ❌ **Gray text on gray background** - Poor readability
+- ❌ **Light blue text on light blue background** - Insufficient contrast
+- ✅ **Always verify** text is readable against its background
+- ✅ **Test with different screen brightness** settings
+- ✅ **Consider colorblind users** - Don't rely only on color for meaning
+
 ### 6. ALERT COMPONENT VARIATIONS
 ```html
 <!-- ✅ OPTION 1: HTML Direct (Recommended for static alerts) -->
