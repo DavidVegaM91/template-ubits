@@ -385,13 +385,13 @@
             if (fileName === 'validador-ubits.html') {
                 // Para páginas con JavaScript complejo, solo validar el HTML/CSS real
                 // Extraer solo el contenido HTML visible (head + body sin scripts)
-                const htmlMatch = cleanContent.match(/<html[\s\S]*?<\/html>/);
+                const htmlMatch = cleanContent.match(/&lt;html[\s\S]*?&lt;\/html&gt;/);
                 if (htmlMatch) {
                     cleanContent = htmlMatch[0];
                     // Remover todo el contenido de script
-                    cleanContent = cleanContent.replace(/<script[\s\S]*?<\/script>/g, '');
+                    cleanContent = cleanContent.replace(/&lt;script[\s\S]*?&lt;\/script&gt;/g, '');
                     // Remover style blocks que puedan contener configuración
-                    cleanContent = cleanContent.replace(/<style[\s\S]*?<\/style>/g, '');
+                    cleanContent = cleanContent.replace(/&lt;style[\s\S]*?&lt;\/style&gt;/g, '');
                     // Mantener solo los links CSS y el contenido HTML estructural
                 }
             }
@@ -461,7 +461,7 @@
                 results.push({
                     type: 'success',
                     title: 'Tokens UBITS encontrados',
-                    description: `Se encontraron ${tokenUsage} usos de tokens UBITS. ¡Excelente!`
+                    description: 'Se encontraron ' + tokenUsage + ' usos de tokens UBITS. ¡Excelente!'
                 });
                 success++;
             } else {
@@ -664,13 +664,13 @@
                 missingFiles.forEach(missing => {
                     const fileType = missing.type === 'CSS' ? 'CSS' : 'JavaScript';
                     const importTag = missing.type === 'CSS' ? 
-                        `<link rel="stylesheet" href="${missing.file}">` : 
-                        `<script src="${missing.file}"></script>`;
+                        '<link rel="stylesheet" href="' + missing.file + '">' : 
+                        '<script src="' + missing.file + '"><\/script>';
                     
                     results.push({
                         type: 'error',
-                        title: `${fileType} faltante para ${missing.component}`,
-                        description: `El componente ${missing.component} requiere: ${importTag}`
+                        title: fileType + ' faltante para ' + missing.component,
+                        description: 'El componente ' + missing.component + ' requiere: ' + importTag
                     });
                     errors++;
                 });
@@ -774,10 +774,10 @@
             // Extraer solo el HTML estructural (sin JavaScript)
             let structuralHTML = htmlContent;
             // Remover completamente todos los scripts
-            structuralHTML = structuralHTML.replace(/<script[\s\S]*?<\/script>/g, '');
+            structuralHTML = structuralHTML.replace(/&lt;script[\s\S]*?&lt;\/script&gt;/g, '');
             // Remover contenido del head que no sea CSS
-            structuralHTML = structuralHTML.replace(/<title>[\s\S]*?<\/title>/g, '');
-            structuralHTML = structuralHTML.replace(/<meta[\s\S]*?>/g, '');
+            structuralHTML = structuralHTML.replace(/&lt;title&gt;[\s\S]*?&lt;\/title&gt;/g, '');
+            structuralHTML = structuralHTML.replace(/&lt;meta[\s\S]*?&gt;/g, '');
 
             // Validar solo las importaciones CSS
             const importValidation = validateImports(htmlContent);
@@ -870,13 +870,11 @@
                 const iconColor = result.type === 'success' ? 'var(--ubits-feedback-accent-success)' : 
                                  result.type === 'error' ? 'var(--ubits-feedback-accent-error)' : 'var(--ubits-feedback-accent-warning)';
 
-                item.innerHTML = `
-                    <i class="far ${iconClass} validation-icon" style="color: ${iconColor};"></i>
-                    <div class="validation-content">
-                        <div class="validation-title ubits-body-sm-bold">${result.title}</div>
-                        <div class="validation-description ubits-body-sm-regular">${result.description}</div>
-                    </div>
-                `;
+                item.innerHTML = '<i class="far ' + iconClass + ' validation-icon" style="color: ' + iconColor + ';"></i>' +
+                    '<div class="validation-content">' +
+                        '<div class="validation-title ubits-body-sm-bold">' + result.title + '</div>' +
+                        '<div class="validation-description ubits-body-sm-regular">' + result.description + '</div>' +
+                    '</div>';
                 listContainer.appendChild(item);
             });
 
@@ -904,12 +902,12 @@
 
             // Mostrar toast con resumen
             if (totalIssues === 0) {
-                showToast('success', `¡Perfecto! ${validation.fileName} cumple todos los estándares UBITS 🎉`, {
+                showToast('success', '¡Perfecto! ' + validation.fileName + ' cumple todos los estándares UBITS 🎉', {
                     containerId: 'ubits-toast-container',
                     duration: 3500
                 });
             } else {
-                showToast('warning', `Validación completada: ${totalIssues} problemas encontrados en ${validation.fileName}`, {
+                showToast('warning', 'Validación completada: ' + totalIssues + ' problemas encontrados en ' + validation.fileName, {
                     containerId: 'ubits-toast-container',
                     duration: 5000
                 });
@@ -925,29 +923,29 @@
                 return;
             }
 
-            let prompt = `🚨 VALIDACIÓN UBITS - CORRECCIONES REQUERIDAS\n\n`;
-            prompt += `Archivo: ${validation.fileName}\n`;
-            prompt += `Puntuación UBITS: ${validation.stats.score}%\n\n`;
+            let prompt = '🚨 VALIDACIÓN UBITS - CORRECCIONES REQUERIDAS\n\n';
+            prompt += 'Archivo: ' + validation.fileName + '\n';
+            prompt += 'Puntuación UBITS: ' + validation.stats.score + '%\n\n';
 
             if (errors.length > 0) {
-                prompt += `🔴 ERRORES CRÍTICOS (${errors.length}):\n`;
+                prompt += '🔴 ERRORES CRÍTICOS (' + errors.length + '):\n';
                 errors.forEach((error, index) => {
-                    prompt += `${index + 1}. ${error.title}\n`;
-                    prompt += `   ${error.description}\n\n`;
+                    prompt += (index + 1) + '. ' + error.title + '\n';
+                    prompt += '   ' + error.description + '\n\n';
                 });
             }
 
             if (warnings.length > 0) {
-                prompt += `🟡 ADVERTENCIAS (${warnings.length}):\n`;
+                prompt += '🟡 ADVERTENCIAS (' + warnings.length + '):\n';
                 warnings.forEach((warning, index) => {
-                    prompt += `${index + 1}. ${warning.title}\n`;
-                    prompt += `   ${warning.description}\n\n`;
+                    prompt += (index + 1) + '. ' + warning.title + '\n';
+                    prompt += '   ' + warning.description + '\n\n';
                 });
             }
 
-            prompt += `📋 INSTRUCCIONES PARA CURSOR:\n\n`;
-            prompt += `Por favor corrige TODOS los problemas listados arriba en ${validation.fileName}. `;
-            prompt += `Asegúrate de seguir estas reglas UBITS:\n\n`;
+            prompt += '📋 INSTRUCCIONES PARA CURSOR:\n\n';
+            prompt += 'Por favor corrige TODOS los problemas listados arriba en ' + validation.fileName + '. ';
+            prompt += 'Asegúrate de seguir estas reglas UBITS:\n\n';
 
             // Agregar instrucciones específicas basadas en los errores
             const instructions = [];
@@ -981,14 +979,14 @@
 
             prompt += instructions.join('\n') + '\n\n';
             
-            prompt += `✅ VERIFICACIÓN FINAL:\n`;
-            prompt += `Después de hacer los cambios, verifica que:\n`;
-            prompt += `• No hay colores hardcodeados\n`;
-            prompt += `• Solo se usan clases de tipografía oficiales UBITS\n`;
-            prompt += `• Todos los CSS requeridos están importados\n`;
-            prompt += `• Se usan componentes UBITS en lugar de custom\n\n`;
+            prompt += '✅ VERIFICACIÓN FINAL:\n';
+            prompt += 'Después de hacer los cambios, verifica que:\n';
+            prompt += '• No hay colores hardcodeados\n';
+            prompt += '• Solo se usan clases de tipografía oficiales UBITS\n';
+            prompt += '• Todos los CSS requeridos están importados\n';
+            prompt += '• Se usan componentes UBITS en lugar de custom\n\n';
             
-            prompt += `🎯 OBJETIVO: Lograr 100% de puntuación UBITS manteniendo la funcionalidad.`;
+            prompt += '🎯 OBJETIVO: Lograr 100% de puntuación UBITS manteniendo la funcionalidad.';
 
             // Mostrar el prompt generado
             document.getElementById('cursor-prompt-content').textContent = prompt;
