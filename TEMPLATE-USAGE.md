@@ -31,8 +31,9 @@
 
 Este repositorio tiene:
 - ✅ **Protección de rama main**
-- ✅ **Solo el owner puede hacer push directo**
-- ✅ **Pull requests requeridos para cambios**
+- ✅ **Solo usuarios autorizados pueden hacer push directo**
+- ✅ **Usuarios autorizados: DavidVegaM91 y davidvegaux únicamente**
+- ✅ **Pull requests requeridos para cambios externos**
 - ✅ **Protección contra sobrescritura accidental**
 
 ## 📞 CONTACTO
