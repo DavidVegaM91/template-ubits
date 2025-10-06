@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="fontawesome-icons.css">
     <link rel="stylesheet" href="ubits-typography.css">
     <link rel="stylesheet" href="components/sub-nav.css">
+    <link rel="stylesheet" href="components/toast.css">
     
     <style>
         /* Layout de dos columnas */
@@ -157,6 +158,27 @@
             .dark-column {
                 order: 2;
             }
+        }
+        
+        /* Estilos para token-item clickeables */
+        .light-section .token-item {
+            border: 1px solid var(--ubits-border-1);
+            border-radius: 8px;
+            transition: border-color 0.2s ease;
+        }
+        
+        .light-section .token-item:hover {
+            border: 1px solid var(--ubits-accent-brand) !important;
+        }
+        
+        .dark-section .token-item {
+            border: 1px solid var(--ubits-border-1);
+            border-radius: 8px;
+            transition: border-color 0.2s ease;
+        }
+        
+        .dark-section .token-item:hover {
+            border: 1px solid var(--ubits-accent-brand) !important;
         }
     </style>
 </head>
@@ -4143,13 +4165,50 @@
         </main>
     </div>
 
+    <!-- Contenedor para Toast UBITS -->
+    <div id="ubits-toast-container"></div>
+
     <script src="components/sidebar.js"></script>
     <script src="components/sub-nav.js"></script>
+    <script src="components/toast.js"></script>
     <script src="script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Cargar top-nav con variante documentación
             loadSubNav('top-nav-container', 'documentacion');
+            
+            // Función para copiar token de color al portapapeles
+            window.copyToClipboard = function(text) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showToast('success', '¡Token copiado! 😉', {
+                        containerId: 'ubits-toast-container',
+                        duration: 3500
+                    });
+                }).catch(err => {
+                    console.error('Error al copiar:', err);
+                    // Fallback para navegadores antiguos
+                    const textArea = document.createElement('textarea');
+                    textArea.value = text;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    showToast('success', '¡Token copiado! 😉', {
+                        containerId: 'ubits-toast-container',
+                        duration: 3500
+                    });
+                });
+            }
+            
+            // Añadir eventos click a los token-item de Brand colors (modo light y dark)
+            const brandColorTokens = document.querySelectorAll('.light-section .token-item, .dark-section .token-item');
+            brandColorTokens.forEach(tokenItem => {
+                tokenItem.style.cursor = 'pointer';
+                tokenItem.addEventListener('click', function() {
+                    const tokenName = this.querySelector('.token-name').textContent;
+                    copyToClipboard(tokenName);
+                });
+            });
         });
     </script>
 </body>
