@@ -235,7 +235,7 @@
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="sidebar-prompt-1">En la página [nombre-pagina.html] en el componente SIDEBAR UBITS (navegación lateral izquierda) haz que se vea activa la sección de [opciones: aprendizaje, diagnóstico, desempeño, encuestas, reclutamiento, tareas, ubits-ai] activa</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="sidebar-prompt-1">En la página [nombre-pagina.html] en el componente SIDEBAR UBITS (navegación lateral izquierda) haz que se vea activa la sección de [opciones: aprendizaje, diagnóstico, desempeño, encuestas, reclutamiento, tareas, ubits-ai] activa. Usa la función loadSidebar().</code></pre>
                         </div>
                     </div>
 
@@ -358,7 +358,7 @@
 &lt;link rel="stylesheet" href="ubits-typography.css"&gt;
 
 &lt;!-- JavaScript --&gt;
-loadSidebar(); // Cargar sidebar
+loadSidebar('desempeño'); // Cargar sidebar con sección activa
 updateActiveSidebarButton('desempeño'); // Cambiar botón activo</code></pre>
                             </div>
                         </div>
@@ -370,14 +370,15 @@ updateActiveSidebarButton('desempeño'); // Cambiar botón activo</code></pre>
                                 API y funciones
                             </h2>
                             <div style="margin-bottom: 24px;">
-                                <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">loadSidebar()</h3>
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">loadSidebar(activeButton)</h3>
                                 <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
-                                    Carga el componente sidebar en el contenedor especificado. El sidebar se carga con el botón activo por defecto.
+                                    Carga el componente sidebar en el contenedor 'sidebar-container'. Busca automáticamente el contenedor y activa la sección especificada.
                                 </p>
                                 <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: 6px; border-left: 4px solid var(--ubits-accent-brand);">
                                     <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
-                                        <strong>Parámetros:</strong> Ninguno<br>
-                                        <strong>Ejemplo:</strong> loadSidebar()
+                                        <strong>Parámetros:</strong> activeButton (string, opcional) - Sección a activar<br>
+                                        <strong>Ejemplo:</strong> loadSidebar('aprendizaje')<br>
+                                        <strong>Sin parámetro:</strong> loadSidebar() - Ninguna sección activa
                                     </div>
                                 </div>
                             </div>

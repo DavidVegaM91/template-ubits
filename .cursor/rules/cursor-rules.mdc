@@ -634,7 +634,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <!-- JavaScript to load Sidebar -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    loadSidebar('sidebar-container', 'ACTIVE_OPTION');
+    loadSidebar('ACTIVE_OPTION');
 });
 </script>
 ```
@@ -1117,7 +1117,7 @@ Before creating ANY UI element, you MUST:
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Load components
-    loadSidebar('sidebar-container', 'ninguno');
+    loadSidebar('ninguno');
     loadSubNav('top-nav-container', 'template');
     loadTabBar('tab-bar-container');
     loadDocsSidebar('introduccion');

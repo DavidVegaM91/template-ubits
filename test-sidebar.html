@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Sidebar - UBITS</title>
+    
+    <!-- Estilos UBITS -->
+    <link rel="stylesheet" href="ubits-colors.css">
+    <link rel="stylesheet" href="ubits-typography.css">
+    <link rel="stylesheet" href="fontawesome-icons.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="components-sidebar.css">
+    <link rel="stylesheet" href="components/sub-nav.css">
+    <link rel="stylesheet" href="components/tab-bar.css">
+    <link rel="stylesheet" href="components/toast.css">
+</head>
+<body data-theme="light">
+    <div class="dashboard-container">
+        <!-- Top Navigation -->
+        <div id="top-nav-container"></div>
+        
+        <!-- Sidebar Container -->
+        <div id="sidebar-container"></div>
+        
+        <!-- Tab Bar Container -->
+        <div id="tab-bar-container"></div>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-area">
+                <h1 class="ubits-heading-h1">Test Sidebar</h1>
+                <p class="ubits-body-md-regular">Esta página prueba que el sidebar funcione correctamente con la documentación corregida.</p>
+                
+                <div style="margin-top: 20px;">
+                    <button class="ubits-button ubits-button--primary ubits-button--md" onclick="testSidebar('aprendizaje')">
+                        <span>Activar Aprendizaje</span>
+                    </button>
+                    <button class="ubits-button ubits-button--secondary ubits-button--md" onclick="testSidebar('diagnóstico')">
+                        <span>Activar Diagnóstico</span>
+                    </button>
+                    <button class="ubits-button ubits-button--tertiary ubits-button--md" onclick="testSidebar()">
+                        <span>Sin activar</span>
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="ubits-toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="components/sidebar.js"></script>
+    <script src="components/sub-nav.js"></script>
+    <script src="components/tab-bar.js"></script>
+    <script src="components/toast.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cargar componentes
+            loadSubNav('top-nav-container', 'template');
+            loadTabBar('tab-bar-container');
+            
+            // Cargar sidebar con sección activa (CORRECTO - solo un parámetro)
+            loadSidebar('aprendizaje');
+            
+            console.log('✅ Sidebar cargado correctamente con documentación corregida');
+        });
+
+        function testSidebar(section) {
+            if (section) {
+                loadSidebar(section);
+                showToast('success', `Sidebar activado: ${section}`, {
+                    containerId: 'ubits-toast-container',
+                    duration: 3500
+                });
+            } else {
+                loadSidebar();
+                showToast('info', 'Sidebar cargado sin sección activa', {
+                    containerId: 'ubits-toast-container',
+                    duration: 3500
+                });
+            }
+        }
+    </script>
+</body>
+</html>
