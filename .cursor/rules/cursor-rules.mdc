@@ -1523,6 +1523,50 @@ When issues are found, the validator creates a detailed prompt for Cursor with:
 </div>
 ```
 
+### **🚨 CRITICAL: PÁGINAS SIN SUBNAV - MARGIN SUPERIOR EN MÓVIL**
+
+**PROBLEMA IDENTIFICADO:** Cuando se quita el SubNav de una página, el `content-area` se ve pegado al borde superior en móvil.
+
+**SOLUCIÓN OBLIGATORIA:** Añadir este CSS en páginas sin SubNav:
+
+```css
+/* Fix para páginas sin SubNav - margin superior en móvil */
+@media (max-width: 1023px) {
+    .content-area {
+        margin-top: 0 !important;
+    }
+}
+```
+
+**CUÁNDO APLICAR:**
+- ✅ **SIEMPRE** cuando se quite el SubNav de una página
+- ✅ **SIEMPRE** cuando se comente `<div id="top-nav-container"></div>`
+- ✅ **SIEMPRE** cuando se comente `loadSubNav()` en JavaScript
+
+**ARCHIVOS QUE YA LO TIENEN:**
+- `profile.html` ✅
+- `diagnostico.html` ✅  
+- `reclutamiento.html` ✅
+
+**EJEMPLO DE IMPLEMENTACIÓN:**
+```html
+<style>
+    /* ... otros estilos ... */
+    
+    /* Fix para páginas sin SubNav - margin superior en móvil */
+    @media (max-width: 1023px) {
+        .content-area {
+            margin-top: 0 !important;
+        }
+    }
+</style>
+```
+
+**VALIDACIÓN:**
+- ✅ **Verificar** que en móvil el contenido no esté pegado al borde superior
+- ✅ **Probar** en diferentes tamaños de pantalla móvil
+- ✅ **Confirmar** que el espaciado se ve correcto
+
 ### 12. TITLES AND TEXT (SENTENCE CASE)
 ```html
 <!-- ❌ NEVER use titles in all caps -->

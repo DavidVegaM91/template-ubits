@@ -15,7 +15,6 @@
     <link rel="stylesheet" href="components/tab-bar.css">
     <link rel="stylesheet" href="components/floating-menu.css">
     <link rel="stylesheet" href="components/profile-menu.css">
-    <link rel="stylesheet" href="profile.css">
     <style>
         /* ¡A LA MIERDA LAS REGLAS PENDEJAS! */
 
@@ -115,6 +114,13 @@
             }
             
             /* Ajustar widgets para móvil - sin altura mínima forzada */
+        }
+
+        /* Fix para páginas sin SubNav - margin superior en móvil */
+        @media (max-width: 1023px) {
+            .content-area {
+                margin-top: 0 !important;
+            }
         }
 
         @media (max-width: 480px) {

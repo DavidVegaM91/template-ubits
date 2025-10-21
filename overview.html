@@ -1,0 +1,2720 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Overview - UBITS Playground</title>
+    
+    <!-- Estilos UBITS -->
+    <link rel="stylesheet" href="ubits-colors.css">
+    <link rel="stylesheet" href="ubits-typography.css">
+    <link rel="stylesheet" href="fontawesome-icons.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="components/button.css">
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 16px 24px;
+            background: var(--ubits-bg-2);
+            min-height: 100vh;
+        }
+        
+        .roadmap-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0;
+        }
+        
+        .section-card {
+            background: var(--ubits-bg-1);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 24px;
+            border: 1px solid var(--ubits-border-1);
+            border: 1px solid var(--ubits-border-1);
+        }
+        
+        /* Header del proyecto */
+        .project-header {
+            text-align: left;
+        }
+        
+        .project-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .project-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--ubits-accent-brand);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+        
+        .project-name {
+            color: var(--ubits-fg-1-high);
+            margin: 0;
+        }
+        
+        .project-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 32px;
+            align-items: center;
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--ubits-accent-brand);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .avatar-image {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: var(--ubits-bg-2);
+        }
+        
+        /* Progreso general */
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .progress-title {
+            margin: 0;
+            color: var(--ubits-fg-1-high);
+        }
+        
+        .progress-stats {
+            font-weight: 600;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .progress-count {
+            color: var(--ubits-fg-1-medium);
+        }
+        
+        .progress-percentage {
+            color: var(--ubits-accent-brand);
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: var(--ubits-bg-2);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--ubits-accent-brand);
+            border-radius: 6px;
+            transition: width 0.6s ease;
+        }
+        
+        /* Entregables (accordions) */
+        
+        .entregable {
+            background: var(--ubits-bg-1);
+            border: 1px solid var(--ubits-border-1);
+            border-radius: 16px;
+            margin-bottom: 16px;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+        
+        /* Indicador visual para entregables que se pueden mover */
+        .entregable:not(.expanded) {
+            cursor: grab;
+        }
+        
+        .entregable:not(.expanded):active {
+            cursor: grabbing;
+        }
+        
+        .entregable.expanded {
+            cursor: default;
+        }
+        
+        .entregable:hover {
+            border: 1px solid var(--ubits-border-1);
+        }
+        
+        .entregable.dragging {
+            opacity: 0.7;
+            transform: rotate(0.5deg);
+            z-index: 500;
+            cursor: grabbing;
+        }
+        
+        /* Zona de drop para entregables */
+        .entregables-drop-zone {
+            border: 2px dashed transparent;
+            border-radius: 16px;
+            transition: all 0.2s ease;
+            padding: 0;
+        }
+        
+        /* Solo aplicar min-height cuando no hay empty-state */
+        .entregables-drop-zone:not(:has(.empty-state)) {
+            min-height: 100px;
+        }
+        
+        /* Transición suave para evitar parpadeo */
+        .entregable, .grupo-tareas, .tarea, .tarea-directa {
+            opacity: 1;
+            transition: opacity 0.1s ease;
+        }
+        
+        .entregable.updating, .grupo-tareas.updating, .tarea.updating, .tarea-directa.updating {
+            opacity: 0.8;
+        }
+        
+        .entregables-drop-zone.drag-over {
+            border-color: var(--ubits-accent-brand);
+            background: var(--ubits-bg-2);
+        }
+        
+        .entregable-header {
+            padding: 20px 24px;
+            background: var(--ubits-bg-2);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s ease;
+        }
+        
+        .entregable-header-top {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+        
+        .entregable-header:hover {
+            filter: brightness(0.98);
+        }
+        
+        .entregable-title {
+            margin: 0;
+            cursor: text;
+            flex: 1;
+            min-width: 0; /* Permite que el título se comprima si es necesario */
+        }
+        
+        .entregable-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            white-space: nowrap; /* Evita que se partan en múltiples líneas */
+            flex-shrink: 0; /* No se comprime */
+        }
+        
+        .entregable-stats {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            color: var(--ubits-fg-1-medium);
+            font-size: 14px;
+        }
+        
+        .entregable-progress {
+            color: var(--ubits-accent-brand);
+            font-weight: 600;
+        }
+        
+        .entregable-chevron {
+            color: var(--ubits-fg-1-medium);
+            font-size: 16px;
+            transition: transform 0.3s ease;
+        }
+        
+        .entregable.expanded .entregable-chevron {
+            transform: rotate(180deg);
+        }
+        
+        .entregable-content {
+            max-height: 0;
+            overflow: hidden;
+            padding: 0 16px;
+            border-top: 1px solid transparent;
+            transition: max-height 0.4s ease, padding 0.4s ease, border-color 0.4s ease;
+        }
+        
+        .entregable.expanded .entregable-content {
+            max-height: 9999px;
+            padding: 16px;
+            border-top: 1px solid var(--ubits-border-1);
+        }
+        
+        /* Grupos de tareas */
+        .grupo-tareas {
+            background: var(--ubits-bg-2);
+            border: 1px solid var(--ubits-border-1);
+            border-radius: 12px;
+            margin-bottom: 16px;
+            padding: 8px;
+            cursor: grab;
+            transition: all 0.2s ease, padding 0.3s ease;
+        }
+        
+        .grupo-tareas.expanded {
+            padding-right: 8px;
+        }
+        
+        .grupo-tareas:hover {
+            border: 1px solid var(--ubits-border-1);
+            transform: translateY(-1px);
+        }
+        
+        .grupo-tareas.dragging {
+            opacity: 0.7;
+            cursor: grabbing;
+            transform: rotate(0.5deg);
+            z-index: 500;
+        }
+        
+        .grupo-chevron {
+            color: var(--ubits-fg-1-medium);
+            font-size: 14px;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .grupo-tareas.expanded .grupo-chevron {
+            transform: rotate(180deg);
+        }
+        
+        .tareas-list {
+            transition: max-height 0.3s ease, opacity 0.3s ease, min-height 0.3s ease, padding 0.3s ease, margin 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .grupo-tareas:not(.expanded) .tareas-list {
+            max-height: 0;
+            min-height: 0;
+            opacity: 0;
+            margin-bottom: 0;
+            padding: 0;
+            border: none;
+        }
+        
+        .grupo-tareas:not(.expanded) {
+            padding: 8px 16px 8px 8px; /* Mantener padding-right de 16px */
+        }
+        
+        .grupo-tareas:not(.expanded) .grupo-header {
+            margin-bottom: 0; /* Eliminar margen cuando está colapsado */
+        }
+        
+        .grupo-tareas:not(.expanded) .grupo-bottom-actions {
+            display: none; /* Ocultar botón cuando está colapsado */
+        }
+        
+        .grupo-tareas.expanded .tareas-list {
+            max-height: 9999px;
+            min-height: 60px;
+            opacity: 1;
+        }
+        
+        /* Zona de drop mixta para grupos y tareas */
+        .elementos-drop-zone {
+            min-height: 20px;
+            border: 2px dashed transparent;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        
+        .elementos-drop-zone.drag-over {
+            border-color: var(--ubits-accent-brand);
+            background: var(--ubits-bg-2);
+        }
+        
+        .elementos-drop-zone:empty::before {
+            content: 'Crea grupos de tareas o tareas individuales aquí';
+            display: block;
+            text-align: center;
+            color: var(--ubits-fg-1-low);
+            font-style: italic;
+            padding: 20px;
+        }
+        
+        /* Tareas directas */
+        .tarea-directa {
+            background: var(--ubits-bg-1);
+            border: 1px solid var(--ubits-border-1);
+            border-radius: 8px;
+            padding: 8px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s ease;
+            cursor: grab;
+        }
+        
+        .tarea-directa:hover {
+            border: 1px solid var(--ubits-border-1);
+        }
+        
+        .tarea-directa.dragging {
+            opacity: 0.7;
+            cursor: grabbing;
+            transform: rotate(0.5deg);
+            z-index: 500;
+        }
+        
+        .grupo-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            margin-right: 8px;
+            transition: margin-bottom 0.3s ease;
+        }
+        
+        .grupo-header-top {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+        
+        .grupo-title {
+            margin: 0;
+            cursor: text;
+            flex: 1;
+            min-width: 0; /* Permite que el título se comprima si es necesario */
+        }
+        
+        .grupo-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            white-space: nowrap; /* Evita que se partan en múltiples líneas */
+            flex-shrink: 0; /* No se comprime */
+        }
+        
+        /* Botones pequeños ahora usan clases oficiales UBITS */
+        
+        /* Tareas */
+        .tareas-list {
+            min-height: 60px;
+            border: 2px dashed transparent;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            margin-bottom: 0;
+        }
+        
+        .tareas-list.drag-over {
+            border-color: var(--ubits-accent-brand);
+            background: var(--ubits-bg-2);
+        }
+        
+        .tareas-list:empty::before {
+            content: 'Este grupo está esperando sus primeras tareas';
+            display: block;
+            text-align: center;
+            color: var(--ubits-fg-1-low);
+            font-style: italic;
+            padding: 20px;
+        }
+        
+        .tarea {
+            background: var(--ubits-bg-1);
+            border: 1px solid var(--ubits-border-1);
+            border-radius: 8px;
+            padding: 8px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s ease;
+            cursor: grab;
+        }
+        
+        .tarea:hover {
+            border: 1px solid var(--ubits-border-1);
+        }
+        
+        .tarea.dragging {
+            opacity: 0.7;
+            cursor: grabbing;
+            transform: rotate(0.5deg);
+            z-index: 500;
+        }
+        
+        .tarea.drag-over {
+            border-color: var(--ubits-accent-brand);
+            background: var(--ubits-bg-2);
+        }
+        
+        .tarea-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            min-width: 0; /* Permite que el contenido se comprima si es necesario */
+        }
+        
+        .tarea-title {
+            margin: 0;
+            cursor: text;
+            flex: 1;
+            min-width: 0; /* Permite que el texto se trunque si es muy largo */
+        }
+        
+        .tarea-estado {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+        }
+        
+        /* Estados de tareas con tokens UBITS oficiales */
+        .estado-por-iniciar {
+            background: var(--ubits-bg-2);
+            color: var(--ubits-fg-1-medium);
+        }
+        
+        .estado-en-progreso {
+            background: var(--ubits-feedback-bg-warning-subtle);
+            color: var(--ubits-feedback-fg-warning);
+        }
+        
+        .estado-completada {
+            background: var(--ubits-feedback-bg-success-subtle);
+            color: var(--ubits-feedback-fg-success);
+        }
+        
+        .tarea-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            opacity: 1;
+            position: relative;
+        }
+        
+        /* Los elementos hijos no interfieren con el drag del contenedor */
+        
+        /* Botón de link secundario */
+        .tarea-link-btn {
+            display: none;
+        }
+        
+        .tarea-link-btn.has-link {
+            display: inline-flex;
+        }
+        
+        /* Dropdown menu para opciones de tarea */
+        .tarea-dropdown {
+            position: fixed;
+            background: var(--ubits-bg-1);
+            border: 1px solid var(--ubits-border-1);
+            border-radius: 8px;
+            border: 1px solid var(--ubits-border-1);
+            z-index: 999999;
+            min-width: 160px;
+            overflow: hidden;
+            display: none;
+        }
+        
+        .tarea-dropdown.show {
+            display: block;
+        }
+        
+        /* Ya no necesitamos esto con position: fixed */
+        
+        .tarea-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: var(--ubits-fg-1-medium);
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            font-size: 14px;
+        }
+        
+        .tarea-dropdown-item:hover {
+            background: var(--ubits-bg-2);
+        }
+        
+        .tarea-dropdown-item.danger {
+            color: var(--ubits-feedback-fg-error);
+        }
+        
+        .tarea-dropdown-item.danger:hover {
+            background: var(--ubits-feedback-bg-error-subtle);
+        }
+        
+        .tarea-dropdown-item i {
+            width: 16px;
+            text-align: center;
+        }
+        
+        /* Botones de icono ahora usan clases oficiales UBITS */
+        
+        /* Botón principal de creación */
+        .creation-section {
+            text-align: center;
+            padding: 32px;
+            border: 2px dashed var(--ubits-border-1);
+            border-radius: 16px;
+            background: var(--ubits-bg-2);
+        }
+        
+        /* Botón principal ahora usa clases oficiales UBITS */
+        
+        /* Dropdown de creación */
+        .creation-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--ubits-bg-1);
+            border: 1px solid var(--ubits-border-1);
+            border-radius: 8px;
+            border: 1px solid var(--ubits-border-1);
+            z-index: 500;
+            min-width: 200px;
+            margin-top: 8px;
+        }
+        
+        .dropdown-menu.show {
+            display: block;
+        }
+        
+        .dropdown-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--ubits-border-1);
+            transition: background 0.2s ease;
+        }
+        
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+        
+        .dropdown-item:hover {
+            background: var(--ubits-bg-2);
+        }
+        
+        .dropdown-item i {
+            margin-right: 8px;
+            color: var(--ubits-accent-brand);
+        }
+        
+        /* Estado vacío */
+        .empty-state {
+            padding: 32px 20px;
+            color: var(--ubits-fg-1-medium);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 32px;
+        }
+        
+        .empty-state i {
+            font-size: 48px;
+            color: var(--ubits-border-1);
+        }
+        
+        .empty-state-image {
+            width: 220px;
+            height: 200px;
+            opacity: 0.9;
+            flex-shrink: 0;
+        }
+        
+        .empty-state-content {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            text-align: left;
+        }
+        
+        .empty-state h3,
+        .empty-state p {
+            margin: 0;
+        }
+        
+        /* Animaciones para accordions */
+        @keyframes fadeInContent {
+            from { 
+                opacity: 0; 
+                transform: translateY(-10px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+        
+        .entregable.expanded .entregable-content > * {
+            animation: fadeInContent 0.3s ease 0.1s both;
+        }
+        
+        .entregable.expanded .grupo-tareas:nth-child(2) {
+            animation-delay: 0.15s;
+        }
+        
+        .entregable.expanded .grupo-tareas:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+        
+        /* Efecto hover mejorado para entregables */
+        .entregable-header {
+            position: relative;
+        }
+        
+        .entregable-header::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background: transparent;
+            transition: background 0.3s ease;
+        }
+        
+        .entregable.expanded .entregable-header::before {
+            background: var(--ubits-accent-brand);
+        }
+        
+        /* Estados visuales mejorados */
+        .entregable.expanded {
+            border-color: var(--ubits-accent-brand);
+            border: 1px solid var(--ubits-border-1);
+        }
+        
+        .entregable.expanded .entregable-header {
+            background: var(--ubits-bg-1);
+        }
+        
+        /* ========== EDICIÓN INLINE SUTIL ========== */
+        .inline-input {
+            background: var(--ubits-bg-3);
+            border: none;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-family: inherit;
+            font-size: inherit;
+            font-weight: inherit;
+            color: inherit;
+            width: 400px;
+            max-width: 400px;
+            box-sizing: border-box;
+            outline: none;
+        }
+        
+        .inline-input:hover,
+        .inline-input:focus,
+        .inline-input:active {
+            background: var(--ubits-bg-3);
+        }
+        
+        /* Títulos editables - hover muy sutil */
+        .editable {
+            cursor: text;
+            transition: background 0.2s ease;
+            border-radius: 4px;
+            padding: 4px 8px;
+            margin: -4px -8px;
+        }
+        
+        .editable:hover {
+            background: var(--ubits-bg-3);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .roadmap-container {
+                padding: 0;
+                margin: 0;
+            }
+            
+            .project-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+            
+            .progress-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            
+            /* Inputs inline en mobile usan ancho completo */
+            .inline-input {
+                width: 100%;
+                max-width: 100%;
+            }
+            
+            /* Estructura responsive para headers */
+            .entregable-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+                padding: 16px 20px;
+            }
+            
+            .entregable-title {
+                flex: 1;
+                min-width: 0;
+                line-height: 1.3;
+                max-height: 2.6em; /* 2 líneas */
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                line-clamp: 2;
+                -webkit-box-orient: vertical;
+                margin-bottom: 8px;
+            }
+            
+            .entregable-right {
+                width: 100%;
+                justify-content: space-between;
+                white-space: normal;
+            }
+            
+            /* Estructura responsive para grupos */
+            .grupo-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+            
+            .grupo-header-top {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            
+            .grupo-title {
+                flex: 1;
+                min-width: 0;
+                line-height: 1.3;
+                max-height: 2.6em; /* 2 líneas */
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                line-clamp: 2;
+                -webkit-box-orient: vertical;
+            }
+            
+            .grupo-actions {
+                width: 100%;
+                justify-content: space-between;
+                white-space: normal;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            
+            /* Estructura responsive para tareas */
+            .tarea,
+            .tarea-directa {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+                padding: 8px;
+            }
+            
+            .tarea-content {
+                width: 100%;
+            }
+            
+            .tarea-title {
+                line-height: 1.3;
+                max-height: 2.6em; /* 2 líneas */
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                line-clamp: 2;
+                -webkit-box-orient: vertical;
+            }
+            
+            .tarea-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            /* Empty state responsive */
+            .empty-state {
+                flex-direction: column;
+                text-align: center;
+                gap: 16px;
+            }
+            
+            .empty-state-content {
+                text-align: center;
+            }
+            
+            .empty-state-image {
+                width: 180px;
+                height: 164px;
+            }
+        }
+        
+        /* Modal para links */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--ubits-bg-3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal {
+            background: var(--ubits-bg-1);
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 400px;
+            width: 90%;
+            border: 1px solid var(--ubits-border-1);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal-overlay.show .modal {
+            transform: scale(1);
+        }
+        
+        .modal-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .modal-title {
+            color: var(--ubits-fg-1-high);
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .modal-body {
+            margin-bottom: 24px;
+        }
+        
+        .modal-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--ubits-border-1);
+            border-radius: 8px;
+            background: var(--ubits-bg-1);
+            color: var(--ubits-fg-1-medium);
+            font-size: 14px;
+            transition: border-color 0.2s ease;
+            box-sizing: border-box;
+        }
+        
+        .modal-input:focus {
+            outline: none;
+            border-color: var(--ubits-accent-brand);
+        }
+        
+        .modal-input::placeholder {
+            color: var(--ubits-fg-1-low);
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+    </style>
+</head>
+<body data-theme="light">
+    <div class="roadmap-container">
+        <!-- Sección 1: Header + Progreso -->
+        <div class="section-card">
+            <!-- Header del Proyecto -->
+            <div class="project-header">
+                <div class="project-title">
+                    <h1 class="ubits-heading-h1 project-name">Overview del proyecto UBITS Playground</h1>
+                </div>
+                
+                <div class="project-info">
+                    <div class="info-item">
+                        <img src="https://davidvegaportfolioux.netlify.app/Images/David-Vega-UX.jpg" alt="David Vega" class="avatar avatar-image">
+                        <span class="ubits-body-md-regular"><strong>Creado por:</strong> David Vega</span>
+                    </div>
+                    <div class="info-item">
+                        <img src="https://ca.slack-edge.com/T07ER6Q9X5G-U08472A2BH6-78334e55da81-512" alt="Kike Peña" class="avatar avatar-image">
+                        <span class="ubits-body-md-regular"><strong>Supervisión:</strong> Kike Peña</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progreso General -->
+            <div class="progress-section" style="margin-top: 32px;">
+                <div class="progress-header">
+                    <h2 class="ubits-body-md-bold progress-title">Progreso general</h2>
+                    <div class="progress-stats">
+                        <span class="progress-count" id="progress-count">0/0</span>
+                        <span class="progress-percentage" id="progress-percentage">(0%)</span>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-bar" style="width: 0%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección 2: Entregables y Creación -->
+        <div class="section-card">
+            <!-- Entregables Container -->
+            <div class="entregables-drop-zone drop-zone-entregables" id="entregables-container">
+                <div class="empty-state" id="empty-state">
+                    <img src="images/empty-states/sin-cards.svg" alt="No hay entregables" class="empty-state-image">
+                    <div class="empty-state-content">
+                        <h3 class="ubits-body-md-bold">No hay entregables creados</h3>
+                        <p class="ubits-body-sm-regular">Comienza creando tu primer entregable</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botón Principal de Creación -->
+            <div class="creation-section">
+            <button class="ubits-button ubits-button--secondary ubits-button--md" id="btn-create-main" onclick="createNewEntregable()">
+                <i class="far fa-folder"></i>
+                <span>Crear Entregable</span>
+            </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== MODELO DE DATOS ========== 
+        let roadmapData = {
+            entregables: [],
+            nextId: 1
+        };
+        
+        // Estados posibles para las tareas
+        const TASK_STATES = {
+            'por-iniciar': { label: 'Por iniciar', class: 'estado-por-iniciar' },
+            'en-progreso': { label: 'En progreso', class: 'estado-en-progreso' },
+            'completada': { label: 'Completada', class: 'estado-completada' }
+        };
+        
+        // ========== CLASES DE DATOS ========== 
+        class Entregable {
+            constructor(titulo = 'Título del entregable') {
+                this.id = roadmapData.nextId++;
+                this.type = 'entregable';
+                this.titulo = titulo;
+                this.elementos = []; // Array mixto de grupos y tareas
+                this.expanded = false;
+            }
+            
+            getTotalTareas() {
+                let total = 0;
+                this.elementos.forEach(elemento => {
+                    if (elemento.type === 'tarea') {
+                        total += 1;
+                    } else if (elemento.type === 'grupo') {
+                        total += elemento.tareas.length;
+                    }
+                });
+                return total;
+            }
+            
+            getTareasCompletadas() {
+                let completadas = 0;
+                this.elementos.forEach(elemento => {
+                    if (elemento.type === 'tarea' && elemento.estado === 'completada') {
+                        completadas += 1;
+                    } else if (elemento.type === 'grupo') {
+                        completadas += elemento.tareas.filter(t => t.estado === 'completada').length;
+                    }
+                });
+                return completadas;
+            }
+            
+            getProgreso() {
+                const total = this.getTotalTareas();
+                if (total === 0) return 0;
+                return Math.round((this.getTareasCompletadas() / total) * 100);
+            }
+        }
+        
+        class GrupoTareas {
+            constructor(titulo = 'Título del grupo', entregableId) {
+                this.id = roadmapData.nextId++;
+                this.type = 'grupo';
+                this.titulo = titulo;
+                this.entregableId = entregableId;
+                this.tareas = [];
+                this.expanded = true; // Grupos se crean expandidos por defecto
+            }
+            
+            getTareasCompletadas() {
+                return this.tareas.filter(t => t.estado === 'completada').length;
+            }
+            
+            getProgreso() {
+                if (this.tareas.length === 0) return 0;
+                return Math.round((this.getTareasCompletadas() / this.tareas.length) * 100);
+            }
+        }
+        
+        class Tarea {
+            constructor(titulo = 'Título de la tarea', containerId = null, containerType = 'entregable') {
+                this.id = roadmapData.nextId++;
+                this.type = 'tarea';
+                this.titulo = titulo;
+                this.estado = 'por-iniciar';
+                this.containerId = containerId;
+                this.containerType = containerType;
+                this.link = null;
+            }
+        }
+        
+        // ========== FUNCIONES DE DATOS ========== 
+        function createEntregable(titulo) {
+            const entregable = new Entregable(titulo);
+            roadmapData.entregables.push(entregable);
+            return entregable;
+        }
+        
+        function createGrupo(titulo, entregableId) {
+            const entregable = findEntregableById(entregableId);
+            if (!entregable) return null;
+            
+            const grupo = new GrupoTareas(titulo, entregableId);
+            entregable.elementos.push(grupo);
+            return grupo;
+        }
+        
+        function createTarea(titulo, containerId = null, containerType = 'entregable') {
+            const tarea = new Tarea(titulo, containerId, containerType);
+            
+            if (containerType === 'entregable') {
+                const entregable = findEntregableById(containerId);
+                if (entregable) {
+                    entregable.elementos.push(tarea);
+                } else {
+                    // Si no hay contenedor, crear en el primer entregable o crear uno nuevo
+                    if (roadmapData.entregables.length === 0) {
+                        const newEntregable = createEntregable('Nuevo entregable');
+                        if (newEntregable) {
+                            tarea.containerId = newEntregable.id;
+                            newEntregable.elementos.push(tarea);
+                        }
+                    } else {
+                        const firstEntregable = roadmapData.entregables[0];
+                        tarea.containerId = firstEntregable.id;
+                        firstEntregable.elementos.push(tarea);
+                    }
+                }
+            } else if (containerType === 'grupo') {
+                const grupo = findGrupoById(containerId);
+                if (grupo) {
+                    grupo.tareas.push(tarea);
+                }
+            }
+            
+            return tarea;
+        }
+        
+        function findEntregableById(id) {
+            return roadmapData.entregables.find(e => e.id === id);
+        }
+        
+        function findGrupoById(id) {
+            for (let entregable of roadmapData.entregables) {
+                const grupo = entregable.elementos.find(e => e.type === 'grupo' && e.id === id);
+                if (grupo) return grupo;
+            }
+            return null;
+        }
+        
+        function findTareaById(id) {
+            for (let entregable of roadmapData.entregables) {
+                // Buscar en tareas directas del entregable
+                const tareaDirecta = entregable.elementos.find(e => e.type === 'tarea' && e.id === id);
+                if (tareaDirecta) return tareaDirecta;
+                
+                // Buscar en grupos
+                for (let elemento of entregable.elementos) {
+                    if (elemento.type === 'grupo') {
+                        const tareaEnGrupo = elemento.tareas.find(t => t.id === id);
+                        if (tareaEnGrupo) return tareaEnGrupo;
+                    }
+                }
+            }
+            return null;
+        }
+        
+        function getTotalTareas() {
+            let total = 0;
+            roadmapData.entregables.forEach(entregable => {
+                total += entregable.getTotalTareas();
+            });
+            return total;
+        }
+        
+        function getTotalTareasCompletadas() {
+            let completadas = 0;
+            roadmapData.entregables.forEach(entregable => {
+                completadas += entregable.getTareasCompletadas();
+            });
+            return completadas;
+        }
+        
+        function getProgresoGeneral() {
+            const total = getTotalTareas();
+            if (total === 0) return 0;
+            return Math.round((getTotalTareasCompletadas() / total) * 100);
+        }
+        
+        // ========== RENDERIZADO ========== 
+        function renderRoadmap() {
+            const container = document.getElementById('entregables-container');
+            
+            if (!container) {
+                console.error('No se encontró el contenedor entregables-container');
+                return;
+            }
+            
+            // Limpiar completamente el contenedor
+            container.innerHTML = '';
+            
+            if (roadmapData.entregables.length === 0) {
+                // Mostrar empty state
+                container.innerHTML = `
+                    <div class="empty-state" id="empty-state">
+                        <img src="images/empty-states/sin-cards.svg" alt="No hay entregables" class="empty-state-image">
+                        <div class="empty-state-content">
+                            <h3 class="ubits-body-md-bold">No hay entregables creados</h3>
+                            <p class="ubits-body-sm-regular">Comienza creando tu primer entregable</p>
+                        </div>
+                    </div>
+                `;
+                updateProgresoGeneral();
+                return;
+            }
+            
+            // Agregar empty state oculto para futuras referencias
+            container.innerHTML = `
+                <div class="empty-state" id="empty-state" style="display: none;">
+                    <img src="images/empty-states/sin-cards.svg" alt="No hay entregables" class="empty-state-image">
+                    <div class="empty-state-content">
+                        <h3 class="ubits-body-md-bold">No hay entregables creados</h3>
+                        <p class="ubits-body-sm-regular">Comienza creando tu primer entregable</p>
+                    </div>
+                </div>
+            `;
+            
+            // Renderizar cada entregable
+            roadmapData.entregables.forEach(entregable => {
+                const entregableElement = createEntregableElement(entregable);
+                container.appendChild(entregableElement);
+            });
+            
+            updateProgresoGeneral();
+            
+            // Mover todos los dropdowns al contenedor global para evitar overflow issues
+            moveDropdownsToGlobalContainer();
+            
+            // Inicializar drag & drop con un pequeño delay para asegurar que el DOM esté listo
+            setTimeout(() => {
+                initializeDragAndDrop();
+            }, 100);
+        }
+        
+        
+        function moveDropdownsToGlobalContainer() {
+            const globalContainer = document.getElementById('dropdowns-container');
+            
+            if (!globalContainer) {
+                console.error('No se encontró el contenedor dropdowns-container');
+                return;
+            }
+            
+            const allDropdowns = document.querySelectorAll('.tarea-dropdown');
+            
+            allDropdowns.forEach(dropdown => {
+                if (dropdown.parentNode !== globalContainer) {
+                    globalContainer.appendChild(dropdown);
+                }
+            });
+            
+            // Limpiar dropdowns huérfanos (de tareas que ya no existen)
+            cleanupOrphanedDropdowns();
+        }
+        
+        function cleanupOrphanedDropdowns() {
+            const globalContainer = document.getElementById('dropdowns-container');
+            
+            if (!globalContainer) {
+                return; // Salir silenciosamente si no existe el contenedor
+            }
+            
+            const allDropdowns = globalContainer.querySelectorAll('.tarea-dropdown');
+            
+            allDropdowns.forEach(dropdown => {
+                const dropdownId = dropdown.id; // formato: "dropdown-123"
+                const tareaId = dropdownId.replace('dropdown-', '');
+                const tareaExists = findTareaById(parseInt(tareaId));
+                
+                if (!tareaExists) {
+                    dropdown.remove();
+                }
+            });
+        }
+        
+        function createEntregableElement(entregable) {
+            const div = document.createElement('div');
+            div.className = `entregable ${entregable.expanded ? 'expanded' : ''}`;
+            div.dataset.id = entregable.id;
+            // Solo permitir arrastrar cuando está comprimido (no expandido)
+            div.draggable = !entregable.expanded;
+            
+            const totalTareas = entregable.getTotalTareas();
+            const tareasCompletadas = entregable.getTareasCompletadas();
+            const progreso = entregable.getProgreso();
+            
+            div.innerHTML = `
+                <div class="entregable-header">
+                    <h3 class="entregable-title editable ubits-body-md-bold" onclick="editTitle(event, ${entregable.id}, 'entregable')">${entregable.titulo}</h3>
+                    <div class="entregable-right">
+                        <div class="entregable-stats">
+                            <span>tareas: ${tareasCompletadas}/${totalTareas}</span>
+                            <span class="entregable-progress">avance (${progreso}%)</span>
+                        </div>
+                        <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" onclick="deleteEntregable(${entregable.id})" title="Eliminar entregable">
+                            <i class="far fa-trash"></i>
+                        </button>
+                        <i class="far fa-chevron-down entregable-chevron" onclick="toggleEntregable(${entregable.id})"></i>
+                    </div>
+                </div>
+                <div class="entregable-content">
+                    ${renderEntregableContent(entregable)}
+                </div>
+            `;
+            
+            return div;
+        }
+        
+        function renderEntregableContent(entregable) {
+            let content = '';
+            
+            // Zona de drop mixta para grupos y tareas
+            content += `<div class="elementos-drop-zone drop-zone-mixta" data-entregable-id="${entregable.id}">`;
+            
+            // Renderizar elementos en orden (grupos y tareas mezclados)
+            entregable.elementos.forEach(elemento => {
+                if (elemento.type === 'grupo') {
+                    content += createGrupoHTML(elemento);
+                } else if (elemento.type === 'tarea') {
+                    content += createTareaDirectaHTML(elemento);
+                }
+            });
+            
+            content += `</div>`;
+            
+            // Botones de creación
+            content += `
+                <div style="margin-top: 16px; text-align: center; display: flex; gap: 8px; justify-content: center;">
+                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="createGrupo('Nuevo grupo', ${entregable.id}); renderRoadmap(); autoSave();">
+                        <i class="far fa-layer-group"></i>
+                        <span>Crear grupo de tareas</span>
+                    </button>
+                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="createTarea('Nueva tarea', ${entregable.id}, 'entregable'); renderRoadmap(); autoSave();">
+                        <i class="far fa-plus"></i>
+                        <span>Crear tarea</span>
+                    </button>
+                </div>
+            `;
+            
+            return content;
+        }
+        
+        function createTareaDirectaHTML(tarea) {
+            const estado = TASK_STATES[tarea.estado];
+            
+            return `
+                <div class="tarea-directa" data-id="${tarea.id}" draggable="true">
+                    <div class="tarea-content">
+                        <h5 class="tarea-title editable ubits-body-sm-regular" onclick="editTitle(event, ${tarea.id}, 'tarea')" draggable="false">${tarea.titulo}</h5>
+                    </div>
+                    <div class="tarea-actions" draggable="false">
+                        <select class="tarea-estado ${estado.class}" onchange="changeTaskState(${tarea.id}, this.value)" draggable="false">
+                            ${Object.entries(TASK_STATES).map(([key, value]) => 
+                                `<option value="${key}" ${tarea.estado === key ? 'selected' : ''}>${value.label}</option>`
+                            ).join('')}
+                        </select>
+                        <button class="ubits-button ubits-button--secondary ubits-button--sm tarea-link-btn ${tarea.link ? 'has-link' : ''}" onclick="openTareaLink('${tarea.link || ''}')" title="Abrir link" draggable="false">
+                            <i class="far fa-link"></i>
+                        </button>
+                        <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" onclick="toggleTareaOptions(${tarea.id}, this)" title="Opciones" draggable="false">
+                            <i class="far fa-ellipsis-vertical"></i>
+                        </button>
+                        <div class="tarea-dropdown" id="dropdown-${tarea.id}">
+                            ${tarea.link ? 
+                                `<button class="ubits-button ubits-button--tertiary ubits-button--sm" style="width: 100%; justify-content: flex-start; margin-bottom: 4px;" onclick="editTareaLink(${tarea.id})">
+                                    <i class="far fa-pen-to-square"></i>
+                                    <span>Editar link</span>
+                                </button>
+                                <button class="ubits-button ubits-button--tertiary ubits-button--sm" style="width: 100%; justify-content: flex-start; margin-bottom: 4px;" onclick="removeTareaLink(${tarea.id})">
+                                    <i class="far fa-link-slash"></i>
+                                    <span>Eliminar link</span>
+                                </button>` :
+                                `<button class="ubits-button ubits-button--tertiary ubits-button--sm" style="width: 100%; justify-content: flex-start; margin-bottom: 4px;" onclick="addTareaLink(${tarea.id})">
+                                    <i class="far fa-link"></i>
+                                    <span>Añadir link</span>
+                                </button>`
+                            }
+                            <button class="ubits-button ubits-button--tertiary ubits-button--sm" style="width: 100%; justify-content: flex-start; margin-bottom: 4px; color: var(--ubits-feedback-accent-error);" onclick="deleteTarea(${tarea.id})">
+                                <i class="far fa-trash"></i>
+                                <span>Eliminar Tarea</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function createGrupoHTML(grupo) {
+            const tareasCompletadas = grupo.getTareasCompletadas();
+            const progreso = grupo.getProgreso();
+            
+            return `
+                <div class="grupo-tareas ${grupo.expanded ? 'expanded' : ''}" data-id="${grupo.id}" draggable="true">
+                    <div class="grupo-header">
+                        <h4 class="grupo-title editable ubits-body-sm-bold" onclick="editTitle(event, ${grupo.id}, 'grupo')">${grupo.titulo}</h4>
+                        <div class="grupo-actions">
+                            <span style="font-size: 12px; color: var(--ubits-fg-1-medium);">${tareasCompletadas}/${grupo.tareas.length} (${progreso}%)</span>
+                            <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" onclick="deleteGrupo(${grupo.id})" title="Eliminar grupo">
+                                <i class="far fa-trash"></i>
+                            </button>
+                            <i class="far fa-chevron-down grupo-chevron" onclick="toggleGrupo(${grupo.id})"></i>
+                        </div>
+                    </div>
+                    <div class="tareas-list drop-zone" data-container-id="${grupo.id}" data-container-type="grupo">
+                        ${grupo.tareas.map(tarea => createTareaHTML(tarea)).join('')}
+                    </div>
+                    <div class="grupo-bottom-actions" style="margin-top: 8px; text-align: center;">
+                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="createTarea('Nueva tarea', ${grupo.id}, 'grupo'); renderRoadmap(); autoSave();">
+                            <i class="far fa-plus"></i>
+                            <span>Crear tarea</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function createTareaHTML(tarea) {
+            const estado = TASK_STATES[tarea.estado];
+            
+            return `
+                <div class="tarea" data-id="${tarea.id}" draggable="true">
+                    <div class="tarea-content">
+                        <h5 class="tarea-title editable ubits-body-sm-regular" onclick="editTitle(event, ${tarea.id}, 'tarea')" draggable="false">${tarea.titulo}</h5>
+                    </div>
+                    <div class="tarea-actions" draggable="false">
+                        <select class="tarea-estado ${estado.class}" onchange="changeTaskState(${tarea.id}, this.value)" draggable="false">
+                            ${Object.entries(TASK_STATES).map(([key, value]) => 
+                                `<option value="${key}" ${tarea.estado === key ? 'selected' : ''}>${value.label}</option>`
+                            ).join('')}
+                        </select>
+                        <button class="ubits-button ubits-button--secondary ubits-button--sm tarea-link-btn ${tarea.link ? 'has-link' : ''}" onclick="openTareaLink('${tarea.link || ''}')" title="Abrir link" draggable="false">
+                            <i class="far fa-link"></i>
+                        </button>
+                        <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" onclick="toggleTareaOptions(${tarea.id}, this)" title="Opciones" draggable="false">
+                            <i class="far fa-ellipsis-vertical"></i>
+                        </button>
+                        <div class="tarea-dropdown" id="dropdown-${tarea.id}">
+                            ${tarea.link ? 
+                                `<button class="ubits-button ubits-button--tertiary ubits-button--sm" style="width: 100%; justify-content: flex-start; margin-bottom: 4px;" onclick="editTareaLink(${tarea.id})">
+                                    <i class="far fa-pen-to-square"></i>
+                                    <span>Editar link</span>
+                                </button>
+                                <button class="ubits-button ubits-button--tertiary ubits-button--sm" style="width: 100%; justify-content: flex-start; margin-bottom: 4px;" onclick="removeTareaLink(${tarea.id})">
+                                    <i class="far fa-link-slash"></i>
+                                    <span>Eliminar link</span>
+                                </button>` :
+                                `<button class="ubits-button ubits-button--tertiary ubits-button--sm" style="width: 100%; justify-content: flex-start; margin-bottom: 4px;" onclick="addTareaLink(${tarea.id})">
+                                    <i class="far fa-link"></i>
+                                    <span>Añadir link</span>
+                                </button>`
+                            }
+                            <button class="ubits-button ubits-button--tertiary ubits-button--sm" style="width: 100%; justify-content: flex-start; margin-bottom: 4px; color: var(--ubits-feedback-accent-error);" onclick="deleteTarea(${tarea.id})">
+                                <i class="far fa-trash"></i>
+                                <span>Eliminar Tarea</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function updateProgresoGeneral() {
+            const total = getTotalTareas();
+            const completadas = getTotalTareasCompletadas();
+            const progreso = getProgresoGeneral();
+            
+            document.getElementById('progress-count').textContent = `${completadas}/${total}`;
+            document.getElementById('progress-percentage').textContent = `(${progreso}%)`;
+            document.getElementById('progress-bar').style.width = `${progreso}%`;
+        }
+        
+        // ========== EVENT HANDLERS ========== 
+        function toggleEntregable(id) {
+            const entregable = findEntregableById(id);
+            if (!entregable) return;
+            
+            // Cerrar otros entregables (accordion exclusivo)
+            roadmapData.entregables.forEach(e => {
+                if (e.id !== id) {
+                    e.expanded = false;
+                }
+            });
+            
+            // Toggle del entregable actual
+            entregable.expanded = !entregable.expanded;
+            
+            // Renderizar con animación
+            renderRoadmap();
+            
+            // Scroll suave al entregable expandido
+            if (entregable.expanded) {
+                setTimeout(() => {
+                    const element = document.querySelector(`[data-id="${id}"]`);
+                    if (element) {
+                        element.scrollIntoView({ 
+                            behavior: 'smooth', 
+                            block: 'nearest' 
+                        });
+                    }
+                }, 200);
+            }
+        }
+        
+        function toggleGrupo(id) {
+            const grupo = findGrupoById(id);
+            if (!grupo) return;
+            
+            // Toggle del grupo
+            grupo.expanded = !grupo.expanded;
+            
+            // Renderizar con animación
+            renderRoadmap();
+            autoSave();
+        }
+        
+        function editTitle(event, id, type) {
+            event.stopPropagation();
+            
+            const element = event.target;
+            const currentTitle = element.textContent;
+            
+            // Crear input inline que se ve casi igual
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = currentTitle;
+            input.className = 'inline-input';
+            
+            // Reemplazar suavemente
+            element.style.display = 'none';
+            element.parentNode.insertBefore(input, element);
+            
+            // Focus y seleccionar
+            input.focus();
+            input.select();
+            
+            // Función para guardar
+            function saveChanges() {
+                const newTitle = input.value.trim();
+                if (newTitle && newTitle !== currentTitle) {
+                    // Actualizar datos
+                    if (type === 'entregable') {
+                        const entregable = findEntregableById(id);
+                        if (entregable) entregable.titulo = newTitle;
+                    } else if (type === 'grupo') {
+                        const grupo = findGrupoById(id);
+                        if (grupo) grupo.titulo = newTitle;
+                    } else if (type === 'tarea') {
+                        const tarea = findTareaById(id);
+                        if (tarea) tarea.titulo = newTitle;
+                    }
+                    
+                    renderRoadmap();
+                    autoSave();
+                } else {
+                    // Cancelar
+                    element.style.display = '';
+                    input.remove();
+                }
+            }
+            
+            // Event listeners
+            input.addEventListener('blur', saveChanges);
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    input.blur();
+                } else if (e.key === 'Escape') {
+                    e.preventDefault();
+                    element.style.display = '';
+                    input.remove();
+                }
+            });
+        }
+        
+        // ========== DRAG & DROP ========== 
+        let draggedTask = null;
+        let draggedGroup = null;
+        let draggedEntregable = null;
+        
+        function initializeDragAndDrop() {
+            // Agregar event listeners a todas las tareas (dentro de grupos)
+            document.querySelectorAll('.tarea').forEach(tarea => {
+                tarea.addEventListener('dragstart', handleTaskDragStart);
+                tarea.addEventListener('dragend', handleTaskDragEnd);
+            });
+            
+            // Agregar event listeners a todas las tareas directas
+            document.querySelectorAll('.tarea-directa').forEach(tarea => {
+                tarea.addEventListener('dragstart', handleDirectTaskDragStart);
+                tarea.addEventListener('dragend', handleDirectTaskDragEnd);
+            });
+            
+            // Agregar event listeners a todos los grupos
+            document.querySelectorAll('.grupo-tareas').forEach(grupo => {
+                grupo.addEventListener('dragstart', handleGroupDragStart);
+                grupo.addEventListener('dragend', handleGroupDragEnd);
+            });
+            
+            // Agregar event listeners a todos los entregables
+            document.querySelectorAll('.entregable').forEach(entregable => {
+                entregable.addEventListener('dragstart', handleEntregableDragStart);
+                entregable.addEventListener('dragend', handleEntregableDragEnd);
+            });
+            
+            // Agregar event listeners a todas las drop zones de tareas (dentro de grupos)
+            document.querySelectorAll('.drop-zone').forEach(zone => {
+                zone.addEventListener('dragover', handleDragOver);
+                zone.addEventListener('dragenter', handleDragEnter);
+                zone.addEventListener('dragleave', handleDragLeave);
+                zone.addEventListener('drop', handleTaskDrop);
+            });
+            
+            // Agregar event listeners a todas las drop zones mixtas (entregables)
+            document.querySelectorAll('.drop-zone-mixta').forEach(zone => {
+                zone.addEventListener('dragover', handleDragOver);
+                zone.addEventListener('dragenter', handleDragEnter);
+                zone.addEventListener('dragleave', handleDragLeave);
+                zone.addEventListener('drop', handleMixedDrop);
+            });
+            
+            // Agregar event listeners a todas las drop zones de entregables
+            document.querySelectorAll('.drop-zone-entregables').forEach(zone => {
+                zone.addEventListener('dragover', handleDragOver);
+                zone.addEventListener('dragenter', handleDragEnter);
+                zone.addEventListener('dragleave', handleDragLeave);
+                zone.addEventListener('drop', handleEntregableDrop);
+            });
+        }
+        
+        function handleTaskDragStart(e) {
+            e.stopPropagation(); // Evitar que el evento burbujee al entregable
+            
+            draggedTask = {
+                id: parseInt(this.dataset.id),
+                element: this
+            };
+            
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            
+            // Crear imagen transparente para eliminar ícono de mundo
+            const img = new Image();
+            img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=';
+            e.dataTransfer.setDragImage(img, 0, 0);
+        }
+        
+        function handleTaskDragEnd(e) {
+            this.classList.remove('dragging');
+            
+            // Limpiar todas las drop zones
+            document.querySelectorAll('.drop-zone').forEach(zone => {
+                zone.classList.remove('drag-over');
+            });
+            
+            draggedTask = null;
+        }
+        
+        function handleGroupDragStart(e) {
+            draggedGroup = {
+                id: parseInt(this.dataset.id),
+                element: this
+            };
+            
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', `tarea-${this.dataset.id}`);
+        }
+        
+        function handleGroupDragEnd(e) {
+            this.classList.remove('dragging');
+            
+            // Limpiar todas las drop zones
+            document.querySelectorAll('.drop-zone-mixta, .drop-zone-grupos').forEach(zone => {
+                zone.classList.remove('drag-over');
+            });
+            
+            draggedGroup = null;
+        }
+        
+        function handleDirectTaskDragStart(e) {
+            e.stopPropagation(); // Evitar que el evento burbujee al entregable
+            
+            draggedTask = {
+                id: parseInt(this.dataset.id),
+                element: this,
+                type: 'direct'
+            };
+            
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            
+            // Crear imagen transparente para eliminar ícono de mundo
+            const img = new Image();
+            img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=';
+            e.dataTransfer.setDragImage(img, 0, 0);
+        }
+        
+        function handleDirectTaskDragEnd(e) {
+            this.classList.remove('dragging');
+            
+            // Limpiar todas las drop zones
+            document.querySelectorAll('.drop-zone, .drop-zone-mixta').forEach(zone => {
+                zone.classList.remove('drag-over');
+            });
+            
+            draggedTask = null;
+        }
+        
+        function handleEntregableDragStart(e) {
+            draggedEntregable = {
+                id: parseInt(this.dataset.id),
+                element: this
+            };
+            
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', `tarea-${this.dataset.id}`);
+        }
+        
+        function handleEntregableDragEnd(e) {
+            this.classList.remove('dragging');
+            
+            // Limpiar todas las drop zones
+            document.querySelectorAll('.drop-zone-entregables').forEach(zone => {
+                zone.classList.remove('drag-over');
+            });
+            
+            draggedEntregable = null;
+        }
+        
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+        }
+        
+        function handleDragEnter(e) {
+            e.preventDefault();
+            if ((draggedTask && !this.contains(draggedTask.element)) || 
+                (draggedGroup && !this.contains(draggedGroup.element)) ||
+                (draggedEntregable && !this.contains(draggedEntregable.element))) {
+                this.classList.add('drag-over');
+            }
+        }
+        
+        function handleDragLeave(e) {
+            if (!this.contains(e.relatedTarget)) {
+                this.classList.remove('drag-over');
+            }
+        }
+        
+        function handleTaskDrop(e) {
+            e.preventDefault();
+            this.classList.remove('drag-over');
+            
+            if (!draggedTask) return;
+            
+            const newContainerId = parseInt(this.dataset.containerId);
+            const newContainerType = this.dataset.containerType;
+            
+            // Calcular posición de inserción basada en la posición del mouse
+            const dropZone = this;
+            const afterElement = getDragAfterElement(dropZone, e.clientY);
+            
+            moveTaskToPosition(draggedTask.id, newContainerId, newContainerType, afterElement);
+        }
+        
+        function handleMixedDrop(e) {
+            e.preventDefault();
+            this.classList.remove('drag-over');
+            
+            const newEntregableId = parseInt(this.dataset.entregableId);
+            const dropZone = this;
+            
+            if (draggedGroup) {
+                // Mover grupo
+                const afterElement = getDragAfterElementMixed(dropZone, e.clientY, 'grupo');
+                moveElementToPosition(draggedGroup.id, 'grupo', newEntregableId, afterElement);
+            } else if (draggedTask) {
+                // Mover tarea directa
+                const afterElement = getDragAfterElementMixed(dropZone, e.clientY, 'tarea');
+                moveElementToPosition(draggedTask.id, 'tarea', newEntregableId, afterElement);
+            }
+        }
+        
+        function handleGroupDrop(e) {
+            e.preventDefault();
+            this.classList.remove('drag-over');
+            
+            if (!draggedGroup) return;
+            
+            const newEntregableId = parseInt(this.dataset.entregableId);
+            
+            // Calcular posición de inserción basada en la posición del mouse
+            const dropZone = this;
+            const afterElement = getDragAfterElementGroup(dropZone, e.clientY);
+            
+            moveGroupToPosition(draggedGroup.id, newEntregableId, afterElement);
+        }
+        
+        function handleEntregableDrop(e) {
+            e.preventDefault();
+            this.classList.remove('drag-over');
+            
+            if (!draggedEntregable) return;
+            
+            // Calcular posición de inserción basada en la posición del mouse
+            const dropZone = this;
+            const afterElement = getDragAfterElementEntregable(dropZone, e.clientY);
+            
+            moveEntregableToPosition(draggedEntregable.id, afterElement);
+        }
+        
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('.tarea:not(.dragging)')];
+            
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+        
+        function getDragAfterElementGroup(container, y) {
+            const draggableElements = [...container.querySelectorAll('.grupo-tareas:not(.dragging)')];
+            
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+        
+        function getDragAfterElementMixed(container, y, elementType) {
+            let selector = '';
+            if (elementType === 'grupo') {
+                selector = '.grupo-tareas:not(.dragging), .tarea-directa:not(.dragging)';
+            } else if (elementType === 'tarea') {
+                selector = '.grupo-tareas:not(.dragging), .tarea-directa:not(.dragging)';
+            }
+            
+            const draggableElements = [...container.querySelectorAll(selector)];
+            
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+        
+        function getDragAfterElementEntregable(container, y) {
+            const draggableElements = [...container.querySelectorAll('.entregable:not(.dragging)')];
+            
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                // Usar 75% del alto del elemento para una detección más intuitiva
+                const offset = y - box.top - box.height * 0.75;
+                
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+        
+        function updateContainerStats(containerId, containerType) {
+            if (containerType === 'entregable') {
+                const entregable = findEntregableById(containerId);
+                if (entregable) {
+                    const totalTareas = entregable.getTotalTareas();
+                    const tareasCompletadas = entregable.getTareasCompletadas();
+                    const progreso = entregable.getProgreso();
+                    
+                    const entregableElement = document.querySelector(`[data-id="${containerId}"]`);
+                    if (entregableElement) {
+                        const statsElement = entregableElement.querySelector('.entregable-stats');
+                        if (statsElement) {
+                            statsElement.innerHTML = `
+                                <span>tareas: ${tareasCompletadas}/${totalTareas}</span>
+                                <span class="entregable-progress">avance (${progreso}%)</span>
+                            `;
+                        }
+                    }
+                }
+            } else if (containerType === 'grupo') {
+                const grupo = findGrupoById(containerId);
+                if (grupo) {
+                    const tareasCompletadas = grupo.getTareasCompletadas();
+                    const progreso = grupo.getProgreso();
+                    
+                    const grupoElement = document.querySelector(`[data-id="${containerId}"]`);
+                    if (grupoElement) {
+                        const statsElement = grupoElement.querySelector('.grupo-actions span');
+                        if (statsElement) {
+                            statsElement.textContent = `${tareasCompletadas}/${grupo.tareas.length} (${progreso}%)`;
+                        }
+                    }
+                }
+            }
+        }
+        
+        function moveTaskToPosition(tareaId, newContainerId, newContainerType, afterElement) {
+            const tarea = findTareaById(tareaId);
+            if (!tarea) return;
+            
+            // Guardar información del contenedor anterior
+            const oldContainerId = tarea.containerId;
+            const oldContainerType = tarea.containerType;
+            
+            // Remover de contenedor actual
+            if (tarea.containerType === 'entregable') {
+                const oldEntregable = findEntregableById(tarea.containerId);
+                if (oldEntregable) {
+                    oldEntregable.elementos = oldEntregable.elementos.filter(e => e.id !== tareaId);
+                }
+            } else if (tarea.containerType === 'grupo') {
+                const oldGrupo = findGrupoById(tarea.containerId);
+                if (oldGrupo) {
+                    oldGrupo.tareas = oldGrupo.tareas.filter(t => t.id !== tareaId);
+                }
+            }
+            
+            // Actualizar propiedades de la tarea
+            tarea.containerId = newContainerId;
+            tarea.containerType = newContainerType;
+            
+            // Agregar a nuevo contenedor en la posición correcta
+            if (newContainerType === 'entregable') {
+                const newEntregable = findEntregableById(newContainerId);
+                if (newEntregable) {
+                    if (afterElement) {
+                        const afterId = parseInt(afterElement.dataset.id);
+                        const insertIndex = newEntregable.elementos.findIndex(e => e.id === afterId);
+                        newEntregable.elementos.splice(insertIndex, 0, tarea);
+                    } else {
+                        newEntregable.elementos.push(tarea);
+                    }
+                }
+            } else if (newContainerType === 'grupo') {
+                const newGrupo = findGrupoById(newContainerId);
+                if (newGrupo) {
+                    if (afterElement) {
+                        const afterId = parseInt(afterElement.dataset.id);
+                        const insertIndex = newGrupo.tareas.findIndex(t => t.id === afterId);
+                        newGrupo.tareas.splice(insertIndex, 0, tarea);
+                    } else {
+                        newGrupo.tareas.push(tarea);
+                    }
+                }
+            }
+            
+            // Mover visualmente el elemento DOM sin re-renderizar todo
+            const draggedElement = document.querySelector(`[data-id="${tareaId}"]`);
+            const targetContainer = document.querySelector(`[data-container-id="${newContainerId}"][data-container-type="${newContainerType}"]`);
+            
+            if (draggedElement && targetContainer) {
+                // Remover el elemento de su posición actual
+                draggedElement.remove();
+                
+                // Insertar en la nueva posición
+                if (afterElement) {
+                    targetContainer.insertBefore(draggedElement, afterElement);
+                } else {
+                    targetContainer.appendChild(draggedElement);
+                }
+            }
+            
+            // Actualizar estadísticas de contenedores afectados
+            updateContainerStats(oldContainerId, oldContainerType);
+            if (newContainerId !== oldContainerId || newContainerType !== oldContainerType) {
+                updateContainerStats(newContainerId, newContainerType);
+            }
+            
+            // Solo actualizar progreso general
+            updateProgresoGeneral();
+            autoSave();
+        }
+        
+        function moveGroupToPosition(grupoId, newEntregableId, afterElement) {
+            const grupo = findGrupoById(grupoId);
+            if (!grupo) return;
+            
+            // Guardar información del entregable anterior
+            const oldEntregableId = grupo.entregableId;
+            
+            // Remover del entregable actual
+            const oldEntregable = findEntregableById(oldEntregableId);
+            if (oldEntregable) {
+                oldEntregable.grupos = oldEntregable.grupos.filter(g => g.id !== grupoId);
+            }
+            
+            // Actualizar propiedades del grupo
+            grupo.entregableId = newEntregableId;
+            
+            // Agregar al nuevo entregable en la posición correcta
+            const newEntregable = findEntregableById(newEntregableId);
+            if (newEntregable) {
+                if (afterElement) {
+                    const afterId = parseInt(afterElement.dataset.id);
+                    const insertIndex = newEntregable.grupos.findIndex(g => g.id === afterId);
+                    newEntregable.grupos.splice(insertIndex, 0, grupo);
+                } else {
+                    newEntregable.grupos.push(grupo);
+                }
+            }
+            
+            // Mover visualmente el elemento DOM sin re-renderizar todo
+            const draggedElement = document.querySelector(`[data-id="${grupoId}"]`);
+            const targetContainer = document.querySelector(`[data-entregable-id="${newEntregableId}"]`);
+            
+            if (draggedElement && targetContainer) {
+                // Remover el elemento de su posición actual
+                draggedElement.remove();
+                
+                // Insertar en la nueva posición
+                if (afterElement) {
+                    targetContainer.insertBefore(draggedElement, afterElement);
+                } else {
+                    targetContainer.appendChild(draggedElement);
+                }
+            }
+            
+            // Actualizar estadísticas de entregables afectados
+            updateContainerStats(oldEntregableId, 'entregable');
+            if (newEntregableId !== oldEntregableId) {
+                updateContainerStats(newEntregableId, 'entregable');
+            }
+            
+            // Solo actualizar progreso general
+            updateProgresoGeneral();
+            autoSave();
+        }
+        
+        function moveElementToPosition(elementId, elementType, newEntregableId, afterElement) {
+            let element = null;
+            let oldEntregableId = null;
+            
+            if (elementType === 'grupo') {
+                element = findGrupoById(elementId);
+                if (element) {
+                    oldEntregableId = element.entregableId;
+                }
+            } else if (elementType === 'tarea') {
+                element = findTareaById(elementId);
+                if (element && element.containerType === 'entregable') {
+                    oldEntregableId = element.containerId;
+                }
+            }
+            
+            if (!element) return;
+            
+            // Remover del entregable actual
+            const oldEntregable = findEntregableById(oldEntregableId);
+            if (oldEntregable) {
+                oldEntregable.elementos = oldEntregable.elementos.filter(e => e.id !== elementId);
+            }
+            
+            // Actualizar propiedades del elemento
+            if (elementType === 'grupo') {
+                element.entregableId = newEntregableId;
+            } else if (elementType === 'tarea') {
+                element.containerId = newEntregableId;
+                element.containerType = 'entregable';
+            }
+            
+            // Agregar al nuevo entregable en la posición correcta
+            const newEntregable = findEntregableById(newEntregableId);
+            if (newEntregable) {
+                if (afterElement) {
+                    const afterId = parseInt(afterElement.dataset.id);
+                    const insertIndex = newEntregable.elementos.findIndex(e => e.id === afterId);
+                    newEntregable.elementos.splice(insertIndex, 0, element);
+                } else {
+                    newEntregable.elementos.push(element);
+                }
+            }
+            
+            // Mover visualmente el elemento DOM sin re-renderizar todo
+            const draggedElement = document.querySelector(`[data-id="${elementId}"]`);
+            const targetContainer = document.querySelector(`[data-entregable-id="${newEntregableId}"]`);
+            
+            if (draggedElement && targetContainer) {
+                // Remover el elemento de su posición actual
+                draggedElement.remove();
+                
+                // Insertar en la nueva posición
+                if (afterElement) {
+                    targetContainer.insertBefore(draggedElement, afterElement);
+                } else {
+                    targetContainer.appendChild(draggedElement);
+                }
+            }
+            
+            // Actualizar estadísticas de entregables afectados
+            if (oldEntregableId) {
+                updateContainerStats(oldEntregableId, 'entregable');
+            }
+            if (newEntregableId !== oldEntregableId) {
+                updateContainerStats(newEntregableId, 'entregable');
+            }
+            
+            // Solo actualizar progreso general
+            updateProgresoGeneral();
+            autoSave();
+        }
+        
+        function moveEntregableToPosition(entregableId, afterElement) {
+            const entregableIndex = roadmapData.entregables.findIndex(e => e.id === entregableId);
+            if (entregableIndex === -1) return;
+            
+            // Remover el entregable de su posición actual
+            const entregable = roadmapData.entregables.splice(entregableIndex, 1)[0];
+            
+            // Calcular nueva posición
+            let newIndex = roadmapData.entregables.length; // Por defecto al final
+            
+            if (afterElement) {
+                const afterId = parseInt(afterElement.dataset.id);
+                const afterIndex = roadmapData.entregables.findIndex(e => e.id === afterId);
+                if (afterIndex !== -1) {
+                    newIndex = afterIndex;
+                }
+            }
+            
+            // Insertar en la nueva posición
+            roadmapData.entregables.splice(newIndex, 0, entregable);
+            
+            // Mover visualmente el elemento DOM sin re-renderizar todo
+            const draggedElement = document.querySelector(`[data-id="${entregableId}"]`);
+            const targetContainer = document.getElementById('entregables-container');
+            
+            if (draggedElement && targetContainer) {
+                // Remover el elemento de su posición actual
+                draggedElement.remove();
+                
+                // Insertar en la nueva posición
+                if (afterElement) {
+                    targetContainer.insertBefore(draggedElement, afterElement);
+                } else {
+                    // Insertar antes del empty-state si existe, o al final
+                    const emptyState = targetContainer.querySelector('.empty-state');
+                    if (emptyState) {
+                        targetContainer.insertBefore(draggedElement, emptyState);
+                    } else {
+                        targetContainer.appendChild(draggedElement);
+                    }
+                }
+            }
+            
+            // Solo actualizar progreso general (no hay estadísticas que actualizar para entregables)
+            updateProgresoGeneral();
+            autoSave();
+        }
+        
+        function moveTask(tareaId, newContainerId, newContainerType) {
+            const tarea = findTareaById(tareaId);
+            if (!tarea) return;
+            
+            // Remover de contenedor actual
+            if (tarea.containerType === 'entregable') {
+                const oldEntregable = findEntregableById(tarea.containerId);
+                if (oldEntregable) {
+                    oldEntregable.elementos = oldEntregable.elementos.filter(e => e.id !== tareaId);
+                }
+            } else if (tarea.containerType === 'grupo') {
+                const oldGrupo = findGrupoById(tarea.containerId);
+                if (oldGrupo) {
+                    oldGrupo.tareas = oldGrupo.tareas.filter(t => t.id !== tareaId);
+                }
+            }
+            
+            // Agregar a nuevo contenedor
+            tarea.containerId = newContainerId;
+            tarea.containerType = newContainerType;
+            
+            if (newContainerType === 'entregable') {
+                const newEntregable = findEntregableById(newContainerId);
+                if (newEntregable) {
+                    newEntregable.elementos.push(tarea);
+                }
+            } else if (newContainerType === 'grupo') {
+                const newGrupo = findGrupoById(newContainerId);
+                if (newGrupo) {
+                    newGrupo.tareas.push(tarea);
+                }
+            }
+            
+            // Re-renderizar y guardar
+            renderRoadmap();
+            autoSave();
+        }
+        
+        function changeTaskState(tareaId, newState) {
+            const tarea = findTareaById(tareaId);
+            if (tarea) {
+                tarea.estado = newState;
+                renderRoadmap();
+                autoSave();
+            }
+        }
+        
+        function deleteEntregable(entregableId) {
+            const entregable = findEntregableById(entregableId);
+            if (!entregable) return;
+            
+            const totalTareas = entregable.getTotalTareas();
+            const totalGrupos = entregable.elementos.filter(e => e.type === 'grupo').length;
+            const confirmMessage = totalTareas > 0 
+                ? `¿Estás seguro de eliminar este entregable? Se eliminarán ${totalTareas} tareas y ${totalGrupos} grupos.`
+                : '¿Estás seguro de eliminar este entregable?';
+                
+            if (!confirm(confirmMessage)) return;
+            
+            roadmapData.entregables = roadmapData.entregables.filter(e => e.id !== entregableId);
+            renderRoadmap();
+            autoSave();
+        }
+        
+        function deleteGrupo(grupoId) {
+            const grupo = findGrupoById(grupoId);
+            if (!grupo) return;
+            
+            const confirmMessage = grupo.tareas.length > 0 
+                ? `¿Estás seguro de eliminar este grupo? Se eliminarán ${grupo.tareas.length} tareas.`
+                : '¿Estás seguro de eliminar este grupo?';
+                
+            if (!confirm(confirmMessage)) return;
+            
+            const entregable = findEntregableById(grupo.entregableId);
+            if (entregable) {
+                entregable.elementos = entregable.elementos.filter(e => e.id !== grupoId);
+            }
+            
+            renderRoadmap();
+            autoSave();
+        }
+        
+        function deleteTarea(tareaId) {
+            if (!confirm('¿Estás seguro de eliminar esta tarea?')) return;
+            
+            // Cerrar el dropdown de la tarea que se va a eliminar
+            const dropdown = document.getElementById(`dropdown-${tareaId}`);
+            if (dropdown) {
+                dropdown.classList.remove('show');
+            }
+            
+            const tarea = findTareaById(tareaId);
+            if (!tarea) return;
+            
+            if (tarea.containerType === 'entregable') {
+                const entregable = findEntregableById(tarea.containerId);
+                if (entregable) {
+                    entregable.elementos = entregable.elementos.filter(e => e.id !== tareaId);
+                }
+            } else if (tarea.containerType === 'grupo') {
+                const grupo = findGrupoById(tarea.containerId);
+                if (grupo) {
+                    grupo.tareas = grupo.tareas.filter(t => t.id !== tareaId);
+                }
+            }
+            
+            renderRoadmap();
+            autoSave();
+        }
+        
+        // Variables globales para el modal de links
+        let currentTareaId = null;
+        let isEditingLink = false;
+        
+        // Función para alternar el dropdown de opciones de tarea
+        function toggleTareaOptions(tareaId, buttonElement) {
+            // Cerrar todos los dropdowns abiertos
+            document.querySelectorAll('.tarea-dropdown.show').forEach(dropdown => {
+                dropdown.classList.remove('show');
+            });
+            
+            // Abrir el dropdown actual
+            const dropdown = document.getElementById(`dropdown-${tareaId}`);
+            
+            if (dropdown && buttonElement) {
+                // Posicionar el dropdown basado en la posición del botón
+                const rect = buttonElement.getBoundingClientRect();
+                const dropdownWidth = 160;
+                
+                // Calcular posición óptima
+                let top = rect.bottom + 5;
+                let left = rect.right - dropdownWidth;
+                
+                // Ajustar si se sale de la pantalla por la derecha
+                if (left < 10) {
+                    left = rect.left;
+                }
+                
+                // Ajustar si se sale de la pantalla por abajo
+                const viewportHeight = window.innerHeight;
+                const dropdownHeight = 120; // Estimado
+                if (top + dropdownHeight > viewportHeight - 20) {
+                    top = rect.top - dropdownHeight - 5;
+                }
+                
+                dropdown.style.top = `${top}px`;
+                dropdown.style.left = `${left}px`;
+                dropdown.classList.add('show');
+                
+                // Cerrar dropdown al hacer click fuera
+                setTimeout(() => {
+                    document.addEventListener('click', function closeDropdown(e) {
+                        if (!e.target.closest('.tarea-dropdown') && !e.target.closest(`[onclick*="toggleTareaOptions"]`)) {
+                            dropdown.classList.remove('show');
+                            document.removeEventListener('click', closeDropdown);
+                        }
+                    });
+                }, 0);
+            }
+        }
+        
+        // Función para abrir link de tarea
+        function openTareaLink(url) {
+            if (url && url.trim() !== '') {
+                // Agregar https:// si no tiene protocolo
+                let fullUrl = url;
+                if (!url.match(/^https?:\/\//)) {
+                    fullUrl = 'https://' + url;
+                }
+                window.open(fullUrl, '_blank');
+            }
+        }
+        
+        // Función para mostrar modal de añadir link
+        function addTareaLink(tareaId) {
+            currentTareaId = tareaId;
+            isEditingLink = false;
+            
+            document.getElementById('modalTitle').textContent = 'Añadir link';
+            document.getElementById('linkInput').value = '';
+            document.getElementById('linkInput').placeholder = 'https://ejemplo.com';
+            
+            showLinkModal();
+        }
+        
+        // Función para mostrar modal de editar link
+        function editTareaLink(tareaId) {
+            const tarea = findTareaById(tareaId);
+            if (!tarea) return;
+            
+            currentTareaId = tareaId;
+            isEditingLink = true;
+            
+            document.getElementById('modalTitle').textContent = 'Editar link';
+            document.getElementById('linkInput').value = tarea.link || '';
+            document.getElementById('linkInput').placeholder = 'https://ejemplo.com';
+            
+            showLinkModal();
+        }
+        
+        // Función para eliminar link de tarea
+        function removeTareaLink(tareaId) {
+            if (!confirm('¿Estás seguro de eliminar el link de esta tarea?')) return;
+            
+            const tarea = findTareaById(tareaId);
+            if (tarea) {
+                tarea.link = null;
+                renderRoadmap();
+                autoSave();
+            }
+        }
+        
+        // Función para mostrar el modal
+        function showLinkModal() {
+            const modal = document.getElementById('linkModal');
+            modal.classList.add('show');
+            
+            // Focus en el input
+            setTimeout(() => {
+                document.getElementById('linkInput').focus();
+            }, 100);
+            
+            // Cerrar modal con ESC
+            document.addEventListener('keydown', function closeOnEsc(e) {
+                if (e.key === 'Escape') {
+                    closeLinkModal();
+                    document.removeEventListener('keydown', closeOnEsc);
+                }
+            });
+        }
+        
+        // Función para cerrar el modal
+        function closeLinkModal() {
+            const modal = document.getElementById('linkModal');
+            modal.classList.remove('show');
+            currentTareaId = null;
+            isEditingLink = false;
+        }
+        
+        // Función para guardar el link
+        function saveTareaLink() {
+            const url = document.getElementById('linkInput').value.trim();
+            
+            if (!url) {
+                alert('Por favor ingresa una URL válida');
+                return;
+            }
+            
+            // Validar URL básica
+            try {
+                let fullUrl = url;
+                if (!url.match(/^https?:\/\//)) {
+                    fullUrl = 'https://' + url;
+                }
+                new URL(fullUrl);
+            } catch (e) {
+                alert('Por favor ingresa una URL válida');
+                return;
+            }
+            
+            const tarea = findTareaById(currentTareaId);
+            if (tarea) {
+                tarea.link = url;
+                renderRoadmap();
+                autoSave();
+                closeLinkModal();
+            }
+        }
+        
+        // ========== PERSISTENCIA ========== 
+        function saveToLocalStorage() {
+            try {
+                localStorage.setItem('ubits-roadmap-data', JSON.stringify(roadmapData));
+                console.log('Datos guardados en localStorage');
+            } catch (error) {
+                console.error('Error guardando en localStorage:', error);
+            }
+        }
+        
+        function loadFromLocalStorage() {
+            try {
+                const saved = localStorage.getItem('ubits-roadmap-data');
+                if (saved) {
+                    const savedData = JSON.parse(saved);
+                    
+                    // Reconstruir objetos con sus métodos
+                    roadmapData.entregables = savedData.entregables.map(entregableData => {
+                        const entregable = new Entregable(entregableData.titulo);
+                        entregable.id = entregableData.id;
+                        entregable.expanded = entregableData.expanded || false;
+                        
+                        // Migrar del formato antiguo al nuevo si es necesario
+                        if (entregableData.elementos) {
+                            // Formato nuevo - elementos mixtos
+                            entregable.elementos = entregableData.elementos.map(elementoData => {
+                                if (elementoData.type === 'grupo') {
+                                    const grupo = new GrupoTareas(elementoData.titulo, entregable.id);
+                                    grupo.id = elementoData.id;
+                                    grupo.expanded = elementoData.expanded !== undefined ? elementoData.expanded : true;
+                                    
+                                    // Reconstruir tareas del grupo
+                                    grupo.tareas = elementoData.tareas.map(tareaData => {
+                                        const tarea = new Tarea(tareaData.titulo, grupo.id, 'grupo');
+                                        tarea.id = tareaData.id;
+                                        tarea.estado = tareaData.estado;
+                                        tarea.link = tareaData.link || null;
+                                        return tarea;
+                                    });
+                                    
+                                    return grupo;
+                                } else if (elementoData.type === 'tarea') {
+                                    const tarea = new Tarea(elementoData.titulo, entregable.id, 'entregable');
+                                    tarea.id = elementoData.id;
+                                    tarea.estado = elementoData.estado;
+                                    tarea.link = elementoData.link || null;
+                                    return tarea;
+                                }
+                            }).filter(Boolean);
+                        } else {
+                            // Formato antiguo - migrar a elementos mixtos
+                            entregable.elementos = [];
+                            
+                            // Agregar grupos existentes
+                            if (entregableData.grupos) {
+                                entregableData.grupos.forEach(grupoData => {
+                                    const grupo = new GrupoTareas(grupoData.titulo, entregable.id);
+                                    grupo.id = grupoData.id;
+                                    grupo.expanded = grupoData.expanded !== undefined ? grupoData.expanded : true;
+                                    
+                                    // Reconstruir tareas del grupo
+                                    grupo.tareas = grupoData.tareas.map(tareaData => {
+                                        const tarea = new Tarea(tareaData.titulo, grupo.id, 'grupo');
+                                        tarea.id = tareaData.id;
+                                        tarea.estado = tareaData.estado;
+                                        tarea.link = tareaData.link || null;
+                                        return tarea;
+                                    });
+                                    
+                                    entregable.elementos.push(grupo);
+                                });
+                            }
+                            
+                            // Agregar tareas directas existentes
+                            if (entregableData.tareas) {
+                                entregableData.tareas.forEach(tareaData => {
+                                    const tarea = new Tarea(tareaData.titulo, entregable.id, 'entregable');
+                                    tarea.id = tareaData.id;
+                                    tarea.estado = tareaData.estado;
+                                    tarea.link = tareaData.link || null;
+                                    entregable.elementos.push(tarea);
+                                });
+                            }
+                        }
+                        
+                        return entregable;
+                    });
+                    
+                    roadmapData.nextId = savedData.nextId || roadmapData.nextId;
+                    console.log('Datos cargados desde localStorage');
+                }
+            } catch (error) {
+                console.error('Error cargando desde localStorage:', error);
+            }
+        }
+        
+        
+        // Auto-save cada vez que se hacen cambios
+        function autoSave() {
+            saveToLocalStorage();
+        }
+        
+        // ========== INICIALIZACIÓN ========== 
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeRoadmap();
+        });
+        
+        function initializeRoadmap() {
+            const savedTheme = localStorage.getItem('ubits-theme');
+            if (savedTheme) {
+                document.body.dataset.theme = savedTheme;
+            }
+            
+            // Cargar datos guardados
+            loadFromLocalStorage();
+            
+            renderRoadmap();
+        }
+        
+        // ========== FUNCIONES DE EXPORTACIÓN/IMPORTACIÓN ==========
+        function exportData() {
+            const data = localStorage.getItem('ubits-roadmap-data');
+            if (data) {
+                console.log('=== DATOS PARA COPIAR ===');
+                console.log(data);
+                console.log('=== FIN DE DATOS ===');
+                
+                // Copiar al clipboard si es posible
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(data).then(() => {
+                        alert('✅ Datos copiados al clipboard!\n\nAhora ve a Netlify, abre la consola y ejecuta:\nimportData(`pega aquí los datos`)');
+                    });
+                } else {
+                    alert('📋 Datos mostrados en consola.\n\nCopia los datos de la consola y ve a Netlify para importarlos.');
+                }
+            } else {
+                alert('❌ No hay datos para exportar');
+            }
+        }
+        
+        function importData(jsonString) {
+            try {
+                // Validar que sea JSON válido
+                JSON.parse(jsonString);
+                
+                // Guardar en localStorage
+                localStorage.setItem('ubits-roadmap-data', jsonString);
+                
+                // Recargar la página
+                location.reload();
+                
+                alert('✅ Datos importados correctamente!');
+            } catch (error) {
+                alert('❌ Error: Los datos no son válidos\n' + error.message);
+            }
+        }
+        
+        // Hacer funciones disponibles globalmente
+        window.exportData = exportData;
+        window.importData = importData;
+        
+        function createNewEntregable() {
+            const entregable = createEntregable('Nuevo entregable');
+            // Crear el entregable abierto por defecto
+            if (entregable) {
+                entregable.expanded = true;
+            }
+            renderRoadmap();
+            autoSave();
+        }
+        
+        // Hacer funciones disponibles globalmente
+        window.createNewEntregable = createNewEntregable;
+        window.createEntregable = createEntregable;
+        window.createGrupo = createGrupo;
+        window.createTarea = createTarea;
+        window.toggleEntregable = toggleEntregable;
+        window.toggleGrupo = toggleGrupo;
+        window.editTitle = editTitle;
+        window.changeTaskState = changeTaskState;
+        window.deleteEntregable = deleteEntregable;
+        window.deleteGrupo = deleteGrupo;
+        window.deleteTarea = deleteTarea;
+        window.moveTask = moveTask;
+        window.renderRoadmap = renderRoadmap;
+        window.saveToLocalStorage = saveToLocalStorage;
+        window.loadFromLocalStorage = loadFromLocalStorage;
+        
+        // Funciones de links de tareas
+        window.toggleTareaOptions = toggleTareaOptions;
+        window.openTareaLink = openTareaLink;
+        window.addTareaLink = addTareaLink;
+        window.editTareaLink = editTareaLink;
+        window.removeTareaLink = removeTareaLink;
+        window.showLinkModal = showLinkModal;
+        window.closeLinkModal = closeLinkModal;
+        window.saveTareaLink = saveTareaLink;
+    </script>
+    
+    <!-- Contenedor global para dropdowns -->
+    <div id="dropdowns-container"></div>
+    
+    <!-- Modal para links de tareas -->
+    <div class="modal-overlay" id="linkModal">
+        <div class="modal">
+            <div class="modal-header">
+                <i class="far fa-link"></i>
+                <h3 class="modal-title" id="modalTitle">Añadir link</h3>
+            </div>
+            <div class="modal-body">
+                <input type="url" class="modal-input" id="linkInput" placeholder="https://ejemplo.com" />
+            </div>
+            <div class="modal-actions">
+                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="closeLinkModal()">
+                    <span>Cancelar</span>
+                </button>
+                <button class="ubits-button ubits-button--primary ubits-button--sm" onclick="saveTareaLink()">
+                    <span>Guardar</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

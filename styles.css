@@ -368,6 +368,27 @@ body {
     z-index: 5;
 }
 
+/* Centrado para pantallas grandes */
+@media (min-width: 1440px) {
+    .main-content {
+        margin: 16px auto 0 auto;
+        padding-left: 143px;
+        padding-right: 24px;
+        width: 1607px;
+        max-width: 1607px;
+        box-sizing: border-box;
+    }
+    
+    .main-content-profile {
+        margin: 16px auto 0 auto;
+        padding-left: 143px;
+        padding-right: 24px;
+        width: 1607px;
+        max-width: 1607px;
+        box-sizing: border-box;
+    }
+}
+
 /* Ajustar gap en móvil cuando no hay subnav */
 @media (max-width: 1023px) {
     .main-content {
