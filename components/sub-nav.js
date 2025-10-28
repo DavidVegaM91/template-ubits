@@ -55,6 +55,34 @@ const TOP_NAV_VARIANTS = {
             { id: 'plans', label: 'Planes', icon: 'far fa-layer-group', url: 'planes.html' },
             { id: 'tasks', label: 'Tareas', icon: 'far fa-tasks', url: 'tareas.html' }
         ]
+    },
+    empresa: {
+        name: 'Empresa',
+        tabs: [
+            { id: 'gestion-usuarios', label: 'Gestión de usuarios', icon: 'far fa-users' },
+            { id: 'organigrama', label: 'Organigrama', icon: 'far fa-sitemap' },
+            { id: 'datos-empresa', label: 'Datos de empresa', icon: 'far fa-building' },
+            { id: 'personalizacion', label: 'Personalización', icon: 'far fa-paint-brush' },
+            { id: 'roles-permisos', label: 'Roles y permisos', icon: 'far fa-user-shield' },
+            { id: 'comunicaciones', label: 'Comunicaciones', icon: 'far fa-envelope' }
+        ]
+    },
+    'admin-aprendizaje': {
+        name: 'Aprendizaje',
+        tabs: [
+            { id: 'lms-cursos', label: 'LMS - Cursos propios', icon: 'far fa-book' },
+            { id: 'plan-formacion', label: 'Plan de formación', icon: 'far fa-clipboard-list-check' },
+            { id: 'certificados', label: 'Certificados', icon: 'far fa-file-certificate' },
+            { id: 'metricas-empresa', label: 'Métricas de empresa', icon: 'far fa-chart-line' }
+        ]
+    },
+    'admin-desempeño': {
+        name: 'Desempeño',
+        tabs: [
+            { id: 'evaluations', label: 'Evaluaciones 360', icon: 'far fa-chart-pie' },
+            { id: 'objectives', label: 'Objetivos', icon: 'far fa-bullseye' },
+            { id: 'matriz-talento', label: 'Matriz de Talento', icon: 'far fa-sitemap' }
+        ]
     }
 };
 

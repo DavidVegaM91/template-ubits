@@ -181,8 +181,9 @@ loadCardContent('cards-container', [{
 #### **1. 🧭 NAVIGATION COMPONENTS:**
 - **SubNav** (Top navigation) → `components/sub-nav.css` + `components/sub-nav.js`
   - Variants: `template`, `aprendizaje`, `desempeno`, `encuestas`, `tareas`, `documentacion`
-- **Sidebar** (Left navigation) → `components-sidebar.css` + `components/sidebar.js`  
-  - Options: `admin`, `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`, `reclutamiento`, `tareas`, `ubits-ai`, `ninguno`
+- **Sidebar** (Left navigation) - 2 variantes → `components-sidebar.css` + `components/sidebar.js`  
+  - **Variante Default:** Body (`admin`, `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`, `reclutamiento`, `tareas`, `ubits-ai`, `ninguno`) + Footer (Modo oscuro, Perfil)
+  - **Variante Admin:** Body (`inicio`, `empresa`, `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`) + Footer (API, Centro de ayuda, Modo oscuro, Perfil)
 - **TabBar** (Mobile navigation) → `components/tab-bar.css` + `components/tab-bar.js`
   - Features: Responsive, options: `modulos`, `perfil`, `modo-oscuro`
 - **Floating Menu** (Modal navigation) → `components/floating-menu.css` + `components/floating-menu.js`
@@ -626,7 +627,8 @@ document.addEventListener('DOMContentLoaded', function() {
 - `components/sub-nav.css`
 - `components/sub-nav.js`
 
-#### **2. SIDEBAR (Left Navigation)**
+#### **2. SIDEBAR (Left Navigation) - 2 Variantes**
+
 ```html
 <!-- Container for Sidebar -->
 <div id="sidebar-container"></div>
@@ -634,13 +636,24 @@ document.addEventListener('DOMContentLoaded', function() {
 <!-- JavaScript to load Sidebar -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    loadSidebar('ACTIVE_OPTION');
+    // Variante Default (no especificar 'default' como primer parámetro)
+    loadSidebar('aprendizaje'); // Activa sidebar default con aprendizaje
+    
+    // Variante Admin
+    loadSidebar('admin', 'inicio'); // Activa sidebar admin con inicio
 });
 </script>
 ```
 
-**Available options:**
-- `admin`, `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`, `reclutamiento`, `tareas`, `ubits-ai`, `ninguno`
+**Variante Default:**
+- **Body:** `admin`, `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`, `reclutamiento`, `tareas`, `ubits-ai`, `ninguno`
+- **Footer:** Modo oscuro, Perfil
+- **Profile Menu:** Ver mi perfil, Modo Administrador, Cambio de contraseña, Cerrar sesión
+
+**Variante Admin:**
+- **Body:** `inicio`, `empresa`, `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`
+- **Footer:** API, Centro de ayuda, Modo oscuro, Perfil
+- **Profile Menu:** Ver mi perfil, Modo colaborador, Cambio de contraseña, Cerrar sesión
 
 **Required files:**
 - `components/sidebar.js`
@@ -1215,8 +1228,33 @@ document.addEventListener('DOMContentLoaded', function() {
 
 ## 🎯 SIDEBAR Y TAB-BAR OPCIONES
 
-### **Sidebar activo:**
-- **Opciones:** `admin`, `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`, `reclutamiento`, `tareas`, `ubits-ai`, `ninguno`
+### **Sidebar - 2 Variantes Disponibles:**
+
+#### **Variante Default:**
+- **Body:** `admin`, `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`, `reclutamiento`, `tareas`, `ubits-ai`, `ninguno`
+- **Footer:** Modo oscuro, Perfil
+- **Profile Menu:** Ver mi perfil, Modo Administrador, Cambio de contraseña, Cerrar sesión
+- **Ejemplo:**
+  ```html
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+      loadSidebar('default', 'aprendizaje');
+  });
+  </script>
+  ```
+
+#### **Variante Admin:**
+- **Body:** `inicio`, `empresa`, `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`
+- **Footer:** API, Centro de ayuda, Modo oscuro, Perfil
+- **Profile Menu:** Ver mi perfil, Modo colaborador, Cambio de contraseña, Cerrar sesión
+- **Ejemplo:**
+  ```html
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+      loadSidebar('admin', 'inicio');
+  });
+  </script>
+  ```
 
 ### **Tab-bar responsive:**
 - **Opciones:** `modulos`, `perfil`, `modo-oscuro`

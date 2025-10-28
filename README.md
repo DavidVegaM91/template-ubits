@@ -27,8 +27,13 @@ Una **plantilla lista para usar** que permite a **Product Managers**, **Diseñad
 ## 🧩 Componentes UBITS disponibles
 
 ### **Componentes de navegación:**
-- **SubNav** - Navegación superior (variantes: template, aprendizaje, desempeno, encuestas, tareas, documentacion)
-- **Sidebar** - Navegación lateral (opciones: aprendizaje, diagnóstico, desempeño, encuestas, reclutamiento, tareas, ubits-ai, ninguno)
+- **SubNav** - Navegación superior (variantes disponibles):
+  - `template`, `aprendizaje`, `desempeno`, `encuestas`, `tareas`, `documentacion`
+  - `empresa` - Gestión de empresa (gestión usuarios, organigrama, datos, personalización, roles, comunicaciones)
+  - `admin-aprendizaje` - Administración de aprendizaje (LMS, plan formación, certificados, métricas)
+- **Sidebar** - Navegación lateral con 2 variantes:
+  - **Variante default:** (opciones: admin, aprendizaje, diagnóstico, desempeño, encuestas, reclutamiento, tareas, ubits-ai, ninguno) - Con modo oscuro
+  - **Variante admin:** (opciones: inicio, empresa, aprendizaje, diagnóstico, desempeño, encuestas; footer: api, centro-de-ayuda, modo-oscuro, perfil) - Incluye modo oscuro en footer
 - **TabBar** - Navegación móvil (opciones: modulos, perfil, modo-oscuro)
 
 ### **Componentes de UI:**
@@ -126,6 +131,16 @@ Todos los componentes UBITS requieren imports obligatorios:
 
 #### **👤 Perfil:**
 - **`profile.html`** - Perfil/Portal del colaborador
+
+#### **⚙️ Módulo de Administración:**
+- **`admin.html`** - Dashboard de administración (1 sección, sin SubNav)
+- **`admin-empresa.html`** - Gestión de empresa (con SubNav)
+- **`admin-aprendizaje.html`** - Administración de aprendizaje (con SubNav)
+- **`admin-diagnostico.html`** - Administración de diagnóstico (sin SubNav)
+- **`admin-desempeño.html`** - Administración de desempeño (con SubNav)
+- **`admin-encuestas.html`** - Administración de encuestas (sin SubNav)
+- **`admin-api.html`** - Gestión de API (sin SubNav)
+- **`admin-help-center.html`** - Centro de ayuda (sin SubNav)
 
 ### **2. PÁGINAS DE DOCUMENTACIÓN (Sistema de Componentes)**
 
@@ -272,10 +287,16 @@ ubits-body-md-bold, ubits-body-sm-bold
 loadSubNav('top-nav-container', 'template');
 </script>
 
-<!-- Sidebar -->
+<!-- Sidebar - Variante default -->
 <div id="sidebar-container"></div>
 <script>
-loadSidebar('sidebar-container', 'ninguno');
+loadSidebar('default', 'aprendizaje'); // Activa aprendizaje
+</script>
+
+<!-- Sidebar - Variante admin -->
+<div id="sidebar-container"></div>
+<script>
+loadSidebar('admin', 'inicio'); // Activa inicio en sidebar admin
 </script>
 
 <!-- Button -->

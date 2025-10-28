@@ -2355,7 +2355,7 @@ body {
     display: none;
     position: fixed;
     left: 120px;
-    bottom: 80px;
+    bottom: 27px;
     width: 200px;
     background: var(--ubits-sidebar-bg);
     border: 1px solid var(--ubits-border-1);
@@ -2407,6 +2407,13 @@ body {
 
 .sidebar-profile-menu .profile-menu-item:hover i {
     color: var(--ubits-sidebar-button-fg-hover);
+}
+
+/* Profile menu divider */
+.sidebar-profile-menu .profile-menu-divider {
+    height: 1px;
+    background: var(--ubits-border-1);
+    margin: 4px 0;
 }
 
 /* Dark mode para el profile menu del sidebar */
