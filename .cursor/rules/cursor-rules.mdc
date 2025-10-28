@@ -182,7 +182,7 @@ loadCardContent('cards-container', [{
 - **SubNav** (Top navigation) → `components/sub-nav.css` + `components/sub-nav.js`
   - Variants: `template`, `aprendizaje`, `desempeno`, `encuestas`, `tareas`, `documentacion`
 - **Sidebar** (Left navigation) → `components-sidebar.css` + `components/sidebar.js`  
-  - Options: `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`, `reclutamiento`, `tareas`, `ubits-ai`, `ninguno`
+  - Options: `admin`, `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`, `reclutamiento`, `tareas`, `ubits-ai`, `ninguno`
 - **TabBar** (Mobile navigation) → `components/tab-bar.css` + `components/tab-bar.js`
   - Features: Responsive, options: `modulos`, `perfil`, `modo-oscuro`
 - **Floating Menu** (Modal navigation) → `components/floating-menu.css` + `components/floating-menu.js`
@@ -640,7 +640,7 @@ document.addEventListener('DOMContentLoaded', function() {
 ```
 
 **Available options:**
-- `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`, `reclutamiento`, `tareas`, `ubits-ai`, `ninguno`
+- `admin`, `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`, `reclutamiento`, `tareas`, `ubits-ai`, `ninguno`
 
 **Required files:**
 - `components/sidebar.js`
@@ -1216,7 +1216,7 @@ document.addEventListener('DOMContentLoaded', function() {
 ## 🎯 SIDEBAR Y TAB-BAR OPCIONES
 
 ### **Sidebar activo:**
-- **Opciones:** `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`, `reclutamiento`, `tareas`, `ubits-ai`, `ninguno`
+- **Opciones:** `admin`, `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`, `reclutamiento`, `tareas`, `ubits-ai`, `ninguno`
 
 ### **Tab-bar responsive:**
 - **Opciones:** `modulos`, `perfil`, `modo-oscuro`
@@ -1601,7 +1601,7 @@ When issues are found, the validator creates a detailed prompt for Cursor with:
 
 ### Key Components
 - **SubNav** - Top navigation (variants: template, aprendizaje, desempeno, encuestas, tareas, documentacion)
-- **Sidebar** - Left navigation (options: aprendizaje, diagnóstico, desempeño, encuestas, reclutamiento, tareas, ubits-ai, ninguno)
+- **Sidebar** - Left navigation (options: admin, aprendizaje, diagnóstico, desempeño, encuestas, reclutamiento, tareas, ubits-ai, ninguno)
 - **TabBar** - Mobile navigation (options: modulos, perfil, modo-oscuro)
 - **Alert** - Notifications (types: success, info, warning, error; with/without close button)
 - **Button** - Actions (variants: primary, secondary, tertiary; sizes: sm, md, lg)

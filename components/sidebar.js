@@ -17,9 +17,10 @@ function adjustSidebarHeight() {
 
 // Sidebar Component Loader
 // Función para cargar el sidebar UBITS
-// Parámetros: activeButton (string, opcional) - Sección a activar ('aprendizaje', 'diagnóstico', 'desempeño', 'encuestas', 'reclutamiento', 'tareas', 'ubits-ai')
+// Parámetros: activeButton (string, opcional) - Sección a activar ('admin', 'aprendizaje', 'diagnóstico', 'desempeño', 'encuestas', 'reclutamiento', 'tareas', 'ubits-ai')
 // La función busca automáticamente el contenedor 'sidebar-container'
 // Ejemplo: loadSidebar('aprendizaje') - Activa la sección aprendizaje
+// Ejemplo: loadSidebar('admin') - Activa la sección admin
 // Ejemplo: loadSidebar() - Carga sidebar sin sección activa
 function loadSidebar(activeButton = null) {
     console.log('loadSidebar llamado con activeButton:', activeButton);
@@ -47,6 +48,9 @@ function loadSidebar(activeButton = null) {
                 
                 <!-- Body -->
                 <div class="sidebar-body">
+                    <button class="nav-button" data-section="admin" data-tooltip="Admin" onclick="window.location.href='#'" style="cursor: pointer;">
+                        <i class="far fa-laptop"></i>
+                    </button>
                     <button class="nav-button" data-section="aprendizaje" data-tooltip="Aprendizaje" onclick="window.location.href='home-learn.html'" style="cursor: pointer;">
                         <i class="far fa-graduation-cap"></i>
                     </button>
