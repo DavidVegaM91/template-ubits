@@ -213,11 +213,9 @@
    BUTTON TYPES
    ======================================== */
 
-/* Icon Only Button */
+/* Icon Only Button - Base (sin restricciones de tamaño) */
 .ubits-button--icon-only {
     padding: 12px;
-    min-width: 40px;
-    min-height: 40px;
 }
 
 /* ========================================
@@ -236,6 +234,34 @@
     font-size: 16px;
     font-weight: 600;
     line-height: 24px;
+}
+
+/* Medium (default) Icon Only */
+.ubits-button.ubits-button--icon-only {
+    padding: 12px;
+    width: 40px;
+    height: 40px;
+}
+
+/* Extra Small - usa ubits-body-xs-semibold */
+.ubits-button--xs {
+    padding: 7.5px 8px;
+    height: 28px;
+    /* Hereda de ubits-body-xs-semibold: 11px, weight 600, line-height 16.5px */
+}
+
+/* Aplicar tipografía UBITS al texto del botón extra small - ubits-body-xs-semibold */
+.ubits-button--xs span {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 16.5px;
+}
+
+.ubits-button--xs.ubits-button--icon-only {
+    padding: 7.5px;
+    width: 28px;
+    height: 28px;
 }
 
 /* Small - usa ubits-body-sm-semibold */
