@@ -93,7 +93,7 @@
   /* Gray */
   --ubits-fg-gray-subtle: #2b3543;
   --ubits-fg-gray-subtle-inverted: #2b3543;
-  --ubits-fg-gray-subtle-hover: #c5c6cb;
+  --ubits-fg-gray-subtle-hover: #DBDDE0;
   --ubits-fg-gray-subtle-inverted-hover: #16202f;
   --ubits-fg-gray-subtle-static: #2b3543;
   --ubits-fg-gray-subtle-static-inverted: #dbdde0;
@@ -504,7 +504,7 @@
   
   --ubits-fg-gray-subtle: #dbdde0;
   --ubits-fg-gray-subtle-inverted: #dbdde0;
-  --ubits-fg-gray-subtle-hover: #c5c6cb;
+  --ubits-fg-gray-subtle-hover: #2A303F;
   --ubits-fg-gray-subtle-inverted-hover: #16202f;
   --ubits-fg-gray-subtle-static: #2b3543;
   --ubits-fg-gray-subtle-static-inverted: #dbdde0;
