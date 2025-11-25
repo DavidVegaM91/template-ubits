@@ -134,6 +134,7 @@
  * - **Controles:** Botones de navegación (anterior/siguiente) en la parte inferior derecha
  * - **Indicadores:** Dots centrados en la parte inferior dentro del card
  * - **Pausa:** Se pausa automáticamente al hacer hover
+ * - **Efecto hover:** Zoom suave en la imagen (1.08x) con transición de 0.6s
  * - **Botón "Ver ahora":** Visible y funcional
  * 
  * ### Mobile (≤768px):
@@ -160,6 +161,11 @@
  * ### Componentes UBITS Utilizados:
  * - **Botón "Ver ahora":** `ubits-button--secondary--md` oficial UBITS
  * - **Controles:** `ubits-button--secondary--md--icon-only` oficial UBITS
+ * 
+ * ### Efectos Visuales:
+ * - **Zoom en hover:** La imagen de fondo hace zoom suave (1.08x) al pasar el mouse sobre el carrusel
+ * - **Transición:** 0.6s ease para una animación fluida
+ * - **Combinado con pausa:** El zoom se activa junto con la pausa del auto-advance al hacer hover
  * 
  * ## 📱 RESPONSIVE
  * 
