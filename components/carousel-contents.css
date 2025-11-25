@@ -1,0 +1,356 @@
+/* ========================================
+   UBITS CAROUSEL CONTENTS COMPONENT
+   Componente de carrusel con múltiples variantes
+   Variante principal: Hero (banner grande horizontal)
+   ======================================== */
+
+/* Carousel Contents Container - Variante Hero */
+.carousel-contents--hero {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 21 / 9;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--ubits-bg-1);
+}
+
+/* Slides Container */
+.carousel-contents--hero__slides-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+/* Individual Slide */
+.carousel-contents--hero__slide {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+}
+
+.carousel-contents--hero__slide.active {
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 1;
+}
+
+/* Hero Image Background */
+.carousel-contents--hero__image-wrapper {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.carousel-contents--hero__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    background: var(--ubits-bg-2);
+}
+
+.carousel-contents--hero__gradient {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(0, 0, 0, 0.3) 50%,
+        rgba(0, 0, 0, 0.7) 100%
+    );
+}
+
+/* Hero Content Overlay */
+.carousel-contents--hero__content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 2;
+}
+
+/* Content Type */
+.carousel-contents--hero__type {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.carousel-contents--hero__type-text {
+    color: var(--ubits-fg-1-high-static-inverted) !important;
+}
+
+/* Title Section */
+.carousel-contents--hero__title-wrapper {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+}
+
+.carousel-contents--hero__title {
+    flex: 1;
+    color: var(--ubits-fg-1-high-static-inverted) !important;
+    margin: 0;
+    line-height: 48px;
+}
+
+/* Provider Info */
+.carousel-contents--hero__provider {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.carousel-contents--hero__provider-avatar {
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 50%;
+    flex-shrink: 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.carousel-contents--hero__provider-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.carousel-contents--hero__provider-name {
+    flex: 1;
+    color: var(--ubits-fg-1-high-static-inverted) !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Competency */
+.carousel-contents--hero__competency {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    color: var(--ubits-fg-1-high-static-inverted);
+}
+
+.carousel-contents--hero__competency-icon {
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.carousel-contents--hero__competency-icon i {
+    font-size: 14px;
+    color: var(--ubits-fg-1-high-static-inverted) !important;
+}
+
+.carousel-contents--hero__competency-text {
+    color: var(--ubits-fg-1-high-static-inverted) !important;
+}
+
+/* Specs */
+.carousel-contents--hero__specs {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.carousel-contents--hero__spec-item {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    color: var(--ubits-fg-1-high-static-inverted);
+}
+
+.carousel-contents--hero__spec-icon {
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.carousel-contents--hero__spec-icon i {
+    font-size: 14px;
+    color: var(--ubits-fg-1-high-static-inverted) !important;
+}
+
+.carousel-contents--hero__spec-text {
+    color: var(--ubits-fg-1-high-static-inverted) !important;
+}
+
+/* Actions Section */
+.carousel-contents--hero__actions {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    width: 100%;
+    gap: 8px;
+    position: relative;
+}
+
+.carousel-contents--hero__button-wrapper {
+    flex-shrink: 0;
+}
+
+/* Carousel Indicators - Inside (Desktop/Tablet) */
+.carousel-contents--hero__indicators--inside {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 12px;
+    flex: 0 0 auto;
+}
+
+/* Carousel Indicators - Outside (Mobile) */
+.carousel-contents--hero__indicators--outside {
+    display: none;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 8px;
+    height: 12px;
+    width: 100%;
+}
+
+.carousel-contents--hero__indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--ubits-fg-gray-subtle-hover);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.carousel-contents--hero__indicator.active {
+    width: 12px;
+    height: 12px;
+    background: var(--ubits-accent-brand);
+}
+
+.carousel-contents--hero__indicator:not(.active) {
+    width: 10px;
+    height: 10px;
+}
+
+/* Carousel Contents Wrapper */
+.carousel-contents--hero-wrapper {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Carousel Controls */
+.carousel-contents--hero__controls {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    z-index: 10;
+    flex-shrink: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 1023px) {
+    /* Tablet: mantener 21:9 */
+    .carousel-contents--hero {
+        aspect-ratio: 21 / 9;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Mobile: cambiar a 1:1 */
+    .carousel-contents--hero {
+        aspect-ratio: 1 / 1;
+    }
+    
+    /* Cambiar título a body-md-bold en mobile */
+    .carousel-contents--hero__title {
+        font-family: 'Noto Sans', sans-serif !important;
+        font-size: 16px !important;
+        font-weight: 700 !important;
+        line-height: 24px !important;
+    }
+    
+    .carousel-contents--hero__content {
+        padding: 12px;
+    }
+    
+    /* Ocultar controles de navegación en mobile */
+    .carousel-contents--hero__controls {
+        display: none;
+    }
+    
+    /* Ocultar indicadores dentro del card en mobile */
+    .carousel-contents--hero__indicators--inside {
+        display: none;
+    }
+    
+    /* Ocultar botón "Ver ahora" en mobile */
+    .carousel-contents--hero__button-wrapper {
+        display: none;
+    }
+    
+    /* Ocultar indicadores dentro del card en mobile */
+    .carousel-contents--hero__indicators--inside {
+        display: none;
+    }
+    
+    /* Mostrar indicadores fuera del card en mobile */
+    .carousel-contents--hero__indicators--outside {
+        display: flex !important;
+        margin-top: 8px;
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    /* Ajustar acciones sin botón */
+    .carousel-contents--hero__actions {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .carousel-contents--hero {
+        aspect-ratio: 1 / 1;
+    }
+    
+    /* Mantener body-md-bold en móviles pequeños también */
+    .carousel-contents--hero__title {
+        font-family: 'Noto Sans', sans-serif !important;
+        font-size: 16px !important;
+        font-weight: 700 !important;
+        line-height: 24px !important;
+    }
+}
+

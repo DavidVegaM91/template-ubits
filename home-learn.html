@@ -15,6 +15,8 @@
     <link rel="stylesheet" href="components/tab-bar.css">
     <link rel="stylesheet" href="components/floating-menu.css">
     <link rel="stylesheet" href="components/profile-menu.css">
+    <link rel="stylesheet" href="components/carousel-contents.css">
+    <link rel="stylesheet" href="components/button.css">
     <link rel="stylesheet" href="profile.css">
     <style>
         /* ¡A LA MIERDA LAS REGLAS PENDEJAS! */
@@ -77,11 +79,21 @@
             background-color: var(--ubits-bg-1);
             border: none;
             border-radius: 8px;
-            padding: 16px !important; /* !important para sobrescribir el reset */
+            padding: 12px !important; /* !important para sobrescribir el reset */
             width: 100%;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
+        }
+
+        /* Widget hero sin padding */
+        .section-single > .widget-hero,
+        .section-dual > .widget-hero,
+        .section-triple > .widget-hero,
+        .section-quad > .widget-hero,
+        .widget-hero {
+            padding: 0 !important;
+            background: transparent !important;
         }
 
         /* Distribución de anchos */
@@ -145,9 +157,8 @@
                 <div class="content-sections">
                     <!-- Nueva sección de 1 columna -->
                     <div class="section-single">
-                        <div class="widget-banner">
-                            <p class="ubits-body-md-regular">Banner principal</p>
-                            <br><br><br><br><br><br><br><br><br><br><br><br><br>
+                        <div class="widget-hero">
+                            <div id="hero-card-container"></div>
                         </div>
                     </div>
 
@@ -233,6 +244,7 @@
     <script src="components/tab-bar.js"></script>
     <script src="components/floating-menu.js"></script>
     <script src="components/profile-menu.js"></script>
+    <script src="components/carousel-contents.js"></script>
     <script src="script.js"></script>
     <script>
         // Cargar componentes dinámicamente
@@ -276,6 +288,94 @@
                     setActiveAccordionLink('inicio');
                 }
             }, 200);
+
+            // Crear carousel contents - Variante Hero con 5 slides reales
+            if (typeof createCarouselContents === 'function') {
+                createCarouselContents({
+                    containerId: 'hero-card-container',
+                    type: 'hero',
+                    slides: [
+                        {
+                            image: 'images/cards-learn/el-manejo-de-las-emociones.jpeg',
+                            contentType: 'Curso',
+                            title: 'El manejo de las emociones',
+                            provider: {
+                                name: 'Harvard Business Publishing',
+                                logo: 'images/Favicons/Harvard-Business-Publishing.jpg'
+                            },
+                            competency: 'Inteligencia emocional',
+                            specs: {
+                                level: 'Intermedio',
+                                duration: '60 min',
+                                language: 'Español'
+                            }
+                        },
+                        {
+                            image: 'images/cards-learn/liderar-con-inteligencia-emocional.jpeg',
+                            contentType: 'Curso',
+                            title: 'Liderar con inteligencia emocional',
+                            provider: {
+                                name: 'Harvard Business Publishing',
+                                logo: 'images/Favicons/Harvard-Business-Publishing.jpg'
+                            },
+                            competency: 'Liderazgo',
+                            specs: {
+                                level: 'Avanzado',
+                                duration: '90 min',
+                                language: 'Español'
+                            }
+                        },
+                        {
+                            image: 'images/cards-learn/como-dirigir-un-equipo-de-producto.jpeg',
+                            contentType: 'Curso',
+                            title: 'Cómo dirigir un equipo de producto',
+                            provider: {
+                                name: 'Microsoft',
+                                logo: 'images/Favicons/Microsoft.jpg'
+                            },
+                            competency: 'Gestión de proyectos',
+                            specs: {
+                                level: 'Intermedio',
+                                duration: '45 min',
+                                language: 'Español'
+                            }
+                        },
+                        {
+                            image: 'images/cards-learn/conoce-el-diagnostico-de-innovacion-empresarial.jpeg',
+                            contentType: 'Curso',
+                            title: 'Conoce el diagnóstico de innovación empresarial',
+                            provider: {
+                                name: 'UBITS',
+                                logo: 'images/Favicons/UBITS.jpg'
+                            },
+                            competency: 'Innovación',
+                            specs: {
+                                level: 'Básico',
+                                duration: '30 min',
+                                language: 'Español'
+                            }
+                        },
+                        {
+                            image: 'images/cards-learn/abm-marketing-la-mejor-estrategia-para-ventas-b2b.jpeg',
+                            contentType: 'Curso',
+                            title: 'ABM Marketing: la mejor estrategia para ventas B2B',
+                            provider: {
+                                name: 'Hubspot',
+                                logo: 'images/Favicons/Hubspot.jpg'
+                            },
+                            competency: 'Marketing digital',
+                            specs: {
+                                level: 'Intermedio',
+                                duration: '60 min',
+                                language: 'Español'
+                            }
+                        }
+                    ],
+                    onButtonClick: function(slide, index) {
+                        console.log('Ver ahora clicked:', slide.title, 'Slide:', index + 1);
+                    }
+                });
+            }
         });
     </script>
 </body>
