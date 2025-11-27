@@ -162,6 +162,12 @@
 
 .provider-name {
     color: var(--ubits-fg-1-high);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    flex: 1;
+    min-width: 0;
 }
 
 /* Múltiples avatares para Ruta de aprendizaje */

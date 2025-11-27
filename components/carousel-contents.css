@@ -144,7 +144,10 @@
 .carousel-contents--hero__provider-name {
     flex: 1;
     color: var(--ubits-fg-1-high-static-inverted) !important;
+    white-space: nowrap;
     overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
@@ -1031,6 +1034,10 @@
 
 .carousel-contents--outstanding__title-wrapper {
     width: 100%;
+    height: 84px; /* Alto fijo para 2 líneas (2 * 42px line-height) */
+    display: flex;
+    align-items: flex-start;
+    box-sizing: border-box;
 }
 
 .carousel-contents--outstanding__content .carousel-contents--outstanding__title {
@@ -1040,6 +1047,12 @@
     font-family: 'Noto Sans', sans-serif;
     font-size: 28px;
     font-weight: 700;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
 }
 
 .carousel-contents--outstanding__provider {
@@ -1070,6 +1083,12 @@
 
 .carousel-contents--outstanding__provider-name {
     color: var(--ubits-fg-1-high);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    flex: 1;
+    min-width: 0;
     /* Usa ubits-body-sm-regular: 13px, 400, 19.5px - La clase ubits-body-sm-regular ya aplica estos estilos */
 }
 
@@ -1327,6 +1346,10 @@
 
 /* Responsive: Mobile pequeño (mismo breakpoint donde content-cards se vuelve de una columna) */
 @media (max-width: 480px) {
+    .carousel-contents--outstanding__title-wrapper {
+        height: 39px; /* Alto fijo para 2 líneas (2 * 19.5px line-height) */
+    }
+    
     .carousel-contents--outstanding__title {
         font-family: 'Noto Sans', sans-serif;
         font-size: 13px;
