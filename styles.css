@@ -38,7 +38,10 @@ body {
     display: flex;
     min-height: 100vh;
     width: 100%;
-    overflow: visible;
+    max-width: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    box-sizing: border-box;
 }
 
 /* Sidebar - Dimensiones fijas que NO cambian con el tema */
@@ -370,6 +373,10 @@ body {
 
 /* Centrado para pantallas grandes */
 @media (min-width: 1440px) {
+    .dashboard-container {
+        overflow-x: hidden;
+    }
+    
     .main-content {
         margin: 16px auto 0 auto;
         padding-left: 143px;
@@ -377,6 +384,7 @@ body {
         width: 1607px;
         max-width: 1607px;
         box-sizing: border-box;
+        overflow-x: hidden;
     }
     
     .main-content-profile {
@@ -386,6 +394,7 @@ body {
         width: 1607px;
         max-width: 1607px;
         box-sizing: border-box;
+        overflow-x: hidden;
     }
 }
 
@@ -518,6 +527,63 @@ body {
     box-sizing: border-box;
     max-height: none;
     box-shadow: none !important;
+    min-width: 0; /* Permite que el flex item se encoja correctamente */
+    width: 100%; /* Respeta el ancho del padre */
+}
+
+/* Fix para pantallas grandes - asegurar que content-area y content-sections respeten el ancho máximo del main-content */
+@media (min-width: 1440px) {
+    .content-area {
+        max-width: 100%;
+        width: 100%;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
+    
+    .content-sections {
+        max-width: 100%;
+        width: 100%;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
+    
+    /* Asegurar que todos los widgets y carruseles respeten el ancho máximo */
+    .content-sections > *,
+    .section-single,
+    .section-dual,
+    .section-triple,
+    .section-quad {
+        max-width: 100%;
+        width: 100%;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
+    
+    /* Asegurar que los carruseles no se desborden */
+    .widget-hero,
+    .widget-promo-cards,
+    .widget-aliados,
+    .widget-continua-viendo,
+    .widget-outstanding {
+        max-width: 100%;
+        width: 100%;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
+    
+    /* Asegurar que los contenedores de carruseles no se desborden */
+    #hero-card-container,
+    #libros-recomendados-container,
+    #promo-vertical-container,
+    #allies-container,
+    #continua-viendo-container,
+    #outstanding-container,
+    #recomendados-container {
+        max-width: 100%;
+        width: 100%;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
 }
 
 /* Content Area sin fondo para UBITS AI */

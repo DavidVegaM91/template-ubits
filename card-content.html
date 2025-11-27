@@ -40,8 +40,14 @@
         }
         
         .single-card-preview {
-            max-width: 320px;
+            max-width: 400px;
             width: 100%;
+        }
+        
+        /* Asegurar que el card tenga el ancho correcto */
+        .single-card-preview .course-card {
+            width: 100%;
+            max-width: 100%;
         }
         
         .preview-controls {
@@ -92,9 +98,7 @@
         
         /* Hover state simulation */
         .course-card.hover-state {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            border-color: var(--ubits-accent-brand);
+            border: 1px solid var(--ubits-border-1);
         }
         
         .course-card.hover-state .course-image {
@@ -104,6 +108,39 @@
         /* Quitar animación de entrada para el preview */
         .single-card-preview .course-card {
             animation: none !important;
+            border: none !important; /* Sin borde por defecto, igual que el componente real */
+        }
+        
+        /* Asegurar que el avatar del provider sea 28px en el preview */
+        .single-card-preview .provider-avatar {
+            width: 28px !important;
+            height: 28px !important;
+            min-width: 28px !important;
+            min-height: 28px !important;
+            max-width: 28px !important;
+            max-height: 28px !important;
+        }
+        
+        /* Asegurar que los specs no se partan en el preview */
+        .single-card-preview .spec-item {
+            flex-shrink: 1 !important;
+            min-width: 0 !important;
+        }
+        
+        .single-card-preview .spec-item span {
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            flex-shrink: 1 !important;
+            min-width: 0 !important;
+            display: block !important;
+        }
+        
+        /* Asegurar que el contenedor de specs permita truncamiento */
+        .single-card-preview .course-specs {
+            min-width: 0 !important;
+            overflow: hidden !important;
+            flex-wrap: nowrap !important;
         }
     </style>
 </head>
@@ -173,7 +210,7 @@
                             <label class="control-label ubits-body-sm-bold">Progreso</label>
                             <select class="control-select" id="progreso-select">
                                 <option value="default">Default (0%)</option>
-                                <option value="progress">En progreso (75%)</option>
+                                <option value="progress" selected>En progreso (75%)</option>
                                 <option value="completed">Completado (100%)</option>
                             </select>
                         </div>
@@ -181,7 +218,7 @@
                         <div class="control-group">
                             <label class="control-label ubits-body-sm-bold">Tipo de contenido</label>
                             <select class="control-select" id="tipo-select">
-                                <option value="Curso">Curso</option>
+                                <option value="Curso" selected>Curso</option>
                                 <option value="Cápsula">Cápsula</option>
                                 <option value="Charla">Charla</option>
                                 <option value="Artículo">Artículo</option>
@@ -203,7 +240,7 @@
                                 <option value="TED">TED</option>
                                 <option value="AWS">AWS</option>
                                 <option value="Hubspot">Hubspot</option>
-                                <option value="Harvard Business Publishing">Harvard Business Publishing</option>
+                                <option value="Harvard Business Publishing" selected>Harvard Business Publishing</option>
                                 <option value="Universidad de Los Andes">Universidad de Los Andes</option>
                                 <option value="Advanced English">Advanced English</option>
                                 <option value="IE University">IE University</option>
@@ -226,7 +263,7 @@
                                 <option value="Desarrollo de software">Desarrollo de software</option>
                                 <option value="Liderazgo">Liderazgo</option>
                                 <option value="Marketing digital">Marketing digital</option>
-                                <option value="Inteligencia emocional">Inteligencia emocional</option>
+                                <option value="Inteligencia emocional" selected>Inteligencia emocional</option>
                                 <option value="Accountability">Accountability</option>
                                 <option value="Administración de negocios">Administración de negocios</option>
                                 <option value="Agilidad">Agilidad</option>
@@ -263,7 +300,7 @@
                             <label class="control-label ubits-body-sm-bold">Nivel</label>
                             <select class="control-select" id="nivel-select">
                                 <option value="Básico">Básico</option>
-                                <option value="Intermedio">Intermedio</option>
+                                <option value="Intermedio" selected>Intermedio</option>
                                 <option value="Avanzado">Avanzado</option>
                             </select>
                         </div>
@@ -855,15 +892,15 @@ const logoMap = {
         // Datos base del card
         let currentCardData = {
             type: 'Curso',
-            title: 'Segmenta la experiencia del cliente',
-            provider: 'UBITS',
-            providerLogo: 'images/Favicons/UBITS.jpg',
+            title: 'El manejo de las emociones',
+            provider: 'Harvard Business Publishing',
+            providerLogo: 'images/Favicons/Harvard-Business-Publishing.jpg',
             duration: '60 min',
-            level: 'Básico',
-            progress: 0,
-            status: 'default',
-            image: 'images/cards-learn/segmenta-la-experiencia-del-cliente.jpg',
-            competency: 'Experiencia del cliente',
+            level: 'Intermedio',
+            progress: 75,
+            status: 'progress',
+            image: 'images/cards-learn/el-manejo-de-las-emociones.jpeg',
+            competency: 'Inteligencia emocional',
             language: 'Español'
         };
         

@@ -182,6 +182,57 @@ function renderCardContent(cardData) {
     // Determinar icono según el nivel
     const levelIcon = LEVELS[cardData.level] || LEVELS['Intermedio'];
 
+    // Detectar si es Ruta de aprendizaje y tiene múltiples proveedores
+    const isRutaAprendizaje = cardData.type === 'Ruta de aprendizaje';
+    const hasMultipleProviders = isRutaAprendizaje && Array.isArray(cardData.providers) && cardData.providers.length > 1;
+    
+    // Renderizar avatares según el tipo
+    let providerHTML = '';
+    if (hasMultipleProviders) {
+        // Múltiples avatares para Ruta de aprendizaje
+        // Variantes: 2 avatares, 3 avatares, o 3 avatares + avatar con "+N"
+        const providers = cardData.providers;
+        const totalCount = providers.length;
+        const visibleCount = Math.min(totalCount, 3);
+        const remainingCount = totalCount > 3 ? totalCount - 3 : 0;
+        
+        // Calcular z-index: el primero tiene el z-index más alto
+        providerHTML = `
+            <div class="course-provider course-provider--multiple">
+                <div class="provider-avatars-list">
+                    ${providers.slice(0, visibleCount).map((provider, index) => {
+                        const zIndex = visibleCount - index;
+                        // Si hay un avatar con "+N" después, el último avatar visible también debe tener margin-right: -5px
+                        const marginRight = (index < visibleCount - 1) || remainingCount > 0 ? '-5px' : '0';
+                        return `
+                            <div class="provider-avatar provider-avatar--stacked" style="z-index: ${zIndex}; margin-right: ${marginRight};">
+                                <img src="${provider.logo || provider.providerLogo || 'images/Favicons/UBITS.jpg'}" 
+                                     alt="${provider.name || provider.provider || 'Provider'}" 
+                                     class="provider-icon">
+                            </div>
+                        `;
+                    }).join('')}
+                    ${remainingCount > 0 ? `
+                        <div class="provider-avatar provider-avatar--stacked provider-avatar--count" style="z-index: 0; margin-right: 0;">
+                            <span class="provider-count-text">+${remainingCount}</span>
+                        </div>
+                    ` : ''}
+                </div>
+                <span class="provider-name ubits-body-xs-regular">Varios</span>
+            </div>
+        `;
+    } else {
+        // Avatar único (comportamiento normal)
+        providerHTML = `
+            <div class="course-provider">
+                <div class="provider-avatar">
+                    <img src="${cardData.providerLogo}" alt="${cardData.provider}" class="provider-icon">
+                </div>
+                <span class="provider-name ubits-body-sm-regular">${cardData.provider}</span>
+            </div>
+        `;
+    }
+
     // Template de la card
     return `
         <div class="course-card" data-progress="${cardData.progress}" data-status="${cardData.status}">
@@ -203,12 +254,7 @@ function renderCardContent(cardData) {
                     </div>
                 </div>
                 <h3 class="course-title ubits-body-sm-bold">${cardData.title}</h3>
-                <div class="course-provider">
-                    <div class="provider-avatar">
-                        <img src="${cardData.providerLogo}" alt="${cardData.provider}" class="provider-icon">
-                    </div>
-                    <span class="provider-name ubits-body-sm-regular">${cardData.provider}</span>
-                </div>
+                ${providerHTML}
                 <div class="course-competency">
                     <div class="spec-icon">
                         <i class="far fa-tag"></i>
@@ -392,5 +438,16 @@ console.log(window.CARD_CONTENT_OPTIONS);
  * COMPETENCIAS: 35 competencias oficiales UBITS (Product design, Desarrollo de software, Liderazgo, etc.)
  * PROVEEDORES: 18 aliados oficiales (UBITS, Microsoft, TED, AWS, etc.)
  * NIVELES: Básico, Intermedio, Avanzado
+ * 
+ * VARIANTES DE AVATARES PARA RUTA DE APRENDIZAJE:
+ * Cuando el tipo de contenido es "Ruta de aprendizaje" y se proporciona un array de `providers` con más de 1 elemento,
+ * se mostrarán múltiples avatares superpuestos con el texto "Varios":
+ * - 2 proveedores: Muestra 2 avatares superpuestos + texto "Varios"
+ * - 3 proveedores: Muestra 3 avatares superpuestos + texto "Varios"
+ * - 4+ proveedores: Muestra 3 avatares visibles + 1 avatar con "+N" (donde N es el número restante) + texto "Varios"
+ * 
+ * Los avatares se superponen con un margen negativo de -5px y z-index decreciente (el primero tiene el z-index más alto).
+ * El texto "Varios" usa la clase `ubits-body-xs-regular` (11px, regular, 16.5px line-height).
+ * El texto "+N" usa font semibold (600) con tamaño 13px y line-height 19.5px.
  * ESTADOS: default, progress, completed
  */

@@ -149,6 +149,51 @@
     white-space: nowrap;
 }
 
+/* Múltiples avatares para Ruta de aprendizaje en Hero */
+.carousel-contents--hero__provider--multiple {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.carousel-contents--hero__provider-avatars-list {
+    display: flex;
+    align-items: center;
+    position: relative;
+    height: 28px;
+    isolation: isolate; /* Crear nuevo contexto de apilamiento */
+}
+
+.carousel-contents--hero__provider-avatar--stacked {
+    position: relative;
+    width: 28px;
+    height: 28px;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* Avatar con contador para +4 o más */
+.carousel-contents--hero__provider-avatar--count {
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+}
+
+.carousel-contents--hero__provider-count-text {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 19.5px;
+    color: var(--ubits-fg-1-high-static-inverted) !important;
+    text-align: center;
+    white-space: nowrap;
+}
+
 /* Competency */
 .carousel-contents--hero__competency {
     display: flex;
@@ -358,6 +403,980 @@
         font-size: 16px !important;
         font-weight: 700 !important;
         line-height: 24px !important;
+    }
+}
+
+/* ========================================
+   VARIANTE: PROMO VERTICAL
+   ======================================== */
+
+/* Container principal */
+.carousel-contents--promo-vertical-wrapper {
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-sizing: border-box;
+}
+
+/* Título de sección con controles */
+.carousel-contents--promo-vertical__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    height: 32px;
+}
+
+.carousel-contents--promo-vertical__title {
+    flex: 1;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--ubits-fg-1-high);
+    margin: 0;
+}
+
+.carousel-contents--promo-vertical__controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.carousel-contents--promo-vertical__controls button.disabled,
+.carousel-contents--promo-vertical__controls button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Container de cards */
+.carousel-contents--promo-vertical__cards-container {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+    position: relative;
+}
+
+.carousel-contents--promo-vertical__cards-container::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+
+/* Card individual */
+.carousel-contents--promo-vertical__card {
+    flex: 0 0 calc((100% - (3 * 24px)) / 4);
+    width: calc((100% - (3 * 24px)) / 4);
+    max-width: calc((100% - (3 * 24px)) / 4);
+    min-width: calc((100% - (3 * 24px)) / 4);
+    aspect-ratio: 3 / 4;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    background: var(--ubits-bg-1);
+    box-sizing: border-box;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+/* Zoom effect on hover */
+.carousel-contents--promo-vertical__card:hover .carousel-contents--promo-vertical__card-image {
+    transform: scale(1.08);
+}
+
+.carousel-contents--promo-vertical__card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    transition: transform 0.6s ease;
+}
+
+/* Responsive: Tablet */
+@media (max-width: 1023px) {
+    .carousel-contents--promo-vertical__card {
+        flex: 0 0 calc((100% - (2 * 24px)) / 3);
+        width: calc((100% - (2 * 24px)) / 3);
+        max-width: calc((100% - (2 * 24px)) / 3);
+        min-width: calc((100% - (2 * 24px)) / 3);
+    }
+}
+
+/* Indicadores (dots) para mobile */
+.carousel-contents--promo-vertical__indicators {
+    display: none;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 8px;
+    width: 100%;
+}
+
+.carousel-contents--promo-vertical__indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--ubits-border-1);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.carousel-contents--promo-vertical__indicator.active {
+    width: 12px;
+    height: 12px;
+    background: var(--ubits-accent-brand);
+}
+
+/* Responsive: Mobile */
+@media (max-width: 767px) {
+    /* Ocultar controles en mobile */
+    .carousel-contents--promo-vertical__controls {
+        display: none;
+    }
+    
+    /* Mostrar indicadores en mobile */
+    .carousel-contents--promo-vertical__indicators {
+        display: flex;
+    }
+    
+    .carousel-contents--promo-vertical__cards-container {
+        gap: 24px;
+    }
+    
+    .carousel-contents--promo-vertical__card {
+        flex: 0 0 calc((100% - (1 * 24px)) / 2);
+        width: calc((100% - (1 * 24px)) / 2);
+        max-width: calc((100% - (1 * 24px)) / 2);
+        min-width: calc((100% - (1 * 24px)) / 2);
+    }
+}
+
+/* Responsive: Mobile pequeño */
+@media (max-width: 480px) {
+    .carousel-contents--promo-vertical__card {
+        flex: 0 0 100%;
+        width: 100%;
+        max-width: 100%;
+        min-width: 100%;
+    }
+}
+
+/* ========================================
+   VARIANTE: ALLIES (Aliados destacados)
+   ======================================== */
+
+/* Container principal */
+.carousel-contents--allies-wrapper {
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+    box-sizing: border-box;
+}
+
+/* Header con título y controles */
+.carousel-contents--allies__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0;
+}
+
+.carousel-contents--allies__title {
+    color: var(--ubits-fg-1-high);
+    margin: 0;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.carousel-contents--allies__controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.carousel-contents--allies__controls button.disabled,
+.carousel-contents--allies__controls button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Container de carrusel */
+.carousel-contents--allies__carousel {
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+    overflow-x: auto;
+    overflow-y: visible;
+    scroll-behavior: smooth;
+    padding: 0;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE y Edge */
+}
+
+.carousel-contents--allies__carousel::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+/* Card de aliado */
+.carousel-contents--allies__card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    cursor: pointer;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+    overflow: visible;
+    padding: 0;
+    margin: 0;
+    border: 1px solid transparent;
+    flex: 0 0 calc((100% - (7 * 24px)) / 8);
+    width: calc((100% - (7 * 24px)) / 8);
+    max-width: calc((100% - (7 * 24px)) / 8);
+    min-width: calc((100% - (7 * 24px)) / 8);
+    box-sizing: border-box;
+    flex-shrink: 0;
+    position: relative;
+    border-radius: 50%;
+}
+
+.carousel-contents--allies__card:hover {
+    border-color: var(--ubits-border-1);
+}
+
+/* Imagen del aliado */
+.carousel-contents--allies__card-image {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--ubits-bg-1);
+    border: none;
+    transition: transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+    padding: 0;
+}
+
+.carousel-contents--allies__card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 50%;
+    transition: transform 0.2s ease;
+}
+
+.carousel-contents--allies__card:hover .carousel-contents--allies__card-image img {
+    transform: scale(1.1);
+}
+
+/* Tooltip para cards de aliados */
+.carousel-contents--allies__card-tooltip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ubits-fg-1-high);
+    color: var(--ubits-logo-inverted);
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 99999;
+    font-family: 'Noto Sans', sans-serif;
+    font-weight: 400;
+    visibility: hidden;
+    display: block;
+}
+
+.carousel-contents--allies__card:hover .carousel-contents--allies__card-tooltip {
+    opacity: 1;
+    visibility: visible;
+}
+
+.carousel-contents--allies__card-tooltip.tooltip-right {
+    left: auto;
+    right: 0;
+    transform: none;
+}
+
+.carousel-contents--allies__card-tooltip.tooltip-left {
+    left: 0;
+    right: auto;
+    transform: none;
+}
+
+.carousel-contents--allies__card-tooltip.tooltip-bottom {
+    bottom: auto;
+    top: calc(100% + 8px);
+}
+
+.carousel-contents--allies__card-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid var(--ubits-fg-1-high);
+}
+
+.carousel-contents--allies__card-tooltip.tooltip-bottom::after {
+    top: auto;
+    bottom: 100%;
+    border-top: none;
+    border-bottom: 5px solid var(--ubits-fg-1-high);
+}
+
+.carousel-contents--allies__card-tooltip.tooltip-right::after {
+    left: auto;
+    right: 14px;
+    transform: none;
+}
+
+.carousel-contents--allies__card-tooltip.tooltip-left::after {
+    left: 14px;
+    right: auto;
+    transform: none;
+}
+
+/* Responsive: Tablet */
+@media (max-width: 1023px) {
+    .carousel-contents--allies__card {
+        flex: 0 0 calc((100% - (5 * 24px)) / 6);
+        width: calc((100% - (5 * 24px)) / 6);
+        max-width: calc((100% - (5 * 24px)) / 6);
+        min-width: calc((100% - (5 * 24px)) / 6);
+    }
+}
+
+/* Indicadores (dots) para mobile - Allies */
+.carousel-contents--allies__indicators {
+    display: none;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 8px;
+    width: 100%;
+}
+
+.carousel-contents--allies__indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--ubits-border-1);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.carousel-contents--allies__indicator.active {
+    width: 12px;
+    height: 12px;
+    background: var(--ubits-accent-brand);
+}
+
+/* Responsive: Mobile */
+@media (max-width: 767px) {
+    /* Ocultar controles en mobile */
+    .carousel-contents--allies__controls {
+        display: none;
+    }
+    
+    /* Mostrar indicadores en mobile */
+    .carousel-contents--allies__indicators {
+        display: flex;
+    }
+    
+    .carousel-contents--allies__card {
+        flex: 0 0 calc((100% - (3 * 24px)) / 4);
+        width: calc((100% - (3 * 24px)) / 4);
+        max-width: calc((100% - (3 * 24px)) / 4);
+        min-width: calc((100% - (3 * 24px)) / 4);
+    }
+}
+
+/* ========================================
+   VARIANTE: CONTENT CARDS
+   ======================================== */
+
+/* Container principal */
+.carousel-contents--content-cards-wrapper {
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-sizing: border-box;
+}
+
+/* Header con título y controles */
+.carousel-contents--content-cards__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    height: 32px;
+}
+
+.carousel-contents--content-cards__title {
+    flex: 1;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--ubits-fg-1-high);
+    margin: 0;
+}
+
+.carousel-contents--content-cards__controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.carousel-contents--content-cards__controls button.disabled,
+.carousel-contents--content-cards__controls button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Container de cards */
+.carousel-contents--content-cards__cards-container {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.carousel-contents--content-cards__cards-container::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+
+/* Card individual (usando componente oficial card-content) */
+.carousel-contents--content-cards__cards-container .course-card {
+    flex: 0 0 calc((100% - (3 * 24px)) / 4);
+    width: calc((100% - (3 * 24px)) / 4);
+    max-width: calc((100% - (3 * 24px)) / 4);
+    min-width: calc((100% - (3 * 24px)) / 4);
+    box-sizing: border-box;
+    flex-shrink: 0;
+    /* Asegurar que el card no tenga width: 100% que pueda interferir */
+}
+
+/* Responsive: Tablet */
+@media (max-width: 1365px) {
+    .carousel-contents--content-cards__cards-container .course-card {
+        flex: 0 0 calc((100% - (2 * 24px)) / 3);
+        width: calc((100% - (2 * 24px)) / 3);
+        max-width: calc((100% - (2 * 24px)) / 3);
+        min-width: calc((100% - (2 * 24px)) / 3);
+    }
+}
+
+/* Indicadores (dots) para mobile */
+.carousel-contents--content-cards__indicators {
+    display: none;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 8px;
+    width: 100%;
+}
+
+.carousel-contents--content-cards__indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--ubits-border-1);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.carousel-contents--content-cards__indicator.active {
+    width: 12px;
+    height: 12px;
+    background: var(--ubits-accent-brand);
+}
+
+/* Responsive: Mobile */
+@media (max-width: 767px) {
+    /* Ocultar controles en mobile */
+    .carousel-contents--content-cards__controls {
+        display: none;
+    }
+    
+    /* Mostrar indicadores en mobile */
+    .carousel-contents--content-cards__indicators {
+        display: flex;
+    }
+    
+    .carousel-contents--content-cards__cards-container {
+        gap: 24px;
+    }
+    
+    .carousel-contents--content-cards__cards-container .course-card {
+        flex: 0 0 calc((100% - (1 * 24px)) / 2);
+        width: calc((100% - (1 * 24px)) / 2);
+        max-width: calc((100% - (1 * 24px)) / 2);
+        min-width: calc((100% - (1 * 24px)) / 2);
+    }
+}
+
+/* Responsive: Mobile pequeño */
+@media (max-width: 480px) {
+    .carousel-contents--content-cards__cards-container .course-card {
+        flex: 0 0 100%;
+        width: 100%;
+        max-width: 100%;
+        min-width: 100%;
+    }
+}
+
+/* ========================================
+   VARIANTE OUTSTANDING
+   Layout horizontal: contenido izquierda, imagen derecha
+   ======================================== */
+
+.carousel-contents--outstanding-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.carousel-contents--outstanding__header {
+    width: 100%;
+}
+
+.carousel-contents--outstanding__header .carousel-contents--outstanding__title {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+    /* El tamaño viene de ubits-heading-h2, no sobrescribir */
+}
+
+.carousel-contents--outstanding__slides-container {
+    position: relative;
+    width: 100%;
+    min-height: 375px;
+}
+
+.carousel-contents--outstanding__slide {
+    display: none;
+    width: 100%;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.carousel-contents--outstanding__slide.active {
+    display: flex;
+    opacity: 1;
+    gap: 0;
+    align-items: stretch;
+    background: var(--ubits-bg-1);
+    border-radius: 8px;
+    overflow: hidden;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* Contenido izquierda */
+.carousel-contents--outstanding__content {
+    flex: 0 0 40%;
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+    padding: 20px;
+    box-sizing: border-box;
+    justify-content: center;
+}
+
+.carousel-contents--outstanding__type {
+    width: fit-content;
+}
+
+.carousel-contents--outstanding__type-text {
+    color: var(--ubits-fg-1-medium);
+    /* Usa ubits-body-sm-regular: 13px, 400, 19.5px */
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 19.5px;
+}
+
+.carousel-contents--outstanding__title-wrapper {
+    width: 100%;
+}
+
+.carousel-contents--outstanding__content .carousel-contents--outstanding__title {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+    line-height: 42px;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.carousel-contents--outstanding__provider {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.carousel-contents--outstanding__provider-avatar {
+    width: 28px;
+    height: 28px;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.carousel-contents--outstanding__provider-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.carousel-contents--outstanding__provider-name {
+    color: var(--ubits-fg-1-high);
+    /* Usa ubits-body-sm-regular: 13px, 400, 19.5px - La clase ubits-body-sm-regular ya aplica estos estilos */
+}
+
+/* Múltiples avatares para Ruta de aprendizaje en Outstanding */
+.carousel-contents--outstanding__provider--multiple {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.carousel-contents--outstanding__provider-avatars-list {
+    display: flex;
+    align-items: center;
+    position: relative;
+    height: 28px;
+    isolation: isolate; /* Crear nuevo contexto de apilamiento */
+}
+
+.carousel-contents--outstanding__provider-avatar--stacked {
+    position: relative;
+    width: 28px;
+    height: 28px;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* Avatar con contador para +4 o más */
+.carousel-contents--outstanding__provider-avatar--count {
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+}
+
+.carousel-contents--outstanding__provider-count-text {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 19.5px;
+    color: var(--ubits-fg-1-high);
+    text-align: center;
+    white-space: nowrap;
+}
+
+.carousel-contents--outstanding__competency {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--ubits-fg-1-medium);
+}
+
+.carousel-contents--outstanding__competency-icon {
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.carousel-contents--outstanding__competency-icon i {
+    font-size: 12px;
+    color: var(--ubits-fg-1-medium);
+}
+
+.carousel-contents--outstanding__competency-text {
+    color: var(--ubits-fg-1-medium);
+    /* Usa ubits-body-sm-regular: 13px, 400, 19.5px */
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 19.5px;
+}
+
+.carousel-contents--outstanding__specs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.carousel-contents--outstanding__spec-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--ubits-fg-1-medium);
+    flex-shrink: 1;
+    min-width: 0;
+}
+
+.carousel-contents--outstanding__spec-icon {
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.carousel-contents--outstanding__spec-icon i {
+    font-size: 12px;
+    color: var(--ubits-fg-1-medium);
+}
+
+.carousel-contents--outstanding__spec-text {
+    color: var(--ubits-fg-1-medium);
+    /* Usa ubits-body-sm-regular: 13px, 400, 19.5px - La clase ubits-body-sm-regular ya aplica estos estilos */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 1;
+    min-width: 0;
+}
+
+.carousel-contents--outstanding__button-wrapper {
+    width: fit-content;
+    margin-top: 8px;
+}
+
+/* Imagen derecha */
+.carousel-contents--outstanding__image-wrapper {
+    position: relative;
+    flex: 0 0 60%;
+    width: 60%;
+    overflow: hidden;
+    display: flex;
+    align-items: stretch;
+    align-self: stretch;
+}
+
+.carousel-contents--outstanding__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.3s ease;
+    display: block;
+}
+
+.carousel-contents--outstanding__slide.active:hover .carousel-contents--outstanding__image {
+    transform: scale(1.05);
+}
+
+/* Controles dentro de la imagen */
+.carousel-contents--outstanding__controls {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+}
+
+/* Indicadores (dots) - Ocultos por defecto, visibles solo en mobile */
+.carousel-contents--outstanding__indicators {
+    display: none;
+}
+
+.carousel-contents--outstanding__indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--ubits-border-1);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.carousel-contents--outstanding__indicator:hover {
+    background: var(--ubits-fg-1-medium);
+}
+
+.carousel-contents--outstanding__indicator.active {
+    width: 12px;
+    height: 12px;
+    background: var(--ubits-accent-brand);
+}
+
+/* Responsive: Tablet */
+@media (max-width: 1023px) {
+    .carousel-contents--outstanding__slide.active {
+        flex-direction: column;
+    }
+
+    .carousel-contents--outstanding__content {
+        width: 100%;
+        order: 2;
+    }
+
+    .carousel-contents--outstanding__image-wrapper {
+        flex: 0 0 100%;
+        width: 100%;
+        order: 1;
+    }
+
+    .carousel-contents--outstanding__controls {
+        top: 12px;
+        right: 12px;
+    }
+}
+
+/* Responsive: Mobile */
+@media (max-width: 767px) {
+    .carousel-contents--outstanding__slide.active {
+        gap: 0;
+    }
+
+    .carousel-contents--outstanding__content {
+        gap: 8px;
+        padding: 16px;
+    }
+
+    .carousel-contents--outstanding__specs {
+        gap: 8px;
+    }
+
+    /* Ocultar controles en mobile */
+    .carousel-contents--outstanding__controls {
+        display: none;
+    }
+
+    /* Mostrar indicadores solo en mobile */
+    .carousel-contents--outstanding__indicators {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        justify-content: center;
+        margin-top: 8px;
+    }
+
+    .carousel-contents--outstanding__indicator {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--ubits-border-1);
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .carousel-contents--outstanding__indicator:hover {
+        background: var(--ubits-fg-1-medium);
+    }
+
+    .carousel-contents--outstanding__indicator.active {
+        width: 12px;
+        height: 12px;
+        background: var(--ubits-accent-brand);
+    }
+}
+
+/* Responsive: Mobile pequeño (mismo breakpoint donde content-cards se vuelve de una columna) */
+@media (max-width: 480px) {
+    .carousel-contents--outstanding__title {
+        font-family: 'Noto Sans', sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        line-height: 19.5px;
+    }
+
+    /* Ocultar botón Ver ahora en mobile */
+    .carousel-contents--outstanding__button-wrapper {
+        display: none;
+    }
+}
+
+/* Fix para pantallas grandes - asegurar que los carruseles no se desborden */
+@media (min-width: 1440px) {
+    .carousel-contents--hero,
+    .carousel-contents--promo-vertical,
+    .carousel-contents--allies,
+    .carousel-contents--content-cards,
+    .carousel-contents--outstanding {
+        max-width: 100%;
+        width: 100%;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
+    
+    .carousel-contents--hero__slides-container,
+    .carousel-contents--promo-vertical__slides-container,
+    .carousel-contents--allies__slides-container,
+    .carousel-contents--content-cards__slides-container,
+    .carousel-contents--outstanding__slides-container {
+        max-width: 100%;
+        width: 100%;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
+    
+    .carousel-contents--promo-vertical__slides-wrapper,
+    .carousel-contents--allies__slides-wrapper,
+    .carousel-contents--content-cards__slides-wrapper {
+        max-width: 100%;
+        box-sizing: border-box;
     }
 }
 

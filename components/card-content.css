@@ -6,17 +6,16 @@
 /* Course Card Base */
 .course-card {
     background: var(--ubits-bg-1);
-    border: 1px solid var(--ubits-border-1);
+    border: 1px solid transparent;
     border-radius: 8px;
     overflow: hidden;
-    transition: all 0.2s ease;
+    transition: border-color 0.2s ease;
     cursor: pointer;
+    box-sizing: border-box;
 }
 
 .course-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border-color: var(--ubits-accent-brand);
+    border-color: var(--ubits-border-1);
 }
 
 /* Course Thumbnail */
@@ -66,6 +65,7 @@
     background: var(--ubits-bg-4-static);
     border-radius: 0;
     overflow: hidden;
+    position: relative;
 }
 
 .course-progress-overlay .progress-fill {
@@ -139,8 +139,8 @@
 }
 
 .provider-avatar {
-    width: 35px;
-    height: 35px;
+    width: 28px;
+    height: 28px;
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
     border-radius: 50%;
@@ -149,6 +149,7 @@
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    position: relative;
 }
 
 .provider-icon {
@@ -161,6 +162,51 @@
 
 .provider-name {
     color: var(--ubits-fg-1-high);
+}
+
+/* Múltiples avatares para Ruta de aprendizaje */
+.course-provider--multiple {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.provider-avatars-list {
+    display: flex;
+    align-items: center;
+    position: relative;
+    height: 28px;
+    isolation: isolate; /* Crear nuevo contexto de apilamiento */
+}
+
+.provider-avatar--stacked {
+    position: relative;
+    width: 28px;
+    height: 28px;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* Avatar con contador para +4 o más */
+.provider-avatar--count {
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+}
+
+.provider-count-text {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 19.5px;
+    color: var(--ubits-fg-1-high);
+    text-align: center;
+    white-space: nowrap;
 }
 
 /* Course Competency */
@@ -176,6 +222,8 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    min-width: 0; /* Permitir que el contenedor se achique */
+    overflow: hidden; /* Evitar desbordamiento */
 }
 
 .spec-item {
@@ -183,6 +231,17 @@
     align-items: center;
     gap: 4px;
     color: var(--ubits-fg-1-medium);
+    flex-shrink: 1;
+    min-width: 0;
+}
+
+/* Evitar que el texto de los specs se parta en dos líneas */
+.spec-item span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 1;
+    min-width: 0;
 }
 
 /* Contenedor estándar para todos los iconos de specs - 18x18px */
@@ -192,7 +251,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
+    flex-shrink: 0; /* El icono nunca se achica */
 }
 
 /* Iconos FontAwesome dentro del contenedor */

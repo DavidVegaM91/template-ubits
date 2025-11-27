@@ -273,6 +273,7 @@
   --ubits-bg-2: #F3F3F4;
   --ubits-bg-3: #e7e8ea;
   --ubits-bg-4: #dbdde0;
+  --ubits-bg-4-static: #DBDDE0;
   --ubits-bg-5: #ced0d5;
   --ubits-bg-dim: #00000080;
   --ubits-bg-disabled: #edeeef;
@@ -674,6 +675,7 @@
   --ubits-bg-2: #0E1825;
   --ubits-bg-3: #0c121c;
   --ubits-bg-4: #050b15;
+  --ubits-bg-4-static: #DBDDE0;
   --ubits-bg-5: #000000;
   --ubits-bg-dim: #000000b2;
   --ubits-bg-disabled: #3b4350;
