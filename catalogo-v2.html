@@ -1626,7 +1626,7 @@
                 // Buscar coincidencias exactas
                 for (const [key, values] of Object.entries(searchSuggestionsV2)) {
                     if (normalizedQuery.includes(key) || key.includes(normalizedQuery)) {
-                        suggestions = values;
+                        suggestions = values.slice(0, 8);
                         break;
                     }
                 }
@@ -1636,7 +1636,7 @@
                     for (const [key, values] of Object.entries(searchSuggestionsV2)) {
                         const matching = values.filter(s => s.toLowerCase().includes(normalizedQuery));
                         if (matching.length > 0) {
-                            suggestions = matching.slice(0, 10);
+                            suggestions = matching.slice(0, 8);
                             break;
                         }
                     }
