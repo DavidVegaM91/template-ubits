@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="components/profile-menu.css">
     <link rel="stylesheet" href="components/input.css">
     <link rel="stylesheet" href="components/button.css">
+    <link rel="stylesheet" href="components/carousel-contents.css">
     <link rel="stylesheet" href="profile.css">
     <style>
         /* Estilos específicos para content-sections */
@@ -152,8 +153,8 @@
             gap: 8px;
         }
 
-        /* Carrusel de tipos de contenido */
-        .tipos-contenido-carousel {
+        /* Carrusel de tipos de contenido (nuevo - rectangular) */
+        .tipos-contenido-carousel-nuevo {
             display: flex;
             flex-direction: row;
             gap: 24px;
@@ -975,24 +976,8 @@
                         <div id="catalog-results"></div>
                     </div>
 
-                    <!-- Wrapper de sección de tipos de contenido -->
-                    <div class="tipos-contenido-section-wrapper">
-                        <!-- Header con título y controles -->
-                        <div class="tipos-contenido-section-header">
-                            <h2 class="ubits-heading-h2 tipos-contenido-section-title">Explora por aliados destacados</h2>
-                            <div class="tipos-contenido-controls">
-                                <button class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" id="tipos-contenido-prev">
-                                    <i class="far fa-chevron-left"></i>
-                                </button>
-                                <button class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" id="tipos-contenido-next">
-                                    <i class="far fa-chevron-right"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Carrusel de tipos de contenido -->
-                        <div class="tipos-contenido-carousel" id="tipos-contenido-carousel"></div>
-                    </div>
+                    <!-- Wrapper de sección de aliados destacados - Usando componente oficial -->
+                    <div id="aliados-container"></div>
                     
                     <!-- Wrapper de sección de tipos de contenido (nuevo) -->
                     <div class="tipos-contenido-section-wrapper">
@@ -1033,6 +1018,7 @@
     <script src="components/floating-menu.js"></script>
     <script src="components/profile-menu.js"></script>
     <script src="components/input.js"></script>
+    <script src="components/carousel-contents.js"></script>
     <script src="script.js"></script>
     <script>
         // Competencias asignadas al usuario
@@ -1339,8 +1325,68 @@
             // Renderizar catálogo inicial
             renderCatalog(catalogData.academias);
 
-            // Renderizar tipos de contenido (aliados destacados)
-            renderTiposContenido();
+            // Renderizar aliados destacados usando componente oficial
+            if (typeof createCarouselContents === 'function') {
+                createCarouselContents({
+                    containerId: 'aliados-container',
+                    type: 'allies',
+                    sectionTitle: 'Explora por aliados destacados',
+                    slides: [
+                        {
+                            name: 'UBITS',
+                            logo: 'images/Favicons/UBITS.jpg'
+                        },
+                        {
+                            name: 'Microsoft',
+                            logo: 'images/Favicons/Microsoft.jpg'
+                        },
+                        {
+                            name: 'TED',
+                            logo: 'images/Favicons/TED.jpg'
+                        },
+                        {
+                            name: 'Harvard Business Publishing',
+                            logo: 'images/Favicons/Harvard-Business-Publishing.jpg'
+                        },
+                        {
+                            name: 'All Ears English',
+                            logo: 'images/Favicons/All Ears English.jpg'
+                        },
+                        {
+                            name: 'IE University Publishing',
+                            logo: 'images/Favicons/IE-University-Publishing.jpg'
+                        },
+                        {
+                            name: 'WOBI',
+                            logo: 'images/Favicons/WOBI.jpg'
+                        },
+                        {
+                            name: 'Hubspot',
+                            logo: 'images/Favicons/Hubspot.jpg'
+                        },
+                        {
+                            name: 'AWS',
+                            logo: 'images/Favicons/AWS.jpg'
+                        },
+                        {
+                            name: 'Código Facilito',
+                            logo: 'images/Favicons/Código-Facilito.jpg'
+                        },
+                        {
+                            name: 'Universidad de Los Andes',
+                            logo: 'images/Favicons/Universidad-de-Los Andes.jpg'
+                        },
+                        {
+                            name: 'Welu',
+                            logo: 'images/Favicons/Welu.jpg'
+                        }
+                    ],
+                    onButtonClick: function(ally, index) {
+                        console.log('Ally clicked:', ally.name, 'Index:', index);
+                        // Aquí puedes agregar la lógica de filtrado por aliado
+                    }
+                });
+            }
             
             // Renderizar tipos de contenido (nuevo carrusel) - con delay para asegurar que el DOM esté listo
             setTimeout(() => {
@@ -1545,258 +1591,6 @@
 
         // Función para renderizar el catálogo
         // Función para renderizar tipos de contenido
-        function renderTiposContenido() {
-            const carouselContainer = document.getElementById('tipos-contenido-carousel');
-            if (!carouselContainer) return;
-
-            // Tipos de contenido oficiales
-            const tiposContenido = [
-                'Curso',
-                'Cápsula',
-                'Charla',
-                'Artículo',
-                'Podcast',
-                'Libro',
-                'Ideas de libro',
-                'Caso de estudio',
-                'Documento técnico',
-                'Ejercicios de práctica',
-                'Ruta de aprendizaje',
-                'Welu',
-                'Instafit',
-                'Bureau-Veritas',
-                'Hackers-del-Talento',
-                'Figsha Smart Consulting'
-            ];
-
-            // Mapeo de logos por tipo de contenido
-            const logosPorTipo = {
-                'Curso': 'UBITS.jpg',
-                'Cápsula': 'Microsoft.jpg',
-                'Charla': 'TED.jpg',
-                'Artículo': 'Harvard-Business-Publishing.jpg',
-                'Podcast': 'All Ears English.jpg',
-                'Libro': 'IE-University-Publishing.jpg',
-                'Ideas de libro': 'WOBI.jpg',
-                'Caso de estudio': 'Hubspot.jpg',
-                'Documento técnico': 'AWS.jpg',
-                'Ejercicios de práctica': 'Código-Facilito.jpg',
-                'Ruta de aprendizaje': 'Universidad-de-Los Andes.jpg',
-                'Welu': 'Welu.jpg',
-                'Instafit': 'Instafit.jpg',
-                'Bureau-Veritas': 'Bureau-Veritas.jpg',
-                'Hackers-del-Talento': 'Hackers-del-Talento.jpg',
-                'Figsha Smart Consulting': 'Figsha Smart Consulting.jpg'
-            };
-
-            const htmlContentAliados = tiposContenido.map(tipo => {
-                const logo = logosPorTipo[tipo] || 'UBITS.jpg';
-                const logoPath = `images/Favicons/${logo}`;
-                
-                return `
-                    <div class="tipo-contenido-card" data-tipo="${tipo}">
-                        <div class="tipo-contenido-image">
-                            <img src="${logoPath}" alt="${tipo}" loading="lazy">
-                        </div>
-                        <div class="tipo-contenido-card-tooltip">${tipo}</div>
-                    </div>
-                `;
-            }).join('');
-            
-            carouselContainer.innerHTML = htmlContentAliados;
-
-            // Función para ajustar posición del tooltip dinámicamente
-            function adjustAliadoTooltipPosition(tooltip, card) {
-                const tooltipRect = tooltip.getBoundingClientRect();
-                const cardRect = card.getBoundingClientRect();
-                const viewportWidth = window.innerWidth;
-                const viewportHeight = window.innerHeight;
-                
-                // Resetear clases
-                tooltip.classList.remove('tooltip-right', 'tooltip-left', 'tooltip-bottom');
-                
-                // Verificar si se corta a la derecha
-                if (tooltipRect.right > viewportWidth) {
-                    tooltip.classList.add('tooltip-right');
-                }
-                // Verificar si se corta a la izquierda
-                else if (tooltipRect.left < 0) {
-                    tooltip.classList.add('tooltip-left');
-                }
-                
-                // Verificar si se corta arriba
-                if (tooltipRect.top < 0) {
-                    tooltip.classList.add('tooltip-bottom');
-                }
-            }
-
-            // Agregar event listeners para los cards
-            carouselContainer.querySelectorAll('.tipo-contenido-card').forEach(card => {
-                const tooltip = card.querySelector('.tipo-contenido-card-tooltip');
-                
-                card.addEventListener('click', function() {
-                    const tipo = this.dataset.tipo;
-                    // Aquí puedes agregar la lógica de filtrado por tipo de contenido
-                    console.log('Tipo seleccionado:', tipo);
-                });
-                
-                // Ajustar posición del tooltip en hover
-                if (tooltip) {
-                    card.addEventListener('mouseenter', function() {
-                        // Pequeño delay para que el tooltip se renderice primero
-                        setTimeout(() => {
-                            adjustAliadoTooltipPosition(tooltip, card);
-                        }, 10);
-                    });
-                }
-            });
-
-            // Agregar event listeners para los botones de control del carrusel
-            const prevButton = document.getElementById('tipos-contenido-prev');
-            const nextButton = document.getElementById('tipos-contenido-next');
-
-            // Función para actualizar el estado de los botones
-            function updateCarouselButtons() {
-                if (!carouselContainer || !prevButton || !nextButton) return;
-
-                const scrollLeft = carouselContainer.scrollLeft;
-                const scrollWidth = carouselContainer.scrollWidth;
-                const clientWidth = carouselContainer.clientWidth;
-                const isAtStart = scrollLeft <= 0;
-                const isAtEnd = scrollLeft + clientWidth >= scrollWidth - 1; // -1 para tolerancia
-
-                // Deshabilitar/habilitar botón anterior
-                prevButton.disabled = isAtStart;
-
-                // Deshabilitar/habilitar botón siguiente
-                nextButton.disabled = isAtEnd;
-            }
-
-            // Obtener número de items a mover según breakpoint
-            function getItemsToMove() {
-                const windowWidth = window.innerWidth;
-                
-                if (windowWidth <= 767) {
-                    return 3; // Mobile
-                } else if (windowWidth <= 1023) {
-                    return 5; // Tablet
-                }
-                return 8; // Desktop
-            }
-
-            // Encontrar el índice del primer item visible
-            function getFirstVisibleIndex() {
-                const cards = carouselContainer.querySelectorAll('.tipo-contenido-card');
-                if (cards.length === 0) return 0;
-                
-                const containerRect = carouselContainer.getBoundingClientRect();
-                const containerLeft = containerRect.left;
-                
-                for (let i = 0; i < cards.length; i++) {
-                    const cardRect = cards[i].getBoundingClientRect();
-                    // Si el card está visible (su izquierda está dentro o a la derecha del contenedor)
-                    if (cardRect.left >= containerLeft - 10) { // -10 para tolerancia
-                        return i;
-                    }
-                }
-                return 0;
-            }
-
-            // Scroll al siguiente grupo de items
-            function scrollToNextGroup() {
-                const cards = carouselContainer.querySelectorAll('.tipo-contenido-card');
-                if (cards.length === 0) return;
-                
-                const itemsToMove = getItemsToMove();
-                const currentIndex = getFirstVisibleIndex();
-                const nextIndex = Math.min(currentIndex + itemsToMove, cards.length - 1);
-                
-                // Si ya estamos al final, no hacer nada
-                if (nextIndex >= cards.length - 1) {
-                    const lastCard = cards[cards.length - 1];
-                    const lastCardRect = lastCard.getBoundingClientRect();
-                    const containerRect = carouselContainer.getBoundingClientRect();
-                    carouselContainer.scrollTo({
-                        left: carouselContainer.scrollLeft + (lastCardRect.right - containerRect.right),
-                        behavior: 'smooth'
-                    });
-                    setTimeout(updateCarouselButtons, 400);
-                    return;
-                }
-                
-                // Scroll hasta el siguiente grupo
-                const targetCard = cards[nextIndex];
-                const targetCardRect = targetCard.getBoundingClientRect();
-                const containerRect = carouselContainer.getBoundingClientRect();
-                const scrollLeft = carouselContainer.scrollLeft;
-                
-                carouselContainer.scrollTo({
-                    left: scrollLeft + (targetCardRect.left - containerRect.left),
-                    behavior: 'smooth'
-                });
-                setTimeout(updateCarouselButtons, 400);
-            }
-
-            // Scroll al grupo anterior de items
-            function scrollToPrevGroup() {
-                const cards = carouselContainer.querySelectorAll('.tipo-contenido-card');
-                if (cards.length === 0) return;
-                
-                const itemsToMove = getItemsToMove();
-                const currentIndex = getFirstVisibleIndex();
-                const prevIndex = Math.max(0, currentIndex - itemsToMove);
-                
-                // Si ya estamos al inicio, no hacer nada
-                if (prevIndex === 0) {
-                    carouselContainer.scrollTo({
-                        left: 0,
-                        behavior: 'smooth'
-                    });
-                    setTimeout(updateCarouselButtons, 400);
-                    return;
-                }
-                
-                // Scroll hasta el grupo anterior
-                const targetCard = cards[prevIndex];
-                const targetCardRect = targetCard.getBoundingClientRect();
-                const containerRect = carouselContainer.getBoundingClientRect();
-                const scrollLeft = carouselContainer.scrollLeft;
-                
-                carouselContainer.scrollTo({
-                    left: scrollLeft + (targetCardRect.left - containerRect.left),
-                    behavior: 'smooth'
-                });
-                setTimeout(updateCarouselButtons, 400);
-            }
-
-            if (prevButton && nextButton) {
-                // Inicializar estado de los botones
-                updateCarouselButtons();
-
-                // Botón anterior
-                prevButton.addEventListener('click', function() {
-                    if (this.disabled) return;
-                    scrollToPrevGroup();
-                });
-
-                // Botón siguiente
-                nextButton.addEventListener('click', function() {
-                    if (this.disabled) return;
-                    scrollToNextGroup();
-                });
-
-                // Actualizar estado de botones al hacer scroll manual
-                carouselContainer.addEventListener('scroll', function() {
-                    // Usar setTimeout para actualizar después de que termine la animación
-                    setTimeout(updateCarouselButtons, 100);
-                });
-
-                // Actualizar estado al redimensionar la ventana
-                window.addEventListener('resize', function() {
-                    setTimeout(updateCarouselButtons, 100);
-                });
-            }
-        }
 
         // Función para renderizar el nuevo carrusel de tipos de contenido (rectangular)
         function renderTiposContenidoNuevo() {
