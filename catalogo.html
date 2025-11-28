@@ -60,6 +60,60 @@
         .catalog-search-container {
             flex: 1;
             max-width: 600px;
+            position: relative;
+        }
+        
+        /* Contenedor de sugerencias de búsqueda - KISS: simple y directo */
+        #catalog-search-container {
+            position: relative;
+        }
+        
+        .search-suggestions-container {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            width: 100%;
+            background: var(--ubits-bg-1);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            border: 1px solid var(--ubits-border-1);
+            box-sizing: border-box;
+        }
+        
+        .search-suggestions-container.visible {
+            display: block;
+        }
+        
+        .search-suggestion-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            border-bottom: 1px solid var(--ubits-border-1);
+            color: var(--ubits-fg-1-high);
+        }
+        
+        .search-suggestion-item:last-child {
+            border-bottom: none;
+        }
+        
+        .search-suggestion-item:hover {
+            background: var(--ubits-bg-2);
+        }
+        
+        .search-suggestion-item .suggestion-text {
+            color: var(--ubits-fg-1-high);
+            font-size: 14px;
+            line-height: 1.5;
+            text-align: left;
+        }
+        
+        .search-suggestion-item {
+            text-align: left;
         }
 
         .catalog-filters-btn {
@@ -1301,6 +1355,88 @@
             loadFloatingMenu('floating-menu-container');
             loadProfileMenu('profile-menu-container');
 
+            // Base de datos de sugerencias
+            const searchSuggestions = {
+                'ia': [
+                    'Inteligencia artificial',
+                    'Inteligencia artificial y ética',
+                    'Máster de inteligencia artificial para agentes de viajes',
+                    'Introduccion a la inteligencia artificial',
+                    'Herramientas de inteligencia artificial',
+                    'Inteligencia artificial como potenciador de un negocio',
+                    'Genera videos con inteligencia artificial',
+                    'Inteligencia artificial y su impacto en ventas',
+                    'Casos practicos de inteligencia artificial',
+                    'Inteligencia artificial generativa'
+                ]
+            };
+            
+            // Función para mostrar sugerencias - KISS: simple y directo
+            function showSuggestions(query) {
+                const suggestionsContainer = document.getElementById('search-suggestions-container');
+                if (!suggestionsContainer) {
+                    console.error('❌ No se encontró el contenedor de sugerencias');
+                    return;
+                }
+                
+                const normalizedQuery = query.toLowerCase().trim();
+                console.log('🔍 Buscando sugerencias para:', normalizedQuery);
+                
+                if (normalizedQuery.length === 0) {
+                    suggestionsContainer.classList.remove('visible');
+                    return;
+                }
+                
+                // Buscar sugerencias
+                let suggestions = [];
+                
+                // Buscar coincidencias exactas
+                for (const [key, values] of Object.entries(searchSuggestions)) {
+                    if (normalizedQuery.includes(key) || key.includes(normalizedQuery)) {
+                        suggestions = values;
+                        break;
+                    }
+                }
+                
+                // Si no hay coincidencias, buscar en el contenido
+                if (suggestions.length === 0) {
+                    for (const [key, values] of Object.entries(searchSuggestions)) {
+                        const matching = values.filter(s => s.toLowerCase().includes(normalizedQuery));
+                        if (matching.length > 0) {
+                            suggestions = matching.slice(0, 10);
+                            break;
+                        }
+                    }
+                }
+                
+                if (suggestions.length > 0) {
+                    console.log('✅ Encontradas', suggestions.length, 'sugerencias');
+                    suggestionsContainer.innerHTML = suggestions.map(suggestion => `
+                        <div class="search-suggestion-item">
+                            <span class="suggestion-text">${suggestion}</span>
+                        </div>
+                    `).join('');
+                    
+                    suggestionsContainer.classList.add('visible');
+                    
+                    // Listeners para clic en sugerencias
+                    suggestionsContainer.querySelectorAll('.search-suggestion-item').forEach(item => {
+                        item.addEventListener('click', function() {
+                            const searchInput = document.querySelector('#catalog-search-container input');
+                            if (searchInput) {
+                                searchInput.value = this.querySelector('.suggestion-text').textContent;
+                                suggestionsContainer.classList.remove('visible');
+                                searchInput.focus();
+                                searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+                            }
+                        });
+                    });
+                } else {
+                    console.log('❌ No se encontraron sugerencias');
+                    suggestionsContainer.classList.remove('visible');
+                }
+            }
+
             // Crear input de búsqueda
             setTimeout(() => {
                 createInput({
@@ -1310,13 +1446,64 @@
                     size: 'md'
                 });
 
-                // Agregar listener de búsqueda
+                // Agregar listener de búsqueda y sugerencias - KISS: simple y directo
                 setTimeout(() => {
                     const searchInput = document.querySelector('#catalog-search-container input');
-                    if (searchInput) {
-                        searchInput.addEventListener('input', handleSearch);
+                    const searchContainer = document.getElementById('catalog-search-container');
+                    
+                    console.log('🔍 Setup sugerencias:', { searchInput: !!searchInput, searchContainer: !!searchContainer });
+                    
+                    if (!searchInput || !searchContainer) {
+                        console.error('❌ No se encontraron elementos necesarios');
+                        return;
                     }
-                }, 500);
+                    
+                    // KISS: Crear contenedor de sugerencias y moverlo al div con position: relative que crea createInput
+                    let suggestionsContainer = document.getElementById('search-suggestions-container');
+                    if (!suggestionsContainer) {
+                        suggestionsContainer = document.createElement('div');
+                        suggestionsContainer.id = 'search-suggestions-container';
+                        suggestionsContainer.className = 'search-suggestions-container';
+                    }
+                    
+                    // Mover el contenedor de sugerencias al div con position: relative que crea createInput
+                    const inputWrapper = searchInput.parentElement; // El div con position: relative
+                    if (inputWrapper) {
+                        inputWrapper.style.position = 'relative';
+                        inputWrapper.style.zIndex = '1000';
+                        inputWrapper.appendChild(suggestionsContainer);
+                        console.log('✅ Contenedor de sugerencias movido al wrapper del input');
+                    } else {
+                        // Fallback: usar el contenedor padre
+                        searchContainer.style.position = 'relative';
+                        searchContainer.style.zIndex = '1000';
+                        searchContainer.appendChild(suggestionsContainer);
+                    }
+                    
+                    // Listener simple para input
+                    searchInput.addEventListener('input', function(e) {
+                        const value = this.value;
+                        console.log('📝 Input cambiado:', value);
+                        showSuggestions(value);
+                        handleSearch(e);
+                    });
+                    
+                    // Listener para botón X (limpiar)
+                    const clearIcon = searchContainer.querySelector('i[class*="fa-times"]');
+                    if (clearIcon) {
+                        clearIcon.addEventListener('click', function() {
+                            console.log('❌ Botón X clickeado');
+                            suggestionsContainer.classList.remove('visible');
+                        });
+                    }
+                    
+                    // Ocultar al hacer clic fuera
+                    document.addEventListener('click', function(e) {
+                        if (!searchContainer.contains(e.target) && !suggestionsContainer.contains(e.target)) {
+                            suggestionsContainer.classList.remove('visible');
+                        }
+                    });
+                }, 1000);
             }, 300);
 
             // Renderizar chips de búsquedas frecuentes

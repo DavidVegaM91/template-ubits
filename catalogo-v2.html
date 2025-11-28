@@ -148,22 +148,38 @@
             pointer-events: all !important;
         }
         
-        /* Contenedor de sugerencias de búsqueda */
+        /* Contenedor de sugerencias de búsqueda - KISS: simple y directo */
+        .catalog-search-container-v2-overlay {
+            position: relative;
+        }
+        
         .search-suggestions-container {
             position: absolute;
             top: calc(100% + 8px);
-            left: 20px;
-            right: 20px;
-            width: calc(100% - 40px);
+            left: 0;
+            right: 0;
+            width: 100%;
             background: var(--ubits-bg-1);
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             max-height: 400px;
             overflow-y: auto;
-            z-index: 1000 !important;
+            z-index: 1002 !important; /* Mayor que search-sections (1001) pero dentro del mismo contexto */
             display: none;
             border: 1px solid var(--ubits-border-1);
             box-sizing: border-box;
+        }
+        
+        /* Asegurar que las secciones estén por debajo de las sugerencias */
+        body.search-overlay-active .search-sections {
+            position: relative;
+            z-index: 1 !important;
+        }
+        
+        body.search-overlay-active .academias-section-wrapper,
+        body.search-overlay-active .tipos-contenido-section-wrapper {
+            position: relative;
+            z-index: 1 !important;
         }
         
         .search-suggestions-container.visible {
@@ -190,6 +206,11 @@
             color: var(--ubits-fg-1-high);
             font-size: 14px;
             line-height: 1.5;
+            text-align: left;
+        }
+        
+        .search-suggestion-item {
+            text-align: left;
         }
         
         body.search-overlay-active .catalog-search-wrapper-v2-overlay {
@@ -260,8 +281,23 @@
             
             body.search-overlay-active .catalog-search-wrapper-v2-overlay,
             body.search-overlay-active .catalog-search-container-v2-overlay,
-            body.search-overlay-active .search-close-button,
+            body.search-overlay-active .search-close-button {
+                z-index: 10002 !important;
+            }
+            
             body.search-overlay-active .search-suggestions-container {
+                z-index: 10002 !important; /* Mayor que search-content-wrapper (10001) en mobile */
+            }
+            
+            body.search-overlay-active .catalog-search-wrapper-v2-overlay {
+                z-index: 10002 !important;
+            }
+            
+            body.search-overlay-active .catalog-search-container-v2-overlay {
+                z-index: 10002 !important;
+            }
+            
+            body.search-overlay-active .catalog-search-container-v2-overlay > div[style*="position: relative"] {
                 z-index: 10002 !important;
             }
             
@@ -342,15 +378,30 @@
             }
         }
         
-        /* Asegurar que las secciones dentro del contenido también estén por encima */
+        /* Asegurar que las secciones dentro del contenido estén por debajo del input y sugerencias */
         body.search-overlay-active .search-sections {
             position: relative;
-            z-index: 1001;
+            z-index: 1;
         }
         
         body.search-overlay-active .search-sections * {
             position: relative;
-            z-index: 1001;
+            z-index: 1;
+        }
+        
+        /* Asegurar que el input y sugerencias estén por encima de las secciones */
+        body.search-overlay-active .catalog-search-wrapper-v2-overlay {
+            position: relative;
+            z-index: 1002 !important;
+        }
+        
+        body.search-overlay-active .catalog-search-container-v2-overlay {
+            position: relative;
+            z-index: 1002 !important;
+        }
+        
+        body.search-overlay-active .catalog-search-container-v2-overlay > div[style*="position: relative"] {
+            z-index: 1002 !important;
         }
 
         .search-overlay.active ~ .search-content-wrapper {
@@ -1217,7 +1268,6 @@
     <div class="search-content-wrapper">
         <div class="catalog-search-wrapper-v2-overlay" id="catalog-search-wrapper-v2-overlay" style="display: none;">
             <div class="catalog-search-container-v2-overlay" id="catalog-search-container-v2-overlay"></div>
-            <div class="search-suggestions-container" id="search-suggestions-container"></div>
         </div>
         <div class="search-sections">
                             <!-- Wrapper de sección de academias -->
@@ -1538,6 +1588,88 @@
             loadFloatingMenu('floating-menu-container');
             loadProfileMenu('profile-menu-container');
 
+            // Base de datos de sugerencias - Global para el overlay
+            const searchSuggestionsV2 = {
+                'ia': [
+                    'Inteligencia artificial',
+                    'Inteligencia artificial y ética',
+                    'Máster de inteligencia artificial para agentes de viajes',
+                    'Introduccion a la inteligencia artificial',
+                    'Herramientas de inteligencia artificial',
+                    'Inteligencia artificial como potenciador de un negocio',
+                    'Genera videos con inteligencia artificial',
+                    'Inteligencia artificial y su impacto en ventas',
+                    'Casos practicos de inteligencia artificial',
+                    'Inteligencia artificial generativa'
+                ]
+            };
+            
+            // Función para mostrar sugerencias - KISS: Copiar exactamente de catalogo.html
+            const showSuggestionsV2 = function(query) {
+                const suggestionsContainer = document.getElementById('search-suggestions-container');
+                if (!suggestionsContainer) {
+                    console.error('❌ No se encontró el contenedor de sugerencias v2');
+                    return;
+                }
+                
+                const normalizedQuery = query.toLowerCase().trim();
+                console.log('🔍 Buscando sugerencias v2 para:', normalizedQuery);
+                
+                if (normalizedQuery.length === 0) {
+                    suggestionsContainer.classList.remove('visible');
+                    return;
+                }
+                
+                // Buscar sugerencias
+                let suggestions = [];
+                
+                // Buscar coincidencias exactas
+                for (const [key, values] of Object.entries(searchSuggestionsV2)) {
+                    if (normalizedQuery.includes(key) || key.includes(normalizedQuery)) {
+                        suggestions = values;
+                        break;
+                    }
+                }
+                
+                // Si no hay coincidencias, buscar en el contenido
+                if (suggestions.length === 0) {
+                    for (const [key, values] of Object.entries(searchSuggestionsV2)) {
+                        const matching = values.filter(s => s.toLowerCase().includes(normalizedQuery));
+                        if (matching.length > 0) {
+                            suggestions = matching.slice(0, 10);
+                            break;
+                        }
+                    }
+                }
+                
+                if (suggestions.length > 0) {
+                    console.log('✅ Encontradas', suggestions.length, 'sugerencias v2');
+                    suggestionsContainer.innerHTML = suggestions.map(suggestion => `
+                        <div class="search-suggestion-item">
+                            <span class="suggestion-text">${suggestion}</span>
+                        </div>
+                    `).join('');
+                    
+                    suggestionsContainer.classList.add('visible');
+                    
+                    // Listeners para clic en sugerencias
+                    suggestionsContainer.querySelectorAll('.search-suggestion-item').forEach(item => {
+                        item.addEventListener('click', function() {
+                            const overlayInput = document.querySelector('#catalog-search-container-v2-overlay input');
+                            if (overlayInput) {
+                                overlayInput.value = this.querySelector('.suggestion-text').textContent;
+                                suggestionsContainer.classList.remove('visible');
+                                overlayInput.focus();
+                                overlayInput.dispatchEvent(new Event('input', { bubbles: true }));
+                            }
+                        });
+                    });
+                } else {
+                    console.log('❌ No se encontraron sugerencias v2');
+                    suggestionsContainer.classList.remove('visible');
+                }
+            };
+            
             // Agregar listeners para overlay
             setTimeout(() => {
                 const overlay = document.getElementById('search-overlay');
@@ -1546,83 +1678,6 @@
                 const closeButton = document.getElementById('search-close-button');
                 
                 if (overlay) {
-                    // Función para crear el input en el overlay
-                    // Base de datos de sugerencias
-                    const searchSuggestions = {
-                        'ia': [
-                            'Inteligencia artificial',
-                            'Inteligencia artificial y ética',
-                            'Máster de inteligencia artificial para agentes de viajes',
-                            'Introduccion a la inteligencia artificial',
-                            'Herramientas de inteligencia artificial',
-                            'Inteligencia artificial como potenciador de un negocio',
-                            'Genera videos con inteligencia artificial',
-                            'Inteligencia artificial y su impacto en ventas',
-                            'Casos practicos de inteligencia artificial',
-                            'Inteligencia artificial generativa'
-                        ]
-                    };
-                    
-                    function showSuggestions(query) {
-                        const suggestionsContainer = document.getElementById('search-suggestions-container');
-                        if (!suggestionsContainer) return;
-                        
-                        const normalizedQuery = query.toLowerCase().trim();
-                        
-                        if (normalizedQuery.length === 0) {
-                            suggestionsContainer.classList.remove('visible');
-                            return;
-                        }
-                        
-                        // Buscar sugerencias que coincidan con la query
-                        let suggestions = [];
-                        
-                        // Buscar en la base de datos
-                        for (const [key, values] of Object.entries(searchSuggestions)) {
-                            if (normalizedQuery.includes(key) || key.includes(normalizedQuery)) {
-                                suggestions = values;
-                                break;
-                            }
-                        }
-                        
-                        // Si no hay coincidencias exactas, buscar sugerencias que contengan la query
-                        if (suggestions.length === 0) {
-                            for (const [key, values] of Object.entries(searchSuggestions)) {
-                                const matching = values.filter(s => 
-                                    s.toLowerCase().includes(normalizedQuery)
-                                );
-                                if (matching.length > 0) {
-                                    suggestions = matching.slice(0, 10);
-                                    break;
-                                }
-                            }
-                        }
-                        
-                        if (suggestions.length > 0) {
-                            suggestionsContainer.innerHTML = suggestions.map(suggestion => `
-                                <div class="search-suggestion-item">
-                                    <span class="suggestion-text">${suggestion}</span>
-                                </div>
-                            `).join('');
-                            
-                            suggestionsContainer.classList.add('visible');
-                            
-                            // Agregar event listeners a las sugerencias
-                            suggestionsContainer.querySelectorAll('.search-suggestion-item').forEach(item => {
-                                item.addEventListener('click', function() {
-                                    const overlayInput = document.querySelector('#catalog-search-container-v2-overlay input');
-                                    if (overlayInput) {
-                                        overlayInput.value = this.querySelector('.suggestion-text').textContent;
-                                        suggestionsContainer.classList.remove('visible');
-                                        overlayInput.focus();
-                                    }
-                                });
-                            });
-                        } else {
-                            suggestionsContainer.classList.remove('visible');
-                        }
-                    }
-                    
                     function createOverlayInput() {
                         if (overlaySearchContainer) {
                             // Crear el input en el contenedor del overlay
@@ -1648,20 +1703,60 @@
                                     // Focus en el input del overlay
                                     overlayInput.focus();
                                     
-                                    // Event listener para mostrar sugerencias
-                                    overlayInput.addEventListener('input', function() {
-                                        showSuggestions(this.value);
+                                    // Setup sugerencias - KISS: Copiar exactamente de catalogo.html
+                                    const overlaySearchContainer = document.getElementById('catalog-search-container-v2-overlay');
+                                    
+                                    console.log('🔍 Setup sugerencias v2:', { overlayInput: !!overlayInput, overlaySearchContainer: !!overlaySearchContainer });
+                                    
+                                    if (!overlayInput || !overlaySearchContainer) {
+                                        console.error('❌ No se encontraron elementos necesarios');
+                                        return;
+                                    }
+                                    
+                                    // KISS: Crear contenedor si no existe y moverlo al inputWrapper (igual que catalogo.html)
+                                    let suggestionsContainer = document.getElementById('search-suggestions-container');
+                                    if (!suggestionsContainer) {
+                                        suggestionsContainer = document.createElement('div');
+                                        suggestionsContainer.id = 'search-suggestions-container';
+                                        suggestionsContainer.className = 'search-suggestions-container';
+                                    }
+                                    
+                                    // Mover al inputWrapper (igual que catalogo.html)
+                                    const inputWrapper = overlayInput.parentElement;
+                                    if (inputWrapper) {
+                                        inputWrapper.style.position = 'relative';
+                                        inputWrapper.style.zIndex = '1002'; // Mayor que search-sections (1001)
+                                        inputWrapper.appendChild(suggestionsContainer);
+                                        // Asegurar z-index del contenedor también
+                                        suggestionsContainer.style.zIndex = '1002';
+                                        console.log('✅ Contenedor de sugerencias movido al wrapper del input v2');
+                                    } else {
+                                        overlaySearchContainer.style.position = 'relative';
+                                        overlaySearchContainer.style.zIndex = '1002';
+                                        overlaySearchContainer.appendChild(suggestionsContainer);
+                                        suggestionsContainer.style.zIndex = '1002';
+                                    }
+                                    
+                                    // Listener simple para input (igual que catalogo.html)
+                                    overlayInput.addEventListener('input', function(e) {
+                                        const value = this.value;
+                                        console.log('📝 Input cambiado v2:', value);
+                                        showSuggestionsV2(value);
                                     });
                                     
-                                    // Ocultar sugerencias cuando se hace clic fuera
+                                    // Listener para botón X (igual que catalogo.html)
+                                    const clearIcon = overlaySearchContainer.querySelector('i[class*="fa-times"]');
+                                    if (clearIcon) {
+                                        clearIcon.addEventListener('click', function() {
+                                            console.log('❌ Botón X clickeado v2');
+                                            suggestionsContainer.classList.remove('visible');
+                                        });
+                                    }
+                                    
+                                    // Ocultar al hacer clic fuera (igual que catalogo.html)
                                     document.addEventListener('click', function(e) {
-                                        const suggestionsContainer = document.getElementById('search-suggestions-container');
-                                        const inputWrapper = document.querySelector('#catalog-search-container-v2-overlay');
-                                        
-                                        if (suggestionsContainer && inputWrapper) {
-                                            if (!inputWrapper.contains(e.target) && !suggestionsContainer.contains(e.target)) {
-                                                suggestionsContainer.classList.remove('visible');
-                                            }
+                                        if (!overlaySearchContainer.contains(e.target) && !suggestionsContainer.contains(e.target)) {
+                                            suggestionsContainer.classList.remove('visible');
                                         }
                                     });
                                 }

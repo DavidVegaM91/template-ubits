@@ -289,6 +289,19 @@ loadCardContent('cards-container', [{
 
 **If you catch yourself doing ANY of these, STOP and fix immediately.**
 
+## 🔍 DEBUGGING - ENFOQUE ANALÍTICO
+
+### **🚨 MANDATORY: PRIMERO ENTENDER, LUEGO AJUSTAR**
+
+**When facing ANY problem (z-index, positioning, functionality not working):**
+
+1. **📋 REVISAR ESTRUCTURA HTML REAL** - NEVER assume, ALWAYS verify with `read_file` or `grep`
+2. **🎯 ENTENDER STACKING CONTEXT** - Review ALL z-index values, understand hierarchy
+3. **🔍 VERIFICAR SCOPE** - Check where functions/variables are defined vs where they're used
+4. **📐 USAR MÍNIMO NECESARIO** - Use minimum necessary changes (e.g., z-index: 1002 not 99999)
+
+**Remember: Enfoque analítico - primero entender, luego ajustar.**
+
 ## 🎯 PRIORITY LEVELS
 
 ### 🔴 CRITICAL (Must Follow)
