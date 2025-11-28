@@ -12,6 +12,7 @@
     border-radius: 8px;
     overflow: hidden;
     background: var(--ubits-bg-1);
+    touch-action: pan-x pan-y pinch-zoom; /* Permitir swipe horizontal y vertical */
 }
 
 /* Zoom effect on hover */
@@ -24,6 +25,7 @@
     position: relative;
     width: 100%;
     height: 100%;
+    touch-action: pan-x pan-y pinch-zoom; /* Permitir swipe horizontal y vertical */
 }
 
 /* Individual Slide */
@@ -968,6 +970,7 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
+    touch-action: pan-x pan-y pinch-zoom; /* Permitir swipe horizontal y vertical */
 }
 
 .carousel-contents--outstanding__header {
@@ -984,6 +987,7 @@
     position: relative;
     width: 100%;
     min-height: 375px;
+    touch-action: pan-x pan-y pinch-zoom; /* Permitir swipe horizontal y vertical */
 }
 
 .carousel-contents--outstanding__slide {

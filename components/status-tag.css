@@ -1,0 +1,187 @@
+/* ========================================
+   UBITS STATUS TAG COMPONENT
+   Componente de etiqueta de estado con variantes
+   ======================================== */
+
+/* ========================================
+   BASE STATUS TAG STYLES
+   ======================================== */
+
+.ubits-status-tag {
+    /* Base styles */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 16px;
+    white-space: nowrap;
+    box-sizing: border-box;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+    height: 28px; /* Altura por defecto (sm) */
+}
+
+/* Asegurar que los iconos dentro del tag usen FontAwesome */
+.ubits-status-tag i {
+    font-family: "Font Awesome 6 Pro", "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
+}
+
+/* ========================================
+   STATUS TAG VARIANTS
+   ======================================== */
+
+/* Success (Verde) */
+.ubits-status-tag--success {
+    background: var(--ubits-feedback-bg-success-subtle);
+    color: var(--ubits-feedback-fg-success-subtle);
+    border-color: var(--ubits-feedback-border-success);
+}
+
+/* Info (Azul) */
+.ubits-status-tag--info {
+    background: var(--ubits-feedback-bg-info-subtle);
+    color: var(--ubits-feedback-fg-info-subtle);
+    border-color: var(--ubits-feedback-border-info);
+}
+
+/* Warning (Amarillo) */
+.ubits-status-tag--warning {
+    background: var(--ubits-feedback-bg-warning-subtle);
+    color: var(--ubits-feedback-fg-warning-subtle);
+    border-color: var(--ubits-feedback-border-warning);
+}
+
+/* Error (Rojo) */
+.ubits-status-tag--error {
+    background: var(--ubits-feedback-bg-error-subtle);
+    color: var(--ubits-feedback-fg-error-subtle);
+    border-color: var(--ubits-feedback-border-error);
+}
+
+/* Neutral (Gris) */
+.ubits-status-tag--neutral {
+    background: var(--ubits-bg-2);
+    color: var(--ubits-fg-1-medium);
+    border-color: var(--ubits-border-1);
+}
+
+/* ========================================
+   STATUS TAG ICON POSITIONS
+   ======================================== */
+
+/* Icono a la izquierda */
+.ubits-status-tag--icon-left {
+    flex-direction: row;
+}
+
+.ubits-status-tag--icon-left i {
+    order: 0;
+}
+
+.ubits-status-tag--icon-left .ubits-status-tag__text {
+    order: 1;
+}
+
+/* Icono a la derecha */
+.ubits-status-tag--icon-right {
+    flex-direction: row;
+}
+
+.ubits-status-tag--icon-right i {
+    order: 1;
+}
+
+.ubits-status-tag--icon-right .ubits-status-tag__text {
+    order: 0;
+}
+
+/* ========================================
+   STATUS TAG ELEMENTS
+   ======================================== */
+
+/* Estilos para iconos dentro del status tag */
+.ubits-status-tag i {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 11px;
+    line-height: 1;
+    width: 12px;
+    height: 12px;
+}
+
+.ubits-status-tag__text {
+    display: inline-block;
+    line-height: 16px;
+}
+
+/* ========================================
+   STATUS TAG SIZES
+   ======================================== */
+
+/* Extra Small size */
+.ubits-status-tag--xs {
+    padding: 2px 8px;
+    font-size: 10px;
+    line-height: 16px;
+    gap: 4px;
+    height: 20px;
+}
+
+.ubits-status-tag--xs i {
+    font-size: 10px;
+    width: 10px;
+    height: 10px;
+}
+
+/* Small size */
+.ubits-status-tag--sm {
+    padding: 6px 10px;
+    font-size: 11px;
+    line-height: 16px;
+    gap: 6px;
+    height: 28px;
+}
+
+.ubits-status-tag--sm i {
+    font-size: 11px;
+    width: 12px;
+    height: 12px;
+}
+
+/* Medium size */
+.ubits-status-tag--md {
+    padding: 10px 12px;
+    font-size: 13px;
+    line-height: 16px;
+    gap: 8px;
+    height: 36px;
+}
+
+.ubits-status-tag--md i {
+    font-size: 13px;
+    width: 14px;
+    height: 14px;
+}
+
+/* Large size */
+.ubits-status-tag--lg {
+    padding: 12px 14px;
+    font-size: 14px;
+    line-height: 16px;
+    gap: 8px;
+    height: 40px;
+}
+
+.ubits-status-tag--lg i {
+    font-size: 14px;
+    width: 16px;
+    height: 16px;
+}
+

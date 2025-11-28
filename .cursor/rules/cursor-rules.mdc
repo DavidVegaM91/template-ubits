@@ -586,6 +586,22 @@ border: 1px solid var(--ubits-border-1);
 - ✅ **Use outline icons** - Prefer `far` over `fas` (e.g., `far fa-check` not `fas fa-check`)
 - ✅ **Test icon rendering** - Always verify icons display correctly
 
+**🚨 CRITICAL: RENDERING ICONS DYNAMICALLY WITH innerHTML**
+**When inserting HTML dynamically with `innerHTML`, ALWAYS use ONLY FontAwesome classes directly on the `<i>` tag:**
+```html
+<!-- ✅ CORRECT: Only FontAwesome classes (works in button.html, alert.html) -->
+<i class="far fa-check-circle"></i>
+
+<!-- ❌ WRONG: Adding wrapper classes breaks FontAwesome rendering -->
+<i class="ubits-status-tag__icon far fa-check-circle"></i>
+```
+**Why this matters:**
+- FontAwesome processes icons when the page loads
+- When using `innerHTML` dynamically, FontAwesome may not process icons with additional wrapper classes
+- **Solution:** Use only FontAwesome classes (`far fa-icon-name`) directly on `<i>` tags
+- Apply styling via CSS selectors like `.ubits-status-tag i` instead of wrapper classes
+- **Reference:** See `button.html` line 619 for working example: `<i class="far fa-${icon}"></i>`
+
 **Common icon classes:**
 - `far fa-check` - Check mark
 - `far fa-times` - X mark  

@@ -49,6 +49,11 @@ const DOCS_SIDEBAR_SECTIONS = [
         id: 'toast',
         title: 'Toast',
         group: 'ui'
+    },
+    {
+        id: 'status-tag',
+        title: 'Status Tag',
+        group: 'ui'
     }
 ];
 
@@ -92,6 +97,9 @@ const docsSidebarHTML = `
                     </div>
                     <div class="docs-sidebar-item" data-section="toast">
                         <span class="docs-sidebar-text">Toast</span>
+                    </div>
+                    <div class="docs-sidebar-item" data-section="status-tag">
+                        <span class="docs-sidebar-text">Status Tag</span>
                     </div>
                 </div>
             </div>
@@ -140,6 +148,9 @@ const docsDropdownHTML = `
                     </div>
                     <div class="docs-dropdown-item" data-section="toast">
                         <span class="docs-dropdown-item-text ubits-body-md-regular">Toast</span>
+                    </div>
+                    <div class="docs-dropdown-item" data-section="status-tag">
+                        <span class="docs-dropdown-item-text ubits-body-md-regular">Status Tag</span>
                     </div>
                 </div>
             </div>
@@ -262,6 +273,14 @@ function initDocsSidebar(activeSection) {
             } else {
                 // Si estamos en otra página, navegar a toast.html
                 window.location.href = 'toast.html';
+            }
+        } else if (section === 'status-tag') {
+            // Si ya estamos en status-tag.html, solo hacer scroll al top
+            if (window.location.pathname.includes('status-tag.html')) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                // Si estamos en otra página, navegar a status-tag.html
+                window.location.href = 'status-tag.html';
             }
         }
     }

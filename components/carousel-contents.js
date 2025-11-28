@@ -1757,27 +1757,85 @@ function createCarouselContents(options) {
             indicator.addEventListener('click', () => goToSlide(slideIndex));
         });
 
-        // Swipe para mobile
-        const slidesContainer = wrapper.querySelector('.carousel-contents--outstanding__slides-container');
-        if (slidesContainer) {
-            slidesContainer.addEventListener('touchstart', (e) => {
+        // Swipe para mobile - usar el elemento outstanding card directamente con capture phase
+        const outstandingCard = wrapper.querySelector('.carousel-contents--outstanding');
+        if (outstandingCard) {
+            let isSwiping = false;
+            let touchStartY = 0;
+            
+            outstandingCard.addEventListener('touchstart', (e) => {
+                // Ignorar si el touch es en un botón o indicador
+                if (e.target.closest('.carousel-contents--outstanding__prev-btn') ||
+                    e.target.closest('.carousel-contents--outstanding__next-btn') ||
+                    e.target.closest('.carousel-contents--outstanding__indicator')) {
+                    return;
+                }
                 touchStartX = e.changedTouches[0].screenX;
-            });
+                touchStartY = e.changedTouches[0].screenY;
+                isSwiping = false;
+            }, { passive: true, capture: true });
 
-            slidesContainer.addEventListener('touchend', (e) => {
+            outstandingCard.addEventListener('touchmove', (e) => {
+                if (!touchStartX) return;
+                
+                const touchCurrentX = e.changedTouches[0].screenX;
+                const touchCurrentY = e.changedTouches[0].screenY;
+                const diffX = Math.abs(touchStartX - touchCurrentX);
+                const diffY = Math.abs(touchStartY - touchCurrentY);
+                
+                // Si el movimiento es más horizontal que vertical, prevenir scroll
+                if (diffX > diffY && diffX > 10) {
+                    isSwiping = true;
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+            }, { passive: false, capture: true });
+
+            outstandingCard.addEventListener('touchend', (e) => {
+                if (!touchStartX) return;
+                
+                // Ignorar si el touch es en un botón o indicador
+                if (e.target.closest('.carousel-contents--outstanding__prev-btn') ||
+                    e.target.closest('.carousel-contents--outstanding__next-btn') ||
+                    e.target.closest('.carousel-contents--outstanding__indicator')) {
+                    touchStartX = 0;
+                    touchEndX = 0;
+                    touchStartY = 0;
+                    return;
+                }
+                
                 touchEndX = e.changedTouches[0].screenX;
-                handleSwipe();
-            });
+                const swipeThreshold = 50;
+                const diff = touchStartX - touchEndX;
+
+                if (isSwiping && Math.abs(diff) > swipeThreshold) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (diff > 0) {
+                        // Swipe izquierda - siguiente
+                        nextSlide();
+                    } else {
+                        // Swipe derecha - anterior
+                        prevSlide();
+                    }
+                }
+                
+                touchStartX = 0;
+                touchEndX = 0;
+                touchStartY = 0;
+                isSwiping = false;
+            }, { passive: true, capture: true });
         }
 
-        // Auto-advance en desktop
-        startAutoAdvance();
-
         // Pausar auto-advance al hacer hover
+        const slidesContainer = wrapper.querySelector('.carousel-contents--outstanding__slides-container');
         if (slidesContainer) {
             slidesContainer.addEventListener('mouseenter', stopAutoAdvance);
             slidesContainer.addEventListener('mouseleave', startAutoAdvance);
         }
+
+        // Auto-advance en desktop
+        startAutoAdvance();
 
         // Manejar resize para auto-advance
         let resizeTimeout;
@@ -1791,9 +1849,10 @@ function createCarouselContents(options) {
 
         // Actualizar estado inicial
         updateCarousel();
-    } else {
+    } else if (type === 'hero') {
         // Lógica para variante hero
         const wrapper = container.querySelector('.carousel-contents--hero-wrapper');
+        if (!wrapper) return;
         
         // Botones de control - usar delegación de eventos para que funcionen en todos los slides
         wrapper.addEventListener('click', (e) => {
@@ -1818,23 +1877,80 @@ function createCarouselContents(options) {
             indicator.addEventListener('click', () => goToSlide(slideIndex));
         });
 
-        // Swipe para mobile
+        // Swipe para mobile - usar el elemento hero card directamente con capture phase
         const heroCard = wrapper.querySelector('.carousel-contents--hero');
         if (heroCard) {
+            let isSwiping = false;
+            let touchStartY = 0;
+            
             heroCard.addEventListener('touchstart', (e) => {
+                // Ignorar si el touch es en un botón o indicador
+                if (e.target.closest('.carousel-contents--hero__prev-btn') ||
+                    e.target.closest('.carousel-contents--hero__next-btn') ||
+                    e.target.closest('.carousel-contents--hero__indicator')) {
+                    return;
+                }
                 touchStartX = e.changedTouches[0].screenX;
-            });
+                touchStartY = e.changedTouches[0].screenY;
+                isSwiping = false;
+            }, { passive: true, capture: true });
+
+            heroCard.addEventListener('touchmove', (e) => {
+                if (!touchStartX) return;
+                
+                const touchCurrentX = e.changedTouches[0].screenX;
+                const touchCurrentY = e.changedTouches[0].screenY;
+                const diffX = Math.abs(touchStartX - touchCurrentX);
+                const diffY = Math.abs(touchStartY - touchCurrentY);
+                
+                // Si el movimiento es más horizontal que vertical, prevenir scroll
+                if (diffX > diffY && diffX > 10) {
+                    isSwiping = true;
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+            }, { passive: false, capture: true });
 
             heroCard.addEventListener('touchend', (e) => {
+                if (!touchStartX) return;
+                
+                // Ignorar si el touch es en un botón o indicador
+                if (e.target.closest('.carousel-contents--hero__prev-btn') ||
+                    e.target.closest('.carousel-contents--hero__next-btn') ||
+                    e.target.closest('.carousel-contents--hero__indicator')) {
+                    touchStartX = 0;
+                    touchEndX = 0;
+                    touchStartY = 0;
+                    return;
+                }
+                
                 touchEndX = e.changedTouches[0].screenX;
-                handleSwipe();
-            });
+                const swipeThreshold = 50;
+                const diff = touchStartX - touchEndX;
+
+                if (isSwiping && Math.abs(diff) > swipeThreshold) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (diff > 0) {
+                        // Swipe izquierda - siguiente
+                        nextSlide();
+                    } else {
+                        // Swipe derecha - anterior
+                        prevSlide();
+                    }
+                }
+                
+                touchStartX = 0;
+                touchEndX = 0;
+                touchStartY = 0;
+                isSwiping = false;
+            }, { passive: true, capture: true });
         }
 
         // Auto-advance en desktop
         startAutoAdvance();
 
-        // Pausar auto-advance al hacer hover
+        // Pausar auto-advance al hacer hover (reutilizar heroCard ya declarado)
         if (heroCard) {
             heroCard.addEventListener('mouseenter', stopAutoAdvance);
             heroCard.addEventListener('mouseleave', startAutoAdvance);
