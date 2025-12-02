@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="components/input.css">
     <link rel="stylesheet" href="components/button.css">
     <link rel="stylesheet" href="components/carousel-contents.css">
+    <link rel="stylesheet" href="components/status-tag.css">
     <link rel="stylesheet" href="profile.css">
     <style>
         /* Estilos específicos para content-sections */
@@ -630,14 +631,12 @@
             color: inherit;
         }
         
-        .competencia-card-v1-assigned-indicator-wrapper {
-            flex-shrink: 0;
-            display: inline-flex;
-            align-items: center;
+        /* Ajuste para status-tag dentro del título */
+        .competencia-card-v1-title .ubits-status-tag {
             margin-left: 6px;
-            position: relative;
+            flex-shrink: 0;
         }
-
+        
         .competencia-card-v1-count {
             color: var(--ubits-fg-1-medium);
             line-height: 1.2;
@@ -698,123 +697,6 @@
             color: var(--ubits-fg-1-high);
         }
 
-        /* Indicador de competencia asignada */
-        .competencia-card-v1-assigned-indicator {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--ubits-feedback-accent-error);
-            flex-shrink: 0;
-            pointer-events: none;
-            display: inline-block;
-            vertical-align: middle;
-        }
-        
-        /* Animación: Borde externo que crece (para todos los badges) */
-        .competencia-card-v1-assigned-indicator {
-            position: relative;
-        }
-        
-        .competencia-card-v1-assigned-indicator::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            border: 2px solid var(--ubits-feedback-accent-error);
-            opacity: 0.6;
-            animation: badge-ring-expand 2s ease-out infinite;
-        }
-        
-        @keyframes badge-ring-expand {
-            0% {
-                width: 8px;
-                height: 8px;
-                opacity: 0.6;
-            }
-            100% {
-                width: 20px;
-                height: 20px;
-                opacity: 0;
-            }
-        }
-
-        .competencia-card-v1-assigned-tooltip {
-            position: absolute;
-            bottom: calc(100% + 8px);
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--ubits-fg-1-high);
-            color: var(--ubits-logo-inverted);
-            padding: 6px 10px;
-            border-radius: 6px;
-            font-size: 12px;
-            white-space: nowrap;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s ease;
-            z-index: 1000;
-            font-family: 'Noto Sans', sans-serif;
-            font-weight: 400;
-        }
-        
-        .competencia-card-v1-assigned-tooltip.tooltip-right {
-            left: auto;
-            right: 0;
-            transform: none;
-        }
-        
-        .competencia-card-v1-assigned-tooltip.tooltip-left {
-            left: 0;
-            right: auto;
-            transform: none;
-        }
-        
-        .competencia-card-v1-assigned-tooltip.tooltip-bottom {
-            bottom: auto;
-            top: calc(100% + 8px);
-        }
-
-        .competencia-card-v1-assigned-tooltip::after {
-            content: '';
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            border-left: 5px solid transparent;
-            border-right: 5px solid transparent;
-            border-top: 5px solid var(--ubits-fg-1-high);
-        }
-        
-        .competencia-card-v1-assigned-tooltip.tooltip-bottom::after {
-            top: auto;
-            bottom: 100%;
-            border-top: none;
-            border-bottom: 5px solid var(--ubits-fg-1-high);
-        }
-        
-        .competencia-card-v1-assigned-tooltip.tooltip-right::after {
-            left: auto;
-            right: 14px;
-            transform: none;
-        }
-        
-        .competencia-card-v1-assigned-tooltip.tooltip-left::after {
-            left: 14px;
-            right: auto;
-            transform: none;
-        }
-
-        .competencia-card-v1-title:hover .competencia-card-v1-assigned-tooltip,
-        .competencia-card-v1-assigned-indicator-wrapper:hover .competencia-card-v1-assigned-tooltip {
-            opacity: 1;
-        }
-        
         /* Tooltips para botones */
         .competencia-card-v1-actions .ubits-button {
             position: relative;
@@ -2210,7 +2092,7 @@
                                                         <div class="competencia-card-v1-title-wrapper">
                                                             <p class="ubits-body-sm-semibold competencia-card-v1-title">
                                                                 <span class="competencia-card-v1-title-text">${competencia.nombre}</span>
-                                                                ${isAssigned ? '<span class="competencia-card-v1-assigned-indicator-wrapper"><span class="competencia-card-v1-assigned-indicator"></span><span class="competencia-card-v1-assigned-tooltip">Competencia asignada</span></span>' : ''}
+                                                                ${isAssigned ? '<span class="ubits-status-tag ubits-status-tag--info ubits-status-tag--xs"><span class="ubits-status-tag__text">Asignado</span></span>' : ''}
                                                             </p>
                                                         </div>
                                                         <p class="ubits-body-xs-regular competencia-card-v1-count">${competencia.habilidades.length} habilidades</p>
@@ -2252,59 +2134,6 @@
             // Asegurar que los event listeners estén adjuntos (solo una vez)
             attachCatalogEventListeners();
 
-            // Agregar listeners para tooltips inteligentes de competencia asignada
-            document.querySelectorAll('.competencia-card-v1-assigned-indicator-wrapper, .competencia-card-v1-title').forEach(element => {
-                const tooltip = element.querySelector('.competencia-card-v1-assigned-tooltip');
-                if (tooltip) {
-                    element.addEventListener('mouseenter', function() {
-                        // Forzar cálculo de dimensiones mostrando temporalmente el tooltip
-                        const originalOpacity = tooltip.style.opacity;
-                        tooltip.style.opacity = '1';
-                        tooltip.style.visibility = 'visible';
-                        
-                        const rect = element.getBoundingClientRect();
-                        const tooltipRect = tooltip.getBoundingClientRect();
-                        const viewportWidth = window.innerWidth;
-                        const viewportHeight = window.innerHeight;
-                        const margin = 10;
-                        
-                        // Resetear clases
-                        tooltip.classList.remove('tooltip-top', 'tooltip-bottom', 'tooltip-left', 'tooltip-right');
-                        
-                        // Calcular espacio disponible
-                        const spaceAbove = rect.top;
-                        const spaceBelow = viewportHeight - rect.bottom;
-                        const spaceLeft = rect.left;
-                        const spaceRight = viewportWidth - rect.right;
-                        
-                        // Determinar posición vertical
-                        const useBottom = spaceAbove < tooltipRect.height + margin;
-                        
-                        // Determinar posición horizontal
-                        let horizontalPos = 'center';
-                        if (spaceRight < tooltipRect.width / 2 + margin) {
-                            horizontalPos = 'right';
-                        } else if (spaceLeft < tooltipRect.width / 2 + margin) {
-                            horizontalPos = 'left';
-                        }
-                        
-                        // Aplicar clases
-                        if (useBottom) {
-                            tooltip.classList.add('tooltip-bottom');
-                        }
-                        if (horizontalPos === 'right') {
-                            tooltip.classList.add('tooltip-right');
-                        } else if (horizontalPos === 'left') {
-                            tooltip.classList.add('tooltip-left');
-                        }
-                        
-                        // Restaurar visibilidad
-                        tooltip.style.visibility = '';
-                        tooltip.style.opacity = originalOpacity || '';
-                    });
-                }
-            });
-            
             document.querySelectorAll('.competencia-card-v1-actions .ubits-button').forEach(button => {
                 button.addEventListener('mouseenter', function() {
                     const tooltipText = this.getAttribute('data-tooltip');
