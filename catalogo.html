@@ -436,25 +436,55 @@
             margin-bottom: 24px;
         }
 
-        /* Cards de academia - solo texto */
+        /* Cards de academia - con imagen de fondo y texto blanco */
         .academia-card-spotify {
-            background: var(--ubits-bg-1);
-            border: 1px solid transparent;
-            border-radius: 8px;
-            padding: 12px 16px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: 12px;
+            padding: 12px;
             cursor: pointer;
-            transition: border-color 0.2s ease;
+            transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-end;
+            color: var(--ubits-logo-inverted);
+            position: relative;
+            overflow: hidden;
+            aspect-ratio: 1 / 1;
         }
 
-        .academia-card-spotify:hover {
-            border-color: var(--ubits-border-1);
+        .academia-card-spotify::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.4) 100%);
+            border-radius: 12px;
+            z-index: 0;
+        }
+
+        .academia-card-spotify:hover::before {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.5) 100%);
         }
 
         .academia-card-spotify.expanded {
             border-color: var(--ubits-accent-brand);
+            position: relative;
+        }
+        
+        .academia-card-spotify.expanded::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--ubits-accent-brand);
+            border-radius: 0 0 12px 12px;
+            z-index: 10;
         }
 
         .academia-card-spotify-content {
@@ -468,16 +498,21 @@
         }
 
         .academia-card-spotify-title {
-            color: var(--ubits-fg-1-high);
+            color: var(--ubits-logo-inverted);
             margin-top: 0;
             margin-bottom: 0;
             line-height: 1.3;
+            position: relative;
+            z-index: 1;
         }
 
         .academia-card-spotify-meta {
-            color: var(--ubits-fg-1-medium);
+            color: var(--ubits-logo-inverted);
+            opacity: 0.95;
             line-height: 1.4;
             margin-top: 0;
+            position: relative;
+            z-index: 1;
         }
 
         /* Contenedor de competencias expandidas */
@@ -1583,7 +1618,11 @@
             // Listener de resize para actualizar el catálogo dinámicamente
             let resizeTimeout;
             let lastWindowWidth = window.innerWidth;
+            let isRendering = false; // Flag para prevenir re-renders infinitos
             window.addEventListener('resize', function() {
+                // Prevenir re-render si ya se está renderizando
+                if (isRendering) return;
+                
                 clearTimeout(resizeTimeout);
                 resizeTimeout = setTimeout(function() {
                     const currentWidth = window.innerWidth;
@@ -1605,6 +1644,8 @@
                     
                     // Solo re-renderizar si cambió el número de columnas
                     if (numColumns !== lastNumColumns) {
+                        isRendering = true; // Marcar que se está renderizando
+                        
                         // Guardar estado actual (academias y competencias expandidas)
                         const expandedAcademias = [];
                         document.querySelectorAll('.academia-card-spotify.expanded').forEach(card => {
@@ -1657,6 +1698,8 @@
                                     }
                                 }
                             });
+                            
+                            isRendering = false; // Marcar que terminó el renderizado
                         }, 50);
                         
                         lastWindowWidth = currentWidth;
@@ -1966,6 +2009,125 @@
             }
         }
 
+        // Event delegation para evitar listeners duplicados
+        let catalogEventListenersAttached = false;
+        
+        function attachCatalogEventListeners() {
+            // Solo agregar listeners una vez usando event delegation
+            if (catalogEventListenersAttached) return;
+            catalogEventListenersAttached = true;
+            
+            const resultsContainer = document.getElementById('catalog-results');
+            
+            // Event delegation para academias
+            resultsContainer.addEventListener('click', function(e) {
+                const academiaCard = e.target.closest('.academia-card-spotify');
+                if (academiaCard) {
+                    e.stopPropagation();
+                    const academiaNombre = academiaCard.dataset.academia;
+                    const competenciasContainer = document.querySelector(`.academia-competencias-container[data-academia="${academiaNombre}"]`);
+                    const isCurrentlyExpanded = academiaCard.classList.contains('expanded');
+                    
+                    // Cerrar todas las academias abiertas
+                    document.querySelectorAll('.academia-card-spotify.expanded').forEach(openCard => {
+                        if (openCard !== academiaCard) {
+                            openCard.classList.remove('expanded');
+                            const openAcademiaNombre = openCard.dataset.academia;
+                            const openContainer = document.querySelector(`.academia-competencias-container[data-academia="${openAcademiaNombre}"]`);
+                            if (openContainer) {
+                                openContainer.classList.remove('is-visible');
+                            }
+                        }
+                    });
+                    
+                    // Toggle la academia clickeada
+                    if (competenciasContainer) {
+                        if (isCurrentlyExpanded) {
+                            // Si ya estaba abierta, cerrarla
+                            academiaCard.classList.remove('expanded');
+                            competenciasContainer.classList.remove('is-visible');
+                        } else {
+                            // Si estaba cerrada, abrirla
+                            academiaCard.classList.add('expanded');
+                            competenciasContainer.classList.add('is-visible');
+                            
+                            // Scroll suave al contenedor (sin causar resize)
+                            requestAnimationFrame(() => {
+                                competenciasContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                            });
+                        }
+                    }
+                    return;
+                }
+                
+                // Event delegation para competencias
+                const competenciaCard = e.target.closest('.competencia-card-v1');
+                if (competenciaCard) {
+                    // Si el clic fue en el botón de filtro, no hacer nada
+                    if (e.target.closest('.ubits-button[data-tooltip="Filtrar por esta competencia"]')) {
+                        return;
+                    }
+                    
+                    e.stopPropagation();
+                    const competenciaNombre = competenciaCard.dataset.competencia;
+                    const academiaNombre = competenciaCard.dataset.academia;
+                    const habilidadesContainer = document.querySelector(`.competencia-habilidades-container[data-competencia="${competenciaNombre}"][data-academia="${academiaNombre}"]`);
+                    const chevronBtn = competenciaCard.querySelector('.competencia-card-v1-chevron-btn');
+                    const chevronIcon = chevronBtn ? chevronBtn.querySelector('.competencia-card-v1-chevron') : null;
+                    const isCurrentlyExpanded = competenciaCard.classList.contains('expanded');
+                    
+                    // Cerrar todas las competencias expandidas
+                    document.querySelectorAll('.competencia-card-v1.expanded').forEach(openCard => {
+                        if (openCard !== competenciaCard) {
+                            openCard.classList.remove('expanded');
+                            const openCompetenciaNombre = openCard.dataset.competencia;
+                            const openAcademiaNombre = openCard.dataset.academia;
+                            const openContainer = document.querySelector(`.competencia-habilidades-container[data-competencia="${openCompetenciaNombre}"][data-academia="${openAcademiaNombre}"]`);
+                            if (openContainer) {
+                                openContainer.classList.remove('is-visible');
+                            }
+                            // Resetear chevron de otras cards
+                            const openChevronBtn = openCard.querySelector('.competencia-card-v1-chevron-btn');
+                            if (openChevronBtn) {
+                                const openChevronIcon = openChevronBtn.querySelector('.competencia-card-v1-chevron');
+                                if (openChevronIcon) {
+                                    openChevronIcon.style.transform = '';
+                                }
+                            }
+                        }
+                    });
+                    
+                    // Toggle la competencia clickeada
+                    if (habilidadesContainer) {
+                        if (isCurrentlyExpanded) {
+                            // Si ya estaba expandida, colapsarla
+                            competenciaCard.classList.remove('expanded');
+                            habilidadesContainer.classList.remove('is-visible');
+                            if (chevronIcon) {
+                                chevronIcon.style.transform = '';
+                            }
+                        } else {
+                            // Si estaba colapsada, expandirla
+                            competenciaCard.classList.add('expanded');
+                            habilidadesContainer.classList.add('is-visible');
+                            if (chevronIcon) {
+                                chevronIcon.style.transform = 'rotate(180deg)';
+                            }
+                        }
+                    }
+                    return;
+                }
+                
+                // Event delegation para botón de filtro
+                const filterButton = e.target.closest('.ubits-button[data-tooltip="Filtrar por esta competencia"]');
+                if (filterButton) {
+                    e.stopPropagation();
+                    // No hacer nada, esta funcionalidad se implementará en el futuro
+                    return;
+                }
+            });
+        }
+        
         function renderCatalog(academias) {
             const resultsContainer = document.getElementById('catalog-results');
             
@@ -1985,8 +2147,11 @@
                 const prefijo = 'Academia de';
                 const resto = partes.length > 1 ? partes[1] : nombreCompleto;
                 
+                // Obtener imagen de fondo
+                const academiaImage = academiaImageMap[academia.nombre] || 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=400&fit=crop';
+                
                 academiasHtml += `
-                    <div class="academia-card-spotify" data-academia="${academia.nombre}">
+                    <div class="academia-card-spotify" data-academia="${academia.nombre}" style="background-image: url('${academiaImage}');">
                         <div class="academia-card-spotify-content">
                             <p class="ubits-body-md-semibold academia-card-spotify-title">
                                 <span>${prefijo}</span><br>
@@ -2083,6 +2248,9 @@
             });
 
             resultsContainer.innerHTML = academiasHtml + competenciasHtml;
+            
+            // Asegurar que los event listeners estén adjuntos (solo una vez)
+            attachCatalogEventListeners();
 
             // Agregar listeners para tooltips inteligentes de competencia asignada
             document.querySelectorAll('.competencia-card-v1-assigned-indicator-wrapper, .competencia-card-v1-title').forEach(element => {
@@ -2188,111 +2356,6 @@
                 });
             });
 
-            // Agregar listeners para expandir/colapsar academias (solo una a la vez)
-            document.querySelectorAll('.academia-card-spotify').forEach(card => {
-                card.addEventListener('click', function(e) {
-                    const academiaNombre = this.dataset.academia;
-                    const competenciasContainer = document.querySelector(`.academia-competencias-container[data-academia="${academiaNombre}"]`);
-                    const isCurrentlyExpanded = this.classList.contains('expanded');
-                    
-                    // Cerrar todas las academias abiertas
-                    document.querySelectorAll('.academia-card-spotify.expanded').forEach(openCard => {
-                        if (openCard !== this) {
-                            openCard.classList.remove('expanded');
-                            const openAcademiaNombre = openCard.dataset.academia;
-                            const openContainer = document.querySelector(`.academia-competencias-container[data-academia="${openAcademiaNombre}"]`);
-                            if (openContainer) {
-                                openContainer.classList.remove('is-visible');
-                            }
-                        }
-                    });
-                    
-                    // Toggle la academia clickeada
-                    if (competenciasContainer) {
-                        if (isCurrentlyExpanded) {
-                            // Si ya estaba abierta, cerrarla
-                            this.classList.remove('expanded');
-                            competenciasContainer.classList.remove('is-visible');
-                        } else {
-                            // Si estaba cerrada, abrirla
-                            this.classList.add('expanded');
-                            competenciasContainer.classList.add('is-visible');
-                            
-                            // Scroll suave al contenedor
-                            setTimeout(() => {
-                                competenciasContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                            }, 100);
-                        }
-                    }
-                });
-            });
-
-            // Agregar listener para el botón de filtro (no hace nada por ahora)
-            document.querySelectorAll('.competencia-card-v1-actions .ubits-button--tertiary').forEach(btn => {
-                if (btn.querySelector('.fa-filter')) {
-                    btn.addEventListener('click', function(e) {
-                        e.stopPropagation();
-                        // No hacer nada, esta funcionalidad se implementará en el futuro
-                    });
-                }
-            });
-            
-            // Agregar listeners para desplegar/colapsar habilidades (acordeón) - en todo el card
-            document.querySelectorAll('.competencia-card-v1').forEach(card => {
-                card.addEventListener('click', function(e) {
-                    // Si el clic fue en el botón de filtro, no hacer nada
-                    if (e.target.closest('.ubits-button[data-tooltip="Filtrar por esta competencia"]')) {
-                        return;
-                    }
-                    
-                    const competenciaNombre = this.dataset.competencia;
-                    const academiaNombre = this.dataset.academia;
-                    const habilidadesContainer = document.querySelector(`.competencia-habilidades-container[data-competencia="${competenciaNombre}"][data-academia="${academiaNombre}"]`);
-                    const chevronBtn = this.querySelector('.competencia-card-v1-chevron-btn');
-                    const chevronIcon = chevronBtn ? chevronBtn.querySelector('.competencia-card-v1-chevron') : null;
-                    const isCurrentlyExpanded = this.classList.contains('expanded');
-                    
-                    // Cerrar todas las competencias expandidas
-                    document.querySelectorAll('.competencia-card-v1.expanded').forEach(openCard => {
-                        if (openCard !== this) {
-                            openCard.classList.remove('expanded');
-                            const openCompetenciaNombre = openCard.dataset.competencia;
-                            const openAcademiaNombre = openCard.dataset.academia;
-                            const openContainer = document.querySelector(`.competencia-habilidades-container[data-competencia="${openCompetenciaNombre}"][data-academia="${openAcademiaNombre}"]`);
-                            if (openContainer) {
-                                openContainer.classList.remove('is-visible');
-                            }
-                            // Resetear chevron de otras cards
-                            const openChevronBtn = openCard.querySelector('.competencia-card-v1-chevron-btn');
-                            if (openChevronBtn) {
-                                const openChevronIcon = openChevronBtn.querySelector('.competencia-card-v1-chevron');
-                                if (openChevronIcon) {
-                                    openChevronIcon.style.transform = '';
-                                }
-                            }
-                        }
-                    });
-                    
-                    // Toggle la competencia clickeada
-                    if (habilidadesContainer) {
-                        if (isCurrentlyExpanded) {
-                            // Si ya estaba expandida, colapsarla
-                            this.classList.remove('expanded');
-                            habilidadesContainer.classList.remove('is-visible');
-                            if (chevronIcon) {
-                                chevronIcon.style.transform = '';
-                            }
-                        } else {
-                            // Si estaba colapsada, expandirla
-                            this.classList.add('expanded');
-                            habilidadesContainer.classList.add('is-visible');
-                            if (chevronIcon) {
-                                chevronIcon.style.transform = 'rotate(180deg)';
-                            }
-                        }
-                    }
-                });
-            });
         }
 
     </script>
