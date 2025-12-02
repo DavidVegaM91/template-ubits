@@ -7,7 +7,7 @@
    CONFIGURACIÓN DE SPECS DISPONIBLES
    ======================================== */
 
-// TIPOS DE CONTENIDO DISPONIBLES (11 tipos)
+// TIPOS DE CONTENIDO DISPONIBLES (12 tipos)
 const CONTENT_TYPES = [
     'Curso',
     'Short', 
@@ -19,7 +19,8 @@ const CONTENT_TYPES = [
     'Caso de estudio',
     'Documento técnico',
     'Ejercicios de práctica',
-    'Ruta de aprendizaje'
+    'Ruta de aprendizaje',
+    'Programa'
 ];
 
 // COMPETENCIAS OFICIALES UBITS (35 competencias)
@@ -125,6 +126,7 @@ function getRecommendedDuration(type) {
     if (type === 'Short') return '15 min';
     if (type === 'Artículo') return '15 min';
     if (type === 'Ruta de aprendizaje') return '120 min';
+    if (type === 'Programa') return '120 min';
     return '60 min';
 }
 
@@ -154,7 +156,7 @@ function validateCardData(cardData) {
 /**
  * Renderiza una course-card con todos sus datos
  * @param {Object} cardData - Datos de la card
- * @param {string} cardData.type - Tipo de contenido (Curso, Short, Charla, Artículo, Podcast, Libro, Ideas de libro, Caso de estudio, Documento técnico, Ejercicios de práctica, Ruta de aprendizaje)
+ * @param {string} cardData.type - Tipo de contenido (Curso, Short, Charla, Artículo, Podcast, Libro, Ideas de libro, Caso de estudio, Documento técnico, Ejercicios de práctica, Ruta de aprendizaje, Programa)
  * @param {string} cardData.title - Título del contenido
  * @param {string} cardData.provider - Nombre del proveedor/aliado
  * @param {string} cardData.providerLogo - Ruta del logo del proveedor
@@ -182,14 +184,15 @@ function renderCardContent(cardData) {
     // Determinar icono según el nivel
     const levelIcon = LEVELS[cardData.level] || LEVELS['Intermedio'];
 
-    // Detectar si es Ruta de aprendizaje y tiene múltiples proveedores
+    // Detectar si es Ruta de aprendizaje o Programa y tiene múltiples proveedores
     const isRutaAprendizaje = cardData.type === 'Ruta de aprendizaje';
-    const hasMultipleProviders = isRutaAprendizaje && Array.isArray(cardData.providers) && cardData.providers.length > 1;
+    const isPrograma = cardData.type === 'Programa';
+    const hasMultipleProviders = (isRutaAprendizaje || isPrograma) && Array.isArray(cardData.providers) && cardData.providers.length > 1;
     
     // Renderizar avatares según el tipo
     let providerHTML = '';
     if (hasMultipleProviders) {
-        // Múltiples avatares para Ruta de aprendizaje
+        // Múltiples avatares para Ruta de aprendizaje o Programa
         // Variantes: 2 avatares, 3 avatares, o 3 avatares + avatar con "+N"
         const providers = cardData.providers;
         const totalCount = providers.length;
@@ -434,13 +437,13 @@ console.log(window.CARD_CONTENT_OPTIONS);
  * </script>
  * ```
  * 
- * TIPOS DE CONTENIDO: Curso, Short, Charla, Artículo, Podcast, Libro, Ideas de libro, Caso de estudio, Documento técnico, Ejercicios de práctica, Ruta de aprendizaje
+ * TIPOS DE CONTENIDO: Curso, Short, Charla, Artículo, Podcast, Libro, Ideas de libro, Caso de estudio, Documento técnico, Ejercicios de práctica, Ruta de aprendizaje, Programa
  * COMPETENCIAS: 35 competencias oficiales UBITS (Product design, Desarrollo de software, Liderazgo, etc.)
  * PROVEEDORES: 18 aliados oficiales (UBITS, Microsoft, TED, AWS, etc.)
  * NIVELES: Básico, Intermedio, Avanzado
  * 
- * VARIANTES DE AVATARES PARA RUTA DE APRENDIZAJE:
- * Cuando el tipo de contenido es "Ruta de aprendizaje" y se proporciona un array de `providers` con más de 1 elemento,
+ * VARIANTES DE AVATARES PARA RUTA DE APRENDIZAJE Y PROGRAMA:
+ * Cuando el tipo de contenido es "Ruta de aprendizaje" o "Programa" y se proporciona un array de `providers` con más de 1 elemento,
  * se mostrarán múltiples avatares superpuestos con el texto "Varios":
  * - 2 proveedores: Muestra 2 avatares superpuestos + texto "Varios"
  * - 3 proveedores: Muestra 3 avatares superpuestos + texto "Varios"

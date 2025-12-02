@@ -229,6 +229,7 @@
                                 <option value="Documento técnico">Documento técnico</option>
                                 <option value="Ejercicios de práctica">Ejercicios de práctica</option>
                                 <option value="Ruta de aprendizaje">Ruta de aprendizaje</option>
+                                <option value="Programa">Programa</option>
                             </select>
                         </div>
                         
@@ -767,6 +768,7 @@ const CONTENT_TYPES = [
     'Documento técnico',
     'Ejercicios de práctica',
     'Ruta de aprendizaje',
+    'Programa',
     'Mi Nuevo Tipo'  // ← Agregar aquí
 ];</code></pre>
                                 </div>
@@ -940,6 +942,8 @@ const logoMap = {
                 if (this.value === 'Short') {
                     currentCardData.duration = '15 min';
                 } else if (this.value === 'Ruta de aprendizaje') {
+                    currentCardData.duration = '240 min';
+                } else if (this.value === 'Programa') {
                     currentCardData.duration = '240 min';
                 } else {
                     currentCardData.duration = '60 min';
