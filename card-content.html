@@ -219,7 +219,7 @@
                             <label class="control-label ubits-body-sm-bold">Tipo de contenido</label>
                             <select class="control-select" id="tipo-select">
                                 <option value="Curso" selected>Curso</option>
-                                <option value="Cápsula">Cápsula</option>
+                                <option value="Short">Short</option>
                                 <option value="Charla">Charla</option>
                                 <option value="Artículo">Artículo</option>
                                 <option value="Podcast">Podcast</option>
@@ -385,7 +385,7 @@
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontent-prompt-2">Cambia la card [nombre_del_card] de [tipo_actual] a [nuevo_tipo: Curso, Cápsula, Charla, Artículo, Podcast, Libro, etc.].</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontent-prompt-2">Cambia la card [nombre_del_card] de [tipo_actual] a [nuevo_tipo: Curso, Short, Charla, Artículo, Podcast, Libro, etc.].</code></pre>
                         </div>
                     </div>
 
@@ -713,12 +713,12 @@ document.addEventListener('DOMContentLoaded', function() {
                             <div style="margin-bottom: 24px;">
                                 <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">getRecommendedDuration(type)</h3>
                                 <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
-                                    Obtiene la duración recomendada según el tipo de contenido (Cápsula = 15min, Ruta = 240min, etc.).
+                                    Obtiene la duración recomendada según el tipo de contenido (Short = 15min, Ruta = 240min, etc.).
                                 </p>
                                 <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: 6px; border-left: 4px solid var(--ubits-accent-brand);">
                                     <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
                                         <strong>Parámetros:</strong> type (string) - Tipo de contenido<br>
-                                        <strong>Ejemplo:</strong> getRecommendedDuration('Cápsula') // '15 min'
+                                        <strong>Ejemplo:</strong> getRecommendedDuration('Short') // '15 min'
                                     </div>
                                 </div>
                             </div>
@@ -757,7 +757,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="add-features-code">// En card-content.js, línea 11-23
 const CONTENT_TYPES = [
     'Curso',
-    'Cápsula', 
+    'Short', 
     'Charla',
     'Artículo',
     'Podcast',
@@ -937,7 +937,7 @@ const logoMap = {
             document.getElementById('tipo-select').addEventListener('change', function() {
                 currentCardData.type = this.value;
                 // Ajustar duración recomendada
-                if (this.value === 'Cápsula') {
+                if (this.value === 'Short') {
                     currentCardData.duration = '15 min';
                 } else if (this.value === 'Ruta de aprendizaje') {
                     currentCardData.duration = '240 min';

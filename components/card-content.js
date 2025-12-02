@@ -10,7 +10,7 @@
 // TIPOS DE CONTENIDO DISPONIBLES (11 tipos)
 const CONTENT_TYPES = [
     'Curso',
-    'Cápsula', 
+    'Short', 
     'Charla',
     'Artículo',
     'Podcast',
@@ -120,9 +120,9 @@ const PROVIDERS = {
    REGLAS DE NEGOCIO
    ======================================== */
 
-// REGLA: Las cápsulas normalmente son de 15 minutos
+// REGLA: Los Shorts normalmente son de 15 minutos
 function getRecommendedDuration(type) {
-    if (type === 'Cápsula') return '15 min';
+    if (type === 'Short') return '15 min';
     if (type === 'Artículo') return '15 min';
     if (type === 'Ruta de aprendizaje') return '120 min';
     return '60 min';
@@ -154,7 +154,7 @@ function validateCardData(cardData) {
 /**
  * Renderiza una course-card con todos sus datos
  * @param {Object} cardData - Datos de la card
- * @param {string} cardData.type - Tipo de contenido (Curso, Cápsula, Charla, Artículo, Podcast, Libro, Ideas de libro, Caso de estudio, Documento técnico, Ejercicios de práctica, Ruta de aprendizaje)
+ * @param {string} cardData.type - Tipo de contenido (Curso, Short, Charla, Artículo, Podcast, Libro, Ideas de libro, Caso de estudio, Documento técnico, Ejercicios de práctica, Ruta de aprendizaje)
  * @param {string} cardData.title - Título del contenido
  * @param {string} cardData.provider - Nombre del proveedor/aliado
  * @param {string} cardData.providerLogo - Ruta del logo del proveedor
@@ -315,7 +315,7 @@ function loadCardContent(containerId, cardsData) {
 
 // Ejemplo básico de uso
 const sampleCardData = {
-    type: 'Cápsula',
+    type: 'Short',
     title: 'Mi primer contenido',
     provider: 'UBITS',
     providerLogo: 'images/Favicons/UBITS.jpg',
@@ -372,7 +372,7 @@ console.log(`
 💡 USO BÁSICO:
 loadCardContent('mi-contenedor', [
     {
-        type: 'Cápsula',
+        type: 'Short',
         title: 'Mi contenido',
         provider: 'UBITS',
         duration: '15 min',
@@ -434,7 +434,7 @@ console.log(window.CARD_CONTENT_OPTIONS);
  * </script>
  * ```
  * 
- * TIPOS DE CONTENIDO: Curso, Cápsula, Charla, Artículo, Podcast, Libro, Ideas de libro, Caso de estudio, Documento técnico, Ejercicios de práctica, Ruta de aprendizaje
+ * TIPOS DE CONTENIDO: Curso, Short, Charla, Artículo, Podcast, Libro, Ideas de libro, Caso de estudio, Documento técnico, Ejercicios de práctica, Ruta de aprendizaje
  * COMPETENCIAS: 35 competencias oficiales UBITS (Product design, Desarrollo de software, Liderazgo, etc.)
  * PROVEEDORES: 18 aliados oficiales (UBITS, Microsoft, TED, AWS, etc.)
  * NIVELES: Básico, Intermedio, Avanzado
