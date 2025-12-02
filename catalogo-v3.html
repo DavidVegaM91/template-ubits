@@ -2084,10 +2084,9 @@
                 // Obtener imagen
                 const academiaImage = academiaImageMap[academia.nombre] || 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=400&fit=crop';
                 
-                // Todas las academias usan variante con imagen arriba
+                // Todas las academias usan card cuadrada original (imagen de fondo)
                 academiasHtml += `
-                    <div class="academia-card-spotify variant-image-top" data-academia="${academia.nombre}">
-                        <img src="${academiaImage}" alt="${academia.nombre}" class="academia-card-spotify-image">
+                    <div class="academia-card-spotify" data-academia="${academia.nombre}" style="background-image: url('${academiaImage}');">
                         <div class="academia-card-spotify-content">
                             <p class="ubits-body-md-semibold academia-card-spotify-title">
                                 <span>${prefijo}</span><br>

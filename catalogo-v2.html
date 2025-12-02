@@ -17,6 +17,8 @@
     <link rel="stylesheet" href="components/profile-menu.css">
     <link rel="stylesheet" href="components/input.css">
     <link rel="stylesheet" href="components/button.css">
+    <link rel="stylesheet" href="components/carousel-contents.css">
+    <link rel="stylesheet" href="components/card-content.css">
     <link rel="stylesheet" href="profile.css">
     <style>
         /* Estilos específicos para content-sections */
@@ -32,14 +34,138 @@
             padding-bottom: 60px;
         }
 
+        /* Espaciador para alinear elementos */
+        .content-sections > *:not(:last-child):not(.section-dual):not(.section-single):not(.section-triple):not(.section-quad) {
+            margin-bottom: 24px;
+        }
+
+        /* Espaciador final */
+        .content-sections::after {
+            content: '';
+            height: 0px;
+            flex-shrink: 0;
+        }
+
+        /* Reducir el gap del último elemento */
+        .content-sections > *:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Secciones de widgets */
+        .section-single {
+            display: flex;
+            width: 100%;
+        }
+
+        .section-dual {
+            display: flex;
+            gap: 20px;
+        }
+
+        .section-triple {
+            display: flex;
+            gap: 20px;
+        }
+
+        .section-quad {
+            display: flex;
+            gap: 20px;
+        }
+
+        /* Widgets en secciones - sin altura mínima forzada */
+        .section-single > div,
+        .section-dual > div,
+        .section-triple > div,
+        .section-quad > div {
+            background-color: var(--ubits-bg-1);
+            border: none;
+            border-radius: 8px;
+            padding: 12px !important;
+            width: 100%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Widgets con carruseles sin padding ni fondo */
+        .section-single > .widget-hero,
+        .section-dual > .widget-hero,
+        .section-triple > .widget-hero,
+        .section-quad > .widget-hero,
+        .widget-hero,
+        .section-single > .widget-promo-cards,
+        .section-dual > .widget-promo-cards,
+        .section-triple > .widget-promo-cards,
+        .section-quad > .widget-promo-cards,
+        .widget-promo-cards,
+        .section-single > .widget-aliados,
+        .section-dual > .widget-aliados,
+        .section-triple > .widget-aliados,
+        .section-quad > .widget-aliados,
+        .widget-aliados,
+        .section-single > .widget-continua-viendo,
+        .section-dual > .widget-continua-viendo,
+        .section-triple > .widget-continua-viendo,
+        .section-quad > .widget-continua-viendo,
+        .widget-continua-viendo,
+        .section-single > .widget-outstanding,
+        .section-dual > .widget-outstanding,
+        .section-triple > .widget-outstanding,
+        .section-quad > .widget-outstanding,
+        .widget-outstanding {
+            padding: 0 !important;
+            background: transparent !important;
+        }
+
+        /* Distribución de anchos */
+        .section-single > div {
+            flex: 1;
+        }
+
+        .section-dual > div {
+            flex: 1;
+        }
+
+        .section-triple > div {
+            flex: 1;
+        }
+
+        .section-quad > div {
+            flex: 1;
+        }
+
+        /* Responsive para secciones */
+        @media (max-width: 1023px) {
+            .content-sections {
+                padding-bottom: 0;
+            }
+            
+            .section-dual,
+            .section-triple,
+            .section-quad {
+                flex-direction: column;
+                gap: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .section-single > div,
+            .section-dual > div,
+            .section-triple > div,
+            .section-quad > div {
+                padding: 12px !important;
+            }
+        }
+
         /* Hero de búsqueda centrado */
         .catalog-hero-v2 {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 60vh;
-            padding: 40px 20px;
+            min-height: auto;
+            padding: 0;
+            margin-bottom: 0;
             position: relative;
         }
 
@@ -1251,6 +1377,55 @@
                             </button>
                         </div>
                     </div>
+
+                    <!-- Nueva sección de 1 columna -->
+                    <div class="section-single">
+                        <div class="widget-hero">
+                            <div id="hero-card-container"></div>
+                        </div>
+                    </div>
+
+                    <!-- Sección de libros recomendados -->
+                    <div class="section-single">
+                        <div class="widget-promo-cards">
+                            <div id="libros-recomendados-container"></div>
+                        </div>
+                    </div>
+
+                    <!-- Sección de aliados destacados -->
+                    <div class="section-single">
+                        <div class="widget-aliados">
+                            <div id="allies-container"></div>
+                        </div>
+                    </div>
+
+                    <!-- Sección continua viendo -->
+                    <div class="section-single">
+                        <div class="widget-continua-viendo">
+                            <div id="continua-viendo-container"></div>
+                        </div>
+                    </div>
+
+                    <!-- Sección contenidos destacados (outstanding) -->
+                    <div class="section-single">
+                        <div class="widget-outstanding">
+                            <div id="outstanding-container"></div>
+                        </div>
+                    </div>
+
+                    <!-- Sección de promo cards - Charlas TED -->
+                    <div class="section-single">
+                        <div class="widget-promo-cards">
+                            <div id="promo-vertical-container"></div>
+                        </div>
+                    </div>
+
+                    <!-- Sección contenidos recomendados (outstanding) -->
+                    <div class="section-single">
+                        <div class="widget-outstanding">
+                            <div id="recomendados-container"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
@@ -1314,6 +1489,8 @@
     <script src="components/tab-bar.js"></script>
     <script src="components/floating-menu.js"></script>
     <script src="components/profile-menu.js"></script>
+    <script src="components/carousel-contents.js"></script>
+    <script src="components/card-content.js"></script>
     <script src="components/input.js"></script>
     <script src="script.js"></script>
     <script>
@@ -1821,6 +1998,573 @@
                     setActiveAccordionLink('catalogo');
                 }
             }, 200);
+
+            // Crear carousel contents - Variante Hero con 5 slides reales
+            if (typeof createCarouselContents === 'function') {
+                createCarouselContents({
+                    containerId: 'hero-card-container',
+                    type: 'hero',
+                    slides: [
+                        {
+                            image: 'images/cards-learn/descubre-las-bases-del-design-thinking.jpeg',
+                            contentType: 'Ruta de aprendizaje',
+                            title: 'Descubre las bases del design thinking',
+                            providers: [
+                                {name: 'UBITS', logo: 'images/Favicons/UBITS.jpg'},
+                                {name: 'Microsoft', logo: 'images/Favicons/Microsoft.jpg'},
+                                {name: 'Hubspot', logo: 'images/Favicons/Hubspot.jpg'}
+                            ],
+                            competency: 'Product design',
+                            specs: {
+                                level: 'Básico',
+                                duration: '120 min',
+                                language: 'Español'
+                            }
+                        },
+                        {
+                            image: 'images/cards-learn/introduccion-al-growth-marketing.jpeg',
+                            contentType: 'Curso',
+                            title: 'Introducción al growth marketing',
+                            provider: {
+                                name: 'Hubspot',
+                                logo: 'images/Favicons/Hubspot.jpg'
+                            },
+                            competency: 'Marketing digital',
+                            specs: {
+                                level: 'Intermedio',
+                                duration: '75 min',
+                                language: 'Español'
+                            }
+                        },
+                        {
+                            image: 'images/cards-learn/neuroliderazgo-configura-tu-mente.jpeg',
+                            contentType: 'Charla',
+                            title: 'Neuroliderazgo: configura tu mente',
+                            provider: {
+                                name: 'Harvard Business Publishing',
+                                logo: 'images/Favicons/Harvard-Business-Publishing.jpg'
+                            },
+                            competency: 'Liderazgo',
+                            specs: {
+                                level: 'Avanzado',
+                                duration: '90 min',
+                                language: 'Español'
+                            }
+                        },
+                        {
+                            image: 'images/cards-learn/introduccion-a-la-innovacion-corporativa.jpeg',
+                            contentType: 'Cápsula',
+                            title: 'Introducción a la innovación corporativa',
+                            provider: {
+                                name: 'Microsoft',
+                                logo: 'images/Favicons/Microsoft.jpg'
+                            },
+                            competency: 'Innovación',
+                            specs: {
+                                level: 'Básico',
+                                duration: '15 min',
+                                language: 'Español'
+                            }
+                        },
+                        {
+                            image: 'images/cards-learn/ingenieria-de-prompts-habla-con-la-ia.jpeg',
+                            contentType: 'Curso',
+                            title: 'Ingeniería de prompts: habla con la IA',
+                            provider: {
+                                name: 'AWS',
+                                logo: 'images/Favicons/AWS.jpg'
+                            },
+                            competency: 'Herramientas tecnológicas',
+                            specs: {
+                                level: 'Intermedio',
+                                duration: '60 min',
+                                language: 'Inglés'
+                            }
+                        }
+                    ],
+                    onButtonClick: function(slide, index) {
+                        console.log('Ver ahora clicked:', slide.title, 'Slide:', index + 1);
+                    }
+                });
+            }
+
+            // Crear carousel contents - Variante Promo Vertical - Libros recomendados
+            if (typeof createCarouselContents === 'function') {
+                createCarouselContents({
+                    containerId: 'libros-recomendados-container',
+                    type: 'promo-vertical',
+                    sectionTitle: 'Libros recomendados',
+                    slides: [
+                        {
+                            image: 'images/vertical-cards/Libro_El_obstaculo_es_el_camino.webp',
+                            title: 'El obstáculo es el camino'
+                        },
+                        {
+                            image: 'images/vertical-cards/Libro_Por_que_dormimos_de_Matthew_Walker.webp',
+                            title: 'Por qué dormimos'
+                        },
+                        {
+                            image: 'images/vertical-cards/Libro_Rendir_mas_con_menos_estres_de_Emily_Fletcher.webp',
+                            title: 'Rendir más con menos estrés'
+                        },
+                        {
+                            image: 'images/vertical-cards/Libro_dinero_feliz.webp',
+                            title: 'Dinero feliz'
+                        },
+                        {
+                            image: 'images/vertical-cards/Libro_Focus_Daniel_Goleman.jpg',
+                            title: 'Focus'
+                        },
+                        {
+                            image: 'images/vertical-cards/Libro_Estoicismo_cotidiano_Ryan_Holiday_y_Stephen_Hanselman.jpg',
+                            title: 'Estoicismo cotidiano'
+                        },
+                        {
+                            image: 'images/vertical-cards/Libro_Los_dones_de_la_imperfeccion_Brene_Brown.jpg',
+                            title: 'Los dones de la imperfección'
+                        },
+                        {
+                            image: 'images/vertical-cards/Libro_el_poder_de_los_introvertidos.jpg',
+                            title: 'El poder de los introvertidos'
+                        }
+                    ]
+                });
+            }
+
+            // Crear carousel contents - Variante Promo Vertical - Charlas TED
+            if (typeof createCarouselContents === 'function') {
+                createCarouselContents({
+                    containerId: 'promo-vertical-container',
+                    type: 'promo-vertical',
+                    sectionTitle: 'Charlas TED recomendadas',
+                    slides: [
+                        {
+                            image: 'images/vertical-cards/ted-Como-fortalecer-la-propia-confianza-y-despertar-la-de-otros.jpg',
+                            title: 'Cómo fortalecer la propia confianza y despertar la de otros'
+                        },
+                        {
+                            image: 'images/vertical-cards/ted-Deberiamos-simplificar-la-ortografia.jpg',
+                            title: 'Deberíamos simplificar la ortografía'
+                        },
+                        {
+                            image: 'images/vertical-cards/ted-El-lenguaje-secreto-del-diseno-de-letras.jpg',
+                            title: 'El lenguaje secreto del diseño de letras'
+                        },
+                        {
+                            image: 'images/vertical-cards/ted-El-maravilloso-equilibrio-entre-el-valor-y-el-miedo.jpg',
+                            title: 'El maravilloso equilibrio entre el valor y el miedo'
+                        },
+                        {
+                            image: 'images/vertical-cards/ted-Hay-mas-en-la-vida-que-ser-feliz.jpg',
+                            title: 'Hay más en la vida que ser feliz'
+                        },
+                        {
+                            image: 'images/vertical-cards/ted-La-sorprendente-ciencia-de-la-motivacion.jpg',
+                            title: 'La sorprendente ciencia de la motivación'
+                        },
+                        {
+                            image: 'images/vertical-cards/ted-Las-escuelas-matan-la-creatividad.jpg',
+                            title: 'Las escuelas matan la creatividad'
+                        },
+                        {
+                            image: 'images/vertical-cards/ted-Mi-fuerte-derrame-cerebral-de-lucidez.jpg',
+                            title: 'Mi fuerte derrame cerebral de lucidez'
+                        }
+                    ]
+                });
+            }
+
+            // Crear carousel contents - Variante Allies
+            if (typeof createCarouselContents === 'function') {
+                createCarouselContents({
+                    containerId: 'allies-container',
+                    type: 'allies',
+                    sectionTitle: 'Explora por aliados destacados',
+                    slides: [
+                        {
+                            name: 'UBITS',
+                            logo: 'images/Favicons/UBITS.jpg'
+                        },
+                        {
+                            name: 'Microsoft',
+                            logo: 'images/Favicons/Microsoft.jpg'
+                        },
+                        {
+                            name: 'TED',
+                            logo: 'images/Favicons/TED.jpg'
+                        },
+                        {
+                            name: 'Harvard Business Publishing',
+                            logo: 'images/Favicons/Harvard-Business-Publishing.jpg'
+                        },
+                        {
+                            name: 'All Ears English',
+                            logo: 'images/Favicons/All Ears English.jpg'
+                        },
+                        {
+                            name: 'IE University Publishing',
+                            logo: 'images/Favicons/IE-University-Publishing.jpg'
+                        },
+                        {
+                            name: 'WOBI',
+                            logo: 'images/Favicons/WOBI.jpg'
+                        },
+                        {
+                            name: 'Hubspot',
+                            logo: 'images/Favicons/Hubspot.jpg'
+                        },
+                        {
+                            name: 'AWS',
+                            logo: 'images/Favicons/AWS.jpg'
+                        },
+                        {
+                            name: 'Código Facilito',
+                            logo: 'images/Favicons/Código-Facilito.jpg'
+                        },
+                        {
+                            name: 'Universidad de Los Andes',
+                            logo: 'images/Favicons/Universidad-de-Los Andes.jpg'
+                        },
+                        {
+                            name: 'Welu',
+                            logo: 'images/Favicons/Welu.jpg'
+                        }
+                    ],
+                    onButtonClick: function(ally, index) {
+                        console.log('Ally clicked:', ally.name, 'Index:', index);
+                    }
+                });
+            }
+
+            // Crear carousel contents - Variante Content Cards (Continua viendo)
+            if (typeof createCarouselContents === 'function') {
+                createCarouselContents({
+                    containerId: 'continua-viendo-container',
+                    type: 'content-cards',
+                    sectionTitle: 'Continua viendo',
+                    slides: [
+                        {
+                            image: 'images/cards-learn/el-manejo-de-las-emociones.jpeg',
+                            contentType: 'Curso',
+                            title: 'El manejo de las emociones',
+                            provider: {
+                                name: 'Harvard Business Publishing',
+                                logo: 'images/Favicons/Harvard-Business-Publishing.jpg'
+                            },
+                            competency: 'Inteligencia emocional',
+                            specs: {
+                                level: 'Intermedio',
+                                duration: '60 min',
+                                language: 'Español'
+                            },
+                            status: 'progress',
+                            progress: 85
+                        },
+                        {
+                            image: 'images/cards-learn/liderar-con-inteligencia-emocional.jpeg',
+                            contentType: 'Charla',
+                            title: 'Liderar con inteligencia emocional',
+                            provider: {
+                                name: 'TED',
+                                logo: 'images/Favicons/TED.jpg'
+                            },
+                            competency: 'Liderazgo',
+                            specs: {
+                                level: 'Avanzado',
+                                duration: '90 min',
+                                language: 'Inglés'
+                            },
+                            status: 'progress',
+                            progress: 75
+                        },
+                        {
+                            image: 'images/cards-learn/comunicacion-efectiva-para-liderar-equipos.jpeg',
+                            contentType: 'Cápsula',
+                            title: 'Comunicación efectiva para liderar equipos',
+                            provider: {
+                                name: 'UBITS',
+                                logo: 'images/Favicons/UBITS.jpg'
+                            },
+                            competency: 'Comunicación',
+                            specs: {
+                                level: 'Básico',
+                                duration: '15 min',
+                                language: 'Español'
+                            },
+                            status: 'progress',
+                            progress: 65
+                        },
+                        {
+                            image: 'images/cards-learn/agilidad-emocional.jpeg',
+                            contentType: 'Ruta de aprendizaje',
+                            title: 'Agilidad emocional',
+                            providers: [
+                                {name: 'WOBI', logo: 'images/Favicons/WOBI.jpg'},
+                                {name: 'Harvard Business Publishing', logo: 'images/Favicons/Harvard-Business-Publishing.jpg'},
+                                {name: 'TED', logo: 'images/Favicons/TED.jpg'}
+                            ],
+                            competency: 'Inteligencia emocional',
+                            specs: {
+                                level: 'Intermedio',
+                                duration: '120 min',
+                                language: 'Español'
+                            },
+                            status: 'progress',
+                            progress: 55
+                        },
+                        {
+                            image: 'images/cards-learn/liderazgo-en-tiempos-de-crisi.jpeg',
+                            contentType: 'Curso',
+                            title: 'Liderazgo en tiempos de crisis',
+                            provider: {
+                                name: 'Harvard Business Publishing',
+                                logo: 'images/Favicons/Harvard-Business-Publishing.jpg'
+                            },
+                            competency: 'Liderazgo',
+                            specs: {
+                                level: 'Avanzado',
+                                duration: '120 min',
+                                language: 'Español'
+                            },
+                            status: 'progress',
+                            progress: 45
+                        },
+                        {
+                            image: 'images/cards-learn/la-confianza-una-clave-para-el-liderazgo.jpeg',
+                            contentType: 'Podcast',
+                            title: 'La confianza: una clave para el liderazgo',
+                            provider: {
+                                name: 'IE University',
+                                logo: 'images/Favicons/IE-University-Publishing.jpg'
+                            },
+                            competency: 'Liderazgo',
+                            specs: {
+                                level: 'Intermedio',
+                                duration: '45 min',
+                                language: 'Español'
+                            },
+                            status: 'progress',
+                            progress: 35
+                        },
+                        {
+                            image: 'images/cards-learn/liderazgo-femenino.jpeg',
+                            contentType: 'Curso',
+                            title: 'Liderazgo femenino',
+                            provider: {
+                                name: 'Universidad de Los Andes',
+                                logo: 'images/Favicons/Universidad-de-Los Andes.jpg'
+                            },
+                            competency: 'Liderazgo',
+                            specs: {
+                                level: 'Básico',
+                                duration: '75 min',
+                                language: 'Español'
+                            },
+                            status: 'progress',
+                            progress: 25
+                        },
+                        {
+                            image: 'images/cards-learn/autodireccion-de-equipos-de-alto-desmpeno.jpeg',
+                            contentType: 'Caso de estudio',
+                            title: 'Autodirección de equipos de alto desempeño',
+                            provider: {
+                                name: 'Bureau Veritas',
+                                logo: 'images/Favicons/Bureau-Veritas.jpg'
+                            },
+                            competency: 'Liderazgo',
+                            specs: {
+                                level: 'Intermedio',
+                                duration: '60 min',
+                                language: 'Español'
+                            },
+                            status: 'progress',
+                            progress: 15
+                        }
+                    ]
+                });
+            }
+
+            // Crear carousel contents - Variante Outstanding (Contenidos destacados)
+            if (typeof createCarouselContents === 'function') {
+                createCarouselContents({
+                    containerId: 'outstanding-container',
+                    type: 'outstanding',
+                    sectionTitle: 'Contenidos destacados',
+                    slides: [
+                        {
+                            image: 'images/cards-learn/el-liderazgo-suficiente.jpeg',
+                            contentType: 'Libro',
+                            title: 'El liderazgo suficiente',
+                            provider: {
+                                name: 'Harvard Business Publishing',
+                                logo: 'images/Favicons/Harvard-Business-Publishing.jpg'
+                            },
+                            competency: 'Liderazgo',
+                            specs: {
+                                level: 'Intermedio',
+                                duration: '180 min',
+                                language: 'Español'
+                            }
+                        },
+                        {
+                            image: 'images/cards-learn/creatividad-e-innovacion-en-equipos.jpeg',
+                            contentType: 'Ruta de aprendizaje',
+                            title: 'Creatividad e innovación en equipos',
+                            providers: [
+                                {name: 'Código Facilito', logo: 'images/Favicons/Código-Facilito.jpg'},
+                                {name: 'TED', logo: 'images/Favicons/TED.jpg'}
+                            ],
+                            competency: 'Innovación',
+                            specs: {
+                                level: 'Avanzado',
+                                duration: '240 min',
+                                language: 'Español'
+                            }
+                        },
+                        {
+                            image: 'images/cards-learn/estrategias-de-marketing-digital-y-de-contenidos.jpeg',
+                            contentType: 'Curso',
+                            title: 'Estrategias de marketing digital y de contenidos',
+                            provider: {
+                                name: 'Hubspot',
+                                logo: 'images/Favicons/Hubspot.jpg'
+                            },
+                            competency: 'Marketing digital',
+                            specs: {
+                                level: 'Avanzado',
+                                duration: '90 min',
+                                language: 'Inglés'
+                            }
+                        },
+                        {
+                            image: 'images/cards-learn/como-ejercer-el-liderazgo-inclusivo.jpeg',
+                            contentType: 'Charla',
+                            title: 'Cómo ejercer el liderazgo inclusivo',
+                            provider: {
+                                name: 'TED',
+                                logo: 'images/Favicons/TED.jpg'
+                            },
+                            competency: 'Liderazgo',
+                            specs: {
+                                level: 'Intermedio',
+                                duration: '45 min',
+                                language: 'Español'
+                            }
+                        },
+                        {
+                            image: 'images/cards-learn/experto-en-diseno-y-desarrollo-web.jpeg',
+                            contentType: 'Ruta de aprendizaje',
+                            title: 'Experto en diseño y desarrollo web',
+                            providers: [
+                                {name: 'Microsoft', logo: 'images/Favicons/Microsoft.jpg'},
+                                {name: 'UBITS', logo: 'images/Favicons/UBITS.jpg'},
+                                {name: 'Hubspot', logo: 'images/Favicons/Hubspot.jpg'},
+                                {name: 'TED', logo: 'images/Favicons/TED.jpg'},
+                                {name: 'AWS', logo: 'images/Favicons/AWS.jpg'}
+                            ],
+                            competency: 'Desarrollo web',
+                            specs: {
+                                level: 'Avanzado',
+                                duration: '120 min',
+                                language: 'Español'
+                            }
+                        }
+                    ],
+                    onButtonClick: function(slide, index) {
+                        console.log('Ver ahora clicked:', slide.title, 'Slide:', index + 1);
+                    }
+                });
+            }
+
+            // Crear carousel contents - Variante Outstanding (Recomendado para ti)
+            if (typeof createCarouselContents === 'function') {
+                createCarouselContents({
+                    containerId: 'recomendados-container',
+                    type: 'outstanding',
+                    sectionTitle: 'Recomendado para ti',
+                    slides: [
+                        {
+                            image: 'images/cards-learn/digital-marketing-master.jpeg',
+                            contentType: 'Curso',
+                            title: 'Digital marketing master',
+                            provider: {
+                                name: 'Hubspot',
+                                logo: 'images/Favicons/Hubspot.jpg'
+                            },
+                            competency: 'Marketing digital',
+                            specs: {
+                                level: 'Avanzado',
+                                duration: '150 min',
+                                language: 'Inglés'
+                            }
+                        },
+                        {
+                            image: 'images/cards-learn/ruta-experto-en-inbound-marketing.jpeg',
+                            contentType: 'Ruta de aprendizaje',
+                            title: 'Experto en inbound marketing',
+                            providers: [
+                                {name: 'Hubspot', logo: 'images/Favicons/Hubspot.jpg'},
+                                {name: 'Microsoft', logo: 'images/Favicons/Microsoft.jpg'},
+                                {name: 'UBITS', logo: 'images/Favicons/UBITS.jpg'}
+                            ],
+                            competency: 'Marketing digital',
+                            specs: {
+                                level: 'Avanzado',
+                                duration: '200 min',
+                                language: 'Español'
+                            }
+                        },
+                        {
+                            image: 'images/cards-learn/como-dirigir-un-equipo-de-producto.jpeg',
+                            contentType: 'Curso',
+                            title: 'Cómo dirigir un equipo de producto',
+                            provider: {
+                                name: 'Microsoft',
+                                logo: 'images/Favicons/Microsoft.jpg'
+                            },
+                            competency: 'Liderazgo',
+                            specs: {
+                                level: 'Intermedio',
+                                duration: '80 min',
+                                language: 'Español'
+                            }
+                        },
+                        {
+                            image: 'images/cards-learn/innovacion-disruptiva.jpeg',
+                            contentType: 'Charla',
+                            title: 'Innovación disruptiva',
+                            provider: {
+                                name: 'TED',
+                                logo: 'images/Favicons/TED.jpg'
+                            },
+                            competency: 'Innovación',
+                            specs: {
+                                level: 'Intermedio',
+                                duration: '50 min',
+                                language: 'Español'
+                            }
+                        },
+                        {
+                            image: 'images/cards-learn/ux-research-conoce-tu-usuario-y-aumenta-el-engagement.jpeg',
+                            contentType: 'Curso',
+                            title: 'UX research: conoce tu usuario y aumenta el engagement',
+                            provider: {
+                                name: 'Código Facilito',
+                                logo: 'images/Favicons/Código-Facilito.jpg'
+                            },
+                            competency: 'Product design',
+                            specs: {
+                                level: 'Intermedio',
+                                duration: '90 min',
+                                language: 'Español'
+                            }
+                        }
+                    ],
+                    onButtonClick: function(slide, index) {
+                        console.log('Ver ahora clicked:', slide.title, 'Slide:', index + 1);
+                    }
+                });
+            }
         });
 
         // Función para renderizar el catálogo (mismo que catalogo-v3)
