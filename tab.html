@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tab | UBITS Playground</title>
+    
+    <!-- Estilos locales -->
+    <link rel="stylesheet" href="ubits-colors.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="fontawesome-icons.css">
+    <link rel="stylesheet" href="ubits-typography.css">
+    <link rel="stylesheet" href="components/sub-nav.css">
+    <link rel="stylesheet" href="components/tab-bar.css">
+    <link rel="stylesheet" href="components/alert.css">
+    <link rel="stylesheet" href="components-sidebar.css">
+    <link rel="stylesheet" href="docs/docs-sidebar.css">
+    <link rel="stylesheet" href="components/button.css">
+    <link rel="stylesheet" href="components/toast.css">
+    <link rel="stylesheet" href="components/tab.css">
+    <style>
+        /* Preview control buttons - override UBITS button styles for active state */
+        .preview-control-btn.active {
+            background: var(--ubits-accent-brand) !important;
+            color: white !important;
+            border-color: var(--ubits-accent-brand) !important;
+        }
+        
+        .preview-control-btn.active span {
+            color: white !important;
+        }
+        
+        /* Switch styles */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--ubits-border-1);
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: var(--ubits-accent-brand);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navigation -->
+            <div id="top-nav-container"></div>
+            
+            <!-- Content with Sidebar -->
+            <div style="display: flex;">
+            
+            <!-- Dropdown Móvil para Documentación -->
+            <div id="docs-dropdown-container"></div>
+            
+            <!-- Sidebar de Documentación -->
+            <div id="docs-sidebar-container"></div>
+
+            <!-- Content Area -->
+            <div class="components-content">
+                <!-- Content Area -->
+                <div class="content-area" style="display: block; width: 100%;">
+                    <!-- Hero Section -->
+                    <div style="text-align: center; margin-bottom: 60px;">
+                        <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                            Tab
+                        </h1>
+                        <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                            Componente de tab para navegación entre secciones con estados activo/inactivo, múltiples tamaños y variante icon-only.
+                        </p>
+                    </div>
+
+                    <!-- Preview Section -->
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1); margin-bottom: 40px;">
+                        <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Preview del componente
+                        </h2>
+                        <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                            Aquí puedes ver el componente Tab en acción. Usa los controles para cambiar estados, tamaños y variantes.
+                        </p>
+                        
+                        <!-- Preview Container -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: 1px solid var(--ubits-border-1); position: relative;">
+                            
+                            <!-- Tab Preview -->
+                            <div id="tab-preview" style="display: flex; flex-direction: column; gap: 16px; align-items: flex-start;">
+                                <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-start;">
+                                    <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Medium (md)</span>
+                                    <button class="ubits-tab" style="width: auto;">
+                                        <span>Label</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Preview Controls -->
+                        <div style="margin-top: 24px;">
+                            <!-- Estados -->
+                            <div style="margin-bottom: 16px;">
+                                <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium); margin-right: 12px;">Estados:</span>
+                                <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;">
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" onclick="setPreviewState('inactive')">
+                                        <span>Inactivo</span>
+                                    </button>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewState('active')">
+                                        <span>Activo</span>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Tamaños -->
+                            <div style="margin-bottom: 16px;">
+                                <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium); margin-right: 12px;">Tamaños:</span>
+                                <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;">
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewSize('xs')">
+                                        <span>XS</span>
+                                    </button>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewSize('sm')">
+                                        <span>SM</span>
+                                    </button>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" onclick="setPreviewSize('md')">
+                                        <span>MD</span>
+                                    </button>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewSize('lg')">
+                                        <span>LG</span>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Variante -->
+                            <div style="margin-bottom: 16px;">
+                                <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium); margin-right: 12px;">Variante:</span>
+                                <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;">
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" onclick="setPreviewVariant('default')">
+                                        <span>Con texto</span>
+                                    </button>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewVariant('icon-only')">
+                                        <span>Solo icono</span>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Switch para Iconos -->
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Iconos:</span>
+                                <label class="switch">
+                                    <input type="checkbox" id="icon-toggle" onchange="toggleIcons()">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Preview Section - Grupo de Tabs -->
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1); margin-bottom: 40px;">
+                        <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-layer-group" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Preview - Grupo de tabs
+                        </h2>
+                        <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                            Ejemplo de grupo de tabs navegables. Usa el switch para ver cómo se ven sobre fondo blanco (dentro de secciones).
+                        </p>
+                        
+                        <!-- Preview Container -->
+                        <div id="tabs-group-preview-container" style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: 1px solid var(--ubits-border-1); position: relative; transition: background 0.2s ease;">
+                            
+                            <!-- Tabs Group Preview -->
+                            <div id="tabs-group-preview" style="display: flex; gap: 4px; align-items: flex-start;">
+                                <!-- Tabs se generarán dinámicamente -->
+                            </div>
+                        </div>
+                        
+                        <!-- Preview Controls -->
+                        <div style="margin-top: 24px;">
+                            <!-- Switch para Fondo Blanco -->
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Fondo blanco:</span>
+                                <label class="switch">
+                                    <input type="checkbox" id="white-bg-toggle" onchange="toggleWhiteBackground()">
+                                    <span class="slider"></span>
+                                </label>
+                                <span class="ubits-body-xs-regular" style="color: var(--ubits-fg-1-medium); margin-left: 8px;">
+                                    <i class="far fa-info-circle" style="margin-right: 4px;"></i>
+                                    Cuando está activo, simula tabs dentro de una sección con fondo blanco
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Características generales -->
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1); margin-bottom: 40px;">
+                        <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Características generales
+                        </h2>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-toggle-on"></i></div>
+                                <div class="ubits-body-sm-bold">Estados</div>
+                                <div class="ubits-body-sm-regular">Activo e inactivo</div>
+                            </div>
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-expand-arrows-alt"></i></div>
+                                <div class="ubits-body-sm-bold">Tamaños</div>
+                                <div class="ubits-body-sm-regular">XS, SM, MD y LG</div>
+                            </div>
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-icons"></i></div>
+                                <div class="ubits-body-sm-bold">Variantes</div>
+                                <div class="ubits-body-sm-regular">Con texto y solo icono</div>
+                            </div>
+                        </div>
+                </div>
+
+                <!-- PROMPTS ÚTILES -->
+                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1); margin-bottom: 40px;">
+                    <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                        <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                        Prompts útiles
+                    </h2>
+                    <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                        Usa estos prompts con Cursor AI para configurar y personalizar el componente Tab de manera eficiente.
+                    </p>
+
+                    <!-- Alert Warning -->
+                    <div id="tab-warning-alert" style="margin-bottom: 32px;"></div>
+
+                    <!-- Prompt 1: Crear tab básico -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Crear tab básico
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('tab-prompt-1')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tab-prompt-1">Crea un tab UBITS con estas características:
+- Texto: [especifica texto]
+- Icono: [especifica icono FontAwesome]
+- Tamaño: [xs/sm/md/lg]
+- Estado: [activo o inactivo]
+- Ubicación: [describe en que parte del layout debe estar el tab]
+
+IMPORTANTE: Usa EXACTAMENTE esta estructura:
+&lt;button class="ubits-tab ubits-tab--[tamaño]"&gt;
+    &lt;i class="far fa-[icono]"&gt;&lt;/i&gt;
+    &lt;span&gt;[texto]&lt;/span&gt;
+&lt;/button&gt;
+
+Para estado activo, agrega la clase: ubits-tab--active
+
+IMPORTA: components/tab.css</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 2: Cambiar estado -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Cambiar estado del tab
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('tab-prompt-2')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tab-prompt-2">Cambia el tab [descripción_del_tab] a estado [activo o inactivo]. Agrega o quita la clase ubits-tab--active según corresponda.</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 3: Cambiar tamaño -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Cambiar tamaño del tab
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('tab-prompt-3')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tab-prompt-3">Cambia el tamaño del tab [descripción_del_tab] a [xs, sm, md o lg]. Actualiza la clase ubits-tab--[tamaño] correspondiente.</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 4: Convertir a icon-only -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Convertir a tab solo icono
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('tab-prompt-4')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tab-prompt-4">Convierte el tab [descripción_del_tab] a la variante de solo icono. Quita el elemento &lt;span&gt; con el texto y agrega la clase ubits-tab--icon-only.</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 5: Agregar icono -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Agregar icono al tab
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('tab-prompt-5')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tab-prompt-5">Agrega el icono [nombre_del_icono] al tab [descripción_del_tab]. Usa FontAwesome con la clase far fa-[nombre_del_icono].</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 6: Crear grupo de tabs -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Crear grupo de tabs navegables
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('tab-prompt-6')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tab-prompt-6">Crea un grupo de tabs navegables en [ubicación] con los siguientes tabs: [lista de tabs]. Implementa la funcionalidad para que al hacer clic en un tab, se active ese tab (agregando la clase ubits-tab--active) y se desactiven los demás (quitando la clase ubits-tab--active).
+
+IMPORTANTE: Si los tabs están dentro de una sección con fondo blanco (bg-1), envuélvelos en un contenedor con fondo bg-2 y padding de 4px.</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 7: Tabs sobre fondo blanco -->
+                    <div>
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Crear grupo de tabs sobre fondo blanco
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('tab-prompt-7')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tab-prompt-7">Crea un grupo de tabs navegables en [ubicación] que estará dentro de una sección con fondo blanco (bg-1). Los tabs deben estar envueltos en un contenedor con fondo bg-2 y padding de 4px para mantener el contraste visual.
+
+IMPORTANTE: Usa esta estructura:
+&lt;div style="background: var(--ubits-bg-2); padding: 4px; border-radius: 8px; display: inline-flex; gap: 4px;"&gt;
+  &lt;button class="ubits-tab ubits-tab--active" onclick="setActiveTab(this)"&gt;
+    &lt;span&gt;[tab 1]&lt;/span&gt;
+  &lt;/button&gt;
+  &lt;button class="ubits-tab" onclick="setActiveTab(this)"&gt;
+    &lt;span&gt;[tab 2]&lt;/span&gt;
+  &lt;/button&gt;
+&lt;/div&gt;</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technical Documentation -->
+                    <div style="background: var(--ubits-bg-1); border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1); margin-bottom: 40px; overflow: hidden;">
+                        <!-- Header del acordeón -->
+                        <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Documentación técnica
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
+                                Información técnica detallada para implementar el componente Tab.
+                            </p>
+                        </div>
+                        
+                        <!-- Botón de expansión -->
+                        <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                            <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                <i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>
+                                Mostrar
+                            </span>
+                        </div>
+
+                        <!-- Contenido del acordeón (inicialmente oculto) -->
+                        <div id="technical-docs-content" style="display: none; padding: 0;">
+                            <!-- Estructura del Componente -->
+                            <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                    <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                        <i class="far fa-sitemap" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                        Estructura del componente
+                                    </h2>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('structure-code')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="structure-code">&lt;!-- Tab inactivo con icono y texto --&gt;
+&lt;button class="ubits-tab ubits-tab--md"&gt;
+    &lt;i class="far fa-grid"&gt;&lt;/i&gt;
+    &lt;span&gt;Label&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- Tab activo con icono y texto --&gt;
+&lt;button class="ubits-tab ubits-tab--md ubits-tab--active"&gt;
+    &lt;i class="far fa-grid"&gt;&lt;/i&gt;
+    &lt;span&gt;Label&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- Tab solo icono --&gt;
+&lt;button class="ubits-tab ubits-tab--md ubits-tab--icon-only"&gt;
+    &lt;i class="far fa-grid"&gt;&lt;/i&gt;
+&lt;/button&gt;</code></pre>
+                                </div>
+                            </div>
+
+                            <!-- Clases disponibles -->
+                            <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                    <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                        <i class="far fa-tags" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                        Clases disponibles
+                                    </h2>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('classes-code')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="classes-code">/* Estados */
+.ubits-tab--active           /* Tab activo (fondo blanco, texto oscuro, bold) */
+
+/* Tamaños */
+.ubits-tab--xs               /* Extra pequeño (11px, 28px alto) */
+.ubits-tab--sm               /* Pequeño (13px, 32px alto) */
+.ubits-tab                  /* Mediano (13px, 40px alto) - DEFAULT */
+.ubits-tab--lg               /* Grande (20px, 48px alto) */
+
+/* Variantes */
+.ubits-tab--icon-only        /* Solo icono, sin texto */
+  /* Extra Small: 28x28px, Small: 32x32px, Medium: 40x40px, Large: 48x48px */</code></pre>
+                                </div>
+                            </div>
+
+                            <!-- Cómo implementar -->
+                            <div style="padding: 32px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                    <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                        <i class="far fa-code-branch" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                        Cómo implementar
+                                    </h2>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('implementation-code')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                
+                                <!-- REQUISITOS DE RENDERIZADO -->
+                                <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: 1px solid var(--ubits-border-1); margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">🔧 REQUISITOS OBLIGATORIOS:</h3>
+                                    <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.5;">
+                                        <strong>CSS Requerido:</strong><br>
+                                        • <code>components/tab.css</code> - Estilos del componente<br>
+                                        • <code>fontawesome-icons.css</code> - Iconos FontAwesome<br>
+                                        • <code>ubits-colors.css</code> - Tokens de color UBITS<br>
+                                        • <code>ubits-typography.css</code> - Tipografía UBITS<br><br>
+                                        <strong>JavaScript:</strong> NO requerido - Componente puramente CSS<br><br>
+                                        <strong>Renderizado:</strong> HTML directo con clases UBITS
+                                    </div>
+                                </div>
+                                
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="implementation-code">&lt;!-- IMPLEMENTACIÓN BÁSICA --&gt;
+&lt;!-- Tab inactivo pequeño --&gt;
+&lt;button class="ubits-tab ubits-tab--sm"&gt;
+  &lt;i class="far fa-home"&gt;&lt;/i&gt;
+  &lt;span&gt;Inicio&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- Tab activo mediano --&gt;
+&lt;button class="ubits-tab ubits-tab--active"&gt;
+  &lt;i class="far fa-book"&gt;&lt;/i&gt;
+  &lt;span&gt;Cursos&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- Tab grande solo icono --&gt;
+&lt;button class="ubits-tab ubits-tab--lg ubits-tab--icon-only"&gt;
+  &lt;i class="far fa-settings"&gt;&lt;/i&gt;
+&lt;/button&gt;
+
+&lt;!-- Grupo de tabs navegables sobre fondo bg-2 (por defecto) --&gt;
+&lt;div style="display: flex; gap: 4px;"&gt;
+  &lt;button class="ubits-tab ubits-tab--active" onclick="setActiveTab(this)"&gt;
+    &lt;i class="far fa-home"&gt;&lt;/i&gt;
+    &lt;span&gt;Inicio&lt;/span&gt;
+  &lt;/button&gt;
+  &lt;button class="ubits-tab" onclick="setActiveTab(this)"&gt;
+    &lt;i class="far fa-book"&gt;&lt;/i&gt;
+    &lt;span&gt;Cursos&lt;/span&gt;
+  &lt;/button&gt;
+  &lt;button class="ubits-tab" onclick="setActiveTab(this)"&gt;
+    &lt;i class="far fa-chart-line"&gt;&lt;/i&gt;
+    &lt;span&gt;Métricas&lt;/span&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+&lt;!-- Grupo de tabs sobre fondo blanco (dentro de secciones) --&gt;
+&lt;div style="background: var(--ubits-bg-2); padding: 4px; border-radius: 8px; display: inline-flex; gap: 4px;"&gt;
+  &lt;button class="ubits-tab ubits-tab--active" onclick="setActiveTab(this)"&gt;
+    &lt;i class="far fa-home"&gt;&lt;/i&gt;
+    &lt;span&gt;Inicio&lt;/span&gt;
+  &lt;/button&gt;
+  &lt;button class="ubits-tab" onclick="setActiveTab(this)"&gt;
+    &lt;i class="far fa-book"&gt;&lt;/i&gt;
+    &lt;span&gt;Cursos&lt;/span&gt;
+  &lt;/button&gt;
+  &lt;button class="ubits-tab" onclick="setActiveTab(this)"&gt;
+    &lt;i class="far fa-chart-line"&gt;&lt;/i&gt;
+    &lt;span&gt;Métricas&lt;/span&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+function setActiveTab(clickedTab) {
+  // Remover active de todos los tabs en el grupo
+  const wrapper = clickedTab.closest('div');
+  wrapper.querySelectorAll('.ubits-tab').forEach(tab => {
+    tab.classList.remove('ubits-tab--active');
+  });
+  // Agregar active al tab clickeado
+  clickedTab.classList.add('ubits-tab--active');
+}
+&lt;/script&gt;</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Contenedor para Toast UBITS -->
+    <div id="ubits-toast-container"></div>
+
+    <!-- Tab Bar Container -->
+
+    <!-- Floating Menu Container -->
+    <div id="floating-menu-container"></div>
+    
+    <!-- Profile Menu Container -->
+    <div id="profile-menu-container"></div>
+
+    <script src="components/sidebar.js"></script>
+    <script src="components/sub-nav.js"></script>
+    <script src="components/tab-bar.js"></script>
+    <script src="components/floating-menu.js"></script>
+    <script src="components/profile-menu.js"></script>
+    <script src="components/alert.js"></script>
+    <script src="components/toast.js"></script>
+    <script src="docs/docs-sidebar.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Estado del preview
+        let currentState = 'inactive';
+        let currentSize = 'md';
+        let currentVariant = 'default';
+        let showIcons = false; // Por defecto sin iconos
+        let whiteBackground = false; // Por defecto fondo bg-2
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cargar top-nav con variante documentación
+            loadSubNav('top-nav-container', 'documentacion');
+            
+            // Forzar activación de Componentes en todas las páginas de documentación
+            setTimeout(() => {
+                // Quitar todas las clases active primero
+                document.querySelectorAll('.nav-tab.active, .hamburger-item.active').forEach(item => {
+                    item.classList.remove('active');
+                });
+                
+                // Activar solo Componentes
+                const navTab = document.querySelector('.nav-tab[data-tab="section3"]');
+                const hamburgerItem = document.querySelector('.hamburger-item[data-tab="section3"]');
+                if (navTab) navTab.classList.add('active');
+                if (hamburgerItem) hamburgerItem.classList.add('active');
+            }, 200);
+            
+            // Cargar sidebar de documentación
+            loadDocsSidebar('tab');
+            
+            // Cargar alert de warning para prompts usando el componente oficial
+            showAlert('warning', 'Importante: Antes de enviar estos prompts a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
+                containerId: 'tab-warning-alert',
+                noClose: true
+            });
+            
+            // Inicializar preview del grupo de tabs
+            updateTabsGroupPreview();
+        });
+
+        // Función para actualizar preview
+        function updatePreview() {
+            const preview = document.getElementById('tab-preview');
+            const activeClass = currentState === 'active' ? ' ubits-tab--active' : '';
+            const sizeClass = currentSize === 'md' ? '' : ` ubits-tab--${currentSize}`;
+            
+            // Etiquetas de tamaño
+            const sizeLabels = {
+                'xs': 'Extra Small (xs)',
+                'sm': 'Small (sm)',
+                'md': 'Medium (md)',
+                'lg': 'Large (lg)'
+            };
+            
+            let html = '';
+            const iconHTML = showIcons ? '<i class="far fa-grid"></i>' : '';
+            
+            if (currentVariant === 'icon-only') {
+                // Solo icono - mostrar solo el tamaño seleccionado
+                html = `
+                    <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-start;">
+                        <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">${sizeLabels[currentSize]}</span>
+                        <button class="ubits-tab${sizeClass} ubits-tab--icon-only${activeClass}" style="width: auto;">
+                            ${iconHTML}
+                        </button>
+                    </div>
+                `;
+            } else {
+                // Con texto - mostrar solo el tamaño seleccionado
+                html = `
+                    <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-start;">
+                        <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">${sizeLabels[currentSize]}</span>
+                        <button class="ubits-tab${sizeClass}${activeClass}" style="width: auto;">
+                            ${iconHTML}
+                            <span>Label</span>
+                        </button>
+                    </div>
+                `;
+            }
+            
+            preview.innerHTML = html;
+        }
+        
+        // Función para toggle de iconos
+        function toggleIcons() {
+            const iconToggle = document.getElementById('icon-toggle');
+            showIcons = iconToggle.checked;
+            updatePreview();
+            updateTabsGroupPreview();
+        }
+        
+        // Función para toggle de fondo blanco
+        function toggleWhiteBackground() {
+            const whiteBgToggle = document.getElementById('white-bg-toggle');
+            whiteBackground = whiteBgToggle.checked;
+            updateTabsGroupPreview();
+        }
+        
+        // Función para actualizar preview del grupo de tabs
+        function updateTabsGroupPreview() {
+            const groupPreview = document.getElementById('tabs-group-preview');
+            const container = document.getElementById('tabs-group-preview-container');
+            if (!groupPreview || !container) return;
+            
+            const sizeClass = currentSize === 'md' ? '' : ` ubits-tab--${currentSize}`;
+            
+            // Cambiar fondo del contenedor según el switch
+            if (whiteBackground) {
+                container.style.background = 'var(--ubits-bg-1)';
+            } else {
+                container.style.background = 'var(--ubits-bg-2)';
+            }
+            
+            // Crear contenedor interno si está sobre fondo blanco
+            const wrapperStyle = whiteBackground 
+                ? 'background: var(--ubits-bg-2); padding: 4px; border-radius: 8px; display: inline-flex; gap: 4px;'
+                : 'display: flex; gap: 4px;';
+            
+            const tabs = [
+                { label: 'Inicio', icon: 'home', active: true },
+                { label: 'Cursos', icon: 'book', active: false },
+                { label: 'Métricas', icon: 'chart-line', active: false },
+                { label: 'Perfil', icon: 'user', active: false }
+            ];
+            
+            let tabsHTML = '';
+            tabs.forEach(tab => {
+                const activeClass = tab.active ? ' ubits-tab--active' : '';
+                const tabIconHTML = showIcons ? `<i class="far fa-${tab.icon}"></i>` : '';
+                tabsHTML += `
+                    <button class="ubits-tab${sizeClass}${activeClass}" onclick="setActiveTabInGroup(this)">
+                        ${tabIconHTML}
+                        <span>${tab.label}</span>
+                    </button>
+                `;
+            });
+            
+            groupPreview.innerHTML = `<div style="${wrapperStyle}">${tabsHTML}</div>`;
+        }
+        
+        // Función para manejar clics en tabs del grupo
+        function setActiveTabInGroup(clickedTab) {
+            const wrapper = clickedTab.closest('div');
+            wrapper.querySelectorAll('.ubits-tab').forEach(tab => {
+                tab.classList.remove('ubits-tab--active');
+            });
+            clickedTab.classList.add('ubits-tab--active');
+        }
+
+        // Función para cambiar estado
+        function setPreviewState(state) {
+            currentState = state;
+            
+            // Actualizar botones activos
+            document.querySelectorAll('[onclick^="setPreviewState"]').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.closest('.preview-control-btn').classList.add('active');
+            
+            updatePreview();
+        }
+
+        // Función para cambiar tamaño
+        function setPreviewSize(size) {
+            currentSize = size;
+            
+            // Actualizar botones activos
+            document.querySelectorAll('[onclick^="setPreviewSize"]').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.closest('.preview-control-btn').classList.add('active');
+            
+            updatePreview();
+            updateTabsGroupPreview();
+        }
+
+        // Función para cambiar variante
+        function setPreviewVariant(variant) {
+            currentVariant = variant;
+            
+            // Actualizar botones activos
+            document.querySelectorAll('[onclick^="setPreviewVariant"]').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.closest('.preview-control-btn').classList.add('active');
+            
+            updatePreview();
+            updateTabsGroupPreview();
+        }
+
+        // Función para toggle de documentación técnica
+        function toggleTechnicalDocs() {
+            const content = document.getElementById('technical-docs-content');
+            const chevron = document.getElementById('tech-docs-chevron');
+            const toggleText = chevron.parentElement;
+            
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                chevron.style.transform = 'rotate(180deg)';
+                toggleText.innerHTML = '<i class="far fa-chevron-up" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Ocultar';
+            } else {
+                content.style.display = 'none';
+                chevron.style.transform = 'rotate(0deg)';
+                toggleText.innerHTML = '<i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Mostrar';
+            }
+        }
+
+        // Función para copiar prompts
+        function copyPrompt(promptId) {
+            const promptElement = document.getElementById(promptId);
+            const promptText = promptElement.textContent;
+            
+            // Copiar al portapapeles
+            navigator.clipboard.writeText(promptText).then(function() {
+                // Mostrar feedback visual
+                const button = document.querySelector(`[onclick="copyPrompt('${promptId}')"]`);
+                const icon = button.querySelector('i');
+                const text = button.querySelector('span');
+                
+                // Cambiar estado del botón
+                icon.className = 'far fa-check';
+                text.textContent = 'Copiado';
+                button.classList.add('ubits-button--active');
+                
+                // Mostrar toast
+                showToast('success', '¡Prompt copiado! 🎉', {
+                    containerId: 'ubits-toast-container',
+                    duration: 3500
+                });
+                
+                // Restaurar estado después de 2 segundos
+                setTimeout(function() {
+                    icon.className = 'far fa-copy';
+                    text.textContent = 'Copiar';
+                    button.classList.remove('ubits-button--active');
+                }, 2000);
+                
+            }).catch(function(err) {
+                console.error('Error al copiar: ', err);
+                showToast('error', 'Error al copiar el prompt', {
+                    containerId: 'ubits-toast-container',
+                    duration: 6500
+                });
+            });
+        }
+
+        // Función para copiar código
+        function copyCode(elementId) {
+            const codeElement = document.getElementById(elementId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(function() {
+                // Mostrar feedback visual
+                const button = event.target.closest('button');
+                const icon = button.querySelector('i');
+                const span = button.querySelector('span');
+                const originalIconClass = icon.className;
+                const originalText = span.textContent;
+                
+                // Cambiar estado del botón
+                icon.className = 'far fa-check';
+                span.textContent = 'Copiado!';
+                button.classList.add('ubits-button--active');
+                
+                // Mostrar toast
+                showToast('success', 'Código copiado al portapapeles', {
+                    containerId: 'ubits-toast-container',
+                    duration: 3500
+                });
+                
+                // Restaurar estado después de 2 segundos
+                setTimeout(() => {
+                    icon.className = originalIconClass;
+                    span.textContent = originalText;
+                    button.classList.remove('ubits-button--active');
+                }, 2000);
+            }).catch(err => {
+                console.error('Error al copiar: ', err);
+                showToast('error', 'Error al copiar el código', {
+                    containerId: 'ubits-toast-container',
+                    duration: 6500
+                });
+            });
+        }
+    </script>
+</body>
+</html>

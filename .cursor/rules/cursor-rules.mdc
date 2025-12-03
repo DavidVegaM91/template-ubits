@@ -205,6 +205,17 @@ loadCardContent('cards-container', [{
   - Features: icons, counter, helper text, mandatory text, scroll infinito automático
 - **Card Content** (Learning cards) → `components/card-content.css` + `components/card-content.js`
   - 11 content types, 35 competencies, 18 providers
+- **Carousel Contents** (Content carousels) → `components/carousel-contents.css` + `components/carousel-contents.js`
+  - Features: Horizontal scrolling, navigation arrows, responsive
+- **Status Tag** (Status indicators) → `components/status-tag.css` + `components/status-tag.js`
+  - Types: `success`, `info`, `warning`, `error`, `neutral`
+  - Sizes: `xs`, `sm`, `md`, `lg`
+  - Options: with/without icons (left/right)
+- **Tab** (Navigation tabs) → `components/tab.css` + `components/tab.js`
+  - States: `active`, `inactive`
+  - Sizes: `xs` (28px), `sm` (32px), `md` (40px), `lg` (48px)
+  - Variants: with text, `icon-only`
+  - Features: Icons optional (default: no icons)
 
 #### **3. 🔧 UTILITY COMPONENTS:**
 - **Profile Menu** → `components/profile-menu.css` + `components/profile-menu.js`

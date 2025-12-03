@@ -1,0 +1,322 @@
+/* ========================================
+   UBITS TAB COMPONENT
+   Componente de tab con todas las variantes
+   ======================================== */
+
+/* ========================================
+   BASE TAB STYLES
+   ======================================== */
+
+.ubits-tab {
+    /* Base styles */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Noto Sans', sans-serif;
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    user-select: none;
+    white-space: nowrap;
+    
+    /* Default state (Inactive) */
+    background: var(--ubits-bg-2);
+    color: var(--ubits-fg-1-medium);
+    border: 1px solid transparent;
+}
+
+/* ========================================
+   TAB STATES
+   ======================================== */
+
+/* Active State */
+.ubits-tab--active {
+    background: var(--ubits-bg-1);
+    color: var(--ubits-fg-1-high);
+    font-weight: 700;
+}
+
+.ubits-tab--active i {
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-tab--active span {
+    color: var(--ubits-fg-1-high);
+    font-weight: 700;
+}
+
+/* Hover State */
+.ubits-tab:hover:not(.ubits-tab--active) {
+    background: var(--ubits-btn-secondary-bg-hover);
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-tab:hover:not(.ubits-tab--active) i {
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-tab:hover:not(.ubits-tab--active) span {
+    color: var(--ubits-fg-1-medium);
+}
+
+/* Active Hover State */
+.ubits-tab--active:hover {
+    background: var(--ubits-bg-1);
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-tab--active:hover i {
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-tab--active:hover span {
+    color: var(--ubits-fg-1-high);
+    font-weight: 700;
+}
+
+/* Focus State */
+.ubits-tab:focus-visible {
+    outline: none;
+    box-shadow: 0px 0px 0px 4px var(--ubits-button-focus-ring);
+}
+
+/* Disabled State */
+.ubits-tab:disabled {
+    background: var(--ubits-bg-disabled-button) !important;
+    color: var(--ubits-fg-on-disabled-button) !important;
+    border-color: var(--ubits-border-disabled-button) !important;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.ubits-tab:disabled i {
+    color: var(--ubits-fg-on-disabled-button) !important;
+}
+
+.ubits-tab:disabled span {
+    color: var(--ubits-fg-on-disabled-button) !important;
+}
+
+/* ========================================
+   TAB ICONS
+   ======================================== */
+
+.ubits-tab i {
+    font-size: 16px;
+    line-height: 1;
+    color: var(--ubits-fg-1-medium);
+    transition: color 0.2s ease;
+}
+
+.ubits-tab--active i {
+    color: var(--ubits-fg-1-high);
+}
+
+/* ========================================
+   TAB TEXT
+   ======================================== */
+
+.ubits-tab span {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 13px;
+    color: var(--ubits-fg-1-medium);
+    transition: color 0.2s ease, font-weight 0.2s ease;
+}
+
+.ubits-tab--active span {
+    color: var(--ubits-fg-1-high);
+    font-weight: 700;
+}
+
+/* ========================================
+   TAB SIZES - KISS: UNA CLASE POR TAMAÑO
+   ======================================== */
+
+/* Medium (default) - usa ubits-body-sm-semibold */
+.ubits-tab {
+    height: 40px;
+    padding: 12px;
+    /* Hereda de ubits-body-sm-semibold: 13px, weight 600, line-height 19.5px */
+}
+
+/* Aplicar tipografía UBITS al texto del tab medium */
+.ubits-tab span {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 13px;
+}
+
+.ubits-tab i {
+    font-size: 16px;
+}
+
+/* Medium (default) Icon Only */
+.ubits-tab.ubits-tab--icon-only {
+    padding: 12px;
+    width: 40px;
+    height: 40px;
+}
+
+.ubits-tab.ubits-tab--icon-only i {
+    font-size: 16px;
+}
+
+/* Extra Small - usa ubits-body-xs-semibold */
+.ubits-tab--xs {
+    padding: 7.5px 6px;
+    height: 28px;
+    /* Hereda de ubits-body-xs-semibold: 11px, weight 600, line-height 16.5px */
+}
+
+/* Aplicar tipografía UBITS al texto del tab extra small - ubits-body-xs-semibold */
+.ubits-tab--xs span {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 11px;
+}
+
+.ubits-tab--xs i {
+    font-size: 14px;
+}
+
+.ubits-tab--xs.ubits-tab--icon-only {
+    padding: 7.5px;
+    width: 28px;
+    height: 28px;
+}
+
+.ubits-tab--xs.ubits-tab--icon-only i {
+    font-size: 14px;
+}
+
+/* Small - usa ubits-body-sm-semibold */
+.ubits-tab--sm {
+    padding: 9.5px 12px;
+    height: 32px;
+    /* Hereda de ubits-body-sm-semibold: 13px, weight 600, line-height 19.5px */
+}
+
+/* Aplicar tipografía UBITS al texto del tab small - ubits-body-sm-semibold */
+.ubits-tab--sm span {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 13px;
+}
+
+.ubits-tab--sm i {
+    font-size: 15px;
+}
+
+.ubits-tab--sm.ubits-tab--icon-only {
+    padding: 9.5px;
+    width: 32px;
+    height: 32px;
+}
+
+.ubits-tab--sm.ubits-tab--icon-only i {
+    font-size: 15px;
+}
+
+/* Large - usa ubits-body-lg-semibold */
+.ubits-tab--lg {
+    padding: 14px 20px;
+    height: 48px;
+    /* Hereda de ubits-body-lg-semibold: 20px, weight 600, line-height 30px */
+}
+
+/* Aplicar tipografía UBITS al texto del tab large */
+.ubits-tab--lg span {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 20px;
+}
+
+.ubits-tab--lg i {
+    font-size: 18px;
+}
+
+.ubits-tab--lg.ubits-tab--icon-only {
+    padding: 14px;
+    width: 48px;
+    height: 48px;
+}
+
+.ubits-tab--lg.ubits-tab--icon-only i {
+    font-size: 18px;
+}
+
+/* ========================================
+   TAB BADGE
+   ======================================== */
+
+.ubits-tab__badge {
+    position: absolute;
+    top: -2px;
+    right: -3px;
+    width: 10px;
+    height: 10px;
+    background: var(--ubits-button-badge);
+    border-radius: 50%;
+}
+
+.ubits-tab--icon-only .ubits-tab__badge {
+    top: -2px;
+    right: -2px;
+}
+
+/* ========================================
+   ACCESSIBILITY
+   ======================================== */
+
+.ubits-tab:focus-visible {
+    outline: none;
+    box-shadow: 0px 0px 0px 4px var(--ubits-button-focus-ring);
+}
+
+.ubits-tab[aria-disabled="true"] {
+    background: var(--ubits-bg-disabled-button);
+    color: var(--ubits-fg-on-disabled-button);
+    border-color: var(--ubits-border-disabled-button);
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 768px) {
+    .ubits-tab {
+        font-size: 12px;
+        padding: 10px 12px;
+    }
+    
+    .ubits-tab--xs {
+        font-size: 10px;
+        padding: 6px 8px;
+    }
+    
+    .ubits-tab--sm {
+        font-size: 12px;
+        padding: 8px 10px;
+    }
+    
+    .ubits-tab--lg {
+        font-size: 18px;
+        padding: 12px 16px;
+    }
+}
+

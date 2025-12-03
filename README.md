@@ -42,6 +42,9 @@ Una **plantilla lista para usar** que permite a **Product Managers**, **Diseñad
 - **Toast** - Notificaciones flotantes (tipos: success, info, warning, error; auto-cierre, pausa en hover) - **RENDERIZADO: showToast()**
 - **Input** - Campos de entrada (11 tipos: text, email, password, number, tel, url, select, textarea, search, autocomplete, calendar; tamaños: sm, md, lg; estados: default, hover, focus, invalid, disabled; con iconos, contador, helper text, mandatory/optional, validación manual, scroll infinito automático) - **RENDERIZADO: createInput()**
 - **Card Content** - Cards para contenidos de aprendizaje (11 tipos, 35 competencias, 18 aliados, estados de progreso) - **RENDERIZADO: loadCardContent()**
+- **Carousel Contents** - Carruseles de contenido (navegación horizontal, flechas, responsive) - **RENDERIZADO: loadCarouselContents()**
+- **Status Tag** - Etiquetas de estado (tipos: success, info, warning, error, neutral; tamaños: xs, sm, md, lg; iconos opcionales izquierda/derecha) - **RENDERIZADO: HTML directo**
+- **Tab** - Tabs de navegación (estados: active, inactive; tamaños: xs, sm, md, lg; variantes: con texto, icon-only; iconos opcionales) - **RENDERIZADO: HTML directo**
 
 ### **🔧 REQUISITOS DE RENDERIZADO:**
 Todos los componentes UBITS requieren imports obligatorios:
@@ -53,12 +56,16 @@ Todos los componentes UBITS requieren imports obligatorios:
 <link rel="stylesheet" href="components/toast.css">
 <link rel="stylesheet" href="components/input.css">
 <link rel="stylesheet" href="components/card-content.css">
+<link rel="stylesheet" href="components/carousel-contents.css">
+<link rel="stylesheet" href="components/status-tag.css">
+<link rel="stylesheet" href="components/tab.css">
 
 <!-- JavaScript OBLIGATORIO para componentes dinámicos -->
 <script src="components/alert.js"></script>
 <script src="components/toast.js"></script>
 <script src="components/input.js"></script>
 <script src="components/card-content.js"></script>
+<script src="components/carousel-contents.js"></script>
 
 <!-- Base UBITS SIEMPRE REQUERIDA -->
 <link rel="stylesheet" href="ubits-colors.css">
@@ -94,7 +101,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 - ✅ **SIEMPRE usar estructura oficial** UBITS
 
 ### **Componentes de documentación:**
-- **Docs Sidebar** - Navegación para documentación (secciones: introduccion, sidebar, sub-nav, tab-bar, button, alert, card-content)
+- **Docs Sidebar** - Navegación para documentación (secciones: introduccion, sidebar, sub-nav, tab-bar, button, alert, card-content, input, toast, status-tag, tab)
 
 ## 🎯 **LOS 3 GRANDES ENTREGABLES DE UBITS PLAYGROUND**
 
