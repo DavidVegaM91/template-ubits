@@ -173,8 +173,16 @@ function getTopNavHTML(variant = 'template', customTabs = []) {
         }
     }
 
+    // Logo del cliente antes de los tabs (solo para variantes que NO sean documentacion)
+    const clientLogo = variant !== 'documentacion' ? `
+        <div class="sub-nav-logo">
+            <img src="images/Client-logo.jpg" alt="Client Logo" class="sub-nav-logo-img">
+        </div>
+    ` : '';
+
     return `
         <div class="sub-nav" data-variant="${variant}">
+            ${clientLogo}
             <div class="nav-tabs">
                 ${leftContent}
             </div>
@@ -205,7 +213,23 @@ function loadSubNav(containerId, variant = 'template', customTabs = []) {
     // Activar el tab correcto basado en la página actual
     setTimeout(() => {
         activateCurrentPageTab(container, variant);
-    }, 100);
+        // Detectar overflow y activar selector si es necesario
+        checkAndActivateSelector(container, variant, customTabs);
+    }, 200);
+    
+    // También verificar después de que todo esté renderizado
+    setTimeout(() => {
+        checkAndActivateSelector(container, variant, customTabs);
+    }, 500);
+    
+    // Detectar cambios de tamaño de ventana
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            checkAndActivateSelector(container, variant, customTabs);
+        }, 100);
+    });
 }
 
 function activateCurrentPageTab(container, variant) {
@@ -395,6 +419,234 @@ window.navigateToTab = function(tabId, variant) {
     console.log('No URL found for tab:', tabId);
 };
 
+/**
+ * Detecta si los tabs no caben y activa el selector automáticamente
+ * @param {HTMLElement} container - Contenedor del sub-nav
+ * @param {string} variant - Variante del top-nav
+ * @param {Array} customTabs - Array opcional de tabs personalizados
+ */
+function checkAndActivateSelector(container, variant, customTabs = []) {
+    // Regla simple: >= 1280px = items, < 1280px = selector (excepto documentación)
+    if (variant === 'documentacion') {
+        // Documentación siempre usa su propio sistema
+        return;
+    }
+    
+    const subNav = container.querySelector('.sub-nav');
+    if (!subNav) return;
+    
+    if (window.innerWidth >= 1280) {
+        // Desktop (>= 1280px): siempre mostrar items
+        if (subNav.classList.contains('use-selector')) {
+            subNav.classList.remove('use-selector');
+            restoreOriginalTabs(container, variant, customTabs);
+        } else {
+            // Asegurarse de que los tabs estén presentes
+            const navTabs = container.querySelector('.nav-tabs');
+            if (navTabs && !navTabs.querySelector('.nav-tab')) {
+                restoreOriginalTabs(container, variant, customTabs);
+            }
+        }
+    } else {
+        // Mobile/Tablet (< 1280px): siempre mostrar selector
+        if (!subNav.classList.contains('use-selector')) {
+            activateSelector(container, variant, customTabs);
+        }
+    }
+}
+
+/**
+ * Restaura los tabs originales cuando se desactiva el selector
+ * @param {HTMLElement} container - Contenedor del sub-nav
+ * @param {string} variant - Variante del top-nav
+ * @param {Array} customTabs - Array opcional de tabs personalizados
+ */
+function restoreOriginalTabs(container, variant, customTabs = []) {
+    const config = TOP_NAV_VARIANTS[variant];
+    if (!config) return;
+    
+    const tabs = variant === 'template' && customTabs.length > 0 ? customTabs : config.tabs;
+    
+    // Obtener el tab activo del selector antes de restaurar
+    const activeSelectorItem = container.querySelector('.module-selector-item.active');
+    let activeTabId = null;
+    
+    if (activeSelectorItem) {
+        activeTabId = activeSelectorItem.getAttribute('data-tab');
+    }
+    
+    // Si no hay tab activo en el selector, intentar obtenerlo de la página actual
+    if (!activeTabId) {
+        const currentPage = window.location.pathname.split('/').pop();
+        // Mapear páginas a tabs (lógica similar a activateCurrentPageTab)
+        const pageToTabMap = {
+            'home-learn.html': 'home',
+            'catalogo.html': 'catalog',
+            'u-corporativa.html': 'corporate',
+            'zona-estudio.html': 'study-zone',
+            'evaluaciones-360.html': 'evaluations',
+            'objetivos.html': 'objectives',
+            'metricas.html': 'metrics',
+            'reportes.html': 'reports',
+            'encuestas.html': 'encuestas',
+            'planes.html': 'plans',
+            'tareas.html': 'tasks'
+        };
+        activeTabId = pageToTabMap[currentPage] || null;
+    }
+    
+    // Regenerar HTML de los tabs originales
+    let tabsHTML = '';
+    if (tabs.length > 0) {
+        tabsHTML = tabs.map(tab => {
+            const isActive = tab.id === activeTabId;
+            return `
+                <button class="nav-tab ${isActive ? 'active' : ''}" data-tab="${tab.id}" onclick="navigateToTab('${tab.id}', '${variant}')">
+                    <i class="fa ${tab.icon}"></i>
+                    <span class="ubits-body-sm-regular">${tab.label}</span>
+                </button>
+            `;
+        }).join('');
+    }
+    
+    // Restaurar el contenido de nav-tabs
+    const navTabs = container.querySelector('.nav-tabs');
+    if (navTabs) {
+        navTabs.innerHTML = tabsHTML;
+        // Re-agregar event listeners
+        addTopNavEventListeners(container);
+        // Si no se encontró tab activo, intentar activar basado en la página actual
+        if (!activeTabId) {
+            activateCurrentPageTab(container, variant);
+        }
+    }
+}
+
+/**
+ * Activa el selector mobile
+ * @param {HTMLElement} container - Contenedor del sub-nav
+ * @param {string} variant - Variante del top-nav
+ * @param {Array} customTabs - Array opcional de tabs personalizados
+ */
+function activateSelector(container, variant, customTabs = []) {
+    const subNav = container.querySelector('.sub-nav');
+    if (!subNav) return;
+    
+    subNav.classList.add('use-selector');
+    
+    const config = TOP_NAV_VARIANTS[variant];
+    if (!config) return;
+    
+    const tabs = variant === 'template' && customTabs.length > 0 ? customTabs : config.tabs;
+    
+    // Obtener el tab activo
+    const activeTab = subNav.querySelector('.nav-tab.active');
+    let activeTabId = null;
+    let activeTabLabel = '';
+    
+    if (activeTab) {
+        activeTabId = activeTab.getAttribute('data-tab');
+        const activeTabConfig = tabs.find(t => t.id === activeTabId);
+        if (activeTabConfig) {
+            activeTabLabel = activeTabConfig.label;
+        }
+    } else if (tabs.length > 0) {
+        // Si no hay tab activo, usar el primero
+        activeTabId = tabs[0].id;
+        activeTabLabel = tabs[0].label;
+    }
+    
+    // Crear HTML del selector
+    const moduleNameHTML = `
+        <div class="module-name">
+            <div class="module-name-label">${config.name}</div>
+        </div>
+    `;
+    
+    const selectorItemsHTML = tabs.map(tab => {
+        const isActive = tab.id === activeTabId;
+        return `
+            <a href="${tab.url || '#'}" class="module-selector-item ${isActive ? 'active' : ''}" data-tab="${tab.id}">
+                <i class="fa ${tab.icon}"></i>
+                <span>${tab.label}</span>
+            </a>
+        `;
+    }).join('');
+    
+    const selectorHTML = `
+        <div class="module-selector">
+            <button class="module-selector-button" id="module-selector-btn">
+                <span class="module-selector-button-text">${activeTabLabel}</span>
+                <i class="far fa-chevron-down module-selector-button-chevron"></i>
+            </button>
+            <div class="module-selector-dropdown" id="module-selector-dropdown">
+                ${selectorItemsHTML}
+            </div>
+        </div>
+    `;
+    
+    // Insertar el selector después del logo
+    const navTabs = subNav.querySelector('.nav-tabs');
+    if (navTabs) {
+        navTabs.innerHTML = moduleNameHTML + selectorHTML;
+    }
+    
+    // Agregar event listeners al selector
+    const selectorButton = subNav.querySelector('#module-selector-btn');
+    const selectorDropdown = subNav.querySelector('#module-selector-dropdown');
+    const selectorItems = subNav.querySelectorAll('.module-selector-item');
+    
+    if (selectorButton && selectorDropdown) {
+        selectorButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            selectorButton.classList.toggle('open');
+            selectorDropdown.classList.toggle('show');
+        });
+        
+        // Cerrar al hacer click fuera
+        document.addEventListener('click', function closeDropdown(e) {
+            if (!subNav.contains(e.target)) {
+                selectorButton.classList.remove('open');
+                selectorDropdown.classList.remove('show');
+                document.removeEventListener('click', closeDropdown);
+            }
+        });
+    }
+    
+    // Manejar clicks en los items del selector
+    selectorItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+            const tabId = this.getAttribute('data-tab');
+            const tabConfig = tabs.find(t => t.id === tabId);
+            
+            if (tabConfig && tabConfig.url) {
+                window.location.href = tabConfig.url;
+            } else {
+                // Disparar evento personalizado
+                const event = new CustomEvent('topNavTabClick', {
+                    detail: { tabId: tabId, tabElement: this }
+                });
+                document.dispatchEvent(event);
+            }
+            
+            // Actualizar el botón con el texto seleccionado
+            const buttonText = selectorButton.querySelector('.module-selector-button-text');
+            if (buttonText) {
+                buttonText.textContent = tabConfig.label;
+            }
+            
+            // Remover active de todos y agregar al seleccionado
+            selectorItems.forEach(i => i.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Cerrar dropdown
+            selectorButton.classList.remove('open');
+            selectorDropdown.classList.remove('show');
+        });
+    });
+}
+
 // Exportar funciones para uso global
 window.getTopNavHTML = getTopNavHTML;
 window.loadSubNav = loadSubNav;
@@ -402,3 +654,6 @@ window.getTopNavVariant = getTopNavVariant;
 window.getAllTopNavVariants = getAllTopNavVariants;
 window.addTopNavEventListeners = addTopNavEventListeners;
 window.activateCurrentPageTab = activateCurrentPageTab;
+window.checkAndActivateSelector = checkAndActivateSelector;
+window.activateSelector = activateSelector;
+window.restoreOriginalTabs = restoreOriginalTabs;

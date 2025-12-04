@@ -15,37 +15,23 @@
     <link rel="stylesheet" href="components/tab-bar.css">
     <link rel="stylesheet" href="components/floating-menu.css">
     <link rel="stylesheet" href="components/profile-menu.css">
+    <link rel="stylesheet" href="components/card-content.css">
+    <link rel="stylesheet" href="components/button.css">
+    <link rel="stylesheet" href="components/input.css">
+    <link rel="stylesheet" href="components/paginator.css">
+    <link rel="stylesheet" href="components/empty-state.css">
     <link rel="stylesheet" href="profile.css">
     <style>
-        /* ¡A LA MIERDA LAS REGLAS PENDEJAS! */
-
-        /* Estilos específicos para content-sections - idéntico a left-wrapper */
+        /* Estilos específicos para content-sections */
         .content-sections {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 24px;
             flex: 1;
             min-width: 0;
             width: 100%;
             overflow: visible;
             max-height: none;
-        }
-
-        /* Espaciador para alinear elementos - idéntico a left-wrapper */
-        .content-sections > *:not(:last-child):not(.section-dual):not(.section-single):not(.section-triple):not(.section-quad) {
-            margin-bottom: 16px;
-        }
-
-        /* Espaciador final - idéntico a left-wrapper */
-        .content-sections::after {
-            content: '';
-            height: 0px;
-            flex-shrink: 0;
-        }
-
-        /* Reducir el gap del último elemento - idéntico a left-wrapper */
-        .content-sections > *:last-child {
-            margin-bottom: 0;
         }
 
         /* Secciones de widgets */
@@ -54,76 +40,245 @@
             width: 100%;
         }
 
-        .section-dual {
-            display: flex;
-            gap: 20px;
+        /* Widgets sin padding ni fondo */
+        .section-single > .widget-encabezado-universidad,
+        .section-single > .widget-buscador-filtros,
+        .section-single > .widget-grid-cursos-propios {
+            padding: 0 !important;
+            background: transparent !important;
         }
 
-        .section-triple {
-            display: flex;
-            gap: 20px;
-        }
-
-        .section-quad {
-            display: flex;
-            gap: 20px;
-        }
-
-        /* Widgets en secciones - sin altura mínima forzada */
-        .section-single > div,
-        .section-dual > div,
-        .section-triple > div,
-        .section-quad > div {
-            background-color: var(--ubits-bg-1);
-            border: none;
-            border-radius: 8px;
-            padding: 12px !important; /* !important para sobrescribir el reset */
+        /* Encabezado Universidad Corporativa */
+        .widget-encabezado-universidad {
             width: 100%;
+            max-width: 100%;
             box-sizing: border-box;
+            border-radius: 8px;
+            overflow: hidden;
+            background: var(--ubits-bg-1);
+            border-left: 4px solid var(--ubits-accent-brand);
+            display: flex;
+            flex-direction: row;
+            align-items: stretch;
+            min-height: 0;
+        }
+
+        .encabezado-content {
+            flex: 0 0 50%;
+            padding: 24px;
             display: flex;
             flex-direction: column;
+            gap: 16px;
+            justify-content: center;
+            background: var(--ubits-bg-1);
+            order: 1;
         }
 
-        /* Distribución de anchos */
-        .section-single > div {
-            flex: 1;
+        .encabezado-banner {
+            flex: 0 0 50%;
+            position: relative;
+            overflow: hidden;
+            aspect-ratio: 21 / 9;
+            order: 2;
+        }
+        
+        .encabezado-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
         }
 
-        .section-dual > div {
-            flex: 1;
+        .encabezado-title {
+            color: var(--ubits-fg-1-high);
+            margin: 0;
+            font-family: 'Noto Sans', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            line-height: 48px;
         }
 
-        .section-triple > div {
-            flex: 1;
+        .encabezado-description {
+            color: var(--ubits-fg-1-medium);
+            margin: 0;
+            font-family: 'Noto Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 400;
+            line-height: 19.5px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
-        .section-quad > div {
-            flex: 1;
+        .encabezado-button-wrapper {
+            margin-top: 0;
         }
 
-        /* Responsive para secciones */
+        /* Buscador y filtros */
+        .widget-buscador-filtros {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            width: 100%;
+        }
+
+        .buscador-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .buscador-title-container {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex: 0 0 auto;
+        }
+
+        .buscador-title {
+            color: var(--ubits-fg-1-high);
+            margin: 0;
+            font-family: 'Noto Sans', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 24px;
+        }
+
+        .buscador-results {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+
+        .buscador-results-count {
+            color: var(--ubits-fg-1-medium);
+            font-family: 'Noto Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 400;
+            line-height: 13px;
+        }
+
+        .buscador-results-text {
+            color: var(--ubits-fg-1-medium);
+            font-family: 'Noto Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 400;
+            line-height: 19.5px;
+        }
+
+        .buscador-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex: 0 0 auto;
+        }
+
+        /* Grid de cards */
+        .widget-grid-cursos-propios {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .grid-cards-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+
+        /* Empty state debe ocupar todo el ancho del grid */
+        .grid-cards-container #empty-state-no-results {
+            grid-column: 1 / -1;
+            width: 100%;
+        }
+
+        /* Paginador - usar componente oficial */
+        .paginador-container {
+            margin-top: 24px;
+        }
+
+        /* Responsive: Tablet */
+        @media (max-width: 1365px) {
+            .grid-cards-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* Responsive: Tablet y Mobile */
         @media (max-width: 1023px) {
             .content-sections {
-                padding-bottom: 0;
-            }
-            
-            .section-dual,
-            .section-triple,
-            .section-quad {
-                flex-direction: column;
                 gap: 16px;
             }
-            
-            /* Ajustar widgets para móvil - sin altura mínima forzada */
+
+            .widget-encabezado-universidad {
+                flex-direction: column;
+                border-top: 4px solid var(--ubits-accent-brand);
+                border-left: none;
+                align-items: flex-start;
+            }
+
+            .encabezado-content {
+                order: 2;
+                width: 100%;
+                box-sizing: border-box;
+                padding: 16px;
+                background: var(--ubits-bg-1);
+            }
+
+            .encabezado-banner {
+                order: 1;
+                width: 100%;
+                box-sizing: border-box;
+                aspect-ratio: 21 / 9;
+                border-bottom: 1px solid var(--ubits-border-1);
+            }
+
+            .buscador-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+
+            .buscador-title-container {
+                width: 100%;
+            }
+
+            .buscador-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+
+            .grid-cards-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
+            }
         }
 
+        /* Responsive: Mobile pequeño */
         @media (max-width: 480px) {
-            /* Padding reducido en móviles pequeños - sin altura mínima forzada */
-            .section-single > div,
-            .section-dual > div,
-            .section-triple > div,
-            .section-quad > div {
-                padding: 12px !important; /* !important para sobrescribir el reset */
+            .grid-cards-container {
+                grid-template-columns: 1fr;
+            }
+
+            .widget-encabezado-universidad {
+                min-height: auto;
+                height: auto;
+            }
+
+            .encabezado-content {
+                padding: 12px;
+                min-height: auto;
+                height: auto;
+            }
+
+            .encabezado-title {
+                font-size: 24px;
+                line-height: 36px;
+            }
+
+            .encabezado-description {
+                font-size: 14px;
+                line-height: 20px;
             }
         }
     </style>
@@ -146,24 +301,51 @@
                     <!-- Sección encabezado universidad corporativa -->
                     <div class="section-single">
                         <div class="widget-encabezado-universidad">
-                            <p class="ubits-body-md-regular">Encabezado universidad corporativa</p>
-                            <br><br><br><br><br>
+                            <div class="encabezado-banner">
+                                <img src="images/banner-u-corporativa.jpg" alt="Universidad Corporativa">
+                            </div>
+                            <div class="encabezado-content">
+                                <h1 class="encabezado-title">Contenidos de mi empresa</h1>
+                                <p class="encabezado-description">Encuentra los contenidos formativos creados por la empresa, pensados para todos nuestros colaboradores.</p>
+                                <div class="encabezado-button-wrapper">
+                                    <button class="ubits-button ubits-button--secondary ubits-button--md">
+                                        <i class="far fa-bolt"></i>
+                                        <span>Acceder al creador</span>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Sección buscador y filtros -->
                     <div class="section-single">
                         <div class="widget-buscador-filtros">
-                            <p class="ubits-body-md-regular">Buscador y filtros</p>
-                            <br>
+                            <div class="buscador-header">
+                                <div class="buscador-title-container">
+                                    <h2 class="buscador-title">Lista de contenidos</h2>
+                                    <div class="buscador-results">
+                                        <span class="buscador-results-count" id="buscador-results-count">0</span>
+                                        <span class="buscador-results-text">resultados</span>
+                                    </div>
+                                </div>
+                                <div class="buscador-actions">
+                                    <div id="buscador-input-container" style="display: none;"></div>
+                                    <button id="buscador-toggle-btn" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only">
+                                        <i class="far fa-search"></i>
+                                    </button>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only">
+                                        <i class="far fa-filter"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Sección grid cards cursos propios -->
                     <div class="section-single">
                         <div class="widget-grid-cursos-propios">
-                            <p class="ubits-body-md-regular">Grid cards cursos propios</p>
-                            <br><br><br><br><br><br><br><br>
+                            <div class="grid-cards-container" id="cursos-corporativos-container"></div>
+                            <div class="paginador-container" id="paginador-container"></div>
                         </div>
                     </div>
                 </div>
@@ -185,6 +367,10 @@
     <script src="components/tab-bar.js"></script>
     <script src="components/floating-menu.js"></script>
     <script src="components/profile-menu.js"></script>
+    <script src="components/card-content.js"></script>
+    <script src="components/input.js"></script>
+    <script src="components/paginator.js"></script>
+    <script src="components/empty-state.js"></script>
     <script src="script.js"></script>
     <script>
         // Cargar componentes dinámicamente
@@ -237,7 +423,515 @@
                     setActiveAccordionLink('corporativa');
                 }
             }, 200);
+
+            // Datos de los cursos corporativos según Figma
+            const cursosCorporativos = [
+                {
+                    type: 'Curso',
+                    title: 'Inducción a la cultura y valores corporativos',
+                    provider: 'Figsha Smart Consulting',
+                    providerLogo: 'images/Favicons/Figsha Smart Consulting.jpg',
+                    duration: '60 min',
+                    level: 'Básico',
+                    progress: 0,
+                    status: 'default',
+                    image: 'images/cards-learn/U-Corporativa/Inducción-a-la-cultura-y-valores-corporativos.jpg',
+                    competency: 'Liderazgo',
+                    language: 'Español'
+                },
+                {
+                    type: 'Curso',
+                    title: 'Prevención del acoso laboral',
+                    provider: 'Figsha Smart Consulting',
+                    providerLogo: 'images/Favicons/Figsha Smart Consulting.jpg',
+                    duration: '60 min',
+                    level: 'Básico',
+                    progress: 0,
+                    status: 'default',
+                    image: 'images/cards-learn/U-Corporativa/prevencion-acoso-laboral.jpg',
+                    competency: 'Liderazgo',
+                    language: 'Español'
+                },
+                {
+                    type: 'Curso',
+                    title: 'Seguridad y salud en el trabajo 2025',
+                    provider: 'Figsha Smart Consulting',
+                    providerLogo: 'images/Favicons/Figsha Smart Consulting.jpg',
+                    duration: '60 min',
+                    level: 'Básico',
+                    progress: 0,
+                    status: 'default',
+                    image: 'images/cards-learn/U-Corporativa/seguridad-y-salud-en-el-trabajo.jpg',
+                    competency: 'Liderazgo',
+                    language: 'Español'
+                },
+                {
+                    type: 'Curso',
+                    title: 'Cumplimiento normativo y código de conducta',
+                    provider: 'Figsha Smart Consulting',
+                    providerLogo: 'images/Favicons/Figsha Smart Consulting.jpg',
+                    duration: '60 min',
+                    level: 'Básico',
+                    progress: 0,
+                    status: 'default',
+                    image: 'images/cards-learn/U-Corporativa/Cumplimiento-normativo-y-código-de-conducta.jpg',
+                    competency: 'Liderazgo',
+                    language: 'Español'
+                },
+                {
+                    type: 'Curso',
+                    title: 'Comunicación efectiva en el trabajo',
+                    provider: 'Figsha Smart Consulting',
+                    providerLogo: 'images/Favicons/Figsha Smart Consulting.jpg',
+                    duration: '60 min',
+                    level: 'Básico',
+                    progress: 0,
+                    status: 'default',
+                    image: 'images/cards-learn/U-Corporativa/Comunicación-efectiva-en-el-trabajo.jpg',
+                    competency: 'Comunicación',
+                    language: 'Español'
+                },
+                {
+                    type: 'Curso',
+                    title: 'Gestión del tiempo y productividad',
+                    provider: 'Figsha Smart Consulting',
+                    providerLogo: 'images/Favicons/Figsha Smart Consulting.jpg',
+                    duration: '60 min',
+                    level: 'Básico',
+                    progress: 0,
+                    status: 'default',
+                    image: 'images/cards-learn/U-Corporativa/gestion-del-tiempo-y-productividad.jpg',
+                    competency: 'Comunicación',
+                    language: 'Español'
+                },
+                {
+                    type: 'Curso',
+                    title: 'Resolución efectiva de conflictos en equipos de trabajo',
+                    provider: 'Figsha Smart Consulting',
+                    providerLogo: 'images/Favicons/Figsha Smart Consulting.jpg',
+                    duration: '60 min',
+                    level: 'Básico',
+                    progress: 0,
+                    status: 'default',
+                    image: 'images/cards-learn/U-Corporativa/resolucion-de-conflictos.jpg',
+                    competency: 'Comunicación',
+                    language: 'Español'
+                },
+                {
+                    type: 'Curso',
+                    title: 'Pensamiento crítico y toma de decisiones',
+                    provider: 'Figsha Smart Consulting',
+                    providerLogo: 'images/Favicons/Figsha Smart Consulting.jpg',
+                    duration: '90 min',
+                    level: 'Intermedio',
+                    progress: 0,
+                    status: 'default',
+                    image: 'images/cards-learn/U-Corporativa/Pensamiento-crítico-y-toma-de-decisiones.jpg',
+                    competency: 'Comunicación',
+                    language: 'Español'
+                },
+                {
+                    type: 'Curso',
+                    title: 'Creatividad e innovación',
+                    provider: 'Figsha Smart Consulting',
+                    providerLogo: 'images/Favicons/Figsha Smart Consulting.jpg',
+                    duration: '60 min',
+                    level: 'Básico',
+                    progress: 0,
+                    status: 'default',
+                    image: 'images/cards-learn/U-Corporativa/creatividad-e-innovacion.jpg',
+                    competency: 'Comunicación',
+                    language: 'Español'
+                },
+                {
+                    type: 'Curso',
+                    title: 'Presentaciones de alto impacto',
+                    provider: 'Figsha Smart Consulting',
+                    providerLogo: 'images/Favicons/Figsha Smart Consulting.jpg',
+                    duration: '60 min',
+                    level: 'Básico',
+                    progress: 0,
+                    status: 'default',
+                    image: 'images/cards-learn/U-Corporativa/presentaciones-de-alto-impacto.jpg',
+                    competency: 'Comunicación',
+                    language: 'Español'
+                },
+                {
+                    type: 'Curso',
+                    title: 'Manejo del estrés laboral',
+                    provider: 'Figsha Smart Consulting',
+                    providerLogo: 'images/Favicons/Figsha Smart Consulting.jpg',
+                    duration: '30 min',
+                    level: 'Básico',
+                    progress: 0,
+                    status: 'default',
+                    image: 'images/cards-learn/U-Corporativa/manejo-del-estres-laboral.jpg',
+                    competency: 'Comunicación',
+                    language: 'Español'
+                },
+                {
+                    type: 'Curso',
+                    title: 'Trabajo en equipo y colaboración',
+                    provider: 'Figsha Smart Consulting',
+                    providerLogo: 'images/Favicons/Figsha Smart Consulting.jpg',
+                    duration: '60 min',
+                    level: 'Básico',
+                    progress: 0,
+                    status: 'default',
+                    image: 'images/cards-learn/U-Corporativa/trabajo-en-equipo.jpg',
+                    competency: 'Comunicación',
+                    language: 'Español'
+                },
+                {
+                    type: 'Curso',
+                    title: 'Gestión de equipos remotos e híbridos',
+                    provider: 'Figsha Smart Consulting',
+                    providerLogo: 'images/Favicons/Figsha Smart Consulting.jpg',
+                    duration: '60 min',
+                    level: 'Básico',
+                    progress: 0,
+                    status: 'default',
+                    image: 'images/cards-learn/U-Corporativa/gestion-equipos-remotos.jpg',
+                    competency: 'Liderazgo',
+                    language: 'Español'
+                },
+                {
+                    type: 'Curso',
+                    title: 'Delegación efectiva',
+                    provider: 'Figsha Smart Consulting',
+                    providerLogo: 'images/Favicons/Figsha Smart Consulting.jpg',
+                    duration: '60 min',
+                    level: 'Básico',
+                    progress: 0,
+                    status: 'default',
+                    image: 'images/cards-learn/U-Corporativa/delegacion-efectiva.jpg',
+                    competency: 'Liderazgo',
+                    language: 'Español'
+                },
+                {
+                    type: 'Curso',
+                    title: 'Cómo dar y recibir feedback',
+                    provider: 'Figsha Smart Consulting',
+                    providerLogo: 'images/Favicons/Figsha Smart Consulting.jpg',
+                    duration: '60 min',
+                    level: 'Básico',
+                    progress: 0,
+                    status: 'default',
+                    image: 'images/cards-learn/U-Corporativa/dar-y-recibir-feedback.jpg',
+                    competency: 'Liderazgo',
+                    language: 'Español'
+                },
+                {
+                    type: 'Curso',
+                    title: 'Comunicación asertiva para líderes',
+                    provider: 'Figsha Smart Consulting',
+                    providerLogo: 'images/Favicons/Figsha Smart Consulting.jpg',
+                    duration: '60 min',
+                    level: 'Básico',
+                    progress: 0,
+                    status: 'default',
+                    image: 'images/cards-learn/U-Corporativa/Comunicación-asertiva-para-líderes.jpg',
+                    competency: 'Liderazgo',
+                    language: 'Español'
+                },
+                {
+                    type: 'Curso',
+                    title: 'Ciberseguridad y protección de datos',
+                    provider: 'Figsha Smart Consulting',
+                    providerLogo: 'images/Favicons/Figsha Smart Consulting.jpg',
+                    duration: '60 min',
+                    level: 'Básico',
+                    progress: 0,
+                    status: 'default',
+                    image: 'images/cards-learn/U-Corporativa/Ciberseguridad-y-protección-de-datos.jpg',
+                    competency: 'Herramientas tecnológicas',
+                    language: 'Español'
+                },
+                {
+                    type: 'Curso',
+                    title: 'Gestión de proyectos con metodologías ágiles',
+                    provider: 'Figsha Smart Consulting',
+                    providerLogo: 'images/Favicons/Figsha Smart Consulting.jpg',
+                    duration: '60 min',
+                    level: 'Básico',
+                    progress: 0,
+                    status: 'default',
+                    image: 'images/cards-learn/U-Corporativa/Gestión-de-proyectos-con-metodologías-ágiles.jpg',
+                    competency: 'Herramientas tecnológicas',
+                    language: 'Español'
+                },
+                {
+                    type: 'Curso',
+                    title: 'Uso eficiente del correo electrónico y calendarios',
+                    provider: 'Figsha Smart Consulting',
+                    providerLogo: 'images/Favicons/Figsha Smart Consulting.jpg',
+                    duration: '60 min',
+                    level: 'Básico',
+                    progress: 0,
+                    status: 'default',
+                    image: 'images/cards-learn/U-Corporativa/Uso-eficiente-del-correo-electrónico-y-calendarios.jpg',
+                    competency: 'Herramientas tecnológicas',
+                    language: 'Español'
+                },
+                {
+                    type: 'Curso',
+                    title: 'Motivación y reconocimiento del talento',
+                    provider: 'Figsha Smart Consulting',
+                    providerLogo: 'images/Favicons/Figsha Smart Consulting.jpg',
+                    duration: '60 min',
+                    level: 'Básico',
+                    progress: 0,
+                    status: 'default',
+                    image: 'images/cards-learn/U-Corporativa/motivacion-y-reconocimiento-del-talento.jpg',
+                    competency: 'Liderazgo',
+                    language: 'Español'
+                }
+            ];
+
+            // Configuración de paginación usando componente oficial UBITS Paginator
+            let currentPage = 1;
+            let itemsPerPageValue = 16; // Valor por defecto
+            let paginatorInstance = null;
+            let cursosFiltrados = [...cursosCorporativos]; // Copia de todos los cursos para filtrado
+            let searchQuery = ''; // Texto de búsqueda actual
+
+            // Función para filtrar cursos basándose en el texto de búsqueda
+            function filterCourses(searchText) {
+                searchQuery = searchText.toLowerCase().trim();
+                
+                if (searchQuery === '') {
+                    // Si no hay búsqueda, mostrar todos los cursos
+                    cursosFiltrados = [...cursosCorporativos];
+                } else {
+                    // Filtrar cursos que coincidan con el texto de búsqueda
+                    cursosFiltrados = cursosCorporativos.filter(curso => {
+                        // Buscar en título
+                        const titleMatch = curso.title.toLowerCase().includes(searchQuery);
+                        // Buscar en competencia
+                        const competencyMatch = curso.competency.toLowerCase().includes(searchQuery);
+                        // Buscar en tipo de contenido
+                        const typeMatch = curso.type.toLowerCase().includes(searchQuery);
+                        // Buscar en nivel
+                        const levelMatch = curso.level.toLowerCase().includes(searchQuery);
+                        
+                        return titleMatch || competencyMatch || typeMatch || levelMatch;
+                    });
+                }
+                
+                // Resetear a la primera página cuando se filtra
+                currentPage = 1;
+                
+                // Re-renderizar cards y actualizar paginador
+                renderCards();
+                updatePaginator();
+            }
+
+            // Función para actualizar el contador de resultados
+            function updateResultsCount() {
+                const resultsCountElement = document.getElementById('buscador-results-count');
+                if (resultsCountElement) {
+                    resultsCountElement.textContent = cursosFiltrados.length;
+                }
+            }
+
+            // Función para renderizar cards de la página actual
+            function renderCards() {
+                const container = document.getElementById('cursos-corporativos-container');
+                if (!container) return;
+
+                // Si no hay resultados, mostrar empty state
+                if (cursosFiltrados.length === 0) {
+                    // Limpiar el grid y mostrar empty state ocupando todo el ancho
+                    container.innerHTML = '<div id="empty-state-no-results" style="grid-column: 1 / -1; width: 100%;"></div>';
+                    
+                    // Cargar empty state component
+                    if (typeof loadEmptyState === 'function') {
+                        loadEmptyState('empty-state-no-results', {
+                            icon: 'fa-search',
+                            iconSize: 'lg',
+                            title: 'No se encontraron resultados',
+                            description: 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.'
+                        });
+                    }
+                    
+                    // Ocultar paginador cuando no hay resultados
+                    const paginatorContainer = document.getElementById('paginador-container');
+                    if (paginatorContainer) {
+                        paginatorContainer.style.display = 'none';
+                    }
+                    
+                    // Actualizar contador de resultados
+                    updateResultsCount();
+                    return;
+                }
+
+                // Si hay resultados, mostrar las cards
+                if (typeof loadCardContent === 'function') {
+                    const startIndex = (currentPage - 1) * itemsPerPageValue;
+                    const endIndex = startIndex + itemsPerPageValue;
+                    const pageCards = cursosFiltrados.slice(startIndex, endIndex);
+
+                    loadCardContent('cursos-corporativos-container', pageCards);
+                }
+                
+                // Mostrar paginador cuando hay resultados
+                const paginatorContainer = document.getElementById('paginador-container');
+                if (paginatorContainer) {
+                    paginatorContainer.style.display = 'block';
+                }
+                
+                // Actualizar contador de resultados
+                updateResultsCount();
+            }
+
+            // Función para actualizar el paginador con el nuevo total de items
+            function updatePaginator() {
+                if (paginatorInstance) {
+                    paginatorInstance.updateTotalItems(cursosFiltrados.length);
+                } else {
+                    // Si el paginador aún no existe, inicializarlo
+                    initializePaginator();
+                }
+            }
+
+            // Inicializar paginador usando componente oficial UBITS
+            function initializePaginator() {
+                const container = document.getElementById('paginador-container');
+                if (!container || typeof loadPaginator !== 'function') return;
+
+                paginatorInstance = loadPaginator('paginador-container', {
+                    totalItems: cursosFiltrados.length,
+                    itemsPerPage: itemsPerPageValue,
+                    currentPage: currentPage,
+                    itemsPerPageOptions: [16, 20, 32, 48],
+                    onPageChange: function(page) {
+                        currentPage = page;
+                        renderCards();
+                        
+                        // Scroll suave hacia arriba
+                        window.scrollTo({
+                            top: 0,
+                            behavior: 'smooth'
+                        });
+                    },
+                    onItemsPerPageChange: function(newItemsPerPage) {
+                        itemsPerPageValue = newItemsPerPage;
+                        currentPage = 1; // Resetear a la primera página
+                        renderCards();
+                        
+                        // Actualizar el paginador con el nuevo total de páginas
+                        if (paginatorInstance) {
+                            paginatorInstance.updateTotalItems(cursosFiltrados.length);
+                        }
+                    }
+                });
+            }
+
+            // Cargar cards iniciales y paginador
+            renderCards();
+            initializePaginator();
+            
+            // Actualizar contador de resultados inicial
+            updateResultsCount();
+            
+            // Funcionalidad del botón de búsqueda
+            const buscadorToggleBtn = document.getElementById('buscador-toggle-btn');
+            const buscadorInputContainer = document.getElementById('buscador-input-container');
+            let searchInputInstance = null;
+            let isSearchMode = false;
+            let currentSearchValue = ''; // Almacenar el valor actual de búsqueda
+            
+            // Función para cerrar el input de búsqueda
+            function closeSearchInput(clearSearch = true) {
+                if (isSearchMode) {
+                    buscadorInputContainer.innerHTML = '';
+                    buscadorInputContainer.style.display = 'none';
+                    buscadorToggleBtn.style.display = 'flex';
+                    isSearchMode = false;
+                    searchInputInstance = null;
+                    
+                    // Limpiar búsqueda y restaurar todos los cursos solo si se solicita
+                    if (clearSearch) {
+                        currentSearchValue = '';
+                        filterCourses('');
+                    }
+                }
+            }
+            
+            // Función para verificar si hay texto en el input de búsqueda
+            function hasSearchText() {
+                // Usar la variable almacenada en lugar de leer del DOM
+                return currentSearchValue.trim() !== '';
+            }
+            
+            if (buscadorToggleBtn && buscadorInputContainer) {
+                buscadorToggleBtn.addEventListener('click', function(e) {
+                    e.stopPropagation(); // Prevenir que el clic se propague
+                    if (!isSearchMode) {
+                        // Convertir botón en input de búsqueda
+                        buscadorToggleBtn.style.display = 'none';
+                        buscadorInputContainer.style.display = 'block';
+                        
+                        // Crear input de búsqueda UBITS
+                        if (typeof createInput === 'function') {
+                            searchInputInstance = createInput({
+                                containerId: 'buscador-input-container',
+                                type: 'search',
+                                placeholder: 'Buscar contenidos...',
+                                size: 'md',
+                                onChange: function(value) {
+                                    // Almacenar el valor actual
+                                    currentSearchValue = value || '';
+                                    // Ejecutar búsqueda cuando el usuario escribe
+                                    filterCourses(value);
+                                }
+                            });
+                            
+                            // Agregar botón para cerrar búsqueda y focus automático
+                            setTimeout(() => {
+                                const inputWrapper = buscadorInputContainer.querySelector('.ubits-input-wrapper');
+                                if (inputWrapper) {
+                                    const closeBtn = document.createElement('button');
+                                    closeBtn.className = 'ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only';
+                                    closeBtn.style.marginLeft = '8px';
+                                    closeBtn.innerHTML = '<i class="far fa-times"></i>';
+                                    closeBtn.addEventListener('click', function(e) {
+                                        e.stopPropagation(); // Prevenir que el clic se propague
+                                        closeSearchInput(true); // Cerrar y limpiar búsqueda
+                                    });
+                                    buscadorInputContainer.appendChild(closeBtn);
+                                    
+                                    // Focus automático en el input
+                                    const inputElement = inputWrapper.querySelector('input');
+                                    if (inputElement) {
+                                        inputElement.focus();
+                                    }
+                                }
+                            }, 100);
+                            
+                            isSearchMode = true;
+                        }
+                    }
+                });
+                
+                // Detectar clics fuera del input para cerrarlo (solo si no hay búsqueda activa)
+                document.addEventListener('click', function(e) {
+                    if (isSearchMode) {
+                        const isClickInside = buscadorInputContainer.contains(e.target) || 
+                                             buscadorToggleBtn.contains(e.target);
+                        if (!isClickInside) {
+                            // Verificar si hay texto usando la variable almacenada
+                            if (!hasSearchText()) {
+                                // Solo cerrar si no hay texto
+                                closeSearchInput(true);
+                            }
+                            // Si hay texto, mantener el input abierto (no hacer nada)
+                        }
+                    }
+                });
+            }
         });
     </script>
 </body>
 </html>
+

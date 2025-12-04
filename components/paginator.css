@@ -1,0 +1,99 @@
+/* ========================================
+   UBITS PAGINATOR COMPONENT
+   Componente de paginador con navegación y selector de items por página
+   ======================================== */
+
+/* ========================================
+   PAGINATOR CONTAINER
+   ======================================== */
+
+.ubits-paginator {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    min-height: 40px;
+    padding: 8px 0;
+}
+
+/* ========================================
+   PAGINATOR SELECTOR CONTAINER
+   ======================================== */
+
+.ubits-paginator__items-select {
+    display: inline-block;
+    width: 140px !important;
+    max-width: 140px !important;
+    /* Ancho fijo de 140px */
+}
+
+/* Ocultar label del selector de items por página */
+.ubits-paginator__items-select .ubits-input-label {
+    display: none;
+}
+
+/* Estilo del input select para que se vea como botón tertiary */
+.ubits-paginator__items-select .ubits-input {
+    background: transparent;
+    border: none;
+    padding: 8px 8px 8px 12px !important; /* Padding sm para tamaño sm */
+    color: var(--ubits-btn-tertiary-fg);
+    cursor: pointer;
+    width: 140px !important;
+    max-width: 140px !important;
+    min-width: 140px !important;
+    display: inline-block;
+    box-sizing: border-box;
+}
+
+.ubits-paginator__items-select .ubits-input:hover {
+    background: var(--ubits-btn-tertiary-bg-hover);
+}
+
+.ubits-paginator__items-select .ubits-input-wrapper {
+    border: none;
+    width: 140px !important;
+    max-width: 140px !important;
+    min-width: 140px !important;
+    display: inline-block;
+    box-sizing: border-box;
+}
+
+/* Asegurar que el input dentro del wrapper se ajuste al contenido */
+.ubits-paginator__items-select .ubits-input-wrapper .ubits-input {
+    width: 140px !important;
+    max-width: 140px !important;
+    min-width: 140px !important;
+    display: inline-block;
+    box-sizing: border-box;
+}
+
+/* Asegurar que el select dentro del input también se ajuste */
+.ubits-paginator__items-select .ubits-input select {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: auto !important;
+    padding-right: 24px; /* Espacio para el icono chevron */
+    box-sizing: border-box;
+}
+
+/* Dropdown hacia arriba cuando no hay espacio abajo */
+.ubits-paginator__items-select .ubits-select-dropdown.dropdown-up {
+    top: auto;
+    bottom: 100%;
+    margin-top: 0;
+    margin-bottom: 4px;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+    .ubits-paginator {
+        gap: 4px;
+        padding: 8px 0;
+    }
+}
+

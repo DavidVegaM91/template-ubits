@@ -37,6 +37,69 @@
             background: var(--ubits-bg-1) !important;
             border: 1px solid var(--ubits-border-1) !important;
         }
+        
+        /* Simular vista mobile en el preview */
+        #preview-container-wrapper.preview-mobile {
+            max-width: 400px;
+            margin: 0 auto;
+            overflow: visible; /* Permitir que el dropdown se muestre */
+        }
+        
+        #preview-container-wrapper.preview-mobile #subnav-preview {
+            max-width: 100%;
+            overflow: visible; /* Permitir que el dropdown se muestre */
+        }
+        
+        /* Asegurar que el contenedor del preview permita overflow para dropdowns */
+        #preview-container-wrapper.preview-mobile #subnav-preview-temp {
+            overflow: visible;
+            position: relative;
+        }
+        
+        /* Forzar comportamiento mobile cuando está activo - PERO dentro del contenedor */
+        #preview-container-wrapper.preview-mobile .sub-nav {
+            width: 100% !important; /* Usar 100% del contenedor, no 100vw */
+            max-width: 100% !important;
+            margin-left: 0 !important; /* Sin márgenes negativos */
+            margin-right: 0 !important;
+            border-radius: 0 !important;
+            padding: 12px 12px !important;
+            height: 71px !important; /* Altura fija de 71px en mobile */
+            min-height: 71px !important;
+            box-sizing: border-box;
+        }
+        
+        /* Mostrar selector mobile cuando está activo */
+        #preview-container-wrapper.preview-mobile .sub-nav .module-name,
+        #preview-container-wrapper.preview-mobile .sub-nav .module-selector {
+            display: flex !important;
+        }
+        
+        /* Ocultar tabs normales en mobile */
+        #preview-container-wrapper.preview-mobile .sub-nav .nav-tab {
+            display: none !important;
+        }
+        
+        /* Asegurar que el dropdown del selector se muestre correctamente */
+        #preview-container-wrapper.preview-mobile .module-selector-dropdown {
+            position: absolute !important;
+            z-index: 1000 !important;
+            top: calc(100% + 4px) !important;
+            left: 0 !important;
+            right: 0 !important;
+            width: 100% !important;
+        }
+        
+        /* Asegurar que el contenedor del preview tenga position relative */
+        #preview-container-wrapper {
+            position: relative;
+            overflow: visible; /* Cambiar a visible para permitir dropdowns */
+        }
+        
+        /* El contenedor interno del preview también debe permitir overflow */
+        #preview-container-wrapper > div {
+            overflow: visible;
+        }
     </style>
 </head>
 <body class="componentes-page" data-theme="light">
@@ -68,7 +131,7 @@
                         SubNav
                     </h1>
                     <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
-                        Componente de navegación superior que muestra las sub-navegaciones de los módulos principales del sidebar.
+                        Componente de navegación superior que muestra las sub-navegaciones de los módulos principales del sidebar. En desktop muestra todos los tabs de forma horizontal, y en mobile se transforma automáticamente en un selector dropdown para mantener la funcionalidad completa.
                     </p>
                 </div>
 
@@ -83,49 +146,47 @@
                     </p>
                     
                     <!-- Preview Container -->
-                    <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: 1px solid var(--ubits-border-1); position: relative;">
+                    <div id="preview-container-wrapper" style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: 1px solid var(--ubits-border-1); position: relative;">
                         
                         <!-- SubNav Real de UBITS -->
                         <div id="subnav-preview-container" style="display: flex; justify-content: center; align-items: center;">
                             <div id="subnav-preview" style="width: 100%; max-width: 800px;">
-                                <!-- SubNav Real de UBITS -->
-                                <div class="sub-nav" data-variant="template" id="subnav-preview-real">
-                                    <div class="nav-tabs">
-                                        <button class="nav-tab active" data-tab="section1">
-                                            <i class="fa far fa-home"></i>
-                                            <span class="ubits-body-sm-regular">Sección 1</span>
-                                        </button>
-                                        <button class="nav-tab" data-tab="section2">
-                                            <i class="fa far fa-book"></i>
-                                            <span class="ubits-body-sm-regular">Sección 2</span>
-                                        </button>
-                                        <button class="nav-tab" data-tab="section3">
-                                            <i class="fa far fa-chart-line"></i>
-                                            <span class="ubits-body-sm-regular">Sección 3</span>
-                                        </button>
-                                    </div>
-                                </div>
+                                <!-- SubNav se carga dinámicamente aquí -->
                             </div>
                         </div>
                     </div>
                     
                     <!-- Preview Controls -->
-                    <div style="margin-top: 16px; display: flex; gap: 12px; flex-wrap: wrap;">
-                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" onclick="setPreviewVariant('template')">
-                            <span>Template</span>
-                        </button>
-                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewVariant('aprendizaje')">
-                            <span>Aprendizaje</span>
-                        </button>
-                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewVariant('desempeno')">
-                            <span>Desempeño</span>
-                        </button>
-                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewVariant('encuestas')">
-                            <span>Encuestas</span>
-                        </button>
-                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewVariant('tareas')">
-                            <span>Tareas</span>
-                        </button>
+                    <div style="margin-top: 16px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                            <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin-right: 8px;">Variantes:</span>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" onclick="setPreviewVariant('template')">
+                                <span>Template</span>
+                            </button>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewVariant('aprendizaje')">
+                                <span>Aprendizaje</span>
+                            </button>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewVariant('desempeno')">
+                                <span>Desempeño</span>
+                            </button>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewVariant('encuestas')">
+                                <span>Encuestas</span>
+                            </button>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewVariant('tareas')">
+                                <span>Tareas</span>
+                            </button>
+                        </div>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-left: auto;">
+                            <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin-right: 8px;">Vista:</span>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" id="preview-desktop-btn" onclick="setPreviewView('desktop')">
+                                <i class="far fa-desktop"></i>
+                                <span>Desktop</span>
+                            </button>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" id="preview-mobile-btn" onclick="setPreviewView('mobile')">
+                                <i class="far fa-mobile"></i>
+                                <span>Mobile</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -144,7 +205,7 @@
                         <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                             <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-mobile"></i></div>
                             <div class="ubits-body-sm-bold">Móvil</div>
-                            <div class="ubits-body-sm-regular">Oculto (se reemplaza por el tab-bar)</div>
+                            <div class="ubits-body-sm-regular">Se transforma en selector dropdown (&lt; 1280px)</div>
                         </div>
                         <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                             <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-cog"></i></div>
@@ -313,6 +374,41 @@ updateActiveSubNavTab('componentes'); // Cambiar pestaña activa</code></pre>
                             </div>
                         </div>
 
+                        <!-- Comportamiento Responsive -->
+                        <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-mobile-alt" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Comportamiento responsive
+                            </h2>
+                            <div style="margin-bottom: 24px;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Desktop (≥ 1280px)</h3>
+                                <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
+                                    En pantallas grandes, el SubNav muestra todos los tabs de navegación de forma horizontal. Los tabs son completamente visibles y accesibles.
+                                </p>
+                            </div>
+                            <div style="margin-bottom: 24px;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Mobile/Tablet (&lt; 1280px)</h3>
+                                <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
+                                    En pantallas pequeñas, el SubNav se transforma automáticamente en un selector dropdown. El selector muestra el módulo actual y permite cambiar entre diferentes módulos mediante un dropdown.
+                                </p>
+                                <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: 6px; border-left: 4px solid var(--ubits-accent-brand); margin-top: 12px;">
+                                    <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                        <strong>Características del selector mobile:</strong><br>
+                                        • Muestra el nombre del módulo actual<br>
+                                        • Dropdown con todos los módulos disponibles<br>
+                                        • Se activa automáticamente al redimensionar la ventana<br>
+                                        • Mantiene la funcionalidad de navegación completa
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 24px;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Variante Documentación</h3>
+                                <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
+                                    La variante "documentacion" usa un hamburger menu en mobile en lugar del selector dropdown. El hamburger menu muestra todos los tabs de documentación en un dropdown vertical.
+                                </p>
+                            </div>
+                        </div>
+
                         <!-- API y Funciones -->
                         <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
                             <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
@@ -430,111 +526,204 @@ updateActiveSubNavTab('componentes'); // Cambiar pestaña activa</code></pre>
             });
         });
 
+        // Estado del preview
+        let currentPreviewVariant = 'template';
+        let currentPreviewView = 'desktop';
+        let currentActiveTabId = null; // Guardar tab activo para preservarlo al cambiar vistas
+        
         // Funciones para el preview del SubNav
         function setPreviewVariant(variant) {
-            const preview = document.getElementById('subnav-preview-real');
+            currentPreviewVariant = variant;
+            renderPreview();
             
-            // Cambiar el contenido según la variante
-            switch(variant) {
-                case 'template':
-                    preview.innerHTML = `
-                        <div class="nav-tabs">
-                            <button class="nav-tab active" data-tab="section1">
-                                <i class="fa far fa-home"></i>
-                                <span class="ubits-body-sm-regular">Sección 1</span>
-                            </button>
-                            <button class="nav-tab" data-tab="section2">
-                                <i class="fa far fa-book"></i>
-                                <span class="ubits-body-sm-regular">Sección 2</span>
-                            </button>
-                            <button class="nav-tab" data-tab="section3">
-                                <i class="fa far fa-chart-line"></i>
-                                <span class="ubits-body-sm-regular">Sección 3</span>
-                            </button>
-                        </div>
-                    `;
-                    break;
-                    
-                case 'aprendizaje':
-                    preview.innerHTML = `
-                        <div class="nav-tabs">
-                            <button class="nav-tab active" data-tab="home">
-                                <i class="fa far fa-home"></i>
-                                <span class="ubits-body-sm-regular">Inicio</span>
-                            </button>
-                            <button class="nav-tab" data-tab="catalog">
-                                <i class="fa far fa-book"></i>
-                                <span class="ubits-body-sm-regular">Catálogo</span>
-                            </button>
-                            <button class="nav-tab" data-tab="my-courses">
-                                <i class="fa far fa-play-circle"></i>
-                                <span class="ubits-body-sm-regular">Mis Cursos</span>
-                            </button>
-                        </div>
-                    `;
-                    break;
-                    
-                case 'desempeno':
-                    preview.innerHTML = `
-                        <div class="nav-tabs">
-                            <button class="nav-tab active" data-tab="evaluations">
-                                <i class="fa far fa-chart-pie"></i>
-                                <span class="ubits-body-sm-regular">Evaluaciones 360</span>
-                            </button>
-                            <button class="nav-tab" data-tab="objectives">
-                                <i class="fa far fa-bullseye"></i>
-                                <span class="ubits-body-sm-regular">Objetivos</span>
-                            </button>
-                            <button class="nav-tab" data-tab="metrics">
-                                <i class="fa far fa-chart-line"></i>
-                                <span class="ubits-body-sm-regular">Métricas</span>
-                            </button>
-                            <button class="nav-tab" data-tab="reports">
-                                <i class="fa far fa-file-chart-line"></i>
-                                <span class="ubits-body-sm-regular">Reportes</span>
-                            </button>
-                        </div>
-                    `;
-                    break;
-                    
-                case 'encuestas':
-                    preview.innerHTML = `
-                        <div class="nav-tabs">
-                            <button class="nav-tab active" data-tab="encuestas">
-                                <i class="fa far fa-clipboard-list-check"></i>
-                                <span class="ubits-body-sm-regular">Encuestas</span>
-                            </button>
-                        </div>
-                    `;
-                    break;
-                    
-                case 'tareas':
-                    preview.innerHTML = `
-                        <div class="nav-tabs">
-                            <button class="nav-tab active" data-tab="plans">
-                                <i class="fa far fa-calendar-check"></i>
-                                <span class="ubits-body-sm-regular">Planes</span>
-                            </button>
-                            <button class="nav-tab" data-tab="projects">
-                                <i class="fa far fa-layer-group"></i>
-                                <span class="ubits-body-sm-regular">Proyectos</span>
-                            </button>
-                        </div>
-                    `;
-                    break;
-            }
-            
-            // Actualizar controles
-            const controlButtons = document.querySelectorAll('.preview-control-btn');
-            controlButtons.forEach(button => {
-                button.classList.remove('active');
+            // Actualizar controles de variantes
+            document.querySelectorAll('[onclick^="setPreviewVariant"]').forEach(btn => {
+                btn.classList.remove('active');
             });
-            
             const activeControl = document.querySelector(`[onclick="setPreviewVariant('${variant}')"]`);
             if (activeControl) {
                 activeControl.classList.add('active');
             }
         }
+        
+        function setPreviewView(view) {
+            currentPreviewView = view;
+            const wrapper = document.getElementById('preview-container-wrapper');
+            
+            if (view === 'mobile') {
+                wrapper.classList.add('preview-mobile');
+            } else {
+                wrapper.classList.remove('preview-mobile');
+            }
+            
+            // Actualizar controles de vista
+            document.getElementById('preview-desktop-btn').classList.toggle('active', view === 'desktop');
+            document.getElementById('preview-mobile-btn').classList.toggle('active', view === 'mobile');
+            
+            // Re-renderizar para aplicar cambios
+            renderPreview();
+        }
+        
+        function renderPreview() {
+            const previewContainer = document.getElementById('subnav-preview');
+            if (!previewContainer) return;
+            
+            // Limpiar contenedor
+            previewContainer.innerHTML = '';
+            
+            // Crear contenedor temporal para el SubNav
+            const tempContainer = document.createElement('div');
+            tempContainer.id = 'subnav-preview-temp';
+            previewContainer.appendChild(tempContainer);
+            
+            // Cargar SubNav usando el componente oficial
+            if (typeof loadSubNav === 'function') {
+                loadSubNav('subnav-preview-temp', currentPreviewVariant);
+                
+                // Esperar a que el componente se cargue completamente
+                setTimeout(() => {
+                    const container = document.getElementById('subnav-preview-temp');
+                    if (!container) return;
+                    
+                    const subNav = container.querySelector('.sub-nav');
+                    if (!subNav) return;
+                    
+                    if (currentPreviewView === 'mobile') {
+                        // Activar selector mobile usando la función global
+                        if (typeof window.activateSelector === 'function') {
+                            window.activateSelector(container, currentPreviewVariant, []);
+                            
+                            // Si hay un tab activo guardado, aplicarlo al selector
+                            if (currentActiveTabId) {
+                                setTimeout(() => {
+                                    const activeItem = container.querySelector(`.module-selector-item[data-tab="${currentActiveTabId}"]`);
+                                    if (activeItem) {
+                                        // Remover active de todos
+                                        container.querySelectorAll('.module-selector-item').forEach(item => item.classList.remove('active'));
+                                        // Agregar active al correcto
+                                        activeItem.classList.add('active');
+                                        
+                                        // Actualizar texto del botón
+                                        const buttonText = container.querySelector('.module-selector-button-text');
+                                        if (buttonText) {
+                                            buttonText.textContent = activeItem.querySelector('span').textContent;
+                                        }
+                                    }
+                                }, 100);
+                            }
+                        }
+                    } else {
+                        // Asegurarse de que esté en modo desktop (sin selector)
+                        if (subNav.classList.contains('use-selector')) {
+                            // Guardar tab activo del selector antes de restaurar
+                            const activeSelectorItem = container.querySelector('.module-selector-item.active');
+                            if (activeSelectorItem) {
+                                currentActiveTabId = activeSelectorItem.getAttribute('data-tab');
+                            }
+                            
+                            // Restaurar tabs originales usando la función global
+                            if (typeof window.restoreOriginalTabs === 'function') {
+                                window.restoreOriginalTabs(container, currentPreviewVariant, []);
+                                
+                                // Aplicar tab activo guardado después de restaurar
+                                if (currentActiveTabId) {
+                                    setTimeout(() => {
+                                        const activeTab = container.querySelector(`.nav-tab[data-tab="${currentActiveTabId}"]`);
+                                        if (activeTab) {
+                                            container.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+                                            activeTab.classList.add('active');
+                                        }
+                                    }, 100);
+                                }
+                            } else {
+                                // Fallback: remover clase y recargar
+                                subNav.classList.remove('use-selector');
+                                loadSubNav('subnav-preview-temp', currentPreviewVariant);
+                            }
+                        } else {
+                            // Si ya está en desktop, aplicar tab activo si existe
+                            if (currentActiveTabId) {
+                                setTimeout(() => {
+                                    const activeTab = container.querySelector(`.nav-tab[data-tab="${currentActiveTabId}"]`);
+                                    if (activeTab) {
+                                        container.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+                                        activeTab.classList.add('active');
+                                    }
+                                }, 100);
+                            }
+                        }
+                    }
+                }, 500);
+            }
+        }
+        
+        function activateMobileSelector(containerId, variant) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            // Usar la función global activateSelector del componente
+            if (typeof window.activateSelector === 'function') {
+                window.activateSelector(container, variant, []);
+            } else {
+                console.error('activateSelector no está disponible');
+            }
+        }
+        
+        function togglePreviewModuleSelector(containerId) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            const button = container.querySelector('.module-selector-button');
+            const dropdown = container.querySelector('.module-selector-dropdown');
+            
+            if (button && dropdown) {
+                button.classList.toggle('open');
+                dropdown.classList.toggle('show');
+            }
+        }
+        
+        function selectPreviewModuleItem(containerId, tabId) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            // Guardar tab activo
+            currentActiveTabId = tabId;
+            
+            // Obtener configuración
+            const config = getAllTopNavVariants ? getAllTopNavVariants()[currentPreviewVariant] : null;
+            if (!config) return;
+            
+            const tabs = config.tabs || [];
+            const selectedTab = tabs.find(t => t.id === tabId);
+            if (!selectedTab) return;
+            
+            // Actualizar item activo
+            const items = container.querySelectorAll('.module-selector-item');
+            items.forEach(item => item.classList.remove('active'));
+            
+            const selectedItem = container.querySelector(`[data-tab="${tabId}"]`);
+            if (selectedItem) {
+                selectedItem.classList.add('active');
+                
+                // Actualizar texto del botón
+                const buttonText = container.querySelector('.module-selector-button-text');
+                if (buttonText) {
+                    buttonText.textContent = selectedTab.label;
+                }
+            }
+            
+            // Cerrar dropdown
+            togglePreviewModuleSelector(containerId);
+        }
+        
+        // Funciones globales para el selector mobile del preview
+        window.togglePreviewModuleSelector = togglePreviewModuleSelector;
+        window.selectPreviewModuleItem = selectPreviewModuleItem;
+        
+        // Inicializar preview al cargar
+        document.addEventListener('DOMContentLoaded', function() {
+            renderPreview();
+        });
 
 
         // Función para el acordeón de documentación técnica

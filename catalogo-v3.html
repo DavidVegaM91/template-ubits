@@ -688,7 +688,7 @@
             margin-left: 6px;
             flex-shrink: 0;
         }
-        
+
         .competencia-card-v1-count {
             color: var(--ubits-fg-1-medium);
             line-height: 1.2;
@@ -748,7 +748,7 @@
         .habilidad-chip:hover i {
             color: var(--ubits-fg-1-high);
         }
-
+        
         /* Tooltips para botones */
         .competencia-card-v1-actions .ubits-button {
             position: relative;
@@ -2063,7 +2063,7 @@
                 }
             });
         }
-        
+
         function renderCatalog(academias) {
             const resultsContainer = document.getElementById('catalog-results');
             
@@ -2185,10 +2185,10 @@
             });
 
             resultsContainer.innerHTML = academiasHtml + competenciasHtml;
-            
+
             // Asegurar que los event listeners estén adjuntos (solo una vez)
             attachCatalogEventListeners();
-
+            
             document.querySelectorAll('.competencia-card-v1-actions .ubits-button').forEach(button => {
                 button.addEventListener('mouseenter', function() {
                     const tooltipText = this.getAttribute('data-tooltip');

@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="fontawesome-icons.css">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="components/button.css">
+    <link rel="stylesheet" href="components/empty-state.css">
     
     <style>
         body {
@@ -1030,13 +1031,7 @@
         <div class="section-card">
             <!-- Entregables Container -->
             <div class="entregables-drop-zone drop-zone-entregables" id="entregables-container">
-                <div class="empty-state" id="empty-state">
-                    <img src="images/empty-states/sin-cards.svg" alt="No hay entregables" class="empty-state-image">
-                    <div class="empty-state-content">
-                        <h3 class="ubits-body-md-bold">No hay entregables creados</h3>
-                        <p class="ubits-body-sm-regular">Comienza creando tu primer entregable</p>
-                    </div>
-                </div>
+                <div id="empty-state"></div>
             </div>
 
             <!-- Botón Principal de Creación -->
@@ -1049,6 +1044,7 @@
         </div>
     </div>
 
+    <script src="components/empty-state.js"></script>
     <script>
         // ========== MODELO DE DATOS ========== 
         let roadmapData = {
@@ -1248,29 +1244,23 @@
             
             if (roadmapData.entregables.length === 0) {
                 // Mostrar empty state
-                container.innerHTML = `
-                    <div class="empty-state" id="empty-state">
-                        <img src="images/empty-states/sin-cards.svg" alt="No hay entregables" class="empty-state-image">
-                        <div class="empty-state-content">
-                            <h3 class="ubits-body-md-bold">No hay entregables creados</h3>
-                            <p class="ubits-body-sm-regular">Comienza creando tu primer entregable</p>
-                        </div>
-                    </div>
-                `;
+                container.innerHTML = '<div id="empty-state"></div>';
+                
+                // Cargar empty state component
+                if (typeof loadEmptyState === 'function') {
+                    loadEmptyState('empty-state', {
+                        icon: 'fa-folder',
+                        iconSize: 'lg',
+                        title: 'No hay entregables creados',
+                        description: 'Comienza creando tu primer entregable'
+                    });
+                }
                 updateProgresoGeneral();
                 return;
             }
             
             // Agregar empty state oculto para futuras referencias
-            container.innerHTML = `
-                <div class="empty-state" id="empty-state" style="display: none;">
-                    <img src="images/empty-states/sin-cards.svg" alt="No hay entregables" class="empty-state-image">
-                    <div class="empty-state-content">
-                        <h3 class="ubits-body-md-bold">No hay entregables creados</h3>
-                        <p class="ubits-body-sm-regular">Comienza creando tu primer entregable</p>
-                    </div>
-                </div>
-            `;
+            container.innerHTML = '<div id="empty-state" style="display: none;"></div>';
             
             // Renderizar cada entregable
             roadmapData.entregables.forEach(entregable => {
@@ -2210,7 +2200,7 @@
                     targetContainer.insertBefore(draggedElement, afterElement);
                 } else {
                     // Insertar antes del empty-state si existe, o al final
-                    const emptyState = targetContainer.querySelector('.empty-state');
+                    const emptyState = targetContainer.querySelector('#empty-state');
                     if (emptyState) {
                         targetContainer.insertBefore(draggedElement, emptyState);
                     } else {

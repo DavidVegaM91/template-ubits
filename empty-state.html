@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Empty State | UBITS Playground</title>
+    
+    <!-- Estilos locales -->
+    <link rel="stylesheet" href="ubits-colors.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="fontawesome-icons.css">
+    <link rel="stylesheet" href="ubits-typography.css">
+    <link rel="stylesheet" href="components/sub-nav.css">
+    <link rel="stylesheet" href="components/tab-bar.css">
+    <link rel="stylesheet" href="components/alert.css">
+    <link rel="stylesheet" href="components-sidebar.css">
+    <link rel="stylesheet" href="docs/docs-sidebar.css">
+    <link rel="stylesheet" href="components/button.css">
+    <link rel="stylesheet" href="components/empty-state.css">
+    <style>
+        /* Switch styles */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--ubits-border-1);
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: var(--ubits-accent-brand);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navigation -->
+            <div id="top-nav-container"></div>
+            
+            <!-- Content with Sidebar -->
+            <div style="display: flex;">
+            
+            <!-- Dropdown Móvil para Documentación -->
+            <div id="docs-dropdown-container"></div>
+            
+            <!-- Sidebar de Documentación -->
+            <div id="docs-sidebar-container"></div>
+
+            <!-- Content Area -->
+            <div class="components-content">
+                <!-- Content Area -->
+                <div class="content-area" style="display: block; width: 100%;">
+                    <!-- Hero Section -->
+                    <div style="text-align: center; margin-bottom: 60px;">
+                        <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                            Empty State
+                        </h1>
+                        <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                            Componente para mostrar estados vacíos con icono, título, descripción y dos botones de acción (secondary y primary). Útil para mostrar cuando no hay contenido disponible, resultados de búsqueda, o estados iniciales.
+                        </p>
+                    </div>
+
+                    <!-- Preview Section -->
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1); margin-bottom: 40px;">
+                        <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Preview del componente
+                        </h2>
+                        <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                            Aquí puedes ver el componente Empty State en acción. Usa los controles para cambiar entre diferentes variantes.
+                        </p>
+                        
+                        <!-- Preview Container -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: 1px solid var(--ubits-border-1); position: relative; min-height: 300px;">
+                            
+                            <!-- Empty State Preview -->
+                            <div id="empty-state-preview"></div>
+                        </div>
+                        
+                        <!-- Preview Controls -->
+                        <div style="margin-top: 24px;">
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                                <!-- Switch Header -->
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Header:</span>
+                                    <label class="switch">
+                                        <input type="checkbox" id="preview-header-toggle" onchange="updatePreview()" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                
+                                <!-- Switch Title -->
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Title:</span>
+                                    <label class="switch">
+                                        <input type="checkbox" id="preview-title-toggle" onchange="updatePreview()" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                
+                                <!-- Switch Media Content (Icono) -->
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Media content:</span>
+                                    <label class="switch">
+                                        <input type="checkbox" id="preview-icon-toggle" onchange="updatePreview()" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                
+                                <!-- Switch Body -->
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Body:</span>
+                                    <label class="switch">
+                                        <input type="checkbox" id="preview-body-toggle" onchange="updatePreview()" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                
+                                <!-- Switch Footer -->
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Footer:</span>
+                                    <label class="switch">
+                                        <input type="checkbox" id="preview-footer-toggle" onchange="updatePreview()" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                
+                                <!-- Switch Secondary Action -->
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Secondary action:</span>
+                                    <label class="switch">
+                                        <input type="checkbox" id="preview-secondary-toggle" onchange="updatePreview()" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                
+                                <!-- Switch Primary Action -->
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Primary action:</span>
+                                    <label class="switch">
+                                        <input type="checkbox" id="preview-primary-toggle" onchange="updatePreview()" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                
+                                <!-- Selector Icon Container Size -->
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Icon container size:</span>
+                                    <select id="preview-icon-size-select" onchange="updatePreview()" style="padding: 6px 12px; border-radius: 6px; border: 1px solid var(--ubits-border-1); background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-family: 'Noto Sans', sans-serif; font-size: 14px;">
+                                        <option value="sm">sm</option>
+                                        <option value="md">md</option>
+                                        <option value="lg" selected>lg</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Características Generales -->
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1); margin-bottom: 40px;">
+                        <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-list-check" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Características generales
+                        </h2>
+                        <ul style="list-style: none; padding: 0; margin: 0;">
+                            <li style="margin-bottom: 16px; padding-left: 32px; position: relative;">
+                                <i class="far fa-check-circle" style="position: absolute; left: 0; top: 2px; color: var(--ubits-accent-brand);"></i>
+                                <span class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium);">
+                                    <strong style="color: var(--ubits-fg-1-high);">Icono en contenedor:</strong> Icono FontAwesome dentro de un contenedor con fondo bg-2.
+                                </span>
+                            </li>
+                            <li style="margin-bottom: 16px; padding-left: 32px; position: relative;">
+                                <i class="far fa-check-circle" style="position: absolute; left: 0; top: 2px; color: var(--ubits-accent-brand);"></i>
+                                <span class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium);">
+                                    <strong style="color: var(--ubits-fg-1-high);">Título y descripción:</strong> Textos personalizables con tipografía UBITS.
+                                </span>
+                            </li>
+                            <li style="margin-bottom: 16px; padding-left: 32px; position: relative;">
+                                <i class="far fa-check-circle" style="position: absolute; left: 0; top: 2px; color: var(--ubits-accent-brand);"></i>
+                                <span class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium);">
+                                    <strong style="color: var(--ubits-fg-1-high);">Dos botones opcionales:</strong> Botón Secondary y Primary con todas las variantes y tamaños de UBITS Button.
+                                </span>
+                            </li>
+                            <li style="margin-bottom: 16px; padding-left: 32px; position: relative;">
+                                <i class="far fa-check-circle" style="position: absolute; left: 0; top: 2px; color: var(--ubits-accent-brand);"></i>
+                                <span class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium);">
+                                    <strong style="color: var(--ubits-fg-1-high);">Responsive:</strong> Se adapta automáticamente a diferentes tamaños de pantalla.
+                                </span>
+                            </li>
+                            <li style="margin-bottom: 16px; padding-left: 32px; position: relative;">
+                                <i class="far fa-check-circle" style="position: absolute; left: 0; top: 2px; color: var(--ubits-accent-brand);"></i>
+                                <span class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium);">
+                                    <strong style="color: var(--ubits-fg-1-high);">Tokens UBITS:</strong> Usa colores y tipografía oficiales del sistema de diseño.
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Documentación Técnica -->
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1); margin-bottom: 40px;">
+                        <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Documentación técnica
+                        </h2>
+                        
+                        <div style="margin-bottom: 32px;">
+                            <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">Requisitos obligatorios</h3>
+                            <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                <pre style="margin: 0; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>&lt;!-- CSS Requerido --&gt;
+&lt;link rel="stylesheet" href="components/empty-state.css"&gt;
+&lt;link rel="stylesheet" href="components/button.css"&gt; &lt;!-- Si se usa botón de acción --&gt;
+&lt;link rel="stylesheet" href="fontawesome-icons.css"&gt; &lt;!-- Si se usa icono en botón --&gt;
+&lt;link rel="stylesheet" href="ubits-colors.css"&gt;
+&lt;link rel="stylesheet" href="ubits-typography.css"&gt;
+
+&lt;!-- JavaScript Requerido --&gt;
+&lt;script src="components/empty-state.js"&gt;&lt;/script&gt;</code></pre>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 32px;">
+                            <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">Implementación básica</h3>
+                            <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                <pre style="margin: 0; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>&lt;div id="mi-empty-state-container"&gt;&lt;/div&gt;
+&lt;script&gt;
+    document.addEventListener('DOMContentLoaded', function() {
+        loadEmptyState('mi-empty-state-container', {
+            icon: 'fa-grid',
+            iconSize: 'lg', // 'sm', 'md', 'lg' (default: 'lg')
+            title: 'No se encontraron resultados',
+            description: 'Intenta ajustar los filtros de búsqueda para encontrar lo que buscas.'
+        });
+    });
+&lt;/script&gt;</code></pre>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 32px;">
+                            <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">Con botones (secondary y primary)</h3>
+                            <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                <pre style="margin: 0; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>&lt;div id="mi-empty-state-container"&gt;&lt;/div&gt;
+&lt;script&gt;
+    document.addEventListener('DOMContentLoaded', function() {
+        loadEmptyState('mi-empty-state-container', {
+            icon: 'fa-grid',
+            title: 'No se encontraron resultados',
+            description: 'Intenta ajustar los filtros de búsqueda para encontrar lo que buscas.',
+            buttons: {
+                secondary: {
+                    text: 'Cancelar',
+                    icon: 'fa-times',
+                    onClick: function() {
+                        console.log('Cancelar');
+                    }
+                },
+                primary: {
+                    text: 'Buscar',
+                    icon: 'fa-search',
+                    onClick: function() {
+                        console.log('Buscar');
+                    }
+                }
+            }
+        });
+    });
+&lt;/script&gt;</code></pre>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 32px;">
+                            <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">Parámetros disponibles</h3>
+                            <div style="overflow-x: auto;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <thead>
+                                        <tr style="background: var(--ubits-bg-2);">
+                                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-high); font-family: 'Noto Sans', sans-serif; font-size: 13px; font-weight: 700;">Parámetro</th>
+                                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-high); font-family: 'Noto Sans', sans-serif; font-size: 13px; font-weight: 700;">Tipo</th>
+                                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-high); font-family: 'Noto Sans', sans-serif; font-size: 13px; font-weight: 700;">Requerido</th>
+                                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-high); font-family: 'Noto Sans', sans-serif; font-size: 13px; font-weight: 700;">Descripción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Courier New', monospace; font-size: 13px;">containerId</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: 13px;">string</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: 13px;">Sí</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: 13px;">ID del contenedor donde se renderizará el empty state</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Courier New', monospace; font-size: 13px;">options.icon</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: 13px;">string</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: 13px;">No</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: 13px;">Clase FontAwesome del icono (ej: 'fa-grid', default: 'fa-grid')</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Courier New', monospace; font-size: 13px;">options.iconSize</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: 13px;">string</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: 13px;">No</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: 13px;">Tamaño del contenedor: 'sm' (28x28px, icono 12px), 'md' (32x32px, icono 16px), 'lg' (36x36px, icono 20px). Default: 'lg'</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Courier New', monospace; font-size: 13px;">options.title</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: 13px;">string</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: 13px;">Sí</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: 13px;">Título del empty state</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Courier New', monospace; font-size: 13px;">options.description</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: 13px;">string</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: 13px;">Sí</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: 13px;">Descripción del empty state</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Courier New', monospace; font-size: 13px;">options.buttons</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: 13px;">object</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: 13px;">No</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: 13px;">Configuración de los botones (secondary: {text, icon, onClick}, primary: {text, icon, onClick})</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 32px;">
+                            <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">Métodos disponibles</h3>
+                            <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                <pre style="margin: 0; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>const emptyStateInstance = loadEmptyState('mi-container', {...});
+
+// Actualizar configuración
+emptyStateInstance.update({
+    title: 'Nuevo título',
+    description: 'Nueva descripción'
+});
+
+// Obtener configuración actual
+const config = emptyStateInstance.getConfig();</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="components/sidebar.js"></script>
+    <script src="components/sub-nav.js"></script>
+    <script src="components/tab-bar.js"></script>
+    <script src="docs/docs-sidebar.js"></script>
+    <script src="components/empty-state.js"></script>
+    
+    <script>
+        // Estado del preview
+        let previewState = {
+            showHeader: true,
+            showTitle: true,
+            showIcon: true,
+            showBody: true,
+            showFooter: true,
+            showSecondary: true,
+            showPrimary: true,
+            iconSize: 'lg',
+            icon: 'fa-grid',
+            title: 'Empty title',
+            description: 'Empty description',
+            secondaryText: 'Secondary',
+            secondaryIcon: 'fa-times',
+            primaryText: 'Primary',
+            primaryIcon: 'fa-search'
+        };
+        
+        // Cargar componentes de navegación
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSidebar('ninguno');
+            loadSubNav('top-nav-container', 'documentacion');
+            loadTabBar('tab-bar-container');
+            loadDocsSidebar('empty-state');
+            
+            // Inicializar preview
+            updatePreview();
+        });
+        
+        // Función para actualizar el preview según los switches
+        function updatePreview() {
+            // Obtener valores de los switches
+            previewState.showHeader = document.getElementById('preview-header-toggle').checked;
+            previewState.showTitle = document.getElementById('preview-title-toggle').checked;
+            previewState.showIcon = document.getElementById('preview-icon-toggle').checked;
+            previewState.showBody = document.getElementById('preview-body-toggle').checked;
+            previewState.showFooter = document.getElementById('preview-footer-toggle').checked;
+            previewState.showSecondary = document.getElementById('preview-secondary-toggle').checked;
+            previewState.showPrimary = document.getElementById('preview-primary-toggle').checked;
+            previewState.iconSize = document.getElementById('preview-icon-size-select').value;
+            
+            // Construir configuración para loadEmptyState
+            const config = {
+                icon: previewState.icon,
+                iconSize: previewState.iconSize,
+                title: previewState.showTitle ? previewState.title : '',
+                description: previewState.showBody ? previewState.description : ''
+            };
+            
+            // Construir botones si footer está activo
+            if (previewState.showFooter && (previewState.showSecondary || previewState.showPrimary)) {
+                config.buttons = {};
+                
+                if (previewState.showSecondary) {
+                    config.buttons.secondary = {
+                        text: previewState.secondaryText,
+                        icon: previewState.secondaryIcon,
+                        onClick: function() {
+                            alert('Secondary action');
+                        }
+                    };
+                }
+                
+                if (previewState.showPrimary) {
+                    config.buttons.primary = {
+                        text: previewState.primaryText,
+                        icon: previewState.primaryIcon,
+                        onClick: function() {
+                            alert('Primary action');
+                        }
+                    };
+                }
+            }
+            
+            // Renderizar el empty state
+            const container = document.getElementById('empty-state-preview');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            container.className = 'ubits-empty-state';
+            
+            let html = '';
+            
+            // Header (solo si está activo Y (icono o título están activos))
+            if (previewState.showHeader && (previewState.showIcon || previewState.showTitle)) {
+                html += '<div class="ubits-empty-state__header">';
+                
+                // Icono (Media content)
+                if (previewState.showIcon) {
+                    html += `
+                        <div class="ubits-empty-state__icon-container ubits-empty-state__icon-container--${previewState.iconSize}">
+                            <div class="ubits-empty-state__icon">
+                                <i class="far ${previewState.icon.startsWith('fa-') ? previewState.icon : 'fa-' + previewState.icon}"></i>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                // Título
+                if (previewState.showTitle) {
+                    html += `<h3 class="ubits-empty-state__title ubits-body-md-bold">${previewState.title}</h3>`;
+                }
+                
+                html += '</div>';
+            }
+            
+            // Body (Descripción)
+            if (previewState.showBody) {
+                html += `<p class="ubits-empty-state__description ubits-body-sm-regular">${previewState.description}</p>`;
+            }
+            
+            // Footer (Botones)
+            if (previewState.showFooter && (previewState.showSecondary || previewState.showPrimary)) {
+                html += '<div class="ubits-empty-state__footer">';
+                
+                // Botón Secondary
+                if (previewState.showSecondary) {
+                    html += `
+                        <button class="ubits-button ubits-button--secondary ubits-button--md" onclick="alert('Secondary action')">
+                            <i class="far ${previewState.secondaryIcon.startsWith('fa-') ? previewState.secondaryIcon : 'fa-' + previewState.secondaryIcon}"></i>
+                            <span>${previewState.secondaryText}</span>
+                        </button>
+                    `;
+                }
+                
+                // Botón Primary
+                if (previewState.showPrimary) {
+                    html += `
+                        <button class="ubits-button ubits-button--primary ubits-button--md" onclick="alert('Primary action')">
+                            <i class="far ${previewState.primaryIcon.startsWith('fa-') ? previewState.primaryIcon : 'fa-' + previewState.primaryIcon}"></i>
+                            <span>${previewState.primaryText}</span>
+                        </button>
+                    `;
+                }
+                
+                html += '</div>';
+            }
+            
+            container.innerHTML = html;
+        }
+    </script>
+</body>
+</html>
+

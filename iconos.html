@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="components/sub-nav.css">
     <link rel="stylesheet" href="components/button.css">
     <link rel="stylesheet" href="components/toast.css">
+    <link rel="stylesheet" href="components/empty-state.css">
 </head>
 <body class="iconos-page" data-theme="light">
     <div class="dashboard-container">
@@ -65,21 +66,7 @@
                     <!-- Las secciones de letras se cargarán aquí dinámicamente -->
                 </div>
 
-                <div class="empty-state" id="emptyState" style="display: none;">
-                    <div class="empty-state-content">
-                        <div class="empty-state-illustration">
-                            <img src="images/empty-states/sin-resultados-img.svg" alt="Sin resultados" width="220" height="200">
-                        </div>
-                        <div class="empty-state-text">
-                            <div class="empty-state-title ubits-body-md-bold">Sin resultados</div>
-                            <div class="empty-state-description ubits-body-md-regular">Intenta nuevamente ingresando otro término de búsqueda.</div>
-                            <button class="ubits-button ubits-button--secondary ubits-button--md" onclick="clearSearch()">
-                                <i class="far fa-refresh"></i>
-                                <span>Limpiar búsqueda</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                <div id="emptyState" style="display: none;"></div>
             </div>
             </div>
             </div>
@@ -89,6 +76,7 @@
     <script src="components/sidebar.js"></script>
     <script src="components/sub-nav.js"></script>
     <script src="components/toast.js"></script>
+    <script src="components/empty-state.js"></script>
     <script src="script.js"></script>
     
     <!-- Contenedor para Toast UBITS -->
@@ -341,19 +329,39 @@
 
             let filteredIcons = [...allIcons];
 
+            let emptyStateInstance = null;
+
             function renderIcons() {
                 const container = document.getElementById('iconsContainer');
                 const resultsCount = document.getElementById('resultsCount');
-                const emptyState = document.getElementById('emptyState');
+                const emptyStateContainer = document.getElementById('emptyState');
 
                 if (filteredIcons.length === 0) {
                     container.innerHTML = '';
-                    emptyState.style.display = 'flex';
+                    emptyStateContainer.style.display = 'block';
+                    
+                    // Cargar o actualizar empty state
+                    if (!emptyStateInstance) {
+                        emptyStateInstance = loadEmptyState('emptyState', {
+                            icon: 'fa-search',
+                            iconSize: 'lg',
+                            title: 'Sin resultados',
+                            description: 'Intenta nuevamente ingresando otro término de búsqueda.',
+                            buttons: {
+                                secondary: {
+                                    text: 'Limpiar búsqueda',
+                                    icon: 'fa-refresh',
+                                    onClick: clearSearch
+                                }
+                            }
+                        });
+                    }
+                    
                     resultsCount.textContent = '0 resultados';
                     return;
                 }
 
-                emptyState.style.display = 'none';
+                emptyStateContainer.style.display = 'none';
                 resultsCount.textContent = `${filteredIcons.length} resultados`;
 
                 // Agrupar iconos por letra

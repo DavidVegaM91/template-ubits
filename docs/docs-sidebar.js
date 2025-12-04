@@ -59,6 +59,16 @@ const DOCS_SIDEBAR_SECTIONS = [
         id: 'tab',
         title: 'Tab',
         group: 'ui'
+    },
+    {
+        id: 'paginator',
+        title: 'Paginator',
+        group: 'ui'
+    },
+    {
+        id: 'empty-state',
+        title: 'Empty State',
+        group: 'ui'
     }
 ];
 
@@ -108,6 +118,12 @@ const docsSidebarHTML = `
                     </div>
                     <div class="docs-sidebar-item" data-section="tab">
                         <span class="docs-sidebar-text">Tab</span>
+                    </div>
+                    <div class="docs-sidebar-item" data-section="paginator">
+                        <span class="docs-sidebar-text">Paginator</span>
+                    </div>
+                    <div class="docs-sidebar-item" data-section="empty-state">
+                        <span class="docs-sidebar-text">Empty State</span>
                     </div>
                 </div>
             </div>
@@ -162,6 +178,12 @@ const docsDropdownHTML = `
                     </div>
                     <div class="docs-dropdown-item" data-section="tab">
                         <span class="docs-dropdown-item-text ubits-body-md-regular">Tab</span>
+                    </div>
+                    <div class="docs-dropdown-item" data-section="paginator">
+                        <span class="docs-dropdown-item-text ubits-body-md-regular">Paginator</span>
+                    </div>
+                    <div class="docs-dropdown-item" data-section="empty-state">
+                        <span class="docs-dropdown-item-text ubits-body-md-regular">Empty State</span>
                     </div>
                 </div>
             </div>
@@ -300,6 +322,22 @@ function initDocsSidebar(activeSection) {
             } else {
                 // Si estamos en otra página, navegar a tab.html
                 window.location.href = 'tab.html';
+            }
+        } else if (section === 'paginator') {
+            // Si ya estamos en paginator.html, solo hacer scroll al top
+            if (window.location.pathname.includes('paginator.html')) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                // Si estamos en otra página, navegar a paginator.html
+                window.location.href = 'paginator.html';
+            }
+        } else if (section === 'empty-state') {
+            // Si ya estamos en empty-state.html, solo hacer scroll al top
+            if (window.location.pathname.includes('empty-state.html')) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                // Si estamos en otra página, navegar a empty-state.html
+                window.location.href = 'empty-state.html';
             }
         }
     }
