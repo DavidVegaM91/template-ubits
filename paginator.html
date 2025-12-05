@@ -386,6 +386,35 @@ loadPaginator('mi-paginador', {
                                     </div>
                                 </div>
                                 
+                                <!-- IMPORTANTE: CENTRADO DEL PAGINADOR -->
+                                <div style="background: var(--ubits-feedback-bg-info); padding: 16px; border-radius: 8px; border-left: 4px solid var(--ubits-feedback-accent-info); margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">⚠️ IMPORTANTE: El paginador siempre debe estar centrado</h3>
+                                    <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6;">
+                                        <p style="margin-bottom: 12px;">
+                                            El componente paginator <strong>siempre debe aparecer centrado</strong> en la página. El CSS del componente aplica automáticamente el centrado, pero si necesitas mostrar/ocultar el paginador con JavaScript, asegúrate de usar <code>display: flex</code> en lugar de <code>display: block</code>.
+                                        </p>
+                                        <div style="background: var(--ubits-bg-1); padding: 12px; border-radius: 6px; margin-top: 12px; border: 1px solid var(--ubits-border-1);">
+                                            <strong style="color: var(--ubits-fg-1-high);">✅ CORRECTO:</strong>
+                                            <pre style="margin: 8px 0 0 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 12px; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>// Mostrar paginador (centrado)
+const paginatorContainer = document.getElementById('paginador-container');
+if (paginatorContainer) {
+    paginatorContainer.style.display = 'flex'; // ✅ Usar flex para centrar
+}</code></pre>
+                                        </div>
+                                        <div style="background: var(--ubits-bg-1); padding: 12px; border-radius: 6px; margin-top: 12px; border: 1px solid var(--ubits-border-1);">
+                                            <strong style="color: var(--ubits-fg-1-high);">❌ INCORRECTO:</strong>
+                                            <pre style="margin: 8px 0 0 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 12px; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>// Mostrar paginador (NO centrado)
+const paginatorContainer = document.getElementById('paginador-container');
+if (paginatorContainer) {
+    paginatorContainer.style.display = 'block'; // ❌ NO usar block, no permite centrar
+}</code></pre>
+                                        </div>
+                                        <p style="margin-top: 12px; margin-bottom: 0;">
+                                            El CSS del componente aplica automáticamente <code>display: flex</code>, <code>justify-content: center</code> y <code>align-items: center</code> a los contenedores comunes del paginador (como <code>.paginador-container</code>, <code>.paginator-container</code>, o IDs que contengan "paginador" o "paginator").
+                                        </p>
+                                    </div>
+                                </div>
+                                
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
                                     <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="implementation-code">&lt;!-- IMPLEMENTACIÓN BÁSICA --&gt;
 &lt;!-- HTML --&gt;

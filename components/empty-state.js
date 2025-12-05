@@ -59,6 +59,140 @@
  * </script>
  * ```
  *
+ * IMPLEMENTACIÓN PARA OCUPAR TODO EL ANCHO DISPONIBLE:
+ * Para que el empty state ocupe todo el ancho de una sección (como un encabezado o widget completo):
+ * 
+ * 1. Coloca el contenedor directamente en la sección, no dentro de grids o contenedores con ancho limitado:
+ * ```html
+ * <div class="section-single">
+ *     <div id="mi-empty-state-container"></div>
+ * </div>
+ * ```
+ * 
+ * 2. Asegúrate de que la sección tenga flex-direction: column:
+ * ```css
+ * .section-single {
+ *     display: flex;
+ *     flex-direction: column;
+ *     width: 100%;
+ * }
+ * ```
+ * 
+ * 3. El contenedor solo necesita width: 100% (el componente maneja sus propios paddings):
+ * ```css
+ * #mi-empty-state-container {
+ *     width: 100%;
+ * }
+ * ```
+ * 
+ * El componente `.ubits-empty-state` automáticamente ocupará todo el ancho disponible y mantendrá
+ * sus paddings originales (20px en desktop, 16px en mobile).
+ *
+ * ⚠️ IMPORTANTE - DISPLAY Y GAP:
+ * El componente usa `display: flex` y `gap` para el espaciado. Si necesitas mostrar/ocultar el
+ * contenedor, usa `display: 'flex'` en lugar de `display: 'block'`, de lo contrario el `gap` no funcionará:
+ * 
+ * ```javascript
+ * // ✅ CORRECTO
+ * emptyStateContainer.style.display = 'flex';
+ * 
+ * // ❌ INCORRECTO - El gap no funcionará
+ * emptyStateContainer.style.display = 'block';
+ * ```
+ * 
+ * El componente automáticamente aplica `display: flex` al contenedor cuando se renderiza, pero si
+ * necesitas controlar el display manualmente, asegúrate de usar `flex` para mantener el espaciado correcto.
+ *
+ * ⚠️ IMPORTANTE - ONCLICK Y FUNCIONES GLOBALES:
+ * El componente crea funciones globales para manejar los onClick de los botones. Si necesitas que
+ * el onClick acceda a funciones definidas en tu código, asegúrate de que esas funciones estén disponibles
+ * en el scope global (window) o captura la referencia directamente:
+ * 
+ * ```javascript
+ * // ✅ CORRECTO - Función global
+ * window.miFuncionLimpiar = function() {
+ *     // Tu código aquí
+ * };
+ * 
+ * loadEmptyState('mi-container', {
+ *     title: 'No hay resultados',
+ *     description: 'Descripción',
+ *     buttons: {
+ *         primary: {
+ *             text: 'Limpiar',
+ *             onClick: function() {
+ *                 window.miFuncionLimpiar(); // Acceder a función global
+ *             }
+ *         }
+ *     }
+ * });
+ * ```
+ * 
+ * ```javascript
+ * // ✅ CORRECTO - Capturar referencia directa
+ * const miFuncion = function() {
+ *     // Tu código aquí
+ * };
+ * 
+ * loadEmptyState('mi-container', {
+ *     title: 'No hay resultados',
+ *     description: 'Descripción',
+ *     buttons: {
+ *         primary: {
+ *             text: 'Limpiar',
+ *             onClick: miFuncion // Pasar referencia directa
+ *         }
+ *     }
+ * });
+ * ```
+ * 
+ * El componente automáticamente limpia las funciones globales anteriores cuando se renderiza de nuevo,
+ * así que puedes llamar a `loadEmptyState` múltiples veces sin problemas.
+ *
+ * ⚠️ SOLUCIÓN PARA CASOS DE BÚSQUEDA (Empty State de "No se encontraron resultados"):
+ * Si el onClick no funciona (problema común en casos de búsqueda), usa un event listener directo:
+ * 
+ * ```javascript
+ * // 1. Define la función global ANTES de renderizar
+ * window.limpiarBusqueda = function() {
+ *     // Tu código para limpiar búsqueda
+ *     filterCourses('');
+ * };
+ * 
+ * // 2. Renderiza el empty state
+ * loadEmptyState('empty-state-container', {
+ *     title: 'No se encontraron resultados',
+ *     description: 'Intenta ajustar tu búsqueda.',
+ *     buttons: {
+ *         primary: {
+ *             text: 'Limpiar búsqueda',
+ *             icon: 'fa-times',
+ *             onClick: function() {
+ *                 // Placeholder, manejaremos el click directamente
+ *             }
+ *         }
+ *     }
+ * });
+ * 
+ * // 3. Agregar event listener directo al botón (KISS approach)
+ * setTimeout(() => {
+ *     const container = document.getElementById('empty-state-container');
+ *     const clearBtn = container.querySelector('.ubits-button--primary');
+ *     if (clearBtn) {
+ *         clearBtn.onclick = function(e) {
+ *             e.preventDefault();
+ *             e.stopPropagation();
+ *             if (typeof window.limpiarBusqueda === 'function') {
+ *                 window.limpiarBusqueda();
+ *             }
+ *         };
+ *     }
+ * }, 50);
+ * ```
+ * 
+ * Esta solución es más simple y directa, especialmente útil para casos de búsqueda donde el onClick
+ * del componente puede no funcionar correctamente debido a problemas de scope o timing.
+ *
  * @param {string} containerId - ID del contenedor donde se renderizará el empty state.
  * @param {object} options - Opciones de configuración del empty state.
  * @param {string} options.icon - Clase FontAwesome del icono (ej: 'fa-grid', se agrega 'far' automáticamente).
@@ -180,20 +314,33 @@ function loadEmptyState(containerId, options = {}) {
         
         container.innerHTML = html;
         
+        // Limpiar funciones globales anteriores para evitar conflictos
+        const secondaryFuncName = `ubitsEmptyStateSecondary_${containerId}`;
+        const primaryFuncName = `ubitsEmptyStatePrimary_${containerId}`;
+        if (window[secondaryFuncName]) {
+            delete window[secondaryFuncName];
+        }
+        if (window[primaryFuncName]) {
+            delete window[primaryFuncName];
+        }
+        
         // Crear funciones globales para los botones
+        // IMPORTANTE: Capturar directamente la referencia al onClick, no a través de config
         if (config.buttons) {
             if (config.buttons.secondary && config.buttons.secondary.onClick) {
-                window[`ubitsEmptyStateSecondary_${containerId}`] = function() {
-                    if (typeof config.buttons.secondary.onClick === 'function') {
-                        config.buttons.secondary.onClick();
+                const secondaryOnClick = config.buttons.secondary.onClick; // Capturar referencia directa
+                window[secondaryFuncName] = function() {
+                    if (typeof secondaryOnClick === 'function') {
+                        secondaryOnClick();
                     }
                 };
             }
             
             if (config.buttons.primary && config.buttons.primary.onClick) {
-                window[`ubitsEmptyStatePrimary_${containerId}`] = function() {
-                    if (typeof config.buttons.primary.onClick === 'function') {
-                        config.buttons.primary.onClick();
+                const primaryOnClick = config.buttons.primary.onClick; // Capturar referencia directa
+                window[primaryFuncName] = function() {
+                    if (typeof primaryOnClick === 'function') {
+                        primaryOnClick();
                     }
                 };
             }

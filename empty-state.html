@@ -231,6 +231,12 @@
                                     <strong style="color: var(--ubits-fg-1-high);">Tokens UBITS:</strong> Usa colores y tipografía oficiales del sistema de diseño.
                                 </span>
                             </li>
+                            <li style="margin-bottom: 16px; padding-left: 32px; position: relative;">
+                                <i class="far fa-check-circle" style="position: absolute; left: 0; top: 2px; color: var(--ubits-accent-brand);"></i>
+                                <span class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium);">
+                                    <strong style="color: var(--ubits-fg-1-high);">Ancho completo:</strong> Puede ocupar todo el ancho disponible cuando se coloca directamente en secciones con <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px;">flex-direction: column</code>.
+                                </span>
+                            </li>
                         </ul>
                     </div>
 
@@ -302,6 +308,176 @@
         });
     });
 &lt;/script&gt;</code></pre>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 32px;">
+                            <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">Ocupar todo el ancho disponible</h3>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 16px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                Para que el empty state ocupe todo el ancho de una sección (como un encabezado o widget completo), sigue estos pasos:
+                            </p>
+                            <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: 1px solid var(--ubits-border-1); margin-bottom: 16px;">
+                                <pre style="margin: 0; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>&lt;!-- 1. Coloca el contenedor directamente en la sección, no dentro de grids --&gt;
+&lt;div class="section-single"&gt;
+    &lt;div id="mi-empty-state-container"&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;style&gt;
+    /* 2. Asegúrate de que la sección tenga flex-direction: column */
+    .section-single {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    /* 3. El contenedor solo necesita width: 100% */
+    /* El componente maneja sus propios paddings automáticamente */
+    #mi-empty-state-container {
+        width: 100%;
+    }
+&lt;/style&gt;
+
+&lt;script&gt;
+    document.addEventListener('DOMContentLoaded', function() {
+        loadEmptyState('mi-empty-state-container', {
+            icon: 'fa-search',
+            iconSize: 'lg',
+            title: 'No se encontraron resultados',
+            description: 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.'
+        });
+    });
+&lt;/script&gt;</code></pre>
+                            </div>
+                            <div style="background: var(--ubits-feedback-bg-info); padding: 16px; border-radius: 8px; border-left: 4px solid var(--ubits-feedback-accent-info);">
+                                <p class="ubits-body-sm-regular" style="margin: 0; color: var(--ubits-fg-1-medium); line-height: 1.6;">
+                                    <strong style="color: var(--ubits-fg-1-high);">💡 Importante:</strong> El componente <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px;">.ubits-empty-state</code> automáticamente ocupará todo el ancho disponible y mantendrá sus paddings originales (20px en desktop, 16px en mobile). No necesitas agregar estilos adicionales al componente interno.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 32px;">
+                            <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">⚠️ Problema común: Display y Gap</h3>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 16px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                El componente usa <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px;">display: flex</code> y <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px;">gap</code> para el espaciado entre elementos. Si necesitas mostrar/ocultar el contenedor manualmente, <strong>usa <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px;">display: 'flex'</code> en lugar de <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px;">display: 'block'</code></strong>, de lo contrario el <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px;">gap</code> no funcionará y los elementos se verán pegados.
+                            </p>
+                            <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: 1px solid var(--ubits-border-1); margin-bottom: 16px;">
+                                <pre style="margin: 0; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>// ✅ CORRECTO - El gap funcionará correctamente
+const emptyStateContainer = document.getElementById('mi-empty-state');
+emptyStateContainer.style.display = 'flex'; // Usar flex para que gap funcione
+
+// ❌ INCORRECTO - El gap NO funcionará, elementos se verán pegados
+emptyStateContainer.style.display = 'block'; // display: block previene que gap tenga efecto</code></pre>
+                            </div>
+                            <div style="background: var(--ubits-feedback-bg-warning); padding: 16px; border-radius: 8px; border-left: 4px solid var(--ubits-feedback-accent-warning);">
+                                <p class="ubits-body-sm-regular" style="margin: 0; color: var(--ubits-fg-1-medium); line-height: 1.6;">
+                                    <strong style="color: var(--ubits-fg-1-high);">⚠️ Advertencia:</strong> Si usas <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px;">display: 'block'</code>, el navegador mostrará un warning: <em>"The display: block property prevents gap from having an effect"</em>. El componente automáticamente aplica <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px;">display: flex</code> al renderizarse, pero si necesitas controlar el display manualmente (por ejemplo, para mostrar/ocultar), siempre usa <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px;">'flex'</code>.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 32px;">
+                            <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">⚠️ Problema común: onClick y funciones globales</h3>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 16px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                El componente crea funciones globales para manejar los onClick de los botones. Si necesitas que el onClick acceda a funciones definidas en tu código, asegúrate de que esas funciones estén disponibles en el scope global (<code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px;">window</code>) o captura la referencia directamente.
+                            </p>
+                            <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: 1px solid var(--ubits-border-1); margin-bottom: 16px;">
+                                <pre style="margin: 0; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>// ✅ CORRECTO - Función global (recomendado para búsquedas)
+window.limpiarBusqueda = function() {
+    // Tu código para limpiar búsqueda
+    console.log('Limpiando búsqueda...');
+};
+
+loadEmptyState('mi-container', {
+    title: 'No se encontraron resultados',
+    description: 'Intenta ajustar tu búsqueda.',
+    buttons: {
+        primary: {
+            text: 'Limpiar búsqueda',
+            icon: 'fa-times',
+            onClick: function() {
+                window.limpiarBusqueda(); // Acceder a función global
+            }
+        }
+    }
+});
+
+// ✅ CORRECTO - Capturar referencia directa
+const miFuncion = function() {
+    console.log('Ejecutando acción...');
+};
+
+loadEmptyState('mi-container', {
+    title: 'No hay resultados',
+    description: 'Descripción',
+    buttons: {
+        primary: {
+            text: 'Acción',
+            onClick: miFuncion // Pasar referencia directa
+        }
+    }
+});</code></pre>
+                            </div>
+                            <div style="background: var(--ubits-feedback-bg-info); padding: 16px; border-radius: 8px; border-left: 4px solid var(--ubits-feedback-accent-info);">
+                                <p class="ubits-body-sm-regular" style="margin: 0; color: var(--ubits-fg-1-medium); line-height: 1.6;">
+                                    <strong style="color: var(--ubits-fg-1-high);">💡 Importante:</strong> El componente automáticamente limpia las funciones globales anteriores cuando se renderiza de nuevo, así que puedes llamar a <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px;">loadEmptyState</code> múltiples veces sin problemas. Para casos de búsqueda donde necesitas limpiar resultados, usar funciones globales es la mejor práctica.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 32px;">
+                            <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">🔍 Solución para casos de búsqueda (Empty State de "No se encontraron resultados")</h3>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 16px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                Si el onClick del botón no funciona (problema común en casos de búsqueda), usa un event listener directo. Esta es la solución más simple y confiable (KISS approach):
+                            </p>
+                            <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: 1px solid var(--ubits-border-1); margin-bottom: 16px;">
+                                <pre style="margin: 0; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>// 1. Define la función global ANTES de renderizar
+window.limpiarBusqueda = function() {
+    // Tu código para limpiar búsqueda
+    currentSearchValue = '';
+    filterCourses('');
+    
+    // Ocultar empty state
+    const emptyStateContainer = document.getElementById('empty-state-container');
+    if (emptyStateContainer) {
+        emptyStateContainer.style.display = 'none';
+        emptyStateContainer.innerHTML = '';
+    }
+};
+
+// 2. Renderiza el empty state
+loadEmptyState('empty-state-container', {
+    title: 'No se encontraron resultados',
+    description: 'Intenta ajustar tu búsqueda.',
+    buttons: {
+        primary: {
+            text: 'Limpiar búsqueda',
+            icon: 'fa-times',
+            onClick: function() {
+                // Placeholder, manejaremos el click directamente
+            }
+        }
+    }
+});
+
+// 3. Agregar event listener directo al botón (KISS approach)
+setTimeout(() => {
+    const container = document.getElementById('empty-state-container');
+    const clearBtn = container.querySelector('.ubits-button--primary');
+    if (clearBtn) {
+        clearBtn.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (typeof window.limpiarBusqueda === 'function') {
+                window.limpiarBusqueda();
+            }
+        };
+    }
+}, 50);</code></pre>
+                            </div>
+                            <div style="background: var(--ubits-feedback-bg-warning); padding: 16px; border-radius: 8px; border-left: 4px solid var(--ubits-feedback-accent-warning);">
+                                <p class="ubits-body-sm-regular" style="margin: 0; color: var(--ubits-fg-1-medium); line-height: 1.6;">
+                                    <strong style="color: var(--ubits-fg-1-high);">⚠️ Por qué esta solución:</strong> En casos de búsqueda donde el empty state se renderiza dinámicamente, el sistema de funciones globales del componente puede tener problemas de scope o timing. Usar un event listener directo es más simple, confiable y funciona siempre. El <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px;">setTimeout</code> de 50ms asegura que el botón ya esté en el DOM.
+                                </p>
                             </div>
                         </div>
 

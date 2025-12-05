@@ -37,6 +37,7 @@
         /* Secciones de widgets */
         .section-single {
             display: flex;
+            flex-direction: column;
             width: 100%;
         }
 
@@ -47,6 +48,7 @@
             padding: 0 !important;
             background: transparent !important;
         }
+        
 
         /* Encabezado Universidad Corporativa */
         .widget-encabezado-universidad {
@@ -178,6 +180,7 @@
             display: flex;
             flex-direction: column;
             gap: 24px;
+            width: 100%;
         }
 
         .grid-cards-container {
@@ -186,10 +189,24 @@
             gap: 24px;
         }
 
-        /* Empty state debe ocupar todo el ancho del grid */
-        .grid-cards-container #empty-state-no-results {
-            grid-column: 1 / -1;
+        /* Empty state ocupa todo el ancho */
+        #empty-state-no-results {
             width: 100%;
+        }
+        
+        /* Asegurar que el componente empty state mantenga sus gaps y paddings */
+        #empty-state-no-results.ubits-empty-state {
+            display: flex !important; /* Forzar flex para que gap funcione */
+            padding: 20px !important;
+            gap: 12px !important;
+        }
+        
+        #empty-state-no-results .ubits-empty-state__header {
+            gap: 8px !important;
+        }
+        
+        #empty-state-no-results .ubits-empty-state__footer {
+            gap: 12px !important;
         }
 
         /* Paginador - usar componente oficial */
@@ -347,6 +364,7 @@
                             <div class="grid-cards-container" id="cursos-corporativos-container"></div>
                             <div class="paginador-container" id="paginador-container"></div>
                         </div>
+                        <div id="empty-state-no-results" style="display: none;"></div>
                     </div>
                 </div>
             </div>
@@ -737,21 +755,49 @@
             // Función para renderizar cards de la página actual
             function renderCards() {
                 const container = document.getElementById('cursos-corporativos-container');
+                const emptyStateContainer = document.getElementById('empty-state-no-results');
                 if (!container) return;
 
                 // Si no hay resultados, mostrar empty state
                 if (cursosFiltrados.length === 0) {
-                    // Limpiar el grid y mostrar empty state ocupando todo el ancho
-                    container.innerHTML = '<div id="empty-state-no-results" style="grid-column: 1 / -1; width: 100%;"></div>';
+                    // Ocultar el grid de cards
+                    container.style.display = 'none';
                     
-                    // Cargar empty state component
-                    if (typeof loadEmptyState === 'function') {
-                        loadEmptyState('empty-state-no-results', {
-                            icon: 'fa-search',
-                            iconSize: 'lg',
-                            title: 'No se encontraron resultados',
-                            description: 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.'
-                        });
+                    // Mostrar y cargar empty state component
+                    if (emptyStateContainer) {
+                        emptyStateContainer.style.display = 'flex'; // Usar flex para que gap funcione
+                        
+                        if (typeof loadEmptyState === 'function') {
+                            loadEmptyState('empty-state-no-results', {
+                                icon: 'fa-search',
+                                iconSize: 'lg',
+                                title: 'No se encontraron resultados',
+                                description: 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.',
+                                buttons: {
+                                    primary: {
+                                        text: 'Limpiar búsqueda',
+                                        icon: 'fa-times',
+                                        onClick: function() {
+                                            // Placeholder, manejaremos el click directamente
+                                        }
+                                    }
+                                }
+                            });
+                            
+                            // Agregar event listener directo al botón (KISS approach)
+                            setTimeout(() => {
+                                const clearBtn = emptyStateContainer.querySelector('.ubits-button--primary');
+                                if (clearBtn) {
+                                    clearBtn.onclick = function(e) {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        if (typeof window.clearSearchUCorporativa === 'function') {
+                                            window.clearSearchUCorporativa();
+                                        }
+                                    };
+                                }
+                            }, 50);
+                        }
                     }
                     
                     // Ocultar paginador cuando no hay resultados
@@ -765,7 +811,15 @@
                     return;
                 }
 
-                // Si hay resultados, mostrar las cards
+                // Si hay resultados, ocultar empty state y mostrar las cards
+                if (emptyStateContainer) {
+                    emptyStateContainer.style.display = 'none';
+                    emptyStateContainer.innerHTML = ''; // Limpiar contenido del empty state
+                    emptyStateContainer.className = ''; // Limpiar clases también
+                }
+                
+                container.style.display = 'grid';
+                
                 if (typeof loadCardContent === 'function') {
                     const startIndex = (currentPage - 1) * itemsPerPageValue;
                     const endIndex = startIndex + itemsPerPageValue;
@@ -777,7 +831,7 @@
                 // Mostrar paginador cuando hay resultados
                 const paginatorContainer = document.getElementById('paginador-container');
                 if (paginatorContainer) {
-                    paginatorContainer.style.display = 'block';
+                    paginatorContainer.style.display = 'flex'; // Usar flex para centrar
                 }
                 
                 // Actualizar contador de resultados
@@ -827,13 +881,6 @@
                 });
             }
 
-            // Cargar cards iniciales y paginador
-            renderCards();
-            initializePaginator();
-            
-            // Actualizar contador de resultados inicial
-            updateResultsCount();
-            
             // Funcionalidad del botón de búsqueda
             const buscadorToggleBtn = document.getElementById('buscador-toggle-btn');
             const buscadorInputContainer = document.getElementById('buscador-input-container');
@@ -841,8 +888,43 @@
             let isSearchMode = false;
             let currentSearchValue = ''; // Almacenar el valor actual de búsqueda
             
+            // Función para limpiar la búsqueda (usada por el botón X y el empty state)
+            // Hacerla global para que el botón del empty state pueda accederla
+            window.clearSearchUCorporativa = function() {
+                currentSearchValue = '';
+                
+                // Asegurarse de que el empty state se oculte antes de filtrar
+                const emptyStateContainer = document.getElementById('empty-state-no-results');
+                if (emptyStateContainer) {
+                    emptyStateContainer.style.display = 'none';
+                    emptyStateContainer.innerHTML = '';
+                    emptyStateContainer.className = '';
+                }
+                
+                filterCourses('');
+                
+                // Si el input está abierto, cerrarlo también
+                if (isSearchMode) {
+                    buscadorInputContainer.innerHTML = '';
+                    buscadorInputContainer.style.display = 'none';
+                    buscadorToggleBtn.style.display = 'flex';
+                    isSearchMode = false;
+                    searchInputInstance = null;
+                }
+            };
+            
+            // Alias local para mantener compatibilidad
+            const clearSearch = window.clearSearchUCorporativa;
+            
+            // Cargar cards iniciales y paginador
+            renderCards();
+            initializePaginator();
+            
+            // Actualizar contador de resultados inicial
+            updateResultsCount();
+            
             // Función para cerrar el input de búsqueda
-            function closeSearchInput(clearSearch = true) {
+            function closeSearchInput(clearSearchParam = true) {
                 if (isSearchMode) {
                     buscadorInputContainer.innerHTML = '';
                     buscadorInputContainer.style.display = 'none';
@@ -851,7 +933,7 @@
                     searchInputInstance = null;
                     
                     // Limpiar búsqueda y restaurar todos los cursos solo si se solicita
-                    if (clearSearch) {
+                    if (clearSearchParam) {
                         currentSearchValue = '';
                         filterCourses('');
                     }
@@ -897,7 +979,7 @@
                                     closeBtn.innerHTML = '<i class="far fa-times"></i>';
                                     closeBtn.addEventListener('click', function(e) {
                                         e.stopPropagation(); // Prevenir que el clic se propague
-                                        closeSearchInput(true); // Cerrar y limpiar búsqueda
+                                        clearSearch(); // Limpiar búsqueda y cerrar input
                                     });
                                     buscadorInputContainer.appendChild(closeBtn);
                                     

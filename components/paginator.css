@@ -7,6 +7,17 @@
    PAGINATOR CONTAINER
    ======================================== */
 
+/* Asegurar que cualquier contenedor del paginador esté centrado */
+[id*="paginador"],
+[id*="paginator"],
+.paginador-container,
+.paginator-container {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+}
+
 .ubits-paginator {
     display: flex;
     gap: 4px;
@@ -15,6 +26,8 @@
     flex-wrap: wrap;
     min-height: 40px;
     padding: 8px 0;
+    width: 100%;
+    margin: 0 auto;
 }
 
 /* ========================================

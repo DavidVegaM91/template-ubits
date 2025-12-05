@@ -14,7 +14,8 @@ Una **plantilla lista para usar** que permite a **Product Managers**, **Diseñad
 2. **🎯 Edita `index.html`** - Tu página principal (se despliega en Netlify)
 3. **📄 Usa `plantilla-ubits.html`** - Para crear páginas nuevas
 4. **👀 Mira `componentes.html`** - Ve todos los componentes disponibles
-5. **🎨 Usa SOLO tokens UBITS** - `var(--ubits-...)` NUNCA colores hardcodeados
+5. **📖 LEE LA DOCUMENTACIÓN DEL COMPONENTE** - Antes de implementar cualquier componente, lee su página de documentación (ej: `button.html`, `alert.html`, `empty-state.html`) para entender cómo usarlo correctamente
+6. **🎨 Usa SOLO tokens UBITS** - `var(--ubits-...)` NUNCA colores hardcodeados
 
 ## 🚀 Cómo usar esta plantilla
 
@@ -45,6 +46,8 @@ Una **plantilla lista para usar** que permite a **Product Managers**, **Diseñad
 - **Carousel Contents** - Carruseles de contenido (navegación horizontal, flechas, responsive) - **RENDERIZADO: loadCarouselContents()**
 - **Status Tag** - Etiquetas de estado (tipos: success, info, warning, error, neutral; tamaños: xs, sm, md, lg; iconos opcionales izquierda/derecha) - **RENDERIZADO: HTML directo**
 - **Tab** - Tabs de navegación (estados: active, inactive; tamaños: xs, sm, md, lg; variantes: con texto, icon-only; iconos opcionales) - **RENDERIZADO: HTML directo**
+- **Empty State** - Estados vacíos (icono, título, descripción, botones opcionales; tamaños de icono: sm, md, lg; casos de uso: búsqueda sin resultados, contenido vacío, estados iniciales) - **RENDERIZADO: loadEmptyState()**
+- **Paginator** - Paginación de resultados (navegación por páginas, items por página, callbacks de cambio) - **RENDERIZADO: loadPaginator()**
 
 ### **🔧 REQUISITOS DE RENDERIZADO:**
 Todos los componentes UBITS requieren imports obligatorios:
@@ -59,6 +62,8 @@ Todos los componentes UBITS requieren imports obligatorios:
 <link rel="stylesheet" href="components/carousel-contents.css">
 <link rel="stylesheet" href="components/status-tag.css">
 <link rel="stylesheet" href="components/tab.css">
+<link rel="stylesheet" href="components/empty-state.css">
+<link rel="stylesheet" href="components/paginator.css">
 
 <!-- JavaScript OBLIGATORIO para componentes dinámicos -->
 <script src="components/alert.js"></script>
@@ -66,6 +71,8 @@ Todos los componentes UBITS requieren imports obligatorios:
 <script src="components/input.js"></script>
 <script src="components/card-content.js"></script>
 <script src="components/carousel-contents.js"></script>
+<script src="components/empty-state.js"></script>
+<script src="components/paginator.js"></script>
 
 <!-- Base UBITS SIEMPRE REQUERIDA -->
 <link rel="stylesheet" href="ubits-colors.css">
@@ -100,8 +107,8 @@ Todos los componentes UBITS requieren imports obligatorios:
 - ✅ **SIEMPRE importar** `components/button.css` y `fontawesome-icons.css`
 - ✅ **SIEMPRE usar estructura oficial** UBITS
 
-### **Componentes de documentación:**
-- **Docs Sidebar** - Navegación para documentación (secciones: introduccion, sidebar, sub-nav, tab-bar, button, alert, card-content, input, toast, status-tag, tab)
+### **📚 Componentes de documentación (solo para páginas de documentación):**
+- **Docs Sidebar** - Navegación para páginas de documentación (ej: `button.html`, `alert.html`, `empty-state.html`). **NO usar en páginas de producto** (ej: `u-corporativa.html`, `catalogo.html`, etc.)
 
 ## 🎯 **LOS 3 GRANDES ENTREGABLES DE UBITS PLAYGROUND**
 
@@ -162,6 +169,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 - **`button.html`** - Documentación del componente Button
 - **`alert.html`** - Documentación del componente Alert
 - **`card-content.html`** - Documentación del componente Card Content
+- **`empty-state.html`** - Documentación del componente Empty State
 
 #### **🎨 Guías de Diseño:**
 - **`colores.html`** - Guía de colores UBITS
@@ -190,9 +198,10 @@ Todos los componentes UBITS requieren imports obligatorios:
 │   ├── toast.css + toast.js
 │   ├── input.css + input.js
 │   ├── button.css
-│   └── card-content.css + card-content.js
-├── 📁 docs/                   # Sistema de documentación
-│   ├── docs-sidebar.css + docs-sidebar.js
+│   ├── card-content.css + card-content.js
+│   └── empty-state.css + empty-state.js
+├── 📁 docs/                   # Sistema de documentación (solo para páginas *.html de documentación)
+│   ├── docs-sidebar.css + docs-sidebar.js  # Solo para button.html, alert.html, etc. NO para páginas de producto
 └── 📁 images/                 # Recursos visuales
     ├── cards-learn/           # Imágenes para cards de aprendizaje
     ├── Favicons/              # Logos de proveedores
@@ -233,12 +242,13 @@ Todos los componentes UBITS requieren imports obligatorios:
 ### **📋 Reglas Importantes**
 
 #### ✅ **SIEMPRE Hacer (OBLIGATORIO):**
-1. **Usar tokens de color UBITS** - `var(--ubits-fg-1-high)`, `var(--ubits-bg-1)`, etc. NUNCA colores hardcodeados
-2. **Usar la tipografía UBITS** - Aplicar clases como `ubits-h1`, `ubits-body-md-regular`
-3. **Usar componentes existentes** - Revisar `componentes.html` antes de crear custom
-4. **Usar `box-sizing: border-box`** - Para cálculos correctos de tamaño
-5. **Usar iconos outline** - Usar `far` (FontAwesome Regular) para iconos outline
-6. **Importar `ubits-colors.css`** - En cualquier nuevo archivo HTML que crees
+1. **📖 LEER LA DOCUMENTACIÓN DEL COMPONENTE** - Antes de implementar cualquier componente, lee su página de documentación (ej: `button.html`, `alert.html`, `empty-state.html`, `paginator.html`) para entender cómo usarlo correctamente, casos de uso comunes y problemas conocidos
+2. **Usar tokens de color UBITS** - `var(--ubits-fg-1-high)`, `var(--ubits-bg-1)`, etc. NUNCA colores hardcodeados
+3. **Usar la tipografía UBITS** - Aplicar clases como `ubits-h1`, `ubits-body-md-regular`
+4. **Usar componentes existentes** - Revisar `componentes.html` antes de crear custom
+5. **Usar `box-sizing: border-box`** - Para cálculos correctos de tamaño
+6. **Usar iconos outline** - Usar `far` (FontAwesome Regular) para iconos outline
+7. **Importar `ubits-colors.css`** - En cualquier nuevo archivo HTML que crees
 
 #### ❌ **EVITAR:**
 1. **Usar colores hardcodeados** - SIEMPRE usar tokens UBITS (`var(--ubits-...)`)
@@ -360,6 +370,8 @@ loadCardContent('mi-contenedor-cards', [
 - **`button.html`** - Documentación del componente Button
 - **`alert.html`** - Documentación del componente Alert
 - **`card-content.html`** - Documentación del componente Card Content
+- **`empty-state.html`** - Documentación del componente Empty State
+- **`paginator.html`** - Documentación del componente Paginator
 - **`sidebar.html`** - Documentación del componente Sidebar
 - **`subnav.html`** - Documentación del componente SubNav
 - **`tab-bar.html`** - Documentación del componente TabBar
@@ -367,7 +379,7 @@ loadCardContent('mi-contenedor-cards', [
 ## 🎯 Características principales
 
 ### ✅ **Componentes listos para usar:**
-- 7 componentes UBITS completamente funcionales
+- 8 componentes UBITS completamente funcionales
 - Documentación interactiva con ejemplos
 - Código listo para copiar y pegar
 - Variantes y opciones configurables
