@@ -74,6 +74,11 @@ const DOCS_SIDEBAR_SECTIONS = [
         id: 'empty-state',
         title: 'Empty State',
         group: 'ui'
+    },
+    {
+        id: 'header-product',
+        title: 'Header Product',
+        group: 'ui'
     }
 ];
 
@@ -132,6 +137,9 @@ const docsSidebarHTML = `
                     </div>
                     <div class="docs-sidebar-item" data-section="empty-state">
                         <span class="docs-sidebar-text">Empty State</span>
+                    </div>
+                    <div class="docs-sidebar-item" data-section="header-product">
+                        <span class="docs-sidebar-text">Header Product</span>
                     </div>
                 </div>
             </div>
@@ -195,6 +203,9 @@ const docsDropdownHTML = `
                     </div>
                     <div class="docs-dropdown-item" data-section="empty-state">
                         <span class="docs-dropdown-item-text ubits-body-md-regular">Empty State</span>
+                    </div>
+                    <div class="docs-dropdown-item" data-section="header-product">
+                        <span class="docs-dropdown-item-text ubits-body-md-regular">Header Product</span>
                     </div>
                 </div>
             </div>
@@ -361,6 +372,14 @@ function initDocsSidebar(activeSection) {
             } else {
                 // Si estamos en otra página, navegar a empty-state.html
                 window.location.href = 'empty-state.html';
+            }
+        } else if (section === 'header-product') {
+            // Si ya estamos en header-product.html, solo hacer scroll al top
+            if (window.location.pathname.includes('header-product.html')) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                // Si estamos en otra página, navegar a header-product.html
+                window.location.href = 'header-product.html';
             }
         }
     }

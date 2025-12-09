@@ -1,0 +1,188 @@
+/* ========================================
+   UBITS HEADER PRODUCT COMPONENT
+   Componente de encabezado de producto
+   ======================================== */
+
+/* Contenedor principal */
+.ubits-header-product {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    min-height: auto;
+    height: auto;
+}
+
+/* Primera fila: Información del producto y acciones */
+.ubits-header-product__primary-row {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+/* Información del producto (izquierda) */
+.ubits-header-product__product-info {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+}
+
+/* Título del producto con icono de información */
+.ubits-header-product__product-title {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.ubits-header-product__product-title h1 {
+    margin: 0;
+}
+
+/* En mobile, cambiar el título a body-md-bold */
+@media (max-width: 768px) {
+    .ubits-header-product__product-title h1.ubits-heading-h1 {
+        font-family: 'Noto Sans', sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 24px;
+        color: var(--ubits-fg-1-high);
+    }
+}
+
+/* Acciones (derecha) */
+.ubits-header-product__actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+/* Segunda fila: Breadcrumb */
+.ubits-header-product__secondary-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    width: 100%;
+    flex-wrap: wrap;
+    min-height: auto;
+    height: auto;
+}
+
+/* Ocultar fila secundaria si no tiene contenido */
+.ubits-header-product__secondary-row:empty {
+    display: none;
+}
+
+/* Breadcrumb (izquierda) */
+.ubits-header-product__breadcrumb {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+}
+
+.ubits-header-product__breadcrumb-item {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+/* Asegurar que los iconos dentro del breadcrumb usen FontAwesome */
+.ubits-header-product__breadcrumb i {
+    font-family: "Font Awesome 6 Pro", "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
+    font-size: 12px;
+    color: var(--ubits-fg-2-medium);
+}
+
+.ubits-header-product__breadcrumb-link {
+    color: var(--ubits-fg-2-medium);
+}
+
+.ubits-header-product__breadcrumb-active {
+    color: var(--ubits-fg-1-high);
+    font-weight: 700;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .ubits-header-product__primary-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .ubits-header-product__product-info {
+        width: 100%;
+    }
+    
+    .ubits-header-product__actions {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+    
+    .ubits-header-product__secondary-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .ubits-header-product__breadcrumb {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+}
+
+/* En mobile pequeño (< 480px), todos los botones se transforman a icon-only */
+@media (max-width: 480px) {
+    /* Botones secundarios sm - ocultar texto y hacer icon-only (32x32px) */
+    .ubits-header-product__actions .ubits-button--secondary.ubits-button--sm:not(.ubits-button--icon-only) span {
+        display: none;
+    }
+    
+    .ubits-header-product__actions .ubits-button--secondary.ubits-button--sm:not(.ubits-button--icon-only) {
+        padding: 9.5px 8px !important;
+        width: 32px !important;
+        height: 32px !important;
+        min-width: 32px !important;
+        min-height: 32px !important;
+        max-width: 32px !important;
+        max-height: 32px !important;
+        border-radius: 8px !important;
+    }
+    
+    /* Botón primario sm - ocultar texto y hacer icon-only (32x32px) */
+    .ubits-header-product__actions .ubits-button--primary.ubits-button--sm:not(.ubits-button--icon-only) span {
+        display: none;
+    }
+    
+    .ubits-header-product__actions .ubits-button--primary.ubits-button--sm:not(.ubits-button--icon-only) {
+        padding: 9.5px 8px !important;
+        width: 32px !important;
+        height: 32px !important;
+        min-width: 32px !important;
+        min-height: 32px !important;
+        max-width: 32px !important;
+        max-height: 32px !important;
+        border-radius: 8px !important;
+    }
+    
+    /* Botón IA secundario sm - ocultar texto y hacer icon-only (32x32px circular) */
+    .ubits-header-product__actions .ubits-ia-button--secondary.ubits-ia-button--sm:not(.ubits-ia-button--icon-only) span {
+        display: none;
+    }
+    
+    .ubits-header-product__actions .ubits-ia-button--secondary.ubits-ia-button--sm:not(.ubits-ia-button--icon-only) {
+        padding: 0 !important;
+        width: 32px !important;
+        height: 32px !important;
+        min-width: 32px !important;
+        min-height: 32px !important;
+        max-width: 32px !important;
+        max-height: 32px !important;
+        border-radius: 50% !important;
+    }
+}
+

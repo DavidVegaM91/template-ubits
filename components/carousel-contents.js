@@ -971,7 +971,7 @@ function createCarouselContents(options) {
             const windowWidth = window.innerWidth;
             if (windowWidth <= 480) {
                 return 1; // Mobile pequeño
-            } else if (windowWidth <= 767) {
+            } else if (windowWidth <= 768) {
                 return 2; // Mobile
             } else if (windowWidth <= 1023) {
                 return 3; // Tablet
@@ -1181,7 +1181,7 @@ function createCarouselContents(options) {
         // Función para obtener número de items a mover según breakpoint
         function getItemsToMove() {
             const windowWidth = window.innerWidth;
-            if (windowWidth <= 767) {
+            if (windowWidth <= 768) {
                 return 4; // Mobile
             } else if (windowWidth <= 1023) {
                 return 6; // Tablet
@@ -1538,7 +1538,7 @@ function createCarouselContents(options) {
                 const windowWidth = window.innerWidth;
                 if (windowWidth <= 480) {
                     return 1; // Mobile pequeño
-                } else if (windowWidth <= 767) {
+                } else if (windowWidth <= 768) {
                     return 2; // Mobile
                 } else if (windowWidth <= 1365) {
                     return 3; // Tablet

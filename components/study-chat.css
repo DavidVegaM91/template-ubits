@@ -1,0 +1,339 @@
+/* ========================================
+   UBITS STUDY CHAT COMPONENT
+   Componente de chat para modo estudio IA
+   ======================================== */
+
+.ubits-study-chat {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    height: 100%;
+    width: 100%;
+    background: var(--ubits-bg-1);
+    border-radius: 10px;
+    padding: 16px;
+    box-sizing: border-box;
+    min-height: 0; /* Permitir que flexbox funcione correctamente */
+    flex: 1 1 0; /* Ocupar todo el espacio disponible */
+}
+
+/* Body del chat - área de mensajes */
+.ubits-study-chat__body {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
+    padding-right: 4px;
+}
+
+/* Scrollbar personalizado */
+.ubits-study-chat__body::-webkit-scrollbar {
+    width: 4px;
+}
+
+.ubits-study-chat__body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.ubits-study-chat__body::-webkit-scrollbar-thumb {
+    background: var(--ubits-border-1);
+    border-radius: 2px;
+}
+
+.ubits-study-chat__body::-webkit-scrollbar-thumb:hover {
+    background: var(--ubits-border-2);
+}
+
+/* Mensaje individual */
+.ubits-study-chat__message {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+}
+
+.ubits-study-chat__message--ai {
+    align-items: flex-start;
+}
+
+.ubits-study-chat__message--user {
+    align-items: flex-end;
+}
+
+/* Text globe - burbuja de mensaje */
+.ubits-study-chat__text-globe {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    max-width: 80%;
+    word-wrap: break-word;
+    position: relative;
+}
+
+/* Mensaje de IA */
+.ubits-study-chat__text-globe--ai {
+    background: var(--ubits-bg-2);
+    color: var(--ubits-fg-1-high);
+    border-radius: 8px;
+    border-bottom-left-radius: 0; /* Sin radius en esquina inferior izquierda */
+}
+
+/* Mensaje de usuario */
+.ubits-study-chat__text-globe--user {
+    background: #626974; /* Color gris para mensajes de usuario */
+    color: var(--ubits-fg-bold);
+    border-radius: 8px;
+    border-bottom-right-radius: 0; /* Sin radius en esquina inferior derecha */
+}
+
+/* Texto del mensaje */
+.ubits-study-chat__message-text {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 16px;
+    line-height: 24px;
+    margin: 0;
+    white-space: pre-wrap;
+}
+
+.ubits-study-chat__text-globe--ai .ubits-study-chat__message-text {
+    font-weight: 400;
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-study-chat__text-globe--user .ubits-study-chat__message-text {
+    font-weight: 600;
+    color: var(--ubits-fg-bold);
+    font-size: 13px;
+    line-height: 1;
+}
+
+/* Timestamp */
+.ubits-study-chat__timestamp {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    line-height: 19.5px;
+    color: var(--ubits-btn-tertiary-fg);
+    margin: 0;
+}
+
+.ubits-study-chat__message--ai .ubits-study-chat__timestamp {
+    text-align: left;
+}
+
+.ubits-study-chat__message--user .ubits-study-chat__timestamp {
+    text-align: right;
+}
+
+/* Botones de acción en mensajes de IA */
+.ubits-study-chat__message-actions {
+    display: flex;
+    gap: 0;
+    align-items: center;
+    margin-top: 4px;
+}
+
+.ubits-study-chat__action-btn {
+    background: transparent;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ubits-fg-1-high);
+    transition: background-color 0.2s;
+}
+
+.ubits-study-chat__action-btn:hover {
+    background: var(--ubits-btn-tertiary-bg-hover);
+}
+
+.ubits-study-chat__action-btn:active {
+    background: var(--ubits-btn-tertiary-bg-pressed);
+}
+
+.ubits-study-chat__action-btn i {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+/* Mensaje de carga (typing) */
+.ubits-study-chat__text-globe--typing {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    height: 43px;
+}
+
+.ubits-study-chat__typing-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px;
+    border-radius: 8px;
+}
+
+.ubits-study-chat__typing-icon i {
+    font-size: 16px;
+    width: 20px;
+    height: 16px;
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-study-chat__typing-text {
+    font-family: 'Noto Sans', sans-serif;
+    font-style: italic;
+    font-size: 16px;
+    line-height: 24px;
+    color: var(--ubits-fg-1-high);
+    margin: 0;
+}
+
+/* Área de input y sugerencias */
+.ubits-study-chat__input-area {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    flex-shrink: 0;
+}
+
+/* Botones de sugerencias - usar componente UBITS button */
+.ubits-study-chat__suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+/* Los botones de sugerencias ahora usan el componente UBITS button oficial */
+.ubits-study-chat__suggestions .ubits-button {
+    /* No se necesitan estilos adicionales, el componente button.css ya los tiene */
+}
+
+/* Input de chat */
+.ubits-study-chat__input-container {
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 12px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    align-items: flex-start;
+}
+
+.ubits-study-chat__input-wrapper {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 0;
+}
+
+.ubits-study-chat__input-placeholder {
+    flex: 1;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 28.8px;
+    color: var(--ubits-fg-1-medium);
+    cursor: text;
+}
+
+.ubits-study-chat__input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 28.8px;
+    color: var(--ubits-fg-1-high);
+    width: 100%;
+    resize: none;
+    overflow: hidden;
+    min-height: 28.8px;
+    max-height: 200px;
+}
+
+.ubits-study-chat__input::placeholder {
+    color: var(--ubits-fg-1-medium);
+}
+
+/* Acciones del input */
+.ubits-study-chat__input-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 0;
+}
+
+.ubits-study-chat__input-action-btn {
+    background: transparent;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ubits-fg-1-medium);
+    transition: background-color 0.2s;
+}
+
+.ubits-study-chat__input-action-btn:hover {
+    background: var(--ubits-btn-tertiary-bg-hover);
+}
+
+.ubits-study-chat__input-action-btn:active {
+    background: var(--ubits-btn-tertiary-bg-pressed);
+}
+
+.ubits-study-chat__input-action-btn--send {
+    background: var(--ubits-button-primary-bg-default);
+    color: var(--ubits-btn-primary-fg);
+}
+
+.ubits-study-chat__input-action-btn--send:hover {
+    background: var(--ubits-button-primary-hover);
+}
+
+.ubits-study-chat__input-action-btn--send:active {
+    background: var(--ubits-button-primary-pressed);
+}
+
+.ubits-study-chat__input-action-btn i {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .ubits-study-chat {
+        padding: 12px;
+        gap: 16px;
+    }
+    
+    .ubits-study-chat__text-globe {
+        max-width: 90%;
+    }
+    
+    .ubits-study-chat__suggestions {
+        gap: 8px;
+    }
+    
+    .ubits-study-chat__suggestion-btn {
+        font-size: 14px;
+        padding: 10px 12px;
+    }
+}
+

@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="components/button.css">
     <link rel="stylesheet" href="components/carousel-contents.css">
     <link rel="stylesheet" href="components/status-tag.css">
+    <link rel="stylesheet" href="components/ia-button.css">
     <link rel="stylesheet" href="profile.css">
     <style>
         /* Estilos específicos para content-sections */
@@ -62,6 +63,43 @@
             flex: 1;
             max-width: 600px;
             position: relative;
+        }
+        
+        /* Botones dentro del input de búsqueda */
+        .catalog-search-input-buttons {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 10;
+        }
+        
+        /* Ajustar padding del input para los botones */
+        #catalog-search-container input.ubits-input {
+            padding-right: 150px !important; /* Espacio para 2 botones sm + gaps */
+        }
+        
+        /* Ocultar el icono X del search ya que tenemos botones personalizados */
+        #catalog-search-container i[class*="fa-times"] {
+            display: none !important;
+        }
+        
+        /* En mobile: ajustar placeholder para que no se corte */
+        @media (max-width: 768px) {
+            /* Reducir padding del input en mobile para que quepa más texto */
+            #catalog-search-container input.ubits-input {
+                padding-right: 110px !important; /* Espacio reducido para mobile */
+            }
+            
+            /* Asegurar que el placeholder se muestre correctamente */
+            #catalog-search-container input.ubits-input::placeholder {
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+            }
         }
         
         /* Contenedor de sugerencias de búsqueda - KISS: simple y directo */
@@ -883,7 +921,7 @@
             }
         }
 
-        @media (max-width: 767px) {
+        @media (max-width: 768px) {
             .tipo-contenido-card {
                 flex: 0 0 calc((100% - (2 * 24px)) / 3);
                 min-width: calc((100% - (2 * 24px)) / 3);
@@ -979,10 +1017,6 @@
                         <h1 class="ubits-heading-h1">¿Qué quieres aprender hoy?</h1>
                         <div class="catalog-search-wrapper">
                             <div class="catalog-search-container" id="catalog-search-container"></div>
-                            <button class="ubits-button ubits-button--secondary ubits-button--md catalog-filters-btn">
-                                <i class="far fa-filter"></i>
-                                <span>Filtros</span>
-                            </button>
                         </div>
                         <div class="catalog-chips-wrapper">
                             <span class="ubits-body-sm-regular catalog-chips-label">Lo más buscado:</span>
@@ -1412,10 +1446,10 @@
                     containerId: 'catalog-search-container',
                     type: 'search',
                     placeholder: 'Buscar un tema, competencia o habilidad...',
-                    size: 'md'
+                    size: 'lg'
                 });
 
-                // Agregar listener de búsqueda y sugerencias - KISS: simple y directo
+                // Agregar botones dentro del input y listeners - KISS: simple y directo
                 setTimeout(() => {
                     const searchInput = document.querySelector('#catalog-search-container input');
                     const searchContainer = document.getElementById('catalog-search-container');
@@ -1427,17 +1461,73 @@
                         return;
                     }
                     
-                    // KISS: Crear contenedor de sugerencias y moverlo al div con position: relative que crea createInput
-                    let suggestionsContainer = document.getElementById('search-suggestions-container');
-                    if (!suggestionsContainer) {
-                        suggestionsContainer = document.createElement('div');
-                        suggestionsContainer.id = 'search-suggestions-container';
-                        suggestionsContainer.className = 'search-suggestions-container';
+                    // Ocultar el icono X del search (rightIcon) ya que tendremos botones personalizados
+                    const clearIcon = searchContainer.querySelector('i[class*="fa-times"]');
+                    if (clearIcon) {
+                        clearIcon.style.display = 'none';
                     }
                     
-                    // Mover el contenedor de sugerencias al div con position: relative que crea createInput
+                    // En mobile: cambiar placeholder a uno más corto para que no se corte
+                    function updatePlaceholderForMobile() {
+                        if (window.innerWidth <= 768) {
+                            searchInput.placeholder = 'Buscar...';
+                        } else {
+                            searchInput.placeholder = 'Buscar un tema, competencia o habilidad...';
+                        }
+                    }
+                    
+                    // Actualizar placeholder al cargar y al cambiar tamaño de ventana
+                    updatePlaceholderForMobile();
+                    window.addEventListener('resize', updatePlaceholderForMobile);
+                    
+                    // Agregar botones dentro del input
                     const inputWrapper = searchInput.parentElement; // El div con position: relative
                     if (inputWrapper) {
+                        // Crear contenedor de botones
+                        let buttonsContainer = inputWrapper.querySelector('.catalog-search-input-buttons');
+                        if (!buttonsContainer) {
+                            buttonsContainer = document.createElement('div');
+                            buttonsContainer.className = 'catalog-search-input-buttons';
+                            
+                            // Botón de filtros (terciario, icon-only, sm)
+                            const filterButton = document.createElement('button');
+                            filterButton.className = 'ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only';
+                            filterButton.setAttribute('aria-label', 'Filtros');
+                            filterButton.innerHTML = '<i class="far fa-filter"></i>';
+                            filterButton.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                console.log('🔍 Filtros clickeado');
+                                // Aquí puedes agregar la lógica de filtros
+                            });
+                            
+                            // Botón de Modo IA (ia-button secundario, sm)
+                            const iaButton = document.createElement('button');
+                            iaButton.className = 'ubits-ia-button ubits-ia-button--secondary ubits-ia-button--sm';
+                            iaButton.innerHTML = '<i class="far fa-sparkles"></i><span>Modo IA</span>';
+                            iaButton.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                console.log('🤖 Modo IA clickeado');
+                                // Redirigir a modo-estudio-ia.html
+                                window.location.href = 'modo-estudio-ia.html';
+                            });
+                            
+                            buttonsContainer.appendChild(filterButton);
+                            buttonsContainer.appendChild(iaButton);
+                            inputWrapper.appendChild(buttonsContainer);
+                            console.log('✅ Botones agregados dentro del input');
+                        }
+                        
+                        // KISS: Crear contenedor de sugerencias y moverlo al div con position: relative que crea createInput
+                        let suggestionsContainer = document.getElementById('search-suggestions-container');
+                        if (!suggestionsContainer) {
+                            suggestionsContainer = document.createElement('div');
+                            suggestionsContainer.id = 'search-suggestions-container';
+                            suggestionsContainer.className = 'search-suggestions-container';
+                        }
+                        
+                        // Mover el contenedor de sugerencias al div con position: relative que crea createInput
                         inputWrapper.style.position = 'relative';
                         inputWrapper.style.zIndex = '1000';
                         inputWrapper.appendChild(suggestionsContainer);
@@ -1457,14 +1547,7 @@
                         handleSearch(e);
                     });
                     
-                    // Listener para botón X (limpiar)
-                    const clearIcon = searchContainer.querySelector('i[class*="fa-times"]');
-                    if (clearIcon) {
-                        clearIcon.addEventListener('click', function() {
-                            console.log('❌ Botón X clickeado');
-                            suggestionsContainer.classList.remove('visible');
-                        });
-                    }
+                    // El botón X ya está oculto, no necesitamos listener para él
                     
                     // Ocultar al hacer clic fuera
                     document.addEventListener('click', function(e) {
@@ -1562,7 +1645,7 @@
                     const currentWidth = window.innerWidth;
                     // Determinar número de columnas según el ancho
                     let numColumns = 3;
-                    if (currentWidth <= 767) {
+                    if (currentWidth <= 768) {
                         numColumns = 1;
                     } else if (currentWidth <= 1023) {
                         numColumns = 2;
@@ -1570,7 +1653,7 @@
                     
                     // Determinar número de columnas del ancho anterior
                     let lastNumColumns = 3;
-                    if (lastWindowWidth <= 767) {
+                    if (lastWindowWidth <= 768) {
                         lastNumColumns = 1;
                     } else if (lastWindowWidth <= 1023) {
                         lastNumColumns = 2;
@@ -1826,7 +1909,7 @@
 
             // Función para obtener el número de items a mover según el breakpoint
             function getItemsToMoveNuevo() {
-                if (window.innerWidth <= 767) {
+                if (window.innerWidth <= 768) {
                     return 3; // Mobile
                 } else if (window.innerWidth <= 1023) {
                     return 5; // Tablet
@@ -2114,7 +2197,7 @@
                 
                 // Determinar número de columnas según el ancho de la pantalla
                 let numColumns = 3; // Desktop por defecto
-                if (window.innerWidth <= 767) {
+                if (window.innerWidth <= 768) {
                     numColumns = 1; // Mobile
                 } else if (window.innerWidth <= 1023) {
                     numColumns = 2; // Tablet

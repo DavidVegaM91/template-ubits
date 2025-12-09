@@ -23,14 +23,14 @@
  * 
  * <!-- Status tag con icono a la izquierda -->
  * <span class="ubits-status-tag ubits-status-tag--success ubits-status-tag--sm ubits-status-tag--icon-left">
- *   <i class="ubits-status-tag__icon far fa-check-circle"></i>
+ *   <i class="far fa-check-circle"></i>
  *   <span class="ubits-status-tag__text">Activo</span>
  * </span>
  * 
  * <!-- Status tag con icono a la derecha -->
  * <span class="ubits-status-tag ubits-status-tag--info ubits-status-tag--sm ubits-status-tag--icon-right">
  *   <span class="ubits-status-tag__text">Pendiente</span>
- *   <i class="ubits-status-tag__icon far fa-clock"></i>
+ *   <i class="far fa-clock"></i>
  * </span>
  * ```
  * 
@@ -54,8 +54,11 @@
  * 
  * ESTRUCTURA HTML CORRECTA:
  * 1. Tag sin icono: <span class="ubits-status-tag__text">Texto</span>
- * 2. Tag con icono izquierda: <i class="ubits-status-tag__icon"> + <span class="ubits-status-tag__text">
- * 3. Tag con icono derecha: <span class="ubits-status-tag__text"> + <i class="ubits-status-tag__icon">
+ * 2. Tag con icono izquierda: <i class="far fa-[icono]"> + <span class="ubits-status-tag__text">
+ * 3. Tag con icono derecha: <span class="ubits-status-tag__text"> + <i class="far fa-[icono]">
+ * 
+ * NOTA IMPORTANTE: Cuando se usa innerHTML dinámicamente, usar SOLO clases FontAwesome directamente
+ * (sin clases wrapper como ubits-status-tag__icon) para asegurar el renderizado correcto.
  * 
  * ICONOS FONTAWESOME:
  * - Usar siempre clase 'far' (outline)
@@ -70,14 +73,14 @@
  * 
  * <!-- Info con icono izquierda -->
  * <span class="ubits-status-tag ubits-status-tag--info ubits-status-tag--sm ubits-status-tag--icon-left">
- *   <i class="ubits-status-tag__icon far fa-info-circle"></i>
+ *   <i class="far fa-info-circle"></i>
  *   <span class="ubits-status-tag__text">En proceso</span>
  * </span>
  * 
  * <!-- Warning con icono derecha -->
  * <span class="ubits-status-tag ubits-status-tag--warning ubits-status-tag--sm ubits-status-tag--icon-right">
  *   <span class="ubits-status-tag__text">Atención</span>
- *   <i class="ubits-status-tag__icon far fa-exclamation-triangle"></i>
+ *   <i class="far fa-exclamation-triangle"></i>
  * </span>
  * 
  * <!-- Error extra pequeño -->
@@ -87,7 +90,7 @@
  * 
  * <!-- Neutral grande con icono -->
  * <span class="ubits-status-tag ubits-status-tag--neutral ubits-status-tag--lg ubits-status-tag--icon-left">
- *   <i class="ubits-status-tag__icon far fa-circle"></i>
+ *   <i class="far fa-circle"></i>
  *   <span class="ubits-status-tag__text">Neutral</span>
  * </span>
  * ```
