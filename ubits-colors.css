@@ -797,3 +797,19 @@
   
   --ubits-bottom-nav-shadow-opacity: rgba(0, 0, 0, 0.36);
 }
+
+/* ========================================
+   FORCE LIGHT MODE VARIABLES - CRITICAL FOR NETLIFY
+   Asegurar que las variables de modo claro se apliquen explícitamente
+   cuando data-theme="light" para evitar problemas en Netlify
+   Mayor especificidad que [data-theme="dark"] para forzar modo claro
+   ======================================== */
+
+body[data-theme="light"] {
+  /* Background Colors - Light Mode (FORCE) */
+  --ubits-bg-1: #ffffff;
+  --ubits-bg-2: #F3F3F4;
+  --ubits-bg-3: #e7e8ea;
+  --ubits-bg-4: #dbdde0;
+  --ubits-bg-5: #ced0d5;
+}
