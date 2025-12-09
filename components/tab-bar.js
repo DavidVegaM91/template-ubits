@@ -38,33 +38,18 @@ function loadTabBar(containerId) {
         return;
     }
 
-    // Cargar el componente HTML
-    // CRITICAL: tab-bar.html está en la raíz, no en components/
-    fetch('tab-bar.html')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.text();
-        })
-        .then(html => {
-            container.innerHTML = html;
-            
-            // Agregar event listeners
-            addTabBarEventListeners();
-            
-            // Activar el tab correcto basado en la página actual
-            activateCurrentPageTab();
-            
-            console.log('Tab bar component loaded successfully');
-        })
-        .catch(error => {
-            console.error('Error loading tab-bar component:', error);
-            // Fallback al HTML generado
-            container.innerHTML = getTabBarHTML();
-            addTabBarEventListeners();
-            activateCurrentPageTab();
-        });
+    // Usar directamente el HTML generado - tab-bar.html es una página completa, no un componente
+    // CRITICAL: No hacer fetch de tab-bar.html porque es una página HTML completa con DOCTYPE, head, body, etc.
+    // Usar getTabBarHTML() que genera solo el HTML del componente
+    container.innerHTML = getTabBarHTML();
+    
+    // Agregar event listeners
+    addTabBarEventListeners();
+    
+    // Activar el tab correcto basado en la página actual
+    activateCurrentPageTab();
+    
+    console.log('Tab bar component loaded successfully');
 }
 
 /**
