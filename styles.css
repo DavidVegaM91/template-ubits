@@ -15,6 +15,19 @@ body {
     scrollbar-color: var(--ubits-fg-2-medium-static) var(--ubits-bg-5);
 }
 
+/* Asegurar fondo claro en modo claro - CRITICAL para Netlify */
+body[data-theme="light"] {
+    background-color: #F3F3F4 !important;
+}
+
+body[data-theme="light"] .dashboard-container {
+    background-color: #F3F3F4 !important;
+}
+
+body[data-theme="light"] .content-area {
+    background-color: transparent !important;
+}
+
 /* Scroll más claro para WebKit (Chrome, Safari, Edge) */
 ::-webkit-scrollbar {
     width: 8px;
@@ -689,6 +702,19 @@ body[data-theme="dark"] .content-area.no-background {
         height: 20px;
         font-size: 14px;
     }
+}
+
+/* Modo claro - Asegurar fondo claro explícitamente (CRITICAL para Netlify) */
+body[data-theme="light"] {
+    background-color: #F3F3F4 !important;
+}
+
+body[data-theme="light"] .dashboard-container {
+    background-color: #F3F3F4 !important;
+}
+
+body[data-theme="light"] .content-area {
+    background-color: transparent !important;
 }
 
 /* Modo oscuro - Solo colores, sin afectar layout */
