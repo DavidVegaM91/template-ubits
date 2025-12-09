@@ -1,8 +1,6 @@
 
-/* Importar tokens de color UBITS */
-@import url('./ubits-colors.css');
-
 /* Reset y estilos base */
+/* NOTA: ubits-colors.css debe cargarse ANTES de este archivo en el HTML */
 
 body {
     background-color: var(--ubits-bg-2);

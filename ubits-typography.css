@@ -2,8 +2,7 @@
    SISTEMA DE TIPOGRAFÍA OFICIAL UBITS
    ======================================== */
 
-/* Importar tokens de color UBITS */
-@import url('./ubits-colors.css');
+/* NOTA: ubits-colors.css debe cargarse ANTES de este archivo en el HTML */
 
 /* Variables CSS para personalización */
 :root {
