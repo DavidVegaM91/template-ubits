@@ -118,6 +118,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Función para cargar tema guardado
     function loadSavedTheme() {
+        // CRITICAL: Solo cargar tema guardado si el body NO tiene data-theme explícito
+        // Esto previene que se sobrescriba el tema por defecto en páginas de producto
+        const bodyTheme = document.body.getAttribute('data-theme');
+        if (bodyTheme && bodyTheme !== '') {
+            // Si ya tiene un tema explícito, respetarlo y no cargar de localStorage
+            return;
+        }
+        
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme) {
             document.body.setAttribute('data-theme', savedTheme);
