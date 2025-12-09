@@ -3,14 +3,23 @@
 /* NOTA: ubits-colors.css debe cargarse ANTES de este archivo en el HTML */
 
 body {
-    background-color: var(--ubits-bg-2);
+    background-color: #F3F3F4 !important; /* Color directo para Netlify */
     margin: 0;
     padding: 0;
     overflow-x: hidden;
-    overflow-y: auto;
+    overflow-y: auto !important; /* Forzar scroll visible */
     /* Forzar scroll más claro */
     scrollbar-width: thin;
     scrollbar-color: var(--ubits-fg-2-medium-static) var(--ubits-bg-5);
+}
+
+/* Asegurar fondo claro explícitamente - CRITICAL para Netlify */
+body[data-theme="light"] {
+    background-color: #F3F3F4 !important;
+}
+
+body[data-theme="light"] .dashboard-container {
+    background-color: #F3F3F4 !important;
 }
 
 /* Scroll más claro para WebKit (Chrome, Safari, Edge) */
@@ -689,6 +698,19 @@ body[data-theme="dark"] .content-area.no-background {
     }
 }
 
+/* Modo claro - FORZAR explícitamente (CRITICAL para Netlify) - DEBE IR ANTES de modo oscuro */
+body[data-theme="light"],
+body:not([data-theme="dark"]) {
+    background-color: #F3F3F4 !important;
+    overflow-y: auto !important;
+}
+
+body[data-theme="light"] .dashboard-container,
+body:not([data-theme="dark"]) .dashboard-container {
+    background-color: #F3F3F4 !important;
+    overflow-y: visible !important;
+}
+
 /* Modo oscuro - Solo colores, sin afectar layout */
 [data-theme="dark"] body {
     background-color: var(--ubits-bg-2) !important;
@@ -863,6 +885,19 @@ body[data-theme="dark"] .content-area.no-background {
 
 [data-theme="dark"] .content-placeholder p {
     color: var(--ubits-fg-2-medium-static-inverted) !important;
+}
+
+/* Modo claro - FORZAR explícitamente (CRITICAL para Netlify) - DEBE IR DESPUÉS de modo oscuro para sobrescribir */
+body[data-theme="light"],
+body:not([data-theme="dark"]) {
+    background-color: #F3F3F4 !important;
+    overflow-y: auto !important;
+}
+
+body[data-theme="light"] .dashboard-container,
+body:not([data-theme="dark"]) .dashboard-container {
+    background-color: #F3F3F4 !important;
+    overflow-y: visible !important;
 }
 
 /* Asegurar que el modo oscuro se aplique */
