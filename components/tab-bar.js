@@ -39,8 +39,14 @@ function loadTabBar(containerId) {
     }
 
     // Cargar el componente HTML
-    fetch('components/tab-bar.html')
-        .then(response => response.text())
+    // CRITICAL: tab-bar.html está en la raíz, no en components/
+    fetch('tab-bar.html')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.text();
+        })
         .then(html => {
             container.innerHTML = html;
             
