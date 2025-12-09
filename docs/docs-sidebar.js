@@ -31,6 +31,11 @@ const DOCS_SIDEBAR_SECTIONS = [
         group: 'ui'
     },
     {
+        id: 'ia-button',
+        title: 'IA-Button',
+        group: 'ui'
+    },
+    {
         id: 'alert',
         title: 'Alert',
         group: 'ui'
@@ -101,6 +106,9 @@ const docsSidebarHTML = `
                     <div class="docs-sidebar-item" data-section="button">
                         <span class="docs-sidebar-text">Button</span>
                     </div>
+                    <div class="docs-sidebar-item" data-section="ia-button">
+                        <span class="docs-sidebar-text">IA-Button</span>
+                    </div>
                     <div class="docs-sidebar-item" data-section="alert">
                         <span class="docs-sidebar-text">Alert</span>
                     </div>
@@ -160,6 +168,9 @@ const docsDropdownHTML = `
                     <div class="docs-dropdown-subgroup-title ubits-body-sm-regular">UI</div>
                     <div class="docs-dropdown-item" data-section="button">
                         <span class="docs-dropdown-item-text ubits-body-md-regular">Button</span>
+                    </div>
+                    <div class="docs-dropdown-item" data-section="ia-button">
+                        <span class="docs-dropdown-item-text ubits-body-md-regular">IA-Button</span>
                     </div>
                     <div class="docs-dropdown-item" data-section="alert">
                         <span class="docs-dropdown-item-text ubits-body-md-regular">Alert</span>
@@ -228,6 +239,9 @@ function initDocsSidebar(activeSection) {
     
     // Función para manejar navegación
     function handleDocsNavigation(section) {
+        // Debug: verificar que la función se está llamando
+        console.log('handleDocsNavigation called with section:', section);
+        
         // Cerrar dropdown
         if (dropdownTrigger && dropdownMenu) {
             dropdownTrigger.classList.remove('active');
@@ -268,12 +282,21 @@ function initDocsSidebar(activeSection) {
                 window.location.href = 'tab-bar.html';
             }
         } else if (section === 'button') {
-            // Si ya estamos en button.html, solo hacer scroll al top
-            if (window.location.pathname.includes('button.html')) {
+            // Si ya estamos en button.html (exactamente, no ia-button.html), solo hacer scroll al top
+            const currentPath = window.location.pathname;
+            if (currentPath.endsWith('button.html') && !currentPath.includes('ia-button.html')) {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } else {
                 // Si estamos en otra página, navegar a button.html
                 window.location.href = 'button.html';
+            }
+        } else if (section === 'ia-button') {
+            // Si ya estamos en ia-button.html, solo hacer scroll al top
+            if (window.location.pathname.includes('ia-button.html')) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                // Si estamos en otra página, navegar a ia-button.html
+                window.location.href = 'ia-button.html';
             }
         } else if (section === 'alert') {
             // Si ya estamos en alert.html, solo hacer scroll al top
@@ -344,10 +367,17 @@ function initDocsSidebar(activeSection) {
     
     // Event listeners para sidebar
     sidebarItems.forEach(item => {
-        item.addEventListener('click', function() {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation(); // CRITICAL: Prevenir que otros listeners capturen este evento
             const section = this.getAttribute('data-section');
-            handleDocsNavigation(section);
-        });
+            console.log('Sidebar item clicked, section:', section);
+            if (section) {
+                handleDocsNavigation(section);
+            }
+            return false; // Prevenir propagación adicional
+        }, true); // Usar capture phase para capturar antes que otros listeners
     });
     
     // Event listeners para dropdown
@@ -359,10 +389,17 @@ function initDocsSidebar(activeSection) {
     }
     
     dropdownItems.forEach(item => {
-        item.addEventListener('click', function() {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation(); // CRITICAL: Prevenir que otros listeners capturen este evento
             const section = this.getAttribute('data-section');
-            handleDocsNavigation(section);
-        });
+            console.log('Dropdown item clicked, section:', section);
+            if (section) {
+                handleDocsNavigation(section);
+            }
+            return false; // Prevenir propagación adicional
+        }, true); // Usar capture phase para capturar antes que otros listeners
     });
     
     // Cerrar dropdown al hacer click fuera

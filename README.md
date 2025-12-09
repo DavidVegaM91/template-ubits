@@ -39,6 +39,7 @@ Una **plantilla lista para usar** que permite a **Product Managers**, **Diseñad
 
 ### **Componentes de UI:**
 - **Button** - Botones de acción (variantes: primary, secondary, tertiary; tamaños: sm, md, lg) - **RENDERIZADO: HTML directo**
+- **IA-Button** - Botones especiales para casos de IA (variantes: primary con gradiente radial, secondary outlined; tamaños: sm, md, lg; badge siempre presente; pill shape) - **RENDERIZADO: HTML directo**
 - **Alert** - Notificaciones (tipos: success, info, warning, error; con/sin botón cerrar) - **RENDERIZADO: showAlert() o HTML directo**
 - **Toast** - Notificaciones flotantes (tipos: success, info, warning, error; auto-cierre, pausa en hover) - **RENDERIZADO: showToast()**
 - **Input** - Campos de entrada (11 tipos: text, email, password, number, tel, url, select, textarea, search, autocomplete, calendar; tamaños: sm, md, lg; estados: default, hover, focus, invalid, disabled; con iconos, contador, helper text, mandatory/optional, validación manual, scroll infinito automático) - **RENDERIZADO: createInput()**
@@ -55,6 +56,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 ```html
 <!-- CSS OBLIGATORIO para cada componente usado -->
 <link rel="stylesheet" href="components/button.css">
+<link rel="stylesheet" href="components/ia-button.css">
 <link rel="stylesheet" href="components/alert.css">
 <link rel="stylesheet" href="components/toast.css">
 <link rel="stylesheet" href="components/input.css">

@@ -196,11 +196,11 @@
                                 </label>
                             </div>
                             
-                            <!-- Switch para Badge -->
+                            <!-- Switch para Icon-only -->
                             <div style="display: flex; align-items: center; gap: 8px; margin-left: 16px;">
-                                <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Badge:</span>
+                                <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Icon-only:</span>
                                 <label class="switch">
-                                    <input type="checkbox" id="badge-toggle" onchange="toggleBadge()">
+                                    <input type="checkbox" id="icon-only-toggle" onchange="toggleIconOnly()">
                                     <span class="slider"></span>
                                 </label>
                             </div>
@@ -576,6 +576,9 @@ IMPORTA: components/button.css</code></pre>
             });
         });
 
+        // Variable global para guardar la opción actual del preview
+        let currentPreviewOption = 'primary';
+
         // Función para toggle de iconos
         function toggleIcons() {
             // Obtener la opción activa actual
@@ -594,43 +597,30 @@ IMPORTA: components/button.css</code></pre>
             }
         }
         
-        // Función para toggle de badge
-        function toggleBadge() {
-            // Obtener la opción activa actual
-            const activeButton = document.querySelector('.preview-control-btn.active');
-            if (activeButton) {
-                const option = activeButton.textContent.trim().toLowerCase();
-                if (option === 'primario') {
-                    updatePreview('primary');
-                } else if (option === 'secundario') {
-                    updatePreview('secondary');
-                } else if (option === 'tertiary') {
-                    updatePreview('tertiary');
-                } else if (option === 'disabled') {
-                    // Para botones disabled, no mostrar badge (no tiene sentido lógico)
-                    updatePreview('disabled');
-                }
-            }
+        // Función para toggle de icon-only
+        function toggleIconOnly() {
+            // Usar la variable global que guarda la opción actual
+            updatePreview(currentPreviewOption);
         }
         
         // Función auxiliar para generar HTML de botón con/sin badge y con/sin iconos
-        function generateButtonHTML(variant, size, text, icon, showBadge = false, showIcons = true, isDisabled = false) {
-            const badgeHTML = showBadge ? `<span class="ubits-button__badge"></span>` : '';
+        function generateButtonHTML(variant, size, text, icon, isIconOnly = false, showIcons = true, isDisabled = false) {
             const iconHTML = showIcons ? `<i class="far fa-${icon}"></i>` : '';
             const disabledAttr = isDisabled ? ' disabled' : '';
-            return `<button class="ubits-button ubits-button--${variant} ubits-button--${size}"${disabledAttr}>
+            const iconOnlyClass = isIconOnly ? ` ubits-button--icon-only` : '';
+            const textHTML = isIconOnly ? '' : `<span>${text}</span>`;
+            return `<button class="ubits-button ubits-button--${variant} ubits-button--${size}${iconOnlyClass}"${disabledAttr}>
                 ${iconHTML}
-                <span>${text}</span>
-                ${badgeHTML}
+                ${textHTML}
             </button>`;
         }
         
         // Función interna para actualizar preview sin cambiar estado visual
         function updatePreview(option) {
-            // Obtener estado del badge e iconos
-            const badgeToggle = document.getElementById('badge-toggle');
+            // Obtener estado del icon-only e iconos
+            const iconOnlyToggle = document.getElementById('icon-only-toggle');
             const iconToggle = document.getElementById('icon-toggle');
-            const showBadge = badgeToggle ? badgeToggle.checked : false;
+            const isIconOnly = iconOnlyToggle ? iconOnlyToggle.checked : false;
             const showIcons = iconToggle ? iconToggle.checked : true;
             
             // Cambiar el preview
@@ -644,19 +634,19 @@ IMPORTA: components/button.css</code></pre>
                         <div style="display: flex; flex-direction: column; gap: 16px; align-items: flex-start;">
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Extra Small (xs)</span>
-                                ${generateButtonHTML('primary', 'xs', 'Botón primario', 'check', showBadge, showIcons)}
+                                ${generateButtonHTML('primary', 'xs', 'Botón primario', 'check', isIconOnly, showIcons)}
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Small (sm)</span>
-                                ${generateButtonHTML('primary', 'sm', 'Botón primario', 'check', showBadge, showIcons)}
+                                ${generateButtonHTML('primary', 'sm', 'Botón primario', 'check', isIconOnly, showIcons)}
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Medium (md)</span>
-                                ${generateButtonHTML('primary', 'md', 'Botón primario', 'check', showBadge, showIcons)}
+                                ${generateButtonHTML('primary', 'md', 'Botón primario', 'check', isIconOnly, showIcons)}
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Large (lg)</span>
-                                ${generateButtonHTML('primary', 'lg', 'Botón primario', 'check', showBadge, showIcons)}
+                                ${generateButtonHTML('primary', 'lg', 'Botón primario', 'check', isIconOnly, showIcons)}
                             </div>
                         </div>
                     `;
@@ -666,19 +656,19 @@ IMPORTA: components/button.css</code></pre>
                         <div style="display: flex; flex-direction: column; gap: 16px; align-items: flex-start;">
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Extra Small (xs)</span>
-                                ${generateButtonHTML('secondary', 'xs', 'Botón secundario', 'times', showBadge, showIcons)}
+                                ${generateButtonHTML('secondary', 'xs', 'Botón secundario', 'times', isIconOnly, showIcons)}
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Small (sm)</span>
-                                ${generateButtonHTML('secondary', 'sm', 'Botón secundario', 'times', showBadge, showIcons)}
+                                ${generateButtonHTML('secondary', 'sm', 'Botón secundario', 'times', isIconOnly, showIcons)}
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Medium (md)</span>
-                                ${generateButtonHTML('secondary', 'md', 'Botón secundario', 'times', showBadge, showIcons)}
+                                ${generateButtonHTML('secondary', 'md', 'Botón secundario', 'times', isIconOnly, showIcons)}
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Large (lg)</span>
-                                ${generateButtonHTML('secondary', 'lg', 'Botón secundario', 'times', showBadge, showIcons)}
+                                ${generateButtonHTML('secondary', 'lg', 'Botón secundario', 'times', isIconOnly, showIcons)}
                             </div>
                         </div>
                     `;
@@ -688,19 +678,19 @@ IMPORTA: components/button.css</code></pre>
                         <div style="display: flex; flex-direction: column; gap: 16px; align-items: flex-start;">
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Extra Small (xs)</span>
-                                ${generateButtonHTML('tertiary', 'xs', 'Botón terciario', 'plus', showBadge, showIcons)}
+                                ${generateButtonHTML('tertiary', 'xs', 'Botón terciario', 'plus', isIconOnly, showIcons)}
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Small (sm)</span>
-                                ${generateButtonHTML('tertiary', 'sm', 'Botón terciario', 'plus', showBadge, showIcons)}
+                                ${generateButtonHTML('tertiary', 'sm', 'Botón terciario', 'plus', isIconOnly, showIcons)}
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Medium (md)</span>
-                                ${generateButtonHTML('tertiary', 'md', 'Botón terciario', 'plus', showBadge, showIcons)}
+                                ${generateButtonHTML('tertiary', 'md', 'Botón terciario', 'plus', isIconOnly, showIcons)}
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Large (lg)</span>
-                                ${generateButtonHTML('tertiary', 'lg', 'Botón terciario', 'plus', showBadge, showIcons)}
+                                ${generateButtonHTML('tertiary', 'lg', 'Botón terciario', 'plus', isIconOnly, showIcons)}
                             </div>
                         </div>
                     `;
@@ -710,19 +700,19 @@ IMPORTA: components/button.css</code></pre>
                         <div style="display: flex; flex-direction: column; gap: 16px; align-items: flex-start;">
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Extra Small (xs)</span>
-                                ${generateButtonHTML('primary', 'xs', 'Botón deshabilitado', 'check', false, showIcons, true)}
+                                ${generateButtonHTML('primary', 'xs', 'Botón deshabilitado', 'check', isIconOnly, showIcons, true)}
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Small (sm)</span>
-                                ${generateButtonHTML('primary', 'sm', 'Botón deshabilitado', 'check', false, showIcons, true)}
+                                ${generateButtonHTML('primary', 'sm', 'Botón deshabilitado', 'check', isIconOnly, showIcons, true)}
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Medium (md)</span>
-                                ${generateButtonHTML('secondary', 'md', 'Botón deshabilitado', 'times', false, showIcons, true)}
+                                ${generateButtonHTML('secondary', 'md', 'Botón deshabilitado', 'times', isIconOnly, showIcons, true)}
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Large (lg)</span>
-                                ${generateButtonHTML('tertiary', 'lg', 'Botón deshabilitado', 'plus', false, showIcons, true)}
+                                ${generateButtonHTML('tertiary', 'lg', 'Botón deshabilitado', 'plus', isIconOnly, showIcons, true)}
                             </div>
                         </div>
                     `;
@@ -732,6 +722,9 @@ IMPORTA: components/button.css</code></pre>
         
         // Función para cambiar el preview
         function setPreviewOption(option) {
+            // Guardar la opción actual en la variable global
+            currentPreviewOption = option;
+            
             // Remover clase active de todos los botones
             document.querySelectorAll('.preview-control-btn').forEach(btn => {
                 btn.classList.remove('active');
@@ -740,14 +733,8 @@ IMPORTA: components/button.css</code></pre>
             // Agregar clase active al botón clickeado
             event.target.closest('.preview-control-btn').classList.add('active');
             
-            // Deshabilitar badge toggle si está en modo disabled
-            const badgeToggle = document.getElementById('badge-toggle');
-            if (option === 'disabled') {
-                badgeToggle.disabled = true;
-                badgeToggle.checked = false;
-            } else {
-                badgeToggle.disabled = false;
-            }
+            // Permitir icon-only incluso en modo disabled (igual que ia-button)
+            // No deshabilitar el toggle de icon-only
             
             // Actualizar el preview
             updatePreview(option);

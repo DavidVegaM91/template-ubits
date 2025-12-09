@@ -27,47 +27,8 @@
             <!-- Content with Sidebar -->
             <div style="display: flex;">
             
-            <!-- Selector Responsive para Móvil -->
-            <div class="components-selector-mobile">
-                <div class="custom-dropdown" id="components-dropdown">
-                    <div class="dropdown-trigger">
-                        <span class="dropdown-text ubits-body-md-regular">Introducción</span>
-                        <i class="far fa-chevron-down dropdown-icon"></i>
-                    </div>
-                    <div class="dropdown-menu">
-                        <div class="dropdown-item" data-section="introduccion">
-                            <span class="dropdown-item-text ubits-body-md-regular">Introducción</span>
-                        </div>
-                        <div class="dropdown-group">
-                            <div class="dropdown-group-title ubits-body-sm-regular">Componentes</div>
-                            <div class="dropdown-subgroup">
-                                <div class="dropdown-subgroup-title ubits-body-sm-regular">Navegación</div>
-                                <div class="dropdown-item" data-section="sidebar">
-                                    <span class="dropdown-item-text ubits-body-md-regular">Sidebar</span>
-                                </div>
-                                <div class="dropdown-item" data-section="sub-nav">
-                                    <span class="dropdown-item-text ubits-body-md-regular">Sub-nav</span>
-                                </div>
-                                <div class="dropdown-item" data-section="tab-bar">
-                                    <span class="dropdown-item-text ubits-body-md-regular">Tab Bar</span>
-                                </div>
-                            </div>
-                            <div class="dropdown-subgroup">
-                                <div class="dropdown-subgroup-title ubits-body-sm-regular">UI</div>
-                                <div class="dropdown-item" data-section="button">
-                                    <span class="dropdown-item-text ubits-body-md-regular">Button</span>
-                                </div>
-                                <div class="dropdown-item" data-section="alert">
-                                    <span class="dropdown-item-text ubits-body-md-regular">Alert</span>
-                                </div>
-                                <div class="dropdown-item" data-section="toast">
-                                    <span class="dropdown-item-text ubits-body-md-regular">Toast</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <!-- Dropdown Móvil para Documentación (generado automáticamente por docs-sidebar.js) -->
+            <div id="docs-dropdown-container"></div>
             
             <!-- Sidebar de Documentación -->
             <div id="docs-sidebar-container"></div>
@@ -186,59 +147,9 @@
             // Cargar top-nav con variante documentación
             loadSubNav('top-nav-container', 'documentacion');
             
-            // Cargar sidebar de documentación
+            // Cargar sidebar de documentación (esto también carga el dropdown móvil automáticamente)
             loadDocsSidebar('introduccion');
-            
-            // Inicializar dropdown de componentes
-            initComponentsDropdown();
         });
-
-        // Función para inicializar el dropdown de componentes
-        function initComponentsDropdown() {
-            const dropdownTrigger = document.querySelector('.dropdown-trigger');
-            const dropdownMenu = document.querySelector('.dropdown-menu');
-            const dropdownItems = document.querySelectorAll('.dropdown-item');
-            
-            if (dropdownTrigger && dropdownMenu) {
-                dropdownTrigger.addEventListener('click', function() {
-                    dropdownTrigger.classList.toggle('active');
-                    dropdownMenu.classList.toggle('open');
-                });
-            }
-            
-            dropdownItems.forEach(item => {
-                item.addEventListener('click', function() {
-                    const section = this.getAttribute('data-section');
-                    handleComponentsNavigation(section);
-                    
-                    // Cerrar dropdown
-                    dropdownTrigger.classList.remove('active');
-                    dropdownMenu.classList.remove('open');
-                });
-            });
-        }
-        
-        // Función para manejar navegación de componentes
-        function handleComponentsNavigation(section) {
-            if (section === 'introduccion') {
-                // Si ya estamos en componentes.html, solo hacer scroll al top
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            } else {
-                // Navegar a la página correspondiente
-                const pageMap = {
-                    'sidebar': 'sidebar.html',
-                    'sub-nav': 'subnav.html',
-                    'tab-bar': 'tab-bar.html',
-                    'alert': 'alert.html',
-                    'button': 'button.html',
-                    'toast': 'toast.html'
-                };
-                
-                if (pageMap[section]) {
-                    window.location.href = pageMap[section];
-                }
-            }
-        }
     </script>
 </body>
 </html>

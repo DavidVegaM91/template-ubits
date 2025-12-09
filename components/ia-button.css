@@ -1,0 +1,493 @@
+/* ========================================
+   UBITS IA-BUTTON COMPONENT
+   Botón especial para casos de IA con gradiente radial
+   ======================================== */
+
+/* ========================================
+   KEYFRAMES - REMOVIDOS
+   ======================================== */
+/* Las animaciones del borde fueron removidas - botón simple sin efecto de borde animado */
+
+/* ========================================
+   BASE IA-BUTTON STYLES
+   ======================================== */
+
+.ubits-ia-button {
+    /* Base styles */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: none;
+    border-radius: 1000px; /* Pill shape - completo */
+    font-family: 'Noto Sans', sans-serif;
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    user-select: none;
+    white-space: nowrap;
+    box-sizing: border-box; /* CRITICAL: Asegurar que padding se incluya en height */
+    overflow: hidden; /* Para mantener el contenido dentro del botón */
+    
+    /* Default state - Primary con múltiples gradientes radiales superpuestos (replicado de Storybook) */
+    background: 
+        radial-gradient(40% 50% at 50% 100%, rgb(0, 215, 255), rgba(0, 0, 0, 0)),
+        radial-gradient(80% 100% at 50% 120%, rgb(0, 152, 253), rgba(0, 0, 0, 0)),
+        radial-gradient(76.58% 94.29% at 47.57% 132.86%, rgb(0, 215, 255) 0%, rgb(0, 89, 250) 100%);
+    color: rgb(255, 255, 255);
+    border: 1px solid rgb(82, 151, 244);
+    box-shadow: none;
+    
+    /* REMOVIDO: padding, height, font-size - se definen en las clases de tamaño específicas */
+}
+
+/* Efecto de borde animado removido - botón simple sin animación */
+
+/* ========================================
+   IA-BUTTON VARIANTS
+   ======================================== */
+
+/* Primary Variant (con múltiples gradientes radiales superpuestos - replicado de Storybook) */
+.ubits-ia-button--primary {
+    background: 
+        radial-gradient(40% 50% at 50% 100%, rgb(0, 215, 255), rgba(0, 0, 0, 0)),
+        radial-gradient(80% 100% at 50% 120%, rgb(0, 152, 253), rgba(0, 0, 0, 0)),
+        radial-gradient(76.58% 94.29% at 47.57% 132.86%, rgb(0, 215, 255) 0%, rgb(0, 89, 250) 100%);
+    color: rgb(255, 255, 255);
+    border: 1px solid rgb(82, 151, 244);
+    box-shadow: none;
+}
+
+/* Secondary Variant (outlined) */
+.ubits-ia-button--secondary {
+    background: var(--ubits-bg-1);
+    color: var(--ubits-fg-1-high);
+    border: 1px solid var(--ubits-accent-brand);
+}
+
+/* ========================================
+   IA-BUTTON STATES
+   ======================================== */
+
+/* Hover State - Primary */
+.ubits-ia-button--primary:hover:not(:disabled) {
+    background: 
+        radial-gradient(40% 50% at 50% 100%, rgb(0, 215, 255), rgba(0, 0, 0, 0)),
+        radial-gradient(80% 100% at 50% 120%, rgb(0, 152, 253), rgba(0, 0, 0, 0)),
+        radial-gradient(76.58% 94.29% at 47.57% 132.86%, rgb(0, 215, 255) 0%, rgb(0, 89, 250) 100%);
+    border: 1px solid rgb(82, 151, 244);
+    box-shadow: 
+        rgba(0, 89, 250, 0.85) 0px 0px 28px 0.2px,
+        rgba(255, 255, 255, 0.35) 0px 0.8px 0px 0px inset,
+        rgba(0, 0, 0, 0.1) 0px -0.8px 0px 0px inset;
+    opacity: 1;
+}
+
+/* Hover State - Secondary */
+.ubits-ia-button--secondary:hover:not(:disabled) {
+    background: var(--ubits-bg-1);
+    border-color: var(--ubits-accent-brand);
+    box-shadow: 
+        rgba(0, 89, 250, 0.85) 0px 0px 28px 0.2px,
+        rgba(255, 255, 255, 0.35) 0px 0.8px 0px 0px inset,
+        rgba(0, 0, 0, 0.1) 0px -0.8px 0px 0px inset;
+}
+
+/* Pressed State - Primary */
+.ubits-ia-button--primary:active:not(:disabled) {
+    background: 
+        radial-gradient(40% 50% at 50% 100%, rgb(0, 215, 255), rgba(0, 0, 0, 0)),
+        radial-gradient(80% 100% at 50% 120%, rgb(0, 152, 253), rgba(0, 0, 0, 0)),
+        radial-gradient(76.58% 94.29% at 47.57% 132.86%, rgb(0, 215, 255) 0%, rgb(0, 89, 250) 100%);
+    border: 1px solid rgb(82, 151, 244);
+    box-shadow: none;
+    transform: translateY(1px);
+}
+
+/* Pressed State - Secondary */
+.ubits-ia-button--secondary:active:not(:disabled) {
+    background: var(--ubits-bg-1);
+    border-color: var(--ubits-accent-brand);
+    transform: translateY(1px);
+}
+
+/* Focus State */
+.ubits-ia-button:focus-visible {
+    outline: none;
+    box-shadow: 0px 0px 0px 4px var(--ubits-button-focus-ring);
+}
+
+/* Focus State - Primary mantiene gradiente */
+.ubits-ia-button--primary:focus-visible {
+    background: 
+        radial-gradient(40% 50% at 50% 100%, rgb(0, 215, 255), rgba(0, 0, 0, 0)),
+        radial-gradient(80% 100% at 50% 120%, rgb(0, 152, 253), rgba(0, 0, 0, 0)),
+        radial-gradient(76.58% 94.29% at 47.57% 132.86%, rgb(0, 215, 255) 0%, rgb(0, 89, 250) 100%);
+    border: 1px solid rgb(82, 151, 244);
+    box-shadow: 0px 0px 0px 4px var(--ubits-button-focus-ring);
+}
+
+/* Active State (programático) */
+.ubits-ia-button--active {
+    background: var(--ubits-button-active-bg) !important;
+    color: var(--ubits-accent-brand) !important;
+    border: none !important;
+}
+
+.ubits-ia-button--active i {
+    color: var(--ubits-accent-brand) !important;
+}
+
+/* Disabled State */
+.ubits-ia-button:disabled,
+.ubits-ia-button--disabled {
+    background: var(--ubits-bg-disabled-button) !important;
+    color: var(--ubits-fg-on-disabled-button) !important;
+    border-color: var(--ubits-border-disabled-button) !important;
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 1;
+}
+
+.ubits-ia-button:disabled i,
+.ubits-ia-button--disabled i {
+    color: var(--ubits-fg-on-disabled-button) !important;
+}
+
+/* ========================================
+   IA-BUTTON SIZES - IGUALES A UBITS-BUTTON
+   ======================================== */
+
+/* Extra Small - altura 28px (igual que ubits-button--xs) */
+.ubits-ia-button.ubits-ia-button--xs,
+.ubits-ia-button--xs {
+    padding: 7.5px 8px !important;
+    height: 28px !important;
+    min-height: 28px !important;
+    max-height: 28px !important;
+    font-size: 11px !important;
+    gap: 6px;
+    box-sizing: border-box;
+}
+
+.ubits-ia-button.ubits-ia-button--xs i,
+.ubits-ia-button--xs i {
+    font-size: 11px !important;
+    width: 11px !important;
+    height: 11px !important;
+}
+
+.ubits-ia-button.ubits-ia-button--xs span,
+.ubits-ia-button--xs span {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 11px !important;
+    font-weight: 600;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Small - altura 32px (igual que ubits-button--sm) */
+.ubits-ia-button.ubits-ia-button--sm,
+.ubits-ia-button--sm {
+    padding: 9.5px 12px !important;
+    height: 32px !important;
+    min-height: 32px !important;
+    max-height: 32px !important;
+    font-size: 13px !important;
+    gap: 6px;
+    box-sizing: border-box;
+}
+
+.ubits-ia-button.ubits-ia-button--sm i,
+.ubits-ia-button--sm i {
+    font-size: 13px !important;
+    width: 13px !important;
+    height: 13px !important;
+}
+
+.ubits-ia-button.ubits-ia-button--sm span,
+.ubits-ia-button--sm span {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 13px !important;
+    font-weight: 600;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Medium (default) - altura 40px (igual que ubits-button--md) */
+.ubits-ia-button.ubits-ia-button--md,
+.ubits-ia-button--md {
+    padding: 12px 16px !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    max-height: 40px !important;
+    font-size: 16px !important;
+    gap: 8px;
+    box-sizing: border-box;
+}
+
+/* Base button sin clase de tamaño - por defecto md */
+.ubits-ia-button:not(.ubits-ia-button--xs):not(.ubits-ia-button--sm):not(.ubits-ia-button--md):not(.ubits-ia-button--lg) {
+    padding: 12px 16px !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    max-height: 40px !important;
+    font-size: 16px;
+    gap: 8px;
+    box-sizing: border-box;
+}
+
+.ubits-ia-button.ubits-ia-button--md i,
+.ubits-ia-button--md i {
+    font-size: 16px !important;
+    width: 16px !important;
+    height: 16px !important;
+}
+
+.ubits-ia-button.ubits-ia-button--md span,
+.ubits-ia-button--md span {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 16px !important;
+    font-weight: 600;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Iconos y spans por defecto (md) cuando no hay clase de tamaño */
+.ubits-ia-button:not(.ubits-ia-button--xs):not(.ubits-ia-button--sm):not(.ubits-ia-button--md):not(.ubits-ia-button--lg) i {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.ubits-ia-button:not(.ubits-ia-button--xs):not(.ubits-ia-button--sm):not(.ubits-ia-button--md):not(.ubits-ia-button--lg) span {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Large - altura 48px (igual que ubits-button--lg) */
+.ubits-ia-button.ubits-ia-button--lg,
+.ubits-ia-button--lg {
+    padding: 14px 20px !important;
+    height: 48px !important;
+    min-height: 48px !important;
+    max-height: 48px !important;
+    font-size: 20px !important;
+    gap: 10px;
+    box-sizing: border-box;
+}
+
+.ubits-ia-button.ubits-ia-button--lg i,
+.ubits-ia-button--lg i {
+    font-size: 20px !important;
+    width: 20px !important;
+    height: 20px !important;
+}
+
+.ubits-ia-button.ubits-ia-button--lg span,
+.ubits-ia-button--lg span {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 20px !important;
+    font-weight: 600;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* ========================================
+   IA-BUTTON ICON-ONLY
+   ======================================== */
+
+.ubits-ia-button--icon-only {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+    padding: 0 !important;
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+    max-width: 40px !important;
+    max-height: 40px !important;
+    border-radius: 50% !important;
+    line-height: 0 !important;
+    flex-shrink: 0;
+}
+
+/* CRITICAL: Mayor especificidad para sobrescribir estilos de tamaño */
+.ubits-ia-button.ubits-ia-button--icon-only--xs,
+.ubits-ia-button--icon-only.ubits-ia-button--xs,
+.ubits-ia-button--icon-only--xs {
+    padding: 0 !important;
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+    min-height: 28px !important;
+    max-width: 28px !important;
+    max-height: 28px !important;
+    border-radius: 50% !important;
+    line-height: 0 !important;
+    flex-shrink: 0;
+    aspect-ratio: 1 / 1 !important;
+}
+
+.ubits-ia-button.ubits-ia-button--icon-only--xs i,
+.ubits-ia-button--icon-only.ubits-ia-button--xs i,
+.ubits-ia-button--icon-only--xs i {
+    font-size: 11px !important;
+    width: 11px !important;
+    height: 11px !important;
+}
+
+.ubits-ia-button.ubits-ia-button--icon-only--sm,
+.ubits-ia-button--icon-only.ubits-ia-button--sm,
+.ubits-ia-button--icon-only--sm {
+    padding: 0 !important;
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
+    max-width: 32px !important;
+    max-height: 32px !important;
+    border-radius: 50% !important;
+    line-height: 0 !important;
+    flex-shrink: 0;
+    aspect-ratio: 1 / 1 !important;
+}
+
+.ubits-ia-button.ubits-ia-button--icon-only--sm i,
+.ubits-ia-button--icon-only.ubits-ia-button--sm i,
+.ubits-ia-button--icon-only--sm i {
+    font-size: 13px !important;
+    width: 13px !important;
+    height: 13px !important;
+}
+
+.ubits-ia-button--icon-only--md,
+.ubits-ia-button--icon-only {
+    padding: 0 !important;
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+    max-width: 40px !important;
+    max-height: 40px !important;
+    border-radius: 50% !important;
+    line-height: 0 !important;
+    flex-shrink: 0;
+}
+
+.ubits-ia-button--icon-only--md i,
+.ubits-ia-button--icon-only i {
+    font-size: 16px !important;
+    width: 16px !important;
+    height: 16px !important;
+}
+
+.ubits-ia-button--icon-only--lg {
+    padding: 0 !important;
+    width: 48px !important;
+    height: 48px !important;
+    min-width: 48px !important;
+    min-height: 48px !important;
+    max-width: 48px !important;
+    max-height: 48px !important;
+    border-radius: 50% !important;
+    line-height: 0 !important;
+    flex-shrink: 0;
+}
+
+.ubits-ia-button--icon-only--lg i {
+    font-size: 20px !important;
+    width: 20px !important;
+    height: 20px !important;
+}
+
+/* ========================================
+   IA-BUTTON BADGE (opcional)
+   ======================================== */
+
+.ubits-ia-button__badge {
+    position: absolute;
+    top: -2px;
+    right: -3px;
+    width: 10px;
+    height: 10px;
+    background: var(--ubits-button-badge);
+    border-radius: 1000px;
+    z-index: 1;
+}
+
+.ubits-ia-button--secondary .ubits-ia-button__badge {
+    top: -3px;
+    right: -4px;
+}
+
+/* ========================================
+   IA-BUTTON ICONS
+   ======================================== */
+
+.ubits-ia-button i {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: inherit;
+}
+
+.ubits-ia-button--primary i {
+    color: #ffffff;
+}
+
+.ubits-ia-button--secondary i {
+    color: var(--ubits-accent-brand);
+}
+
+.ubits-ia-button--active i {
+    color: var(--ubits-accent-brand) !important;
+}
+
+/* ========================================
+   IA-BUTTON TEXT
+   ======================================== */
+
+.ubits-ia-button span {
+    color: inherit;
+    font-weight: 600;
+    line-height: 1;
+}
+
+/* ========================================
+   DARK MODE SUPPORT
+   ======================================== */
+
+[data-theme="dark"] .ubits-ia-button--secondary {
+    background: var(--ubits-bg-1);
+    color: var(--ubits-fg-1-high-inverted);
+    border-color: var(--ubits-accent-brand-inverted);
+}
+
+[data-theme="dark"] .ubits-ia-button--secondary i {
+    color: var(--ubits-accent-brand-inverted);
+}
+
+[data-theme="dark"] .ubits-ia-button--active {
+    background: var(--ubits-button-active-bg) !important;
+    color: var(--ubits-accent-brand-inverted) !important;
+}
+
+[data-theme="dark"] .ubits-ia-button--active i {
+    color: var(--ubits-accent-brand-inverted) !important;
+}
+
