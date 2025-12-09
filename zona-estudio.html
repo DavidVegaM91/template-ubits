@@ -15,7 +15,6 @@
     <link rel="stylesheet" href="components/tab-bar.css">
     <link rel="stylesheet" href="components/floating-menu.css">
     <link rel="stylesheet" href="components/profile-menu.css">
-    <link rel="stylesheet" href="components/tab.css">
     <link rel="stylesheet" href="profile.css">
     <style>
         /* ¡A LA MIERDA LAS REGLAS PENDEJAS! */
@@ -127,23 +126,6 @@
                 padding: 12px !important; /* !important para sobrescribir el reset */
             }
         }
-
-        /* Estilos para tabs de zona de estudio - sobre fondo bg-2 */
-        .section-single > .widget-tabs-zona-estudio {
-            background: transparent !important;
-            padding: 0 !important;
-            border-radius: 0 !important;
-            display: flex !important;
-            flex-direction: row !important;
-            align-items: center;
-            gap: 0;
-            width: 100%;
-        }
-
-        .widget-tabs-zona-estudio .ubits-tab {
-            flex: 0 1 auto;
-            min-width: 0;
-        }
     </style>
 </head>
 <body data-theme="light">
@@ -164,18 +146,8 @@
                     <!-- Sección tabs de zona de estudio -->
                     <div class="section-single">
                         <div class="widget-tabs-zona-estudio">
-                            <button class="ubits-tab ubits-tab--active" data-tab="plan-contenidos" onclick="setActiveTabZonaEstudio(this, 'plan-contenidos')">
-                                <span>Plan de contenidos</span>
-                            </button>
-                            <button class="ubits-tab" data-tab="plan-competencias" onclick="setActiveTabZonaEstudio(this, 'plan-competencias')">
-                                <span>Plan de competencias</span>
-                            </button>
-                            <button class="ubits-tab" data-tab="exclusivo-mi" onclick="setActiveTabZonaEstudio(this, 'exclusivo-mi')">
-                                <span>Exclusivo para mi</span>
-                            </button>
-                            <button class="ubits-tab" data-tab="historial-certificados" onclick="setActiveTabZonaEstudio(this, 'historial-certificados')">
-                                <span>Historial y certificados</span>
-                            </button>
+                            <p class="ubits-body-md-regular">Tabs de zona de estudio</p>
+                            <br>
                         </div>
                     </div>
 
@@ -258,28 +230,6 @@
                 }
             }, 200);
         });
-
-        // Función para manejar el cambio de tabs en zona de estudio
-        function setActiveTabZonaEstudio(clickedTab, tabId) {
-            // Remover active de todos los tabs
-            document.querySelectorAll('.tabs-container-zona-estudio .ubits-tab').forEach(tab => {
-                tab.classList.remove('ubits-tab--active');
-            });
-            
-            // Agregar active al tab clickeado
-            clickedTab.classList.add('ubits-tab--active');
-            
-            // Aquí puedes agregar lógica para cambiar el contenido según el tab seleccionado
-            console.log('Tab activo:', tabId);
-            
-            // Ejemplo: cambiar contenido del widget-contenido-tabs
-            const contenidoTabs = document.querySelector('.widget-contenido-tabs');
-            if (contenidoTabs) {
-                // Aquí puedes cambiar el contenido según el tabId
-                // Por ahora solo mostramos un mensaje
-                contenidoTabs.innerHTML = `<p class="ubits-body-md-regular">Contenido de: ${tabId}</p>`;
-            }
-        }
     </script>
 </body>
 </html>

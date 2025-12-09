@@ -502,9 +502,9 @@ function restoreOriginalTabs(container, variant, customTabs = []) {
             const isActive = tab.id === activeTabId;
             return `
                 <button class="nav-tab ${isActive ? 'active' : ''}" data-tab="${tab.id}" onclick="navigateToTab('${tab.id}', '${variant}')">
-                <i class="fa ${tab.icon}"></i>
-                <span class="ubits-body-sm-regular">${tab.label}</span>
-            </button>
+                    <i class="fa ${tab.icon}"></i>
+                    <span class="ubits-body-sm-regular">${tab.label}</span>
+                </button>
             `;
         }).join('');
     }
@@ -517,7 +517,7 @@ function restoreOriginalTabs(container, variant, customTabs = []) {
         addTopNavEventListeners(container);
         // Si no se encontró tab activo, intentar activar basado en la página actual
         if (!activeTabId) {
-        activateCurrentPageTab(container, variant);
+            activateCurrentPageTab(container, variant);
         }
     }
 }
