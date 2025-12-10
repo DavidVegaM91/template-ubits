@@ -1,5 +1,27 @@
 // UBITS Playground - Dashboard JavaScript
 
+// Función para cambiar el favicon según el tema
+function updateFavicon(theme) {
+    const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+    link.type = 'image/svg+xml';
+    link.rel = 'icon';
+    
+    // Si el tema es oscuro o el navegador prefiere modo oscuro, usar logo blanco
+    // Si el tema es claro o el navegador prefiere modo claro, usar logo oscuro
+    const prefersDark = window.matchMedia && window.matchMedia('(prefer-color-scheme: dark)').matches;
+    const isDark = theme === 'dark' || (!theme && prefersDark);
+    
+    link.href = isDark ? 'images/Ubits-logo.svg' : 'images/Ubits-logo-dark.svg';
+    
+    // Remover favicon anterior si existe
+    const oldLink = document.querySelector("link[rel*='icon']");
+    if (oldLink) {
+        oldLink.remove();
+    }
+    
+    document.getElementsByTagName('head')[0].appendChild(link);
+}
+
 // Función global para alternar modo oscuro
 function toggleDarkMode() {
     const body = document.body;
@@ -10,6 +32,9 @@ function toggleDarkMode() {
     
     // Guardar preferencia en localStorage
     localStorage.setItem('theme', newTheme);
+    
+    // Actualizar favicon según el nuevo tema
+    updateFavicon(newTheme);
     
     // Cambiar icono del botón del sidebar
     const darkModeButton = document.querySelector('#darkmode-toggle i');
@@ -69,6 +94,20 @@ function initDarkModeToggle() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar favicon según el tema del navegador o localStorage
+    const savedTheme = localStorage.getItem('theme');
+    const bodyTheme = document.body.getAttribute('data-theme');
+    const theme = savedTheme || bodyTheme || (window.matchMedia && window.matchMedia('(prefer-color-scheme: dark)').matches ? 'dark' : 'light');
+    updateFavicon(theme);
+    
+    // Escuchar cambios en la preferencia del sistema
+    if (window.matchMedia) {
+        window.matchMedia('(prefer-color-scheme: dark)').addEventListener('change', (e) => {
+            const currentTheme = document.body.getAttribute('data-theme') || (e.matches ? 'dark' : 'light');
+            updateFavicon(currentTheme);
+        });
+    }
+    
     // Elementos del DOM
     const sidebar = document.getElementById('sidebar');
     const topNav = document.getElementById('topNav');
