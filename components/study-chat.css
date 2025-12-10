@@ -99,6 +99,22 @@
     white-space: pre-wrap;
 }
 
+/* Links dentro del mensaje */
+.ubits-study-chat__message-text a.ubits-study-chat__link {
+    color: var(--ubits-accent-brand-static);
+    text-decoration: underline;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.ubits-study-chat__message-text a.ubits-study-chat__link:hover {
+    opacity: 0.8;
+}
+
+.ubits-study-chat__message-text a.ubits-study-chat__link:visited {
+    color: var(--ubits-accent-brand-static);
+}
+
 .ubits-study-chat__text-globe--ai .ubits-study-chat__message-text {
     font-weight: 400;
     color: var(--ubits-fg-1-high);
