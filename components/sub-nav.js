@@ -70,10 +70,10 @@ const TOP_NAV_VARIANTS = {
     'admin-aprendizaje': {
         name: 'Aprendizaje',
         tabs: [
-            { id: 'lms-cursos', label: 'LMS - Cursos propios', icon: 'far fa-book' },
-            { id: 'plan-formacion', label: 'Plan de formación', icon: 'far fa-clipboard-list-check' },
-            { id: 'certificados', label: 'Certificados', icon: 'far fa-file-certificate' },
-            { id: 'metricas-empresa', label: 'Métricas de empresa', icon: 'far fa-chart-line' }
+            { id: 'planes-formacion', label: 'Planes de formación', icon: 'far fa-clipboard-list-check', url: 'planes-formacion.html' },
+            { id: 'u-corporativa', label: 'Universidad corporativa', icon: 'far fa-building-columns', url: 'admin-u-corporativa.html' },
+            { id: 'certificados', label: 'Certificados', icon: 'far fa-file-certificate', url: 'admin-certificados.html' },
+            { id: 'seguimiento', label: 'Seguimiento', icon: 'far fa-chart-line', url: 'seguimiento.html' }
         ]
     },
     'admin-desempeño': {
@@ -200,7 +200,7 @@ function getTopNavHTML(variant = 'template', customTabs = []) {
     // Logo del cliente antes de los tabs (solo para variantes que NO sean documentacion)
     const clientLogo = variant !== 'documentacion' ? `
         <div class="sub-nav-logo">
-            <img src="images/Client-logo.jpg" alt="Client Logo" class="sub-nav-logo-img">
+            <img src="images/Client-logo.png" alt="Client Logo" class="sub-nav-logo-img">
         </div>
     ` : '';
 

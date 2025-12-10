@@ -105,7 +105,7 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
                     <button class="nav-button" data-section="empresa" data-tooltip="Empresa" onclick="window.location.href='gestion-de-usuarios.html'" style="cursor: pointer;">
                         <i class="far fa-building"></i>
                     </button>
-                    <button class="nav-button" data-section="aprendizaje" data-tooltip="Aprendizaje" onclick="window.location.href='admin-aprendizaje.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="aprendizaje" data-tooltip="Aprendizaje" onclick="window.location.href='planes-formacion.html'" style="cursor: pointer;">
                         <i class="far fa-graduation-cap"></i>
                     </button>
                     <button class="nav-button" data-section="diagnóstico" data-tooltip="Diagnóstico" onclick="window.location.href='admin-diagnostico.html'" style="cursor: pointer;">

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="images/Ubits-logo.svg">
-    <title>UBITS Playground - API</title>
+    <title>UBITS Playground - Universidad corporativa</title>
     
     <!-- Estilos locales -->
     <link rel="stylesheet" href="ubits-colors.css">
@@ -160,7 +160,7 @@
                     <!-- Sección contenido principal -->
                     <div class="section-single">
                         <div class="widget-contenido-principal">
-                            <p class="ubits-body-md-regular">API</p>
+                            <p class="ubits-body-md-regular">Universidad corporativa</p>
                             <br><br><br><br><br><br><br><br><br><br><br>
                         </div>
                     </div>
@@ -188,8 +188,8 @@
     <script>
         // Cargar componentes dinámicamente
         document.addEventListener('DOMContentLoaded', function() {
-            loadSidebar('admin');
-            loadSubNav('top-nav-container', 'template');
+            loadSidebar('admin', 'aprendizaje');
+            loadSubNav('top-nav-container', 'admin-aprendizaje');
             loadTabBar('tab-bar-container');
             loadFloatingMenu('floating-menu-container');
             loadProfileMenu('profile-menu-container');
@@ -197,7 +197,7 @@
             // Cargar header-product
             if (typeof loadHeaderProduct === 'function') {
                 loadHeaderProduct('header-product-container', {
-                    productName: 'API',
+                    productName: 'Universidad corporativa',
                     breadcrumbItems: [], // Array vacío para ocultar breadcrumb
                     aiButton: {
                         text: 'AI button',
@@ -222,8 +222,18 @@
                     }
                 });
             }
+            
+            // Activar el tab "Universidad corporativa" en el SubNav
+            setTimeout(() => {
+                const uCorporativaTab = document.querySelector('.nav-tab[data-tab="u-corporativa"]');
+                if (uCorporativaTab) {
+                    document.querySelectorAll('.nav-tab, .hamburger-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    uCorporativaTab.classList.add('active');
+                }
+            }, 200);
         });
     </script>
 </body>
 </html>
-

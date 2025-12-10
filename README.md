@@ -29,17 +29,30 @@ Una **plantilla lista para usar** que permite a **Product Managers**, **Diseñad
 
 ### **Componentes de navegación:**
 - **SubNav** - Navegación superior (variantes disponibles):
-  - `template`, `aprendizaje`, `desempeno`, `encuestas`, `tareas`, `documentacion`
+  - `template` - Plantilla personalizable
+  - `aprendizaje` - Módulo de aprendizaje (inicio, catálogo, U. corporativa, zona de estudio)
+  - `desempeno` - Módulo de desempeño (evaluaciones 360, objetivos, métricas, reportes)
+  - `encuestas` - Módulo de encuestas
+  - `tareas` - Módulo de tareas (planes, tareas)
+  - `diagnostico` - Módulo de diagnóstico
+  - `reclutamiento` - Módulo de reclutamiento
   - `empresa` - Gestión de empresa (gestión usuarios, organigrama, datos, personalización, roles, comunicaciones)
-  - `admin-aprendizaje` - Administración de aprendizaje (LMS, plan formación, certificados, métricas)
+  - `admin-aprendizaje` - Administración de aprendizaje (planes de formación, universidad corporativa, certificados, seguimiento)
+  - `admin-desempeño` - Administración de desempeño (evaluaciones 360, objetivos, matriz de talento)
+  - `admin-diagnostico` - Administración de diagnóstico
+  - `admin-encuestas` - Administración de encuestas
+  - `documentacion` - Solo para páginas de documentación
 - **Sidebar** - Navegación lateral con 2 variantes:
   - **Variante default:** (opciones: admin, aprendizaje, diagnóstico, desempeño, encuestas, reclutamiento, tareas, ubits-ai, ninguno) - Con modo oscuro
   - **Variante admin:** (opciones: inicio, empresa, aprendizaje, diagnóstico, desempeño, encuestas; footer: api, centro-de-ayuda, modo-oscuro, perfil) - Incluye modo oscuro en footer
 - **TabBar** - Navegación móvil (opciones: modulos, perfil, modo-oscuro)
+- **Floating Menu** - Menú flotante modal para navegación móvil (acordeones con subitems)
+- **Profile Menu** - Menú desplegable del perfil de usuario
 
 ### **Componentes de UI:**
-- **Button** - Botones de acción (variantes: primary, secondary, tertiary; tamaños: sm, md, lg) - **RENDERIZADO: HTML directo**
+- **Button** - Botones de acción (variantes: primary, secondary, tertiary; tamaños: sm, md, lg; iconos opcionales) - **RENDERIZADO: HTML directo**
 - **IA-Button** - Botones especiales para casos de IA (variantes: primary con gradiente radial, secondary outlined; tamaños: sm, md, lg; badge siempre presente; pill shape) - **RENDERIZADO: HTML directo**
+- **Header Product** - Encabezado de producto con breadcrumb, botones de acción (back, info, AI, secundarios, primario, menú) - **RENDERIZADO: loadHeaderProduct()**
 - **Alert** - Notificaciones (tipos: success, info, warning, error; con/sin botón cerrar) - **RENDERIZADO: showAlert() o HTML directo**
 - **Toast** - Notificaciones flotantes (tipos: success, info, warning, error; auto-cierre, pausa en hover) - **RENDERIZADO: showToast()**
 - **Input** - Campos de entrada (11 tipos: text, email, password, number, tel, url, select, textarea, search, autocomplete, calendar; tamaños: sm, md, lg; estados: default, hover, focus, invalid, disabled; con iconos, contador, helper text, mandatory/optional, validación manual, scroll infinito automático) - **RENDERIZADO: createInput()**
@@ -49,6 +62,8 @@ Una **plantilla lista para usar** que permite a **Product Managers**, **Diseñad
 - **Tab** - Tabs de navegación (estados: active, inactive; tamaños: xs, sm, md, lg; variantes: con texto, icon-only; iconos opcionales) - **RENDERIZADO: HTML directo**
 - **Empty State** - Estados vacíos (icono, título, descripción, botones opcionales; tamaños de icono: sm, md, lg; casos de uso: búsqueda sin resultados, contenido vacío, estados iniciales) - **RENDERIZADO: loadEmptyState()**
 - **Paginator** - Paginación de resultados (navegación por páginas, items por página, callbacks de cambio) - **RENDERIZADO: loadPaginator()**
+- **Copilot Chat** - Chat de asistente IA (interfaz de conversación con mensajes, input, historial) - **RENDERIZADO: loadCopilotChat()**
+- **Study Chat** - Chat de estudio con IA (interfaz especializada para aprendizaje) - **RENDERIZADO: loadStudyChat()**
 
 ### **🔧 REQUISITOS DE RENDERIZADO:**
 Todos los componentes UBITS requieren imports obligatorios:
@@ -57,6 +72,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 <!-- CSS OBLIGATORIO para cada componente usado -->
 <link rel="stylesheet" href="components/button.css">
 <link rel="stylesheet" href="components/ia-button.css">
+<link rel="stylesheet" href="components/header-product.css">
 <link rel="stylesheet" href="components/alert.css">
 <link rel="stylesheet" href="components/toast.css">
 <link rel="stylesheet" href="components/input.css">
@@ -66,8 +82,13 @@ Todos los componentes UBITS requieren imports obligatorios:
 <link rel="stylesheet" href="components/tab.css">
 <link rel="stylesheet" href="components/empty-state.css">
 <link rel="stylesheet" href="components/paginator.css">
+<link rel="stylesheet" href="components/copilot-chat.css">
+<link rel="stylesheet" href="components/study-chat.css">
+<link rel="stylesheet" href="components/floating-menu.css">
+<link rel="stylesheet" href="components/profile-menu.css">
 
 <!-- JavaScript OBLIGATORIO para componentes dinámicos -->
+<script src="components/header-product.js"></script>
 <script src="components/alert.js"></script>
 <script src="components/toast.js"></script>
 <script src="components/input.js"></script>
@@ -75,6 +96,10 @@ Todos los componentes UBITS requieren imports obligatorios:
 <script src="components/carousel-contents.js"></script>
 <script src="components/empty-state.js"></script>
 <script src="components/paginator.js"></script>
+<script src="components/copilot-chat.js"></script>
+<script src="components/study-chat.js"></script>
+<script src="components/floating-menu.js"></script>
+<script src="components/profile-menu.js"></script>
 
 <!-- Base UBITS SIEMPRE REQUERIDA -->
 <link rel="stylesheet" href="ubits-colors.css">
@@ -145,18 +170,39 @@ Todos los componentes UBITS requieren imports obligatorios:
 - **`planes.html`** - Planes (1 sección)
 - **`tareas.html`** - Tareas (1 sección)
 
-#### **👤 Perfil:**
+#### **👤 Perfil y AI:**
 - **`profile.html`** - Perfil/Portal del colaborador
+- **`ubits-ai.html`** - Página de UBITS AI
+- **`simon-chat.html`** - Chat con Simon AI
+- **`modo-estudio-ia.html`** - Modo de estudio con IA
 
 #### **⚙️ Módulo de Administración:**
 - **`admin.html`** - Dashboard de administración (1 sección, sin SubNav)
-- **`admin-empresa.html`** - Gestión de empresa (con SubNav)
-- **`admin-aprendizaje.html`** - Administración de aprendizaje (con SubNav)
-- **`admin-diagnostico.html`** - Administración de diagnóstico (sin SubNav)
-- **`admin-desempeño.html`** - Administración de desempeño (con SubNav)
-- **`admin-encuestas.html`** - Administración de encuestas (sin SubNav)
-- **`admin-api.html`** - Gestión de API (sin SubNav)
-- **`admin-help-center.html`** - Centro de ayuda (sin SubNav)
+
+**Módulo Empresa (SubNav: `empresa`):**
+- **`gestion-de-usuarios.html`** - Gestión de usuarios (con header-product)
+- **`organigrama.html`** - Organigrama (con header-product)
+- **`datos-de-empresa.html`** - Datos de empresa (con header-product)
+- **`personalizacion.html`** - Personalización (con header-product)
+- **`roles-y-permisos.html`** - Roles y permisos (con header-product)
+- **`comunicaciones.html`** - Comunicaciones (con header-product)
+
+**Módulo Admin Aprendizaje (SubNav: `admin-aprendizaje`):**
+- **`planes-formacion.html`** - Planes de formación (con header-product)
+- **`admin-u-corporativa.html`** - Universidad corporativa (con header-product)
+- **`admin-certificados.html`** - Certificados (con header-product)
+- **`seguimiento.html`** - Seguimiento (con header-product)
+
+**Módulo Admin Desempeño (SubNav: `admin-desempeño`):**
+- **`admin-360.html`** - Evaluaciones 360 (con header-product)
+- **`admin-objetivos.html`** - Objetivos (con header-product)
+- **`admin-matriz-talento.html`** - Matriz de Talento (con header-product)
+
+**Otros módulos admin:**
+- **`admin-diagnostico.html`** - Administración de diagnóstico (SubNav: `admin-diagnostico`)
+- **`admin-encuestas.html`** - Administración de encuestas (SubNav: `admin-encuestas`)
+- **`admin-api.html`** - Gestión de API (sin SubNav, con header-product)
+- **`admin-help-center.html`** - Centro de ayuda (sin SubNav, con header-product)
 
 ### **2. PÁGINAS DE DOCUMENTACIÓN (Sistema de Componentes)**
 
@@ -169,9 +215,16 @@ Todos los componentes UBITS requieren imports obligatorios:
 - **`subnav.html`** - Documentación del componente SubNav
 - **`tab-bar.html`** - Documentación del componente TabBar
 - **`button.html`** - Documentación del componente Button
+- **`ia-button.html`** - Documentación del componente IA-Button
+- **`header-product.html`** - Documentación del componente Header Product
 - **`alert.html`** - Documentación del componente Alert
+- **`toast.html`** - Documentación del componente Toast
+- **`input.html`** - Documentación del componente Input
 - **`card-content.html`** - Documentación del componente Card Content
+- **`status-tag.html`** - Documentación del componente Status Tag
+- **`tab.html`** - Documentación del componente Tab
 - **`empty-state.html`** - Documentación del componente Empty State
+- **`paginator.html`** - Documentación del componente Paginator
 
 #### **🎨 Guías de Diseño:**
 - **`colores.html`** - Guía de colores UBITS
@@ -180,6 +233,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 
 #### ** Herramientas de Documentación:**
 - **`guia-prompts.html`** - Prompts para personalización con Cursor AI
+- **`overview.html`** - Vista general del proyecto
 
 ### **3. ✅ VALIDADOR (Control de Calidad Automático)**
 - **`validador-ubits.html`** - Herramienta drag & drop que verifica tokens UBITS, tipografía y componentes, genera prompts para Cursor AI y otorga puntuación
@@ -196,12 +250,20 @@ Todos los componentes UBITS requieren imports obligatorios:
 │   ├── tab-bar.css + tab-bar.js
 │   ├── floating-menu.css + floating-menu.js
 │   ├── profile-menu.css + profile-menu.js
+│   ├── button.css + button.js
+│   ├── ia-button.css + ia-button.js
+│   ├── header-product.css + header-product.js
 │   ├── alert.css + alert.js
 │   ├── toast.css + toast.js
 │   ├── input.css + input.js
-│   ├── button.css
 │   ├── card-content.css + card-content.js
-│   └── empty-state.css + empty-state.js
+│   ├── carousel-contents.css + carousel-contents.js
+│   ├── status-tag.css + status-tag.js
+│   ├── tab.css + tab.js
+│   ├── empty-state.css + empty-state.js
+│   ├── paginator.css + paginator.js
+│   ├── copilot-chat.css + copilot-chat.js
+│   └── study-chat.css + study-chat.js
 ├── 📁 docs/                   # Sistema de documentación (solo para páginas *.html de documentación)
 │   ├── docs-sidebar.css + docs-sidebar.js  # Solo para button.html, alert.html, etc. NO para páginas de producto
 └── 📁 images/                 # Recursos visuales
@@ -324,6 +386,13 @@ loadSidebar('admin', 'inicio'); // Activa inicio en sidebar admin
     <span>Botón primario</span>
 </button>
 
+<!-- IA-Button -->
+<button class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--md">
+    <i class="far fa-sparkles"></i>
+    <span>AI Assistant</span>
+    <span class="ubits-ia-button__badge"></span>
+</button>
+
 <!-- Alert -->
 <div class="ubits-alert ubits-alert--success">
     <div class="ubits-alert__icon">
@@ -336,6 +405,36 @@ loadSidebar('admin', 'inicio'); // Activa inicio en sidebar admin
         <i class="far fa-times"></i>
     </button>
 </div>
+
+<!-- Header Product -->
+<div id="header-product-container"></div>
+<script>
+loadHeaderProduct('header-product-container', {
+    productName: 'Nombre del Producto',
+    breadcrumbItems: [], // Array vacío para ocultar breadcrumb (versión light)
+    aiButton: {
+        text: 'AI button',
+        onClick: function() {
+            console.log('AI button clicked');
+        }
+    },
+    secondaryButtons: [
+        { text: 'Button text', icon: 'fa-th', onClick: function() { console.log('Secondary button clicked'); } }
+    ],
+    primaryButton: {
+        text: 'Primary action',
+        icon: 'fa-th',
+        onClick: function() {
+            console.log('Primary button clicked');
+        }
+    },
+    menuButton: {
+        onClick: function() {
+            console.log('Menu button clicked');
+        }
+    }
+});
+</script>
 
 <!-- Card Content -->
 <div id="mi-contenedor-cards"></div>
@@ -363,6 +462,7 @@ loadCardContent('mi-contenedor-cards', [
 "Usa el componente Button de UBITS para crear un botón primario con el texto 'Guardar'"
 "Agrega un Alert de éxito usando el componente UBITS con el mensaje 'Datos guardados'"
 "Implementa el SubNav con la variante 'template' en la página principal"
+"Implementa el header-product en esta página con el nombre 'Mi Producto'"
 "Crea un catálogo de cursos usando el componente Card Content con diferentes tipos y estados"
 ```
 
@@ -370,8 +470,14 @@ loadCardContent('mi-contenedor-cards', [
 
 - **`componentes.html`** - Página principal con todos los componentes disponibles
 - **`button.html`** - Documentación del componente Button
+- **`ia-button.html`** - Documentación del componente IA-Button
+- **`header-product.html`** - Documentación del componente Header Product
 - **`alert.html`** - Documentación del componente Alert
+- **`toast.html`** - Documentación del componente Toast
+- **`input.html`** - Documentación del componente Input
 - **`card-content.html`** - Documentación del componente Card Content
+- **`status-tag.html`** - Documentación del componente Status Tag
+- **`tab.html`** - Documentación del componente Tab
 - **`empty-state.html`** - Documentación del componente Empty State
 - **`paginator.html`** - Documentación del componente Paginator
 - **`sidebar.html`** - Documentación del componente Sidebar
@@ -381,7 +487,7 @@ loadCardContent('mi-contenedor-cards', [
 ## 🎯 Características principales
 
 ### ✅ **Componentes listos para usar:**
-- 8 componentes UBITS completamente funcionales
+- 20+ componentes UBITS completamente funcionales
 - Documentación interactiva con ejemplos
 - Código listo para copiar y pegar
 - Variantes y opciones configurables
@@ -457,15 +563,15 @@ Un sistema inspirado que permite a **cualquier usuario** (Product Managers, Dise
 - **`plantilla-ubits.html`** - Template base con estructura
 
 #### **Páginas especializadas:**
-- **`diagnostico.html`** - 1 sección enfocada
-- **`evaluaciones-360.html`** - Contenido específico 360
-- **`objetivos.html`** - Contenido específico objetivos
-- **`metricas.html`** - Contenido específico métricas
-- **`reportes.html`** - Contenido específico reportes
-- **`encuestas.html`** - Contenido específico encuestas
-- **`reclutamiento.html`** - Contenido específico reclutamiento
-- **`planes.html`** - Contenido específico planes
-- **`tareas.html`** - Contenido específico tareas
+- **`diagnostico.html`** - 1 sección enfocada (con header-product)
+- **`evaluaciones-360.html`** - Contenido específico 360 (con header-product)
+- **`objetivos.html`** - Contenido específico objetivos (con header-product)
+- **`metricas.html`** - Contenido específico métricas (con header-product)
+- **`reportes.html`** - Contenido específico reportes (con header-product)
+- **`encuestas.html`** - Contenido específico encuestas (con header-product)
+- **`reclutamiento.html`** - Contenido específico reclutamiento (con header-product, sin SubNav)
+- **`planes.html`** - Contenido específico planes (con header-product)
+- **`tareas.html`** - Contenido específico tareas (con header-product)
 
 ### **🚀 Ventajas del sistema:**
 
@@ -718,6 +824,170 @@ createInput({
 - **Validación Manual**: Implementación obligatoria para email, teléfono y URL
 - **Callbacks**: onChange, onFocus, onBlur
 - **Métodos**: getValue(), setValue(), focus(), blur(), disable(), enable(), setState()
+
+## 🎯 Componente Header Product - Guía rápida
+
+### **¿Qué es Header Product?**
+Encabezado de producto con breadcrumb, nombre del producto y botones de acción (back, info, AI, secundarios, primario, menú). Disponible en dos versiones: **Full** (con todos los elementos) y **Light** (sin back/info/breadcrumb, usado en la plataforma actual).
+
+### **Cómo implementar:**
+
+#### **1. Importar archivos necesarios:**
+```html
+<link rel="stylesheet" href="ubits-colors.css">
+<link rel="stylesheet" href="fontawesome-icons.css">
+<link rel="stylesheet" href="components/button.css">
+<link rel="stylesheet" href="components/ia-button.css">
+<link rel="stylesheet" href="components/header-product.css">
+<script src="components/header-product.js"></script>
+```
+
+#### **2. Crear contenedor en HTML:**
+```html
+<div class="content-sections">
+    <!-- Sección header-product -->
+    <div class="section-single">
+        <div class="widget-header-product" id="header-product-container"></div>
+    </div>
+    
+    <!-- Resto del contenido -->
+</div>
+```
+
+#### **3. Agregar CSS para widget (si usas sistema modular):**
+```css
+.section-single > .widget-header-product {
+    background-color: transparent !important;
+    padding: 0 !important;
+}
+```
+
+#### **4. Usar la función (Versión Light - Plataforma actual):**
+```javascript
+loadHeaderProduct('header-product-container', {
+    productName: 'Nombre del Producto',
+    breadcrumbItems: [], // Array vacío para ocultar breadcrumb
+    aiButton: {
+        text: 'AI button',
+        onClick: function() {
+            console.log('AI button clicked');
+        }
+    },
+    secondaryButtons: [
+        { text: 'Filtros', icon: 'fa-filter', onClick: function() { console.log('Filtros clicked'); } },
+        { text: 'Exportar', icon: 'fa-download', onClick: function() { console.log('Exportar clicked'); } }
+    ],
+    primaryButton: {
+        text: 'Guardar',
+        icon: 'fa-save',
+        onClick: function() {
+            console.log('Guardar clicked');
+        }
+    },
+    menuButton: {
+        onClick: function() {
+            console.log('Menu button clicked');
+        }
+    }
+});
+```
+
+#### **5. Versión Full (Nuevas experiencias):**
+```javascript
+loadHeaderProduct('header-product-container', {
+    productName: 'Nombre del Producto',
+    breadcrumbItems: [
+        { text: 'Inicio', active: false },
+        { text: 'Categoría', active: false },
+        { text: 'Producto Actual', active: true }
+    ],
+    backButton: {
+        onClick: function() {
+            window.history.back();
+        }
+    },
+    infoButton: {
+        onClick: function() {
+            console.log('Info button clicked');
+        }
+    },
+    aiButton: {
+        text: 'AI button',
+        onClick: function() {
+            console.log('AI button clicked');
+        }
+    },
+    secondaryButtons: [
+        { text: 'Filtros', icon: 'fa-filter', onClick: function() { console.log('Filtros clicked'); } }
+    ],
+    primaryButton: {
+        text: 'Guardar',
+        icon: 'fa-save',
+        onClick: function() {
+            console.log('Guardar clicked');
+        }
+    },
+    menuButton: {
+        onClick: function() {
+            console.log('Menu button clicked');
+        }
+    }
+});
+```
+
+#### **6. Características:**
+- ✅ **Versión Light** - Sin back button, sin info button, sin breadcrumb (usada en plataforma actual)
+- ✅ **Versión Full** - Con todos los elementos (recomendada para nuevas experiencias)
+- ✅ **Botones configurables** - AI, secundarios, primario, menú
+- ✅ **Breadcrumb opcional** - Array vacío para ocultar
+- ✅ **Responsive** - Se adapta a diferentes tamaños de pantalla
+
+## 🤖 Componente IA-Button - Guía rápida
+
+### **¿Qué es IA-Button?**
+Botones especiales diseñados para casos de uso con IA. Incluyen un badge siempre presente y tienen forma pill (redondeada). Disponible en dos variantes: primary (con gradiente radial) y secondary (outlined).
+
+### **Cómo implementar:**
+
+#### **1. Importar archivos necesarios:**
+```html
+<link rel="stylesheet" href="ubits-colors.css">
+<link rel="stylesheet" href="fontawesome-icons.css">
+<link rel="stylesheet" href="components/ia-button.css">
+```
+
+#### **2. Usar en HTML:**
+```html
+<!-- IA-Button Primary -->
+<button class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--md">
+    <i class="far fa-sparkles"></i>
+    <span>AI Assistant</span>
+    <span class="ubits-ia-button__badge"></span>
+</button>
+
+<!-- IA-Button Secondary -->
+<button class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--sm">
+    <i class="far fa-robot"></i>
+    <span>Ask AI</span>
+    <span class="ubits-ia-button__badge"></span>
+</button>
+```
+
+#### **3. Variantes disponibles:**
+- `ubits-ia-button--primary` - Con gradiente radial azul
+- `ubits-ia-button--secondary` - Outlined con borde
+
+#### **4. Tamaños disponibles:**
+- `ubits-ia-button--sm` - Small (32px)
+- `ubits-ia-button--md` - Medium (40px)
+- `ubits-ia-button--lg` - Large (48px)
+
+#### **5. Características:**
+- ✅ **Badge siempre presente** - Indicador visual de IA
+- ✅ **Forma pill** - Bordes completamente redondeados
+- ✅ **Gradiente radial** - En variante primary
+- ✅ **Iconos opcionales** - FontAwesome icons
+- ✅ **Responsive** - Se adapta a diferentes tamaños
 
 ## 🍞 Componente Toast - Guía rápida
 
