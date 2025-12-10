@@ -1449,15 +1449,16 @@
                     size: 'lg'
                 });
 
-                // Agregar botones dentro del input y listeners - KISS: simple y directo
-                setTimeout(() => {
+                // Agregar botones dentro del input y listeners - Verificación directa sin delay largo
+                const setupButtons = () => {
                     const searchInput = document.querySelector('#catalog-search-container input');
                     const searchContainer = document.getElementById('catalog-search-container');
                     
                     console.log('🔍 Setup sugerencias:', { searchInput: !!searchInput, searchContainer: !!searchContainer });
                     
                     if (!searchInput || !searchContainer) {
-                        console.error('❌ No se encontraron elementos necesarios');
+                        // Si aún no están listos, reintentar rápidamente
+                        setTimeout(setupButtons, 10);
                         return;
                     }
                     
@@ -1555,7 +1556,10 @@
                             suggestionsContainer.classList.remove('visible');
                         }
                     });
-                }, 1000);
+                };
+                
+                // Llamar inmediatamente - se reintentará automáticamente si no está listo
+                setupButtons();
             }, 300);
 
             // Renderizar chips de búsquedas frecuentes
