@@ -102,7 +102,7 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
                     <button class="nav-button" data-section="inicio" data-tooltip="Inicio" onclick="window.location.href='admin.html'" style="cursor: pointer;">
                         <i class="far fa-house"></i>
                     </button>
-                    <button class="nav-button" data-section="empresa" data-tooltip="Empresa" onclick="window.location.href='admin-empresa.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="empresa" data-tooltip="Empresa" onclick="window.location.href='gestion-de-usuarios.html'" style="cursor: pointer;">
                         <i class="far fa-building"></i>
                     </button>
                     <button class="nav-button" data-section="aprendizaje" data-tooltip="Aprendizaje" onclick="window.location.href='admin-aprendizaje.html'" style="cursor: pointer;">
@@ -111,7 +111,7 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
                     <button class="nav-button" data-section="diagnóstico" data-tooltip="Diagnóstico" onclick="window.location.href='admin-diagnostico.html'" style="cursor: pointer;">
                         <i class="far fa-chart-mixed"></i>
                     </button>
-                    <button class="nav-button" data-section="desempeño" data-tooltip="Desempeño" onclick="window.location.href='admin-desempeño.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="desempeño" data-tooltip="Desempeño" onclick="window.location.href='admin-360.html'" style="cursor: pointer;">
                         <i class="far fa-bars-progress"></i>
                     </button>
                     <button class="nav-button" data-section="encuestas" data-tooltip="Encuestas" onclick="window.location.href='admin-encuestas.html'" style="cursor: pointer;">

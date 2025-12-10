@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="images/Ubits-logo.svg">
-    <title>UBITS Playground - Empresa</title>
+    <title>UBITS Playground - Matriz de Talento</title>
     
     <!-- Estilos locales -->
     <link rel="stylesheet" href="ubits-colors.css">
@@ -16,6 +16,9 @@
     <link rel="stylesheet" href="components/tab-bar.css">
     <link rel="stylesheet" href="components/floating-menu.css">
     <link rel="stylesheet" href="components/profile-menu.css">
+    <link rel="stylesheet" href="components/button.css">
+    <link rel="stylesheet" href="components/ia-button.css">
+    <link rel="stylesheet" href="components/header-product.css">
     <style>
         /* ¡A LA MIERDA LAS REGLAS PENDEJAS! */
 
@@ -126,6 +129,12 @@
                 padding: 12px !important; /* !important para sobrescribir el reset */
             }
         }
+        
+        /* Widget header-product: sin fondo blanco ni padding */
+        .section-single > .widget-header-product {
+            background-color: transparent !important;
+            padding: 0 !important;
+        }
     </style>
 </head>
 <body data-theme="light">
@@ -143,10 +152,15 @@
             <div class="content-area">
                 <!-- Content wrapper con secciones de widgets -->
                 <div class="content-sections">
+                    <!-- Sección header-product -->
+                    <div class="section-single">
+                        <div class="widget-header-product" id="header-product-container"></div>
+                    </div>
+                    
                     <!-- Sección contenido principal -->
                     <div class="section-single">
                         <div class="widget-contenido-principal">
-                            <p class="ubits-body-md-regular">Empresa</p>
+                            <p class="ubits-body-md-regular">Matriz de Talento</p>
                             <br><br><br><br><br><br><br><br><br><br><br>
                         </div>
                     </div>
@@ -169,17 +183,57 @@
     <script src="components/tab-bar.js"></script>
     <script src="components/floating-menu.js"></script>
     <script src="components/profile-menu.js"></script>
+    <script src="components/header-product.js"></script>
     <script src="script.js"></script>
     <script>
         // Cargar componentes dinámicamente
         document.addEventListener('DOMContentLoaded', function() {
-            loadSidebar('admin', 'empresa');
-            loadSubNav('top-nav-container', 'empresa');
+            loadSidebar('admin', 'desempeño');
+            loadSubNav('top-nav-container', 'admin-desempeño');
             loadTabBar('tab-bar-container');
             loadFloatingMenu('floating-menu-container');
             loadProfileMenu('profile-menu-container');
+            
+            // Cargar header-product
+            if (typeof loadHeaderProduct === 'function') {
+                loadHeaderProduct('header-product-container', {
+                    productName: 'Matriz de Talento',
+                    breadcrumbItems: [], // Array vacío para ocultar breadcrumb
+                    aiButton: {
+                        text: 'AI button',
+                        onClick: function() {
+                            console.log('AI button clicked');
+                        }
+                    },
+                    secondaryButtons: [
+                        { text: 'Button text', icon: 'fa-th', onClick: function() { console.log('Secondary button clicked'); } }
+                    ],
+                    primaryButton: {
+                        text: 'Primary action',
+                        icon: 'fa-th',
+                        onClick: function() {
+                            console.log('Primary button clicked');
+                        }
+                    },
+                    menuButton: {
+                        onClick: function() {
+                            console.log('Menu button clicked');
+                        }
+                    }
+                });
+            }
+            
+            // Activar el tab "Matriz de Talento" en el SubNav
+            setTimeout(() => {
+                const matrizTalentoTab = document.querySelector('.nav-tab[data-tab="matriz-talento"]');
+                if (matrizTalentoTab) {
+                    document.querySelectorAll('.nav-tab, .hamburger-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    matrizTalentoTab.classList.add('active');
+                }
+            }, 200);
         });
     </script>
 </body>
 </html>
-

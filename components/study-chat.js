@@ -122,10 +122,10 @@ function createStudyChatHTML() {
                         ></textarea>
                     </div>
                     <div class="ubits-study-chat__input-actions">
-                        <button class="ubits-study-chat__input-action-btn" id="ubits-study-chat-attach-btn" title="Adjuntar">
+                        <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="ubits-study-chat-attach-btn" title="Adjuntar">
                             <i class="far fa-paperclip"></i>
                         </button>
-                        <button class="ubits-study-chat__input-action-btn ubits-study-chat__input-action-btn--send" id="ubits-study-chat-send-btn" title="Enviar">
+                        <button class="ubits-button ubits-button--primary ubits-button--sm ubits-button--icon-only" id="ubits-study-chat-send-btn" title="Enviar">
                             <i class="far fa-paper-plane"></i>
                         </button>
                     </div>
@@ -181,10 +181,10 @@ function createMessageHTML(type, text, timestamp, showActions = false, isTyping 
     
     const actionsHTML = (type === 'ai' && showActions && !isTyping) ? `
         <div class="ubits-study-chat__message-actions">
-            <button class="ubits-study-chat__action-btn" title="Copiar">
+            <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" title="Copiar">
                 <i class="far fa-copy"></i>
             </button>
-            <button class="ubits-study-chat__action-btn" title="Regenerar">
+            <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" title="Regenerar">
                 <i class="far fa-arrows-rotate"></i>
             </button>
         </div>
@@ -372,8 +372,8 @@ function addMessage(type, text, showActions = false, regenerateFunction = null) 
     // Agregar event listeners a los botones de acción
     if (type === 'ai' && showActions) {
         const messageElement = body.lastElementChild;
-        const copyBtn = messageElement.querySelector('.ubits-study-chat__action-btn[title="Copiar"]');
-        const regenerateBtn = messageElement.querySelector('.ubits-study-chat__action-btn[title="Regenerar"]');
+        const copyBtn = messageElement.querySelector('button[title="Copiar"]');
+        const regenerateBtn = messageElement.querySelector('button[title="Regenerar"]');
         
         if (copyBtn) {
             copyBtn.addEventListener('click', function() {

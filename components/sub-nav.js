@@ -59,12 +59,12 @@ const TOP_NAV_VARIANTS = {
     empresa: {
         name: 'Empresa',
         tabs: [
-            { id: 'gestion-usuarios', label: 'Gestión de usuarios', icon: 'far fa-users' },
-            { id: 'organigrama', label: 'Organigrama', icon: 'far fa-sitemap' },
-            { id: 'datos-empresa', label: 'Datos de empresa', icon: 'far fa-building' },
-            { id: 'personalizacion', label: 'Personalización', icon: 'far fa-paint-brush' },
-            { id: 'roles-permisos', label: 'Roles y permisos', icon: 'far fa-user-shield' },
-            { id: 'comunicaciones', label: 'Comunicaciones', icon: 'far fa-envelope' }
+            { id: 'gestion-usuarios', label: 'Gestión de usuarios', icon: 'far fa-users', url: 'gestion-de-usuarios.html' },
+            { id: 'organigrama', label: 'Organigrama', icon: 'far fa-sitemap', url: 'organigrama.html' },
+            { id: 'datos-empresa', label: 'Datos de empresa', icon: 'far fa-building', url: 'datos-de-empresa.html' },
+            { id: 'personalizacion', label: 'Personalización', icon: 'far fa-paint-brush', url: 'personalizacion.html' },
+            { id: 'roles-permisos', label: 'Roles y permisos', icon: 'far fa-user-shield', url: 'roles-y-permisos.html' },
+            { id: 'comunicaciones', label: 'Comunicaciones', icon: 'far fa-envelope', url: 'comunicaciones.html' }
         ]
     },
     'admin-aprendizaje': {
@@ -79,9 +79,33 @@ const TOP_NAV_VARIANTS = {
     'admin-desempeño': {
         name: 'Desempeño',
         tabs: [
-            { id: 'evaluations', label: 'Evaluaciones 360', icon: 'far fa-chart-pie' },
-            { id: 'objectives', label: 'Objetivos', icon: 'far fa-bullseye' },
-            { id: 'matriz-talento', label: 'Matriz de Talento', icon: 'far fa-sitemap' }
+            { id: 'evaluations', label: 'Evaluaciones 360', icon: 'far fa-chart-pie', url: 'admin-360.html' },
+            { id: 'objectives', label: 'Objetivos', icon: 'far fa-bullseye', url: 'admin-objetivos.html' },
+            { id: 'matriz-talento', label: 'Matriz de Talento', icon: 'far fa-sitemap', url: 'admin-matriz-talento.html' }
+        ]
+    },
+    diagnostico: {
+        name: 'Diagnóstico',
+        tabs: [
+            { id: 'diagnostico', label: 'Diagnostico', icon: 'far fa-stethoscope', url: 'diagnostico.html' }
+        ]
+    },
+    reclutamiento: {
+        name: 'Reclutamiento',
+        tabs: [
+            { id: 'reclutamiento', label: 'Reclutamiento', icon: 'far fa-user-plus', url: 'reclutamiento.html' }
+        ]
+    },
+    'admin-diagnostico': {
+        name: 'Diagnóstico',
+        tabs: [
+            { id: 'diagnostico', label: 'Diagnostico', icon: 'far fa-stethoscope', url: 'admin-diagnostico.html' }
+        ]
+    },
+    'admin-encuestas': {
+        name: 'Encuestas',
+        tabs: [
+            { id: 'encuestas', label: 'Encuestas', icon: 'far fa-clipboard-list-check', url: 'admin-encuestas.html' }
         ]
     }
 };

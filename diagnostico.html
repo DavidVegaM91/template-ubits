@@ -11,11 +11,14 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="fontawesome-icons.css">
     <link rel="stylesheet" href="ubits-typography.css">
-    <!-- <link rel="stylesheet" href="components/sub-nav.css"> --> <!-- SubNav oculto -->
+    <link rel="stylesheet" href="components/sub-nav.css">
     <link rel="stylesheet" href="components-sidebar.css">
     <link rel="stylesheet" href="components/tab-bar.css">
     <link rel="stylesheet" href="components/floating-menu.css">
     <link rel="stylesheet" href="components/profile-menu.css">
+    <link rel="stylesheet" href="components/button.css">
+    <link rel="stylesheet" href="components/ia-button.css">
+    <link rel="stylesheet" href="components/header-product.css">
     <style>
         /* ¡A LA MIERDA LAS REGLAS PENDEJAS! */
 
@@ -117,12 +120,6 @@
             /* Ajustar widgets para móvil - sin altura mínima forzada */
         }
 
-        /* Fix para páginas sin SubNav - margin superior en móvil */
-        @media (max-width: 1023px) {
-            .content-area {
-                margin-top: 0 !important;
-            }
-        }
 
         @media (max-width: 480px) {
             /* Padding reducido en móviles pequeños - sin altura mínima forzada */
@@ -132,6 +129,12 @@
             .section-quad > div {
                 padding: 12px !important; /* !important para sobrescribir el reset */
             }
+        }
+        
+        /* Widget header-product: sin fondo blanco ni padding */
+        .section-single > .widget-header-product {
+            background-color: transparent !important;
+            padding: 0 !important;
         }
     </style>
 </head>
@@ -144,12 +147,17 @@
 
         <!-- Main Content -->
         <main class="main-content">
-            <!-- Top Navigation - OCULTO -->
-            <!-- <div id="top-nav-container"></div> -->
+            <!-- Top Navigation -->
+            <div id="top-nav-container"></div>
             <!-- Content Area -->
             <div class="content-area">
                 <!-- Content wrapper con secciones de widgets -->
                 <div class="content-sections">
+                    <!-- Sección header-product -->
+                    <div class="section-single">
+                        <div class="widget-header-product" id="header-product-container"></div>
+                    </div>
+                    
                     <!-- Sección contenido assessments -->
                     <div class="section-single">
                         <div class="widget-contenido-assessments">
@@ -172,23 +180,60 @@
     <div id="profile-menu-container"></div>
 
     <script src="components/sidebar.js"></script>
-    <!-- <script src="components/sub-nav.js"></script> --> <!-- SubNav oculto -->
+    <script src="components/sub-nav.js"></script>
     <script src="components/tab-bar.js"></script>
     <script src="components/floating-menu.js"></script>
     <script src="components/profile-menu.js"></script>
+    <script src="components/header-product.js"></script>
     <script src="script.js"></script>
     <script>
         // Cargar componentes dinámicamente
         document.addEventListener('DOMContentLoaded', function() {
             loadSidebar('sidebar-container', 'diagnóstico');
-            // loadSubNav('top-nav-container', 'aprendizaje'); // OCULTO
+            loadSubNav('top-nav-container', 'diagnostico');
             loadTabBar('tab-bar-container');
             loadFloatingMenu('floating-menu-container');
             loadProfileMenu('profile-menu-container');
             
-            // Configuración de navegación (SubNav oculto)
+            // Cargar header-product
+            if (typeof loadHeaderProduct === 'function') {
+                loadHeaderProduct('header-product-container', {
+                    productName: 'Diagnostico',
+                    breadcrumbItems: [], // Array vacío para ocultar breadcrumb
+                    aiButton: {
+                        text: 'AI button',
+                        onClick: function() {
+                            console.log('AI button clicked');
+                        }
+                    },
+                    secondaryButtons: [
+                        { text: 'Button text', icon: 'fa-th', onClick: function() { console.log('Secondary button clicked'); } }
+                    ],
+                    primaryButton: {
+                        text: 'Primary action',
+                        icon: 'fa-th',
+                        onClick: function() {
+                            console.log('Primary button clicked');
+                        }
+                    },
+                    menuButton: {
+                        onClick: function() {
+                            console.log('Menu button clicked');
+                        }
+                    }
+                });
+            }
+            
+            // Configuración de navegación
             setTimeout(() => {
-                // SubNav deshabilitado - no se activan tabs
+                // Activar el tab "Diagnostico" en el SubNav
+                const diagnosticoTab = document.querySelector('.nav-tab[data-tab="diagnostico"]');
+                if (diagnosticoTab) {
+                    document.querySelectorAll('.nav-tab, .hamburger-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    diagnosticoTab.classList.add('active');
+                }
                 
                 // Activar el botón de diagnóstico en el sidebar
                 const diagnosticoButton = document.querySelector('.nav-button[data-section="diagnóstico"]');

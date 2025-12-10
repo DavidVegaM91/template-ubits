@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="images/Ubits-logo.svg">
-    <title>UBITS Playground - Diagnóstico</title>
+    <title>UBITS Playground - Roles y permisos</title>
     
     <!-- Estilos locales -->
     <link rel="stylesheet" href="ubits-colors.css">
@@ -129,13 +129,6 @@
                 padding: 12px !important; /* !important para sobrescribir el reset */
             }
         }
-
-        /* Fix para páginas sin SubNav - margin superior en móvil */
-        @media (max-width: 1023px) {
-            .content-area {
-                margin-top: 0 !important;
-            }
-        }
         
         /* Widget header-product: sin fondo blanco ni padding */
         .section-single > .widget-header-product {
@@ -167,7 +160,7 @@
                     <!-- Sección contenido principal -->
                     <div class="section-single">
                         <div class="widget-contenido-principal">
-                            <p class="ubits-body-md-regular">Diagnóstico</p>
+                            <p class="ubits-body-md-regular">Roles y permisos</p>
                             <br><br><br><br><br><br><br><br><br><br><br>
                         </div>
                     </div>
@@ -195,8 +188,8 @@
     <script>
         // Cargar componentes dinámicamente
         document.addEventListener('DOMContentLoaded', function() {
-            loadSidebar('admin', 'diagnóstico');
-            loadSubNav('top-nav-container', 'admin-diagnostico');
+            loadSidebar('admin', 'empresa');
+            loadSubNav('top-nav-container', 'empresa');
             loadTabBar('tab-bar-container');
             loadFloatingMenu('floating-menu-container');
             loadProfileMenu('profile-menu-container');
@@ -204,7 +197,7 @@
             // Cargar header-product
             if (typeof loadHeaderProduct === 'function') {
                 loadHeaderProduct('header-product-container', {
-                    productName: 'Diagnostico',
+                    productName: 'Roles y permisos',
                     breadcrumbItems: [], // Array vacío para ocultar breadcrumb
                     aiButton: {
                         text: 'AI button',
@@ -230,18 +223,17 @@
                 });
             }
             
-            // Activar el tab "Diagnostico" en el SubNav
+            // Activar el tab "Roles y permisos" en el SubNav
             setTimeout(() => {
-                const diagnosticoTab = document.querySelector('.nav-tab[data-tab="diagnostico"]');
-                if (diagnosticoTab) {
+                const rolesPermisosTab = document.querySelector('.nav-tab[data-tab="roles-permisos"]');
+                if (rolesPermisosTab) {
                     document.querySelectorAll('.nav-tab, .hamburger-item').forEach(item => {
                         item.classList.remove('active');
                     });
-                    diagnosticoTab.classList.add('active');
+                    rolesPermisosTab.classList.add('active');
                 }
             }, 200);
         });
     </script>
 </body>
 </html>
-

@@ -68,7 +68,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 16px;
+    padding: 8px 16px;
     max-width: 80%;
     word-wrap: break-word;
     position: relative;
@@ -121,10 +121,8 @@
 }
 
 .ubits-study-chat__text-globe--user .ubits-study-chat__message-text {
-    font-weight: 600;
+    font-weight: 400;
     color: var(--ubits-fg-bold);
-    font-size: 13px;
-    line-height: 1;
 }
 
 /* Timestamp */
@@ -148,36 +146,9 @@
 /* Botones de acción en mensajes de IA */
 .ubits-study-chat__message-actions {
     display: flex;
-    gap: 0;
+    gap: 4px;
     align-items: center;
     margin-top: 4px;
-}
-
-.ubits-study-chat__action-btn {
-    background: transparent;
-    border: none;
-    padding: 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--ubits-fg-1-high);
-    transition: background-color 0.2s;
-}
-
-.ubits-study-chat__action-btn:hover {
-    background: var(--ubits-btn-tertiary-bg-hover);
-}
-
-.ubits-study-chat__action-btn:active {
-    background: var(--ubits-btn-tertiary-bg-pressed);
-}
-
-.ubits-study-chat__action-btn i {
-    font-size: 16px;
-    width: 16px;
-    height: 16px;
 }
 
 /* Mensaje de carga (typing) */
@@ -283,53 +254,13 @@
     color: var(--ubits-fg-1-medium);
 }
 
-/* Acciones del input */
+/* Acciones del input - botones usan componente oficial ubits-button */
 .ubits-study-chat__input-actions {
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    gap: 0;
-}
-
-.ubits-study-chat__input-action-btn {
-    background: transparent;
-    border: none;
-    padding: 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--ubits-fg-1-medium);
-    transition: background-color 0.2s;
-}
-
-.ubits-study-chat__input-action-btn:hover {
-    background: var(--ubits-btn-tertiary-bg-hover);
-}
-
-.ubits-study-chat__input-action-btn:active {
-    background: var(--ubits-btn-tertiary-bg-pressed);
-}
-
-.ubits-study-chat__input-action-btn--send {
-    background: var(--ubits-button-primary-bg-default);
-    color: var(--ubits-btn-primary-fg);
-}
-
-.ubits-study-chat__input-action-btn--send:hover {
-    background: var(--ubits-button-primary-hover);
-}
-
-.ubits-study-chat__input-action-btn--send:active {
-    background: var(--ubits-button-primary-pressed);
-}
-
-.ubits-study-chat__input-action-btn i {
-    font-size: 16px;
-    width: 16px;
-    height: 16px;
+    gap: 8px;
 }
 
 /* Responsive */

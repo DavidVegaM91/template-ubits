@@ -16,6 +16,9 @@
     <link rel="stylesheet" href="components/tab-bar.css">
     <link rel="stylesheet" href="components/floating-menu.css">
     <link rel="stylesheet" href="components/profile-menu.css">
+    <link rel="stylesheet" href="components/button.css">
+    <link rel="stylesheet" href="components/ia-button.css">
+    <link rel="stylesheet" href="components/header-product.css">
     <link rel="stylesheet" href="profile.css">
     <style>
         /* ¡A LA MIERDA LAS REGLAS PENDEJAS! */
@@ -127,6 +130,12 @@
                 padding: 12px !important; /* !important para sobrescribir el reset */
             }
         }
+        
+        /* Widget header-product: sin fondo blanco ni padding */
+        .section-single > .widget-header-product {
+            background-color: transparent !important;
+            padding: 0 !important;
+        }
     </style>
 </head>
 <body data-theme="light">
@@ -144,6 +153,11 @@
             <div class="content-area">
                 <!-- Content wrapper con secciones de widgets -->
                 <div class="content-sections">
+                    <!-- Sección header-product -->
+                    <div class="section-single">
+                        <div class="widget-header-product" id="header-product-container"></div>
+                    </div>
+                    
                     <!-- Sección contenido 360 -->
                     <div class="section-single">
                         <div class="widget-contenido-360">
@@ -170,6 +184,7 @@
     <script src="components/tab-bar.js"></script>
     <script src="components/floating-menu.js"></script>
     <script src="components/profile-menu.js"></script>
+    <script src="components/header-product.js"></script>
     <script src="script.js"></script>
     <script>
         // Cargar componentes dinámicamente
@@ -179,6 +194,35 @@
             loadTabBar('tab-bar-container');
             loadFloatingMenu('floating-menu-container');
             loadProfileMenu('profile-menu-container');
+            
+            // Cargar header-product
+            if (typeof loadHeaderProduct === 'function') {
+                loadHeaderProduct('header-product-container', {
+                    productName: 'Evaluaciones 360',
+                    breadcrumbItems: [], // Array vacío para ocultar breadcrumb
+                    aiButton: {
+                        text: 'AI button',
+                        onClick: function() {
+                            console.log('AI button clicked');
+                        }
+                    },
+                    secondaryButtons: [
+                        { text: 'Button text', icon: 'fa-th', onClick: function() { console.log('Secondary button clicked'); } }
+                    ],
+                    primaryButton: {
+                        text: 'Primary action',
+                        icon: 'fa-th',
+                        onClick: function() {
+                            console.log('Primary button clicked');
+                        }
+                    },
+                    menuButton: {
+                        onClick: function() {
+                            console.log('Menu button clicked');
+                        }
+                    }
+                });
+            }
             
             // Activar el tab "Evaluaciones 360" específicamente después de cargar el SubNav
             setTimeout(() => {

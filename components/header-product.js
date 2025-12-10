@@ -196,6 +196,216 @@
  * @param {Array} [options.secondaryButtons] - Array de botones secundarios. Cada botón: {text: string, icon: string, onClick: function}.
  * @param {Object} [options.primaryButton] - Configuración del botón primario. {text: string, icon: string, onClick: function}.
  * @param {Object} [options.menuButton] - Configuración del botón menú. {onClick: function}.
+ *
+ * ========================================
+ * IMPLEMENTACIÓN EN PÁGINAS - GUÍA COMPLETA
+ * ========================================
+ *
+ * Hay dos enfoques para implementar el header-product en páginas:
+ *
+ * 1. VERSIÓN COMPLETA (Recomendada para nuevas experiencias):
+ *    Incluye todos los elementos: back button, info button, breadcrumb, y todos los botones.
+ *    Ideal para compañeros que están creando nuevas experiencias desde cero.
+ *
+ * 2. VERSIÓN LIGHT (Usada en la plataforma actual):
+ *    Versión simplificada sin back button, sin info button, y sin breadcrumb.
+ *    Refleja mejor el estado actual de la plataforma UBITS.
+ *
+ * ========================================
+ * PASOS PARA IMPLEMENTAR EN UNA PÁGINA
+ * ========================================
+ *
+ * PASO 1: Agregar los CSS imports necesarios en el <head>:
+ * ```html
+ * <link rel="stylesheet" href="components/button.css">
+ * <link rel="stylesheet" href="components/ia-button.css">
+ * <link rel="stylesheet" href="components/header-product.css">
+ * ```
+ *
+ * PASO 2: Agregar el estilo CSS para widget-header-product (si usas sistema modular):
+ * ```css
+ * .section-single > .widget-header-product {
+ *     background-color: transparent !important;
+ *     padding: 0 !important;
+ * }
+ * ```
+ * Nota: Este estilo hace que el widget-header-product tenga fondo transparente y sin padding.
+ *
+ * PASO 3: Agregar el contenedor en el HTML dentro de content-sections:
+ * ```html
+ * <div class="content-sections">
+ *     <!-- Sección header-product -->
+ *     <div class="section-single">
+ *         <div class="widget-header-product" id="header-product-container"></div>
+ *     </div>
+ *     
+ *     <!-- Resto del contenido -->
+ *     <div class="section-single">
+ *         <div class="widget-contenido">
+ *             <!-- Tu contenido aquí -->
+ *         </div>
+ *     </div>
+ * </div>
+ * ```
+ *
+ * PASO 4: Agregar el script JavaScript antes de </body>:
+ * ```html
+ * <script src="components/header-product.js"></script>
+ * ```
+ *
+ * PASO 5: Llamar a loadHeaderProduct en DOMContentLoaded (ver ejemplos abajo)
+ *
+ * ========================================
+ * EJEMPLO 1: VERSIÓN COMPLETA (Nuevas experiencias)
+ * ========================================
+ * 
+ * Esta versión incluye TODOS los elementos disponibles:
+ * - Back button (navegación hacia atrás)
+ * - Info button (información del producto)
+ * - Breadcrumb (navegación jerárquica)
+ * - AI button, Secondary buttons, Primary button, Menu button
+ *
+ * ```html
+ * <script>
+ *     document.addEventListener('DOMContentLoaded', function() {
+ *         // ... otros componentes ...
+ *         
+ *         // Cargar header-product - VERSIÓN COMPLETA
+ *         if (typeof loadHeaderProduct === 'function') {
+ *             loadHeaderProduct('header-product-container', {
+ *                 productName: 'Nombre del Producto',
+ *                 breadcrumbItems: [
+ *                     { text: 'Inicio', active: false },
+ *                     { text: 'Categoría', active: false },
+ *                     { text: 'Producto Actual', active: true }
+ *                 ],
+ *                 backButton: {
+ *                     onClick: function() {
+ *                         window.history.back();
+ *                         // O redirigir a una página específica:
+ *                         // window.location.href = 'pagina-anterior.html';
+ *                     }
+ *                 },
+ *                 infoButton: {
+ *                     onClick: function() {
+ *                         console.log('Info button clicked');
+ *                         // Mostrar información del producto
+ *                     }
+ *                 },
+ *                 aiButton: {
+ *                     text: 'AI button',
+ *                     onClick: function() {
+ *                         console.log('AI button clicked');
+ *                     }
+ *                 },
+ *                 secondaryButtons: [
+ *                     { text: 'Filtros', icon: 'fa-filter', onClick: function() { console.log('Filtros clicked'); } },
+ *                     { text: 'Exportar', icon: 'fa-download', onClick: function() { console.log('Exportar clicked'); } }
+ *                 ],
+ *                 primaryButton: {
+ *                     text: 'Guardar',
+ *                     icon: 'fa-save',
+ *                     onClick: function() {
+ *                         console.log('Guardar clicked');
+ *                     }
+ *                 },
+ *                 menuButton: {
+ *                     onClick: function() {
+ *                         console.log('Menu button clicked');
+ *                     }
+ *                 }
+ *             });
+ *         }
+ *     });
+ * </script>
+ * ```
+ *
+ * ========================================
+ * EJEMPLO 2: VERSIÓN LIGHT (Plataforma actual)
+ * ========================================
+ * 
+ * Esta versión es más simple y refleja mejor el estado actual de la plataforma:
+ * - Sin back button
+ * - Sin info button
+ * - Sin breadcrumb
+ * - Solo botones de acción: AI button, Secondary buttons, Primary button, Menu button
+ *
+ * ```html
+ * <script>
+ *     document.addEventListener('DOMContentLoaded', function() {
+ *         // ... otros componentes ...
+ *         
+ *         // Cargar header-product - VERSIÓN LIGHT
+ *         if (typeof loadHeaderProduct === 'function') {
+ *             loadHeaderProduct('header-product-container', {
+ *                 productName: 'Nombre del Producto',
+ *                 breadcrumbItems: [], // Array vacío para ocultar breadcrumb
+ *                 aiButton: {
+ *                     text: 'AI button',
+ *                     onClick: function() {
+ *                         console.log('AI button clicked');
+ *                     }
+ *                 },
+ *                 secondaryButtons: [
+ *                     { text: 'Button text', icon: 'fa-th', onClick: function() { console.log('Secondary button clicked'); } }
+ *                 ],
+ *                 primaryButton: {
+ *                     text: 'Primary action',
+ *                     icon: 'fa-th',
+ *                     onClick: function() {
+ *                         console.log('Primary button clicked');
+ *                     }
+ *                 },
+ *                 menuButton: {
+ *                     onClick: function() {
+ *                         console.log('Menu button clicked');
+ *                     }
+ *                 }
+ *             });
+ *         }
+ *     });
+ * </script>
+ * ```
+ *
+ * ========================================
+ * CUÁNDO USAR CADA VERSIÓN
+ * ========================================
+ *
+ * ✅ USAR VERSIÓN COMPLETA cuando:
+ * - Estás creando una nueva experiencia desde cero
+ * - Necesitas navegación jerárquica (breadcrumb)
+ * - Necesitas botón de retroceso para navegar
+ * - Necesitas botón de información para mostrar detalles
+ * - Quieres aprovechar todas las funcionalidades del componente
+ *
+ * ✅ USAR VERSIÓN LIGHT cuando:
+ * - Estás replicando el estado actual de la plataforma UBITS
+ * - No necesitas navegación jerárquica
+ * - No necesitas botón de retroceso
+ * - Quieres un header más limpio y minimalista
+ * - Solo necesitas botones de acción (AI, secundarios, primario, menú)
+ *
+ * ========================================
+ * EJEMPLOS REALES EN EL PROYECTO
+ * ========================================
+ *
+ * VERSIÓN COMPLETA:
+ * - (No hay ejemplos actualmente, pero se puede usar en nuevas páginas)
+ *
+ * VERSIÓN LIGHT:
+ * - evaluaciones-360.html
+ * - objetivos.html
+ * - modo-estudio-ia.html (tiene back button pero sin info button ni breadcrumb)
+ *
+ * ========================================
+ * NOTAS IMPORTANTES
+ * ========================================
+ *
+ * - El componente es completamente flexible: puedes incluir o excluir cualquier elemento
+ * - Si no pasas una opción (ej: backButton), ese elemento no se renderiza
+ * - Para ocultar breadcrumb, pasa breadcrumbItems: [] (array vacío)
+ * - Todos los botones son opcionales excepto productName (requerido)
+ * - El componente se adapta automáticamente a móvil y desktop
  */
 
 /**
