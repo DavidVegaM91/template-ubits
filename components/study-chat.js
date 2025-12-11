@@ -199,10 +199,10 @@ function createMessageHTML(type, text, timestamp, showActions = false, isTyping 
             });
             
             textHTML = processedText;
-        } else {
-            // Convertir URLs en links con estilo
-            const linkRegex = /(https?:\/\/[^\s]+)/g;
-            const textWithLinks = text.replace(linkRegex, '<a href="$1" class="ubits-study-chat__link" target="_blank" rel="noopener noreferrer">$1</a>');
+    } else {
+        // Convertir URLs en links con estilo
+        const linkRegex = /(https?:\/\/[^\s]+)/g;
+        const textWithLinks = text.replace(linkRegex, '<a href="$1" class="ubits-study-chat__link" target="_blank" rel="noopener noreferrer">$1</a>');
             // Dividir por saltos de línea y crear párrafos
             const lines = textWithLinks.split('\n').filter(line => line.trim());
             textHTML = lines.map(line => `<p class="ubits-study-chat__message-text">${line}</p>`).join('');

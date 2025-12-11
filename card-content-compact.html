@@ -819,6 +819,7 @@ document.addEventListener('DOMContentLoaded', function() {
             progress: 75,
             status: 'progress',
             image: 'images/cards-learn/abm-marketing-la-mejor-estrategia-para-ventas-b2b.jpeg',
+            competency: 'Liderazgo',
             language: 'Español'
         };
         
@@ -893,11 +894,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 };
                 
                 currentCardData.providerLogo = `images/Favicons/${logoMap[this.value] || 'UBITS.jpg'}`;
-                updateCardPreview();
-            });
-            
-            document.getElementById('competencia-select').addEventListener('change', function() {
-                currentCardData.competency = this.value;
                 updateCardPreview();
             });
             
