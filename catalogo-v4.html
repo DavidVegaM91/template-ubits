@@ -67,16 +67,44 @@
             position: relative;
         }
         
-        /* Botones dentro del input de búsqueda */
+        /* Botones dentro del input de búsqueda - mantener posición original */
         .catalog-search-input-buttons {
             position: absolute;
-            right: 8px;
+            right: 8px; /* Posición original de los botones personalizados */
             top: 50%;
             transform: translateY(-50%);
             display: flex;
             align-items: center;
             gap: 8px;
             z-index: 10;
+        }
+        
+        /* Mover el botón X (limpiar) más a la izquierda para que quede ANTES de los botones personalizados */
+        /* Botones personalizados están en right: 8px, ocupan ~130px (Modo IA ~90px + gap 8px + Filtros 32px) */
+        /* Botón X debe estar en: 8px + 130px + 8px (gap) = 146px desde el borde derecho */
+        #catalog-search-container i[class*="fa-times"] {
+            z-index: 5 !important; /* Debajo de los botones personalizados */
+            pointer-events: auto !important;
+            cursor: pointer !important;
+            right: 146px !important; /* Mover a la izquierda de los botones personalizados */
+            /* No forzar display - dejar que el componente input.js maneje la visibilidad */
+        }
+        
+        /* Ajustar padding del input para dar espacio a todos los elementos */
+        /* Botones personalizados: ~130px + gap 8px + Botón X 32px = 170px total */
+        #catalog-search-container.ubits-input-wrapper--right-icon .ubits-input {
+            padding-right: 170px !important;
+        }
+        
+        /* En mobile: ajustar posicionamiento y padding */
+        @media (max-width: 768px) {
+            #catalog-search-container i[class*="fa-times"] {
+                right: 120px !important; /* Ajuste para mobile */
+            }
+            
+            #catalog-search-container.ubits-input-wrapper--right-icon .ubits-input {
+                padding-right: 150px !important; /* Reducido para mobile */
+            }
         }
         
         /* En mobile: ajustar placeholder para que no se corte */
@@ -1447,7 +1475,16 @@
                     containerId: 'catalog-search-container',
                     type: 'search',
                     placeholder: 'Buscar un tema, competencia o habilidad...',
-                    size: 'lg'
+                    size: 'lg',
+                    onChange: function(value) {
+                        // Cuando se limpia el input (botón X), ocultar sugerencias
+                        if (value === '') {
+                            const suggestionsContainer = document.getElementById('search-suggestions-container');
+                            if (suggestionsContainer) {
+                                suggestionsContainer.classList.remove('visible');
+                            }
+                        }
+                    }
                 });
 
                 // Agregar botones dentro del input y listeners - Verificación directa sin delay largo
@@ -1542,11 +1579,22 @@
                     }
                     
                     // Listener simple para input
+                    // Listener simple para input - solo mostrar sugerencias, no buscar
                     searchInput.addEventListener('input', function(e) {
                         const value = this.value;
                         console.log('📝 Input cambiado:', value);
-                        showSuggestions(value);
-                        handleSearch(e);
+                        
+                        // Si el input está vacío, ocultar sugerencias
+                        if (value === '') {
+                            const suggestionsContainer = document.getElementById('search-suggestions-container');
+                            if (suggestionsContainer) {
+                                suggestionsContainer.classList.remove('visible');
+                            }
+                        } else {
+                            // Solo mostrar sugerencias si hay texto
+                            showSuggestions(value);
+                        }
+                        // NO llamar handleSearch - la búsqueda está desactivada
                     });
                     
                     // El botón X ya está oculto, no necesitamos listener para él
@@ -1682,16 +1730,8 @@
                             });
                         });
                         
-                        // Guardar término de búsqueda
-                        const searchInput = document.querySelector('#catalog-search-container input');
-                        const searchTerm = searchInput ? searchInput.value : '';
-                        
-                        // Re-renderizar
-                        if (searchTerm.trim() === '') {
-                            renderCatalog(catalogData.academias);
-                        } else {
-                            handleSearch({ target: { value: searchTerm } });
-                        }
+                        // Re-renderizar catálogo completo (búsqueda desactivada)
+                        renderCatalog(catalogData.academias);
                         
                         // Restaurar estado
                         setTimeout(() => {
@@ -1789,56 +1829,11 @@
             }
         }
 
-        // Función de búsqueda
+        // Función de búsqueda - DESACTIVADA (solo para diseño, no funcional)
+        // En la vida real, esto enviaría a una página de resultados de búsqueda
         function handleSearch(event) {
-            const searchTerm = event.target.value.toLowerCase().trim();
-            const resultsContainer = document.getElementById('catalog-results');
-            
-            if (searchTerm === '') {
-                renderCatalog(catalogData.academias);
-                return;
-            }
-
-            // Filtrar resultados
-            const filteredAcademias = catalogData.academias.map(academia => {
-                const competenciasFiltradas = academia.competencias.map(competencia => {
-                    const habilidadesFiltradas = competencia.habilidades.filter(habilidad =>
-                        habilidad.toLowerCase().includes(searchTerm)
-                    );
-                    
-                    if (habilidadesFiltradas.length > 0 || 
-                        competencia.nombre.toLowerCase().includes(searchTerm)) {
-                        return {
-                            ...competencia,
-                            habilidades: habilidadesFiltradas.length > 0 ? habilidadesFiltradas : competencia.habilidades
-                        };
-                    }
-                    return null;
-                }).filter(c => c !== null);
-
-                if (competenciasFiltradas.length > 0 || 
-                    academia.nombre.toLowerCase().includes(searchTerm)) {
-                    return {
-                        ...academia,
-                        competencias: competenciasFiltradas
-                    };
-                }
-                return null;
-            }).filter(a => a !== null);
-
-            if (filteredAcademias.length === 0) {
-                resultsContainer.innerHTML = `
-                    <div class="catalog-empty-state">
-                        <div class="catalog-empty-state-icon">
-                            <i class="far fa-search"></i>
-                        </div>
-                        <h2 class="ubits-heading-h2">No se encontraron resultados</h2>
-                        <p class="ubits-body-md-regular">Intenta con otros términos de búsqueda</p>
-                    </div>
-                `;
-            } else {
-                renderCatalog(filteredAcademias);
-            }
+            // La búsqueda está desactivada - no hacer nada
+            return;
         }
 
         // Función para renderizar el catálogo

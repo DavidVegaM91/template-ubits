@@ -1863,7 +1863,16 @@
                                 containerId: 'catalog-search-container-v2-overlay',
                                 type: 'search',
                                 placeholder: 'Buscar un tema, competencia o habilidad...',
-                                size: 'md'
+                                size: 'md',
+                                onChange: function(value) {
+                                    // Cuando se limpia el input (botón X), ocultar sugerencias
+                                    if (value === '') {
+                                        const suggestionsContainer = document.getElementById('search-suggestions-container');
+                                        if (suggestionsContainer) {
+                                            suggestionsContainer.classList.remove('visible');
+                                        }
+                                    }
+                                }
                             });
                             
                             // Resaltar icono y hacer focus
@@ -1915,11 +1924,21 @@
                                         suggestionsContainer.style.zIndex = '1002';
                                     }
                                     
-                                    // Listener simple para input (igual que catalogo.html)
+                                    // Listener simple para input - solo mostrar sugerencias, no buscar
                                     overlayInput.addEventListener('input', function(e) {
                                         const value = this.value;
                                         console.log('📝 Input cambiado v2:', value);
-                                        showSuggestionsV2(value);
+                                        
+                                        // Si el input está vacío, ocultar sugerencias
+                                        if (value === '') {
+                                            const suggestionsContainer = document.getElementById('search-suggestions-container');
+                                            if (suggestionsContainer) {
+                                                suggestionsContainer.classList.remove('visible');
+                                            }
+                                        } else {
+                                            // Solo mostrar sugerencias si hay texto
+                                            showSuggestionsV2(value);
+                                        }
                                     });
                                     
                                     // Listener para botón X (igual que catalogo.html)
