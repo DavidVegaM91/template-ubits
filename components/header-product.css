@@ -11,6 +11,7 @@
     width: 100%;
     min-height: auto;
     height: auto;
+    overflow: visible; /* Permitir que las sombras de los botones se vean completas */
 }
 
 /* Primera fila: Información del producto y acciones */
@@ -20,6 +21,7 @@
     align-items: center;
     width: 100%;
     flex-wrap: wrap;
+    overflow: visible; /* Permitir que las sombras de los botones se vean completas */
 }
 
 /* Información del producto (izquierda) */
@@ -65,6 +67,9 @@
     gap: 8px;
     align-items: center;
     flex-shrink: 0;
+    overflow: visible; /* Permitir que las sombras de los botones se vean completas */
+    padding: 16px; /* Espacio suficiente para que las sombras (28px blur) no se corten */
+    margin: -16px; /* Compensar el padding para mantener el layout */
 }
 
 /* Segunda fila: Breadcrumb */
@@ -139,6 +144,15 @@
         width: 100%;
         flex-wrap: wrap;
     }
+}
+
+/* Asegurar que el widget-header-product permita que las sombras se vean completas */
+.widget-header-product {
+    overflow: visible !important;
+}
+
+.section-single > .widget-header-product {
+    overflow: visible !important;
 }
 
 /* En mobile pequeño (< 480px), todos los botones se transforman a icon-only */
