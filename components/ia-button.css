@@ -463,9 +463,14 @@
    ======================================== */
 
 .ubits-ia-button span {
-    color: inherit;
+    color: var(--ubits-fg-1-high);
     font-weight: 600;
     line-height: 1;
+}
+
+/* Primary variant mantiene texto blanco para contraste con fondo azul */
+.ubits-ia-button--primary span {
+    color: rgb(255, 255, 255);
 }
 
 /* ========================================
