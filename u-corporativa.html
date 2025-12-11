@@ -175,6 +175,34 @@
             align-items: center;
             flex: 0 0 auto;
         }
+        
+        /* Contenedor del input de búsqueda */
+        #buscador-input-container {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        /* En mobile: cuando el input está visible, debe ocupar el ancho disponible pero mantener el botón de filtros al lado */
+        @media (max-width: 768px) {
+            #buscador-input-container {
+                flex: 1 1 auto !important;
+                min-width: 0;
+                max-width: none;
+            }
+            
+            #buscador-input-container .ubits-input-wrapper {
+                width: 100% !important;
+            }
+            
+            #buscador-input-container .ubits-input {
+                width: 100% !important;
+            }
+            
+            .buscador-actions {
+                width: 100%;
+                flex-wrap: nowrap; /* Mantener elementos en la misma línea */
+            }
+        }
 
         /* Grid de cards */
         .widget-grid-cursos-propios {
@@ -885,6 +913,7 @@
             // Funcionalidad del botón de búsqueda
             const buscadorToggleBtn = document.getElementById('buscador-toggle-btn');
             const buscadorInputContainer = document.getElementById('buscador-input-container');
+            const buscadorActions = buscadorInputContainer?.closest('.buscador-actions');
             let searchInputInstance = null;
             let isSearchMode = false;
             let currentSearchValue = ''; // Almacenar el valor actual de búsqueda
@@ -930,6 +959,10 @@
                     buscadorInputContainer.innerHTML = '';
                     buscadorInputContainer.style.display = 'none';
                     buscadorToggleBtn.style.display = 'flex';
+                    // Remover clase cuando se cierra el buscador
+                    if (buscadorActions) {
+                        buscadorActions.classList.remove('search-mode-active');
+                    }
                     isSearchMode = false;
                     searchInputInstance = null;
                     
@@ -954,6 +987,10 @@
                         // Convertir botón en input de búsqueda
                         buscadorToggleBtn.style.display = 'none';
                         buscadorInputContainer.style.display = 'block';
+                        // Agregar clase para indicar que el buscador está activo (para CSS)
+                        if (buscadorActions) {
+                            buscadorActions.classList.add('search-mode-active');
+                        }
                         
                         // Crear input de búsqueda UBITS
                         if (typeof createInput === 'function') {
