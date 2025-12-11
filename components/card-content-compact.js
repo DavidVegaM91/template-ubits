@@ -1,14 +1,18 @@
 /* ========================================
-   UBITS CARD CONTENT COMPONENT - COMPLETO
-   Componente autocontenido con todas las opciones
+   UBITS CARD CONTENT COMPACT COMPONENT - COMPLETO
+   Variante horizontal y compacta de content-card
    ======================================== */
 
 /* ========================================
-   CONFIGURACIÓN DE SPECS DISPONIBLES
+   REUTILIZAR CONFIGURACIÓN DE CONTENT-CARD
    ======================================== */
 
+// Importar constantes del componente original (se cargan desde card-content.js)
+// Si card-content.js ya está cargado, usar sus constantes
+// Si no, definir aquí las mismas constantes
+
 // TIPOS DE CONTENIDO DISPONIBLES (12 tipos)
-const CONTENT_TYPES = [
+const CONTENT_TYPES_COMPACT = [
     'Curso',
     'Short', 
     'Charla',
@@ -24,7 +28,7 @@ const CONTENT_TYPES = [
 ];
 
 // COMPETENCIAS OFICIALES UBITS (35 competencias)
-const COMPETENCIES = [
+const COMPETENCIES_COMPACT = [
     'Accountability',
     'Administración de negocios',
     'Agilidad',
@@ -62,14 +66,14 @@ const COMPETENCIES = [
 ];
 
 // NIVELES DISPONIBLES (3 niveles con iconos FontAwesome)
-const LEVELS = {
+const LEVELS_COMPACT = {
     'Básico': 'far fa-gauge-min',
     'Intermedio': 'far fa-gauge',
     'Avanzado': 'far fa-gauge-max'
 };
 
 // TIEMPOS OFICIALES (9 duraciones)
-const DURATIONS = [
+const DURATIONS_COMPACT = [
     '15 min',
     '30 min', 
     '45 min',
@@ -82,21 +86,21 @@ const DURATIONS = [
 ];
 
 // IDIOMAS DISPONIBLES (3 idiomas)
-const LANGUAGES = [
+const LANGUAGES_COMPACT = [
     'Español',
     'Inglés',
     'Portugués'
 ];
 
 // ESTADOS DISPONIBLES (3 estados)
-const STATUSES = {
+const STATUSES_COMPACT = {
     'default': { class: '', text: '' },
-    'progress': { class: 'course-status--progress', text: 'En progreso' },
-    'completed': { class: 'course-status--completed', text: 'Completado' }
+    'progress': { class: 'course-status-compact--progress', text: 'En progreso' },
+    'completed': { class: 'course-status-compact--completed', text: 'Completado' }
 };
 
 // ALIADOS OFICIALES (18 proveedores)
-const PROVIDERS = {
+const PROVIDERS_COMPACT = {
     'UBITS': 'images/Favicons/UBITS.jpg',
     'Microsoft': 'images/Favicons/Microsoft.jpg',
     'Hubspot': 'images/Favicons/Hubspot.jpg',
@@ -122,7 +126,7 @@ const PROVIDERS = {
    ======================================== */
 
 // REGLA: Los Shorts normalmente son de 15 minutos
-function getRecommendedDuration(type) {
+function getRecommendedDurationCompact(type) {
     if (type === 'Short') return '15 min';
     if (type === 'Artículo') return '15 min';
     if (type === 'Ruta de aprendizaje') return '120 min';
@@ -131,22 +135,26 @@ function getRecommendedDuration(type) {
 }
 
 // Función para validar datos antes de renderizar
-function validateCardData(cardData) {
+function validateCardDataCompact(cardData) {
     const errors = [];
     
-    if (!CONTENT_TYPES.includes(cardData.type)) {
+    // Usar constantes del componente original si están disponibles, sino usar las locales
+    const contentTypes = window.CARD_CONTENT_OPTIONS?.CONTENT_TYPES || CONTENT_TYPES_COMPACT;
+    const competencies = window.CARD_CONTENT_OPTIONS?.COMPETENCIES || COMPETENCIES_COMPACT;
+    
+    if (!contentTypes.includes(cardData.type)) {
         errors.push(`Tipo de contenido no válido: ${cardData.type}`);
     }
     
-    if (!COMPETENCIES.includes(cardData.competency)) {
+    if (!competencies.includes(cardData.competency)) {
         errors.push(`Competencia no válida: ${cardData.competency}`);
     }
     
     if (errors.length > 0) {
-        console.warn('Errores de validación en card:', errors);
+        console.warn('Errores de validación en card compact:', errors);
         console.warn('Opciones disponibles:', {
-            types: CONTENT_TYPES,
-            competencies: COMPETENCIES
+            types: contentTypes,
+            competencies: competencies
         });
     }
     
@@ -154,36 +162,44 @@ function validateCardData(cardData) {
 }
 
 /**
- * Renderiza una course-card con todos sus datos
- * @param {Object} cardData - Datos de la card
- * @param {string} cardData.type - Tipo de contenido (Curso, Short, Charla, Artículo, Podcast, Libro, Ideas de libro, Caso de estudio, Documento técnico, Ejercicios de práctica, Ruta de aprendizaje, Programa)
+ * Renderiza una course-card-compact con todos sus datos
+ * @param {Object} cardData - Datos de la card (igual estructura que content-card)
+ * @param {string} cardData.type - Tipo de contenido
  * @param {string} cardData.title - Título del contenido
  * @param {string} cardData.provider - Nombre del proveedor/aliado
  * @param {string} cardData.providerLogo - Ruta del logo del proveedor
- * @param {string} cardData.duration - Duración (15 min, 30 min, etc.)
+ * @param {string} cardData.duration - Duración
  * @param {string} cardData.level - Nivel (Básico, Intermedio, Avanzado)
  * @param {number} cardData.progress - Progreso (0-100)
  * @param {string} cardData.status - Estado (default, progress, completed)
- * @param {string} cardData.image - Ruta de la imagen (puede ser cualquier imagen disponible en tu proyecto)
- * @param {string} cardData.competency - Competencia (Accountability, Administración de negocios, Agilidad, Comunicación, Cumplimiento (Compliance), Data skills, Desarrollo de software, Desarrollo web, Digital skills, e-Commerce, Emprendimiento, Experiencia del cliente, Gestión de procesos y operaciones, Gestión de proyectos, Gestión de recursos tecnológicos, Gestión del cambio, Gestión del riesgo, Gestión financiera, Herramientas tecnológicas, Inglés, Innovación, Inteligencia emocional, Lenguajes de Programación, Liderazgo, Marketing, Marketing digital, Negociación, People management, Product design, Productividad, Resolución de problemas, Trabajo en equipo, Ventas, Wellness)
- * @param {string} cardData.language - Idioma (Español, Inglés, etc.)
+ * @param {string} cardData.image - Ruta de la imagen
+ * @param {string} cardData.competency - Competencia
+ * @param {string} cardData.language - Idioma
  */
-function renderCardContent(cardData) {
+function renderCardContentCompact(cardData) {
+    // Validar datos
+    validateCardDataCompact(cardData);
+    
+    // Usar constantes del componente original si están disponibles
+    const STATUSES = window.CARD_CONTENT_OPTIONS?.STATUSES || STATUSES_COMPACT;
+    const LEVELS = window.CARD_CONTENT_OPTIONS?.LEVELS || LEVELS_COMPACT;
+    const PROVIDERS = window.CARD_CONTENT_OPTIONS?.PROVIDERS || PROVIDERS_COMPACT;
+    
     // Determinar clase de estado
     let statusClass = '';
     let statusText = '';
     
     if (cardData.status === 'progress') {
-        statusClass = 'course-status--progress';
+        statusClass = 'course-status-compact--progress';
         statusText = 'En progreso';
     } else if (cardData.status === 'completed') {
-        statusClass = 'course-status--completed';
+        statusClass = 'course-status-compact--completed';
         statusText = 'Completado';
     }
     
     // Determinar icono según el nivel
     const levelIcon = LEVELS[cardData.level] || LEVELS['Intermedio'];
-
+    
     // Detectar si es Ruta de aprendizaje o Programa y tiene múltiples proveedores
     const isRutaAprendizaje = cardData.type === 'Ruta de aprendizaje';
     const isPrograma = cardData.type === 'Programa';
@@ -193,110 +209,107 @@ function renderCardContent(cardData) {
     let providerHTML = '';
     if (hasMultipleProviders) {
         // Múltiples avatares para Ruta de aprendizaje o Programa
-        // Variantes: 2 avatares, 3 avatares, o 3 avatares + avatar con "+N"
         const providers = cardData.providers;
         const totalCount = providers.length;
         const visibleCount = Math.min(totalCount, 3);
         const remainingCount = totalCount > 3 ? totalCount - 3 : 0;
         
-        // Calcular z-index: el primero tiene el z-index más alto
         providerHTML = `
-            <div class="course-provider course-provider--multiple">
-                <div class="provider-avatars-list">
+            <div class="course-provider-compact course-provider-compact--multiple">
+                <div class="provider-avatars-list-compact">
                     ${providers.slice(0, visibleCount).map((provider, index) => {
                         const zIndex = visibleCount - index;
-                        // Si hay un avatar con "+N" después, el último avatar visible también debe tener margin-right: -5px
                         const marginRight = (index < visibleCount - 1) || remainingCount > 0 ? '-5px' : '0';
                         return `
-                            <div class="provider-avatar provider-avatar--stacked" style="z-index: ${zIndex}; margin-right: ${marginRight};">
-                                <img src="${provider.logo || provider.providerLogo || 'images/Favicons/UBITS.jpg'}" 
+                            <div class="provider-avatar-compact provider-avatar-compact--stacked" style="z-index: ${zIndex}; margin-right: ${marginRight};">
+                                <img src="${provider.logo || provider.providerLogo || PROVIDERS['UBITS']}" 
                                      alt="${provider.name || provider.provider || 'Provider'}" 
-                                     class="provider-icon">
+                                     class="provider-icon-compact">
                             </div>
                         `;
                     }).join('')}
                     ${remainingCount > 0 ? `
-                        <div class="provider-avatar provider-avatar--stacked provider-avatar--count" style="z-index: 0; margin-right: 0;">
-                            <span class="provider-count-text">+${remainingCount}</span>
+                        <div class="provider-avatar-compact provider-avatar-compact--stacked provider-avatar-compact--count" style="z-index: 0; margin-right: 0;">
+                            <span class="provider-count-text-compact">+${remainingCount}</span>
                         </div>
                     ` : ''}
                 </div>
-                <span class="provider-name ubits-body-xs-regular">Varios</span>
+                <span class="provider-name-compact ubits-body-xs-regular">Varios</span>
             </div>
         `;
     } else {
         // Avatar único (comportamiento normal)
+        const providerLogo = cardData.providerLogo || PROVIDERS[cardData.provider] || PROVIDERS['UBITS'];
         providerHTML = `
-            <div class="course-provider">
-                <div class="provider-avatar">
-                    <img src="${cardData.providerLogo}" alt="${cardData.provider}" class="provider-icon">
+            <div class="course-provider-compact">
+                <div class="provider-avatar-compact">
+                    <img src="${providerLogo}" alt="${cardData.provider}" class="provider-icon-compact">
                 </div>
-                <span class="provider-name ubits-body-xs-regular">${cardData.provider}</span>
+                <span class="provider-name-compact ubits-body-xs-regular">${cardData.provider}</span>
+                <span class="provider-separator-compact ubits-body-xs-regular">|</span>
+                <span class="course-type-compact ubits-body-xs-regular">${cardData.type}</span>
             </div>
         `;
     }
 
-    // Template de la card
+    // Template de la card compact (estructura según Figma)
     return `
-        <div class="course-card" data-progress="${cardData.progress}" data-status="${cardData.status}">
-            <div class="course-thumbnail-wrapper">
-                <div class="course-thumbnail">
-                    <img src="${cardData.image}" alt="${cardData.title}" class="course-image">
-                </div>
-                ${(cardData.progress > 0 || cardData.status !== 'default') ? `
-                <div class="course-progress-overlay">
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: ${cardData.progress || 0}%"></div>
+        <div class="course-card-compact" data-progress="${cardData.progress || 0}" data-status="${cardData.status || 'default'}">
+            <div class="course-card-compact-inner">
+                <!-- Parte superior: Imagen y título -->
+                <div class="course-header-compact-wrapper">
+                    <div class="course-thumbnail-compact-wrapper">
+                        <div class="course-thumbnail-compact">
+                            <img src="${cardData.image}" alt="${cardData.title}" class="course-image-compact">
+                        </div>
+                    </div>
+                    <div class="course-title-wrapper-compact">
+                        <h3 class="course-title-compact ubits-body-sm-bold" style="color: var(--ubits-fg-1-high);">${cardData.title}</h3>
                     </div>
                 </div>
-                ` : ''}
-            </div>
-            <div class="course-content">
-                <div class="course-header">
-                    <div class="course-type-status">
-                        <span class="course-type ubits-body-xs-regular">${cardData.type}</span>
-                        ${statusText ? `<span class="course-status ${statusClass} ubits-body-sm-bold">${statusText}</span>` : ''}
-                    </div>
+                <!-- Debajo: Avatar y tipo de contenido -->
+                <div class="course-content-compact">
+                    ${providerHTML}
                 </div>
-                <h3 class="course-title ubits-body-sm-bold">${cardData.title}</h3>
-                ${providerHTML}
-                <div class="course-competency">
-                    <div class="spec-icon">
-                        <i class="far fa-tag"></i>
-                    </div>
-                    <span class="ubits-body-xs-regular">${cardData.competency}</span>
-                </div>
-                <div class="course-specs">
-                    <div class="spec-item">
-                        <div class="spec-icon">
+                <!-- Debajo: Nivel, tiempo e idioma -->
+                <div class="course-specs-compact">
+                    <div class="spec-item-compact">
+                        <div class="spec-icon-compact">
                             <i class="${levelIcon}"></i>
                         </div>
                         <span class="ubits-body-xs-regular">${cardData.level}</span>
                     </div>
-                    <div class="spec-item">
-                        <div class="spec-icon">
+                    <div class="spec-item-compact">
+                        <div class="spec-icon-compact">
                             <i class="far fa-clock"></i>
                         </div>
                         <span class="ubits-body-xs-regular">${cardData.duration}</span>
                     </div>
-                    <div class="spec-item">
-                        <div class="spec-icon">
+                    <div class="spec-item-compact">
+                        <div class="spec-icon-compact">
                             <i class="far fa-globe"></i>
                         </div>
                         <span class="ubits-body-xs-regular">${cardData.language}</span>
                     </div>
                 </div>
             </div>
+            ${(cardData.progress > 0 || cardData.status !== 'default') ? `
+            <div class="course-progress-overlay-compact">
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${cardData.progress || 0}%"></div>
+                </div>
+            </div>
+            ` : ''}
         </div>
     `;
 }
 
 /**
- * Carga múltiples course-cards en un contenedor
+ * Carga múltiples course-cards-compact en un contenedor
  * @param {string} containerId - ID del contenedor donde cargar las cards
- * @param {Array} cardsData - Array de objetos con datos de las cards
+ * @param {Array} cardsData - Array de objetos con datos de las cards (misma estructura que content-card)
  */
-function loadCardContent(containerId, cardsData) {
+function loadCardContentCompact(containerId, cardsData) {
     const container = document.getElementById(containerId);
     if (!container) {
         console.error(`Container with ID "${containerId}" not found`);
@@ -308,55 +321,30 @@ function loadCardContent(containerId, cardsData) {
 
     // Renderizar cada card
     cardsData.forEach(cardData => {
-        const cardHTML = renderCardContent(cardData);
+        const cardHTML = renderCardContentCompact(cardData);
         container.insertAdjacentHTML('beforeend', cardHTML);
     });
 }
-
-
-/* ========================================
-   DATOS DE EJEMPLO PARA QUICK START
-   ======================================== */
-
-// Ejemplo básico de uso
-const sampleCardData = {
-    type: 'Short',
-    title: 'Mi primer contenido',
-    provider: 'UBITS',
-    providerLogo: 'images/Favicons/UBITS.jpg',
-    duration: '15 min',
-    level: 'Básico',
-    progress: 0,
-    status: 'default',
-    image: 'images/cards-learn/descubre-las-bases-del-design-thinking.jpeg',
-    competency: 'Product design',
-    language: 'Español'
-};
 
 /* ========================================
    EXPORTAR FUNCIONES Y CONSTANTES
    ======================================== */
 
 // Exponer funciones principales
-window.renderCardContent = renderCardContent;
-window.loadCardContent = loadCardContent;
-window.validateCardData = validateCardData;
-window.getRecommendedDuration = getRecommendedDuration;
+window.renderCardContentCompact = renderCardContentCompact;
+window.loadCardContentCompact = loadCardContentCompact;
+window.validateCardDataCompact = validateCardDataCompact;
+window.getRecommendedDurationCompact = getRecommendedDurationCompact;
 
 // Exponer todas las opciones disponibles
-window.CARD_CONTENT_OPTIONS = {
-    CONTENT_TYPES,
-    COMPETENCIES,
-    LEVELS,
-    DURATIONS,
-    LANGUAGES,
-    STATUSES,
-    PROVIDERS
-};
-
-// Exponer datos de ejemplo
-window.CARD_SAMPLES = {
-    sampleCardData
+window.CARD_CONTENT_COMPACT_OPTIONS = {
+    CONTENT_TYPES: CONTENT_TYPES_COMPACT,
+    COMPETENCIES: COMPETENCIES_COMPACT,
+    LEVELS: LEVELS_COMPACT,
+    DURATIONS: DURATIONS_COMPACT,
+    LANGUAGES: LANGUAGES_COMPACT,
+    STATUSES: STATUSES_COMPACT,
+    PROVIDERS: PROVIDERS_COMPACT
 };
 
 /* ========================================
@@ -364,27 +352,28 @@ window.CARD_SAMPLES = {
    ======================================== */
 
 console.log(`
-🚀 UBITS Card Content Component cargado exitosamente!
+🚀 UBITS Card Content Compact Component cargado exitosamente!
 
-📋 OPCIONES DISPONIBLES:
-• Tipos de contenido: ${CONTENT_TYPES.length} tipos
-• Competencias: ${COMPETENCIES.length} competencias oficiales UBITS
-• Niveles: ${Object.keys(LEVELS).length} niveles con iconos FontAwesome
-• Duraciones: ${DURATIONS.length} tiempos oficiales
-• Idiomas: ${LANGUAGES.length} idiomas
-• Aliados: ${Object.keys(PROVIDERS).length} proveedores oficiales
+📋 CARACTERÍSTICAS:
+• Variante horizontal y compacta de content-card
+• Misma funcionalidad que content-card (tipos, competencias, aliados)
+• Layout horizontal siempre: imagen 85x48px arriba izquierda, título alineado verticalmente
+• Estructura: Imagen + Título → Avatar + Tipo → Nivel + Tiempo + Idioma
+• Barra de progreso en la parte inferior del card completo
+• Efecto zoom en imagen al hacer hover (igual que content-card)
 
 💡 USO BÁSICO:
-loadCardContent('mi-contenedor', [
+loadCardContentCompact('mi-contenedor', [
     {
-        type: 'Short',
-        title: 'Mi contenido',
+        type: 'Curso',
+        title: 'Mi contenido compacto',
         provider: 'UBITS',
-        duration: '15 min',
-        level: 'Básico',
+        providerLogo: 'images/Favicons/UBITS.jpg',
+        duration: '60 min',
+        level: 'Intermedio',
         progress: 50,
         status: 'progress',
-        image: 'images/mi-imagen.jpg',  // ✅ Usa cualquier imagen de tu proyecto
+        image: 'images/mi-imagen.jpg',
         competency: 'Product design',
         language: 'Español'
     }
@@ -393,10 +382,10 @@ loadCardContent('mi-contenedor', [
 📷 NOTA SOBRE IMÁGENES:
 • Las rutas de imagen pueden ser diferentes en cada proyecto
 • El componente se adapta automáticamente a cualquier imagen
-• Proporción 16:9 automática con zoom elegante en hover
+• Tamaño fijo: 85x48px con zoom elegante en hover
 
 🔍 VER TODAS LAS OPCIONES:
-console.log(window.CARD_CONTENT_OPTIONS);
+console.log(window.CARD_CONTENT_COMPACT_OPTIONS);
 `);
 
 /* ========================================
@@ -404,26 +393,26 @@ console.log(window.CARD_CONTENT_OPTIONS);
    ======================================== */
 
 /**
- * RENDERIZADO DEL COMPONENTE CARD CONTENT
+ * RENDERIZADO DEL COMPONENTE CARD CONTENT COMPACT
  * 
  * REQUISITOS OBLIGATORIOS:
- * 1. CSS: <link rel="stylesheet" href="components/card-content.css">
- * 2. JS: <script src="components/card-content.js"></script>
+ * 1. CSS: <link rel="stylesheet" href="components/card-content-compact.css">
+ * 2. JS: <script src="components/card-content-compact.js"></script>
  * 3. FontAwesome: <link rel="stylesheet" href="fontawesome-icons.css">
  * 4. UBITS Base: <link rel="stylesheet" href="ubits-colors.css">
  * 5. UBITS Typography: <link rel="stylesheet" href="ubits-typography.css">
  * 
  * IMPLEMENTACIÓN BÁSICA:
  * ```html
- * <!-- Container para las cards -->
- * <div id="mi-contenedor-cards"></div>
+ * <!-- Container para las cards compactas -->
+ * <div id="mi-contenedor-compact"></div>
  * 
  * <!-- JavaScript -->
  * <script>
  * const cardsData = [
  *   {
  *     type: 'Curso',
- *     title: 'Mi contenido de aprendizaje',
+ *     title: 'Mi contenido de aprendizaje compacto',
  *     provider: 'UBITS',
  *     providerLogo: 'images/Favicons/UBITS.jpg',
  *     duration: '60 min',
@@ -435,7 +424,7 @@ console.log(window.CARD_CONTENT_OPTIONS);
  *     language: 'Español'
  *   }
  * ];
- * loadCardContent('mi-contenedor-cards', cardsData);
+ * loadCardContentCompact('mi-contenedor-compact', cardsData);
  * </script>
  * ```
  * 
@@ -443,6 +432,12 @@ console.log(window.CARD_CONTENT_OPTIONS);
  * COMPETENCIAS: 35 competencias oficiales UBITS (Product design, Desarrollo de software, Liderazgo, etc.)
  * PROVEEDORES: 18 aliados oficiales (UBITS, Microsoft, TED, AWS, etc.)
  * NIVELES: Básico, Intermedio, Avanzado
+ * 
+ * ESTRUCTURA DEL COMPONENTE:
+ * - Parte superior: Imagen (85x48px) y título (body-sm-bold) alineados horizontalmente
+ * - Parte media: Avatar del proveedor (28px) + nombre + "|" + tipo de contenido (body-xs-regular)
+ * - Parte inferior: Nivel + Tiempo + Idioma con iconos (body-xs-regular)
+ * - Barra de progreso: En la parte inferior del card completo (4px de altura)
  * 
  * VARIANTES DE AVATARES PARA RUTA DE APRENDIZAJE Y PROGRAMA:
  * Cuando el tipo de contenido es "Ruta de aprendizaje" o "Programa" y se proporciona un array de `providers` con más de 1 elemento,
@@ -455,4 +450,12 @@ console.log(window.CARD_CONTENT_OPTIONS);
  * El texto "Varios" usa la clase `ubits-body-xs-regular` (11px, regular, 16.5px line-height).
  * El texto "+N" usa font semibold (600) con tamaño 13px y line-height 19.5px.
  * ESTADOS: default, progress, completed
+ * 
+ * DIFERENCIAS CON CARD CONTENT:
+ * - Layout siempre horizontal (nunca cambia a vertical)
+ * - Imagen fija de 85x48px (no 16:9 responsive)
+ * - Título: body-sm-bold en lugar de body-sm-bold (mismo tamaño)
+ * - Tipo, aliado, nivel, tiempo, idioma: body-xs-regular (más pequeños)
+ * - Barra de progreso en la parte inferior del card completo
+ * - Estructura vertical: Imagen+Título → Avatar+Tipo → Specs
  */

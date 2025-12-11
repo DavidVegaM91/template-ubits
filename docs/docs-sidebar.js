@@ -46,6 +46,11 @@ const DOCS_SIDEBAR_SECTIONS = [
         group: 'ui'
     },
     {
+        id: 'card-content-compact',
+        title: 'Card content compact',
+        group: 'ui'
+    },
+    {
         id: 'input',
         title: 'Input',
         group: 'ui'
@@ -120,6 +125,9 @@ const docsSidebarHTML = `
                     <div class="docs-sidebar-item" data-section="card-content">
                         <span class="docs-sidebar-text">Card content</span>
                     </div>
+                    <div class="docs-sidebar-item" data-section="card-content-compact">
+                        <span class="docs-sidebar-text">Card content compact</span>
+                    </div>
                     <div class="docs-sidebar-item" data-section="input">
                         <span class="docs-sidebar-text">Input</span>
                     </div>
@@ -186,6 +194,9 @@ const docsDropdownHTML = `
                     <div class="docs-dropdown-item" data-section="card-content">
                         <span class="docs-dropdown-item-text ubits-body-md-regular">Card content</span>
                     </div>
+                    <div class="docs-dropdown-item" data-section="card-content-compact">
+                        <span class="docs-dropdown-item-text ubits-body-md-regular">Card content compact</span>
+                    </div>
                     <div class="docs-dropdown-item" data-section="input">
                         <span class="docs-dropdown-item-text ubits-body-md-regular">Input</span>
                     </div>
@@ -250,7 +261,7 @@ function initDocsSidebar(activeSection) {
     
     // Función para manejar navegación
     function handleDocsNavigation(section) {
-        // Debug: verificar que la función se está llamando
+        // Debug: verificar que la funci?n se está llamando
         console.log('handleDocsNavigation called with section:', section);
         
         // Cerrar dropdown
@@ -319,11 +330,19 @@ function initDocsSidebar(activeSection) {
             }
         } else if (section === 'card-content') {
             // Si ya estamos en card-content.html, solo hacer scroll al top
-            if (window.location.pathname.includes('card-content.html')) {
+            if (window.location.pathname.includes('card-content.html') && !window.location.pathname.includes('card-content-compact.html')) {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } else {
                 // Si estamos en otra página, navegar a card-content.html
                 window.location.href = 'card-content.html';
+            }
+        } else if (section === 'card-content-compact') {
+            // Si ya estamos en card-content-compact.html, solo hacer scroll al top
+            if (window.location.pathname.includes('card-content-compact.html')) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                // Si estamos en otra página, navegar a card-content-compact.html
+                window.location.href = 'card-content-compact.html';
             }
         } else if (section === 'input') {
             // Si ya estamos en input.html, solo hacer scroll al top

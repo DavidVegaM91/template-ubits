@@ -1,0 +1,303 @@
+/* ========================================
+   UBITS CARD CONTENT COMPACT COMPONENT
+   Variante horizontal y compacta de content-card
+   ======================================== */
+
+/* Course Card Compact Base */
+.course-card-compact {
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.2s ease;
+    cursor: pointer;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.course-card-compact:hover {
+    border-color: var(--ubits-border-2);
+}
+
+/* Course Card Compact Inner Container */
+.course-card-compact-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+}
+
+/* Course Header Compact - Imagen y título en la parte superior */
+.course-header-compact-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    align-items: center;
+}
+
+/* Course Thumbnail Compact - Imagen a la izquierda */
+.course-thumbnail-compact-wrapper {
+    position: relative;
+    flex-shrink: 0;
+    width: 85px;
+    height: 48px;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.course-thumbnail-compact {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--ubits-accent-brand), var(--ubits-accent-brand-static));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    color: var(--ubits-btn-primary-fg);
+    overflow: hidden;
+}
+
+.course-image-compact {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.3s ease;
+}
+
+.course-card-compact:hover .course-image-compact {
+    transform: scale(1.05);
+}
+
+/* Progress Overlay Compact - En la parte inferior del card completo */
+.course-progress-overlay-compact {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0;
+    height: 4px;
+    border-radius: 0 0 8px 8px;
+    overflow: hidden;
+}
+
+.course-progress-overlay-compact .progress-bar {
+    width: 100%;
+    height: 4px;
+    background: var(--ubits-bg-4-static);
+    border-radius: 0;
+    overflow: hidden;
+    position: relative;
+}
+
+.course-progress-overlay-compact .progress-fill {
+    height: 100%;
+    background: var(--ubits-accent-brand);
+    border-radius: 0;
+    transition: width 0.3s ease;
+}
+
+/* Barra verde para estado completado */
+.course-card-compact[data-status="completed"] .course-progress-overlay-compact .progress-fill {
+    background: var(--ubits-feedback-accent-success-static);
+}
+
+/* Course Title Compact - En la parte superior junto a la imagen */
+.course-title-wrapper-compact {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+}
+
+.course-title-compact {
+    color: var(--ubits-fg-1-high);
+    margin: 0;
+    height: auto;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Course Content Compact - Avatar y tipo debajo */
+.course-content-compact {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+/* Course Header Compact */
+.course-header-compact {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 20px;
+}
+
+.course-type-status-compact {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.course-type-compact {
+    color: var(--ubits-fg-1-medium);
+}
+
+.course-status-compact {
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.course-status-compact--progress {
+    color: var(--ubits-accent-brand);
+}
+
+.course-status-compact--completed {
+    color: var(--ubits-feedback-accent-success-static);
+}
+
+
+/* Provider Info Compact */
+.course-provider-compact {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.provider-avatar-compact {
+    width: 28px;
+    height: 28px;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+}
+
+.provider-icon-compact {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 50%;
+}
+
+.provider-name-compact {
+    color: var(--ubits-fg-1-high);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 0;
+}
+
+/* Múltiples avatares para Ruta de aprendizaje */
+.course-provider-compact--multiple {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.provider-avatars-list-compact {
+    display: flex;
+    align-items: center;
+    position: relative;
+    height: 28px;
+    isolation: isolate;
+}
+
+.provider-avatar-compact--stacked {
+    position: relative;
+    width: 28px;
+    height: 28px;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.provider-avatar-compact--count {
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+}
+
+.provider-count-text-compact {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 19.5px;
+    color: var(--ubits-fg-1-high);
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* Course Specs Compact - Metadata horizontal */
+.course-specs-compact {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.spec-item-compact {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--ubits-fg-1-medium);
+    flex-shrink: 1;
+    min-width: 0;
+}
+
+.spec-item-compact span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 1;
+    min-width: 0;
+    color: var(--ubits-fg-1-medium);
+}
+
+.spec-icon-compact {
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--ubits-fg-1-medium);
+    font-size: 12px;
+}
+
+/* Separador entre provider y tipo */
+.provider-separator-compact {
+    color: var(--ubits-fg-1-medium);
+    margin: 0 4px;
+}
+
+/* El card siempre debe ser horizontal, nunca cambiar a vertical */
+/* Responsive solo ajusta tamaños pero mantiene layout horizontal */
+@media (max-width: 768px) {
+    .course-thumbnail-compact-wrapper {
+        width: 85px;
+        height: 48px;
+    }
+    
+    .course-card-compact-inner {
+        gap: 8px;
+        padding: 8px;
+    }
+}

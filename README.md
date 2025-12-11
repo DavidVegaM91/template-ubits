@@ -57,6 +57,7 @@ Una **plantilla lista para usar** que permite a **Product Managers**, **Diseñad
 - **Toast** - Notificaciones flotantes (tipos: success, info, warning, error; auto-cierre, pausa en hover) - **RENDERIZADO: showToast()**
 - **Input** - Campos de entrada (11 tipos: text, email, password, number, tel, url, select, textarea, search, autocomplete, calendar; tamaños: sm, md, lg; estados: default, hover, focus, invalid, disabled; con iconos, contador, helper text, mandatory/optional, validación manual, scroll infinito automático) - **RENDERIZADO: createInput()**
 - **Card Content** - Cards para contenidos de aprendizaje (11 tipos, 35 competencias, 18 aliados, estados de progreso) - **RENDERIZADO: loadCardContent()**
+- **Card Content Compact** - Variante horizontal compacta de Card Content (misma funcionalidad, diseño optimizado para espacios reducidos, siempre horizontal) - **RENDERIZADO: loadCardContentCompact()**
 - **Carousel Contents** - Carruseles de contenido (navegación horizontal, flechas, responsive) - **RENDERIZADO: loadCarouselContents()**
 - **Status Tag** - Etiquetas de estado (tipos: success, info, warning, error, neutral; tamaños: xs, sm, md, lg; iconos opcionales izquierda/derecha) - **RENDERIZADO: HTML directo**
 - **Tab** - Tabs de navegación (estados: active, inactive; tamaños: xs, sm, md, lg; variantes: con texto, icon-only; iconos opcionales) - **RENDERIZADO: HTML directo**
@@ -77,6 +78,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 <link rel="stylesheet" href="components/toast.css">
 <link rel="stylesheet" href="components/input.css">
 <link rel="stylesheet" href="components/card-content.css">
+<link rel="stylesheet" href="components/card-content-compact.css">
 <link rel="stylesheet" href="components/carousel-contents.css">
 <link rel="stylesheet" href="components/status-tag.css">
 <link rel="stylesheet" href="components/tab.css">
@@ -93,6 +95,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 <script src="components/toast.js"></script>
 <script src="components/input.js"></script>
 <script src="components/card-content.js"></script>
+<script src="components/card-content-compact.js"></script>
 <script src="components/carousel-contents.js"></script>
 <script src="components/empty-state.js"></script>
 <script src="components/paginator.js"></script>
@@ -221,6 +224,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 - **`toast.html`** - Documentación del componente Toast
 - **`input.html`** - Documentación del componente Input
 - **`card-content.html`** - Documentación del componente Card Content
+- **`card-content-compact.html`** - Documentación del componente Card Content Compact
 - **`status-tag.html`** - Documentación del componente Status Tag
 - **`tab.html`** - Documentación del componente Tab
 - **`empty-state.html`** - Documentación del componente Empty State
@@ -257,6 +261,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 │   ├── toast.css + toast.js
 │   ├── input.css + input.js
 │   ├── card-content.css + card-content.js
+│   ├── card-content-compact.css + card-content-compact.js
 │   ├── carousel-contents.css + carousel-contents.js
 │   ├── status-tag.css + status-tag.js
 │   ├── tab.css + tab.js
@@ -455,6 +460,26 @@ loadCardContent('mi-contenedor-cards', [
     }
 ]);
 </script>
+
+<!-- Card Content Compact -->
+<div id="mi-contenedor-compact"></div>
+<script>
+loadCardContentCompact('mi-contenedor-compact', [
+    {
+        type: 'Curso',
+        title: 'Mi contenido compacto',
+        provider: 'UBITS',
+        providerLogo: 'images/Favicons/UBITS.jpg',
+        duration: '60 min',
+        level: 'Intermedio',
+        progress: 50,
+        status: 'progress',
+        image: 'images/cards-learn/mi-imagen.jpg',
+        competency: 'Product design',
+        language: 'Español'
+    }
+]);
+</script>
 ```
 
 ### **Prompts para Cursor AI:**
@@ -464,6 +489,8 @@ loadCardContent('mi-contenedor-cards', [
 "Implementa el SubNav con la variante 'template' en la página principal"
 "Implementa el header-product en esta página con el nombre 'Mi Producto'"
 "Crea un catálogo de cursos usando el componente Card Content con diferentes tipos y estados"
+
+"Crea una lista compacta de contenidos usando el componente Card Content Compact en [ubicación]"
 ```
 
 ## 📚 Documentación
@@ -476,6 +503,7 @@ loadCardContent('mi-contenedor-cards', [
 - **`toast.html`** - Documentación del componente Toast
 - **`input.html`** - Documentación del componente Input
 - **`card-content.html`** - Documentación del componente Card Content
+- **`card-content-compact.html`** - Documentación del componente Card Content Compact
 - **`status-tag.html`** - Documentación del componente Status Tag
 - **`tab.html`** - Documentación del componente Tab
 - **`empty-state.html`** - Documentación del componente Empty State
@@ -590,7 +618,7 @@ Un sistema inspirado que permite a **cualquier usuario** (Product Managers, Dise
 2. **SIEMPRE revisa `images/Favicons/`** para logos de proveedores (18 proveedores disponibles)
 3. **SIEMPRE revisa `images/empty-states/`** para imágenes de estados vacíos (2 archivos SVG)
 4. **SIEMPRE revisa `images/Profile-image.jpg`** para avatar de usuario
-5. **SIEMPRE revisa `components/card-content.js`** para lista oficial de competencias (35 competencias)
+5. **SIEMPRE revisa `components/card-content.js` o `components/card-content-compact.js`** para lista oficial de competencias (35 competencias)
 6. **NUNCA inventes nombres de recursos** que no existen
 7. **SIEMPRE verifica** las rutas de recursos antes de implementar
 8. **Para otras imágenes** - Usa servicios externos como Unsplash con atribución adecuada
