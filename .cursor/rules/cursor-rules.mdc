@@ -230,8 +230,7 @@ loadCardContent('cards-container', [{
 ### **👤 PÁGINAS FUNCIONALES:**
 - **`profile.html`** - Perfil de usuario (ejemplo original del sistema modular)
 - **`home-learn.html`** - Dashboard de aprendizaje (ejemplo completo con 9 secciones)
-- **`ubits-ai.html`** - Página de UBITS AI
-- **`simon-chat.html`** - Chat con Simon AI
+- **`ubits-ai.html`** - Página de UBITS AI (página en blanco basada en plantilla)
 
 ### **📚 FLUJO DE APRENDIZAJE:**
 - **`catalogo.html`** - Catálogo de contenidos
@@ -1563,7 +1562,6 @@ When issues are found, the validator creates a detailed prompt for Cursor with:
 - ✅ **ALWAYS achieve 100%** - Only consider page complete at 100% score
 
 ### **VALIDATOR SUCCESS EXAMPLES:**
-- `simon-chat.html`: Detected missing `components/button.css` → Fixed deformed button
 - `overview.html`: Detected 15 hardcoded colors → Replaced with UBITS tokens
 - `iconos.html`: Detected invalid `ubits-heading-h3` → Replaced with `ubits-body-md-bold`
 - `guia-prompts.html`: Detected rgba() colors in shadows → Removed elevations
@@ -1768,7 +1766,6 @@ setTimeout(() => {
 
 #### **5. EXAMPLE IMPLEMENTATION:**
 ```html
-<!-- In ubits-ai.html -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     loadSidebar('ubits-ai');

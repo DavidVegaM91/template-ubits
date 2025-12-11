@@ -175,8 +175,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 
 #### **👤 Perfil y AI:**
 - **`profile.html`** - Perfil/Portal del colaborador
-- **`ubits-ai.html`** - Página de UBITS AI
-- **`simon-chat.html`** - Chat con Simon AI
+- **`ubits-ai.html`** - Página de UBITS AI (página en blanco basada en plantilla)
 - **`modo-estudio-ia.html`** - Modo de estudio con IA
 
 #### **⚙️ Módulo de Administración:**
