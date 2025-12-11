@@ -81,7 +81,9 @@ let chatState = {
     currentPlan: null, // Plan de formación actual propuesto
     lastAIMessageElement: null, // Referencia al último mensaje de IA para regenerar
     lastAIMessageText: null, // Texto del último mensaje de IA
-    lastRegenerateFunction: null // Función para regenerar el último mensaje
+    lastRegenerateFunction: null, // Función para regenerar el último mensaje
+    pendingCoursesContainer: null, // Contenedor pendiente para renderizar cards de cursos
+    pendingPlanContainer: null // Contenedor pendiente para renderizar cards del plan
 };
 
 /**
@@ -173,10 +175,38 @@ function createMessageHTML(type, text, timestamp, showActions = false, isTyping 
             <p class="ubits-study-chat__typing-text">Espera por favor...</p>
         `;
     } else {
-        // Convertir URLs en links con estilo
-        const linkRegex = /(https?:\/\/[^\s]+)/g;
-        const textWithLinks = text.replace(linkRegex, '<a href="$1" class="ubits-study-chat__link" target="_blank" rel="noopener noreferrer">$1</a>');
-        textHTML = `<p class="ubits-study-chat__message-text">${textWithLinks}</p>`;
+        // Detectar si el texto contiene HTML (divs, etc.)
+        const hasHTML = /<[^>]+>/.test(text);
+        
+        if (hasHTML) {
+            // Si tiene HTML, dividir el texto en partes (texto plano y HTML)
+            // Convertir URLs en links antes de procesar
+            const linkRegex = /(https?:\/\/[^\s]+)/g;
+            // Dividir por saltos de línea primero para separar texto de HTML
+            const lines = text.split('\n');
+            let processedText = '';
+            
+            lines.forEach(line => {
+                const trimmedLine = line.trim();
+                if (trimmedLine.startsWith('<div')) {
+                    // Es HTML, agregarlo directamente
+                    processedText += line;
+                } else if (trimmedLine.length > 0) {
+                    // Es texto plano, convertir URLs y envolver en párrafo
+                    const textWithLinks = trimmedLine.replace(linkRegex, '<a href="$1" class="ubits-study-chat__link" target="_blank" rel="noopener noreferrer">$1</a>');
+                    processedText += `<p class="ubits-study-chat__message-text">${textWithLinks}</p>`;
+                }
+            });
+            
+            textHTML = processedText;
+        } else {
+            // Convertir URLs en links con estilo
+            const linkRegex = /(https?:\/\/[^\s]+)/g;
+            const textWithLinks = text.replace(linkRegex, '<a href="$1" class="ubits-study-chat__link" target="_blank" rel="noopener noreferrer">$1</a>');
+            // Dividir por saltos de línea y crear párrafos
+            const lines = textWithLinks.split('\n').filter(line => line.trim());
+            textHTML = lines.map(line => `<p class="ubits-study-chat__message-text">${line}</p>`).join('');
+        }
     }
     
     const actionsHTML = (type === 'ai' && showActions && !isTyping) ? `
@@ -202,47 +232,60 @@ function createMessageHTML(type, text, timestamp, showActions = false, isTyping 
 }
 
 /**
- * Formatea la lista de cursos como texto
+ * Formatea la lista de cursos como cards compactos
  * @param {Array} courses - Array de cursos a mostrar
  * @param {boolean} isAddingMore - Si es true, indica que se están agregando más cursos
- * @returns {string} Texto formateado de los cursos
+ * @returns {string} HTML con contenedor para cards compactos
  */
 function formatCoursesHTML(courses, isAddingMore = false) {
-    let text = '';
+    // Generar ID único para el contenedor
+    const containerId = `courses-container-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     
+    // Guardar los cursos en el estado para poder renderizarlos después
+    chatState.pendingCoursesContainer = {
+        containerId: containerId,
+        courses: courses
+    };
+    
+    let introText = '';
     if (isAddingMore) {
-        text = '\n\nCursos sugeridos (lista completa):\n\n';
+        introText = 'He agregado otros 3 cursos a tu lista. Aquí está la lista completa:';
     } else {
-        text = '\n\nCursos sugeridos:\n\n';
+        introText = '';
     }
     
-    // Mostrar todos los cursos
-    courses.forEach((course, index) => {
-        text += `${index + 1}. ${course.title}\n`;
-    });
-    
-    text += '\n¿Te gustaría que agregue otros 3 cursos? Solo dime "agrégame otros 3" o "agrega más".';
-    return text;
+    return `<div class="study-chat-courses-section"><div id="${containerId}" class="study-chat-courses-container"></div><div class="study-chat-courses-prompt">¿Te gustaría que agregue otros 3 cursos? Solo dime "agrégame otros 3" o "agrega más".</div></div>`;
 }
 
 /**
- * Formatea un plan de formación como texto
+ * Formatea un plan de formación con cards compactos
  * @param {Object} plan - Objeto con la información del plan
- * @returns {string} Texto formateado del plan
+ * @returns {string} HTML formateado del plan con cards compactos
  */
 function formatPlanHTML(plan) {
-    let text = '\n\nPlan de Formación:\n\n';
-    text += `Título: ${plan.title}\n\n`;
-    text += `Cursos incluidos (${plan.courses.length}):\n\n`;
+    // Generar ID único para el contenedor
+    const containerId = `plan-courses-container-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     
-    plan.courses.forEach((course, index) => {
-        text += `${index + 1}. ${course.title}\n`;
-    });
+    // Guardar el plan en el estado para poder renderizar los cards después
+    chatState.pendingPlanContainer = {
+        containerId: containerId,
+        plan: plan
+    };
     
-    text += `\nDuración:\n`;
-    text += `- Fecha de inicio: ${plan.startDate}\n`;
-    text += `- Fecha de fin: ${plan.endDate}\n`;
-    text += `\n¿Deseas aceptar este plan o modificar el listado de cursos? Responde "acepto" o "modificar".`;
+    let text = `<div class="study-chat-plan-section">`;
+    text += `<div class="study-chat-plan-title">Plan de Formación</div>`;
+    text += `<div class="study-chat-plan-details">`;
+    text += `<div class="study-chat-plan-detail-item"><strong>Título:</strong> ${plan.title}</div>`;
+    text += `<div class="study-chat-plan-detail-item"><strong>Cursos incluidos:</strong> ${plan.courses.length}</div>`;
+    text += `</div>`;
+    text += `<div class="study-chat-plan-courses-title">Cursos del plan</div>`;
+    text += `<div id="${containerId}" class="study-chat-courses-container"></div>`;
+    text += `<div class="study-chat-plan-details" style="margin-top: 16px;">`;
+    text += `<div class="study-chat-plan-detail-item"><strong>Fecha de inicio:</strong> ${plan.startDate}</div>`;
+    text += `<div class="study-chat-plan-detail-item"><strong>Fecha de fin:</strong> ${plan.endDate}</div>`;
+    text += `</div>`;
+    text += `<div class="study-chat-plan-prompt">¿Deseas aceptar este plan o modificar el listado de cursos? Responde "acepto" o "modificar".</div>`;
+    text += `</div>`;
     
     return text;
 }
@@ -328,7 +371,7 @@ function generateLeadershipCoursesResponse(count = 3, isAddingMore = false) {
     if (isAddingMore) {
         // Si estamos agregando más cursos, mantener todos los cursos sugeridos hasta ahora
         const allCourses = chatState.suggestedCourses;
-        intro = '¡Perfecto! He agregado otros 3 cursos a tu lista. Aquí está la lista completa:';
+        intro = '¡Perfecto! He agregado otros 3 cursos a tu lista.';
         coursesText = formatCoursesHTML(allCourses, true);
     } else {
         // Primera vez que se sugieren cursos
@@ -336,7 +379,7 @@ function generateLeadershipCoursesResponse(count = 3, isAddingMore = false) {
         coursesText = formatCoursesHTML(courses, false);
     }
     
-    const responseText = intro + coursesText;
+    const responseText = intro + '\n\n' + coursesText;
     
     return {
         text: responseText,
@@ -367,6 +410,61 @@ function addMessage(type, text, showActions = false, regenerateFunction = null) 
         chatState.lastAIMessageElement = body.lastElementChild;
         chatState.lastAIMessageText = text;
         chatState.lastRegenerateFunction = regenerateFunction;
+        
+        // Buscar contenedores de cards compactos y renderizarlos
+        setTimeout(() => {
+            const messageElement = body.lastElementChild;
+            
+            // Renderizar cards de cursos sugeridos si hay un contenedor pendiente
+            if (chatState.pendingCoursesContainer && typeof loadCardContentCompact === 'function') {
+                const { containerId, courses } = chatState.pendingCoursesContainer;
+                const container = messageElement.querySelector(`#${containerId}`);
+                
+                if (container && courses && courses.length > 0) {
+                    const cardsData = courses.map(course => ({
+                        type: 'Curso',
+                        title: course.title,
+                        provider: 'UBITS',
+                        providerLogo: 'images/Favicons/UBITS.jpg',
+                        duration: '60 min',
+                        level: 'Intermedio',
+                        progress: 0,
+                        status: 'default',
+                        image: course.image,
+                        competency: 'Liderazgo',
+                        language: 'Español'
+                    }));
+                    loadCardContentCompact(containerId, cardsData);
+                    // Limpiar el estado pendiente
+                    chatState.pendingCoursesContainer = null;
+                }
+            }
+            
+            // Renderizar cards del plan de formación si hay un contenedor pendiente
+            if (chatState.pendingPlanContainer && typeof loadCardContentCompact === 'function') {
+                const { containerId, plan } = chatState.pendingPlanContainer;
+                const container = messageElement.querySelector(`#${containerId}`);
+                
+                if (container && plan && plan.courses && plan.courses.length > 0) {
+                    const cardsData = plan.courses.map(course => ({
+                        type: 'Curso',
+                        title: course.title,
+                        provider: 'UBITS',
+                        providerLogo: 'images/Favicons/UBITS.jpg',
+                        duration: '60 min',
+                        level: 'Intermedio',
+                        progress: 0,
+                        status: 'default',
+                        image: course.image,
+                        competency: 'Liderazgo',
+                        language: 'Español'
+                    }));
+                    loadCardContentCompact(containerId, cardsData);
+                    // Limpiar el estado pendiente
+                    chatState.pendingPlanContainer = null;
+                }
+            }
+        }, 200);
     }
     
     // Agregar event listeners a los botones de acción

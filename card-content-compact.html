@@ -99,7 +99,7 @@
         
         /* Hover state simulation */
         .course-card-compact.hover-state {
-            border: 1px solid var(--ubits-border-2);
+            border-color: var(--ubits-border-1);
         }
         
         .course-card-compact.hover-state .course-image-compact {
@@ -109,7 +109,11 @@
         /* Quitar animación de entrada para el preview */
         .single-card-preview .course-card-compact {
             animation: none !important;
-            border: 1px solid var(--ubits-border-1) !important;
+            border: 1px solid transparent !important;
+        }
+        
+        .single-card-preview .course-card-compact.hover-state {
+            border-color: var(--ubits-border-1) !important;
         }
         
         /* Asegurar que el avatar del provider sea 28px en el preview */
