@@ -40,6 +40,12 @@
 
 .ubits-header-product__product-title h1 {
     margin: 0;
+    display: none; /* Ocultar por defecto */
+}
+
+/* Mostrar product-name solo en modo-estudio-ia.html */
+.modo-estudio-ia-page .ubits-header-product__product-title h1 {
+    display: block;
 }
 
 /* En mobile, cambiar el título a body-md-bold */
