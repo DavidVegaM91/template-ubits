@@ -19,6 +19,8 @@
     box-sizing: border-box;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     gap: 12px;
+    position: relative;
+    z-index: 1001; /* Crear stacking context para que el dropdown esté por encima del buscador */
 }
 
 /* Client Logo */
@@ -100,7 +102,7 @@
     border: 1px solid var(--ubits-border-1);
     border-radius: 0 0 8px 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    z-index: 1000;
+    z-index: 1002; /* Mayor que el buscador (1000) y sus sugerencias (1000) */
     display: none;
     flex-direction: column;
     padding: 8px 0;
