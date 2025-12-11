@@ -557,6 +557,13 @@
             line-height: 1.3;
             position: relative;
             z-index: 1;
+            /* Limitar a 2 líneas con puntos suspensivos */
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-height: calc(1.3em * 2); /* line-height * número de líneas */
         }
 
         .academia-card-spotify-meta {
@@ -610,6 +617,13 @@
 
         .academia-card-spotify.variant-image-top .academia-card-spotify-title {
             color: var(--ubits-fg-1-high);
+            /* Limitar a 2 líneas con puntos suspensivos también en variante image-top */
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-height: calc(1.3em * 2); /* line-height * número de líneas */
         }
 
         .academia-card-spotify.variant-image-top .academia-card-spotify-meta {
@@ -983,6 +997,13 @@
 
             .catalog-search-wrapper {
                 flex-direction: column;
+                max-width: 100% !important;
+                width: 100% !important;
+            }
+            
+            .catalog-search-container {
+                max-width: 100% !important;
+                width: 100% !important;
             }
 
             .catalog-chips-wrapper {
