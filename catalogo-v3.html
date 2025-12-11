@@ -65,6 +65,28 @@
             position: relative;
         }
         
+        /* Botones dentro del input de búsqueda */
+        .catalog-search-input-buttons {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 10;
+        }
+        
+        /* En mobile: ajustar placeholder para que no se corte */
+        @media (max-width: 768px) {
+            /* Asegurar que el placeholder se muestre correctamente */
+            #catalog-search-container input.ubits-input::placeholder {
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+            }
+        }
+        
         /* Contenedor de sugerencias de búsqueda - KISS: simple y directo */
         #catalog-search-container {
             position: relative;
@@ -116,10 +138,6 @@
         
         .search-suggestion-item {
             text-align: left;
-        }
-
-        .catalog-filters-btn {
-            flex-shrink: 0;
         }
 
         .catalog-chips-wrapper {
@@ -980,10 +998,6 @@
                         <h1 class="ubits-heading-h1">¿Qué quieres aprender hoy?</h1>
                         <div class="catalog-search-wrapper">
                             <div class="catalog-search-container" id="catalog-search-container"></div>
-                            <button class="ubits-button ubits-button--secondary ubits-button--md catalog-filters-btn">
-                                <i class="far fa-filter"></i>
-                                <span>Filtros</span>
-                            </button>
                         </div>
                         <div class="catalog-chips-wrapper">
                             <span class="ubits-body-sm-regular catalog-chips-label">Lo más buscado:</span>

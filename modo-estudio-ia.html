@@ -297,8 +297,13 @@
                     backButton: {
                         onClick: function() {
                             console.log('Back button clicked');
-                            // Redirigir a catalogo.html
-                            window.location.href = 'catalogo.html';
+                            // Regresar a la página anterior del historial del navegador
+                            if (window.history.length > 1) {
+                                window.history.back();
+                            } else {
+                                // Si no hay historial, redirigir a catalogo.html como fallback
+                                window.location.href = 'catalogo.html';
+                            }
                         }
                     },
                     secondaryButtons: [

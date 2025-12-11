@@ -79,23 +79,8 @@
             z-index: 10;
         }
         
-        /* Ajustar padding del input para los botones */
-        #catalog-search-container input.ubits-input {
-            padding-right: 150px !important; /* Espacio para 2 botones sm + gaps */
-        }
-        
-        /* Ocultar el icono X del search ya que tenemos botones personalizados */
-        #catalog-search-container i[class*="fa-times"] {
-            display: none !important;
-        }
-        
         /* En mobile: ajustar placeholder para que no se corte */
         @media (max-width: 768px) {
-            /* Reducir padding del input en mobile para que quepa más texto */
-            #catalog-search-container input.ubits-input {
-                padding-right: 110px !important; /* Espacio reducido para mobile */
-            }
-            
             /* Asegurar que el placeholder se muestre correctamente */
             #catalog-search-container input.ubits-input::placeholder {
                 text-overflow: ellipsis;
@@ -1478,11 +1463,6 @@
                         return;
                     }
                     
-                    // Ocultar el icono X del search (rightIcon) ya que tendremos botones personalizados
-                    const clearIcon = searchContainer.querySelector('i[class*="fa-times"]');
-                    if (clearIcon) {
-                        clearIcon.style.display = 'none';
-                    }
                     
                     // En mobile: cambiar placeholder a uno más corto para que no se corte
                     function updatePlaceholderForMobile() {
