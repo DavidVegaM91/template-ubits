@@ -1057,7 +1057,7 @@
 
                         <!-- Contenedor de resultados -->
                         <div id="catalog-results"></div>
-                    </div>
+                        </div>
 
                     <!-- Wrapper de sección de aliados destacados - Usando componente oficial -->
                     <div id="aliados-container"></div>
@@ -1583,7 +1583,7 @@
                             }
                         } else {
                             // Solo mostrar sugerencias si hay texto
-                            showSuggestions(value);
+                        showSuggestions(value);
                         }
                         // NO llamar handleSearch - la búsqueda está desactivada
                     });
@@ -1722,7 +1722,7 @@
                         });
                         
                         // Re-renderizar catálogo completo (búsqueda desactivada)
-                        renderCatalog(catalogData.academias);
+                            renderCatalog(catalogData.academias);
                         
                         // Restaurar estado
                         setTimeout(() => {
@@ -1824,7 +1824,7 @@
         // En la vida real, esto enviaría a una página de resultados de búsqueda
         function handleSearch(event) {
             // La búsqueda está desactivada - no hacer nada
-            return;
+                return;
         }
 
         // Función para renderizar el catálogo
@@ -2032,10 +2032,10 @@
             // Verificar que el contenedor existe antes de agregar listeners
             if (!resultsContainer) {
                 console.warn('catalog-results container not found, skipping event listeners');
-                return;
-            }
-            
-            // Event delegation para competencias
+                    return;
+                }
+                
+                // Event delegation para competencias
             resultsContainer.addEventListener('click', function(e) {
                 const competenciaCard = e.target.closest('.competencia-card-v1');
                 if (competenciaCard) {
@@ -2106,7 +2106,7 @@
         
         // Variable global para almacenar la academia seleccionada en la segunda sección
         let selectedAcademia2 = 'Academia de Habilidades Blandas';
-
+        
         function renderCatalog(academias) {
             const resultsContainer = document.getElementById('catalog-results');
             
@@ -2114,7 +2114,7 @@
                 if (resultsContainer) resultsContainer.innerHTML = '';
                 return;
             }
-            
+
             // Renderizar sección con selector
             if (resultsContainer) {
                 renderCatalogWithSelector(resultsContainer, academias);
@@ -2223,82 +2223,82 @@
                 return;
             }
 
-            // Ordenar competencias alfabéticamente
-            const competenciasOrdenadas = [...academia.competencias].sort((a, b) => 
-                a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' })
-            );
-            
-            // Determinar número de columnas según el ancho de la pantalla
-            let numColumns = 3; // Desktop por defecto
-            if (window.innerWidth <= 768) {
-                numColumns = 1; // Mobile
-            } else if (window.innerWidth <= 1023) {
-                numColumns = 2; // Tablet
-            }
-            
-            const columns = [];
-            for (let i = 0; i < numColumns; i++) {
-                columns[i] = [];
-            }
-            
+                // Ordenar competencias alfabéticamente
+                const competenciasOrdenadas = [...academia.competencias].sort((a, b) => 
+                    a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' })
+                );
+                
+                // Determinar número de columnas según el ancho de la pantalla
+                let numColumns = 3; // Desktop por defecto
+                if (window.innerWidth <= 768) {
+                    numColumns = 1; // Mobile
+                } else if (window.innerWidth <= 1023) {
+                    numColumns = 2; // Tablet
+                }
+                
+                const columns = [];
+                for (let i = 0; i < numColumns; i++) {
+                    columns[i] = [];
+                }
+                
             // Distribuir competencias en columnas
-            competenciasOrdenadas.forEach((competencia, index) => {
-                const columnIndex = index % numColumns;
-                columns[columnIndex].push(competencia);
-            });
+                competenciasOrdenadas.forEach((competencia, index) => {
+                    const columnIndex = index % numColumns;
+                    columns[columnIndex].push(competencia);
+                });
 
             const competenciasHtml = `
                 <div class="academia-competencias-container is-visible" data-academia="${academia.nombre}">
-                    <div class="competencias-grid-v1">
-                        ${columns.map(column => `
-                            <div class="competencias-column">
-                                ${column.map(competencia => {
-                                    const imageName = competenciaImageMap[competencia.nombre] || 'Accountability.jpg';
-                                    const imagePath = `images/imagenes competencias/${imageName}`;
-                                    const isAssigned = competenciasAsignadas.includes(competencia.nombre);
-                                    return `
-                                        <div class="competencia-card-v1-wrapper">
-                                            <div class="competencia-card-v1 ${isAssigned ? 'is-assigned' : ''}" data-competencia="${competencia.nombre}" data-academia="${academia.nombre}">
-                                                <img src="${imagePath}" alt="${competencia.nombre}" class="competencia-card-v1-image" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=300&fit=crop'">
-                                                <div class="competencia-card-v1-content">
-                                                    <div class="competencia-card-v1-title-wrapper">
-                                                        <p class="ubits-body-sm-semibold competencia-card-v1-title">
-                                                            <span class="competencia-card-v1-title-text">${competencia.nombre}</span>
-                                                            ${isAssigned ? '<span class="ubits-status-tag ubits-status-tag--info ubits-status-tag--xs"><span class="ubits-status-tag__text">Asignado</span></span>' : ''}
-                                                        </p>
+                        <div class="competencias-grid-v1">
+                            ${columns.map(column => `
+                                <div class="competencias-column">
+                                    ${column.map(competencia => {
+                                        const imageName = competenciaImageMap[competencia.nombre] || 'Accountability.jpg';
+                                        const imagePath = `images/imagenes competencias/${imageName}`;
+                                        const isAssigned = competenciasAsignadas.includes(competencia.nombre);
+                                        return `
+                                            <div class="competencia-card-v1-wrapper">
+                                                <div class="competencia-card-v1 ${isAssigned ? 'is-assigned' : ''}" data-competencia="${competencia.nombre}" data-academia="${academia.nombre}">
+                                                    <img src="${imagePath}" alt="${competencia.nombre}" class="competencia-card-v1-image" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=300&fit=crop'">
+                                                    <div class="competencia-card-v1-content">
+                                                        <div class="competencia-card-v1-title-wrapper">
+                                                            <p class="ubits-body-sm-semibold competencia-card-v1-title">
+                                                                <span class="competencia-card-v1-title-text">${competencia.nombre}</span>
+                                                                ${isAssigned ? '<span class="ubits-status-tag ubits-status-tag--info ubits-status-tag--xs"><span class="ubits-status-tag__text">Asignado</span></span>' : ''}
+                                                            </p>
+                                                        </div>
+                                                        <p class="ubits-body-xs-regular competencia-card-v1-count">${competencia.habilidades.length} habilidades</p>
                                                     </div>
-                                                    <p class="ubits-body-xs-regular competencia-card-v1-count">${competencia.habilidades.length} habilidades</p>
+                                                    <div class="competencia-card-v1-actions">
+                                                        <button class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only" aria-label="Filtrar por esta competencia" data-tooltip="Filtrar por esta competencia">
+                                                            <i class="far fa-filter"></i>
+                                                        </button>
+                                                        <button class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only competencia-card-v1-chevron-btn" aria-label="Ver habilidades" data-competencia="${competencia.nombre}" data-academia="${academia.nombre}" data-tooltip="Ver habilidades">
+                                                            <i class="far fa-chevron-down competencia-card-v1-chevron"></i>
+                                                        </button>
+                                                    </div>
                                                 </div>
-                                                <div class="competencia-card-v1-actions">
-                                                    <button class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only" aria-label="Filtrar por esta competencia" data-tooltip="Filtrar por esta competencia">
-                                                        <i class="far fa-filter"></i>
-                                                    </button>
-                                                    <button class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only competencia-card-v1-chevron-btn" aria-label="Ver habilidades" data-competencia="${competencia.nombre}" data-academia="${academia.nombre}" data-tooltip="Ver habilidades">
-                                                        <i class="far fa-chevron-down competencia-card-v1-chevron"></i>
-                                                    </button>
+                                                <div class="competencia-habilidades-container" data-competencia="${competencia.nombre}" data-academia="${academia.nombre}">
+                                                    <div class="competencias-habilidades-grid">
+                                                        ${competencia.habilidades.sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' })).map(habilidad => {
+                                                            const icon = habilidadIconMap[habilidad] || 'fa-circle';
+                                                            return `
+                                                                <div class="habilidad-chip">
+                                                                    <i class="far ${icon}"></i>
+                                                                    <span class="ubits-body-sm-regular">${habilidad}</span>
+                                                                </div>
+                                                            `;
+                                                        }).join('')}
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="competencia-habilidades-container" data-competencia="${competencia.nombre}" data-academia="${academia.nombre}">
-                                                <div class="competencias-habilidades-grid">
-                                                    ${competencia.habilidades.sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' })).map(habilidad => {
-                                                        const icon = habilidadIconMap[habilidad] || 'fa-circle';
-                                                        return `
-                                                            <div class="habilidad-chip">
-                                                                <i class="far ${icon}"></i>
-                                                                <span class="ubits-body-sm-regular">${habilidad}</span>
-                                                            </div>
-                                                        `;
-                                                    }).join('')}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    `;
-                                }).join('')}
-                            </div>
-                        `).join('')}
+                                        `;
+                                    }).join('')}
+                                </div>
+                            `).join('')}
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
 
             // Asegurar que el contenedor esté en el DOM antes de insertar HTML
             if (!competenciasContainer.parentNode) {
@@ -2314,7 +2314,7 @@
             
             // Asegurar que los event listeners estén adjuntos
             if (typeof attachCatalogEventListeners === 'function') {
-                attachCatalogEventListeners();
+            attachCatalogEventListeners();
             }
 
             document.querySelectorAll('.competencia-card-v1-actions .ubits-button').forEach(button => {
