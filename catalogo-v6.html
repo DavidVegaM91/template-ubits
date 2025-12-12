@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="images/Ubits-logo-dark.svg">
-    <title>UBITS Playground - Catálogo v5</title>
+    <title>UBITS Playground - Catálogo v6</title>
     
     <!-- Estilos locales -->
     <link rel="stylesheet" href="ubits-colors.css">
@@ -173,26 +173,74 @@
             flex-shrink: 0;
         }
         
-        /* Selector de academias - dropdown sin scroll (5 items completos) */
-        /* Calcular altura exacta: 5 items * (12px padding-top + 20px line-height + 12px padding-bottom + 1px border) = 5 * 45px = 225px */
-        #academia-selector-container .ubits-select-dropdown {
-            max-height: 225px !important; /* Altura exacta para 5 items */
-            height: 225px !important; /* Forzar altura exacta */
-            overflow-y: hidden !important; /* Sin scroll */
-            overflow-x: hidden !important;
-        }
-        
-        /* Reducir padding de items para que quepan 5 items completos (igual que v6) */
-        #academia-selector-container .ubits-select-option {
-            padding: 12px 16px !important; /* Igual que v6 */
-            min-height: auto !important;
-            height: auto !important;
-            max-height: 44px !important; /* 12px + 20px + 12px = 44px por item */
-            font-size: 14px !important; /* body-sm-regular como v6 */
-            line-height: 20px !important; /* body-sm-regular como v6 */
+        /* Selector de academia personalizado (texto + botón) */
+        .academia-selector-custom {
             display: flex;
             align-items: center;
-            box-sizing: border-box;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+        
+        .academia-selector-custom__text {
+            color: var(--ubits-fg-1-high);
+            margin: 0;
+        }
+        
+        .academia-selector-custom__dropdown {
+            position: relative;
+        }
+        
+        .academia-selector-custom__dropdown-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            background: var(--ubits-bg-1);
+            border: 1px solid var(--ubits-border-1);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            display: none;
+            min-width: 280px;
+            overflow: hidden;
+            /* Sin scroll - tamaño exacto para 5 items */
+            max-height: none;
+            height: auto;
+        }
+        
+        .academia-selector-custom__dropdown-menu.visible {
+            display: block;
+        }
+        
+        /* Dropdown desplegado hacia arriba */
+        .academia-selector-custom__dropdown-menu.dropdown-up {
+            top: auto;
+            bottom: calc(100% + 8px);
+        }
+        
+        .academia-selector-custom__dropdown-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            color: var(--ubits-fg-1-high);
+            border-bottom: 1px solid var(--ubits-border-1);
+            font-family: 'Noto Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 20px;
+        }
+        
+        .academia-selector-custom__dropdown-item:last-child {
+            border-bottom: none;
+        }
+        
+        .academia-selector-custom__dropdown-item:hover {
+            background: var(--ubits-bg-2);
+        }
+        
+        .academia-selector-custom__dropdown-item.active {
+            background: var(--ubits-bg-2);
+            color: var(--ubits-fg-1-high);
+            font-weight: 400;
         }
 
         .catalog-chips-wrapper {
@@ -2147,62 +2195,202 @@
         }
 
         function renderCatalogWithSelector(container, academias) {
-            // Crear selector de academias si no existe
+            // Crear selector de academias personalizado si no existe
             let selectorContainer = container.querySelector('#academia-selector-container');
             if (!selectorContainer) {
                 selectorContainer = document.createElement('div');
                 selectorContainer.id = 'academia-selector-container';
-                selectorContainer.style.marginBottom = '24px';
+                selectorContainer.className = 'academia-selector-custom';
                 container.insertBefore(selectorContainer, container.firstChild);
             }
             
             // Renderizar competencias inmediatamente (no dependen del selector para existir)
             renderCompetenciasForSelector(container, selectedAcademia2, academias);
             
-            // Verificar si el selector ya fue creado (buscar el input readonly que crea createInput)
-            const existingInput = selectorContainer.querySelector('input[readonly]');
-            if (!existingInput) {
-                // Verificar que createInput esté disponible
-                if (typeof createInput === 'function') {
-                    // Definir el callback onChange antes de crear el input
-                    const handleAcademiaChange = function(selectedValue) {
-                        selectedAcademia2 = selectedValue;
-                        renderCompetenciasForSelector(container, selectedAcademia2, academias);
-                    };
-                    
-                    createInput({
-                        containerId: 'academia-selector-container',
-                        type: 'select',
-                        label: 'Selecciona una academia',
-                        placeholder: 'Selecciona una academia...',
-                        selectOptions: academias.map(academia => ({
-                            value: academia.nombre,
-                            text: academia.nombre
-                        })),
-                        value: selectedAcademia2,
-                        onChange: handleAcademiaChange
-                    });
-                }
+            // Verificar si el selector ya fue creado
+            const existingText = selectorContainer.querySelector('.academia-selector-custom__text');
+            if (!existingText) {
+                // Crear el selector personalizado (texto + botón + dropdown)
+                createCustomAcademiaSelector(selectorContainer, academias);
             } else {
-                // Si el selector ya existe, necesitamos actualizar las opciones y el callback
-                // Para esto, es mejor recrear el selector con las nuevas opciones
-                selectorContainer.innerHTML = '';
-                const handleAcademiaChange = function(selectedValue) {
-                    selectedAcademia2 = selectedValue;
-                    renderCompetenciasForSelector(container, selectedAcademia2, academias);
-                };
+                // Si ya existe, solo actualizar el texto y las opciones del dropdown
+                updateCustomAcademiaSelector(selectorContainer, academias);
+            }
+        }
+        
+        function createCustomAcademiaSelector(container, academias) {
+            // Limpiar contenedor
+            container.innerHTML = '';
+            
+            // Crear texto con nombre de academia
+            const textElement = document.createElement('p');
+            textElement.className = 'ubits-body-md-regular academia-selector-custom__text';
+            textElement.textContent = selectedAcademia2;
+            container.appendChild(textElement);
+            
+            // Crear contenedor del dropdown
+            const dropdownContainer = document.createElement('div');
+            dropdownContainer.className = 'academia-selector-custom__dropdown';
+            
+            // Crear botón con chevron-down
+            const button = document.createElement('button');
+            button.className = 'ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only';
+            button.setAttribute('aria-label', 'Desplegar academias');
+            button.innerHTML = '<i class="far fa-chevron-down"></i>';
+            dropdownContainer.appendChild(button);
+            
+            // Crear menú dropdown
+            const dropdownMenu = document.createElement('div');
+            dropdownMenu.className = 'academia-selector-custom__dropdown-menu';
+            
+            // Crear items del dropdown (5 academias, sin scroll)
+            academias.forEach(academia => {
+                const item = document.createElement('div');
+                item.className = 'academia-selector-custom__dropdown-item';
+                if (academia.nombre === selectedAcademia2) {
+                    item.classList.add('active');
+                }
+                item.textContent = academia.nombre;
+                item.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    selectedAcademia2 = academia.nombre;
+                    textElement.textContent = selectedAcademia2;
+                    dropdownMenu.classList.remove('visible');
+                    // Rotar chevron de vuelta
+                    const chevronIcon = button.querySelector('i');
+                    if (chevronIcon) {
+                        chevronIcon.style.transform = '';
+                    }
+                    // Actualizar items activos
+                    dropdownMenu.querySelectorAll('.academia-selector-custom__dropdown-item').forEach(item => {
+                        if (item.textContent === selectedAcademia2) {
+                            item.classList.add('active');
+                        } else {
+                            item.classList.remove('active');
+                        }
+                    });
+                    // Renderizar competencias de la academia seleccionada
+                    const resultsContainer = document.getElementById('catalog-results');
+                    if (resultsContainer) {
+                        renderCompetenciasForSelector(resultsContainer, selectedAcademia2, academias);
+                    }
+                });
+                dropdownMenu.appendChild(item);
+            });
+            
+            dropdownContainer.appendChild(dropdownMenu);
+            container.appendChild(dropdownContainer);
+            
+            // Función para calcular posición del dropdown
+            function calculateDropdownPosition() {
+                const buttonRect = button.getBoundingClientRect();
+                const dropdownHeight = dropdownMenu.offsetHeight || 240; // Aproximadamente 5 items * 48px
+                const spaceBelow = window.innerHeight - buttonRect.bottom;
+                const spaceAbove = buttonRect.top;
                 
-                createInput({
-                    containerId: 'academia-selector-container',
-                    type: 'select',
-                    label: 'Selecciona una academia',
-                    placeholder: 'Selecciona una academia...',
-                    selectOptions: academias.map(academia => ({
-                        value: academia.nombre,
-                        text: academia.nombre
-                    })),
-                    value: selectedAcademia2,
-                    onChange: handleAcademiaChange
+                // Si hay menos espacio abajo que arriba, desplegar hacia arriba
+                if (spaceBelow < dropdownHeight && spaceAbove > spaceBelow) {
+                    dropdownMenu.classList.add('dropdown-up');
+                } else {
+                    dropdownMenu.classList.remove('dropdown-up');
+                }
+            }
+            
+            // Toggle del dropdown al hacer clic en el botón
+            button.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const isVisible = dropdownMenu.classList.contains('visible');
+                if (isVisible) {
+                    dropdownMenu.classList.remove('visible');
+                    dropdownMenu.classList.remove('dropdown-up');
+                    const chevronIcon = button.querySelector('i');
+                    if (chevronIcon) {
+                        chevronIcon.style.transform = '';
+                    }
+                } else {
+                    // Calcular posición antes de mostrar
+                    calculateDropdownPosition();
+                    dropdownMenu.classList.add('visible');
+                    const chevronIcon = button.querySelector('i');
+                    if (chevronIcon) {
+                        chevronIcon.style.transform = 'rotate(180deg)';
+                    }
+                }
+            });
+            
+            // Cerrar dropdown al hacer clic fuera
+            document.addEventListener('click', function(e) {
+                if (!dropdownContainer.contains(e.target)) {
+                    dropdownMenu.classList.remove('visible');
+                    dropdownMenu.classList.remove('dropdown-up');
+                    const chevronIcon = button.querySelector('i');
+                    if (chevronIcon) {
+                        chevronIcon.style.transform = '';
+                    }
+                }
+            });
+            
+            // Recalcular posición al hacer scroll o resize
+            window.addEventListener('scroll', function() {
+                if (dropdownMenu.classList.contains('visible')) {
+                    calculateDropdownPosition();
+                }
+            }, true);
+            
+            window.addEventListener('resize', function() {
+                if (dropdownMenu.classList.contains('visible')) {
+                    calculateDropdownPosition();
+                }
+            });
+        }
+        
+        function updateCustomAcademiaSelector(container, academias) {
+            // Actualizar texto
+            const textElement = container.querySelector('.academia-selector-custom__text');
+            if (textElement) {
+                textElement.textContent = selectedAcademia2;
+            }
+            
+            // Actualizar items del dropdown
+            const dropdownMenu = container.querySelector('.academia-selector-custom__dropdown-menu');
+            const button = container.querySelector('.academia-selector-custom__dropdown button');
+            
+            if (dropdownMenu && button) {
+                dropdownMenu.innerHTML = '';
+                academias.forEach(academia => {
+                    const item = document.createElement('div');
+                    item.className = 'academia-selector-custom__dropdown-item';
+                    if (academia.nombre === selectedAcademia2) {
+                        item.classList.add('active');
+                    }
+                    item.textContent = academia.nombre;
+                    item.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        selectedAcademia2 = academia.nombre;
+                        if (textElement) {
+                            textElement.textContent = selectedAcademia2;
+                        }
+                        dropdownMenu.classList.remove('visible');
+                        dropdownMenu.classList.remove('dropdown-up');
+                        const chevronIcon = button.querySelector('i');
+                        if (chevronIcon) {
+                            chevronIcon.style.transform = '';
+                        }
+                        // Actualizar items activos
+                        dropdownMenu.querySelectorAll('.academia-selector-custom__dropdown-item').forEach(item => {
+                            if (item.textContent === selectedAcademia2) {
+                                item.classList.add('active');
+                            } else {
+                                item.classList.remove('active');
+                            }
+                        });
+                        // Renderizar competencias
+                        const resultsContainer = document.getElementById('catalog-results');
+                        if (resultsContainer) {
+                            renderCompetenciasForSelector(resultsContainer, selectedAcademia2, academias);
+                        }
+                    });
+                    dropdownMenu.appendChild(item);
                 });
             }
         }
