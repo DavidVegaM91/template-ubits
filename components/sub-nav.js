@@ -17,95 +17,95 @@ const TOP_NAV_VARIANTS = {
     documentacion: {
         name: 'Documentación',
         tabs: [
-            { id: 'section1', label: 'Inicio', icon: 'far fa-home', url: 'documentacion.html' },
-            { id: 'section2', label: 'Guía de prompts', icon: 'far fa-comments', url: 'guia-prompts.html' },
-            { id: 'section3', label: 'Componentes', icon: 'far fa-cube', url: 'componentes.html' },
-            { id: 'section4', label: 'Colores', icon: 'far fa-palette', url: 'colores.html' },
-            { id: 'section5', label: 'Iconos', icon: 'far fa-icons', url: 'iconos.html' },
-            { id: 'section6', label: 'Tipografía', icon: 'far fa-text-size', url: 'tipografia.html' }
+            { id: 'section1', label: 'Inicio', icon: 'far fa-home', url: 'documentacion.html', urlFromGuias: '../documentacion.html', urlFromComponentes: '../documentacion.html' },
+            { id: 'section2', label: 'Guía de prompts', icon: 'far fa-comments', url: 'guia-prompts.html', urlFromGuias: '../guia-prompts.html', urlFromComponentes: '../guia-prompts.html' },
+            { id: 'section3', label: 'Componentes', icon: 'far fa-cube', url: 'componentes.html', urlFromGuias: '../componentes.html', urlFromComponentes: '../componentes.html' },
+            { id: 'section4', label: 'Colores', icon: 'far fa-palette', url: 'guias/colores.html', urlFromGuias: 'colores.html', urlFromComponentes: '../guias/colores.html' },
+            { id: 'section5', label: 'Iconos', icon: 'far fa-icons', url: 'guias/iconos.html', urlFromGuias: 'iconos.html', urlFromComponentes: '../guias/iconos.html' },
+            { id: 'section6', label: 'Tipografía', icon: 'far fa-text-size', url: 'guias/tipografia.html', urlFromGuias: 'tipografia.html', urlFromComponentes: '../guias/tipografia.html' }
         ]
     },
     aprendizaje: {
         name: 'Aprendizaje',
         tabs: [
-            { id: 'home', label: 'Inicio', icon: 'far fa-home', url: 'home-learn.html' },
-            { id: 'catalog', label: 'Catálogo', icon: 'far fa-book', url: 'catalogo.html' },
-            { id: 'corporate', label: 'U. Corporativa', icon: 'far fa-building-columns', url: 'u-corporativa.html' },
-            { id: 'study-zone', label: 'Zona de estudio', icon: 'far fa-books', url: 'zona-estudio.html' }
+            { id: 'home', label: 'Inicio', icon: 'far fa-home', url: '../../ubits-colaborador/aprendizaje/home-learn.html' },
+            { id: 'catalog', label: 'Catálogo', icon: 'far fa-book', url: '../../ubits-colaborador/aprendizaje/catalogo.html' },
+            { id: 'corporate', label: 'U. Corporativa', icon: 'far fa-building-columns', url: '../../ubits-colaborador/aprendizaje/u-corporativa.html' },
+            { id: 'study-zone', label: 'Zona de estudio', icon: 'far fa-books', url: '../../ubits-colaborador/aprendizaje/zona-estudio.html' }
         ]
     },
     desempeno: {
         name: 'Desempeño',
         tabs: [
-            { id: 'evaluations', label: 'Evaluaciones 360', icon: 'far fa-chart-pie', url: 'evaluaciones-360.html' },
-            { id: 'objectives', label: 'Objetivos', icon: 'far fa-bullseye', url: 'objetivos.html' },
-            { id: 'metrics', label: 'Métricas', icon: 'far fa-chart-line', url: 'metricas.html' },
-            { id: 'reports', label: 'Reportes', icon: 'far fa-file-chart-line', url: 'reportes.html' }
+            { id: 'evaluations', label: 'Evaluaciones 360', icon: 'far fa-chart-pie', url: '../../ubits-colaborador/desempeno/evaluaciones-360.html' },
+            { id: 'objectives', label: 'Objetivos', icon: 'far fa-bullseye', url: '../../ubits-colaborador/desempeno/objetivos.html' },
+            { id: 'metrics', label: 'Métricas', icon: 'far fa-chart-line', url: '../../ubits-colaborador/desempeno/metricas.html' },
+            { id: 'reports', label: 'Reportes', icon: 'far fa-file-chart-line', url: '../../ubits-colaborador/desempeno/reportes.html' }
         ]
     },
     encuestas: {
         name: 'Encuestas',
         tabs: [
-            { id: 'encuestas', label: 'Encuestas', icon: 'far fa-clipboard-list-check', url: 'encuestas.html' }
+            { id: 'encuestas', label: 'Encuestas', icon: 'far fa-clipboard-list-check', url: '../../ubits-colaborador/encuestas/encuestas.html' }
         ]
     },
     tareas: {
         name: 'Tareas',
         tabs: [
-            { id: 'plans', label: 'Planes', icon: 'far fa-layer-group', url: 'planes.html' },
-            { id: 'tasks', label: 'Tareas', icon: 'far fa-tasks', url: 'tareas.html' }
+            { id: 'plans', label: 'Planes', icon: 'far fa-layer-group', url: '../../ubits-colaborador/tareas/planes.html' },
+            { id: 'tasks', label: 'Tareas', icon: 'far fa-tasks', url: '../../ubits-colaborador/tareas/tareas.html' }
         ]
     },
     empresa: {
         name: 'Empresa',
         tabs: [
-            { id: 'gestion-usuarios', label: 'Gestión de usuarios', icon: 'far fa-users', url: 'gestion-de-usuarios.html' },
-            { id: 'organigrama', label: 'Organigrama', icon: 'far fa-sitemap', url: 'organigrama.html' },
-            { id: 'datos-empresa', label: 'Datos de empresa', icon: 'far fa-building', url: 'datos-de-empresa.html' },
-            { id: 'personalizacion', label: 'Personalización', icon: 'far fa-paint-brush', url: 'personalizacion.html' },
-            { id: 'roles-permisos', label: 'Roles y permisos', icon: 'far fa-user-shield', url: 'roles-y-permisos.html' },
-            { id: 'comunicaciones', label: 'Comunicaciones', icon: 'far fa-envelope', url: 'comunicaciones.html' }
+            { id: 'gestion-usuarios', label: 'Gestión de usuarios', icon: 'far fa-users', url: '../../ubits-admin/empresa/gestion-de-usuarios.html' },
+            { id: 'organigrama', label: 'Organigrama', icon: 'far fa-sitemap', url: '../../ubits-admin/empresa/organigrama.html' },
+            { id: 'datos-empresa', label: 'Datos de empresa', icon: 'far fa-building', url: '../../ubits-admin/empresa/datos-de-empresa.html' },
+            { id: 'personalizacion', label: 'Personalización', icon: 'far fa-paint-brush', url: '../../ubits-admin/empresa/personalizacion.html' },
+            { id: 'roles-permisos', label: 'Roles y permisos', icon: 'far fa-user-shield', url: '../../ubits-admin/empresa/roles-y-permisos.html' },
+            { id: 'comunicaciones', label: 'Comunicaciones', icon: 'far fa-envelope', url: '../../ubits-admin/empresa/comunicaciones.html' }
         ]
     },
     'admin-aprendizaje': {
         name: 'Aprendizaje',
         tabs: [
-            { id: 'planes-formacion', label: 'Planes de formación', icon: 'far fa-clipboard-list-check', url: 'planes-formacion.html' },
-            { id: 'u-corporativa', label: 'Universidad corporativa', icon: 'far fa-building-columns', url: 'admin-u-corporativa.html' },
-            { id: 'certificados', label: 'Certificados', icon: 'far fa-file-certificate', url: 'admin-certificados.html' },
-            { id: 'seguimiento', label: 'Seguimiento', icon: 'far fa-chart-line', url: 'seguimiento.html' }
+            { id: 'planes-formacion', label: 'Planes de formación', icon: 'far fa-clipboard-list-check', url: '../../ubits-admin/aprendizaje/planes-formacion.html' },
+            { id: 'u-corporativa', label: 'Universidad corporativa', icon: 'far fa-building-columns', url: '../../ubits-admin/aprendizaje/admin-u-corporativa.html' },
+            { id: 'certificados', label: 'Certificados', icon: 'far fa-file-certificate', url: '../../ubits-admin/aprendizaje/admin-certificados.html' },
+            { id: 'seguimiento', label: 'Seguimiento', icon: 'far fa-chart-line', url: '../../ubits-admin/aprendizaje/seguimiento.html' }
         ]
     },
     'admin-desempeño': {
         name: 'Desempeño',
         tabs: [
-            { id: 'evaluations', label: 'Evaluaciones 360', icon: 'far fa-chart-pie', url: 'admin-360.html' },
-            { id: 'objectives', label: 'Objetivos', icon: 'far fa-bullseye', url: 'admin-objetivos.html' },
-            { id: 'matriz-talento', label: 'Matriz de Talento', icon: 'far fa-sitemap', url: 'admin-matriz-talento.html' }
+            { id: 'evaluations', label: 'Evaluaciones 360', icon: 'far fa-chart-pie', url: '../../ubits-admin/desempeno/admin-360.html' },
+            { id: 'objectives', label: 'Objetivos', icon: 'far fa-bullseye', url: '../../ubits-admin/desempeno/admin-objetivos.html' },
+            { id: 'matriz-talento', label: 'Matriz de Talento', icon: 'far fa-sitemap', url: '../../ubits-admin/desempeno/admin-matriz-talento.html' }
         ]
     },
     diagnostico: {
         name: 'Diagnóstico',
         tabs: [
-            { id: 'diagnostico', label: 'Diagnostico', icon: 'far fa-stethoscope', url: 'diagnostico.html' }
+            { id: 'diagnostico', label: 'Diagnostico', icon: 'far fa-stethoscope', url: '../../ubits-colaborador/diagnostico/diagnostico.html' }
         ]
     },
     reclutamiento: {
         name: 'Reclutamiento',
         tabs: [
-            { id: 'reclutamiento', label: 'Reclutamiento', icon: 'far fa-user-plus', url: 'reclutamiento.html' }
+            { id: 'reclutamiento', label: 'Reclutamiento', icon: 'far fa-user-plus', url: '../../ubits-colaborador/reclutamiento/reclutamiento.html' }
         ]
     },
     'admin-diagnostico': {
         name: 'Diagnóstico',
         tabs: [
-            { id: 'diagnostico', label: 'Diagnostico', icon: 'far fa-stethoscope', url: 'admin-diagnostico.html' }
+            { id: 'diagnostico', label: 'Diagnostico', icon: 'far fa-stethoscope', url: '../../ubits-admin/diagnostico/admin-diagnostico.html' }
         ]
     },
     'admin-encuestas': {
         name: 'Encuestas',
         tabs: [
-            { id: 'encuestas', label: 'Encuestas', icon: 'far fa-clipboard-list-check', url: 'admin-encuestas.html' }
+            { id: 'encuestas', label: 'Encuestas', icon: 'far fa-clipboard-list-check', url: '../../ubits-admin/encuestas/admin-encuestas.html' }
         ]
     }
 };
@@ -200,7 +200,7 @@ function getTopNavHTML(variant = 'template', customTabs = []) {
     // Logo del cliente antes de los tabs (solo para variantes que NO sean documentacion)
     const clientLogo = variant !== 'documentacion' ? `
         <div class="sub-nav-logo">
-            <img src="images/Client-logo.png" alt="Client Logo" class="sub-nav-logo-img">
+            <img src="../../images/Client-logo.png" alt="Client Logo" class="sub-nav-logo-img">
         </div>
     ` : '';
 
@@ -256,53 +256,91 @@ function loadSubNav(containerId, variant = 'template', customTabs = []) {
     });
 }
 
+// Mapeo simple: página -> tab ID
+const PAGE_TO_TAB = {
+    // Aprendizaje
+    'home-learn.html': 'home',
+    'catalogo.html': 'catalog',
+    'catalogo-v2.html': 'catalog',
+    'catalogo-v3.html': 'catalog',
+    'catalogo-v4.html': 'catalog',
+    'catalogo-v5.html': 'catalog',
+    'catalogo-v6.html': 'catalog',
+    'modo-estudio-ia.html': 'catalog',
+    'u-corporativa.html': 'corporate',
+    'zona-estudio.html': 'study-zone',
+    // Desempeño
+    'evaluaciones-360.html': 'evaluations',
+    'objetivos.html': 'objectives',
+    'metricas.html': 'metrics',
+    'reportes.html': 'reports',
+    // Tareas
+    'planes.html': 'plans',
+    'tareas.html': 'tasks',
+    // Documentación
+    'documentacion.html': 'section1',
+    'guia-prompts.html': 'section2',
+    'componentes.html': 'section3',
+    'sidebar.html': 'section3',
+    'subnav.html': 'section3',
+    'tab-bar.html': 'section3',
+    'button.html': 'section3',
+    'alert.html': 'section3',
+    'toast.html': 'section3',
+    'input.html': 'section3',
+    'colores.html': 'section4',
+    'iconos.html': 'section5',
+    'tipografia.html': 'section6',
+    // Encuestas
+    'encuestas.html': 'encuestas',
+    // Diagnóstico
+    'diagnostico.html': 'diagnostico',
+    // Reclutamiento
+    'reclutamiento.html': 'reclutamiento',
+    // Admin empresa
+    'gestion-de-usuarios.html': 'gestion-usuarios',
+    'organigrama.html': 'organigrama',
+    'datos-de-empresa.html': 'datos-empresa',
+    'personalizacion.html': 'personalizacion',
+    'roles-y-permisos.html': 'roles-permisos',
+    'comunicaciones.html': 'comunicaciones',
+    // Admin aprendizaje
+    'planes-formacion.html': 'planes-formacion',
+    'admin-u-corporativa.html': 'u-corporativa',
+    'admin-certificados.html': 'certificados',
+    'seguimiento.html': 'seguimiento',
+    // Admin desempeño
+    'admin-360.html': 'evaluations',
+    'admin-objetivos.html': 'objectives',
+    'admin-matriz-talento.html': 'matriz-talento',
+    // Admin diagnóstico
+    'admin-diagnostico.html': 'diagnostico',
+    // Admin encuestas
+    'admin-encuestas.html': 'encuestas'
+};
+
 function activateCurrentPageTab(container, variant) {
     const currentPage = window.location.pathname.split('/').pop();
+    const tabId = PAGE_TO_TAB[currentPage];
     
-    // Función para activar tab tanto en nav-tab como en hamburger-item
-    const activateTab = (tabId) => {
+    if (tabId) {
+        // Activar en nav-tab
         const navTab = container.querySelector(`.nav-tab[data-tab="${tabId}"]`);
-        const hamburgerItem = container.querySelector(`.hamburger-item[data-tab="${tabId}"]`);
-        
         if (navTab) navTab.classList.add('active');
+        
+        // Activar en hamburger-item
+        const hamburgerItem = container.querySelector(`.hamburger-item[data-tab="${tabId}"]`);
         if (hamburgerItem) hamburgerItem.classList.add('active');
-    };
-    
-    // Activar tab basado en la página actual
-    if (currentPage === 'home-learn.html') {
-        activateTab('home');
-    } else if (currentPage === 'tipografia.html') {
-        activateTab('section6');
-    } else if (currentPage === 'iconos.html') {
-        activateTab('section5');
-    } else if (currentPage === 'colores.html') {
-        activateTab('section4');
-    } else if (currentPage === 'componentes.html') {
-        activateTab('section3');
-    } else if (currentPage === 'sidebar.html') {
-        activateTab('section3');
-    } else if (currentPage === 'subnav.html') {
-        activateTab('section3');
-    } else if (currentPage === 'tab-bar.html') {
-        activateTab('section3');
-    } else if (currentPage === 'button.html') {
-        activateTab('section3');
-    } else if (currentPage === 'guia-prompts.html') {
-        activateTab('section2');
-    } else if (currentPage === 'documentacion.html') {
-        activateTab('section1');
+        
+        // Activar en module-selector-item
+        const selectorItem = container.querySelector(`.module-selector-item[data-tab="${tabId}"]`);
+        if (selectorItem) selectorItem.classList.add('active');
     }
     
-    // Siempre activar el primero por defecto si no se activó ninguno
-    const activeNavTab = container.querySelector('.nav-tab.active');
-    const activeHamburgerItem = container.querySelector('.hamburger-item.active');
-    
-    if (!activeNavTab && !activeHamburgerItem) {
-        const firstNavTab = container.querySelector('.nav-tab');
-        const firstHamburgerItem = container.querySelector('.hamburger-item');
-        
-        if (firstNavTab) firstNavTab.classList.add('active');
-        if (firstHamburgerItem) firstHamburgerItem.classList.add('active');
+    // Si no se activó ningún tab, activar el primero
+    if (!container.querySelector('.nav-tab.active')) {
+        const firstTab = container.querySelector('.nav-tab');
+        if (firstTab) firstTab.classList.add('active');
     }
 }
 
@@ -336,9 +374,10 @@ function addTopNavEventListeners(container) {
             // Buscar el tab en la configuración para obtener la URL
             if (variantConfig && variantConfig.tabs) {
                 const tabConfig = variantConfig.tabs.find(t => t.id === tabId);
-                if (tabConfig && tabConfig.url) {
+                const targetUrl = getCorrectTabUrl(tabConfig, variant);
+                if (targetUrl) {
                     // Navegar a la URL
-                    window.location.href = tabConfig.url;
+                    window.location.href = targetUrl;
                     return;
                 }
             }
@@ -385,10 +424,11 @@ function addTopNavEventListeners(container) {
                 // Buscar el tab en la configuración para obtener la URL
                 if (variantConfig && variantConfig.tabs) {
                     const tabConfig = variantConfig.tabs.find(t => t.id === tabId);
-                    if (tabConfig && tabConfig.url) {
-                        console.log('Navigating to:', tabConfig.url);
+                    const targetUrl = getCorrectTabUrl(tabConfig, variant);
+                    if (targetUrl) {
+                        console.log('Navigating to:', targetUrl);
                         // Navegar a la URL
-                        window.location.href = tabConfig.url;
+                        window.location.href = targetUrl;
                         return;
                     }
                 }
@@ -420,6 +460,37 @@ function getTopNavVariant(variant) {
 }
 
 /**
+ * Obtiene la URL correcta para un tab según la ubicación actual
+ * @param {Object} tabConfig - Configuración del tab
+ * @param {string} variant - Variante del top-nav
+ * @returns {string} URL correcta para navegar
+ */
+function getCorrectTabUrl(tabConfig, variant) {
+    if (!tabConfig) return null;
+    
+    let targetUrl = tabConfig.url;
+    
+    if (variant === 'documentacion') {
+        const currentPath = window.location.pathname;
+        
+        // Si estamos en documentacion/guias/
+        if (currentPath.includes('/guias/')) {
+            targetUrl = tabConfig.urlFromGuias || tabConfig.url;
+        }
+        // Si estamos en documentacion/componentes/
+        else if (currentPath.includes('/componentes/')) {
+            targetUrl = tabConfig.urlFromComponentes || tabConfig.url;
+        }
+        // Si estamos en documentacion/ (raíz)
+        else {
+            targetUrl = tabConfig.url;
+        }
+    }
+    
+    return targetUrl;
+}
+
+/**
  * Obtiene todas las variantes disponibles
  * @returns {Object} Todas las variantes del top-nav
  */
@@ -434,9 +505,11 @@ window.navigateToTab = function(tabId, variant) {
     const variantConfig = getTopNavVariant(variant);
     if (variantConfig && variantConfig.tabs) {
         const tabConfig = variantConfig.tabs.find(t => t.id === tabId);
-        if (tabConfig && tabConfig.url) {
-            console.log('Going to:', tabConfig.url);
-            window.location.href = tabConfig.url;
+        const targetUrl = getCorrectTabUrl(tabConfig, variant);
+        
+        if (targetUrl) {
+            console.log('Going to:', targetUrl);
+            window.location.href = targetUrl;
             return;
         }
     }
@@ -491,33 +564,9 @@ function restoreOriginalTabs(container, variant, customTabs = []) {
     
     const tabs = variant === 'template' && customTabs.length > 0 ? customTabs : config.tabs;
     
-    // Obtener el tab activo del selector antes de restaurar
-    const activeSelectorItem = container.querySelector('.module-selector-item.active');
-    let activeTabId = null;
-    
-    if (activeSelectorItem) {
-        activeTabId = activeSelectorItem.getAttribute('data-tab');
-    }
-    
-    // Si no hay tab activo en el selector, intentar obtenerlo de la página actual
-    if (!activeTabId) {
-        const currentPage = window.location.pathname.split('/').pop();
-        // Mapear páginas a tabs (lógica similar a activateCurrentPageTab)
-        const pageToTabMap = {
-            'home-learn.html': 'home',
-            'catalogo.html': 'catalog',
-            'u-corporativa.html': 'corporate',
-            'zona-estudio.html': 'study-zone',
-            'evaluaciones-360.html': 'evaluations',
-            'objetivos.html': 'objectives',
-            'metricas.html': 'metrics',
-            'reportes.html': 'reports',
-            'encuestas.html': 'encuestas',
-            'planes.html': 'plans',
-            'tareas.html': 'tasks'
-        };
-        activeTabId = pageToTabMap[currentPage] || null;
-    }
+    // Obtener el tab activo basado en la página actual (KISS)
+    const currentPage = window.location.pathname.split('/').pop();
+    const activeTabId = PAGE_TO_TAB[currentPage] || null;
     
     // Regenerar HTML de los tabs originales
     let tabsHTML = '';
@@ -563,19 +612,21 @@ function activateSelector(container, variant, customTabs = []) {
     
     const tabs = variant === 'template' && customTabs.length > 0 ? customTabs : config.tabs;
     
-    // Obtener el tab activo
-    const activeTab = subNav.querySelector('.nav-tab.active');
-    let activeTabId = null;
+    // Obtener el tab activo basado en la página actual (KISS)
+    const currentPage = window.location.pathname.split('/').pop();
+    let activeTabId = PAGE_TO_TAB[currentPage] || null;
     let activeTabLabel = '';
     
-    if (activeTab) {
-        activeTabId = activeTab.getAttribute('data-tab');
+    // Buscar el label del tab activo
+    if (activeTabId) {
         const activeTabConfig = tabs.find(t => t.id === activeTabId);
         if (activeTabConfig) {
             activeTabLabel = activeTabConfig.label;
         }
-    } else if (tabs.length > 0) {
-        // Si no hay tab activo, usar el primero
+    }
+    
+    // Si no se encontró, usar el primero
+    if (!activeTabLabel && tabs.length > 0) {
         activeTabId = tabs[0].id;
         activeTabLabel = tabs[0].label;
     }

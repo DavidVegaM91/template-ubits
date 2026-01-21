@@ -15,7 +15,7 @@ function getTabBarHTML() {
                     <span class="tab-bar-text">Módulos</span>
                 </div>
                 <div class="tab-bar-item" data-tab="perfil" onclick="navigateToTab('perfil')">
-                    <img src="images/Profile-image.jpg" alt="Mi perfil" class="tab-bar-avatar">
+                    <img src="../../images/Profile-image.jpg" alt="Mi perfil" class="tab-bar-avatar">
                     <span class="tab-bar-text">Mi perfil</span>
                 </div>
                 <div class="tab-bar-item" data-tab="modo-oscuro" onclick="navigateToTab('modo-oscuro')">

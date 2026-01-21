@@ -101,24 +101,24 @@ const STATUSES_COMPACT = {
 
 // ALIADOS OFICIALES (18 proveedores)
 const PROVIDERS_COMPACT = {
-    'UBITS': 'images/Favicons/UBITS.jpg',
-    'Microsoft': 'images/Favicons/Microsoft.jpg',
-    'Hubspot': 'images/Favicons/Hubspot.jpg',
-    'Harvard Business Publishing': 'images/Favicons/Harvard-Business-Publishing.jpg',
-    'TED': 'images/Favicons/TED.jpg',
-    'AWS': 'images/Favicons/AWS.jpg',
-    'Universidad de Los Andes': 'images/Favicons/Universidad-de-Los Andes.jpg',
-    'Advanced English': 'images/Favicons/Advanced-English.jpg',
-    'IE University': 'images/Favicons/IE-University-Publishing.jpg',
-    'Código Facilito': 'images/Favicons/Código-Facilito.jpg',
-    'Hackers del Talento': 'images/Favicons/Hackers-del-Talento.jpg',
-    'All Ears English': 'images/Favicons/All Ears English.jpg',
-    'American & British Academy': 'images/Favicons/American & British Academy.jpg',
-    'Bureau Veritas': 'images/Favicons/Bureau-Veritas.jpg',
-    'Welu': 'images/Favicons/Welu.jpg',
-    'Figsha Smart Consulting': 'images/Favicons/Figsha Smart Consulting.jpg',
-    'Instafit': 'images/Favicons/Instafit.jpg',
-    'WOBI': 'images/Favicons/WOBI.jpg'
+    'UBITS': '../../images/Favicons/UBITS.jpg',
+    'Microsoft': '../../images/Favicons/Microsoft.jpg',
+    'Hubspot': '../../images/Favicons/Hubspot.jpg',
+    'Harvard Business Publishing': '../../images/Favicons/Harvard-Business-Publishing.jpg',
+    'TED': '../../images/Favicons/TED.jpg',
+    'AWS': '../../images/Favicons/AWS.jpg',
+    'Universidad de Los Andes': '../../images/Favicons/Universidad-de-Los Andes.jpg',
+    'Advanced English': '../../images/Favicons/Advanced-English.jpg',
+    'IE University': '../../images/Favicons/IE-University-Publishing.jpg',
+    'Código Facilito': '../../images/Favicons/Código-Facilito.jpg',
+    'Hackers del Talento': '../../images/Favicons/Hackers-del-Talento.jpg',
+    'All Ears English': '../../images/Favicons/All Ears English.jpg',
+    'American & British Academy': '../../images/Favicons/American & British Academy.jpg',
+    'Bureau Veritas': '../../images/Favicons/Bureau-Veritas.jpg',
+    'Welu': '../../images/Favicons/Welu.jpg',
+    'Figsha Smart Consulting': '../../images/Favicons/Figsha Smart Consulting.jpg',
+    'Instafit': '../../images/Favicons/Instafit.jpg',
+    'WOBI': '../../images/Favicons/WOBI.jpg'
 };
 
 /* ========================================
@@ -368,7 +368,7 @@ loadCardContentCompact('mi-contenedor', [
         type: 'Curso',
         title: 'Mi contenido compacto',
         provider: 'UBITS',
-        providerLogo: 'images/Favicons/UBITS.jpg',
+        providerLogo: '../../images/Favicons/UBITS.jpg',
         duration: '60 min',
         level: 'Intermedio',
         progress: 50,
@@ -414,12 +414,12 @@ console.log(window.CARD_CONTENT_COMPACT_OPTIONS);
  *     type: 'Curso',
  *     title: 'Mi contenido de aprendizaje compacto',
  *     provider: 'UBITS',
- *     providerLogo: 'images/Favicons/UBITS.jpg',
+ *     providerLogo: '../../images/Favicons/UBITS.jpg',
  *     duration: '60 min',
  *     level: 'Intermedio',
  *     progress: 75,
  *     status: 'progress',
- *     image: 'images/cards-learn/mi-imagen.jpg',
+ *     image: '../../images/cards-learn/mi-imagen.jpg',
  *     competency: 'Product design',
  *     language: 'Español'
  *   }

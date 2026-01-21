@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>SubNav - Navegación superior | UBITS Playground</title>
+    
+    <!-- Estilos locales -->
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <style>
+        /* Preview Styles */
+        /* Preview control buttons - override UBITS button styles for active state */
+        .preview-control-btn.active {
+            background: var(--ubits-accent-brand) !important;
+            color: white !important;
+            border-color: var(--ubits-accent-brand) !important;
+        }
+        
+        .preview-control-btn.active span {
+            color: white !important;
+        }
+        
+        /* Component preview container - reemplaza con estilos específicos del componente */
+        .component-preview {
+            position: relative !important;
+            border-radius: 8px !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+            background: var(--ubits-bg-1) !important;
+            border: 1px solid var(--ubits-border-1) !important;
+        }
+        
+        /* Simular vista mobile en el preview */
+        #preview-container-wrapper.preview-mobile {
+            max-width: 400px;
+            margin: 0 auto;
+            overflow: visible; /* Permitir que el dropdown se muestre */
+        }
+        
+        #preview-container-wrapper.preview-mobile #subnav-preview {
+            max-width: 100%;
+            overflow: visible; /* Permitir que el dropdown se muestre */
+        }
+        
+        /* Asegurar que el contenedor del preview permita overflow para dropdowns */
+        #preview-container-wrapper.preview-mobile #subnav-preview-temp {
+            overflow: visible;
+            position: relative;
+        }
+        
+        /* Forzar comportamiento mobile cuando está activo - PERO dentro del contenedor */
+        #preview-container-wrapper.preview-mobile .sub-nav {
+            width: 100% !important; /* Usar 100% del contenedor, no 100vw */
+            max-width: 100% !important;
+            margin-left: 0 !important; /* Sin márgenes negativos */
+            margin-right: 0 !important;
+            border-radius: 0 !important;
+            padding: 12px 12px !important;
+            height: 71px !important; /* Altura fija de 71px en mobile */
+            min-height: 71px !important;
+            box-sizing: border-box;
+        }
+        
+        /* Mostrar selector mobile cuando está activo */
+        #preview-container-wrapper.preview-mobile .sub-nav .module-name,
+        #preview-container-wrapper.preview-mobile .sub-nav .module-selector {
+            display: flex !important;
+        }
+        
+        /* Ocultar tabs normales en mobile */
+        #preview-container-wrapper.preview-mobile .sub-nav .nav-tab {
+            display: none !important;
+        }
+        
+        /* Asegurar que el dropdown del selector se muestre correctamente */
+        #preview-container-wrapper.preview-mobile .module-selector-dropdown {
+            position: absolute !important;
+            z-index: 1000 !important;
+            top: calc(100% + 4px) !important;
+            left: 0 !important;
+            right: 0 !important;
+            width: 100% !important;
+        }
+        
+        /* Asegurar que el contenedor del preview tenga position relative */
+        #preview-container-wrapper {
+            position: relative;
+            overflow: visible; /* Cambiar a visible para permitir dropdowns */
+        }
+        
+        /* El contenedor interno del preview también debe permitir overflow */
+        #preview-container-wrapper > div {
+            overflow: visible;
+        }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navigation -->
+            <div id="top-nav-container"></div>
+            
+            <!-- Content with Sidebar -->
+            <div style="display: flex;">
+            
+            <!-- Dropdown Móvil para Documentación -->
+            <div id="docs-dropdown-container"></div>
+            
+            <!-- Sidebar de Documentación -->
+            <div id="docs-sidebar-container"></div>
+
+            <!-- Content Area -->
+            <div class="components-content">
+                <!-- Content Area -->
+                <div class="content-area" style="display: block; width: 100%;">
+                <!-- Hero Section -->
+                <div style="text-align: center; margin-bottom: 60px;">
+                    <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                        SubNav
+                    </h1>
+                    <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                        Componente de navegación superior que muestra las sub-navegaciones de los módulos principales del sidebar. En desktop muestra todos los tabs de forma horizontal, y en mobile se transforma automáticamente en un selector dropdown para mantener la funcionalidad completa.
+                    </p>
+                </div>
+
+                <!-- Preview Section -->
+                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1); margin-bottom: 40px;">
+                    <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                        <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                        Preview del componente
+                    </h2>
+                    <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                        Aquí puedes ver el componente SubNav en acción. Haz clic en los botones para ver las diferentes variantes disponibles.
+                    </p>
+                    
+                    <!-- Preview Container -->
+                    <div id="preview-container-wrapper" style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: 1px solid var(--ubits-border-1); position: relative;">
+                        
+                        <!-- SubNav Real de UBITS -->
+                        <div id="subnav-preview-container" style="display: flex; justify-content: center; align-items: center;">
+                            <div id="subnav-preview" style="width: 100%; max-width: 800px;">
+                                <!-- SubNav se carga dinámicamente aquí -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Preview Controls -->
+                    <div style="margin-top: 16px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                            <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin-right: 8px;">Variantes:</span>
+                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" onclick="setPreviewVariant('template')">
+                            <span>Template</span>
+                        </button>
+                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewVariant('aprendizaje')">
+                            <span>Aprendizaje</span>
+                        </button>
+                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewVariant('desempeno')">
+                            <span>Desempeño</span>
+                        </button>
+                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewVariant('encuestas')">
+                            <span>Encuestas</span>
+                        </button>
+                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewVariant('tareas')">
+                            <span>Tareas</span>
+                        </button>
+                        </div>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-left: auto;">
+                            <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin-right: 8px;">Vista:</span>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" id="preview-desktop-btn" onclick="setPreviewView('desktop')">
+                                <i class="far fa-desktop"></i>
+                                <span>Desktop</span>
+                            </button>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" id="preview-mobile-btn" onclick="setPreviewView('mobile')">
+                                <i class="far fa-mobile"></i>
+                                <span>Mobile</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Características generales -->
+                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1); margin-bottom: 40px;">
+                    <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                        <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                        Características generales
+                    </h2>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                        <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                            <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-desktop"></i></div>
+                            <div class="ubits-body-sm-bold">Desktop</div>
+                            <div class="ubits-body-sm-regular">Fijo superior</div>
+                        </div>
+                        <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                            <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-mobile"></i></div>
+                            <div class="ubits-body-sm-bold">Móvil</div>
+                            <div class="ubits-body-sm-regular">Se transforma en selector dropdown (&lt; 1280px)</div>
+                        </div>
+                        <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                            <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-cog"></i></div>
+                            <div class="ubits-body-sm-bold">Personalizable</div>
+                            <div class="ubits-body-sm-regular">Fácil de modificar y extender</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROMPTS ÚTILES -->
+                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1); margin-bottom: 40px;">
+                    <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                        <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                        Prompts útiles
+                    </h2>
+                    <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                        Usa estos prompts con Cursor AI para configurar y personalizar el componente Sub-nav de manera eficiente.
+                    </p>
+
+                    <!-- Alert Warning -->
+                    <div id="subnav-warning-alert" style="margin-bottom: 32px;"></div>
+
+                    <!-- Prompt 1: Cambiar variante -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Cambiar variante del Sub-nav
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('subnav-prompt-1')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="subnav-prompt-1">En la página [nombre-pagina.html], cambia el Sub-nav a la variante de [las opciones son: template, aprendizaje, desempeno, encuestas, tareas, documentacion].</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 2: Activar sección -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Activar tab específico
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('subnav-prompt-2')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="subnav-prompt-2">En la página [nombre-pagina.html], activa el tab [nombre_del_tab] en el Sub-nav. Asegúrate de que se vea como seleccionado visualmente.</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 3: Cambiar tab activo -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Cambiar tab activo
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('subnav-prompt-3')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="subnav-prompt-3">En la página [nombre-pagina.html], cambia el tab activo del Sub-nav de [tab_actual] a [nuevo_tab]. Asegúrate de que el nuevo tab se vea seleccionado.</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 4: Ocultar Sub-nav -->
+                    <div>
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Ocultar Sub-nav en página específica
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('subnav-prompt-4')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="subnav-prompt-4">En la página [nombre-pagina.html], oculta el Sub-nav.</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ACORDEÓN DE DOCUMENTACIÓN TÉCNICA -->
+                <div style="background: var(--ubits-bg-1); border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1); margin-bottom: 40px; overflow: hidden;">
+                    <!-- Header del acordeón -->
+                    <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                        <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Documentación técnica
+                        </h2>
+                        <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
+                            Reemplaza esta sección con la documentación técnica específica del componente.
+                        </p>
+                    </div>
+                    
+                    <!-- Botón de expansión -->
+                    <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                        <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>
+                            Mostrar
+                        </span>
+                    </div>
+                    
+                    <!-- Contenido del acordeón (inicialmente oculto) -->
+                    <div id="technical-docs-content" style="display: none; padding: 0;">
+                        <!-- Estructura del Componente -->
+                        <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-sitemap" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Estructura del componente
+                                </h2>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('structure-code')">
+                                    <i class="far fa-copy"></i>
+                                    <span>Copiar</span>
+                                </button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: 1px solid var(--ubits-border-1);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="structure-code">&lt;nav class="sub-nav" id="sub-nav"&gt;
+  &lt;div class="sub-nav-container"&gt;
+    &lt;div class="sub-nav-content"&gt;
+      &lt;div class="sub-nav-tabs"&gt;
+        &lt;button class="sub-nav-tab active" data-section="inicio"&gt;
+          &lt;i class="far fa-home"&gt;&lt;/i&gt;
+          &lt;span&gt;Inicio&lt;/span&gt;
+        &lt;/button&gt;
+        &lt;button class="sub-nav-tab" data-section="componentes"&gt;
+          &lt;i class="far fa-cube"&gt;&lt;/i&gt;
+          &lt;span&gt;Componentes&lt;/span&gt;
+        &lt;/button&gt;
+        &lt;!-- Más pestañas --&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/nav&gt;</code></pre>
+                            </div>
+                        </div>
+
+                        <!-- Cómo Implementar -->
+                        <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Cómo implementar
+                                </h2>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('implement-code')">
+                                    <i class="far fa-copy"></i>
+                                    <span>Copiar</span>
+                                </button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="implement-code">&lt;!-- HTML --&gt;
+&lt;div id="sub-nav-container"&gt;&lt;/div&gt;
+
+&lt;!-- CSS --&gt;
+&lt;link rel="stylesheet" href="../../components/sub-nav.css"&gt;
+
+&lt;!-- JavaScript --&gt;
+loadSubNav('sub-nav-container', 'template'); // Cargar SubNav con variante template
+updateActiveSubNavTab('componentes'); // Cambiar pestaña activa</code></pre>
+                            </div>
+                        </div>
+
+                        <!-- Comportamiento Responsive -->
+                        <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-mobile-alt" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Comportamiento responsive
+                            </h2>
+                            <div style="margin-bottom: 24px;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Desktop (≥ 1280px)</h3>
+                                <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
+                                    En pantallas grandes, el SubNav muestra todos los tabs de navegación de forma horizontal. Los tabs son completamente visibles y accesibles.
+                                </p>
+                            </div>
+                            <div style="margin-bottom: 24px;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Mobile/Tablet (&lt; 1280px)</h3>
+                                <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
+                                    En pantallas pequeñas, el SubNav se transforma automáticamente en un selector dropdown. El selector muestra el módulo actual y permite cambiar entre diferentes módulos mediante un dropdown.
+                                </p>
+                                <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: 6px; border-left: 4px solid var(--ubits-accent-brand); margin-top: 12px;">
+                                    <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                        <strong>Características del selector mobile:</strong><br>
+                                        • Muestra el nombre del módulo actual<br>
+                                        • Dropdown con todos los módulos disponibles<br>
+                                        • Se activa automáticamente al redimensionar la ventana<br>
+                                        • Mantiene la funcionalidad de navegación completa
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 24px;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Variante Documentación</h3>
+                                <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
+                                    La variante "documentacion" usa un hamburger menu en mobile en lugar del selector dropdown. El hamburger menu muestra todos los tabs de documentación en un dropdown vertical.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- API y Funciones -->
+                        <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-cogs" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                API y funciones
+                            </h2>
+                            <div style="margin-bottom: 24px;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">loadSubNav(containerId, variant)</h3>
+                                <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
+                                    Carga el componente SubNav en el contenedor especificado con la variante seleccionada.
+                                </p>
+                                <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: 6px; border-left: 4px solid var(--ubits-accent-brand);">
+                                    <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                        <strong>Parámetros:</strong> containerId (string) - ID del contenedor, variant (string) - Variante del SubNav<br>
+                                        <strong>Ejemplo:</strong> loadSubNav('sub-nav-container', 'template')
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 24px;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">updateActiveSubNavTab(tabId)</h3>
+                                <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
+                                    Actualiza la pestaña activa del SubNav sin recargar el componente.
+                                </p>
+                                <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: 6px; border-left: 4px solid var(--ubits-accent-brand);">
+                                    <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                        <strong>Parámetros:</strong> tabId (string) - ID de la nueva pestaña activa<br>
+                                        <strong>Ejemplo:</strong> updateActiveSubNavTab('componentes')
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Personalización -->
+                        <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-paint-brush" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Personalización
+                            </h2>
+                            <div style="margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Agregar nuevas funcionalidades</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('add-features-code')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <p class="ubits-body-md-regular" style="margin-bottom: 12px; line-height: 1.5;">
+                                    Para agregar nuevas pestañas, edita el HTML del SubNav en <code>components/sub-nav.js</code>:
+                                </p>
+                                <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="add-features-code">// En sub-nav.js, dentro del subNavHTML (línea 45-66)
+&lt;button class="sub-nav-tab" data-section="nueva-seccion"&gt;
+  &lt;i class="far fa-nuevo-icono"&gt;&lt;/i&gt;
+  &lt;span&gt;Nueva Sección&lt;/span&gt;
+&lt;/button&gt;</code></pre>
+                                </div>
+                            </div>
+                            <div>
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Modificar estilos</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('modify-styles-code')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <p class="ubits-body-md-regular" style="margin-bottom: 12px; line-height: 1.5;">
+                                    Los estilos se pueden personalizar editando las variables CSS en <code>components/sub-nav.css</code>:
+                                </p>
+                                <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="modify-styles-code">/* Personalizar colores del SubNav */
+.sub-nav {
+  background-color: var(--ubits-bg-1);
+  border-bottom: 1px solid var(--ubits-border-1);
+}
+
+/* Personalizar pestañas activas */
+.sub-nav-tab.active {
+  color: var(--ubits-accent-brand);
+  border-bottom: 2px solid var(--ubits-accent-brand);
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Contenedor para Toast UBITS -->
+    <div id="ubits-toast-container"></div>
+
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cargar top-nav con variante documentación
+            loadSubNav('top-nav-container', 'documentacion');
+            
+            // Cargar sidebar de documentación
+            loadDocsSidebar('sub-nav');
+            
+            // Cargar alert de warning para prompts usando el componente oficial
+            showAlert('warning', 'Importante: Antes de enviar estos prompts a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
+                containerId: 'subnav-warning-alert',
+                noClose: true
+            });
+        });
+
+        // Estado del preview
+        let currentPreviewVariant = 'template';
+        let currentPreviewView = 'desktop';
+        let currentActiveTabId = null; // Guardar tab activo para preservarlo al cambiar vistas
+
+        // Funciones para el preview del SubNav
+        function setPreviewVariant(variant) {
+            currentPreviewVariant = variant;
+            renderPreview();
+            
+            // Actualizar controles de variantes
+            document.querySelectorAll('[onclick^="setPreviewVariant"]').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            const activeControl = document.querySelector(`[onclick="setPreviewVariant('${variant}')"]`);
+            if (activeControl) {
+                activeControl.classList.add('active');
+            }
+        }
+        
+        function setPreviewView(view) {
+            currentPreviewView = view;
+            const wrapper = document.getElementById('preview-container-wrapper');
+            
+            if (view === 'mobile') {
+                wrapper.classList.add('preview-mobile');
+            } else {
+                wrapper.classList.remove('preview-mobile');
+            }
+            
+            // Actualizar controles de vista
+            document.getElementById('preview-desktop-btn').classList.toggle('active', view === 'desktop');
+            document.getElementById('preview-mobile-btn').classList.toggle('active', view === 'mobile');
+            
+            // Re-renderizar para aplicar cambios
+            renderPreview();
+        }
+        
+        function renderPreview() {
+            const previewContainer = document.getElementById('subnav-preview');
+            if (!previewContainer) return;
+            
+            // Limpiar contenedor
+            previewContainer.innerHTML = '';
+            
+            // Crear contenedor temporal para el SubNav
+            const tempContainer = document.createElement('div');
+            tempContainer.id = 'subnav-preview-temp';
+            previewContainer.appendChild(tempContainer);
+            
+            // Cargar SubNav usando el componente oficial
+            if (typeof loadSubNav === 'function') {
+                loadSubNav('subnav-preview-temp', currentPreviewVariant);
+                
+                // Esperar a que el componente se cargue completamente
+                setTimeout(() => {
+                    const container = document.getElementById('subnav-preview-temp');
+                    if (!container) return;
+                    
+                    const subNav = container.querySelector('.sub-nav');
+                    if (!subNav) return;
+                    
+                    if (currentPreviewView === 'mobile') {
+                        // Activar selector mobile usando la función global
+                        if (typeof window.activateSelector === 'function') {
+                            window.activateSelector(container, currentPreviewVariant, []);
+                            
+                            // Si hay un tab activo guardado, aplicarlo al selector
+                            if (currentActiveTabId) {
+                                setTimeout(() => {
+                                    const activeItem = container.querySelector(`.module-selector-item[data-tab="${currentActiveTabId}"]`);
+                                    if (activeItem) {
+                                        // Remover active de todos
+                                        container.querySelectorAll('.module-selector-item').forEach(item => item.classList.remove('active'));
+                                        // Agregar active al correcto
+                                        activeItem.classList.add('active');
+                                        
+                                        // Actualizar texto del botón
+                                        const buttonText = container.querySelector('.module-selector-button-text');
+                                        if (buttonText) {
+                                            buttonText.textContent = activeItem.querySelector('span').textContent;
+                                        }
+                                    }
+                                }, 100);
+                            }
+                        }
+                    } else {
+                        // Asegurarse de que esté en modo desktop (sin selector)
+                        if (subNav.classList.contains('use-selector')) {
+                            // Guardar tab activo del selector antes de restaurar
+                            const activeSelectorItem = container.querySelector('.module-selector-item.active');
+                            if (activeSelectorItem) {
+                                currentActiveTabId = activeSelectorItem.getAttribute('data-tab');
+                            }
+                            
+                            // Restaurar tabs originales usando la función global
+                            if (typeof window.restoreOriginalTabs === 'function') {
+                                window.restoreOriginalTabs(container, currentPreviewVariant, []);
+                                
+                                // Aplicar tab activo guardado después de restaurar
+                                if (currentActiveTabId) {
+                                    setTimeout(() => {
+                                        const activeTab = container.querySelector(`.nav-tab[data-tab="${currentActiveTabId}"]`);
+                                        if (activeTab) {
+                                            container.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+                                            activeTab.classList.add('active');
+                                        }
+                                    }, 100);
+                                }
+                            } else {
+                                // Fallback: remover clase y recargar
+                                subNav.classList.remove('use-selector');
+                                loadSubNav('subnav-preview-temp', currentPreviewVariant);
+                            }
+                        } else {
+                            // Si ya está en desktop, aplicar tab activo si existe
+                            if (currentActiveTabId) {
+                                setTimeout(() => {
+                                    const activeTab = container.querySelector(`.nav-tab[data-tab="${currentActiveTabId}"]`);
+                                    if (activeTab) {
+                                        container.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+                                        activeTab.classList.add('active');
+                                    }
+                                }, 100);
+                            }
+                        }
+                    }
+                }, 500);
+            }
+        }
+        
+        function activateMobileSelector(containerId, variant) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            // Usar la función global activateSelector del componente
+            if (typeof window.activateSelector === 'function') {
+                window.activateSelector(container, variant, []);
+            } else {
+                console.error('activateSelector no está disponible');
+            }
+        }
+        
+        function togglePreviewModuleSelector(containerId) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            const button = container.querySelector('.module-selector-button');
+            const dropdown = container.querySelector('.module-selector-dropdown');
+            
+            if (button && dropdown) {
+                button.classList.toggle('open');
+                dropdown.classList.toggle('show');
+            }
+        }
+        
+        function selectPreviewModuleItem(containerId, tabId) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            // Guardar tab activo
+            currentActiveTabId = tabId;
+            
+            // Obtener configuración
+            const config = getAllTopNavVariants ? getAllTopNavVariants()[currentPreviewVariant] : null;
+            if (!config) return;
+            
+            const tabs = config.tabs || [];
+            const selectedTab = tabs.find(t => t.id === tabId);
+            if (!selectedTab) return;
+            
+            // Actualizar item activo
+            const items = container.querySelectorAll('.module-selector-item');
+            items.forEach(item => item.classList.remove('active'));
+            
+            const selectedItem = container.querySelector(`[data-tab="${tabId}"]`);
+            if (selectedItem) {
+                selectedItem.classList.add('active');
+                
+                // Actualizar texto del botón
+                const buttonText = container.querySelector('.module-selector-button-text');
+                if (buttonText) {
+                    buttonText.textContent = selectedTab.label;
+                }
+            }
+            
+            // Cerrar dropdown
+            togglePreviewModuleSelector(containerId);
+        }
+        
+        // Funciones globales para el selector mobile del preview
+        window.togglePreviewModuleSelector = togglePreviewModuleSelector;
+        window.selectPreviewModuleItem = selectPreviewModuleItem;
+        
+        // Inicializar preview al cargar
+        document.addEventListener('DOMContentLoaded', function() {
+            renderPreview();
+        });
+
+
+        // Función para el acordeón de documentación técnica
+        function toggleTechnicalDocs() {
+            const content = document.getElementById('technical-docs-content');
+            const button = document.querySelector('[onclick="toggleTechnicalDocs()"]');
+            
+            if (content.style.display === 'none' || content.style.display === '') {
+                // Expandir
+                content.style.display = 'block';
+                button.innerHTML = '<i class="far fa-chevron-up" id="tech-docs-chevron" style="color: var(--ubits-accent-brand);"></i> <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand);">Ocultar</span>';
+            } else {
+                // Contraer
+                content.style.display = 'none';
+                button.innerHTML = '<i class="far fa-chevron-down" id="tech-docs-chevron" style="color: var(--ubits-accent-brand);"></i> <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand);">Mostrar</span>';
+            }
+        }
+
+        // Función para copiar prompts
+        function copyPrompt(promptId) {
+            const promptElement = document.getElementById(promptId);
+            const promptText = promptElement.textContent;
+            
+            // Copiar al portapapeles
+            navigator.clipboard.writeText(promptText).then(function() {
+                // Mostrar feedback visual
+                const button = document.querySelector(`[onclick="copyPrompt('${promptId}')"]`);
+                const icon = button.querySelector('i');
+                const text = button.querySelector('span');
+                
+                // Cambiar estado del botón
+                icon.className = 'far fa-check';
+                text.textContent = 'Copiado';
+                button.classList.add('ubits-button--active');
+                
+                // Mostrar toast
+                showToast('success', '¡Prompt copiado! 🎉', {
+                    containerId: 'ubits-toast-container',
+                    duration: 3500
+                });
+                
+                // Restaurar estado después de 2 segundos
+                setTimeout(function() {
+                    icon.className = 'far fa-copy';
+                    text.textContent = 'Copiar';
+                    button.classList.remove('ubits-button--active');
+                }, 2000);
+                
+            }).catch(function(err) {
+                console.error('Error al copiar: ', err);
+                showToast('error', 'Error al copiar el prompt', {
+                    containerId: 'ubits-toast-container',
+                    duration: 6500
+                });
+            });
+        }
+
+        // Función para copiar código
+        function copyCode(codeId) {
+            const codeElement = document.getElementById(codeId);
+            const codeText = codeElement.textContent;
+            
+            // Copiar al portapapeles
+            navigator.clipboard.writeText(codeText).then(function() {
+                // Mostrar feedback visual
+                const button = document.querySelector(`[onclick="copyCode('${codeId}')"]`);
+                const icon = button.querySelector('i');
+                const text = button.querySelector('span');
+                
+                // Cambiar estado del botón
+                icon.className = 'far fa-check';
+                text.textContent = 'Copiado';
+                button.classList.add('ubits-button--active');
+                
+                // Mostrar toast
+                showToast('success', '¡Código copiado! 🎉', {
+                    containerId: 'ubits-toast-container',
+                    duration: 3500
+                });
+                
+                // Restaurar estado después de 2 segundos
+                setTimeout(function() {
+                    icon.className = 'far fa-copy';
+                    text.textContent = 'Copiar';
+                    button.classList.remove('ubits-button--active');
+                }, 2000);
+                
+            }).catch(function(err) {
+                console.error('Error al copiar: ', err);
+                showToast('error', 'Error al copiar el código', {
+                    containerId: 'ubits-toast-container',
+                    duration: 6500
+                });
+            });
+        }
+
+    </script>
+</body>
+</html>

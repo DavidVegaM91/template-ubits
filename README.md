@@ -12,10 +12,11 @@ Una **plantilla lista para usar** que permite a **Product Managers**, **Diseñad
 
 1. **📋 Lee `.cursor/rules/cursor-rules.mdc`** - Reglas obligatorias para Cursor AI
 2. **🎯 Edita `index.html`** - Tu página principal (se despliega en Netlify)
-3. **📄 Usa `plantilla-ubits.html`** - Para crear páginas nuevas
-4. **👀 Mira `componentes.html`** - Ve todos los componentes disponibles
-5. **📖 LEE LA DOCUMENTACIÓN DEL COMPONENTE** - Antes de implementar cualquier componente, lee su página de documentación (ej: `button.html`, `alert.html`, `empty-state.html`) para entender cómo usarlo correctamente
+3. **📄 Usa `documentacion/plantilla-ubits.html`** - Para crear páginas nuevas
+4. **👀 Mira `documentacion/componentes.html`** - Ve todos los componentes disponibles
+5. **📖 LEE LA DOCUMENTACIÓN DEL COMPONENTE** - Antes de implementar cualquier componente, lee su página de documentación (ej: `documentacion/componentes/button.html`, `documentacion/componentes/alert.html`) para entender cómo usarlo correctamente
 6. **🎨 Usa SOLO tokens UBITS** - `var(--ubits-...)` NUNCA colores hardcodeados
+7. **📁 IMPORTANTE: Nueva estructura de carpetas** - El proyecto ahora está organizado en módulos (`ubits-admin/`, `ubits-colaborador/`, `documentacion/`)
 
 ## 🚀 Cómo usar esta plantilla
 
@@ -71,43 +72,51 @@ Todos los componentes UBITS requieren imports obligatorios:
 
 ```html
 <!-- CSS OBLIGATORIO para cada componente usado -->
-<link rel="stylesheet" href="components/button.css">
-<link rel="stylesheet" href="components/ia-button.css">
-<link rel="stylesheet" href="components/header-product.css">
-<link rel="stylesheet" href="components/alert.css">
-<link rel="stylesheet" href="components/toast.css">
-<link rel="stylesheet" href="components/input.css">
-<link rel="stylesheet" href="components/card-content.css">
-<link rel="stylesheet" href="components/card-content-compact.css">
-<link rel="stylesheet" href="components/carousel-contents.css">
-<link rel="stylesheet" href="components/status-tag.css">
-<link rel="stylesheet" href="components/tab.css">
-<link rel="stylesheet" href="components/empty-state.css">
-<link rel="stylesheet" href="components/paginator.css">
-<link rel="stylesheet" href="components/copilot-chat.css">
-<link rel="stylesheet" href="components/study-chat.css">
-<link rel="stylesheet" href="components/floating-menu.css">
-<link rel="stylesheet" href="components/profile-menu.css">
+<!-- NOTA: Rutas relativas desde subcarpetas (ubits-admin/*, ubits-colaborador/*) -->
+<link rel="stylesheet" href="../../components/button.css">
+<link rel="stylesheet" href="../../components/ia-button.css">
+<link rel="stylesheet" href="../../components/header-product.css">
+<link rel="stylesheet" href="../../components/alert.css">
+<link rel="stylesheet" href="../../components/toast.css">
+<link rel="stylesheet" href="../../components/input.css">
+<link rel="stylesheet" href="../../components/card-content.css">
+<link rel="stylesheet" href="../../components/card-content-compact.css">
+<link rel="stylesheet" href="../../components/carousel-contents.css">
+<link rel="stylesheet" href="../../components/status-tag.css">
+<link rel="stylesheet" href="../../components/tab.css">
+<link rel="stylesheet" href="../../components/empty-state.css">
+<link rel="stylesheet" href="../../components/paginator.css">
+<link rel="stylesheet" href="../../components/copilot-chat.css">
+<link rel="stylesheet" href="../../components/study-chat.css">
+<link rel="stylesheet" href="../../components/floating-menu.css">
+<link rel="stylesheet" href="../../components/profile-menu.css">
+<link rel="stylesheet" href="../../components/sidebar.css">
+<link rel="stylesheet" href="../../components/sub-nav.css">
+<link rel="stylesheet" href="../../components/tab-bar.css">
 
 <!-- JavaScript OBLIGATORIO para componentes dinámicos -->
-<script src="components/header-product.js"></script>
-<script src="components/alert.js"></script>
-<script src="components/toast.js"></script>
-<script src="components/input.js"></script>
-<script src="components/card-content.js"></script>
-<script src="components/card-content-compact.js"></script>
-<script src="components/carousel-contents.js"></script>
-<script src="components/empty-state.js"></script>
-<script src="components/paginator.js"></script>
-<script src="components/copilot-chat.js"></script>
-<script src="components/study-chat.js"></script>
-<script src="components/floating-menu.js"></script>
-<script src="components/profile-menu.js"></script>
+<script src="../../components/header-product.js"></script>
+<script src="../../components/alert.js"></script>
+<script src="../../components/toast.js"></script>
+<script src="../../components/input.js"></script>
+<script src="../../components/card-content.js"></script>
+<script src="../../components/card-content-compact.js"></script>
+<script src="../../components/carousel-contents.js"></script>
+<script src="../../components/empty-state.js"></script>
+<script src="../../components/paginator.js"></script>
+<script src="../../components/copilot-chat.js"></script>
+<script src="../../components/study-chat.js"></script>
+<script src="../../components/floating-menu.js"></script>
+<script src="../../components/profile-menu.js"></script>
+<script src="../../components/sidebar.js"></script>
+<script src="../../components/sub-nav.js"></script>
+<script src="../../components/tab-bar.js"></script>
 
 <!-- Base UBITS SIEMPRE REQUERIDA -->
-<link rel="stylesheet" href="ubits-colors.css">
-<link rel="stylesheet" href="ubits-typography.css">
-<link rel="stylesheet" href="fontawesome-icons.css">
+<link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+<link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+<link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+<link rel="stylesheet" href="../../general-styles/styles.css">
 ```
 
 ### **🚨 PROBLEMAS COMUNES CON COMPONENTES:**
@@ -145,43 +154,43 @@ Todos los componentes UBITS requieren imports obligatorios:
 ### **1. PÁGINAS PLANTILLA (Templates Listos para Usar)**
 
 #### **🏠 Páginas Base:**
-- **`index.html`** - Página principal (se deploya como homepage - 1 sección)
-- **`plantilla-ubits.html`** - Template base para crear nuevas páginas (1 sección)
+- **`index.html`** - Página principal (se deploya como homepage - 1 sección, ubicada en raíz)
+- **`documentacion/plantilla-ubits.html`** - Template base para crear nuevas páginas (1 sección)
 
-#### **🎓 Módulo de Aprendizaje:**
+#### **🎓 Módulo de Aprendizaje (ubits-colaborador/aprendizaje/):**
 - **`home-learn.html`** - Dashboard de aprendizaje (9 secciones)
 - **`catalogo.html`** - Catálogo de contenidos (2 secciones)
 - **`u-corporativa.html`** - Universidad corporativa (3 secciones)
 - **`zona-estudio.html`** - Zona de estudio (2 secciones con tabs)
+- **`modo-estudio-ia.html`** - Modo de estudio con IA
 
-#### **📊 Módulo de Diagnóstico:**
+#### **📊 Módulo de Diagnóstico (ubits-colaborador/diagnostico/):**
 - **`diagnostico.html`** - Página de diagnóstico (1 sección)
 
-#### **📈 Módulo de Desempeño:**
+#### **📈 Módulo de Desempeño (ubits-colaborador/desempeno/):**
 - **`evaluaciones-360.html`** - Evaluaciones 360 (1 sección)
 - **`objetivos.html`** - Objetivos (1 sección)
 - **`metricas.html`** - Métricas (1 sección)
 - **`reportes.html`** - Reportes (1 sección)
 
-#### **📋 Módulo de Encuestas:**
+#### **📋 Módulo de Encuestas (ubits-colaborador/encuestas/):**
 - **`encuestas.html`** - Encuestas (1 sección)
 
-#### **👥 Módulo de Reclutamiento:**
+#### **👥 Módulo de Reclutamiento (ubits-colaborador/reclutamiento/):**
 - **`reclutamiento.html`** - Reclutamiento (1 sección, sin SubNav)
 
-#### **📝 Módulo de Planes y Tareas:**
+#### **📝 Módulo de Planes y Tareas (ubits-colaborador/tareas/):**
 - **`planes.html`** - Planes (1 sección)
 - **`tareas.html`** - Tareas (1 sección)
 
-#### **👤 Perfil y AI:**
-- **`profile.html`** - Perfil/Portal del colaborador
-- **`ubits-ai.html`** - Página de UBITS AI (página en blanco basada en plantilla)
-- **`modo-estudio-ia.html`** - Modo de estudio con IA
+#### **👤 Perfil y AI (ubits-colaborador/):**
+- **`perfil/profile.html`** - Perfil/Portal del colaborador
+- **`ubits-ai/ubits-ai.html`** - Página de UBITS AI (página en blanco basada en plantilla)
 
-#### **⚙️ Módulo de Administración:**
-- **`admin.html`** - Dashboard de administración (1 sección, sin SubNav)
+#### **⚙️ Módulo de Administración (ubits-admin/):**
+- **`inicio/admin.html`** - Dashboard de administración (1 sección, sin SubNav)
 
-**Módulo Empresa (SubNav: `empresa`):**
+**Módulo Empresa (ubits-admin/empresa/, SubNav: `empresa`):**
 - **`gestion-de-usuarios.html`** - Gestión de usuarios (con header-product)
 - **`organigrama.html`** - Organigrama (con header-product)
 - **`datos-de-empresa.html`** - Datos de empresa (con header-product)
@@ -189,67 +198,73 @@ Todos los componentes UBITS requieren imports obligatorios:
 - **`roles-y-permisos.html`** - Roles y permisos (con header-product)
 - **`comunicaciones.html`** - Comunicaciones (con header-product)
 
-**Módulo Admin Aprendizaje (SubNav: `admin-aprendizaje`):**
+**Módulo Admin Aprendizaje (ubits-admin/aprendizaje/, SubNav: `admin-aprendizaje`):**
 - **`planes-formacion.html`** - Planes de formación (con header-product)
 - **`admin-u-corporativa.html`** - Universidad corporativa (con header-product)
 - **`admin-certificados.html`** - Certificados (con header-product)
 - **`seguimiento.html`** - Seguimiento (con header-product)
 
-**Módulo Admin Desempeño (SubNav: `admin-desempeño`):**
+**Módulo Admin Desempeño (ubits-admin/desempeno/, SubNav: `admin-desempeno`):**
 - **`admin-360.html`** - Evaluaciones 360 (con header-product)
 - **`admin-objetivos.html`** - Objetivos (con header-product)
 - **`admin-matriz-talento.html`** - Matriz de Talento (con header-product)
 
 **Otros módulos admin:**
-- **`admin-diagnostico.html`** - Administración de diagnóstico (SubNav: `admin-diagnostico`)
-- **`admin-encuestas.html`** - Administración de encuestas (SubNav: `admin-encuestas`)
-- **`admin-api.html`** - Gestión de API (sin SubNav, con header-product)
-- **`admin-help-center.html`** - Centro de ayuda (sin SubNav, con header-product)
+- **`diagnostico/admin-diagnostico.html`** - Administración de diagnóstico (SubNav: `admin-diagnostico`)
+- **`encuestas/admin-encuestas.html`** - Administración de encuestas (SubNav: `admin-encuestas`)
+- **`otros/admin-api.html`** - Gestión de API (sin SubNav, con header-product)
+- **`otros/admin-help-center.html`** - Centro de ayuda (sin SubNav, con header-product)
 
-### **2. PÁGINAS DE DOCUMENTACIÓN (Sistema de Componentes)**
+### **2. PÁGINAS DE DOCUMENTACIÓN (Sistema de Componentes) - documentacion/**
 
 #### ** Página Principal:**
-- **`documentacion.html`** - Home de documentación
+- **`documentacion/documentacion.html`** - Home de documentación
 
-#### **📖 Documentación de Componentes:**
-- **`componentes.html`** - Introducción y bienvenida a los componentes UBITS
-- **`sidebar.html`** - Documentación del componente Sidebar
-- **`subnav.html`** - Documentación del componente SubNav
-- **`tab-bar.html`** - Documentación del componente TabBar
-- **`button.html`** - Documentación del componente Button
-- **`ia-button.html`** - Documentación del componente IA-Button
-- **`header-product.html`** - Documentación del componente Header Product
-- **`alert.html`** - Documentación del componente Alert
-- **`toast.html`** - Documentación del componente Toast
-- **`input.html`** - Documentación del componente Input
-- **`card-content.html`** - Documentación del componente Card Content
-- **`card-content-compact.html`** - Documentación del componente Card Content Compact
-- **`status-tag.html`** - Documentación del componente Status Tag
-- **`tab.html`** - Documentación del componente Tab
-- **`empty-state.html`** - Documentación del componente Empty State
-- **`paginator.html`** - Documentación del componente Paginator
+#### **📖 Documentación de Componentes (documentacion/componentes/):**
+- **`documentacion/componentes.html`** - Introducción y bienvenida a los componentes UBITS
+- **`documentacion/componentes/sidebar.html`** - Documentación del componente Sidebar
+- **`documentacion/componentes/subnav.html`** - Documentación del componente SubNav
+- **`documentacion/componentes/tab-bar.html`** - Documentación del componente TabBar
+- **`documentacion/componentes/button.html`** - Documentación del componente Button
+- **`documentacion/componentes/ia-button.html`** - Documentación del componente IA-Button
+- **`documentacion/componentes/header-product.html`** - Documentación del componente Header Product
+- **`documentacion/componentes/alert.html`** - Documentación del componente Alert
+- **`documentacion/componentes/toast.html`** - Documentación del componente Toast
+- **`documentacion/componentes/input.html`** - Documentación del componente Input
+- **`documentacion/componentes/card-content.html`** - Documentación del componente Card Content
+- **`documentacion/componentes/card-content-compact.html`** - Documentación del componente Card Content Compact
+- **`documentacion/componentes/status-tag.html`** - Documentación del componente Status Tag
+- **`documentacion/componentes/tab.html`** - Documentación del componente Tab
+- **`documentacion/componentes/empty-state.html`** - Documentación del componente Empty State
+- **`documentacion/componentes/paginator.html`** - Documentación del componente Paginator
 
-#### **🎨 Guías de Diseño:**
-- **`colores.html`** - Guía de colores UBITS
-- **`tipografia.html`** - Guía de tipografía UBITS
-- **`iconos.html`** - Galería de iconos FontAwesome
+#### **🎨 Guías de Diseño (documentacion/guias/):**
+- **`documentacion/guias/colores.html`** - Guía de colores UBITS
+- **`documentacion/guias/tipografia.html`** - Guía de tipografía UBITS
+- **`documentacion/guias/iconos.html`** - Galería de iconos FontAwesome
 
 #### ** Herramientas de Documentación:**
-- **`guia-prompts.html`** - Prompts para personalización con Cursor AI
-- **`overview.html`** - Vista general del proyecto
+- **`documentacion/guia-prompts.html`** - Prompts para personalización con Cursor AI
+- **`documentacion/validador-ubits.html`** - Herramienta drag & drop que verifica tokens UBITS, tipografía y componentes, genera prompts para Cursor AI y otorga puntuación
+- **`documentacion/plantilla-ubits.html`** - Template base para crear nuevas páginas
 
 ### **3. ✅ VALIDADOR (Control de Calidad Automático)**
-- **`validador-ubits.html`** - Herramienta drag & drop que verifica tokens UBITS, tipografía y componentes, genera prompts para Cursor AI y otorga puntuación
+- **`documentacion/validador-ubits.html`** - Herramienta drag & drop que verifica tokens UBITS, tipografía y componentes, genera prompts para Cursor AI y otorga puntuación
 
 ---
 
 ## 🛠️ **HERRAMIENTAS DE SOPORTE (Lo que hace que los 3 grandes funcionen)**
 
-### **🧩 Componentes del sistema:**
+### **🧩 Estructura del proyecto (NUEVA ORGANIZACIÓN):**
 ```
-├── 📁 components/             # Componentes reutilizables
+├── 📁 general-styles/         # Estilos base del sistema
+│   ├── ubits-colors.css       # Tokens de color UBITS oficiales
+│   ├── ubits-typography.css   # Clases de tipografía UBITS oficiales
+│   ├── fontawesome-icons.css  # Iconos FontAwesome
+│   └── styles.css             # Estilos globales compartidos
+├── 📁 components/             # Componentes reutilizables UBITS
 │   ├── sub-nav.css + sub-nav.js
-│   ├── sidebar.js + components-sidebar.css
+│   ├── sidebar.css + sidebar.js
 │   ├── tab-bar.css + tab-bar.js
 │   ├── floating-menu.css + floating-menu.js
 │   ├── profile-menu.css + profile-menu.js
@@ -268,23 +283,123 @@ Todos los componentes UBITS requieren imports obligatorios:
 │   ├── paginator.css + paginator.js
 │   ├── copilot-chat.css + copilot-chat.js
 │   └── study-chat.css + study-chat.js
-├── 📁 docs/                   # Sistema de documentación (solo para páginas *.html de documentación)
-│   ├── docs-sidebar.css + docs-sidebar.js  # Solo para button.html, alert.html, etc. NO para páginas de producto
-└── 📁 images/                 # Recursos visuales
-    ├── cards-learn/           # Imágenes para cards de aprendizaje
-    ├── Favicons/              # Logos de proveedores
-    └── empty-states/          # Estados vacíos
+├── 📁 ubits-admin/           # Módulo de administración
+│   ├── inicio/
+│   ├── empresa/
+│   ├── aprendizaje/
+│   ├── diagnostico/
+│   ├── desempeno/
+│   ├── encuestas/
+│   └── otros/
+├── 📁 ubits-colaborador/     # Módulo de colaborador
+│   ├── inicio/
+│   ├── aprendizaje/
+│   ├── diagnostico/
+│   ├── desempeno/
+│   ├── encuestas/
+│   ├── reclutamiento/
+│   ├── tareas/
+│   ├── ubits-ai/
+│   └── perfil/
+├── 📁 documentacion/         # Sistema de documentación
+│   ├── componentes.html      # Lista de componentes
+│   ├── componentes/          # Documentación de cada componente
+│   ├── guias/                # Guías de diseño (colores, tipografía, iconos)
+│   ├── guia-prompts.html     # Prompts para Cursor AI
+│   ├── validador-ubits.html  # Validador automático
+│   └── plantilla-ubits.html  # Template base para nuevas páginas
+├── 📁 docs/                  # Sistema de documentación (solo para páginas *.html de documentación)
+│   ├── docs-sidebar.css + docs-sidebar.js
+│   └── docstyles.css         # Estilos específicos de documentación
+└── 📁 images/                # Recursos visuales
+    ├── cards-learn/          # Imágenes para cards de aprendizaje (85+ imágenes)
+    ├── Favicons/             # Logos de proveedores (18 proveedores)
+    ├── vertical-cards/       # Imágenes verticales para libros (16 imágenes)
+    ├── academias/            # Imágenes de academias (5 imágenes)
+    ├── imagenes competencias/ # Imágenes de competencias (35 imágenes)
+    └── empty-states/         # Estados vacíos (2 SVG)
 ```
 
-### **🎨 Archivos de diseño:**
+### **📁 Nueva organización de archivos:**
+- **`general-styles/`** - Estilos base compartidos (tokens, tipografía, estilos globales)
+- **`components/`** - Todos los componentes UBITS reutilizables
+- **`ubits-admin/`** - Páginas del módulo de administración organizadas por subcarpetas
+- **`ubits-colaborador/`** - Páginas del módulo de colaborador organizadas por subcarpetas
+- **`documentacion/`** - Sistema de documentación completo
+- **`docs/`** - Componentes de documentación (docs-sidebar, docstyles)
+- **`images/`** - Todos los recursos visuales del proyecto
+
+### **📄 Estructura HTML + CSS por página (OBLIGATORIO):**
+
+**🚨 REGLA CRÍTICA:** Cada página HTML debe tener su archivo CSS correspondiente separado.
+
+#### **Estructura correcta:**
 ```
-├── 📄 ubits-colors.css        # Tokens de color UBITS oficiales
-├── 📄 ubits-typography.css    # Clases de tipografía UBITS oficiales
-├── 📄 fontawesome-icons.css   # Iconos FontAwesome
-├── 📄 styles.css              # Estilos globales del template
-├── 📄 profile.css             # Estilos específicos del perfil
-└── 📄 script.js               # JavaScript principal
+ubits-colaborador/
+├── aprendizaje/
+│   ├── home-learn.html      ← Página HTML
+│   ├── home-learn.css       ← Estilos específicos de la página
+│   ├── catalogo.html
+│   ├── catalogo.css
+│   └── ...
+├── desempeno/
+│   ├── objetivos.html
+│   ├── objetivos.css
+│   └── ...
 ```
+
+#### **Cómo crear una nueva página:**
+
+1. **Ubicar en la carpeta correcta** según el módulo:
+   - `ubits-colaborador/aprendizaje/` - Páginas de aprendizaje
+   - `ubits-colaborador/desempeno/` - Páginas de desempeño
+   - `ubits-admin/empresa/` - Páginas de administración de empresa
+   - etc.
+
+2. **Crear ambos archivos:**
+   - `mi-pagina.html` - Estructura HTML
+   - `mi-pagina.css` - Estilos específicos de la página
+
+3. **Importar estilos generales en el HTML:**
+```html
+<!-- Estilos base UBITS (OBLIGATORIO) -->
+<link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+<link rel="stylesheet" href="../../general-styles/styles.css">
+<link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+<link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+
+<!-- Componentes que uses -->
+<link rel="stylesheet" href="../../components/sidebar.css">
+<link rel="stylesheet" href="../../components/sub-nav.css">
+<!-- ... otros componentes -->
+
+<!-- Estilos específicos de la página (AL FINAL) -->
+<link rel="stylesheet" href="./mi-pagina.css">
+```
+
+4. **En el CSS de la página:**
+```css
+/* ========================================
+   ESTILOS ESPECÍFICOS PARA mi-pagina
+   ======================================== */
+
+/* Solo estilos únicos de esta página */
+.mi-widget-especial {
+    /* ... */
+}
+```
+
+#### **❌ NUNCA hacer:**
+- Poner estilos en `<style>` tags dentro del HTML
+- Crear páginas sin su CSS correspondiente
+- Mezclar estilos de diferentes páginas en un solo CSS
+- Modificar `general-styles/styles.css` para estilos de una página específica
+
+#### **✅ SIEMPRE hacer:**
+- Separar HTML y CSS en archivos independientes
+- Usar rutas relativas correctas (`../../` desde subcarpetas)
+- Importar estilos generales antes que los específicos
+- Nombrar el CSS igual que el HTML (ej: `catalogo.html` → `catalogo.css`)
 
 ## 🎯 Casos de uso reales
 
@@ -358,8 +473,17 @@ ubits-body-md-bold, ubits-body-sm-bold
 
 ### **Importar tokens (OBLIGATORIO en nuevos archivos):**
 ```html
-<link rel="stylesheet" href="ubits-colors.css">
-<link rel="stylesheet" href="ubits-typography.css">
+<!-- Desde subcarpetas (ubits-admin/*, ubits-colaborador/*) -->
+<link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+<link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+<link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+<link rel="stylesheet" href="../../general-styles/styles.css">
+
+<!-- Desde la raíz del proyecto -->
+<link rel="stylesheet" href="general-styles/ubits-colors.css">
+<link rel="stylesheet" href="general-styles/ubits-typography.css">
+<link rel="stylesheet" href="general-styles/fontawesome-icons.css">
+<link rel="stylesheet" href="general-styles/styles.css">
 ```
 
 ## 🚀 Ejemplos de uso
@@ -448,12 +572,12 @@ loadCardContent('mi-contenedor-cards', [
         type: 'Curso',
         title: 'Mi contenido',
         provider: 'UBITS',
-        providerLogo: 'images/Favicons/UBITS.jpg',
+        providerLogo: '../../images/Favicons/UBITS.jpg',  // ✅ Rutas relativas desde subcarpetas
         duration: '60 min',
         level: 'Intermedio',
         progress: 75,
         status: 'progress',
-        image: 'images/cards-learn/mi-imagen.jpg',
+        image: '../../images/cards-learn/mi-imagen.jpg',  // ✅ Rutas relativas desde subcarpetas
         competency: 'Product design',
         language: 'Español'
     }
@@ -468,12 +592,12 @@ loadCardContentCompact('mi-contenedor-compact', [
         type: 'Curso',
         title: 'Mi contenido compacto',
         provider: 'UBITS',
-        providerLogo: 'images/Favicons/UBITS.jpg',
+        providerLogo: '../../images/Favicons/UBITS.jpg',  // ✅ Rutas relativas desde subcarpetas
         duration: '60 min',
         level: 'Intermedio',
         progress: 50,
         status: 'progress',
-        image: 'images/cards-learn/mi-imagen.jpg',
+        image: '../../images/cards-learn/mi-imagen.jpg',  // ✅ Rutas relativas desde subcarpetas
         competency: 'Product design',
         language: 'Español'
     }
@@ -494,22 +618,26 @@ loadCardContentCompact('mi-contenedor-compact', [
 
 ## 📚 Documentación
 
-- **`componentes.html`** - Página principal con todos los componentes disponibles
-- **`button.html`** - Documentación del componente Button
-- **`ia-button.html`** - Documentación del componente IA-Button
-- **`header-product.html`** - Documentación del componente Header Product
-- **`alert.html`** - Documentación del componente Alert
-- **`toast.html`** - Documentación del componente Toast
-- **`input.html`** - Documentación del componente Input
-- **`card-content.html`** - Documentación del componente Card Content
-- **`card-content-compact.html`** - Documentación del componente Card Content Compact
-- **`status-tag.html`** - Documentación del componente Status Tag
-- **`tab.html`** - Documentación del componente Tab
-- **`empty-state.html`** - Documentación del componente Empty State
-- **`paginator.html`** - Documentación del componente Paginator
-- **`sidebar.html`** - Documentación del componente Sidebar
-- **`subnav.html`** - Documentación del componente SubNav
-- **`tab-bar.html`** - Documentación del componente TabBar
+- **`documentacion/componentes.html`** - Página principal con todos los componentes disponibles
+- **`documentacion/componentes/button.html`** - Documentación del componente Button
+- **`documentacion/componentes/ia-button.html`** - Documentación del componente IA-Button
+- **`documentacion/componentes/header-product.html`** - Documentación del componente Header Product
+- **`documentacion/componentes/alert.html`** - Documentación del componente Alert
+- **`documentacion/componentes/toast.html`** - Documentación del componente Toast
+- **`documentacion/componentes/input.html`** - Documentación del componente Input
+- **`documentacion/componentes/card-content.html`** - Documentación del componente Card Content
+- **`documentacion/componentes/card-content-compact.html`** - Documentación del componente Card Content Compact
+- **`documentacion/componentes/status-tag.html`** - Documentación del componente Status Tag
+- **`documentacion/componentes/tab.html`** - Documentación del componente Tab
+- **`documentacion/componentes/empty-state.html`** - Documentación del componente Empty State
+- **`documentacion/componentes/paginator.html`** - Documentación del componente Paginator
+- **`documentacion/componentes/sidebar.html`** - Documentación del componente Sidebar
+- **`documentacion/componentes/subnav.html`** - Documentación del componente SubNav
+- **`documentacion/componentes/tab-bar.html`** - Documentación del componente TabBar
+- **`documentacion/guias/colores.html`** - Guía de colores UBITS
+- **`documentacion/guias/tipografia.html`** - Guía de tipografía UBITS
+- **`documentacion/guias/iconos.html`** - Galería de iconos FontAwesome
+- **`documentacion/validador-ubits.html`** - Validador automático de calidad UBITS
 
 ## 🎯 Características principales
 
@@ -681,8 +809,10 @@ Un sistema inspirado que permite a **cualquier usuario** (Product Managers, Dise
 
 ### **Si las imágenes no cargan:**
 1. **Verificar rutas de imágenes** - Usa solo recursos de las carpetas oficiales
-2. **Revisar nombres de archivos** - Respeta mayúsculas y minúsculas exactas
-3. **Usar competencias oficiales** - Solo las 35 competencias de la lista oficial
+2. **Revisar rutas relativas** - Desde subcarpetas usar `../../images/...`, desde raíz usar `images/...`
+3. **Revisar nombres de archivos** - Respeta mayúsculas y minúsculas exactas
+4. **Usar competencias oficiales** - Solo las 35 competencias de la lista oficial
+5. **Verificar documentación** - Lee `documentacion/componentes/card-content.html` para guía completa de rutas
 
 ## 📝 Componente Input - Guía rápida
 

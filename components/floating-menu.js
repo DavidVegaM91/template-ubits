@@ -8,17 +8,17 @@ const FLOATING_MENU_SECTIONS = [
         title: 'Aprendizaje',
         icon: 'far fa-graduation-cap',
         subitems: [
-            { id: 'inicio', title: 'Inicio', icon: 'far fa-home', url: 'home-learn.html' },
-            { id: 'catalogo', title: 'Catálogo', icon: 'far fa-book', url: 'catalogo.html' },
-            { id: 'corporativa', title: 'U. Corporativa', icon: 'far fa-building-columns', url: 'u-corporativa.html' },
-            { id: 'zona-estudio', title: 'Zona de estudio', icon: 'far fa-books', url: 'zona-estudio.html' }
+            { id: 'inicio', title: 'Inicio', icon: 'far fa-home', url: '../../ubits-colaborador/aprendizaje/home-learn.html' },
+            { id: 'catalogo', title: 'Catálogo', icon: 'far fa-book', url: '../../ubits-colaborador/aprendizaje/catalogo.html' },
+            { id: 'corporativa', title: 'U. Corporativa', icon: 'far fa-building-columns', url: '../../ubits-colaborador/aprendizaje/u-corporativa.html' },
+            { id: 'zona-estudio', title: 'Zona de estudio', icon: 'far fa-books', url: '../../ubits-colaborador/aprendizaje/zona-estudio.html' }
         ]
     },
     {
         id: 'diagnostico',
         title: 'Diagnóstico',
         icon: 'far fa-chart-mixed',
-        url: 'diagnostico.html',
+        url: '../../ubits-colaborador/diagnostico/diagnostico.html',
         isLink: true,
         clickable: true
     },
@@ -27,17 +27,17 @@ const FLOATING_MENU_SECTIONS = [
         title: 'Desempeño',
         icon: 'far fa-bars-progress',
         subitems: [
-            { id: 'evaluaciones-360', title: 'Evaluaciones 360', icon: 'far fa-chart-pie', url: 'evaluaciones-360.html' },
-            { id: 'objetivos', title: 'Objetivos', icon: 'far fa-bullseye', url: 'objetivos.html' },
-            { id: 'metricas', title: 'Métricas', icon: 'far fa-chart-line', url: 'metricas.html' },
-            { id: 'reportes', title: 'Reportes', icon: 'far fa-file-chart-line', url: 'reportes.html' }
+            { id: 'evaluaciones-360', title: 'Evaluaciones 360', icon: 'far fa-chart-pie', url: '../../ubits-colaborador/desempeno/evaluaciones-360.html' },
+            { id: 'objetivos', title: 'Objetivos', icon: 'far fa-bullseye', url: '../../ubits-colaborador/desempeno/objetivos.html' },
+            { id: 'metricas', title: 'Métricas', icon: 'far fa-chart-line', url: '../../ubits-colaborador/desempeno/metricas.html' },
+            { id: 'reportes', title: 'Reportes', icon: 'far fa-file-chart-line', url: '../../ubits-colaborador/desempeno/reportes.html' }
         ]
     },
             {
                 id: 'encuestas',
                 title: 'Encuestas',
                 icon: 'far fa-clipboard-list-check',
-                url: 'encuestas.html',
+                url: '../../ubits-colaborador/encuestas/encuestas.html',
                 isLink: true,
                 clickable: false
             },
@@ -45,7 +45,7 @@ const FLOATING_MENU_SECTIONS = [
         id: 'reclutamiento',
         title: 'Reclutamiento',
         icon: 'far fa-users',
-        url: 'reclutamiento.html',
+        url: '../../ubits-colaborador/reclutamiento/reclutamiento.html',
         isLink: true,
         clickable: true
     },
@@ -54,15 +54,15 @@ const FLOATING_MENU_SECTIONS = [
         title: 'Tareas',
         icon: 'far fa-layer-group',
         subitems: [
-            { id: 'planes', title: 'Planes', icon: 'far fa-calendar', url: 'planes.html' },
-            { id: 'tareas', title: 'Tareas', icon: 'far fa-tasks', url: 'tareas.html' }
+            { id: 'planes', title: 'Planes', icon: 'far fa-calendar', url: '../../ubits-colaborador/tareas/planes.html' },
+            { id: 'tareas', title: 'Tareas', icon: 'far fa-tasks', url: '../../ubits-colaborador/tareas/tareas.html' }
         ]
     },
     {
         id: 'ubits-ai',
         title: 'UBITS AI',
         icon: 'far fa-sparkles',
-        url: 'ubits-ai.html',
+        url: '../../ubits-colaborador/ubits-ai/ubits-ai.html',
         isLink: true,
         clickable: true
     }

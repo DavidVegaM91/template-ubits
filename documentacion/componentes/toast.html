@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Toast - Notificaciones flotantes | UBITS Playground</title>
+    
+    <!-- Estilos locales -->
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <style>
+        /* Preview Styles */
+        /* Preview control buttons - override UBITS button styles for active state */
+        .preview-control-btn.active {
+            background: var(--ubits-accent-brand) !important;
+            color: white !important;
+            border-color: var(--ubits-accent-brand) !important;
+        }
+        
+        .preview-control-btn.active span {
+            color: white !important;
+        }
+        
+        /* Component preview container - reemplaza con estilos específicos del componente */
+        .component-preview {
+            position: relative !important;
+            border-radius: 8px !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+            background: var(--ubits-bg-1) !important;
+            border: 1px solid var(--ubits-border-1) !important;
+        }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navigation -->
+            <div id="top-nav-container"></div>
+            
+            <!-- Content with Sidebar -->
+            <div style="display: flex;">
+            
+            <!-- Dropdown Móvil para Documentación -->
+            <div id="docs-dropdown-container"></div>
+            
+            <!-- Sidebar de Documentación -->
+            <div id="docs-sidebar-container"></div>
+
+            <!-- Content Area -->
+            <div class="components-content">
+                <!-- Content Area -->
+                <div class="content-area" style="display: block; width: 100%;">
+                <!-- Hero Section -->
+                <div style="text-align: center; margin-bottom: 60px;">
+                    <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                        Toast
+                    </h1>
+                    <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                        Mensajes breves que aparecen arriba, al centro, para informar algo rápido al usuario. Se muestran por unos segundos y luego se van solos.
+                    </p>
+                </div>
+
+                <!-- Preview Section -->
+                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1); margin-bottom: 40px;">
+                    <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                        <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                        Preview del componente
+                    </h2>
+                    <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                        Prueba las variantes principales del toast. Los mensajes aparecen arriba, al centro, y se cierran solos.
+                    </p>
+                    
+                    <!-- Preview Container -->
+                    <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: 1px solid var(--ubits-border-1); position: relative;">
+                        
+                        <!-- Component Preview -->
+                        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                            <button class="ubits-button ubits-button--secondary ubits-button--md" onclick="showToast('success', 'Acción completada correctamente.', { duration: 3500 })">
+                                <i class="far fa-check"></i>
+                                <span>Success</span>
+                            </button>
+                            <button class="ubits-button ubits-button--secondary ubits-button--md" onclick="showToast('info', 'Información general para el usuario.', { duration: 3500 })">
+                                <i class="far fa-info-circle"></i>
+                                <span>Info</span>
+                            </button>
+                            <button class="ubits-button ubits-button--secondary ubits-button--md" onclick="showToast('warning', 'Atención: revisa la información.', { duration: 5000 })">
+                                <i class="far fa-exclamation-triangle"></i>
+                                <span>Warning</span>
+                            </button>
+                            <button class="ubits-button ubits-button--secondary ubits-button--md" onclick="showToast('error', 'No se pudo completar la acción.', { duration: 6500 })">
+                                <i class="far fa-times-circle"></i>
+                                <span>Error</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    
+                </div>
+
+                <!-- Características generales -->
+                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1); margin-bottom: 40px;">
+                    <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                        <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                        Características generales
+                    </h2>
+                    <p class="ubits-body-md-regular" style="margin-bottom: 24px; color: var(--ubits-fg-1-medium);">
+                        Toasts ligeros y consistentes con UBITS: posición superior centrada, cierre automático y accesibilidad integrada.
+                    </p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+                        <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                            <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-arrows-v"></i></div>
+                            <div class="ubits-body-sm-bold">Posición y apilado</div>
+                            <div class="ubits-body-sm-regular">Siempre aparecen arriba y al centro, uno debajo de otro, para que no te tapes nada importante.</div>
+                        </div>
+                        <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                            <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-hourglass-half"></i></div>
+                            <div class="ubits-body-sm-bold">Duración</div>
+                            <div class="ubits-body-sm-regular">Se cierran solos: success e info ~3.5 segundos, warning ~5 segundos y error ~6.5 segundos.</div>
+                        </div>
+                        <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                            <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-universal-access"></i></div>
+                            <div class="ubits-body-sm-bold">Pausa en hover y foco</div>
+                            <div class="ubits-body-sm-regular">Si pasas el cursor o navegas con teclado, se quedan un momento más para que puedas leerlos con calma.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROMPTS ÚTILES -->
+                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1); margin-bottom: 40px;">
+                    <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                        <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                        Prompts útiles
+                    </h2>
+                    <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                        Usa estos prompts con Cursor AI para configurar y personalizar el componente Toast de manera eficiente.
+                    </p>
+
+                    <!-- Alert Warning -->
+                    <div id="component-warning-alert" style="margin-bottom: 32px;"></div>
+
+                    <!-- Prompt 1: Importar e implementar Toast básico -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Crear toast de notificación
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('component-prompt-1')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="component-prompt-1">Al [hacer clic en el botón/enviar el formulario/completar la acción] muestra un toast de [success, info, warning o error] que diga "[tu_mensaje]".</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 2: Toast info con tiempo corto -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Quitar botón de cerrar del toast
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('component-prompt-2')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="component-prompt-2">Quita el botón de cerrar del toast que dice "[tu_mensaje]" para que solo se cierre automáticamente.</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 3: Toast warning sin botón de cierre -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Cambiar tipo del toast
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('component-prompt-3')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="component-prompt-3">Cambia el toast [descripción_del_toast] de [tipo_actual] a [nuevo_tipo: success, info, warning o error].</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 4: Toast con acción (botón dentro del toast) -->
+                    <div style="padding-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Cambiar duración del toast
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('component-prompt-4')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="component-prompt-4">Cambia el toast [descripción_del_toast] para que se cierre en [numero] segundos.</code></pre>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- ACORDEÓN DE DOCUMENTACIÓN TÉCNICA -->
+                <div style="background: var(--ubits-bg-1); border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1); margin-bottom: 40px; overflow: hidden;">
+                    <!-- Header del acordeón -->
+                    <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                        <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Documentación técnica
+                        </h2>
+                        <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
+                            Documentación técnica completa del componente Toast con ejemplos de implementación, API y personalización.
+                        </p>
+                    </div>
+                    
+                    <!-- Botón de expansión -->
+                    <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                        <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>
+                            Mostrar
+                        </span>
+                    </div>
+                    
+                    <!-- Contenido del acordeón (inicialmente oculto) -->
+                    <div id="technical-docs-content" style="display: none; padding: 0;">
+                        <!-- Estructura del Componente -->
+                        <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-sitemap" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Estructura del componente
+                                </h2>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('structure-code')">
+                                    <i class="far fa-copy"></i>
+                                    <span>Copiar</span>
+                                </button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: 1px solid var(--ubits-border-1);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="structure-code">&lt;!-- Contenedor principal (se crea automáticamente) --&gt;
+&lt;div id="ubits-toast-container"&gt;&lt;/div&gt;
+
+&lt;!-- Toast individual (se genera dinámicamente) --&gt;
+&lt;div class="ubits-toast ubits-toast--success"&gt;
+  &lt;div class="ubits-toast__icon"&gt;
+    &lt;i class="far fa-check-circle"&gt;&lt;/i&gt;
+  &lt;/div&gt;
+  &lt;div class="ubits-toast__content"&gt;
+    &lt;div class="ubits-toast__text ubits-body-sm-regular"&gt;Mensaje del toast&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;button class="ubits-toast__close" aria-label="Cerrar notificación"&gt;
+    &lt;i class="far fa-times"&gt;&lt;/i&gt;
+  &lt;/button&gt;
+&lt;/div&gt;</code></pre>
+                            </div>
+                        </div>
+
+                        <!-- Cómo Implementar -->
+                        <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Cómo implementar
+                                </h2>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('implement-code')">
+                                    <i class="far fa-copy"></i>
+                                    <span>Copiar</span>
+                                </button>
+                            </div>
+                            
+                            <!-- REQUISITOS DE RENDERIZADO -->
+                            <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: 1px solid var(--ubits-border-1); margin-bottom: 16px;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">🔧 REQUISITOS OBLIGATORIOS:</h3>
+                                <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.5;">
+                                    <strong>CSS Requerido:</strong><br>
+                                    • <code>components/toast.css</code> - Estilos del componente<br>
+                                    • <code>fontawesome-icons.css</code> - Iconos FontAwesome<br>
+                                    • <code>ubits-colors.css</code> - Tokens de color UBITS<br><br>
+                                    <strong>JavaScript Requerido:</strong><br>
+                                    • <code>components/toast.js</code> - Función showToast()<br><br>
+                                    <strong>Container Requerido:</strong><br>
+                                    • <code>&lt;div id="ubits-toast-container"&gt;&lt;/div&gt;</code> - Container obligatorio<br><br>
+                                    <strong>Renderizado:</strong> showToast() function
+                                </div>
+                            </div>
+                            
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="implement-code">&lt;!-- 1. IMPORTAR ARCHIVOS NECESARIOS --&gt;
+&lt;link rel="stylesheet" href="../../general-styles/ubits-colors.css"&gt;
+&lt;link rel="stylesheet" href="../../general-styles/fontawesome-icons.css"&gt;
+&lt;link rel="stylesheet" href="../../components/toast.css"&gt;
+&lt;script src="../../components/toast.js"&gt;&lt;/script&gt;
+
+&lt;!-- 2. CREAR CONTENEDOR --&gt;
+&lt;div id="ubits-toast-container"&gt;&lt;/div&gt;
+
+&lt;!-- 3. USAR LA FUNCIÓN --&gt;
+&lt;script&gt;
+// Toast básico
+showToast('success', '¡Operación exitosa!');
+
+// Toast con opciones
+showToast('info', 'Ya estás en la documentación 😆', {
+    containerId: 'ubits-toast-container',
+    duration: 3500,
+    noClose: false
+});
+
+// Toast con botón de acción
+showToast('warning', 'Datos no guardados', {
+    action: { 
+        label: 'Guardar', 
+        onClick: () => save() 
+    }
+});
+&lt;/script&gt;</code></pre>
+                            </div>
+                        </div>
+
+                        <!-- API y Funciones -->
+                        <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-cogs" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                API y funciones
+                            </h2>
+                            <div style="margin-bottom: 24px;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">showToast(type, message, options)</h3>
+                                <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
+                                    Función helper para crear toasts fácilmente. Requiere que el CSS y JS del componente estén importados.
+                                </p>
+                                <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: 6px; border-left: 4px solid var(--ubits-accent-brand);">
+                                    <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                        <strong>Parámetros:</strong><br>
+                                        • type: 'success' (3.5s), 'info' (3.5s), 'warning' (5s), 'error' (6.5s)<br>
+                                        • message: Texto del toast (string)<br>
+                                        • options: { containerId, duration, noClose, pauseOnHover, action }<br><br>
+                                        <strong>Opciones disponibles:</strong><br>
+                                        • containerId: string (ID del contenedor, default: 'ubits-toast-container')<br>
+                                        • duration: number (milisegundos, 0 = persistente)<br>
+                                        • noClose: boolean (ocultar botón cerrar)<br>
+                                        • pauseOnHover: boolean (pausar en hover, default: true)<br>
+                                        • action: {label: string, onClick: function} (botón de acción)<br><br>
+                                        <strong>Ejemplos:</strong><br>
+                                        showToast('success', '¡Guardado!');<br>
+                                        showToast('error', 'Error al guardar', { noClose: true });<br>
+                                        showToast('warning', 'Datos no guardados', { action: { label: 'Guardar', onClick: save } });
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Características y Mejores Prácticas -->
+                        <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-star" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Características y mejores prácticas
+                            </h2>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                    <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">✅ Características</h3>
+                                    <ul class="ubits-body-sm-regular" style="margin: 0; padding-left: 16px; color: var(--ubits-fg-1-medium); line-height: 1.6;">
+                                        <li>Auto-cierre después del tiempo especificado</li>
+                                        <li>Pausa en hover y foco para mejor UX</li>
+                                        <li>Apilado inteligente (máximo 3 visibles)</li>
+                                        <li>Roles ARIA para accesibilidad</li>
+                                        <li>Animaciones suaves de entrada/salida</li>
+                                        <li>Posicionamiento fijo top-center</li>
+                                    </ul>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                    <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">💡 Mejores prácticas</h3>
+                                    <ul class="ubits-body-sm-regular" style="margin: 0; padding-left: 16px; color: var(--ubits-fg-1-medium); line-height: 1.6;">
+                                        <li>Usa mensajes cortos y claros</li>
+                                        <li>Success para confirmaciones</li>
+                                        <li>Error para problemas críticos</li>
+                                        <li>Warning para advertencias</li>
+                                        <li>Info para información general</li>
+                                        <li>No abuses de los toasts</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Personalización -->
+                        <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-paint-brush" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Personalización
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 12px; line-height: 1.5;">
+                                Los estilos se pueden personalizar editando las variables CSS en <code>components/toast.css</code>. 
+                                Los toasts usan tokens UBITS para mantener consistencia con el sistema de diseño.
+                            </p>
+                            <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                    <span class="ubits-body-md-regular">Variables CSS personalizables</span>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('customize-code')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="customize-code">/* Personalizar colores de toasts */
+.ubits-toast--success {
+  background-color: var(--ubits-feedback-bg-success-subtle);
+  border-color: var(--ubits-feedback-border-success-subtle);
+  color: var(--ubits-feedback-fg-success-subtle);
+}
+
+.ubits-toast--info {
+  background-color: var(--ubits-feedback-bg-info-subtle);
+  border-color: var(--ubits-feedback-border-info-subtle);
+  color: var(--ubits-feedback-fg-info-subtle);
+}
+
+.ubits-toast--warning {
+  background-color: var(--ubits-feedback-bg-warning-subtle);
+  border-color: var(--ubits-feedback-border-warning-subtle);
+  color: var(--ubits-feedback-fg-warning-subtle);
+}
+
+.ubits-toast--error {
+  background-color: var(--ubits-feedback-bg-error-subtle);
+  border-color: var(--ubits-feedback-border-error-subtle);
+  color: var(--ubits-feedback-fg-error-subtle);
+}</code></pre>
+                            </div>
+                        </div>
+
+                        <!-- Solución de problemas -->
+                        <div style="padding: 32px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-tools" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Solución de problemas
+                            </h2>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                    <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">❌ Problemas comunes</h3>
+                                    <ul class="ubits-body-sm-regular" style="margin: 0; padding-left: 16px; color: var(--ubits-fg-1-medium); line-height: 1.6;">
+                                        <li><strong>Toast no aparece:</strong> Verifica que el contenedor tenga ID correcto</li>
+                                        <li><strong>Sin estilos:</strong> Importa <code>components/toast.css</code></li>
+                                        <li><strong>Sin iconos:</strong> Importa <code>fontawesome-icons.css</code></li>
+                                        <li><strong>Colores incorrectos:</strong> Importa <code>ubits-colors.css</code></li>
+                                        <li><strong>No se cierra:</strong> Verifica que el JS esté cargado</li>
+                                    </ul>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                    <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">✅ Checklist de verificación</h3>
+                                    <ul class="ubits-body-sm-regular" style="margin: 0; padding-left: 16px; color: var(--ubits-fg-1-medium); line-height: 1.6;">
+                                        <li>✓ Contenedor con ID <code>ubits-toast-container</code></li>
+                                        <li>✓ CSS: <code>components/toast.css</code> importado</li>
+                                        <li>✓ JS: <code>components/toast.js</code> importado</li>
+                                        <li>✓ Tokens: <code>ubits-colors.css</code> importado</li>
+                                        <li>✓ Iconos: <code>fontawesome-icons.css</code> importado</li>
+                                        <li>✓ Función: <code>showToast()</code> disponible</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Contenedor para Toast UBITS -->
+    <div id="ubits-toast-container"></div>
+
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cargar top-nav con variante documentación
+            loadSubNav('top-nav-container', 'documentacion');
+            
+            // Forzar activación de Componentes en todas las páginas de documentación
+            setTimeout(() => {
+                // Quitar todas las clases active primero
+                document.querySelectorAll('.nav-tab.active, .hamburger-item.active').forEach(item => {
+                    item.classList.remove('active');
+                });
+                
+                // Activar solo Componentes
+                const navTab = document.querySelector('.nav-tab[data-tab="section3"]');
+                const hamburgerItem = document.querySelector('.hamburger-item[data-tab="section3"]');
+                if (navTab) navTab.classList.add('active');
+                if (hamburgerItem) hamburgerItem.classList.add('active');
+            }, 200);
+            
+            // Cargar sidebar de documentación
+            loadDocsSidebar('toast');
+            
+            // Cargar alert de warning para prompts usando el componente oficial
+            showAlert('warning', 'Importante: Antes de enviar estos prompts a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
+                containerId: 'component-warning-alert',
+                noClose: true
+            });
+        });
+
+        // Funciones para el preview del componente
+        function setPreviewActive(section) {
+            // Reemplaza con la lógica específica del componente
+            console.log('Preview activo:', section);
+            
+            // Actualizar controles
+            const controlButtons = document.querySelectorAll('.preview-control-btn');
+            controlButtons.forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            const activeControl = document.querySelector(`[onclick="setPreviewActive('${section}')"]`);
+            if (activeControl) {
+                activeControl.classList.add('active');
+            }
+        }
+
+
+        // Función para el acordeón de documentación técnica
+        function toggleTechnicalDocs() {
+            const content = document.getElementById('technical-docs-content');
+            const button = document.querySelector('[onclick="toggleTechnicalDocs()"]');
+            
+            if (content.style.display === 'none' || content.style.display === '') {
+                // Expandir
+                content.style.display = 'block';
+                button.innerHTML = '<i class="far fa-chevron-up" id="tech-docs-chevron" style="color: var(--ubits-accent-brand);"></i> <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand);">Ocultar</span>';
+            } else {
+                // Contraer
+                content.style.display = 'none';
+                button.innerHTML = '<i class="far fa-chevron-down" id="tech-docs-chevron" style="color: var(--ubits-accent-brand);"></i> <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand);">Mostrar</span>';
+            }
+        }
+
+        // Función para copiar prompts
+        function copyPrompt(promptId) {
+            const promptElement = document.getElementById(promptId);
+            const promptText = promptElement.textContent;
+            
+            // Copiar al portapapeles
+            navigator.clipboard.writeText(promptText).then(function() {
+                // Mostrar feedback visual
+                const button = document.querySelector(`[onclick="copyPrompt('${promptId}')"]`);
+                const icon = button.querySelector('i');
+                const text = button.querySelector('span');
+                
+                // Cambiar estado del botón
+                icon.className = 'far fa-check';
+                text.textContent = 'Copiado';
+                button.classList.add('ubits-button--active');
+                
+                // Mostrar toast
+                showToast('success', '¡Prompt copiado! 🎉', {
+                    containerId: 'ubits-toast-container',
+                    duration: 3500
+                });
+                
+                // Restaurar estado después de 2 segundos
+                setTimeout(function() {
+                    icon.className = 'far fa-copy';
+                    text.textContent = 'Copiar';
+                    button.classList.remove('ubits-button--active');
+                }, 2000);
+                
+            }).catch(function(err) {
+                console.error('Error al copiar: ', err);
+                showToast('error', 'Error al copiar el prompt', {
+                    containerId: 'ubits-toast-container',
+                    duration: 6500
+                });
+            });
+        }
+
+        // Función para copiar código
+        function copyCode(codeId) {
+            const codeElement = document.getElementById(codeId);
+            const codeText = codeElement.textContent;
+            
+            // Copiar al portapapeles
+            navigator.clipboard.writeText(codeText).then(function() {
+                // Mostrar feedback visual
+                const button = document.querySelector(`[onclick="copyCode('${codeId}')"]`);
+                const icon = button.querySelector('i');
+                const text = button.querySelector('span');
+                
+                // Cambiar estado del botón
+                icon.className = 'far fa-check';
+                text.textContent = 'Copiado';
+                button.classList.add('ubits-button--active');
+                
+                // Mostrar toast
+                showToast('success', '¡Código copiado! 🎉', {
+                    containerId: 'ubits-toast-container',
+                    duration: 3500
+                });
+                
+                // Restaurar estado después de 2 segundos
+                setTimeout(function() {
+                    icon.className = 'far fa-copy';
+                    text.textContent = 'Copiar';
+                    button.classList.remove('ubits-button--active');
+                }, 2000);
+                
+            }).catch(function(err) {
+                console.error('Error al copiar: ', err);
+                showToast('error', 'Error al copiar el código', {
+                    containerId: 'ubits-toast-container',
+                    duration: 6500
+                });
+            });
+        }
+
+    </script>
+</body>
+</html>

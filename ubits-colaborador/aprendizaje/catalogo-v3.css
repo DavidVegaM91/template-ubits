@@ -1,0 +1,991 @@
+/* ========================================
+   ESTILOS ESPECÍFICOS PARA catalogo-v3
+   ======================================== */
+
+
+/* Estilos específicos para content-sections */
+.content-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+    overflow: visible;
+    max-height: none;
+    padding-bottom: 60px;
+}
+
+/* Hero de búsqueda minimalista */
+.catalog-hero {
+    background: transparent;
+    padding: 0;
+    margin-bottom: 0;
+    text-align: center;
+}
+
+.catalog-hero h1 {
+    color: var(--ubits-fg-1-high);
+    margin-bottom: 16px;
+}
+
+.catalog-search-wrapper {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    justify-content: center;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.catalog-search-container {
+    flex: 1;
+    max-width: 600px;
+    position: relative;
+}
+
+/* Botones dentro del input de búsqueda - mantener posición original */
+.catalog-search-input-buttons {
+    position: absolute;
+    right: 8px; /* Posición original de los botones personalizados */
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 10;
+}
+
+/* Mover el botón X (limpiar) más a la izquierda para que quede ANTES de los botones personalizados */
+/* Botones personalizados están en right: 8px, ocupan ~130px (Modo IA ~90px + gap 8px + Filtros 32px) */
+/* Botón X debe estar en: 8px + 130px + 8px (gap) = 146px desde el borde derecho */
+#catalog-search-container i[class*="fa-times"] {
+    z-index: 5 !important; /* Debajo de los botones personalizados */
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    right: 146px !important; /* Mover a la izquierda de los botones personalizados */
+    /* No forzar display - dejar que el componente input.js maneje la visibilidad */
+}
+
+/* Ajustar padding del input para dar espacio a todos los elementos */
+/* Botones personalizados: ~130px + gap 8px + Botón X 32px = 170px total */
+#catalog-search-container.ubits-input-wrapper--right-icon .ubits-input {
+    padding-right: 170px !important;
+}
+
+/* En mobile: ajustar posicionamiento y padding */
+@media (max-width: 768px) {
+    #catalog-search-container i[class*="fa-times"] {
+        right: 120px !important; /* Ajuste para mobile */
+    }
+    
+    #catalog-search-container.ubits-input-wrapper--right-icon .ubits-input {
+        padding-right: 150px !important; /* Reducido para mobile */
+    }
+}
+
+/* En mobile: ajustar placeholder para que no se corte */
+@media (max-width: 768px) {
+    /* Asegurar que el placeholder se muestre correctamente */
+    #catalog-search-container input.ubits-input::placeholder {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+}
+
+/* Contenedor de sugerencias de búsqueda - KISS: simple y directo */
+#catalog-search-container {
+    position: relative;
+}
+
+.search-suggestions-container {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    width: 100%;
+    background: var(--ubits-bg-1);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    max-height: 400px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+    border: 1px solid var(--ubits-border-1);
+    box-sizing: border-box;
+}
+
+.search-suggestions-container.visible {
+    display: block;
+}
+
+.search-suggestion-item {
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border-bottom: 1px solid var(--ubits-border-1);
+    color: var(--ubits-fg-1-high);
+}
+
+.search-suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.search-suggestion-item:hover {
+    background: var(--ubits-bg-2);
+}
+
+.search-suggestion-item .suggestion-text {
+    color: var(--ubits-fg-1-high);
+    font-size: 14px;
+    line-height: 1.5;
+    text-align: left;
+}
+
+.search-suggestion-item {
+    text-align: left;
+}
+
+.catalog-filters-btn {
+    flex-shrink: 0;
+}
+
+.catalog-chips-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.catalog-chips-label {
+    color: var(--ubits-fg-1-medium);
+    white-space: nowrap;
+}
+
+.catalog-chips {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap;
+}
+
+/* Ocultar scrollbar pero mantener funcionalidad de scroll */
+.catalog-chips {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE y Edge */
+}
+
+.catalog-chips::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+.catalog-chip {
+    background: var(--ubits-bg-1);
+    border: 1px solid transparent;
+    border-radius: 20px;
+    padding: 4px 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: var(--ubits-fg-1-medium);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.catalog-chip:hover {
+    background: var(--ubits-bg-gray-subtle-hover);
+    color: var(--ubits-fg-1-high);
+}
+
+/* Wrapper de sección de academias */
+.academias-section-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Título de sección de academias */
+.academias-section-title {
+    color: var(--ubits-fg-1-high);
+    margin-bottom: 12px;
+}
+
+/* Sección de tipos de contenido */
+.tipos-contenido-section-wrapper {
+    display: flex;
+    flex-direction: column;
+    margin-top: 24px;
+    overflow: visible;
+}
+
+.tipos-contenido-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.tipos-contenido-section-title {
+    color: var(--ubits-fg-1-high);
+    margin: 0;
+}
+
+.tipos-contenido-controls {
+    display: flex;
+    gap: 8px;
+}
+
+/* Carrusel de tipos de contenido (nuevo - rectangular) */
+.tipos-contenido-carousel-nuevo {
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+    overflow-x: auto;
+    overflow-y: visible;
+    scroll-behavior: smooth;
+    padding: 0;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Ocultar scrollbar pero mantener funcionalidad de scroll */
+.tipos-contenido-carousel {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE y Edge */
+}
+
+.tipos-contenido-carousel::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+/* Card de tipo de contenido */
+.tipo-contenido-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    cursor: pointer;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+    overflow: visible;
+    padding: 0;
+    margin: 0;
+    border: 1px solid transparent;
+    flex: 0 0 calc((100% - (7 * 24px)) / 8);
+    width: calc((100% - (7 * 24px)) / 8);
+    max-width: calc((100% - (7 * 24px)) / 8);
+    min-width: calc((100% - (7 * 24px)) / 8);
+    box-sizing: border-box;
+    flex-shrink: 0;
+    position: relative;
+    border-radius: 50%;
+}
+
+.tipo-contenido-card:hover {
+    border-color: var(--ubits-border-1);
+}
+
+/* Tooltip para cards de aliados */
+.tipo-contenido-card-tooltip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ubits-fg-1-high);
+    color: var(--ubits-logo-inverted);
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 10000;
+    font-family: 'Noto Sans', sans-serif;
+    font-weight: 400;
+    visibility: hidden;
+}
+
+.tipo-contenido-card:hover .tipo-contenido-card-tooltip {
+    opacity: 1;
+    visibility: visible;
+}
+
+.tipo-contenido-card-tooltip.tooltip-right {
+    left: auto;
+    right: 0;
+    transform: none;
+}
+
+.tipo-contenido-card-tooltip.tooltip-left {
+    left: 0;
+    right: auto;
+    transform: none;
+}
+
+.tipo-contenido-card-tooltip.tooltip-bottom {
+    bottom: auto;
+    top: calc(100% + 8px);
+}
+
+.tipo-contenido-card-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid var(--ubits-fg-1-high);
+}
+
+.tipo-contenido-card-tooltip.tooltip-bottom::after {
+    top: auto;
+    bottom: 100%;
+    border-top: none;
+    border-bottom: 5px solid var(--ubits-fg-1-high);
+}
+
+.tipo-contenido-card-tooltip.tooltip-right::after {
+    left: auto;
+    right: 14px;
+    transform: none;
+}
+
+.tipo-contenido-card-tooltip.tooltip-left::after {
+    left: 14px;
+    right: auto;
+    transform: none;
+}
+
+
+
+.tipo-contenido-image {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--ubits-bg-1);
+    border: none;
+    transition: transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+    padding: 0;
+}
+
+.tipo-contenido-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 50%;
+    transition: transform 0.2s ease;
+}
+
+.tipo-contenido-card:hover .tipo-contenido-image img {
+    transform: scale(1.1);
+}
+
+/* Carrusel de tipos de contenido (nuevo - rectangular) */
+.tipos-contenido-carousel-nuevo {
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    padding: 0;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    min-height: 120px;
+}
+
+.tipos-contenido-carousel-nuevo::-webkit-scrollbar {
+    display: none;
+}
+
+.tipo-contenido-card-nuevo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 16px;
+    background: var(--ubits-bg-1);
+    border: 1px solid transparent;
+    border-radius: 8px;
+    flex: 0 0 calc((100% - (7 * 24px)) / 8);
+    width: calc((100% - (7 * 24px)) / 8);
+    max-width: calc((100% - (7 * 24px)) / 8);
+    transition: all 0.2s ease;
+    min-height: 100px;
+    box-sizing: border-box;
+}
+
+.tipo-contenido-card-nuevo:hover {
+    border-color: var(--ubits-border-1);
+}
+
+.tipo-contenido-icon-nuevo {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ubits-fg-1-medium);
+    transition: color 0.2s ease;
+}
+
+.tipo-contenido-card-nuevo:hover .tipo-contenido-icon-nuevo {
+    color: var(--ubits-fg-1-high);
+}
+
+.tipo-contenido-icon-nuevo i {
+    font-size: 32px;
+}
+
+.tipo-contenido-name-nuevo {
+    text-align: center;
+    color: var(--ubits-fg-1-medium);
+    transition: color 0.2s ease;
+}
+
+.tipo-contenido-card-nuevo:hover .tipo-contenido-name-nuevo {
+    color: var(--ubits-fg-1-high);
+}
+
+/* Grid de academias - 5 columnas ocupando todo el ancho */
+.academias-grid-spotify {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+/* Cards de academia - con imagen de fondo y texto blanco */
+.academia-card-spotify {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 12px;
+    padding: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    color: var(--ubits-logo-inverted);
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 1 / 1;
+}
+
+.academia-card-spotify::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.4) 100%);
+    border-radius: 12px;
+    z-index: 0;
+}
+
+.academia-card-spotify:hover::before {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.5) 100%);
+}
+
+.academia-card-spotify.expanded {
+    border-color: var(--ubits-accent-brand);
+    position: relative;
+}
+
+.academia-card-spotify.expanded::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--ubits-accent-brand);
+    border-radius: 0 0 12px 12px;
+    z-index: 10;
+}
+
+.academia-card-spotify-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.academia-card-spotify-content p {
+    margin: 0;
+}
+
+.academia-card-spotify-title {
+    color: var(--ubits-logo-inverted);
+    margin-top: 0;
+    margin-bottom: 0;
+    line-height: 1.3;
+    position: relative;
+    z-index: 1;
+}
+
+.academia-card-spotify-meta {
+    color: var(--ubits-logo-inverted);
+    opacity: 0.95;
+    line-height: 1.4;
+    margin-top: 0;
+    position: relative;
+    z-index: 1;
+}
+
+/* Variante para Academia de Habilidades Blandas - imagen arriba, fondo blanco */
+.academia-card-spotify.variant-image-top {
+    background: var(--ubits-bg-1);
+    background-image: none;
+    padding: 0;
+    aspect-ratio: auto;
+    overflow: hidden;
+    border-radius: 12px;
+    border: 1px solid transparent;
+}
+
+.academia-card-spotify.variant-image-top:hover {
+    border-color: var(--ubits-border-1);
+}
+
+.academia-card-spotify.variant-image-top::before {
+    display: none;
+}
+
+.academia-card-spotify.variant-image-top .academia-card-spotify-image {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    display: block;
+    border-radius: 12px 12px 0 0;
+}
+
+.academia-card-spotify.variant-image-top .academia-card-spotify-content {
+    padding: 16px;
+    background: var(--ubits-bg-1);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.academia-card-spotify.variant-image-top .academia-card-spotify-title {
+    color: var(--ubits-fg-1-high);
+}
+
+.academia-card-spotify.variant-image-top .academia-card-spotify-meta {
+    color: var(--ubits-fg-1-medium);
+    opacity: 1;
+}
+
+.academia-card-spotify.variant-image-top.expanded {
+    border: 1px solid var(--ubits-accent-brand) !important;
+}
+
+.academia-card-spotify.variant-image-top.expanded::after {
+    display: none;
+}
+
+/* Contenedor de competencias expandidas */
+.academia-competencias-container {
+    display: none;
+    margin-top: 24px;
+    margin-bottom: 32px;
+}
+
+.academia-competencias-container.is-visible {
+    display: block;
+}
+
+/* Grid de competencias estilo v1 - cards horizontales */
+.competencias-grid-v1 {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    overflow: visible;
+}
+
+.competencias-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Wrapper para competencia y habilidades */
+.competencia-card-v1-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Cards de competencia estilo v1 - horizontales compactas */
+.competencia-card-v1 {
+    background: var(--ubits-bg-1);
+    border: 1px solid transparent;
+    border-radius: 6px;
+    overflow: visible;
+    cursor: default;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 0;
+    height: 48px;
+    position: relative;
+    transition: border-color 0.2s ease;
+}
+
+.competencia-card-v1:hover {
+    border-color: var(--ubits-border-1);
+}
+
+.competencia-card-v1-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 8px;
+    flex-shrink: 0;
+}
+
+.competencia-card-v1-chevron {
+    transition: transform 0.2s ease;
+}
+
+.competencia-card-v1.expanded .competencia-card-v1-chevron {
+    transform: rotate(180deg);
+}
+
+
+.competencia-card-v1-image {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    background: var(--ubits-bg-2);
+    flex-shrink: 0;
+    border-radius: 6px 0 0 6px;
+}
+
+.competencia-card-v1-content {
+    padding: 6px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+    justify-content: center;
+    overflow: visible;
+}
+
+.competencia-card-v1-title-wrapper {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+    overflow: visible;
+}
+
+.competencia-card-v1-title {
+    color: var(--ubits-fg-1-high);
+    margin-bottom: 0;
+    line-height: 1.5;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    max-width: 100%;
+}
+
+.competencia-card-v1-title-text {
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+    color: inherit;
+}
+
+/* Ajuste para status-tag dentro del título */
+.competencia-card-v1-title .ubits-status-tag {
+    margin-left: 6px;
+    flex-shrink: 0;
+}
+
+.competencia-card-v1-count {
+    color: var(--ubits-fg-1-medium);
+    line-height: 1.2;
+    margin-top: 0;
+}
+
+/* Wrapper para competencia y habilidades */
+.competencia-card-v1-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Contenedor de habilidades (acordeón) */
+.competencia-habilidades-container {
+    display: none;
+    margin-top: 8px;
+    padding: 0;
+    background: var(--ubits-bg-2);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.competencia-habilidades-container.is-visible {
+    display: block;
+}
+
+.competencias-habilidades-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.habilidad-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 8px;
+    background: var(--ubits-bg-1);
+    border: 1px solid transparent;
+    border-radius: 20px;
+    color: var(--ubits-fg-1-medium);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.habilidad-chip:hover {
+    background: var(--ubits-bg-gray-subtle-hover);
+    color: var(--ubits-fg-1-high);
+}
+
+.habilidad-chip i {
+    color: var(--ubits-fg-1-medium);
+    font-size: 14px;
+    transition: color 0.2s ease;
+}
+
+.habilidad-chip:hover i {
+    color: var(--ubits-fg-1-high);
+}
+
+/* Tooltips para botones */
+.competencia-card-v1-actions .ubits-button {
+    position: relative;
+}
+
+.competencia-card-v1-actions .ubits-button::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ubits-fg-1-high);
+    color: var(--ubits-logo-inverted);
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 1000;
+    font-family: 'Noto Sans', sans-serif;
+    font-weight: 400;
+}
+
+.competencia-card-v1-actions .ubits-button.tooltip-right::after {
+    left: auto;
+    right: 0;
+    transform: none;
+}
+
+.competencia-card-v1-actions .ubits-button.tooltip-left::after {
+    left: 0;
+    right: auto;
+    transform: none;
+}
+
+.competencia-card-v1-actions .ubits-button.tooltip-bottom::after {
+    bottom: auto;
+    top: calc(100% + 8px);
+}
+
+.competencia-card-v1-actions .ubits-button::before {
+    content: '';
+    position: absolute;
+    bottom: calc(100% + 3px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid var(--ubits-fg-1-high);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 1001;
+}
+
+.competencia-card-v1-actions .ubits-button.tooltip-bottom::before {
+    bottom: auto;
+    top: calc(100% + 3px);
+    border-top: none;
+    border-bottom: 5px solid var(--ubits-fg-1-high);
+}
+
+.competencia-card-v1-actions .ubits-button.tooltip-right::before {
+    left: auto;
+    right: 14px;
+    transform: none;
+}
+
+.competencia-card-v1-actions .ubits-button.tooltip-left::before {
+    left: 14px;
+    right: auto;
+    transform: none;
+}
+
+.competencia-card-v1-actions .ubits-button:hover::after,
+.competencia-card-v1-actions .ubits-button:hover::before {
+    opacity: 1;
+}
+
+
+/* Estado vacío */
+.catalog-empty-state {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.catalog-empty-state-icon {
+    font-size: 64px;
+    color: var(--ubits-fg-1-low);
+    margin-bottom: 16px;
+}
+
+/* Responsive */
+@media (max-width: 1023px) {
+    .tipo-contenido-card {
+        flex: 0 0 calc((100% - (4 * 24px)) / 5);
+        width: calc((100% - (4 * 24px)) / 5);
+        max-width: calc((100% - (4 * 24px)) / 5);
+        min-width: calc((100% - (4 * 24px)) / 5);
+    }
+    
+    .tipo-contenido-card-nuevo {
+        flex: 0 0 calc((100% - (4 * 24px)) / 5);
+        width: calc((100% - (4 * 24px)) / 5);
+        max-width: calc((100% - (4 * 24px)) / 5);
+        min-width: calc((100% - (4 * 24px)) / 5);
+    }
+    
+    .tipo-contenido-card-nuevo {
+        flex: 0 0 calc((100% - (4 * 24px)) / 5);
+        width: calc((100% - (4 * 24px)) / 5);
+        max-width: calc((100% - (4 * 24px)) / 5);
+    }
+
+    .academias-grid-spotify {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+    }
+
+
+    .competencia-card-v1-image {
+        width: 48px;
+        height: 48px;
+    }
+
+    .competencia-card-v1 {
+        height: 48px;
+    }
+}
+
+@media (max-width: 768px) {
+    .tipo-contenido-card {
+        flex: 0 0 calc((100% - (2 * 24px)) / 3);
+        min-width: calc((100% - (2 * 24px)) / 3);
+    }
+    
+    .tipo-contenido-card-nuevo {
+        flex: 0 0 calc((100% - (2 * 24px)) / 3);
+        width: calc((100% - (2 * 24px)) / 3);
+        max-width: calc((100% - (2 * 24px)) / 3);
+    }
+    
+    .tipo-contenido-card {
+        flex: 0 0 calc((100% - (2 * 24px)) / 3);
+        width: calc((100% - (2 * 24px)) / 3);
+        max-width: calc((100% - (2 * 24px)) / 3);
+        min-width: calc((100% - (2 * 24px)) / 3);
+    }
+    
+    .tipo-contenido-card-nuevo {
+        flex: 0 0 calc((100% - (2 * 24px)) / 3);
+        width: calc((100% - (2 * 24px)) / 3);
+        max-width: calc((100% - (2 * 24px)) / 3);
+        min-width: calc((100% - (2 * 24px)) / 3);
+    }
+
+    .academias-grid-spotify {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .catalog-hero {
+        padding: 0;
+    }
+
+    .catalog-hero h1 {
+        font-size: 24px;
+    }
+
+    .catalog-search-wrapper {
+        flex-direction: column;
+    }
+
+    .catalog-chips-wrapper {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .catalog-chips {
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 4px;
+    }
+
+    .competencias-grid-v1 {
+        flex-direction: column;
+    }
+    
+    .competencias-column {
+        width: 100%;
+    }
+
+    .competencia-card-v1 {
+        height: 48px;
+    }
+
+    .competencia-card-v1-image {
+        width: 48px;
+        height: 48px;
+    }
+}

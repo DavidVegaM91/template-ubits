@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../images/Ubits-logo-dark.svg">
+    <title>UBITS Playground - Documentación</title>
+    
+    <!-- Estilos locales -->
+    <link rel="stylesheet" href="../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../general-styles/styles.css">
+    <link rel="stylesheet" href="../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../components/sub-nav.css">
+    <link rel="stylesheet" href="../components/button.css">
+    <link rel="stylesheet" href="../components/toast.css">
+    <link rel="stylesheet" href="../docs/docstyles.css">
+</head>
+<body class="documentacion-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navigation -->
+            <div id="top-nav-container"></div>
+            <!-- Content Area -->
+            <div class="content-area" style="display: block; width: 100%;">
+                <!-- Hero Section -->
+                <div style="text-align: center; margin-bottom: 60px;">
+                    <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                        UBITS Playground
+                    </h1>
+                    <h2 class="ubits-display-d3-semibold" style="margin-bottom: 16px;">
+                        Crea interfaces UBITS en tiempo record
+                    </h2>
+                    <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                        La plantilla definitiva para quienes quieren crear experiencias UBITS auténticas sin complicaciones técnicas. Solo necesitas una idea y Cursor AI.
+                    </p>
+                </div>
+
+                <!-- Value Proposition Cards -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+                    <!-- Card 1: Cero curva de aprendizaje -->
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px;  border: 1px solid var(--ubits-border-1);">
+                        <div style="font-size: 48px; margin-bottom: 16px; color: var(--ubits-accent-brand);"><i class="far fa-bolt"></i></div>
+                        <h3 class="ubits-heading-h2" style="margin-bottom: 12px;">
+                            Cero curva de aprendizaje
+                        </h3>
+                        <p class="ubits-body-md-regular" style="line-height: 1.5;">
+                            Sin configuración, sin dependencias, sin complicaciones. Solo abre Cursor, chatea y crea.
+                        </p>
+                    </div>
+
+                    <!-- Card 2: Acelera el desarrollo -->
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px;  border: 1px solid var(--ubits-border-1);">
+                        <div style="font-size: 48px; margin-bottom: 16px; color: var(--ubits-accent-brand);"><i class="far fa-rocket"></i></div>
+                        <h3 class="ubits-heading-h2" style="margin-bottom: 12px;">
+                            Acelera el desarrollo
+                        </h3>
+                        <p class="ubits-body-md-regular" style="line-height: 1.5;">
+                            <strong>Valida ideas rápidamente</strong> con usuarios reales. 
+                            <strong>Prototipa interfaces</strong> en minutos, no semanas. 
+                            <strong>Itera y mejora</strong> sin barreras técnicas.
+                        </p>
+                    </div>
+
+                    <!-- Card 3: Consistencia visual garantizada -->
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px;  border: 1px solid var(--ubits-border-1);">
+                        <div style="font-size: 48px; margin-bottom: 16px; color: var(--ubits-accent-brand);"><i class="far fa-palette"></i></div>
+                        <h3 class="ubits-heading-h2" style="margin-bottom: 12px;">
+                            Consistencia visual garantizada
+                        </h3>
+                        <p class="ubits-body-md-regular" style="line-height: 1.5;">
+                            Componentes propios, colores que cambian automáticamente entre modo claro y oscuro. Tipografía oficial e iconos listos para usar.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- How It Works Section -->
+                <div style="background: var(--ubits-bg-2); padding: 48px; border-radius: 16px; margin-bottom: 60px;">
+                    <h2 class="ubits-display-d3-semibold" style="text-align: center; margin-bottom: 40px;">
+                        ¿Cómo funciona?
+                    </h2>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 32px;">
+                        <!-- Step 1 -->
+                        <div style="text-align: center;">
+                            <div class="step-number" style="background: var(--ubits-accent-brand); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+                                1
+                            </div>
+                            <h3 class="ubits-heading-h2" style="margin-bottom: 8px;">
+                                Clona el repositorio
+                            </h3>
+                            <p class="ubits-body-md-regular">
+                                Abre Cursor AI y clona este template en tu nueva carpeta de proyecto.
+                            </p>
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div style="text-align: center;">
+                            <div class="step-number" style="background: var(--ubits-accent-brand); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+                                2
+                            </div>
+                            <h3 class="ubits-heading-h2" style="margin-bottom: 8px;">
+                                Personaliza con Cursor
+                            </h3>
+                            <p class="ubits-body-md-regular">
+                                Pídele a Cursor que modifique el contenido, agregue secciones o cree nuevas páginas.
+                            </p>
+                        </div>
+
+                        <!-- Step 3 -->
+                        <div style="text-align: center;">
+                            <div class="step-number" style="background: var(--ubits-accent-brand); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+                                3
+                            </div>
+                            <h3 class="ubits-heading-h2" style="margin-bottom: 8px;">
+                                Valida con usuarios
+                            </h3>
+                            <p class="ubits-body-md-regular">
+                                Comparte tu interfaz y obtén feedback real para iterar y mejorar.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Los 3 Grandes Entregables -->
+                <div style="background: var(--ubits-bg-1); padding: 24px; border-radius: 16px; margin-bottom: 60px;">
+                    <h2 class="ubits-display-d3-semibold" style="text-align: center; margin-bottom: 40px;">
+                        ¿Qué incluye UBITS Playground?
+                    </h2>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
+                        <!-- 1. Páginas Plantilla -->
+                        <div style="background: var(--ubits-bg-2); padding: 32px; border-radius: 12px; border: 1px solid var(--ubits-border-1);">
+                            <div style="display: flex; align-items: center; margin-bottom: 20px;">
+                                <div style="background: var(--ubits-accent-brand); color: white; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 16px;">
+                                    <i class="far fa-file-alt" style="font-size: 20px;"></i>
+                                </div>
+                                <h3 class="ubits-heading-h2" style="margin: 0;">
+                                    1. Páginas plantilla
+                                </h3>
+                            </div>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 20px; line-height: 1.5;">
+                                <strong>16 templates listos</strong> para todos los módulos UBITS: Aprendizaje, Diagnóstico, Desempeño, Encuestas, Reclutamiento, Planes y Tareas.
+                            </p>
+                            <div style="margin-bottom: 20px;">
+                                <p class="ubits-body-sm-bold" style="margin-bottom: 8px;">Incluye:</p>
+                                <ul style="margin: 0; padding-left: 20px; color: var(--ubits-fg-1-medium);">
+                                    <li class="ubits-body-sm-regular">Dashboard de aprendizaje</li>
+                                    <li class="ubits-body-sm-regular">Catálogo de contenidos</li>
+                                    <li class="ubits-body-sm-regular">Evaluaciones 360</li>
+                                    <li class="ubits-body-sm-regular">Métricas y reportes</li>
+                                    <li class="ubits-body-sm-regular">Y mucho más...</li>
+                                </ul>
+                            </div>
+                            <button class="ubits-button ubits-button--secondary ubits-button--md" onclick="window.open('index.html', '_blank')" style="width: 100%;">
+                                <i class="far fa-eye"></i>
+                                <span>Ver plantillas</span>
+                            </button>
+                        </div>
+
+                        <!-- 2. Documentación -->
+                        <div style="background: var(--ubits-bg-2); padding: 32px; border-radius: 12px; border: 1px solid var(--ubits-border-1);">
+                            <div style="display: flex; align-items: center; margin-bottom: 20px;">
+                                <div style="background: var(--ubits-accent-brand); color: white; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 16px;">
+                                    <i class="far fa-book" style="font-size: 20px;"></i>
+                                </div>
+                                <h3 class="ubits-heading-h2" style="margin: 0;">
+                                    2. Documentación
+                                </h3>
+                            </div>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 20px; line-height: 1.5;">
+                                <strong>Sistema completo</strong> de documentación con guías de componentes, colores, tipografía y prompts para Cursor AI.
+                            </p>
+                            <div style="margin-bottom: 20px;">
+                                <p class="ubits-body-sm-bold" style="margin-bottom: 8px;">Incluye:</p>
+                                <ul style="margin: 0; padding-left: 20px; color: var(--ubits-fg-1-medium);">
+                                    <li class="ubits-body-sm-regular">Componentes interactivos</li>
+                                    <li class="ubits-body-sm-regular">Guías de diseño</li>
+                                    <li class="ubits-body-sm-regular">Prompts para Cursor</li>
+                                    <li class="ubits-body-sm-regular">Ejemplos en vivo</li>
+                                    <li class="ubits-body-sm-regular">Copiar y pegar</li>
+                                </ul>
+                            </div>
+                            <button class="ubits-button ubits-button--secondary ubits-button--md" disabled style="width: 100%;">
+                                <i class="far fa-cube"></i>
+                                <span>Ya estás en la documentación</span>
+                            </button>
+                        </div>
+
+                        <!-- 3. Validador -->
+                        <div style="background: var(--ubits-bg-2); padding: 32px; border-radius: 12px; border: 1px solid var(--ubits-border-1);">
+                            <div style="display: flex; align-items: center; margin-bottom: 20px;">
+                                <div style="background: var(--ubits-accent-brand); color: white; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 16px;">
+                                    <i class="far fa-check-circle" style="font-size: 20px;"></i>
+                                </div>
+                                <h3 class="ubits-heading-h2" style="margin: 0;">
+                                    3. Validador
+                                </h3>
+                            </div>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 20px; line-height: 1.5;">
+                                <strong>Control de calidad automático</strong> que verifica el uso correcto de tokens UBITS y genera prompts para corregir problemas.
+                            </p>
+                            <div style="margin-bottom: 20px;">
+                                <p class="ubits-body-sm-bold" style="margin-bottom: 8px;">Incluye:</p>
+                                <ul style="margin: 0; padding-left: 20px; color: var(--ubits-fg-1-medium);">
+                                    <li class="ubits-body-sm-regular">Drag & drop de archivos</li>
+                                    <li class="ubits-body-sm-regular">Validación automática</li>
+                                    <li class="ubits-body-sm-regular">Prompts para Cursor AI</li>
+                                    <li class="ubits-body-sm-regular">Puntuación UBITS</li>
+                                    <li class="ubits-body-sm-regular">Corrección automática</li>
+                                </ul>
+                            </div>
+                            <button class="ubits-button ubits-button--secondary ubits-button--md" onclick="window.open('validador-ubits.html', '_blank')" style="width: 100%;">
+                                <i class="far fa-shield-check"></i>
+                                <span>Probar validador</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Guía de Netlify -->
+                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1); margin-bottom: 40px;">
+                    <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                        <i class="far fa-cloud-upload" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                        Compartir tu proyecto en línea
+                    </h2>
+                    <p class="ubits-body-md-regular" style="margin-bottom: 32px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                        ¿Quieres compartir tu proyecto UBITS? Sigue estos pasos y en menos de 5 minutos tendrás tu proyecto en línea.
+                    </p>
+
+                    <!-- Pasos principales -->
+                    <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: 1px solid var(--ubits-border-1); margin-bottom: 24px;">
+                        <h3 class="ubits-body-md-bold" style="margin-bottom: 20px; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-rocket" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Pasos principales
+                        </h3>
+                        
+                        <div style="display: grid; gap: 16px;">
+                            <!-- Paso 1 -->
+                            <div style="display: flex; align-items: flex-start; gap: 12px;">
+                                <div style="background: var(--ubits-accent-brand); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; flex-shrink: 0; margin-top: 2px;">
+                                    1
+                                </div>
+                                <div>
+                                    <p class="ubits-body-md-regular" style="margin: 0; line-height: 1.5;">
+                                        Ve a <a href="https://netlify.com" target="_blank" style="color: var(--ubits-accent-brand); text-decoration: none;">netlify.com</a> y regístrate gratis
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Paso 2 -->
+                            <div style="display: flex; align-items: flex-start; gap: 12px;">
+                                <div style="background: var(--ubits-accent-brand); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; flex-shrink: 0; margin-top: 2px;">
+                                    2
+                                </div>
+                                <div>
+                                    <p class="ubits-body-md-regular" style="margin: 0; line-height: 1.5;">
+                                        Ubica la opción "Deploy manually"
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Paso 3 -->
+                            <div style="display: flex; align-items: flex-start; gap: 12px;">
+                                <div style="background: var(--ubits-accent-brand); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; flex-shrink: 0; margin-top: 2px;">
+                                    3
+                                </div>
+                                <div>
+                                    <p class="ubits-body-md-regular" style="margin: 0; line-height: 1.5;">
+                                        Arrastra y suelta toda la carpeta del proyecto en ese espacio
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Paso 4 -->
+                            <div style="display: flex; align-items: flex-start; gap: 12px;">
+                                <div style="background: var(--ubits-accent-brand); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; flex-shrink: 0; margin-top: 2px;">
+                                    4
+                                </div>
+                                <div>
+                                    <p class="ubits-body-md-regular" style="margin: 0; line-height: 1.5;">
+                                        ¡Listo! - Tu proyecto estará en línea en segundos
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Personalización opcional -->
+                    <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: 1px solid var(--ubits-border-1);">
+                        <h3 class="ubits-body-md-bold" style="margin-bottom: 20px; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-cog" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Personalizar el enlace (opcional)
+                        </h3>
+                        
+                        <div style="display: grid; gap: 16px;">
+                            <!-- Paso 1 -->
+                            <div style="display: flex; align-items: flex-start; gap: 12px;">
+                                <div style="background: var(--ubits-fg-1-medium); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; flex-shrink: 0; margin-top: 2px;">
+                                    1
+                                </div>
+                                <div>
+                                    <p class="ubits-body-md-regular" style="margin: 0; line-height: 1.5;">
+                                        Haz clic en tu proyecto recién creado
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Paso 2 -->
+                            <div style="display: flex; align-items: flex-start; gap: 12px;">
+                                <div style="background: var(--ubits-fg-1-medium); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; flex-shrink: 0; margin-top: 2px;">
+                                    2
+                                </div>
+                                <div>
+                                    <p class="ubits-body-md-regular" style="margin: 0; line-height: 1.5;">
+                                        En el menú superior, ve a 'Project configuration'
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Paso 3 -->
+                            <div style="display: flex; align-items: flex-start; gap: 12px;">
+                                <div style="background: var(--ubits-fg-1-medium); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; flex-shrink: 0; margin-top: 2px;">
+                                    3
+                                </div>
+                                <div>
+                                    <p class="ubits-body-md-regular" style="margin: 0; line-height: 1.5;">
+                                        Haz clic en "Change project name" y pon el nombre que quieras
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Paso 4 -->
+                            <div style="display: flex; align-items: flex-start; gap: 12px;">
+                                <div style="background: var(--ubits-fg-1-medium); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; flex-shrink: 0; margin-top: 2px;">
+                                    4
+                                </div>
+                                <div>
+                                    <p class="ubits-body-md-regular" style="margin: 0; line-height: 1.5;">
+                                        Tu nuevo enlace será: <code style="background: var(--ubits-bg-1); padding: 2px 6px; border-radius: 4px; font-size: 12px;">https://tu-nombre.netlify.app</code>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+
+
+    <script src="../components/sidebar.js"></script>
+    <script src="../components/sub-nav.js"></script>
+    <script src="../script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cargar top-nav con variante documentación
+            loadSubNav('top-nav-container', 'documentacion');
+        });
+
+    </script>
+</body>
+</html>

@@ -96,25 +96,28 @@ const STATUSES = {
 };
 
 // ALIADOS OFICIALES (18 proveedores)
+// NOTA: Las rutas son relativas al HTML que carga el componente, no al JS
+// Desde subcarpetas (ubits-admin/*, ubits-colaborador/*) usar: '../../images/Favicons/...'
+// Desde raíz usar: 'images/Favicons/...'
 const PROVIDERS = {
-    'UBITS': 'images/Favicons/UBITS.jpg',
-    'Microsoft': 'images/Favicons/Microsoft.jpg',
-    'Hubspot': 'images/Favicons/Hubspot.jpg',
-    'Harvard Business Publishing': 'images/Favicons/Harvard-Business-Publishing.jpg',
-    'TED': 'images/Favicons/TED.jpg',
-    'AWS': 'images/Favicons/AWS.jpg',
-    'Universidad de Los Andes': 'images/Favicons/Universidad-de-Los Andes.jpg',
-    'Advanced English': 'images/Favicons/Advanced-English.jpg',
-    'IE University': 'images/Favicons/IE-University-Publishing.jpg',
-    'Código Facilito': 'images/Favicons/Código-Facilito.jpg',
-    'Hackers del Talento': 'images/Favicons/Hackers-del-Talento.jpg',
-    'All Ears English': 'images/Favicons/All Ears English.jpg',
-    'American & British Academy': 'images/Favicons/American & British Academy.jpg',
-    'Bureau Veritas': 'images/Favicons/Bureau-Veritas.jpg',
-    'Welu': 'images/Favicons/Welu.jpg',
-    'Figsha Smart Consulting': 'images/Favicons/Figsha Smart Consulting.jpg',
-    'Instafit': 'images/Favicons/Instafit.jpg',
-    'WOBI': 'images/Favicons/WOBI.jpg'
+    'UBITS': '../../images/Favicons/UBITS.jpg',
+    'Microsoft': '../../images/Favicons/Microsoft.jpg',
+    'Hubspot': '../../images/Favicons/Hubspot.jpg',
+    'Harvard Business Publishing': '../../images/Favicons/Harvard-Business-Publishing.jpg',
+    'TED': '../../images/Favicons/TED.jpg',
+    'AWS': '../../images/Favicons/AWS.jpg',
+    'Universidad de Los Andes': '../../images/Favicons/Universidad-de-Los Andes.jpg',
+    'Advanced English': '../../images/Favicons/Advanced-English.jpg',
+    'IE University': '../../images/Favicons/IE-University-Publishing.jpg',
+    'Código Facilito': '../../images/Favicons/Código-Facilito.jpg',
+    'Hackers del Talento': '../../images/Favicons/Hackers-del-Talento.jpg',
+    'All Ears English': '../../images/Favicons/All Ears English.jpg',
+    'American & British Academy': '../../images/Favicons/American & British Academy.jpg',
+    'Bureau Veritas': '../../images/Favicons/Bureau-Veritas.jpg',
+    'Welu': '../../images/Favicons/Welu.jpg',
+    'Figsha Smart Consulting': '../../images/Favicons/Figsha Smart Consulting.jpg',
+    'Instafit': '../../images/Favicons/Instafit.jpg',
+    'WOBI': '../../images/Favicons/WOBI.jpg'
 };
 
 /* ========================================
@@ -209,7 +212,7 @@ function renderCardContent(cardData) {
                         const marginRight = (index < visibleCount - 1) || remainingCount > 0 ? '-5px' : '0';
                         return `
                             <div class="provider-avatar provider-avatar--stacked" style="z-index: ${zIndex}; margin-right: ${marginRight};">
-                                <img src="${provider.logo || provider.providerLogo || 'images/Favicons/UBITS.jpg'}" 
+                                <img src="${provider.logo || provider.providerLogo || '../../images/Favicons/UBITS.jpg'}" 
                                      alt="${provider.name || provider.provider || 'Provider'}" 
                                      class="provider-icon">
                             </div>
@@ -323,12 +326,12 @@ const sampleCardData = {
     type: 'Short',
     title: 'Mi primer contenido',
     provider: 'UBITS',
-    providerLogo: 'images/Favicons/UBITS.jpg',
+    providerLogo: '../../images/Favicons/UBITS.jpg',
     duration: '15 min',
     level: 'Básico',
     progress: 0,
     status: 'default',
-    image: 'images/cards-learn/descubre-las-bases-del-design-thinking.jpeg',
+    image: '../../images/cards-learn/descubre-las-bases-del-design-thinking.jpeg',
     competency: 'Product design',
     language: 'Español'
 };
@@ -384,7 +387,7 @@ loadCardContent('mi-contenedor', [
         level: 'Básico',
         progress: 50,
         status: 'progress',
-        image: 'images/mi-imagen.jpg',  // ✅ Usa cualquier imagen de tu proyecto
+        image: '../../images/mi-imagen.jpg',  // ✅ Usa cualquier imagen de tu proyecto (ruta relativa desde subcarpetas)
         competency: 'Product design',
         language: 'Español'
     }
@@ -425,12 +428,12 @@ console.log(window.CARD_CONTENT_OPTIONS);
  *     type: 'Curso',
  *     title: 'Mi contenido de aprendizaje',
  *     provider: 'UBITS',
- *     providerLogo: 'images/Favicons/UBITS.jpg',
+ *     providerLogo: '../../images/Favicons/UBITS.jpg',
  *     duration: '60 min',
  *     level: 'Intermedio',
  *     progress: 75,
  *     status: 'progress',
- *     image: 'images/cards-learn/mi-imagen.jpg',
+ *     image: '../../images/cards-learn/mi-imagen.jpg',
  *     competency: 'Product design',
  *     language: 'Español'
  *   }

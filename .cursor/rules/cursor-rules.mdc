@@ -9,7 +9,7 @@ This is a UBITS template for creating interfaces quickly with Cursor AI. The val
 
 ## 🚨 MANDATORY: CHECK COMPONENTS FIRST
 **BEFORE creating ANY UI element (buttons, alerts, etc.), you MUST:**
-1. **ALWAYS check `componentes.html`** to see what UBITS components are available
+1. **ALWAYS check `documentacion/componentes.html`** to see what UBITS components are available
 2. **NEVER create custom components** when UBITS ones exist
 3. **ALWAYS use existing UBITS components** from the template
 
@@ -36,18 +36,18 @@ This is a UBITS template for creating interfaces quickly with Cursor AI. The val
 ## 🚨 MANDATORY WORKFLOW FOR EVERY TASK
 
 ### **BEFORE STARTING ANY TASK:**
-1. **📋 READ**: Check `componentes.html` for available components
+1. **📋 READ**: Check `documentacion/componentes.html` for available components
 2. **🎯 PLAN**: Use existing components, never create custom
-3. **📦 IMPORT**: Add required CSS for each component used
-4. **✅ VALIDATE**: Use `validador-ubits.html` before finishing (MANDATORY)
+3. **📦 IMPORT**: Add required CSS for each component used (rutas relativas desde subcarpetas: `../../components/...`)
+4. **✅ VALIDATE**: Use `documentacion/validador-ubits.html` before finishing (MANDATORY)
 
 ### **WHEN CREATING UI ELEMENTS:**
-1. **🔘 Buttons** → ALWAYS use `ubits-button` + import `components/button.css` - **RENDERIZADO: HTML directo**
-2. **🚨 Alerts** → ALWAYS use `ubits-alert` + import `components/alert.css` - **RENDERIZADO: showAlert() o HTML directo**
-3. **🍞 Toasts** → ALWAYS use `showToast()` + import `components/toast.css` - **RENDERIZADO: showToast() function**
-4. **📝 Inputs** → ALWAYS use `createInput()` + import `components/input.css` - **RENDERIZADO: createInput() function**
-5. **🎴 Cards** → ALWAYS use `loadCardContent()` + import `components/card-content.css` - **RENDERIZADO: loadCardContent() function**
-6. **🧭 Navigation** → ALWAYS use SubNav/Sidebar + import their CSS
+1. **🔘 Buttons** → ALWAYS use `ubits-button` + import `../../components/button.css` (desde subcarpetas) - **RENDERIZADO: HTML directo**
+2. **🚨 Alerts** → ALWAYS use `ubits-alert` + import `../../components/alert.css` (desde subcarpetas) - **RENDERIZADO: showAlert() o HTML directo**
+3. **🍞 Toasts** → ALWAYS use `showToast()` + import `../../components/toast.css` (desde subcarpetas) - **RENDERIZADO: showToast() function**
+4. **📝 Inputs** → ALWAYS use `createInput()` + import `../../components/input.css` (desde subcarpetas) - **RENDERIZADO: createInput() function**
+5. **🎴 Cards** → ALWAYS use `loadCardContent()` + import `../../components/card-content.css` (desde subcarpetas) - **RENDERIZADO: loadCardContent() function**
+6. **🧭 Navigation** → ALWAYS use SubNav/Sidebar + import their CSS (`../../components/sub-nav.css`, `../../components/sidebar.css`)
 7. **🎨 Colors** → ALWAYS use `var(--ubits-*)` tokens
 
 ### **🔧 COMPONENT RENDERING REQUIREMENTS:**
@@ -56,8 +56,12 @@ This is a UBITS template for creating interfaces quickly with Cursor AI. The val
 #### **Button Component (HTML Direct):**
 ```html
 <!-- CSS Required -->
+<!-- Desde subcarpetas (ubits-admin/*, ubits-colaborador/*) -->
+<link rel="stylesheet" href="../../components/button.css">
+<link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+<!-- Desde la raíz -->
 <link rel="stylesheet" href="components/button.css">
-<link rel="stylesheet" href="fontawesome-icons.css">
+<link rel="stylesheet" href="general-styles/fontawesome-icons.css">
 
 <!-- HTML Structure -->
 <button class="ubits-button ubits-button--primary ubits-button--md">
@@ -98,10 +102,17 @@ This is a UBITS template for creating interfaces quickly with Cursor AI. The val
 #### **Alert Component (showAlert() or HTML):**
 ```html
 <!-- CSS Required -->
+<!-- Desde subcarpetas (ubits-admin/*, ubits-colaborador/*) -->
+<link rel="stylesheet" href="../../components/alert.css">
+<link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+<!-- Desde la raíz -->
 <link rel="stylesheet" href="components/alert.css">
-<link rel="stylesheet" href="fontawesome-icons.css">
+<link rel="stylesheet" href="general-styles/fontawesome-icons.css">
 
 <!-- JavaScript Required -->
+<!-- Desde subcarpetas -->
+<script src="../../components/alert.js"></script>
+<!-- Desde la raíz -->
 <script src="components/alert.js"></script>
 
 <!-- Usage -->
@@ -112,10 +123,17 @@ This is a UBITS template for creating interfaces quickly with Cursor AI. The val
 #### **Toast Component (showToast() function):**
 ```html
 <!-- CSS Required -->
+<!-- Desde subcarpetas (ubits-admin/*, ubits-colaborador/*) -->
+<link rel="stylesheet" href="../../components/toast.css">
+<link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+<!-- Desde la raíz -->
 <link rel="stylesheet" href="components/toast.css">
-<link rel="stylesheet" href="fontawesome-icons.css">
+<link rel="stylesheet" href="general-styles/fontawesome-icons.css">
 
 <!-- JavaScript Required -->
+<!-- Desde subcarpetas -->
+<script src="../../components/toast.js"></script>
+<!-- Desde la raíz -->
 <script src="components/toast.js"></script>
 
 <!-- Container Required -->
@@ -128,10 +146,17 @@ This is a UBITS template for creating interfaces quickly with Cursor AI. The val
 #### **Input Component (createInput() function):**
 ```html
 <!-- CSS Required -->
+<!-- Desde subcarpetas (ubits-admin/*, ubits-colaborador/*) -->
+<link rel="stylesheet" href="../../components/input.css">
+<link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+<!-- Desde la raíz -->
 <link rel="stylesheet" href="components/input.css">
-<link rel="stylesheet" href="fontawesome-icons.css">
+<link rel="stylesheet" href="general-styles/fontawesome-icons.css">
 
 <!-- JavaScript Required -->
+<!-- Desde subcarpetas -->
+<script src="../../components/input.js"></script>
+<!-- Desde la raíz -->
 <script src="components/input.js"></script>
 
 <!-- Usage -->
@@ -149,10 +174,17 @@ createInput({
 #### **Card Content Component (loadCardContent() function):**
 ```html
 <!-- CSS Required -->
+<!-- Desde subcarpetas (ubits-admin/*, ubits-colaborador/*) -->
+<link rel="stylesheet" href="../../components/card-content.css">
+<link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+<!-- Desde la raíz -->
 <link rel="stylesheet" href="components/card-content.css">
-<link rel="stylesheet" href="fontawesome-icons.css">
+<link rel="stylesheet" href="general-styles/fontawesome-icons.css">
 
 <!-- JavaScript Required -->
+<!-- Desde subcarpetas -->
+<script src="../../components/card-content.js"></script>
+<!-- Desde la raíz -->
 <script src="components/card-content.js"></script>
 
 <!-- Usage -->
@@ -228,41 +260,188 @@ loadCardContent('cards-container', [{
 - **`plantilla-ubits.html`** - Template base para crear nuevas páginas
 
 ### **👤 PÁGINAS FUNCIONALES:**
-- **`profile.html`** - Perfil de usuario (ejemplo original del sistema modular)
-- **`home-learn.html`** - Dashboard de aprendizaje (ejemplo completo con 9 secciones)
-- **`ubits-ai.html`** - Página de UBITS AI (página en blanco basada en plantilla)
+- **`ubits-colaborador/perfil/profile.html`** - Perfil de usuario (ejemplo original del sistema modular)
+- **`ubits-colaborador/aprendizaje/home-learn.html`** - Dashboard de aprendizaje (ejemplo completo con 9 secciones)
+- **`ubits-colaborador/ubits-ai/ubits-ai.html`** - Página de UBITS AI (página en blanco basada en plantilla)
 
-### **📚 FLUJO DE APRENDIZAJE:**
+### **📚 FLUJO DE APRENDIZAJE (ubits-colaborador/aprendizaje/):**
 - **`catalogo.html`** - Catálogo de contenidos
 - **`u-corporativa.html`** - Universidad corporativa
 - **`zona-estudio.html`** - Zona de estudio
+- **`modo-estudio-ia.html`** - Modo de estudio con IA
 
 ### **📊 FLUJO DE DIAGNÓSTICO Y DESEMPEÑO:**
-- **`diagnostico.html`** - Página de diagnóstico
-- **`evaluaciones-360.html`** - Evaluaciones 360
-- **`objetivos.html`** - Objetivos
-- **`metricas.html`** - Métricas
-- **`reportes.html`** - Reportes
+- **`ubits-colaborador/diagnostico/diagnostico.html`** - Página de diagnóstico
+- **`ubits-colaborador/desempeno/evaluaciones-360.html`** - Evaluaciones 360
+- **`ubits-colaborador/desempeno/objetivos.html`** - Objetivos
+- **`ubits-colaborador/desempeno/metricas.html`** - Métricas
+- **`ubits-colaborador/desempeno/reportes.html`** - Reportes
 
 ### **📋 FLUJO DE GESTIÓN:**
-- **`encuestas.html`** - Gestión de encuestas
-- **`reclutamiento.html`** - Reclutamiento
-- **`planes.html`** - Planes
-- **`tareas.html`** - Tareas
+- **`ubits-colaborador/encuestas/encuestas.html`** - Gestión de encuestas
+- **`ubits-colaborador/reclutamiento/reclutamiento.html`** - Reclutamiento
+- **`ubits-colaborador/tareas/planes.html`** - Planes
+- **`ubits-colaborador/tareas/tareas.html`** - Tareas
 
-### **📚 DOCUMENTACIÓN Y HERRAMIENTAS:**
-- **`componentes.html`** - Lista completa de componentes UBITS (CHECK FIRST)
-- **`validador-ubits.html`** - Validador automático (USE ALWAYS)
-- **`guia-prompts.html`** - Prompts para personalización
-- **`overview.html`** - Vista general del proyecto
-- **`iconos.html`** - Galería de iconos FontAwesome
+### **📚 DOCUMENTACIÓN Y HERRAMIENTAS (documentacion/):**
+- **`documentacion/componentes.html`** - Lista completa de componentes UBITS (CHECK FIRST)
+- **`documentacion/validador-ubits.html`** - Validador automático (USE ALWAYS)
+- **`documentacion/guia-prompts.html`** - Prompts para personalización
+- **`documentacion/guias/iconos.html`** - Galería de iconos FontAwesome
+- **`documentacion/plantilla-ubits.html`** - Template base para crear nuevas páginas
 
 ### **🚫 NUNCA MODIFIQUES ESTOS ARCHIVOS:**
-- **`ubits-colors.css`** - Tokens de color oficiales UBITS
-- **`ubits-typography.css`** - Clases de tipografía oficiales UBITS
-- **`fontawesome-icons.css`** - Iconos FontAwesome
+- **`general-styles/ubits-colors.css`** - Tokens de color oficiales UBITS
+- **`general-styles/ubits-typography.css`** - Clases de tipografía oficiales UBITS
+- **`general-styles/fontawesome-icons.css`** - Iconos FontAwesome
+- **`general-styles/styles.css`** - Estilos globales compartidos
 - **Archivos en `components/`** - Componentes del sistema UBITS
 - **Archivos en `docs/`** - Sistema de documentación
+
+## 📄 CREAR NUEVAS PÁGINAS - ESTRUCTURA OBLIGATORIA
+
+### **🚨 REGLA CRÍTICA: Cada página HTML debe tener su CSS separado**
+
+**ESTRUCTURA CORRECTA:**
+```
+ubits-colaborador/
+├── aprendizaje/
+│   ├── mi-pagina.html      ← Archivo HTML
+│   ├── mi-pagina.css       ← Archivo CSS (mismo nombre)
+│   └── ...
+```
+
+### **PASOS PARA CREAR UNA NUEVA PÁGINA:**
+
+#### **1. Ubicar en la carpeta correcta:**
+- `ubits-colaborador/aprendizaje/` - Páginas de aprendizaje
+- `ubits-colaborador/desempeno/` - Páginas de desempeño
+- `ubits-colaborador/diagnostico/` - Páginas de diagnóstico
+- `ubits-colaborador/encuestas/` - Páginas de encuestas
+- `ubits-colaborador/tareas/` - Páginas de tareas
+- `ubits-colaborador/reclutamiento/` - Páginas de reclutamiento
+- `ubits-colaborador/ubits-ai/` - Páginas de UBITS AI
+- `ubits-admin/empresa/` - Administración de empresa
+- `ubits-admin/aprendizaje/` - Administración de aprendizaje
+- `ubits-admin/desempeno/` - Administración de desempeño
+
+#### **2. Crear DOS archivos:**
+- `mi-pagina.html` - Estructura HTML
+- `mi-pagina.css` - Estilos específicos
+
+#### **3. Importar estilos en el HTML (orden correcto):**
+```html
+<head>
+    <!-- 1. Estilos base UBITS (OBLIGATORIO) -->
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    
+    <!-- 2. Componentes de navegación -->
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../components/tab-bar.css">
+    <link rel="stylesheet" href="../../components/floating-menu.css">
+    <link rel="stylesheet" href="../../components/profile-menu.css">
+    
+    <!-- 3. Componentes UI que uses -->
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/header-product.css">
+    <!-- ... otros componentes -->
+    
+    <!-- 4. CSS específico de la página (SIEMPRE AL FINAL) -->
+    <link rel="stylesheet" href="./mi-pagina.css">
+</head>
+```
+
+#### **4. Estructura del CSS de la página:**
+```css
+/* ========================================
+   ESTILOS ESPECÍFICOS PARA mi-pagina
+   ======================================== */
+
+/* Solo estilos únicos de esta página */
+.mi-widget-especial {
+    background-color: var(--ubits-bg-1);
+    /* ... */
+}
+
+/* Responsive si es necesario */
+@media (max-width: 1023px) {
+    .mi-widget-especial {
+        /* ... */
+    }
+}
+```
+
+### **❌ PROHIBIDO AL CREAR PÁGINAS:**
+- ❌ Poner estilos en `<style>` tags dentro del HTML
+- ❌ Crear páginas sin su archivo CSS correspondiente
+- ❌ Modificar `general-styles/styles.css` para estilos de una página específica
+- ❌ Mezclar estilos de diferentes páginas en un solo CSS
+- ❌ Usar rutas absolutas en lugar de relativas
+
+### **✅ OBLIGATORIO AL CREAR PÁGINAS:**
+- ✅ Separar HTML y CSS en archivos independientes
+- ✅ Nombrar el CSS igual que el HTML (`catalogo.html` → `catalogo.css`)
+- ✅ Usar rutas relativas correctas (`../../` desde subcarpetas)
+- ✅ Importar estilos generales ANTES que los específicos
+- ✅ Usar tokens UBITS (`var(--ubits-*)`) en el CSS
+- ✅ Ubicar la página en la carpeta del módulo correspondiente
+
+### **EJEMPLO COMPLETO - Nueva página "mi-dashboard.html":**
+
+**Ubicación:** `ubits-colaborador/aprendizaje/mi-dashboard.html`
+
+**HTML:**
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Mi Dashboard - UBITS</title>
+    
+    <!-- Estilos base -->
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    
+    <!-- Componentes -->
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    
+    <!-- CSS específico de la página -->
+    <link rel="stylesheet" href="./mi-dashboard.css">
+</head>
+<body data-theme="light">
+    <!-- Contenido -->
+</body>
+</html>
+```
+
+**CSS (`mi-dashboard.css`):**
+```css
+/* ========================================
+   ESTILOS ESPECÍFICOS PARA mi-dashboard
+   ======================================== */
+
+.widget-estadisticas {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+@media (max-width: 1023px) {
+    .widget-estadisticas {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+```
 
 ## 🚨 CRITICAL: NEVER ASK USERS TO DO TECHNICAL TASKS
 - ❌ NEVER ask users to run terminal commands
@@ -411,9 +590,17 @@ line-height: [appropriate line-height];
 ### 3. ALWAYS IMPORT UBITS FILES
 ```html
 <!-- REQUIRED in any new HTML file -->
-<link rel="stylesheet" href="ubits-colors.css">
-<link rel="stylesheet" href="ubits-typography.css">
-<link rel="stylesheet" href="fontawesome-icons.css">
+<!-- Desde subcarpetas (ubits-admin/*, ubits-colaborador/*) -->
+<link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+<link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+<link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+<link rel="stylesheet" href="../../general-styles/styles.css">
+
+<!-- Desde la raíz del proyecto -->
+<link rel="stylesheet" href="general-styles/ubits-colors.css">
+<link rel="stylesheet" href="general-styles/ubits-typography.css">
+<link rel="stylesheet" href="general-styles/fontawesome-icons.css">
+<link rel="stylesheet" href="general-styles/styles.css">
 ```
 
 **CRITICAL:** FontAwesome is REQUIRED for all components with icons. Without it, icons won't render.
@@ -825,9 +1012,15 @@ showToast('info', 'Ya estás en la documentación 😆', {
 **CRITICAL: REQUIRED IMPORTS**
 ```html
 <!-- ALWAYS import these files for Button component -->
-<link rel="stylesheet" href="ubits-colors.css">
-<link rel="stylesheet" href="ubits-typography.css">
-<link rel="stylesheet" href="fontawesome-icons.css">
+<!-- Desde subcarpetas (ubits-admin/*, ubits-colaborador/*) -->
+<link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+<link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+<link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+<link rel="stylesheet" href="../../components/button.css">
+<!-- Desde la raíz -->
+<link rel="stylesheet" href="general-styles/ubits-colors.css">
+<link rel="stylesheet" href="general-styles/ubits-typography.css">
+<link rel="stylesheet" href="general-styles/fontawesome-icons.css">
 <link rel="stylesheet" href="components/button.css">
 ```
 
@@ -1073,12 +1266,12 @@ document.addEventListener('DOMContentLoaded', function() {
             type: 'Curso',
             title: 'Mi contenido de aprendizaje',
             provider: 'UBITS',
-            providerLogo: 'images/Favicons/UBITS.jpg',
+            providerLogo: '../../images/Favicons/UBITS.jpg',  // ✅ Rutas relativas desde subcarpetas
             duration: '60 min',
             level: 'Intermedio',
             progress: 75,
             status: 'progress',
-            image: 'images/cards-learn/mi-imagen.jpg',
+            image: '../../images/cards-learn/mi-imagen.jpg',  // ✅ Rutas relativas desde subcarpetas
             competency: 'Product design',
             language: 'Español'
         }
@@ -1301,7 +1494,7 @@ document.addEventListener('DOMContentLoaded', function() {
 ## 📝 PROMPTS Y PERSONALIZACIÓN
 
 ### **Guía de Prompts:**
-- **Ubicación:** `guia-prompts.html`
+- **Ubicación:** `documentacion/guia-prompts.html`
 - **4 prompts disponibles:** Clonar repositorio, Crear página inicio, Crear nueva página, Actualizar repositorio
 - **Uso:** Algunos prompts requieren personalización antes de usar
 - **Personalización:** Reemplazar textos entre [corchetes] con información específica
@@ -1309,7 +1502,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 ### **🚨 MANDATORY: COMPONENT CHECK IN PROMPTS**
 **ALL prompts MUST include this verification step:**
-- **ALWAYS check `componentes.html`** before creating any UI element
+- **ALWAYS check `documentacion/componentes.html`** before creating any UI element
 - **NEVER create custom buttons** - UBITS Button component exists
 - **NEVER create custom alerts** - UBITS Alert component exists
 - **ALWAYS use existing UBITS components** from the template
@@ -1385,21 +1578,21 @@ Todas las páginas del template (excepto documentación) ahora usan un sistema m
 - **Sin elevaciones**: Diseño plano sin box-shadow
 
 ### **ARCHIVOS CON ESTRUCTURA MODULAR:**
-- `home-learn.html` - 9 secciones variadas (ejemplo completo)
-- `catalogo.html` - 2 secciones básicas
-- `u-corporativa.html` - 3 secciones específicas
-- `zona-estudio.html` - 2 secciones con tabs
-- `diagnostico.html` - 1 sección enfocada
-- `evaluaciones-360.html` - 1 sección específica
-- `objetivos.html` - 1 sección específica
-- `metricas.html` - 1 sección específica
-- `reportes.html` - 1 sección específica
-- `encuestas.html` - 1 sección específica
-- `reclutamiento.html` - 1 sección específica
-- `planes.html` - 1 sección específica
-- `tareas.html` - 1 sección específica
-- `index.html` - 1 sección básica
-- `plantilla-ubits.html` - 1 sección base (template)
+- `ubits-colaborador/aprendizaje/home-learn.html` - 9 secciones variadas (ejemplo completo)
+- `ubits-colaborador/aprendizaje/catalogo.html` - 2 secciones básicas
+- `ubits-colaborador/aprendizaje/u-corporativa.html` - 3 secciones específicas
+- `ubits-colaborador/aprendizaje/zona-estudio.html` - 2 secciones con tabs
+- `ubits-colaborador/diagnostico/diagnostico.html` - 1 sección enfocada
+- `ubits-colaborador/desempeno/evaluaciones-360.html` - 1 sección específica
+- `ubits-colaborador/desempeno/objetivos.html` - 1 sección específica
+- `ubits-colaborador/desempeno/metricas.html` - 1 sección específica
+- `ubits-colaborador/desempeno/reportes.html` - 1 sección específica
+- `ubits-colaborador/encuestas/encuestas.html` - 1 sección específica
+- `ubits-colaborador/reclutamiento/reclutamiento.html` - 1 sección específica
+- `ubits-colaborador/tareas/planes.html` - 1 sección específica
+- `ubits-colaborador/tareas/tareas.html` - 1 sección específica
+- `index.html` - 1 sección básica (ubicada en raíz)
+- `documentacion/plantilla-ubits.html` - 1 sección base (template)
 
 ### **VENTAJAS DEL SISTEMA:**
 1. **Fácil de entender**: Nombres semánticos claros
@@ -1432,9 +1625,9 @@ Before finishing any task, verify:
 - [ ] **TYPOGRAPHY:** All classes verified against official UBITS typography guide
 - [ ] **TYPOGRAPHY:** BEFORE using any class, CHECKED it exists in official list
 - [ ] **TYPOGRAPHY:** NO HTML tags without UBITS classes
-- [ ] ubits-colors.css is imported
-- [ ] ubits-typography.css is imported
-- [ ] **fontawesome-icons.css is imported** (CRITICAL for components with icons)
+- [ ] `general-styles/ubits-colors.css` is imported (desde subcarpetas: `../../general-styles/ubits-colors.css`)
+- [ ] `general-styles/ubits-typography.css` is imported (desde subcarpetas: `../../general-styles/ubits-typography.css`)
+- [ ] **`general-styles/fontawesome-icons.css` is imported** (CRITICAL for components with icons, desde subcarpetas: `../../general-styles/fontawesome-icons.css`)
 - [ ] Colors change in dark mode
 - [ ] Borders use var(--ubits-border-1) by default
 - [ ] No text tokens used for borders
@@ -1459,24 +1652,29 @@ Before finishing any task, verify:
 <!-- ✅ ALWAYS import the CSS for each component you use -->
 
 <!-- Button component -->
-<link rel="stylesheet" href="components/button.css">
+<!-- Desde subcarpetas: <link rel="stylesheet" href="../../components/button.css"> -->
+<!-- Desde la raíz: <link rel="stylesheet" href="components/button.css"> -->
 <!-- Required when using: ubits-button classes -->
 
 <!-- Alert component -->
-<link rel="stylesheet" href="components/alert.css">
+<!-- Desde subcarpetas: <link rel="stylesheet" href="../../components/alert.css"> -->
+<!-- Desde la raíz: <link rel="stylesheet" href="components/alert.css"> -->
 <!-- Required when using: ubits-alert classes or showAlert() -->
 
 <!-- Toast component -->
-<link rel="stylesheet" href="components/toast.css">
+<!-- Desde subcarpetas: <link rel="stylesheet" href="../../components/toast.css"> -->
+<!-- Desde la raíz: <link rel="stylesheet" href="components/toast.css"> -->
 <!-- Required when using: showToast() -->
 
 <!-- SubNav component -->
-<link rel="stylesheet" href="components/sub-nav.css">
+<!-- Desde subcarpetas: <link rel="stylesheet" href="../../components/sub-nav.css"> -->
+<!-- Desde la raíz: <link rel="stylesheet" href="components/sub-nav.css"> -->
 <!-- Required when using: loadSubNav() -->
 
 <!-- Sidebar component -->
-<link rel="stylesheet" href="components-sidebar.css">
+<link rel="stylesheet" href="../../components/sidebar.css">
 <!-- Required when using: loadSidebar() -->
+<!-- From root: <link rel="stylesheet" href="components/sidebar.css"> -->
 
 <!-- TabBar component -->
 <link rel="stylesheet" href="components/tab-bar.css">
@@ -1620,7 +1818,7 @@ When issues are found, the validator creates a detailed prompt for Cursor with:
 - ✅ **SIEMPRE** cuando se comente `loadSubNav()` en JavaScript
 
 **ARCHIVOS QUE YA LO TIENEN:**
-- `profile.html` ✅
+- `ubits-colaborador/perfil/profile.html` ✅
 - `diagnostico.html` ✅  
 - `reclutamiento.html` ✅
 
@@ -1721,7 +1919,7 @@ setTimeout(() => {
 - `encuestas` - Encuestas page
 
 **Accordion Subitems:**
-- `inicio` - Aprendizaje > Inicio (home-learn.html)
+- `inicio` - Aprendizaje > Inicio (ubits-colaborador/aprendizaje/home-learn.html)
 - `catalogo` - Aprendizaje > Catálogo
 - `corporativa` - Aprendizaje > U. Corporativa
 - `zona-estudio` - Aprendizaje > Zona de estudio
@@ -1803,11 +2001,11 @@ document.addEventListener('DOMContentLoaded', function() {
 ### **📋 CHECKLIST RÁPIDO - LEE ESTO PRIMERO:**
 
 #### **🚨 ANTES DE CUALQUIER TAREA:**
-1. ✅ **Check `componentes.html`** - Ver qué componentes UBITS existen
+1. ✅ **Check `documentacion/componentes.html`** - Ver qué componentes UBITS existen
 2. ✅ **Never create custom** - Usar solo componentes UBITS existentes
-3. ✅ **Import component CSS** - Cada componente necesita su CSS
+3. ✅ **Import component CSS** - Cada componente necesita su CSS (rutas relativas: `../../components/...`)
 4. ✅ **Use UBITS tokens** - Solo `var(--ubits-*)`, nunca colores hardcodeados
-5. ✅ **Validate with `validador-ubits.html`** - Objetivo: 100% score
+5. ✅ **Validate with `documentacion/validador-ubits.html`** - Objetivo: 100% score
 
 #### **🎯 USUARIOS SON NO-TÉCNICOS:**
 - ❌ **NEVER ask users** to run commands, install things, or code
@@ -1818,21 +2016,21 @@ document.addEventListener('DOMContentLoaded', function() {
 - **Buttons**: `ubits-button` + `components/button.css`
 - **Alerts**: `ubits-alert` + `components/alert.css`
 - **Toasts**: `showToast()` + `components/toast.css`
-- **Navigation**: `loadSidebar()` + `components-sidebar.css`
+- **Navigation**: `loadSidebar()` + `components/sidebar.css` (desde subcarpetas: `../../components/sidebar.css`)
 - **Typography**: Only official classes (`ubits-heading-h1`, `ubits-body-md-regular`)
 
 #### **🔍 VALIDATION WORKFLOW:**
 1. **Create/modify** page following UBITS rules
-2. **Open** `validador-ubits.html` in browser
+2. **Open** `documentacion/validador-ubits.html` in browser
 3. **Drag & drop** your HTML file
 4. **Copy** generated prompt if issues found
 5. **Fix** all issues until 100% score
 
 #### **📁 KEY FILES TO KNOW:**
-- **`componentes.html`** - Component library (check first)
-- **`validador-ubits.html`** - Quality validator (use always)
-- **`plantilla-ubits.html`** - Base template for new pages
-- **`profile.html`** - Modular structure example
+- **`documentacion/componentes.html`** - Component library (check first)
+- **`documentacion/validador-ubits.html`** - Quality validator (use always)
+- **`documentacion/plantilla-ubits.html`** - Base template for new pages
+- **`ubits-colaborador/perfil/profile.html`** - Modular structure example
 
 ### **🚀 SUCCESS FORMULA:**
 **UBITS Components + UBITS Tokens + Component CSS + Validation = Perfect UBITS Interface**
@@ -1856,7 +2054,10 @@ document.addEventListener('DOMContentLoaded', function() {
 5. **ALWAYS check `components/card-content.js`** for official competencies list (35 competencies)
 6. **NEVER invent resource names** that don't exist
 7. **ALWAYS verify** resource paths before implementation
-8. **For other images** - Use external services like Unsplash with proper attribution
+8. **🚨 CRITICAL: Image paths are relative to HTML** - NOT to JavaScript:
+   - From subcarpetas (`ubits-admin/*`, `ubits-colaborador/*`): use `../../images/...`
+   - From root: use `images/...`
+9. **For other images** - Use external services like Unsplash with proper attribution
 
 **This prevents broken images and invalid data.**
 

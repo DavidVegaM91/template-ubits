@@ -1,0 +1,115 @@
+/* ========================================
+   ESTILOS ESPECÍFICOS PARA ubits-ai
+   ======================================== */
+
+
+/* Estilos específicos para content-sections */
+.content-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+    overflow: visible;
+    max-height: none;
+}
+
+/* Espaciador para alinear elementos */
+.content-sections > *:not(:last-child):not(.section-dual):not(.section-single):not(.section-triple):not(.section-quad) {
+    margin-bottom: 16px;
+}
+
+/* Espaciador final */
+.content-sections::after {
+    content: '';
+    height: 0px;
+    flex-shrink: 0;
+}
+
+/* Reducir el gap del último elemento */
+.content-sections > *:last-child {
+    margin-bottom: 0;
+}
+
+/* Secciones de widgets */
+.section-single {
+    display: flex;
+    width: 100%;
+}
+
+.section-dual {
+    display: flex;
+    gap: 20px;
+}
+
+.section-triple {
+    display: flex;
+    gap: 20px;
+}
+
+.section-quad {
+    display: flex;
+    gap: 20px;
+}
+
+/* Widgets en secciones - sin altura mínima forzada */
+.section-single > div,
+.section-dual > div,
+.section-triple > div,
+.section-quad > div {
+    background-color: var(--ubits-bg-1);
+    border: none;
+    border-radius: 8px;
+    padding: 12px !important;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Distribución de anchos */
+.section-single > div {
+    flex: 1;
+}
+
+.section-dual > div {
+    flex: 1;
+}
+
+.section-triple > div {
+    flex: 1;
+}
+
+.section-quad > div {
+    flex: 1;
+}
+
+/* Responsive para secciones */
+@media (max-width: 1023px) {
+    .content-sections {
+        padding-bottom: 0;
+    }
+    
+    .section-dual,
+    .section-triple,
+    .section-quad {
+        flex-direction: column;
+        gap: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .section-single > div,
+    .section-dual > div,
+    .section-triple > div,
+    .section-quad > div {
+        padding: 12px !important;
+    }
+}
+
+/* Widget header-product: sin fondo blanco ni padding */
+.section-single > .widget-header-product {
+    background-color: transparent !important;
+    padding: 0 !important;
+}

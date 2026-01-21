@@ -3,71 +3,87 @@
    JavaScript para el chat de modo estudio IA
    ======================================== */
 
-// Base de datos de cursos de liderazgo
+// Función para obtener la ruta base de imágenes según la ubicación actual
+function getImageBasePath() {
+    const currentPath = window.location.pathname;
+    
+    // Si estamos en ubits-colaborador/aprendizaje/ o ubits-admin/aprendizaje/
+    if (currentPath.includes('/ubits-colaborador/') || currentPath.includes('/ubits-admin/')) {
+        return '../../images/';
+    }
+    // Si estamos en documentacion/
+    if (currentPath.includes('/documentacion/')) {
+        return '../images/';
+    }
+    // Default: raíz del proyecto
+    return 'images/';
+}
+
+// Base de datos de cursos de liderazgo (las rutas se ajustan dinámicamente)
 const LEADERSHIP_COURSES = [
     { 
         title: 'Cambio en el estilo de liderazgo', 
-        image: 'images/cards-learn/cambio-en-el-estilo-de-liderazgo.jpeg' 
+        imagePath: 'cards-learn/cambio-en-el-estilo-de-liderazgo.jpeg' 
     },
     { 
         title: 'Cómo ejercer el liderazgo inclusivo', 
-        image: 'images/cards-learn/como-ejercer-el-liderazgo-inclusivo.jpeg' 
+        imagePath: 'cards-learn/como-ejercer-el-liderazgo-inclusivo.jpeg' 
     },
     { 
         title: 'El buen coaching inspira liderazgo', 
-        image: 'images/cards-learn/el-buen-coaching-inspira-liderazgo.jpeg' 
+        imagePath: 'cards-learn/el-buen-coaching-inspira-liderazgo.jpeg' 
     },
     { 
         title: 'Emplea los valores del liderazgo femenino', 
-        image: 'images/cards-learn/emplea-los-valores-del-liderazgo-femenino.jpeg' 
+        imagePath: 'cards-learn/emplea-los-valores-del-liderazgo-femenino.jpeg' 
     },
     { 
         title: 'Implementa el liderazgo colectivo en tu empresa', 
-        image: 'images/cards-learn/implementa-el-liderazgo-coletivo-en-tu-empresa.jpeg' 
+        imagePath: 'cards-learn/implementa-el-liderazgo-coletivo-en-tu-empresa.jpeg' 
     },
     { 
         title: 'La clave del liderazgo inclusivo', 
-        image: 'images/cards-learn/la-clave-del-liderazgo-inclusivo.jpeg' 
+        imagePath: 'cards-learn/la-clave-del-liderazgo-inclusivo.jpeg' 
     },
     { 
         title: 'La confianza: una clave para el liderazgo', 
-        image: 'images/cards-learn/la-confianza-una-clave-para-el-liderazgo.jpeg' 
+        imagePath: 'cards-learn/la-confianza-una-clave-para-el-liderazgo.jpeg' 
     },
     { 
         title: 'Liderar como los grandes directores de orquesta', 
-        image: 'images/cards-learn/liderar-como-los-grandes-directores-de-orquesta.jpeg' 
+        imagePath: 'cards-learn/liderar-como-los-grandes-directores-de-orquesta.jpeg' 
     },
     { 
         title: 'Liderar con inteligencia emocional', 
-        image: 'images/cards-learn/liderar-con-inteligencia-emocional.jpeg' 
+        imagePath: 'cards-learn/liderar-con-inteligencia-emocional.jpeg' 
     },
     { 
         title: 'Liderazgo en tiempos de crisis', 
-        image: 'images/cards-learn/liderazgo-en-tiempos-de-crisi.jpeg' 
+        imagePath: 'cards-learn/liderazgo-en-tiempos-de-crisi.jpeg' 
     },
     { 
         title: 'Liderazgo femenino', 
-        image: 'images/cards-learn/liderazgo-femenino.jpeg' 
+        imagePath: 'cards-learn/liderazgo-femenino.jpeg' 
     },
     { 
         title: 'Líderes cotidianos', 
-        image: 'images/cards-learn/lideres-cotidianos.jpeg' 
+        imagePath: 'cards-learn/lideres-cotidianos.jpeg' 
     },
     { 
         title: 'Neuroliderazgo: configura tu mente', 
-        image: 'images/cards-learn/neuroliderazgo-configura-tu-mente.jpeg' 
+        imagePath: 'cards-learn/neuroliderazgo-configura-tu-mente.jpeg' 
     },
     { 
         title: 'Potencia tu liderazgo en entornos VUCA', 
-        image: 'images/cards-learn/potencia-tu-liderazgo-en-entornos-vuca.jpeg' 
+        imagePath: 'cards-learn/potencia-tu-liderazgo-en-entornos-vuca.jpeg' 
     },
     { 
         title: '¿Qué hace que algunos equipos tengan alto desempeño?', 
-        image: 'images/cards-learn/que-hace-que-alugnos-equipos-tengan-alto-desempeno.jpeg' 
+        imagePath: 'cards-learn/que-hace-que-alugnos-equipos-tengan-alto-desempeno.jpeg' 
     },
     { 
         title: 'Ruta: Desarrollo de habilidades de liderazgo', 
-        image: 'images/cards-learn/ruta-desarrollo-de-habilidades-de-liderazgo.jpeg' 
+        imagePath: 'cards-learn/ruta-desarrollo-de-habilidades-de-liderazgo.jpeg' 
     }
 ];
 
@@ -421,16 +437,17 @@ function addMessage(type, text, showActions = false, regenerateFunction = null) 
                 const container = messageElement.querySelector(`#${containerId}`);
                 
                 if (container && courses && courses.length > 0) {
+                    const basePath = getImageBasePath();
                     const cardsData = courses.map(course => ({
                         type: 'Curso',
                         title: course.title,
                         provider: 'UBITS',
-                        providerLogo: 'images/Favicons/UBITS.jpg',
+                        providerLogo: basePath + 'Favicons/UBITS.jpg',
                         duration: '60 min',
                         level: 'Intermedio',
                         progress: 0,
                         status: 'default',
-                        image: course.image,
+                        image: basePath + course.imagePath,
                         competency: 'Liderazgo',
                         language: 'Español'
                     }));
@@ -446,16 +463,17 @@ function addMessage(type, text, showActions = false, regenerateFunction = null) 
                 const container = messageElement.querySelector(`#${containerId}`);
                 
                 if (container && plan && plan.courses && plan.courses.length > 0) {
+                    const basePath = getImageBasePath();
                     const cardsData = plan.courses.map(course => ({
                         type: 'Curso',
                         title: course.title,
                         provider: 'UBITS',
-                        providerLogo: 'images/Favicons/UBITS.jpg',
+                        providerLogo: basePath + 'Favicons/UBITS.jpg',
                         duration: '60 min',
                         level: 'Intermedio',
                         progress: 0,
                         status: 'default',
-                        image: course.image,
+                        image: basePath + course.imagePath,
                         competency: 'Liderazgo',
                         language: 'Español'
                     }));

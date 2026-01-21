@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>[NOMBRE_COMPONENTE] - [DESCRIPCIÓN_BREVE] | UBITS Playground</title>
+    
+    <!-- Estilos locales -->
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/card-content.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <style>
+        /* Preview Styles */
+        /* Preview control buttons - override UBITS button styles for active state */
+        .preview-control-btn.active {
+            background: var(--ubits-accent-brand) !important;
+            color: white !important;
+            border-color: var(--ubits-accent-brand) !important;
+        }
+        
+        .preview-control-btn.active span {
+            color: white !important;
+        }
+        
+        /* Card Content Preview Styles */
+        .card-preview-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 320px;
+            margin-bottom: 24px;
+        }
+        
+        .single-card-preview {
+            max-width: 400px;
+            width: 100%;
+        }
+        
+        /* Asegurar que el card tenga el ancho correcto */
+        .single-card-preview .course-card {
+            width: 100%;
+            max-width: 100%;
+        }
+        
+        .preview-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+        
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .control-label {
+            font-weight: 600;
+            color: var(--ubits-fg-1-high);
+        }
+        
+        .control-select {
+            padding: 8px 32px 8px 12px;
+            border: 1px solid var(--ubits-border-1);
+            border-radius: 12px;
+            background: var(--ubits-bg-1);
+            color: var(--ubits-fg-1-medium);
+            font-family: 'Noto Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 12px center;
+            background-repeat: no-repeat;
+            background-size: 16px;
+        }
+        
+        .control-select:hover {
+            border-color: var(--ubits-accent-brand);
+        }
+        
+        .control-select:focus {
+            outline: none;
+            border-color: var(--ubits-accent-brand);
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+        
+        /* Hover state simulation */
+        .course-card.hover-state {
+            border: 1px solid var(--ubits-border-1);
+        }
+        
+        .course-card.hover-state .course-image {
+            transform: scale(1.05);
+        }
+        
+        /* Quitar animación de entrada para el preview */
+        .single-card-preview .course-card {
+            animation: none !important;
+            border: none !important; /* Sin borde por defecto, igual que el componente real */
+        }
+        
+        /* Asegurar que el avatar del provider sea 28px en el preview */
+        .single-card-preview .provider-avatar {
+            width: 28px !important;
+            height: 28px !important;
+            min-width: 28px !important;
+            min-height: 28px !important;
+            max-width: 28px !important;
+            max-height: 28px !important;
+        }
+        
+        /* Asegurar que los specs no se partan en el preview */
+        .single-card-preview .spec-item {
+            flex-shrink: 1 !important;
+            min-width: 0 !important;
+        }
+        
+        .single-card-preview .spec-item span {
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            flex-shrink: 1 !important;
+            min-width: 0 !important;
+            display: block !important;
+        }
+        
+        /* Asegurar que el contenedor de specs permita truncamiento */
+        .single-card-preview .course-specs {
+            min-width: 0 !important;
+            overflow: hidden !important;
+            flex-wrap: nowrap !important;
+        }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navigation -->
+            <div id="top-nav-container"></div>
+            
+            <!-- Content with Sidebar -->
+            <div style="display: flex;">
+            
+            <!-- Dropdown Móvil para Documentación -->
+            <div id="docs-dropdown-container"></div>
+            
+            <!-- Sidebar de Documentación -->
+            <div id="docs-sidebar-container"></div>
+
+            <!-- Content Area -->
+            <div class="components-content">
+                <!-- Content Area -->
+                <div class="content-area" style="display: block; width: 100%;">
+                <!-- Hero Section -->
+                <div style="text-align: center; margin-bottom: 60px;">
+                    <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                        Card content
+                    </h1>
+                    <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                        Componente para mostrar contenidos de aprendizaje con información completa, progreso visual y diseño responsive.
+                    </p>
+                </div>
+
+                <!-- Preview Section -->
+                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1); margin-bottom: 40px;">
+                    <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                        <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                        Preview del componente
+                    </h2>
+                    <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                        Personaliza el card en tiempo real usando los selectores. Cambia el estado, progreso, tipo de contenido y más para ver todas las variantes disponibles.
+                    </p>
+                    
+                    <!-- Preview Container -->
+                    <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: 1px solid var(--ubits-border-1); position: relative;">
+                        
+                        <!-- Card Preview -->
+                        <div class="card-preview-container">
+                            <div class="single-card-preview" id="card-preview"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Preview Controls -->
+                    <div class="preview-controls">
+                        <div class="control-group">
+                            <label class="control-label ubits-body-sm-bold">Estado</label>
+                            <select class="control-select" id="estado-select">
+                                <option value="default">Default</option>
+                                <option value="hover">Hover</option>
+                            </select>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label class="control-label ubits-body-sm-bold">Progreso</label>
+                            <select class="control-select" id="progreso-select">
+                                <option value="default">Default (0%)</option>
+                                <option value="progress" selected>En progreso (75%)</option>
+                                <option value="completed">Completado (100%)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label class="control-label ubits-body-sm-bold">Tipo de contenido</label>
+                            <select class="control-select" id="tipo-select">
+                                <option value="Curso" selected>Curso</option>
+                                <option value="Short">Short</option>
+                                <option value="Charla">Charla</option>
+                                <option value="Artículo">Artículo</option>
+                                <option value="Podcast">Podcast</option>
+                                <option value="Libro">Libro</option>
+                                <option value="Ideas de libro">Ideas de libro</option>
+                                <option value="Caso de estudio">Caso de estudio</option>
+                                <option value="Documento técnico">Documento técnico</option>
+                                <option value="Ejercicios de práctica">Ejercicios de práctica</option>
+                                <option value="Ruta de aprendizaje">Ruta de aprendizaje</option>
+                                <option value="Programa">Programa</option>
+                            </select>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label class="control-label ubits-body-sm-bold">Aliado</label>
+                            <select class="control-select" id="aliado-select">
+                                <option value="UBITS">UBITS</option>
+                                <option value="Microsoft">Microsoft</option>
+                                <option value="TED">TED</option>
+                                <option value="AWS">AWS</option>
+                                <option value="Hubspot">Hubspot</option>
+                                <option value="Harvard Business Publishing" selected>Harvard Business Publishing</option>
+                                <option value="Universidad de Los Andes">Universidad de Los Andes</option>
+                                <option value="Advanced English">Advanced English</option>
+                                <option value="IE University">IE University</option>
+                                <option value="Código Facilito">Código Facilito</option>
+                                <option value="Hackers del Talento">Hackers del Talento</option>
+                                <option value="All Ears English">All Ears English</option>
+                                <option value="American & British Academy">American & British Academy</option>
+                                <option value="Bureau Veritas">Bureau Veritas</option>
+                                <option value="Welu">Welu</option>
+                                <option value="Figsha Smart Consulting">Figsha Smart Consulting</option>
+                                <option value="Instafit">Instafit</option>
+                                <option value="WOBI">WOBI</option>
+                            </select>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label class="control-label ubits-body-sm-bold">Competencia</label>
+                            <select class="control-select" id="competencia-select">
+                                <option value="Product design">Product design</option>
+                                <option value="Desarrollo de software">Desarrollo de software</option>
+                                <option value="Liderazgo">Liderazgo</option>
+                                <option value="Marketing digital">Marketing digital</option>
+                                <option value="Inteligencia emocional" selected>Inteligencia emocional</option>
+                                <option value="Accountability">Accountability</option>
+                                <option value="Administración de negocios">Administración de negocios</option>
+                                <option value="Agilidad">Agilidad</option>
+                                <option value="Comunicación">Comunicación</option>
+                                <option value="Cumplimiento (Compliance)">Cumplimiento (Compliance)</option>
+                                <option value="Data skills">Data skills</option>
+                                <option value="Desarrollo web">Desarrollo web</option>
+                                <option value="Digital skills">Digital skills</option>
+                                <option value="e-Commerce">e-Commerce</option>
+                                <option value="Emprendimiento">Emprendimiento</option>
+                                <option value="Experiencia del cliente">Experiencia del cliente</option>
+                                <option value="Gestión de procesos y operaciones">Gestión de procesos y operaciones</option>
+                                <option value="Gestión de proyectos">Gestión de proyectos</option>
+                                <option value="Gestión de recursos tecnológicos">Gestión de recursos tecnológicos</option>
+                                <option value="Gestión del cambio">Gestión del cambio</option>
+                                <option value="Gestión del riesgo">Gestión del riesgo</option>
+                                <option value="Gestión financiera">Gestión financiera</option>
+                                <option value="Herramientas tecnológicas">Herramientas tecnológicas</option>
+                                <option value="Inglés">Inglés</option>
+                                <option value="Innovación">Innovación</option>
+                                <option value="Lenguajes de Programación">Lenguajes de Programación</option>
+                                <option value="Marketing">Marketing</option>
+                                <option value="Negociación">Negociación</option>
+                                <option value="People management">People management</option>
+                                <option value="Productividad">Productividad</option>
+                                <option value="Resolución de problemas">Resolución de problemas</option>
+                                <option value="Trabajo en equipo">Trabajo en equipo</option>
+                                <option value="Ventas">Ventas</option>
+                                <option value="Wellness">Wellness</option>
+                            </select>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label class="control-label ubits-body-sm-bold">Nivel</label>
+                            <select class="control-select" id="nivel-select">
+                                <option value="Básico">Básico</option>
+                                <option value="Intermedio" selected>Intermedio</option>
+                                <option value="Avanzado">Avanzado</option>
+                            </select>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label class="control-label ubits-body-sm-bold">Idioma</label>
+                            <select class="control-select" id="idioma-select">
+                                <option value="Español">Español</option>
+                                <option value="Inglés">Inglés</option>
+                                <option value="Portugués">Portugués</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Características generales -->
+                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1); margin-bottom: 40px;">
+                    <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                        <i class="far fa-sparkles" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                        Características principales
+                    </h2>
+                    <p class="ubits-body-md-regular" style="margin-bottom: 24px; color: var(--ubits-fg-1-medium);">
+                        El componente Card Content está diseñado para mostrar contenidos de aprendizaje de manera profesional y consistente.
+                    </p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                        <div style="text-align: center; padding: 24px; background: var(--ubits-bg-2); border-radius: 12px; border: 1px solid var(--ubits-border-1);">
+                            <div style="font-size: 32px; color: var(--ubits-accent-brand); margin-bottom: 16px;"><i class="far fa-circle-play"></i></div>
+                            <div class="ubits-body-md-bold" style="margin-bottom: 8px;">Estados visuales</div>
+                            <div class="ubits-body-sm-regular">Default, En progreso, Completado con barras dinámicas y colores diferenciados</div>
+                        </div>
+                        <div style="text-align: center; padding: 24px; background: var(--ubits-bg-2); border-radius: 12px; border: 1px solid var(--ubits-border-1);">
+                            <div style="font-size: 32px; color: var(--ubits-accent-brand); margin-bottom: 16px;"><i class="far fa-expand"></i></div>
+                            <div class="ubits-body-md-bold" style="margin-bottom: 8px;">Aspect ratio 16:9</div>
+                            <div class="ubits-body-sm-regular">Mantiene las proporciones perfectas para cualquier imagen de contenido</div>
+                        </div>
+                        <div style="text-align: center; padding: 24px; background: var(--ubits-bg-2); border-radius: 12px; border: 1px solid var(--ubits-border-1);">
+                            <div style="font-size: 32px; color: var(--ubits-accent-brand); margin-bottom: 16px;"><i class="far fa-mobile"></i></div>
+                            <div class="ubits-body-md-bold" style="margin-bottom: 8px;">Responsive</div>
+                            <div class="ubits-body-sm-regular">Adaptable a todos los dispositivos con grid automático y breakpoints optimizados</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROMPTS ÚTILES -->
+                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1); margin-bottom: 40px;">
+                    <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                        <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                        Prompts útiles
+                    </h2>
+                    <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                        Usa estos prompts con Cursor AI para configurar y personalizar el componente Card Content de manera eficiente.
+                    </p>
+
+                    <!-- Alert Warning -->
+                    <div id="cardcontent-warning-alert" style="margin-bottom: 32px;"></div>
+
+                    <!-- Prompt 1: Crear cards de contenido -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Crear cards de contenido de aprendizaje
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('cardcontent-prompt-1')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontent-prompt-1">Crea un grid de [número] cards de contenido de aprendizaje sobre [tema] con [número] cards por fila en [ubicación donde quieres el grid]. Agrega los breakpoints responsive que consideres necesarios.</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 2: Cambiar tipo de contenido -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Cambiar tipo de contenido
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('cardcontent-prompt-2')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontent-prompt-2">Cambia la card [nombre_del_card] de [tipo_actual] a [nuevo_tipo: Curso, Short, Charla, Artículo, Podcast, Libro, etc.].</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 3: Cambiar competencia -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Cambiar competencia del contenido
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('cardcontent-prompt-3')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontent-prompt-3">Cambia la card [nombre_del_card] para que muestre contenido de la competencia [nombre_de_la_competencia].</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 4: Filtrar por proveedor -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Filtrar por proveedor de contenido
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('cardcontent-prompt-4')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontent-prompt-4">Cambia la card [nombre_del_card] para que muestre contenido del proveedor [nombre_del_proveedor: UBITS, Microsoft, TED, AWS, Harvard, etc.].</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 5: Cambiar nivel de dificultad -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Cambiar nivel de dificultad
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('cardcontent-prompt-5')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontent-prompt-5">Cambia la card [nombre_del_card] para mostrar contenido de nivel [Básico, Intermedio o Avanzado].</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 6: Mostrar contenido completado -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Mostrar contenido completado
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('cardcontent-prompt-6')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontent-prompt-6">Haz que la card [nombre_del_card] muestre contenido completado al 100% con barra de progreso verde.</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 7: Mostrar contenido en progreso -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Mostrar contenido en progreso
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('cardcontent-prompt-7')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontent-prompt-7">Haz que la card [nombre_del_card] muestre contenido en progreso con [porcentaje]% completado.</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 8: Cambiar duración del contenido -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Cambiar duración del contenido
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('cardcontent-prompt-8')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontent-prompt-8">Cambia la duración de la card [nombre_del_card] para que muestre [nueva_duracion] minutos.</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 9: Cambiar idioma del contenido -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Cambiar idioma del contenido
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('cardcontent-prompt-9')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontent-prompt-9">Cambia la card [nombre_del_card] para mostrar contenido en [idioma: Español, Inglés, Portugués, etc.].</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 10: Personalizar imagen de las cards -->
+                    <div>
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Personalizar imagen de las cards
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('cardcontent-prompt-10')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontent-prompt-10">Cambia la imagen de la card [nombre_del_card] para que use [descripción_de_la_nueva_imagen].</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ACORDEÓN DE DOCUMENTACIÓN TÉCNICA -->
+                <div style="background: var(--ubits-bg-1); border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1); margin-bottom: 40px; overflow: hidden;">
+                    <!-- Header del acordeón -->
+                    <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                        <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Documentación técnica
+                        </h2>
+                        <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
+                            Reemplaza esta sección con la documentación técnica específica del componente.
+                        </p>
+                    </div>
+                    
+                    <!-- Botón de expansión -->
+                    <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                        <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>
+                            Mostrar
+                        </span>
+                    </div>
+                    
+                    <!-- Contenido del acordeón (inicialmente oculto) -->
+                    <div id="technical-docs-content" style="display: none; padding: 0;">
+                        <!-- Estructura del Componente -->
+                        <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-sitemap" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Estructura del componente
+                                </h2>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('structure-code')">
+                                    <i class="far fa-copy"></i>
+                                    <span>Copiar</span>
+                                </button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: 1px solid var(--ubits-border-1);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="structure-code">&lt;div class="course-card" data-progress="75" data-status="progress"&gt;
+  &lt;div class="course-thumbnail-wrapper"&gt;
+    &lt;div class="course-thumbnail"&gt;
+      &lt;img src="imagen.jpg" alt="Título" class="course-image"&gt;
+    &lt;/div&gt;
+    &lt;div class="course-progress-overlay"&gt;
+      &lt;div class="progress-bar"&gt;
+        &lt;div class="progress-fill"&gt;&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="course-content"&gt;
+    &lt;div class="course-header"&gt;
+      &lt;div class="course-type-status"&gt;
+        &lt;span class="course-type"&gt;Curso&lt;/span&gt;
+        &lt;span class="course-status course-status--progress"&gt;En progreso&lt;/span&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;h3 class="course-title"&gt;Título del contenido&lt;/h3&gt;
+    &lt;div class="course-provider"&gt;
+      &lt;div class="provider-avatar"&gt;
+        &lt;img src="logo.jpg" alt="Proveedor" class="provider-icon"&gt;
+      &lt;/div&gt;
+      &lt;span class="provider-name"&gt;Nombre del proveedor&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;div class="course-competency"&gt;
+      &lt;div class="spec-icon"&gt;&lt;i class="far fa-tag"&gt;&lt;/i&gt;&lt;/div&gt;
+      &lt;span&gt;Competencia&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;div class="course-specs"&gt;
+      &lt;div class="spec-item"&gt;
+        &lt;div class="spec-icon"&gt;&lt;i class="far fa-gauge"&gt;&lt;/i&gt;&lt;/div&gt;
+        &lt;span&gt;Intermedio&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;div class="spec-item"&gt;
+        &lt;div class="spec-icon"&gt;&lt;i class="far fa-clock"&gt;&lt;/i&gt;&lt;/div&gt;
+        &lt;span&gt;60 min&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;div class="spec-item"&gt;
+        &lt;div class="spec-icon"&gt;&lt;i class="far fa-globe"&gt;&lt;/i&gt;&lt;/div&gt;
+        &lt;span&gt;Español&lt;/span&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                            </div>
+                        </div>
+
+                        <!-- Cómo Implementar -->
+                        <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Cómo implementar
+                                </h2>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('implement-code')">
+                                    <i class="far fa-copy"></i>
+                                    <span>Copiar</span>
+                                </button>
+                            </div>
+                            
+                            <!-- REQUISITOS DE RENDERIZADO -->
+                            <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: 1px solid var(--ubits-border-1); margin-bottom: 16px;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">🔧 REQUISITOS OBLIGATORIOS:</h3>
+                                <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.5;">
+                                    <strong>CSS Requerido:</strong><br>
+                                    • <code>components/card-content.css</code> - Estilos del componente<br>
+                                    • <code>fontawesome-icons.css</code> - Iconos FontAwesome<br>
+                                    • <code>ubits-colors.css</code> - Tokens de color UBITS<br>
+                                    • <code>ubits-typography.css</code> - Tipografía UBITS<br><br>
+                                    <strong>JavaScript Requerido:</strong><br>
+                                    • <code>components/card-content.js</code> - Función loadCardContent()<br><br>
+                                    <strong>Renderizado:</strong> loadCardContent() function con containerId y datos
+                                </div>
+                            </div>
+                            
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="implement-code">&lt;!-- 1. HTML: Crear contenedor --&gt;
+&lt;div id="mi-contenedor-cards"&gt;&lt;/div&gt;
+
+&lt;!-- 2. CSS: Importar dependencias --&gt;
+&lt;link rel="stylesheet" href="../../general-styles/ubits-colors.css"&gt;
+&lt;link rel="stylesheet" href="../../general-styles/ubits-typography.css"&gt;
+&lt;link rel="stylesheet" href="../../general-styles/fontawesome-icons.css"&gt;
+&lt;link rel="stylesheet" href="../../components/card-content.css"&gt;
+
+&lt;!-- 3. JavaScript: Cargar componente --&gt;
+&lt;script src="../../components/card-content.js"&gt;&lt;/script&gt;
+
+&lt;!-- 4. Implementación: Usar el componente --&gt;
+&lt;script&gt;
+document.addEventListener('DOMContentLoaded', function() {
+    const datosCards = [
+        {
+            type: 'Curso',
+            title: 'Mi contenido',
+            provider: 'UBITS',
+            providerLogo: '../../images/Favicons/UBITS.jpg',
+            duration: '60 min',
+            level: 'Intermedio',
+            progress: 50,
+            status: 'progress',
+            image: '../../images/cards-learn/mi-imagen.jpg',
+            competency: 'Product design',
+            language: 'Español'
+        }
+    ];
+    
+    loadCardContent('mi-contenedor-cards', datosCards);
+});
+&lt;/script&gt;</code></pre>
+                            </div>
+                        </div>
+
+                        <!-- Rutas de Imágenes - CRÍTICO -->
+                        <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-image" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Rutas de imágenes
+                                </h2>
+                            </div>
+                            
+                            <div style="background: var(--ubits-feedback-bg-warning); padding: 20px; border-radius: 12px; border: 1px solid var(--ubits-feedback-accent-warning); margin-bottom: 24px;">
+                                <div style="display: flex; align-items: start; gap: 12px;">
+                                    <i class="far fa-triangle-exclamation" style="font-size: 24px; color: var(--ubits-feedback-accent-warning); margin-top: 2px;"></i>
+                                    <div>
+                                        <h3 class="ubits-body-md-bold" style="margin-bottom: 8px; color: var(--ubits-fg-1-high);">
+                                            ⚠️ IMPORTANTE: Rutas relativas desde la ubicación del HTML
+                                        </h3>
+                                        <p class="ubits-body-sm-regular" style="margin-bottom: 12px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                            Las rutas de imágenes en los datos de las cards son <strong>relativas al archivo HTML</strong> que carga el componente, NO al archivo JavaScript. Esto significa que debes ajustar las rutas según dónde esté ubicado tu HTML.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 24px;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">
+                                    📁 Rutas desde subcarpetas (ubits-admin/*, ubits-colaborador/*)
+                                </h3>
+                                <p class="ubits-body-md-regular" style="margin-bottom: 12px; line-height: 1.5; color: var(--ubits-fg-1-medium);">
+                                    Si tu HTML está en una subcarpeta como <code>ubits-colaborador/aprendizaje/catalogo.html</code>, usa rutas con <code>../../images/</code>:
+                                </p>
+                                <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code>const datosCards = [
+    {
+        type: 'Curso',
+        title: 'Mi contenido',
+        provider: 'UBITS',
+        providerLogo: '../../images/Favicons/UBITS.jpg',  // ✅ Correcto desde subcarpeta
+        image: '../../images/cards-learn/mi-imagen.jpeg', // ✅ Correcto desde subcarpeta
+        // ... otros campos
+    }
+];</code></pre>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 24px;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">
+                                    📁 Rutas desde la raíz del proyecto
+                                </h3>
+                                <p class="ubits-body-md-regular" style="margin-bottom: 12px; line-height: 1.5; color: var(--ubits-fg-1-medium);">
+                                    Si tu HTML está en la raíz del proyecto, usa rutas con <code>images/</code>:
+                                </p>
+                                <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code>const datosCards = [
+    {
+        type: 'Curso',
+        title: 'Mi contenido',
+        provider: 'UBITS',
+        providerLogo: 'images/Favicons/UBITS.jpg',  // ✅ Correcto desde raíz
+        image: 'images/cards-learn/mi-imagen.jpeg', // ✅ Correcto desde raíz
+        // ... otros campos
+    }
+];</code></pre>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 24px;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">
+                                    🗂️ Estructura de carpetas de imágenes
+                                </h3>
+                                <p class="ubits-body-md-regular" style="margin-bottom: 12px; line-height: 1.5; color: var(--ubits-fg-1-medium);">
+                                    El proyecto tiene estas carpetas de imágenes disponibles:
+                                </p>
+                                <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                    <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.8;">
+                                        <strong>📸 Imágenes de cards:</strong><br>
+                                        • <code>images/cards-learn/</code> - Imágenes horizontales para cards (85+ imágenes disponibles)<br>
+                                        • <code>images/vertical-cards/</code> - Imágenes verticales para libros (16 imágenes disponibles)<br><br>
+                                        
+                                        <strong>🏢 Logos de proveedores:</strong><br>
+                                        • <code>images/Favicons/</code> - Logos de aliados oficiales (18 proveedores disponibles)<br><br>
+                                        
+                                        <strong>🎓 Imágenes de academias:</strong><br>
+                                        • <code>images/academias/</code> - Imágenes para academias (5 imágenes disponibles)<br><br>
+                                        
+                                        <strong>🏷️ Imágenes de competencias:</strong><br>
+                                        • <code>images/imagenes competencias/</code> - Imágenes para competencias (35 imágenes disponibles)
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 0;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">
+                                    ✅ Regla de oro
+                                </h3>
+                                <div style="background: var(--ubits-feedback-bg-success); padding: 16px; border-radius: 8px; border: 1px solid var(--ubits-feedback-accent-success);">
+                                    <p class="ubits-body-md-regular" style="margin: 0; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                        <strong>Las rutas siempre son relativas al HTML que carga el componente.</strong><br>
+                                        • Desde <code>ubits-colaborador/aprendizaje/catalogo.html</code> → <code>../../images/...</code><br>
+                                        • Desde <code>ubits-admin/inicio/admin.html</code> → <code>../../images/...</code><br>
+                                        • Desde la raíz → <code>images/...</code>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- API y Funciones -->
+                        <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-cogs" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                API y funciones
+                            </h2>
+                            <div style="margin-bottom: 24px;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">loadCardContent(containerId, cardsData)</h3>
+                                <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
+                                    Carga múltiples cards de contenido en un contenedor específico con grid responsive automático.
+                                </p>
+                                <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: 6px; border-left: 4px solid var(--ubits-accent-brand);">
+                                    <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                        <strong>Parámetros:</strong> containerId (string), cardsData (array)<br>
+                                        <strong>Ejemplo:</strong> loadCardContent('mi-contenedor', datosArray)
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 24px;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">renderCardContent(cardData)</h3>
+                                <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
+                                    Renderiza una sola card de contenido y devuelve el HTML como string para insertar manualmente.
+                                </p>
+                                <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: 6px; border-left: 4px solid var(--ubits-accent-brand);">
+                                    <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                        <strong>Parámetros:</strong> cardData (object) - Datos de la card<br>
+                                        <strong>Ejemplo:</strong> renderCardContent(miCardData)
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 24px;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">validateCardData(cardData)</h3>
+                                <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
+                                    Valida que los datos de la card tengan tipos y competencias válidas según las opciones oficiales UBITS.
+                                </p>
+                                <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: 6px; border-left: 4px solid var(--ubits-accent-brand);">
+                                    <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                        <strong>Parámetros:</strong> cardData (object) - Datos a validar<br>
+                                        <strong>Ejemplo:</strong> validateCardData(miCardData)
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 24px;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">getRecommendedDuration(type)</h3>
+                                <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
+                                    Obtiene la duración recomendada según el tipo de contenido (Short = 15min, Ruta = 240min, etc.).
+                                </p>
+                                <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: 6px; border-left: 4px solid var(--ubits-accent-brand);">
+                                    <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                        <strong>Parámetros:</strong> type (string) - Tipo de contenido<br>
+                                        <strong>Ejemplo:</strong> getRecommendedDuration('Short') // '15 min'
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 0;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">window.CARD_CONTENT_OPTIONS</h3>
+                                <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
+                                    Objeto global que contiene todas las opciones disponibles (tipos, competencias, niveles, proveedores, etc.).
+                                </p>
+                                <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: 6px; border-left: 4px solid var(--ubits-accent-brand);">
+                                    <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                        <strong>Uso:</strong> Variable global de solo lectura<br>
+                                        <strong>Ejemplo:</strong> console.log(window.CARD_CONTENT_OPTIONS)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Personalización -->
+                        <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-paint-brush" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Personalización
+                            </h2>
+                            <div style="margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Agregar nuevos tipos de contenido</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('add-features-code')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <p class="ubits-body-md-regular" style="margin-bottom: 12px; line-height: 1.5;">
+                                    Para agregar nuevos tipos de contenido, modifica el array CONTENT_TYPES en el archivo JavaScript:
+                                </p>
+                                <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="add-features-code">// En card-content.js, línea 11-23
+const CONTENT_TYPES = [
+    'Curso',
+    'Short', 
+    'Charla',
+    'Artículo',
+    'Podcast',
+    'Libro',
+    'Ideas de libro',
+    'Caso de estudio',
+    'Documento técnico',
+    'Ejercicios de práctica',
+    'Ruta de aprendizaje',
+    'Programa',
+    'Mi Nuevo Tipo'  // ← Agregar aquí
+];</code></pre>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Personalizar estilos CSS</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('modify-styles-code')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <p class="ubits-body-md-regular" style="margin-bottom: 12px; line-height: 1.5;">
+                                    Puedes personalizar la apariencia del componente sobrescribiendo las clases CSS:
+                                </p>
+                                <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="modify-styles-code">/* Personalizar el hover del card */
+.course-card:hover {
+  transform: translateY(-4px); /* Más elevación */
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); /* Sombra más fuerte */
+}
+
+/* Personalizar el tamaño de la imagen */
+.course-thumbnail {
+  aspect-ratio: 4 / 3; /* Cambiar de 16:9 a 4:3 */
+}
+
+/* Personalizar colores de progreso */
+.course-progress-overlay .progress-fill {
+  background: var(--ubits-feedback-accent-warning-static); /* Naranja */
+}
+
+/* Personalizar tipografía del título */
+.course-title {
+  font-size: 18px; /* Título más grande */
+  line-height: 1.4;
+}</code></pre>
+                                </div>
+                            </div>
+                            <div>
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Agregar nuevos proveedores</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('add-providers-code')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <p class="ubits-body-md-regular" style="margin-bottom: 12px; line-height: 1.5;">
+                                    Para agregar nuevos aliados/proveedores, actualiza el objeto PROVIDERS:
+                                </p>
+                                <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="add-providers-code">// En card-content.js, línea 98-120
+const PROVIDERS = {
+    'UBITS': '../../images/Favicons/UBITS.jpg',
+    'Microsoft': '../../images/Favicons/Microsoft.jpg',
+    'TED': '../../images/Favicons/TED.jpg',
+    // ... otros proveedores existentes
+    'Mi Nueva Universidad': '../../images/Favicons/Mi-Nueva-Universidad.jpg' // ← Agregar aquí
+};
+
+// También actualizar el mapeo en card-content.html línea 558-577
+const logoMap = {
+    'UBITS': 'UBITS.jpg',
+    'Microsoft': 'Microsoft.jpg',
+    // ... otros mapeos
+    'Mi Nueva Universidad': 'Mi-Nueva-Universidad.jpg' // ← Agregar aquí
+};</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Contenedor para Toast UBITS -->
+    <div id="ubits-toast-container"></div>
+
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../components/card-content.js"></script>
+    <script src="../../script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cargar top-nav con variante documentación
+            loadSubNav('top-nav-container', 'documentacion');
+            
+            // Forzar activación de Componentes en todas las páginas de documentación
+            setTimeout(() => {
+                // Quitar todas las clases active primero
+                document.querySelectorAll('.nav-tab.active, .hamburger-item.active').forEach(item => {
+                    item.classList.remove('active');
+                });
+                
+                // Activar solo Componentes
+                const navTab = document.querySelector('.nav-tab[data-tab="section3"]');
+                const hamburgerItem = document.querySelector('.hamburger-item[data-tab="section3"]');
+                if (navTab) navTab.classList.add('active');
+                if (hamburgerItem) hamburgerItem.classList.add('active');
+            }, 200);
+            
+            // Cargar sidebar de documentación
+            loadDocsSidebar('card-content');
+            
+            // Cargar alert de warning para prompts usando el componente oficial
+            showAlert('warning', 'Importante: Antes de enviar estos prompts a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
+                containerId: 'cardcontent-warning-alert',
+                noClose: true
+            });
+            
+            // Inicializar preview del card
+            initCardPreview();
+        });
+
+        // Datos base del card
+        let currentCardData = {
+            type: 'Curso',
+            title: 'El manejo de las emociones',
+            provider: 'Harvard Business Publishing',
+            providerLogo: '../../images/Favicons/Harvard-Business-Publishing.jpg',
+            duration: '60 min',
+            level: 'Intermedio',
+            progress: 75,
+            status: 'progress',
+            image: '../../images/cards-learn/el-manejo-de-las-emociones.jpeg',
+            competency: 'Inteligencia emocional',
+            language: 'Español'
+        };
+        
+        // Inicializar preview del card
+        function initCardPreview() {
+            // Renderizar card inicial
+            updateCardPreview();
+            
+            // Event listeners para los selectores
+            document.getElementById('estado-select').addEventListener('change', function() {
+                const card = document.querySelector('.course-card');
+                if (this.value === 'hover') {
+                    card.classList.add('hover-state');
+                } else {
+                    card.classList.remove('hover-state');
+                }
+            });
+            
+            document.getElementById('progreso-select').addEventListener('change', function() {
+                const value = this.value;
+                if (value === 'default') {
+                    currentCardData.progress = 0;
+                    currentCardData.status = 'default';
+                } else if (value === 'progress') {
+                    currentCardData.progress = 75;
+                    currentCardData.status = 'progress';
+                } else if (value === 'completed') {
+                    currentCardData.progress = 100;
+                    currentCardData.status = 'completed';
+                }
+                updateCardPreview();
+            });
+            
+            document.getElementById('tipo-select').addEventListener('change', function() {
+                currentCardData.type = this.value;
+                // Ajustar duración recomendada
+                if (this.value === 'Short') {
+                    currentCardData.duration = '15 min';
+                } else if (this.value === 'Ruta de aprendizaje') {
+                    currentCardData.duration = '240 min';
+                } else if (this.value === 'Programa') {
+                    currentCardData.duration = '240 min';
+                } else {
+                    currentCardData.duration = '60 min';
+                }
+                updateCardPreview();
+            });
+            
+            document.getElementById('aliado-select').addEventListener('change', function() {
+                currentCardData.provider = this.value;
+                
+                // Mapeo correcto de nombres a archivos
+                const logoMap = {
+                    'UBITS': 'UBITS.jpg',
+                    'Microsoft': 'Microsoft.jpg',
+                    'TED': 'TED.jpg',
+                    'AWS': 'AWS.jpg',
+                    'Hubspot': 'Hubspot.jpg',
+                    'Harvard Business Publishing': 'Harvard-Business-Publishing.jpg',
+                    'Universidad de Los Andes': 'Universidad-de-Los Andes.jpg',
+                    'Advanced English': 'Advanced-English.jpg',
+                    'IE University': 'IE-University-Publishing.jpg',
+                    'Código Facilito': 'Código-Facilito.jpg',
+                    'Hackers del Talento': 'Hackers-del-Talento.jpg',
+                    'All Ears English': 'All Ears English.jpg',
+                    'American & British Academy': 'American & British Academy.jpg',
+                    'Bureau Veritas': 'Bureau-Veritas.jpg',
+                    'Welu': 'Welu.jpg',
+                    'Figsha Smart Consulting': 'Figsha Smart Consulting.jpg',
+                    'Instafit': 'Instafit.jpg',
+                    'WOBI': 'WOBI.jpg'
+                };
+                
+                currentCardData.providerLogo = `../../images/Favicons/${logoMap[this.value] || 'UBITS.jpg'}`;
+                updateCardPreview();
+            });
+            
+            document.getElementById('competencia-select').addEventListener('change', function() {
+                currentCardData.competency = this.value;
+                updateCardPreview();
+            });
+            
+            document.getElementById('nivel-select').addEventListener('change', function() {
+                currentCardData.level = this.value;
+                updateCardPreview();
+            });
+            
+            document.getElementById('idioma-select').addEventListener('change', function() {
+                currentCardData.language = this.value;
+                updateCardPreview();
+            });
+        }
+        
+        // Actualizar preview del card
+        function updateCardPreview() {
+            const container = document.getElementById('card-preview');
+            container.innerHTML = renderCardContent(currentCardData);
+        }
+
+
+        // Función para el acordeón de documentación técnica
+        function toggleTechnicalDocs() {
+            const content = document.getElementById('technical-docs-content');
+            const button = document.querySelector('[onclick="toggleTechnicalDocs()"]');
+            
+            if (content.style.display === 'none' || content.style.display === '') {
+                // Expandir
+                content.style.display = 'block';
+                button.innerHTML = '<i class="far fa-chevron-up" id="tech-docs-chevron" style="color: var(--ubits-accent-brand);"></i> <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand);">Ocultar</span>';
+            } else {
+                // Contraer
+                content.style.display = 'none';
+                button.innerHTML = '<i class="far fa-chevron-down" id="tech-docs-chevron" style="color: var(--ubits-accent-brand);"></i> <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand);">Mostrar</span>';
+            }
+        }
+
+        // Función para copiar prompts
+        function copyPrompt(promptId) {
+            const promptElement = document.getElementById(promptId);
+            const promptText = promptElement.textContent;
+            
+            // Copiar al portapapeles
+            navigator.clipboard.writeText(promptText).then(function() {
+                // Mostrar feedback visual
+                const button = document.querySelector(`[onclick="copyPrompt('${promptId}')"]`);
+                const icon = button.querySelector('i');
+                const text = button.querySelector('span');
+                
+                // Cambiar estado del botón
+                icon.className = 'far fa-check';
+                text.textContent = 'Copiado';
+                button.classList.add('ubits-button--active');
+                
+                // Mostrar toast
+                showToast('success', '¡Prompt copiado! 🎉', {
+                    containerId: 'ubits-toast-container',
+                    duration: 3500
+                });
+                
+                // Restaurar estado después de 2 segundos
+                setTimeout(function() {
+                    icon.className = 'far fa-copy';
+                    text.textContent = 'Copiar';
+                    button.classList.remove('ubits-button--active');
+                }, 2000);
+                
+            }).catch(function(err) {
+                console.error('Error al copiar: ', err);
+                showToast('error', 'Error al copiar el prompt', {
+                    containerId: 'ubits-toast-container',
+                    duration: 6500
+                });
+            });
+        }
+
+        // Función para copiar código
+        function copyCode(codeId) {
+            const codeElement = document.getElementById(codeId);
+            const codeText = codeElement.textContent;
+            
+            // Copiar al portapapeles
+            navigator.clipboard.writeText(codeText).then(function() {
+                // Mostrar feedback visual
+                const button = document.querySelector(`[onclick="copyCode('${codeId}')"]`);
+                const icon = button.querySelector('i');
+                const text = button.querySelector('span');
+                
+                // Cambiar estado del botón
+                icon.className = 'far fa-check';
+                text.textContent = 'Copiado';
+                button.classList.add('ubits-button--active');
+                
+                // Mostrar toast
+                showToast('success', '¡Código copiado! 🎉', {
+                    containerId: 'ubits-toast-container',
+                    duration: 3500
+                });
+                
+                // Restaurar estado después de 2 segundos
+                setTimeout(function() {
+                    icon.className = 'far fa-copy';
+                    text.textContent = 'Copiar';
+                    button.classList.remove('ubits-button--active');
+                }, 2000);
+                
+            }).catch(function(err) {
+                console.error('Error al copiar: ', err);
+                showToast('error', 'Error al copiar el código', {
+                    containerId: 'ubits-toast-container',
+                    duration: 6500
+                });
+            });
+        }
+
+    </script>
+</body>
+</html>

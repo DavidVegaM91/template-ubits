@@ -1,0 +1,177 @@
+/* ========================================
+   ESTILOS ESPECÍFICOS PARA MODO-ESTUDIO-IA
+   ======================================== */
+
+/* Estilos específicos para content-sections - idéntico a left-wrapper */
+.content-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex: 1;
+    min-width: 0;
+    min-height: 0; /* Permitir que flexbox funcione correctamente */
+    width: 100%;
+    overflow: visible;
+    max-height: none;
+    height: 100%; /* Ocupar toda la altura disponible */
+}
+
+/* Espaciador para alinear elementos - idéntico a left-wrapper */
+.content-sections > *:not(:last-child):not(.section-dual):not(.section-single):not(.section-triple):not(.section-quad) {
+    margin-bottom: 16px;
+}
+
+/* Espaciador final - idéntico a left-wrapper */
+.content-sections::after {
+    content: '';
+    height: 0px;
+    flex-shrink: 0;
+    display: none; /* Ocultar para evitar espacio extra */
+}
+
+/* Reducir el gap del último elemento - idéntico a left-wrapper */
+.content-sections > *:last-child {
+    margin-bottom: 0;
+}
+
+/* Secciones de widgets */
+.section-single {
+    display: flex;
+    width: 100%;
+}
+
+.section-dual {
+    display: flex;
+    gap: 20px;
+}
+
+.section-triple {
+    display: flex;
+    gap: 20px;
+}
+
+.section-quad {
+    display: flex;
+    gap: 20px;
+}
+
+/* Widgets en secciones - sin altura mínima forzada */
+.section-single > div,
+.section-dual > div,
+.section-triple > div,
+.section-quad > div {
+    background-color: var(--ubits-bg-1);
+    border: none;
+    border-radius: 8px;
+    padding: 12px !important; /* !important para sobrescribir el reset */
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Distribución de anchos */
+.section-single > div {
+    flex: 1;
+}
+
+.section-dual > div {
+    flex: 1;
+}
+
+.section-triple > div {
+    flex: 1;
+}
+
+.section-quad > div {
+    flex: 1;
+}
+
+/* Widget header-product: sin fondo blanco ni padding */
+.section-single > .widget-header-product {
+    background-color: transparent !important;
+    padding: 0 !important;
+}
+
+/* Widget chat: sin fondo blanco ni padding, usar flexbox para ocupar todo el espacio */
+.section-single > .widget-chat {
+    background-color: transparent !important;
+    padding: 0 !important;
+    flex: 1 1 0; /* Ocupar todo el espacio disponible */
+    min-height: 0; /* Permitir que flexbox funcione */
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* Asegurar que el contenedor del chat tenga altura completa */
+#study-chat-container {
+    height: 100% !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* Responsive para secciones */
+@media (max-width: 1023px) {
+    .content-sections {
+        padding-bottom: 0;
+    }
+    
+    .section-dual,
+    .section-triple,
+    .section-quad {
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    /* Ajustar widgets para móvil - sin altura mínima forzada */
+}
+
+/* Asegurar que también se aplique en responsive */
+@media (max-width: 480px) {
+    /* Padding reducido en móviles pequeños - sin altura mínima forzada */
+    .section-single > div,
+    .section-dual > div,
+    .section-triple > div,
+    .section-quad > div {
+        padding: 12px !important; /* !important para sobrescribir el reset */
+    }
+    
+    .section-single > .widget-header-product {
+        padding: 0 !important;
+    }
+    
+    .section-single > .widget-chat {
+        flex: 1 1 0;
+        min-height: 0;
+    }
+}
+
+/* Asegurar que content-area y content-sections usen flexbox correctamente */
+.content-area {
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 0 !important;
+    height: 100% !important;
+    padding-bottom: 16px !important; /* Mantener padding inferior para que no esté pegado */
+}
+
+.content-sections {
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 0 !important;
+    height: 100% !important;
+    padding-bottom: 0 !important; /* Sin padding inferior en sections */
+    margin-bottom: 0 !important; /* Sin margin inferior */
+}
+
+/* Primera sección (header-product) no debe crecer */
+.section-single:first-child {
+    flex: 0 0 auto;
+}
+
+/* Última sección (chat) debe ocupar todo el espacio restante */
+.section-single:last-child {
+    flex: 1 1 0; /* Ocupar todo el espacio disponible */
+    min-height: 0;
+}

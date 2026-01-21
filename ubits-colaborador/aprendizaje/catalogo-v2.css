@@ -1,0 +1,1336 @@
+/* ========================================
+   ESTILOS ESPECÍFICOS PARA catalogo-v2
+   ======================================== */
+
+
+/* Estilos específicos para content-sections */
+.content-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+    overflow: visible;
+    max-height: none;
+    padding-bottom: 60px;
+}
+
+/* Espaciador para alinear elementos */
+.content-sections > *:not(:last-child):not(.section-dual):not(.section-single):not(.section-triple):not(.section-quad) {
+    margin-bottom: 24px;
+}
+
+/* Espaciador final */
+.content-sections::after {
+    content: '';
+    height: 0px;
+    flex-shrink: 0;
+}
+
+/* Reducir el gap del último elemento */
+.content-sections > *:last-child {
+    margin-bottom: 0;
+}
+
+/* Secciones de widgets */
+.section-single {
+    display: flex;
+    width: 100%;
+}
+
+.section-dual {
+    display: flex;
+    gap: 20px;
+}
+
+.section-triple {
+    display: flex;
+    gap: 20px;
+}
+
+.section-quad {
+    display: flex;
+    gap: 20px;
+}
+
+/* Widgets en secciones - sin altura mínima forzada */
+.section-single > div,
+.section-dual > div,
+.section-triple > div,
+.section-quad > div {
+    background-color: var(--ubits-bg-1);
+    border: none;
+    border-radius: 8px;
+    padding: 12px !important;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Widgets con carruseles sin padding ni fondo */
+.section-single > .widget-hero,
+.section-dual > .widget-hero,
+.section-triple > .widget-hero,
+.section-quad > .widget-hero,
+.widget-hero,
+.section-single > .widget-promo-cards,
+.section-dual > .widget-promo-cards,
+.section-triple > .widget-promo-cards,
+.section-quad > .widget-promo-cards,
+.widget-promo-cards,
+.section-single > .widget-aliados,
+.section-dual > .widget-aliados,
+.section-triple > .widget-aliados,
+.section-quad > .widget-aliados,
+.widget-aliados,
+.section-single > .widget-continua-viendo,
+.section-dual > .widget-continua-viendo,
+.section-triple > .widget-continua-viendo,
+.section-quad > .widget-continua-viendo,
+.widget-continua-viendo,
+.section-single > .widget-outstanding,
+.section-dual > .widget-outstanding,
+.section-triple > .widget-outstanding,
+.section-quad > .widget-outstanding,
+.widget-outstanding {
+    padding: 0 !important;
+    background: transparent !important;
+}
+
+/* Distribución de anchos */
+.section-single > div {
+    flex: 1;
+}
+
+.section-dual > div {
+    flex: 1;
+}
+
+.section-triple > div {
+    flex: 1;
+}
+
+.section-quad > div {
+    flex: 1;
+}
+
+/* Responsive para secciones */
+@media (max-width: 1023px) {
+    .content-sections {
+        padding-bottom: 0;
+    }
+    
+    .section-dual,
+    .section-triple,
+    .section-quad {
+        flex-direction: column;
+        gap: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .section-single > div,
+    .section-dual > div,
+    .section-triple > div,
+    .section-quad > div {
+        padding: 12px !important;
+    }
+}
+
+/* Hero de búsqueda centrado */
+.catalog-hero-v2 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: auto;
+    padding: 0;
+    margin-bottom: 0;
+    position: relative;
+}
+
+.catalog-search-wrapper-v2 {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    justify-content: center;
+    max-width: 600px;
+    width: 100%;
+    position: relative;
+    z-index: 10;
+    transition: all 0.3s ease;
+}
+
+/* Cuando overlay está activo, el input se posiciona fijo en la parte superior - FUERA del content-area */
+body.search-overlay-active .catalog-search-wrapper-v2 {
+    position: fixed !important;
+    top: 20px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 999999 !important;
+    max-width: 600px;
+    width: calc(100% - 40px);
+    padding: 0 20px;
+    pointer-events: all !important;
+    isolation: isolate;
+}
+
+.catalog-search-container-v2 {
+    flex: 1;
+    max-width: 600px;
+    position: relative;
+}
+
+/* Cuando overlay está activo, el contenedor también debe estar fuera del stacking context del content-area */
+body.search-overlay-active .catalog-search-container-v2 {
+    z-index: 999999 !important;
+    position: relative;
+    pointer-events: all !important;
+    isolation: isolate;
+}
+
+body.search-overlay-active .catalog-search-container-v2 .ubits-input-wrapper {
+    box-shadow: 0 0 0 2px var(--ubits-accent-brand) !important;
+    border-radius: 8px;
+    background: var(--ubits-bg-1) !important;
+    z-index: 999999 !important;
+    position: relative;
+    pointer-events: all !important;
+    isolation: isolate;
+}
+
+body.search-overlay-active .catalog-search-container-v2 .ubits-input-wrapper input {
+    background: var(--ubits-bg-1) !important;
+    z-index: 999999 !important;
+    position: relative;
+    pointer-events: all !important;
+}
+
+body.search-overlay-active .catalog-search-container-v2 .ubits-input-wrapper * {
+    z-index: 999999 !important;
+    position: relative;
+    pointer-events: all !important;
+}
+
+/* Input de búsqueda cuando overlay está activo (fuera del content-area) */
+.catalog-search-wrapper-v2-overlay {
+    position: relative;
+    max-width: 600px;
+    width: 100%;
+    margin: 0 auto 20px auto;
+    padding: 0 20px;
+    pointer-events: all !important;
+    z-index: 1;
+    box-sizing: border-box;
+}
+
+.catalog-search-container-v2-overlay {
+    flex: 1;
+    max-width: 600px;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+}
+
+.catalog-search-container-v2-overlay .ubits-input-wrapper {
+    box-shadow: 0 0 0 2px var(--ubits-accent-brand) !important;
+    border-radius: 8px;
+    background: var(--ubits-bg-1) !important;
+    z-index: 1;
+    position: relative;
+    pointer-events: all !important;
+}
+
+.catalog-search-container-v2-overlay .ubits-input-wrapper input {
+    background: var(--ubits-bg-1) !important;
+    z-index: 1;
+    position: relative;
+    pointer-events: all !important;
+}
+
+.catalog-search-container-v2-overlay .ubits-input-wrapper * {
+    z-index: 1;
+    position: relative;
+    pointer-events: all !important;
+}
+
+/* Contenedor de sugerencias de búsqueda - KISS: simple y directo */
+.catalog-search-container-v2-overlay {
+    position: relative;
+}
+
+.search-suggestions-container {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    width: 100%;
+    background: var(--ubits-bg-1);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    max-height: 400px;
+    overflow-y: auto;
+    z-index: 1002 !important; /* Mayor que search-sections (1001) pero dentro del mismo contexto */
+    display: none;
+    border: 1px solid var(--ubits-border-1);
+    box-sizing: border-box;
+}
+
+/* Asegurar que las secciones estén por debajo de las sugerencias */
+body.search-overlay-active .search-sections {
+    position: relative;
+    z-index: 1 !important;
+}
+
+body.search-overlay-active .academias-section-wrapper,
+body.search-overlay-active .tipos-contenido-section-wrapper {
+    position: relative;
+    z-index: 1 !important;
+}
+
+.search-suggestions-container.visible {
+    display: block;
+}
+
+.search-suggestion-item {
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border-bottom: 1px solid var(--ubits-border-1);
+    color: var(--ubits-fg-1-high);
+}
+
+.search-suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.search-suggestion-item:hover {
+    background: var(--ubits-bg-2);
+}
+
+.search-suggestion-item .suggestion-text {
+    color: var(--ubits-fg-1-high);
+    font-size: 14px;
+    line-height: 1.5;
+    text-align: left;
+}
+
+.search-suggestion-item {
+    text-align: left;
+}
+
+body.search-overlay-active .catalog-search-wrapper-v2-overlay {
+    display: block !important;
+}
+
+/* Ocultar el input original cuando overlay está activo */
+body.search-overlay-active .catalog-search-wrapper-v2 {
+    display: none !important;
+}
+
+/* Botón de cerrar - usando componente UBITS Button */
+.search-close-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 999999 !important;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    pointer-events: none;
+}
+
+body.search-overlay-active .search-close-button {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: all;
+}
+
+/* Overlay negro */
+.search-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 1000 !important;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    pointer-events: none;
+}
+
+.search-overlay.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: all;
+}
+
+/* Asegurar que el overlay no cubra el input */
+.search-overlay.active {
+    z-index: 1000 !important;
+}
+
+/* En mobile, overlay debe estar por encima del tab-bar */
+@media (max-width: 1023px) {
+    .search-overlay.active {
+        z-index: 10000 !important;
+    }
+    
+    body.search-overlay-active .search-content-wrapper {
+        padding-top: 100px;
+        padding-left: 0;
+        padding-right: 0;
+        z-index: 10001 !important;
+    }
+    
+    body.search-overlay-active .catalog-search-wrapper-v2-overlay,
+    body.search-overlay-active .catalog-search-container-v2-overlay,
+    body.search-overlay-active .search-close-button {
+        z-index: 10002 !important;
+    }
+    
+    body.search-overlay-active .search-suggestions-container {
+        z-index: 10002 !important; /* Mayor que search-content-wrapper (10001) en mobile */
+    }
+    
+    body.search-overlay-active .catalog-search-wrapper-v2-overlay {
+        z-index: 10002 !important;
+    }
+    
+    body.search-overlay-active .catalog-search-container-v2-overlay {
+        z-index: 10002 !important;
+    }
+    
+    body.search-overlay-active .catalog-search-container-v2-overlay > div[style*="position: relative"] {
+        z-index: 10002 !important;
+    }
+    
+    .search-sections {
+        padding: 0 16px;
+        max-width: 100%;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .academias-section-wrapper,
+    .tipos-contenido-section-wrapper {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        padding: 0;
+    }
+    
+    .academias-grid-spotify {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        padding: 0;
+    }
+    
+    .tipos-contenido-carousel-nuevo {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    
+    #catalog-results {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
+}
+
+/* Contenedor de contenido cuando overlay está activo */
+.search-content-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    max-width: 100vw;
+    height: 100%;
+    z-index: 1001 !important;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 20px 20px 40px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-20px);
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+    box-sizing: border-box;
+}
+
+/* Asegurar que el contenido no quede oculto debajo del input fijo */
+body.search-overlay-active .search-content-wrapper {
+    padding-top: 20px;
+    z-index: 1001 !important;
+}
+
+@media (max-width: 1023px) {
+    .search-content-wrapper {
+        padding: 100px 0 80px 0;
+        overflow-x: hidden;
+    }
+    
+    body.search-overlay-active .search-content-wrapper {
+        padding-top: 100px;
+        padding-left: 0;
+        padding-right: 0;
+        padding-bottom: 80px;
+        z-index: 10001 !important;
+    }
+}
+
+/* Asegurar que las secciones dentro del contenido estén por debajo del input y sugerencias */
+body.search-overlay-active .search-sections {
+    position: relative;
+    z-index: 1;
+}
+
+body.search-overlay-active .search-sections * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Asegurar que el input y sugerencias estén por encima de las secciones */
+body.search-overlay-active .catalog-search-wrapper-v2-overlay {
+    position: relative;
+    z-index: 1002 !important;
+}
+
+body.search-overlay-active .catalog-search-container-v2-overlay {
+    position: relative;
+    z-index: 1002 !important;
+}
+
+body.search-overlay-active .catalog-search-container-v2-overlay > div[style*="position: relative"] {
+    z-index: 1002 !important;
+}
+
+.search-overlay.active ~ .search-content-wrapper {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: all;
+}
+
+/* Resaltar icono de búsqueda cuando overlay está activo */
+body.search-overlay-active .catalog-search-container-v2 .ubits-input-wrapper i {
+    color: var(--ubits-accent-brand) !important;
+    transform: scale(1.2);
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+/* Secciones que aparecen debajo del input */
+.search-sections {
+    display: block;
+    margin-top: 20px;
+    width: 100%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+/* Wrapper de sección de academias */
+.academias-section-wrapper {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+/* Título de sección de academias */
+.academias-section-title {
+    color: var(--ubits-fg-1-high-static-inverted);
+    margin-bottom: 12px;
+}
+
+/* Sección de tipos de contenido */
+.tipos-contenido-section-wrapper {
+    display: flex;
+    flex-direction: column;
+    margin-top: 24px;
+    overflow: visible;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.tipos-contenido-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.tipos-contenido-section-title {
+    color: var(--ubits-fg-1-high-static-inverted);
+    margin: 0;
+}
+
+.tipos-contenido-controls {
+    display: flex;
+    gap: 8px;
+}
+
+/* Carrusel de tipos de contenido */
+.tipos-contenido-carousel {
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+    overflow-x: auto;
+    overflow-y: visible;
+    scroll-behavior: smooth;
+    padding: 0;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Ocultar scrollbar pero mantener funcionalidad de scroll */
+.tipos-contenido-carousel {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE y Edge */
+}
+
+.tipos-contenido-carousel::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+/* Card de tipo de contenido */
+.tipo-contenido-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    cursor: pointer;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+    overflow: visible;
+    padding: 0;
+    margin: 0;
+    border: 1px solid transparent;
+    flex: 0 0 calc((100% - (7 * 24px)) / 8);
+    width: calc((100% - (7 * 24px)) / 8);
+    max-width: calc((100% - (7 * 24px)) / 8);
+    min-width: calc((100% - (7 * 24px)) / 8);
+    box-sizing: border-box;
+    flex-shrink: 0;
+    position: relative;
+    border-radius: 50%;
+}
+
+.tipo-contenido-card:hover {
+    border-color: var(--ubits-border-1);
+}
+
+/* Tooltip para cards de aliados */
+.tipo-contenido-card-tooltip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ubits-fg-1-high);
+    color: var(--ubits-logo-inverted);
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 10000;
+    font-family: 'Noto Sans', sans-serif;
+    font-weight: 400;
+    visibility: hidden;
+}
+
+.tipo-contenido-card:hover .tipo-contenido-card-tooltip {
+    opacity: 1;
+    visibility: visible;
+}
+
+.tipo-contenido-card-tooltip.tooltip-right {
+    left: auto;
+    right: 0;
+    transform: none;
+}
+
+.tipo-contenido-card-tooltip.tooltip-left {
+    left: 0;
+    right: auto;
+    transform: none;
+}
+
+.tipo-contenido-card-tooltip.tooltip-bottom {
+    bottom: auto;
+    top: calc(100% + 8px);
+}
+
+.tipo-contenido-card-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid var(--ubits-fg-1-high);
+}
+
+.tipo-contenido-card-tooltip.tooltip-bottom::after {
+    top: auto;
+    bottom: 100%;
+    border-top: none;
+    border-bottom: 5px solid var(--ubits-fg-1-high);
+}
+
+.tipo-contenido-card-tooltip.tooltip-right::after {
+    left: auto;
+    right: 14px;
+    transform: none;
+}
+
+.tipo-contenido-card-tooltip.tooltip-left::after {
+    left: 14px;
+    right: auto;
+    transform: none;
+}
+
+.tipo-contenido-image {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--ubits-bg-1);
+    border: none;
+    transition: transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+    padding: 0;
+}
+
+.tipo-contenido-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 50%;
+    transition: transform 0.2s ease;
+}
+
+.tipo-contenido-card:hover .tipo-contenido-image img {
+    transform: scale(1.1);
+}
+
+/* Carrusel de tipos de contenido (nuevo - rectangular) */
+.tipos-contenido-carousel-nuevo {
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    padding: 0;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    min-height: 120px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.tipos-contenido-carousel-nuevo::-webkit-scrollbar {
+    display: none;
+}
+
+.tipo-contenido-card-nuevo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 16px;
+    background: var(--ubits-bg-1);
+    border: 1px solid transparent;
+    border-radius: 8px;
+    flex: 0 0 calc((100% - (7 * 24px)) / 8);
+    width: calc((100% - (7 * 24px)) / 8);
+    max-width: calc((100% - (7 * 24px)) / 8);
+    transition: all 0.2s ease;
+    min-height: 100px;
+    box-sizing: border-box;
+}
+
+.tipo-contenido-card-nuevo:hover {
+    border-color: var(--ubits-border-1);
+}
+
+.tipo-contenido-icon-nuevo {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ubits-fg-1-medium);
+    transition: color 0.2s ease;
+}
+
+.tipo-contenido-card-nuevo:hover .tipo-contenido-icon-nuevo {
+    color: var(--ubits-fg-1-high);
+}
+
+.tipo-contenido-icon-nuevo i {
+    font-size: 32px;
+}
+
+.tipo-contenido-name-nuevo {
+    text-align: center;
+    color: var(--ubits-fg-1-medium);
+    transition: color 0.2s ease;
+}
+
+.tipo-contenido-card-nuevo:hover .tipo-contenido-name-nuevo {
+    color: var(--ubits-fg-1-high);
+}
+
+/* Grid de academias - 5 columnas ocupando todo el ancho */
+.academias-grid-spotify {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Cards de academia - solo texto */
+.academia-card-spotify {
+    background: var(--ubits-bg-1);
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.academia-card-spotify:hover {
+    border-color: var(--ubits-border-1);
+}
+
+.academia-card-spotify.expanded {
+    border: none;
+}
+
+.academia-card-spotify.expanded .academia-card-spotify-title {
+    color: var(--ubits-accent-brand);
+}
+
+.academia-card-spotify-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.academia-card-spotify-content p {
+    margin: 0;
+}
+
+.academia-card-spotify-title {
+    color: var(--ubits-fg-1-high);
+    margin-top: 0;
+    margin-bottom: 0;
+    line-height: 1.3;
+}
+
+.academia-card-spotify-meta {
+    color: var(--ubits-fg-1-medium);
+    line-height: 1.4;
+    margin-top: 0;
+}
+
+/* Contenedor de competencias expandidas */
+.academia-competencias-container {
+    display: none;
+    margin-top: 24px;
+    margin-bottom: 32px;
+}
+
+.academia-competencias-container.is-visible {
+    display: block;
+}
+
+/* Grid de competencias estilo v1 - cards horizontales */
+.competencias-grid-v1 {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    overflow: visible;
+}
+
+.competencias-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Wrapper para competencia y habilidades */
+.competencia-card-v1-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Cards de competencia estilo v1 - horizontales compactas */
+.competencia-card-v1 {
+    background: var(--ubits-bg-1);
+    border: none;
+    border-radius: 6px;
+    overflow: visible;
+    cursor: default;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 0;
+    height: 48px;
+    position: relative;
+}
+
+.competencia-card-v1:hover {
+    border: none;
+}
+
+.competencia-card-v1-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 8px;
+    flex-shrink: 0;
+}
+
+.competencia-card-v1-chevron {
+    transition: transform 0.2s ease;
+}
+
+.competencia-card-v1.expanded .competencia-card-v1-chevron {
+    transform: rotate(180deg);
+}
+
+.competencia-card-v1-image {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    background: var(--ubits-bg-2);
+    flex-shrink: 0;
+    border-radius: 6px 0 0 6px;
+}
+
+.competencia-card-v1-content {
+    padding: 6px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+    justify-content: center;
+    overflow: visible;
+}
+
+.competencia-card-v1-content p {
+    margin: 0;
+    padding: 0;
+}
+
+.competencia-card-v1-title-wrapper {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+    overflow: visible;
+    display: flex;
+    align-items: center;
+    min-height: 19.5px;
+}
+
+.competencia-card-v1-title {
+    color: var(--ubits-fg-1-high);
+    margin: 0;
+    padding: 0;
+    line-height: 19.5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    max-width: 100%;
+    height: 19.5px;
+}
+
+.competencia-card-v1-title-text {
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+    color: inherit;
+}
+
+.competencia-card-v1-assigned-indicator-wrapper {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    margin-left: 6px;
+    position: relative;
+    height: 19.5px;
+    line-height: 19.5px;
+}
+
+.competencia-card-v1-count {
+    color: var(--ubits-fg-1-medium);
+    line-height: 16.5px;
+    margin: 0;
+    padding: 0;
+}
+
+/* Contenedor de habilidades (acordeón) */
+.competencia-habilidades-container {
+    display: none;
+    margin-top: 8px;
+    padding: 0;
+    background: transparent;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.competencia-habilidades-container.is-visible {
+    display: block;
+}
+
+.competencias-habilidades-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.habilidad-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 8px;
+    background: var(--ubits-bg-1);
+    border: 1px solid transparent;
+    border-radius: 20px;
+    color: var(--ubits-fg-1-medium);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.habilidad-chip:hover {
+    background: var(--ubits-bg-gray-subtle-hover);
+    color: var(--ubits-fg-1-high);
+}
+
+.habilidad-chip i {
+    color: var(--ubits-fg-1-medium);
+    font-size: 14px;
+    transition: color 0.2s ease;
+}
+
+.habilidad-chip:hover i {
+    color: var(--ubits-fg-1-high);
+}
+
+/* Indicador de competencia asignada */
+.competencia-card-v1-assigned-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--ubits-feedback-accent-error);
+    flex-shrink: 0;
+    pointer-events: none;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* Animación: Borde externo que crece (para todos los badges) */
+.competencia-card-v1-assigned-indicator {
+    position: relative;
+}
+
+.competencia-card-v1-assigned-indicator::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 2px solid var(--ubits-feedback-accent-error);
+    opacity: 0.6;
+    animation: badge-ring-expand 2s ease-out infinite;
+}
+
+@keyframes badge-ring-expand {
+    0% {
+        width: 8px;
+        height: 8px;
+        opacity: 0.6;
+    }
+    100% {
+        width: 20px;
+        height: 20px;
+        opacity: 0;
+    }
+}
+
+.competencia-card-v1-assigned-tooltip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ubits-fg-1-high);
+    color: var(--ubits-logo-inverted);
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 1000;
+    font-family: 'Noto Sans', sans-serif;
+    font-weight: 400;
+}
+
+.competencia-card-v1-assigned-tooltip.tooltip-right {
+    left: auto;
+    right: 0;
+    transform: none;
+}
+
+.competencia-card-v1-assigned-tooltip.tooltip-left {
+    left: 0;
+    right: auto;
+    transform: none;
+}
+
+.competencia-card-v1-assigned-tooltip.tooltip-bottom {
+    bottom: auto;
+    top: calc(100% + 8px);
+}
+
+.competencia-card-v1-assigned-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid var(--ubits-fg-1-high);
+}
+
+.competencia-card-v1-assigned-tooltip.tooltip-bottom::after {
+    top: auto;
+    bottom: 100%;
+    border-top: none;
+    border-bottom: 5px solid var(--ubits-fg-1-high);
+}
+
+.competencia-card-v1-assigned-tooltip.tooltip-right::after {
+    left: auto;
+    right: 14px;
+    transform: none;
+}
+
+.competencia-card-v1-assigned-tooltip.tooltip-left::after {
+    left: 14px;
+    right: auto;
+    transform: none;
+}
+
+.competencia-card-v1-title:hover .competencia-card-v1-assigned-tooltip,
+.competencia-card-v1-assigned-indicator-wrapper:hover .competencia-card-v1-assigned-tooltip {
+    opacity: 1;
+}
+
+/* Tooltips para botones */
+.competencia-card-v1-actions .ubits-button {
+    position: relative;
+}
+
+.competencia-card-v1-actions .ubits-button::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ubits-fg-1-high);
+    color: var(--ubits-logo-inverted);
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 1000;
+    font-family: 'Noto Sans', sans-serif;
+    font-weight: 400;
+}
+
+.competencia-card-v1-actions .ubits-button.tooltip-right::after {
+    left: auto;
+    right: 0;
+    transform: none;
+}
+
+.competencia-card-v1-actions .ubits-button.tooltip-left::after {
+    left: 0;
+    right: auto;
+    transform: none;
+}
+
+.competencia-card-v1-actions .ubits-button.tooltip-bottom::after {
+    bottom: auto;
+    top: calc(100% + 8px);
+}
+
+.competencia-card-v1-actions .ubits-button::before {
+    content: '';
+    position: absolute;
+    bottom: calc(100% + 3px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid var(--ubits-fg-1-high);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 1001;
+}
+
+.competencia-card-v1-actions .ubits-button.tooltip-bottom::before {
+    bottom: auto;
+    top: calc(100% + 3px);
+    border-top: none;
+    border-bottom: 5px solid var(--ubits-fg-1-high);
+}
+
+.competencia-card-v1-actions .ubits-button.tooltip-right::before {
+    left: auto;
+    right: 14px;
+    transform: none;
+}
+
+.competencia-card-v1-actions .ubits-button.tooltip-left::before {
+    left: 14px;
+    right: auto;
+    transform: none;
+}
+
+.competencia-card-v1-actions .ubits-button:hover::after,
+.competencia-card-v1-actions .ubits-button:hover::before {
+    opacity: 1;
+}
+
+/* Estado vacío */
+.catalog-empty-state {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.catalog-empty-state-icon {
+    font-size: 64px;
+    color: var(--ubits-fg-1-low);
+    margin-bottom: 16px;
+}
+
+/* Responsive */
+@media (max-width: 1023px) {
+    .tipo-contenido-card {
+        flex: 0 0 calc((100% - (4 * 24px)) / 5);
+        width: calc((100% - (4 * 24px)) / 5);
+        max-width: calc((100% - (4 * 24px)) / 5);
+        min-width: calc((100% - (4 * 24px)) / 5);
+    }
+    
+    .tipo-contenido-card-nuevo {
+        flex: 0 0 calc((100% - (4 * 24px)) / 5);
+        width: calc((100% - (4 * 24px)) / 5);
+        max-width: calc((100% - (4 * 24px)) / 5);
+        min-width: calc((100% - (4 * 24px)) / 5);
+    }
+
+    .academias-grid-spotify {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+    }
+
+    .competencia-card-v1-image {
+        width: 48px;
+        height: 48px;
+    }
+
+    .competencia-card-v1 {
+        height: 48px;
+    }
+}
+
+@media (max-width: 768px) {
+    .tipo-contenido-card {
+        flex: 0 0 calc((100% - (2 * 24px)) / 3);
+        min-width: calc((100% - (2 * 24px)) / 3);
+    }
+    
+    .tipo-contenido-card-nuevo {
+        flex: 0 0 calc((100% - (2 * 24px)) / 3);
+        width: calc((100% - (2 * 24px)) / 3);
+        max-width: calc((100% - (2 * 24px)) / 3);
+    }
+
+    .academias-grid-spotify {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .competencias-grid-v1 {
+        flex-direction: column;
+    }
+    
+    .competencias-column {
+        width: 100%;
+    }
+
+    .competencia-card-v1 {
+        height: 48px;
+    }
+
+    .competencia-card-v1-image {
+        width: 48px;
+        height: 48px;
+    }
+
+    .catalog-hero-v2 {
+        min-height: 50vh;
+    }
+}

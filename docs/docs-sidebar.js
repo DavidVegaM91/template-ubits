@@ -259,9 +259,37 @@ function initDocsSidebar(activeSection) {
     const dropdownTrigger = document.querySelector('.docs-dropdown-trigger');
     const dropdownMenu = document.querySelector('.docs-dropdown-menu');
     
+    // Función para obtener la ruta correcta según la ubicación actual
+    function getCorrectDocsPath(filename) {
+        const currentPath = window.location.pathname;
+        
+        // Si estamos en documentacion/componentes/ - ruta relativa simple
+        if (currentPath.includes('/componentes/')) {
+            return filename;
+        }
+        // Si estamos en documentacion/ (raíz) - agregar componentes/
+        else if (currentPath.includes('/documentacion/')) {
+            return 'componentes/' + filename;
+        }
+        // Fallback
+        return filename;
+    }
+    
+    // Función para obtener la ruta a componentes.html según ubicación
+    function getComponentesPath() {
+        const currentPath = window.location.pathname;
+        
+        // Si estamos en documentacion/componentes/ - subir un nivel
+        if (currentPath.includes('/componentes/')) {
+            return '../componentes.html';
+        }
+        // Si estamos en documentacion/ (raíz) - ruta directa
+        return 'componentes.html';
+    }
+    
     // Función para manejar navegación
     function handleDocsNavigation(section) {
-        // Debug: verificar que la funci?n se está llamando
+        // Debug: verificar que la función se está llamando
         console.log('handleDocsNavigation called with section:', section);
         
         // Cerrar dropdown
@@ -270,136 +298,53 @@ function initDocsSidebar(activeSection) {
             dropdownMenu.classList.remove('open');
         }
         
-        // Navegación según la sección
+        const currentPath = window.location.pathname;
+        
+        // Mapeo de secciones a archivos
+        const sectionToFile = {
+            'introduccion': 'componentes.html',
+            'sidebar': 'sidebar.html',
+            'sub-nav': 'subnav.html',
+            'tab-bar': 'tab-bar.html',
+            'button': 'button.html',
+            'ia-button': 'ia-button.html',
+            'alert': 'alert.html',
+            'card-content': 'card-content.html',
+            'card-content-compact': 'card-content-compact.html',
+            'input': 'input.html',
+            'toast': 'toast.html',
+            'status-tag': 'status-tag.html',
+            'tab': 'tab.html',
+            'paginator': 'paginator.html',
+            'empty-state': 'empty-state.html',
+            'header-product': 'header-product.html'
+        };
+        
+        const targetFile = sectionToFile[section];
+        if (!targetFile) {
+            console.log('Unknown section:', section);
+            return;
+        }
+        
+        // Verificar si ya estamos en la página destino
+        const isCurrentPage = currentPath.includes(targetFile);
+        
+        // Caso especial para button vs ia-button
+        if (section === 'button' && currentPath.includes('ia-button.html')) {
+            // No estamos en button.html, estamos en ia-button.html
+        } else if (section === 'card-content' && currentPath.includes('card-content-compact.html')) {
+            // No estamos en card-content.html, estamos en card-content-compact.html
+        } else if (isCurrentPage) {
+            // Ya estamos en la página, solo scroll al top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+        }
+        
+        // Navegar a la página
         if (section === 'introduccion') {
-            // Si ya estamos en componentes.html, solo hacer scroll al top
-            if (window.location.pathname.includes('componentes.html')) {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            } else {
-                // Si estamos en otra página, navegar a componentes.html
-                window.location.href = 'componentes.html';
-            }
-        } else if (section === 'sidebar') {
-            // Si ya estamos en sidebar.html, solo hacer scroll al top
-            if (window.location.pathname.includes('sidebar.html')) {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            } else {
-                // Si estamos en otra página, navegar a sidebar.html
-                window.location.href = 'sidebar.html';
-            }
-        } else if (section === 'sub-nav') {
-            // Si ya estamos en subnav.html, solo hacer scroll al top
-            if (window.location.pathname.includes('subnav.html')) {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            } else {
-                // Si estamos en otra página, navegar a subnav.html
-                window.location.href = 'subnav.html';
-            }
-        } else if (section === 'tab-bar') {
-            // Si ya estamos en tab-bar.html, solo hacer scroll al top
-            if (window.location.pathname.includes('tab-bar.html')) {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            } else {
-                // Si estamos en otra página, navegar a tab-bar.html
-                window.location.href = 'tab-bar.html';
-            }
-        } else if (section === 'button') {
-            // Si ya estamos en button.html (exactamente, no ia-button.html), solo hacer scroll al top
-            const currentPath = window.location.pathname;
-            if (currentPath.endsWith('button.html') && !currentPath.includes('ia-button.html')) {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            } else {
-                // Si estamos en otra página, navegar a button.html
-                window.location.href = 'button.html';
-            }
-        } else if (section === 'ia-button') {
-            // Si ya estamos en ia-button.html, solo hacer scroll al top
-            if (window.location.pathname.includes('ia-button.html')) {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            } else {
-                // Si estamos en otra página, navegar a ia-button.html
-                window.location.href = 'ia-button.html';
-            }
-        } else if (section === 'alert') {
-            // Si ya estamos en alert.html, solo hacer scroll al top
-            if (window.location.pathname.includes('alert.html')) {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            } else {
-                // Si estamos en otra página, navegar a alert.html
-                window.location.href = 'alert.html';
-            }
-        } else if (section === 'card-content') {
-            // Si ya estamos en card-content.html, solo hacer scroll al top
-            if (window.location.pathname.includes('card-content.html') && !window.location.pathname.includes('card-content-compact.html')) {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            } else {
-                // Si estamos en otra página, navegar a card-content.html
-                window.location.href = 'card-content.html';
-            }
-        } else if (section === 'card-content-compact') {
-            // Si ya estamos en card-content-compact.html, solo hacer scroll al top
-            if (window.location.pathname.includes('card-content-compact.html')) {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            } else {
-                // Si estamos en otra página, navegar a card-content-compact.html
-                window.location.href = 'card-content-compact.html';
-            }
-        } else if (section === 'input') {
-            // Si ya estamos en input.html, solo hacer scroll al top
-            if (window.location.pathname.includes('input.html')) {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            } else {
-                // Si estamos en otra página, navegar a input.html
-                window.location.href = 'input.html';
-            }
-        } else if (section === 'toast') {
-            // Si ya estamos en toast.html, solo hacer scroll al top
-            if (window.location.pathname.includes('toast.html')) {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            } else {
-                // Si estamos en otra página, navegar a toast.html
-                window.location.href = 'toast.html';
-            }
-        } else if (section === 'status-tag') {
-            // Si ya estamos en status-tag.html, solo hacer scroll al top
-            if (window.location.pathname.includes('status-tag.html')) {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            } else {
-                // Si estamos en otra página, navegar a status-tag.html
-                window.location.href = 'status-tag.html';
-            }
-        } else if (section === 'tab') {
-            // Si ya estamos en tab.html, solo hacer scroll al top
-            if (window.location.pathname.includes('tab.html')) {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            } else {
-                // Si estamos en otra página, navegar a tab.html
-                window.location.href = 'tab.html';
-            }
-        } else if (section === 'paginator') {
-            // Si ya estamos en paginator.html, solo hacer scroll al top
-            if (window.location.pathname.includes('paginator.html')) {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            } else {
-                // Si estamos en otra página, navegar a paginator.html
-                window.location.href = 'paginator.html';
-            }
-        } else if (section === 'empty-state') {
-            // Si ya estamos en empty-state.html, solo hacer scroll al top
-            if (window.location.pathname.includes('empty-state.html')) {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            } else {
-                // Si estamos en otra página, navegar a empty-state.html
-                window.location.href = 'empty-state.html';
-            }
-        } else if (section === 'header-product') {
-            // Si ya estamos en header-product.html, solo hacer scroll al top
-            if (window.location.pathname.includes('header-product.html')) {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            } else {
-                // Si estamos en otra página, navegar a header-product.html
-                window.location.href = 'header-product.html';
-            }
+            window.location.href = getComponentesPath();
+        } else {
+            window.location.href = getCorrectDocsPath(targetFile);
         }
     }
     

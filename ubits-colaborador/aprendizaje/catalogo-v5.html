@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>UBITS Playground - Catálogo v5</title>
+    
+    <!-- Estilos locales -->
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../components/tab-bar.css">
+    <link rel="stylesheet" href="../../components/floating-menu.css">
+    <link rel="stylesheet" href="../../components/profile-menu.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/carousel-contents.css">
+    <link rel="stylesheet" href="../../components/status-tag.css">
+    <link rel="stylesheet" href="../../components/ia-button.css">
+    <link rel="stylesheet" href="./profile.css">
+    <link rel="stylesheet" href="./catalogo-v5.css">
+</head>
+<body data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        
+        <!-- Sidebar Container -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navigation -->
+            <div id="top-nav-container"></div>
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Content wrapper con secciones de widgets -->
+                <div class="content-sections">
+                    <!-- Hero de búsqueda -->
+                    <div class="catalog-hero">
+                        <h1 class="ubits-heading-h1">¿Qué quieres aprender hoy?</h1>
+                        <div class="catalog-search-wrapper">
+                            <div class="catalog-search-container" id="catalog-search-container"></div>
+                        </div>
+                        <div class="catalog-chips-wrapper">
+                            <span class="ubits-body-sm-regular catalog-chips-label">Lo más buscado:</span>
+                            <div class="catalog-chips" id="catalog-chips"></div>
+                        </div>
+                    </div>
+
+                    <!-- Wrapper de sección de academias -->
+                    <div class="academias-section-wrapper">
+                        <!-- Título de sección -->
+                        <h2 class="ubits-heading-h2 academias-section-title">Explora por academias</h2>
+
+                        <!-- Contenedor de resultados -->
+                        <div id="catalog-results"></div>
+                        </div>
+
+                    <!-- Wrapper de sección de aliados destacados - Usando componente oficial -->
+                    <div id="aliados-container"></div>
+                    
+                    <!-- Wrapper de sección de tipos de contenido (nuevo) -->
+                    <div class="tipos-contenido-section-wrapper">
+                        <!-- Header con título y controles -->
+                        <div class="tipos-contenido-section-header">
+                            <h2 class="ubits-heading-h2 tipos-contenido-section-title">Explora por tipo de contenido</h2>
+                            <div class="tipos-contenido-controls">
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" id="tipos-contenido-nuevo-prev">
+                                    <i class="far fa-chevron-left"></i>
+                                </button>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" id="tipos-contenido-nuevo-next">
+                                    <i class="far fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Carrusel de tipos de contenido (nuevo) -->
+                        <div class="tipos-contenido-carousel-nuevo" id="tipos-contenido-carousel-nuevo"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Tab Bar Container -->
+    <div id="tab-bar-container"></div>
+
+    <!-- Floating Menu Container -->
+    <div id="floating-menu-container"></div>
+    
+    <!-- Profile Menu Container -->
+    <div id="profile-menu-container"></div>
+
+
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/tab-bar.js"></script>
+    <script src="../../components/floating-menu.js"></script>
+    <script src="../../components/profile-menu.js"></script>
+    <script src="../../components/input.js"></script>
+    <script src="../../components/carousel-contents.js"></script>
+    <script src="../../script.js"></script>
+    <script>
+        // Competencias asignadas al usuario
+        const competenciasAsignadas = ['Liderazgo', 'Comunicación', 'Inglés'];
+
+        // Datos del CSV parseados
+        const catalogData = {
+            academias: [
+                {
+                    nombre: 'Academia de Habilidades Blandas',
+                    competencias: [
+                        { nombre: 'Accountability', habilidades: ['Autogestión', 'Proactividad', 'Integridad'] },
+                        { nombre: 'Inteligencia emocional', habilidades: ['Empatía', 'Autoconocimiento', 'Autorregulación', 'Autocompasión', 'Resiliencia'] },
+                        { nombre: 'Trabajo en equipo', habilidades: ['Trabajo colaborativo', 'Gestión del conflicto', 'Relacionamiento'] },
+                        { nombre: 'Resolución de problemas', habilidades: ['Análisis de escenarios', 'Toma de decisiones', 'Pensamiento crítico'] },
+                        { nombre: 'Comunicación', habilidades: ['Asertividad', 'Comunicación efectiva', 'Marca personal', 'Redacción y ortografía', 'Protocolo y etiqueta empresarial', 'Hablar en público', 'Gestión de stakeholders'] },
+                        { nombre: 'Productividad', habilidades: ['Gestión del tiempo', 'Planificación', 'Organización'] },
+                        { nombre: 'Gestión del cambio', habilidades: ['Orientación a la mejora continua', 'Pensamiento sistémico', 'Adaptabilidad', 'Aprendizaje continuo'] },
+                        { nombre: 'Negociación', habilidades: ['Persuasión', 'Generación de acuerdos'] },
+                        { nombre: 'Wellness', habilidades: ['Salud mental y emocional', 'Salud física', 'Balance de vida', 'Alimentación saludable', 'Salud financiera'] },
+                        { nombre: 'Liderazgo', habilidades: ['Empoderamiento', 'Motivación', 'Pensamiento estratégico', 'Coaching de equipos'] },
+                        { nombre: 'Innovación', habilidades: ['Creatividad', 'Pensamiento disruptivo', 'Ideación', 'Pensamiento exponencial'] }
+                    ]
+                },
+                {
+                    nombre: 'Academia de Inglés',
+                    competencias: [
+                        { nombre: 'Inglés', habilidades: ['Grammar', 'Listening', 'Reading', 'Speaking', 'Writing', 'Vocabulary'] }
+                    ]
+                },
+                {
+                    nombre: 'Academia de Negocios',
+                    competencias: [
+                        { nombre: 'Experiencia del cliente', habilidades: ['Servicio al cliente', 'Manejo de objeciones', 'Customer Relationship Management (CRM)', 'Diseño de la experiencia de cliente (CX)'] },
+                        { nombre: 'Marketing', habilidades: ['Branding', 'Storytelling', 'Social media'] },
+                        { nombre: 'Ventas', habilidades: ['Prospección', 'Gestión de ciclo de ventas', 'Cierre de ventas', 'Venta consultiva', 'Gestión del equipo comercial'] },
+                        { nombre: 'Agilidad', habilidades: ['Agilidad de negocios', 'Metodologías ágiles'] },
+                        { nombre: 'People management', habilidades: ['Cultura organizacional', 'Adquisición del talento', 'Experiencia del empleado (EX)', 'Relaciones laborales', 'Analítica de personas', 'Diversidad, equidad e inclusión', 'Gestión del desempeño', 'Desarrollo del talento', 'Teletrabajo'] },
+                        { nombre: 'Gestión de proyectos', habilidades: ['Planeación de proyectos', 'Control de proyectos'] },
+                        { nombre: 'Gestión de procesos y operaciones', habilidades: ['Gestión de la cadena de suministro', 'Gestión de procesos', 'e-Operations', 'Retail', 'Hospitality', 'Automatización de procesos'] },
+                        { nombre: 'Gestión financiera', habilidades: ['Planeación financiera', 'Análisis de estados financieros', 'Gestión contable', 'Control financiero', 'Financial services'] },
+                        { nombre: 'Administración de negocios', habilidades: ['Estrategia', 'Control de gestión', 'Análisis económico', 'Sostenibilidad y RSE'] },
+                        { nombre: 'Emprendimiento', habilidades: ['Propuesta de valor', 'Modelos de negocio', 'Intraemprendimiento'] }
+                    ]
+                },
+                {
+                    nombre: 'Academia de Compliance',
+                    competencias: [
+                        { nombre: 'Cumplimiento (Compliance)', habilidades: ['Cumplimiento en Data & IT', 'Cumplimiento financiero', 'Gobierno corporativo', 'Sistemas de gestión HSEQ +RL', 'Cumplimiento operativo y de calidad', 'Legislación laboral'] },
+                        { nombre: 'Gestión del riesgo', habilidades: ['Riesgo operativo', 'Continuidad del negocio'] }
+                    ]
+                },
+                {
+                    nombre: 'Academia de Tecnología',
+                    competencias: [
+                        { nombre: 'Data skills', habilidades: ['Administración de bases de datos', 'Análisis de datos', 'Visualización de datos', 'Inteligencia de negocios (BI)', 'Big data', 'Probabilidad y estadística'] },
+                        { nombre: 'Product design', habilidades: ['Design thinking', 'Diseño UX', 'Diseño UI', 'Prototipado', 'UX Research'] },
+                        { nombre: 'Desarrollo de software', habilidades: ['Software testing', 'DevOps', 'Herramientas de desarrollo de software', 'Herramientas No Code', 'Pensamiento computacional'] },
+                        { nombre: 'Lenguajes de Programación', habilidades: ['SQL', 'Java', 'JavaScript', 'PHP', 'Python', 'NoSQL', 'Ruby', 'R', 'C Sharp (C#)'] },
+                        { nombre: 'Desarrollo web', habilidades: ['Desarrollo frontend', 'Desarrollo backend', 'Diseño e implementación de APIs'] },
+                        { nombre: 'Herramientas tecnológicas', habilidades: ['Aplicaciones Microsoft', 'Aplicaciones Google', 'Herramientas para proyectos', 'Herramientas colaborativas', 'Herramientas de diseño', 'Herramientas de ventas', 'Aplicaciones Amazon', 'Sistema Linux', 'Computadores, dispositivos electrónicos e internet'] },
+                        { nombre: 'Digital skills', habilidades: ['Diseño gráfico digital', 'Tendencias digitales', 'Contenido digital', 'Transformación digital'] },
+                        { nombre: 'Gestión de recursos tecnológicos', habilidades: ['Arquitectura TI', 'Infraestructura tecnológica', 'Ciberseguridad', 'Derecho digital'] },
+                        { nombre: 'e-Commerce', habilidades: ['Gestión de plataformas de e-commerce'] },
+                        { nombre: 'Marketing digital', habilidades: ['Product marketing', 'Analítica en marketing', 'Gestión del funnel de conversión', 'Growth marketing', 'Google Analytics', 'Google Ads', 'Inbound marketing'] }
+                    ]
+                }
+            ]
+        };
+
+        // Mapeo de nombres de competencias a archivos de imagen
+        const competenciaImageMap = {
+            'Accountability': 'Accountability.jpg',
+            'Inteligencia emocional': 'Inteligencia emocional.jpg',
+            'Trabajo en equipo': 'Trabajo en equipo.jpg',
+            'Resolución de problemas': 'Resolución de problemas.jpg',
+            'Comunicación': 'Comunicación.jpg',
+            'Productividad': 'Productividad.jpg',
+            'Gestión del cambio': 'Gestión del cambio.jpg',
+            'Negociación': 'Negociación.jpg',
+            'Wellness': 'Wellness.jpg',
+            'Liderazgo': 'Liderazgo.jpg',
+            'Inglés': 'Inglés.jpg',
+            'Innovación': 'Innovación.jpg',
+            'Experiencia del cliente': 'Experiencia del cliente.jpg',
+            'Marketing': 'Marketing.jpg',
+            'Ventas': 'Ventas.jpg',
+            'Agilidad': 'Agilidad.jpg',
+            'People management': 'People management.jpg',
+            'Gestión de proyectos': 'Gestión de proyectos.jpg',
+            'Gestión de procesos y operaciones': 'Gestión de procesos y operaciones.jpg',
+            'Gestión financiera': 'Gestión financiera.jpg',
+            'Administración de negocios': 'Administración de negocios.jpg',
+            'Emprendimiento': 'Emprendimiento.jpg',
+            'Gestión del riesgo': 'Gestión del riesgo.jpg',
+            'Cumplimiento (Compliance)': 'Cumplimiento (Compliance).jpg',
+            'Data skills': 'Data skills.jpg',
+            'Product design': 'Product design.jpg',
+            'Desarrollo de software': 'Desarrollo de software.jpg',
+            'Lenguajes de Programación': 'Lenguajes de Programación.jpg',
+            'Desarrollo web': 'Desarrollo web.jpg',
+            'Herramientas tecnológicas': 'Herramientas tecnológicas.jpg',
+            'Digital skills': 'Digital skills.jpg',
+            'Gestión de recursos tecnológicos': 'Gestión de recursos tecnológicos.jpg',
+            'e-Commerce': 'e-Commerce.jpg',
+            'Marketing digital': 'Marketing digital.jpg'
+        };
+
+        // Imágenes placeholder para academias (usando Unsplash)
+        const academiaImageMap = {
+            'Academia de Habilidades Blandas': 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=400&fit=crop',
+            'Academia de Inglés': 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=400&h=400&fit=crop',
+            'Academia de Negocios': 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=400&fit=crop',
+            'Academia de Compliance': 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=400&h=400&fit=crop',
+            'Academia de Tecnología': 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&h=400&fit=crop'
+        };
+
+        // Iconos para habilidades
+        const habilidadIconMap = {
+            'Autogestión': 'fa-user-check',
+            'Proactividad': 'fa-rocket',
+            'Integridad': 'fa-shield-check',
+            'Empatía': 'fa-heart',
+            'Autoconocimiento': 'fa-brain',
+            'Autorregulación': 'fa-balance-scale',
+            'Autocompasión': 'fa-hands-helping',
+            'Resiliencia': 'fa-dumbbell',
+            'Trabajo colaborativo': 'fa-users',
+            'Gestión del conflicto': 'fa-handshake',
+            'Relacionamiento': 'fa-network-wired',
+            'Análisis de escenarios': 'fa-chart-line',
+            'Toma de decisiones': 'fa-check-circle',
+            'Pensamiento crítico': 'fa-lightbulb',
+            'Asertividad': 'fa-comments',
+            'Comunicación efectiva': 'fa-bullhorn',
+            'Marca personal': 'fa-user-tag',
+            'Redacción y ortografía': 'fa-pen',
+            'Protocolo y etiqueta empresarial': 'fa-handshake',
+            'Hablar en público': 'fa-microphone',
+            'Gestión de stakeholders': 'fa-users-cog',
+            'Gestión del tiempo': 'fa-clock',
+            'Planificación': 'fa-calendar-check',
+            'Organización': 'fa-folder-open',
+            'Orientación a la mejora continua': 'fa-chart-line',
+            'Pensamiento sistémico': 'fa-project-diagram',
+            'Adaptabilidad': 'fa-sync',
+            'Aprendizaje continuo': 'fa-graduation-cap',
+            'Persuasión': 'fa-comments-dollar',
+            'Generación de acuerdos': 'fa-handshake',
+            'Salud mental y emocional': 'fa-heart',
+            'Salud física': 'fa-dumbbell',
+            'Balance de vida': 'fa-balance-scale',
+            'Alimentación saludable': 'fa-apple-alt',
+            'Salud financiera': 'fa-wallet',
+            'Empoderamiento': 'fa-crown',
+            'Motivación': 'fa-fire',
+            'Pensamiento estratégico': 'fa-chess',
+            'Coaching de equipos': 'fa-users-cog',
+            'Grammar': 'fa-book',
+            'Listening': 'fa-headphones',
+            'Reading': 'fa-book-open',
+            'Speaking': 'fa-microphone',
+            'Writing': 'fa-pen-fancy',
+            'Vocabulary': 'fa-book-reader',
+            'Creatividad': 'fa-palette',
+            'Pensamiento disruptivo': 'fa-lightbulb',
+            'Ideación': 'fa-lightbulb-on',
+            'Pensamiento exponencial': 'fa-chart-line',
+            'Servicio al cliente': 'fa-headset',
+            'Manejo de objeciones': 'fa-comments',
+            'Customer Relationship Management (CRM)': 'fa-address-book',
+            'Diseño de la experiencia de cliente (CX)': 'fa-smile',
+            'Branding': 'fa-tag',
+            'Storytelling': 'fa-book',
+            'Social media': 'fa-share-alt',
+            'Prospección': 'fa-search',
+            'Gestión de ciclo de ventas': 'fa-sync',
+            'Cierre de ventas': 'fa-handshake',
+            'Venta consultiva': 'fa-comments-dollar',
+            'Gestión del equipo comercial': 'fa-users',
+            'Agilidad de negocios': 'fa-tachometer-alt',
+            'Metodologías ágiles': 'fa-project-diagram',
+            'Cultura organizacional': 'fa-building',
+            'Adquisición del talento': 'fa-user-plus',
+            'Experiencia del empleado (EX)': 'fa-user-check',
+            'Relaciones laborales': 'fa-handshake',
+            'Analítica de personas': 'fa-chart-bar',
+            'Diversidad, equidad e inclusión': 'fa-users',
+            'Gestión del desempeño': 'fa-chart-line',
+            'Desarrollo del talento': 'fa-user-graduate',
+            'Teletrabajo': 'fa-laptop',
+            'Planeación de proyectos': 'fa-calendar-alt',
+            'Control de proyectos': 'fa-tasks',
+            'Gestión de la cadena de suministro': 'fa-truck',
+            'Gestión de procesos': 'fa-cogs',
+            'e-Operations': 'fa-server',
+            'Retail': 'fa-store',
+            'Hospitality': 'fa-hotel',
+            'Automatización de procesos': 'fa-robot',
+            'Planeación financiera': 'fa-chart-pie',
+            'Análisis de estados financieros': 'fa-file-invoice-dollar',
+            'Gestión contable': 'fa-calculator',
+            'Control financiero': 'fa-wallet',
+            'Financial services': 'fa-university',
+            'Estrategia': 'fa-chess',
+            'Control de gestión': 'fa-clipboard-check',
+            'Análisis económico': 'fa-chart-line',
+            'Sostenibilidad y RSE': 'fa-leaf',
+            'Propuesta de valor': 'fa-gem',
+            'Modelos de negocio': 'fa-briefcase',
+            'Intraemprendimiento': 'fa-rocket',
+            'Riesgo operativo': 'fa-exclamation-triangle',
+            'Continuidad del negocio': 'fa-shield-alt',
+            'Cumplimiento en Data & IT': 'fa-database',
+            'Cumplimiento financiero': 'fa-file-invoice',
+            'Gobierno corporativo': 'fa-building',
+            'Sistemas de gestión HSEQ +RL': 'fa-clipboard-check',
+            'Cumplimiento operativo y de calidad': 'fa-check-circle',
+            'Legislación laboral': 'fa-gavel',
+            'Administración de bases de datos': 'fa-database',
+            'Análisis de datos': 'fa-chart-bar',
+            'Visualización de datos': 'fa-chart-pie',
+            'Inteligencia de negocios (BI)': 'fa-brain',
+            'Big data': 'fa-server',
+            'Probabilidad y estadística': 'fa-chart-line',
+            'Design thinking': 'fa-lightbulb',
+            'Diseño UX': 'fa-mouse-pointer',
+            'Diseño UI': 'fa-palette',
+            'Prototipado': 'fa-drafting-compass',
+            'UX Research': 'fa-search',
+            'Software testing': 'fa-vial',
+            'DevOps': 'fa-code-branch',
+            'Herramientas de desarrollo de software': 'fa-tools',
+            'Herramientas No Code': 'fa-magic',
+            'Pensamiento computacional': 'fa-brain',
+            'SQL': 'fa-database',
+            'Java': 'fa-coffee',
+            'JavaScript': 'fa-code',
+            'PHP': 'fa-code',
+            'Python': 'fa-code',
+            'NoSQL': 'fa-database',
+            'Ruby': 'fa-gem',
+            'R': 'fa-chart-bar',
+            'C Sharp (C#)': 'fa-code',
+            'Desarrollo frontend': 'fa-laptop-code',
+            'Desarrollo backend': 'fa-server',
+            'Diseño e implementación de APIs': 'fa-plug',
+            'Aplicaciones Microsoft': 'fa-windows',
+            'Aplicaciones Google': 'fa-google',
+            'Herramientas para proyectos': 'fa-tasks',
+            'Herramientas colaborativas': 'fa-users',
+            'Herramientas de diseño': 'fa-palette',
+            'Herramientas de ventas': 'fa-handshake',
+            'Aplicaciones Amazon': 'fa-amazon',
+            'Sistema Linux': 'fa-linux',
+            'Computadores, dispositivos electrónicos e internet': 'fa-desktop',
+            'Diseño gráfico digital': 'fa-paint-brush',
+            'Tendencias digitales': 'fa-trending-up',
+            'Contenido digital': 'fa-file-alt',
+            'Transformación digital': 'fa-sync',
+            'Arquitectura TI': 'fa-network-wired',
+            'Infraestructura tecnológica': 'fa-server',
+            'Ciberseguridad': 'fa-shield-alt',
+            'Derecho digital': 'fa-gavel',
+            'Gestión de plataformas de e-commerce': 'fa-shopping-cart',
+            'Product marketing': 'fa-bullhorn',
+            'Analítica en marketing': 'fa-chart-bar',
+            'Gestión del funnel de conversión': 'fa-filter',
+            'Growth marketing': 'fa-chart-line',
+            'Google Analytics': 'fa-chart-bar',
+            'Google Ads': 'fa-ad',
+            'Inbound marketing': 'fa-arrow-down'
+        };
+
+        // Cargar componentes dinámicamente
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSidebar('sidebar-container', 'aprendizaje');
+            loadSubNav('top-nav-container', 'aprendizaje');
+            loadTabBar('tab-bar-container');
+            loadFloatingMenu('floating-menu-container');
+            loadProfileMenu('profile-menu-container');
+            
+            // Base de datos de sugerencias
+            const searchSuggestions = {
+                'ia': [
+                    'Inteligencia artificial',
+                    'Inteligencia artificial y ética',
+                    'Máster de inteligencia artificial para agentes de viajes',
+                    'Introduccion a la inteligencia artificial',
+                    'Herramientas de inteligencia artificial',
+                    'Inteligencia artificial como potenciador de un negocio',
+                    'Genera videos con inteligencia artificial',
+                    'Inteligencia artificial y su impacto en ventas',
+                    'Casos practicos de inteligencia artificial',
+                    'Inteligencia artificial generativa'
+                ]
+            };
+            
+            // Función para mostrar sugerencias - KISS: simple y directo
+            function showSuggestions(query) {
+                const suggestionsContainer = document.getElementById('search-suggestions-container');
+                if (!suggestionsContainer) {
+                    console.error('❌ No se encontró el contenedor de sugerencias');
+                    return;
+                }
+                
+                const normalizedQuery = query.toLowerCase().trim();
+                console.log('🔍 Buscando sugerencias para:', normalizedQuery);
+                
+                if (normalizedQuery.length === 0) {
+                    suggestionsContainer.classList.remove('visible');
+                    return;
+                }
+                
+                // Buscar sugerencias
+                let suggestions = [];
+                
+                // Buscar coincidencias exactas
+                for (const [key, values] of Object.entries(searchSuggestions)) {
+                    if (normalizedQuery.includes(key) || key.includes(normalizedQuery)) {
+                        suggestions = values.slice(0, 8);
+                        break;
+                    }
+                }
+                
+                // Si no hay coincidencias, buscar en el contenido
+                if (suggestions.length === 0) {
+                    for (const [key, values] of Object.entries(searchSuggestions)) {
+                        const matching = values.filter(s => s.toLowerCase().includes(normalizedQuery));
+                        if (matching.length > 0) {
+                            suggestions = matching.slice(0, 8);
+                            break;
+                        }
+                    }
+                }
+                
+                if (suggestions.length > 0) {
+                    console.log('✅ Encontradas', suggestions.length, 'sugerencias');
+                    suggestionsContainer.innerHTML = suggestions.map(suggestion => `
+                        <div class="search-suggestion-item">
+                            <span class="suggestion-text">${suggestion}</span>
+                        </div>
+                    `).join('');
+                    
+                    suggestionsContainer.classList.add('visible');
+                    
+                    // Listeners para clic en sugerencias
+                    suggestionsContainer.querySelectorAll('.search-suggestion-item').forEach(item => {
+                        item.addEventListener('click', function() {
+                            const searchInput = document.querySelector('#catalog-search-container input');
+                            if (searchInput) {
+                                searchInput.value = this.querySelector('.suggestion-text').textContent;
+                                suggestionsContainer.classList.remove('visible');
+                                searchInput.focus();
+                                searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+                            }
+                        });
+                    });
+                } else {
+                    console.log('❌ No se encontraron sugerencias');
+                    suggestionsContainer.classList.remove('visible');
+                }
+            }
+
+            // Crear input de búsqueda
+            setTimeout(() => {
+                createInput({
+                    containerId: 'catalog-search-container',
+                    type: 'search',
+                    placeholder: 'Buscar un tema, competencia o habilidad...',
+                    size: 'lg',
+                    onChange: function(value) {
+                        // Cuando se limpia el input (botón X), ocultar sugerencias
+                        if (value === '') {
+                            const suggestionsContainer = document.getElementById('search-suggestions-container');
+                            if (suggestionsContainer) {
+                                suggestionsContainer.classList.remove('visible');
+                            }
+                        }
+                    }
+                });
+
+                // Agregar botones dentro del input y listeners - Verificación directa sin delay largo
+                const setupButtons = () => {
+                    const searchInput = document.querySelector('#catalog-search-container input');
+                    const searchContainer = document.getElementById('catalog-search-container');
+                    
+                    console.log('🔍 Setup sugerencias:', { searchInput: !!searchInput, searchContainer: !!searchContainer });
+                    
+                    if (!searchInput || !searchContainer) {
+                        // Si aún no están listos, reintentar rápidamente
+                        setTimeout(setupButtons, 10);
+                        return;
+                    }
+                    
+                    
+                    // En mobile: cambiar placeholder a uno más corto para que no se corte
+                    function updatePlaceholderForMobile() {
+                        if (window.innerWidth <= 768) {
+                            searchInput.placeholder = 'Buscar...';
+                        } else {
+                            searchInput.placeholder = 'Buscar un tema, competencia o habilidad...';
+                        }
+                    }
+                    
+                    // Actualizar placeholder al cargar y al cambiar tamaño de ventana
+                    updatePlaceholderForMobile();
+                    window.addEventListener('resize', updatePlaceholderForMobile);
+                    
+                    // Agregar botones dentro del input
+                    const inputWrapper = searchInput.parentElement; // El div con position: relative
+                    if (inputWrapper) {
+                        // Crear contenedor de botones
+                        let buttonsContainer = inputWrapper.querySelector('.catalog-search-input-buttons');
+                        if (!buttonsContainer) {
+                            buttonsContainer = document.createElement('div');
+                            buttonsContainer.className = 'catalog-search-input-buttons';
+                            
+                            // Botón de filtros (terciario, icon-only, sm)
+                            const filterButton = document.createElement('button');
+                            filterButton.className = 'ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only';
+                            filterButton.setAttribute('aria-label', 'Filtros');
+                            filterButton.innerHTML = '<i class="far fa-filter"></i>';
+                            filterButton.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                console.log('🔍 Filtros clickeado');
+                                // Aquí puedes agregar la lógica de filtros
+                            });
+                            
+                            // Botón de Modo IA (ia-button secundario, sm)
+                            const iaButton = document.createElement('button');
+                            iaButton.className = 'ubits-ia-button ubits-ia-button--secondary ubits-ia-button--sm';
+                            iaButton.innerHTML = '<i class="far fa-sparkles"></i><span>Modo IA</span>';
+                            iaButton.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                console.log('🤖 Modo IA clickeado');
+                                // Redirigir a modo-estudio-ia.html
+                                window.location.href = 'modo-estudio-ia.html';
+                            });
+                            
+                            buttonsContainer.appendChild(filterButton);
+                            buttonsContainer.appendChild(iaButton);
+                            inputWrapper.appendChild(buttonsContainer);
+                            console.log('✅ Botones agregados dentro del input');
+                        }
+                        
+                        // KISS: Crear contenedor de sugerencias y moverlo al div con position: relative que crea createInput
+                        let suggestionsContainer = document.getElementById('search-suggestions-container');
+                        if (!suggestionsContainer) {
+                            suggestionsContainer = document.createElement('div');
+                            suggestionsContainer.id = 'search-suggestions-container';
+                            suggestionsContainer.className = 'search-suggestions-container';
+                        }
+                        
+                        // Mover el contenedor de sugerencias al div con position: relative que crea createInput
+                        inputWrapper.style.position = 'relative';
+                        inputWrapper.style.zIndex = '1000';
+                        inputWrapper.appendChild(suggestionsContainer);
+                        console.log('✅ Contenedor de sugerencias movido al wrapper del input');
+                    } else {
+                        // Fallback: usar el contenedor padre
+                        searchContainer.style.position = 'relative';
+                        searchContainer.style.zIndex = '1000';
+                        searchContainer.appendChild(suggestionsContainer);
+                    }
+                    
+                    // Listener simple para input - solo mostrar sugerencias, no buscar
+                    searchInput.addEventListener('input', function(e) {
+                        const value = this.value;
+                        console.log('📝 Input cambiado:', value);
+                        
+                        // Si el input está vacío, ocultar sugerencias
+                        if (value === '') {
+                            const suggestionsContainer = document.getElementById('search-suggestions-container');
+                            if (suggestionsContainer) {
+                                suggestionsContainer.classList.remove('visible');
+                            }
+                        } else {
+                            // Solo mostrar sugerencias si hay texto
+                        showSuggestions(value);
+                        }
+                        // NO llamar handleSearch - la búsqueda está desactivada
+                    });
+                    
+                    // El botón X ya está oculto, no necesitamos listener para él
+                    
+                    // Ocultar al hacer clic fuera
+                    document.addEventListener('click', function(e) {
+                        if (!searchContainer.contains(e.target) && !suggestionsContainer.contains(e.target)) {
+                            suggestionsContainer.classList.remove('visible');
+                        }
+                    });
+                };
+                
+                // Llamar inmediatamente - se reintentará automáticamente si no está listo
+                setupButtons();
+            }, 300);
+
+            // Renderizar chips de búsquedas frecuentes
+            renderChips();
+
+            // Renderizar catálogo inicial
+            renderCatalog(catalogData.academias);
+
+            // Renderizar aliados destacados usando componente oficial
+            if (typeof createCarouselContents === 'function') {
+                createCarouselContents({
+                    containerId: 'aliados-container',
+                    type: 'allies',
+                    sectionTitle: 'Explora por aliados destacados',
+                    slides: [
+                        {
+                            name: 'UBITS',
+                            logo: '../../images/Favicons/UBITS.jpg'
+                        },
+                        {
+                            name: 'Microsoft',
+                            logo: '../../images/Favicons/Microsoft.jpg'
+                        },
+                        {
+                            name: 'TED',
+                            logo: '../../images/Favicons/TED.jpg'
+                        },
+                        {
+                            name: 'Harvard Business Publishing',
+                            logo: '../../images/Favicons/Harvard-Business-Publishing.jpg'
+                        },
+                        {
+                            name: 'All Ears English',
+                            logo: '../../images/Favicons/All Ears English.jpg'
+                        },
+                        {
+                            name: 'IE University Publishing',
+                            logo: '../../images/Favicons/IE-University-Publishing.jpg'
+                        },
+                        {
+                            name: 'WOBI',
+                            logo: '../../images/Favicons/WOBI.jpg'
+                        },
+                        {
+                            name: 'Hubspot',
+                            logo: '../../images/Favicons/Hubspot.jpg'
+                        },
+                        {
+                            name: 'AWS',
+                            logo: '../../images/Favicons/AWS.jpg'
+                        },
+                        {
+                            name: 'Código Facilito',
+                            logo: '../../images/Favicons/Código-Facilito.jpg'
+                        },
+                        {
+                            name: 'Universidad de Los Andes',
+                            logo: '../../images/Favicons/Universidad-de-Los Andes.jpg'
+                        },
+                        {
+                            name: 'Welu',
+                            logo: '../../images/Favicons/Welu.jpg'
+                        }
+                    ],
+                    onButtonClick: function(ally, index) {
+                        console.log('Ally clicked:', ally.name, 'Index:', index);
+                        // Aquí puedes agregar la lógica de filtrado por aliado
+                    }
+                });
+            }
+            
+            // Renderizar tipos de contenido (nuevo carrusel) - con delay para asegurar que el DOM esté listo
+            setTimeout(() => {
+                renderTiposContenidoNuevo();
+            }, 100);
+
+            // Listener de resize para actualizar el catálogo dinámicamente
+            let resizeTimeout;
+            let lastWindowWidth = window.innerWidth;
+            let isRendering = false; // Flag para prevenir re-renders infinitos
+            window.addEventListener('resize', function() {
+                // Prevenir re-render si ya se está renderizando
+                if (isRendering) return;
+                
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(function() {
+                    const currentWidth = window.innerWidth;
+                    // Determinar número de columnas según el ancho
+                    let numColumns = 3;
+                    if (currentWidth <= 768) {
+                        numColumns = 1;
+                    } else if (currentWidth <= 1023) {
+                        numColumns = 2;
+                    }
+                    
+                    // Determinar número de columnas del ancho anterior
+                    let lastNumColumns = 3;
+                    if (lastWindowWidth <= 768) {
+                        lastNumColumns = 1;
+                    } else if (lastWindowWidth <= 1023) {
+                        lastNumColumns = 2;
+                    }
+                    
+                    // Solo re-renderizar si cambió el número de columnas
+                    if (numColumns !== lastNumColumns) {
+                        isRendering = true; // Marcar que se está renderizando
+                        
+                        // Guardar estado actual (academias y competencias expandidas)
+                        const expandedAcademias = [];
+                        document.querySelectorAll('.academia-card-spotify.expanded').forEach(card => {
+                            expandedAcademias.push(card.dataset.academia);
+                        });
+                        
+                        const expandedCompetencias = [];
+                        document.querySelectorAll('.competencia-card-v1.expanded').forEach(card => {
+                            expandedCompetencias.push({
+                                competencia: card.dataset.competencia,
+                                academia: card.dataset.academia
+                            });
+                        });
+                        
+                        // Re-renderizar catálogo completo (búsqueda desactivada)
+                            renderCatalog(catalogData.academias);
+                        
+                        // Restaurar estado
+                        setTimeout(() => {
+                            expandedAcademias.forEach(academiaNombre => {
+                                const card = document.querySelector(`.academia-card-spotify[data-academia="${academiaNombre}"]`);
+                                const container = document.querySelector(`.academia-competencias-container[data-academia="${academiaNombre}"]`);
+                                if (card && container) {
+                                    card.classList.add('expanded');
+                                    container.classList.add('is-visible');
+                                }
+                            });
+                            
+                            expandedCompetencias.forEach(({ competencia, academia }) => {
+                                const card = document.querySelector(`.competencia-card-v1[data-competencia="${competencia}"][data-academia="${academia}"]`);
+                                const container = document.querySelector(`.competencia-habilidades-container[data-competencia="${competencia}"][data-academia="${academia}"]`);
+                                if (card && container) {
+                                    card.classList.add('expanded');
+                                    container.classList.add('is-visible');
+                                    // Restaurar rotación del chevron
+                                    const chevronBtn = card.querySelector('.competencia-card-v1-chevron-btn');
+                                    if (chevronBtn) {
+                                        const chevronIcon = chevronBtn.querySelector('.competencia-card-v1-chevron');
+                                        if (chevronIcon) {
+                                            chevronIcon.style.transform = 'rotate(180deg)';
+                                        }
+                                    }
+                                }
+                            });
+                            
+                            isRendering = false; // Marcar que terminó el renderizado
+                        }, 50);
+                        
+                        lastWindowWidth = currentWidth;
+                    }
+                }, 150);
+            });
+
+            // Hacer funciones accesibles globalmente
+            window.handleChipClick = handleChipClick;
+
+            // Activar el tab "Catálogo"
+            setTimeout(() => {
+                document.querySelectorAll('.nav-tab, .hamburger-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                
+                const catalogTab = document.querySelector('.nav-tab[data-tab="catalog"]');
+                if (catalogTab) catalogTab.classList.add('active');
+                
+                const catalogHamburger = document.querySelector('.hamburger-item[data-tab="catalog"]');
+                if (catalogHamburger) catalogHamburger.classList.add('active');
+                
+                const aprendizajeButton = document.querySelector('.nav-button[data-section="aprendizaje"]');
+                if (aprendizajeButton) {
+                    document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
+                    aprendizajeButton.classList.add('active');
+                }
+                
+                const modulosTabBarItem = document.querySelector('.tab-bar-item[data-tab="modulos"]');
+                if (modulosTabBarItem) {
+                    document.querySelectorAll('.tab-bar-item').forEach(item => item.classList.remove('active'));
+                    modulosTabBarItem.classList.add('active');
+                }
+                
+                if (typeof setActiveAccordionLink === 'function') {
+                    setActiveAccordionLink('catalogo');
+                }
+            }, 200);
+        });
+
+        // Función para renderizar chips de búsquedas frecuentes
+        function renderChips() {
+            const busquedasFrecuentes = [
+                'Liderazgo',
+                'Product Design',
+                'Marketing Digital',
+                'Desarrollo de Software',
+                'Data Skills'
+            ];
+
+            const chipsContainer = document.getElementById('catalog-chips');
+            chipsContainer.innerHTML = busquedasFrecuentes.map(busqueda => `
+                <div class="catalog-chip" onclick="handleChipClick('${busqueda}')">
+                    <span class="ubits-body-sm-regular">${busqueda}</span>
+                </div>
+            `).join('');
+        }
+
+        // Función para manejar click en chip
+        function handleChipClick(busqueda) {
+            const searchInput = document.querySelector('#catalog-search-container input');
+            if (searchInput) {
+                searchInput.value = busqueda;
+                searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+        }
+
+        // Función de búsqueda - DESACTIVADA (solo para diseño, no funcional)
+        // En la vida real, esto enviaría a una página de resultados de búsqueda
+        function handleSearch(event) {
+            // La búsqueda está desactivada - no hacer nada
+                return;
+        }
+
+        // Función para renderizar el catálogo
+        // Función para renderizar tipos de contenido
+
+        // Función para renderizar el nuevo carrusel de tipos de contenido (rectangular)
+        function renderTiposContenidoNuevo() {
+            const carouselContainer = document.getElementById('tipos-contenido-carousel-nuevo');
+            if (!carouselContainer) {
+                console.error('No se encontró el contenedor tipos-contenido-carousel-nuevo');
+                return;
+            }
+
+            // Tipos de contenido oficiales (de la v2)
+            const tiposContenido = [
+                'Curso',
+                'Short',
+                'Charla',
+                'Artículo',
+                'Podcast',
+                'Libro',
+                'Ideas de libro',
+                'Caso de estudio',
+                'Documento técnico',
+                'Ejercicios de práctica',
+                'Ruta de aprendizaje',
+                'Programa'
+            ];
+
+            // Mapeo de iconos por tipo de contenido (de la v2)
+            const iconosPorTipo = {
+                'Curso': 'fa-graduation-cap',
+                'Short': 'fa-capsules',
+                'Charla': 'fa-comments',
+                'Artículo': 'fa-file-lines',
+                'Podcast': 'fa-podcast',
+                'Libro': 'fa-book',
+                'Ideas de libro': 'fa-lightbulb',
+                'Caso de estudio': 'fa-briefcase',
+                'Documento técnico': 'fa-file-code',
+                'Ejercicios de práctica': 'fa-dumbbell',
+                'Ruta de aprendizaje': 'fa-route',
+                'Programa': 'fa-network-wired'
+            };
+
+            const htmlContent = tiposContenido.map(tipo => {
+                const icono = iconosPorTipo[tipo] || 'fa-circle';
+                
+                return `
+                    <div class="tipo-contenido-card-nuevo" data-tipo="${tipo}">
+                        <div class="tipo-contenido-icon-nuevo">
+                            <i class="far ${icono}"></i>
+                        </div>
+                        <span class="ubits-body-sm-regular tipo-contenido-name-nuevo">${tipo}</span>
+                    </div>
+                `;
+            }).join('');
+            
+            carouselContainer.innerHTML = htmlContent;
+
+            // Agregar event listeners para los cards
+            carouselContainer.querySelectorAll('.tipo-contenido-card-nuevo').forEach(card => {
+                card.addEventListener('click', function() {
+                    const tipo = this.dataset.tipo;
+                    // Aquí puedes agregar la lógica de filtrado por tipo de contenido
+                    console.log('Tipo seleccionado:', tipo);
+                });
+            });
+
+            // Agregar event listeners para los botones de control del carrusel
+            const prevButton = document.getElementById('tipos-contenido-nuevo-prev');
+            const nextButton = document.getElementById('tipos-contenido-nuevo-next');
+
+            // Función para obtener el número de items a mover según el breakpoint
+            function getItemsToMoveNuevo() {
+                if (window.innerWidth <= 768) {
+                    return 3; // Mobile
+                } else if (window.innerWidth <= 1023) {
+                    return 5; // Tablet
+                }
+                return 8; // Desktop
+            }
+
+            // Función para obtener el índice del primer item visible
+            function getFirstVisibleIndexNuevo() {
+                const cards = carouselContainer.querySelectorAll('.tipo-contenido-card-nuevo');
+                if (cards.length === 0) return 0;
+
+                const containerRect = carouselContainer.getBoundingClientRect();
+                for (let i = 0; i < cards.length; i++) {
+                    const cardRect = cards[i].getBoundingClientRect();
+                    if (cardRect.left >= containerRect.left) {
+                        return i;
+                    }
+                }
+                return 0;
+            }
+
+            // Función para actualizar el estado de los botones
+            function updateCarouselButtonsNuevo() {
+                if (!carouselContainer || !prevButton || !nextButton) return;
+
+                const scrollLeft = carouselContainer.scrollLeft;
+                const scrollWidth = carouselContainer.scrollWidth;
+                const clientWidth = carouselContainer.clientWidth;
+                const isAtStart = scrollLeft <= 0;
+                const isAtEnd = scrollLeft + clientWidth >= scrollWidth - 1;
+
+                prevButton.disabled = isAtStart;
+                nextButton.disabled = isAtEnd;
+            }
+
+            // Scroll al siguiente grupo de items
+            function scrollToNextGroupNuevo() {
+                const cards = carouselContainer.querySelectorAll('.tipo-contenido-card-nuevo');
+                if (cards.length === 0) return;
+                
+                const itemsToMove = getItemsToMoveNuevo();
+                const currentIndex = getFirstVisibleIndexNuevo();
+                const nextIndex = Math.min(cards.length - 1, currentIndex + itemsToMove);
+                
+                if (nextIndex === currentIndex) {
+                    setTimeout(updateCarouselButtonsNuevo, 400);
+                    return;
+                }
+                
+                const targetCard = cards[nextIndex];
+                const targetCardRect = targetCard.getBoundingClientRect();
+                const containerRect = carouselContainer.getBoundingClientRect();
+                const scrollLeft = carouselContainer.scrollLeft;
+                
+                carouselContainer.scrollTo({
+                    left: scrollLeft + (targetCardRect.left - containerRect.left),
+                    behavior: 'smooth'
+                });
+                
+                setTimeout(updateCarouselButtonsNuevo, 400);
+            }
+
+            // Scroll al grupo anterior de items
+            function scrollToPrevGroupNuevo() {
+                const cards = carouselContainer.querySelectorAll('.tipo-contenido-card-nuevo');
+                if (cards.length === 0) return;
+                
+                const itemsToMove = getItemsToMoveNuevo();
+                const currentIndex = getFirstVisibleIndexNuevo();
+                const prevIndex = Math.max(0, currentIndex - itemsToMove);
+                
+                if (prevIndex === currentIndex) {
+                    setTimeout(updateCarouselButtonsNuevo, 400);
+                    return;
+                }
+                
+                const targetCard = cards[prevIndex];
+                const targetCardRect = targetCard.getBoundingClientRect();
+                const containerRect = carouselContainer.getBoundingClientRect();
+                const scrollLeft = carouselContainer.scrollLeft;
+                
+                carouselContainer.scrollTo({
+                    left: scrollLeft + (targetCardRect.left - containerRect.left),
+                    behavior: 'smooth'
+                });
+                
+                setTimeout(updateCarouselButtonsNuevo, 400);
+            }
+
+            if (prevButton && nextButton) {
+                // Inicializar estado de los botones
+                updateCarouselButtonsNuevo();
+
+                // Botón anterior
+                prevButton.addEventListener('click', function() {
+                    if (this.disabled) return;
+                    scrollToPrevGroupNuevo();
+                });
+
+                // Botón siguiente
+                nextButton.addEventListener('click', function() {
+                    if (this.disabled) return;
+                    scrollToNextGroupNuevo();
+                });
+
+                // Actualizar estado al hacer scroll
+                carouselContainer.addEventListener('scroll', function() {
+                    setTimeout(updateCarouselButtonsNuevo, 100);
+                });
+
+                // Actualizar estado al redimensionar la ventana
+                window.addEventListener('resize', function() {
+                    setTimeout(updateCarouselButtonsNuevo, 100);
+                });
+            }
+        }
+
+        // Event delegation para evitar listeners duplicados
+        let catalogEventListenersAttached = false;
+        
+        function attachCatalogEventListeners() {
+            // Solo agregar listeners una vez usando event delegation
+            if (catalogEventListenersAttached) return;
+            catalogEventListenersAttached = true;
+            
+            const resultsContainer = document.getElementById('catalog-results');
+            
+            // Verificar que el contenedor existe antes de agregar listeners
+            if (!resultsContainer) {
+                console.warn('catalog-results container not found, skipping event listeners');
+                    return;
+                }
+                
+                // Event delegation para competencias
+            resultsContainer.addEventListener('click', function(e) {
+                const competenciaCard = e.target.closest('.competencia-card-v1');
+                if (competenciaCard) {
+                    // Si el clic fue en el botón de filtro, no hacer nada
+                    if (e.target.closest('.ubits-button[data-tooltip="Filtrar por esta competencia"]')) {
+                        return;
+                    }
+                    
+                    e.stopPropagation();
+                    const competenciaNombre = competenciaCard.dataset.competencia;
+                    const academiaNombre = competenciaCard.dataset.academia;
+                    const habilidadesContainer = document.querySelector(`.competencia-habilidades-container[data-competencia="${competenciaNombre}"][data-academia="${academiaNombre}"]`);
+                    const chevronBtn = competenciaCard.querySelector('.competencia-card-v1-chevron-btn');
+                    const chevronIcon = chevronBtn ? chevronBtn.querySelector('.competencia-card-v1-chevron') : null;
+                    const isCurrentlyExpanded = competenciaCard.classList.contains('expanded');
+                    
+                    // Cerrar todas las competencias expandidas
+                    document.querySelectorAll('.competencia-card-v1.expanded').forEach(openCard => {
+                        if (openCard !== competenciaCard) {
+                            openCard.classList.remove('expanded');
+                            const openCompetenciaNombre = openCard.dataset.competencia;
+                            const openAcademiaNombre = openCard.dataset.academia;
+                            const openContainer = document.querySelector(`.competencia-habilidades-container[data-competencia="${openCompetenciaNombre}"][data-academia="${openAcademiaNombre}"]`);
+                            if (openContainer) {
+                                openContainer.classList.remove('is-visible');
+                            }
+                            // Resetear chevron de otras cards
+                            const openChevronBtn = openCard.querySelector('.competencia-card-v1-chevron-btn');
+                            if (openChevronBtn) {
+                                const openChevronIcon = openChevronBtn.querySelector('.competencia-card-v1-chevron');
+                                if (openChevronIcon) {
+                                    openChevronIcon.style.transform = '';
+                                }
+                            }
+                        }
+                    });
+                    
+                    // Toggle la competencia clickeada
+                    if (habilidadesContainer) {
+                        if (isCurrentlyExpanded) {
+                            // Si ya estaba expandida, colapsarla
+                            competenciaCard.classList.remove('expanded');
+                            habilidadesContainer.classList.remove('is-visible');
+                            if (chevronIcon) {
+                                chevronIcon.style.transform = '';
+                            }
+                        } else {
+                            // Si estaba colapsada, expandirla
+                            competenciaCard.classList.add('expanded');
+                            habilidadesContainer.classList.add('is-visible');
+                            if (chevronIcon) {
+                                chevronIcon.style.transform = 'rotate(180deg)';
+                            }
+                        }
+                    }
+                    return;
+                }
+                
+                // Event delegation para botón de filtro
+                const filterButton = e.target.closest('.ubits-button[data-tooltip="Filtrar por esta competencia"]');
+                if (filterButton) {
+                    e.stopPropagation();
+                    // No hacer nada, esta funcionalidad se implementará en el futuro
+                    return;
+                }
+            });
+        }
+        
+        // Variable global para almacenar la academia seleccionada en la segunda sección
+        let selectedAcademia2 = 'Academia de Habilidades Blandas';
+        
+        function renderCatalog(academias) {
+            const resultsContainer = document.getElementById('catalog-results');
+            
+            if (academias.length === 0) {
+                if (resultsContainer) resultsContainer.innerHTML = '';
+                return;
+            }
+
+            // Renderizar sección con selector
+            if (resultsContainer) {
+                renderCatalogWithSelector(resultsContainer, academias);
+            }
+            
+            // Asegurar que los event listeners estén adjuntos (solo una vez)
+            attachCatalogEventListeners();
+        }
+
+        function renderCatalogWithSelector(container, academias) {
+            // Crear selector de academias si no existe
+            let selectorContainer = container.querySelector('#academia-selector-container');
+            if (!selectorContainer) {
+                selectorContainer = document.createElement('div');
+                selectorContainer.id = 'academia-selector-container';
+                selectorContainer.style.marginBottom = '24px';
+                container.insertBefore(selectorContainer, container.firstChild);
+            }
+            
+            // Renderizar competencias inmediatamente (no dependen del selector para existir)
+            renderCompetenciasForSelector(container, selectedAcademia2, academias);
+            
+            // Verificar si el selector ya fue creado (buscar el input readonly que crea createInput)
+            const existingInput = selectorContainer.querySelector('input[readonly]');
+            if (!existingInput) {
+                // Verificar que createInput esté disponible
+                if (typeof createInput === 'function') {
+                    // Definir el callback onChange antes de crear el input
+                    const handleAcademiaChange = function(selectedValue) {
+                        selectedAcademia2 = selectedValue;
+                        renderCompetenciasForSelector(container, selectedAcademia2, academias);
+                    };
+                    
+                    createInput({
+                        containerId: 'academia-selector-container',
+                        type: 'select',
+                        label: 'Selecciona una academia',
+                        placeholder: 'Selecciona una academia...',
+                        selectOptions: academias.map(academia => ({
+                            value: academia.nombre,
+                            text: academia.nombre
+                        })),
+                        value: selectedAcademia2,
+                        onChange: handleAcademiaChange
+                    });
+                }
+            } else {
+                // Si el selector ya existe, necesitamos actualizar las opciones y el callback
+                // Para esto, es mejor recrear el selector con las nuevas opciones
+                selectorContainer.innerHTML = '';
+                const handleAcademiaChange = function(selectedValue) {
+                    selectedAcademia2 = selectedValue;
+                    renderCompetenciasForSelector(container, selectedAcademia2, academias);
+                };
+                
+                createInput({
+                    containerId: 'academia-selector-container',
+                    type: 'select',
+                    label: 'Selecciona una academia',
+                    placeholder: 'Selecciona una academia...',
+                    selectOptions: academias.map(academia => ({
+                        value: academia.nombre,
+                        text: academia.nombre
+                    })),
+                    value: selectedAcademia2,
+                    onChange: handleAcademiaChange
+                });
+            }
+        }
+
+        function renderCompetenciasForSelector(container, academiaNombre, academias) {
+            // Buscar un contenedor específico para las competencias o crear uno
+            let competenciasContainer = document.getElementById('competencias-container');
+            
+            if (!competenciasContainer) {
+                competenciasContainer = document.createElement('div');
+                competenciasContainer.id = 'competencias-container';
+                competenciasContainer.style.marginTop = '24px';
+                competenciasContainer.style.width = '100%';
+                
+                // Insertar después del selector en el contenedor principal
+                const selectorContainer = document.getElementById('academia-selector-container');
+                if (selectorContainer && selectorContainer.parentNode) {
+                    // Insertar después del contenedor del selector
+                    selectorContainer.parentNode.insertBefore(competenciasContainer, selectorContainer.nextSibling);
+                } else {
+                    // Si no se encuentra, insertar en el contenedor principal
+                    container.appendChild(competenciasContainer);
+                }
+            }
+            
+            // Asegurar que el contenedor esté en el DOM
+            if (!competenciasContainer.parentNode) {
+                const selectorContainer = document.getElementById('academia-selector-container');
+                if (selectorContainer && selectorContainer.parentNode) {
+                    selectorContainer.parentNode.insertBefore(competenciasContainer, selectorContainer.nextSibling);
+                } else {
+                    container.appendChild(competenciasContainer);
+                }
+            }
+            
+            const academia = academias.find(a => a.nombre === academiaNombre);
+            
+            if (!academia) {
+                competenciasContainer.innerHTML = '<p class="ubits-body-md-regular">No se encontró la academia seleccionada.</p>';
+                return;
+            }
+
+                // Ordenar competencias alfabéticamente
+                const competenciasOrdenadas = [...academia.competencias].sort((a, b) => 
+                    a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' })
+                );
+                
+                // Determinar número de columnas según el ancho de la pantalla
+                let numColumns = 3; // Desktop por defecto
+                if (window.innerWidth <= 768) {
+                    numColumns = 1; // Mobile
+                } else if (window.innerWidth <= 1023) {
+                    numColumns = 2; // Tablet
+                }
+                
+                const columns = [];
+                for (let i = 0; i < numColumns; i++) {
+                    columns[i] = [];
+                }
+                
+            // Distribuir competencias en columnas
+                competenciasOrdenadas.forEach((competencia, index) => {
+                    const columnIndex = index % numColumns;
+                    columns[columnIndex].push(competencia);
+                });
+
+            const competenciasHtml = `
+                <div class="academia-competencias-container is-visible" data-academia="${academia.nombre}">
+                        <div class="competencias-grid-v1">
+                            ${columns.map(column => `
+                                <div class="competencias-column">
+                                    ${column.map(competencia => {
+                                        const imageName = competenciaImageMap[competencia.nombre] || 'Accountability.jpg';
+                                        const imagePath = `images/imagenes competencias/${imageName}`;
+                                        const isAssigned = competenciasAsignadas.includes(competencia.nombre);
+                                        return `
+                                            <div class="competencia-card-v1-wrapper">
+                                                <div class="competencia-card-v1 ${isAssigned ? 'is-assigned' : ''}" data-competencia="${competencia.nombre}" data-academia="${academia.nombre}">
+                                                    <img src="${imagePath}" alt="${competencia.nombre}" class="competencia-card-v1-image" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=300&fit=crop'">
+                                                    <div class="competencia-card-v1-content">
+                                                        <div class="competencia-card-v1-title-wrapper">
+                                                            <p class="ubits-body-sm-semibold competencia-card-v1-title">
+                                                                <span class="competencia-card-v1-title-text">${competencia.nombre}</span>
+                                                                ${isAssigned ? '<span class="ubits-status-tag ubits-status-tag--info ubits-status-tag--xs"><span class="ubits-status-tag__text">Asignado</span></span>' : ''}
+                                                            </p>
+                                                        </div>
+                                                        <p class="ubits-body-xs-regular competencia-card-v1-count">${competencia.habilidades.length} habilidades</p>
+                                                    </div>
+                                                    <div class="competencia-card-v1-actions">
+                                                        <button class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only" aria-label="Filtrar por esta competencia" data-tooltip="Filtrar por esta competencia">
+                                                            <i class="far fa-filter"></i>
+                                                        </button>
+                                                        <button class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only competencia-card-v1-chevron-btn" aria-label="Ver habilidades" data-competencia="${competencia.nombre}" data-academia="${academia.nombre}" data-tooltip="Ver habilidades">
+                                                            <i class="far fa-chevron-down competencia-card-v1-chevron"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div class="competencia-habilidades-container" data-competencia="${competencia.nombre}" data-academia="${academia.nombre}">
+                                                    <div class="competencias-habilidades-grid">
+                                                        ${competencia.habilidades.sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' })).map(habilidad => {
+                                                            const icon = habilidadIconMap[habilidad] || 'fa-circle';
+                                                            return `
+                                                                <div class="habilidad-chip">
+                                                                    <i class="far ${icon}"></i>
+                                                                    <span class="ubits-body-sm-regular">${habilidad}</span>
+                                                                </div>
+                                                            `;
+                                                        }).join('')}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        `;
+                                    }).join('')}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+
+            // Asegurar que el contenedor esté en el DOM antes de insertar HTML
+            if (!competenciasContainer.parentNode) {
+                const selectorContainer = container.querySelector('#academia-selector-container-2');
+                if (selectorContainer && selectorContainer.parentNode) {
+                    selectorContainer.parentNode.insertBefore(competenciasContainer, selectorContainer.nextSibling);
+                } else {
+                    container.appendChild(competenciasContainer);
+                }
+            }
+            
+            competenciasContainer.innerHTML = competenciasHtml;
+            
+            // Asegurar que los event listeners estén adjuntos
+            if (typeof attachCatalogEventListeners === 'function') {
+            attachCatalogEventListeners();
+            }
+
+            document.querySelectorAll('.competencia-card-v1-actions .ubits-button').forEach(button => {
+                button.addEventListener('mouseenter', function() {
+                    const tooltipText = this.getAttribute('data-tooltip');
+                    if (!tooltipText) return;
+                    
+                    // Crear tooltip temporal para calcular dimensiones
+                    const tempTooltip = document.createElement('div');
+                    tempTooltip.textContent = tooltipText;
+                    tempTooltip.style.cssText = 'position: absolute; visibility: hidden; white-space: nowrap; padding: 6px 10px; font-size: 12px; font-family: "Noto Sans", sans-serif;';
+                    document.body.appendChild(tempTooltip);
+                    const tooltipWidth = tempTooltip.offsetWidth;
+                    const tooltipHeight = tempTooltip.offsetHeight;
+                    document.body.removeChild(tempTooltip);
+                    
+                    const rect = this.getBoundingClientRect();
+                    const viewportWidth = window.innerWidth;
+                    const viewportHeight = window.innerHeight;
+                    const margin = 10;
+                    
+                    // Determinar posición
+                    const spaceAbove = rect.top;
+                    const spaceBelow = viewportHeight - rect.bottom;
+                    const spaceRight = viewportWidth - rect.right;
+                    const spaceLeft = rect.left;
+                    
+                    // Resetear clases
+                    this.classList.remove('tooltip-top', 'tooltip-bottom', 'tooltip-left', 'tooltip-right');
+                    
+                    // Determinar posición vertical
+                    const useBottom = spaceAbove < tooltipHeight + margin;
+                    
+                    // Determinar posición horizontal
+                    let horizontalPos = 'center';
+                    if (spaceRight < tooltipWidth / 2 + margin) {
+                        horizontalPos = 'right';
+                    } else if (spaceLeft < tooltipWidth / 2 + margin) {
+                        horizontalPos = 'left';
+                    }
+                    
+                    // Aplicar clases
+                    if (useBottom) {
+                        this.classList.add('tooltip-bottom');
+                    }
+                    if (horizontalPos === 'right') {
+                        this.classList.add('tooltip-right');
+                    } else if (horizontalPos === 'left') {
+                        this.classList.add('tooltip-left');
+                    }
+                });
+            });
+
+        }
+
+    </script>
+</body>
+</html>
+

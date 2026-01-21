@@ -1,0 +1,308 @@
+/* ========================================
+   ESTILOS ESPECÍFICOS PARA u-corporativa
+   ======================================== */
+
+/* Estilos específicos para content-sections */
+.content-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+    overflow: visible;
+    max-height: none;
+}
+
+/* Secciones de widgets */
+.section-single {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+/* Widgets sin padding ni fondo */
+.section-single > .widget-encabezado-universidad,
+.section-single > .widget-buscador-filtros,
+.section-single > .widget-grid-cursos-propios {
+    padding: 0 !important;
+    background: transparent !important;
+}
+        
+
+/* Encabezado Universidad Corporativa */
+.widget-encabezado-universidad {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--ubits-bg-1);
+    border-left: 4px solid var(--ubits-accent-brand);
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    min-height: 0;
+}
+
+.encabezado-content {
+    flex: 0 0 50%;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    justify-content: center;
+    background: var(--ubits-bg-1);
+    order: 1;
+}
+
+.encabezado-banner {
+    flex: 0 0 50%;
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 21 / 9;
+    order: 2;
+}
+
+.encabezado-banner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.encabezado-title {
+    color: var(--ubits-fg-1-high);
+    margin: 0;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 48px;
+}
+
+.encabezado-description {
+    color: var(--ubits-fg-1-medium);
+    margin: 0;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 19.5px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.encabezado-button-wrapper {
+    margin-top: 0;
+}
+
+/* Buscador y filtros */
+.widget-buscador-filtros {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+}
+
+.buscador-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.buscador-title-container {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex: 0 0 auto;
+}
+
+.buscador-title {
+    color: var(--ubits-fg-1-high);
+    margin: 0;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 24px;
+}
+
+.buscador-results {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.buscador-results-count {
+    color: var(--ubits-fg-1-medium);
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 13px;
+}
+
+.buscador-results-text {
+    color: var(--ubits-fg-1-medium);
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 19.5px;
+}
+
+.buscador-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex: 0 0 auto;
+}
+
+/* Contenedor del input de búsqueda */
+#buscador-input-container {
+    flex: 1;
+    min-width: 0;
+}
+
+/* En mobile: cuando el input está visible, debe ocupar el ancho disponible pero mantener el botón de filtros al lado */
+@media (max-width: 768px) {
+    #buscador-input-container {
+        flex: 1 1 auto !important;
+        min-width: 0;
+        max-width: none;
+    }
+    
+    #buscador-input-container .ubits-input-wrapper {
+        width: 100% !important;
+    }
+    
+    #buscador-input-container .ubits-input {
+        width: 100% !important;
+    }
+    
+    .buscador-actions {
+        width: 100%;
+        flex-wrap: nowrap; /* Mantener elementos en la misma línea */
+    }
+}
+
+/* Grid de cards */
+.widget-grid-cursos-propios {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+}
+
+.grid-cards-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+}
+
+/* Empty state ocupa todo el ancho */
+#empty-state-no-results {
+    width: 100%;
+}
+
+/* Asegurar que el componente empty state mantenga sus gaps y paddings */
+#empty-state-no-results.ubits-empty-state {
+    display: flex !important; /* Forzar flex para que gap funcione */
+    padding: 20px !important;
+    gap: 12px !important;
+}
+
+#empty-state-no-results .ubits-empty-state__header {
+    gap: 8px !important;
+}
+
+#empty-state-no-results .ubits-empty-state__footer {
+    gap: 12px !important;
+}
+
+/* Paginador - usar componente oficial */
+.paginador-container {
+    margin-top: 24px;
+}
+
+/* Responsive: Tablet */
+@media (max-width: 1365px) {
+    .grid-cards-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Responsive: Tablet y Mobile */
+@media (max-width: 1023px) {
+    .content-sections {
+        gap: 16px;
+    }
+
+    .widget-encabezado-universidad {
+        flex-direction: column;
+        border-top: 4px solid var(--ubits-accent-brand);
+        border-left: none;
+        align-items: flex-start;
+    }
+    
+    .encabezado-content {
+        order: 2;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 16px;
+        background: var(--ubits-bg-1);
+    }
+
+    .encabezado-banner {
+        order: 1;
+        width: 100%;
+        box-sizing: border-box;
+        aspect-ratio: 21 / 9;
+        border-bottom: 1px solid var(--ubits-border-1);
+    }
+
+    .buscador-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    
+    .buscador-title-container {
+        width: 100%;
+    }
+
+    .buscador-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .grid-cards-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+}
+
+/* Responsive: Mobile pequeño */
+@media (max-width: 480px) {
+    .grid-cards-container {
+        grid-template-columns: 1fr;
+    }
+
+    .widget-encabezado-universidad {
+        min-height: auto;
+        height: auto;
+    }
+
+    .encabezado-content {
+        padding: 12px;
+        min-height: auto;
+        height: auto;
+    }
+
+    .encabezado-title {
+        font-size: 24px;
+        line-height: 36px;
+    }
+
+    .encabezado-description {
+        font-size: 14px;
+        line-height: 20px;
+    }
+}

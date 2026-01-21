@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>UBITS Playground - Modo Estudio IA</title>
+    
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../components/tab-bar.css">
+    <link rel="stylesheet" href="../../components/floating-menu.css">
+    <link rel="stylesheet" href="../../components/profile-menu.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/ia-button.css">
+    <link rel="stylesheet" href="../../components/header-product.css">
+    <link rel="stylesheet" href="../../components/study-chat.css">
+    <link rel="stylesheet" href="../../components/card-content-compact.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="./profile.css">
+    <link rel="stylesheet" href="./modo-estudio-ia.css">
+</head>
+<body class="modo-estudio-ia-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        
+        <!-- Sidebar Container -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navigation -->
+            <div id="top-nav-container"></div>
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Content wrapper con secciones de widgets -->
+                <div class="content-sections">
+                    <!-- Sección header-product -->
+                    <div class="section-single">
+                        <div class="widget-header-product" id="header-product-container"></div>
+                    </div>
+                    
+                    <!-- Sección chat -->
+                    <div class="section-single">
+                        <div class="widget-chat" id="study-chat-container"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Tab Bar Container -->
+    <div id="tab-bar-container"></div>
+
+    <!-- Floating Menu Container -->
+    <div id="floating-menu-container"></div>
+    
+    <!-- Profile Menu Container -->
+    <div id="profile-menu-container"></div>
+
+    <!-- Contenedor para Toast UBITS -->
+    <div id="ubits-toast-container"></div>
+
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/tab-bar.js"></script>
+    <script src="../../components/floating-menu.js"></script>
+    <script src="../../components/profile-menu.js"></script>
+    <script src="../../components/header-product.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/card-content-compact.js"></script>
+    <script src="../../components/study-chat.js"></script>
+    <script src="../../script.js"></script>
+    <script>
+        // Cargar componentes dinámicamente
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSidebar('default', 'aprendizaje');
+            loadSubNav('top-nav-container', 'aprendizaje');
+            loadTabBar('tab-bar-container');
+            loadFloatingMenu('floating-menu-container');
+            loadProfileMenu('profile-menu-container');
+            
+            // Activar el tab de catálogo en el SubNav
+            setTimeout(() => {
+                const catalogTab = document.querySelector('.nav-tab[data-tab="catalog"]');
+                const catalogSelectorItem = document.querySelector('.module-selector-item[data-tab="catalog"]');
+                if (catalogTab) {
+                    catalogTab.classList.add('active');
+                }
+                if (catalogSelectorItem) {
+                    catalogSelectorItem.classList.add('active');
+                }
+            }, 300);
+            
+            // Cargar header-product
+            if (typeof loadHeaderProduct === 'function') {
+                loadHeaderProduct('header-product-container', {
+                    productName: 'Modo Estudio IA',
+                    breadcrumbItems: [], // Array vacío para ocultar breadcrumb
+                    backButton: {
+                        onClick: function() {
+                            console.log('Back button clicked');
+                            // Regresar a la página anterior del historial del navegador
+                            if (window.history.length > 1) {
+                                window.history.back();
+                            } else {
+                                // Si no hay historial, redirigir a catalogo.html como fallback
+                            window.location.href = 'catalogo.html';
+                            }
+                        }
+                    },
+                    secondaryButtons: [
+                        { text: 'Historial', icon: 'fa-clock', onClick: function() { console.log('Historial clicked'); } },
+                        { text: 'Nuevo chat', icon: 'fa-comment', onClick: function() { console.log('Nuevo chat clicked'); } }
+                    ]
+                });
+            }
+            
+            // Inicializar chat de estudio
+            if (typeof initStudyChat === 'function') {
+                initStudyChat('study-chat-container');
+            }
+        });
+    </script>
+</body>
+</html>
+

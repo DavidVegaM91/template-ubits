@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>UBITS Playground - Guía de Prompts</title>
+    
+    <!-- Estilos locales -->
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <!-- Estilos de documentación -->
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    
+    <style>
+        .typography-demo {
+            margin: 20px 0;
+            padding: 20px;
+            background: var(--ubits-bg-2);
+            border: 1px solid var(--ubits-border-1);
+            border-radius: 8px;
+        }
+        
+        .typography-info {
+            font-size: 12px;
+            color: var(--ubits-fg-2-medium);
+            margin-top: 8px;
+            font-family: 'Monaco', 'Menlo', monospace;
+        }
+        
+        .section-card {
+            background: var(--ubits-bg-1);
+            border: 1px solid var(--ubits-border-1);
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 40px;
+        }
+        
+        .code-block {
+            background: var(--ubits-bg-2);
+            border: 1px solid var(--ubits-border-1);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+        
+        .prompt-card {
+            background: var(--ubits-bg-1);
+            border: 1px solid var(--ubits-border-1);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .prompt-card:hover {
+            border-color: var(--ubits-border-2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .prompt-card.copied {
+            border-color: var(--ubits-accent-brand);
+            background: var(--ubits-bg-active);
+        }
+        
+        .prompt-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        
+        
+        .prompt-icon {
+            color: var(--ubits-accent-brand);
+            font-size: 20px;
+        }
+        
+        .prompt-description {
+            color: var(--ubits-fg-1-medium);
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+        
+        .prompt-code-container {
+            position: relative;
+            background: var(--ubits-bg-2);
+            border: 1px solid var(--ubits-border-1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .prompt-code {
+            background: transparent;
+            border: none;
+            border-radius: 0;
+            padding: 16px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+            color: var(--ubits-fg-1-high);
+            white-space: pre-wrap;
+            word-break: break-word;
+            overflow-x: auto;
+            margin: 0;
+        }
+        
+        .copy-button {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--ubits-bg-1);
+            border: 1px solid var(--ubits-border-1);
+            border-radius: 6px;
+            padding: 8px 12px;
+            color: var(--ubits-fg-1-medium);
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            outline: none;
+            box-shadow: none;
+            z-index: 10;
+        }
+        
+        .copy-button:hover {
+            background: var(--ubits-bg-2);
+            color: var(--ubits-fg-1-high);
+        }
+        
+        .copy-button.copied {
+            background: var(--ubits-accent-brand);
+            color: white;
+            border-color: var(--ubits-accent-brand);
+            outline: none;
+        }
+        
+        .copy-button:focus {
+            outline: none;
+        }
+        
+        .step-number {
+            background: var(--ubits-accent-brand);
+            color: white;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            margin-right: 16px;
+            flex-shrink: 0;
+        }
+        
+        .step-content {
+            flex: 1;
+        }
+        
+        .step-item {
+            margin-bottom: 8px;
+        }
+        
+        .step-title {
+            color: var(--ubits-fg-1-high);
+            margin-bottom: 0;
+        }
+        
+        .step-description {
+            color: var(--ubits-fg-1-medium);
+        }
+        
+        
+        /* Dark mode */
+        [data-theme="dark"] .prompt-card {
+            background: var(--ubits-bg-1);
+            border-color: var(--ubits-border-1);
+        }
+        
+        [data-theme="dark"] .prompt-card:hover {
+            border-color: var(--ubits-border-2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        [data-theme="dark"] .prompt-code {
+            background: var(--ubits-bg-2);
+            border-color: var(--ubits-border-1);
+        }
+        
+        [data-theme="dark"] .copy-button {
+            background: var(--ubits-bg-1);
+            border-color: var(--ubits-border-1);
+        }
+        
+        [data-theme="dark"] .copy-button:hover {
+            background: var(--ubits-bg-2);
+        }
+    </style>
+</head>
+<body class="documentacion-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navigation -->
+            <div id="top-nav-container"></div>
+            
+            <!-- Content Area -->
+            <div class="content-area" style="display: block; width: 100%;">
+                <!-- Hero Section -->
+                <div style="text-align: center; margin-bottom: 60px;">
+                    <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                        Tipografía UBITS
+                    </h1>
+                    <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto; line-height: 1.6;">
+                        Guía completa de todas las clases tipográficas disponibles en el sistema de diseño UBITS. Aprende a usar cada estilo correctamente y mantén la consistencia visual.
+                    </p>
+                </div>
+
+
+                <!-- Display Styles -->
+                <div class="section-card">
+                    <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                        <i class="far fa-text-size" style="margin-right: 12px; color: var(--ubits-accent-brand);"></i>
+                        Display Styles
+                    </h2>
+                    <p class="ubits-body-md-regular" style="margin-bottom: 32px;">
+                        Los estilos Display son para títulos principales y elementos destacados. Úsalos con moderación.
+                    </p>
+                    
+                    <div class="typography-demo">
+                        <div class="ubits-display-d1-regular">Display D1 Regular</div>
+                        <div class="typography-info">ubits-display-d1-regular • 40px • Regular (400) • 60px line-height</div>
+                    </div>
+                    
+                    <div class="typography-demo">
+                        <div class="ubits-display-d1-semibold">Display D1 Semibold</div>
+                        <div class="typography-info">ubits-display-d1-semibold • 40px • Semibold (600) • 60px line-height</div>
+                    </div>
+                    
+                    <div class="typography-demo">
+                        <div class="ubits-display-d1-bold">Display D1 Bold</div>
+                        <div class="typography-info">ubits-display-d1-bold • 40px • Bold (700) • 60px line-height</div>
+                    </div>
+                    
+                    <div class="typography-demo">
+                        <div class="ubits-display-d2-regular">Display D2 Regular</div>
+                        <div class="typography-info">ubits-display-d2-regular • 36px • Regular (400) • 54px line-height</div>
+                    </div>
+                    
+                    <div class="typography-demo">
+                        <div class="ubits-display-d2-semibold">Display D2 Semibold</div>
+                        <div class="typography-info">ubits-display-d2-semibold • 36px • Semibold (600) • 54px line-height</div>
+                    </div>
+                    
+                    <div class="typography-demo">
+                        <div class="ubits-display-d2-bold">Display D2 Bold</div>
+                        <div class="typography-info">ubits-display-d2-bold • 36px • Bold (700) • 54px line-height</div>
+                    </div>
+                    
+                    <div class="typography-demo">
+                        <div class="ubits-display-d3-regular">Display D3 Regular</div>
+                        <div class="typography-info">ubits-display-d3-regular • 32px • Regular (400) • 48px line-height</div>
+                    </div>
+                    
+                    <div class="typography-demo">
+                        <div class="ubits-display-d3-semibold">Display D3 Semibold</div>
+                        <div class="typography-info">ubits-display-d3-semibold • 32px • Semibold (600) • 48px line-height</div>
+                    </div>
+                    
+                    <div class="typography-demo">
+                        <div class="ubits-display-d3-bold">Display D3 Bold</div>
+                        <div class="typography-info">ubits-display-d3-bold • 32px • Bold (700) • 48px line-height</div>
+                    </div>
+                    
+                    <div class="code-block">
+                        <strong>Uso recomendado:</strong><br>
+                        • D1: Títulos de landing pages, heros principales<br>
+                        • D2: Títulos de sección importantes<br>
+                        • D3: Subtítulos destacados, títulos de cards hero<br>
+                        • D4: Títulos de componentes grandes
+                    </div>
+                </div>
+
+                <!-- Heading Styles -->
+                <div class="section-card">
+                    <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                        <i class="far fa-heading" style="margin-right: 12px; color: var(--ubits-accent-brand);"></i>
+                        Heading Styles
+                    </h2>
+                    <p class="ubits-body-md-regular" style="margin-bottom: 32px;">
+                        Los estilos Heading son para títulos de contenido y jerarquía de información. Solo existen H1 y H2 en UBITS.
+                    </p>
+                    
+                    <div class="typography-demo">
+                        <div class="ubits-heading-h1">Heading H1</div>
+                        <div class="typography-info">ubits-heading-h1 • 20px • Semibold (600) • 30px line-height</div>
+                    </div>
+                    
+                    <div class="typography-demo">
+                        <div class="ubits-heading-h2">Heading H2</div>
+                        <div class="typography-info">ubits-heading-h2 • 18px • Semibold (600) • 27px line-height</div>
+                    </div>
+                    
+                    <div class="code-block">
+                        <strong>⚠️ Reglas importantes:</strong><br>
+                        • Solo existen H1 y H2 en UBITS<br>
+                        • Para subtítulos menores usa ubits-body-md-bold o ubits-body-sm-bold<br>
+                        • NO uses ubits-heading-h3, ubits-heading-h4, etc. (no existen)<br>
+                        • H1 para títulos principales de páginas<br>
+                        • H2 para subtítulos y secciones importantes
+                    </div>
+                </div>
+
+                <!-- Body Styles -->
+                <div class="section-card">
+                    <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                        <i class="far fa-paragraph" style="margin-right: 12px; color: var(--ubits-accent-brand);"></i>
+                        Body Styles
+                    </h2>
+                    <p class="ubits-body-md-regular" style="margin-bottom: 32px;">
+                        Los estilos Body son para texto de contenido, párrafos y elementos de interfaz. Son los más utilizados en el sistema.
+                    </p>
+                    
+                    <!-- Body XS -->
+                    <h3 class="ubits-body-md-bold" style="margin: 32px 0 16px 0;">Body Extra Small (11px)</h3>
+                    
+                    <div class="typography-demo">
+                        <div class="ubits-body-xs-regular">Body XS Regular - Para texto muy pequeño y metadatos</div>
+                        <div class="typography-info">ubits-body-xs-regular • 11px • Regular (400) • 16.5px line-height</div>
+                    </div>
+                    
+                    <div class="typography-demo">
+                        <div class="ubits-body-xs-semibold">Body XS Semibold - Para etiquetas pequeñas</div>
+                        <div class="typography-info">ubits-body-xs-semibold • 11px • Semibold (600) • 16.5px line-height</div>
+                    </div>
+                    
+                    <div class="typography-demo">
+                        <div class="ubits-body-xs-bold">Body XS Bold - Para énfasis en texto muy pequeño</div>
+                        <div class="typography-info">ubits-body-xs-bold • 11px • Bold (700) • 16.5px line-height</div>
+                    </div>
+                    
+                    <!-- Body SM -->
+                    <h3 class="ubits-body-md-bold" style="margin: 32px 0 16px 0;">Body Small (13px)</h3>
+                    
+                    <div class="typography-demo">
+                        <div class="ubits-body-sm-regular">Body SM Regular - Para texto secundario y descripciones</div>
+                        <div class="typography-info">ubits-body-sm-regular • 13px • Regular (400) • 19.5px line-height</div>
+                    </div>
+                    
+                    <div class="typography-demo">
+                        <div class="ubits-body-sm-semibold">Body SM Semibold - Para etiquetas y texto destacado pequeño</div>
+                        <div class="typography-info">ubits-body-sm-semibold • 13px • Semibold (600) • 19.5px line-height</div>
+                    </div>
+                    
+                    <div class="typography-demo">
+                        <div class="ubits-body-sm-bold">Body SM Bold - Para títulos de componentes pequeños</div>
+                        <div class="typography-info">ubits-body-sm-bold • 13px • Bold (700) • 19.5px line-height</div>
+                    </div>
+                    
+                    <!-- Body MD -->
+                    <h3 class="ubits-body-md-bold" style="margin: 32px 0 16px 0;">Body Medium (16px)</h3>
+                    
+                    <div class="typography-demo">
+                        <div class="ubits-body-md-regular">Body MD Regular - Texto para párrafos y contenido general</div>
+                        <div class="typography-info">ubits-body-md-regular • 16px • Regular (400) • 24px line-height</div>
+                    </div>
+                    
+                    <div class="typography-demo">
+                        <div class="ubits-body-md-semibold">Body MD Semibold - Para destacar información importante</div>
+                        <div class="typography-info">ubits-body-md-semibold • 16px • Semibold (600) • 24px line-height</div>
+                    </div>
+                    
+                    <div class="typography-demo">
+                        <div class="ubits-body-md-bold">Body MD Bold - Para subtítulos y énfasis fuerte</div>
+                        <div class="typography-info">ubits-body-md-bold • 16px • Bold (700) • 24px line-height</div>
+                    </div>
+                    
+                    <!-- Body LG -->
+                    <h3 class="ubits-body-md-bold" style="margin: 32px 0 16px 0;">Body Large (20px)</h3>
+                    
+                    <div class="typography-demo">
+                        <div class="ubits-body-lg-semibold">Body LG Semibold - Solo para botones grandes</div>
+                        <div class="typography-info">ubits-body-lg-semibold • 20px • Semibold (600) • 30px line-height</div>
+                    </div>
+                    
+                    <div class="code-block">
+                        <strong>📋 Uso recomendado:</strong><br>
+                        • XS: Metadatos, texto muy pequeño, timestamps<br>
+                        • SM: Texto secundario, descripciones, etiquetas<br>
+                        • MD: Texto principal, párrafos, contenido general<br>
+                        • LG: Solo para botones grandes (no usar en layouts)<br><br>
+                        <strong>⚠️ Importante:</strong><br>
+                        • ubits-body-lg-semibold es EXCLUSIVO para botones<br>
+                        • Para subtítulos usa ubits-body-md-bold o ubits-body-sm-bold
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="../../components/sub-nav.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cargar top-nav con variante documentación
+            loadSubNav('top-nav-container', 'documentacion');
+        });
+
+        // Función para copiar prompts
+        function copyPrompt(promptId) {
+            const promptElement = document.getElementById(`prompt-${promptId}`);
+            const promptText = promptElement.textContent;
+            
+            // Copiar al portapapeles
+            navigator.clipboard.writeText(promptText).then(function() {
+                // Mostrar feedback visual
+                const card = document.querySelector(`[data-prompt="${promptId}"]`);
+                const button = card.querySelector('.ubits-button');
+                const icon = button.querySelector('i');
+                const text = button.querySelector('span');
+                
+                // Cambiar estado del botón
+                icon.className = 'far fa-check';
+                text.textContent = 'Copiado';
+                button.classList.add('ubits-button--active');
+                card.classList.add('copied');
+                
+                // Mostrar toast
+                showToast('¡Prompt copiado! 🎉');
+                
+                // Restaurar estado después de 2 segundos
+                setTimeout(function() {
+                    icon.className = 'far fa-copy';
+                    text.textContent = 'Copiar';
+                    button.classList.remove('ubits-button--active');
+                    card.classList.remove('copied');
+                }, 2000);
+                
+            }).catch(function(err) {
+                console.error('Error al copiar: ', err);
+                showToast('Error al copiar el prompt', 'error');
+            });
+        }
+
+        // Función para mostrar toast
+        function showToast(message, type = 'success') {
+            // Crear elemento toast
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? 'var(--ubits-accent-brand)' : 'var(--ubits-feedback-bg-error-subtle)'};
+                color: white;
+                padding: 16px 24px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+                z-index: 10000;
+                font-family: 'Noto Sans', sans-serif;
+                font-size: 14px;
+                font-weight: 500;
+                opacity: 0;
+                transform: translateX(100%);
+                transition: all 0.3s ease;
+            `;
+            toast.textContent = message;
+            
+            // Añadir al DOM
+            document.body.appendChild(toast);
+            
+            // Animar entrada
+            setTimeout(() => {
+                toast.style.opacity = '1';
+                toast.style.transform = 'translateX(0)';
+            }, 100);
+            
+            // Remover después de 3 segundos
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

@@ -16,7 +16,7 @@
 }
 
 /* Solo visible en resoluciones inferiores a 1024px */
-@media (min-width: 1024px) {
+@media (min-width: 1280px) {
     .floating-menu {
         display: none !important;
     }

@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../images/Ubits-logo-dark.svg">
+    <title>UBITS Playground - Guía de Prompts</title>
+
+    <!-- Estilos locales -->
+    <link rel="stylesheet" href="../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../general-styles/styles.css">
+    <link rel="stylesheet" href="../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../components/sub-nav.css">
+    <link rel="stylesheet" href="../components/alert.css">
+    <link rel="stylesheet" href="../components/button.css">
+    <link rel="stylesheet" href="../components/toast.css">
+    <link rel="stylesheet" href="../docs/docstyles.css">
+
+    <style>
+        .prompt-card {
+            background: var(--ubits-bg-1);
+            border: 1px solid var(--ubits-border-1);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .prompt-card:hover {
+            border-color: var(--ubits-border-2);
+            transform: translateY(-2px);
+        }
+
+        .prompt-card.copied {
+            border-color: var(--ubits-accent-brand);
+            background: var(--ubits-bg-active);
+        }
+
+        .prompt-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+
+        .prompt-icon {
+            color: var(--ubits-accent-brand);
+            font-size: 20px;
+        }
+
+        .prompt-description {
+            color: var(--ubits-fg-1-medium);
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .prompt-code-container {
+            position: relative;
+            background: var(--ubits-bg-2);
+            border: 1px solid var(--ubits-border-1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .prompt-code {
+            background: transparent;
+            border: none;
+            border-radius: 0;
+            padding: 16px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+            color: var(--ubits-fg-1-high);
+            white-space: pre-wrap;
+            word-break: break-word;
+            overflow-x: auto;
+            margin: 0;
+        }
+
+        .copy-button {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--ubits-bg-1);
+            border: 1px solid var(--ubits-border-1);
+            border-radius: 6px;
+            padding: 8px 12px;
+            color: var(--ubits-fg-1-medium);
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            outline: none;
+            box-shadow: none;
+            z-index: 10;
+        }
+
+        .copy-button:hover {
+            background: var(--ubits-bg-2);
+            color: var(--ubits-fg-1-high);
+        }
+
+        .copy-button.copied {
+            background: var(--ubits-accent-brand);
+            color: white;
+            border-color: var(--ubits-accent-brand);
+            outline: none;
+        }
+
+        .copy-button:focus {
+            outline: none;
+        }
+
+        .step-number {
+            background: var(--ubits-accent-brand);
+            color: white;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            margin-right: 16px;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-item {
+            margin-bottom: 8px;
+        }
+
+        .step-title {
+            color: var(--ubits-fg-1-high);
+            margin-bottom: 0;
+        }
+
+        .step-description {
+            color: var(--ubits-fg-1-medium);
+        }
+
+
+        /* Dark mode */
+        [data-theme="dark"] .prompt-card {
+            background: var(--ubits-bg-1);
+            border-color: var(--ubits-border-1);
+        }
+
+        [data-theme="dark"] .prompt-card:hover {
+            border-color: var(--ubits-border-2);
+        }
+
+        [data-theme="dark"] .prompt-code {
+            background: var(--ubits-bg-2);
+            border-color: var(--ubits-border-1);
+        }
+
+        [data-theme="dark"] .copy-button {
+            background: var(--ubits-bg-1);
+            border-color: var(--ubits-border-1);
+        }
+
+        [data-theme="dark"] .copy-button:hover {
+            background: var(--ubits-bg-2);
+        }
+    </style>
+</head>
+<body class="documentacion-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navigation -->
+            <div id="top-nav-container"></div>
+
+            <!-- Content Area -->
+            <div class="content-area" style="display: block; width: 100%;">
+                <!-- Hero Section -->
+                <div style="text-align: center; margin-bottom: 60px;">
+                    <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                        Guía de Prompts UBITS
+                    </h1>
+                    <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto; line-height: 1.6;">
+                        Prompts para usar en Cursor AI. Sin conocimiento técnico necesario, solo copia, pega y personaliza.
+                    </p>
+                </div>
+
+                <!-- Info Alert -->
+                <div id="info-alert-container" style="margin-bottom: 32px;"></div>
+
+                <!-- Cómo usar la guía -->
+                <div style="background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: 12px; padding: 32px; margin-bottom: 40px;">
+                    <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                        <i class="far fa-lightbulb" style="margin-right: 12px; color: var(--ubits-accent-brand);"></i>
+                        Cómo usar esta guía
+                    </h2>
+
+                    <div class="step-item" style="display: flex;">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <div class="step-title ubits-body-md-bold">Copia el prompt</div>
+                            <div class="step-description ubits-body-md-regular">
+                                Haz clic en el botón "Copiar" del prompt que necesites. Se copiará automáticamente a tu portapapeles.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-item" style="display: flex;">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <div class="step-title ubits-body-md-bold">Personaliza el prompt</div>
+                            <div class="step-description ubits-body-md-regular">
+                                Reemplaza los textos entre corchetes [TEXTO] con tu información específica antes de usar el prompt.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-item" style="display: flex;">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <div class="step-title ubits-body-md-bold">Pega en Cursor AI</div>
+                            <div class="step-description ubits-body-md-regular">
+                                Abre Cursor AI, pega el prompt en el chat y presiona Enter. Cursor hará todo el trabajo por ti.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-item" style="display: flex;">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <div class="step-title ubits-body-md-bold">Revisa y ajusta</div>
+                            <div class="step-description ubits-body-md-regular">
+                                Revisa los cambios que hizo Cursor y pide ajustes si es necesario. ¡Es así de fácil!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Prompt 1: Clonar repositorio -->
+                <div class="prompt-card" data-prompt="clone">
+                    <div class="prompt-header">
+                        <h3 class="ubits-body-md-bold">1. Clonar el repositorio UBITS</h3>
+                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('clone')">
+                            <i class="far fa-copy"></i>
+                            <span>Copiar</span>
+                        </button>
+                    </div>
+                    <p class="prompt-description ubits-body-md-regular">
+                        Usa este prompt para obtener el UBITS Playground completo en tu computadora por primera vez.
+                    </p>
+                    <div class="prompt-code-container">
+                        <div class="prompt-code" id="prompt-clone">
+Quiero trabajar contigo usando el UBITS Playground que está en este repositorio:
+https://github.com/DavidVegaM91/template-ubits.git
+
+1. Importa el repositorio.
+2. Lee los archivos README.md y .cursor/rules/cursor-rules.mdc para entender el contexto del proyecto.
+3. Confírmame que comprendiste la configuración y pregúntame qué página quiero editar o qué nuevo flujo quiero crear.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Prompt 2: Crear página de inicio -->
+                <div class="prompt-card" data-prompt="homepage">
+                    <div class="prompt-header">
+                        <h3 class="ubits-body-md-bold">2. Crear página de inicio del proyecto</h3>
+                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('homepage')">
+                            <i class="far fa-copy"></i>
+                            <span>Copiar</span>
+                        </button>
+                    </div>
+                    <p class="prompt-description ubits-body-md-regular">
+                        Usa este prompt para configurar la página principal de tu proyecto UBITS.
+                    </p>
+
+                    <!-- Warning Alert -->
+                    <div id="warning-alert-1" style="margin-bottom: 16px;"></div>
+
+                    <div class="prompt-code-container">
+                        <div class="prompt-code" id="prompt-homepage">
+Necesito editar index.html. Esta es una tarea grande que necesito que dividas los pasos que consideres necesarios y cumplas cada uno sin omitir nada:
+
+1. **CONTENIDO PRINCIPAL:**
+   - Edita la sección de Contenido principal y reemplázala con: [inserta tu idea aquí lo más completa posible].
+   - Asegúrate de cumplir con todos los requerimientos
+   - Usa la estructura modular de secciones según como lo requieras: section-single (1 columna), section-dual (2 columnas), section-triple (3 columnas), section-quad (4 columnas)
+   - Cada widget debe tener un nombre descriptivo en el código
+
+2. **VERIFICACIÓN:**
+   - Confirma que todos los tokens ubits-colors estén aplicados correctamente y no haber usado colores hardcodeados
+   - NO hardcodees componentes que ya existen en la carpeta components (button, alert, card content, input, toast).
+   - Si se usaron botones confirma que usaste los botones de ubits usa ubits-button
+   - **SIEMPRE importa CSS** de cada componente usado
+   - **VALIDA que TODAS las clases de tipografía que usaste hacen parte de la lista oficial de UBITS-TYPOGRAPHY-GUIDE.md** NUNCA inventes clases como ubits-h1, ubits-h2, ubits-title, ubits-text, ubits-paragraph**
+   - Asegúrate de que la interfaz sea responsive y funcione en modo claro/oscuro
+
+Si tienes dudas sobre mi idea, por favor hazme preguntas para darte mas detalles!!!!
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Prompt 3: Crear nueva página -->
+                <div class="prompt-card" data-prompt="newpage">
+                    <div class="prompt-header">
+                        <h3 class="ubits-body-md-bold">3. Crear una nueva página UBITS</h3>
+                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('newpage')">
+                            <i class="far fa-copy"></i>
+                            <span>Copiar</span>
+                        </button>
+                    </div>
+                    <p class="prompt-description ubits-body-md-regular">
+                        Usa este prompt para crear una nueva página usando plantilla-ubits.html como base.
+                    </p>
+
+                    <!-- Warning Alert -->
+                    <div id="warning-alert-2" style="margin-bottom: 16px;"></div>
+
+                    <div class="prompt-code-container">
+                        <div class="prompt-code" id="prompt-newpage">
+Necesito crear una nueva página. Esta es una tarea grande que necesito que dividas los pasos que consideres necesarios y cumplas cada uno sin omitir nada:
+
+1. **DUPLICAR PÁGINA DE PLANTILLA**
+   - Duplica plantilla-ubits.html y ponle el nombre [nombre de la página].html
+
+2. **CONTENIDO PRINCIPAL:**
+   - Edita la sección de Contenido principal y reemplázala con: [inserta tu idea aquí lo más completa posible].
+   - Asegúrate de cumplir con todos los requerimientos
+   - Usa la estructura modular de secciones según como lo requieras: section-single (1 columna), section-dual (2 columnas), section-triple (3 columnas), section-quad (4 columnas)
+   - Cada widget debe tener un nombre descriptivo en el código
+
+3. **VERIFICACIÓN:**
+   - Confirma que todos los tokens ubits-colors estén aplicados correctamente y no haber usado colores hardcodeados
+   - NO hardcodees componentes que ya existen en la carpeta components (button, alert, card content, input, toast).
+   - Si se usaron botones confirma que usaste los botones de ubits usa ubits-button
+   - **SIEMPRE importa CSS** de cada componente usado
+   - **VALIDA que TODAS las clases de tipografía que usaste hacen parte de la lista oficial de UBITS-TYPOGRAPHY-GUIDE.md** NUNCA inventes clases como ubits-h1, ubits-h2, ubits-title, ubits-text, ubits-paragraph**
+   - Asegúrate de que la interfaz sea responsive y funcione en modo claro/oscuro
+
+Si tienes dudas sobre mi idea, por favor hazme preguntas para darte mas detalles!!!!
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!-- Prompt 4: Actualizar repositorio -->
+                <div class="prompt-card" data-prompt="update">
+                    <div class="prompt-header">
+                        <h3 class="ubits-body-md-bold">4. Actualizar el repositorio UBITS</h3>
+                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('update')">
+                            <i class="far fa-copy"></i>
+                            <span>Copiar</span>
+                        </button>
+                    </div>
+                    <p class="prompt-description ubits-body-md-regular">
+                        Usa este prompt cuando quieras obtener las últimas actualizaciones del template sin perder tus cambios personalizados.
+                    </p>
+                    <div class="prompt-code-container">
+                        <div class="prompt-code" id="prompt-update">
+1. Haz un backup de mis archivos personalizados (todos los que he modificado)
+2. Obtén la versión más reciente del template desde https://github.com/DavidVegaM91/template-ubits
+3. Compara archivo por archivo y actualiza solo:
+   - Archivos del sistema UBITS (components/, ubits-colors.css, ubits-typography.css, fontawesome-icons.css)
+   - Archivos de documentación (documentacion.html, componentes.html, validador-ubits.html, guia-prompts.html)
+   - Páginas de componentes (sidebar.html, subnav.html, tab-bar.html, button.html, alert.html, card-content.html)
+   - Guías de diseño (colores.html, tipografia.html, iconos.html)
+   - Archivos de configuración (.cursor/rules/cursor-rules.mdc, README.md)
+4. NO toques mis archivos personalizados (index.html, mis páginas creadas, mis modificaciones)
+5. Verifica que todo funcione correctamente
+
+Mi objetivo es tener las últimas mejoras del UBITS Playground manteniendo mis personalizaciones.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Prompt 5: Editar widget específico -->
+                <div class="prompt-card" data-prompt="widget">
+                    <div class="prompt-header">
+                        <h3 class="ubits-body-md-bold">5. Editar widget específico</h3>
+                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('widget')">
+                            <i class="far fa-copy"></i>
+                            <span>Copiar</span>
+                        </button>
+                    </div>
+                    <p class="prompt-description ubits-body-md-regular">
+                        Usa este prompt para personalizar el contenido de un widget específico en cualquier página.
+                    </p>
+
+                    <!-- Warning Alert -->
+                    <div id="warning-alert-5" style="margin-bottom: 16px;"></div>
+
+                    <div class="prompt-code-container">
+                        <div class="prompt-code" id="prompt-widget">
+Necesito editar un widget específico. Esta es una tarea grande que necesito que dividas los pasos que consideres necesarios y cumplas cada uno sin omitir nada:
+
+1. **IDENTIFICAR WIDGET:**
+   - Página: [nombre-pagina].html
+   - Widget a editar: [nombre-del-widget]
+
+2. **CONTENIDO NUEVO:**
+   - Reemplaza el contenido del widget con: [describe exactamente qué quieres que contenga el widget]
+   - Mantén la estructura modular existente
+
+3. **VERIFICACIÓN:**
+   - Confirma que todos los tokens ubits-colors estén aplicados correctamente y no haber usado colores hardcodeados
+   - NO hardcodees componentes que ya existen en la carpeta components (button, alert, card content, input, toast).
+   - Si se usaron botones confirma que usaste los botones de ubits usa ubits-button
+   - **SIEMPRE importa CSS** de cada componente usado
+   - **VALIDA que TODAS las clases de tipografía que usaste hacen parte de la lista oficial de UBITS-TYPOGRAPHY-GUIDE.md** NUNCA inventes clases como ubits-h1, ubits-h2, ubits-title, ubits-text, ubits-paragraph**
+   - Asegúrate de que la interfaz sea responsive y funcione en modo claro/oscuro
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Contenedor para Toast UBITS -->
+    <div id="ubits-toast-container"></div>
+
+    <script src="../components/sub-nav.js"></script>
+    <script src="../components/alert.js"></script>
+    <script src="../components/toast.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cargar top-nav con variante documentación
+            loadSubNav('top-nav-container', 'documentacion');
+
+            // Cargar alerts usando el componente oficial
+            showAlert('info', 'Importante: Estos prompts están diseñados para Cursor AI.', {
+                containerId: 'info-alert-container',
+                noClose: true
+            });
+
+            showAlert('warning', 'Importante: Antes de enviar este prompt a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
+                containerId: 'warning-alert-1',
+                noClose: true
+            });
+
+            showAlert('warning', 'Importante: Antes de enviar este prompt a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
+                containerId: 'warning-alert-2',
+                noClose: true
+            });
+
+            showAlert('warning', 'Importante: Antes de enviar este prompt a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
+                containerId: 'warning-alert-5',
+                noClose: true
+            });
+
+        });
+
+        // Función para copiar prompts
+        function copyPrompt(promptId) {
+            const promptElement = document.getElementById(`prompt-${promptId}`);
+            const promptText = promptElement.textContent;
+
+            // Copiar al portapapeles
+            navigator.clipboard.writeText(promptText).then(function() {
+                // Mostrar feedback visual
+                const card = document.querySelector(`[data-prompt="${promptId}"]`);
+                const button = card.querySelector('.ubits-button');
+                const icon = button.querySelector('i');
+                const text = button.querySelector('span');
+
+                // Cambiar estado del botón
+                icon.className = 'far fa-check';
+                text.textContent = 'Copiado';
+                button.classList.add('ubits-button--active');
+
+                // Mostrar toast
+                showToast('success', '¡Prompt copiado! 🎉', {
+                    containerId: 'ubits-toast-container',
+                    duration: 3500
+                });
+
+                // Restaurar estado después de 2 segundos
+                setTimeout(function() {
+                    icon.className = 'far fa-copy';
+                    text.textContent = 'Copiar';
+                    button.classList.remove('ubits-button--active');
+                }, 2000);
+
+            }).catch(function(err) {
+                console.error('Error al copiar: ', err);
+                showToast('error', 'Error al copiar el prompt', {
+                    containerId: 'ubits-toast-container',
+                    duration: 6500
+                });
+            });
+        }
+
+    </script>
+</body>
+</html>

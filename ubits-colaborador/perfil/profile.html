@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>UBITS Playground - Dashboard</title>
+    
+    <!-- Estilos locales -->
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../components/tab-bar.css">
+    <link rel="stylesheet" href="../../components/floating-menu.css">
+    <link rel="stylesheet" href="../../components/profile-menu.css">
+    <link rel="stylesheet" href="./profile.css">
+</head>
+<body data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        
+        <!-- Sidebar Container -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Content wrapper con secciones de widgets -->
+                <div class="content-sections">
+                    <!-- Sección principal con dos columnas -->
+                    <div class="section-dual">
+                        <div class="widget-contenido-izquierdo">
+            <!-- Primera fila: Personal y Organización -->
+            <div class="personal-org">
+                                <div class="widget-user-info">
+                                    <p class="ubits-body-md-regular">Información Personal</p>
+                    <br><br><br><br><br>
+                </div>
+                <div class="widget-org">
+                                    <p class="ubits-body-md-regular">Organización</p>
+                    <br><br><br><br><br>
+                </div>
+            </div>
+
+            <!-- Segunda fila: Aprendizaje -->
+            <div class="widget-learn">
+                                <p class="ubits-body-md-regular">Aprendizaje</p>
+                <br><br><br><br><br><br><br><br><br>
+            </div>
+
+            <!-- Tercera fila: Objetivos y Encuestas -->
+            <div class="objetivos-encuestas">
+                <div class="widget-objectives">
+                                    <p class="ubits-body-md-regular">Objetivos</p>
+                    <br><br><br><br><br><br>
+                </div>
+                <div class="widget-surveys">
+                                    <p class="ubits-body-md-regular">Encuestas</p>
+                    <br><br><br><br><br><br>
+                </div>
+            </div>
+
+            <!-- Cuarta fila: Assessments y Evaluaciones -->
+            <div class="assessments-evaluaciones">
+                <div class="widget-assessments">
+                                    <p class="ubits-body-md-regular">Assessments</p>
+                    <br><br><br><br><br><br>
+                </div>
+                <div class="widget-evaluations">
+                                    <p class="ubits-body-md-regular">Evaluaciones</p>
+                    <br><br><br><br><br><br>
+                </div>
+            </div>
+        </div>
+                        <div class="widget-contenido-derecho">
+                            <p class="ubits-body-md-regular">Sidebar derecho (30%)</p>
+                            <br><br><br><br><br><br><br><br><br><br><br>
+                        </div>
+                    </div>
+                </div>
+        </div>
+        </main>
+    </div>
+
+    <!-- Tab Bar Container -->
+    <div id="tab-bar-container"></div>
+
+    <!-- Floating Menu Container -->
+    <div id="floating-menu-container"></div>
+    
+    <!-- Profile Menu Container -->
+    <div id="profile-menu-container"></div>
+
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/tab-bar.js"></script>
+    <script src="../../components/floating-menu.js"></script>
+    <script src="../../components/profile-menu.js"></script>
+    <script src="../../script.js"></script>
+    <script>
+        // Cargar componentes dinámicamente
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSidebar();
+                loadTabBar('tab-bar-container');
+                loadFloatingMenu('floating-menu-container');
+                loadProfileMenu('profile-menu-container');
+        });
+    </script>
+</body>
+</html>
