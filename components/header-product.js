@@ -9,7 +9,7 @@
  * botones de acción (IA, secundarios, primario, menú) y breadcrumb opcional.
  * Útil para páginas de producto, detalle de contenido, o cualquier página que requiera un header
  * con navegación y acciones contextuales.
- * 
+ *
  * ⚠️ TROUBLESHOOTING - SCROLL VERTICAL NO DESEADO:
  * =========================================================
  * Si la sección que contiene el header-product genera un scroll vertical no deseado,

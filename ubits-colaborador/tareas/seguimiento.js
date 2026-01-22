@@ -8,8 +8,8 @@
     'use strict';
 
     // Los datos se cargan desde seguimiento-data.js (SEGUIMIENTO_DATABASE)
-    const COLUMN_IDS = ['id', 'nombre', 'asignado', 'idColaborador', 'area', 'plan', 'estado', 'prioridad', 'avance', 'fechaCreacion', 'fechaFinalizacion', 'creador', 'comentarios'];
-    const VISIBLE_BY_DEFAULT = ['nombre', 'asignado', 'estado', 'avance', 'fechaCreacion', 'plan'];
+    const COLUMN_IDS = ['id', 'nombre', 'asignado', 'username', 'area', 'lider', 'creador', 'plan', 'estado', 'prioridad', 'avance', 'fechaCreacion', 'fechaFinalizacion', 'comentarios'];
+    const VISIBLE_BY_DEFAULT = ['nombre', 'asignado', 'estado', 'prioridad', 'avance', 'fechaCreacion'];
 
     // Estado global
     let SEGUIMIENTO_DATA = [];
@@ -22,9 +22,13 @@
     let currentSort = { column: 'fechaCreacion', direction: 'desc' }; // Por defecto: más reciente primero
     let currentFilters = {
         tipoActividad: [],
-        plan: '',
-        persona: '',
-        area: '',
+        plan: [],
+        persona: [],
+        username: [],
+        area: [],
+        lider: [],
+        nombre: [],
+        creador: [],
         estado: [],
         prioridad: [],
         fechaCreacionDesde: null,
@@ -38,32 +42,51 @@
     function positionMenuSmartly(menu, buttonRect, menuWidth = 200, menuHeight = 150) {
         const viewportWidth = window.innerWidth;
         const viewportHeight = window.innerHeight;
-        const scrollX = window.scrollX || window.pageXOffset;
-        const scrollY = window.scrollY || window.pageYOffset;
+        const padding = 16; // Padding mínimo desde los bordes
         
+        // Calcular posición inicial (debajo del botón)
         let left = buttonRect.left;
         let top = buttonRect.bottom + 4;
-
-        // Si el menú se sale por la derecha, alinear a la derecha del botón
-        if (left + menuWidth > viewportWidth - 16) {
+        
+        // Asegurar que el menú no se salga por la derecha
+        if (left + menuWidth > viewportWidth - padding) {
+            // Intentar alinear a la derecha del botón
             left = buttonRect.right - menuWidth;
+            
+            // Si aún se sale, pegarlo al borde derecho con padding
+            if (left < padding) {
+                left = viewportWidth - menuWidth - padding;
+            }
         }
-
-        // Si aún se sale, pegarlo al borde derecho
-        if (left < 16) {
-            left = 16;
+        
+        // Asegurar que el menú no se salga por la izquierda
+        if (left < padding) {
+            left = padding;
         }
-        if (left + menuWidth > viewportWidth - 16) {
-            left = viewportWidth - menuWidth - 16;
+        
+        // Asegurar que el menú no se salga por abajo
+        if (top + menuHeight > viewportHeight - padding) {
+            // Intentar mostrar arriba del botón
+            const spaceAbove = buttonRect.top - padding;
+            const spaceBelow = viewportHeight - buttonRect.bottom - padding;
+            
+            if (spaceAbove >= menuHeight || spaceAbove > spaceBelow) {
+                // Mostrar arriba
+                top = buttonRect.top - menuHeight - 4;
+            } else {
+                // Ajustar altura si es necesario (limitar al espacio disponible)
+                top = viewportHeight - menuHeight - padding;
+            }
         }
-
-        // Si se sale por abajo, mostrar arriba del botón
-        if (top + menuHeight > viewportHeight) {
-            top = buttonRect.top - menuHeight - 4;
+        
+        // Asegurar que el menú no se salga por arriba
+        if (top < padding) {
+            top = padding;
         }
-
-        menu.style.left = left + 'px';
-        menu.style.top = top + 'px';
+        
+        // Aplicar posición
+        menu.style.left = Math.max(padding, Math.min(left, viewportWidth - menuWidth - padding)) + 'px';
+        menu.style.top = Math.max(padding, Math.min(top, viewportHeight - menuHeight - padding)) + 'px';
     }
 
     // Generar datos desde la base de datos realista (seguimiento-data.js)
@@ -76,22 +99,23 @@
         
         // Fallback si no se carga el archivo de datos
         console.warn('seguimiento-data.js no cargado. Usando datos de ejemplo mínimos.');
-        return [{
-            id: 10001,
-            tipo: 'tarea',
-            nombre: 'Tarea de ejemplo',
-            plan: 'Plan de ejemplo',
-            asignado: { nombre: 'Usuario Ejemplo', avatar: null },
-            idColaborador: '1011000001',
-            area: 'Administración',
-            estado: 'Iniciada',
-            prioridad: 'Media',
-            avance: 50,
-            fechaCreacion: '1 ene 2025',
-            fechaFinalizacion: '28 feb 2025',
-            creador: 'Gerencia General',
-            comentarios: 0
-        }];
+            return [{
+                id: 10001,
+                tipo: 'tarea',
+                nombre: 'Tarea de ejemplo',
+                plan: 'Plan de ejemplo',
+                asignado: { nombre: 'Usuario Ejemplo', avatar: null },
+                idColaborador: '1011000001',
+                area: 'Administración',
+                lider: 'Gerente Administrativa',
+                estado: 'Iniciada',
+                prioridad: 'Media',
+                avance: 50,
+                fechaCreacion: '1 ene 2025',
+                fechaFinalizacion: '28 feb 2025',
+                creador: 'Gerencia General',
+                comentarios: 0
+            }];
     }
 
     // Inicializar visibilidad de columnas
@@ -105,15 +129,34 @@
     function applyFiltersAndSearch() {
         let data = [...SEGUIMIENTO_DATA];
 
-        // Búsqueda
+        // Búsqueda general (searchQuery)
         if (searchQuery) {
             const q = searchQuery.toLowerCase();
             data = data.filter(row =>
                 row.nombre.toLowerCase().includes(q) ||
                 row.asignado.nombre.toLowerCase().includes(q) ||
+                (row.asignado.username && row.asignado.username.toLowerCase().includes(q)) ||
                 row.plan.toLowerCase().includes(q) ||
                 row.creador.toLowerCase().includes(q) ||
                 String(row.id).includes(q)
+            );
+        }
+
+        // Filtro nombre (actividad)
+        if (currentFilters.nombre.length > 0) {
+            data = data.filter(row => 
+                currentFilters.nombre.some(nombre => 
+                    row.nombre.toLowerCase().includes(nombre.toLowerCase())
+                )
+            );
+        }
+
+        // Filtro creador
+        if (currentFilters.creador.length > 0) {
+            data = data.filter(row => 
+                currentFilters.creador.some(creador => 
+                    row.creador.toLowerCase().includes(creador.toLowerCase())
+                )
             );
         }
 
@@ -123,19 +166,50 @@
             data = data.filter(row => tipos.includes(row.tipo));
         }
 
-        // Filtro plan
-        if (currentFilters.plan) {
-            data = data.filter(row => row.plan.toLowerCase().includes(currentFilters.plan.toLowerCase()));
+        // Filtro plan - busca en nombre del plan Y nombre de la actividad
+        if (currentFilters.plan.length > 0) {
+            data = data.filter(row => 
+                currentFilters.plan.some(plan => 
+                    row.plan.toLowerCase().includes(plan.toLowerCase()) ||
+                    row.nombre.toLowerCase().includes(plan.toLowerCase())
+                )
+            );
         }
 
         // Filtro persona
-        if (currentFilters.persona) {
-            data = data.filter(row => row.asignado.nombre.toLowerCase().includes(currentFilters.persona.toLowerCase()));
+        if (currentFilters.persona.length > 0) {
+            data = data.filter(row => 
+                currentFilters.persona.some(persona => 
+                    row.asignado.nombre.toLowerCase().includes(persona.toLowerCase())
+                )
+            );
+        }
+
+        // Filtro username
+        if (currentFilters.username.length > 0) {
+            data = data.filter(row => 
+                currentFilters.username.some(username => 
+                    row.asignado.username && row.asignado.username.toLowerCase().includes(username.toLowerCase())
+                )
+            );
         }
 
         // Filtro área
-        if (currentFilters.area) {
-            data = data.filter(row => row.area.toLowerCase().includes(currentFilters.area.toLowerCase()));
+        if (currentFilters.area.length > 0) {
+            data = data.filter(row => 
+                currentFilters.area.some(area => 
+                    row.area.toLowerCase().includes(area.toLowerCase())
+                )
+            );
+        }
+
+        // Filtro lider
+        if (currentFilters.lider.length > 0) {
+            data = data.filter(row => 
+                currentFilters.lider.some(lider => 
+                    row.lider && row.lider.toLowerCase().includes(lider.toLowerCase())
+                )
+            );
         }
 
         // Filtro estado
@@ -148,7 +222,95 @@
             data = data.filter(row => currentFilters.prioridad.includes(row.prioridad));
         }
 
+        // Filtro fecha de creación
+        if (currentFilters.fechaCreacionDesde || currentFilters.fechaCreacionHasta) {
+            data = data.filter(row => {
+                const fechaRow = parseFecha(row.fechaCreacion);
+                if (!fechaRow) return false;
+                
+                if (currentFilters.fechaCreacionDesde && currentFilters.fechaCreacionHasta) {
+                    const fechaDesde = parseFecha(currentFilters.fechaCreacionDesde);
+                    const fechaHasta = parseFecha(currentFilters.fechaCreacionHasta);
+                    if (!fechaDesde || !fechaHasta) return false;
+                    return fechaRow >= fechaDesde && fechaRow <= fechaHasta;
+                } else if (currentFilters.fechaCreacionDesde) {
+                    const fechaDesde = parseFecha(currentFilters.fechaCreacionDesde);
+                    if (!fechaDesde) return false;
+                    return fechaRow >= fechaDesde;
+                } else if (currentFilters.fechaCreacionHasta) {
+                    const fechaHasta = parseFecha(currentFilters.fechaCreacionHasta);
+                    if (!fechaHasta) return false;
+                    return fechaRow <= fechaHasta;
+                }
+                return false;
+            });
+        }
+
+        // Filtro fecha de vencimiento
+        if (currentFilters.fechaVencimientoDesde || currentFilters.fechaVencimientoHasta) {
+            data = data.filter(row => {
+                const fechaRow = parseFecha(row.fechaFinalizacion);
+                if (!fechaRow) return false;
+                
+                if (currentFilters.fechaVencimientoDesde && currentFilters.fechaVencimientoHasta) {
+                    const fechaDesde = parseFecha(currentFilters.fechaVencimientoDesde);
+                    const fechaHasta = parseFecha(currentFilters.fechaVencimientoHasta);
+                    if (!fechaDesde || !fechaHasta) return false;
+                    return fechaRow >= fechaDesde && fechaRow <= fechaHasta;
+                } else if (currentFilters.fechaVencimientoDesde) {
+                    const fechaDesde = parseFecha(currentFilters.fechaVencimientoDesde);
+                    if (!fechaDesde) return false;
+                    return fechaRow >= fechaDesde;
+                } else if (currentFilters.fechaVencimientoHasta) {
+                    const fechaHasta = parseFecha(currentFilters.fechaVencimientoHasta);
+                    if (!fechaHasta) return false;
+                    return fechaRow <= fechaHasta;
+                }
+                return false;
+            });
+        }
+
         filteredData = data;
+    }
+
+    // Función auxiliar para parsear fechas en formato "1 ene 2026"
+    function parseFecha(fechaStr) {
+        if (!fechaStr) return null;
+        
+        // Mapeo de meses en español
+        const meses = {
+            'ene': 0, 'feb': 1, 'mar': 2, 'abr': 3, 'may': 4, 'jun': 5,
+            'jul': 6, 'ago': 7, 'sep': 8, 'oct': 9, 'nov': 10, 'dic': 11
+        };
+        
+        // Formato esperado: "1 ene 2026" o "01/01/2026" (si viene del date picker)
+        const partes = fechaStr.trim().split(/[\s\/\-]+/);
+        
+        if (partes.length === 3) {
+            let dia, mes, año;
+            
+            // Si tiene formato "1 ene 2026"
+            if (partes[1].toLowerCase() in meses) {
+                dia = parseInt(partes[0], 10);
+                mes = meses[partes[1].toLowerCase()];
+                año = parseInt(partes[2], 10);
+            } 
+            // Si tiene formato "01/01/2026" (del date picker)
+            else {
+                dia = parseInt(partes[0], 10);
+                mes = parseInt(partes[1], 10) - 1; // Los meses en JS son 0-indexed
+                año = parseInt(partes[2], 10);
+            }
+            
+            if (!isNaN(dia) && !isNaN(mes) && !isNaN(año)) {
+                const fecha = new Date(año, mes, dia);
+                // Normalizar a medianoche para comparaciones
+                fecha.setHours(0, 0, 0, 0);
+                return fecha;
+            }
+        }
+        
+        return null;
     }
 
     // Aplicar ordenamiento
@@ -194,9 +356,65 @@
     // Renderizar tabla
     function renderTable() {
         const tbody = document.getElementById('seguimiento-tbody');
+        const tableWrapper = document.querySelector('.widget-tabla-seguimiento');
+        const emptyStateContainer = document.getElementById('seguimiento-empty-state');
+        const paginatorContainer = document.querySelector('.widget-paginador-seguimiento');
+        
         if (!tbody) return;
 
         const data = getDisplayData();
+        
+        // Si no hay resultados, mostrar empty state
+        if (data.length === 0) {
+            // Ocultar tabla y paginador
+            if (tableWrapper) tableWrapper.style.display = 'none';
+            if (paginatorContainer) paginatorContainer.style.display = 'none';
+            
+            // Mostrar empty state
+            if (emptyStateContainer && typeof loadEmptyState === 'function') {
+                emptyStateContainer.style.display = 'flex';
+                loadEmptyState('seguimiento-empty-state', {
+                    icon: 'fa-search',
+                    iconSize: 'lg',
+                    title: 'No se encontraron resultados',
+                    description: 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.',
+                    buttons: {
+                        primary: {
+                            text: 'Limpiar búsqueda',
+                            icon: 'fa-times',
+                            onClick: function() {
+                                // Placeholder, manejaremos el click directamente
+                            }
+                        }
+                    }
+                });
+                
+                // Agregar event listener directo al botón después de que se carga
+                setTimeout(() => {
+                    const clearBtn = emptyStateContainer.querySelector('.ubits-button--primary');
+                    if (clearBtn) {
+                        clearBtn.onclick = function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            clearAllFilters();
+                        };
+                    }
+                }, 50);
+            }
+            
+            // Actualizar contador
+            updateResultsCount();
+            return;
+        }
+        
+        // Si hay resultados, ocultar empty state y mostrar tabla
+        if (emptyStateContainer) {
+            emptyStateContainer.style.display = 'none';
+            emptyStateContainer.innerHTML = '';
+        }
+        if (tableWrapper) tableWrapper.style.display = 'block';
+        if (paginatorContainer) paginatorContainer.style.display = 'flex';
+        
         const start = (currentPage - 1) * itemsPerPage;
         const slice = data.slice(start, start + itemsPerPage);
 
@@ -217,21 +435,22 @@
             const avanceNum = typeof row.avance === 'number' ? row.avance : parseInt(row.avance) || 0;
             const avanceHtml = `<div class="seguimiento-avance"><div class="seguimiento-progress-bar"><div class="seguimiento-progress-bar-fill" style="width: ${avanceNum}%"></div></div><span class="ubits-body-sm-regular">${avanceNum}%</span></div>`;
 
-            const cols = ['_checkbox', 'id', 'nombre', 'asignado', 'idColaborador', 'area', 'plan', 'estado', 'prioridad', 'avance', 'fechaCreacion', 'fechaFinalizacion', 'creador', 'comentarios'];
+            const cols = ['_checkbox', 'id', 'nombre', 'asignado', 'username', 'area', 'lider', 'creador', 'plan', 'estado', 'prioridad', 'avance', 'fechaCreacion', 'fechaFinalizacion', 'comentarios'];
             const cells = [
                 `<td class="seguimiento-td-checkbox"><input type="checkbox" class="seguimiento-row-check" data-id="${row.id}"${sel}></td>`,
                 `<td class="seguimiento-td" data-col="id">${row.id}</td>`,
                 `<td class="seguimiento-td" data-col="nombre"><span class="ubits-body-sm-regular">${row.nombre}</span></td>`,
                 `<td class="seguimiento-td" data-col="asignado"><div class="seguimiento-asignado">${asignadoHtml}</div></td>`,
-                `<td class="seguimiento-td" data-col="idColaborador"><span class="ubits-body-sm-regular">${row.idColaborador}</span></td>`,
+                `<td class="seguimiento-td" data-col="username"><span class="ubits-body-sm-regular">${row.asignado.username || ''}</span></td>`,
                 `<td class="seguimiento-td" data-col="area"><span class="ubits-body-sm-regular">${row.area}</span></td>`,
+                `<td class="seguimiento-td" data-col="lider"><span class="ubits-body-sm-regular">${row.lider || ''}</span></td>`,
+                `<td class="seguimiento-td" data-col="creador"><span class="ubits-body-sm-regular">${row.creador}</span></td>`,
                 `<td class="seguimiento-td" data-col="plan"><span class="ubits-body-sm-regular">${row.plan}</span></td>`,
                 `<td class="seguimiento-td" data-col="estado">${estadoTag}</td>`,
                 `<td class="seguimiento-td" data-col="prioridad">${prioridadHtml}</td>`,
                 `<td class="seguimiento-td" data-col="avance">${avanceHtml}</td>`,
                 `<td class="seguimiento-td" data-col="fechaCreacion"><span class="ubits-body-sm-regular">${row.fechaCreacion}</span></td>`,
                 `<td class="seguimiento-td" data-col="fechaFinalizacion"><span class="ubits-body-sm-regular">${row.fechaFinalizacion}</span></td>`,
-                `<td class="seguimiento-td" data-col="creador"><span class="ubits-body-sm-regular">${row.creador}</span></td>`,
                 `<td class="seguimiento-td" data-col="comentarios"><span class="ubits-body-sm-regular">${comentariosText}</span></td>`
             ];
 
@@ -319,6 +538,399 @@
         el.textContent = `${data.length}/${SEGUIMIENTO_DATA.length}`;
     }
 
+    // Renderizar chips de filtros aplicados
+    function renderFiltrosAplicados() {
+        const container = document.getElementById('filtros-chips-container');
+        const widget = document.getElementById('seguimiento-filtros-aplicados');
+        if (!container || !widget) return;
+
+        const chips = [];
+        let hasFilters = false;
+
+        // Búsqueda
+        if (searchQuery && searchQuery.trim()) {
+            hasFilters = true;
+            chips.push({
+                type: 'search',
+                label: 'Búsqueda',
+                value: searchQuery,
+                remove: () => {
+                    searchQuery = '';
+                    const searchContainer = document.getElementById('seguimiento-search-container');
+                    if (searchContainer) {
+                        searchContainer.innerHTML = '';
+                        searchContainer.style.display = 'none';
+                    }
+                    const searchToggle = document.getElementById('seguimiento-search-toggle');
+                    if (searchToggle) {
+                        searchToggle.style.display = 'flex';
+                    }
+                    currentPage = 1;
+                    renderTable();
+                    updateResultsCount();
+                    initPaginator();
+                }
+            });
+        }
+
+        // Tipo de actividad (solo mostrar si NO es "todos")
+        if (currentFilters.tipoActividad.length > 0 && !currentFilters.tipoActividad.includes('todos')) {
+            hasFilters = true;
+            const tipos = currentFilters.tipoActividad.map(t => t === 'planes' ? 'Planes' : t === 'tareas' ? 'Tareas' : t);
+            chips.push({
+                type: 'tipoActividad',
+                label: 'Tipo',
+                value: tipos.join(', '),
+                remove: () => {
+                    currentFilters.tipoActividad = [];
+                    // Desmarcar todos los radio buttons
+                    document.querySelectorAll('#filtros-tipo-actividad input').forEach(cb => {
+                        cb.checked = false;
+                    });
+                    currentPage = 1;
+                    renderTable();
+                    updateResultsCount();
+                    initPaginator();
+                }
+            });
+        }
+
+        // Plan o actividad - un chip por cada valor
+        if (currentFilters.plan.length > 0) {
+            hasFilters = true;
+            currentFilters.plan.forEach((planValue, index) => {
+                chips.push({
+                    type: 'plan',
+                    label: 'Plan/Actividad',
+                    value: planValue,
+                    remove: () => {
+                        // Remover solo este valor del array
+                        currentFilters.plan = currentFilters.plan.filter((_, i) => i !== index);
+                        // Si no quedan valores, limpiar input de plan
+                        if (currentFilters.plan.length === 0) {
+                            const planContainer = document.getElementById('filtros-buscar-plan');
+                            if (planContainer) {
+                                planContainer.innerHTML = '';
+                                initFilterInputs();
+                            }
+                        }
+                        currentPage = 1;
+                        renderTable();
+                        updateResultsCount();
+                        initPaginator();
+                    }
+                });
+            });
+        }
+
+        // Persona - un chip por cada valor
+        if (currentFilters.persona.length > 0) {
+            hasFilters = true;
+            currentFilters.persona.forEach((personaValue, index) => {
+                chips.push({
+                    type: 'persona',
+                    label: 'Persona',
+                    value: personaValue,
+                    remove: () => {
+                        // Remover solo este valor del array
+                        currentFilters.persona = currentFilters.persona.filter((_, i) => i !== index);
+                        // Si no quedan valores, limpiar input de personas
+                        if (currentFilters.persona.length === 0) {
+                            const personasContainer = document.getElementById('filtros-buscar-personas');
+                            if (personasContainer) {
+                                personasContainer.innerHTML = '';
+                                initFilterInputs();
+                            }
+                        }
+                        currentPage = 1;
+                        renderTable();
+                        updateResultsCount();
+                        initPaginator();
+                    }
+                });
+            });
+        }
+
+        // Username - un chip por cada valor
+        if (currentFilters.username.length > 0) {
+            hasFilters = true;
+            currentFilters.username.forEach((usernameValue, index) => {
+                chips.push({
+                    type: 'username',
+                    label: 'Username',
+                    value: usernameValue,
+                    remove: () => {
+                        // Remover solo este valor del array
+                        currentFilters.username = currentFilters.username.filter((_, i) => i !== index);
+                        currentPage = 1;
+                        applyFiltersAndSearch();
+                        applySorting();
+                        renderTable();
+                        updateResultsCount();
+                        initPaginator();
+                    }
+                });
+            });
+        }
+
+        // Área - un chip por cada valor
+        if (currentFilters.area.length > 0) {
+            hasFilters = true;
+            currentFilters.area.forEach((areaValue, index) => {
+                chips.push({
+                    type: 'area',
+                    label: 'Área',
+                    value: areaValue,
+                    remove: () => {
+                        // Remover solo este valor del array
+                        currentFilters.area = currentFilters.area.filter((_, i) => i !== index);
+                        // Si no quedan valores, limpiar checkboxes de áreas
+                        if (currentFilters.area.length === 0) {
+                            document.querySelectorAll('#filtros-areas input').forEach(cb => {
+                                cb.checked = false;
+                            });
+                        }
+                        currentPage = 1;
+                        renderTable();
+                        updateResultsCount();
+                        initPaginator();
+                    }
+                });
+            });
+        }
+
+        // Lider - un chip por cada valor
+        if (currentFilters.lider.length > 0) {
+            hasFilters = true;
+            currentFilters.lider.forEach((liderValue, index) => {
+                chips.push({
+                    type: 'lider',
+                    label: 'Lider',
+                    value: liderValue,
+                    remove: () => {
+                        // Remover solo este valor del array
+                        currentFilters.lider = currentFilters.lider.filter((_, i) => i !== index);
+                        currentPage = 1;
+                        applyFiltersAndSearch();
+                        applySorting();
+                        renderTable();
+                        updateResultsCount();
+                        initPaginator();
+                    }
+                });
+            });
+        }
+
+        // Nombre (actividad) - un chip por cada valor
+        if (currentFilters.nombre.length > 0) {
+            hasFilters = true;
+            currentFilters.nombre.forEach((nombreValue, index) => {
+                chips.push({
+                    type: 'nombre',
+                    label: 'Actividad',
+                    value: nombreValue,
+                    remove: () => {
+                        // Remover solo este valor del array
+                        currentFilters.nombre = currentFilters.nombre.filter((_, i) => i !== index);
+                        currentPage = 1;
+                        applyFiltersAndSearch();
+                        applySorting();
+                        renderTable();
+                        updateResultsCount();
+                        initPaginator();
+                    }
+                });
+            });
+        }
+
+        // Creador - un chip por cada valor
+        if (currentFilters.creador.length > 0) {
+            hasFilters = true;
+            currentFilters.creador.forEach((creadorValue, index) => {
+                chips.push({
+                    type: 'creador',
+                    label: 'Creador',
+                    value: creadorValue,
+                    remove: () => {
+                        // Remover solo este valor del array
+                        currentFilters.creador = currentFilters.creador.filter((_, i) => i !== index);
+                        currentPage = 1;
+                        applyFiltersAndSearch();
+                        applySorting();
+                        renderTable();
+                        updateResultsCount();
+                        initPaginator();
+                    }
+                });
+            });
+        }
+
+        // Estado - un chip por cada valor
+        if (currentFilters.estado.length > 0) {
+            hasFilters = true;
+            currentFilters.estado.forEach((estadoValue, index) => {
+                chips.push({
+                    type: 'estado',
+                    label: 'Estado',
+                    value: estadoValue,
+                    remove: () => {
+                        // Remover solo este valor del array
+                        currentFilters.estado = currentFilters.estado.filter((_, i) => i !== index);
+                        // Actualizar checkboxes en el modal
+                        const estadoCheckbox = document.querySelector(`#filtros-estado input[value="${estadoValue}"]`);
+                        if (estadoCheckbox) {
+                            estadoCheckbox.checked = false;
+                        }
+                        // Actualizar checkboxes en el menú de encabezado si está abierto
+                        const checkboxMenu = document.getElementById('checkbox-menu');
+                        if (checkboxMenu && checkboxMenu.style.display !== 'none') {
+                            const activeColumn = checkboxMenu.dataset.column;
+                            if (activeColumn === 'estado') {
+                                const menuCheckbox = checkboxMenu.querySelector(`input[value="${estadoValue}"]`);
+                                if (menuCheckbox) {
+                                    menuCheckbox.checked = false;
+                                }
+                            }
+                        }
+                        currentPage = 1;
+                        applyFiltersAndSearch();
+                        applySorting();
+                        renderTable();
+                        updateResultsCount();
+                        initPaginator();
+                    }
+                });
+            });
+        }
+
+        // Prioridad - un chip por cada valor
+        if (currentFilters.prioridad.length > 0) {
+            hasFilters = true;
+            currentFilters.prioridad.forEach((prioridadValue, index) => {
+                chips.push({
+                    type: 'prioridad',
+                    label: 'Prioridad',
+                    value: prioridadValue,
+                    remove: () => {
+                        // Remover solo este valor del array
+                        currentFilters.prioridad = currentFilters.prioridad.filter((_, i) => i !== index);
+                        // Actualizar checkboxes en el modal
+                        const prioridadCheckbox = document.querySelector(`#filtros-prioridad input[value="${prioridadValue}"]`);
+                        if (prioridadCheckbox) {
+                            prioridadCheckbox.checked = false;
+                        }
+                        // Actualizar checkboxes en el menú de encabezado si está abierto
+                        const checkboxMenu = document.getElementById('checkbox-menu');
+                        if (checkboxMenu && checkboxMenu.style.display !== 'none') {
+                            const activeColumn = checkboxMenu.dataset.column;
+                            if (activeColumn === 'prioridad') {
+                                const menuCheckbox = checkboxMenu.querySelector(`input[value="${prioridadValue}"]`);
+                                if (menuCheckbox) {
+                                    menuCheckbox.checked = false;
+                                }
+                            }
+                        }
+                        currentPage = 1;
+                        applyFiltersAndSearch();
+                        applySorting();
+                        renderTable();
+                        updateResultsCount();
+                        initPaginator();
+                    }
+                });
+            });
+        }
+
+        // Fechas de creación
+        if (currentFilters.fechaCreacionDesde || currentFilters.fechaCreacionHasta) {
+            hasFilters = true;
+            let fechaText = '';
+            if (currentFilters.fechaCreacionDesde && currentFilters.fechaCreacionHasta) {
+                fechaText = `${currentFilters.fechaCreacionDesde} - ${currentFilters.fechaCreacionHasta}`;
+            } else if (currentFilters.fechaCreacionDesde) {
+                fechaText = `Desde ${currentFilters.fechaCreacionDesde}`;
+            } else {
+                fechaText = `Hasta ${currentFilters.fechaCreacionHasta}`;
+            }
+            chips.push({
+                type: 'fechaCreacion',
+                label: 'Fecha creación',
+                value: fechaText,
+                remove: () => {
+                    currentFilters.fechaCreacionDesde = null;
+                    currentFilters.fechaCreacionHasta = null;
+                    // Limpiar inputs de fecha
+                    const desdeContainer = document.getElementById('filtros-fecha-creacion-desde');
+                    const hastaContainer = document.getElementById('filtros-fecha-creacion-hasta');
+                    if (desdeContainer) desdeContainer.innerHTML = '';
+                    if (hastaContainer) hastaContainer.innerHTML = '';
+                    initFilterInputs();
+                    currentPage = 1;
+                    renderTable();
+                    updateResultsCount();
+                    initPaginator();
+                }
+            });
+        }
+
+        // Fechas de vencimiento
+        if (currentFilters.fechaVencimientoDesde || currentFilters.fechaVencimientoHasta) {
+            hasFilters = true;
+            let fechaText = '';
+            if (currentFilters.fechaVencimientoDesde && currentFilters.fechaVencimientoHasta) {
+                fechaText = `${currentFilters.fechaVencimientoDesde} - ${currentFilters.fechaVencimientoHasta}`;
+            } else if (currentFilters.fechaVencimientoDesde) {
+                fechaText = `Desde ${currentFilters.fechaVencimientoDesde}`;
+            } else {
+                fechaText = `Hasta ${currentFilters.fechaVencimientoHasta}`;
+            }
+            chips.push({
+                type: 'fechaVencimiento',
+                label: 'Fecha vencimiento',
+                value: fechaText,
+                remove: () => {
+                    currentFilters.fechaVencimientoDesde = null;
+                    currentFilters.fechaVencimientoHasta = null;
+                    // Limpiar inputs de fecha
+                    const desdeContainer = document.getElementById('filtros-fecha-vencimiento-desde');
+                    const hastaContainer = document.getElementById('filtros-fecha-vencimiento-hasta');
+                    if (desdeContainer) desdeContainer.innerHTML = '';
+                    if (hastaContainer) hastaContainer.innerHTML = '';
+                    initFilterInputs();
+                    currentPage = 1;
+                    renderTable();
+                    updateResultsCount();
+                    initPaginator();
+                }
+            });
+        }
+
+        // Mostrar/ocultar widget
+        if (hasFilters) {
+            widget.style.display = 'flex';
+            container.innerHTML = chips.map(chip => `
+                <div class="filtro-chip">
+                    <span class="filtro-chip-label">${chip.label}:</span>
+                    <span class="filtro-chip-value">${chip.value}</span>
+                    <button type="button" class="filtro-chip-remove" data-chip-type="${chip.type}" aria-label="Remover filtro ${chip.label}">
+                        <i class="far fa-xmark"></i>
+                    </button>
+                </div>
+            `).join('');
+
+            // Agregar event listeners a los botones de remover
+            container.querySelectorAll('.filtro-chip-remove').forEach((btn, index) => {
+                btn.addEventListener('click', function() {
+                    chips[index].remove();
+                    renderFiltrosAplicados();
+                });
+            });
+        } else {
+            widget.style.display = 'none';
+            container.innerHTML = '';
+        }
+    }
+
     // Construir menú de columnas
     function buildColumnsMenu() {
         const list = document.getElementById('columns-menu-list');
@@ -326,10 +938,11 @@
 
         const labels = {
             id: 'ID',
-            nombre: 'Nombre',
+            nombre: 'Nombre de actividad',
             asignado: 'Asignado',
-            idColaborador: 'ID Colaborador',
+            username: 'Username',
             area: 'Área',
+            lider: 'Lider',
             plan: 'Plan',
             estado: 'Estado',
             prioridad: 'Prioridad',
@@ -371,55 +984,136 @@
         }
     }
 
+    // Función para crear autocomplete con checkboxes en el modal de filtros (dropdown normal)
+    function createFilterAutocompleteWithCheckboxes(containerId, options, placeholder, onSelectionChange) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        // Cargar valores ya seleccionados
+        let currentFilterValues = [];
+        if (containerId === 'filtros-buscar-plan') {
+            currentFilterValues = currentFilters.plan;
+        } else if (containerId === 'filtros-buscar-personas') {
+            currentFilterValues = currentFilters.persona;
+        } else if (containerId === 'filtros-areas') {
+            currentFilterValues = currentFilters.area;
+        }
+        
+        // Usar createInput con autocomplete normal pero con checkboxes
+        if (typeof createInput === 'function') {
+            createInput({
+                containerId: containerId,
+                type: 'autocomplete',
+                placeholder: placeholder,
+                size: 'md',
+                autocompleteOptions: options.map((opt, i) => ({ value: opt, text: opt })),
+                multiple: true,
+                showCheckboxes: true,
+                onChange: function(val) {
+                    // Este onChange no se ejecuta en modo múltiple con checkboxes
+                }
+            });
+            
+            // Después de crear el input, interceptar cambios en los checkboxes
+            setTimeout(() => {
+                const dropdown = container.querySelector('.ubits-autocomplete-dropdown');
+                const inputElement = container.querySelector('input');
+                
+                if (dropdown && inputElement) {
+                    // Cargar valores seleccionados en los checkboxes
+                    function loadSelectedValues() {
+                        if (Array.isArray(currentFilterValues) && currentFilterValues.length > 0) {
+                            dropdown.querySelectorAll('.ubits-autocomplete-checkbox').forEach(checkbox => {
+                                const optionText = checkbox.closest('.ubits-autocomplete-option')?.querySelector('.ubits-autocomplete-option-text')?.textContent;
+                                if (optionText && currentFilterValues.includes(optionText)) {
+                                    checkbox.checked = true;
+                                }
+                            });
+                        }
+                    }
+                    
+                    // Observar cambios en el dropdown para cargar valores cuando se rendericen
+                    const observer = new MutationObserver(function() {
+                        loadSelectedValues();
+                    });
+                    
+                    observer.observe(dropdown, { childList: true, subtree: true });
+                    
+                    // Cargar valores inicialmente
+                    loadSelectedValues();
+                    
+                    // Interceptar cambios en checkboxes
+                    dropdown.addEventListener('change', function(e) {
+                        if (e.target.classList.contains('ubits-autocomplete-checkbox')) {
+                            // Obtener todos los checkboxes marcados
+                            const selectedTexts = Array.from(dropdown.querySelectorAll('.ubits-autocomplete-checkbox:checked'))
+                                .map(checkbox => {
+                                    const optionText = checkbox.closest('.ubits-autocomplete-option')?.querySelector('.ubits-autocomplete-option-text')?.textContent;
+                                    return optionText;
+                                })
+                                .filter(text => text && text.trim());
+                            
+                            // Actualizar filtros inmediatamente
+                            onSelectionChange(selectedTexts);
+                        }
+                    });
+                }
+            }, 200);
+        }
+    }
+
     // Inicializar inputs de filtros (autocomplete y calendar)
     function initFilterInputs() {
         // Solo inicializar una vez
-        if (document.getElementById('filtros-buscar-plan').querySelector('.ubits-input-wrapper')) return;
+        if (document.getElementById('filtros-buscar-plan').querySelector('.seguimiento-filter-input-wrapper')) return;
 
         // Obtener opciones únicas de los datos
         const planes = [...new Set(SEGUIMIENTO_DATA.map(r => r.plan))];
+        const nombresActividades = [...new Set(SEGUIMIENTO_DATA.map(r => r.nombre))];
+        // Combinar planes y nombres de actividades para el autocomplete
+        const opcionesPlan = [...new Set([...planes, ...nombresActividades])];
         const personas = [...new Set(SEGUIMIENTO_DATA.map(r => r.asignado.nombre))];
         const areas = [...new Set(SEGUIMIENTO_DATA.map(r => r.area))];
 
+        // Buscar plan o tarea (con checkboxes)
+        createFilterAutocompleteWithCheckboxes('filtros-buscar-plan', opcionesPlan, 'Buscar plan o tarea...', (selectedValues) => {
+            currentFilters.plan = selectedValues;
+            currentPage = 1;
+            applyFiltersAndSearch();
+            applySorting();
+            renderTable();
+            updateResultsCount();
+            initPaginator();
+            renderFiltrosAplicados();
+        });
+
+        // Buscar asignados (con checkboxes)
+        createFilterAutocompleteWithCheckboxes('filtros-buscar-personas', personas, 'Buscar asignados...', (selectedValues) => {
+            currentFilters.persona = selectedValues;
+            currentPage = 1;
+            applyFiltersAndSearch();
+            applySorting();
+            renderTable();
+            updateResultsCount();
+            initPaginator();
+            renderFiltrosAplicados();
+        });
+
+        // Buscar área (con checkboxes)
+        createFilterAutocompleteWithCheckboxes('filtros-areas', areas, 'Buscar área...', (selectedValues) => {
+            currentFilters.area = selectedValues;
+            currentPage = 1;
+            applyFiltersAndSearch();
+            applySorting();
+            renderTable();
+            updateResultsCount();
+            initPaginator();
+            renderFiltrosAplicados();
+        });
+
         if (typeof createInput === 'function') {
-            // Buscar plan
-            createInput({
-                containerId: 'filtros-buscar-plan',
-                type: 'autocomplete',
-                placeholder: 'Buscar plan...',
-                size: 'md',
-                autocompleteOptions: planes.map((p, i) => ({ value: String(i), text: p })),
-                onChange: function(val) {
-                    const opt = planes.find((p, i) => String(i) === val);
-                    currentFilters.plan = opt || val || '';
-                }
-            });
-
-            // Buscar personas
-            createInput({
-                containerId: 'filtros-buscar-personas',
-                type: 'autocomplete',
-                placeholder: 'Buscar personas...',
-                size: 'md',
-                autocompleteOptions: personas.map((p, i) => ({ value: String(i), text: p })),
-                onChange: function(val) {
-                    const opt = personas.find((p, i) => String(i) === val);
-                    currentFilters.persona = opt || val || '';
-                }
-            });
-
-            // Todas las áreas
-            createInput({
-                containerId: 'filtros-areas',
-                type: 'autocomplete',
-                placeholder: 'Buscar área...',
-                size: 'md',
-                autocompleteOptions: areas.map((a, i) => ({ value: String(i), text: a })),
-                onChange: function(val) {
-                    const opt = areas.find((a, i) => String(i) === val);
-                    currentFilters.area = opt || val || '';
-                }
-            });
 
             // Fechas de creación
             createInput({
@@ -484,9 +1178,13 @@
     function clearFilters() {
         currentFilters = {
             tipoActividad: [],
-            plan: '',
-            persona: '',
-            area: '',
+            plan: [],
+            persona: [],
+            username: [],
+            area: [],
+            lider: [],
+            nombre: [],
+            creador: [],
             estado: [],
             prioridad: [],
             fechaCreacionDesde: null,
@@ -495,9 +1193,9 @@
             fechaVencimientoHasta: null
         };
 
-        // Limpiar checkboxes
+        // Limpiar radio buttons de tipo de actividad (desmarcar todos)
         document.querySelectorAll('#filtros-tipo-actividad input').forEach(cb => {
-            cb.checked = cb.value === 'todos';
+            cb.checked = false;
         });
         document.querySelectorAll('#filtros-estado input, #filtros-prioridad input').forEach(cb => {
             cb.checked = false;
@@ -505,6 +1203,41 @@
 
         // Limpiar inputs (si existen métodos)
         // Los inputs de createInput() no tienen un método clear estándar, se reinicializarán
+    }
+
+    // Limpiar todos los filtros y búsqueda (usado por empty state)
+    function clearAllFilters() {
+        // Limpiar búsqueda
+        searchQuery = '';
+        const searchContainer = document.getElementById('seguimiento-search-container');
+        if (searchContainer) {
+            searchContainer.innerHTML = '';
+            searchContainer.style.display = 'none';
+        }
+        const searchToggle = document.getElementById('seguimiento-search-toggle');
+        if (searchToggle) {
+            searchToggle.style.display = 'flex';
+        }
+
+        // Limpiar filtros
+        clearFilters();
+
+        // Reinicializar inputs de filtros
+        initFilterInputs();
+
+        // Resetear página y renderizar
+        currentPage = 1;
+        renderTable();
+        updateResultsCount();
+        initPaginator();
+        renderFiltrosAplicados();
+
+        // Cerrar modal de filtros si está abierto
+        closeFiltersModal();
+
+        if (typeof showToast === 'function') {
+            showToast('success', 'Búsqueda y filtros limpiados');
+        }
     }
 
     // Toggle menú de columnas
@@ -570,6 +1303,7 @@
                             renderTable();
                             updateResultsCount();
                             initPaginator();
+                            renderFiltrosAplicados();
                         }
                     });
                     setTimeout(() => {
@@ -651,6 +1385,11 @@
         if (filtersClose) filtersClose.addEventListener('click', closeFiltersModal);
         if (filtersLimpiar) filtersLimpiar.addEventListener('click', function() {
             clearFilters();
+            currentPage = 1;
+            renderTable();
+            updateResultsCount();
+            initPaginator();
+            renderFiltrosAplicados();
         });
         if (filtersAplicar) filtersAplicar.addEventListener('click', function() {
             readFilterCheckboxes();
@@ -658,6 +1397,7 @@
             renderTable();
             updateResultsCount();
             initPaginator();
+            renderFiltrosAplicados();
             closeFiltersModal();
             if (typeof showToast === 'function') showToast('success', 'Filtros aplicados correctamente');
         });
@@ -747,79 +1487,241 @@
         const filterApply = document.getElementById('filter-menu-apply');
         const filterContainer = document.getElementById('filter-autocomplete-container');
         let activeFilterColumn = null;
-        let selectedFilterValue = '';
+        let selectedFilterValues = new Set(); // Set de valores (strings) directamente, no índices
+        let filterApplied = false;
 
         const filterDataMap = {
-            nombre: () => [...new Set(SEGUIMIENTO_DATA.map(r => r.nombre))],
-            asignado: () => [...new Set(SEGUIMIENTO_DATA.map(r => r.asignado.nombre))],
-            area: () => [...new Set(SEGUIMIENTO_DATA.map(r => r.area))],
-            plan: () => [...new Set(SEGUIMIENTO_DATA.map(r => r.plan))],
-            creador: () => [...new Set(SEGUIMIENTO_DATA.map(r => r.creador))]
+            nombre: () => [...new Set(SEGUIMIENTO_DATA.map(r => r.nombre))].sort((a, b) => a.localeCompare(b, 'es')),
+            asignado: () => [...new Set(SEGUIMIENTO_DATA.map(r => r.asignado.nombre))].sort((a, b) => a.localeCompare(b, 'es')),
+            username: () => [...new Set(SEGUIMIENTO_DATA.map(r => r.asignado.username))].filter(u => u).sort((a, b) => a.localeCompare(b, 'es')),
+            area: () => [...new Set(SEGUIMIENTO_DATA.map(r => r.area))].sort((a, b) => a.localeCompare(b, 'es')),
+            lider: () => [...new Set(SEGUIMIENTO_DATA.map(r => r.lider))].filter(l => l).sort((a, b) => a.localeCompare(b, 'es')),
+            plan: () => [...new Set(SEGUIMIENTO_DATA.map(r => r.plan))].sort((a, b) => a.localeCompare(b, 'es')),
+            creador: () => [...new Set(SEGUIMIENTO_DATA.map(r => r.creador))].sort((a, b) => a.localeCompare(b, 'es'))
         };
+
+        // Función para aplicar el filtro con valores seleccionados
+        function applyFilterFromMenu() {
+            if (activeFilterColumn && selectedFilterValues.size > 0) {
+                filterApplied = true;
+                
+                // Convertir el Set directamente a un array (ya contiene los valores, no índices)
+                const selectedOptions = Array.from(selectedFilterValues).filter(val => val && val.trim());
+                
+                // Reemplazar los valores del filtro con los nuevos seleccionados
+                if (activeFilterColumn === 'asignado') {
+                    currentFilters.persona = selectedOptions;
+                } else if (activeFilterColumn === 'username') {
+                    currentFilters.username = selectedOptions;
+                } else if (activeFilterColumn === 'plan') {
+                    currentFilters.plan = selectedOptions;
+                } else if (activeFilterColumn === 'area') {
+                    currentFilters.area = selectedOptions;
+                } else if (activeFilterColumn === 'lider') {
+                    currentFilters.lider = selectedOptions;
+                } else if (activeFilterColumn === 'nombre') {
+                    currentFilters.nombre = selectedOptions;
+                } else if (activeFilterColumn === 'creador') {
+                    currentFilters.creador = selectedOptions;
+                }
+
+                currentPage = 1;
+                applyFiltersAndSearch();
+                applySorting();
+                renderTable();
+                updateResultsCount();
+                initPaginator();
+                renderFiltrosAplicados();
+            }
+        }
+
+        // Función para cerrar el menú sin aplicar filtro
+        function closeFilterMenu() {
+            filterMenu.style.display = 'none';
+            filterOverlay.style.display = 'none';
+            filterContainer.innerHTML = '';
+            activeFilterColumn = null;
+            selectedFilterValues.clear();
+            filterApplied = false;
+        }
 
         document.querySelectorAll('.seguimiento-filter-btn').forEach(btn => {
             btn.addEventListener('click', function(e) {
                 e.stopPropagation();
                 const col = this.dataset.filter;
                 activeFilterColumn = col;
-                selectedFilterValue = '';
+                selectedFilterValues.clear();
+                filterApplied = false;
+
+                // Cargar valores ya seleccionados en el filtro actual
+                let currentFilterValues = [];
+                if (col === 'asignado') {
+                    currentFilterValues = currentFilters.persona;
+                } else if (col === 'username') {
+                    currentFilterValues = currentFilters.username;
+                } else if (col === 'plan') {
+                    currentFilterValues = currentFilters.plan;
+                } else if (col === 'area') {
+                    currentFilterValues = currentFilters.area;
+                } else if (col === 'lider') {
+                    currentFilterValues = currentFilters.lider;
+                } else if (col === 'nombre') {
+                    currentFilterValues = currentFilters.nombre;
+                } else if (col === 'creador') {
+                    currentFilterValues = currentFilters.creador;
+                }
 
                 // Posicionar menú inteligentemente
                 const rect = this.getBoundingClientRect();
                 filterMenu.style.display = 'block';
-                positionMenuSmartly(filterMenu, rect, 280, 120);
+                positionMenuSmartly(filterMenu, rect, 280, 300); // Aumentar altura para mostrar opciones con checkboxes
                 filterOverlay.style.display = 'block';
 
-                // Crear autocomplete
+                // Crear input con opciones siempre visibles (variante tipo Google Sheets)
                 filterContainer.innerHTML = '';
-                if (typeof createInput === 'function') {
-                    const options = filterDataMap[col]();
-                    createInput({
-                        containerId: 'filter-autocomplete-container',
-                        type: 'autocomplete',
-                        placeholder: `Filtrar por ${col}...`,
-                        size: 'md',
-                        autocompleteOptions: options.slice(0, 50).map((o, i) => ({ value: String(i), text: o })),
-                        onChange: function(val) {
-                            const opt = options[parseInt(val)];
-                            selectedFilterValue = opt || val || '';
-                            
-                            // Aplicar inmediatamente
-                            if (activeFilterColumn && selectedFilterValue) {
-                                if (activeFilterColumn === 'asignado') {
-                                    currentFilters.persona = selectedFilterValue;
-                                } else if (activeFilterColumn === 'plan') {
-                                    currentFilters.plan = selectedFilterValue;
-                                } else if (activeFilterColumn === 'area') {
-                                    currentFilters.area = selectedFilterValue;
-                                }
-                                if (activeFilterColumn === 'nombre' || activeFilterColumn === 'creador') {
-                                    searchQuery = selectedFilterValue;
-                                }
-
-                                currentPage = 1;
-                                renderTable();
-                                updateResultsCount();
-                                initPaginator();
-                            }
-                            
-                            // Cerrar menú
-                            filterMenu.style.display = 'none';
-                            filterOverlay.style.display = 'none';
-                            filterContainer.innerHTML = '';
-                            activeFilterColumn = null;
-                            selectedFilterValue = '';
+                const allOptions = filterDataMap[col]();
+                
+                // Cargar los valores ya seleccionados directamente en el Set
+                if (Array.isArray(currentFilterValues) && currentFilterValues.length > 0) {
+                    currentFilterValues.forEach(value => {
+                        if (value && value.trim()) {
+                            selectedFilterValues.add(value);
                         }
                     });
                 }
+                
+                // Crear input básico sin usar createInput (para no interferir con el componente existente)
+                const inputWrapper = document.createElement('div');
+                inputWrapper.className = 'ubits-input-wrapper seguimiento-filter-input-wrapper';
+                
+                const inputElement = document.createElement('input');
+                inputElement.type = 'text';
+                inputElement.className = 'ubits-input ubits-input--md';
+                inputElement.placeholder = `Filtrar por ${col}...`;
+                inputElement.setAttribute('aria-label', `Filtrar por ${col}`);
+                
+                // Icono de búsqueda
+                const searchIcon = document.createElement('i');
+                searchIcon.className = 'far fa-search';
+                searchIcon.style.position = 'absolute';
+                searchIcon.style.right = '12px';
+                searchIcon.style.top = '50%';
+                searchIcon.style.transform = 'translateY(-50%)';
+                searchIcon.style.color = 'var(--ubits-fg-1-medium)';
+                searchIcon.style.pointerEvents = 'none';
+                
+                inputWrapper.style.position = 'relative';
+                inputWrapper.appendChild(inputElement);
+                inputWrapper.appendChild(searchIcon);
+                
+                // Contenedor de opciones siempre visibles
+                const optionsContainer = document.createElement('div');
+                optionsContainer.className = 'seguimiento-filter-options-container';
+                optionsContainer.style.maxHeight = '200px';
+                optionsContainer.style.overflowY = 'auto';
+                optionsContainer.style.marginTop = '8px';
+                optionsContainer.style.background = 'var(--ubits-bg-1)';
+                
+                // Función para renderizar opciones
+                function renderFilterOptions(options) {
+                    optionsContainer.innerHTML = '';
+                    
+                    options.forEach((option) => {
+                        const optionElement = document.createElement('div');
+                        optionElement.className = 'seguimiento-filter-option';
+                        
+                        // Guardar el valor directamente en lugar del índice
+                        optionElement.dataset.value = option;
+                        
+                        // Checkbox
+                        const checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        checkbox.className = 'seguimiento-filter-checkbox';
+                        checkbox.checked = selectedFilterValues.has(option);
+                        checkbox.dataset.value = option;
+                        checkbox.id = `filter-option-${option.replace(/\s+/g, '-')}`;
+                        
+                        checkbox.addEventListener('change', function() {
+                            if (this.checked) {
+                                selectedFilterValues.add(this.dataset.value);
+                            } else {
+                                selectedFilterValues.delete(this.dataset.value);
+                            }
+                        });
+                        
+                        // Label para el checkbox
+                        const label = document.createElement('label');
+                        label.htmlFor = checkbox.id;
+                        label.className = 'seguimiento-filter-option-label';
+                        label.textContent = option;
+                        
+                        optionElement.appendChild(checkbox);
+                        optionElement.appendChild(label);
+                        
+                        optionElement.addEventListener('click', function(e) {
+                            if (e.target !== checkbox && e.target !== label) {
+                                checkbox.checked = !checkbox.checked;
+                                checkbox.dispatchEvent(new Event('change'));
+                            }
+                        });
+                        
+                        optionsContainer.appendChild(optionElement);
+                    });
+                }
+                
+                // Mostrar primeras 5 opciones por defecto
+                function showDefaultFilterOptions() {
+                    const defaultOptions = allOptions.slice(0, 5);
+                    renderFilterOptions(defaultOptions);
+                }
+                
+                // Filtrar opciones cuando se escribe
+                inputElement.addEventListener('input', function() {
+                    const searchText = this.value.toLowerCase();
+                    
+                    if (searchText.length === 0) {
+                        showDefaultFilterOptions();
+                    } else {
+                        const filtered = allOptions.filter(opt => 
+                            opt.toLowerCase().includes(searchText)
+                        ).slice(0, 5);
+                        renderFilterOptions(filtered);
+                    }
+                });
+                
+                // Agregar al contenedor
+                filterContainer.appendChild(inputWrapper);
+                filterContainer.appendChild(optionsContainer);
+                
+                // Mostrar opciones por defecto al abrir
+                showDefaultFilterOptions();
+                
+                // Focus en el input
+                setTimeout(() => {
+                    inputElement.focus();
+                }, 100);
             });
         });
 
+        // Cerrar sin aplicar si se hace clic en el overlay
         if (filterOverlay) {
             filterOverlay.addEventListener('click', function() {
-                filterMenu.style.display = 'none';
-                filterOverlay.style.display = 'none';
-                filterContainer.innerHTML = '';
+                closeFilterMenu();
+            });
+        }
+
+        // Cerrar sin aplicar si se hace clic en cancelar
+        if (filterCancel) {
+            filterCancel.addEventListener('click', function() {
+                closeFilterMenu();
+            });
+        }
+
+        // Aplicar filtro cuando se hace clic en Aplicar
+        if (filterApply) {
+            filterApply.addEventListener('click', function() {
+                applyFilterFromMenu();
+                closeFilterMenu();
             });
         }
     }
@@ -883,6 +1785,7 @@
                         renderTable();
                         updateResultsCount();
                         initPaginator();
+                        renderFiltrosAplicados();
                     });
                 });
             });
@@ -1132,7 +2035,7 @@
                 if (selectedIds.size === 0) return;
 
                 const selectedRows = SEGUIMIENTO_DATA.filter(r => selectedIds.has(r.id));
-                const headers = ['ID', 'Nombre', 'Asignado', 'ID Colaborador', 'Plan', 'Estado', 'Prioridad', 'Avance', 'Fecha Finalización', 'Fecha Creación', 'Creador', 'Comentarios'];
+                const headers = ['ID', 'Nombre', 'Asignado', 'Username', 'Área', 'Lider', 'Creador', 'Plan', 'Estado', 'Prioridad', 'Avance', 'Fecha Finalización', 'Fecha Creación', 'Comentarios'];
                 const csvRows = [headers.join(',')];
 
                 selectedRows.forEach(row => {
@@ -1140,14 +2043,16 @@
                         row.id,
                         `"${row.nombre.replace(/"/g, '""')}"`,
                         `"${row.asignado.nombre.replace(/"/g, '""')}"`,
-                        row.idColaborador,
+                        `"${(row.asignado.username || '').replace(/"/g, '""')}"`,
+                        `"${row.area.replace(/"/g, '""')}"`,
+                        `"${(row.lider || '').replace(/"/g, '""')}"`,
+                        `"${row.creador.replace(/"/g, '""')}"`,
                         `"${row.plan.replace(/"/g, '""')}"`,
                         row.estado,
                         row.prioridad,
                         row.avance,
                         row.fechaFinalizacion,
                         row.fechaCreacion,
-                        `"${row.creador.replace(/"/g, '""')}"`,
                         row.comentarios
                     ];
                     csvRows.push(values.join(','));
@@ -1194,6 +2099,16 @@
     }
 
     // Inicialización principal
+    // Inicializar botón de limpiar filtros
+    function initClearFiltersButton() {
+        const clearFiltersBtn = document.getElementById('seguimiento-clear-filters-btn');
+        if (clearFiltersBtn) {
+            clearFiltersBtn.addEventListener('click', function() {
+                clearAllFilters();
+            });
+        }
+    }
+
     function init() {
         SEGUIMIENTO_DATA = generateData();
         filteredData = [...SEGUIMIENTO_DATA];
@@ -1204,6 +2119,7 @@
         updateSelectAll();
         updateResultsCount();
         initPaginator();
+        renderFiltrosAplicados();
         initSearchToggle();
         initModals();
         initSortMenu();
@@ -1213,6 +2129,7 @@
         initVerSeleccionados();
         initActionButtons();
         initMobileAlert();
+        initClearFiltersButton();
     }
 
     document.addEventListener('DOMContentLoaded', init);

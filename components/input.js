@@ -786,12 +786,18 @@ function createCalendarPicker(container, inputElement, onChange) {
             e.stopPropagation();
             currentDate.setMonth(currentDate.getMonth() - 1);
             renderCalendar();
+            if (calendar.style.display === 'block') {
+                setTimeout(() => positionCalendar(), 10);
+            }
         });
         
         nextBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             currentDate.setMonth(currentDate.getMonth() + 1);
             renderCalendar();
+            if (calendar.style.display === 'block') {
+                setTimeout(() => positionCalendar(), 10);
+            }
         });
         
         // Selector de mes
@@ -799,6 +805,9 @@ function createCalendarPicker(container, inputElement, onChange) {
             e.stopPropagation();
             currentDate.setMonth(parseInt(e.target.value));
             renderCalendar();
+            if (calendar.style.display === 'block') {
+                setTimeout(() => positionCalendar(), 10);
+            }
         });
         
         // Selector de año
@@ -806,6 +815,9 @@ function createCalendarPicker(container, inputElement, onChange) {
             e.stopPropagation();
             currentDate.setFullYear(parseInt(e.target.value));
             renderCalendar();
+            if (calendar.style.display === 'block') {
+                setTimeout(() => positionCalendar(), 10);
+            }
         });
         
         // Selección de día
@@ -826,11 +838,70 @@ function createCalendarPicker(container, inputElement, onChange) {
         });
     }
     
+    // Función para posicionar el calendario inteligentemente
+    function positionCalendar() {
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        const padding = 16;
+        const calendarWidth = 320; // Ancho aproximado del calendario
+        const calendarHeight = 350; // Alto aproximado del calendario
+        
+        const inputRect = inputElement.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+        
+        let left = inputRect.left;
+        let top = inputRect.bottom + 4;
+        
+        // Ajustar posición horizontal
+        if (left + calendarWidth > viewportWidth - padding) {
+            // Intentar alinear a la derecha del input
+            left = inputRect.right - calendarWidth;
+            
+            // Si aún se sale, pegarlo al borde derecho
+            if (left < padding) {
+                left = viewportWidth - calendarWidth - padding;
+            }
+        }
+        
+        // Asegurar que no se salga por la izquierda
+        if (left < padding) {
+            left = padding;
+        }
+        
+        // Ajustar posición vertical
+        if (top + calendarHeight > viewportHeight - padding) {
+            // Intentar mostrar arriba del input
+            const spaceAbove = inputRect.top - padding;
+            const spaceBelow = viewportHeight - inputRect.bottom - padding;
+            
+            if (spaceAbove >= calendarHeight || spaceAbove > spaceBelow) {
+                // Mostrar arriba
+                top = inputRect.top - calendarHeight - 4;
+            } else {
+                // Ajustar altura si es necesario
+                top = viewportHeight - calendarHeight - padding;
+            }
+        }
+        
+        // Asegurar que no se salga por arriba
+        if (top < padding) {
+            top = padding;
+        }
+        
+        // Aplicar posición (el calendario debe tener position: fixed)
+        calendar.style.left = Math.max(padding, Math.min(left, viewportWidth - calendarWidth - padding)) + 'px';
+        calendar.style.top = Math.max(padding, Math.min(top, viewportHeight - calendarHeight - padding)) + 'px';
+    }
+
     // Event listener para mostrar/ocultar calendario
     inputElement.addEventListener('click', function() {
         if (calendar.style.display === 'none' || calendar.style.display === '') {
             calendar.style.display = 'block';
             renderCalendar();
+            // Posicionar inteligentemente después de renderizar
+            setTimeout(() => {
+                positionCalendar();
+            }, 10);
         } else {
             calendar.style.display = 'none';
         }
@@ -852,15 +923,77 @@ function createCalendarPicker(container, inputElement, onChange) {
 }
 
 // Función para crear dropdown de autocompletado
-function createAutocompleteDropdown(container, inputElement, autocompleteOptions, onChange) {
-    console.log('createAutocompleteDropdown called with:', { container, inputElement, autocompleteOptions, onChange });
+function createAutocompleteDropdown(container, inputElement, autocompleteOptions, onChange, multiple = false, showCheckboxes = false) {
+    console.log('createAutocompleteDropdown called with:', { container, inputElement, autocompleteOptions, onChange, multiple, showCheckboxes });
     
     const dropdown = document.createElement('div');
     dropdown.className = 'ubits-autocomplete-dropdown';
     dropdown.style.display = 'none';
     
+    // Si es múltiple, mantener un Set de valores seleccionados
+    const selectedValues = new Set();
+    
     // Función para filtrar opciones basado en el texto del input
     function filterOptions(searchText) {
+        // Si tiene checkboxes y está vacío, mostrar las primeras 5 opciones por defecto
+        if (showCheckboxes && (!searchText || searchText.length < 1)) {
+            const defaultOptions = autocompleteOptions.slice(0, 5);
+            dropdown.innerHTML = '';
+            
+            defaultOptions.forEach(option => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'ubits-autocomplete-option';
+                optionElement.dataset.value = option.value;
+                
+                // Agregar checkbox
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.className = 'ubits-autocomplete-checkbox';
+                checkbox.checked = selectedValues.has(option.value);
+                checkbox.dataset.value = option.value;
+                
+                optionElement.appendChild(checkbox);
+                
+                checkbox.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+                
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        selectedValues.add(option.value);
+                    } else {
+                        selectedValues.delete(option.value);
+                    }
+                });
+                
+                // Contenedor para el texto
+                const textElement = document.createElement('span');
+                textElement.className = 'ubits-autocomplete-option-text';
+                textElement.textContent = option.text;
+                optionElement.appendChild(textElement);
+                
+                optionElement.addEventListener('mouseenter', function() {
+                    this.style.backgroundColor = 'var(--ubits-bg-2)';
+                });
+                optionElement.addEventListener('mouseleave', function() {
+                    this.style.backgroundColor = 'transparent';
+                });
+                
+                optionElement.addEventListener('click', function(e) {
+                    if (e.target !== checkbox) {
+                        checkbox.checked = !checkbox.checked;
+                        checkbox.dispatchEvent(new Event('change'));
+                    }
+                });
+                
+                dropdown.appendChild(optionElement);
+            });
+            
+            dropdown.style.display = 'block';
+            return;
+        }
+        
+        // Si no tiene checkboxes y está vacío, ocultar
         if (!searchText || searchText.length < 1) {
             dropdown.style.display = 'none';
             return;
@@ -884,12 +1017,44 @@ function createAutocompleteDropdown(container, inputElement, autocompleteOptions
         optionsToShow.forEach(option => {
             const optionElement = document.createElement('div');
             optionElement.className = 'ubits-autocomplete-option';
-            optionElement.textContent = option.text;
             optionElement.dataset.value = option.value;
             
+            // Si tiene checkboxes, agregar checkbox
+            if (showCheckboxes) {
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.className = 'ubits-autocomplete-checkbox';
+                checkbox.checked = selectedValues.has(option.value);
+                checkbox.dataset.value = option.value;
+                
+                optionElement.appendChild(checkbox);
+                
+                // Prevenir que el click en el checkbox propague al optionElement
+                checkbox.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+                
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        selectedValues.add(option.value);
+                    } else {
+                        selectedValues.delete(option.value);
+                    }
+                });
+            }
+            
+            // Contenedor para el texto
+            const textElement = document.createElement('span');
+            textElement.className = 'ubits-autocomplete-option-text';
+            textElement.textContent = option.text;
+            
             // Resaltar texto coincidente
-            const regex = new RegExp(`(${searchText})`, 'gi');
-            optionElement.innerHTML = option.text.replace(regex, '<strong>$1</strong>');
+            if (searchText) {
+                const regex = new RegExp(`(${searchText})`, 'gi');
+                textElement.innerHTML = option.text.replace(regex, '<strong>$1</strong>');
+            }
+            
+            optionElement.appendChild(textElement);
             
             optionElement.addEventListener('mouseenter', function() {
                 this.style.backgroundColor = 'var(--ubits-bg-2)';
@@ -898,9 +1063,20 @@ function createAutocompleteDropdown(container, inputElement, autocompleteOptions
                 this.style.backgroundColor = 'transparent';
             });
             
-            optionElement.addEventListener('click', function() {
+            optionElement.addEventListener('click', function(e) {
+                // Si tiene checkboxes, toggle el checkbox
+                if (showCheckboxes) {
+                    const checkbox = this.querySelector('.ubits-autocomplete-checkbox');
+                    if (checkbox) {
+                        checkbox.checked = !checkbox.checked;
+                        checkbox.dispatchEvent(new Event('change'));
+                    }
+                    return; // No cerrar el dropdown en modo múltiple
+                }
+                
+                // Modo simple: seleccionar y cerrar
                 const selectedValue = this.dataset.value;
-                const selectedText = this.textContent;
+                const selectedText = this.textContent.replace(/<[^>]*>/g, ''); // Remover HTML
                 inputElement.value = selectedText;
                 dropdown.style.display = 'none';
                 if (onChange && typeof onChange === 'function') {
@@ -920,18 +1096,24 @@ function createAutocompleteDropdown(container, inputElement, autocompleteOptions
     
     // Event listener para focus
     inputElement.addEventListener('focus', function() {
-        if (this.value.length > 0) {
+        if (showCheckboxes) {
+            // Si tiene checkboxes, mostrar opciones por defecto aunque esté vacío
+            filterOptions('');
+        } else if (this.value.length > 0) {
             filterOptions(this.value);
         }
     });
     
     // Event listener para blur (ocultar dropdown)
-    inputElement.addEventListener('blur', function() {
-        // Delay para permitir clicks en las opciones
-        setTimeout(() => {
-            dropdown.style.display = 'none';
-        }, 150);
-    });
+    // Si tiene checkboxes, no ocultar automáticamente al perder focus
+    if (!showCheckboxes) {
+        inputElement.addEventListener('blur', function() {
+            // Delay para permitir clicks en las opciones
+            setTimeout(() => {
+                dropdown.style.display = 'none';
+            }, 150);
+        });
+    }
     
     // Cerrar dropdown al hacer click fuera
     document.addEventListener('click', function(e) {
@@ -1123,7 +1305,9 @@ function createInput(options = {}) {
             value = '',
             onChange = null,
             onFocus = null,
-            onBlur = null
+            onBlur = null,
+            multiple = false,
+            showCheckboxes = false
         } = options;
 
     // Validar parámetros requeridos
@@ -1421,7 +1605,7 @@ function createInput(options = {}) {
         }
         
         // Funcionalidad de sugerencias
-        createAutocompleteDropdown(container, inputElement, autocompleteOptions, onChange);
+        createAutocompleteDropdown(container, inputElement, autocompleteOptions, onChange, multiple, showCheckboxes);
     }
     
     // Si es CALENDAR, agregar funcionalidad de date picker

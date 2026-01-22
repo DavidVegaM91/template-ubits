@@ -93,7 +93,6 @@
     flex-wrap: wrap;
     gap: 12px;
     padding: 12px 0;
-    border-top: 1px solid var(--ubits-border-1);
 }
 
 .widget-action-bar-seguimiento.is-visible {
@@ -241,7 +240,8 @@
 
 .seguimiento-th-checkbox,
 .seguimiento-td-checkbox {
-    width: 44px;
+    max-width: 55px;
+    width: 55px;
     text-align: center;
     vertical-align: middle;
 }
@@ -413,11 +413,107 @@
     accent-color: var(--ubits-accent-brand);
 }
 
+/* Filtros aplicados (chips) */
+.widget-filtros-aplicados {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.filtros-chips-container {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.filtro-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 8px;
+    min-height: 20px;
+    max-width: 120px;
+    background: var(--ubits-bg-2); /* bg-gray/subtle/default #f3f3f4 */
+    border-radius: 1000px; /* Full rounded como en Figma */
+    font-size: 11px;
+    line-height: 13px;
+    font-family: 'Noto Sans', sans-serif;
+    font-weight: 400;
+    color: var(--ubits-fg-1-medium); /* fg-gray/subtle/default #2b3543 */
+    transition: background-color 0.2s ease, color 0.2s ease;
+    overflow: hidden;
+}
+
+.filtro-chip:hover {
+    background: #dbdde0; /* bg-gray/subtle/hover */
+    color: #16202f; /* fg-gray/subtle/hover */
+}
+
+.filtro-chip:active {
+    background: #c5c6cb; /* bg-gray/subtle/pressed */
+    color: #16202f; /* fg-gray/subtle/hover */
+}
+
+.filtro-chip-label {
+    color: inherit;
+    font-weight: 400;
+    flex-shrink: 0;
+}
+
+.filtro-chip-value {
+    color: inherit;
+    font-weight: 400;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+    flex: 1;
+}
+
+.filtro-chip-remove {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
+    padding: 4px;
+    margin: 0;
+    background: transparent;
+    border: none;
+    border-radius: 1000px; /* Full rounded */
+    cursor: pointer;
+    color: inherit;
+    transition: background-color 0.2s ease;
+    flex-shrink: 0;
+}
+
+.filtro-chip-remove:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.filtro-chip-remove:active {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.filtro-chip-remove i {
+    font-size: 11px;
+}
+
 /* Paginador */
 .widget-paginador-seguimiento {
     display: flex;
     justify-content: center;
     padding: 16px 0;
+}
+
+/* Empty State */
+#seguimiento-empty-state {
+    width: 100%;
+    padding: 40px 20px;
 }
 
 /* Columnas con ordenamiento */
@@ -461,20 +557,114 @@
 .filter-menu {
     position: fixed;
     min-width: 280px;
+    max-width: 306px;
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
     border-radius: 8px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
     z-index: 1001;
     padding: 12px;
+    overflow: visible; /* Permitir que el dropdown se muestre fuera del menú */
 }
 
 .filter-menu-content {
     margin-bottom: 12px;
+    position: relative;
+    overflow: visible;
+    min-height: 40px; /* Altura mínima para el input */
+}
+
+#filter-autocomplete-container {
+    position: relative;
+    overflow: visible;
+}
+
+/* Estilos para la variante de filter con opciones siempre visibles */
+.seguimiento-filter-input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.seguimiento-filter-input-wrapper .ubits-input {
+    width: 100%;
+    padding-right: 40px; /* Espacio para el icono de búsqueda */
+    box-sizing: border-box;
+    height: 40px; /* md size */
+    padding-left: 12px;
+    padding-top: 0;
+    padding-bottom: 0;
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 6px;
+    background: var(--ubits-bg-1);
+    color: var(--ubits-fg-1-high);
+    font-family: var(--ubits-font-family);
+    font-size: 14px;
+    line-height: 20px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.seguimiento-filter-input-wrapper .ubits-input:focus {
+    outline: none;
+    border-color: var(--ubits-accent-brand);
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+}
+
+.seguimiento-filter-input-wrapper .ubits-input::placeholder {
+    color: var(--ubits-fg-1-low);
+}
+
+.seguimiento-filter-options-container {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-top: 8px;
+    background: var(--ubits-bg-1);
+}
+
+.seguimiento-filter-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 0;
+    cursor: pointer;
+    border-bottom: 1px solid var(--ubits-border-1);
+    transition: background-color 0.2s ease;
+}
+
+.seguimiento-filter-option:last-child {
+    border-bottom: none;
+}
+
+.seguimiento-filter-option:hover {
+    background-color: var(--ubits-bg-2);
+}
+
+.seguimiento-filter-checkbox {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    margin: 0;
+    flex-shrink: 0;
+}
+
+.seguimiento-filter-option-label {
+    flex: 1;
+    cursor: pointer;
+    color: var(--ubits-fg-1-high);
+    font-family: var(--ubits-font-family);
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 400;
+    user-select: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0; /* Permite que el flex item se encoja */
 }
 
 .filter-menu-footer {
-    display: none;
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
 }
 
 /* Menú de checkboxes */
@@ -502,7 +692,6 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin-bottom: 12px;
 }
 
 .checkbox-menu-option {
@@ -616,7 +805,6 @@
     display: flex;
     flex-direction: column;
     gap: 4px;
-    margin-bottom: 12px;
 }
 
 .sort-menu-option {

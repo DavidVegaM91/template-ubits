@@ -253,7 +253,7 @@
     border: 1px solid var(--ubits-border-1);
     border-radius: 6px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    z-index: 1000;
+    z-index: 10000; /* Alto z-index para estar dentro del filter-menu */
     max-height: 200px;
     overflow-y: auto;
     display: none;
@@ -267,6 +267,9 @@
     color: var(--ubits-fg-1-high);
     border-bottom: 1px solid var(--ubits-border-1);
     transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .ubits-autocomplete-option:last-child {
@@ -275,6 +278,18 @@
 
 .ubits-autocomplete-option:hover {
     background-color: var(--ubits-bg-2);
+}
+
+.ubits-autocomplete-option-text {
+    flex: 1;
+}
+
+.ubits-autocomplete-checkbox {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    margin: 0;
+    flex-shrink: 0;
 }
 
 .ubits-autocomplete-option strong {
@@ -287,16 +302,16 @@
    ======================================== */
 
 .ubits-calendar-picker {
-    position: absolute;
-    top: 100%;
-    left: 0;
+    position: fixed;
+    top: auto;
+    left: auto;
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
     border-radius: 8px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-    z-index: 1000;
+    z-index: 10000;
     display: none;
-    margin-top: 4px;
+    margin-top: 0;
     width: 280px;
     padding: 16px;
 }

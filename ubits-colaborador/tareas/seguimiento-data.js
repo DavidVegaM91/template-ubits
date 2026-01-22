@@ -10,14 +10,28 @@
 const EMPRESA_DATA = {
     nombre: 'Decoraciones Premium S.A.S.',
     descripcion: 'Empresa colombiana dedicada a la venta, reparación e instalación de productos decorativos de lujo.',
-    empleados: 50,
+    empleados: 51, // 50 empleados + 1 Gerente General
     fundada: 2015
+};
+
+// ============================================
+// GERENTE GENERAL (1 persona - máxima autoridad)
+// ============================================
+const GERENTE_GENERAL = {
+    id: 'GG001',
+    nombre: 'Patricia Elena Bermúdez Ríos',
+    cargo: 'Gerente General',
+    area: 'Gerencia General',
+    genero: 'F',
+    avatar: 'https://images.unsplash.com/photo-1551836022-deb4988cc6c0?w=100&h=100&fit=crop',
+    username: 'pateleber@fiqsha.demo'
 };
 
 // ============================================
 // ÁREAS DE LA EMPRESA (7 áreas)
 // ============================================
 const AREAS = [
+    { id: 0, nombre: 'Gerencia General', descripcion: 'Dirección estratégica y toma de decisiones' },
     { id: 1, nombre: 'Ventas', descripcion: 'Asesoría comercial y cierre de negocios' },
     { id: 2, nombre: 'Instalaciones', descripcion: 'Instalación de productos en sitio' },
     { id: 3, nombre: 'Reparaciones', descripcion: 'Servicio técnico y mantenimiento' },
@@ -37,7 +51,8 @@ const JEFES = [
         cargo: 'Director Comercial',
         area: 'Ventas',
         genero: 'M',
-        avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100&h=100&fit=crop'
+        avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100&h=100&fit=crop',
+        username: 'rospid@fiqsha.demo'
     },
     {
         id: 'J002',
@@ -45,7 +60,8 @@ const JEFES = [
         cargo: 'Jefe de Instalaciones',
         area: 'Instalaciones',
         genero: 'M',
-        avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop'
+        avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop',
+        username: 'fcastr@fiqsha.demo'
     },
     {
         id: 'J003',
@@ -53,7 +69,8 @@ const JEFES = [
         cargo: 'Jefe de Servicio Técnico',
         area: 'Reparaciones',
         genero: 'F',
-        avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop'
+        avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop',
+        username: 'cvargm@fiqsha.demo'
     },
     {
         id: 'J004',
@@ -61,7 +78,8 @@ const JEFES = [
         cargo: 'Coordinadora de Atención al Cliente',
         area: 'Atención al Cliente',
         genero: 'F',
-        avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop'
+        avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop',
+        username: 'asuarg@fiqsha.demo'
     },
     {
         id: 'J005',
@@ -69,7 +87,8 @@ const JEFES = [
         cargo: 'Jefe de Logística',
         area: 'Logística',
         genero: 'M',
-        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop'
+        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop',
+        username: 'jramit@fiqsha.demo'
     },
     {
         id: 'J006',
@@ -77,7 +96,8 @@ const JEFES = [
         cargo: 'Gerente Administrativa',
         area: 'Administración',
         genero: 'F',
-        avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop'
+        avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop',
+        username: 'mjimep@fiqsha.demo'
     },
     {
         id: 'J007',
@@ -85,32 +105,46 @@ const JEFES = [
         cargo: 'Director de Marketing',
         area: 'Marketing',
         genero: 'M',
-        avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop'
+        avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop',
+        username: 'amorer@fiqsha.demo'
     }
 ];
 
 // ============================================
-// EMPLEADOS (50 total: 25 hombres, 25 mujeres)
-// Incluye los 7 jefes + 43 empleados
+// EMPLEADOS (51 total: 25 hombres, 26 mujeres)
+// Incluye: 1 Gerente General + 7 jefes + 43 empleados
 // ============================================
 const EMPLEADOS = [
-    // ========== JEFES (7) ==========
+    // ========== GERENTE GENERAL (1) ==========
+    {
+        id: 'E001',
+        idColaborador: '1011000001',
+        nombre: GERENTE_GENERAL.nombre,
+        cargo: GERENTE_GENERAL.cargo,
+        area: GERENTE_GENERAL.area,
+        genero: GERENTE_GENERAL.genero,
+        avatar: GERENTE_GENERAL.avatar,
+        jefe: null, // No tiene jefe, es la máxima autoridad
+        esJefe: true,
+        esGerenteGeneral: true
+    },
+    // ========== JEFES DE ÁREA (7) ==========
     ...JEFES.map((j, i) => ({
-        id: `E${String(i + 1).padStart(3, '0')}`,
-        idColaborador: `10${String(1000001 + i)}`,
+        id: `E${String(i + 2).padStart(3, '0')}`,
+        idColaborador: `10${String(1000002 + i)}`,
         nombre: j.nombre,
         cargo: j.cargo,
         area: j.area,
         genero: j.genero,
         avatar: j.avatar,
-        jefe: 'Gerencia General',
+        jefe: GERENTE_GENERAL.nombre, // Reportan a la Gerente General
         esJefe: true
     })),
     
     // ========== VENTAS (6 empleados) ==========
     {
-        id: 'E008',
-        idColaborador: '1011000008',
+        id: 'E009',
+        idColaborador: '1011000009',
         nombre: 'Carlos Andrés García López',
         cargo: 'Asesor Comercial Senior',
         area: 'Ventas',
@@ -120,8 +154,8 @@ const EMPLEADOS = [
         esJefe: false
     },
     {
-        id: 'E009',
-        idColaborador: '1011000009',
+        id: 'E010',
+        idColaborador: '1011000010',
         nombre: 'Laura Valentina Rodríguez Martínez',
         cargo: 'Asesora Comercial',
         area: 'Ventas',
@@ -131,8 +165,8 @@ const EMPLEADOS = [
         esJefe: false
     },
     {
-        id: 'E010',
-        idColaborador: '1011000010',
+        id: 'E011',
+        idColaborador: '1011000011',
         nombre: 'Miguel Ángel Hernández Díaz',
         cargo: 'Asesor Comercial',
         area: 'Ventas',
@@ -599,6 +633,11 @@ const EMPLEADOS = [
 // PLANES DE FORMACIÓN POR ÁREA
 // ============================================
 const PLANES_POR_AREA = {
+    'Gerencia General': [
+        { nombre: 'Liderazgo Estratégico Empresarial', descripcion: 'Desarrollo de competencias directivas de alto nivel' },
+        { nombre: 'Transformación Digital Organizacional', descripcion: 'Implementación de estrategias de innovación digital' },
+        { nombre: 'Gestión del Talento y Cultura Organizacional', descripcion: 'Fortalecimiento del capital humano' }
+    ],
     'Ventas': [
         { nombre: 'Técnicas de Venta Consultiva', descripcion: 'Formación en metodologías de venta profesional' },
         { nombre: 'Conocimiento de Productos Decorativos', descripcion: 'Dominio técnico del catálogo de productos' },
@@ -641,6 +680,19 @@ const PLANES_POR_AREA = {
 // Todas las tareas inician con verbos de acción
 // ============================================
 const TAREAS_POR_CARGO = {
+    // GERENCIA GENERAL
+    'Gerente General': [
+        'Revisar y aprobar presupuesto anual de la compañía',
+        'Liderar reunión mensual de comité directivo con jefes de área',
+        'Evaluar indicadores clave de desempeño (KPIs) del mes',
+        'Aprobar plan estratégico comercial del primer trimestre',
+        'Revisar estados financieros y proyecciones de cierre',
+        'Completar curso de liderazgo ejecutivo certificado',
+        'Participar en taller de transformación digital para CEOs',
+        'Definir objetivos estratégicos del año para cada área',
+        'Aprobar contrataciones clave para expansión de operaciones',
+        'Presentar resultados trimestrales a junta de socios'
+    ],
     // VENTAS
     'Asesor Comercial Senior': [
         'Estudiar el perfil del cliente ideal para productos decorativos',
@@ -1244,7 +1296,7 @@ function formatearFecha(fecha) {
 // Los planes tienen avances variables: 0%, 10%, 20%, 30%, etc.
 // ============================================
 function generarAvancePlan(fechaFin, estado) {
-    const hoy = new Date(2026, 0, 20); // 20 de enero de 2026 (lunes)
+    const hoy = new Date(2026, 0, 22); // 22 de enero de 2026 (miércoles)
     
     if (estado === 'Finalizada') {
         return 100;
@@ -1288,7 +1340,7 @@ function generarAvanceTarea(estado) {
 // DETERMINAR ESTADO BASADO EN FECHA (Hoy = 20 enero 2026)
 // ============================================
 function determinarEstado(fechaFin, fechaCreacion) {
-    const hoy = new Date(2026, 0, 20); // 20 de enero de 2026
+    const hoy = new Date(2026, 0, 22); // 22 de enero de 2026 (miércoles)
     
     // Si la fecha de vencimiento ya pasó
     if (fechaFin < hoy) {
@@ -1310,23 +1362,46 @@ function determinarEstado(fechaFin, fechaCreacion) {
 }
 
 // ============================================
-// FUNCIÓN PARA OBTENER EL JEFE DE UN EMPLEADO
+// FUNCIÓN PARA GENERAR USERNAME (EMAIL)
+// Formato: primeras letras de cada palabra + @fiqsha.demo
+// Ejemplo: "Patricia Elena Bermúdez Ríos" → "pateleber@fiqsha.demo"
 // ============================================
-function obtenerJefe(area) {
+function generarUsername(nombre) {
+    const palabras = nombre.toLowerCase().split(' ').filter(p => p.length > 0);
+    const iniciales = palabras.map(p => p.charAt(0)).join('');
+    return `${iniciales}@fiqsha.demo`;
+}
+
+// ============================================
+// FUNCIÓN PARA OBTENER EL JEFE DE UN EMPLEADO
+// Jerarquía: Empleados → Jefe de Área → Gerente General
+// ============================================
+function obtenerJefe(area, esJefeDeArea = false) {
+    // Si es Gerencia General, no tiene jefe (o podría ser "Junta Directiva")
+    if (area === 'Gerencia General') {
+        return 'Junta Directiva';
+    }
+    
+    // Si es jefe de área, reporta a la Gerente General
+    if (esJefeDeArea) {
+        return GERENTE_GENERAL.nombre;
+    }
+    
+    // Empleados regulares reportan al jefe de su área
     const jefe = JEFES.find(j => j.area === area);
-    return jefe ? jefe.nombre : 'Gerencia General';
+    return jefe ? jefe.nombre : GERENTE_GENERAL.nombre;
 }
 
 // ============================================
 // GENERAR BASE DE DATOS DE ACTIVIDADES
 // Todas las fechas en ENERO 2026
 // Distribución semanal realista (días laborales)
-// Fecha actual simulada: 20 de enero de 2026 (lunes)
+// Fecha actual simulada: 22 de enero de 2026 (miércoles)
 // ============================================
 function generarBaseDeDatos() {
     const actividades = [];
     let idActividad = 10001;
-    const hoy = new Date(2026, 0, 20); // Lunes 20 de enero de 2026
+    const hoy = new Date(2026, 0, 22); // Miércoles 22 de enero de 2026
     
     // ============================================
     // SEMANAS DE ENERO 2026 (días laborales):
@@ -1334,7 +1409,7 @@ function generarBaseDeDatos() {
     // Semana 1 (corta): jue 1 - vie 3 enero (solo 2 días, tareas sencillas)
     // Semana 2: lun 5 - vie 9 enero (2 tareas por empleado)
     // Semana 3: lun 12 - vie 16 enero (2 tareas por empleado)
-    // Semana 4: lun 19 - vie 23 enero (2 tareas por empleado) ← SEMANA ACTUAL (hoy es 20)
+    // Semana 4: lun 19 - vie 23 enero (2 tareas por empleado) ← SEMANA ACTUAL (hoy es 22)
     // Semana 5: lun 26 - vie 30 enero (2 tareas por empleado)
     // ============================================
     
@@ -1440,17 +1515,27 @@ function generarBaseDeDatos() {
                         plan: nombrePlan,
                         asignado: {
                             nombre: empleado.nombre,
-                            avatar: empleado.avatar
+                            avatar: empleado.avatar,
+                            username: empleado.username || generarUsername(empleado.nombre)
                         },
                         idColaborador: empleado.idColaborador,
                         area: empleado.area,
+                        lider: empleado.area === 'Gerencia General' ? null : obtenerJefe(empleado.area, empleado.esJefe),
                         cargo: empleado.cargo,
                         estado: estadoTarea,
                         prioridad: prioridadTarea,
                         avance: avanceTarea,
                         fechaCreacion: formatearFecha(fechaCreacionTarea),
                         fechaFinalizacion: formatearFecha(fechaFinTarea),
-                        creador: obtenerJefe(empleado.area),
+                        creador: empleado.area === 'Gerencia General' ? empleado.nombre : (() => {
+                            const jefe = obtenerJefe(empleado.area, empleado.esJefe);
+                            // Si el jefe es "Junta Directiva", siempre usar el nombre de la persona
+                            if (jefe === 'Junta Directiva') {
+                                return empleado.nombre;
+                            }
+                            // Si no, 50% jefe, 50% persona
+                            return Math.random() < 0.5 ? jefe : empleado.nombre;
+                        })(),
                         comentarios: Math.floor(Math.random() * 4)
                     };
                     
@@ -1486,17 +1571,27 @@ function generarBaseDeDatos() {
                 plan: nombrePlan,
                 asignado: {
                     nombre: empleado.nombre,
-                    avatar: empleado.avatar
+                    avatar: empleado.avatar,
+                    username: empleado.username || generarUsername(empleado.nombre)
                 },
                 idColaborador: empleado.idColaborador,
                 area: empleado.area,
+                lider: empleado.area === 'Gerencia General' ? null : obtenerJefe(empleado.area, empleado.esJefe),
                 cargo: empleado.cargo,
                 estado: estadoPlan,
                 prioridad: prioridadPlan,
                 avance: avancePlan,
                 fechaCreacion: formatearFecha(fechaCreacionPlan),
                 fechaFinalizacion: formatearFecha(fechaFinPlan),
-                creador: obtenerJefe(empleado.area),
+                creador: empleado.area === 'Gerencia General' ? empleado.nombre : (() => {
+                    const jefe = obtenerJefe(empleado.area, empleado.esJefe);
+                    // Si el jefe es "Junta Directiva", siempre usar el nombre de la persona
+                    if (jefe === 'Junta Directiva') {
+                        return empleado.nombre;
+                    }
+                    // Si no, 50% jefe, 50% persona
+                    return Math.random() < 0.5 ? jefe : empleado.nombre;
+                })(),
                 comentarios: Math.floor(Math.random() * 6)
             });
             

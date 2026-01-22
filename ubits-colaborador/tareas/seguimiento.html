@@ -26,6 +26,7 @@
     <link rel="stylesheet" href="../../components/alert.css">
     <link rel="stylesheet" href="../../components/paginator.css">
     <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/empty-state.css">
 
     <!-- Página -->
     <link rel="stylesheet" href="./seguimiento.css">
@@ -60,6 +61,16 @@
                                         <i class="far fa-columns-3"></i>
                                     </button>
                                 </div>
+                            </div>
+
+                            <!-- Filtros aplicados (chips) -->
+                            <div class="widget-filtros-aplicados" id="seguimiento-filtros-aplicados" style="display: none;">
+                                <span class="ubits-body-sm-regular">Filtros aplicados:</span>
+                                <div class="filtros-chips-container" id="filtros-chips-container"></div>
+                                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs seguimiento-clear-filters-btn" id="seguimiento-clear-filters-btn" aria-label="Limpiar todos los filtros">
+                                    <i class="far fa-filter-slash"></i>
+                                    <span>Limpiar filtros</span>
+                                </button>
                             </div>
 
                             <!-- Action bar (solo cuando hay selección) -->
@@ -105,17 +116,18 @@
                                         <tr>
                                             <th class="seguimiento-th-checkbox"><input type="checkbox" id="seguimiento-select-all" aria-label="Seleccionar todo"></th>
                                             <th class="seguimiento-th" data-col="id">ID</th>
-                                            <th class="seguimiento-th seguimiento-th-filterable" data-col="nombre">Nombre <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-filter-btn" data-filter="nombre" aria-label="Filtrar por nombre"><i class="far fa-ellipsis"></i></button></th>
-                                            <th class="seguimiento-th seguimiento-th-filterable" data-col="asignado">Asignado <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-filter-btn" data-filter="asignado" aria-label="Filtrar por asignado"><i class="far fa-ellipsis"></i></button></th>
-                                            <th class="seguimiento-th" data-col="idColaborador">ID Colaborador</th>
-                                            <th class="seguimiento-th seguimiento-th-filterable" data-col="area">Área <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-filter-btn" data-filter="area" aria-label="Filtrar por área"><i class="far fa-ellipsis"></i></button></th>
-                                            <th class="seguimiento-th seguimiento-th-filterable" data-col="plan">Plan <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-filter-btn" data-filter="plan" aria-label="Filtrar por plan"><i class="far fa-ellipsis"></i></button></th>
-                                            <th class="seguimiento-th seguimiento-th-filterable" data-col="estado">Estado <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-checkbox-btn" data-checkbox="estado" aria-label="Filtrar por estado"><i class="far fa-ellipsis"></i></button></th>
-                                            <th class="seguimiento-th seguimiento-th-filterable" data-col="prioridad">Prioridad <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-checkbox-btn" data-checkbox="prioridad" aria-label="Filtrar por prioridad"><i class="far fa-ellipsis"></i></button></th>
+                                            <th class="seguimiento-th seguimiento-th-filterable" data-col="nombre">Nombre de actividad <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-filter-btn" data-filter="nombre" aria-label="Filtrar por nombre"><i class="far fa-filter"></i></button></th>
+                                            <th class="seguimiento-th seguimiento-th-filterable" data-col="asignado">Asignado <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-filter-btn" data-filter="asignado" aria-label="Filtrar por asignado"><i class="far fa-filter"></i></button></th>
+                                            <th class="seguimiento-th seguimiento-th-filterable" data-col="username">Username <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-filter-btn" data-filter="username" aria-label="Filtrar por username"><i class="far fa-filter"></i></button></th>
+                                            <th class="seguimiento-th seguimiento-th-filterable" data-col="area">Área <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-filter-btn" data-filter="area" aria-label="Filtrar por área"><i class="far fa-filter"></i></button></th>
+                                            <th class="seguimiento-th seguimiento-th-filterable" data-col="lider">Lider <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-filter-btn" data-filter="lider" aria-label="Filtrar por lider"><i class="far fa-filter"></i></button></th>
+                                            <th class="seguimiento-th seguimiento-th-filterable" data-col="creador">Creador <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-filter-btn" data-filter="creador" aria-label="Filtrar por creador"><i class="far fa-filter"></i></button></th>
+                                            <th class="seguimiento-th seguimiento-th-filterable" data-col="plan">Plan <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-filter-btn" data-filter="plan" aria-label="Filtrar por plan"><i class="far fa-filter"></i></button></th>
+                                            <th class="seguimiento-th seguimiento-th-filterable" data-col="estado">Estado <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-checkbox-btn" data-checkbox="estado" aria-label="Filtrar por estado"><i class="far fa-filter"></i></button></th>
+                                            <th class="seguimiento-th seguimiento-th-filterable" data-col="prioridad">Prioridad <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-checkbox-btn" data-checkbox="prioridad" aria-label="Filtrar por prioridad"><i class="far fa-filter"></i></button></th>
                                             <th class="seguimiento-th" data-col="avance">Avance</th>
                                             <th class="seguimiento-th seguimiento-th-sortable" data-col="fechaCreacion">Fecha de creación <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-date-sort-btn" data-sort="fechaCreacion" aria-label="Ordenar por fecha de creación"><i class="far fa-ellipsis"></i></button></th>
                                             <th class="seguimiento-th seguimiento-th-sortable" data-col="fechaFinalizacion">Fecha de finalización <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-date-sort-btn" data-sort="fechaFinalizacion" aria-label="Ordenar por fecha de finalización"><i class="far fa-ellipsis"></i></button></th>
-                                            <th class="seguimiento-th seguimiento-th-filterable" data-col="creador">Creador <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-filter-btn" data-filter="creador" aria-label="Filtrar por creador"><i class="far fa-ellipsis"></i></button></th>
                                             <th class="seguimiento-th" data-col="comentarios">Comentario</th>
                                         </tr>
                                     </thead>
@@ -125,6 +137,9 @@
                                 </table>
                                 </div>
                             </div>
+                            
+                            <!-- Empty State (oculto por defecto) -->
+                            <div id="seguimiento-empty-state" style="display: none;"></div>
                             
                             <!-- Paginador -->
                             <div class="widget-paginador-seguimiento">
@@ -156,10 +171,6 @@
                     <label class="ubits-body-sm-bold filtros-label">Tipo de actividad</label>
                     <div class="filtros-radio-list" id="filtros-tipo-actividad">
                         <label class="filtros-radio-option">
-                            <input type="radio" name="tipo-actividad" value="todos" checked>
-                            <span class="ubits-body-sm-regular">Todos los tipos</span>
-                        </label>
-                        <label class="filtros-radio-option">
                             <input type="radio" name="tipo-actividad" value="planes">
                             <span class="ubits-body-sm-regular">Planes</span>
                         </label>
@@ -170,21 +181,21 @@
                     </div>
                 </div>
 
-                <!-- Buscar plan -->
+                <!-- Buscar plan o actividad -->
                 <div class="filtros-group">
-                    <label class="ubits-body-sm-bold filtros-label">Buscar plan</label>
+                    <label class="ubits-body-sm-bold filtros-label">Buscar plan o tarea</label>
                     <div id="filtros-buscar-plan"></div>
                 </div>
 
-                <!-- Buscar personas -->
+                <!-- Buscar asignados -->
                 <div class="filtros-group">
-                    <label class="ubits-body-sm-bold filtros-label">Buscar personas</label>
+                    <label class="ubits-body-sm-bold filtros-label">Buscar asignados</label>
                     <div id="filtros-buscar-personas"></div>
                 </div>
 
-                <!-- Todas las áreas -->
+                <!-- Buscar áreas -->
                 <div class="filtros-group">
-                    <label class="ubits-body-sm-bold filtros-label">Todas las áreas</label>
+                    <label class="ubits-body-sm-bold filtros-label">Buscar áreas</label>
                     <div id="filtros-areas"></div>
                 </div>
 
@@ -385,6 +396,7 @@
     <script src="../../components/alert.js"></script>
     <script src="../../components/toast.js"></script>
     <script src="../../components/paginator.js"></script>
+    <script src="../../components/empty-state.js"></script>
     <script src="../../script.js"></script>
     <script src="./seguimiento-data.js"></script>
     <script src="./seguimiento.js"></script>
