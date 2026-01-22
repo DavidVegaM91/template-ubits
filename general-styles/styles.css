@@ -544,14 +544,14 @@ body[data-theme="light"] .dashboard-container {
         max-width: 100%;
         width: 100%;
         box-sizing: border-box;
-        overflow-x: hidden;
+        overflow: visible;
     }
     
     .content-sections {
         max-width: 100%;
         width: 100%;
         box-sizing: border-box;
-        overflow-x: hidden;
+        overflow: visible;
     }
     
     /* Asegurar que todos los widgets y carruseles respeten el ancho máximo */
@@ -563,7 +563,7 @@ body[data-theme="light"] .dashboard-container {
         max-width: 100%;
         width: 100%;
         box-sizing: border-box;
-        overflow-x: hidden;
+        overflow: visible;
     }
     
     /* Asegurar que los carruseles no se desborden */

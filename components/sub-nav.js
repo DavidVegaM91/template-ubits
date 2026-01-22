@@ -2,6 +2,25 @@
    TOP NAVIGATION COMPONENT
    ======================================== */
 
+// Función para calcular la ruta base según la profundidad de la página
+function getSubNavBasePath() {
+    const path = window.location.pathname;
+    
+    // Detectar la profundidad basándose en patrones de carpetas del proyecto
+    // Páginas en subcarpetas de segundo nivel (ubits-colaborador/*, ubits-admin/*)
+    if (path.includes('/ubits-colaborador/') || path.includes('/ubits-admin/')) {
+        return '../../';
+    }
+    
+    // Páginas en primer nivel de carpeta (documentacion/)
+    if (path.includes('/documentacion/')) {
+        return '../';
+    }
+    
+    // Página en la raíz (index.html) o cualquier otra ubicación
+    return '';
+}
+
 // Configuración de variantes del top-nav
 const TOP_NAV_VARIANTS = {
     template: {
@@ -53,7 +72,8 @@ const TOP_NAV_VARIANTS = {
         name: 'Tareas',
         tabs: [
             { id: 'plans', label: 'Planes', icon: 'far fa-layer-group', url: '../../ubits-colaborador/tareas/planes.html' },
-            { id: 'tasks', label: 'Tareas', icon: 'far fa-tasks', url: '../../ubits-colaborador/tareas/tareas.html' }
+            { id: 'tasks', label: 'Tareas', icon: 'far fa-tasks', url: '../../ubits-colaborador/tareas/tareas.html' },
+            { id: 'seguimiento', label: 'Seguimiento', icon: 'far fa-chart-line', url: '../../ubits-colaborador/tareas/seguimiento.html' }
         ]
     },
     empresa: {
@@ -198,9 +218,10 @@ function getTopNavHTML(variant = 'template', customTabs = []) {
     }
 
     // Logo del cliente antes de los tabs (solo para variantes que NO sean documentacion)
+    const basePath = getSubNavBasePath();
     const clientLogo = variant !== 'documentacion' ? `
         <div class="sub-nav-logo">
-            <img src="../../images/Client-logo.png" alt="Client Logo" class="sub-nav-logo-img">
+            <img src="${basePath}images/Client-logo.png" alt="Client Logo" class="sub-nav-logo-img">
         </div>
     ` : '';
 

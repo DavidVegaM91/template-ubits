@@ -1,0 +1,844 @@
+/* ========================================
+   ESTILOS ESPECÍFICOS PARA seguimiento
+   ======================================== */
+
+/* Content sections */
+.content-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+    overflow: visible;
+    max-height: none;
+}
+
+.content-sections > *:not(:last-child):not(.section-dual):not(.section-single):not(.section-triple):not(.section-quad) {
+    margin-bottom: 16px;
+}
+
+.content-sections::after {
+    content: '';
+    height: 0;
+    flex-shrink: 0;
+}
+
+.content-sections > *:last-child {
+    margin-bottom: 0;
+}
+
+.section-single {
+    display: flex;
+    width: 100%;
+}
+
+.section-single > div,
+.section-dual > div {
+    background-color: var(--ubits-bg-1);
+    border: none;
+    border-radius: 8px;
+    padding: 12px !important;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+.section-single > div {
+    flex: 1;
+}
+
+/* Header bar */
+.widget-header-seguimiento {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.seguimiento-header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.seguimiento-header-left {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+}
+
+.seguimiento-header-left h1 {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.seguimiento-header-left .ubits-body-sm-regular {
+    color: var(--ubits-fg-1-medium);
+}
+
+.seguimiento-header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Action bar (visible cuando hay selección) */
+.widget-action-bar-seguimiento {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 12px 0;
+    border-top: 1px solid var(--ubits-border-1);
+}
+
+.widget-action-bar-seguimiento.is-visible {
+    display: flex;
+}
+
+.seguimiento-action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Alert experiencia desktop */
+.seguimiento-alert-experiencia {
+    margin-bottom: 12px;
+}
+
+/* Tabla wrapper */
+.widget-tabla-seguimiento {
+    overflow: visible;
+}
+
+.seguimiento-table-wrapper {
+    min-width: 900px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Tabla */
+.seguimiento-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.seguimiento-table thead th {
+    text-align: left;
+    padding: 0 16px;
+    height: 45px;
+    background: transparent;
+    color: var(--ubits-fg-1-medium);
+    border-bottom: 1px solid var(--ubits-border-1);
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.seguimiento-table tbody td {
+    padding: 0 16px;
+    height: 45px;
+    border-bottom: 1px solid var(--ubits-border-1);
+    color: var(--ubits-fg-1-medium);
+    vertical-align: middle;
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 16px;
+}
+
+/* Quitar borde de la última fila para evitar doble borde */
+.seguimiento-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Columnas con ancho específico */
+.seguimiento-td[data-col="nombre"] {
+    max-width: 280px;
+}
+
+.seguimiento-td[data-col="asignado"] {
+    max-width: 180px;
+}
+
+.seguimiento-td[data-col="plan"] {
+    max-width: 200px;
+}
+
+.seguimiento-td[data-col="creador"] {
+    max-width: 180px;
+}
+
+.seguimiento-td[data-col="id"],
+.seguimiento-td[data-col="idColaborador"] {
+    max-width: 120px;
+}
+
+.seguimiento-td[data-col="avance"] {
+    max-width: 140px;
+}
+
+.seguimiento-td[data-col="estado"],
+.seguimiento-td[data-col="prioridad"],
+.seguimiento-td[data-col="comentarios"] {
+    max-width: 120px;
+}
+
+/* Status tag ancho fijo */
+.seguimiento-td[data-col="estado"] .ubits-status-tag {
+    min-width: 76px;
+    width: 76px;
+    justify-content: center;
+}
+
+/* Progress bar para avance */
+.seguimiento-avance {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.seguimiento-progress-bar {
+    width: 60px;
+    height: 8px;
+    background-color: var(--ubits-bg-4-static);
+    border-radius: 4px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.seguimiento-progress-bar-fill {
+    height: 100%;
+    background-color: var(--ubits-feedback-accent-info);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.seguimiento-td[data-col="fechaCreacion"],
+.seguimiento-td[data-col="fechaFinalizacion"] {
+    max-width: 140px;
+}
+
+.seguimiento-table tbody tr:hover td {
+    background: var(--ubits-bg-2);
+}
+
+.seguimiento-th-checkbox,
+.seguimiento-td-checkbox {
+    width: 44px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.seguimiento-th-checkbox input,
+.seguimiento-td-checkbox input {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: var(--ubits-accent-brand);
+}
+
+/* Avatares 28×28 */
+.seguimiento-asignado {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.seguimiento-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--ubits-bg-2);
+    border: 1px solid var(--ubits-border-1);
+}
+
+.seguimiento-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.seguimiento-avatar-icon {
+    color: var(--ubits-fg-1-medium);
+}
+
+.seguimiento-avatar-icon i {
+    font-size: 14px;
+}
+
+/* Prioridad (icono + texto) */
+.seguimiento-prioridad {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+}
+
+.seguimiento-prioridad i {
+    font-size: 12px;
+}
+
+/* Botón eliminar con selección */
+.seguimiento-btn-eliminar {
+    color: var(--ubits-feedback-accent-error);
+}
+
+.seguimiento-btn-eliminar:hover {
+    color: var(--ubits-feedback-accent-error);
+    border-color: var(--ubits-feedback-accent-error);
+}
+
+/* Búsqueda inline */
+.seguimiento-search-inline {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Modal filtros */
+.filtros-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--ubits-bg-dim);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.filtros-modal-content {
+    background: var(--ubits-bg-1);
+    border-radius: 8px;
+    max-width: 560px;
+    width: 100%;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--ubits-border-1);
+}
+
+.filtros-modal-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--ubits-border-1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.filtros-modal-header h2 {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.filtros-modal-body {
+    padding: 20px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.filtros-modal-footer {
+    padding: 16px 20px;
+    border-top: 1px solid var(--ubits-border-1);
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+/* Menú columnas */
+.columns-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+}
+
+.columns-menu {
+    position: fixed;
+    top: 120px;
+    right: 24px;
+    min-width: 220px;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    z-index: 1001;
+    padding: 12px;
+}
+
+.columns-menu-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.columns-menu-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.columns-menu-option input {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: var(--ubits-accent-brand);
+}
+
+/* Paginador */
+.widget-paginador-seguimiento {
+    display: flex;
+    justify-content: center;
+    padding: 16px 0;
+}
+
+/* Columnas con ordenamiento */
+.seguimiento-th-sortable {
+    white-space: nowrap;
+}
+
+.seguimiento-sort-btn {
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+    vertical-align: middle;
+    margin-left: 4px;
+}
+
+.seguimiento-th-sortable:hover .seguimiento-sort-btn,
+.seguimiento-th-sortable:hover .seguimiento-date-sort-btn,
+.seguimiento-th-filterable:hover .seguimiento-filter-btn,
+.seguimiento-th-filterable:hover .seguimiento-checkbox-btn {
+    opacity: 1;
+}
+
+.seguimiento-filter-btn,
+.seguimiento-checkbox-btn,
+.seguimiento-date-sort-btn {
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+    vertical-align: middle;
+    margin-left: 4px;
+}
+
+/* Menú de filtro con autocomplete */
+.filter-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+}
+
+.filter-menu {
+    position: fixed;
+    min-width: 280px;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    z-index: 1001;
+    padding: 12px;
+}
+
+.filter-menu-content {
+    margin-bottom: 12px;
+}
+
+.filter-menu-footer {
+    display: none;
+}
+
+/* Menú de checkboxes */
+.checkbox-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+}
+
+.checkbox-menu {
+    position: fixed;
+    min-width: 180px;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    z-index: 1001;
+    padding: 12px;
+}
+
+.checkbox-menu-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.checkbox-menu-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.checkbox-menu-option input {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: var(--ubits-accent-brand);
+}
+
+.checkbox-menu-footer {
+    display: none;
+}
+
+/* Modal filtros - grupos */
+.filtros-group {
+    margin-bottom: 20px;
+}
+
+.filtros-group:last-child {
+    margin-bottom: 0;
+}
+
+.filtros-label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--ubits-fg-1-high);
+}
+
+.filtros-checkbox-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.filtros-checkbox-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.filtros-checkbox-option input {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: var(--ubits-accent-brand);
+}
+
+/* Radio buttons */
+.filtros-radio-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.filtros-radio-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.filtros-radio-option input {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: var(--ubits-accent-brand);
+}
+
+.filtros-group-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.filtros-date-field,
+.filtros-field {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Menú de ordenamiento */
+.sort-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+}
+
+.sort-menu {
+    position: fixed;
+    min-width: 200px;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    z-index: 1001;
+    padding: 8px;
+}
+
+.sort-menu-options {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 12px;
+}
+
+.sort-menu-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    width: 100%;
+    text-align: left;
+}
+
+.sort-menu-option:hover {
+    background: var(--ubits-bg-2);
+}
+
+.sort-menu-option.selected {
+    background: var(--ubits-accent-brand-subtle);
+}
+
+.sort-menu-option i {
+    color: var(--ubits-fg-1-medium);
+    font-size: 14px;
+}
+
+.sort-menu-footer {
+    display: none;
+}
+
+/* Modal de confirmación de eliminación */
+.delete-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--ubits-bg-dim);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.delete-modal-content {
+    background: var(--ubits-bg-1);
+    border-radius: 8px;
+    max-width: 420px;
+    width: 100%;
+    border: 1px solid var(--ubits-border-1);
+}
+
+.delete-modal-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--ubits-border-1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.delete-modal-header h2 {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.delete-modal-body {
+    padding: 20px;
+}
+
+.delete-modal-body p {
+    margin: 0 0 8px 0;
+}
+
+.delete-modal-body p:last-child {
+    margin-bottom: 0;
+}
+
+.delete-modal-footer {
+    padding: 16px 20px;
+    border-top: 1px solid var(--ubits-border-1);
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+/* Menús flotantes para acciones */
+.priority-menu-overlay,
+.status-menu-overlay,
+.reasignar-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+}
+
+.priority-menu,
+.status-menu {
+    position: fixed;
+    min-width: 160px;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    z-index: 1001;
+    padding: 8px;
+}
+
+.priority-menu-options,
+.status-menu-options {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.priority-menu-option,
+.status-menu-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    width: 100%;
+    text-align: left;
+}
+
+.priority-menu-option:hover,
+.status-menu-option:hover {
+    background: var(--ubits-bg-2);
+}
+
+.priority-menu-option i {
+    font-size: 14px;
+    width: 16px;
+    text-align: center;
+}
+
+/* Menú reasignar */
+.reasignar-menu {
+    position: fixed;
+    min-width: 300px;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    z-index: 1001;
+    padding: 12px;
+}
+
+.reasignar-menu-content {
+    margin-bottom: 12px;
+}
+
+.reasignar-menu-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--ubits-border-1);
+}
+
+/* Responsive */
+@media (max-width: 1023px) {
+    .content-sections {
+        padding-bottom: 0;
+    }
+
+    .seguimiento-header-bar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .seguimiento-action-buttons {
+        flex-wrap: wrap;
+    }
+
+    .filtros-group-row {
+        grid-template-columns: 1fr;
+    }
+
+    .filtros-modal-content {
+        max-height: 80vh;
+    }
+
+    /* Ocultar texto en botones de acción en móvil */
+    .widget-action-bar-seguimiento .ubits-button span {
+        display: none;
+    }
+
+    .widget-action-bar-seguimiento .ubits-button {
+        padding: 8px;
+    }
+
+    /* Menús flotantes */
+    .sort-menu,
+    .priority-menu,
+    .status-menu,
+    .reasignar-menu,
+    .columns-menu {
+        left: 16px !important;
+        right: 16px;
+        min-width: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .section-single > div {
+        padding: 12px !important;
+    }
+
+    .seguimiento-header-left {
+        flex-direction: column;
+        gap: 4px;
+        align-items: flex-start;
+    }
+}

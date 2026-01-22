@@ -1,3 +1,22 @@
+// Función para calcular la ruta base según la profundidad de la página
+function getBasePath() {
+    const path = window.location.pathname;
+    
+    // Detectar la profundidad basándose en patrones de carpetas del proyecto
+    // Páginas en subcarpetas de segundo nivel (ubits-colaborador/*, ubits-admin/*)
+    if (path.includes('/ubits-colaborador/') || path.includes('/ubits-admin/')) {
+        return '../../';
+    }
+    
+    // Páginas en primer nivel de carpeta (documentacion/)
+    if (path.includes('/documentacion/')) {
+        return '../';
+    }
+    
+    // Página en la raíz (index.html) o cualquier otra ubicación
+    return '';
+}
+
 // Función para ajustar la altura del sidebar
 function adjustSidebarHeight() {
     const sidebar = document.getElementById('sidebar');
@@ -81,6 +100,10 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
         return;
     }
     
+    // Obtener la ruta base dinámica
+    const basePath = getBasePath();
+    console.log('Base path calculado:', basePath);
+    
     // Determinar qué HTML usar según la variante
     let sidebarHTML = '';
     
@@ -92,29 +115,29 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
             <div class="sidebar-main">
                 <!-- Header -->
                 <div class="sidebar-header">
-                    <div class="logo" onclick="window.location.href='../../ubits-admin/inicio/admin.html'" style="cursor: pointer;">
-                        <img src="../../images/Ubits-logo.svg" alt="UBITS Logo" />
+                    <div class="logo" onclick="window.location.href='${basePath}ubits-admin/inicio/admin.html'" style="cursor: pointer;">
+                        <img src="${basePath}images/Ubits-logo.svg" alt="UBITS Logo" />
                     </div>
                 </div>
                 
                 <!-- Body -->
                 <div class="sidebar-body">
-                    <button class="nav-button" data-section="inicio" data-tooltip="Inicio" onclick="window.location.href='../../ubits-admin/inicio/admin.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="inicio" data-tooltip="Inicio" onclick="window.location.href='${basePath}ubits-admin/inicio/admin.html'" style="cursor: pointer;">
                         <i class="far fa-house"></i>
                     </button>
-                    <button class="nav-button" data-section="empresa" data-tooltip="Empresa" onclick="window.location.href='../../ubits-admin/empresa/gestion-de-usuarios.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="empresa" data-tooltip="Empresa" onclick="window.location.href='${basePath}ubits-admin/empresa/gestion-de-usuarios.html'" style="cursor: pointer;">
                         <i class="far fa-building"></i>
                     </button>
-                    <button class="nav-button" data-section="aprendizaje" data-tooltip="Aprendizaje" onclick="window.location.href='../../ubits-admin/aprendizaje/planes-formacion.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="aprendizaje" data-tooltip="Aprendizaje" onclick="window.location.href='${basePath}ubits-admin/aprendizaje/planes-formacion.html'" style="cursor: pointer;">
                         <i class="far fa-graduation-cap"></i>
                     </button>
-                    <button class="nav-button" data-section="diagnóstico" data-tooltip="Diagnóstico" onclick="window.location.href='../../ubits-admin/diagnostico/admin-diagnostico.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="diagnóstico" data-tooltip="Diagnóstico" onclick="window.location.href='${basePath}ubits-admin/diagnostico/admin-diagnostico.html'" style="cursor: pointer;">
                         <i class="far fa-chart-mixed"></i>
                     </button>
-                    <button class="nav-button" data-section="desempeño" data-tooltip="Desempeño" onclick="window.location.href='../../ubits-admin/desempeno/admin-360.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="desempeño" data-tooltip="Desempeño" onclick="window.location.href='${basePath}ubits-admin/desempeno/admin-360.html'" style="cursor: pointer;">
                         <i class="far fa-bars-progress"></i>
                     </button>
-                    <button class="nav-button" data-section="encuestas" data-tooltip="Encuestas" onclick="window.location.href='../../ubits-admin/encuestas/admin-encuestas.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="encuestas" data-tooltip="Encuestas" onclick="window.location.href='${basePath}ubits-admin/encuestas/admin-encuestas.html'" style="cursor: pointer;">
                         <i class="far fa-clipboard"></i>
                     </button>
                 </div>
@@ -122,18 +145,18 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
             
             <!-- Footer -->
             <div class="sidebar-footer">
-                <button class="nav-button" data-tooltip="API" onclick="window.location.href='../../ubits-admin/otros/admin-api.html'" style="cursor: pointer;">
+                <button class="nav-button" data-tooltip="API" onclick="window.location.href='${basePath}ubits-admin/otros/admin-api.html'" style="cursor: pointer;">
                     <i class="far fa-code"></i>
                 </button>
-                <button class="nav-button" data-tooltip="Centro de ayuda" onclick="window.location.href='../../ubits-admin/otros/admin-help-center.html'" style="cursor: pointer;">
+                <button class="nav-button" data-tooltip="Centro de ayuda" onclick="window.location.href='${basePath}ubits-admin/otros/admin-help-center.html'" style="cursor: pointer;">
                     <i class="far fa-circle-question"></i>
                 </button>
                 <button class="nav-button" id="darkmode-toggle" data-tooltip="Modo oscuro" data-theme="light">
                     <i class="far fa-moon"></i>
                 </button>
                 <div class="user-avatar-container">
-                    <div class="user-avatar" onmouseenter="showSidebarProfileMenu(this)" onmouseleave="hideSidebarProfileMenu()" onclick="window.location.href='../../ubits-colaborador/perfil/profile.html'">
-                        <img src="../../images/Profile-image.jpg" alt="Usuario" class="avatar-image">
+                    <div class="user-avatar" onmouseenter="showSidebarProfileMenu(this)" onmouseleave="hideSidebarProfileMenu()" onclick="window.location.href='${basePath}ubits-colaborador/perfil/profile.html'">
+                        <img src="${basePath}images/Profile-image.jpg" alt="Usuario" class="avatar-image">
                     </div>
                 </div>
             </div>
@@ -141,12 +164,12 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
         
         <!-- Profile menu para sidebar admin -->
         <div class="sidebar-profile-menu" id="sidebar-profile-menu" onmouseenter="showSidebarProfileMenu(this)" onmouseleave="hideSidebarProfileMenu()">
-            <div class="profile-menu-item" onclick="window.location.href='../../ubits-colaborador/perfil/profile.html'">
+            <div class="profile-menu-item" onclick="window.location.href='${basePath}ubits-colaborador/perfil/profile.html'">
                 <i class="far fa-user"></i>
                 <span>Ver mi perfil</span>
             </div>
             <div class="profile-menu-divider"></div>
-            <div class="profile-menu-item" onclick="window.location.href='../../ubits-colaborador/inicio/index.html'">
+            <div class="profile-menu-item" onclick="window.location.href='${basePath}index.html'">
                 <i class="far fa-user-gear"></i>
                 <span>Modo colaborador</span>
             </div>
@@ -169,35 +192,35 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
             <div class="sidebar-main">
                 <!-- Header -->
                 <div class="sidebar-header">
-                    <div class="logo" onclick="window.location.href='../../ubits-colaborador/inicio/index.html'" style="cursor: pointer;">
-                        <img src="../../images/Ubits-logo.svg" alt="UBITS Logo" />
+                    <div class="logo" onclick="window.location.href='${basePath}index.html'" style="cursor: pointer;">
+                        <img src="${basePath}images/Ubits-logo.svg" alt="UBITS Logo" />
                     </div>
                 </div>
                 
                 <!-- Body -->
                 <div class="sidebar-body">
-                    <button class="nav-button" data-section="admin" data-tooltip="Administrador" onclick="window.location.href='../../ubits-admin/inicio/admin.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="admin" data-tooltip="Administrador" onclick="window.location.href='${basePath}ubits-admin/inicio/admin.html'" style="cursor: pointer;">
                         <i class="far fa-laptop"></i>
                     </button>
-                    <button class="nav-button" data-section="aprendizaje" data-tooltip="Aprendizaje" onclick="window.location.href='../../ubits-colaborador/aprendizaje/home-learn.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="aprendizaje" data-tooltip="Aprendizaje" onclick="window.location.href='${basePath}ubits-colaborador/aprendizaje/home-learn.html'" style="cursor: pointer;">
                         <i class="far fa-graduation-cap"></i>
                     </button>
-                    <button class="nav-button" data-section="diagnóstico" data-tooltip="Diagnóstico" onclick="window.location.href='../../ubits-colaborador/diagnostico/diagnostico.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="diagnóstico" data-tooltip="Diagnóstico" onclick="window.location.href='${basePath}ubits-colaborador/diagnostico/diagnostico.html'" style="cursor: pointer;">
                         <i class="far fa-chart-mixed"></i>
                     </button>
-                    <button class="nav-button" data-section="desempeño" data-tooltip="Desempeño" onclick="window.location.href='../../ubits-colaborador/desempeno/evaluaciones-360.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="desempeño" data-tooltip="Desempeño" onclick="window.location.href='${basePath}ubits-colaborador/desempeno/evaluaciones-360.html'" style="cursor: pointer;">
                         <i class="far fa-bars-progress"></i>
                     </button>
-                    <button class="nav-button" data-section="encuestas" data-tooltip="Encuestas" onclick="window.location.href='../../ubits-colaborador/encuestas/encuestas.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="encuestas" data-tooltip="Encuestas" onclick="window.location.href='${basePath}ubits-colaborador/encuestas/encuestas.html'" style="cursor: pointer;">
                         <i class="far fa-clipboard"></i>
                     </button>
-                    <button class="nav-button" data-section="reclutamiento" data-tooltip="Reclutamiento" onclick="window.location.href='../../ubits-colaborador/reclutamiento/reclutamiento.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="reclutamiento" data-tooltip="Reclutamiento" onclick="window.location.href='${basePath}ubits-colaborador/reclutamiento/reclutamiento.html'" style="cursor: pointer;">
                         <i class="far fa-users"></i>
                     </button>
-                    <button class="nav-button" data-section="tareas" data-tooltip="Tareas" onclick="window.location.href='../../ubits-colaborador/tareas/planes.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="tareas" data-tooltip="Tareas" onclick="window.location.href='${basePath}ubits-colaborador/tareas/planes.html'" style="cursor: pointer;">
                         <i class="far fa-layer-group"></i>
                     </button>
-                    <button class="nav-button" data-section="ubits-ai" data-tooltip="UBITS AI" onclick="window.location.href='../../ubits-colaborador/ubits-ai/ubits-ai.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="ubits-ai" data-tooltip="UBITS AI" onclick="window.location.href='${basePath}ubits-colaborador/ubits-ai/ubits-ai.html'" style="cursor: pointer;">
                         <i class="far fa-sparkles"></i>
                     </button>
                 </div>
@@ -209,8 +232,8 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
                     <i class="far fa-moon"></i>
                 </button>
                 <div class="user-avatar-container">
-                    <div class="user-avatar" onmouseenter="showSidebarProfileMenu(this)" onmouseleave="hideSidebarProfileMenu()" onclick="window.location.href='../../ubits-colaborador/perfil/profile.html'">
-                        <img src="../../images/Profile-image.jpg" alt="Usuario" class="avatar-image">
+                    <div class="user-avatar" onmouseenter="showSidebarProfileMenu(this)" onmouseleave="hideSidebarProfileMenu()" onclick="window.location.href='${basePath}ubits-colaborador/perfil/profile.html'">
+                        <img src="${basePath}images/Profile-image.jpg" alt="Usuario" class="avatar-image">
                     </div>
                 </div>
             </div>
@@ -218,12 +241,12 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
         
         <!-- Profile menu para sidebar default -->
         <div class="sidebar-profile-menu" id="sidebar-profile-menu" onmouseenter="showSidebarProfileMenu(this)" onmouseleave="hideSidebarProfileMenu()">
-            <div class="profile-menu-item" onclick="window.location.href='../../ubits-colaborador/perfil/profile.html'">
+            <div class="profile-menu-item" onclick="window.location.href='${basePath}ubits-colaborador/perfil/profile.html'">
                 <i class="far fa-user"></i>
                 <span>Ver mi perfil</span>
             </div>
             <div class="profile-menu-divider"></div>
-            <div class="profile-menu-item" onclick="window.location.href='../../ubits-admin/inicio/admin.html'">
+            <div class="profile-menu-item" onclick="window.location.href='${basePath}ubits-admin/inicio/admin.html'">
                 <i class="far fa-laptop"></i>
                 <span>Modo Administrador</span>
             </div>

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Seguimiento - UBITS Playground</title>
+
+    <!-- Estilos base UBITS -->
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+
+    <!-- Navegación -->
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../components/tab-bar.css">
+    <link rel="stylesheet" href="../../components/floating-menu.css">
+    <link rel="stylesheet" href="../../components/profile-menu.css">
+
+    <!-- Componentes UI -->
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/status-tag.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/paginator.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+
+    <!-- Página -->
+    <link rel="stylesheet" href="./seguimiento.css">
+</head>
+<body data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+
+        <div id="sidebar-container"></div>
+
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div class="content-area">
+                <div class="content-sections">
+                    <!-- Header + indicador + botones búsqueda/filtros/columnas -->
+                    <div class="section-single">
+                        <div class="widget-header-seguimiento">
+                            <div class="seguimiento-header-bar">
+                                <div class="seguimiento-header-left">
+                                    <span class="ubits-body-md-bold">Lista de elementos</span>
+                                    <span class="ubits-body-sm-regular" id="seguimiento-results-count">0/100</span>
+                                </div>
+                                <div class="seguimiento-header-right">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only" id="seguimiento-search-toggle" aria-label="Buscar">
+                                        <i class="far fa-magnifying-glass"></i>
+                                    </button>
+                                    <div id="seguimiento-search-container" class="seguimiento-search-inline" style="display: none;"></div>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only" id="seguimiento-filters-toggle" aria-label="Filtros">
+                                        <i class="far fa-filter"></i>
+                                    </button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only" id="seguimiento-columns-toggle" aria-label="Columnas">
+                                        <i class="far fa-columns-3"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Action bar (solo cuando hay selección) -->
+                            <div class="widget-action-bar-seguimiento" id="seguimiento-action-bar">
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="seguimiento-ver-seleccionados">
+                                    <i class="far fa-eye"></i>
+                                    <span>Ver seleccionados</span>
+                                </button>
+                                <div class="seguimiento-action-buttons">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="seguimiento-reasignar" title="Reasignar">
+                                        <i class="far fa-user-plus"></i>
+                                        <span>Reasignar</span>
+                                    </button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="seguimiento-cambiar-prioridad" title="Cambiar prioridad">
+                                        <i class="far fa-sliders"></i>
+                                        <span>Cambiar prioridad</span>
+                                    </button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="seguimiento-cambiar-estado" title="Cambiar estado">
+                                        <i class="far fa-rotate"></i>
+                                        <span>Cambiar estado</span>
+                                    </button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="seguimiento-descargar" title="Descargar CSV">
+                                        <i class="far fa-download"></i>
+                                        <span>Descargar</span>
+                                    </button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md seguimiento-btn-eliminar" id="seguimiento-eliminar" title="Eliminar">
+                                        <i class="far fa-trash"></i>
+                                        <span>Eliminar</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Alert experiencia desktop -->
+                            <div class="seguimiento-alert-experiencia" id="seguimiento-alert-mobile" style="display: none;">
+                                <div id="seguimiento-alert-container"></div>
+                            </div>
+
+                            <!-- Tabla -->
+                            <div class="widget-tabla-seguimiento">
+                                <div class="seguimiento-table-wrapper">
+                                <table class="seguimiento-table" id="seguimiento-table">
+                                    <thead>
+                                        <tr>
+                                            <th class="seguimiento-th-checkbox"><input type="checkbox" id="seguimiento-select-all" aria-label="Seleccionar todo"></th>
+                                            <th class="seguimiento-th" data-col="id">ID</th>
+                                            <th class="seguimiento-th seguimiento-th-filterable" data-col="nombre">Nombre <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-filter-btn" data-filter="nombre" aria-label="Filtrar por nombre"><i class="far fa-ellipsis"></i></button></th>
+                                            <th class="seguimiento-th seguimiento-th-filterable" data-col="asignado">Asignado <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-filter-btn" data-filter="asignado" aria-label="Filtrar por asignado"><i class="far fa-ellipsis"></i></button></th>
+                                            <th class="seguimiento-th" data-col="idColaborador">ID Colaborador</th>
+                                            <th class="seguimiento-th seguimiento-th-filterable" data-col="plan">Plan <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-filter-btn" data-filter="plan" aria-label="Filtrar por plan"><i class="far fa-ellipsis"></i></button></th>
+                                            <th class="seguimiento-th seguimiento-th-filterable" data-col="estado">Estado <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-checkbox-btn" data-checkbox="estado" aria-label="Filtrar por estado"><i class="far fa-ellipsis"></i></button></th>
+                                            <th class="seguimiento-th seguimiento-th-filterable" data-col="prioridad">Prioridad <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-checkbox-btn" data-checkbox="prioridad" aria-label="Filtrar por prioridad"><i class="far fa-ellipsis"></i></button></th>
+                                            <th class="seguimiento-th" data-col="avance">Avance</th>
+                                            <th class="seguimiento-th seguimiento-th-sortable" data-col="fechaCreacion">Fecha de creación <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-date-sort-btn" data-sort="fechaCreacion" aria-label="Ordenar por fecha de creación"><i class="far fa-ellipsis"></i></button></th>
+                                            <th class="seguimiento-th seguimiento-th-sortable" data-col="fechaFinalizacion">Fecha de finalización <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-date-sort-btn" data-sort="fechaFinalizacion" aria-label="Ordenar por fecha de finalización"><i class="far fa-ellipsis"></i></button></th>
+                                            <th class="seguimiento-th seguimiento-th-filterable" data-col="creador">Creador <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-filter-btn" data-filter="creador" aria-label="Filtrar por creador"><i class="far fa-ellipsis"></i></button></th>
+                                            <th class="seguimiento-th" data-col="comentarios">Comentario</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="seguimiento-tbody">
+                                        <!-- Filas generadas por JS -->
+                                    </tbody>
+                                </table>
+                                </div>
+                            </div>
+                            
+                            <!-- Paginador -->
+                            <div class="widget-paginador-seguimiento">
+                                <div id="seguimiento-paginador"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="tab-bar-container"></div>
+    <div id="floating-menu-container"></div>
+    <div id="profile-menu-container"></div>
+
+    <!-- Modal filtros -->
+    <div class="filtros-modal-overlay" id="filtros-modal-overlay" style="display: none;" aria-hidden="true">
+        <div class="filtros-modal-content">
+            <div class="filtros-modal-header">
+                <h2 class="ubits-heading-h2">Filtros</h2>
+                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="filtros-modal-close" aria-label="Cerrar">
+                    <i class="far fa-times"></i>
+                </button>
+            </div>
+            <div class="filtros-modal-body">
+                <!-- Tipo de actividad (radio buttons) -->
+                <div class="filtros-group">
+                    <label class="ubits-body-sm-bold filtros-label">Tipo de actividad</label>
+                    <div class="filtros-radio-list" id="filtros-tipo-actividad">
+                        <label class="filtros-radio-option">
+                            <input type="radio" name="tipo-actividad" value="todos" checked>
+                            <span class="ubits-body-sm-regular">Todos los tipos</span>
+                        </label>
+                        <label class="filtros-radio-option">
+                            <input type="radio" name="tipo-actividad" value="planes">
+                            <span class="ubits-body-sm-regular">Planes</span>
+                        </label>
+                        <label class="filtros-radio-option">
+                            <input type="radio" name="tipo-actividad" value="tareas">
+                            <span class="ubits-body-sm-regular">Tareas</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Buscar plan -->
+                <div class="filtros-group">
+                    <label class="ubits-body-sm-bold filtros-label">Buscar plan</label>
+                    <div id="filtros-buscar-plan"></div>
+                </div>
+
+                <!-- Buscar personas -->
+                <div class="filtros-group">
+                    <label class="ubits-body-sm-bold filtros-label">Buscar personas</label>
+                    <div id="filtros-buscar-personas"></div>
+                </div>
+
+                <!-- Todas las áreas -->
+                <div class="filtros-group">
+                    <label class="ubits-body-sm-bold filtros-label">Todas las áreas</label>
+                    <div id="filtros-areas"></div>
+                </div>
+
+                <!-- Estado y Prioridad en dos columnas -->
+                <div class="filtros-group filtros-group-row">
+                    <div class="filtros-field">
+                        <label class="ubits-body-sm-bold filtros-label">Estado</label>
+                        <div class="filtros-checkbox-list" id="filtros-estado">
+                            <label class="filtros-checkbox-option">
+                                <input type="checkbox" value="Iniciada">
+                                <span class="ubits-body-sm-regular">Iniciada</span>
+                            </label>
+                            <label class="filtros-checkbox-option">
+                                <input type="checkbox" value="Vencida">
+                                <span class="ubits-body-sm-regular">Vencida</span>
+                            </label>
+                            <label class="filtros-checkbox-option">
+                                <input type="checkbox" value="Finalizada">
+                                <span class="ubits-body-sm-regular">Finalizada</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="filtros-field">
+                        <label class="ubits-body-sm-bold filtros-label">Prioridad</label>
+                        <div class="filtros-checkbox-list" id="filtros-prioridad">
+                            <label class="filtros-checkbox-option">
+                                <input type="checkbox" value="Alta">
+                                <span class="ubits-body-sm-regular">Alta</span>
+                            </label>
+                            <label class="filtros-checkbox-option">
+                                <input type="checkbox" value="Media">
+                                <span class="ubits-body-sm-regular">Media</span>
+                            </label>
+                            <label class="filtros-checkbox-option">
+                                <input type="checkbox" value="Baja">
+                                <span class="ubits-body-sm-regular">Baja</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fechas de creación -->
+                <div class="filtros-group filtros-group-row">
+                    <div class="filtros-date-field">
+                        <label class="ubits-body-sm-bold filtros-label">Fecha de creación desde</label>
+                        <div id="filtros-fecha-creacion-desde"></div>
+                    </div>
+                    <div class="filtros-date-field">
+                        <label class="ubits-body-sm-bold filtros-label">Fecha de creación hasta</label>
+                        <div id="filtros-fecha-creacion-hasta"></div>
+                    </div>
+                </div>
+
+                <!-- Fechas de vencimiento -->
+                <div class="filtros-group filtros-group-row">
+                    <div class="filtros-date-field">
+                        <label class="ubits-body-sm-bold filtros-label">Fecha de vencimiento desde</label>
+                        <div id="filtros-fecha-vencimiento-desde"></div>
+                    </div>
+                    <div class="filtros-date-field">
+                        <label class="ubits-body-sm-bold filtros-label">Fecha de vencimiento hasta</label>
+                        <div id="filtros-fecha-vencimiento-hasta"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="filtros-modal-footer">
+                <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="filtros-limpiar">Limpiar filtros</button>
+                <button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="filtros-aplicar">Aplicar filtros</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal columnas -->
+    <div class="columns-menu-overlay" id="columns-menu-overlay" style="display: none;" aria-hidden="true"></div>
+    <div class="columns-menu" id="columns-menu" style="display: none;" role="dialog" aria-label="Mostrar u ocultar columnas">
+        <div class="columns-menu-list" id="columns-menu-list"></div>
+    </div>
+
+    <!-- Menú de ordenamiento por fecha -->
+    <div class="sort-menu-overlay" id="sort-menu-overlay" style="display: none;"></div>
+    <div class="sort-menu" id="sort-menu" style="display: none;" role="dialog" aria-label="Ordenar columna">
+        <div class="sort-menu-options">
+            <button type="button" class="sort-menu-option" data-dir="desc">
+                <i class="far fa-arrow-up"></i>
+                <span class="ubits-body-sm-regular">Más reciente primero</span>
+            </button>
+            <button type="button" class="sort-menu-option" data-dir="asc">
+                <i class="far fa-arrow-down"></i>
+                <span class="ubits-body-sm-regular">Más reciente al final</span>
+            </button>
+        </div>
+        <div class="sort-menu-footer">
+            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="sort-menu-cancel">Cancelar</button>
+            <button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="sort-menu-apply">Aceptar</button>
+        </div>
+    </div>
+
+    <!-- Menú de filtro con autocomplete (para Nombre, Asignado, Plan, Creador) -->
+    <div class="filter-menu-overlay" id="filter-menu-overlay" style="display: none;"></div>
+    <div class="filter-menu" id="filter-menu" style="display: none;" role="dialog" aria-label="Filtrar columna">
+        <div class="filter-menu-content">
+            <div id="filter-autocomplete-container"></div>
+        </div>
+        <div class="filter-menu-footer">
+            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="filter-menu-cancel">Cancelar</button>
+            <button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="filter-menu-apply">Aplicar</button>
+        </div>
+    </div>
+
+    <!-- Menú de checkboxes (para Estado, Prioridad) -->
+    <div class="checkbox-menu-overlay" id="checkbox-menu-overlay" style="display: none;"></div>
+    <div class="checkbox-menu" id="checkbox-menu" style="display: none;" role="dialog" aria-label="Filtrar por opciones">
+        <div class="checkbox-menu-options" id="checkbox-menu-options">
+            <!-- Opciones se generan dinámicamente -->
+        </div>
+        <div class="checkbox-menu-footer">
+            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="checkbox-menu-cancel">Cancelar</button>
+            <button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="checkbox-menu-apply">Aplicar</button>
+        </div>
+    </div>
+
+    <!-- Modal de confirmación de eliminación -->
+    <div class="delete-modal-overlay" id="delete-modal-overlay" style="display: none;" aria-hidden="true">
+        <div class="delete-modal-content">
+            <div class="delete-modal-header">
+                <h2 class="ubits-heading-h2">Confirmar eliminación</h2>
+                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="delete-modal-close" aria-label="Cerrar">
+                    <i class="far fa-times"></i>
+                </button>
+            </div>
+            <div class="delete-modal-body">
+                <p class="ubits-body-md-regular">¿Estás seguro de que deseas eliminar <strong id="delete-count">0</strong> elemento(s) seleccionado(s)?</p>
+                <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="delete-modal-footer">
+                <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="delete-modal-cancel">Cancelar</button>
+                <button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="delete-modal-confirm" style="background-color: var(--ubits-feedback-accent-error); border-color: var(--ubits-feedback-accent-error);">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Menú flotante para cambiar prioridad -->
+    <div class="priority-menu-overlay" id="priority-menu-overlay" style="display: none;"></div>
+    <div class="priority-menu" id="priority-menu" style="display: none;" role="dialog" aria-label="Cambiar prioridad">
+        <div class="priority-menu-options">
+            <button type="button" class="priority-menu-option" data-value="Alta">
+                <i class="far fa-chevrons-up" style="color: var(--ubits-feedback-accent-error);"></i>
+                <span class="ubits-body-sm-regular">Alta</span>
+            </button>
+            <button type="button" class="priority-menu-option" data-value="Media">
+                <i class="far fa-chevron-up" style="color: var(--ubits-fg-1-medium);"></i>
+                <span class="ubits-body-sm-regular">Media</span>
+            </button>
+            <button type="button" class="priority-menu-option" data-value="Baja">
+                <i class="far fa-chevron-down" style="color: var(--ubits-feedback-accent-info);"></i>
+                <span class="ubits-body-sm-regular">Baja</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Menú flotante para cambiar estado -->
+    <div class="status-menu-overlay" id="status-menu-overlay" style="display: none;"></div>
+    <div class="status-menu" id="status-menu" style="display: none;" role="dialog" aria-label="Cambiar estado">
+        <div class="status-menu-options">
+            <button type="button" class="status-menu-option" data-value="Iniciada">
+                <span class="ubits-status-tag ubits-status-tag--info ubits-status-tag--sm"><span class="ubits-status-tag__text">Iniciada</span></span>
+            </button>
+            <button type="button" class="status-menu-option" data-value="Vencida">
+                <span class="ubits-status-tag ubits-status-tag--error ubits-status-tag--sm"><span class="ubits-status-tag__text">Vencida</span></span>
+            </button>
+            <button type="button" class="status-menu-option" data-value="Finalizada">
+                <span class="ubits-status-tag ubits-status-tag--success ubits-status-tag--sm"><span class="ubits-status-tag__text">Finalizada</span></span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Menú flotante para reasignar -->
+    <div class="reasignar-menu-overlay" id="reasignar-menu-overlay" style="display: none;"></div>
+    <div class="reasignar-menu" id="reasignar-menu" style="display: none;" role="dialog" aria-label="Reasignar">
+        <div class="reasignar-menu-content">
+            <div id="reasignar-autocomplete"></div>
+        </div>
+        <div class="reasignar-menu-footer">
+            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="reasignar-cancel">Cancelar</button>
+            <button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="reasignar-apply">Aplicar</button>
+        </div>
+    </div>
+
+    <!-- Toast container -->
+    <div id="ubits-toast-container"></div>
+
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/tab-bar.js"></script>
+    <script src="../../components/floating-menu.js"></script>
+    <script src="../../components/profile-menu.js"></script>
+    <script src="../../components/input.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/paginator.js"></script>
+    <script src="../../script.js"></script>
+    <script src="./seguimiento.js"></script>
+</body>
+</html>

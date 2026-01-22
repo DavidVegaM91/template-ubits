@@ -9,6 +9,36 @@
  * botones de acción (IA, secundarios, primario, menú) y breadcrumb opcional.
  * Útil para páginas de producto, detalle de contenido, o cualquier página que requiera un header
  * con navegación y acciones contextuales.
+ * 
+ * ⚠️ TROUBLESHOOTING - SCROLL VERTICAL NO DESEADO:
+ * =========================================================
+ * Si la sección que contiene el header-product genera un scroll vertical no deseado,
+ * el problema está en los estilos de overflow de los contenedores padres.
+ * 
+ * CAUSA: Los contenedores padres (.content-area, .content-sections, .section-single)
+ * tienen `overflow-x: hidden` que puede causar comportamientos extraños de scroll
+ * cuando hay elementos con sombras o que se extienden fuera del contenedor.
+ * 
+ * SOLUCIÓN (aplicada en general-styles/styles.css):
+ * Cambiar `overflow-x: hidden` a `overflow: visible` en los contenedores:
+ * 
+ * ```css
+ * .content-area,
+ * .content-sections,
+ * .section-single,
+ * .section-dual,
+ * .section-triple,
+ * .section-quad {
+ *     overflow: visible;
+ * }
+ * ```
+ * 
+ * NOTA: El CSS del componente (header-product.css) ya tiene `overflow: visible`
+ * en .ubits-header-product y .widget-header-product, pero si los contenedores
+ * padres tienen overflow hidden, el problema persiste.
+ * 
+ * Fecha de fix: Enero 2026
+ * =========================================================
  *
  * REQUISITOS OBLIGATORIOS:
  * 1. CSS: <link rel="stylesheet" href="components/header-product.css">

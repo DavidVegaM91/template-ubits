@@ -9,6 +9,34 @@
  * Componente de paginación con navegación entre páginas y selector de items por página.
  * Incluye posicionamiento inteligente del dropdown según el espacio disponible en el viewport.
  * 
+ * ⚠️ TROUBLESHOOTING - DROPDOWN CORTADO O SCROLL VERTICAL:
+ * =========================================================
+ * Si el dropdown del selector de items por página se ve cortado o genera un scroll
+ * vertical en la sección, el problema está en los estilos de overflow de los contenedores.
+ * 
+ * CAUSA: Los contenedores padres (.content-area, .content-sections, .section-single)
+ * tienen `overflow-x: hidden` que corta los elementos posicionados absolutamente.
+ * 
+ * SOLUCIÓN (aplicada en general-styles/styles.css):
+ * Cambiar `overflow-x: hidden` a `overflow: visible` en los contenedores:
+ * 
+ * ```css
+ * .content-area,
+ * .content-sections,
+ * .section-single,
+ * .section-dual,
+ * .section-triple,
+ * .section-quad {
+ *     overflow: visible;
+ * }
+ * ```
+ * 
+ * NOTA: Los widgets específicos que necesitan ocultar overflow (como carruseles)
+ * deben tener su propio `overflow-x: hidden` individual.
+ * 
+ * Fecha de fix: Enero 2026
+ * =========================================================
+ * 
  * REQUISITOS OBLIGATORIOS:
  * 1. CSS: <link rel="stylesheet" href="components/paginator.css">
  * 2. CSS: <link rel="stylesheet" href="components/button.css">
