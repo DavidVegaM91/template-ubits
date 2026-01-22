@@ -1,37 +1,14 @@
 /* ========================================
    SEGUIMIENTO - Página de seguimiento
+   Empresa: Decoraciones Premium S.A.S.
+   Base de datos: seguimiento-data.js
    ======================================== */
 
 (function() {
     'use strict';
 
-    // Mapeo de nombres a avatares (consistente por persona)
-    const PERSONA_AVATARS = {
-        'María García López': 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop',
-        'Carlos Rodríguez Pérez': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop',
-        'Ana Martínez Sánchez': 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop',
-        'José López Fernández': 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop',
-        'Laura Hernández Gómez': 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop',
-        'Miguel González Ruiz': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop',
-        'Carmen Díaz Martín': 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop',
-        'Francisco Moreno Jiménez': 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100&h=100&fit=crop',
-        'Isabel Álvarez Vega': 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop',
-        'Antonio Romero Navarro': null, // Sin avatar - mostrará icono
-        'Elena Torres Gil': 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop',
-        'David Sánchez Castro': 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&h=100&fit=crop',
-        'Sofía Ramírez Ortega': 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=100&h=100&fit=crop',
-        'Pablo Jiménez Ruiz': null, // Sin avatar - mostrará icono
-        'Lucía Fernández Blanco': 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=100&h=100&fit=crop'
-    };
-
-    const NOMBRES = Object.keys(PERSONA_AVATARS);
-
-    const ESTADOS = ['Iniciada', 'Vencida', 'Finalizada'];
-    const PRIORIDADES = ['Alta', 'Media', 'Baja'];
-    const PLANES_BASE = ['PDI HII 2025', 'Formación Liderazgo', 'Desarrollo Técnico', 'Onboarding 2025', 'Capacitación Ventas', 'Gestión del Talento', 'Transformación Digital'];
-    const AREAS = ['Recursos Humanos', 'Tecnología', 'Marketing', 'Ventas', 'Operaciones', 'Finanzas', 'Legal'];
-
-    const COLUMN_IDS = ['id', 'nombre', 'asignado', 'idColaborador', 'plan', 'estado', 'prioridad', 'avance', 'fechaCreacion', 'fechaFinalizacion', 'creador', 'comentarios'];
+    // Los datos se cargan desde seguimiento-data.js (SEGUIMIENTO_DATABASE)
+    const COLUMN_IDS = ['id', 'nombre', 'asignado', 'idColaborador', 'area', 'plan', 'estado', 'prioridad', 'avance', 'fechaCreacion', 'fechaFinalizacion', 'creador', 'comentarios'];
     const VISIBLE_BY_DEFAULT = ['nombre', 'asignado', 'estado', 'avance', 'fechaCreacion', 'plan'];
 
     // Estado global
@@ -42,7 +19,7 @@
     let itemsPerPage = 10;
     let viewOnlySelected = false;
     let selectedIds = new Set();
-    let currentSort = { column: null, direction: 'asc' };
+    let currentSort = { column: 'fechaCreacion', direction: 'desc' }; // Por defecto: más reciente primero
     let currentFilters = {
         tipoActividad: [],
         plan: '',
@@ -56,14 +33,6 @@
         fechaVencimientoHasta: null
     };
     let searchQuery = '';
-
-    // Utilidades
-    function randomInt(min, max) {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-    function pick(arr) {
-        return arr[randomInt(0, arr.length - 1)];
-    }
 
     // Posicionar menú detectando viewport
     function positionMenuSmartly(menu, buttonRect, menuWidth = 200, menuHeight = 150) {
@@ -97,31 +66,32 @@
         menu.style.top = top + 'px';
     }
 
-    // Generar datos de ejemplo (100 filas)
+    // Generar datos desde la base de datos realista (seguimiento-data.js)
+    // Empresa: Decoraciones Premium S.A.S.
+    // 50 empleados, cada uno con 2 planes y 10 tareas = 600 actividades
     function generateData() {
-        const data = [];
-        for (let i = 1; i <= 100; i++) {
-            const nombrePersona = pick(NOMBRES);
-            const avatar = PERSONA_AVATARS[nombrePersona]; // Avatar consistente por persona
-            const area = pick(AREAS);
-            data.push({
-                id: 12400 + i,
-                nombre: 'People Management-Gestión del desempeño ' + randomInt(50, 90) + '% práctico - Módulo ' + i,
-                asignado: { nombre: nombrePersona, avatar: avatar },
-                idColaborador: String(1000000000 + randomInt(100000, 999999)),
-                plan: nombrePersona.split(' ')[0] + ' ' + pick(PLANES_BASE),
-                area: area,
-                estado: pick(ESTADOS),
-                prioridad: pick(PRIORIDADES),
-                avance: randomInt(0, 100), // Número de 0 a 100
-                fechaFinalizacion: [randomInt(1, 28), 'feb', 2026].join(' '),
-                fechaCreacion: [randomInt(1, 28), 'dic', 2025].join(' '),
-                creador: 'DS Daniel Sanchez Restrepo',
-                comentarios: randomInt(0, 5),
-                tipo: randomInt(0, 1) === 0 ? 'plan' : 'tarea'
-            });
+        if (typeof SEGUIMIENTO_DATABASE !== 'undefined' && SEGUIMIENTO_DATABASE.generarActividades) {
+            return SEGUIMIENTO_DATABASE.generarActividades();
         }
-        return data;
+        
+        // Fallback si no se carga el archivo de datos
+        console.warn('seguimiento-data.js no cargado. Usando datos de ejemplo mínimos.');
+        return [{
+            id: 10001,
+            tipo: 'tarea',
+            nombre: 'Tarea de ejemplo',
+            plan: 'Plan de ejemplo',
+            asignado: { nombre: 'Usuario Ejemplo', avatar: null },
+            idColaborador: '1011000001',
+            area: 'Administración',
+            estado: 'Iniciada',
+            prioridad: 'Media',
+            avance: 50,
+            fechaCreacion: '1 ene 2025',
+            fechaFinalizacion: '28 feb 2025',
+            creador: 'Gerencia General',
+            comentarios: 0
+        }];
     }
 
     // Inicializar visibilidad de columnas
@@ -247,13 +217,14 @@
             const avanceNum = typeof row.avance === 'number' ? row.avance : parseInt(row.avance) || 0;
             const avanceHtml = `<div class="seguimiento-avance"><div class="seguimiento-progress-bar"><div class="seguimiento-progress-bar-fill" style="width: ${avanceNum}%"></div></div><span class="ubits-body-sm-regular">${avanceNum}%</span></div>`;
 
-            const cols = ['_checkbox', 'id', 'nombre', 'asignado', 'idColaborador', 'plan', 'estado', 'prioridad', 'avance', 'fechaCreacion', 'fechaFinalizacion', 'creador', 'comentarios'];
+            const cols = ['_checkbox', 'id', 'nombre', 'asignado', 'idColaborador', 'area', 'plan', 'estado', 'prioridad', 'avance', 'fechaCreacion', 'fechaFinalizacion', 'creador', 'comentarios'];
             const cells = [
                 `<td class="seguimiento-td-checkbox"><input type="checkbox" class="seguimiento-row-check" data-id="${row.id}"${sel}></td>`,
                 `<td class="seguimiento-td" data-col="id">${row.id}</td>`,
                 `<td class="seguimiento-td" data-col="nombre"><span class="ubits-body-sm-regular">${row.nombre}</span></td>`,
                 `<td class="seguimiento-td" data-col="asignado"><div class="seguimiento-asignado">${asignadoHtml}</div></td>`,
                 `<td class="seguimiento-td" data-col="idColaborador"><span class="ubits-body-sm-regular">${row.idColaborador}</span></td>`,
+                `<td class="seguimiento-td" data-col="area"><span class="ubits-body-sm-regular">${row.area}</span></td>`,
                 `<td class="seguimiento-td" data-col="plan"><span class="ubits-body-sm-regular">${row.plan}</span></td>`,
                 `<td class="seguimiento-td" data-col="estado">${estadoTag}</td>`,
                 `<td class="seguimiento-td" data-col="prioridad">${prioridadHtml}</td>`,
@@ -358,6 +329,7 @@
             nombre: 'Nombre',
             asignado: 'Asignado',
             idColaborador: 'ID Colaborador',
+            area: 'Área',
             plan: 'Plan',
             estado: 'Estado',
             prioridad: 'Prioridad',
@@ -780,6 +752,7 @@
         const filterDataMap = {
             nombre: () => [...new Set(SEGUIMIENTO_DATA.map(r => r.nombre))],
             asignado: () => [...new Set(SEGUIMIENTO_DATA.map(r => r.asignado.nombre))],
+            area: () => [...new Set(SEGUIMIENTO_DATA.map(r => r.area))],
             plan: () => [...new Set(SEGUIMIENTO_DATA.map(r => r.plan))],
             creador: () => [...new Set(SEGUIMIENTO_DATA.map(r => r.creador))]
         };
@@ -817,6 +790,8 @@
                                     currentFilters.persona = selectedFilterValue;
                                 } else if (activeFilterColumn === 'plan') {
                                     currentFilters.plan = selectedFilterValue;
+                                } else if (activeFilterColumn === 'area') {
+                                    currentFilters.area = selectedFilterValue;
                                 }
                                 if (activeFilterColumn === 'nombre' || activeFilterColumn === 'creador') {
                                     searchQuery = selectedFilterValue;
@@ -1122,12 +1097,15 @@
             if (reasignarApply) {
                 reasignarApply.addEventListener('click', function() {
                     if (reasignarPersona) {
+                        // Buscar el avatar de la persona seleccionada en los datos existentes
+                        const personaExistente = SEGUIMIENTO_DATA.find(r => r.asignado.nombre === reasignarPersona);
+                        const avatarPersona = personaExistente ? personaExistente.asignado.avatar : null;
+                        
                         selectedIds.forEach(id => {
                             const row = SEGUIMIENTO_DATA.find(r => r.id === id);
                             if (row) {
                                 row.asignado.nombre = reasignarPersona;
-                                // Asignar avatar aleatorio o null
-                                row.asignado.avatar = UNSPLASH_AVATARS[Math.floor(Math.random() * UNSPLASH_AVATARS.length)];
+                                row.asignado.avatar = avatarPersona;
                             }
                         });
                         renderTable();
