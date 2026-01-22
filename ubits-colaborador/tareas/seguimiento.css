@@ -1032,3 +1032,99 @@
         align-items: flex-start;
     }
 }
+
+/* ========================================
+   INDICADORES DE SEGUIMIENTO
+   ======================================== */
+
+.widget-indicadores-seguimiento {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.seguimiento-indicador-card {
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 6px;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 48px;
+}
+
+.seguimiento-indicador-card .indicador-icon-badge {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 1px solid transparent;
+    box-sizing: border-box;
+}
+
+.seguimiento-indicador-card .indicador-icon-badge i {
+    font-size: 14px;
+    font-family: "Font Awesome 6 Pro", "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
+}
+
+.seguimiento-indicador-card .indicador-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.seguimiento-indicador-card .indicador-number {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 22px;
+    color: var(--ubits-fg-1-high);
+}
+
+.seguimiento-indicador-card .indicador-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.seguimiento-indicador-card .indicador-label {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 14px;
+    color: var(--ubits-fg-1-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.seguimiento-indicador-card .indicador-percentage {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 14px;
+    color: var(--ubits-fg-1-medium);
+}
+
+/* Responsive para indicadores */
+@media (max-width: 1023px) {
+    .widget-indicadores-seguimiento {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .widget-indicadores-seguimiento {
+        grid-template-columns: 1fr;
+    }
+    
+    .seguimiento-indicador-card {
+        min-height: 52px;
+    }
+}

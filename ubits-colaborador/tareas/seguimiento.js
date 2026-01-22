@@ -438,8 +438,9 @@
                 }, 50);
             }
             
-            // Actualizar contador
+            // Actualizar contador e indicadores
             updateResultsCount();
+            updateIndicadores();
             return;
         }
         
@@ -575,6 +576,62 @@
         el.textContent = `${data.length}/${SEGUIMIENTO_DATA.length}`;
     }
 
+    // Actualizar indicadores de seguimiento
+    function updateIndicadores() {
+        // Usar filteredData directamente (ya contiene los datos filtrados)
+        // NO llamar applyFiltersAndSearch() aquí porque ya se llamó antes
+        const data = filteredData;
+        
+        // Filtrar solo tareas (no planes)
+        const tareas = data.filter(item => item.tipo === 'tarea');
+        const totalTareas = tareas.length;
+        
+        // Calcular indicadores
+        const finalizadas = tareas.filter(t => t.estado === 'Finalizada').length;
+        const iniciadas = tareas.filter(t => t.estado === 'Iniciada').length;
+        const vencidas = tareas.filter(t => t.estado === 'Vencida').length;
+        const totalActividades = data.length;
+        
+        // Calcular porcentajes
+        const porcentajeFinalizadas = totalTareas > 0 ? Math.round((finalizadas / totalTareas) * 100) : 0;
+        const porcentajeIniciadas = totalTareas > 0 ? Math.round((iniciadas / totalTareas) * 100) : 0;
+        const porcentajeVencidas = totalTareas > 0 ? Math.round((vencidas / totalTareas) * 100) : 0;
+        
+        // Actualizar DOM - Total (primera card)
+        const cardTotal = document.querySelector('#seguimiento-indicadores .seguimiento-indicador-card:nth-child(1)');
+        if (cardTotal) {
+            const numberEl = cardTotal.querySelector('.indicador-number');
+            if (numberEl) numberEl.textContent = totalActividades;
+        }
+        
+        // Actualizar DOM - Finalizadas (segunda card)
+        const cardFinalizadas = document.querySelector('#seguimiento-indicadores .seguimiento-indicador-card:nth-child(2)');
+        if (cardFinalizadas) {
+            const numberEl = cardFinalizadas.querySelector('.indicador-number');
+            const percentageEl = cardFinalizadas.querySelector('.indicador-percentage');
+            if (numberEl) numberEl.textContent = finalizadas;
+            if (percentageEl) percentageEl.textContent = `${porcentajeFinalizadas}%`;
+        }
+        
+        // Actualizar DOM - Iniciadas (tercera card)
+        const cardIniciadas = document.querySelector('#seguimiento-indicadores .seguimiento-indicador-card:nth-child(3)');
+        if (cardIniciadas) {
+            const numberEl = cardIniciadas.querySelector('.indicador-number');
+            const percentageEl = cardIniciadas.querySelector('.indicador-percentage');
+            if (numberEl) numberEl.textContent = iniciadas;
+            if (percentageEl) percentageEl.textContent = `${porcentajeIniciadas}%`;
+        }
+        
+        // Actualizar DOM - Vencidas (cuarta card)
+        const cardVencidas = document.querySelector('#seguimiento-indicadores .seguimiento-indicador-card:nth-child(4)');
+        if (cardVencidas) {
+            const numberEl = cardVencidas.querySelector('.indicador-number');
+            const percentageEl = cardVencidas.querySelector('.indicador-percentage');
+            if (numberEl) numberEl.textContent = vencidas;
+            if (percentageEl) percentageEl.textContent = `${porcentajeVencidas}%`;
+        }
+    }
+
     // Renderizar chips de filtros aplicados
     function renderFiltrosAplicados() {
         const container = document.getElementById('filtros-chips-container');
@@ -603,8 +660,11 @@
                         searchToggle.style.display = 'flex';
                     }
                     currentPage = 1;
+                    applyFiltersAndSearch(); // Asegurar que los filtros se apliquen antes de renderizar
+                    applySorting();
                     renderTable();
                     updateResultsCount();
+                    updateIndicadores();
                     initPaginator();
                 }
             });
@@ -627,6 +687,7 @@
                     currentPage = 1;
                     renderTable();
                     updateResultsCount();
+                    updateIndicadores();
                     initPaginator();
                 }
             });
@@ -654,6 +715,7 @@
                         currentPage = 1;
                         renderTable();
                         updateResultsCount();
+                        updateIndicadores();
                         initPaginator();
                     }
                 });
@@ -682,6 +744,7 @@
                         currentPage = 1;
                         renderTable();
                         updateResultsCount();
+                        updateIndicadores();
                         initPaginator();
                     }
                 });
@@ -704,6 +767,7 @@
                         applySorting();
                         renderTable();
                         updateResultsCount();
+                        updateIndicadores();
                         initPaginator();
                     }
                 });
@@ -730,6 +794,7 @@
                         currentPage = 1;
                         renderTable();
                         updateResultsCount();
+                        updateIndicadores();
                         initPaginator();
                     }
                 });
@@ -752,6 +817,7 @@
                         applySorting();
                         renderTable();
                         updateResultsCount();
+                        updateIndicadores();
                         initPaginator();
                     }
                 });
@@ -774,6 +840,7 @@
                         applySorting();
                         renderTable();
                         updateResultsCount();
+                        updateIndicadores();
                         initPaginator();
                     }
                 });
@@ -796,6 +863,7 @@
                         applySorting();
                         renderTable();
                         updateResultsCount();
+                        updateIndicadores();
                         initPaginator();
                     }
                 });
@@ -834,6 +902,7 @@
                         applySorting();
                         renderTable();
                         updateResultsCount();
+                        updateIndicadores();
                         initPaginator();
                     }
                 });
@@ -872,6 +941,7 @@
                         applySorting();
                         renderTable();
                         updateResultsCount();
+                        updateIndicadores();
                         initPaginator();
                     }
                 });
@@ -905,6 +975,7 @@
                     currentPage = 1;
                     renderTable();
                     updateResultsCount();
+                    updateIndicadores();
                     initPaginator();
                 }
             });
@@ -937,6 +1008,7 @@
                     currentPage = 1;
                     renderTable();
                     updateResultsCount();
+                    updateIndicadores();
                     initPaginator();
                 }
             });
@@ -1123,6 +1195,7 @@
             applySorting();
             renderTable();
             updateResultsCount();
+            updateIndicadores();
             initPaginator();
             renderFiltrosAplicados();
         });
@@ -1135,6 +1208,7 @@
             applySorting();
             renderTable();
             updateResultsCount();
+            updateIndicadores();
             initPaginator();
             renderFiltrosAplicados();
         });
@@ -1147,6 +1221,7 @@
             applySorting();
             renderTable();
             updateResultsCount();
+            updateIndicadores();
             initPaginator();
             renderFiltrosAplicados();
         });
@@ -1265,8 +1340,11 @@
 
         // Resetear página y renderizar
         currentPage = 1;
+        applyFiltersAndSearch(); // Asegurar que los filtros se apliquen antes de renderizar
+        applySorting();
         renderTable();
         updateResultsCount();
+        updateIndicadores();
         initPaginator();
         renderFiltrosAplicados();
 
@@ -1303,6 +1381,7 @@
                 renderTable();
                 updateSelectAll();
                 updateResultsCount();
+                updateIndicadores();
             },
             onItemsPerPageChange: function(ipp) {
                 itemsPerPage = ipp;
@@ -1338,8 +1417,11 @@
                         onChange: function(val) {
                             searchQuery = val || '';
                             currentPage = 1;
+                            applyFiltersAndSearch(); // Asegurar que los filtros se apliquen antes de renderizar
+                            applySorting();
                             renderTable();
                             updateResultsCount();
+                            updateIndicadores();
                             initPaginator();
                             renderFiltrosAplicados();
                         }
@@ -1360,8 +1442,11 @@
                                 toggle.style.display = 'flex';
                                 isSearchMode = false;
                                 currentPage = 1;
+                                applyFiltersAndSearch(); // Asegurar que los filtros se apliquen antes de renderizar
+                                applySorting();
                                 renderTable();
                                 updateResultsCount();
+                                updateIndicadores();
                                 initPaginator();
                             });
                             container.appendChild(closeBtn);
@@ -1424,16 +1509,22 @@
         if (filtersLimpiar) filtersLimpiar.addEventListener('click', function() {
             clearFilters();
             currentPage = 1;
+            applyFiltersAndSearch(); // Asegurar que los filtros se apliquen antes de renderizar
+            applySorting();
             renderTable();
             updateResultsCount();
+            updateIndicadores();
             initPaginator();
             renderFiltrosAplicados();
         });
         if (filtersAplicar) filtersAplicar.addEventListener('click', function() {
             readFilterCheckboxes();
             currentPage = 1;
+            applyFiltersAndSearch(); // Asegurar que los filtros se apliquen antes de renderizar
+            applySorting();
             renderTable();
             updateResultsCount();
+            updateIndicadores();
             initPaginator();
             renderFiltrosAplicados();
             closeFiltersModal();
@@ -1568,6 +1659,7 @@
                 applySorting();
                 renderTable();
                 updateResultsCount();
+                updateIndicadores();
                 initPaginator();
                 renderFiltrosAplicados();
             }
@@ -1820,8 +1912,11 @@
                         }
 
                         currentPage = 1;
+                        applyFiltersAndSearch(); // Asegurar que los filtros se apliquen antes de renderizar
+                        applySorting();
                         renderTable();
                         updateResultsCount();
+                        updateIndicadores();
                         initPaginator();
                         renderFiltrosAplicados();
                     });
@@ -1869,6 +1964,7 @@
             renderTable();
             initPaginator();
             updateResultsCount();
+            updateIndicadores();
             toggleActionBar();
         });
     }
@@ -2158,6 +2254,7 @@
         renderTable();
         updateSelectAll();
         updateResultsCount();
+        updateIndicadores();
         initPaginator();
         renderFiltrosAplicados();
         initSearchToggle();
