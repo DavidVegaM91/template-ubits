@@ -279,6 +279,15 @@
   --ubits-bg-disabled: #edeeef;
   --ubits-bg-disabled-button: #edeeef;
   
+  /* Background Colors - Inverted (valores del modo oscuro en modo claro) */
+  --ubits-bg-1-inverted: #202837;
+  --ubits-bg-2-inverted: #0E1825;
+  --ubits-bg-3-inverted: #0c121c;
+  --ubits-bg-4-inverted: #050b15;
+  --ubits-bg-5-inverted: #000000;
+  --ubits-bg-disabled-inverted: #3b4350;
+  --ubits-bg-disabled-button-inverted: #3b4350;
+  
   /* ========================================
      BORDER COLORS
      ======================================== */
@@ -288,6 +297,12 @@
   --ubits-border-2: #b9bbc1;
   --ubits-border-disabled: #e1e2e5;
   --ubits-border-disabled-button: #e1e2e5;
+  
+  /* Border Colors - Inverted (valores del modo oscuro en modo claro) */
+  --ubits-border-1-inverted: #4f5561;
+  --ubits-border-2-inverted: #404754;
+  --ubits-border-disabled-inverted: #545a66;
+  --ubits-border-disabled-button-inverted: #545a66;
   
   /* Colored Borders */
   --ubits-border-blue: #a2a3fb;
@@ -680,6 +695,15 @@
   --ubits-bg-dim: #000000b2;
   --ubits-bg-disabled: #3b4350;
   --ubits-bg-disabled-button: #3b4350;
+  
+  /* Background Colors - Inverted (valores del modo claro en modo oscuro) */
+  --ubits-bg-1-inverted: #ffffff;
+  --ubits-bg-2-inverted: #F3F3F4;
+  --ubits-bg-3-inverted: #e7e8ea;
+  --ubits-bg-4-inverted: #dbdde0;
+  --ubits-bg-5-inverted: #ced0d5;
+  --ubits-bg-disabled-inverted: #edeeef;
+  --ubits-bg-disabled-button-inverted: #edeeef;
   
   /* ========================================
      BORDER COLORS - DARK MODE

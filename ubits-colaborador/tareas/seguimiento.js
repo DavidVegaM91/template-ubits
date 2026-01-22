@@ -8,7 +8,7 @@
     'use strict';
 
     // Los datos se cargan desde seguimiento-data.js (SEGUIMIENTO_DATABASE)
-    const COLUMN_IDS = ['id', 'nombre', 'asignado', 'username', 'area', 'lider', 'creador', 'plan', 'estado', 'prioridad', 'avance', 'fechaCreacion', 'fechaFinalizacion', 'comentarios'];
+    const COLUMN_IDS = ['id', 'nombre', 'asignado', 'username', 'cargo', 'area', 'lider', 'creador', 'plan', 'estado', 'prioridad', 'avance', 'fechaCreacion', 'fechaFinalizacion', 'comentarios'];
     const VISIBLE_BY_DEFAULT = ['nombre', 'asignado', 'estado', 'prioridad', 'avance', 'fechaCreacion'];
 
     // Estado global
@@ -273,7 +273,22 @@
         filteredData = data;
     }
 
-    // Función auxiliar para parsear fechas en formato "1 ene 2026"
+    // Función auxiliar para formatear fecha para mostrar (sin hora)
+    // Toma una fecha en formato "1 ene 2026 08:00" y devuelve "1 ene 2026"
+    function formatearFechaParaMostrar(fechaStr) {
+        if (!fechaStr) return '';
+        
+        // Si tiene hora, removerla
+        const partes = fechaStr.trim().split(/\s+/);
+        if (partes.length >= 3) {
+            // Tomar solo día, mes y año
+            return `${partes[0]} ${partes[1]} ${partes[2]}`;
+        }
+        
+        return fechaStr;
+    }
+
+    // Función auxiliar para parsear fechas en formato "1 ene 2026" o "1 ene 2026 08:00"
     function parseFecha(fechaStr) {
         if (!fechaStr) return null;
         
@@ -283,17 +298,25 @@
             'jul': 6, 'ago': 7, 'sep': 8, 'oct': 9, 'nov': 10, 'dic': 11
         };
         
-        // Formato esperado: "1 ene 2026" o "01/01/2026" (si viene del date picker)
+        // Formato esperado: "1 ene 2026" o "1 ene 2026 08:00" o "01/01/2026" (si viene del date picker)
         const partes = fechaStr.trim().split(/[\s\/\-]+/);
         
-        if (partes.length === 3) {
-            let dia, mes, año;
+        if (partes.length >= 3) {
+            let dia, mes, año, hora = 0, minutos = 0;
             
-            // Si tiene formato "1 ene 2026"
+            // Si tiene formato "1 ene 2026" o "1 ene 2026 08:00"
             if (partes[1].toLowerCase() in meses) {
                 dia = parseInt(partes[0], 10);
                 mes = meses[partes[1].toLowerCase()];
                 año = parseInt(partes[2], 10);
+                
+                // Si tiene hora (formato "1 ene 2026 08:00")
+                // partes[3] sería "08:00" si existe
+                if (partes.length >= 4 && partes[3] && partes[3].includes(':')) {
+                    const horaPartes = partes[3].split(':');
+                    hora = parseInt(horaPartes[0], 10) || 0;
+                    minutos = parseInt(horaPartes[1], 10) || 0;
+                }
             } 
             // Si tiene formato "01/01/2026" (del date picker)
             else {
@@ -303,9 +326,7 @@
             }
             
             if (!isNaN(dia) && !isNaN(mes) && !isNaN(año)) {
-                const fecha = new Date(año, mes, dia);
-                // Normalizar a medianoche para comparaciones
-                fecha.setHours(0, 0, 0, 0);
+                const fecha = new Date(año, mes, dia, hora, minutos);
                 return fecha;
             }
         }
@@ -325,6 +346,21 @@
             if (currentSort.column === 'asignado') {
                 valA = a.asignado.nombre;
                 valB = b.asignado.nombre;
+            }
+
+            // Manejar fechas (fechaCreacion, fechaFinalizacion)
+            if (currentSort.column === 'fechaCreacion' || currentSort.column === 'fechaFinalizacion') {
+                const fechaA = parseFecha(valA);
+                const fechaB = parseFecha(valB);
+                
+                if (fechaA && fechaB) {
+                    const cmp = fechaA.getTime() - fechaB.getTime();
+                    return currentSort.direction === 'asc' ? cmp : -cmp;
+                }
+                // Si alguna fecha no se puede parsear, ponerla al final
+                if (fechaA && !fechaB) return currentSort.direction === 'asc' ? -1 : 1;
+                if (!fechaA && fechaB) return currentSort.direction === 'asc' ? 1 : -1;
+                return 0;
             }
 
             // Comparar strings
@@ -435,13 +471,14 @@
             const avanceNum = typeof row.avance === 'number' ? row.avance : parseInt(row.avance) || 0;
             const avanceHtml = `<div class="seguimiento-avance"><div class="seguimiento-progress-bar"><div class="seguimiento-progress-bar-fill" style="width: ${avanceNum}%"></div></div><span class="ubits-body-sm-regular">${avanceNum}%</span></div>`;
 
-            const cols = ['_checkbox', 'id', 'nombre', 'asignado', 'username', 'area', 'lider', 'creador', 'plan', 'estado', 'prioridad', 'avance', 'fechaCreacion', 'fechaFinalizacion', 'comentarios'];
+            const cols = ['_checkbox', 'id', 'nombre', 'asignado', 'username', 'cargo', 'area', 'lider', 'creador', 'plan', 'estado', 'prioridad', 'avance', 'fechaCreacion', 'fechaFinalizacion', 'comentarios'];
             const cells = [
                 `<td class="seguimiento-td-checkbox"><input type="checkbox" class="seguimiento-row-check" data-id="${row.id}"${sel}></td>`,
                 `<td class="seguimiento-td" data-col="id">${row.id}</td>`,
                 `<td class="seguimiento-td" data-col="nombre"><span class="ubits-body-sm-regular">${row.nombre}</span></td>`,
                 `<td class="seguimiento-td" data-col="asignado"><div class="seguimiento-asignado">${asignadoHtml}</div></td>`,
                 `<td class="seguimiento-td" data-col="username"><span class="ubits-body-sm-regular">${row.asignado.username || ''}</span></td>`,
+                `<td class="seguimiento-td" data-col="cargo"><span class="ubits-body-sm-regular">${row.cargo || ''}</span></td>`,
                 `<td class="seguimiento-td" data-col="area"><span class="ubits-body-sm-regular">${row.area}</span></td>`,
                 `<td class="seguimiento-td" data-col="lider"><span class="ubits-body-sm-regular">${row.lider || ''}</span></td>`,
                 `<td class="seguimiento-td" data-col="creador"><span class="ubits-body-sm-regular">${row.creador}</span></td>`,
@@ -449,8 +486,8 @@
                 `<td class="seguimiento-td" data-col="estado">${estadoTag}</td>`,
                 `<td class="seguimiento-td" data-col="prioridad">${prioridadHtml}</td>`,
                 `<td class="seguimiento-td" data-col="avance">${avanceHtml}</td>`,
-                `<td class="seguimiento-td" data-col="fechaCreacion"><span class="ubits-body-sm-regular">${row.fechaCreacion}</span></td>`,
-                `<td class="seguimiento-td" data-col="fechaFinalizacion"><span class="ubits-body-sm-regular">${row.fechaFinalizacion}</span></td>`,
+                `<td class="seguimiento-td" data-col="fechaCreacion"><span class="ubits-body-sm-regular">${formatearFechaParaMostrar(row.fechaCreacion)}</span></td>`,
+                `<td class="seguimiento-td" data-col="fechaFinalizacion"><span class="ubits-body-sm-regular">${formatearFechaParaMostrar(row.fechaFinalizacion)}</span></td>`,
                 `<td class="seguimiento-td" data-col="comentarios"><span class="ubits-body-sm-regular">${comentariosText}</span></td>`
             ];
 
@@ -941,6 +978,7 @@
             nombre: 'Nombre de actividad',
             asignado: 'Asignado',
             username: 'Username',
+            cargo: 'Cargo',
             area: 'Área',
             lider: 'Lider',
             plan: 'Plan',
@@ -2035,7 +2073,7 @@
                 if (selectedIds.size === 0) return;
 
                 const selectedRows = SEGUIMIENTO_DATA.filter(r => selectedIds.has(r.id));
-                const headers = ['ID', 'Nombre', 'Asignado', 'Username', 'Área', 'Lider', 'Creador', 'Plan', 'Estado', 'Prioridad', 'Avance', 'Fecha Finalización', 'Fecha Creación', 'Comentarios'];
+                const headers = ['ID', 'Nombre', 'Asignado', 'Username', 'Cargo', 'Área', 'Lider', 'Creador', 'Plan', 'Estado', 'Prioridad', 'Avance', 'Fecha Finalización', 'Fecha Creación', 'Comentarios'];
                 const csvRows = [headers.join(',')];
 
                 selectedRows.forEach(row => {
@@ -2044,6 +2082,7 @@
                         `"${row.nombre.replace(/"/g, '""')}"`,
                         `"${row.asignado.nombre.replace(/"/g, '""')}"`,
                         `"${(row.asignado.username || '').replace(/"/g, '""')}"`,
+                        `"${(row.cargo || '').replace(/"/g, '""')}"`,
                         `"${row.area.replace(/"/g, '""')}"`,
                         `"${(row.lider || '').replace(/"/g, '""')}"`,
                         `"${row.creador.replace(/"/g, '""')}"`,
@@ -2115,6 +2154,7 @@
         initColumnVisibility();
         initNav();
         buildColumnsMenu();
+        applySorting(); // Aplicar ordenamiento por defecto antes de renderizar
         renderTable();
         updateSelectAll();
         updateResultsCount();

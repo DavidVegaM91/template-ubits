@@ -1288,7 +1288,10 @@ function formatearFecha(fecha) {
     const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
     const mes = meses[fecha.getMonth()];
     const anio = fecha.getFullYear();
-    return `${dia} ${mes} ${anio}`;
+    const hora = fecha.getHours();
+    const minutos = fecha.getMinutes();
+    // Formato: "1 ene 2026 08:00"
+    return `${dia} ${mes} ${anio} ${String(hora).padStart(2, '0')}:${String(minutos).padStart(2, '0')}`;
 }
 
 // ============================================
@@ -1373,6 +1376,39 @@ function generarUsername(nombre) {
 }
 
 // ============================================
+// FUNCIÓN PARA OBTENER HORA DE CREACIÓN SEGÚN TIPO DE EMPLEADO
+// Ordenamiento "más reciente primero" → horas tardías aparecen primero
+// Gerente General: 8:00-9:00 (aparece al final)
+// Jefes: 10:00-11:00 (aparecen después)
+// Empleados: 14:00-15:00 (aparecen primero)
+// ============================================
+function obtenerHoraCreacion(empleado) {
+    const area = empleado.area || '';
+    const cargo = empleado.cargo || '';
+    
+    // Gerente General
+    if (area === 'Gerencia General' || empleado.nombre === GERENTE_GENERAL.nombre) {
+        // Hora temprana: 8:00-9:00 (aparece al final con ordenamiento "más reciente primero")
+        return { hora: 8, minutos: Math.floor(Math.random() * 60) };
+    }
+    
+    // Jefes (cargos que incluyen "Jefe", "Director", "Gerente", "Coordinador")
+    const cargoLower = cargo.toLowerCase();
+    if (cargoLower.includes('jefe') || 
+        cargoLower.includes('director') || 
+        cargoLower.includes('gerente') || 
+        cargoLower.includes('coordinador') ||
+        cargoLower.includes('coordinadora')) {
+        // Hora media: 10:00-11:00
+        return { hora: 10, minutos: Math.floor(Math.random() * 60) };
+    }
+    
+    // Empleados regulares
+    // Hora tardía: 14:00-15:00 (aparecen primero con ordenamiento "más reciente primero")
+    return { hora: 14, minutos: Math.floor(Math.random() * 60) };
+}
+
+// ============================================
 // FUNCIÓN PARA OBTENER EL JEFE DE UN EMPLEADO
 // Jerarquía: Empleados → Jefe de Área → Gerente General
 // ============================================
@@ -1448,9 +1484,12 @@ function generarBaseDeDatos() {
         // Plan 1: Semanas 1-3 (1 ene - 16 ene) - 5 tareas
         // Plan 2: Semanas 4-5 (19 ene - 30 ene) - 5 tareas
         
+        // Asignar hora según tipo de empleado (una vez para todos los planes del empleado)
+        const horaCreacion = obtenerHoraCreacion(empleado);
+        
         planesEmpleado.forEach((plan, planIdx) => {
             // Todos los planes: creados 1 enero, terminan 30 enero
-            const fechaCreacionPlan = new Date(2026, 0, 1);
+            const fechaCreacionPlan = new Date(2026, 0, 1, horaCreacion.hora, horaCreacion.minutos);
             const fechaFinPlan = new Date(2026, 0, 30);
             
             const nombrePlan = `${plan.nombre} - ${empleado.nombre.split(' ')[0]}`;
@@ -1482,13 +1521,15 @@ function generarBaseDeDatos() {
             let tareaIndex = 0;
             // Fecha de creación de tareas: 1 ene (Plan 1) o 19 ene (Plan 2)
             const fechaCreacionTareas = planIdx === 0 
-                ? new Date(2026, 0, 1)   // Plan 1: 1 de enero
-                : new Date(2026, 0, 19); // Plan 2: 19 de enero
+                ? new Date(2026, 0, 1, horaCreacion.hora, horaCreacion.minutos)   // Plan 1: 1 de enero
+                : new Date(2026, 0, 19, horaCreacion.hora, horaCreacion.minutos); // Plan 2: 19 de enero
             
             distribucionSemanas.forEach(({ semana, cantidad }) => {
                 for (let i = 0; i < cantidad && tareaIndex < tareasParaPlan.length; i++) {
                     const tarea = tareasParaPlan[tareaIndex];
                     const fechaCreacionTarea = new Date(fechaCreacionTareas);
+                    // Agregar minutos adicionales para variar las horas de las tareas (máximo 30 minutos)
+                    fechaCreacionTarea.setMinutes(fechaCreacionTarea.getMinutes() + (i * 5));
                     const fechaFinTarea = new Date(semana.fin);
                     
                     const estadoTarea = determinarEstado(fechaFinTarea, fechaCreacionTarea);

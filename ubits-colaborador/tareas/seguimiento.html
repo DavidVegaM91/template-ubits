@@ -27,6 +27,7 @@
     <link rel="stylesheet" href="../../components/paginator.css">
     <link rel="stylesheet" href="../../components/toast.css">
     <link rel="stylesheet" href="../../components/empty-state.css">
+    <link rel="stylesheet" href="../../components/tooltip.css">
 
     <!-- Página -->
     <link rel="stylesheet" href="./seguimiento.css">
@@ -75,28 +76,28 @@
 
                             <!-- Action bar (solo cuando hay selección) -->
                             <div class="widget-action-bar-seguimiento" id="seguimiento-action-bar">
-                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="seguimiento-ver-seleccionados">
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="seguimiento-ver-seleccionados">
                                     <i class="far fa-eye"></i>
                                     <span>Ver seleccionados</span>
                                 </button>
                                 <div class="seguimiento-action-buttons">
-                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="seguimiento-reasignar" title="Reasignar">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="seguimiento-reasignar" title="Reasignar">
                                         <i class="far fa-user-plus"></i>
                                         <span>Reasignar</span>
                                     </button>
-                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="seguimiento-cambiar-prioridad" title="Cambiar prioridad">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="seguimiento-cambiar-prioridad" title="Cambiar prioridad">
                                         <i class="far fa-sliders"></i>
                                         <span>Cambiar prioridad</span>
                                     </button>
-                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="seguimiento-cambiar-estado" title="Cambiar estado">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="seguimiento-cambiar-estado" title="Cambiar estado">
                                         <i class="far fa-rotate"></i>
                                         <span>Cambiar estado</span>
                                     </button>
-                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="seguimiento-descargar" title="Descargar CSV">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="seguimiento-descargar" title="Descargar CSV">
                                         <i class="far fa-download"></i>
                                         <span>Descargar</span>
                                     </button>
-                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md seguimiento-btn-eliminar" id="seguimiento-eliminar" title="Eliminar">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm seguimiento-btn-eliminar" id="seguimiento-eliminar" title="Eliminar">
                                         <i class="far fa-trash"></i>
                                         <span>Eliminar</span>
                                     </button>
@@ -119,6 +120,7 @@
                                             <th class="seguimiento-th seguimiento-th-filterable" data-col="nombre">Nombre de actividad <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-filter-btn" data-filter="nombre" aria-label="Filtrar por nombre"><i class="far fa-filter"></i></button></th>
                                             <th class="seguimiento-th seguimiento-th-filterable" data-col="asignado">Asignado <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-filter-btn" data-filter="asignado" aria-label="Filtrar por asignado"><i class="far fa-filter"></i></button></th>
                                             <th class="seguimiento-th seguimiento-th-filterable" data-col="username">Username <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-filter-btn" data-filter="username" aria-label="Filtrar por username"><i class="far fa-filter"></i></button></th>
+                                            <th class="seguimiento-th" data-col="cargo">Cargo</th>
                                             <th class="seguimiento-th seguimiento-th-filterable" data-col="area">Área <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-filter-btn" data-filter="area" aria-label="Filtrar por área"><i class="far fa-filter"></i></button></th>
                                             <th class="seguimiento-th seguimiento-th-filterable" data-col="lider">Lider <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-filter-btn" data-filter="lider" aria-label="Filtrar por lider"><i class="far fa-filter"></i></button></th>
                                             <th class="seguimiento-th seguimiento-th-filterable" data-col="creador">Creador <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-filter-btn" data-filter="creador" aria-label="Filtrar por creador"><i class="far fa-filter"></i></button></th>
@@ -387,7 +389,8 @@
     <!-- Toast container -->
     <div id="ubits-toast-container"></div>
 
-    <script src="../../components/sidebar.js"></script>
+        <script src="../../components/tooltip.js"></script>
+<script src="../../components/sidebar.js"></script>
     <script src="../../components/sub-nav.js"></script>
     <script src="../../components/tab-bar.js"></script>
     <script src="../../components/floating-menu.js"></script>

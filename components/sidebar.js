@@ -280,11 +280,118 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
         }
     }
     
-    // Re-inicializar tooltips y funcionalidad
-    if (typeof initProfileTooltips === 'function') {
-        console.log('Inicializando tooltips...');
-        initProfileTooltips();
+    // Inicializar tooltips DESPUÉS de que el HTML esté insertado
+    // Usar setTimeout para asegurar que el DOM esté completamente renderizado
+    setTimeout(() => {
+        initSidebarTooltips();
+    }, 50);
+    
+    // Inicializar tooltips oficiales UBITS para los botones del sidebar
+    // Solo en desktop (pantallas >= 1024px) y excluyendo logo y avatar
+    function initSidebarTooltips() {
+        // Verificar si estamos en desktop
+        if (window.innerWidth < 1024) {
+            return; // No mostrar tooltips en móvil
+        }
+        
+        // Seleccionar todos los botones con data-tooltip (excluyendo logo y avatar)
+        // El logo no tiene data-tooltip y el avatar tampoco, así que están excluidos automáticamente
+        const tooltipButtons = document.querySelectorAll('.sidebar .nav-button[data-tooltip]');
+        
+        if (tooltipButtons.length === 0) {
+            console.log('No se encontraron botones con data-tooltip en el sidebar');
+            return;
+        }
+        
+        console.log('Inicializando tooltips para', tooltipButtons.length, 'botones del sidebar');
+        
+        tooltipButtons.forEach(button => {
+            // Remover listeners anteriores si existen (para evitar duplicados)
+            if (button._tooltipShowHandler) {
+                button.removeEventListener('mouseenter', button._tooltipShowHandler);
+                button.removeEventListener('mouseleave', button._tooltipHideHandler);
+            }
+            
+            // Configurar atributos para tooltips sin cola, posición derecha
+            button.setAttribute('data-tooltip-no-arrow', '');
+            button.setAttribute('data-tooltip-position', 'right');
+            button.setAttribute('data-tooltip-align', 'center');
+            button.setAttribute('data-tooltip-delay', '200');
+        });
+        
+        // Inicializar tooltips si la función está disponible
+        if (typeof initTooltip === 'function') {
+            console.log('Usando initTooltip() para inicializar tooltips');
+            initTooltip('.sidebar .nav-button[data-tooltip]');
+        } else if (typeof showTooltip === 'function') {
+            // Fallback: inicializar manualmente con showTooltip
+            console.log('Usando showTooltip() manualmente para inicializar tooltips');
+            tooltipButtons.forEach(button => {
+                const tooltipText = button.getAttribute('data-tooltip');
+                
+                let tooltipTimeout;
+                let currentTooltip = null;
+                
+                const showTooltipHandler = function() {
+                    // Verificar que sigamos en desktop antes de mostrar
+                    if (window.innerWidth < 1024) {
+                        return;
+                    }
+                    tooltipTimeout = setTimeout(() => {
+                        if (typeof showTooltip === 'function') {
+                            currentTooltip = showTooltip(button, tooltipText, {
+                                position: 'right',
+                                align: 'center',
+                                delay: 0,
+                                duration: 0,
+                                noArrow: true
+                            });
+                        }
+                    }, 200);
+                };
+                
+                const hideTooltipHandler = function() {
+                    if (tooltipTimeout) clearTimeout(tooltipTimeout);
+                    if (typeof hideTooltip === 'function') {
+                        hideTooltip();
+                    }
+                    currentTooltip = null;
+                };
+                
+                button.addEventListener('mouseenter', showTooltipHandler);
+                button.addEventListener('mouseleave', hideTooltipHandler);
+                
+                // Guardar handlers para poder limpiarlos si es necesario
+                button._tooltipShowHandler = showTooltipHandler;
+                button._tooltipHideHandler = hideTooltipHandler;
+            });
+        } else {
+            console.warn('Tooltip component no está disponible. Asegúrate de importar tooltip.js');
+            // Intentar de nuevo después de un breve delay
+            setTimeout(() => {
+                if (typeof initTooltip === 'function' || typeof showTooltip === 'function') {
+                    initSidebarTooltips();
+                }
+            }, 500);
+        }
     }
+    
+    // Re-inicializar tooltips en resize (por si cambia de móvil a desktop)
+    let resizeTimeout;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            // Si cambiamos de móvil a desktop, inicializar tooltips
+            if (window.innerWidth >= 1024) {
+                initSidebarTooltips();
+            } else {
+                // Si cambiamos a móvil, ocultar tooltips activos
+                if (typeof hideTooltip === 'function') {
+                    hideTooltip();
+                }
+            }
+        }, 250);
+    });
     
     // Re-inicializar dark mode toggle
     if (typeof initDarkModeToggle === 'function') {

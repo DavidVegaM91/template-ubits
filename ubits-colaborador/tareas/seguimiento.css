@@ -238,10 +238,13 @@
     background: var(--ubits-bg-2);
 }
 
-.seguimiento-th-checkbox,
-.seguimiento-td-checkbox {
-    max-width: 55px;
-    width: 55px;
+.seguimiento-table .seguimiento-th-checkbox,
+.seguimiento-table .seguimiento-td-checkbox {
+    width: 55px !important;
+    min-width: 55px !important;
+    max-width: 55px !important;
+    padding: 0 !important;
+    box-sizing: border-box;
     text-align: center;
     vertical-align: middle;
 }
@@ -507,7 +510,6 @@
 .widget-paginador-seguimiento {
     display: flex;
     justify-content: center;
-    padding: 16px 0;
 }
 
 /* Empty State */

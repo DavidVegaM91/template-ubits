@@ -1,0 +1,143 @@
+/* ========================================
+   UBITS TOOLTIP COMPONENT
+   ======================================== */
+
+.ubits-tooltip {
+    position: fixed;
+    z-index: 10000;
+    max-width: 320px;
+    min-width: 120px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.ubits-tooltip.ubits-tooltip--visible {
+    opacity: 1;
+}
+
+.ubits-tooltip__content {
+    /* Por defecto: bg-1 con modifier inverted y fg-1-high con modifier inverted */
+    background: var(--ubits-bg-1-inverted);
+    color: var(--ubits-fg-1-high-inverted);
+    padding: 8px 12px;
+    border-radius: 8px;
+    box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.14), 0px 0px 2px 0px rgba(0, 0, 0, 0.12);
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 13px;
+    line-height: 19.5px;
+    font-weight: 400;
+    word-wrap: break-word;
+    position: relative;
+}
+
+/* Variación normal (bg-1 y fg-1-high sin modificadores) */
+.ubits-tooltip--normal .ubits-tooltip__content {
+    background: var(--ubits-bg-1);
+    color: var(--ubits-fg-1-high);
+}
+
+/* Tooltip arrow/tail */
+.ubits-tooltip__arrow {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-style: solid;
+}
+
+/* Ocultar flecha si no tiene cola */
+.ubits-tooltip--no-arrow .ubits-tooltip__arrow {
+    display: none;
+}
+
+/* Arrow positions: TOP */
+.ubits-tooltip--top .ubits-tooltip__arrow {
+    bottom: -9px;
+    border-width: 9px 9px 0 9px;
+    border-color: var(--ubits-bg-1-inverted) transparent transparent transparent;
+}
+
+.ubits-tooltip--top.ubits-tooltip--normal .ubits-tooltip__arrow {
+    border-color: var(--ubits-bg-1) transparent transparent transparent;
+}
+
+.ubits-tooltip--top.ubits-tooltip--left .ubits-tooltip__arrow {
+    left: 12px;
+}
+
+.ubits-tooltip--top.ubits-tooltip--center .ubits-tooltip__arrow {
+    left: calc(50% - 9px);
+}
+
+.ubits-tooltip--top.ubits-tooltip--right .ubits-tooltip__arrow {
+    right: 12px;
+}
+
+/* Arrow positions: BOTTOM */
+.ubits-tooltip--bottom .ubits-tooltip__arrow {
+    top: -9px;
+    border-width: 0 9px 9px 9px;
+    border-color: transparent transparent var(--ubits-bg-1-inverted) transparent;
+}
+
+.ubits-tooltip--bottom.ubits-tooltip--normal .ubits-tooltip__arrow {
+    border-color: transparent transparent var(--ubits-bg-1) transparent;
+}
+
+.ubits-tooltip--bottom.ubits-tooltip--left .ubits-tooltip__arrow {
+    left: 12px;
+}
+
+.ubits-tooltip--bottom.ubits-tooltip--center .ubits-tooltip__arrow {
+    left: calc(50% - 9px);
+}
+
+.ubits-tooltip--bottom.ubits-tooltip--right .ubits-tooltip__arrow {
+    right: 12px;
+}
+
+/* Arrow positions: LEFT */
+.ubits-tooltip--left .ubits-tooltip__arrow {
+    right: -9px;
+    border-width: 9px 0 9px 9px;
+    border-color: transparent transparent transparent var(--ubits-bg-1-inverted);
+}
+
+.ubits-tooltip--left.ubits-tooltip--normal .ubits-tooltip__arrow {
+    border-color: transparent transparent transparent var(--ubits-bg-1);
+}
+
+.ubits-tooltip--left.ubits-tooltip--top .ubits-tooltip__arrow {
+    top: 12px;
+}
+
+.ubits-tooltip--left.ubits-tooltip--center .ubits-tooltip__arrow {
+    top: calc(50% - 9px);
+}
+
+.ubits-tooltip--left.ubits-tooltip--bottom .ubits-tooltip__arrow {
+    bottom: 12px;
+}
+
+/* Arrow positions: RIGHT */
+.ubits-tooltip--right .ubits-tooltip__arrow {
+    left: -9px;
+    border-width: 9px 9px 9px 0;
+    border-color: transparent var(--ubits-bg-1-inverted) transparent transparent;
+}
+
+.ubits-tooltip--right.ubits-tooltip--normal .ubits-tooltip__arrow {
+    border-color: transparent var(--ubits-bg-1) transparent transparent;
+}
+
+.ubits-tooltip--right.ubits-tooltip--top .ubits-tooltip__arrow {
+    top: 12px;
+}
+
+.ubits-tooltip--right.ubits-tooltip--center .ubits-tooltip__arrow {
+    top: calc(50% - 9px);
+}
+
+.ubits-tooltip--right.ubits-tooltip--bottom .ubits-tooltip__arrow {
+    bottom: 12px;
+}

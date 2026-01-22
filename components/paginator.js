@@ -169,6 +169,16 @@ function loadPaginator(containerId, options = {}) {
     function renderPaginator() {
         const totalPages = getTotalPages();
         
+        // Si los items totales son menores o iguales a itemsPerPage, ocultar el paginador completamente
+        if (config.totalItems <= itemsPerPage) {
+            container.innerHTML = '';
+            container.style.display = 'none';
+            return;
+        }
+        
+        // Mostrar el contenedor si estaba oculto
+        container.style.display = '';
+        
         // Limpiar contenedor pero preservar el selector si existe
         const existingSelectContainer = document.getElementById(`${containerId}-items-select`);
         const selectContainerParent = existingSelectContainer ? existingSelectContainer.parentElement : null;
