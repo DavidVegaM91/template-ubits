@@ -280,10 +280,38 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
         }
     }
     
+    // Función para actualizar el tooltip del botón de modo oscuro/claro
+    function updateDarkModeTooltip() {
+        const darkModeButton = document.getElementById('darkmode-toggle');
+        if (!darkModeButton) return;
+        
+        const currentTheme = document.body.getAttribute('data-theme') || 'light';
+        const tooltipText = currentTheme === 'dark' ? 'Modo claro' : 'Modo oscuro';
+        
+        // Ocultar tooltip actual si está visible
+        if (typeof hideTooltip === 'function') {
+            hideTooltip();
+        }
+        
+        // Actualizar el atributo data-tooltip
+        darkModeButton.setAttribute('data-tooltip', tooltipText);
+        
+        // Reinicializar tooltip para este botón (initTooltip ahora maneja la limpieza de listeners)
+        if (typeof initTooltip === 'function') {
+            setTimeout(() => {
+                initTooltip('#darkmode-toggle');
+            }, 50);
+        }
+    }
+    
+    // Exportar función globalmente para que pueda ser llamada desde script.js
+    window.updateDarkModeTooltip = updateDarkModeTooltip;
+    
     // Inicializar tooltips DESPUÉS de que el HTML esté insertado
     // Usar setTimeout para asegurar que el DOM esté completamente renderizado
     setTimeout(() => {
         initSidebarTooltips();
+        updateDarkModeTooltip(); // Actualizar tooltip del botón de modo oscuro
     }, 50);
     
     // Inicializar tooltips oficiales UBITS para los botones del sidebar

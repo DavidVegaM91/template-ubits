@@ -57,6 +57,11 @@ function toggleDarkMode() {
             darkModeButtonContainer.setAttribute('data-tooltip', 'Modo oscuro');
             darkModeButtonContainer.setAttribute('data-theme', 'light');
         }
+        
+        // Reinicializar tooltip si la función está disponible
+        if (typeof updateDarkModeTooltip === 'function') {
+            updateDarkModeTooltip();
+        }
     }
     
     console.log(`Modo ${newTheme === 'dark' ? 'oscuro' : 'claro'} activado`);
@@ -91,19 +96,33 @@ function loadSavedTheme() {
     if (savedTheme) {
         document.body.setAttribute('data-theme', savedTheme);
         
-        // Actualizar icono y tooltip si es modo oscuro
+        // Actualizar icono y tooltip según el tema guardado
+        const darkModeButton = document.querySelector('#darkmode-toggle i');
+        const darkModeButtonContainer = document.querySelector('#darkmode-toggle');
+        
         if (savedTheme === 'dark') {
-            const darkModeButton = document.querySelector('#darkmode-toggle i');
-            const darkModeButtonContainer = document.querySelector('#darkmode-toggle');
-            
             if (darkModeButton) {
                 darkModeButton.className = 'fa fa-sun-bright';
             }
-            
             if (darkModeButtonContainer) {
                 darkModeButtonContainer.setAttribute('data-tooltip', 'Modo claro');
                 darkModeButtonContainer.setAttribute('data-theme', 'dark');
             }
+        } else {
+            if (darkModeButton) {
+                darkModeButton.className = 'fa fa-moon';
+            }
+            if (darkModeButtonContainer) {
+                darkModeButtonContainer.setAttribute('data-tooltip', 'Modo oscuro');
+                darkModeButtonContainer.setAttribute('data-theme', 'light');
+            }
+        }
+        
+        // Reinicializar tooltip si la función está disponible
+        if (typeof updateDarkModeTooltip === 'function') {
+            setTimeout(() => {
+                updateDarkModeTooltip();
+            }, 100);
         }
     }
 }

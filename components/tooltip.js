@@ -322,6 +322,16 @@
         const elements = document.querySelectorAll(selector);
         
         elements.forEach(element => {
+            // Limpiar listeners anteriores si existen (para evitar duplicados)
+            if (element._tooltipInitialized) {
+                if (element._tooltipMouseEnterHandler) {
+                    element.removeEventListener('mouseenter', element._tooltipMouseEnterHandler);
+                    element.removeEventListener('mouseleave', element._tooltipMouseLeaveHandler);
+                    element.removeEventListener('focus', element._tooltipFocusHandler);
+                    element.removeEventListener('blur', element._tooltipBlurHandler);
+                }
+            }
+            
             const text = element.getAttribute('data-tooltip');
             const position = element.getAttribute('data-tooltip-position') || 'top';
             const align = element.getAttribute('data-tooltip-align') || 'center';
@@ -334,7 +344,7 @@
             let currentTooltip = null;
 
             // Mostrar en hover
-            element.addEventListener('mouseenter', function() {
+            const mouseEnterHandler = function() {
                 tooltipTimeout = setTimeout(() => {
                     currentTooltip = showTooltip(element, text, {
                         position: position,
@@ -345,17 +355,17 @@
                         normal: normal
                     });
                 }, delay);
-            });
-
+            };
+            
             // Ocultar al salir
-            element.addEventListener('mouseleave', function() {
+            const mouseLeaveHandler = function() {
                 if (tooltipTimeout) clearTimeout(tooltipTimeout);
                 hideTooltip();
                 currentTooltip = null;
-            });
+            };
 
             // Mostrar en focus (accesibilidad)
-            element.addEventListener('focus', function() {
+            const focusHandler = function() {
                 tooltipTimeout = setTimeout(() => {
                     currentTooltip = showTooltip(element, text, {
                         position: position,
@@ -366,14 +376,27 @@
                         normal: normal
                     });
                 }, delay);
-            });
+            };
 
             // Ocultar al perder focus
-            element.addEventListener('blur', function() {
+            const blurHandler = function() {
                 if (tooltipTimeout) clearTimeout(tooltipTimeout);
                 hideTooltip();
                 currentTooltip = null;
-            });
+            };
+            
+            // Agregar listeners
+            element.addEventListener('mouseenter', mouseEnterHandler);
+            element.addEventListener('mouseleave', mouseLeaveHandler);
+            element.addEventListener('focus', focusHandler);
+            element.addEventListener('blur', blurHandler);
+            
+            // Guardar referencias para poder limpiarlas después
+            element._tooltipMouseEnterHandler = mouseEnterHandler;
+            element._tooltipMouseLeaveHandler = mouseLeaveHandler;
+            element._tooltipFocusHandler = focusHandler;
+            element._tooltipBlurHandler = blurHandler;
+            element._tooltipInitialized = true;
         });
     }
 
