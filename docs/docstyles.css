@@ -10,6 +10,113 @@
 */
 
 /* ========================================
+   ELIMINAR BORDES DE SECCIONES MODULARES
+   ======================================== */
+
+/* Asegurar que las secciones modulares NO tengan bordes en TODAS las páginas de documentación */
+.documentacion-page .content-sections,
+.documentacion-page .section-single,
+.documentacion-page .section-dual,
+.documentacion-page .section-triple,
+.documentacion-page .section-quad,
+.componentes-page .content-sections,
+.componentes-page .section-single,
+.componentes-page .section-dual,
+.componentes-page .section-triple,
+.componentes-page .section-quad,
+.validador-page .content-sections,
+.validador-page .section-single,
+.validador-page .section-dual,
+.validador-page .section-triple,
+.validador-page .section-quad,
+.guia-prompts-page .content-sections,
+.guia-prompts-page .section-single,
+.guia-prompts-page .section-dual,
+.guia-prompts-page .section-triple,
+.guia-prompts-page .section-quad,
+.iconos-page .content-sections,
+.iconos-page .section-single,
+.iconos-page .section-dual,
+.iconos-page .section-triple,
+.iconos-page .section-quad {
+    border: none !important;
+}
+
+/* Asegurar que los widgets dentro de las secciones NO tengan bordes en TODAS las páginas de documentación */
+.documentacion-page .section-single > div,
+.documentacion-page .section-dual > div,
+.documentacion-page .section-triple > div,
+.documentacion-page .section-quad > div,
+.componentes-page .section-single > div,
+.componentes-page .section-dual > div,
+.componentes-page .section-triple > div,
+.componentes-page .section-quad > div,
+.validador-page .section-single > div,
+.validador-page .section-dual > div,
+.validador-page .section-triple > div,
+.validador-page .section-quad > div,
+.guia-prompts-page .section-single > div,
+.guia-prompts-page .section-dual > div,
+.guia-prompts-page .section-triple > div,
+.guia-prompts-page .section-quad > div,
+.iconos-page .section-single > div,
+.iconos-page .section-dual > div,
+.iconos-page .section-triple > div,
+.iconos-page .section-quad > div {
+    border: none !important;
+}
+
+/* También eliminar bordes de cualquier div con background dentro de content-sections en documentación */
+.documentacion-page .content-sections > div,
+.componentes-page .content-sections > div,
+.validador-page .content-sections > div,
+.guia-prompts-page .content-sections > div,
+.iconos-page .content-sections > div {
+    border: none !important;
+}
+
+/* Regla adicional: eliminar bordes de cualquier div dentro de content-sections que tenga background pero no sea un elemento específico de documentación */
+.documentacion-page .content-sections div[class*="widget-"],
+.componentes-page .content-sections div[class*="widget-"],
+.validador-page .content-sections div[class*="widget-"],
+.guia-prompts-page .content-sections div[class*="widget-"],
+.iconos-page .content-sections div[class*="widget-"] {
+    border: none !important;
+}
+
+/* REGLA AGRESIVA: Eliminar bordes de CUALQUIER div con estilos inline que contengan "border" en TODAS las páginas de documentación (excepto .file-input) */
+.documentacion-page div[style*="border"]:not(.file-input),
+.componentes-page div[style*="border"]:not(.file-input),
+.validador-page div[style*="border"]:not(.file-input),
+.guia-prompts-page div[style*="border"]:not(.file-input),
+.iconos-page div[style*="border"]:not(.file-input) {
+    border: none !important;
+}
+
+/* .file-input DEBE mantener su borde punteado (es funcional, no una sección) */
+.file-input {
+    border: 2px dashed var(--ubits-border-1) !important;
+}
+
+/* REGLA AGRESIVA: Eliminar bordes de divs con background dentro de content-area (excepto elementos específicos de documentación) */
+.documentacion-page .content-area div[style*="background"]:not(.feature-card):not(.component-card):not(.philosophy-item):not(.resource-card):not(.step):not(.type-example):not(.hero-section):not(.cta-section):not(.validator-section),
+.componentes-page .content-area div[style*="background"]:not(.feature-card):not(.component-card):not(.philosophy-item):not(.resource-card):not(.step):not(.type-example):not(.hero-section):not(.cta-section):not(.validator-section),
+.validador-page .content-area div[style*="background"]:not(.feature-card):not(.component-card):not(.philosophy-item):not(.resource-card):not(.step):not(.type-example):not(.hero-section):not(.cta-section):not(.validator-section),
+.guia-prompts-page .content-area div[style*="background"]:not(.feature-card):not(.component-card):not(.philosophy-item):not(.resource-card):not(.step):not(.type-example):not(.hero-section):not(.cta-section):not(.validator-section),
+.iconos-page .content-area div[style*="background"]:not(.feature-card):not(.component-card):not(.philosophy-item):not(.resource-card):not(.step):not(.type-example):not(.hero-section):not(.cta-section):not(.validator-section) {
+    border: none !important;
+}
+
+/* REGLA AGRESIVA: Eliminar bordes de cualquier div dentro de content-sections */
+.documentacion-page .content-sections div,
+.componentes-page .content-sections div,
+.validador-page .content-sections div,
+.guia-prompts-page .content-sections div,
+.iconos-page .content-sections div {
+    border: none !important;
+}
+
+/* ========================================
    LAYOUT DE DOCUMENTACIÓN
    ======================================== */
 

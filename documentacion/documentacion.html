@@ -42,7 +42,7 @@
                 <!-- Value Proposition Cards -->
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
                     <!-- Card 1: Cero curva de aprendizaje -->
-                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px;  border: 1px solid var(--ubits-border-1);">
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px;">
                         <div style="font-size: 48px; margin-bottom: 16px; color: var(--ubits-accent-brand);"><i class="far fa-bolt"></i></div>
                         <h3 class="ubits-heading-h2" style="margin-bottom: 12px;">
                             Cero curva de aprendizaje
@@ -53,7 +53,7 @@
                     </div>
 
                     <!-- Card 2: Acelera el desarrollo -->
-                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px;  border: 1px solid var(--ubits-border-1);">
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px;">
                         <div style="font-size: 48px; margin-bottom: 16px; color: var(--ubits-accent-brand);"><i class="far fa-rocket"></i></div>
                         <h3 class="ubits-heading-h2" style="margin-bottom: 12px;">
                             Acelera el desarrollo
@@ -66,7 +66,7 @@
                     </div>
 
                     <!-- Card 3: Consistencia visual garantizada -->
-                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px;  border: 1px solid var(--ubits-border-1);">
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px;">
                         <div style="font-size: 48px; margin-bottom: 16px; color: var(--ubits-accent-brand);"><i class="far fa-palette"></i></div>
                         <h3 class="ubits-heading-h2" style="margin-bottom: 12px;">
                             Consistencia visual garantizada
@@ -133,7 +133,7 @@
                     
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
                         <!-- 1. Páginas Plantilla -->
-                        <div style="background: var(--ubits-bg-2); padding: 32px; border-radius: 12px; border: 1px solid var(--ubits-border-1);">
+                        <div style="background: var(--ubits-bg-2); padding: 32px; border-radius: 12px;">
                             <div style="display: flex; align-items: center; margin-bottom: 20px;">
                                 <div style="background: var(--ubits-accent-brand); color: white; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 16px;">
                                     <i class="far fa-file-alt" style="font-size: 20px;"></i>
@@ -162,7 +162,7 @@
                         </div>
 
                         <!-- 2. Documentación -->
-                        <div style="background: var(--ubits-bg-2); padding: 32px; border-radius: 12px; border: 1px solid var(--ubits-border-1);">
+                        <div style="background: var(--ubits-bg-2); padding: 32px; border-radius: 12px;">
                             <div style="display: flex; align-items: center; margin-bottom: 20px;">
                                 <div style="background: var(--ubits-accent-brand); color: white; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 16px;">
                                     <i class="far fa-book" style="font-size: 20px;"></i>
@@ -191,7 +191,7 @@
                         </div>
 
                         <!-- 3. Validador -->
-                        <div style="background: var(--ubits-bg-2); padding: 32px; border-radius: 12px; border: 1px solid var(--ubits-border-1);">
+                        <div style="background: var(--ubits-bg-2); padding: 32px; border-radius: 12px;">
                             <div style="display: flex; align-items: center; margin-bottom: 20px;">
                                 <div style="background: var(--ubits-accent-brand); color: white; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 16px;">
                                     <i class="far fa-check-circle" style="font-size: 20px;"></i>
@@ -222,7 +222,7 @@
                 </div>
 
                 <!-- Guía de Netlify -->
-                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1); margin-bottom: 40px;">
+                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 40px;">
                     <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
                         <i class="far fa-cloud-upload" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                         Compartir tu proyecto en línea
@@ -232,7 +232,7 @@
                     </p>
 
                     <!-- Pasos principales -->
-                    <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: 1px solid var(--ubits-border-1); margin-bottom: 24px;">
+                    <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; margin-bottom: 24px;">
                         <h3 class="ubits-body-md-bold" style="margin-bottom: 20px; color: var(--ubits-fg-1-high);">
                             <i class="far fa-rocket" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                             Pasos principales
@@ -362,6 +362,35 @@
             loadSubNav('top-nav-container', 'documentacion');
         });
 
+        // Eliminar bordes (border) y sombras (box-shadow) de estilos inline, MANTENER border-radius
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                const divsWithInlineStyles = document.querySelectorAll('div[style]');
+                divsWithInlineStyles.forEach(div => {
+                    // Mantener borde en .validator-section y .file-input
+                    if (!div.closest('.validator-section') && !div.classList.contains('file-input')) {
+                        const style = div.getAttribute('style');
+                        if (style) {
+                            // Eliminar SOLO border (no border-radius) y box-shadow
+                            let newStyle = style
+                                .replace(/border\s*:\s*[^;]+;?/gi, '') // Eliminar border: valor;
+                                .replace(/border-width\s*:\s*[^;]+;?/gi, '') // Eliminar border-width
+                                .replace(/border-style\s*:\s*[^;]+;?/gi, '') // Eliminar border-style
+                                .replace(/border-color\s*:\s*[^;]+;?/gi, '') // Eliminar border-color
+                                .replace(/box-shadow\s*:\s*[^;]+;?/gi, '') // Eliminar box-shadow
+                                .replace(/;\s*;/g, ';') // Limpiar dobles punto y coma
+                                .trim();
+                            
+                            if (newStyle && newStyle.length > 0) {
+                                div.setAttribute('style', newStyle);
+                            } else {
+                                div.removeAttribute('style');
+                            }
+                        }
+                    }
+                });
+            }, 100);
+        });
     </script>
 </body>
 </html>

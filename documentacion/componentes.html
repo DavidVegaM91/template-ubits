@@ -52,7 +52,7 @@
                 <!-- Value Proposition Cards -->
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
                     <!-- Card 1: Componentes listos -->
-                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1);">
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
                         <div style="font-size: 48px; margin-bottom: 16px; color: var(--ubits-accent-brand);"><i class="far fa-cube"></i></div>
                         <h3 class="ubits-heading-h2" style="margin-bottom: 12px;">
                             Componentes pre-construidos
@@ -63,7 +63,7 @@
                     </div>
 
                     <!-- Card 2: Fácil personalización -->
-                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1);">
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
                         <div style="font-size: 48px; margin-bottom: 16px; color: var(--ubits-accent-brand);"><i class="far fa-sliders-h"></i></div>
                         <h3 class="ubits-heading-h2" style="margin-bottom: 12px;">
                             Fácil personalización
@@ -74,7 +74,7 @@
                     </div>
 
                     <!-- Card 3: Consistencia garantizada -->
-                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--ubits-border-1);">
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
                         <div style="font-size: 48px; margin-bottom: 16px; color: var(--ubits-accent-brand);"><i class="far fa-check-circle"></i></div>
                         <h3 class="ubits-heading-h2" style="margin-bottom: 12px;">
                             Consistencia garantizada
@@ -151,6 +151,36 @@
             
             // Cargar sidebar de documentación (esto también carga el dropdown móvil automáticamente)
             loadDocsSidebar('introduccion');
+        });
+
+        // Eliminar bordes (border) y sombras (box-shadow) de estilos inline, MANTENER border-radius
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                const divsWithInlineStyles = document.querySelectorAll('div[style]');
+                divsWithInlineStyles.forEach(div => {
+                    // Mantener borde en .validator-section y .file-input
+                    if (!div.closest('.validator-section') && !div.classList.contains('file-input')) {
+                        const style = div.getAttribute('style');
+                        if (style) {
+                            // Eliminar SOLO border (no border-radius) y box-shadow
+                            let newStyle = style
+                                .replace(/border\s*:\s*[^;]+;?/gi, '') // Eliminar border: valor;
+                                .replace(/border-width\s*:\s*[^;]+;?/gi, '') // Eliminar border-width
+                                .replace(/border-style\s*:\s*[^;]+;?/gi, '') // Eliminar border-style
+                                .replace(/border-color\s*:\s*[^;]+;?/gi, '') // Eliminar border-color
+                                .replace(/box-shadow\s*:\s*[^;]+;?/gi, '') // Eliminar box-shadow
+                                .replace(/;\s*;/g, ';') // Limpiar dobles punto y coma
+                                .trim();
+                            
+                            if (newStyle && newStyle.length > 0) {
+                                div.setAttribute('style', newStyle);
+                            } else {
+                                div.removeAttribute('style');
+                            }
+                        }
+                    }
+                });
+            }, 100);
         });
     </script>
 </body>

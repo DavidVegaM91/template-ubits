@@ -20,7 +20,7 @@
     <style>
         .prompt-card {
             background: var(--ubits-bg-1);
-            border: 1px solid var(--ubits-border-1);
+            border: none !important;
             border-radius: 12px;
             padding: 24px;
             margin-bottom: 24px;
@@ -30,12 +30,12 @@
         }
 
         .prompt-card:hover {
-            border-color: var(--ubits-border-2);
+            border: none !important;
             transform: translateY(-2px);
         }
 
         .prompt-card.copied {
-            border-color: var(--ubits-accent-brand);
+            border: none !important;
             background: var(--ubits-bg-active);
         }
 
@@ -61,7 +61,7 @@
         .prompt-code-container {
             position: relative;
             background: var(--ubits-bg-2);
-            border: 1px solid var(--ubits-border-1);
+            border: none !important;
             border-radius: 8px;
             overflow: hidden;
         }
@@ -86,7 +86,7 @@
             top: 12px;
             right: 12px;
             background: var(--ubits-bg-1);
-            border: 1px solid var(--ubits-border-1);
+            border: none !important;
             border-radius: 6px;
             padding: 8px 12px;
             color: var(--ubits-fg-1-medium);
@@ -200,7 +200,7 @@
                 <div id="info-alert-container" style="margin-bottom: 32px;"></div>
 
                 <!-- Cómo usar la guía -->
-                <div style="background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: 12px; padding: 32px; margin-bottom: 40px;">
+                <div style="background: var(--ubits-bg-1); border-radius: 12px; padding: 32px; margin-bottom: 40px;">
                     <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
                         <i class="far fa-lightbulb" style="margin-right: 12px; color: var(--ubits-accent-brand);"></i>
                         Cómo usar esta guía
@@ -501,6 +501,35 @@ Necesito editar un widget específico. Esta es una tarea grande que necesito que
             });
         }
 
+        // Eliminar bordes (border) y sombras (box-shadow) de estilos inline, MANTENER border-radius
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                const divsWithInlineStyles = document.querySelectorAll('div[style]');
+                divsWithInlineStyles.forEach(div => {
+                    // Mantener borde en .validator-section y .file-input
+                    if (!div.closest('.validator-section') && !div.classList.contains('file-input')) {
+                        const style = div.getAttribute('style');
+                        if (style) {
+                            // Eliminar SOLO border (no border-radius) y box-shadow
+                            let newStyle = style
+                                .replace(/border\s*:\s*[^;]+;?/gi, '') // Eliminar border: valor;
+                                .replace(/border-width\s*:\s*[^;]+;?/gi, '') // Eliminar border-width
+                                .replace(/border-style\s*:\s*[^;]+;?/gi, '') // Eliminar border-style
+                                .replace(/border-color\s*:\s*[^;]+;?/gi, '') // Eliminar border-color
+                                .replace(/box-shadow\s*:\s*[^;]+;?/gi, '') // Eliminar box-shadow
+                                .replace(/;\s*;/g, ';') // Limpiar dobles punto y coma
+                                .trim();
+                            
+                            if (newStyle && newStyle.length > 0) {
+                                div.setAttribute('style', newStyle);
+                            } else {
+                                div.removeAttribute('style');
+                            }
+                        }
+                    }
+                });
+            }, 100);
+        });
     </script>
 </body>
 </html>
