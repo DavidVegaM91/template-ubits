@@ -922,6 +922,15 @@ function createCalendarPicker(container, inputElement, onChange) {
     }
 }
 
+// Función para normalizar texto (eliminar tildes y convertir a minúsculas)
+function normalizeTextForSearch(text) {
+    if (!text) return '';
+    return String(text)
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, ''); // Elimina diacríticos (tildes)
+}
+
 // Función para crear dropdown de autocompletado
 function createAutocompleteDropdown(container, inputElement, autocompleteOptions, onChange, multiple = false, showCheckboxes = false) {
     console.log('createAutocompleteDropdown called with:', { container, inputElement, autocompleteOptions, onChange, multiple, showCheckboxes });
@@ -933,7 +942,7 @@ function createAutocompleteDropdown(container, inputElement, autocompleteOptions
     // Si es múltiple, mantener un Set de valores seleccionados
     const selectedValues = new Set();
     
-    // Función para filtrar opciones basado en el texto del input
+    // Función para filtrar opciones basado en el texto del input - sin tildes
     function filterOptions(searchText) {
         // Si tiene checkboxes y está vacío, mostrar las primeras 5 opciones por defecto
         if (showCheckboxes && (!searchText || searchText.length < 1)) {
@@ -1000,7 +1009,7 @@ function createAutocompleteDropdown(container, inputElement, autocompleteOptions
         }
         
         const filteredOptions = autocompleteOptions.filter(option => 
-            option.text.toLowerCase().includes(searchText.toLowerCase())
+            normalizeTextForSearch(option.text).includes(normalizeTextForSearch(searchText))
         );
         
         // Limpiar dropdown anterior
@@ -1048,10 +1057,18 @@ function createAutocompleteDropdown(container, inputElement, autocompleteOptions
             textElement.className = 'ubits-autocomplete-option-text';
             textElement.textContent = option.text;
             
-            // Resaltar texto coincidente
+            // Resaltar texto coincidente (usar texto original para resaltar, no normalizado)
             if (searchText) {
-                const regex = new RegExp(`(${searchText})`, 'gi');
-                textElement.innerHTML = option.text.replace(regex, '<strong>$1</strong>');
+                // Crear regex que busque tanto con tildes como sin tildes
+                const normalizedSearch = normalizeTextForSearch(searchText);
+                const normalizedOption = normalizeTextForSearch(option.text);
+                if (normalizedOption.includes(normalizedSearch)) {
+                    // Encontrar la posición en el texto original
+                    const regex = new RegExp(`(${searchText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+                    textElement.innerHTML = option.text.replace(regex, '<strong>$1</strong>');
+                } else {
+                    textElement.textContent = option.text;
+                }
             }
             
             optionElement.appendChild(textElement);

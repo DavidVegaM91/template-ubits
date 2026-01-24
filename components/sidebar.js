@@ -155,7 +155,7 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
                     <i class="far fa-moon"></i>
                 </button>
                 <div class="user-avatar-container">
-                    <div class="user-avatar" onmouseenter="showSidebarProfileMenu(this)" onmouseleave="hideSidebarProfileMenu()" onclick="window.location.href='${basePath}ubits-colaborador/perfil/profile.html'">
+                    <div class="user-avatar" id="sidebar-avatar-admin" onclick="toggleSidebarProfileMenu(event)">
                         <img src="${basePath}images/Profile-image.jpg" alt="Usuario" class="avatar-image">
                     </div>
                 </div>
@@ -163,7 +163,7 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
         </aside>
         
         <!-- Profile menu para sidebar admin -->
-        <div class="sidebar-profile-menu" id="sidebar-profile-menu" onmouseenter="showSidebarProfileMenu(this)" onmouseleave="hideSidebarProfileMenu()">
+        <div class="sidebar-profile-menu" id="sidebar-profile-menu">
             <div class="profile-menu-item" onclick="window.location.href='${basePath}ubits-colaborador/perfil/profile.html'">
                 <i class="far fa-user"></i>
                 <span>Ver mi perfil</span>
@@ -172,6 +172,11 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
             <div class="profile-menu-item" onclick="window.location.href='${basePath}index.html'">
                 <i class="far fa-user-gear"></i>
                 <span>Modo colaborador</span>
+            </div>
+            <div class="profile-menu-divider"></div>
+            <div class="profile-menu-item" onclick="window.open('${basePath}documentacion/documentacion.html', '_blank')">
+                <i class="far fa-book"></i>
+                <span>Documentación</span>
             </div>
             <div class="profile-menu-divider"></div>
             <div class="profile-menu-item" onclick="handlePasswordChange()">
@@ -232,7 +237,7 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
                     <i class="far fa-moon"></i>
                 </button>
                 <div class="user-avatar-container">
-                    <div class="user-avatar" onmouseenter="showSidebarProfileMenu(this)" onmouseleave="hideSidebarProfileMenu()" onclick="window.location.href='${basePath}ubits-colaborador/perfil/profile.html'">
+                    <div class="user-avatar" id="sidebar-avatar-default" onclick="toggleSidebarProfileMenu(event)">
                         <img src="${basePath}images/Profile-image.jpg" alt="Usuario" class="avatar-image">
                     </div>
                 </div>
@@ -240,7 +245,7 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
         </aside>
         
         <!-- Profile menu para sidebar default -->
-        <div class="sidebar-profile-menu" id="sidebar-profile-menu" onmouseenter="showSidebarProfileMenu(this)" onmouseleave="hideSidebarProfileMenu()">
+        <div class="sidebar-profile-menu" id="sidebar-profile-menu">
             <div class="profile-menu-item" onclick="window.location.href='${basePath}ubits-colaborador/perfil/profile.html'">
                 <i class="far fa-user"></i>
                 <span>Ver mi perfil</span>
@@ -249,6 +254,11 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
             <div class="profile-menu-item" onclick="window.location.href='${basePath}ubits-admin/inicio/admin.html'">
                 <i class="far fa-laptop"></i>
                 <span>Modo Administrador</span>
+            </div>
+            <div class="profile-menu-divider"></div>
+            <div class="profile-menu-item" onclick="window.open('${basePath}documentacion/documentacion.html', '_blank')">
+                <i class="far fa-book"></i>
+                <span>Documentación</span>
             </div>
             <div class="profile-menu-divider"></div>
             <div class="profile-menu-item" onclick="handlePasswordChange()">
@@ -267,6 +277,8 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
     sidebarContainer.innerHTML = sidebarHTML;
     console.log('HTML insertado en sidebar container');
     
+    // Inicializar el listener de click fuera del menú de perfil
+    initSidebarProfileMenuClickOutside();
     
     // Ajustar altura del sidebar dinámicamente
     adjustSidebarHeight();
@@ -463,10 +475,16 @@ function updateActiveSidebarButton(activeButton) {
 }
 
 // Funciones para el profile menu del sidebar
-function showSidebarProfileMenu(avatarElement) {
+function toggleSidebarProfileMenu(event) {
+    event.stopPropagation(); // Evitar que el click se propague
     const menu = document.getElementById('sidebar-profile-menu');
     if (menu) {
-        menu.classList.add('show');
+        const isShowing = menu.classList.contains('show');
+        if (isShowing) {
+            menu.classList.remove('show');
+        } else {
+            menu.classList.add('show');
+        }
     }
 }
 
@@ -477,6 +495,39 @@ function hideSidebarProfileMenu() {
     }
 }
 
+// Cerrar el menú al hacer clic fuera de él
+function initSidebarProfileMenuClickOutside() {
+    // Remover listener anterior si existe para evitar duplicados
+    if (window._sidebarProfileMenuClickHandler) {
+        document.removeEventListener('click', window._sidebarProfileMenuClickHandler);
+    }
+    
+    // Crear nuevo handler
+    window._sidebarProfileMenuClickHandler = function(e) {
+        const menu = document.getElementById('sidebar-profile-menu');
+        const avatarAdmin = document.getElementById('sidebar-avatar-admin');
+        const avatarDefault = document.getElementById('sidebar-avatar-default');
+        
+        if (menu && menu.classList.contains('show')) {
+            // Si el click no fue en el menú ni en el avatar, cerrar el menú
+            if (!menu.contains(e.target) && 
+                !avatarAdmin?.contains(e.target) && 
+                !avatarDefault?.contains(e.target)) {
+                hideSidebarProfileMenu();
+            }
+        }
+    };
+    
+    // Agregar el listener
+    document.addEventListener('click', window._sidebarProfileMenuClickHandler);
+}
+
 // Exportar funciones globalmente
-window.showSidebarProfileMenu = showSidebarProfileMenu;
+window.showSidebarProfileMenu = function() {
+    const menu = document.getElementById('sidebar-profile-menu');
+    if (menu) {
+        menu.classList.add('show');
+    }
+};
 window.hideSidebarProfileMenu = hideSidebarProfileMenu;
+window.toggleSidebarProfileMenu = toggleSidebarProfileMenu;

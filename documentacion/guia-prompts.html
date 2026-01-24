@@ -501,35 +501,6 @@ Necesito editar un widget específico. Esta es una tarea grande que necesito que
             });
         }
 
-        // Eliminar bordes (border) y sombras (box-shadow) de estilos inline, MANTENER border-radius
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(function() {
-                const divsWithInlineStyles = document.querySelectorAll('div[style]');
-                divsWithInlineStyles.forEach(div => {
-                    // Mantener borde en .validator-section y .file-input
-                    if (!div.closest('.validator-section') && !div.classList.contains('file-input')) {
-                        const style = div.getAttribute('style');
-                        if (style) {
-                            // Eliminar SOLO border (no border-radius) y box-shadow
-                            let newStyle = style
-                                .replace(/border\s*:\s*[^;]+;?/gi, '') // Eliminar border: valor;
-                                .replace(/border-width\s*:\s*[^;]+;?/gi, '') // Eliminar border-width
-                                .replace(/border-style\s*:\s*[^;]+;?/gi, '') // Eliminar border-style
-                                .replace(/border-color\s*:\s*[^;]+;?/gi, '') // Eliminar border-color
-                                .replace(/box-shadow\s*:\s*[^;]+;?/gi, '') // Eliminar box-shadow
-                                .replace(/;\s*;/g, ';') // Limpiar dobles punto y coma
-                                .trim();
-                            
-                            if (newStyle && newStyle.length > 0) {
-                                div.setAttribute('style', newStyle);
-                            } else {
-                                div.removeAttribute('style');
-                            }
-                        }
-                    }
-                });
-            }, 100);
-        });
     </script>
 </body>
 </html>

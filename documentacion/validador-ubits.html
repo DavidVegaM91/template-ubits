@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="../general-styles/styles.css">
     <link rel="stylesheet" href="../general-styles/fontawesome-icons.css">
     <link rel="stylesheet" href="../general-styles/ubits-typography.css">
-    <link rel="stylesheet" href="../components/sub-nav.css">
     <link rel="stylesheet" href="../components/alert.css">
     <link rel="stylesheet" href="../components/button.css">
     <link rel="stylesheet" href="../components/toast.css">
@@ -28,7 +27,7 @@
 
         .validator-section {
             background: var(--ubits-bg-1);
-            border: 1px solid var(--ubits-border-1);
+           
             border-radius: 12px;
             padding: 24px;
             margin-bottom: 24px;
@@ -175,12 +174,12 @@
             border: none !important;
         }
 
-        /* Solo .validator-section debe tener borde (es intencional) */
+        /* .validator-section NO debe tener borde */
         .validator-section {
-            border: 1px solid var(--ubits-border-1) !important;
+            border: none !important;
         }
 
-        /* ELIMINAR TODOS LOS BORDES de divs con background dentro del validador (excepto .validator-section y .file-input) */
+        /* ELIMINAR TODOS LOS BORDES de divs con background dentro del validador (excepto .file-input) */
         .validator-container div[style*="background"]:not(.file-input) {
             border: none !important;
         }
@@ -198,6 +197,13 @@
         .file-input {
             border: 2px dashed var(--ubits-border-1) !important;
         }
+
+        /* Fix para páginas sin SubNav - margin superior en móvil */
+        @media (max-width: 1023px) {
+            .content-area {
+                margin-top: 0 !important;
+            }
+        }
     </style>
 </head>
 <body class="documentacion-page" data-theme="light">
@@ -206,9 +212,6 @@
         
         <!-- Main Content -->
         <main class="main-content" style="margin-left: 12px;">
-            <!-- Top Navigation -->
-            <div id="top-nav-container"></div>
-            
             <!-- Content Area -->
             <div class="content-area" style="display: block; width: 100%;">
                 <div class="validator-container">
@@ -343,20 +346,6 @@
                                     <li>Valida CSS/JS requeridos para cada componente</li>
                                 </ul>
                             </div>
-
-                            <div style="background: var(--ubits-bg-2); border-radius: 8px; padding: 16px;">
-                                <h3 class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high); margin-bottom: 8px;">
-                                    <i class="far fa-keyboard" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                    Input Component (11 tipos)
-                                </h3>
-                                <ul class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6; padding-left: 20px;">
-                                    <li><strong>Básicos:</strong> text, email, password, number, tel, url</li>
-                                    <li><strong>Avanzados:</strong> select, textarea, search, autocomplete, calendar</li>
-                                    <li><strong>Características:</strong> iconos, contador, helper text, mandatory/optional</li>
-                                    <li><strong>Validación:</strong> Manual obligatoria para email, tel, url</li>
-                                    <li><strong>Scroll infinito:</strong> Automático en SELECT (50+ opciones)</li>
-                                </ul>
-                            </div>
                         </div>
                     </div>
 
@@ -365,13 +354,10 @@
         </main>
     </div>
 
-    <script src="../components/sub-nav.js"></script>
     <script src="../components/alert.js"></script>
     <script src="../components/toast.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Cargar top-nav con variante documentación
-            loadSubNav('top-nav-container', 'documentacion');
             
             // Cargar alert informativo
             showAlert('info', 'Este validador ha sido actualizado con todos los componentes y tokens UBITS disponibles. Verifica tus páginas antes de finalizar para mantener la calidad y consistencia del código UBITS.', {
@@ -1455,38 +1441,6 @@
         toastContainer.id = 'ubits-toast-container';
         document.body.appendChild(toastContainer);
 
-        // Eliminar bordes (border) y sombras (box-shadow) de estilos inline, MANTENER border-radius
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(function() {
-                const divsWithInlineStyles = document.querySelectorAll('div[style]');
-                divsWithInlineStyles.forEach(div => {
-                    // Mantener borde en .validator-section y .file-input
-                    if (!div.classList.contains('validator-section') && 
-                        !div.classList.contains('file-input') && 
-                        !div.closest('.validator-section') &&
-                        !div.closest('.file-input')) {
-                        const style = div.getAttribute('style');
-                        if (style) {
-                            // Eliminar SOLO border (no border-radius) y box-shadow
-                            let newStyle = style
-                                .replace(/border\s*:\s*[^;]+;?/gi, '') // Eliminar border: valor;
-                                .replace(/border-width\s*:\s*[^;]+;?/gi, '') // Eliminar border-width
-                                .replace(/border-style\s*:\s*[^;]+;?/gi, '') // Eliminar border-style
-                                .replace(/border-color\s*:\s*[^;]+;?/gi, '') // Eliminar border-color
-                                .replace(/box-shadow\s*:\s*[^;]+;?/gi, '') // Eliminar box-shadow
-                                .replace(/;\s*;/g, ';') // Limpiar dobles punto y coma
-                                .trim();
-                            
-                            if (newStyle && newStyle.length > 0) {
-                                div.setAttribute('style', newStyle);
-                            } else {
-                                div.removeAttribute('style');
-                            }
-                        }
-                    }
-                });
-            }, 100);
-        });
     </script>
 </body>
 </html>

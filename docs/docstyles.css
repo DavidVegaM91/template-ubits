@@ -116,9 +116,114 @@
     border: none !important;
 }
 
+/* CRITICAL: Eliminar bordes de .validator-section en TODAS las páginas de documentación */
+.documentacion-page .validator-section,
+.componentes-page .validator-section,
+.validador-page .validator-section,
+.guia-prompts-page .validator-section,
+.iconos-page .validator-section {
+    border: none !important;
+}
+
+/* ========================================
+   ELIMINAR SOMBRAS (BOX-SHADOW) DE SECCIONES EN DOCUMENTACIÓN
+   ======================================== */
+
+/* Eliminar box-shadow de TODAS las secciones modulares en TODAS las páginas de documentación */
+.documentacion-page .content-sections,
+.documentacion-page .section-single,
+.documentacion-page .section-dual,
+.documentacion-page .section-triple,
+.documentacion-page .section-quad,
+.componentes-page .content-sections,
+.componentes-page .section-single,
+.componentes-page .section-dual,
+.componentes-page .section-triple,
+.componentes-page .section-quad,
+.validador-page .content-sections,
+.validador-page .section-single,
+.validador-page .section-dual,
+.validador-page .section-triple,
+.validador-page .section-quad,
+.guia-prompts-page .content-sections,
+.guia-prompts-page .section-single,
+.guia-prompts-page .section-dual,
+.guia-prompts-page .section-triple,
+.guia-prompts-page .section-quad,
+.iconos-page .content-sections,
+.iconos-page .section-single,
+.iconos-page .section-dual,
+.iconos-page .section-triple,
+.iconos-page .section-quad {
+    box-shadow: none !important;
+}
+
+/* Eliminar box-shadow de widgets dentro de las secciones */
+.documentacion-page .section-single > div,
+.documentacion-page .section-dual > div,
+.documentacion-page .section-triple > div,
+.documentacion-page .section-quad > div,
+.componentes-page .section-single > div,
+.componentes-page .section-dual > div,
+.componentes-page .section-triple > div,
+.componentes-page .section-quad > div,
+.validador-page .section-single > div,
+.validador-page .section-dual > div,
+.validador-page .section-triple > div,
+.validador-page .section-quad > div,
+.guia-prompts-page .section-single > div,
+.guia-prompts-page .section-dual > div,
+.guia-prompts-page .section-triple > div,
+.guia-prompts-page .section-quad > div,
+.iconos-page .section-single > div,
+.iconos-page .section-dual > div,
+.iconos-page .section-triple > div,
+.iconos-page .section-quad > div {
+    box-shadow: none !important;
+}
+
+/* REGLA AGRESIVA: Eliminar box-shadow de CUALQUIER div con estilos inline en TODAS las páginas de documentación */
+.documentacion-page div[style*="box-shadow"],
+.componentes-page div[style*="box-shadow"],
+.validador-page div[style*="box-shadow"],
+.guia-prompts-page div[style*="box-shadow"],
+.iconos-page div[style*="box-shadow"] {
+    box-shadow: none !important;
+}
+
+/* REGLA AGRESIVA: Eliminar box-shadow de divs con background dentro de content-area */
+.documentacion-page .content-area div[style*="background"]:not(.feature-card):not(.component-card):not(.philosophy-item):not(.resource-card):not(.step):not(.type-example):not(.hero-section):not(.cta-section):not(.validator-section):not(.file-input),
+.componentes-page .content-area div[style*="background"]:not(.feature-card):not(.component-card):not(.philosophy-item):not(.resource-card):not(.step):not(.type-example):not(.hero-section):not(.cta-section):not(.validator-section):not(.file-input),
+.validador-page .content-area div[style*="background"]:not(.feature-card):not(.component-card):not(.philosophy-item):not(.resource-card):not(.step):not(.type-example):not(.hero-section):not(.cta-section):not(.validator-section):not(.file-input),
+.guia-prompts-page .content-area div[style*="background"]:not(.feature-card):not(.component-card):not(.philosophy-item):not(.resource-card):not(.step):not(.type-example):not(.hero-section):not(.cta-section):not(.validator-section):not(.file-input),
+.iconos-page .content-area div[style*="background"]:not(.feature-card):not(.component-card):not(.philosophy-item):not(.resource-card):not(.step):not(.type-example):not(.hero-section):not(.cta-section):not(.validator-section):not(.file-input) {
+    box-shadow: none !important;
+}
+
 /* ========================================
    LAYOUT DE DOCUMENTACIÓN
    ======================================== */
+
+/* CRITICAL: Sobrescribir padding-left de 143px para TODAS las páginas de documentación en pantallas > 1440px */
+/* Esto incluye TODAS las páginas dentro de documentacion/ (incluyendo documentacion/componentes/) */
+@media (min-width: 1440px) {
+    /* Sobrescribir padding-left para todas las páginas de documentación */
+    .documentacion-page .main-content,
+    .componentes-page .main-content,
+    .validador-page .main-content,
+    .guia-prompts-page .main-content,
+    .iconos-page .main-content {
+        padding-left: 24px !important; /* En lugar de 143px */
+        padding-right: 24px !important;
+    }
+    
+    /* También para cualquier página dentro de documentacion/componentes/ */
+    body[class*="documentacion"] .main-content,
+    body[class*="componentes"] .main-content {
+        padding-left: 24px !important;
+        padding-right: 24px !important;
+    }
+}
 
 /* Documentación - Sin sidebar */
 .documentacion-page .main-content {

@@ -125,37 +125,46 @@
         });
     }
 
+    // Función para normalizar texto (eliminar tildes y convertir a minúsculas)
+    function normalizeText(text) {
+        if (!text) return '';
+        return String(text)
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, ''); // Elimina diacríticos (tildes)
+    }
+
     // Aplicar filtros y búsqueda
     function applyFiltersAndSearch() {
         let data = [...SEGUIMIENTO_DATA];
 
-        // Búsqueda general (searchQuery)
+        // Búsqueda general (searchQuery) - sin tildes
         if (searchQuery) {
-            const q = searchQuery.toLowerCase();
+            const q = normalizeText(searchQuery);
             data = data.filter(row =>
-                row.nombre.toLowerCase().includes(q) ||
-                row.asignado.nombre.toLowerCase().includes(q) ||
-                (row.asignado.username && row.asignado.username.toLowerCase().includes(q)) ||
-                row.plan.toLowerCase().includes(q) ||
-                row.creador.toLowerCase().includes(q) ||
+                normalizeText(row.nombre).includes(q) ||
+                normalizeText(row.asignado.nombre).includes(q) ||
+                (row.asignado.username && normalizeText(row.asignado.username).includes(q)) ||
+                normalizeText(row.plan).includes(q) ||
+                normalizeText(row.creador).includes(q) ||
                 String(row.id).includes(q)
             );
         }
 
-        // Filtro nombre (actividad)
+        // Filtro nombre (actividad) - sin tildes
         if (currentFilters.nombre.length > 0) {
             data = data.filter(row => 
                 currentFilters.nombre.some(nombre => 
-                    row.nombre.toLowerCase().includes(nombre.toLowerCase())
+                    normalizeText(row.nombre).includes(normalizeText(nombre))
                 )
             );
         }
 
-        // Filtro creador
+        // Filtro creador - sin tildes
         if (currentFilters.creador.length > 0) {
             data = data.filter(row => 
                 currentFilters.creador.some(creador => 
-                    row.creador.toLowerCase().includes(creador.toLowerCase())
+                    normalizeText(row.creador).includes(normalizeText(creador))
                 )
             );
         }
@@ -166,48 +175,48 @@
             data = data.filter(row => tipos.includes(row.tipo));
         }
 
-        // Filtro plan - busca en nombre del plan Y nombre de la actividad
+        // Filtro plan - busca en nombre del plan Y nombre de la actividad - sin tildes
         if (currentFilters.plan.length > 0) {
             data = data.filter(row => 
                 currentFilters.plan.some(plan => 
-                    row.plan.toLowerCase().includes(plan.toLowerCase()) ||
-                    row.nombre.toLowerCase().includes(plan.toLowerCase())
+                    normalizeText(row.plan).includes(normalizeText(plan)) ||
+                    normalizeText(row.nombre).includes(normalizeText(plan))
                 )
             );
         }
 
-        // Filtro persona
+        // Filtro persona - sin tildes
         if (currentFilters.persona.length > 0) {
             data = data.filter(row => 
                 currentFilters.persona.some(persona => 
-                    row.asignado.nombre.toLowerCase().includes(persona.toLowerCase())
+                    normalizeText(row.asignado.nombre).includes(normalizeText(persona))
                 )
             );
         }
 
-        // Filtro username
+        // Filtro username - sin tildes
         if (currentFilters.username.length > 0) {
             data = data.filter(row => 
                 currentFilters.username.some(username => 
-                    row.asignado.username && row.asignado.username.toLowerCase().includes(username.toLowerCase())
+                    row.asignado.username && normalizeText(row.asignado.username).includes(normalizeText(username))
                 )
             );
         }
 
-        // Filtro área
+        // Filtro área - sin tildes
         if (currentFilters.area.length > 0) {
             data = data.filter(row => 
                 currentFilters.area.some(area => 
-                    row.area.toLowerCase().includes(area.toLowerCase())
+                    normalizeText(row.area).includes(normalizeText(area))
                 )
             );
         }
 
-        // Filtro lider
+        // Filtro lider - sin tildes
         if (currentFilters.lider.length > 0) {
             data = data.filter(row => 
                 currentFilters.lider.some(lider => 
-                    row.lider && row.lider.toLowerCase().includes(lider.toLowerCase())
+                    row.lider && normalizeText(row.lider).includes(normalizeText(lider))
                 )
             );
         }
@@ -1805,15 +1814,15 @@
                     renderFilterOptions(defaultOptions);
                 }
                 
-                // Filtrar opciones cuando se escribe
+                // Filtrar opciones cuando se escribe - sin tildes
                 inputElement.addEventListener('input', function() {
-                    const searchText = this.value.toLowerCase();
+                    const searchText = this.value;
                     
                     if (searchText.length === 0) {
                         showDefaultFilterOptions();
                     } else {
                         const filtered = allOptions.filter(opt => 
-                            opt.toLowerCase().includes(searchText)
+                            normalizeText(opt).includes(normalizeText(searchText))
                         ).slice(0, 5);
                         renderFilterOptions(filtered);
                     }

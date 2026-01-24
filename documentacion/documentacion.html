@@ -222,7 +222,7 @@
                 </div>
 
                 <!-- Guía de Netlify -->
-                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 40px;">
+                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
                     <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
                         <i class="far fa-cloud-upload" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                         Compartir tu proyecto en línea
@@ -290,7 +290,7 @@
                     </div>
 
                     <!-- Personalización opcional -->
-                    <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: 1px solid var(--ubits-border-1);">
+                    <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px;">
                         <h3 class="ubits-body-md-bold" style="margin-bottom: 20px; color: var(--ubits-fg-1-high);">
                             <i class="far fa-cog" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                             Personalizar el enlace (opcional)
@@ -362,35 +362,6 @@
             loadSubNav('top-nav-container', 'documentacion');
         });
 
-        // Eliminar bordes (border) y sombras (box-shadow) de estilos inline, MANTENER border-radius
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(function() {
-                const divsWithInlineStyles = document.querySelectorAll('div[style]');
-                divsWithInlineStyles.forEach(div => {
-                    // Mantener borde en .validator-section y .file-input
-                    if (!div.closest('.validator-section') && !div.classList.contains('file-input')) {
-                        const style = div.getAttribute('style');
-                        if (style) {
-                            // Eliminar SOLO border (no border-radius) y box-shadow
-                            let newStyle = style
-                                .replace(/border\s*:\s*[^;]+;?/gi, '') // Eliminar border: valor;
-                                .replace(/border-width\s*:\s*[^;]+;?/gi, '') // Eliminar border-width
-                                .replace(/border-style\s*:\s*[^;]+;?/gi, '') // Eliminar border-style
-                                .replace(/border-color\s*:\s*[^;]+;?/gi, '') // Eliminar border-color
-                                .replace(/box-shadow\s*:\s*[^;]+;?/gi, '') // Eliminar box-shadow
-                                .replace(/;\s*;/g, ';') // Limpiar dobles punto y coma
-                                .trim();
-                            
-                            if (newStyle && newStyle.length > 0) {
-                                div.setAttribute('style', newStyle);
-                            } else {
-                                div.removeAttribute('style');
-                            }
-                        }
-                    }
-                });
-            }, 100);
-        });
     </script>
 </body>
 </html>
