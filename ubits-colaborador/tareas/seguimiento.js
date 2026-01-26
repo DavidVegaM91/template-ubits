@@ -280,8 +280,8 @@
             });
         }
 
-        // Filtro por período (últimos X días desde hoy)
-        if (currentFilters.periodo) {
+        // Filtro por período (últimos X días desde hoy) - solo si no hay filtro personalizado
+        if (currentFilters.periodo && !currentFilters.fechaCreacionDesde && !currentFilters.fechaCreacionHasta) {
             const hoy = new Date(2026, 2, 22); // Domingo 22 de marzo de 2026
             hoy.setHours(23, 59, 59, 999); // Fin del día de hoy
             
@@ -1270,28 +1270,6 @@
         });
 
         if (typeof createInput === 'function') {
-
-            // Fechas de creación
-            createInput({
-                containerId: 'filtros-fecha-creacion-desde',
-                type: 'calendar',
-                placeholder: 'Desde',
-                size: 'md',
-                onChange: function(val) {
-                    currentFilters.fechaCreacionDesde = val || null;
-                }
-            });
-
-            createInput({
-                containerId: 'filtros-fecha-creacion-hasta',
-                type: 'calendar',
-                placeholder: 'Hasta',
-                size: 'md',
-                onChange: function(val) {
-                    currentFilters.fechaCreacionHasta = val || null;
-                }
-            });
-
             // Fechas de vencimiento
             createInput({
                 containerId: 'filtros-fecha-vencimiento-desde',
@@ -1355,6 +1333,10 @@
         if (periodoText) {
             periodoText.textContent = 'Últimos 30 días';
         }
+        
+        // Limpiar fechas personalizadas
+        currentFilters.fechaCreacionDesde = null;
+        currentFilters.fechaCreacionHasta = null;
         
         // Resetear selección visual en el menú
         const periodoMenu = document.getElementById('periodo-menu');
@@ -1621,11 +1603,23 @@
             '365': 'Último año'
         };
 
+        // Función para determinar qué opción está seleccionada
+        function getSelectedPeriodo() {
+            // Si hay fechas personalizadas, "Personalizado" está seleccionado
+            if (currentFilters.fechaCreacionDesde && currentFilters.fechaCreacionHasta) {
+                return 'personalizado';
+            }
+            // Si no, usar el período normal
+            return currentFilters.periodo || '30';
+        }
+        
         // Valor inicial (sincronizar con currentFilters)
-        let selectedPeriodo = currentFilters.periodo || '30';
+        let selectedPeriodo = getSelectedPeriodo();
         
         // Sincronizar texto del botón con el valor inicial
-        if (periodoTexts[selectedPeriodo]) {
+        if (selectedPeriodo === 'personalizado') {
+            // El texto ya está actualizado por el date picker
+        } else if (periodoTexts[selectedPeriodo]) {
             periodoText.textContent = periodoTexts[selectedPeriodo];
         }
         
@@ -1651,6 +1645,9 @@
                 periodoOverlay.style.display = 'block';
                 positionMenuSmartly(periodoMenu, rect, 200, 200);
                 
+                // Actualizar selectedPeriodo antes de marcar (por si cambió)
+                selectedPeriodo = getSelectedPeriodo();
+                
                 // Marcar la opción seleccionada
                 periodoMenu.querySelectorAll('.periodo-menu-option').forEach(opt => {
                     opt.classList.remove('selected');
@@ -1672,7 +1669,20 @@
             option.addEventListener('click', function(e) {
                 e.stopPropagation();
                 const value = this.dataset.value;
+                
+                // Si es "personalizado", abrir el selector de fechas
+                if (value === 'personalizado') {
+                    periodoMenu.style.display = 'none';
+                    periodoOverlay.style.display = 'none';
+                    openDatePicker();
+                    return;
+                }
+                
                 selectedPeriodo = value;
+                
+                // Limpiar filtro personalizado si existe
+                currentFilters.fechaCreacionDesde = null;
+                currentFilters.fechaCreacionHasta = null;
                 
                 // Actualizar texto del botón
                 periodoText.textContent = periodoTexts[value];
@@ -1683,12 +1693,12 @@
                 });
                 this.classList.add('selected');
                 
+                // Aplicar filtro por período
+                currentFilters.periodo = value;
+                
                 // Cerrar el menú
                 periodoMenu.style.display = 'none';
                 periodoOverlay.style.display = 'none';
-                
-                // Aplicar filtro por período
-                currentFilters.periodo = value;
                 
                 // Resetear página a 1 cuando se aplica un filtro
                 currentPage = 1;
@@ -1700,6 +1710,410 @@
                 initPaginator();
             });
         });
+    }
+
+    // Inicializar selector de fechas personalizado
+    function initDatePicker() {
+        const datePickerModal = document.getElementById('date-picker-modal');
+        const datePickerOverlay = document.getElementById('date-picker-overlay');
+        const datePickerCancelar = document.getElementById('date-picker-cancelar');
+        const datePickerAplicar = document.getElementById('date-picker-aplicar');
+        const fechaInicioInput = document.getElementById('date-picker-fecha-inicio');
+        const fechaFinInput = document.getElementById('date-picker-fecha-fin');
+        const calendarContainer = document.getElementById('date-picker-calendar');
+        const datePickerClose = document.getElementById('date-picker-close');
+        
+        if (!datePickerModal || !datePickerOverlay) return;
+
+        let fechaInicio = null;
+        let fechaFin = null;
+        let currentMonth = new Date(2026, 2, 1); // Marzo 2026
+        let selectingStart = true;
+        
+        // Guardar estado del filtro antes de abrir
+        let savedFilterState = null;
+
+        // Función para formatear fecha para mostrar en inputs (DD/MM/YYYY)
+        function formatearFechaParaInput(fecha) {
+            const dia = String(fecha.getDate()).padStart(2, '0');
+            const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+            const anio = fecha.getFullYear();
+            return `${dia}/${mes}/${anio}`;
+        }
+
+        // Función para formatear fecha para mostrar en botón (DD MMM YYYY)
+        function formatearFechaParaMostrar(fecha) {
+            const dia = fecha.getDate();
+            const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+            const mes = meses[fecha.getMonth()];
+            const anio = fecha.getFullYear();
+            return `${dia} ${mes} ${anio}`;
+        }
+
+        // Función para parsear fecha desde formato DD/MM/YYYY
+        function parsearFechaDesdeInput(texto) {
+            if (!texto || texto.trim() === '') return null;
+            
+            // Intentar parsear DD/MM/YYYY
+            const regex = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/;
+            const match = texto.trim().match(regex);
+            
+            if (!match) return null;
+            
+            const dia = parseInt(match[1], 10);
+            const mes = parseInt(match[2], 10) - 1; // Meses son 0-indexed
+            const anio = parseInt(match[3], 10);
+            
+            // Validar rango de fechas
+            if (dia < 1 || dia > 31 || mes < 0 || mes > 11 || anio < 1900 || anio > 2100) {
+                return null;
+            }
+            
+            const fecha = new Date(anio, mes, dia);
+            
+            // Validar que la fecha es válida (evita fechas como 31/02/2026)
+            if (fecha.getDate() !== dia || fecha.getMonth() !== mes || fecha.getFullYear() !== anio) {
+                return null;
+            }
+            
+            return fecha;
+        }
+
+        // Función para abrir el selector
+        window.openDatePicker = function() {
+            // Guardar el estado actual del filtro antes de abrir
+            savedFilterState = {
+                periodo: currentFilters.periodo,
+                fechaCreacionDesde: currentFilters.fechaCreacionDesde,
+                fechaCreacionHasta: currentFilters.fechaCreacionHasta
+            };
+            
+            datePickerModal.style.display = 'block';
+            datePickerOverlay.style.display = 'block';
+            
+            // Si hay fechas guardadas, restaurarlas
+            if (currentFilters.fechaCreacionDesde && currentFilters.fechaCreacionHasta) {
+                fechaInicio = parseFecha(currentFilters.fechaCreacionDesde);
+                fechaFin = parseFecha(currentFilters.fechaCreacionHasta);
+                updateInputs();
+                // Mostrar el mes de la fecha de inicio
+                if (fechaInicio) {
+                    currentMonth = new Date(fechaInicio);
+                    currentMonth.setDate(1);
+                }
+            } else {
+                fechaInicio = null;
+                fechaFin = null;
+                fechaInicioInput.value = '';
+                fechaFinInput.value = '';
+                // Mostrar mes actual (marzo 2026)
+                currentMonth = new Date(2026, 2, 1);
+            }
+            
+            renderCalendar();
+        };
+
+        // Función para cerrar el selector
+        function closeDatePicker() {
+            datePickerModal.style.display = 'none';
+            datePickerOverlay.style.display = 'none';
+        }
+        
+        // Función para cancelar y restaurar estado anterior
+        function cancelDatePicker() {
+            // Restaurar el estado del filtro guardado
+            if (savedFilterState) {
+                currentFilters.periodo = savedFilterState.periodo;
+                currentFilters.fechaCreacionDesde = savedFilterState.fechaCreacionDesde;
+                currentFilters.fechaCreacionHasta = savedFilterState.fechaCreacionHasta;
+                
+                // Actualizar texto del botón según el estado restaurado
+                const periodoText = document.getElementById('seguimiento-periodo-text');
+                if (periodoText) {
+                    if (currentFilters.periodo) {
+                        const periodoTexts = {
+                            '30': 'Últimos 30 días',
+                            '90': 'Últimos 3 meses',
+                            '180': 'Últimos 6 meses',
+                            '365': 'Último año'
+                        };
+                        periodoText.textContent = periodoTexts[currentFilters.periodo] || 'Últimos 30 días';
+                    } else if (currentFilters.fechaCreacionDesde && currentFilters.fechaCreacionHasta) {
+                        periodoText.textContent = `${currentFilters.fechaCreacionDesde} - ${currentFilters.fechaCreacionHasta}`;
+                    } else {
+                        periodoText.textContent = 'Últimos 30 días';
+                    }
+                }
+            }
+            
+            closeDatePicker();
+        }
+
+        // Cerrar con overlay
+        datePickerOverlay.addEventListener('click', cancelDatePicker);
+
+        // Cerrar con botón X del header
+        if (datePickerClose) {
+            datePickerClose.addEventListener('click', cancelDatePicker);
+        }
+
+        // Cerrar con botón cancelar
+        if (datePickerCancelar) {
+            datePickerCancelar.addEventListener('click', cancelDatePicker);
+        }
+
+        // Aplicar filtro
+        if (datePickerAplicar) {
+            datePickerAplicar.addEventListener('click', function() {
+                if (!fechaInicio || !fechaFin) {
+                    if (typeof showToast === 'function') {
+                        showToast('warning', 'Por favor selecciona ambas fechas');
+                    }
+                    return;
+                }
+
+                // Formatear fechas para el filtro (formato: "1 ene 2026")
+                const fechaInicioStr = formatearFechaParaMostrar(fechaInicio);
+                const fechaFinStr = formatearFechaParaMostrar(fechaFin);
+
+                // Aplicar filtro personalizado
+                currentFilters.periodo = null; // Limpiar filtro de período
+                currentFilters.fechaCreacionDesde = fechaInicioStr;
+                currentFilters.fechaCreacionHasta = fechaFinStr;
+
+                // Actualizar texto del botón
+                const periodoText = document.getElementById('seguimiento-periodo-text');
+                if (periodoText) {
+                    periodoText.textContent = `${fechaInicioStr} - ${fechaFinStr}`;
+                }
+
+                // Resetear página y renderizar
+                currentPage = 1;
+                applyFiltersAndSearch();
+                applySorting();
+                renderTable();
+                updateResultsCount();
+                updateIndicadores();
+                initPaginator();
+
+                closeDatePicker();
+            });
+        }
+
+
+
+        // Actualizar inputs
+        function updateInputs() {
+            if (fechaInicio) {
+                fechaInicioInput.value = formatearFechaParaInput(fechaInicio);
+            } else {
+                fechaInicioInput.value = '';
+            }
+            if (fechaFin) {
+                fechaFinInput.value = formatearFechaParaInput(fechaFin);
+            } else {
+                fechaFinInput.value = '';
+            }
+        }
+
+        // Manejar cambios en inputs de fecha
+        function initDateInputs() {
+            // Input de fecha de inicio
+            fechaInicioInput.addEventListener('blur', function() {
+                const texto = this.value.trim();
+                if (texto === '') {
+                    fechaInicio = null;
+                    renderCalendar();
+                    return;
+                }
+                
+                const fecha = parsearFechaDesdeInput(texto);
+                if (fecha) {
+                    fechaInicio = fecha;
+                    fechaInicio.setHours(0, 0, 0, 0);
+                    this.value = formatearFechaParaInput(fechaInicio);
+                    
+                    // Actualizar mes mostrado si es necesario
+                    if (fechaInicio.getMonth() !== currentMonth.getMonth() || 
+                        fechaInicio.getFullYear() !== currentMonth.getFullYear()) {
+                        currentMonth = new Date(fechaInicio);
+                        currentMonth.setDate(1);
+                    }
+                    
+                    renderCalendar();
+                } else if (texto !== '') {
+                    // Fecha inválida, restaurar valor anterior si existe
+                    if (fechaInicio) {
+                        this.value = formatearFechaParaInput(fechaInicio);
+                    } else {
+                        this.value = '';
+                    }
+                }
+            });
+
+            // Input de fecha de fin
+            fechaFinInput.addEventListener('blur', function() {
+                const texto = this.value.trim();
+                if (texto === '') {
+                    fechaFin = null;
+                    renderCalendar();
+                    return;
+                }
+                
+                const fecha = parsearFechaDesdeInput(texto);
+                if (fecha) {
+                    fechaFin = fecha;
+                    fechaFin.setHours(23, 59, 59, 999);
+                    this.value = formatearFechaParaInput(fechaFin);
+                    
+                    // Actualizar mes mostrado si es necesario
+                    if (fechaFin.getMonth() !== currentMonth.getMonth() || 
+                        fechaFin.getFullYear() !== currentMonth.getFullYear()) {
+                        currentMonth = new Date(fechaFin);
+                        currentMonth.setDate(1);
+                    }
+                    
+                    renderCalendar();
+                } else if (texto !== '') {
+                    // Fecha inválida, restaurar valor anterior si existe
+                    if (fechaFin) {
+                        this.value = formatearFechaParaInput(fechaFin);
+                    } else {
+                        this.value = '';
+                    }
+                }
+            });
+
+            // Permitir Enter para aplicar
+            fechaInicioInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    this.blur();
+                }
+            });
+
+            fechaFinInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    this.blur();
+                }
+            });
+        }
+
+        // Renderizar calendario
+        function renderCalendar() {
+            if (!calendarContainer) return;
+
+            const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+            const diasSemana = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+            
+            // Mostrar solo 1 mes
+            const mes = currentMonth.getMonth();
+            const anio = currentMonth.getFullYear();
+            const primerDia = new Date(anio, mes, 1);
+            const ultimoDia = new Date(anio, mes + 1, 0);
+            const primerDiaSemana = primerDia.getDay() === 0 ? 6 : primerDia.getDay() - 1; // Lunes = 0
+
+            let html = `
+                <div class="date-picker-calendar-month">
+                    <div class="date-picker-calendar-month-header">
+                        <button type="button" class="date-picker-calendar-nav-btn" data-dir="prev">
+                            <i class="far fa-chevron-left"></i>
+                        </button>
+                        <span class="date-picker-calendar-month-title">${meses[mes].toUpperCase()} ${anio}</span>
+                        <button type="button" class="date-picker-calendar-nav-btn" data-dir="next">
+                            <i class="far fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    <div class="date-picker-calendar-header">
+                        ${diasSemana.map(d => `<div class="date-picker-calendar-day-header">${d}</div>`).join('')}
+                    </div>
+                    <div class="date-picker-calendar-grid">
+            `;
+
+            // Días del mes anterior (para completar la primera semana)
+            for (let i = 0; i < primerDiaSemana; i++) {
+                html += `<div class="date-picker-calendar-day disabled"></div>`;
+            }
+
+            // Días del mes
+            for (let dia = 1; dia <= ultimoDia.getDate(); dia++) {
+                const fechaDia = new Date(anio, mes, dia);
+                fechaDia.setHours(0, 0, 0, 0);
+                const fechaDiaTime = fechaDia.getTime();
+                let clases = 'date-picker-calendar-day';
+                
+                // Verificar si está seleccionado o en rango
+                if (fechaInicio && fechaFin) {
+                    const inicioTime = new Date(fechaInicio);
+                    inicioTime.setHours(0, 0, 0, 0);
+                    const finTime = new Date(fechaFin);
+                    finTime.setHours(0, 0, 0, 0);
+                    
+                    if (fechaDiaTime === inicioTime.getTime() || fechaDiaTime === finTime.getTime()) {
+                        clases += fechaDiaTime === inicioTime.getTime() ? ' range-start' : ' range-end';
+                    } else if (fechaDiaTime > inicioTime.getTime() && fechaDiaTime < finTime.getTime()) {
+                        clases += ' in-range';
+                    }
+                } else if (fechaInicio) {
+                    const inicioTime = new Date(fechaInicio);
+                    inicioTime.setHours(0, 0, 0, 0);
+                    if (fechaDiaTime === inicioTime.getTime()) {
+                        clases += ' selected';
+                    }
+                }
+
+                html += `<div class="${clases}" data-date="${anio}-${String(mes + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}">${dia}</div>`;
+            }
+
+            html += `
+                    </div>
+                </div>
+            `;
+
+            calendarContainer.innerHTML = html;
+
+            // Agregar event listeners a los días
+            calendarContainer.querySelectorAll('.date-picker-calendar-day:not(.disabled)').forEach(day => {
+                day.addEventListener('click', function() {
+                    const dateStr = this.dataset.date;
+                    if (!dateStr) return;
+                    
+                    const [anio, mes, dia] = dateStr.split('-').map(Number);
+                    const fechaSeleccionada = new Date(anio, mes - 1, dia);
+                    fechaSeleccionada.setHours(0, 0, 0, 0);
+
+                    if (!fechaInicio || (fechaInicio && fechaFin) || fechaSeleccionada < fechaInicio) {
+                        // Seleccionar nueva fecha de inicio
+                        fechaInicio = new Date(fechaSeleccionada);
+                        fechaFin = null;
+                        selectingStart = false;
+                    } else {
+                        // Seleccionar fecha de fin
+                        fechaFin = new Date(fechaSeleccionada);
+                        fechaFin.setHours(23, 59, 59, 999);
+                        selectingStart = true;
+                    }
+
+                    updateInputs();
+                    renderCalendar();
+                });
+            });
+
+            // Navegación de meses
+            calendarContainer.querySelectorAll('.date-picker-calendar-nav-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const dir = this.dataset.dir;
+                    if (dir === 'prev') {
+                        currentMonth.setMonth(currentMonth.getMonth() - 1);
+                    } else {
+                        currentMonth.setMonth(currentMonth.getMonth() + 1);
+                    }
+                    renderCalendar();
+                });
+            });
+        }
+
+        // Inicializar event listeners de inputs
+        initDateInputs();
     }
 
     // Inicializar menú de ordenamiento por fecha
@@ -2423,6 +2837,7 @@
         initFilterMenu();
         initCheckboxMenu();
         initPeriodoMenu();
+        initDatePicker();
         initCheckboxes();
         initVerSeleccionados();
         initActionButtons();

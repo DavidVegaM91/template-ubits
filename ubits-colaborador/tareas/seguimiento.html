@@ -301,29 +301,6 @@
                     </div>
                 </div>
 
-                <!-- Fechas de creación -->
-                <div class="filtros-group filtros-group-row">
-                    <div class="filtros-date-field">
-                        <label class="ubits-body-sm-bold filtros-label">Fecha de creación desde</label>
-                        <div id="filtros-fecha-creacion-desde"></div>
-                    </div>
-                    <div class="filtros-date-field">
-                        <label class="ubits-body-sm-bold filtros-label">Fecha de creación hasta</label>
-                        <div id="filtros-fecha-creacion-hasta"></div>
-                    </div>
-                </div>
-
-                <!-- Fechas de vencimiento -->
-                <div class="filtros-group filtros-group-row">
-                    <div class="filtros-date-field">
-                        <label class="ubits-body-sm-bold filtros-label">Fecha de vencimiento desde</label>
-                        <div id="filtros-fecha-vencimiento-desde"></div>
-                    </div>
-                    <div class="filtros-date-field">
-                        <label class="ubits-body-sm-bold filtros-label">Fecha de vencimiento hasta</label>
-                        <div id="filtros-fecha-vencimiento-hasta"></div>
-                    </div>
-                </div>
             </div>
             <div class="filtros-modal-footer">
                 <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="filtros-limpiar">Limpiar filtros</button>
@@ -353,6 +330,51 @@
             </button>
             <button type="button" class="periodo-menu-option" data-value="365">
                 <span class="ubits-body-sm-regular">Último año</span>
+            </button>
+            <button type="button" class="periodo-menu-option" data-value="personalizado" id="periodo-personalizado-btn">
+                <span class="ubits-body-sm-regular">Personalizado</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal de fecha personalizada -->
+    <div class="date-picker-overlay" id="date-picker-overlay" style="display: none;" aria-hidden="true"></div>
+    <div class="date-picker-modal-content" id="date-picker-modal" style="display: none;" role="dialog" aria-label="Fecha personalizada">
+        <div class="date-picker-modal-header">
+            <h2 class="ubits-heading-h2">Fecha personalizada</h2>
+            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="date-picker-close" aria-label="Cerrar">
+                <i class="far fa-times"></i>
+            </button>
+        </div>
+        <div class="date-picker-modal-body">
+            <!-- Campos de fecha -->
+            <div class="date-picker-inputs">
+                <div class="date-picker-input-group">
+                    <label class="ubits-body-sm-regular date-picker-label">Fecha de inicio</label>
+                    <div class="date-picker-input-wrapper">
+                        <input type="text" class="date-picker-input" id="date-picker-fecha-inicio" placeholder="DD/MM/YYYY">
+                    </div>
+                </div>
+                <span class="date-picker-separator">-</span>
+                <div class="date-picker-input-group">
+                    <label class="ubits-body-sm-regular date-picker-label">Fecha de fin</label>
+                    <div class="date-picker-input-wrapper">
+                        <input type="text" class="date-picker-input" id="date-picker-fecha-fin" placeholder="DD/MM/YYYY">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calendario -->
+            <div class="date-picker-calendar" id="date-picker-calendar">
+                <!-- El calendario se generará con JavaScript -->
+            </div>
+        </div>
+        <div class="date-picker-modal-footer">
+            <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="date-picker-cancelar">
+                <span>Cancelar</span>
+            </button>
+            <button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="date-picker-aplicar">
+                <span>Aplicar</span>
             </button>
         </div>
     </div>
