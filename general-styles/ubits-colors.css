@@ -14,6 +14,9 @@
   --ubits-accent-brand-static: #0c5bef;
   --ubits-accent-brand-static-inverted: #3865f5;
   
+  /* Accent Green */
+  --ubits-accent-green: #1E8D58;
+  
   /* Button Colors */
   --ubits-button-primary-bg-default: #0c5bef;
   --ubits-button-primary-hover: #223a91;
@@ -279,6 +282,9 @@
   --ubits-bg-disabled: #edeeef;
   --ubits-bg-disabled-button: #edeeef;
   
+  /* Background Blue Bold */
+  --ubits-bg-blue-bold-default: #0C5BEF;
+  
   /* Background Colors - Inverted (valores del modo oscuro en modo claro) */
   --ubits-bg-1-inverted: #202837;
   --ubits-bg-2-inverted: #0E1825;
@@ -418,6 +424,7 @@
      ======================================== */
   
   --ubits-chart-bg-level-1: #ffffff;
+  --ubits-chart-bg-neutral-blue-base: #557593;
   
   /* ========================================
      TOAST COLORS
@@ -472,6 +479,9 @@
   --ubits-logo-inverted: #ffffff;
   --ubits-logo-static: #0d1f57;
   --ubits-logo-static-inverted: #ffffff;
+  
+  /* Accent Green - DARK MODE */
+  --ubits-accent-green: #17B16D;
   
   /* ========================================
      FOREGROUND COLORS - DARK MODE
@@ -696,6 +706,9 @@
   --ubits-bg-disabled: #3b4350;
   --ubits-bg-disabled-button: #3b4350;
   
+  /* Background Blue Bold - DARK MODE */
+  --ubits-bg-blue-bold-default: #3865F5;
+  
   /* Background Colors - Inverted (valores del modo claro en modo oscuro) */
   --ubits-bg-1-inverted: #ffffff;
   --ubits-bg-2-inverted: #F3F3F4;
@@ -808,6 +821,7 @@
      ======================================== */
   
   --ubits-chart-bg-level-1: #ffffff;
+  --ubits-chart-bg-neutral-blue-base: #899DB3;
   
   /* ========================================
      TOAST COLORS - DARK MODE

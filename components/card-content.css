@@ -70,14 +70,14 @@
 
 .course-progress-overlay .progress-fill {
     height: 100%;
-    background: var(--ubits-accent-brand);
+    background: var(--ubits-bg-blue-bold-default);
     border-radius: 0;
     transition: width 0.3s ease;
 }
 
 /* Barra verde para estado completado */
 .course-card[data-status="completed"] .course-progress-overlay .progress-fill {
-    background: var(--ubits-feedback-accent-success-static);
+    background: var(--ubits-accent-green);
 }
 
 /* Course Content */
@@ -116,7 +116,7 @@
 }
 
 .course-status--completed {
-    color: var(--ubits-feedback-accent-success-static);
+    color: var(--ubits-accent-green);
 }
 
 /* Course Title */

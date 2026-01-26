@@ -224,7 +224,7 @@
 
 .seguimiento-progress-bar-fill {
     height: 100%;
-    background-color: var(--ubits-feedback-accent-info);
+    background-color: var(--ubits-chart-bg-neutral-blue-base);
     border-radius: 4px;
     transition: width 0.3s ease;
 }
@@ -977,6 +977,61 @@
     border-top: 1px solid var(--ubits-border-1);
 }
 
+/* Menú de período */
+.periodo-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+}
+
+.periodo-menu {
+    position: fixed;
+    min-width: 200px;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    z-index: 1001;
+    padding: 8px;
+}
+
+.periodo-menu-options {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.periodo-menu-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    width: 100%;
+    text-align: left;
+}
+
+.periodo-menu-option:hover {
+    background: var(--ubits-bg-2);
+}
+
+.periodo-menu-option.selected {
+    background: var(--ubits-button-active-bg);
+    color: var(--ubits-accent-brand);
+}
+
+.periodo-menu-option.selected span {
+    color: var(--ubits-accent-brand);
+    font-weight: 600;
+}
+
 /* Responsive */
 @media (max-width: 1023px) {
     .content-sections {
@@ -1014,7 +1069,8 @@
     .priority-menu,
     .status-menu,
     .reasignar-menu,
-    .columns-menu {
+    .columns-menu,
+    .periodo-menu {
         left: 16px !important;
         right: 16px;
         min-width: auto;

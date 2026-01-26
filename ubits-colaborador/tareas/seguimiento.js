@@ -34,7 +34,8 @@
         fechaCreacionDesde: null,
         fechaCreacionHasta: null,
         fechaVencimientoDesde: null,
-        fechaVencimientoHasta: null
+        fechaVencimientoHasta: null,
+        periodo: '30' // Días hacia atrás desde hoy (30, 90, 180, 365). Por defecto: 30 días
     };
     let searchQuery = '';
 
@@ -276,6 +277,35 @@
                     return fechaRow <= fechaHasta;
                 }
                 return false;
+            });
+        }
+
+        // Filtro por período (últimos X días desde hoy)
+        if (currentFilters.periodo) {
+            const hoy = new Date(2026, 2, 22); // Domingo 22 de marzo de 2026
+            hoy.setHours(23, 59, 59, 999); // Fin del día de hoy
+            
+            // Calcular fecha límite: para "últimos 30 días" desde el 22 de marzo (incluyendo hoy),
+            // debemos incluir desde el 23 de febrero (29 días atrás desde hoy)
+            const periodoDias = parseInt(currentFilters.periodo) || 30; // Asegurar que sea número
+            const diasAtras = periodoDias - 1; // Para 30 días: 29 días atrás
+            
+            // Crear fecha límite: usar milisegundos de forma precisa
+            // 22 de marzo 2026, 00:00:00 - 29 días = 23 de febrero 2026, 00:00:00
+            const hoyInicio = new Date(2026, 2, 22, 0, 0, 0, 0);
+            const fechaLimite = new Date(hoyInicio.getTime() - (diasAtras * 86400000)); // 86400000 ms = 1 día
+            
+            data = data.filter(row => {
+                const fechaRow = parseFecha(row.fechaCreacion);
+                if (!fechaRow) return false;
+                
+                // Comparar usando getTime() para evitar problemas de comparación
+                const fechaRowTime = fechaRow.getTime();
+                const fechaLimiteTime = fechaLimite.getTime();
+                const hoyTime = hoy.getTime();
+                
+                // Incluir actividades desde fechaLimite (inclusive) hasta hoy (inclusive)
+                return fechaRowTime >= fechaLimiteTime && fechaRowTime <= hoyTime;
             });
         }
 
@@ -1065,7 +1095,7 @@
             plan: 'Plan',
             estado: 'Estado',
             prioridad: 'Prioridad',
-            avance: 'Avance',
+            avance: 'Progreso',
             fechaFinalizacion: 'Fecha de finalización',
             fechaCreacion: 'Fecha de creación',
             creador: 'Creador',
@@ -1312,8 +1342,26 @@
             fechaCreacionDesde: null,
             fechaCreacionHasta: null,
             fechaVencimientoDesde: null,
-            fechaVencimientoHasta: null
+            fechaVencimientoHasta: null,
+            periodo: '30' // Resetear a 30 días por defecto
         };
+        
+        // Resetear botón de período a "Últimos 30 días"
+        const periodoText = document.getElementById('seguimiento-periodo-text');
+        if (periodoText) {
+            periodoText.textContent = 'Últimos 30 días';
+        }
+        
+        // Resetear selección visual en el menú
+        const periodoMenu = document.getElementById('periodo-menu');
+        if (periodoMenu) {
+            periodoMenu.querySelectorAll('.periodo-menu-option').forEach(opt => {
+                opt.classList.remove('selected');
+                if (opt.dataset.value === '30') {
+                    opt.classList.add('selected');
+                }
+            });
+        }
 
         // Limpiar radio buttons de tipo de actividad (desmarcar todos)
         document.querySelectorAll('#filtros-tipo-actividad input').forEach(cb => {
@@ -1550,6 +1598,104 @@
         const columnsOverlay = document.getElementById('columns-menu-overlay');
         if (columnsBtn) columnsBtn.addEventListener('click', function(e) { e.stopPropagation(); toggleColumnsMenu(); });
         if (columnsOverlay) columnsOverlay.addEventListener('click', toggleColumnsMenu);
+    }
+
+    // Inicializar menú de período
+    function initPeriodoMenu() {
+        const periodoBtn = document.getElementById('seguimiento-periodo-toggle');
+        const periodoMenu = document.getElementById('periodo-menu');
+        const periodoOverlay = document.getElementById('periodo-menu-overlay');
+        const periodoText = document.getElementById('seguimiento-periodo-text');
+        
+        if (!periodoBtn || !periodoMenu || !periodoOverlay || !periodoText) return;
+
+        // Mapeo de valores a textos
+        const periodoTexts = {
+            '30': 'Últimos 30 días',
+            '90': 'Últimos 3 meses',
+            '180': 'Últimos 6 meses',
+            '365': 'Último año'
+        };
+
+        // Valor inicial (sincronizar con currentFilters)
+        let selectedPeriodo = currentFilters.periodo || '30';
+        
+        // Sincronizar texto del botón con el valor inicial
+        if (periodoTexts[selectedPeriodo]) {
+            periodoText.textContent = periodoTexts[selectedPeriodo];
+        }
+        
+        // Marcar la opción seleccionada inicialmente
+        periodoMenu.querySelectorAll('.periodo-menu-option').forEach(opt => {
+            opt.classList.remove('selected');
+            if (opt.dataset.value === selectedPeriodo) {
+                opt.classList.add('selected');
+            }
+        });
+
+        // Toggle del menú
+        periodoBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const rect = this.getBoundingClientRect();
+            const visible = periodoMenu.style.display === 'block';
+            
+            if (visible) {
+                periodoMenu.style.display = 'none';
+                periodoOverlay.style.display = 'none';
+            } else {
+                periodoMenu.style.display = 'block';
+                periodoOverlay.style.display = 'block';
+                positionMenuSmartly(periodoMenu, rect, 200, 200);
+                
+                // Marcar la opción seleccionada
+                periodoMenu.querySelectorAll('.periodo-menu-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                    if (opt.dataset.value === selectedPeriodo) {
+                        opt.classList.add('selected');
+                    }
+                });
+            }
+        });
+
+        // Cerrar al hacer clic en el overlay
+        periodoOverlay.addEventListener('click', function() {
+            periodoMenu.style.display = 'none';
+            periodoOverlay.style.display = 'none';
+        });
+
+        // Manejar selección de opciones
+        periodoMenu.querySelectorAll('.periodo-menu-option').forEach(option => {
+            option.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const value = this.dataset.value;
+                selectedPeriodo = value;
+                
+                // Actualizar texto del botón
+                periodoText.textContent = periodoTexts[value];
+                
+                // Actualizar selección visual
+                periodoMenu.querySelectorAll('.periodo-menu-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                this.classList.add('selected');
+                
+                // Cerrar el menú
+                periodoMenu.style.display = 'none';
+                periodoOverlay.style.display = 'none';
+                
+                // Aplicar filtro por período
+                currentFilters.periodo = value;
+                
+                // Resetear página a 1 cuando se aplica un filtro
+                currentPage = 1;
+                
+                // Renderizar tabla con el nuevo filtro
+                renderTable();
+                updateResultsCount();
+                updateIndicadores();
+                initPaginator();
+            });
+        });
     }
 
     // Inicializar menú de ordenamiento por fecha
@@ -2178,7 +2324,7 @@
                 if (selectedIds.size === 0) return;
 
                 const selectedRows = SEGUIMIENTO_DATA.filter(r => selectedIds.has(r.id));
-                const headers = ['ID', 'Nombre', 'Asignado', 'Username', 'Cargo', 'Área', 'Lider', 'Creador', 'Plan', 'Estado', 'Prioridad', 'Avance', 'Fecha Finalización', 'Fecha Creación', 'Comentarios'];
+                const headers = ['ID', 'Nombre', 'Asignado', 'Username', 'Cargo', 'Área', 'Lider', 'Creador', 'Plan', 'Estado', 'Prioridad', 'Progreso', 'Fecha Finalización', 'Fecha Creación', 'Comentarios'];
                 const csvRows = [headers.join(',')];
 
                 selectedRows.forEach(row => {
@@ -2259,6 +2405,7 @@
         initColumnVisibility();
         initNav();
         buildColumnsMenu();
+        applyFiltersAndSearch(); // Aplicar filtros (incluyendo período por defecto) antes de renderizar
         applySorting(); // Aplicar ordenamiento por defecto antes de renderizar
         renderTable();
         updateSelectAll();
@@ -2271,6 +2418,7 @@
         initSortMenu();
         initFilterMenu();
         initCheckboxMenu();
+        initPeriodoMenu();
         initCheckboxes();
         initVerSeleccionados();
         initActionButtons();

@@ -1298,15 +1298,13 @@ function formatearFecha(fecha) {
 // FUNCIÓN PARA GENERAR AVANCE DE PLANES
 // Los planes tienen avances variables: 0%, 10%, 20%, 30%, etc.
 // ============================================
-function generarAvancePlan(fechaFin, estado) {
-    const hoy = new Date(2026, 0, 22); // 22 de enero de 2026 (miércoles)
-    
+function generarAvancePlan(fechaFin, estado, fechaHoy) {
     if (estado === 'Finalizada') {
         return 100;
     }
     
     // Si ya venció (estado Vencida)
-    if (fechaFin < hoy) {
+    if (fechaFin < fechaHoy) {
         // Vencida: avances típicos incompletos (40%, 50%, 60%, 70%, 80%)
         const avancesPosibles = [40, 50, 60, 70, 80];
         return avancesPosibles[Math.floor(Math.random() * avancesPosibles.length)];
@@ -1314,8 +1312,8 @@ function generarAvancePlan(fechaFin, estado) {
     
     // Si aún no vence, calcular avance proporcional basado en tareas completadas
     // Asumimos que el plan tiene 5 tareas y calculamos cuántas deberían estar completas
-    const inicioMes = new Date(2026, 0, 1);
-    const diasTranscurridos = Math.floor((hoy - inicioMes) / (1000 * 60 * 60 * 24));
+    const inicioMes = new Date(fechaFin.getFullYear(), fechaFin.getMonth(), 1);
+    const diasTranscurridos = Math.floor((fechaHoy - inicioMes) / (1000 * 60 * 60 * 24));
     const diasTotales = Math.floor((fechaFin - inicioMes) / (1000 * 60 * 60 * 24));
     
     if (diasTotales <= 0) return 0;
@@ -1340,13 +1338,11 @@ function generarAvanceTarea(estado) {
 }
 
 // ============================================
-// DETERMINAR ESTADO BASADO EN FECHA (Hoy = 20 enero 2026)
+// DETERMINAR ESTADO BASADO EN FECHA
 // ============================================
-function determinarEstado(fechaFin, fechaCreacion) {
-    const hoy = new Date(2026, 0, 22); // 22 de enero de 2026 (miércoles)
-    
+function determinarEstado(fechaFin, fechaCreacion, fechaHoy) {
     // Si la fecha de vencimiento ya pasó
-    if (fechaFin < hoy) {
+    if (fechaFin < fechaHoy) {
         // 70% probabilidad de haberla completado a tiempo
         if (Math.random() < 0.7) {
             return 'Finalizada';
@@ -1429,33 +1425,60 @@ function obtenerJefe(area, esJefeDeArea = false) {
 }
 
 // ============================================
-// GENERAR BASE DE DATOS DE ACTIVIDADES
-// Todas las fechas en ENERO 2026
-// Distribución semanal realista (días laborales)
-// Fecha actual simulada: 22 de enero de 2026 (miércoles)
+// FUNCIÓN AUXILIAR: GENERAR ACTIVIDADES PARA UN MES
+// Parámetros: año, mes (0-11), fechaHoy (Date)
 // ============================================
-function generarBaseDeDatos() {
+function generarActividadesPorMes(anio, mes, fechaHoy, idActividadInicial) {
     const actividades = [];
-    let idActividad = 10001;
-    const hoy = new Date(2026, 0, 22); // Miércoles 22 de enero de 2026
+    let idActividad = idActividadInicial;
     
-    // ============================================
-    // SEMANAS DE ENERO 2026 (días laborales):
-    // ============================================
-    // Semana 1 (corta): jue 1 - vie 3 enero (solo 2 días, tareas sencillas)
-    // Semana 2: lun 5 - vie 9 enero (2 tareas por empleado)
-    // Semana 3: lun 12 - vie 16 enero (2 tareas por empleado)
-    // Semana 4: lun 19 - vie 23 enero (2 tareas por empleado) ← SEMANA ACTUAL (hoy es 22)
-    // Semana 5: lun 26 - vie 30 enero (2 tareas por empleado)
-    // ============================================
+    // Calcular semanas del mes (días laborales)
+    // Diciembre 2025: 1 dic (lun) - 31 dic (mié)
+    // Enero 2026: 1 ene (jue) - 31 ene (vie)
+    const primerDia = new Date(anio, mes, 1);
+    const ultimoDia = new Date(anio, mes + 1, 0); // Último día del mes
     
-    const SEMANAS = [
-        { inicio: new Date(2026, 0, 1), fin: new Date(2026, 0, 3), nombre: 'Semana 1 (arranque)' },
-        { inicio: new Date(2026, 0, 5), fin: new Date(2026, 0, 9), nombre: 'Semana 2' },
-        { inicio: new Date(2026, 0, 12), fin: new Date(2026, 0, 16), nombre: 'Semana 3' },
-        { inicio: new Date(2026, 0, 19), fin: new Date(2026, 0, 23), nombre: 'Semana 4' },
-        { inicio: new Date(2026, 0, 26), fin: new Date(2026, 0, 30), nombre: 'Semana 5' }
-    ];
+    // Calcular semanas laborales del mes (lunes a viernes)
+    const SEMANAS = [];
+    let fechaActual = new Date(primerDia);
+    
+    // Encontrar el primer lunes del mes (o el primer día si es lunes)
+    const diaSemanaPrimero = primerDia.getDay();
+    const diasHastaLunes = diaSemanaPrimero === 0 ? 6 : (diaSemanaPrimero === 1 ? 0 : diaSemanaPrimero - 1);
+    let lunesActual = new Date(primerDia);
+    if (diasHastaLunes > 0) {
+        lunesActual.setDate(primerDia.getDate() + (7 - diasHastaLunes));
+    }
+    
+    // Generar semanas mientras haya lunes dentro del mes
+    while (lunesActual <= ultimoDia) {
+        const viernesSemana = new Date(lunesActual);
+        viernesSemana.setDate(lunesActual.getDate() + 4);
+        
+        // Asegurar que no exceda el último día del mes
+        const finSemana = viernesSemana > ultimoDia ? ultimoDia : viernesSemana;
+        
+        // Solo agregar si el lunes está dentro del mes
+        if (lunesActual <= ultimoDia) {
+            SEMANAS.push({
+                inicio: new Date(lunesActual),
+                fin: new Date(finSemana),
+                nombre: `Semana ${SEMANAS.length + 1}`
+            });
+        }
+        
+        // Avanzar al siguiente lunes
+        lunesActual.setDate(lunesActual.getDate() + 7);
+    }
+    
+    // Si no hay semanas, crear al menos una con todo el mes
+    if (SEMANAS.length === 0) {
+        SEMANAS.push({
+            inicio: new Date(primerDia),
+            fin: new Date(ultimoDia),
+            nombre: 'Semana 1'
+        });
+    }
     
     EMPLEADOS.forEach(empleado => {
         // Obtener planes disponibles para el área
@@ -1481,16 +1504,17 @@ function generarBaseDeDatos() {
         // ============================================
         // CREAR LOS 2 PLANES con sus TAREAS
         // ============================================
-        // Plan 1: Semanas 1-3 (1 ene - 16 ene) - 5 tareas
-        // Plan 2: Semanas 4-5 (19 ene - 30 ene) - 5 tareas
+        // Plan 1: Primera mitad del mes - 5 tareas
+        // Plan 2: Segunda mitad del mes - 5 tareas
         
         // Asignar hora según tipo de empleado (una vez para todos los planes del empleado)
         const horaCreacion = obtenerHoraCreacion(empleado);
         
         planesEmpleado.forEach((plan, planIdx) => {
-            // Todos los planes: creados 1 enero, terminan 30 enero
-            const fechaCreacionPlan = new Date(2026, 0, 1, horaCreacion.hora, horaCreacion.minutos);
-            const fechaFinPlan = new Date(2026, 0, 30);
+            // Fechas del plan basadas en el mes
+            const fechaCreacionPlan = new Date(primerDia);
+            fechaCreacionPlan.setHours(horaCreacion.hora, horaCreacion.minutos);
+            const fechaFinPlan = new Date(ultimoDia);
             
             const nombrePlan = `${plan.nombre} - ${empleado.nombre.split(' ')[0]}`;
             const prioridadPlan = planIdx === 0 ? 'Alta' : 'Media';
@@ -1503,26 +1527,38 @@ function generarBaseDeDatos() {
             
             // Distribución de tareas por semanas para este plan
             let distribucionSemanas;
+            const mitadSemanas = Math.ceil(SEMANAS.length / 2);
             if (planIdx === 0) {
-                // Plan 1: Semanas 1, 2, 3
-                distribucionSemanas = [
-                    { semana: SEMANAS[0], cantidad: 2 }, // Semana 1: 2 tareas
-                    { semana: SEMANAS[1], cantidad: 2 }, // Semana 2: 2 tareas
-                    { semana: SEMANAS[2], cantidad: 1 }  // Semana 3: 1 tarea
-                ];
+                // Plan 1: Primera mitad de semanas (5 tareas distribuidas)
+                const semanasPlan1 = SEMANAS.slice(0, mitadSemanas);
+                distribucionSemanas = [];
+                let tareasRestantes = 5;
+                semanasPlan1.forEach((semana, idx) => {
+                    if (tareasRestantes > 0) {
+                        const cantidad = idx < semanasPlan1.length - 1 ? 2 : tareasRestantes; // 2 tareas por semana, última semana el resto
+                        distribucionSemanas.push({ semana: semana, cantidad: Math.min(cantidad, tareasRestantes) });
+                        tareasRestantes -= cantidad;
+                    }
+                });
             } else {
-                // Plan 2: Semanas 4, 5
-                distribucionSemanas = [
-                    { semana: SEMANAS[3], cantidad: 2 }, // Semana 4: 2 tareas
-                    { semana: SEMANAS[4], cantidad: 3 }  // Semana 5: 3 tareas
-                ];
+                // Plan 2: Segunda mitad de semanas (5 tareas distribuidas)
+                const semanasPlan2 = SEMANAS.slice(mitadSemanas);
+                distribucionSemanas = [];
+                let tareasRestantes = 5;
+                semanasPlan2.forEach((semana, idx) => {
+                    if (tareasRestantes > 0) {
+                        const cantidad = idx < semanasPlan2.length - 1 ? 2 : tareasRestantes; // 2 tareas por semana, última semana el resto
+                        distribucionSemanas.push({ semana: semana, cantidad: Math.min(cantidad, tareasRestantes) });
+                        tareasRestantes -= cantidad;
+                    }
+                });
             }
             
             let tareaIndex = 0;
-            // Fecha de creación de tareas: 1 ene (Plan 1) o 19 ene (Plan 2)
+            // Fecha de creación de tareas: inicio del mes (Plan 1) o mitad del mes (Plan 2)
             const fechaCreacionTareas = planIdx === 0 
-                ? new Date(2026, 0, 1, horaCreacion.hora, horaCreacion.minutos)   // Plan 1: 1 de enero
-                : new Date(2026, 0, 19, horaCreacion.hora, horaCreacion.minutos); // Plan 2: 19 de enero
+                ? new Date(primerDia.getFullYear(), primerDia.getMonth(), primerDia.getDate(), horaCreacion.hora, horaCreacion.minutos)
+                : new Date(primerDia.getFullYear(), primerDia.getMonth(), Math.ceil(ultimoDia.getDate() / 2), horaCreacion.hora, horaCreacion.minutos);
             
             distribucionSemanas.forEach(({ semana, cantidad }) => {
                 for (let i = 0; i < cantidad && tareaIndex < tareasParaPlan.length; i++) {
@@ -1532,11 +1568,11 @@ function generarBaseDeDatos() {
                     fechaCreacionTarea.setMinutes(fechaCreacionTarea.getMinutes() + (i * 5));
                     const fechaFinTarea = new Date(semana.fin);
                     
-                    const estadoTarea = determinarEstado(fechaFinTarea, fechaCreacionTarea);
+                    const estadoTarea = determinarEstado(fechaFinTarea, fechaCreacionTarea, fechaHoy);
                     const avanceTarea = generarAvanceTarea(estadoTarea);
                     
                     // Prioridad basada en el estado y fecha
-                    const diasRestantes = Math.floor((fechaFinTarea - hoy) / (1000 * 60 * 60 * 24));
+                    const diasRestantes = Math.floor((fechaFinTarea - fechaHoy) / (1000 * 60 * 60 * 24));
                     
                     let prioridadTarea;
                     if (estadoTarea === 'Vencida') {
@@ -1598,7 +1634,7 @@ function generarBaseDeDatos() {
             let estadoPlan;
             if (avancePlan === 100) {
                 estadoPlan = 'Finalizada';
-            } else if (fechaFinPlan < hoy) {
+            } else if (fechaFinPlan < fechaHoy) {
                 estadoPlan = 'Vencida'; // Plan vencido pero no completado
             } else {
                 estadoPlan = 'Iniciada';
@@ -1642,6 +1678,79 @@ function generarBaseDeDatos() {
             });
         });
     });
+    
+    return { actividades, siguienteId: idActividad };
+}
+
+// ============================================
+// GENERAR BASE DE DATOS DE ACTIVIDADES
+// Genera datos para ABRIL 2025, MAYO 2025, JUNIO 2025, JULIO 2025, AGOSTO 2025, SEPTIEMBRE 2025, OCTUBRE 2025, NOVIEMBRE 2025, DICIEMBRE 2025, ENERO 2026, FEBRERO 2026 y MARZO 2026
+// Distribución semanal realista (días laborales)
+// Fecha actual simulada: 22 de marzo de 2026 (domingo)
+// ============================================
+function generarBaseDeDatos() {
+    const actividades = [];
+    let idActividad = 10001;
+    const hoy = new Date(2026, 2, 22); // Domingo 22 de marzo de 2026
+    
+    // Generar actividades para ABRIL 2025
+    const actividadesAbril = generarActividadesPorMes(2025, 3, hoy, idActividad);
+    actividades.push(...actividadesAbril.actividades);
+    idActividad = actividadesAbril.siguienteId;
+    
+    // Generar actividades para MAYO 2025
+    const actividadesMayo = generarActividadesPorMes(2025, 4, hoy, idActividad);
+    actividades.push(...actividadesMayo.actividades);
+    idActividad = actividadesMayo.siguienteId;
+    
+    // Generar actividades para JUNIO 2025
+    const actividadesJunio = generarActividadesPorMes(2025, 5, hoy, idActividad);
+    actividades.push(...actividadesJunio.actividades);
+    idActividad = actividadesJunio.siguienteId;
+    
+    // Generar actividades para JULIO 2025
+    const actividadesJulio = generarActividadesPorMes(2025, 6, hoy, idActividad);
+    actividades.push(...actividadesJulio.actividades);
+    idActividad = actividadesJulio.siguienteId;
+    
+    // Generar actividades para AGOSTO 2025
+    const actividadesAgosto = generarActividadesPorMes(2025, 7, hoy, idActividad);
+    actividades.push(...actividadesAgosto.actividades);
+    idActividad = actividadesAgosto.siguienteId;
+    
+    // Generar actividades para SEPTIEMBRE 2025
+    const actividadesSeptiembre = generarActividadesPorMes(2025, 8, hoy, idActividad);
+    actividades.push(...actividadesSeptiembre.actividades);
+    idActividad = actividadesSeptiembre.siguienteId;
+    
+    // Generar actividades para OCTUBRE 2025
+    const actividadesOctubre = generarActividadesPorMes(2025, 9, hoy, idActividad);
+    actividades.push(...actividadesOctubre.actividades);
+    idActividad = actividadesOctubre.siguienteId;
+    
+    // Generar actividades para NOVIEMBRE 2025
+    const actividadesNoviembre = generarActividadesPorMes(2025, 10, hoy, idActividad);
+    actividades.push(...actividadesNoviembre.actividades);
+    idActividad = actividadesNoviembre.siguienteId;
+    
+    // Generar actividades para DICIEMBRE 2025
+    const actividadesDiciembre = generarActividadesPorMes(2025, 11, hoy, idActividad);
+    actividades.push(...actividadesDiciembre.actividades);
+    idActividad = actividadesDiciembre.siguienteId;
+    
+    // Generar actividades para ENERO 2026
+    const actividadesEnero = generarActividadesPorMes(2026, 0, hoy, idActividad);
+    actividades.push(...actividadesEnero.actividades);
+    idActividad = actividadesEnero.siguienteId;
+    
+    // Generar actividades para FEBRERO 2026
+    const actividadesFebrero = generarActividadesPorMes(2026, 1, hoy, idActividad);
+    actividades.push(...actividadesFebrero.actividades);
+    idActividad = actividadesFebrero.siguienteId;
+    
+    // Generar actividades para MARZO 2026
+    const actividadesMarzo = generarActividadesPorMes(2026, 2, hoy, idActividad);
+    actividades.push(...actividadesMarzo.actividades);
     
     return actividades;
 }
