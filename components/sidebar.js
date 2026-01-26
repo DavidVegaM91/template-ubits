@@ -50,7 +50,7 @@ function adjustSidebarHeight() {
 //   - activeButton (string, opcional): Sección a activar según la variante
 //
 // VARIANTE DEFAULT:
-//   - Opciones disponibles: 'admin', 'aprendizaje', 'diagnóstico', 'desempeño', 
+//   - Opciones disponibles: 'aprendizaje', 'diagnóstico', 'desempeño', 
 //     'encuestas', 'reclutamiento', 'tareas', 'ubits-ai', 'ninguno'
 //   - Uso: loadSidebar('default', 'aprendizaje')
 //
@@ -209,9 +209,6 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
                 
                 <!-- Body -->
                 <div class="sidebar-body">
-                    <button class="nav-button" data-section="admin" data-tooltip="Administrador" onclick="window.location.href='${basePath}ubits-admin/inicio/admin.html'" style="cursor: pointer;">
-                        <i class="far fa-laptop"></i>
-                    </button>
                     <button class="nav-button" data-section="aprendizaje" data-tooltip="Aprendizaje" onclick="window.location.href='${basePath}ubits-colaborador/aprendizaje/home-learn.html'" style="cursor: pointer;">
                         <i class="far fa-graduation-cap"></i>
                     </button>
