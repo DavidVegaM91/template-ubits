@@ -364,30 +364,113 @@ Si tienes dudas sobre mi idea, por favor hazme preguntas para darte mas detalles
                         </button>
                     </div>
                     <p class="prompt-description ubits-body-md-regular">
-                        Usa este prompt cuando quieras obtener las últimas actualizaciones del template sin perder tus cambios personalizados.
+                        Usa este prompt cuando quieras obtener las últimas actualizaciones del template sin perder tus cambios personalizados. Ahora es más fácil porque cada página tiene su propio HTML y CSS.
                     </p>
+
+                    <!-- Warning Alert -->
+                    <div id="warning-alert-4" style="margin-bottom: 16px;"></div>
+
                     <div class="prompt-code-container">
                         <div class="prompt-code" id="prompt-update">
-1. Haz un backup de mis archivos personalizados (todos los que he modificado)
-2. Obtén la versión más reciente del template desde https://github.com/DavidVegaM91/template-ubits
-3. Compara archivo por archivo y actualiza solo:
-   - Archivos del sistema UBITS (components/, ubits-colors.css, ubits-typography.css, fontawesome-icons.css)
-   - Archivos de documentación (documentacion.html, componentes.html, validador-ubits.html, guia-prompts.html)
-   - Páginas de componentes (sidebar.html, subnav.html, tab-bar.html, button.html, alert.html, card-content.html)
-   - Guías de diseño (colores.html, tipografia.html, iconos.html)
-   - Archivos de configuración (.cursor/rules/cursor-rules.mdc, README.md)
-4. NO toques mis archivos personalizados (index.html, mis páginas creadas, mis modificaciones)
-5. Verifica que todo funcione correctamente
+Importa todos los archivos del repositorio https://github.com/DavidVegaM91/template-ubits para obtener las últimas actualizaciones, EXCEPTO mis archivos personalizados:
 
-Mi objetivo es tener las últimas mejoras del UBITS Playground manteniendo mis personalizaciones.
+**ARCHIVOS QUE NO DEBES TOCAR:**
+[Lista tus archivos HTML y sus CSS correspondientes, ejemplo:
+- index.html y index.css
+- ubits-colaborador/aprendizaje/mi-pagina.html y ubits-colaborador/aprendizaje/mi-pagina.css
+- ubits-admin/empresa/mi-dashboard.html y ubits-admin/empresa/mi-dashboard.css]
+
+**INSTRUCCIONES:**
+1. Importa TODO el repositorio desde GitHub
+2. NO modifiques los archivos que listé arriba (ni sus HTML ni sus CSS)
+3. Actualiza todos los demás archivos (components/, general-styles/, documentacion/, etc.)
+4. Verifica que mis páginas personalizadas sigan funcionando correctamente después de la actualización
+
+Mi objetivo es tener las últimas mejoras del UBITS Playground manteniendo mis personalizaciones intactas.
                         </div>
                     </div>
                 </div>
 
-                <!-- Prompt 5: Editar widget específico -->
+                <!-- Prompt 5: Migrar desde versión antigua (2025) -->
+                <div class="prompt-card" data-prompt="migrate">
+                    <div class="prompt-header">
+                        <h3 class="ubits-body-md-bold">5. Migrar desde versión antigua (2025)</h3>
+                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('migrate')">
+                            <i class="far fa-copy"></i>
+                            <span>Copiar</span>
+                        </button>
+                    </div>
+                    <p class="prompt-description ubits-body-md-regular">
+                        Usa este prompt si tienes la versión antigua del UBITS Playground (2025) donde todas las páginas compartían el archivo styles.css. Este prompt migrará tus páginas a la nueva estructura donde cada página tiene su propio CSS.
+                    </p>
+
+                    <!-- Warning Alert -->
+                    <div id="warning-alert-5" style="margin-bottom: 16px;"></div>
+
+                    <div class="prompt-code-container">
+                        <div class="prompt-code" id="prompt-migrate">
+Necesito migrar mi proyecto desde la versión antigua del UBITS Playground (2025) a la nueva estructura. Esta es una tarea grande que necesito que dividas en pasos y cumplas cada uno sin omitir nada:
+
+**ARCHIVOS QUE QUIERO RESCATAR:**
+[Lista los archivos HTML que tienen estilos personalizados que quieres conservar, ejemplo:
+- index.html (tiene estilos en &lt;style&gt; o referencias a styles.css)
+- mi-pagina-personalizada.html (tiene estilos personalizados)
+- otra-pagina.html (tiene estilos personalizados)]
+
+**PASOS A SEGUIR:**
+
+1. **EXTRAER CSS DE ARCHIVOS HTML:**
+   Para cada archivo HTML que listé arriba:
+   - Lee el archivo HTML completo
+   - Extrae todos los estilos que están dentro de &lt;style&gt; tags
+   - Extrae todos los estilos de styles.css que son específicos de ese HTML (identifica por selectores únicos como clases o IDs que solo aparecen en ese HTML)
+   - Crea un nuevo archivo CSS con el mismo nombre del HTML (ej: index.html → index.css)
+   - Mueve los estilos extraídos a ese nuevo archivo CSS
+   - Elimina los &lt;style&gt; tags del HTML
+   - Agrega el link al nuevo CSS en el &lt;head&gt; del HTML (usando rutas relativas correctas)
+
+2. **IMPORTAR REPOSITORIO ACTUALIZADO:**
+   - Importa todos los archivos del repositorio https://github.com/DavidVegaM91/template-ubits
+   - Esto actualizará components/, general-styles/, documentacion/, y la nueva estructura de carpetas
+
+3. **MOVER ARCHIVOS RESCATADOS:**
+   Mueve cada archivo HTML rescatado a su carpeta correspondiente según la nueva estructura:
+   - Páginas de colaborador → ubits-colaborador/[modulo]/
+   - Páginas de admin → ubits-admin/[modulo]/
+   - Página principal → raíz del proyecto (index.html)
+   - Mueve cada archivo CSS junto con su HTML correspondiente a la misma carpeta
+
+4. **ANALIZAR Y OPTIMIZAR CSS:**
+   - Lee el nuevo archivo general-styles/styles.css del repositorio actualizado
+   - Compara los estilos que extrajiste con los estilos en styles.css
+   - Si encuentras estilos duplicados o iguales: elimínalos del CSS de la página y confirma que el HTML importa correctamente general-styles/styles.css
+   - Si los estilos son únicos y específicos de esa página, consérvalos en el CSS de la página
+
+5. **VERIFICAR IMPORTS:**
+   Asegúrate de que cada HTML importe correctamente (en este orden):
+   - general-styles/ubits-colors.css
+   - general-styles/ubits-typography.css
+   - general-styles/fontawesome-icons.css
+   - general-styles/styles.css
+   - Los CSS de los componentes que usa
+   - Su propio CSS específico (al final)
+   - Usa rutas relativas correctas según la ubicación del archivo
+
+6. **VALIDACIÓN FINAL:**
+   - Verifica que todas las páginas migradas funcionen correctamente
+   - Confirma que los estilos se aplican correctamente
+   - Verifica que no haya estilos duplicados o conflictos
+   - Asegúrate de que la estructura modular (section-single, section-dual, etc.) se mantenga si la usabas
+
+Mi objetivo es migrar mis páginas personalizadas a la nueva estructura sin perder ningún estilo único que haya creado.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Prompt 6: Editar widget específico -->
                 <div class="prompt-card" data-prompt="widget">
                     <div class="prompt-header">
-                        <h3 class="ubits-body-md-bold">5. Editar widget específico</h3>
+                        <h3 class="ubits-body-md-bold">6. Editar widget específico</h3>
                         <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('widget')">
                             <i class="far fa-copy"></i>
                             <span>Copiar</span>
@@ -398,7 +481,7 @@ Mi objetivo es tener las últimas mejoras del UBITS Playground manteniendo mis p
                     </p>
 
                     <!-- Warning Alert -->
-                    <div id="warning-alert-5" style="margin-bottom: 16px;"></div>
+                    <div id="warning-alert-6" style="margin-bottom: 16px;"></div>
 
                     <div class="prompt-code-container">
                         <div class="prompt-code" id="prompt-widget">
@@ -455,7 +538,17 @@ Necesito editar un widget específico. Esta es una tarea grande que necesito que
             });
 
             showAlert('warning', 'Importante: Antes de enviar este prompt a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
+                containerId: 'warning-alert-4',
+                noClose: true
+            });
+
+            showAlert('warning', 'Importante: Antes de enviar este prompt a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto. Este prompt es para usuarios que tienen la versión antigua (2025) del UBITS Playground.', {
                 containerId: 'warning-alert-5',
+                noClose: true
+            });
+
+            showAlert('warning', 'Importante: Antes de enviar este prompt a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
+                containerId: 'warning-alert-6',
                 noClose: true
             });
 

@@ -8,7 +8,12 @@ function getBasePath() {
         return '../../';
     }
     
-    // Páginas en primer nivel de carpeta (documentacion/)
+    // Páginas en subcarpetas de documentacion (documentacion/componentes/, documentacion/guias/, etc.)
+    if (path.includes('/documentacion/') && path.split('/documentacion/')[1].includes('/')) {
+        return '../../';
+    }
+    
+    // Páginas en primer nivel de carpeta (documentacion/*.html)
     if (path.includes('/documentacion/')) {
         return '../';
     }
