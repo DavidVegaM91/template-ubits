@@ -285,15 +285,19 @@
             const hoy = new Date(2026, 2, 22); // Domingo 22 de marzo de 2026
             hoy.setHours(23, 59, 59, 999); // Fin del día de hoy
             
-            // Calcular fecha límite: para "últimos 30 días" desde el 22 de marzo (incluyendo hoy),
-            // debemos incluir desde el 23 de febrero (29 días atrás desde hoy)
-            const periodoDias = parseInt(currentFilters.periodo) || 30; // Asegurar que sea número
-            const diasAtras = periodoDias - 1; // Para 30 días: 29 días atrás
+            // Calcular fecha límite: para "últimos X días" desde el 22 de marzo (incluyendo hoy),
+            // debemos incluir desde (X-1) días atrás desde hoy
+            const periodoDias = parseInt(currentFilters.periodo);
+            if (isNaN(periodoDias)) return; // Si no es un número válido, no aplicar filtro
+            
+            const diasAtras = periodoDias - 1; // Para incluir el día de hoy: restar (periodoDias - 1) días
             
             // Crear fecha límite: usar milisegundos de forma precisa
-            // 22 de marzo 2026, 00:00:00 - 29 días = 23 de febrero 2026, 00:00:00
+            // 22 de marzo 2026, 00:00:00 - diasAtras días
             const hoyInicio = new Date(2026, 2, 22, 0, 0, 0, 0);
-            const fechaLimite = new Date(hoyInicio.getTime() - (diasAtras * 86400000)); // 86400000 ms = 1 día
+            const milisegundosPorDia = 24 * 60 * 60 * 1000;
+            const fechaLimiteTimestamp = hoyInicio.getTime() - (diasAtras * milisegundosPorDia);
+            const fechaLimite = new Date(fechaLimiteTimestamp);
             
             data = data.filter(row => {
                 const fechaRow = parseFecha(row.fechaCreacion);
