@@ -1,0 +1,224 @@
+/* ========================================
+   UBITS Table - Componente reutilizable
+   Tabla con cabecera, filas y tipos de celda:
+   texto, checkbox, progress bar, avatar, profile list, status tag, prioridad.
+   Quien use el componente puede añadir/quitar columnas y tipos de contenido.
+   ======================================== */
+
+/* Wrapper: scroll horizontal en móvil */
+.ubits-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.ubits-table-wrapper--min-width {
+    min-width: 900px;
+}
+
+/* Tabla base */
+.ubits-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Cabecera */
+.ubits-table thead th {
+    text-align: left;
+    padding: 0 16px;
+    height: 45px;
+    background: transparent;
+    color: var(--ubits-fg-1-medium);
+    border-bottom: 1px solid var(--ubits-border-1);
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+/* Celdas cuerpo */
+.ubits-table tbody td {
+    padding: 0 16px;
+    height: 45px;
+    border-bottom: 1px solid var(--ubits-border-1);
+    color: var(--ubits-fg-1-medium);
+    vertical-align: middle;
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 16px;
+}
+
+.ubits-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.ubits-table tbody tr:hover td {
+    background: var(--ubits-bg-2);
+}
+
+/* Columna checkbox (cabecera y celdas) */
+.ubits-table .ubits-table__th--checkbox,
+.ubits-table .ubits-table__td--checkbox {
+    width: 55px;
+    min-width: 55px;
+    max-width: 55px;
+    padding: 0;
+    box-sizing: border-box;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.ubits-table .ubits-table__th--checkbox input,
+.ubits-table .ubits-table__td--checkbox input {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: var(--ubits-accent-brand);
+}
+
+/* Tipo celda: texto (usar ubits-body-sm-regular dentro) */
+.ubits-table__cell-text {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 16px;
+    color: var(--ubits-fg-1-medium);
+}
+
+/* Tipo celda: progress bar */
+.ubits-table__cell-progress {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ubits-table__progress-bar {
+    width: 60px;
+    height: 8px;
+    background-color: var(--ubits-bg-4-static);
+    border-radius: 4px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.ubits-table__progress-bar-fill {
+    height: 100%;
+    background-color: var(--ubits-chart-bg-neutral-blue-base);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+/* Tipo celda: avatar + nombre (assignee) */
+.ubits-table__cell-assignee {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+/* Nombre dentro de assignee: truncar con ellipsis si es muy largo */
+.ubits-table__cell-assignee > span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ubits-table__avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--ubits-bg-2);
+    border: 1px solid var(--ubits-border-1);
+}
+
+.ubits-table__avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.ubits-table__avatar-icon {
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-table__avatar-icon i {
+    font-size: 14px;
+}
+
+/* Tipo celda: profile list (+N) – usar componente avatar/profile-list dentro de .ubits-table__cell-assignee */
+.ubits-table__cell-assignee .ubits-profile-list__count {
+    color: var(--ubits-fg-1-medium);
+}
+
+/* Tipo celda: status tag – usar ubits-status-tag dentro de la celda */
+.ubits-table tbody td[data-col="estado"] .ubits-status-tag,
+.ubits-table__cell-status .ubits-status-tag {
+    min-width: 76px;
+    width: 76px;
+    justify-content: center;
+}
+
+/* Tipo celda: prioridad (icono + texto) */
+.ubits-table__cell-priority {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+}
+
+.ubits-table__cell-priority i {
+    font-size: 12px;
+}
+
+/* Anchos opcionales por data-col (quien use puede sobrescribir) */
+.ubits-table tbody td[data-col="nombre"] {
+    max-width: 280px;
+}
+
+.ubits-table tbody td[data-col="asignado"],
+.ubits-table tbody td[data-col="asignados"] {
+    max-width: 180px;
+}
+
+.ubits-table tbody td[data-col="plan"] {
+    max-width: 200px;
+}
+
+.ubits-table tbody td[data-col="creador"] {
+    max-width: 180px;
+}
+
+.ubits-table tbody td[data-col="id"] {
+    max-width: 120px;
+}
+
+.ubits-table tbody td[data-col="avance"] {
+    max-width: 140px;
+}
+
+.ubits-table tbody td[data-col="estado"],
+.ubits-table tbody td[data-col="prioridad"],
+.ubits-table tbody td[data-col="comentarios"] {
+    max-width: 120px;
+}
+
+.ubits-table tbody td[data-col="fechaCreacion"],
+.ubits-table tbody td[data-col="fechaFinalizacion"] {
+    max-width: 140px;
+}

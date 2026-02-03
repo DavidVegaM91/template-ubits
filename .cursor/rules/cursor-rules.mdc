@@ -463,6 +463,7 @@ ubits-colaborador/
 1. **❌ NEVER ask users to run servers** - Files must work by double-clicking
 2. **❌ NEVER center titles in product interfaces** - Only left-align in product interfaces
 3. **❌ NEVER create custom buttons** - Always use UBITS Button component
+4. **❌ NEVER assume tabs/flex row inside section-single** - `.section-single > div` sets `flex-direction: column`; any child that must display items in a row (e.g. tabs Tareas | Planes) MUST override with `flex-direction: row` in a rule that comes AFTER `.section-single > div` (e.g. `.seguimiento-tabs-wrapper > .seguimiento-tabs { flex-direction: row; }`).
    - ❌ NEVER create `<button class="my-button">` or similar custom buttons
    - ❌ NEVER override UBITS button styles with custom CSS
    - ✅ ALWAYS use: `<button class="ubits-button ubits-button--primary ubits-button--md">`

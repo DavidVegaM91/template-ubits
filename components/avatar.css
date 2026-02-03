@@ -1,0 +1,151 @@
+/* ========================================
+   UBITS Avatar Component
+   Avatar único: imagen circular, tamaños, fallback (icono)
+   Requiere: ubits-colors.css, fontawesome-icons.css (para fallback con icono)
+   ======================================== */
+
+.ubits-avatar {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    background: var(--ubits-bg-2);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 50%;
+}
+
+/* Tamaños: xs 20px, sm 28px, md 36px (default), lg 40px */
+.ubits-avatar--xs {
+    width: 20px;
+    height: 20px;
+}
+
+.ubits-avatar--sm {
+    width: 28px;
+    height: 28px;
+}
+
+.ubits-avatar--md {
+    width: 36px;
+    height: 36px;
+}
+
+.ubits-avatar--lg {
+    width: 40px;
+    height: 40px;
+}
+
+/* Imagen del avatar */
+.ubits-avatar__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 50%;
+}
+
+/* Fallback: icono de usuario (cuando no hay imagen) */
+.ubits-avatar__fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-avatar--xs .ubits-avatar__fallback i {
+    font-size: 9px;
+}
+
+.ubits-avatar--sm .ubits-avatar__fallback i {
+    font-size: 11px;
+}
+
+.ubits-avatar--md .ubits-avatar__fallback i {
+    font-size: 13px;
+}
+
+.ubits-avatar--lg .ubits-avatar__fallback i {
+    font-size: 14px;
+}
+
+/* ========================================
+   Profile list: varios avatares superpuestos (+N)
+   ======================================== */
+
+.ubits-profile-list {
+    display: flex;
+    align-items: center;
+    position: relative;
+    isolation: isolate;
+}
+
+.ubits-profile-list--xs {
+    height: 20px;
+}
+
+.ubits-profile-list--sm {
+    height: 28px;
+}
+
+.ubits-profile-list--md {
+    height: 36px;
+}
+
+.ubits-profile-list--lg {
+    height: 40px;
+}
+
+/* Cada avatar en la lista: superpuesto (margin negativo), z-index por JS */
+.ubits-profile-list__avatar {
+    position: relative;
+    flex-shrink: 0;
+}
+
+/* Chip +N cuando hay más de maxVisible personas */
+.ubits-profile-list__count {
+    position: relative;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 50%;
+    font-family: 'Noto Sans', sans-serif;
+    font-weight: 600;
+    color: var(--ubits-fg-1-high);
+    text-align: center;
+    white-space: nowrap;
+}
+
+.ubits-profile-list--xs .ubits-profile-list__count {
+    width: 20px;
+    height: 20px;
+    font-size: 9px;
+}
+
+.ubits-profile-list--sm .ubits-profile-list__count {
+    width: 28px;
+    height: 28px;
+    font-size: 11px;
+}
+
+.ubits-profile-list--md .ubits-profile-list__count {
+    width: 36px;
+    height: 36px;
+    font-size: 13px;
+}
+
+.ubits-profile-list--lg .ubits-profile-list__count {
+    width: 40px;
+    height: 40px;
+    font-size: 14px;
+}
+
+.ubits-profile-list__count-text {
+    line-height: 1;
+}

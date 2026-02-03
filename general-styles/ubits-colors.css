@@ -37,6 +37,20 @@
   --ubits-btn-tertiary-fg: #5c646f;
   --ubits-btn-tertiary-bg-hover: rgba(231, 232, 234, 0.5);
   --ubits-btn-tertiary-bg-pressed: rgba(231, 232, 234, 0.7);
+
+  /* Error Button Colors - LIGHT MODE (eliminación, acciones destructivas) */
+  --ubits-btn-error-primary-bg-default: #CF0E34;
+  --ubits-btn-error-primary-bg-hover: #B00C2E;
+  --ubits-btn-error-primary-bg-pressed: #9A0A28;
+  --ubits-btn-error-primary-fg: #ffffff;
+  --ubits-btn-error-secondary-bg-default: #FFF0EE;
+  --ubits-btn-error-secondary-bg-hover: #FFE0DD;
+  --ubits-btn-error-secondary-bg-pressed: #FFD2CD;
+  --ubits-btn-error-secondary-border: #FD8A82;
+  --ubits-btn-error-secondary-fg-default: #65181E;
+  --ubits-btn-error-tertiary-fg: #E9343C;
+  --ubits-btn-error-tertiary-bg-hover: #FFF0EE;
+  --ubits-btn-error-tertiary-bg-pressed: #FFE0DD;
   
   /* UBITS Logo */
   --ubits-logo: #0d1f57;
@@ -473,6 +487,20 @@
   --ubits-btn-tertiary-fg: #d0d2d5;
   --ubits-btn-tertiary-bg-hover: rgba(231, 232, 234, 0.5);
   --ubits-btn-tertiary-bg-pressed: rgba(231, 232, 234, 0.7);
+
+  /* Error Button Colors - DARK MODE */
+  --ubits-btn-error-primary-bg-default: #E20D34;
+  --ubits-btn-error-primary-bg-hover: #C90B2E;
+  --ubits-btn-error-primary-bg-pressed: #B00C2E;
+  --ubits-btn-error-primary-fg: #ffffff;
+  --ubits-btn-error-secondary-bg-default: #801B21;
+  --ubits-btn-error-secondary-bg-hover: #65181E;
+  --ubits-btn-error-secondary-bg-pressed: #4D1217;
+  --ubits-btn-error-secondary-border: #E20D34;
+  --ubits-btn-error-secondary-fg-default: #FFD2CD;
+  --ubits-btn-error-tertiary-fg: #F96F6F;
+  --ubits-btn-error-tertiary-bg-hover: #801B21;
+  --ubits-btn-error-tertiary-bg-pressed: #65181E;
   
   /* UBITS Logo - DARK MODE */
   --ubits-logo: #ffffff;

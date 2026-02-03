@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Tabla | UBITS Playground</title>
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/status-tag.css">
+    <link rel="stylesheet" href="../../components/avatar.css">
+    <link rel="stylesheet" href="../../components/table.css">
+    <style>
+        /* Preview: ocultar columnas según controles (solo en esta página) */
+        #table-demo th.table-preview-hide,
+        #table-demo td.table-preview-hide { display: none; }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div style="display: flex;">
+                <div id="docs-dropdown-container"></div>
+                <div id="docs-sidebar-container"></div>
+                <div class="components-content">
+                    <div class="content-area" style="display: block; width: 100%;">
+                        <!-- Hero Section -->
+                        <div style="text-align: center; margin-bottom: 60px;">
+                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">Tabla</h1>
+                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                                Componente tabla UBITS reutilizable: cabecera, filas y celdas con tipos de contenido configurables. Quien use el componente puede añadir o quitar columnas y elegir el tipo de celda (texto, checkbox, progress bar, avatar, profile list, status tag, prioridad).
+                            </p>
+                        </div>
+
+                        <!-- Preview Section -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Preview del componente
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                                Activa o desactiva columnas para ver cada tipo de celda. Por defecto: checkbox, texto y avatar. El resto se controlan con los toggles.
+                            </p>
+                            <div style="margin-bottom: 24px; padding: 16px; background: var(--ubits-bg-2); border-radius: 12px; border: 1px solid var(--ubits-border-1);">
+                                <p class="ubits-body-sm-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Columnas visibles</p>
+                                <div style="display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: center;">
+                                    <label class="ubits-body-sm-regular" style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--ubits-fg-1-medium);">
+                                        <input type="checkbox" id="table-preview-col-checkbox" checked aria-label="Mostrar columna checkbox">
+                                        <span>Checkbox</span>
+                                    </label>
+                                    <label class="ubits-body-sm-regular" style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--ubits-fg-1-medium);">
+                                        <input type="checkbox" id="table-preview-col-nombre" checked aria-label="Mostrar columna texto">
+                                        <span>Texto</span>
+                                    </label>
+                                    <label class="ubits-body-sm-regular" style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--ubits-fg-1-medium);">
+                                        <input type="checkbox" id="table-preview-col-asignado" checked aria-label="Mostrar columna avatar">
+                                        <span>Avatar</span>
+                                    </label>
+                                    <label class="ubits-body-sm-regular" style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--ubits-fg-1-medium);">
+                                        <input type="checkbox" id="table-preview-col-profilelist" aria-label="Mostrar columna profile list">
+                                        <span>Profile list</span>
+                                    </label>
+                                    <label class="ubits-body-sm-regular" style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--ubits-fg-1-medium);">
+                                        <input type="checkbox" id="table-preview-col-avance" aria-label="Mostrar columna avance">
+                                        <span>Progress bar</span>
+                                    </label>
+                                    <label class="ubits-body-sm-regular" style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--ubits-fg-1-medium);">
+                                        <input type="checkbox" id="table-preview-col-estado" aria-label="Mostrar columna estado">
+                                        <span>Status tag</span>
+                                    </label>
+                                    <label class="ubits-body-sm-regular" style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--ubits-fg-1-medium);">
+                                        <input type="checkbox" id="table-preview-col-prioridad" aria-label="Mostrar columna prioridad">
+                                        <span>Prioridad</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; overflow-x: auto;">
+                                <div class="ubits-table-wrapper ubits-table-wrapper--min-width">
+                                    <table class="ubits-table" id="table-demo">
+                                        <thead>
+                                            <tr>
+                                                <th class="ubits-table__th--checkbox" data-col="checkbox"><input type="checkbox" id="table-demo-select-all" aria-label="Seleccionar todo"></th>
+                                                <th data-col="nombre">Nombre</th>
+                                                <th data-col="asignado">Asignado</th>
+                                                <th data-col="profilelist">Asignados</th>
+                                                <th data-col="avance">Avance</th>
+                                                <th data-col="estado">Estado</th>
+                                                <th data-col="prioridad">Prioridad</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="ubits-table__td--checkbox" data-col="checkbox"><input type="checkbox" class="table-demo-row-check" data-id="1"></td>
+                                                <td data-col="nombre"><span class="ubits-body-sm-regular">Tarea de ejemplo A</span></td>
+                                                <td data-col="asignado">
+                                                    <div class="ubits-table__cell-assignee">
+                                                        <div class="ubits-table__avatar"><img src="../../images/Profile-image.jpg" alt="" width="28" height="28"></div>
+                                                        <span class="ubits-body-sm-regular">María García</span>
+                                                    </div>
+                                                </td>
+                                                <td data-col="profilelist">
+                                                    <div class="ubits-table__cell-assignee">
+                                                        <div class="ubits-profile-list ubits-profile-list--sm">
+                                                            <span class="ubits-profile-list__avatar" style="z-index: 2; margin-right: -5px;"><span class="ubits-avatar ubits-avatar--sm"><img src="../../images/Profile-image.jpg" alt="" class="ubits-avatar__img" width="28" height="28"></span></span>
+                                                            <span class="ubits-profile-list__avatar" style="z-index: 1; margin-right: -5px;"><span class="ubits-avatar ubits-avatar--sm"><span class="ubits-avatar__fallback"><i class="far fa-user"></i></span></span></span>
+                                                            <span class="ubits-profile-list__count" style="z-index: 0; margin-right: 0;"><span class="ubits-profile-list__count-text">+1</span></span>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td data-col="avance">
+                                                    <div class="ubits-table__cell-progress">
+                                                        <div class="ubits-table__progress-bar"><div class="ubits-table__progress-bar-fill" style="width: 75%"></div></div>
+                                                        <span class="ubits-body-sm-regular">75%</span>
+                                                    </div>
+                                                </td>
+                                                <td data-col="estado"><span class="ubits-status-tag ubits-status-tag--info ubits-status-tag--sm"><span class="ubits-status-tag__text">Iniciada</span></span></td>
+                                                <td data-col="prioridad"><span class="ubits-table__cell-priority" style="color: var(--ubits-feedback-accent-error);"><i class="far fa-chevrons-up"></i> Alta</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="ubits-table__td--checkbox" data-col="checkbox"><input type="checkbox" class="table-demo-row-check" data-id="2"></td>
+                                                <td data-col="nombre"><span class="ubits-body-sm-regular">Tarea de ejemplo B</span></td>
+                                                <td data-col="asignado">
+                                                    <div class="ubits-table__cell-assignee">
+                                                        <div class="ubits-table__avatar ubits-table__avatar-icon"><i class="far fa-user"></i></div>
+                                                        <span class="ubits-body-sm-regular">Carlos López</span>
+                                                    </div>
+                                                </td>
+                                                <td data-col="profilelist">
+                                                    <div class="ubits-table__cell-assignee">
+                                                        <div class="ubits-profile-list ubits-profile-list--sm">
+                                                            <span class="ubits-profile-list__avatar" style="z-index: 3; margin-right: -5px;"><span class="ubits-avatar ubits-avatar--sm"><span class="ubits-avatar__fallback"><i class="far fa-user"></i></span></span></span>
+                                                            <span class="ubits-profile-list__avatar" style="z-index: 2; margin-right: -5px;"><span class="ubits-avatar ubits-avatar--sm"><span class="ubits-avatar__fallback"><i class="far fa-user"></i></span></span></span>
+                                                            <span class="ubits-profile-list__count" style="z-index: 0; margin-right: 0;"><span class="ubits-profile-list__count-text">+3</span></span>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td data-col="avance">
+                                                    <div class="ubits-table__cell-progress">
+                                                        <div class="ubits-table__progress-bar"><div class="ubits-table__progress-bar-fill" style="width: 100%"></div></div>
+                                                        <span class="ubits-body-sm-regular">100%</span>
+                                                    </div>
+                                                </td>
+                                                <td data-col="estado"><span class="ubits-status-tag ubits-status-tag--success ubits-status-tag--sm"><span class="ubits-status-tag__text">Finalizada</span></span></td>
+                                                <td data-col="prioridad"><span class="ubits-table__cell-priority" style="color: var(--ubits-fg-1-medium);"><i class="far fa-chevron-up"></i> Media</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="ubits-table__td--checkbox" data-col="checkbox"><input type="checkbox" class="table-demo-row-check" data-id="3"></td>
+                                                <td data-col="nombre"><span class="ubits-body-sm-regular">Tarea de ejemplo C</span></td>
+                                                <td data-col="asignado">
+                                                    <div class="ubits-table__cell-assignee">
+                                                        <div class="ubits-table__avatar ubits-table__avatar-icon"><i class="far fa-user"></i></div>
+                                                        <span class="ubits-body-sm-regular">Ana Martínez</span>
+                                                    </div>
+                                                </td>
+                                                <td data-col="profilelist">
+                                                    <div class="ubits-table__cell-assignee">
+                                                        <div class="ubits-profile-list ubits-profile-list--sm">
+                                                            <span class="ubits-profile-list__avatar" style="z-index: 2; margin-right: -5px;"><span class="ubits-avatar ubits-avatar--sm"><img src="../../images/Profile-image.jpg" alt="" class="ubits-avatar__img" width="28" height="28"></span></span>
+                                                            <span class="ubits-profile-list__avatar" style="z-index: 1; margin-right: -5px;"><span class="ubits-avatar ubits-avatar--sm"><span class="ubits-avatar__fallback"><i class="far fa-user"></i></span></span></span>
+                                                            <span class="ubits-profile-list__count" style="z-index: 0; margin-right: 0;"><span class="ubits-profile-list__count-text">+2</span></span>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td data-col="avance">
+                                                    <div class="ubits-table__cell-progress">
+                                                        <div class="ubits-table__progress-bar"><div class="ubits-table__progress-bar-fill" style="width: 30%"></div></div>
+                                                        <span class="ubits-body-sm-regular">30%</span>
+                                                    </div>
+                                                </td>
+                                                <td data-col="estado"><span class="ubits-status-tag ubits-status-tag--error ubits-status-tag--sm"><span class="ubits-status-tag__text">Vencida</span></span></td>
+                                                <td data-col="prioridad"><span class="ubits-table__cell-priority" style="color: var(--ubits-feedback-accent-info);"><i class="far fa-chevron-down"></i> Baja</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Características generales -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Características generales
+                            </h2>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-columns"></i></div>
+                                    <div class="ubits-body-sm-bold">Columnas flexibles</div>
+                                    <div class="ubits-body-sm-regular">Añade o quita columnas según necesites; data-col opcional para anchos</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-th-large"></i></div>
+                                    <div class="ubits-body-sm-bold">Tipos de celda</div>
+                                    <div class="ubits-body-sm-regular">Texto, checkbox, progress bar, avatar, profile list, status tag, prioridad</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-mobile-alt"></i></div>
+                                    <div class="ubits-body-sm-bold">Responsive</div>
+                                    <div class="ubits-body-sm-regular">Wrapper con overflow-x para scroll horizontal en pantallas pequeñas</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-palette"></i></div>
+                                    <div class="ubits-body-sm-bold">Tokens UBITS</div>
+                                    <div class="ubits-body-sm-regular">Colores, bordes y tipografía oficiales</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Prompts útiles -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Prompts útiles
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                Usa estos prompts con Cursor AI para configurar y personalizar el componente Tabla.
+                            </p>
+                            <div id="table-warning-alert" style="margin-bottom: 32px;"></div>
+
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Crear tabla UBITS</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('table-prompt-0')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="table-prompt-0">Crea una tabla UBITS con:
+- Contenedor: div.ubits-table-wrapper (y opcional ubits-table-wrapper--min-width para min-width 900px)
+- Tabla: table.ubits-table
+- Cabecera: thead > tr > th (primera columna opcional: th.ubits-table__th--checkbox con input checkbox)
+- Cuerpo: tbody > tr > td (celdas con data-col opcional para anchos)
+- Tipos de celda: texto (ubits-body-sm-regular), checkbox (ubits-table__td--checkbox), progress (ubits-table__cell-progress + ubits-table__progress-bar + ubits-table__progress-bar-fill), avatar+nombre (ubits-table__cell-assignee + ubits-table__avatar), status tag (ubits-status-tag), prioridad (ubits-table__cell-priority + icono)
+
+IMPORTA: components/table.css, general-styles/ubits-colors.css, ubits-typography.css, fontawesome-icons.css. Para status tag: components/status-tag.css.</code></pre>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Añadir columna a la tabla</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('table-prompt-1')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="table-prompt-1">Añade a la tabla [id o descripción] una columna [nombre]. Cabecera: th con data-col="[id]". Celdas: td con data-col="[id]" y el tipo de contenido adecuado (texto con ubits-body-sm-regular, o ubits-table__cell-progress, ubits-table__cell-assignee, ubits-status-tag, ubits-table__cell-priority). Usa las clases del componente Tabla UBITS (documentacion/componentes/table.html).</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Documentación técnica -->
+                        <div style="background: var(--ubits-bg-1); border-radius: 16px; margin-bottom: 40px; overflow: hidden;">
+                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Documentación técnica
+                                </h2>
+                                <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
+                                    Estructura, clases y tipos de celda del componente Tabla.
+                                </p>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                    <i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>
+                                    Mostrar
+                                </span>
+                            </div>
+                            <div id="technical-docs-content" style="display: none; padding: 0;">
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                            <i class="far fa-sitemap" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                            Estructura del componente
+                                        </h2>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('table-structure-code')">
+                                            <i class="far fa-copy"></i>
+                                            <span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="table-structure-code">&lt;div class="ubits-table-wrapper ubits-table-wrapper--min-width"&gt;
+  &lt;table class="ubits-table"&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th class="ubits-table__th--checkbox"&gt;&lt;input type="checkbox" aria-label="Seleccionar todo"&gt;&lt;/th&gt;
+        &lt;th data-col="nombre"&gt;Nombre&lt;/th&gt;
+        &lt;th data-col="asignado"&gt;Asignado&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;td class="ubits-table__td--checkbox"&gt;&lt;input type="checkbox"&gt;&lt;/td&gt;
+        &lt;td data-col="nombre"&gt;&lt;span class="ubits-body-sm-regular"&gt;Texto&lt;/span&gt;&lt;/td&gt;
+        &lt;td data-col="asignado"&gt;
+          &lt;div class="ubits-table__cell-assignee"&gt;
+            &lt;div class="ubits-table__avatar"&gt;&lt;img src="..." alt="" width="28" height="28"&gt;&lt;/div&gt;
+            &lt;span class="ubits-body-sm-regular"&gt;Nombre&lt;/span&gt;
+          &lt;/div&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+&lt;/div&gt;</code></pre>
+                                    </div>
+                                </div>
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                            <i class="far fa-tags" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                            Clases disponibles
+                                        </h2>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('table-classes-code')">
+                                            <i class="far fa-copy"></i>
+                                            <span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="table-classes-code">.ubits-table-wrapper           /* Contenedor con overflow-x auto */
+.ubits-table-wrapper--min-width  /* Opcional: min-width 900px */
+.ubits-table                    /* Tabla: borde, border-radius, thead/tbody estilos base */
+.ubits-table__th--checkbox     /* Cabecera columna checkbox (55px) */
+.ubits-table__td--checkbox     /* Celda checkbox (55px) */
+
+Tipos de celda (contenido dentro de td):
+.ubits-table__cell-text        /* Texto: usar ubits-body-sm-regular dentro */
+.ubits-table__cell-progress    /* Contenedor progress: barra + porcentaje */
+.ubits-table__progress-bar     /* Barra gris contenedora */
+.ubits-table__progress-bar-fill /* Relleno azul (width en %) */
+.ubits-table__cell-assignee    /* Avatar + nombre (o profile list) */
+.ubits-table__avatar           /* Círculo 28px; img o .ubits-table__avatar-icon */
+.ubits-table__cell-status      /* Contenedor para ubits-status-tag */
+.ubits-table__cell-priority    /* Icono + texto prioridad */
+
+data-col en th/td: opcional, para anchos por columna (nombre, asignado, plan, creador, id, avance, estado, prioridad, comentarios, fechaCreacion, fechaFinalizacion).</code></pre>
+                                    </div>
+                                </div>
+                                <div style="padding: 32px;">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                            <i class="far fa-code-branch" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                            Cómo implementar
+                                        </h2>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('table-implementation-code')">
+                                            <i class="far fa-copy"></i>
+                                            <span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                                        <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">🔧 REQUISITOS:</h3>
+                                        <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.5;">
+                                            <strong>CSS:</strong> <code>components/table.css</code>, <code>ubits-colors.css</code>, <code>ubits-typography.css</code>. Para status tag: <code>components/status-tag.css</code>. Para botones en cabecera (filtro/orden): <code>components/button.css</code>, <code>fontawesome-icons.css</code>.<br>
+                                            <strong>JavaScript:</strong> No incluido; quien use la tabla genera thead/tbody (p. ej. desde datos) y aplica las clases UBITS.
+                                        </div>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="table-implementation-code">&lt;!-- Progress bar en celda --&gt;
+&lt;td data-col="avance"&gt;
+  &lt;div class="ubits-table__cell-progress"&gt;
+    &lt;div class="ubits-table__progress-bar"&gt;&lt;div class="ubits-table__progress-bar-fill" style="width: 75%"&gt;&lt;/div&gt;&lt;/div&gt;
+    &lt;span class="ubits-body-sm-regular"&gt;75%&lt;/span&gt;
+  &lt;/div&gt;
+&lt;/td&gt;
+
+&lt;!-- Avatar + nombre --&gt;
+&lt;td data-col="asignado"&gt;
+  &lt;div class="ubits-table__cell-assignee"&gt;
+    &lt;div class="ubits-table__avatar"&gt;&lt;img src="ruta/imagen.jpg" alt="" width="28" height="28"&gt;&lt;/div&gt;
+    &lt;span class="ubits-body-sm-regular"&gt;Nombre persona&lt;/span&gt;
+  &lt;/div&gt;
+&lt;/td&gt;
+
+&lt;!-- Status tag (requiere status-tag.css) --&gt;
+&lt;td data-col="estado"&gt;&lt;span class="ubits-status-tag ubits-status-tag--info ubits-status-tag--sm"&gt;&lt;span class="ubits-status-tag__text"&gt;Iniciada&lt;/span&gt;&lt;/span&gt;&lt;/td&gt;
+
+&lt;!-- Prioridad (icono + texto) --&gt;
+&lt;td data-col="prioridad"&gt;&lt;span class="ubits-table__cell-priority" style="color: var(--ubits-feedback-accent-error);"&gt;&lt;i class="far fa-chevrons-up"&gt;&lt;/i&gt; Alta&lt;/span&gt;&lt;/td&gt;</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof loadSubNav === 'function') loadSubNav('top-nav-container', 'documentacion');
+            if (typeof loadDocsSidebar === 'function') loadDocsSidebar('table');
+            if (typeof showAlert === 'function') {
+                showAlert('warning', 'Importante: Antes de enviar estos prompts a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
+                    containerId: 'table-warning-alert',
+                    noClose: true
+                });
+            }
+            var selectAll = document.getElementById('table-demo-select-all');
+            var rowChecks = document.querySelectorAll('.table-demo-row-check');
+            if (selectAll && rowChecks.length) {
+                selectAll.addEventListener('change', function() {
+                    rowChecks.forEach(function(cb) { cb.checked = selectAll.checked; });
+                });
+            }
+            /* Controles de columnas del preview */
+            var colIds = ['checkbox', 'nombre', 'asignado', 'profilelist', 'avance', 'estado', 'prioridad'];
+            var defaultVisible = { checkbox: true, nombre: true, asignado: true, profilelist: false, avance: false, estado: false, prioridad: false };
+            function updateTableColumns() {
+                colIds.forEach(function(colId) {
+                    var cb = document.getElementById('table-preview-col-' + colId);
+                    if (!cb) return;
+                    var visible = cb.checked;
+                    var table = document.getElementById('table-demo');
+                    if (!table) return;
+                    var cells = table.querySelectorAll('th[data-col="' + colId + '"], td[data-col="' + colId + '"]');
+                    cells.forEach(function(cell) {
+                        cell.classList.toggle('table-preview-hide', !visible);
+                    });
+                });
+            }
+            colIds.forEach(function(colId) {
+                var cb = document.getElementById('table-preview-col-' + colId);
+                if (!cb) return;
+                cb.checked = defaultVisible[colId] !== false;
+                cb.addEventListener('change', updateTableColumns);
+            });
+            updateTableColumns();
+        });
+        function toggleTechnicalDocs() {
+            var content = document.getElementById('technical-docs-content');
+            var chevron = document.getElementById('tech-docs-chevron');
+            var toggleText = chevron.parentElement;
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                chevron.style.transform = 'rotate(180deg)';
+                toggleText.innerHTML = '<i class="far fa-chevron-up" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Ocultar';
+            } else {
+                content.style.display = 'none';
+                chevron.style.transform = 'rotate(0deg)';
+                toggleText.innerHTML = '<i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Mostrar';
+            }
+        }
+        function copyCode(codeId) {
+            var el = document.getElementById(codeId);
+            if (!el) return;
+            navigator.clipboard.writeText(el.textContent).then(function() {
+                if (typeof showToast === 'function') showToast('success', 'Código copiado');
+            });
+        }
+        function copyPrompt(promptId) {
+            var el = document.getElementById(promptId);
+            if (!el) return;
+            navigator.clipboard.writeText(el.textContent).then(function() {
+                if (typeof showToast === 'function') showToast('success', 'Prompt copiado');
+            });
+        }
+    </script>
+</body>
+</html>

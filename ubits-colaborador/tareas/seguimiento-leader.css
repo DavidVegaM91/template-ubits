@@ -1,0 +1,6 @@
+/* ========================================
+   Seguimiento - Vista líder (TASK_VIEW_SCOPE_LEADER)
+   Reutiliza estilos de seguimiento.css.
+   Añade aquí solo overrides específicos de la vista líder si los necesitas.
+   ======================================== */
+@import url('./seguimiento.css');

@@ -1,0 +1,85 @@
+/* ========================================
+   UBITS Modal - Componente reutilizable
+   Overlay + contenedor centrado + header + body + footer.
+   Usar con date picker, confirmación, formularios, etc.
+   ======================================== */
+
+.ubits-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.ubits-modal-content {
+    background: var(--ubits-bg-1);
+    border-radius: 8px;
+    border: 1px solid var(--ubits-border-1);
+    width: 100%;
+    max-width: min(560px, calc(100vw - 32px));
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    z-index: 1001;
+}
+
+/* Variantes de ancho (desktop); en tablet/mobile se adaptan al viewport */
+.ubits-modal-content--xs {
+    max-width: min(320px, calc(100vw - 32px));
+}
+
+.ubits-modal-content--sm {
+    max-width: min(440px, calc(100vw - 32px));
+}
+
+.ubits-modal-content--md {
+    max-width: min(800px, calc(100vw - 32px));
+}
+
+.ubits-modal-content--lg {
+    max-width: min(1200px, calc(100vw - 32px));
+}
+
+.ubits-modal-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--ubits-border-1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ubits-modal-header h2 {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-modal-body {
+    padding: 20px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.ubits-modal-footer {
+    padding: 16px 20px;
+    border-top: 1px solid var(--ubits-border-1);
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+@media (max-width: 768px) {
+    .ubits-modal-content {
+        max-height: 95vh;
+    }
+
+    .ubits-modal-body {
+        padding: 16px;
+    }
+}

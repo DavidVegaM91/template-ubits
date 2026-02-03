@@ -67,7 +67,10 @@
 /* Disabled State for all variants */
 .ubits-button--primary:disabled,
 .ubits-button--secondary:disabled,
-.ubits-button--tertiary:disabled {
+.ubits-button--tertiary:disabled,
+.ubits-button--error:disabled,
+.ubits-button--error-secondary:disabled,
+.ubits-button--error-tertiary:disabled {
     background: var(--ubits-bg-disabled-button) !important;
     color: var(--ubits-fg-on-disabled-button) !important;
     border-color: var(--ubits-border-disabled-button) !important;
@@ -205,6 +208,80 @@
     background: transparent;
     color: var(--ubits-btn-tertiary-fg);
     border: 1px solid transparent;
+}
+
+/* ========================================
+   ERROR BUTTON VARIANT (eliminación, acciones destructivas)
+   Tokens: ubits-colors.css --ubits-btn-error-*
+   ======================================== */
+
+.ubits-button--error {
+    background: var(--ubits-btn-error-primary-bg-default);
+    color: var(--ubits-btn-error-primary-fg);
+    border: 1px solid var(--ubits-btn-error-primary-bg-default);
+}
+
+.ubits-button--error:hover:not(:disabled) {
+    background: var(--ubits-btn-error-primary-bg-hover);
+    border-color: var(--ubits-btn-error-primary-bg-hover);
+}
+
+.ubits-button--error:active:not(:disabled) {
+    background: var(--ubits-btn-error-primary-bg-pressed);
+    border-color: var(--ubits-btn-error-primary-bg-pressed);
+    transform: translateY(1px);
+}
+
+.ubits-button--error:focus-visible {
+    outline: none;
+    box-shadow: 0px 0px 0px 4px var(--ubits-button-focus-ring);
+}
+
+/* Error Secondary (outline, fondo sutil error) */
+.ubits-button--error-secondary {
+    background: var(--ubits-btn-error-secondary-bg-default);
+    color: var(--ubits-btn-error-secondary-fg-default);
+    border: 1px solid var(--ubits-btn-error-secondary-border);
+}
+
+.ubits-button--error-secondary:hover:not(:disabled) {
+    background: var(--ubits-btn-error-secondary-bg-hover);
+    color: var(--ubits-btn-error-secondary-fg-default);
+    border-color: var(--ubits-btn-error-secondary-border);
+}
+
+.ubits-button--error-secondary:active:not(:disabled) {
+    background: var(--ubits-btn-error-secondary-bg-pressed);
+    color: var(--ubits-btn-error-secondary-fg-default);
+    border-color: var(--ubits-btn-error-secondary-border);
+    transform: translateY(1px);
+}
+
+.ubits-button--error-secondary:focus-visible {
+    outline: none;
+    box-shadow: 0px 0px 0px 4px var(--ubits-button-focus-ring);
+}
+
+/* Error Tertiary (ghost, solo texto/icono error) */
+.ubits-button--error-tertiary {
+    background: transparent;
+    color: var(--ubits-btn-error-tertiary-fg);
+    border: 1px solid transparent;
+}
+
+.ubits-button--error-tertiary:hover:not(:disabled) {
+    background: var(--ubits-btn-error-tertiary-bg-hover);
+    color: var(--ubits-btn-error-tertiary-fg);
+    border: 1px solid transparent;
+}
+
+.ubits-button--error-tertiary:active:not(:disabled) {
+    background: var(--ubits-btn-error-tertiary-bg-pressed);
+    color: var(--ubits-btn-error-tertiary-fg);
+    transform: translateY(1px);
+}
+
+.ubits-button--error-tertiary:focus-visible {
     outline: none;
     box-shadow: 0px 0px 0px 4px var(--ubits-button-focus-ring);
 }

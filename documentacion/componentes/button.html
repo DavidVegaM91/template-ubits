@@ -133,7 +133,7 @@
                             Preview del componente
                         </h2>
                         <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
-                            Aquí puedes ver el componente Button en acción. Haz clic en los botones para ver las diferentes variantes disponibles.
+                            Aquí puedes ver el componente Button en acción. Haz clic en los botones para ver las diferentes variantes disponibles. En <strong>Error</strong> usa el estilo (Primario / Secundario / Terciario) para cambiar el tipo y ver los mismos tamaños xs, sm, md y lg.
                         </p>
                         
                         <!-- Preview Container -->
@@ -188,6 +188,22 @@
                             <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewOption('disabled')">
                                 <span>Disabled</span>
                             </button>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewOption('error')">
+                                <span>Error</span>
+                            </button>
+                            <!-- Subcontroles Error (solo visibles cuando Error está seleccionado) -->
+                            <div id="error-sub-controls" style="display: none; margin-left: 8px; padding-left: 12px; border-left: 1px solid var(--ubits-border-1); flex-wrap: wrap; gap: 8px; align-items: center;" class="ubits-body-sm-regular">
+                                <span style="color: var(--ubits-fg-1-medium);">Estilo:</span>
+                                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs error-sub-control-btn active" data-error-sub="error" onclick="setErrorSubOption('error')">
+                                    <span>Primario</span>
+                                </button>
+                                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs error-sub-control-btn" data-error-sub="error-secondary" onclick="setErrorSubOption('error-secondary')">
+                                    <span>Secundario</span>
+                                </button>
+                                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs error-sub-control-btn" data-error-sub="error-tertiary" onclick="setErrorSubOption('error-tertiary')">
+                                    <span>Terciario</span>
+                                </button>
+                            </div>
                             
                             <!-- Switch para Iconos -->
                             <div style="display: flex; align-items: center; gap: 8px; margin-left: 16px;">
@@ -219,7 +235,7 @@
                             <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                                 <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-palette"></i></div>
                                 <div class="ubits-body-sm-bold">Variantes</div>
-                                <div class="ubits-body-sm-regular">Primario, secundario y terciario</div>
+                                <div class="ubits-body-sm-regular">Primario, secundario, terciario; error (primario, secundario, terciario)</div>
                             </div>
                             <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                                 <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-expand-arrows-alt"></i></div>
@@ -261,7 +277,7 @@
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
                             <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="button-prompt-0">Crea un botón UBITS con estas características:
 - Texto: [especifica texto]
-- Variante: [primary/secondary/tertiary]
+- Variante: [primary/secondary/tertiary/error/error-secondary/error-tertiary]
 - Tamaño: [xs/sm/md/lg]
 - Icono: [especifica icono FontAwesome]
 - Ubicación: [describe en que parte del layout debe estar el botón]
@@ -449,6 +465,9 @@ IMPORTA: components/button.css</code></pre>
 .ubits-button--primary    /* Botón principal (azul) */
 .ubits-button--secondary  /* Botón secundario (gris) */
 .ubits-button--tertiary   /* Botón terciario (transparente) */
+.ubits-button--error           /* Error primario: fondo rojo, texto claro (eliminar principal) */
+.ubits-button--error-secondary  /* Error secundario: fondo sutil rojo, borde y texto error */
+.ubits-button--error-tertiary   /* Error terciario: transparente, solo texto/icono rojo */
 
 /* Tamaños */
 .ubits-button--xs        /* Extra pequeño (11px, 28px alto) */
@@ -513,6 +532,24 @@ IMPORTA: components/button.css</code></pre>
 &lt;button class="ubits-button ubits-button--tertiary ubits-button--lg"&gt;
   &lt;i class="far fa-plus"&gt;&lt;/i&gt;
   &lt;span&gt;Agregar elemento&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- Botón error primario (eliminación principal) --&gt;
+&lt;button class="ubits-button ubits-button--error ubits-button--md"&gt;
+  &lt;i class="far fa-trash-alt"&gt;&lt;/i&gt;
+  &lt;span&gt;Eliminar&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- Botón error secundario (outline, fondo sutil) --&gt;
+&lt;button class="ubits-button ubits-button--error-secondary ubits-button--md"&gt;
+  &lt;i class="far fa-trash-alt"&gt;&lt;/i&gt;
+  &lt;span&gt;Eliminar&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- Botón error terciario (ghost, solo texto rojo) --&gt;
+&lt;button class="ubits-button ubits-button--error-tertiary ubits-button--md"&gt;
+  &lt;i class="far fa-trash-alt"&gt;&lt;/i&gt;
+  &lt;span&gt;Eliminar&lt;/span&gt;
 &lt;/button&gt;
 
 &lt;!-- Botón de solo icono --&gt;
@@ -580,6 +617,8 @@ IMPORTA: components/button.css</code></pre>
 
         // Variable global para guardar la opción actual del preview
         let currentPreviewOption = 'primary';
+        // Sub-variante de Error (error = primario, error-secondary, error-tertiary)
+        let currentErrorSubOption = 'error';
 
         // Función para toggle de iconos
         function toggleIcons() {
@@ -595,8 +634,18 @@ IMPORTA: components/button.css</code></pre>
                     updatePreview('tertiary');
                 } else if (option === 'disabled') {
                     updatePreview('disabled');
+                } else if (option === 'error') {
+                    updatePreview('error');
                 }
             }
+        }
+
+        function setErrorSubOption(subOption) {
+            currentErrorSubOption = subOption;
+            document.querySelectorAll('.error-sub-control-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.getAttribute('data-error-sub') === subOption);
+            });
+            updatePreview('error');
         }
         
         // Función para toggle de icon-only
@@ -719,6 +768,29 @@ IMPORTA: components/button.css</code></pre>
                         </div>
                     `;
                     break;
+                case 'error':
+                    const errorVariant = typeof currentErrorSubOption !== 'undefined' ? currentErrorSubOption : 'error';
+                    preview.innerHTML = `
+                        <div style="display: flex; flex-direction: column; gap: 16px; align-items: flex-start;">
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Extra Small (xs)</span>
+                                ${generateButtonHTML(errorVariant, 'xs', 'Eliminar', 'trash-alt', isIconOnly, showIcons)}
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Small (sm)</span>
+                                ${generateButtonHTML(errorVariant, 'sm', 'Eliminar', 'trash-alt', isIconOnly, showIcons)}
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Medium (md)</span>
+                                ${generateButtonHTML(errorVariant, 'md', 'Eliminar', 'trash-alt', isIconOnly, showIcons)}
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Large (lg)</span>
+                                ${generateButtonHTML(errorVariant, 'lg', 'Eliminar', 'trash-alt', isIconOnly, showIcons)}
+                            </div>
+                        </div>
+                    `;
+                    break;
             }
         }
         
@@ -727,16 +799,27 @@ IMPORTA: components/button.css</code></pre>
             // Guardar la opción actual en la variable global
             currentPreviewOption = option;
             
-            // Remover clase active de todos los botones
+            // Remover clase active de todos los botones principales
             document.querySelectorAll('.preview-control-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
             
             // Agregar clase active al botón clickeado
-            event.target.closest('.preview-control-btn').classList.add('active');
+            const clicked = event.target.closest('.preview-control-btn');
+            if (clicked) clicked.classList.add('active');
             
-            // Permitir icon-only incluso en modo disabled (igual que ia-button)
-            // No deshabilitar el toggle de icon-only
+            // Mostrar u ocultar subcontroles de Error
+            const errorSubEl = document.getElementById('error-sub-controls');
+            if (errorSubEl) {
+                if (option === 'error') {
+                    errorSubEl.style.display = 'flex';
+                    document.querySelectorAll('.error-sub-control-btn').forEach(btn => {
+                        btn.classList.toggle('active', btn.getAttribute('data-error-sub') === currentErrorSubOption);
+                    });
+                } else {
+                    errorSubEl.style.display = 'none';
+                }
+            }
             
             // Actualizar el preview
             updatePreview(option);

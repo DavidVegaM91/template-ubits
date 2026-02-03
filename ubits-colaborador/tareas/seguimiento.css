@@ -28,6 +28,22 @@
     margin-bottom: 0;
 }
 
+/* Tabs Tareas | Planes
+   IMPORTANTE: El contenedor de tabs debe ser flex-direction: row para que los tabs
+   queden uno al lado del otro. La regla .section-single > div aplica flex-direction: column
+   a todos los div hijos; por eso hay que sobrescribirla explícitamente aquí (después de esa regla). */
+.seguimiento-tabs-wrapper {
+    margin-bottom: 0;
+}
+
+.seguimiento-tabs-wrapper .seguimiento-tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--ubits-bg-2);
+    border-radius: 8px;
+    width: fit-content;
+}
+
 .section-single {
     display: flex;
     width: 100%;
@@ -43,6 +59,12 @@
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
+}
+
+/* Tabs: mantener en fila y sin padding (sobrescribe .section-single > div) */
+.seguimiento-tabs-wrapper > .seguimiento-tabs {
+    flex-direction: row;
+    padding: 0 !important;
 }
 
 .section-single > div {
@@ -110,207 +132,14 @@
     margin-bottom: 12px;
 }
 
-/* Tabla wrapper */
+/* Tabla: usa componente UBITS (components/table.css). Solo layout del widget. */
 .widget-tabla-seguimiento {
     overflow: visible;
 }
 
-.seguimiento-table-wrapper {
-    min-width: 900px;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-}
-
-/* Tabla */
-.seguimiento-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    border: 1px solid var(--ubits-border-1);
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.seguimiento-table thead th {
-    text-align: left;
-    padding: 0 16px;
-    height: 45px;
-    background: transparent;
-    color: var(--ubits-fg-1-medium);
-    border-bottom: 1px solid var(--ubits-border-1);
-    font-family: 'Noto Sans', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 20px;
-    white-space: nowrap;
-    vertical-align: middle;
-}
-
-.seguimiento-table tbody td {
-    padding: 0 16px;
-    height: 45px;
-    border-bottom: 1px solid var(--ubits-border-1);
-    color: var(--ubits-fg-1-medium);
-    vertical-align: middle;
-    max-width: 200px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-family: 'Noto Sans', sans-serif;
-    font-size: 12px;
-    font-weight: 400;
-    line-height: 16px;
-}
-
-/* Quitar borde de la última fila para evitar doble borde */
-.seguimiento-table tbody tr:last-child td {
-    border-bottom: none;
-}
-
-/* Columnas con ancho específico */
-.seguimiento-td[data-col="nombre"] {
-    max-width: 280px;
-}
-
-.seguimiento-td[data-col="asignado"] {
-    max-width: 180px;
-}
-
-.seguimiento-td[data-col="plan"] {
-    max-width: 200px;
-}
-
-.seguimiento-td[data-col="creador"] {
-    max-width: 180px;
-}
-
-.seguimiento-td[data-col="id"],
-.seguimiento-td[data-col="idColaborador"] {
-    max-width: 120px;
-}
-
-.seguimiento-td[data-col="avance"] {
-    max-width: 140px;
-}
-
-.seguimiento-td[data-col="estado"],
-.seguimiento-td[data-col="prioridad"],
-.seguimiento-td[data-col="comentarios"] {
-    max-width: 120px;
-}
-
-/* Status tag ancho fijo */
-.seguimiento-td[data-col="estado"] .ubits-status-tag {
-    min-width: 76px;
-    width: 76px;
-    justify-content: center;
-}
-
-/* Progress bar para avance */
-.seguimiento-avance {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.seguimiento-progress-bar {
-    width: 60px;
-    height: 8px;
-    background-color: var(--ubits-bg-4-static);
-    border-radius: 4px;
-    overflow: hidden;
-    flex-shrink: 0;
-}
-
-.seguimiento-progress-bar-fill {
-    height: 100%;
-    background-color: var(--ubits-chart-bg-neutral-blue-base);
-    border-radius: 4px;
-    transition: width 0.3s ease;
-}
-
-.seguimiento-td[data-col="fechaCreacion"],
-.seguimiento-td[data-col="fechaFinalizacion"] {
-    max-width: 140px;
-}
-
-.seguimiento-table tbody tr:hover td {
-    background: var(--ubits-bg-2);
-}
-
-.seguimiento-table .seguimiento-th-checkbox,
-.seguimiento-table .seguimiento-td-checkbox {
-    width: 55px !important;
-    min-width: 55px !important;
-    max-width: 55px !important;
-    padding: 0 !important;
-    box-sizing: border-box;
-    text-align: center;
-    vertical-align: middle;
-}
-
-.seguimiento-th-checkbox input,
-.seguimiento-td-checkbox input {
-    width: 16px;
-    height: 16px;
+/* Chip +N clickeable en tab Planes (dentro de celda assignee del componente tabla) */
+#seguimiento-table .ubits-table__cell-assignee .ubits-profile-list__count {
     cursor: pointer;
-    accent-color: var(--ubits-accent-brand);
-}
-
-/* Avatares 28×28 */
-.seguimiento-asignado {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.seguimiento-avatar {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    overflow: hidden;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--ubits-bg-2);
-    border: 1px solid var(--ubits-border-1);
-}
-
-.seguimiento-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.seguimiento-avatar-icon {
-    color: var(--ubits-fg-1-medium);
-}
-
-.seguimiento-avatar-icon i {
-    font-size: 14px;
-}
-
-/* Prioridad (icono + texto) */
-.seguimiento-prioridad {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 14px;
-}
-
-.seguimiento-prioridad i {
-    font-size: 12px;
-}
-
-/* Botón eliminar con selección */
-.seguimiento-btn-eliminar {
-    color: var(--ubits-feedback-accent-error);
-}
-
-.seguimiento-btn-eliminar:hover {
-    color: var(--ubits-feedback-accent-error);
-    border-color: var(--ubits-feedback-accent-error);
 }
 
 /* Búsqueda inline */
@@ -320,57 +149,18 @@
     gap: 8px;
 }
 
-/* Modal filtros */
-.filtros-modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: var(--ubits-bg-dim);
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 16px;
+/* Overlay fecha personalizada (usa componente ubits-modal-overlay) */
+.date-picker-overlay {
+    background: rgba(0, 0, 0, 0.7);
 }
 
-.filtros-modal-content {
-    background: var(--ubits-bg-1);
-    border-radius: 8px;
-    max-width: 560px;
-    width: 100%;
-    max-height: 90vh;
-    display: flex;
-    flex-direction: column;
-    border: 1px solid var(--ubits-border-1);
+/* Modal de eliminación: márgenes del body (componente ubits-modal-*) */
+#delete-modal-overlay .ubits-modal-body p {
+    margin: 0 0 8px 0;
 }
 
-.filtros-modal-header {
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--ubits-border-1);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.filtros-modal-header h2 {
-    margin: 0;
-    color: var(--ubits-fg-1-high);
-}
-
-.filtros-modal-body {
-    padding: 20px;
-    overflow-y: auto;
-    flex: 1;
-}
-
-.filtros-modal-footer {
-    padding: 16px 20px;
-    border-top: 1px solid var(--ubits-border-1);
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
+#delete-modal-overlay .ubits-modal-body p:last-child {
+    margin-bottom: 0;
 }
 
 /* Menú columnas */
@@ -414,6 +204,55 @@
     height: 16px;
     cursor: pointer;
     accent-color: var(--ubits-accent-brand);
+}
+
+/* Popover asignados: lista de personas al hacer clic en +N (solo visualización) */
+.asignados-popover-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+}
+
+.asignados-popover {
+    position: fixed;
+    min-width: 220px;
+    max-width: 320px;
+    max-height: 320px;
+    overflow-y: auto;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    z-index: 1001;
+    padding: 8px 0;
+}
+
+.asignados-popover-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.asignados-popover-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    color: var(--ubits-fg-1-medium);
+}
+
+.asignados-popover-item .ubits-avatar {
+    flex-shrink: 0;
+}
+
+.asignados-popover-item .ubits-body-sm-regular {
+    color: var(--ubits-fg-1-medium);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 /* Filtros aplicados (chips) */
@@ -840,60 +679,20 @@
     display: none;
 }
 
-/* Modal de confirmación de eliminación */
-.delete-modal-overlay {
+/* Botón Descargar con chevron (menú desplegable) */
+#seguimiento-descargar .fa-chevron-down {
+    margin-left: 4px;
+    font-size: 10px;
+}
+
+/* Overlay del menú Descargar (mismo patrón que sort-menu) */
+.descargar-menu-overlay {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: var(--ubits-bg-dim);
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 16px;
-}
-
-.delete-modal-content {
-    background: var(--ubits-bg-1);
-    border-radius: 8px;
-    max-width: 420px;
-    width: 100%;
-    border: 1px solid var(--ubits-border-1);
-}
-
-.delete-modal-header {
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--ubits-border-1);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.delete-modal-header h2 {
-    margin: 0;
-    color: var(--ubits-fg-1-high);
-}
-
-.delete-modal-body {
-    padding: 20px;
-}
-
-.delete-modal-body p {
-    margin: 0 0 8px 0;
-}
-
-.delete-modal-body p:last-child {
-    margin-bottom: 0;
-}
-
-.delete-modal-footer {
-    padding: 16px 20px;
-    border-top: 1px solid var(--ubits-border-1);
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
+    z-index: 999;
 }
 
 /* Menús flotantes para acciones */
@@ -977,6 +776,39 @@
     border-top: 1px solid var(--ubits-border-1);
 }
 
+/* Menú añadir colaborador al plan */
+.anadir-colaborador-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+}
+
+.anadir-colaborador-menu {
+    position: fixed;
+    min-width: 300px;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    z-index: 1001;
+    padding: 12px;
+}
+
+.anadir-colaborador-content {
+    margin-bottom: 12px;
+}
+
+.anadir-colaborador-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--ubits-border-1);
+}
+
 /* Menú de período */
 .periodo-menu-overlay {
     position: fixed;
@@ -1051,7 +883,7 @@
         grid-template-columns: 1fr;
     }
 
-    .filtros-modal-content {
+    #filtros-modal-overlay .ubits-modal-content {
         max-height: 80vh;
     }
 
@@ -1195,9 +1027,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.3);
     z-index: 1000;
-    backdrop-filter: blur(2px);
 }
 
 .date-picker-modal-content {

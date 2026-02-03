@@ -1480,121 +1480,67 @@ function generarActividadesPorMes(anio, mes, fechaHoy, idActividadInicial) {
         });
     }
     
-    EMPLEADOS.forEach(empleado => {
-        // Obtener planes disponibles para el área
-        const planesArea = PLANES_POR_AREA[empleado.area] || PLANES_POR_AREA['Administración'];
-        
-        // Seleccionar 2 planes aleatorios para este empleado
-        const planesEmpleado = [];
-        const planesDisponibles = [...planesArea];
-        for (let i = 0; i < 2 && planesDisponibles.length > 0; i++) {
-            const idx = Math.floor(Math.random() * planesDisponibles.length);
-            planesEmpleado.push(planesDisponibles.splice(idx, 1)[0]);
-        }
-        
-        // Obtener tareas específicas para el cargo
-        let tareasDelCargo = TAREAS_POR_CARGO[empleado.cargo];
-        if (!tareasDelCargo) {
-            const cargoBase = Object.keys(TAREAS_POR_CARGO).find(c => 
+    // Helper: obtener tareas del cargo de un empleado
+    function getTareasDelCargo(empleado) {
+        let t = TAREAS_POR_CARGO[empleado.cargo];
+        if (!t) {
+            const cargoBase = Object.keys(TAREAS_POR_CARGO).find(c =>
                 empleado.cargo.includes(c.replace('Asesora', 'Asesor').replace('Técnica', 'Técnico'))
             );
-            tareasDelCargo = cargoBase ? TAREAS_POR_CARGO[cargoBase] : TAREAS_POR_CARGO['Asistente Administrativa'];
+            t = cargoBase ? TAREAS_POR_CARGO[cargoBase] : TAREAS_POR_CARGO['Asistente Administrativa'];
         }
-        
-        // ============================================
-        // CREAR LOS 2 PLANES con sus TAREAS
-        // ============================================
-        // Plan 1: Primera mitad del mes - 5 tareas
-        // Plan 2: Segunda mitad del mes - 5 tareas
-        
-        // Asignar hora según tipo de empleado (una vez para todos los planes del empleado)
-        const horaCreacion = obtenerHoraCreacion(empleado);
-        
-        planesEmpleado.forEach((plan, planIdx) => {
-            // Fechas del plan basadas en el mes
-            const fechaCreacionPlan = new Date(primerDia);
-            fechaCreacionPlan.setHours(horaCreacion.hora, horaCreacion.minutos);
-            const fechaFinPlan = new Date(ultimoDia);
-            
-            const nombrePlan = `${plan.nombre} - ${empleado.nombre.split(' ')[0]}`;
+        return t;
+    }
+
+    // Planes por ÁREA: cada plan es grupal (varias personas con tareas dentro del mismo plan)
+    // Nombre del plan: "Nombre del plan - Área" (ej. "Técnicas de Venta Consultiva - Ventas")
+    const areasConPlanes = Object.keys(PLANES_POR_AREA).filter(area =>
+        EMPLEADOS.some(e => e.area === area)
+    );
+
+    areasConPlanes.forEach(area => {
+        const empleadosArea = EMPLEADOS.filter(e => e.area === area);
+        const planesArea = PLANES_POR_AREA[area] || PLANES_POR_AREA['Administración'];
+        const planesDelMes = [...planesArea].sort(() => Math.random() - 0.5).slice(0, 2);
+
+        planesDelMes.forEach((plan, planIdx) => {
+            const nombrePlan = `${plan.nombre} - ${area}`;
             const prioridadPlan = planIdx === 0 ? 'Alta' : 'Media';
-            
-            // ============================================
-            // PRIMERO: GENERAR LAS 5 TAREAS DEL PLAN
-            // ============================================
-            const tareasParaPlan = tareasDelCargo.slice(planIdx * 5, (planIdx * 5) + 5);
+            const fechaCreacionPlan = new Date(primerDia);
+            fechaCreacionPlan.setHours(10, Math.floor(Math.random() * 60));
+            const fechaFinPlan = new Date(ultimoDia);
+
+            // Repartir las 5 tareas entre 3-4 personas del área (round-robin)
+            const numPersonas = Math.min(4, Math.max(2, empleadosArea.length));
+            const empleadosPlan = [...empleadosArea].sort(() => Math.random() - 0.5).slice(0, numPersonas);
+
             const tareasGeneradas = [];
-            
-            // Distribución de tareas por semanas para este plan
-            let distribucionSemanas;
             const mitadSemanas = Math.ceil(SEMANAS.length / 2);
-            if (planIdx === 0) {
-                // Plan 1: Primera mitad de semanas (5 tareas distribuidas)
-                const semanasPlan1 = SEMANAS.slice(0, mitadSemanas);
-                distribucionSemanas = [];
-                let tareasRestantes = 5;
-                semanasPlan1.forEach((semana, idx) => {
-                    if (tareasRestantes > 0) {
-                        const cantidad = idx < semanasPlan1.length - 1 ? 2 : tareasRestantes; // 2 tareas por semana, última semana el resto
-                        distribucionSemanas.push({ semana: semana, cantidad: Math.min(cantidad, tareasRestantes) });
-                        tareasRestantes -= cantidad;
-                    }
-                });
-            } else {
-                // Plan 2: Segunda mitad de semanas (5 tareas distribuidas)
-                const semanasPlan2 = SEMANAS.slice(mitadSemanas);
-                distribucionSemanas = [];
-                let tareasRestantes = 5;
-                semanasPlan2.forEach((semana, idx) => {
-                    if (tareasRestantes > 0) {
-                        const cantidad = idx < semanasPlan2.length - 1 ? 2 : tareasRestantes; // 2 tareas por semana, última semana el resto
-                        distribucionSemanas.push({ semana: semana, cantidad: Math.min(cantidad, tareasRestantes) });
-                        tareasRestantes -= cantidad;
-                    }
-                });
-            }
-            
+            const semanasPlan = planIdx === 0 ? SEMANAS.slice(0, mitadSemanas) : SEMANAS.slice(mitadSemanas);
             let tareaIndex = 0;
-            // Fecha de creación de tareas: inicio del mes (Plan 1) o mitad del mes (Plan 2)
-            const fechaCreacionTareas = planIdx === 0 
-                ? new Date(primerDia.getFullYear(), primerDia.getMonth(), primerDia.getDate(), horaCreacion.hora, horaCreacion.minutos)
-                : new Date(primerDia.getFullYear(), primerDia.getMonth(), Math.ceil(ultimoDia.getDate() / 2), horaCreacion.hora, horaCreacion.minutos);
-            
-            distribucionSemanas.forEach(({ semana, cantidad }) => {
-                for (let i = 0; i < cantidad && tareaIndex < tareasParaPlan.length; i++) {
-                    const tarea = tareasParaPlan[tareaIndex];
+            const fechaCreacionTareas = new Date(primerDia.getFullYear(), primerDia.getMonth(), planIdx === 0 ? primerDia.getDate() : Math.ceil(ultimoDia.getDate() / 2), 10, 0);
+
+            semanasPlan.forEach((semana, idxSemana) => {
+                const cant = idxSemana < semanasPlan.length - 1 ? 2 : 5 - tareaIndex;
+                for (let i = 0; i < cant && tareaIndex < 5; i++) {
+                    const empleado = empleadosPlan[tareaIndex % empleadosPlan.length];
+                    const tareasCargo = getTareasDelCargo(empleado);
+                    const nombreTarea = tareasCargo[tareaIndex % tareasCargo.length];
                     const fechaCreacionTarea = new Date(fechaCreacionTareas);
-                    // Agregar minutos adicionales para variar las horas de las tareas (máximo 30 minutos)
-                    fechaCreacionTarea.setMinutes(fechaCreacionTarea.getMinutes() + (i * 5));
+                    fechaCreacionTarea.setMinutes(fechaCreacionTarea.getMinutes() + tareaIndex * 5);
                     const fechaFinTarea = new Date(semana.fin);
-                    
+
                     const estadoTarea = determinarEstado(fechaFinTarea, fechaCreacionTarea, fechaHoy);
                     const avanceTarea = generarAvanceTarea(estadoTarea);
-                    
-                    // Prioridad basada en el estado y fecha
                     const diasRestantes = Math.floor((fechaFinTarea - fechaHoy) / (1000 * 60 * 60 * 24));
-                    
-                    let prioridadTarea;
-                    if (estadoTarea === 'Vencida') {
-                        prioridadTarea = 'Alta';
-                    } else if (diasRestantes <= 3) {
-                        prioridadTarea = 'Alta';
-                    } else if (diasRestantes <= 7) {
-                        prioridadTarea = 'Media';
-                    } else {
-                        prioridadTarea = 'Baja';
-                    }
-                    
-                    const tareaObj = {
+                    let prioridadTarea = estadoTarea === 'Vencida' ? 'Alta' : diasRestantes <= 3 ? 'Alta' : diasRestantes <= 7 ? 'Media' : 'Baja';
+
+                    tareasGeneradas.push({
                         id: idActividad++,
                         tipo: 'tarea',
-                        nombre: tarea,
+                        nombre: nombreTarea,
                         plan: nombrePlan,
-                        asignado: {
-                            nombre: empleado.nombre,
-                            avatar: empleado.avatar,
-                            username: empleado.username || generarUsername(empleado.nombre)
-                        },
+                        asignado: { nombre: empleado.nombre, avatar: empleado.avatar, username: empleado.username || generarUsername(empleado.nombre) },
                         idColaborador: empleado.idColaborador,
                         area: empleado.area,
                         lider: empleado.area === 'Gerencia General' ? null : obtenerJefe(empleado.area, empleado.esJefe),
@@ -1604,81 +1550,60 @@ function generarActividadesPorMes(anio, mes, fechaHoy, idActividadInicial) {
                         avance: avanceTarea,
                         fechaCreacion: formatearFecha(fechaCreacionTarea),
                         fechaFinalizacion: formatearFecha(fechaFinTarea),
-                        creador: empleado.area === 'Gerencia General' ? empleado.nombre : (() => {
-                            const jefe = obtenerJefe(empleado.area, empleado.esJefe);
-                            // Si el jefe es "Junta Directiva", siempre usar el nombre de la persona
-                            if (jefe === 'Junta Directiva') {
-                                return empleado.nombre;
-                            }
-                            // Si no, 50% jefe, 50% persona
-                            return Math.random() < 0.5 ? jefe : empleado.nombre;
-                        })(),
+                        creador: empleado.area === 'Gerencia General' ? empleado.nombre : (Math.random() < 0.5 ? obtenerJefe(empleado.area, empleado.esJefe) : empleado.nombre),
                         comentarios: Math.floor(Math.random() * 4)
-                    };
-                    
-                    tareasGeneradas.push(tareaObj);
+                    });
                     tareaIndex++;
                 }
             });
-            
-            // ============================================
-            // SEGUNDO: CALCULAR AVANCE DEL PLAN BASADO EN TAREAS COMPLETADAS
-            // ============================================
+
             const totalTareas = tareasGeneradas.length;
             const tareasFinalizadas = tareasGeneradas.filter(t => t.estado === 'Finalizada').length;
             const avancePlan = totalTareas > 0 ? Math.round((tareasFinalizadas / totalTareas) * 100) : 0;
-            
-            // ============================================
-            // TERCERO: DETERMINAR ESTADO DEL PLAN
-            // ============================================
-            let estadoPlan;
-            if (avancePlan === 100) {
-                estadoPlan = 'Finalizada';
-            } else if (fechaFinPlan < fechaHoy) {
-                estadoPlan = 'Vencida'; // Plan vencido pero no completado
-            } else {
-                estadoPlan = 'Iniciada';
-            }
-            
-            // Agregar el PLAN (con avance calculado de las tareas)
+            const estadoPlan = avancePlan === 100 ? 'Finalizada' : fechaFinPlan < fechaHoy ? 'Vencida' : 'Iniciada';
+
+            const asignadosPlan = [];
+            const vistos = new Set();
+            tareasGeneradas.forEach(t => {
+                const k = t.asignado.nombre;
+                if (!vistos.has(k)) {
+                    vistos.add(k);
+                    asignadosPlan.push({
+                        id: t.idColaborador,
+                        nombre: t.asignado.nombre,
+                        avatar: t.asignado.avatar,
+                        username: t.asignado.username || generarUsername(t.asignado.nombre)
+                    });
+                }
+            });
+
+            const primerAsignado = asignadosPlan[0];
+            const creadorPlan = empleadosArea[Math.floor(Math.random() * empleadosArea.length)];
+
             actividades.push({
                 id: idActividad++,
                 tipo: 'plan',
                 nombre: nombrePlan,
                 plan: nombrePlan,
-                asignado: {
-                    nombre: empleado.nombre,
-                    avatar: empleado.avatar,
-                    username: empleado.username || generarUsername(empleado.nombre)
-                },
-                idColaborador: empleado.idColaborador,
-                area: empleado.area,
-                lider: empleado.area === 'Gerencia General' ? null : obtenerJefe(empleado.area, empleado.esJefe),
-                cargo: empleado.cargo,
+                asignado: primerAsignado || { nombre: creadorPlan.nombre, avatar: creadorPlan.avatar, username: creadorPlan.username || generarUsername(creadorPlan.nombre) },
+                asignados: asignadosPlan,
+                idColaborador: creadorPlan.idColaborador,
+                area: area,
+                lider: area === 'Gerencia General' ? null : obtenerJefe(area, false),
+                cargo: creadorPlan.cargo,
                 estado: estadoPlan,
                 prioridad: prioridadPlan,
                 avance: avancePlan,
                 fechaCreacion: formatearFecha(fechaCreacionPlan),
                 fechaFinalizacion: formatearFecha(fechaFinPlan),
-                creador: empleado.area === 'Gerencia General' ? empleado.nombre : (() => {
-                    const jefe = obtenerJefe(empleado.area, empleado.esJefe);
-                    // Si el jefe es "Junta Directiva", siempre usar el nombre de la persona
-                    if (jefe === 'Junta Directiva') {
-                        return empleado.nombre;
-                    }
-                    // Si no, 50% jefe, 50% persona
-                    return Math.random() < 0.5 ? jefe : empleado.nombre;
-                })(),
+                creador: area === 'Gerencia General' ? creadorPlan.nombre : (Math.random() < 0.5 ? obtenerJefe(area, false) : creadorPlan.nombre),
                 comentarios: Math.floor(Math.random() * 6)
             });
-            
-            // Agregar todas las TAREAS del plan
-            tareasGeneradas.forEach(tarea => {
-                actividades.push(tarea);
-            });
+
+            tareasGeneradas.forEach(t => actividades.push(t));
         });
     });
-    
+
     return { actividades, siguienteId: idActividad };
 }
 
@@ -1756,6 +1681,34 @@ function generarBaseDeDatos() {
 }
 
 // ============================================
+// ALCANCE LÍDER (TASK_VIEW_SCOPE_LEADER)
+// Devuelve solo actividades de reportes directos del líder.
+// Misma base de datos, sin duplicar.
+// ============================================
+function getReportesDirectos(nombreLider) {
+    if (!nombreLider || !EMPLEADOS) return [];
+    return EMPLEADOS.filter(function(e) { return e.jefe === nombreLider; }).map(function(e) { return e.nombre; });
+}
+
+function getActividadesParaLider(nombreLider) {
+    var todas = generarBaseDeDatos();
+    var nombresReportes = getReportesDirectos(nombreLider);
+    var setReportes = new Set(nombresReportes);
+    return todas.filter(function(act) {
+        if (act.tipo === 'tarea') {
+            return act.asignado && setReportes.has(act.asignado.nombre);
+        }
+        if (act.tipo === 'plan') {
+            if (act.creador && setReportes.has(act.creador)) return true;
+            if (act.asignados && act.asignados.length) {
+                return act.asignados.some(function(a) { return a && setReportes.has(a.nombre); });
+            }
+        }
+        return false;
+    });
+}
+
+// ============================================
 // EXPORTAR DATOS
 // ============================================
 const SEGUIMIENTO_DATABASE = {
@@ -1767,7 +1720,9 @@ const SEGUIMIENTO_DATABASE = {
     tareasFormacion: TAREAS_POR_CARGO,
     estados: ESTADOS,
     prioridades: PRIORIDADES,
-    generarActividades: generarBaseDeDatos
+    generarActividades: generarBaseDeDatos,
+    getReportesDirectos: getReportesDirectos,
+    getActividadesParaLider: getActividadesParaLider
 };
 
 // Hacer disponible globalmente

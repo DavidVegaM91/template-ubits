@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
-    <title>Seguimiento - UBITS Playground</title>
+    <title>Seguimiento (vista líder) - UBITS Playground</title>
 
     <!-- Estilos base UBITS -->
     <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
@@ -33,8 +33,8 @@
     <link rel="stylesheet" href="../../components/modal.css">
     <link rel="stylesheet" href="../../components/table.css">
 
-    <!-- Página -->
-    <link rel="stylesheet" href="./seguimiento.css">
+    <!-- Página (vista líder: mismo layout que seguimiento, estilos propios por si se quieren ajustes) -->
+    <link rel="stylesheet" href="./seguimiento-leader.css">
 </head>
 <body data-theme="light">
     <div class="dashboard-container">
@@ -239,19 +239,14 @@
                 </button>
             </div>
             <div class="ubits-modal-body">
-                <!-- Buscar asignados (buscador por nombre está fuera del modal, en la barra) -->
                 <div class="filtros-group">
                     <label class="ubits-body-sm-bold filtros-label">Buscar asignados</label>
                     <div id="filtros-buscar-personas"></div>
                 </div>
-
-                <!-- Buscar áreas -->
                 <div class="filtros-group">
                     <label class="ubits-body-sm-bold filtros-label">Buscar áreas</label>
                     <div id="filtros-areas"></div>
                 </div>
-
-                <!-- Estado y Prioridad en dos columnas -->
                 <div class="filtros-group filtros-group-row">
                     <div class="filtros-field">
                         <label class="ubits-body-sm-bold filtros-label">Estado</label>
@@ -288,7 +283,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
             <div class="ubits-modal-footer">
                 <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="filtros-limpiar">Limpiar filtros</button>
@@ -303,7 +297,7 @@
         <div class="columns-menu-list" id="columns-menu-list"></div>
     </div>
 
-    <!-- Popover asignados (+N del profile list en Planes): solo visualización -->
+    <!-- Popover asignados -->
     <div class="asignados-popover-overlay" id="asignados-popover-overlay" style="display: none;" aria-hidden="true"></div>
     <div class="asignados-popover" id="asignados-popover" style="display: none;" role="dialog" aria-label="Personas asignadas">
         <div class="asignados-popover-list" id="asignados-popover-list"></div>
@@ -347,7 +341,6 @@
             </button>
         </div>
         <div class="ubits-modal-body date-picker-modal-body">
-            <!-- Campos de fecha -->
             <div class="date-picker-inputs">
                 <div class="date-picker-input-group">
                     <label class="ubits-body-sm-regular date-picker-label">Fecha de inicio</label>
@@ -363,19 +356,11 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Calendario -->
-            <div class="date-picker-calendar" id="date-picker-calendar">
-                <!-- El calendario se generará con JavaScript -->
-            </div>
+            <div class="date-picker-calendar" id="date-picker-calendar"></div>
         </div>
         <div class="ubits-modal-footer date-picker-modal-footer">
-            <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="date-picker-cancelar">
-                <span>Cancelar</span>
-            </button>
-            <button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="date-picker-aplicar">
-                <span>Aplicar</span>
-            </button>
+            <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="date-picker-cancelar">Cancelar</button>
+            <button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="date-picker-aplicar">Aplicar</button>
         </div>
     </div>
 
@@ -398,7 +383,7 @@
         </div>
     </div>
 
-    <!-- Menú de filtro con autocomplete (para Nombre, Asignado, Plan, Creador) -->
+    <!-- Menú de filtro con autocomplete -->
     <div class="filter-menu-overlay" id="filter-menu-overlay" style="display: none;"></div>
     <div class="filter-menu" id="filter-menu" style="display: none;" role="dialog" aria-label="Filtrar columna">
         <div class="filter-menu-content">
@@ -410,12 +395,10 @@
         </div>
     </div>
 
-    <!-- Menú de checkboxes (para Estado, Prioridad) -->
+    <!-- Menú de checkboxes -->
     <div class="checkbox-menu-overlay" id="checkbox-menu-overlay" style="display: none;"></div>
     <div class="checkbox-menu" id="checkbox-menu" style="display: none;" role="dialog" aria-label="Filtrar por opciones">
-        <div class="checkbox-menu-options" id="checkbox-menu-options">
-            <!-- Opciones se generan dinámicamente -->
-        </div>
+        <div class="checkbox-menu-options" id="checkbox-menu-options"></div>
         <div class="checkbox-menu-footer">
             <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="checkbox-menu-cancel">Cancelar</button>
             <button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="checkbox-menu-apply">Aplicar</button>
@@ -442,7 +425,7 @@
         </div>
     </div>
 
-    <!-- Modal de confirmación reabrir plan (componente UBITS Modal, variante xs) -->
+    <!-- Modal reabrir plan (componente UBITS Modal, variante xs) -->
     <div class="ubits-modal-overlay" id="reabrir-plan-overlay" style="display: none;" aria-hidden="true">
         <div class="ubits-modal-content ubits-modal-content--xs">
             <div class="ubits-modal-header">
@@ -461,7 +444,7 @@
         </div>
     </div>
 
-    <!-- Menú flotante para cambiar prioridad -->
+    <!-- Menú prioridad -->
     <div class="priority-menu-overlay" id="priority-menu-overlay" style="display: none;"></div>
     <div class="priority-menu" id="priority-menu" style="display: none;" role="dialog" aria-label="Cambiar prioridad">
         <div class="priority-menu-options">
@@ -480,7 +463,7 @@
         </div>
     </div>
 
-    <!-- Menú flotante para cambiar estado -->
+    <!-- Menú estado -->
     <div class="status-menu-overlay" id="status-menu-overlay" style="display: none;"></div>
     <div class="status-menu" id="status-menu" style="display: none;" role="dialog" aria-label="Cambiar estado">
         <div class="status-menu-options">
@@ -496,7 +479,7 @@
         </div>
     </div>
 
-    <!-- Menú flotante para reasignar -->
+    <!-- Menú reasignar -->
     <div class="reasignar-menu-overlay" id="reasignar-menu-overlay" style="display: none;"></div>
     <div class="reasignar-menu" id="reasignar-menu" style="display: none;" role="dialog" aria-label="Reasignar">
         <div class="reasignar-menu-content">
@@ -508,7 +491,7 @@
         </div>
     </div>
 
-    <!-- Menú desplegable Descargar (Excel / CSV) -->
+    <!-- Menú Descargar -->
     <div class="descargar-menu-overlay" id="descargar-menu-overlay" style="display: none;"></div>
     <div class="descargar-menu sort-menu" id="descargar-menu" style="display: none;" role="menu" aria-label="Opciones de descarga">
         <div class="sort-menu-options">
@@ -523,7 +506,7 @@
         </div>
     </div>
 
-    <!-- Modal cambiar fecha de finalización (Planes) / vencimiento (Tareas) - componente UBITS Modal -->
+    <!-- Modal cambiar fecha (Planes / Tareas) - componente UBITS Modal -->
     <div class="ubits-modal-overlay date-picker-overlay" id="plan-fecha-overlay" style="display: none;" aria-hidden="true"></div>
     <div class="ubits-modal-content ubits-modal-content--sm date-picker-modal-content" id="plan-fecha-modal" style="display: none;" role="dialog" aria-label="Cambiar fecha de finalización">
         <div class="ubits-modal-header date-picker-modal-header">
@@ -539,21 +522,15 @@
                     <input type="text" class="date-picker-input" id="plan-fecha-input" placeholder="DD/MM/YYYY">
                 </div>
             </div>
-            <div class="date-picker-calendar" id="plan-fecha-calendar">
-                <!-- El calendario se generará con JavaScript -->
-            </div>
+            <div class="date-picker-calendar" id="plan-fecha-calendar"></div>
         </div>
         <div class="ubits-modal-footer date-picker-modal-footer">
-            <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="plan-fecha-cancel">
-                <span>Cancelar</span>
-            </button>
-            <button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="plan-fecha-aplicar">
-                <span>Aplicar</span>
-            </button>
+            <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="plan-fecha-cancel">Cancelar</button>
+            <button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="plan-fecha-aplicar">Aplicar</button>
         </div>
     </div>
 
-    <!-- Menú flotante añadir colaborador al plan -->
+    <!-- Menú añadir colaborador -->
     <div class="anadir-colaborador-overlay" id="anadir-colaborador-overlay" style="display: none;"></div>
     <div class="anadir-colaborador-menu" id="anadir-colaborador-menu" style="display: none;" role="dialog" aria-label="Añadir colaborador al plan">
         <div class="anadir-colaborador-content">
@@ -565,11 +542,10 @@
         </div>
     </div>
 
-    <!-- Toast container -->
     <div id="ubits-toast-container"></div>
 
-        <script src="../../components/tooltip.js"></script>
-<script src="../../components/sidebar.js"></script>
+    <script src="../../components/tooltip.js"></script>
+    <script src="../../components/sidebar.js"></script>
     <script src="../../components/sub-nav.js"></script>
     <script src="../../components/tab-bar.js"></script>
     <script src="../../components/floating-menu.js"></script>
@@ -581,6 +557,11 @@
     <script src="../../components/empty-state.js"></script>
     <script src="../../script.js"></script>
     <script src="../../components/avatar.js"></script>
+    <!-- Vista líder: solo actividades de reportes directos del líder (TASK_VIEW_SCOPE_LEADER). Misma base de datos. -->
+    <script>
+    window.SEGUIMIENTO_SCOPE = 'leader';
+    window.SEGUIMIENTO_CURRENT_LEADER = 'Fernando Castro Restrepo';
+    </script>
     <script src="./seguimiento-data.js"></script>
     <script src="./seguimiento.js"></script>
 </body>

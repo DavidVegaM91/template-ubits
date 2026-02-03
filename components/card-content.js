@@ -192,51 +192,57 @@ function renderCardContent(cardData) {
     const isPrograma = cardData.type === 'Programa';
     const hasMultipleProviders = (isRutaAprendizaje || isPrograma) && Array.isArray(cardData.providers) && cardData.providers.length > 1;
     
-    // Renderizar avatares según el tipo
+    // Renderizar avatares según el tipo (usa componente Avatar/Profile list si está disponible)
     let providerHTML = '';
     if (hasMultipleProviders) {
-        // Múltiples avatares para Ruta de aprendizaje o Programa
-        // Variantes: 2 avatares, 3 avatares, o 3 avatares + avatar con "+N"
         const providers = cardData.providers;
-        const totalCount = providers.length;
-        const visibleCount = Math.min(totalCount, 3);
-        const remainingCount = totalCount > 3 ? totalCount - 3 : 0;
-        
-        // Calcular z-index: el primero tiene el z-index más alto
-        providerHTML = `
-            <div class="course-provider course-provider--multiple">
-                <div class="provider-avatars-list">
-                    ${providers.slice(0, visibleCount).map((provider, index) => {
-                        const zIndex = visibleCount - index;
-                        // Si hay un avatar con "+N" después, el último avatar visible también debe tener margin-right: -5px
-                        const marginRight = (index < visibleCount - 1) || remainingCount > 0 ? '-5px' : '0';
-                        return `
-                            <div class="provider-avatar provider-avatar--stacked" style="z-index: ${zIndex}; margin-right: ${marginRight};">
-                                <img src="${provider.logo || provider.providerLogo || '../../images/Favicons/UBITS.jpg'}" 
-                                     alt="${provider.name || provider.provider || 'Provider'}" 
-                                     class="provider-icon">
-                            </div>
-                        `;
-                    }).join('')}
-                    ${remainingCount > 0 ? `
-                        <div class="provider-avatar provider-avatar--stacked provider-avatar--count" style="z-index: 0; margin-right: 0;">
-                            <span class="provider-count-text">+${remainingCount}</span>
-                        </div>
-                    ` : ''}
+        if (typeof renderProfileList === 'function') {
+            const personas = providers.map(p => ({
+                name: p.name || p.provider || 'Provider',
+                avatar: p.logo || p.providerLogo || '../../images/Favicons/UBITS.jpg'
+            }));
+            providerHTML = `
+                <div class="course-provider course-provider--multiple">
+                    ${renderProfileList(personas, { size: 'sm', maxVisible: 3 })}
+                    <span class="provider-name ubits-body-xs-regular">Varios</span>
                 </div>
-                <span class="provider-name ubits-body-xs-regular">Varios</span>
-            </div>
-        `;
+            `;
+        } else {
+            const totalCount = providers.length;
+            const visibleCount = Math.min(totalCount, 3);
+            const remainingCount = totalCount > 3 ? totalCount - 3 : 0;
+            providerHTML = `
+                <div class="course-provider course-provider--multiple">
+                    <div class="ubits-profile-list ubits-profile-list--sm">
+                        ${providers.slice(0, visibleCount).map((provider, index) => {
+                            const zIndex = visibleCount - index;
+                            const marginRight = (index < visibleCount - 1) || remainingCount > 0 ? '-5px' : '0';
+                            const avatarUrl = provider.logo || provider.providerLogo || '../../images/Favicons/UBITS.jpg';
+                            const alt = provider.name || provider.provider || 'Provider';
+                            return `<span class="ubits-profile-list__avatar" style="z-index: ${zIndex}; margin-right: ${marginRight};"><span class="ubits-avatar ubits-avatar--sm"><img src="${avatarUrl}" alt="${alt}" class="ubits-avatar__img"></span></span>`;
+                        }).join('')}
+                        ${remainingCount > 0 ? `<span class="ubits-profile-list__count" style="z-index: 0; margin-right: 0;"><span class="ubits-profile-list__count-text">+${remainingCount}</span></span>` : ''}
+                    </div>
+                    <span class="provider-name ubits-body-xs-regular">Varios</span>
+                </div>
+            `;
+        }
     } else {
-        // Avatar único (comportamiento normal)
-        providerHTML = `
-            <div class="course-provider">
-                <div class="provider-avatar">
-                    <img src="${cardData.providerLogo}" alt="${cardData.provider}" class="provider-icon">
+        if (typeof renderAvatar === 'function') {
+            providerHTML = `
+                <div class="course-provider">
+                    ${renderAvatar({ nombre: cardData.provider, avatar: cardData.providerLogo }, { size: 'sm' })}
+                    <span class="provider-name ubits-body-xs-regular">${cardData.provider}</span>
                 </div>
-                <span class="provider-name ubits-body-xs-regular">${cardData.provider}</span>
-            </div>
-        `;
+            `;
+        } else {
+            providerHTML = `
+                <div class="course-provider">
+                    <span class="ubits-avatar ubits-avatar--sm"><img src="${cardData.providerLogo}" alt="${cardData.provider}" class="ubits-avatar__img"></span>
+                    <span class="provider-name ubits-body-xs-regular">${cardData.provider}</span>
+                </div>
+            `;
+        }
     }
 
     // Template de la card

@@ -41,6 +41,11 @@ const DOCS_SIDEBAR_SECTIONS = [
         group: 'ui'
     },
     {
+        id: 'avatar',
+        title: 'Avatar',
+        group: 'ui'
+    },
+    {
         id: 'card-content',
         title: 'Card content',
         group: 'ui'
@@ -84,6 +89,16 @@ const DOCS_SIDEBAR_SECTIONS = [
         id: 'header-product',
         title: 'Header Product',
         group: 'ui'
+    },
+    {
+        id: 'modal',
+        title: 'Modal',
+        group: 'ui'
+    },
+    {
+        id: 'table',
+        title: 'Tabla',
+        group: 'ui'
     }
 ];
 
@@ -122,6 +137,9 @@ const docsSidebarHTML = `
                     <div class="docs-sidebar-item" data-section="alert">
                         <span class="docs-sidebar-text">Alert</span>
                     </div>
+                    <div class="docs-sidebar-item" data-section="avatar">
+                        <span class="docs-sidebar-text">Avatar</span>
+                    </div>
                     <div class="docs-sidebar-item" data-section="card-content">
                         <span class="docs-sidebar-text">Card content</span>
                     </div>
@@ -148,6 +166,12 @@ const docsSidebarHTML = `
                     </div>
                     <div class="docs-sidebar-item" data-section="header-product">
                         <span class="docs-sidebar-text">Header Product</span>
+                    </div>
+                    <div class="docs-sidebar-item" data-section="modal">
+                        <span class="docs-sidebar-text">Modal</span>
+                    </div>
+                    <div class="docs-sidebar-item" data-section="table">
+                        <span class="docs-sidebar-text">Tabla</span>
                     </div>
                 </div>
             </div>
@@ -191,6 +215,9 @@ const docsDropdownHTML = `
                     <div class="docs-dropdown-item" data-section="alert">
                         <span class="docs-dropdown-item-text ubits-body-md-regular">Alert</span>
                     </div>
+                    <div class="docs-dropdown-item" data-section="avatar">
+                        <span class="docs-dropdown-item-text ubits-body-md-regular">Avatar</span>
+                    </div>
                     <div class="docs-dropdown-item" data-section="card-content">
                         <span class="docs-dropdown-item-text ubits-body-md-regular">Card content</span>
                     </div>
@@ -217,6 +244,12 @@ const docsDropdownHTML = `
                     </div>
                     <div class="docs-dropdown-item" data-section="header-product">
                         <span class="docs-dropdown-item-text ubits-body-md-regular">Header Product</span>
+                    </div>
+                    <div class="docs-dropdown-item" data-section="modal">
+                        <span class="docs-dropdown-item-text ubits-body-md-regular">Modal</span>
+                    </div>
+                    <div class="docs-dropdown-item" data-section="table">
+                        <span class="docs-dropdown-item-text ubits-body-md-regular">Tabla</span>
                     </div>
                 </div>
             </div>
@@ -309,6 +342,7 @@ function initDocsSidebar(activeSection) {
             'button': 'button.html',
             'ia-button': 'ia-button.html',
             'alert': 'alert.html',
+            'avatar': 'avatar.html',
             'card-content': 'card-content.html',
             'card-content-compact': 'card-content-compact.html',
             'input': 'input.html',
@@ -317,7 +351,9 @@ function initDocsSidebar(activeSection) {
             'tab': 'tab.html',
             'paginator': 'paginator.html',
             'empty-state': 'empty-state.html',
-            'header-product': 'header-product.html'
+            'header-product': 'header-product.html',
+            'modal': 'modal.html',
+            'table': 'table.html'
         };
         
         const targetFile = sectionToFile[section];

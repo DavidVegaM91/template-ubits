@@ -83,8 +83,7 @@
         const tooltipRect = tooltip.getBoundingClientRect();
         const viewportWidth = window.innerWidth;
         const viewportHeight = window.innerHeight;
-        const scrollX = window.scrollX || window.pageXOffset;
-        const scrollY = window.scrollY || window.pageYOffset;
+        // Contenedor es position: fixed → coordenadas relativas al viewport (no sumar scroll)
         const padding = 12; // Padding mínimo del viewport
         const arrowSize = hasArrow ? 9 : 0; // Tamaño de la flecha
 
@@ -153,27 +152,27 @@
             }
         }
 
-        // Calcular posición final
+        // Calcular posición final (viewport: contenedor es position: fixed)
         if (position === 'top') {
-            top = elementRect.top - tooltipRect.height - arrowSize + scrollY;
-            if (align === 'left') left = elementRect.left + scrollX;
-            else if (align === 'center') left = elementRect.left + (elementRect.width / 2) - (tooltipRect.width / 2) + scrollX;
-            else left = elementRect.right - tooltipRect.width + scrollX;
+            top = elementRect.top - tooltipRect.height - arrowSize;
+            if (align === 'left') left = elementRect.left;
+            else if (align === 'center') left = elementRect.left + (elementRect.width / 2) - (tooltipRect.width / 2);
+            else left = elementRect.right - tooltipRect.width;
         } else if (position === 'bottom') {
-            top = elementRect.bottom + arrowSize + scrollY;
-            if (align === 'left') left = elementRect.left + scrollX;
-            else if (align === 'center') left = elementRect.left + (elementRect.width / 2) - (tooltipRect.width / 2) + scrollX;
-            else left = elementRect.right - tooltipRect.width + scrollX;
+            top = elementRect.bottom + arrowSize;
+            if (align === 'left') left = elementRect.left;
+            else if (align === 'center') left = elementRect.left + (elementRect.width / 2) - (tooltipRect.width / 2);
+            else left = elementRect.right - tooltipRect.width;
         } else if (position === 'left') {
-            left = elementRect.left - tooltipRect.width - arrowSize + scrollX;
-            if (align === 'top') top = elementRect.top + scrollY;
-            else if (align === 'center') top = elementRect.top + (elementRect.height / 2) - (tooltipRect.height / 2) + scrollY;
-            else top = elementRect.bottom - tooltipRect.height + scrollY;
+            left = elementRect.left - tooltipRect.width - arrowSize;
+            if (align === 'top') top = elementRect.top;
+            else if (align === 'center') top = elementRect.top + (elementRect.height / 2) - (tooltipRect.height / 2);
+            else top = elementRect.bottom - tooltipRect.height;
         } else { // right
-            left = elementRect.right + arrowSize + scrollX;
-            if (align === 'top') top = elementRect.top + scrollY;
-            else if (align === 'center') top = elementRect.top + (elementRect.height / 2) - (tooltipRect.height / 2) + scrollY;
-            else top = elementRect.bottom - tooltipRect.height + scrollY;
+            left = elementRect.right + arrowSize;
+            if (align === 'top') top = elementRect.top;
+            else if (align === 'center') top = elementRect.top + (elementRect.height / 2) - (tooltipRect.height / 2);
+            else top = elementRect.bottom - tooltipRect.height;
         }
 
         // Asegurar que no se salga del viewport

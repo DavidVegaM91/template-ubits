@@ -8,10 +8,19 @@
     'use strict';
 
     // Los datos se cargan desde seguimiento-data.js (SEGUIMIENTO_DATABASE)
-    const COLUMN_IDS = ['id', 'nombre', 'asignado', 'username', 'cargo', 'area', 'lider', 'creador', 'plan', 'estado', 'prioridad', 'avance', 'fechaCreacion', 'fechaFinalizacion', 'comentarios'];
-    const VISIBLE_BY_DEFAULT = ['nombre', 'asignado', 'estado', 'prioridad', 'avance', 'fechaCreacion'];
+    // 3.2.2 Columnas disponibles en tab Tareas (selector con checkboxes 3.2.1)
+    const COLUMN_IDS_TAREAS = ['id', 'nombre', 'asignado', 'creador', 'area', 'estado', 'prioridad', 'plan', 'fechaCreacion', 'fechaFinalizacion', 'comentarios'];
+    // 3.2.3 Por defecto mostrar: Nombre, Asignado, Creador, Estado, Prioridad, Fecha de vencimiento
+    const VISIBLE_BY_DEFAULT_TAREAS = ['nombre', 'asignado', 'creador', 'estado', 'prioridad', 'fechaFinalizacion'];
+    const COLUMN_IDS_PLANES = ['id', 'nombre', 'asignados', 'creador', 'estado', 'avance', 'fechaCreacion', 'fechaFinalizacion'];
+    const VISIBLE_BY_DEFAULT_PLANES = ['nombre', 'asignados', 'estado', 'avance', 'fechaCreacion', 'fechaFinalizacion'];
+
+    // Permisos (demo: todos habilitados; en producción vendrían del backend)
+    const TASK_EDIT = true;
+    const TASK_DELETE = true;
 
     // Estado global
+    let activeTab = 'tareas'; // 'tareas' | 'planes'
     let SEGUIMIENTO_DATA = [];
     let filteredData = [];
     let columnVisibility = {};
@@ -20,24 +29,33 @@
     let viewOnlySelected = false;
     let selectedIds = new Set();
     let currentSort = { column: 'fechaCreacion', direction: 'desc' }; // Por defecto: más reciente primero
-    let currentFilters = {
-        tipoActividad: [],
-        plan: [],
-        persona: [],
-        username: [],
-        area: [],
-        lider: [],
-        nombre: [],
-        creador: [],
-        estado: [],
-        prioridad: [],
-        fechaCreacionDesde: null,
-        fechaCreacionHasta: null,
-        fechaVencimientoDesde: null,
-        fechaVencimientoHasta: null,
-        periodo: '30' // Días hacia atrás desde hoy (30, 90, 180, 365). Por defecto: 30 días
+    // Filtros por tab: cada tab (Tareas / Planes) tiene su propio estado de filtros
+    function getDefaultFilters() {
+        return {
+            tipoActividad: [],
+            plan: [],
+            persona: [],
+            username: [],
+            area: [],
+            lider: [],
+            nombre: [],
+            creador: [],
+            estado: [],
+            prioridad: [],
+            fechaCreacionDesde: null,
+            fechaCreacionHasta: null,
+            fechaVencimientoDesde: null,
+            fechaVencimientoHasta: null,
+            periodo: '7'
+        };
+    }
+    let filtersByTab = {
+        tareas: getDefaultFilters(),
+        planes: getDefaultFilters()
     };
+    let currentFilters = filtersByTab.tareas; // Referencia al filtro del tab activo
     let searchQuery = '';
+    let isSearchMode = false; // estado del buscador (lupa) para poder resetearlo al limpiar desde empty state o chip
 
     // Posicionar menú detectando viewport
     function positionMenuSmartly(menu, buttonRect, menuWidth = 200, menuHeight = 150) {
@@ -92,9 +110,13 @@
 
     // Generar datos desde la base de datos realista (seguimiento-data.js)
     // Empresa: Decoraciones Premium S.A.S.
-    // 50 empleados, cada uno con 2 planes y 10 tareas = 600 actividades
+    // Si SEGUIMIENTO_SCOPE === 'leader' y SEGUIMIENTO_CURRENT_LEADER está definido, solo actividades de reportes directos (TASK_VIEW_SCOPE_LEADER).
     function generateData() {
-        if (typeof SEGUIMIENTO_DATABASE !== 'undefined' && SEGUIMIENTO_DATABASE.generarActividades) {
+        if (typeof SEGUIMIENTO_DATABASE === 'undefined') return [];
+        if (typeof SEGUIMIENTO_SCOPE !== 'undefined' && SEGUIMIENTO_SCOPE === 'leader' && typeof SEGUIMIENTO_CURRENT_LEADER !== 'undefined' && SEGUIMIENTO_DATABASE.getActividadesParaLider) {
+            return SEGUIMIENTO_DATABASE.getActividadesParaLider(SEGUIMIENTO_CURRENT_LEADER);
+        }
+        if (SEGUIMIENTO_DATABASE.generarActividades) {
             return SEGUIMIENTO_DATABASE.generarActividades();
         }
         
@@ -119,11 +141,96 @@
             }];
     }
 
-    // Inicializar visibilidad de columnas
+    // Obtener IDs de columnas y visibilidad por defecto según tab activo
+    function getColumnIds() {
+        return activeTab === 'planes' ? COLUMN_IDS_PLANES : COLUMN_IDS_TAREAS;
+    }
+    function getVisibleByDefault() {
+        return activeTab === 'planes' ? VISIBLE_BY_DEFAULT_PLANES : VISIBLE_BY_DEFAULT_TAREAS;
+    }
+    function getDataForCurrentTab() {
+        if (!SEGUIMIENTO_DATA.length) return [];
+        const tipo = activeTab === 'planes' ? 'plan' : 'tarea';
+        return SEGUIMIENTO_DATA.filter(r => r.tipo === tipo);
+    }
+
+    // Inicializar visibilidad de columnas (según tab activo)
     function initColumnVisibility() {
-        COLUMN_IDS.forEach(col => {
-            columnVisibility[col] = VISIBLE_BY_DEFAULT.includes(col);
+        const ids = getColumnIds();
+        const visible = getVisibleByDefault();
+        columnVisibility = {};
+        ids.forEach(col => {
+            columnVisibility[col] = visible.includes(col);
         });
+    }
+
+    // Construir cabecera de tabla según tab activo (Tareas o Planes)
+    function buildTableHeader() {
+        const theadRow = document.getElementById('seguimiento-thead-row');
+        if (!theadRow) return;
+        const cols = getColumnIds();
+        const labelsTareas = {
+            id: 'ID de la tarea',
+            nombre: 'Nombre de la tarea',
+            asignado: 'Asignado',
+            creador: 'Creador',
+            area: 'Área',
+            estado: 'Estado',
+            prioridad: 'Prioridad',
+            plan: 'Plan al que pertenece',
+            fechaCreacion: 'Fecha de creación',
+            fechaFinalizacion: 'Fecha de vencimiento',
+            comentarios: 'Número de comentarios'
+        };
+        const labelsPlanes = {
+            id: 'ID del plan',
+            nombre: 'Nombre del plan',
+            asignados: 'Personas asignadas',
+            creador: 'Creador del plan',
+            estado: 'Estado del plan',
+            avance: 'Progreso del plan',
+            fechaCreacion: 'Fecha de creación',
+            fechaFinalizacion: 'Fecha de finalización'
+        };
+        const labels = activeTab === 'planes' ? labelsPlanes : labelsTareas;
+        let html = '<th class="ubits-table__th--checkbox" data-col="checkbox"><input type="checkbox" id="seguimiento-select-all" aria-label="Seleccionar todo"></th>';
+        cols.forEach(col => {
+            const label = labels[col] || col;
+            const visible = columnVisibility[col] !== false;
+            const style = visible ? '' : ' style="display:none;"';
+            if (col === 'estado' && activeTab === 'tareas') {
+                html += `<th class="seguimiento-th-filterable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-checkbox-btn" data-checkbox="estado" aria-label="Filtrar por estado"><i class="far fa-filter"></i></button></th>`;
+            } else if (col === 'prioridad' && activeTab === 'tareas') {
+                html += `<th class="seguimiento-th-filterable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-checkbox-btn" data-checkbox="prioridad" aria-label="Filtrar por prioridad"><i class="far fa-filter"></i></button></th>`;
+            } else if ((col === 'fechaCreacion' || col === 'fechaFinalizacion') && (activeTab === 'tareas' || activeTab === 'planes')) {
+                html += `<th class="seguimiento-th-sortable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-date-sort-btn" data-sort="${col}" aria-label="Ordenar por ${label}"><i class="far fa-ellipsis"></i></button></th>`;
+            } else if (activeTab === 'tareas' && ['nombre', 'asignado', 'area', 'creador', 'plan'].indexOf(col) >= 0) {
+                html += `<th class="seguimiento-th-filterable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-filter-btn" data-filter="${col}" aria-label="Filtrar por ${label}"><i class="far fa-filter"></i></button></th>`;
+            } else if (activeTab === 'planes' && (col === 'nombre' || col === 'creador')) {
+                html += `<th class="seguimiento-th-filterable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-filter-btn" data-filter="${col}" aria-label="Filtrar por ${label}"><i class="far fa-filter"></i></button></th>`;
+            } else if (activeTab === 'planes' && col === 'estado') {
+                html += `<th class="seguimiento-th-filterable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-checkbox-btn" data-checkbox="estado" aria-label="Filtrar por estado"><i class="far fa-filter"></i></button></th>`;
+            } else {
+                html += `<th data-col="${col}"${style}>${label}</th>`;
+            }
+        });
+        theadRow.innerHTML = html;
+        // Re-attach select-all checkbox
+        const selectAll = document.getElementById('seguimiento-select-all');
+        if (selectAll) {
+            selectAll.addEventListener('change', function() {
+                const data = getDisplayData();
+                const start = (currentPage - 1) * itemsPerPage;
+                const pageData = data.slice(start, start + itemsPerPage);
+                if (this.checked) {
+                    pageData.forEach(r => selectedIds.add(r.id));
+                } else {
+                    pageData.forEach(r => selectedIds.delete(r.id));
+                }
+                renderTable();
+                toggleActionBar();
+            });
+        }
     }
 
     // Función para normalizar texto (eliminar tildes y convertir a minúsculas)
@@ -137,19 +244,20 @@
 
     // Aplicar filtros y búsqueda
     function applyFiltersAndSearch() {
-        let data = [...SEGUIMIENTO_DATA];
+        let data = [...getDataForCurrentTab()];
 
-        // Búsqueda general (searchQuery) - sin tildes
+        // Búsqueda general (searchQuery) - sin tildes. En Planes: nombre del plan (+ creador, id). En Tareas: solo nombre de la tarea (3.1.1)
         if (searchQuery) {
             const q = normalizeText(searchQuery);
-            data = data.filter(row =>
-                normalizeText(row.nombre).includes(q) ||
-                normalizeText(row.asignado.nombre).includes(q) ||
-                (row.asignado.username && normalizeText(row.asignado.username).includes(q)) ||
-                normalizeText(row.plan).includes(q) ||
-                normalizeText(row.creador).includes(q) ||
-                String(row.id).includes(q)
-            );
+            if (activeTab === 'planes') {
+                data = data.filter(row =>
+                    normalizeText(row.nombre).includes(q) ||
+                    normalizeText(row.creador).includes(q) ||
+                    String(row.id).includes(q)
+                );
+            } else {
+                data = data.filter(row => normalizeText(row.nombre).includes(q));
+            }
         }
 
         // Filtro nombre (actividad) - sin tildes
@@ -168,12 +276,6 @@
                     normalizeText(row.creador).includes(normalizeText(creador))
                 )
             );
-        }
-
-        // Filtro tipo actividad
-        if (currentFilters.tipoActividad.length > 0 && !currentFilters.tipoActividad.includes('todos')) {
-            const tipos = currentFilters.tipoActividad.map(t => t === 'planes' ? 'plan' : t === 'tareas' ? 'tarea' : t);
-            data = data.filter(row => tipos.includes(row.tipo));
         }
 
         // Filtro plan - busca en nombre del plan Y nombre de la actividad - sin tildes
@@ -316,6 +418,85 @@
         filteredData = data;
     }
 
+    // Datos ya filtrados solo por período y búsqueda (sin filtros de columna). Usado para que las opciones
+    // de los filtros de encabezado (Nombre, Asignado, etc.) muestren solo valores que existen en la vista actual.
+    function getDataFilteredByPeriodAndSearchOnly() {
+        let data = [...getDataForCurrentTab()];
+
+        if (searchQuery) {
+            const q = normalizeText(searchQuery);
+            if (activeTab === 'planes') {
+                data = data.filter(row =>
+                    normalizeText(row.nombre).includes(q) ||
+                    normalizeText(row.creador).includes(q) ||
+                    String(row.id).includes(q)
+                );
+            } else {
+                data = data.filter(row => normalizeText(row.nombre).includes(q));
+            }
+        }
+
+        if (currentFilters.fechaCreacionDesde || currentFilters.fechaCreacionHasta) {
+            data = data.filter(row => {
+                const fechaRow = parseFecha(row.fechaCreacion);
+                if (!fechaRow) return false;
+                if (currentFilters.fechaCreacionDesde && currentFilters.fechaCreacionHasta) {
+                    const fechaDesde = parseFecha(currentFilters.fechaCreacionDesde);
+                    const fechaHasta = parseFecha(currentFilters.fechaCreacionHasta);
+                    if (!fechaDesde || !fechaHasta) return false;
+                    return fechaRow >= fechaDesde && fechaRow <= fechaHasta;
+                } else if (currentFilters.fechaCreacionDesde) {
+                    const fechaDesde = parseFecha(currentFilters.fechaCreacionDesde);
+                    return fechaDesde ? fechaRow >= fechaDesde : false;
+                } else if (currentFilters.fechaCreacionHasta) {
+                    const fechaHasta = parseFecha(currentFilters.fechaCreacionHasta);
+                    return fechaHasta ? fechaRow <= fechaHasta : false;
+                }
+                return false;
+            });
+        }
+
+        if (currentFilters.fechaVencimientoDesde || currentFilters.fechaVencimientoHasta) {
+            data = data.filter(row => {
+                const fechaRow = parseFecha(row.fechaFinalizacion);
+                if (!fechaRow) return false;
+                if (currentFilters.fechaVencimientoDesde && currentFilters.fechaVencimientoHasta) {
+                    const fechaDesde = parseFecha(currentFilters.fechaVencimientoDesde);
+                    const fechaHasta = parseFecha(currentFilters.fechaVencimientoHasta);
+                    if (!fechaDesde || !fechaHasta) return false;
+                    return fechaRow >= fechaDesde && fechaRow <= fechaHasta;
+                } else if (currentFilters.fechaVencimientoDesde) {
+                    const fechaDesde = parseFecha(currentFilters.fechaVencimientoDesde);
+                    return fechaDesde ? fechaRow >= fechaDesde : false;
+                } else if (currentFilters.fechaVencimientoHasta) {
+                    const fechaHasta = parseFecha(currentFilters.fechaVencimientoHasta);
+                    return fechaHasta ? fechaRow <= fechaHasta : false;
+                }
+                return false;
+            });
+        }
+
+        if (currentFilters.periodo && !currentFilters.fechaCreacionDesde && !currentFilters.fechaCreacionHasta) {
+            const hoy = new Date(2026, 2, 22);
+            hoy.setHours(23, 59, 59, 999);
+            const periodoDias = parseInt(currentFilters.periodo);
+            if (!isNaN(periodoDias)) {
+                const diasAtras = periodoDias - 1;
+                const hoyInicio = new Date(2026, 2, 22, 0, 0, 0, 0);
+                const milisegundosPorDia = 24 * 60 * 60 * 1000;
+                const fechaLimite = new Date(hoyInicio.getTime() - (diasAtras * milisegundosPorDia));
+                data = data.filter(row => {
+                    const fechaRow = parseFecha(row.fechaCreacion);
+                    if (!fechaRow) return false;
+                    const t = fechaRow.getTime();
+                    return t >= fechaLimite.getTime() && t <= hoy.getTime();
+                });
+            }
+        }
+
+        return data;
+    }
+
     // Función auxiliar para formatear fecha para mostrar (sin hora)
     // Toma una fecha en formato "1 ene 2026 08:00" y devuelve "1 ene 2026"
     function formatearFechaParaMostrar(fechaStr) {
@@ -385,10 +566,10 @@
             let valA = a[currentSort.column];
             let valB = b[currentSort.column];
 
-            // Manejar objetos (asignado)
-            if (currentSort.column === 'asignado') {
-                valA = a.asignado.nombre;
-                valB = b.asignado.nombre;
+            // Manejar objetos (asignado / asignados)
+            if (currentSort.column === 'asignado' || currentSort.column === 'asignados') {
+                valA = (a.asignados && a.asignados[0]) ? a.asignados[0].nombre : (a.asignado ? a.asignado.nombre : '');
+                valB = (b.asignados && b.asignados[0]) ? b.asignados[0].nombre : (b.asignado ? b.asignado.nombre : '');
             }
 
             // Manejar fechas (fechaCreacion, fechaFinalizacion)
@@ -502,38 +683,56 @@
         const prioridadIcon = { Alta: 'fa-chevrons-up', Media: 'fa-chevron-up', Baja: 'fa-chevron-down' };
         const prioridadColor = { Alta: 'var(--ubits-feedback-accent-error)', Media: 'var(--ubits-fg-1-medium)', Baja: 'var(--ubits-feedback-accent-info)' };
 
+        const columnIds = getColumnIds();
         tbody.innerHTML = slice.map(row => {
             const sel = selectedIds.has(row.id) ? ' checked' : '';
-            const asignadoHtml = row.asignado.avatar
-                ? `<div class="seguimiento-avatar"><img src="${row.asignado.avatar}" alt="" width="28" height="28"></div><span class="ubits-body-sm-regular">${row.asignado.nombre}</span>`
-                : `<div class="seguimiento-avatar seguimiento-avatar-icon"><i class="far fa-user"></i></div><span class="ubits-body-sm-regular">${row.asignado.nombre}</span>`;
+            let asignadoHtml;
+            const tooltipOpts = activeTab === 'planes' ? { showTooltip: true, tooltipDelay: 500 } : {};
+            if (row.asignados && Array.isArray(row.asignados) && row.asignados.length > 0) {
+                asignadoHtml = typeof renderProfileList === 'function'
+                    ? renderProfileList(row.asignados, { size: 'sm', maxVisible: 3, ...tooltipOpts })
+                    : (row.asignado ? (typeof renderAvatar === 'function' ? renderAvatar(row.asignado, { size: 'sm', ...tooltipOpts }) + '<span class="ubits-body-sm-regular">' + row.asignado.nombre + '</span>' : '') : '');
+            } else if (activeTab === 'planes' && row.asignado) {
+                asignadoHtml = typeof renderProfileList === 'function'
+                    ? renderProfileList([row.asignado], { size: 'sm', maxVisible: 3, ...tooltipOpts })
+                    : (typeof renderAvatar === 'function' ? renderAvatar(row.asignado, { size: 'sm', ...tooltipOpts }) : '');
+            } else if (typeof renderAvatar === 'function' && row.asignado) {
+                asignadoHtml = renderAvatar(row.asignado, { size: 'sm', ...tooltipOpts }) + '<span class="ubits-body-sm-regular">' + row.asignado.nombre + '</span>';
+            } else if (row.asignado) {
+                asignadoHtml = row.asignado.avatar
+                    ? '<div class="ubits-table__avatar"><img src="' + row.asignado.avatar + '" alt="" width="28" height="28"></div><span class="ubits-body-sm-regular">' + row.asignado.nombre + '</span>'
+                    : '<div class="ubits-table__avatar ubits-table__avatar-icon"><i class="far fa-user"></i></div><span class="ubits-body-sm-regular">' + row.asignado.nombre + '</span>';
+            } else {
+                asignadoHtml = '';
+            }
             const estadoTag = `<span class="ubits-status-tag ubits-status-tag--${statusClass[row.estado]} ubits-status-tag--sm"><span class="ubits-status-tag__text">${row.estado}</span></span>`;
-            const prioridadHtml = `<span class="seguimiento-prioridad" style="color:${prioridadColor[row.prioridad]}"><i class="far ${prioridadIcon[row.prioridad]}"></i> ${row.prioridad}</span>`;
+            const prioridadHtml = row.prioridad ? `<span class="ubits-table__cell-priority" style="color:${prioridadColor[row.prioridad]}"><i class="far ${prioridadIcon[row.prioridad]}"></i> ${row.prioridad}</span>` : '';
             const comentariosText = row.comentarios === 0 ? '0 comentarios' : `${row.comentarios} comentario${row.comentarios > 1 ? 's' : ''}`;
-            
-            // Progress bar para avance
             const avanceNum = typeof row.avance === 'number' ? row.avance : parseInt(row.avance) || 0;
-            const avanceHtml = `<div class="seguimiento-avance"><div class="seguimiento-progress-bar"><div class="seguimiento-progress-bar-fill" style="width: ${avanceNum}%"></div></div><span class="ubits-body-sm-regular">${avanceNum}%</span></div>`;
+            const avanceHtml = `<div class="ubits-table__cell-progress"><div class="ubits-table__progress-bar"><div class="ubits-table__progress-bar-fill" style="width: ${avanceNum}%"></div></div><span class="ubits-body-sm-regular">${avanceNum}%</span></div>`;
 
-            const cols = ['_checkbox', 'id', 'nombre', 'asignado', 'username', 'cargo', 'area', 'lider', 'creador', 'plan', 'estado', 'prioridad', 'avance', 'fechaCreacion', 'fechaFinalizacion', 'comentarios'];
-            const cells = [
-                `<td class="seguimiento-td-checkbox"><input type="checkbox" class="seguimiento-row-check" data-id="${row.id}"${sel}></td>`,
-                `<td class="seguimiento-td" data-col="id">${row.id}</td>`,
-                `<td class="seguimiento-td" data-col="nombre"><span class="ubits-body-sm-regular">${row.nombre}</span></td>`,
-                `<td class="seguimiento-td" data-col="asignado"><div class="seguimiento-asignado">${asignadoHtml}</div></td>`,
-                `<td class="seguimiento-td" data-col="username"><span class="ubits-body-sm-regular">${row.asignado.username || ''}</span></td>`,
-                `<td class="seguimiento-td" data-col="cargo"><span class="ubits-body-sm-regular">${row.cargo || ''}</span></td>`,
-                `<td class="seguimiento-td" data-col="area"><span class="ubits-body-sm-regular">${row.area}</span></td>`,
-                `<td class="seguimiento-td" data-col="lider"><span class="ubits-body-sm-regular">${row.lider || ''}</span></td>`,
-                `<td class="seguimiento-td" data-col="creador"><span class="ubits-body-sm-regular">${row.creador}</span></td>`,
-                `<td class="seguimiento-td" data-col="plan"><span class="ubits-body-sm-regular">${row.plan}</span></td>`,
-                `<td class="seguimiento-td" data-col="estado">${estadoTag}</td>`,
-                `<td class="seguimiento-td" data-col="prioridad">${prioridadHtml}</td>`,
-                `<td class="seguimiento-td" data-col="avance">${avanceHtml}</td>`,
-                `<td class="seguimiento-td" data-col="fechaCreacion"><span class="ubits-body-sm-regular">${formatearFechaParaMostrar(row.fechaCreacion)}</span></td>`,
-                `<td class="seguimiento-td" data-col="fechaFinalizacion"><span class="ubits-body-sm-regular">${formatearFechaParaMostrar(row.fechaFinalizacion)}</span></td>`,
-                `<td class="seguimiento-td" data-col="comentarios"><span class="ubits-body-sm-regular">${comentariosText}</span></td>`
-            ];
+            const cellByCol = {
+                id: `<td data-col="id">${row.id}</td>`,
+                nombre: `<td data-col="nombre"><span class="ubits-body-sm-regular">${row.nombre}</span></td>`,
+                asignado: `<td data-col="asignado"><div class="ubits-table__cell-assignee">${asignadoHtml}</div></td>`,
+                asignados: `<td data-col="asignados"><div class="ubits-table__cell-assignee">${asignadoHtml}</div></td>`,
+                username: `<td data-col="username"><span class="ubits-body-sm-regular">${row.asignado ? (row.asignado.username || '') : ''}</span></td>`,
+                cargo: `<td data-col="cargo"><span class="ubits-body-sm-regular">${row.cargo || ''}</span></td>`,
+                area: `<td data-col="area"><span class="ubits-body-sm-regular">${row.area || ''}</span></td>`,
+                lider: `<td data-col="lider"><span class="ubits-body-sm-regular">${row.lider || ''}</span></td>`,
+                creador: `<td data-col="creador"><span class="ubits-body-sm-regular">${row.creador}</span></td>`,
+                plan: `<td data-col="plan"><span class="ubits-body-sm-regular">${row.plan || ''}</span></td>`,
+                estado: `<td data-col="estado">${estadoTag}</td>`,
+                prioridad: `<td data-col="prioridad">${prioridadHtml}</td>`,
+                avance: `<td data-col="avance">${avanceHtml}</td>`,
+                fechaCreacion: `<td data-col="fechaCreacion"><span class="ubits-body-sm-regular">${formatearFechaParaMostrar(row.fechaCreacion)}</span></td>`,
+                fechaFinalizacion: `<td data-col="fechaFinalizacion"><span class="ubits-body-sm-regular">${formatearFechaParaMostrar(row.fechaFinalizacion)}</span></td>`,
+                comentarios: `<td data-col="comentarios"><span class="ubits-body-sm-regular">${comentariosText}</span></td>`
+            };
+            const cells = ['<td class="ubits-table__td--checkbox" data-col="checkbox"><input type="checkbox" class="seguimiento-row-check" data-id="' + row.id + '"' + sel + '></td>'].concat(
+                columnIds.map(col => cellByCol[col] || `<td data-col="${col}"></td>`)
+            );
+            const cols = ['_checkbox'].concat(columnIds);
 
             const out = cells.map((html, i) => {
                 const col = cols[i];
@@ -564,6 +763,11 @@
                 toggleActionBar();
             });
         });
+
+        // Tooltips en avatares solo en tab Planes (nombre al hacer hover 1 s)
+        if (activeTab === 'planes' && typeof initTooltip === 'function') {
+            initTooltip('#seguimiento-table .ubits-table__cell-assignee [data-tooltip]');
+        }
     }
 
     // Actualizar checkbox "seleccionar todo"
@@ -616,62 +820,56 @@
         const el = document.getElementById('seguimiento-results-count');
         if (!el) return;
         const data = getDisplayData();
-        el.textContent = `${data.length}/${SEGUIMIENTO_DATA.length}`;
+        const totalTab = getDataForCurrentTab().length;
+        el.textContent = `${data.length}/${totalTab}`;
     }
 
-    // Actualizar indicadores de seguimiento
+    // Actualizar indicadores de seguimiento (según tab: Tareas o Planes)
     function updateIndicadores() {
-        // Usar filteredData directamente (ya contiene los datos filtrados)
-        // NO llamar applyFiltersAndSearch() aquí porque ya se llamó antes
         const data = filteredData;
-        
-        // Filtrar solo tareas (no planes)
-        const tareas = data.filter(item => item.tipo === 'tarea');
-        const totalTareas = tareas.length;
-        
-        // Calcular indicadores
-        const finalizadas = tareas.filter(t => t.estado === 'Finalizada').length;
-        const iniciadas = tareas.filter(t => t.estado === 'Iniciada').length;
-        const vencidas = tareas.filter(t => t.estado === 'Vencida').length;
-        const totalActividades = data.length;
-        
-        // Calcular porcentajes
-        const porcentajeFinalizadas = totalTareas > 0 ? Math.round((finalizadas / totalTareas) * 100) : 0;
-        const porcentajeIniciadas = totalTareas > 0 ? Math.round((iniciadas / totalTareas) * 100) : 0;
-        const porcentajeVencidas = totalTareas > 0 ? Math.round((vencidas / totalTareas) * 100) : 0;
-        
-        // Actualizar DOM - Total (primera card)
+        const totalItems = data.length;
+        const finalizadas = data.filter(t => t.estado === 'Finalizada').length;
+        const iniciadas = data.filter(t => t.estado === 'Iniciada').length;
+        const vencidas = data.filter(t => t.estado === 'Vencida').length;
+        const porcentajeFinalizadas = totalItems > 0 ? Math.round((finalizadas / totalItems) * 100) : 0;
+        const porcentajeIniciadas = totalItems > 0 ? Math.round((iniciadas / totalItems) * 100) : 0;
+        const porcentajeVencidas = totalItems > 0 ? Math.round((vencidas / totalItems) * 100) : 0;
+
+        const labelFinalizadas = activeTab === 'planes' ? 'Finalizados' : 'Finalizadas';
+        const labelIniciadas = activeTab === 'planes' ? 'Iniciados' : 'Iniciadas';
+        const labelVencidas = activeTab === 'planes' ? 'Vencidos' : 'Vencidas';
+
         const cardTotal = document.querySelector('#seguimiento-indicadores .seguimiento-indicador-card:nth-child(1)');
         if (cardTotal) {
             const numberEl = cardTotal.querySelector('.indicador-number');
-            if (numberEl) numberEl.textContent = totalActividades;
+            if (numberEl) numberEl.textContent = totalItems;
         }
-        
-        // Actualizar DOM - Finalizadas (segunda card)
         const cardFinalizadas = document.querySelector('#seguimiento-indicadores .seguimiento-indicador-card:nth-child(2)');
         if (cardFinalizadas) {
             const numberEl = cardFinalizadas.querySelector('.indicador-number');
             const percentageEl = cardFinalizadas.querySelector('.indicador-percentage');
+            const labelEl = cardFinalizadas.querySelector('.indicador-label');
             if (numberEl) numberEl.textContent = finalizadas;
             if (percentageEl) percentageEl.textContent = `${porcentajeFinalizadas}%`;
+            if (labelEl) labelEl.textContent = labelFinalizadas;
         }
-        
-        // Actualizar DOM - Iniciadas (tercera card)
         const cardIniciadas = document.querySelector('#seguimiento-indicadores .seguimiento-indicador-card:nth-child(3)');
         if (cardIniciadas) {
             const numberEl = cardIniciadas.querySelector('.indicador-number');
             const percentageEl = cardIniciadas.querySelector('.indicador-percentage');
+            const labelEl = cardIniciadas.querySelector('.indicador-label');
             if (numberEl) numberEl.textContent = iniciadas;
             if (percentageEl) percentageEl.textContent = `${porcentajeIniciadas}%`;
+            if (labelEl) labelEl.textContent = labelIniciadas;
         }
-        
-        // Actualizar DOM - Vencidas (cuarta card)
         const cardVencidas = document.querySelector('#seguimiento-indicadores .seguimiento-indicador-card:nth-child(4)');
         if (cardVencidas) {
             const numberEl = cardVencidas.querySelector('.indicador-number');
             const percentageEl = cardVencidas.querySelector('.indicador-percentage');
+            const labelEl = cardVencidas.querySelector('.indicador-label');
             if (numberEl) numberEl.textContent = vencidas;
             if (percentageEl) percentageEl.textContent = `${porcentajeVencidas}%`;
+            if (labelEl) labelEl.textContent = labelVencidas;
         }
     }
 
@@ -702,32 +900,10 @@
                     if (searchToggle) {
                         searchToggle.style.display = 'flex';
                     }
+                    isSearchMode = false; // para que la lupa vuelva a abrir el buscador
                     currentPage = 1;
                     applyFiltersAndSearch(); // Asegurar que los filtros se apliquen antes de renderizar
                     applySorting();
-                    renderTable();
-                    updateResultsCount();
-                    updateIndicadores();
-                    initPaginator();
-                }
-            });
-        }
-
-        // Tipo de actividad (solo mostrar si NO es "todos")
-        if (currentFilters.tipoActividad.length > 0 && !currentFilters.tipoActividad.includes('todos')) {
-            hasFilters = true;
-            const tipos = currentFilters.tipoActividad.map(t => t === 'planes' ? 'Planes' : t === 'tareas' ? 'Tareas' : t);
-            chips.push({
-                type: 'tipoActividad',
-                label: 'Tipo',
-                value: tipos.join(', '),
-                remove: () => {
-                    currentFilters.tipoActividad = [];
-                    // Desmarcar todos los radio buttons
-                    document.querySelectorAll('#filtros-tipo-actividad input').forEach(cb => {
-                        cb.checked = false;
-                    });
-                    currentPage = 1;
                     renderTable();
                     updateResultsCount();
                     updateIndicadores();
@@ -747,13 +923,9 @@
                     remove: () => {
                         // Remover solo este valor del array
                         currentFilters.plan = currentFilters.plan.filter((_, i) => i !== index);
-                        // Si no quedan valores, limpiar input de plan
                         if (currentFilters.plan.length === 0) {
                             const planContainer = document.getElementById('filtros-buscar-plan');
-                            if (planContainer) {
-                                planContainer.innerHTML = '';
-                                initFilterInputs();
-                            }
+                            if (planContainer) planContainer.innerHTML = '';
                         }
                         currentPage = 1;
                         renderTable();
@@ -1088,25 +1260,33 @@
         const list = document.getElementById('columns-menu-list');
         if (!list) return;
 
-        const labels = {
-            id: 'ID',
-            nombre: 'Nombre de actividad',
+        const labelsTareas = {
+            id: 'ID de la tarea',
+            nombre: 'Nombre de la tarea',
             asignado: 'Asignado',
-            username: 'Username',
-            cargo: 'Cargo',
+            creador: 'Creador',
             area: 'Área',
-            lider: 'Lider',
-            plan: 'Plan',
             estado: 'Estado',
             prioridad: 'Prioridad',
-            avance: 'Progreso',
-            fechaFinalizacion: 'Fecha de finalización',
+            plan: 'Plan al que pertenece',
             fechaCreacion: 'Fecha de creación',
-            creador: 'Creador',
-            comentarios: 'Comentario'
+            fechaFinalizacion: 'Fecha de vencimiento',
+            comentarios: 'Número de comentarios'
         };
+        const labelsPlanes = {
+            id: 'ID del plan',
+            nombre: 'Nombre del plan',
+            asignados: 'Personas asignadas',
+            creador: 'Creador del plan',
+            estado: 'Estado del plan',
+            avance: 'Progreso del plan',
+            fechaCreacion: 'Fecha de creación',
+            fechaFinalizacion: 'Fecha de finalización'
+        };
+        const labels = activeTab === 'planes' ? labelsPlanes : labelsTareas;
+        const columnIds = getColumnIds();
 
-        list.innerHTML = COLUMN_IDS.map(col => {
+        list.innerHTML = columnIds.map(col => {
             const checked = columnVisibility[col] !== false ? ' checked' : '';
             return `<label class="columns-menu-option"><input type="checkbox" data-col="${col}"${checked}><span class="ubits-body-sm-regular">${labels[col] || col}</span></label>`;
         }).join('');
@@ -1119,13 +1299,20 @@
         });
     }
 
-    // Abrir/cerrar modal de filtros
+    // Abrir/cerrar modal de filtros (muestra los filtros del tab activo)
     function openFiltersModal() {
         const overlay = document.getElementById('filtros-modal-overlay');
         if (overlay) {
             overlay.style.display = 'flex';
             overlay.setAttribute('aria-hidden', 'false');
             initFilterInputs();
+            // Sincronizar checkboxes estado/prioridad con el tab activo
+            document.querySelectorAll('#filtros-estado input').forEach(function(cb) {
+                cb.checked = currentFilters.estado.indexOf(cb.value) >= 0;
+            });
+            document.querySelectorAll('#filtros-prioridad input').forEach(function(cb) {
+                cb.checked = currentFilters.prioridad.indexOf(cb.value) >= 0;
+            });
         }
     }
 
@@ -1146,9 +1333,7 @@
         
         // Cargar valores ya seleccionados
         let currentFilterValues = [];
-        if (containerId === 'filtros-buscar-plan') {
-            currentFilterValues = currentFilters.plan;
-        } else if (containerId === 'filtros-buscar-personas') {
+        if (containerId === 'filtros-buscar-personas') {
             currentFilterValues = currentFilters.persona;
         } else if (containerId === 'filtros-areas') {
             currentFilterValues = currentFilters.area;
@@ -1217,31 +1402,11 @@
         }
     }
 
-    // Inicializar inputs de filtros (autocomplete y calendar)
+    // Inicializar inputs de filtros (autocomplete y calendar). Se re-ejecuta al abrir el modal para reflejar el tab activo.
     function initFilterInputs() {
-        // Solo inicializar una vez
-        if (document.getElementById('filtros-buscar-plan').querySelector('.seguimiento-filter-input-wrapper')) return;
-
         // Obtener opciones únicas de los datos
-        const planes = [...new Set(SEGUIMIENTO_DATA.map(r => r.plan))];
-        const nombresActividades = [...new Set(SEGUIMIENTO_DATA.map(r => r.nombre))];
-        // Combinar planes y nombres de actividades para el autocomplete
-        const opcionesPlan = [...new Set([...planes, ...nombresActividades])];
         const personas = [...new Set(SEGUIMIENTO_DATA.map(r => r.asignado.nombre))];
         const areas = [...new Set(SEGUIMIENTO_DATA.map(r => r.area))];
-
-        // Buscar plan o tarea (con checkboxes)
-        createFilterAutocompleteWithCheckboxes('filtros-buscar-plan', opcionesPlan, 'Buscar plan o tarea...', (selectedValues) => {
-            currentFilters.plan = selectedValues;
-            currentPage = 1;
-            applyFiltersAndSearch();
-            applySorting();
-            renderTable();
-            updateResultsCount();
-            updateIndicadores();
-            initPaginator();
-            renderFiltrosAplicados();
-        });
 
         // Buscar asignados (con checkboxes)
         createFilterAutocompleteWithCheckboxes('filtros-buscar-personas', personas, 'Buscar asignados...', (selectedValues) => {
@@ -1308,57 +1473,25 @@
         currentFilters.prioridad = Array.from(prioridadChecks).map(cb => cb.value);
     }
 
-    // Limpiar filtros
+    // Limpiar filtros (solo del tab activo)
     function clearFilters() {
-        currentFilters = {
-            tipoActividad: [],
-            plan: [],
-            persona: [],
-            username: [],
-            area: [],
-            lider: [],
-            nombre: [],
-            creador: [],
-            estado: [],
-            prioridad: [],
-            fechaCreacionDesde: null,
-            fechaCreacionHasta: null,
-            fechaVencimientoDesde: null,
-            fechaVencimientoHasta: null,
-            periodo: '30' // Resetear a 30 días por defecto
-        };
+        filtersByTab[activeTab] = getDefaultFilters();
+        currentFilters = filtersByTab[activeTab];
         
-        // Resetear botón de período a "Últimos 30 días"
         const periodoText = document.getElementById('seguimiento-periodo-text');
-        if (periodoText) {
-            periodoText.textContent = 'Últimos 30 días';
-        }
+        if (periodoText) periodoText.textContent = 'Últimos 7 días';
         
-        // Limpiar fechas personalizadas
-        currentFilters.fechaCreacionDesde = null;
-        currentFilters.fechaCreacionHasta = null;
-        
-        // Resetear selección visual en el menú
         const periodoMenu = document.getElementById('periodo-menu');
         if (periodoMenu) {
             periodoMenu.querySelectorAll('.periodo-menu-option').forEach(opt => {
                 opt.classList.remove('selected');
-                if (opt.dataset.value === '30') {
-                    opt.classList.add('selected');
-                }
+                if (opt.dataset.value === '7') opt.classList.add('selected');
             });
         }
 
-        // Limpiar radio buttons de tipo de actividad (desmarcar todos)
-        document.querySelectorAll('#filtros-tipo-actividad input').forEach(cb => {
-            cb.checked = false;
-        });
         document.querySelectorAll('#filtros-estado input, #filtros-prioridad input').forEach(cb => {
             cb.checked = false;
         });
-
-        // Limpiar inputs (si existen métodos)
-        // Los inputs de createInput() no tienen un método clear estándar, se reinicializarán
     }
 
     // Limpiar todos los filtros y búsqueda (usado por empty state)
@@ -1374,6 +1507,7 @@
         if (searchToggle) {
             searchToggle.style.display = 'flex';
         }
+        isSearchMode = false; // para que la lupa vuelva a abrir el buscador al hacer clic
 
         // Limpiar filtros
         clearFilters();
@@ -1443,8 +1577,6 @@
         const container = document.getElementById('seguimiento-search-container');
         if (!toggle || !container) return;
 
-        let isSearchMode = false;
-
         toggle.addEventListener('click', function(e) {
             e.stopPropagation();
             if (!isSearchMode) {
@@ -1455,7 +1587,7 @@
                     createInput({
                         containerId: 'seguimiento-search-container',
                         type: 'search',
-                        placeholder: 'Buscar...',
+                        placeholder: activeTab === 'planes' ? 'Buscar plan...' : 'Buscar tareas...',
                         size: 'md',
                         onChange: function(val) {
                             searchQuery = val || '';
@@ -1538,6 +1670,97 @@
         }, 200);
     }
 
+    // Sincronizar texto del botón de período con los filtros del tab activo
+    function syncPeriodButtonFromCurrentFilters() {
+        const periodoText = document.getElementById('seguimiento-periodo-text');
+        if (!periodoText) return;
+        const periodoTexts = {
+            '7': 'Últimos 7 días',
+            '15': 'Últimos 15 días',
+            '30': 'Últimos 30 días',
+            '90': 'Últimos 3 meses',
+            '180': 'Últimos 6 meses',
+            '365': 'Último año'
+        };
+        if (currentFilters.fechaCreacionDesde && currentFilters.fechaCreacionHasta) {
+            periodoText.textContent = currentFilters.fechaCreacionDesde + ' - ' + currentFilters.fechaCreacionHasta;
+        } else if (currentFilters.periodo && periodoTexts[currentFilters.periodo]) {
+            periodoText.textContent = periodoTexts[currentFilters.periodo];
+        } else {
+            periodoText.textContent = 'Últimos 7 días';
+        }
+    }
+
+    // Cambiar tab Tareas | Planes (cada tab tiene sus propios filtros)
+    function switchToTab(tab) {
+        if (tab !== 'tareas' && tab !== 'planes') return;
+        activeTab = tab;
+        currentFilters = filtersByTab[tab];
+        syncPeriodButtonFromCurrentFilters();
+        renderFiltrosAplicados();
+        document.querySelectorAll('#seguimiento-tabs .ubits-tab').forEach(btn => {
+            const isActive = btn.dataset.tab === tab;
+            btn.classList.toggle('ubits-tab--active', isActive);
+            btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        });
+        const headerTitle = document.getElementById('seguimiento-header-title');
+        var vistaSuffix = (typeof SEGUIMIENTO_SCOPE !== 'undefined' && SEGUIMIENTO_SCOPE === 'leader') ? ' (vista líder)' : '';
+        if (headerTitle) headerTitle.textContent = (tab === 'planes' ? 'Lista de planes' : 'Lista de tareas') + vistaSuffix;
+        selectedIds.clear();
+        currentPage = 1;
+        initColumnVisibility();
+        buildTableHeader();
+        initSortMenu();
+        initFilterMenu();
+        initCheckboxMenu();
+        applyFiltersAndSearch();
+        applySorting();
+        renderTable();
+        updateSelectAll();
+        updateResultsCount();
+        updateIndicadores();
+        initPaginator();
+        buildColumnsMenu();
+        toggleActionBar();
+        updateActionBarVisibilityForTab();
+    }
+
+    function updateActionBarVisibilityForTab() {
+        const reasignar = document.getElementById('seguimiento-reasignar');
+        const cambiarPrioridad = document.getElementById('seguimiento-cambiar-prioridad');
+        const cambiarEstado = document.getElementById('seguimiento-cambiar-estado');
+        const cambiarFechaPlan = document.getElementById('seguimiento-cambiar-fecha-plan');
+        const anadirColaborador = document.getElementById('seguimiento-anadir-colaborador');
+        const descargar = document.getElementById('seguimiento-descargar');
+        const eliminar = document.getElementById('seguimiento-eliminar');
+        if (activeTab === 'tareas') {
+            if (reasignar) reasignar.style.display = TASK_EDIT ? '' : 'none';
+            if (cambiarPrioridad) cambiarPrioridad.style.display = TASK_EDIT ? '' : 'none';
+            if (cambiarEstado) cambiarEstado.style.display = TASK_EDIT ? '' : 'none';
+            if (cambiarFechaPlan) { cambiarFechaPlan.style.display = TASK_EDIT ? '' : 'none'; cambiarFechaPlan.title = 'Cambiar fecha de vencimiento'; }
+            if (anadirColaborador) anadirColaborador.style.display = 'none';
+            if (descargar) descargar.style.display = '';
+            if (eliminar) eliminar.style.display = TASK_DELETE ? '' : 'none';
+        } else {
+            if (reasignar) reasignar.style.display = 'none';
+            if (cambiarPrioridad) cambiarPrioridad.style.display = 'none';
+            if (cambiarEstado) cambiarEstado.style.display = TASK_EDIT ? '' : 'none';
+            if (cambiarFechaPlan) { cambiarFechaPlan.style.display = TASK_EDIT ? '' : 'none'; cambiarFechaPlan.title = 'Cambiar fecha de finalización'; }
+            if (anadirColaborador) anadirColaborador.style.display = TASK_EDIT ? '' : 'none';
+            if (descargar) descargar.style.display = '';
+            if (eliminar) eliminar.style.display = TASK_DELETE ? '' : 'none';
+        }
+    }
+
+    function initTabSwitcher() {
+        document.querySelectorAll('#seguimiento-tabs .ubits-tab[data-tab]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                switchToTab(this.dataset.tab);
+            });
+        });
+        updateActionBarVisibilityForTab();
+    }
+
     // Inicializar modales
     function initModals() {
         // Modal filtros
@@ -1584,6 +1807,56 @@
         const columnsOverlay = document.getElementById('columns-menu-overlay');
         if (columnsBtn) columnsBtn.addEventListener('click', function(e) { e.stopPropagation(); toggleColumnsMenu(); });
         if (columnsOverlay) columnsOverlay.addEventListener('click', toggleColumnsMenu);
+
+        // Popover asignados: al hacer clic en +N del profile list (tab Planes) se muestra lista de personas restantes (solo visualización)
+        function closeAsignadosPopover() {
+            const overlay = document.getElementById('asignados-popover-overlay');
+            const popover = document.getElementById('asignados-popover');
+            if (overlay) { overlay.style.display = 'none'; overlay.setAttribute('aria-hidden', 'true'); }
+            if (popover) popover.style.display = 'none';
+        }
+        const asignadosOverlay = document.getElementById('asignados-popover-overlay');
+        if (asignadosOverlay) asignadosOverlay.addEventListener('click', closeAsignadosPopover);
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeAsignadosPopover();
+        });
+        document.addEventListener('click', function(e) {
+            const chip = e.target.closest('.ubits-profile-list__count');
+            if (!chip || activeTab !== 'planes') return;
+            e.preventDefault();
+            e.stopPropagation();
+            const tr = chip.closest('tr');
+            if (!tr) return;
+            const rowId = tr.dataset.id;
+            const data = getDisplayData();
+            const row = data.find(function(r) { return String(r.id) === String(rowId); });
+            if (!row || !row.asignados || row.asignados.length <= 3) return;
+            var remaining = row.asignados.slice(3);
+            var listEl = document.getElementById('asignados-popover-list');
+            var popover = document.getElementById('asignados-popover');
+            var overlay = document.getElementById('asignados-popover-overlay');
+            if (!listEl || !popover || !overlay) return;
+            listEl.innerHTML = '';
+            remaining.forEach(function(p) {
+                var nombre = (p && (p.nombre || p.name)) || 'Sin asignar';
+                var div = document.createElement('div');
+                div.className = 'asignados-popover-item';
+                if (typeof renderAvatar === 'function') {
+                    div.innerHTML = renderAvatar(p, { size: 'sm' });
+                }
+                var span = document.createElement('span');
+                span.className = 'ubits-body-sm-regular';
+                span.textContent = nombre;
+                div.appendChild(span);
+                listEl.appendChild(div);
+            });
+            var rect = chip.getBoundingClientRect();
+            popover.style.top = (rect.bottom + 4) + 'px';
+            popover.style.left = rect.left + 'px';
+            overlay.style.display = 'block';
+            overlay.setAttribute('aria-hidden', 'false');
+            popover.style.display = 'block';
+        });
     }
 
     // Inicializar menú de período
@@ -1597,6 +1870,8 @@
 
         // Mapeo de valores a textos
         const periodoTexts = {
+            '7': 'Últimos 7 días',
+            '15': 'Últimos 15 días',
             '30': 'Últimos 30 días',
             '90': 'Últimos 3 meses',
             '180': 'Últimos 6 meses',
@@ -1609,8 +1884,8 @@
             if (currentFilters.fechaCreacionDesde && currentFilters.fechaCreacionHasta) {
                 return 'personalizado';
             }
-            // Si no, usar el período normal
-            return currentFilters.periodo || '30';
+            // Si no, usar el período normal (por defecto 7 días)
+            return currentFilters.periodo || '7';
         }
         
         // Valor inicial (sincronizar con currentFilters)
@@ -1832,16 +2107,18 @@
                 if (periodoText) {
                     if (currentFilters.periodo) {
                         const periodoTexts = {
+                            '7': 'Últimos 7 días',
+                            '15': 'Últimos 15 días',
                             '30': 'Últimos 30 días',
                             '90': 'Últimos 3 meses',
                             '180': 'Últimos 6 meses',
                             '365': 'Último año'
                         };
-                        periodoText.textContent = periodoTexts[currentFilters.periodo] || 'Últimos 30 días';
+                        periodoText.textContent = periodoTexts[currentFilters.periodo] || 'Últimos 7 días';
                     } else if (currentFilters.fechaCreacionDesde && currentFilters.fechaCreacionHasta) {
                         periodoText.textContent = `${currentFilters.fechaCreacionDesde} - ${currentFilters.fechaCreacionHasta}`;
                     } else {
-                        periodoText.textContent = 'Últimos 30 días';
+                        periodoText.textContent = 'Últimos 7 días';
                     }
                 }
             }
@@ -2192,50 +2469,49 @@
         let selectedFilterValues = new Set(); // Set de valores (strings) directamente, no índices
         let filterApplied = false;
 
+        // Opciones solo de lo que hay disponible en la vista actual (período + búsqueda aplicados)
+        const baseData = () => getDataFilteredByPeriodAndSearchOnly();
         const filterDataMap = {
-            nombre: () => [...new Set(SEGUIMIENTO_DATA.map(r => r.nombre))].sort((a, b) => a.localeCompare(b, 'es')),
-            asignado: () => [...new Set(SEGUIMIENTO_DATA.map(r => r.asignado.nombre))].sort((a, b) => a.localeCompare(b, 'es')),
-            username: () => [...new Set(SEGUIMIENTO_DATA.map(r => r.asignado.username))].filter(u => u).sort((a, b) => a.localeCompare(b, 'es')),
-            area: () => [...new Set(SEGUIMIENTO_DATA.map(r => r.area))].sort((a, b) => a.localeCompare(b, 'es')),
-            lider: () => [...new Set(SEGUIMIENTO_DATA.map(r => r.lider))].filter(l => l).sort((a, b) => a.localeCompare(b, 'es')),
-            plan: () => [...new Set(SEGUIMIENTO_DATA.map(r => r.plan))].sort((a, b) => a.localeCompare(b, 'es')),
-            creador: () => [...new Set(SEGUIMIENTO_DATA.map(r => r.creador))].sort((a, b) => a.localeCompare(b, 'es'))
+            nombre: () => [...new Set(baseData().map(r => r.nombre))].filter(Boolean).sort((a, b) => a.localeCompare(b, 'es')),
+            asignado: () => [...new Set(baseData().map(r => r.asignado && r.asignado.nombre).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'es')),
+            username: () => [...new Set(baseData().map(r => r.asignado && r.asignado.username).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'es')),
+            area: () => [...new Set(baseData().map(r => r.area))].filter(Boolean).sort((a, b) => a.localeCompare(b, 'es')),
+            lider: () => [...new Set(baseData().map(r => r.lider))].filter(Boolean).sort((a, b) => a.localeCompare(b, 'es')),
+            plan: () => [...new Set(baseData().map(r => r.plan))].filter(Boolean).sort((a, b) => a.localeCompare(b, 'es')),
+            creador: () => [...new Set(baseData().map(r => r.creador))].filter(Boolean).sort((a, b) => a.localeCompare(b, 'es'))
         };
 
-        // Función para aplicar el filtro con valores seleccionados
+        // Función para aplicar el filtro con valores seleccionados (o vacío si se deseleccionó todo)
         function applyFilterFromMenu() {
-            if (activeFilterColumn && selectedFilterValues.size > 0) {
-                filterApplied = true;
-                
-                // Convertir el Set directamente a un array (ya contiene los valores, no índices)
-                const selectedOptions = Array.from(selectedFilterValues).filter(val => val && val.trim());
-                
-                // Reemplazar los valores del filtro con los nuevos seleccionados
-                if (activeFilterColumn === 'asignado') {
-                    currentFilters.persona = selectedOptions;
-                } else if (activeFilterColumn === 'username') {
-                    currentFilters.username = selectedOptions;
-                } else if (activeFilterColumn === 'plan') {
-                    currentFilters.plan = selectedOptions;
-                } else if (activeFilterColumn === 'area') {
-                    currentFilters.area = selectedOptions;
-                } else if (activeFilterColumn === 'lider') {
-                    currentFilters.lider = selectedOptions;
-                } else if (activeFilterColumn === 'nombre') {
-                    currentFilters.nombre = selectedOptions;
-                } else if (activeFilterColumn === 'creador') {
-                    currentFilters.creador = selectedOptions;
-                }
+            if (!activeFilterColumn) return;
 
-                currentPage = 1;
-                applyFiltersAndSearch();
-                applySorting();
-                renderTable();
-                updateResultsCount();
-                updateIndicadores();
-                initPaginator();
-                renderFiltrosAplicados();
+            filterApplied = true;
+            const selectedOptions = Array.from(selectedFilterValues).filter(val => val && val.trim());
+
+            if (activeFilterColumn === 'asignado') {
+                currentFilters.persona = selectedOptions;
+            } else if (activeFilterColumn === 'username') {
+                currentFilters.username = selectedOptions;
+            } else if (activeFilterColumn === 'plan') {
+                currentFilters.plan = selectedOptions;
+            } else if (activeFilterColumn === 'area') {
+                currentFilters.area = selectedOptions;
+            } else if (activeFilterColumn === 'lider') {
+                currentFilters.lider = selectedOptions;
+            } else if (activeFilterColumn === 'nombre') {
+                currentFilters.nombre = selectedOptions;
+            } else if (activeFilterColumn === 'creador') {
+                currentFilters.creador = selectedOptions;
             }
+
+            currentPage = 1;
+            applyFiltersAndSearch();
+            applySorting();
+            renderTable();
+            updateResultsCount();
+            updateIndicadores();
+            initPaginator();
+            renderFiltrosAplicados();
         }
 
         // Función para cerrar el menú sin aplicar filtro
@@ -2552,10 +2828,14 @@
         const deleteConfirm = document.getElementById('delete-modal-confirm');
         const deleteCount = document.getElementById('delete-count');
 
+        var deleteBodyText = document.querySelector('#delete-modal-overlay .ubits-modal-body p.ubits-body-md-regular');
         if (eliminar) {
             eliminar.addEventListener('click', function() {
                 if (selectedIds.size === 0) return;
                 if (deleteCount) deleteCount.textContent = selectedIds.size;
+                if (deleteBodyText) deleteBodyText.innerHTML = activeTab === 'planes'
+                    ? '¿Estás seguro de que deseas eliminar <strong id="delete-count">' + selectedIds.size + '</strong> plan(es) seleccionado(s)?'
+                    : '¿Estás seguro de que deseas eliminar <strong id="delete-count">' + selectedIds.size + '</strong> elemento(s) seleccionado(s)?';
                 if (deleteOverlay) {
                     deleteOverlay.style.display = 'flex';
                     deleteOverlay.setAttribute('aria-hidden', 'false');
@@ -2579,9 +2859,20 @@
         }
         if (deleteConfirm) {
             deleteConfirm.addEventListener('click', function() {
+                var idsToRemove = Array.from(selectedIds);
                 closeDeleteModal();
-                if (typeof showToast === 'function') showToast('success', `${selectedIds.size} elemento(s) eliminado(s) correctamente`);
-                // No eliminar realmente, es solo ejemplo
+                // Simular eliminación: quitar de datos y refrescar (Tareas y Planes)
+                SEGUIMIENTO_DATA = SEGUIMIENTO_DATA.filter(function(r) { return !selectedIds.has(r.id); });
+                selectedIds.clear();
+                applyFiltersAndSearch();
+                applySorting();
+                renderTable();
+                updateSelectAll();
+                updateResultsCount();
+                updateIndicadores();
+                initPaginator();
+                toggleActionBar();
+                if (typeof showToast === 'function') showToast('success', idsToRemove.length + ' elemento(s) eliminado(s) correctamente');
             });
         }
 
@@ -2623,15 +2914,17 @@
             }
         }
 
-        // Cambiar estado
+        // Cambiar estado (Tareas: Iniciada/Vencida/Finalizada; Planes: Iniciada/Finalizada + advertencia al reabrir)
         const cambiarEstado = document.getElementById('seguimiento-cambiar-estado');
         const statusMenu = document.getElementById('status-menu');
         const statusOverlay = document.getElementById('status-menu-overlay');
+        const statusOptionVencida = statusMenu ? statusMenu.querySelector('.status-menu-option[data-value="Vencida"]') : null;
 
         if (cambiarEstado && statusMenu) {
             cambiarEstado.addEventListener('click', function(e) {
                 e.stopPropagation();
                 if (selectedIds.size === 0) return;
+                if (statusOptionVencida) statusOptionVencida.style.display = activeTab === 'planes' ? 'none' : '';
                 const rect = this.getBoundingClientRect();
                 statusMenu.style.top = (rect.bottom + 4) + 'px';
                 statusMenu.style.left = rect.left + 'px';
@@ -2639,17 +2932,74 @@
                 statusOverlay.style.display = 'block';
             });
 
+            var reabrirPlanOverlay = document.getElementById('reabrir-plan-overlay');
+            var reabrirPlanTitle = document.getElementById('reabrir-plan-title');
+            var reabrirPlanMessage = document.getElementById('reabrir-plan-message');
+            var reabrirPlanCancel = document.getElementById('reabrir-plan-cancel');
+            var reabrirPlanConfirm = document.getElementById('reabrir-plan-confirm');
+            var reabrirPlanClose = document.getElementById('reabrir-plan-close');
+            var pendingReabrirPlan = null;
+
+            function closeReabrirPlanModal() {
+                if (reabrirPlanOverlay) { reabrirPlanOverlay.style.display = 'none'; reabrirPlanOverlay.setAttribute('aria-hidden', 'true'); }
+                pendingReabrirPlan = null;
+            }
+
+            function applyReabrirPlan() {
+                if (!pendingReabrirPlan) return;
+                var val = pendingReabrirPlan.val;
+                var planNames = pendingReabrirPlan.planNames;
+                selectedIds.forEach(function(id) {
+                    var row = SEGUIMIENTO_DATA.find(function(r) { return r.id === id; });
+                    if (row) row.estado = val;
+                });
+                if (planNames && planNames.length > 0) {
+                    SEGUIMIENTO_DATA.forEach(function(r) {
+                        if (r.tipo === 'tarea' && planNames.indexOf(r.plan) >= 0) r.estado = val;
+                    });
+                }
+                statusMenu.style.display = 'none';
+                statusOverlay.style.display = 'none';
+                closeReabrirPlanModal();
+                renderTable();
+                updateIndicadores();
+                if (typeof showToast === 'function') showToast('success', 'Estado cambiado a ' + val + ' para ' + selectedIds.size + ' plan(es) y sus tareas asociadas');
+            }
+
+            if (reabrirPlanOverlay) reabrirPlanOverlay.addEventListener('click', function(e) { if (e.target === reabrirPlanOverlay) { closeReabrirPlanModal(); statusMenu.style.display = 'none'; statusOverlay.style.display = 'none'; } });
+            if (reabrirPlanClose) reabrirPlanClose.addEventListener('click', function() { closeReabrirPlanModal(); statusMenu.style.display = 'none'; statusOverlay.style.display = 'none'; });
+            if (reabrirPlanCancel) reabrirPlanCancel.addEventListener('click', function() { closeReabrirPlanModal(); statusMenu.style.display = 'none'; statusOverlay.style.display = 'none'; });
+            if (reabrirPlanConfirm) reabrirPlanConfirm.addEventListener('click', applyReabrirPlan);
+
             statusMenu.querySelectorAll('.status-menu-option').forEach(opt => {
                 opt.addEventListener('click', function() {
                     const val = this.dataset.value;
-                    selectedIds.forEach(id => {
-                        const row = SEGUIMIENTO_DATA.find(r => r.id === id);
+                    if (activeTab === 'planes' && (val === 'Iniciada' || val === 'Finalizada')) {
+                        var selectedPlans = SEGUIMIENTO_DATA.filter(function(r) { return r.tipo === 'plan' && selectedIds.has(r.id); });
+                        var planNames = selectedPlans.map(function(p) { return p.nombre; });
+                        statusMenu.style.display = 'none';
+                        statusOverlay.style.display = 'none';
+                        pendingReabrirPlan = { val: val, planNames: planNames };
+                        if (reabrirPlanTitle) reabrirPlanTitle.textContent = val === 'Iniciada' ? 'Reabrir plan(es)' : 'Finalizar plan(es)';
+                        if (reabrirPlanMessage) {
+                            if (val === 'Iniciada') {
+                                reabrirPlanMessage.textContent = 'Al reabrir este(s) plan(es), las tareas asociadas pasar\u00e1n a estado Iniciada. \u00bfContinuar?';
+                            } else {
+                                reabrirPlanMessage.textContent = 'Al finalizar este(s) plan(es), las tareas asociadas pasar\u00e1n a estado Finalizada. \u00bfContinuar?';
+                            }
+                        }
+                        if (reabrirPlanOverlay) { reabrirPlanOverlay.style.display = 'flex'; reabrirPlanOverlay.setAttribute('aria-hidden', 'false'); }
+                        return;
+                    }
+                    selectedIds.forEach(function(id) {
+                        var row = SEGUIMIENTO_DATA.find(function(r) { return r.id === id; });
                         if (row) row.estado = val;
                     });
                     statusMenu.style.display = 'none';
                     statusOverlay.style.display = 'none';
                     renderTable();
-                    if (typeof showToast === 'function') showToast('success', `Estado cambiado a ${val} para ${selectedIds.size} elemento(s)`);
+                    updateIndicadores();
+                    if (typeof showToast === 'function') showToast('success', 'Estado cambiado a ' + val + ' para ' + selectedIds.size + ' elemento(s)');
                 });
             });
 
@@ -2707,19 +3057,28 @@
             if (reasignarApply) {
                 reasignarApply.addEventListener('click', function() {
                     if (reasignarPersona) {
-                        // Buscar el avatar de la persona seleccionada en los datos existentes
-                        const personaExistente = SEGUIMIENTO_DATA.find(r => r.asignado.nombre === reasignarPersona);
-                        const avatarPersona = personaExistente ? personaExistente.asignado.avatar : null;
-                        
+                        const personaExistente = SEGUIMIENTO_DATA.find(r => r.asignado && r.asignado.nombre === reasignarPersona) || SEGUIMIENTO_DATA.find(r => r.asignados && r.asignados.some(a => a.nombre === reasignarPersona));
+                        const avatarPersona = personaExistente && (personaExistente.asignado || (personaExistente.asignados && personaExistente.asignados[0])) ? (personaExistente.asignado || personaExistente.asignados[0]).avatar : null;
+                        const usernamePersona = personaExistente && (personaExistente.asignado || (personaExistente.asignados && personaExistente.asignados[0])) ? (personaExistente.asignado || personaExistente.asignados[0]).username || '' : '';
+                        const nuevoAsignado = { nombre: reasignarPersona, avatar: avatarPersona, username: usernamePersona };
+
                         selectedIds.forEach(id => {
                             const row = SEGUIMIENTO_DATA.find(r => r.id === id);
                             if (row) {
-                                row.asignado.nombre = reasignarPersona;
-                                row.asignado.avatar = avatarPersona;
+                                if (row.tipo === 'tarea' && row.plan) {
+                                    var plan = SEGUIMIENTO_DATA.find(function(r) { return r.tipo === 'plan' && r.nombre === row.plan; });
+                                    if (plan && plan.asignados && Array.isArray(plan.asignados)) {
+                                        if (!plan.asignados.some(function(a) { return a.nombre === reasignarPersona; })) {
+                                            plan.asignados.push(nuevoAsignado);
+                                        }
+                                    }
+                                }
+                                row.asignado = { nombre: reasignarPersona, avatar: avatarPersona, username: usernamePersona };
                             }
                         });
                         renderTable();
-                        if (typeof showToast === 'function') showToast('success', `${selectedIds.size} elemento(s) reasignado(s) a ${reasignarPersona}`);
+                        updateIndicadores();
+                        if (typeof showToast === 'function') showToast('success', selectedIds.size + ' elemento(s) reasignado(s) a ' + reasignarPersona);
                     }
                     reasignarMenu.style.display = 'none';
                     reasignarOverlay.style.display = 'none';
@@ -2735,49 +3094,380 @@
             }
         }
 
-        // Descargar CSV
+        // Descargar: menú desplegable con Excel y CSV (todas las columnas, solo filas seleccionadas)
         const descargar = document.getElementById('seguimiento-descargar');
-        if (descargar) {
-            descargar.addEventListener('click', function() {
-                if (selectedIds.size === 0) return;
+        const descargarMenu = document.getElementById('descargar-menu');
+        const descargarOverlay = document.getElementById('descargar-menu-overlay');
 
-                const selectedRows = SEGUIMIENTO_DATA.filter(r => selectedIds.has(r.id));
-                const headers = ['ID', 'Nombre', 'Asignado', 'Username', 'Cargo', 'Área', 'Lider', 'Creador', 'Plan', 'Estado', 'Prioridad', 'Progreso', 'Fecha Finalización', 'Fecha Creación', 'Comentarios'];
-                const csvRows = [headers.join(',')];
+        function closeDescargarMenu() {
+            if (descargarMenu) descargarMenu.style.display = 'none';
+            if (descargarOverlay) descargarOverlay.style.display = 'none';
+            if (descargar) descargar.setAttribute('aria-expanded', 'false');
+        }
 
-                selectedRows.forEach(row => {
-                    const values = [
-                        row.id,
-                        `"${row.nombre.replace(/"/g, '""')}"`,
-                        `"${row.asignado.nombre.replace(/"/g, '""')}"`,
-                        `"${(row.asignado.username || '').replace(/"/g, '""')}"`,
-                        `"${(row.cargo || '').replace(/"/g, '""')}"`,
-                        `"${row.area.replace(/"/g, '""')}"`,
-                        `"${(row.lider || '').replace(/"/g, '""')}"`,
-                        `"${row.creador.replace(/"/g, '""')}"`,
-                        `"${row.plan.replace(/"/g, '""')}"`,
-                        row.estado,
-                        row.prioridad,
-                        row.avance,
-                        row.fechaFinalizacion,
-                        row.fechaCreacion,
-                        row.comentarios
-                    ];
-                    csvRows.push(values.join(','));
+        function doDownloadExport(format) {
+            if (selectedIds.size === 0) return;
+            var isPlanes = activeTab === 'planes';
+            var columnIds = isPlanes ? COLUMN_IDS_PLANES : COLUMN_IDS_TAREAS;
+            var labelsPlanesExport = { id: 'ID del plan', nombre: 'Nombre del plan', asignados: 'Personas asignadas', creador: 'Creador del plan', estado: 'Estado del plan', avance: 'Progreso del plan', fechaCreacion: 'Fecha de creación', fechaFinalizacion: 'Fecha de finalización' };
+            var labelsTareasExport = { id: 'ID de la tarea', nombre: 'Nombre de la tarea', asignado: 'Asignado', creador: 'Creador', area: 'Área', estado: 'Estado', prioridad: 'Prioridad', plan: 'Plan al que pertenece', fechaCreacion: 'Fecha de creación', fechaFinalizacion: 'Fecha de vencimiento', comentarios: 'Número de comentarios' };
+            var labelsExport = isPlanes ? labelsPlanesExport : labelsTareasExport;
+            var selectedRows = SEGUIMIENTO_DATA.filter(function(r) {
+                return selectedIds.has(r.id) && (isPlanes ? r.tipo === 'plan' : r.tipo === 'tarea');
+            });
+            function getExportVal(row, colId) {
+                if (isPlanes) {
+                    if (colId === 'id') return row.id;
+                    if (colId === 'nombre') return row.nombre || '';
+                    if (colId === 'asignados') {
+                        if (!row.asignados || !row.asignados.length) return (row.asignado && row.asignado.nombre) ? String(row.asignado.nombre) : '';
+                        return row.asignados.map(function(a) { return (a && a.nombre != null) ? String(a.nombre) : ''; }).filter(Boolean).join(', ');
+                    }
+                    if (colId === 'creador') return row.creador || '';
+                    if (colId === 'estado') return row.estado || '';
+                    if (colId === 'avance') return typeof row.avance === 'number' ? row.avance : (parseInt(row.avance, 10) || 0);
+                    if (colId === 'fechaCreacion') return row.fechaCreacion || '';
+                    if (colId === 'fechaFinalizacion') return row.fechaFinalizacion || '';
+                    return '';
+                }
+                if (colId === 'id') return row.id;
+                if (colId === 'nombre') return row.nombre || '';
+                if (colId === 'asignado') return (row.asignado && row.asignado.nombre) ? String(row.asignado.nombre) : '';
+                if (colId === 'username') return (row.asignado && row.asignado.username) ? String(row.asignado.username) : '';
+                if (colId === 'cargo') return row.cargo || '';
+                if (colId === 'area') return row.area || '';
+                if (colId === 'lider') return row.lider || '';
+                if (colId === 'creador') return row.creador || '';
+                if (colId === 'plan') return row.plan || '';
+                if (colId === 'estado') return row.estado || '';
+                if (colId === 'prioridad') return row.prioridad || '';
+                if (colId === 'avance') return typeof row.avance === 'number' ? row.avance : (parseInt(row.avance, 10) || 0);
+                if (colId === 'fechaCreacion') return row.fechaCreacion || '';
+                if (colId === 'fechaFinalizacion') return row.fechaFinalizacion || '';
+                if (colId === 'comentarios') return typeof row.comentarios === 'number' ? row.comentarios : (parseInt(row.comentarios, 10) || 0);
+                return '';
+            }
+            var baseName = (isPlanes ? 'planes_' : 'tareas_') + new Date().toISOString().split('T')[0];
+            if (format === 'excel') {
+                function isNumericColumn(colId) { return colId === 'id' || colId === 'avance' || colId === 'comentarios'; }
+                var escapeXml = function(s) {
+                    if (s == null) return '';
+                    var t = String(s);
+                    t = t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+                    return t.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, '');
+                };
+                var sheetName = isPlanes ? 'Planes' : 'Tareas';
+                var xml = '<?xml version="1.0" encoding="UTF-8"?>\n<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">\n<Styles><Style ss:ID="Default" ss:Name="Normal"><Alignment ss:Vertical="Bottom"/><Borders/><Font ss:FontName="Calibri" ss:Size="11" ss:Color="#000000"/><Interior/><NumberFormat/><Protection/></Style></Styles>\n<Worksheet ss:Name="' + escapeXml(sheetName) + '">\n<Table>\n<Row>\n';
+                columnIds.forEach(function(colId) { xml += '<Cell><Data ss:Type="String">' + escapeXml(labelsExport[colId] || colId) + '</Data></Cell>\n'; });
+                xml += '</Row>\n';
+                selectedRows.forEach(function(row) {
+                    xml += '<Row>\n';
+                    columnIds.forEach(function(colId) {
+                        var val = getExportVal(row, colId);
+                        if (isNumericColumn(colId) && typeof val === 'number') xml += '<Cell><Data ss:Type="Number">' + val + '</Data></Cell>\n';
+                        else xml += '<Cell><Data ss:Type="String">' + escapeXml(val == null ? '' : String(val)) + '</Data></Cell>\n';
+                    });
+                    xml += '</Row>\n';
                 });
-
-                const csvContent = csvRows.join('\n');
-                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement('a');
+                xml += '</Table>\n</Worksheet>\n</Workbook>';
+                var blob = new Blob(['\ufeff' + xml], { type: 'application/vnd.ms-excel;charset=utf-8' });
+                var url = URL.createObjectURL(blob);
+                var link = document.createElement('a');
                 link.href = url;
-                link.download = `seguimiento_${new Date().toISOString().split('T')[0]}.csv`;
+                link.download = baseName + '.xls';
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
                 URL.revokeObjectURL(url);
+                if (typeof showToast === 'function') showToast('success', selectedIds.size + ' elemento(s) descargado(s)');
+            } else {
+                function escapeCsv(s) {
+                    if (s == null) return '';
+                    var t = String(s);
+                    if (/[,\n"]/.test(t)) return '"' + t.replace(/"/g, '""') + '"';
+                    return t;
+                }
+                var headers = columnIds.map(function(colId) { return escapeCsv(labelsExport[colId] || colId); });
+                var csvRows = [headers.join(',')];
+                selectedRows.forEach(function(row) {
+                    var values = columnIds.map(function(colId) { return escapeCsv(getExportVal(row, colId)); });
+                    csvRows.push(values.join(','));
+                });
+                var blob = new Blob(['\ufeff' + csvRows.join('\n')], { type: 'text/csv;charset=utf-8' });
+                var url = URL.createObjectURL(blob);
+                var link = document.createElement('a');
+                link.href = url;
+                link.download = baseName + '.csv';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                if (typeof showToast === 'function') showToast('success', selectedIds.size + ' elemento(s) descargado(s) en CSV');
+            }
+        }
 
-                if (typeof showToast === 'function') showToast('success', `${selectedIds.size} elemento(s) descargado(s)`);
+        if (descargar) {
+            descargar.addEventListener('click', function(e) {
+                if (selectedIds.size === 0) return;
+                e.stopPropagation();
+                if (descargarMenu && descargarOverlay) {
+                    var rect = descargar.getBoundingClientRect();
+                    descargarMenu.style.display = 'block';
+                    positionMenuSmartly(descargarMenu, rect, 220, 100);
+                    descargarOverlay.style.display = 'block';
+                    descargar.setAttribute('aria-expanded', 'true');
+                }
+            });
+        }
+        if (descargarMenu) {
+            descargarMenu.querySelectorAll('.sort-menu-option[data-format]').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var format = this.getAttribute('data-format');
+                    if (format === 'excel' || format === 'csv') doDownloadExport(format);
+                    closeDescargarMenu();
+                });
+            });
+        }
+        if (descargarOverlay) descargarOverlay.addEventListener('click', closeDescargarMenu);
+
+        // Cambiar fecha de finalización (Planes) - date picker + input sincronizados (mismo estilo que fecha personalizada)
+        var planFechaBtn = document.getElementById('seguimiento-cambiar-fecha-plan');
+        var planFechaOverlay = document.getElementById('plan-fecha-overlay');
+        var planFechaModal = document.getElementById('plan-fecha-modal');
+        var planFechaInput = document.getElementById('plan-fecha-input');
+        var planFechaCalendar = document.getElementById('plan-fecha-calendar');
+        var planFechaClose = document.getElementById('plan-fecha-close');
+        var planFechaCancel = document.getElementById('plan-fecha-cancel');
+        var planFechaAplicar = document.getElementById('plan-fecha-aplicar');
+
+        var planFechaSelected = null;
+        var planFechaCurrentMonth = new Date(2026, 2, 1);
+
+        function formatearFechaPlan(fecha) {
+            var d = fecha.getDate();
+            var m = fecha.getMonth() + 1;
+            var y = fecha.getFullYear();
+            return (d < 10 ? '0' : '') + d + '/' + (m < 10 ? '0' : '') + m + '/' + y;
+        }
+        function parsearFechaPlan(texto) {
+            if (!texto || !texto.trim()) return null;
+            var match = texto.trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+            if (!match) return null;
+            var dia = parseInt(match[1], 10);
+            var mes = parseInt(match[2], 10) - 1;
+            var anio = parseInt(match[3], 10);
+            if (dia < 1 || dia > 31 || mes < 0 || mes > 11 || anio < 1900 || anio > 2100) return null;
+            var f = new Date(anio, mes, dia);
+            if (f.getDate() !== dia || f.getMonth() !== mes || f.getFullYear() !== anio) return null;
+            return f;
+        }
+
+        function closePlanFechaModal() {
+            if (planFechaOverlay) { planFechaOverlay.style.display = 'none'; planFechaOverlay.setAttribute('aria-hidden', 'true'); }
+            if (planFechaModal) planFechaModal.style.display = 'none';
+            if (planFechaInput) planFechaInput.value = '';
+            planFechaSelected = null;
+        }
+
+        function renderPlanFechaCalendar() {
+            if (!planFechaCalendar) return;
+            var meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+            var diasSemana = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+            var mes = planFechaCurrentMonth.getMonth();
+            var anio = planFechaCurrentMonth.getFullYear();
+            var primerDia = new Date(anio, mes, 1);
+            var ultimoDia = new Date(anio, mes + 1, 0);
+            var primerDiaSemana = primerDia.getDay() === 0 ? 6 : primerDia.getDay() - 1;
+            var html = '<div class="date-picker-calendar-month">';
+            html += '<div class="date-picker-calendar-month-header">';
+            html += '<button type="button" class="date-picker-calendar-nav-btn" data-dir="prev"><i class="far fa-chevron-left"></i></button>';
+            html += '<span class="date-picker-calendar-month-title">' + meses[mes].toUpperCase() + ' ' + anio + '</span>';
+            html += '<button type="button" class="date-picker-calendar-nav-btn" data-dir="next"><i class="far fa-chevron-right"></i></button>';
+            html += '</div>';
+            html += '<div class="date-picker-calendar-header">';
+            diasSemana.forEach(function(d) { html += '<div class="date-picker-calendar-day-header">' + d + '</div>'; });
+            html += '</div><div class="date-picker-calendar-grid">';
+            for (var i = 0; i < primerDiaSemana; i++) html += '<div class="date-picker-calendar-day disabled"></div>';
+            for (var dia = 1; dia <= ultimoDia.getDate(); dia++) {
+                var fechaDia = new Date(anio, mes, dia);
+                fechaDia.setHours(0, 0, 0, 0);
+                var clases = 'date-picker-calendar-day';
+                if (planFechaSelected) {
+                    var sel = new Date(planFechaSelected);
+                    sel.setHours(0, 0, 0, 0);
+                    if (fechaDia.getTime() === sel.getTime()) clases += ' selected';
+                }
+                var dateStr = anio + '-' + String(mes + 1).padStart(2, '0') + '-' + String(dia).padStart(2, '0');
+                html += '<div class="' + clases + '" data-date="' + dateStr + '">' + dia + '</div>';
+            }
+            html += '</div></div>';
+            planFechaCalendar.innerHTML = html;
+            planFechaCalendar.querySelectorAll('.date-picker-calendar-day:not(.disabled)').forEach(function(dayEl) {
+                dayEl.addEventListener('click', function() {
+                    var dateStr = this.getAttribute('data-date');
+                    if (!dateStr) return;
+                    var parts = dateStr.split('-').map(Number);
+                    planFechaSelected = new Date(parts[0], parts[1] - 1, parts[2]);
+                    planFechaSelected.setHours(0, 0, 0, 0);
+                    if (planFechaInput) planFechaInput.value = formatearFechaPlan(planFechaSelected);
+                    renderPlanFechaCalendar();
+                });
+            });
+            planFechaCalendar.querySelectorAll('.date-picker-calendar-nav-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    if (this.getAttribute('data-dir') === 'prev') planFechaCurrentMonth.setMonth(planFechaCurrentMonth.getMonth() - 1);
+                    else planFechaCurrentMonth.setMonth(planFechaCurrentMonth.getMonth() + 1);
+                    renderPlanFechaCalendar();
+                });
+            });
+        }
+
+        var planFechaModalTitle = document.getElementById('plan-fecha-modal-title');
+        if (planFechaBtn && planFechaModal) {
+            planFechaBtn.addEventListener('click', function() {
+                if (selectedIds.size === 0) return;
+                if (planFechaModalTitle) planFechaModalTitle.textContent = activeTab === 'tareas' ? 'Cambiar fecha de vencimiento' : 'Cambiar fecha de finalización';
+                planFechaSelected = null;
+                planFechaCurrentMonth = new Date(2026, 2, 1);
+                if (planFechaInput) planFechaInput.value = '';
+                if (planFechaOverlay) { planFechaOverlay.style.display = 'block'; planFechaOverlay.setAttribute('aria-hidden', 'false'); }
+                planFechaModal.style.display = 'block';
+                renderPlanFechaCalendar();
+            });
+        }
+        if (planFechaClose) planFechaClose.addEventListener('click', closePlanFechaModal);
+        if (planFechaCancel) planFechaCancel.addEventListener('click', closePlanFechaModal);
+        if (planFechaOverlay) planFechaOverlay.addEventListener('click', function(e) { if (e.target === planFechaOverlay) closePlanFechaModal(); });
+        if (planFechaInput) {
+            planFechaInput.addEventListener('blur', function() {
+                var texto = this.value.trim();
+                if (texto === '') {
+                    planFechaSelected = null;
+                    renderPlanFechaCalendar();
+                    return;
+                }
+                var f = parsearFechaPlan(texto);
+                if (f) {
+                    planFechaSelected = f;
+                    this.value = formatearFechaPlan(planFechaSelected);
+                    planFechaCurrentMonth = new Date(planFechaSelected);
+                    planFechaCurrentMonth.setDate(1);
+                    renderPlanFechaCalendar();
+                } else if (texto !== '' && planFechaSelected) {
+                    this.value = formatearFechaPlan(planFechaSelected);
+                }
+            });
+            planFechaInput.addEventListener('keypress', function(e) { if (e.key === 'Enter') this.blur(); });
+        }
+        function formatearFechaPlanParaTabla(fecha) {
+            var d = fecha.getDate();
+            var meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+            var m = meses[fecha.getMonth()];
+            var y = fecha.getFullYear();
+            return d + ' ' + m + ' ' + y;
+        }
+
+        if (planFechaAplicar) {
+            planFechaAplicar.addEventListener('click', function() {
+                if (!planFechaSelected) {
+                    if (typeof showToast === 'function') showToast('warning', 'Selecciona una fecha en el calendario o escríbela en el campo (DD/MM/YYYY)');
+                    return;
+                }
+                var fechaStr = formatearFechaPlanParaTabla(planFechaSelected);
+                var hoy = new Date();
+                hoy.setHours(0, 0, 0, 0);
+                var sel = new Date(planFechaSelected);
+                sel.setHours(0, 0, 0, 0);
+                if (activeTab === 'tareas') {
+                    selectedIds.forEach(function(id) {
+                        var row = SEGUIMIENTO_DATA.find(function(r) { return r.id === id; });
+                        if (row && row.tipo === 'tarea') {
+                            row.fechaFinalizacion = fechaStr;
+                            if (sel < hoy) row.estado = 'Vencida';
+                        }
+                    });
+                    closePlanFechaModal();
+                    renderTable();
+                    updateIndicadores();
+                    if (typeof showToast === 'function') showToast('success', 'Fecha de vencimiento actualizada para ' + selectedIds.size + ' tarea(s)');
+                } else {
+                    selectedIds.forEach(function(id) {
+                        var row = SEGUIMIENTO_DATA.find(function(r) { return r.id === id; });
+                        if (row && row.tipo === 'plan') {
+                            row.fechaFinalizacion = fechaStr;
+                            if (sel < hoy) row.estado = 'Vencida';
+                        }
+                    });
+                    closePlanFechaModal();
+                    renderTable();
+                    updateIndicadores();
+                    if (typeof showToast === 'function') showToast('success', 'Fecha de finalización actualizada para ' + selectedIds.size + ' plan(es)');
+                }
+            });
+        }
+
+        // Añadir colaborador al plan
+        var anadirColabBtn = document.getElementById('seguimiento-anadir-colaborador');
+        var anadirColabMenu = document.getElementById('anadir-colaborador-menu');
+        var anadirColabOverlay = document.getElementById('anadir-colaborador-overlay');
+        var anadirColabCancel = document.getElementById('anadir-colaborador-cancel');
+        var anadirColabApply = document.getElementById('anadir-colaborador-apply');
+        var anadirColaboradorPersona = null;
+
+        function closeAnadirColaborador() {
+            if (anadirColabOverlay) anadirColabOverlay.style.display = 'none';
+            if (anadirColabMenu) anadirColabMenu.style.display = 'none';
+            anadirColaboradorPersona = null;
+        }
+
+        if (anadirColabBtn && anadirColabMenu) {
+            anadirColabBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (selectedIds.size === 0 || activeTab !== 'planes') return;
+                var rect = this.getBoundingClientRect();
+                anadirColabMenu.style.top = (rect.bottom + 4) + 'px';
+                anadirColabMenu.style.left = rect.left + 'px';
+                anadirColabMenu.style.display = 'block';
+                if (anadirColabOverlay) anadirColabOverlay.style.display = 'block';
+                var container = document.getElementById('anadir-colaborador-autocomplete');
+                if (container) container.innerHTML = '';
+                if (container && typeof createInput === 'function') {
+                    var personas = [];
+                    SEGUIMIENTO_DATA.forEach(function(r) {
+                        if (r.asignado && r.asignado.nombre && personas.indexOf(r.asignado.nombre) < 0) personas.push(r.asignado.nombre);
+                        if (r.asignados) r.asignados.forEach(function(a) { if (a.nombre && personas.indexOf(a.nombre) < 0) personas.push(a.nombre); });
+                    });
+                    createInput({
+                        containerId: 'anadir-colaborador-autocomplete',
+                        type: 'autocomplete',
+                        placeholder: 'Buscar persona...',
+                        size: 'md',
+                        autocompleteOptions: personas.map(function(p, i) { return { value: String(i), text: p }; }),
+                        onChange: function(val) {
+                            var idx = parseInt(val, 10);
+                            anadirColaboradorPersona = !isNaN(idx) && personas[idx] ? personas[idx] : (val || null);
+                        }
+                    });
+                }
+            });
+        }
+        if (anadirColabCancel) anadirColabCancel.addEventListener('click', closeAnadirColaborador);
+        if (anadirColabOverlay) anadirColabOverlay.addEventListener('click', closeAnadirColaborador);
+        if (anadirColabApply) {
+            anadirColabApply.addEventListener('click', function() {
+                if (anadirColaboradorPersona) {
+                    var personaRef = SEGUIMIENTO_DATA.find(function(r) { return r.asignado && r.asignado.nombre === anadirColaboradorPersona; }) || SEGUIMIENTO_DATA.find(function(r) { return r.asignados && r.asignados.some(function(a) { return a.nombre === anadirColaboradorPersona; }); });
+                    var nuevoColab = personaRef && (personaRef.asignado || (personaRef.asignados && personaRef.asignados[0])) ? { nombre: anadirColaboradorPersona, avatar: (personaRef.asignado || personaRef.asignados[0]).avatar, username: (personaRef.asignado || personaRef.asignados[0]).username || '' } : { nombre: anadirColaboradorPersona, avatar: null, username: '' };
+                    selectedIds.forEach(function(id) {
+                        var row = SEGUIMIENTO_DATA.find(function(r) { return r.id === id; });
+                        if (row && row.tipo === 'plan' && row.asignados) {
+                            if (!row.asignados.some(function(a) { return a.nombre === anadirColaboradorPersona; })) row.asignados.push(nuevoColab);
+                        }
+                    });
+                    renderTable();
+                    if (typeof showToast === 'function') showToast('success', anadirColaboradorPersona + ' añadido como colaborador a ' + selectedIds.size + ' plan(es)');
+                }
+                closeAnadirColaborador();
             });
         }
     }
@@ -2819,9 +3509,10 @@
 
     function init() {
         SEGUIMIENTO_DATA = generateData();
-        filteredData = [...SEGUIMIENTO_DATA];
         initColumnVisibility();
+        buildTableHeader();
         initNav();
+        initTabSwitcher();
         buildColumnsMenu();
         applyFiltersAndSearch(); // Aplicar filtros (incluyendo período por defecto) antes de renderizar
         applySorting(); // Aplicar ordenamiento por defecto antes de renderizar

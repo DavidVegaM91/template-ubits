@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Modal | UBITS Playground</title>
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/modal.css">
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div style="display: flex;">
+                <div id="docs-dropdown-container"></div>
+                <div id="docs-sidebar-container"></div>
+                <div class="components-content">
+                    <div class="content-area" style="display: block; width: 100%;">
+                        <!-- Hero Section -->
+                        <div style="text-align: center; margin-bottom: 60px;">
+                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">Modal</h1>
+                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                                Componente modal UBITS reutilizable: overlay con fondo oscuro, contenedor centrado, header con título y botón cerrar, body y footer con acciones. Sirve para fecha personalizada, cambiar fecha de finalización, confirmaciones y formularios.
+                            </p>
+                        </div>
+
+                        <!-- Preview Section -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Preview del componente
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                                Haz clic en el botón para abrir el modal de ejemplo. Cierra con el botón X, Cancelar, Aceptar o clic fuera del contenido.
+                            </p>
+                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; position: relative;">
+                                <div id="modal-preview">
+                                    <button type="button" class="ubits-button ubits-button--primary ubits-button--md" onclick="document.getElementById('modal-demo-overlay').style.display='flex'; document.getElementById('modal-demo-overlay').setAttribute('aria-hidden','false');">
+                                        <i class="far fa-window-maximize"></i>
+                                        <span>Abrir modal de ejemplo</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modal de ejemplo (oculto por defecto, variante sm 440px) -->
+                        <div class="ubits-modal-overlay" id="modal-demo-overlay" style="display: none;" aria-hidden="true" onclick="if(event.target===this) { this.style.display='none'; this.setAttribute('aria-hidden','true'); }">
+                            <div class="ubits-modal-content ubits-modal-content--sm" onclick="event.stopPropagation();">
+                                <div class="ubits-modal-header">
+                                    <h2 class="ubits-heading-h2">Título del modal</h2>
+                                    <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" aria-label="Cerrar" onclick="document.getElementById('modal-demo-overlay').style.display='none'; document.getElementById('modal-demo-overlay').setAttribute('aria-hidden','true');">
+                                        <i class="far fa-times"></i>
+                                    </button>
+                                </div>
+                                <div class="ubits-modal-body">
+                                    <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium);">Contenido del body. Aquí puedes poner formularios, texto, date picker, etc.</p>
+                                </div>
+                                <div class="ubits-modal-footer">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" onclick="document.getElementById('modal-demo-overlay').style.display='none'; document.getElementById('modal-demo-overlay').setAttribute('aria-hidden','true');">
+                                        <span>Cancelar</span>
+                                    </button>
+                                    <button type="button" class="ubits-button ubits-button--primary ubits-button--md">
+                                        <span>Aceptar</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Características generales -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Características generales
+                            </h2>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-layer-group"></i></div>
+                                    <div class="ubits-body-sm-bold">Overlay</div>
+                                    <div class="ubits-body-sm-regular">Fondo oscuro 70%, centrado, cierre al clic fuera</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-window-maximize"></i></div>
+                                    <div class="ubits-body-sm-bold">Estructura</div>
+                                    <div class="ubits-body-sm-regular">Header (título + cerrar), body, footer con acciones</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-calendar-alt"></i></div>
+                                    <div class="ubits-body-sm-bold">Date picker</div>
+                                    <div class="ubits-body-sm-regular">Uso en Seguimiento: fecha personalizada y cambiar fecha</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-palette"></i></div>
+                                    <div class="ubits-body-sm-bold">Tokens UBITS</div>
+                                    <div class="ubits-body-sm-regular">Colores, bordes y tipografía oficiales</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Prompts útiles -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Prompts útiles
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                Usa estos prompts con Cursor AI para configurar y personalizar el componente Modal.
+                            </p>
+                            <div id="modal-warning-alert" style="margin-bottom: 32px;"></div>
+
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Crear modal UBITS</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('modal-prompt-0')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="modal-prompt-0">Crea un modal UBITS con:
+- Título: [título del modal]
+- Contenido del body: [descripción del contenido]
+- Botones del footer: [ej. Cancelar y Aceptar]
+
+Usa las clases: ubits-modal-overlay, ubits-modal-content, ubits-modal-header, ubits-modal-body, ubits-modal-footer.
+IMPORTA: components/modal.css, components/button.css, general-styles/ubits-colors.css, ubits-typography.css, fontawesome-icons.css.</code></pre>
+                                </div>
+                            </div>
+
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Cambiar título del modal</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('modal-prompt-1')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="modal-prompt-1">Cambia el título del modal [id o descripción del modal] para que diga "[nuevo título]".</code></pre>
+                                </div>
+                            </div>
+
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Usar modal con date picker</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('modal-prompt-2')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="modal-prompt-2">Usa el componente modal UBITS (ubits-modal-overlay, ubits-modal-content, ubits-modal-header, ubits-modal-body, ubits-modal-footer) para el selector de fecha [id del modal]. Mantén el date picker y los inputs dentro de ubits-modal-body. Misma apariencia y comportamiento.</code></pre>
+                                </div>
+                            </div>
+
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Añadir botones al footer del modal</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('modal-prompt-3')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="modal-prompt-3">En el modal [id o descripción], dentro de ubits-modal-footer, añade [descripción de los botones]. Usa el componente Button UBITS (ubits-button ubits-button--secondary/primary ubits-button--md).</code></pre>
+                                </div>
+                            </div>
+
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Cerrar modal al clic en overlay</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('modal-prompt-4')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="modal-prompt-4">Haz que el modal [id del overlay] se cierre cuando el usuario haga clic fuera del contenido (en el overlay). Usa onclick en el overlay verificando event.target === this, y event.stopPropagation() en el contenido.</code></pre>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Modal de eliminación con botón rojo (error)</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('modal-prompt-5')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="modal-prompt-5">Usa el componente modal UBITS para el modal de confirmación de eliminación [id del overlay]. Título: "Confirmar eliminación". Body: mensaje de advertencia. Footer: botón Cancelar (ubits-button--secondary) y botón Eliminar (ubits-button--error ubits-button--md). El contenedor del modal debe usar ubits-modal-content ubits-modal-content--xs (320px). Clases: ubits-modal-overlay, ubits-modal-header, ubits-modal-body, ubits-modal-footer. El botón rojo está documentado en documentacion/componentes/button.html como variante "error".</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Documentación técnica -->
+                        <div style="background: var(--ubits-bg-1); border-radius: 16px; margin-bottom: 40px; overflow: hidden;">
+                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Documentación técnica
+                                </h2>
+                                <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
+                                    Información técnica detallada para implementar el componente Modal.
+                                </p>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                    <i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>
+                                    Mostrar
+                                </span>
+                            </div>
+                            <div id="technical-docs-content" style="display: none; padding: 0;">
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                            <i class="far fa-sitemap" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                            Estructura del componente
+                                        </h2>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('modal-structure-code')">
+                                            <i class="far fa-copy"></i>
+                                            <span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="modal-structure-code">&lt;div class="ubits-modal-overlay" id="mi-modal-overlay" style="display: none;"&gt;
+  &lt;div class="ubits-modal-content"&gt;
+    &lt;div class="ubits-modal-header"&gt;
+      &lt;h2 class="ubits-heading-h2"&gt;Título&lt;/h2&gt;
+      &lt;button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" aria-label="Cerrar"&gt;
+        &lt;i class="far fa-times"&gt;&lt;/i&gt;
+      &lt;/button&gt;
+    &lt;/div&gt;
+    &lt;div class="ubits-modal-body"&gt;
+      &lt;!-- Contenido --&gt;
+    &lt;/div&gt;
+    &lt;div class="ubits-modal-footer"&gt;
+      &lt;button class="ubits-button ubits-button--secondary ubits-button--md"&gt;Cancelar&lt;/button&gt;
+      &lt;button class="ubits-button ubits-button--primary ubits-button--md"&gt;Aceptar&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                                    </div>
+                                </div>
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                            <i class="far fa-tags" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                            Clases disponibles
+                                        </h2>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('modal-classes-code')">
+                                            <i class="far fa-copy"></i>
+                                            <span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="modal-classes-code">.ubits-modal-overlay   /* Overlay pantalla completa, fondo rgba(0,0,0,0.7), flex centrado, z-index 1000 */
+.ubits-modal-content   /* Contenedor: bg, borde, border-radius 8px, max-height 90vh. Sin modificador = 560px */
+.ubits-modal-content--xs  /* Ancho máx. 320px (desktop); se adapta al viewport en tablet/mobile */
+.ubits-modal-content--sm  /* Ancho máx. 440px */
+.ubits-modal-content--md  /* Ancho máx. 800px */
+.ubits-modal-content--lg  /* Ancho máx. 1200px */
+.ubits-modal-header    /* Header: padding, border-bottom, título + botón cerrar */
+.ubits-modal-body      /* Body: padding, overflow-y auto, flex 1 */
+.ubits-modal-footer    /* Footer: padding, border-top, flex end, gap 12px */</code></pre>
+                                    </div>
+                                </div>
+                                <div style="padding: 32px;">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                            <i class="far fa-code-branch" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                            Cómo implementar
+                                        </h2>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('modal-implementation-code')">
+                                            <i class="far fa-copy"></i>
+                                            <span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                                        <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">🔧 REQUISITOS OBLIGATORIOS:</h3>
+                                        <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.5;">
+                                            <strong>CSS:</strong> <code>components/modal.css</code>, <code>ubits-colors.css</code>, <code>ubits-typography.css</code>, <code>fontawesome-icons.css</code> (botón cerrar), <code>components/button.css</code> (botones del header/footer).<br>
+                                            <strong>JavaScript:</strong> No incluido en el componente; mostrar/ocultar y lógica a cargo de tu página.<br>
+                                            <strong>Renderizado:</strong> HTML directo con clases UBITS.
+                                        </div>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="modal-implementation-code">&lt;!-- Modal genérico --&gt;
+&lt;div class="ubits-modal-overlay" id="mi-modal" style="display: none;" onclick="if(event.target===this) document.getElementById('mi-modal').style.display='none';"&gt;
+  &lt;div class="ubits-modal-content" onclick="event.stopPropagation();"&gt;
+    &lt;div class="ubits-modal-header"&gt;
+      &lt;h2 class="ubits-heading-h2"&gt;Título&lt;/h2&gt;
+      &lt;button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" aria-label="Cerrar" onclick="document.getElementById('mi-modal').style.display='none';"&gt;&lt;i class="far fa-times"&gt;&lt;/i&gt;&lt;/button&gt;
+    &lt;/div&gt;
+    &lt;div class="ubits-modal-body"&gt;&lt;p class="ubits-body-md-regular"&gt;Contenido.&lt;/p&gt;&lt;/div&gt;
+    &lt;div class="ubits-modal-footer"&gt;
+      &lt;button class="ubits-button ubits-button--secondary ubits-button--md"&gt;Cancelar&lt;/button&gt;
+      &lt;button class="ubits-button ubits-button--primary ubits-button--md"&gt;Aceptar&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Uso con date picker: mismo wrapper, dentro de ubits-modal-body van inputs y calendario --&gt;
+
+&lt;!-- Modal de eliminación (variante xs, botón error) --&gt;
+&lt;div class="ubits-modal-overlay" id="delete-modal" style="display: none;"&gt;
+  &lt;div class="ubits-modal-content ubits-modal-content--xs"&gt;
+    &lt;div class="ubits-modal-header"&gt;
+      &lt;h2 class="ubits-heading-h2"&gt;Confirmar eliminación&lt;/h2&gt;
+      &lt;button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" aria-label="Cerrar"&gt;&lt;i class="far fa-times"&gt;&lt;/i&gt;&lt;/button&gt;
+    &lt;/div&gt;
+    &lt;div class="ubits-modal-body"&gt;
+      &lt;p class="ubits-body-md-regular"&gt;¿Estás seguro? Esta acción no se puede deshacer.&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class="ubits-modal-footer"&gt;
+      &lt;button class="ubits-button ubits-button--secondary ubits-button--md"&gt;Cancelar&lt;/button&gt;
+      &lt;button class="ubits-button ubits-button--error ubits-button--md"&gt;Eliminar&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="ubits-toast-container"></div>
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof loadSubNav === 'function') loadSubNav('top-nav-container', 'documentacion');
+            if (typeof loadDocsSidebar === 'function') loadDocsSidebar('modal');
+            if (typeof showAlert === 'function') {
+                showAlert('warning', 'Importante: Antes de enviar estos prompts a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
+                    containerId: 'modal-warning-alert',
+                    noClose: true
+                });
+            }
+        });
+        function toggleTechnicalDocs() {
+            var content = document.getElementById('technical-docs-content');
+            var chevron = document.getElementById('tech-docs-chevron');
+            var toggleText = chevron.parentElement;
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                chevron.style.transform = 'rotate(180deg)';
+                toggleText.innerHTML = '<i class="far fa-chevron-up" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Ocultar';
+            } else {
+                content.style.display = 'none';
+                chevron.style.transform = 'rotate(0deg)';
+                toggleText.innerHTML = '<i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Mostrar';
+            }
+        }
+        function copyPrompt(promptId) {
+            var el = document.getElementById(promptId);
+            var text = el.textContent;
+            navigator.clipboard.writeText(text).then(function() {
+                var btn = document.querySelector('[onclick="copyPrompt(\'' + promptId + '\')"]');
+                if (btn) {
+                    var icon = btn.querySelector('i');
+                    var span = btn.querySelector('span');
+                    if (icon) icon.className = 'far fa-check';
+                    if (span) span.textContent = 'Copiado';
+                    setTimeout(function() {
+                        if (icon) icon.className = 'far fa-copy';
+                        if (span) span.textContent = 'Copiar';
+                    }, 2000);
+                }
+                if (typeof showToast === 'function') showToast('success', 'Prompt copiado', { containerId: 'ubits-toast-container', duration: 3500 });
+            });
+        }
+        function copyCode(elementId) {
+            var el = document.getElementById(elementId);
+            var text = el ? el.textContent : '';
+            navigator.clipboard.writeText(text).then(function() {
+                var btn = event.target.closest('button');
+                if (btn) {
+                    var icon = btn.querySelector('i');
+                    var span = btn.querySelector('span');
+                    var oIcon = icon ? icon.className : '';
+                    var oSpan = span ? span.textContent : '';
+                    if (icon) icon.className = 'far fa-check';
+                    if (span) span.textContent = 'Copiado!';
+                    setTimeout(function() {
+                        if (icon) icon.className = oIcon;
+                        if (span) span.textContent = oSpan;
+                    }, 2000);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
