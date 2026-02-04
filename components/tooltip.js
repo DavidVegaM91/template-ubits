@@ -70,6 +70,42 @@
     }
 
     /**
+     * Calcula top/left para la posición indicada (sin buscar alternativa). Útil para docs/preview.
+     * @returns {Object} - { position, align, top, left }
+     */
+    function calculatePositionOnly(element, tooltip, preferredPosition, preferredAlign, hasArrow) {
+        const elementRect = element.getBoundingClientRect();
+        const tooltipRect = tooltip.getBoundingClientRect();
+        const arrowSize = hasArrow ? 9 : 0;
+        let top = 0, left = 0;
+        const position = preferredPosition;
+        const align = preferredAlign;
+
+        if (position === 'top') {
+            top = elementRect.top - tooltipRect.height - arrowSize;
+            if (align === 'left') left = elementRect.left;
+            else if (align === 'center') left = elementRect.left + (elementRect.width / 2) - (tooltipRect.width / 2);
+            else left = elementRect.right - tooltipRect.width;
+        } else if (position === 'bottom') {
+            top = elementRect.bottom + arrowSize;
+            if (align === 'left') left = elementRect.left;
+            else if (align === 'center') left = elementRect.left + (elementRect.width / 2) - (tooltipRect.width / 2);
+            else left = elementRect.right - tooltipRect.width;
+        } else if (position === 'left') {
+            left = elementRect.left - tooltipRect.width - arrowSize;
+            if (align === 'top') top = elementRect.top;
+            else if (align === 'center') top = elementRect.top + (elementRect.height / 2) - (tooltipRect.height / 2);
+            else top = elementRect.bottom - tooltipRect.height;
+        } else {
+            left = elementRect.right + arrowSize;
+            if (align === 'top') top = elementRect.top;
+            else if (align === 'center') top = elementRect.top + (elementRect.height / 2) - (tooltipRect.height / 2);
+            else top = elementRect.bottom - tooltipRect.height;
+        }
+        return { position, align, top, left };
+    }
+
+    /**
      * Calcula la mejor posición para el tooltip según el viewport
      * @param {HTMLElement} element - Elemento al que se adjunta el tooltip
      * @param {HTMLElement} tooltip - Elemento del tooltip
@@ -193,6 +229,7 @@
      * @param {number} options.duration - Duración antes de ocultar (ms, 0 = persistente, default: 0)
      * @param {boolean} options.noArrow - Ocultar la flecha/cola (default: false)
      * @param {boolean} options.normal - Usar variación normal (bg-1 y fg-1-high sin modificadores) (default: false)
+     * @param {boolean} options.forcePosition - No ajustar a otra posición si no cabe; usar siempre la indicada (útil para docs) (default: false)
      * @returns {HTMLElement} - Elemento del tooltip creado
      */
     function showTooltip(element, text, options = {}) {
@@ -207,7 +244,8 @@
             delay: options.delay !== undefined ? options.delay : 200,
             duration: options.duration !== undefined ? options.duration : 0,
             noArrow: options.noArrow || false,
-            normal: options.normal || false
+            normal: options.normal || false,
+            forcePosition: options.forcePosition || false
         };
 
         // Ocultar tooltip existente si hay uno
@@ -233,8 +271,10 @@
 
         container.appendChild(tooltip);
 
-        // Calcular posición (pasar si tiene flecha)
-        const position = calculateBestPosition(el, tooltip, config.position, config.align, !config.noArrow);
+        // Calcular posición: si forcePosition, usar siempre la indicada; si no, elegir la que quepa
+        const position = config.forcePosition
+            ? calculatePositionOnly(el, tooltip, config.position, config.align, !config.noArrow)
+            : calculateBestPosition(el, tooltip, config.position, config.align, !config.noArrow);
         
         // Aplicar clases de posición
         let tooltipClasses = `ubits-tooltip ubits-tooltip--${position.position} ubits-tooltip--${position.align}`;
@@ -274,7 +314,9 @@
 
         // Reposicionar en scroll y resize
         function reposition() {
-            const newPosition = calculateBestPosition(el, tooltip, config.position, config.align, !config.noArrow);
+            const newPosition = config.forcePosition
+                ? calculatePositionOnly(el, tooltip, config.position, config.align, !config.noArrow)
+                : calculateBestPosition(el, tooltip, config.position, config.align, !config.noArrow);
             let tooltipClasses = `ubits-tooltip ubits-tooltip--${newPosition.position} ubits-tooltip--${newPosition.align} ubits-tooltip--visible`;
             if (config.noArrow) {
                 tooltipClasses += ' ubits-tooltip--no-arrow';

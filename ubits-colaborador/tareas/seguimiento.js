@@ -2275,117 +2275,32 @@
             });
         }
 
-        // Renderizar calendario
+        // Renderizar calendario oficial UBITS (createCalendar) en modo rango en el modal de fecha personalizada
         function renderCalendar() {
-            if (!calendarContainer) return;
-
-            const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-            const diasSemana = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
-            
-            // Mostrar solo 1 mes
-            const mes = currentMonth.getMonth();
-            const anio = currentMonth.getFullYear();
-            const primerDia = new Date(anio, mes, 1);
-            const ultimoDia = new Date(anio, mes + 1, 0);
-            const primerDiaSemana = primerDia.getDay() === 0 ? 6 : primerDia.getDay() - 1; // Lunes = 0
-
-            let html = `
-                <div class="date-picker-calendar-month">
-                    <div class="date-picker-calendar-month-header">
-                        <button type="button" class="date-picker-calendar-nav-btn" data-dir="prev">
-                            <i class="far fa-chevron-left"></i>
-                        </button>
-                        <span class="date-picker-calendar-month-title">${meses[mes].toUpperCase()} ${anio}</span>
-                        <button type="button" class="date-picker-calendar-nav-btn" data-dir="next">
-                            <i class="far fa-chevron-right"></i>
-                        </button>
-                    </div>
-                    <div class="date-picker-calendar-header">
-                        ${diasSemana.map(d => `<div class="date-picker-calendar-day-header">${d}</div>`).join('')}
-                    </div>
-                    <div class="date-picker-calendar-grid">
-            `;
-
-            // Días del mes anterior (para completar la primera semana)
-            for (let i = 0; i < primerDiaSemana; i++) {
-                html += `<div class="date-picker-calendar-day disabled"></div>`;
-            }
-
-            // Días del mes
-            for (let dia = 1; dia <= ultimoDia.getDate(); dia++) {
-                const fechaDia = new Date(anio, mes, dia);
-                fechaDia.setHours(0, 0, 0, 0);
-                const fechaDiaTime = fechaDia.getTime();
-                let clases = 'date-picker-calendar-day';
-                
-                // Verificar si está seleccionado o en rango
-                if (fechaInicio && fechaFin) {
-                    const inicioTime = new Date(fechaInicio);
-                    inicioTime.setHours(0, 0, 0, 0);
-                    const finTime = new Date(fechaFin);
-                    finTime.setHours(0, 0, 0, 0);
-                    
-                    if (fechaDiaTime === inicioTime.getTime() || fechaDiaTime === finTime.getTime()) {
-                        clases += fechaDiaTime === inicioTime.getTime() ? ' range-start' : ' range-end';
-                    } else if (fechaDiaTime > inicioTime.getTime() && fechaDiaTime < finTime.getTime()) {
-                        clases += ' in-range';
-                    }
-                } else if (fechaInicio) {
-                    const inicioTime = new Date(fechaInicio);
-                    inicioTime.setHours(0, 0, 0, 0);
-                    if (fechaDiaTime === inicioTime.getTime()) {
-                        clases += ' selected';
-                    }
-                }
-
-                html += `<div class="${clases}" data-date="${anio}-${String(mes + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}">${dia}</div>`;
-            }
-
-            html += `
-                    </div>
-                </div>
-            `;
-
-            calendarContainer.innerHTML = html;
-
-            // Agregar event listeners a los días
-            calendarContainer.querySelectorAll('.date-picker-calendar-day:not(.disabled)').forEach(day => {
-                day.addEventListener('click', function() {
-                    const dateStr = this.dataset.date;
-                    if (!dateStr) return;
-                    
-                    const [anio, mes, dia] = dateStr.split('-').map(Number);
-                    const fechaSeleccionada = new Date(anio, mes - 1, dia);
-                    fechaSeleccionada.setHours(0, 0, 0, 0);
-
-                    if (!fechaInicio || (fechaInicio && fechaFin) || fechaSeleccionada < fechaInicio) {
-                        // Seleccionar nueva fecha de inicio
-                        fechaInicio = new Date(fechaSeleccionada);
-                        fechaFin = null;
-                        selectingStart = false;
-                    } else {
-                        // Seleccionar fecha de fin
-                        fechaFin = new Date(fechaSeleccionada);
+            if (!calendarContainer || typeof window.createCalendar !== 'function') return;
+            calendarContainer.innerHTML = '';
+            var initialDate = currentMonth ? new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1) : new Date();
+            window.createCalendar({
+                containerId: 'date-picker-calendar',
+                range: true,
+                initialDate: initialDate,
+                selectedStartDate: fechaInicio || undefined,
+                selectedEndDate: fechaFin || undefined,
+                onRangeSelect: function (startStr, endStr) {
+                    if (!startStr) return;
+                    var partsInicio = startStr.split('/').map(Number);
+                    fechaInicio = new Date(partsInicio[2], partsInicio[1] - 1, partsInicio[0]);
+                    fechaInicio.setHours(0, 0, 0, 0);
+                    if (endStr) {
+                        var partsFin = endStr.split('/').map(Number);
+                        fechaFin = new Date(partsFin[2], partsFin[1] - 1, partsFin[0]);
                         fechaFin.setHours(23, 59, 59, 999);
-                        selectingStart = true;
+                    } else {
+                        fechaFin = null;
                     }
-
                     updateInputs();
                     renderCalendar();
-                });
-            });
-
-            // Navegación de meses
-            calendarContainer.querySelectorAll('.date-picker-calendar-nav-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const dir = this.dataset.dir;
-                    if (dir === 'prev') {
-                        currentMonth.setMonth(currentMonth.getMonth() - 1);
-                    } else {
-                        currentMonth.setMonth(currentMonth.getMonth() + 1);
-                    }
-                    renderCalendar();
-                });
+                }
             });
         }
 
@@ -3269,56 +3184,22 @@
             planFechaSelected = null;
         }
 
+        // Calendario oficial UBITS (createCalendar) en el modal cambiar fecha
         function renderPlanFechaCalendar() {
-            if (!planFechaCalendar) return;
-            var meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-            var diasSemana = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
-            var mes = planFechaCurrentMonth.getMonth();
-            var anio = planFechaCurrentMonth.getFullYear();
-            var primerDia = new Date(anio, mes, 1);
-            var ultimoDia = new Date(anio, mes + 1, 0);
-            var primerDiaSemana = primerDia.getDay() === 0 ? 6 : primerDia.getDay() - 1;
-            var html = '<div class="date-picker-calendar-month">';
-            html += '<div class="date-picker-calendar-month-header">';
-            html += '<button type="button" class="date-picker-calendar-nav-btn" data-dir="prev"><i class="far fa-chevron-left"></i></button>';
-            html += '<span class="date-picker-calendar-month-title">' + meses[mes].toUpperCase() + ' ' + anio + '</span>';
-            html += '<button type="button" class="date-picker-calendar-nav-btn" data-dir="next"><i class="far fa-chevron-right"></i></button>';
-            html += '</div>';
-            html += '<div class="date-picker-calendar-header">';
-            diasSemana.forEach(function(d) { html += '<div class="date-picker-calendar-day-header">' + d + '</div>'; });
-            html += '</div><div class="date-picker-calendar-grid">';
-            for (var i = 0; i < primerDiaSemana; i++) html += '<div class="date-picker-calendar-day disabled"></div>';
-            for (var dia = 1; dia <= ultimoDia.getDate(); dia++) {
-                var fechaDia = new Date(anio, mes, dia);
-                fechaDia.setHours(0, 0, 0, 0);
-                var clases = 'date-picker-calendar-day';
-                if (planFechaSelected) {
-                    var sel = new Date(planFechaSelected);
-                    sel.setHours(0, 0, 0, 0);
-                    if (fechaDia.getTime() === sel.getTime()) clases += ' selected';
-                }
-                var dateStr = anio + '-' + String(mes + 1).padStart(2, '0') + '-' + String(dia).padStart(2, '0');
-                html += '<div class="' + clases + '" data-date="' + dateStr + '">' + dia + '</div>';
-            }
-            html += '</div></div>';
-            planFechaCalendar.innerHTML = html;
-            planFechaCalendar.querySelectorAll('.date-picker-calendar-day:not(.disabled)').forEach(function(dayEl) {
-                dayEl.addEventListener('click', function() {
-                    var dateStr = this.getAttribute('data-date');
-                    if (!dateStr) return;
-                    var parts = dateStr.split('-').map(Number);
-                    planFechaSelected = new Date(parts[0], parts[1] - 1, parts[2]);
+            if (!planFechaCalendar || typeof window.createCalendar !== 'function') return;
+            planFechaCalendar.innerHTML = '';
+            var initialDate = planFechaCurrentMonth ? new Date(planFechaCurrentMonth.getFullYear(), planFechaCurrentMonth.getMonth(), 1) : new Date();
+            window.createCalendar({
+                containerId: 'plan-fecha-calendar',
+                initialDate: initialDate,
+                selectedDate: planFechaSelected || undefined,
+                onDateSelect: function (dateStr) {
+                    var parts = dateStr.split('/').map(Number);
+                    planFechaSelected = new Date(parts[2], parts[1] - 1, parts[0]);
                     planFechaSelected.setHours(0, 0, 0, 0);
                     if (planFechaInput) planFechaInput.value = formatearFechaPlan(planFechaSelected);
                     renderPlanFechaCalendar();
-                });
-            });
-            planFechaCalendar.querySelectorAll('.date-picker-calendar-nav-btn').forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    if (this.getAttribute('data-dir') === 'prev') planFechaCurrentMonth.setMonth(planFechaCurrentMonth.getMonth() - 1);
-                    else planFechaCurrentMonth.setMonth(planFechaCurrentMonth.getMonth() + 1);
-                    renderPlanFechaCalendar();
-                });
+                }
             });
         }
 

@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="../../docs/docstyles.css">
     <link rel="stylesheet" href="../../components/button.css">
     <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/toast.css">
     <style>
         /* Preview Styles */
         /* Preview control buttons - override UBITS button styles for active state */
@@ -486,9 +487,11 @@ showAlert('success', 'Tu mensaje aquí', {
         </div>
     </div>
 
+    <div id="ubits-toast-container"></div>
     <script src="../../components/sidebar.js"></script>
     <script src="../../components/sub-nav.js"></script>
     <script src="../../components/alert.js"></script>
+    <script src="../../components/toast.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
     <script src="../../script.js"></script>
     <script>
@@ -609,7 +612,7 @@ showAlert('success', 'Tu mensaje aquí', {
                 button.classList.add('ubits-button--active');
                 
                 // Mostrar toast
-                showToast('success', '¡Prompt copiado! 🎉');
+                showToast('success', '¡Prompt copiado! 🎉', { containerId: 'ubits-toast-container', duration: 2500 });
                 
                 // Restaurar estado después de 2 segundos
                 setTimeout(function() {
@@ -620,7 +623,7 @@ showAlert('success', 'Tu mensaje aquí', {
                 
             }).catch(function(err) {
                 console.error('Error al copiar: ', err);
-                showToast('error', 'Error al copiar el prompt');
+                showToast('error', 'Error al copiar el prompt', { containerId: 'ubits-toast-container', duration: 2500 });
             });
         }
 
@@ -643,7 +646,7 @@ showAlert('success', 'Tu mensaje aquí', {
                 button.classList.add('ubits-button--active');
                 
                 // Mostrar toast
-                showToast('success', 'Código copiado al portapapeles');
+                showToast('success', 'Código copiado al portapapeles', { containerId: 'ubits-toast-container', duration: 2500 });
                 
                 // Restaurar estado después de 2 segundos
                 setTimeout(() => {
@@ -653,7 +656,7 @@ showAlert('success', 'Tu mensaje aquí', {
                 }, 2000);
             }).catch(err => {
                 console.error('Error al copiar: ', err);
-                showToast('error', 'Error al copiar el código');
+                showToast('error', 'Error al copiar el código', { containerId: 'ubits-toast-container', duration: 2500 });
             });
         }
 

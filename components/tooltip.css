@@ -10,6 +10,7 @@
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.2s ease;
+    overflow: visible;
 }
 
 .ubits-tooltip.ubits-tooltip--visible {
@@ -29,6 +30,7 @@
     font-weight: 400;
     word-wrap: break-word;
     position: relative;
+    overflow: visible;
 }
 
 /* Variación normal (bg-1 y fg-1-high sin modificadores) */

@@ -371,12 +371,12 @@
 }
 
 .floating-menu::-webkit-scrollbar-thumb {
-    background: var(--ubits-sidebar-button-fg-default);
+    background: var(--ubits-scroll-bar-color-bg-default);
     border-radius: 3px;
 }
 
 .floating-menu::-webkit-scrollbar-thumb:hover {
-    background: var(--ubits-sidebar-button-fg-hover);
+    background: var(--ubits-scroll-bar-color-bg-default);
 }
 
 /* Modo oscuro - Los colores ya cambian automáticamente con los tokens */

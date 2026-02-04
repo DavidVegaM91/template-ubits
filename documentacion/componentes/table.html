@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="../../docs/docstyles.css">
     <link rel="stylesheet" href="../../components/button.css">
     <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/toast.css">
     <link rel="stylesheet" href="../../components/status-tag.css">
     <link rel="stylesheet" href="../../components/avatar.css">
     <link rel="stylesheet" href="../../components/table.css">
@@ -241,9 +242,7 @@
 - Tabla: table.ubits-table
 - Cabecera: thead > tr > th (primera columna opcional: th.ubits-table__th--checkbox con input checkbox)
 - Cuerpo: tbody > tr > td (celdas con data-col opcional para anchos)
-- Tipos de celda: texto (ubits-body-sm-regular), checkbox (ubits-table__td--checkbox), progress (ubits-table__cell-progress + ubits-table__progress-bar + ubits-table__progress-bar-fill), avatar+nombre (ubits-table__cell-assignee + ubits-table__avatar), status tag (ubits-status-tag), prioridad (ubits-table__cell-priority + icono)
-
-IMPORTA: components/table.css, general-styles/ubits-colors.css, ubits-typography.css, fontawesome-icons.css. Para status tag: components/status-tag.css.</code></pre>
+- Tipos de celda: texto (ubits-body-sm-regular), checkbox (ubits-table__td--checkbox), progress (ubits-table__cell-progress + ubits-table__progress-bar + ubits-table__progress-bar-fill), avatar+nombre (ubits-table__cell-assignee + ubits-table__avatar), status tag (ubits-status-tag), prioridad (ubits-table__cell-priority + icono)</code></pre>
                                 </div>
                             </div>
 
@@ -396,6 +395,7 @@ data-col en th/td: opcional, para anchos por columna (nombre, asignado, plan, cr
             </div>
         </main>
     </div>
+    <div id="ubits-toast-container"></div>
     <script src="../../components/sidebar.js"></script>
     <script src="../../components/sub-nav.js"></script>
     <script src="../../components/alert.js"></script>
@@ -460,14 +460,14 @@ data-col en th/td: opcional, para anchos por columna (nombre, asignado, plan, cr
             var el = document.getElementById(codeId);
             if (!el) return;
             navigator.clipboard.writeText(el.textContent).then(function() {
-                if (typeof showToast === 'function') showToast('success', 'Código copiado');
+                if (typeof showToast === 'function') showToast('success', 'Código copiado', { containerId: 'ubits-toast-container', duration: 2500 });
             });
         }
         function copyPrompt(promptId) {
             var el = document.getElementById(promptId);
             if (!el) return;
             navigator.clipboard.writeText(el.textContent).then(function() {
-                if (typeof showToast === 'function') showToast('success', 'Prompt copiado');
+                if (typeof showToast === 'function') showToast('success', 'Prompt copiado', { containerId: 'ubits-toast-container', duration: 2500 });
             });
         }
     </script>

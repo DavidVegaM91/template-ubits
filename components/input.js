@@ -144,6 +144,7 @@
  * | `helperText` | string | `''` | Texto de ayuda |
  * | `size` | string | `'md'` | Tamaño: 'sm', 'md', 'lg' |
  * | `state` | string | `'default'` | Estado del input |
+ * | `variant` | string | `'default'` | Apariencia: 'default' (borde visible) o 'subtle' (sin borde visible) |
  * | `type` | string | `'text'` | Tipo de input |
  * | `showLabel` | boolean | `true` | Mostrar/ocultar label |
  * | `showHelper` | boolean | `false` | Mostrar/ocultar helper text (independiente del contador) |
@@ -505,6 +506,7 @@
  * @param {string} [options.helperText] - Texto de ayuda (opcional)
  * @param {string} [options.size='md'] - Tamaño del input: 'sm', 'md', 'lg'
  * @param {string} [options.state='default'] - Estado del input: 'default', 'hover', 'focus', 'active', 'invalid', 'disabled'
+ * @param {string} [options.variant='default'] - Apariencia: 'default' (borde visible) o 'subtle' (sin borde visible)
  * @param {string} [options.type='text'] - Tipo de input: 'text', 'email', 'password', 'number', 'tel', 'url', 'select', 'textarea', 'search', 'autocomplete', 'calendar'
  *   - **text**: Input de texto básico
  *   - **email**: Input de email con validación manual
@@ -678,247 +680,6 @@ function createPasswordToggle(container, inputElement) {
             e.stopPropagation();
             togglePasswordVisibility();
         });
-    }
-}
-
-// Función para crear date picker
-function createCalendarPicker(container, inputElement, onChange) {
-    console.log('createCalendarPicker called with:', { container, inputElement, onChange });
-    
-    const calendar = document.createElement('div');
-    calendar.className = 'ubits-calendar-picker';
-    calendar.style.display = 'none';
-    
-    // Variables para el calendario
-    let currentDate = new Date();
-    let selectedDate = null;
-    
-    // Función para formatear fecha
-    function formatDate(date) {
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const year = date.getFullYear();
-        return `${day}/${month}/${year}`;
-    }
-    
-    // Función para renderizar el calendario
-    function renderCalendar() {
-        const year = currentDate.getFullYear();
-        const month = currentDate.getMonth();
-        
-        // Nombres de los meses
-        const monthNames = [
-            'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-            'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-        ];
-        
-        // Nombres de los días
-        const dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
-        
-        // Crear header del calendario con selectores
-        let calendarHTML = `
-            <div class="ubits-calendar-header">
-                <button class="ubits-calendar-prev" type="button">
-                    <i class="far fa-chevron-left"></i>
-                </button>
-                <div class="ubits-calendar-selectors">
-                    <select class="ubits-calendar-month-select">
-                        ${monthNames.map((name, index) => 
-                            `<option value="${index}" ${index === month ? 'selected' : ''}>${name}</option>`
-                        ).join('')}
-                    </select>
-                    <select class="ubits-calendar-year-select">
-                        ${Array.from({length: 100}, (_, i) => {
-                            const yearOption = currentDate.getFullYear() - 50 + i;
-                            return `<option value="${yearOption}" ${yearOption === year ? 'selected' : ''}>${yearOption}</option>`;
-                        }).join('')}
-                    </select>
-                </div>
-                <button class="ubits-calendar-next" type="button">
-                    <i class="far fa-chevron-right"></i>
-                </button>
-            </div>
-            <div class="ubits-calendar-weekdays">
-        `;
-        
-        // Agregar nombres de los días
-        dayNames.forEach(day => {
-            calendarHTML += `<div class="ubits-calendar-weekday">${day}</div>`;
-        });
-        calendarHTML += '</div><div class="ubits-calendar-days">';
-        
-        // Obtener primer día del mes y número de días
-        const firstDay = new Date(year, month, 1);
-        const lastDay = new Date(year, month + 1, 0);
-        const daysInMonth = lastDay.getDate();
-        const startingDay = firstDay.getDay();
-        
-        // Agregar días vacíos al inicio
-        for (let i = 0; i < startingDay; i++) {
-            calendarHTML += '<div class="ubits-calendar-day ubits-calendar-day--empty"></div>';
-        }
-        
-        // Agregar días del mes
-        for (let day = 1; day <= daysInMonth; day++) {
-            const date = new Date(year, month, day);
-            const isToday = date.toDateString() === new Date().toDateString();
-            const isSelected = selectedDate && date.toDateString() === selectedDate.toDateString();
-            
-            let dayClass = 'ubits-calendar-day';
-            if (isToday) dayClass += ' ubits-calendar-day--today';
-            if (isSelected) dayClass += ' ubits-calendar-day--selected';
-            
-            calendarHTML += `<div class="${dayClass}" data-date="${formatDate(date)}">${day}</div>`;
-        }
-        
-        calendarHTML += '</div></div>';
-        calendar.innerHTML = calendarHTML;
-        
-        // Agregar event listeners
-        const prevBtn = calendar.querySelector('.ubits-calendar-prev');
-        const nextBtn = calendar.querySelector('.ubits-calendar-next');
-        const monthSelect = calendar.querySelector('.ubits-calendar-month-select');
-        const yearSelect = calendar.querySelector('.ubits-calendar-year-select');
-        const dayElements = calendar.querySelectorAll('.ubits-calendar-day:not(.ubits-calendar-day--empty)');
-        
-        // Navegación del calendario
-        prevBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            currentDate.setMonth(currentDate.getMonth() - 1);
-            renderCalendar();
-            if (calendar.style.display === 'block') {
-                setTimeout(() => positionCalendar(), 10);
-            }
-        });
-        
-        nextBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            currentDate.setMonth(currentDate.getMonth() + 1);
-            renderCalendar();
-            if (calendar.style.display === 'block') {
-                setTimeout(() => positionCalendar(), 10);
-            }
-        });
-        
-        // Selector de mes
-        monthSelect.addEventListener('change', (e) => {
-            e.stopPropagation();
-            currentDate.setMonth(parseInt(e.target.value));
-            renderCalendar();
-            if (calendar.style.display === 'block') {
-                setTimeout(() => positionCalendar(), 10);
-            }
-        });
-        
-        // Selector de año
-        yearSelect.addEventListener('change', (e) => {
-            e.stopPropagation();
-            currentDate.setFullYear(parseInt(e.target.value));
-            renderCalendar();
-            if (calendar.style.display === 'block') {
-                setTimeout(() => positionCalendar(), 10);
-            }
-        });
-        
-        // Selección de día
-        dayElements.forEach(dayEl => {
-            dayEl.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const dateStr = dayEl.dataset.date;
-                const [day, month, year] = dateStr.split('/');
-                selectedDate = new Date(year, month - 1, day);
-                
-                inputElement.value = dateStr;
-                calendar.style.display = 'none';
-                
-                if (onChange && typeof onChange === 'function') {
-                    onChange(dateStr);
-                }
-            });
-        });
-    }
-    
-    // Función para posicionar el calendario inteligentemente
-    function positionCalendar() {
-        const viewportWidth = window.innerWidth;
-        const viewportHeight = window.innerHeight;
-        const padding = 16;
-        const calendarWidth = 320; // Ancho aproximado del calendario
-        const calendarHeight = 350; // Alto aproximado del calendario
-        
-        const inputRect = inputElement.getBoundingClientRect();
-        const containerRect = container.getBoundingClientRect();
-        
-        let left = inputRect.left;
-        let top = inputRect.bottom + 4;
-        
-        // Ajustar posición horizontal
-        if (left + calendarWidth > viewportWidth - padding) {
-            // Intentar alinear a la derecha del input
-            left = inputRect.right - calendarWidth;
-            
-            // Si aún se sale, pegarlo al borde derecho
-            if (left < padding) {
-                left = viewportWidth - calendarWidth - padding;
-            }
-        }
-        
-        // Asegurar que no se salga por la izquierda
-        if (left < padding) {
-            left = padding;
-        }
-        
-        // Ajustar posición vertical
-        if (top + calendarHeight > viewportHeight - padding) {
-            // Intentar mostrar arriba del input
-            const spaceAbove = inputRect.top - padding;
-            const spaceBelow = viewportHeight - inputRect.bottom - padding;
-            
-            if (spaceAbove >= calendarHeight || spaceAbove > spaceBelow) {
-                // Mostrar arriba
-                top = inputRect.top - calendarHeight - 4;
-            } else {
-                // Ajustar altura si es necesario
-                top = viewportHeight - calendarHeight - padding;
-            }
-        }
-        
-        // Asegurar que no se salga por arriba
-        if (top < padding) {
-            top = padding;
-        }
-        
-        // Aplicar posición (el calendario debe tener position: fixed)
-        calendar.style.left = Math.max(padding, Math.min(left, viewportWidth - calendarWidth - padding)) + 'px';
-        calendar.style.top = Math.max(padding, Math.min(top, viewportHeight - calendarHeight - padding)) + 'px';
-    }
-
-    // Event listener para mostrar/ocultar calendario
-    inputElement.addEventListener('click', function() {
-        if (calendar.style.display === 'none' || calendar.style.display === '') {
-            calendar.style.display = 'block';
-            renderCalendar();
-            // Posicionar inteligentemente después de renderizar
-            setTimeout(() => {
-                positionCalendar();
-            }, 10);
-        } else {
-            calendar.style.display = 'none';
-        }
-    });
-    
-    // Cerrar calendario al hacer click fuera
-    document.addEventListener('click', function(e) {
-        if (!container.contains(e.target)) {
-            calendar.style.display = 'none';
-        }
-    });
-    
-    container.appendChild(calendar);
-    
-    // Asegurar que el contenedor tenga position: relative
-    if (getComputedStyle(container).position === 'static') {
-        container.style.position = 'relative';
     }
 }
 
@@ -1162,6 +923,46 @@ function createSelectDropdown(container, inputElement, selectOptions, value, pla
     let loadedOptions = [];
     let isLoading = false;
     
+    // Crear y añadir una opción al dropdown (reutilizado por loadOptions y carga inicial)
+    function appendOptionElement(option) {
+        const optionElement = document.createElement('div');
+        optionElement.className = 'ubits-select-option';
+        optionElement.textContent = option.text;
+        optionElement.dataset.value = option.value;
+        optionElement.addEventListener('click', function() {
+            const selectedValue = this.dataset.value;
+            const selectedText = this.textContent;
+            inputElement.value = selectedText;
+            dropdown.style.display = 'none';
+            if (onChange && typeof onChange === 'function') {
+                onChange(selectedValue);
+            }
+        });
+        dropdown.appendChild(optionElement);
+        loadedOptions.push(option);
+    }
+
+    // Carga inicial al abrir: incluye la opción seleccionada y hace scroll hasta ella
+    function loadInitialAndScrollToSelected() {
+        const selectedIndex = value ? selectOptions.findIndex(opt => opt.value === value) : 0;
+        const safeIndex = selectedIndex >= 0 ? selectedIndex : 0;
+        const initialCount = Math.min(selectOptions.length, Math.max(itemsPerPage, safeIndex + 5));
+        dropdown.innerHTML = '';
+        loadedOptions = [];
+        selectOptions.slice(0, initialCount).forEach(appendOptionElement);
+        currentPage = Math.ceil(initialCount / itemsPerPage);
+        dropdown.style.display = 'block';
+        if (initialCount < selectOptions.length) {
+            setupScrollObserver();
+        }
+        requestAnimationFrame(function() {
+            const selectedEl = dropdown.querySelector('[data-value="' + (value || '') + '"]');
+            if (selectedEl) {
+                selectedEl.scrollIntoView({ block: 'nearest', behavior: 'auto' });
+            }
+        });
+    }
+
     // Función para cargar opciones con scroll infinito
     function loadOptions(page = 0, append = false) {
         if (isLoading) return;
@@ -1198,32 +999,7 @@ function createSelectDropdown(container, inputElement, selectOptions, value, pla
             }
             
             // Crear opciones de la página actual
-            pageOptions.forEach(option => {
-                const optionElement = document.createElement('div');
-                optionElement.className = 'ubits-select-option';
-                optionElement.textContent = option.text;
-                optionElement.dataset.value = option.value;
-                
-                // Click handler
-                optionElement.addEventListener('click', function() {
-                    const selectedValue = this.dataset.value;
-                    const selectedText = this.textContent;
-                    
-                    // Actualizar input
-                    inputElement.value = selectedText;
-                    
-                    // Cerrar dropdown
-                    dropdown.style.display = 'none';
-                    
-                    // Trigger onChange
-                    if (onChange && typeof onChange === 'function') {
-                        onChange(selectedValue);
-                    }
-                });
-                
-                dropdown.appendChild(optionElement);
-                loadedOptions.push(option);
-            });
+            pageOptions.forEach(option => appendOptionElement(option));
             
             // Verificar si hay más páginas para scroll infinito
             const hasMorePages = endIndex < selectOptions.length;
@@ -1281,10 +1057,8 @@ function createSelectDropdown(container, inputElement, selectOptions, value, pla
     inputElement.addEventListener('click', function(e) {
         e.preventDefault();
         if (dropdown.style.display === 'none' || dropdown.style.display === '') {
-            // Lazy loading: cargar primera página solo cuando se abre
-            currentPage = 0;
-            loadOptions(0, false);
-            dropdown.style.display = 'block';
+            // Cargar hasta la opción seleccionada y hacer scroll hasta ella (ej. año 2026 visible sin scroll)
+            loadInitialAndScrollToSelected();
         } else {
             dropdown.style.display = 'none';
         }
@@ -1308,6 +1082,7 @@ function createInput(options = {}) {
             helperText = '',
             size = 'md',
             state = 'default',
+            variant = 'default',
             type = 'text',
             showLabel = true,
             showHelper = false,
@@ -1368,6 +1143,9 @@ function createInput(options = {}) {
     if (state !== 'default') {
         inputClasses.push(`ubits-input--${state}`);
     }
+    if (variant === 'subtle') {
+        inputClasses.push('ubits-input--subtle');
+    }
     
     const disabledAttr = state === 'disabled' ? ' disabled' : '';
     const maxLengthAttr = showCounter ? ` maxlength="${maxLength}"` : '';
@@ -1386,13 +1164,13 @@ function createInput(options = {}) {
     
     if (type === 'select') {
         console.log('Rendering SELECT with options:', selectOptions);
-        // SELECT - usar input normal pero readonly y con rightIcon de chevron
+        // SELECT - usar input normal pero readonly y con rightIcon de angle-down
         const selectValue = value ? selectOptions.find(opt => opt.value === value)?.text || placeholder : placeholder;
         inputHTML += `<input type="text" class="${inputClasses.join(' ')}" style="${inputStyle}" value="${selectValue}" readonly>`;
         
-        // Forzar rightIcon a chevron-down si no hay rightIcon personalizado
+        // Forzar rightIcon a angle-down si no hay rightIcon personalizado
         if (!hasRightIcon) {
-            finalRightIcon = 'fa-chevron-down';
+            finalRightIcon = 'fa-angle-down';
             finalHasRightIcon = true;
         }
     } else if (type === 'textarea') {
@@ -1625,10 +1403,63 @@ function createInput(options = {}) {
         createAutocompleteDropdown(container, inputElement, autocompleteOptions, onChange, multiple, showCheckboxes);
     }
     
-    // Si es CALENDAR, agregar funcionalidad de date picker
+    // Si es CALENDAR, popup con el componente Calendar (createCalendar)
     if (type === 'calendar') {
-        console.log('CALENDAR detected, adding date picker functionality');
-        createCalendarPicker(container, inputElement, onChange);
+        if (typeof window.createCalendar === 'function') {
+            (function () {
+                var pickerId = 'ubits-calendar-picker-' + (window._ubitsCalendarPickerId = (window._ubitsCalendarPickerId || 0) + 1);
+                var wrapper = document.createElement('div');
+                wrapper.id = pickerId;
+                wrapper.className = 'ubits-calendar-dropdown';
+                wrapper.style.cssText = 'position:fixed;display:none;z-index:10000;';
+                container.appendChild(wrapper);
+                if (getComputedStyle(container).position === 'static') {
+                    container.style.position = 'relative';
+                }
+                function positionWrapper() {
+                    var pad = 16;
+                    var w = 312;
+                    var h = 382;
+                    var rect = inputElement.getBoundingClientRect();
+                    var vw = window.innerWidth;
+                    var vh = window.innerHeight;
+                    var left = rect.left;
+                    var top = rect.bottom + 4;
+                    if (left + w > vw - pad) left = Math.max(pad, rect.right - w);
+                    if (left < pad) left = pad;
+                    if (top + h > vh - pad) {
+                        if (rect.top - pad >= h || rect.top - pad > vh - rect.bottom - pad) top = rect.top - h - 4;
+                        else top = vh - h - pad;
+                    }
+                    if (top < pad) top = pad;
+                    wrapper.style.left = left + 'px';
+                    wrapper.style.top = top + 'px';
+                }
+                window.createCalendar({
+                    containerId: pickerId,
+                    onDateSelect: function (dateStr) {
+                        inputElement.value = dateStr;
+                        wrapper.style.display = 'none';
+                        if (typeof onChange === 'function') onChange(dateStr);
+                    }
+                });
+                inputElement.addEventListener('click', function () {
+                    if (wrapper.style.display === 'none' || wrapper.style.display === '') {
+                        wrapper.style.display = 'block';
+                        positionWrapper();
+                    } else {
+                        wrapper.style.display = 'none';
+                    }
+                });
+                document.addEventListener('click', function (e) {
+                    if (!container.contains(e.target) && !wrapper.contains(e.target)) {
+                        wrapper.style.display = 'none';
+                    }
+                });
+            })();
+        } else {
+            console.warn('UBITS Input type calendar: carga components/calendar.js y components/calendar.css.');
+        }
     }
     
     // Si es PASSWORD, agregar funcionalidad de toggle mostrar/ocultar

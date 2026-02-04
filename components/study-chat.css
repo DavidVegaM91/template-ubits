@@ -39,12 +39,12 @@
 }
 
 .ubits-study-chat__body::-webkit-scrollbar-thumb {
-    background: var(--ubits-border-1);
+    background: var(--ubits-scroll-bar-color-bg-default);
     border-radius: 2px;
 }
 
 .ubits-study-chat__body::-webkit-scrollbar-thumb:hover {
-    background: var(--ubits-border-2);
+    background: var(--ubits-scroll-bar-color-bg-default);
 }
 
 /* Estilos para cards compactos dentro del chat */

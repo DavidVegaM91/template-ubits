@@ -4,278 +4,142 @@
  */
 
 // Configuración del sidebar de documentación
+// Orden: introducción, navegación (fijo), UI (alfabético por title)
 const DOCS_SIDEBAR_SECTIONS = [
-    {
-        id: 'introduccion',
-        title: 'Introducción',
-        group: 'main'
-    },
-    {
-        id: 'sidebar',
-        title: 'Sidebar',
-        group: 'navegacion'
-    },
-    {
-        id: 'sub-nav',
-        title: 'Sub-nav',
-        group: 'navegacion'
-    },
-    {
-        id: 'tab-bar',
-        title: 'Tab-bar',
-        group: 'navegacion'
-    },
-    {
-        id: 'button',
-        title: 'Button',
-        group: 'ui'
-    },
-    {
-        id: 'ia-button',
-        title: 'IA-Button',
-        group: 'ui'
-    },
-    {
-        id: 'alert',
-        title: 'Alert',
-        group: 'ui'
-    },
-    {
-        id: 'avatar',
-        title: 'Avatar',
-        group: 'ui'
-    },
-    {
-        id: 'card-content',
-        title: 'Card content',
-        group: 'ui'
-    },
-    {
-        id: 'card-content-compact',
-        title: 'Card content compact',
-        group: 'ui'
-    },
-    {
-        id: 'input',
-        title: 'Input',
-        group: 'ui'
-    },
-    {
-        id: 'toast',
-        title: 'Toast',
-        group: 'ui'
-    },
-    {
-        id: 'status-tag',
-        title: 'Status Tag',
-        group: 'ui'
-    },
-    {
-        id: 'tab',
-        title: 'Tab',
-        group: 'ui'
-    },
-    {
-        id: 'paginator',
-        title: 'Paginator',
-        group: 'ui'
-    },
-    {
-        id: 'empty-state',
-        title: 'Empty State',
-        group: 'ui'
-    },
-    {
-        id: 'header-product',
-        title: 'Header Product',
-        group: 'ui'
-    },
-    {
-        id: 'modal',
-        title: 'Modal',
-        group: 'ui'
-    },
-    {
-        id: 'table',
-        title: 'Tabla',
-        group: 'ui'
-    }
+    { id: 'introduccion', title: 'Introducción', group: 'main' },
+    { id: 'sidebar', title: 'Sidebar', group: 'navegacion' },
+    { id: 'sub-nav', title: 'Sub-nav', group: 'navegacion' },
+    { id: 'tab-bar', title: 'Tab-bar', group: 'navegacion' },
+    // UI en orden alfabético
+    { id: 'alert', title: 'Alert', group: 'ui' },
+    { id: 'avatar', title: 'Avatar', group: 'ui' },
+    { id: 'button', title: 'Button', group: 'ui' },
+    { id: 'calendar', title: 'Calendar', group: 'ui' },
+    { id: 'card-content', title: 'Card content', group: 'ui' },
+    { id: 'card-content-compact', title: 'Card content compact', group: 'ui' },
+    { id: 'empty-state', title: 'Empty State', group: 'ui' },
+    { id: 'header-product', title: 'Header Product', group: 'ui' },
+    { id: 'ia-button', title: 'IA-Button', group: 'ui' },
+    { id: 'input', title: 'Input', group: 'ui' },
+    { id: 'modal', title: 'Modal', group: 'ui' },
+    { id: 'paginator', title: 'Paginator', group: 'ui' },
+    { id: 'status-tag', title: 'Status Tag', group: 'ui' },
+    { id: 'tab', title: 'Tab', group: 'ui' },
+    { id: 'table', title: 'Tabla', group: 'ui' },
+    { id: 'toast', title: 'Toast', group: 'ui' },
+    { id: 'tooltip', title: 'Tooltip', group: 'ui' }
 ];
 
-// HTML del sidebar de documentación
-const docsSidebarHTML = `
+/**
+ * Generar HTML del sidebar a partir de DOCS_SIDEBAR_SECTIONS
+ */
+function buildDocsSidebarHTML() {
+    const main = DOCS_SIDEBAR_SECTIONS.filter(s => s.group === 'main');
+    const nav = DOCS_SIDEBAR_SECTIONS.filter(s => s.group === 'navegacion');
+    const ui = DOCS_SIDEBAR_SECTIONS.filter(s => s.group === 'ui').sort((a, b) => a.title.localeCompare(b.title));
+
+    const mainItems = main.map(s => `
+                <div class="docs-sidebar-item" data-section="${s.id}">
+                    <span class="docs-sidebar-text">${s.title}</span>
+                </div>`).join('');
+
+    return `
     <div class="docs-sidebar">
         <div class="docs-sidebar-content">
             <div class="docs-sidebar-section">
-                <div class="docs-sidebar-item" data-section="introduccion">
-                    <span class="docs-sidebar-text">Introducción</span>
-                </div>
+                ${mainItems}
             </div>
-            
             <div class="docs-sidebar-section">
                 <div class="docs-sidebar-title">Componentes</div>
                 <div class="docs-sidebar-subsection">
                     <div class="docs-sidebar-subtitle">NAVEGACIÓN</div>
-                    <div class="docs-sidebar-item" data-section="sidebar">
-                        <span class="docs-sidebar-text">Sidebar</span>
-                    </div>
-                    <div class="docs-sidebar-item" data-section="sub-nav">
-                        <span class="docs-sidebar-text">Sub-nav</span>
-                    </div>
-                    <div class="docs-sidebar-item" data-section="tab-bar">
-                        <span class="docs-sidebar-text">Tab-bar</span>
-                    </div>
+                    ${nav.map(s => `
+                    <div class="docs-sidebar-item" data-section="${s.id}">
+                        <span class="docs-sidebar-text">${s.title}</span>
+                    </div>`).join('')}
                 </div>
                 <div class="docs-sidebar-subsection">
                     <div class="docs-sidebar-subtitle">UI</div>
-                    <div class="docs-sidebar-item" data-section="button">
-                        <span class="docs-sidebar-text">Button</span>
-                    </div>
-                    <div class="docs-sidebar-item" data-section="ia-button">
-                        <span class="docs-sidebar-text">IA-Button</span>
-                    </div>
-                    <div class="docs-sidebar-item" data-section="alert">
-                        <span class="docs-sidebar-text">Alert</span>
-                    </div>
-                    <div class="docs-sidebar-item" data-section="avatar">
-                        <span class="docs-sidebar-text">Avatar</span>
-                    </div>
-                    <div class="docs-sidebar-item" data-section="card-content">
-                        <span class="docs-sidebar-text">Card content</span>
-                    </div>
-                    <div class="docs-sidebar-item" data-section="card-content-compact">
-                        <span class="docs-sidebar-text">Card content compact</span>
-                    </div>
-                    <div class="docs-sidebar-item" data-section="input">
-                        <span class="docs-sidebar-text">Input</span>
-                    </div>
-                    <div class="docs-sidebar-item" data-section="toast">
-                        <span class="docs-sidebar-text">Toast</span>
-                    </div>
-                    <div class="docs-sidebar-item" data-section="status-tag">
-                        <span class="docs-sidebar-text">Status Tag</span>
-                    </div>
-                    <div class="docs-sidebar-item" data-section="tab">
-                        <span class="docs-sidebar-text">Tab</span>
-                    </div>
-                    <div class="docs-sidebar-item" data-section="paginator">
-                        <span class="docs-sidebar-text">Paginator</span>
-                    </div>
-                    <div class="docs-sidebar-item" data-section="empty-state">
-                        <span class="docs-sidebar-text">Empty State</span>
-                    </div>
-                    <div class="docs-sidebar-item" data-section="header-product">
-                        <span class="docs-sidebar-text">Header Product</span>
-                    </div>
-                    <div class="docs-sidebar-item" data-section="modal">
-                        <span class="docs-sidebar-text">Modal</span>
-                    </div>
-                    <div class="docs-sidebar-item" data-section="table">
-                        <span class="docs-sidebar-text">Tabla</span>
-                    </div>
+                    ${ui.map(s => `
+                    <div class="docs-sidebar-item" data-section="${s.id}">
+                        <span class="docs-sidebar-text">${s.title}</span>
+                    </div>`).join('')}
                 </div>
             </div>
         </div>
     </div>
 `;
+}
 
-// HTML del dropdown móvil
-const docsDropdownHTML = `
+/**
+ * Generar HTML del dropdown móvil a partir de DOCS_SIDEBAR_SECTIONS
+ */
+function buildDocsDropdownHTML() {
+    const main = DOCS_SIDEBAR_SECTIONS.filter(s => s.group === 'main');
+    const nav = DOCS_SIDEBAR_SECTIONS.filter(s => s.group === 'navegacion');
+    const ui = DOCS_SIDEBAR_SECTIONS.filter(s => s.group === 'ui').sort((a, b) => a.title.localeCompare(b.title));
+
+    const mainItems = main.map(s => `
+            <div class="docs-dropdown-item" data-section="${s.id}">
+                <span class="docs-dropdown-item-text ubits-body-md-regular">${s.title}</span>
+            </div>`).join('');
+
+    const navItems = nav.map(s => `
+                    <div class="docs-dropdown-item" data-section="${s.id}">
+                        <span class="docs-dropdown-item-text ubits-body-md-regular">${s.title}</span>
+                    </div>`).join('');
+
+    const uiItems = ui.map(s => `
+                    <div class="docs-dropdown-item" data-section="${s.id}">
+                        <span class="docs-dropdown-item-text ubits-body-md-regular">${s.title}</span>
+                    </div>`).join('');
+
+    return `
     <div class="docs-dropdown" id="docs-dropdown">
         <div class="docs-dropdown-trigger">
             <span class="docs-dropdown-text ubits-body-md-regular">Introducción</span>
             <i class="far fa-chevron-down docs-dropdown-icon"></i>
         </div>
         <div class="docs-dropdown-menu">
-            <div class="docs-dropdown-item" data-section="introduccion">
-                <span class="docs-dropdown-item-text ubits-body-md-regular">Introducción</span>
-            </div>
+            ${mainItems}
             <div class="docs-dropdown-group">
                 <div class="docs-dropdown-group-title ubits-body-sm-regular">Componentes</div>
                 <div class="docs-dropdown-subgroup">
                     <div class="docs-dropdown-subgroup-title ubits-body-sm-regular">NAVEGACIÓN</div>
-                    <div class="docs-dropdown-item" data-section="sidebar">
-                        <span class="docs-dropdown-item-text ubits-body-md-regular">Sidebar</span>
-                    </div>
-                    <div class="docs-dropdown-item" data-section="sub-nav">
-                        <span class="docs-dropdown-item-text ubits-body-md-regular">Sub-nav</span>
-                    </div>
-                    <div class="docs-dropdown-item" data-section="tab-bar">
-                        <span class="docs-dropdown-item-text ubits-body-md-regular">Tab-bar</span>
-                    </div>
+                    ${navItems}
                 </div>
                 <div class="docs-dropdown-subgroup">
                     <div class="docs-dropdown-subgroup-title ubits-body-sm-regular">UI</div>
-                    <div class="docs-dropdown-item" data-section="button">
-                        <span class="docs-dropdown-item-text ubits-body-md-regular">Button</span>
-                    </div>
-                    <div class="docs-dropdown-item" data-section="ia-button">
-                        <span class="docs-dropdown-item-text ubits-body-md-regular">IA-Button</span>
-                    </div>
-                    <div class="docs-dropdown-item" data-section="alert">
-                        <span class="docs-dropdown-item-text ubits-body-md-regular">Alert</span>
-                    </div>
-                    <div class="docs-dropdown-item" data-section="avatar">
-                        <span class="docs-dropdown-item-text ubits-body-md-regular">Avatar</span>
-                    </div>
-                    <div class="docs-dropdown-item" data-section="card-content">
-                        <span class="docs-dropdown-item-text ubits-body-md-regular">Card content</span>
-                    </div>
-                    <div class="docs-dropdown-item" data-section="card-content-compact">
-                        <span class="docs-dropdown-item-text ubits-body-md-regular">Card content compact</span>
-                    </div>
-                    <div class="docs-dropdown-item" data-section="input">
-                        <span class="docs-dropdown-item-text ubits-body-md-regular">Input</span>
-                    </div>
-                    <div class="docs-dropdown-item" data-section="toast">
-                        <span class="docs-dropdown-item-text ubits-body-md-regular">Toast</span>
-                    </div>
-                    <div class="docs-dropdown-item" data-section="status-tag">
-                        <span class="docs-dropdown-item-text ubits-body-md-regular">Status Tag</span>
-                    </div>
-                    <div class="docs-dropdown-item" data-section="tab">
-                        <span class="docs-dropdown-item-text ubits-body-md-regular">Tab</span>
-                    </div>
-                    <div class="docs-dropdown-item" data-section="paginator">
-                        <span class="docs-dropdown-item-text ubits-body-md-regular">Paginator</span>
-                    </div>
-                    <div class="docs-dropdown-item" data-section="empty-state">
-                        <span class="docs-dropdown-item-text ubits-body-md-regular">Empty State</span>
-                    </div>
-                    <div class="docs-dropdown-item" data-section="header-product">
-                        <span class="docs-dropdown-item-text ubits-body-md-regular">Header Product</span>
-                    </div>
-                    <div class="docs-dropdown-item" data-section="modal">
-                        <span class="docs-dropdown-item-text ubits-body-md-regular">Modal</span>
-                    </div>
-                    <div class="docs-dropdown-item" data-section="table">
-                        <span class="docs-dropdown-item-text ubits-body-md-regular">Tabla</span>
-                    </div>
+                    ${uiItems}
                 </div>
             </div>
         </div>
     </div>
 `;
+}
 
 /**
  * Cargar sidebar de documentación
  * @param {string} activeSection - Sección activa por defecto
  */
 function loadDocsSidebar(activeSection = 'introduccion') {
-    // Cargar sidebar lateral
+    // Cargar sidebar lateral (generado desde config, orden UI alfabético)
     const sidebarContainer = document.getElementById('docs-sidebar-container');
     if (sidebarContainer) {
-        sidebarContainer.innerHTML = docsSidebarHTML;
+        sidebarContainer.innerHTML = buildDocsSidebarHTML();
     }
     
     // Cargar dropdown móvil
     const dropdownContainer = document.getElementById('docs-dropdown-container');
     if (dropdownContainer) {
-        dropdownContainer.innerHTML = docsDropdownHTML;
+        dropdownContainer.innerHTML = buildDocsDropdownHTML();
     }
     
     // Inicializar funcionalidad
     initDocsSidebar(activeSection);
+    
+    // Hacer scroll en el sidebar para que el ítem activo sea visible al entrar a la página
+    scrollSidebarToActiveItem(activeSection);
     
     // Inicializar scroll listener
     initScrollListener();
@@ -353,7 +217,9 @@ function initDocsSidebar(activeSection) {
             'empty-state': 'empty-state.html',
             'header-product': 'header-product.html',
             'modal': 'modal.html',
-            'table': 'table.html'
+            'table': 'table.html',
+            'tooltip': 'tooltip.html',
+            'calendar': 'calendar.html'
         };
         
         const targetFile = sectionToFile[section];
@@ -435,6 +301,20 @@ function initDocsSidebar(activeSection) {
     
     // Activar sección por defecto
     setActiveDocsSection(activeSection);
+}
+
+/**
+ * Hacer scroll en el sidebar para que el ítem activo sea visible al cargar la página
+ * @param {string} activeSection - ID de la sección activa
+ */
+function scrollSidebarToActiveItem(activeSection) {
+    requestAnimationFrame(function() {
+        const sidebar = document.querySelector('.docs-sidebar');
+        const activeItem = document.querySelector('.docs-sidebar-item[data-section="' + activeSection + '"]');
+        if (sidebar && activeItem) {
+            activeItem.scrollIntoView({ block: 'nearest', behavior: 'auto', inline: 'nearest' });
+        }
+    });
 }
 
 /**

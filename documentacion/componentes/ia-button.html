@@ -233,81 +233,6 @@
                         </div>
                     </div>
 
-                    <!-- Implementación -->
-                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
-                        <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
-                            <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                            Implementación
-                        </h2>
-                        
-                        <div style="margin-bottom: 24px;">
-                            <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">
-                                Requisitos obligatorios
-                            </h3>
-                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code>&lt;!-- CSS Requerido --&gt;
-&lt;link rel="stylesheet" href="../../components/ia-button.css"&gt;
-&lt;link rel="stylesheet" href="../../general-styles/fontawesome-icons.css"&gt;
-&lt;link rel="stylesheet" href="../../general-styles/ubits-colors.css"&gt;
-&lt;link rel="stylesheet" href="../../general-styles/ubits-typography.css"&gt;</code></pre>
-                            </div>
-                        </div>
-                        
-                        <div style="margin-bottom: 24px;">
-                            <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">
-                                Estructura HTML
-                            </h3>
-                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; position: relative;">
-                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('structure-code')" style="position: absolute; top: 12px; right: 12px;">
-                                    <i class="far fa-copy"></i>
-                                    <span>Copiar</span>
-                                </button>
-                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="structure-code">&lt;!-- IA-Button Primary con texto e iconos --&gt;
-&lt;button class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--md"&gt;
-  &lt;i class="far fa-sparkles"&gt;&lt;/i&gt;
-  &lt;span&gt;Button text&lt;/span&gt;
-  &lt;i class="far fa-sparkles"&gt;&lt;/i&gt;
-  &lt;span class="ubits-ia-button__badge"&gt;&lt;/span&gt;
-&lt;/button&gt;
-
-&lt;!-- IA-Button Secondary --&gt;
-&lt;button class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--md"&gt;
-  &lt;i class="far fa-sparkles"&gt;&lt;/i&gt;
-  &lt;span&gt;Button text&lt;/span&gt;
-  &lt;i class="far fa-sparkles"&gt;&lt;/i&gt;
-  &lt;span class="ubits-ia-button__badge"&gt;&lt;/span&gt;
-&lt;/button&gt;
-
-&lt;!-- IA-Button icon-only --&gt;
-&lt;button class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--icon-only ubits-ia-button--md"&gt;
-  &lt;i class="far fa-sparkles"&gt;&lt;/i&gt;
-&lt;/button&gt;
-
-&lt;!-- IA-Button con badge opcional --&gt;
-&lt;button class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--md"&gt;
-  &lt;i class="far fa-sparkles"&gt;&lt;/i&gt;
-  &lt;span&gt;Button text&lt;/span&gt;
-  &lt;i class="far fa-sparkles"&gt;&lt;/i&gt;
-  &lt;span class="ubits-ia-button__badge"&gt;&lt;/span&gt;
-&lt;/button&gt;
-
-&lt;!-- IA-Button con estado Active --&gt;
-&lt;button class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--md ubits-ia-button--active"&gt;
-  &lt;i class="far fa-sparkles"&gt;&lt;/i&gt;
-  &lt;span&gt;Button text&lt;/span&gt;
-  &lt;i class="far fa-sparkles"&gt;&lt;/i&gt;
-&lt;/button&gt;
-
-&lt;!-- IA-Button Disabled --&gt;
-&lt;button class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--md" disabled&gt;
-  &lt;i class="far fa-sparkles"&gt;&lt;/i&gt;
-  &lt;span&gt;Button text&lt;/span&gt;
-  &lt;i class="far fa-sparkles"&gt;&lt;/i&gt;
-&lt;/button&gt;</code></pre>
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- PROMPTS ÚTILES -->
                     <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
                         <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
@@ -340,21 +265,12 @@
 - Icono: [especifica icono FontAwesome, preferiblemente fa-sparkles para IA]
 - Ubicación: [describe en que parte del layout debe estar el botón]
 
-IMPORTANTE: Usa EXACTAMENTE esta estructura:
-&lt;button class="ubits-ia-button ubits-ia-button--[variante] ubits-ia-button--[tamaño]"&gt;
-    &lt;i class="far fa-[icono]"&gt;&lt;/i&gt;
-    &lt;span&gt;[texto]&lt;/span&gt;
-    &lt;i class="far fa-[icono]"&gt;&lt;/i&gt;
-    &lt;span class="ubits-ia-button__badge"&gt;&lt;/span&gt;
-&lt;/button&gt;
-
-IMPORTA: components/ia-button.css
-NOTA: El badge es opcional, agrégalo solo cuando sea necesario</code></pre>
+NOTA: El badge es opcional, agrégalo solo cuando sea necesario.</code></pre>
                             </div>
                         </div>
 
-                        <!-- Prompt 1: Cambiar variante -->
-                        <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <!-- Prompt 1: Cambiar variante (último: sin border-bottom) -->
+                        <div>
                             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
                                 <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
                                     Cambiar variante del IA-Button
@@ -370,77 +286,129 @@ NOTA: El badge es opcional, agrégalo solo cuando sea necesario</code></pre>
                         </div>
                     </div>
 
-                    <!-- Documentación técnica -->
-                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
-                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; cursor: pointer;" onclick="toggleTechnicalDocs()">
-                            <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                    <!-- Documentación técnica (estructura oficial como Button) -->
+                    <div style="background: var(--ubits-bg-1); border-radius: 16px; margin-bottom: 40px; overflow: hidden;">
+                        <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
                                 <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                                 Documentación técnica
                             </h2>
-                            <div style="display: flex; align-items: center; gap: 8px; color: var(--ubits-fg-1-medium);">
-                                <i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>
-                                <span class="ubits-body-sm-regular">Mostrar</span>
-                            </div>
+                            <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
+                                Información técnica detallada para implementar el componente IA-Button.
+                            </p>
                         </div>
-                        
-                        <div id="technical-docs-content" style="display: none;">
-                            <div style="margin-bottom: 24px;">
-                                <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">
-                                    Variantes disponibles
-                                </h3>
-                                <ul style="margin: 0; padding-left: 24px; color: var(--ubits-fg-1-medium); line-height: 1.8;">
-                                    <li><code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px;">ubits-ia-button--primary</code> - Botón con gradiente radial azul (por defecto)</li>
-                                    <li><code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px;">ubits-ia-button--secondary</code> - Botón outlined con borde azul</li>
-                                </ul>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                            <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                <i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>
+                                Mostrar
+                            </span>
+                        </div>
+                        <div id="technical-docs-content" style="display: none; padding: 0;">
+                            <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                    <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                        <i class="far fa-sitemap" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                        Estructura del componente
+                                    </h2>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('structure-code')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="structure-code">&lt;button class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--md"&gt;
+  &lt;i class="far fa-sparkles"&gt;&lt;/i&gt;
+  &lt;span&gt;Button text&lt;/span&gt;
+  &lt;span class="ubits-ia-button__badge"&gt;&lt;/span&gt;
+&lt;/button&gt;</code></pre>
+                                </div>
                             </div>
-                            
-                            <div style="margin-bottom: 24px;">
-                                <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">
-                                    Tamaños disponibles
-                                </h3>
-                                <ul style="margin: 0; padding-left: 24px; color: var(--ubits-fg-1-medium); line-height: 1.8;">
-                                    <li><code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px;">ubits-ia-button--sm</code> - Small (padding 8px 12px)</li>
-                                    <li><code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px;">ubits-ia-button--md</code> - Medium (padding 12px 16px) - POR DEFECTO</li>
-                                    <li><code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px;">ubits-ia-button--lg</code> - Large (padding 16px 20px)</li>
-                                </ul>
+                            <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                    <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                        <i class="far fa-tags" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                        Clases disponibles
+                                    </h2>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('classes-code')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="classes-code">/* Variantes */
+.ubits-ia-button--primary    /* Gradiente radial azul */
+.ubits-ia-button--secondary  /* Outlined con borde azul */
+
+/* Tamaños */
+.ubits-ia-button--xs         /* Extra small */
+.ubits-ia-button--sm        /* Small */
+.ubits-ia-button--md        /* Medium (por defecto) */
+.ubits-ia-button--lg        /* Large */
+
+/* Modificadores */
+.ubits-ia-button--icon-only        /* Solo icono */
+.ubits-ia-button--icon-only--sm
+.ubits-ia-button--icon-only--md
+.ubits-ia-button--icon-only--lg
+.ubits-ia-button--active     /* Estado activo programático */
+.ubits-ia-button__badge      /* Badge opcional */</code></pre>
+                                </div>
                             </div>
-                            
-                            <div style="margin-bottom: 24px;">
-                                <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">
-                                    Estados disponibles
-                                </h3>
-                                <ul style="margin: 0; padding-left: 24px; color: var(--ubits-fg-1-medium); line-height: 1.8;">
-                                    <li><code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px;">:hover</code> - Estado hover automático</li>
-                                    <li><code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px;">:active</code> - Estado pressed automático</li>
-                                    <li><code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px;">:focus-visible</code> - Estado focused automático</li>
-                                    <li><code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px;">ubits-ia-button--active</code> - Estado activo programático</li>
-                                    <li><code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px;">:disabled</code> - Estado deshabilitado</li>
-                                </ul>
-                            </div>
-                            
-                            <div style="margin-bottom: 24px;">
-                                <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">
-                                    Modificadores
-                                </h3>
-                                <ul style="margin: 0; padding-left: 24px; color: var(--ubits-fg-1-medium); line-height: 1.8;">
-                                    <li><code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px;">ubits-ia-button--icon-only</code> - Solo icono, sin texto</li>
-                                    <li><code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px;">ubits-ia-button--icon-only--sm</code> - Icon-only pequeño</li>
-                                    <li><code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px;">ubits-ia-button--icon-only--md</code> - Icon-only mediano</li>
-                                    <li><code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px;">ubits-ia-button--icon-only--lg</code> - Icon-only grande</li>
-                                </ul>
-                            </div>
-                            
-                            <div>
-                                <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">
-                                    Características especiales
-                                </h3>
-                                <ul style="margin: 0; padding-left: 24px; color: var(--ubits-fg-1-medium); line-height: 1.8;">
-                                    <li><strong>Badge opcional:</strong> El badge es opcional y puede agregarse cuando sea necesario</li>
-                                    <li><strong>Gradiente radial:</strong> La variante Primary usa un gradiente radial específico</li>
-                                    <li><strong>Pill shape:</strong> Border radius completo (1000px) para forma de píldora</li>
-                                    <li><strong>Iconos opcionales:</strong> Puedes usar iconos a izquierda y/o derecha del texto</li>
-                                    <li><strong>Diseñado para IA:</strong> Este componente está específicamente diseñado para casos de uso de IA</li>
-                                </ul>
+                            <div style="padding: 32px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                    <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                        <i class="far fa-code-branch" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                        Cómo implementar
+                                    </h2>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('implementation-code')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">🔧 REQUISITOS OBLIGATORIOS:</h3>
+                                    <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.5;">
+                                        <strong>CSS Requerido:</strong><br>
+                                        • <code>components/ia-button.css</code> - Estilos del componente<br>
+                                        • <code>fontawesome-icons.css</code> - Iconos FontAwesome<br>
+                                        • <code>ubits-colors.css</code> - Tokens de color UBITS<br>
+                                        • <code>ubits-typography.css</code> - Tipografía UBITS<br><br>
+                                        <strong>JavaScript:</strong> NO requerido - Componente puramente CSS<br><br>
+                                        <strong>Renderizado:</strong> HTML directo con clases UBITS
+                                    </div>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="implementation-code">&lt;!-- IA-Button Primary --&gt;
+&lt;button class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--md"&gt;
+  &lt;i class="far fa-sparkles"&gt;&lt;/i&gt;
+  &lt;span&gt;Button text&lt;/span&gt;
+  &lt;span class="ubits-ia-button__badge"&gt;&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- IA-Button Secondary --&gt;
+&lt;button class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--md"&gt;
+  &lt;i class="far fa-sparkles"&gt;&lt;/i&gt;
+  &lt;span&gt;Button text&lt;/span&gt;
+  &lt;span class="ubits-ia-button__badge"&gt;&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- IA-Button icon-only --&gt;
+&lt;button class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--icon-only ubits-ia-button--md"&gt;
+  &lt;i class="far fa-sparkles"&gt;&lt;/i&gt;
+&lt;/button&gt;
+
+&lt;!-- IA-Button con estado Active --&gt;
+&lt;button class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--md ubits-ia-button--active"&gt;
+  &lt;i class="far fa-sparkles"&gt;&lt;/i&gt;
+  &lt;span&gt;Button text&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- IA-Button Disabled --&gt;
+&lt;button class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--md" disabled&gt;
+  &lt;i class="far fa-sparkles"&gt;&lt;/i&gt;
+  &lt;span&gt;Button text&lt;/span&gt;
+&lt;/button&gt;</code></pre>
+                                </div>
                             </div>
                         </div>
                     </div>

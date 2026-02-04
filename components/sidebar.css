@@ -93,12 +93,12 @@
 }
 
 .sidebar-content::-webkit-scrollbar-thumb {
-    background: var(--ubits-fg-1-low);
+    background: var(--ubits-scroll-bar-color-bg-default);
     border-radius: 3px;
 }
 
 .sidebar-content::-webkit-scrollbar-thumb:hover {
-    background: var(--ubits-fg-1-medium);
+    background: var(--ubits-scroll-bar-color-bg-default);
 }
 
 /* Modo oscuro */

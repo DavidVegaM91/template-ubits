@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Calendar | UBITS Playground</title>
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/calendar.css">
+    <style>
+        .calendar-preview-area {
+            min-height: 320px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            background: var(--ubits-bg-2);
+            border-radius: 12px;
+            border: 1px solid var(--ubits-border-1);
+            padding: 32px;
+        }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div style="display: flex;">
+                <div id="docs-dropdown-container"></div>
+                <div id="docs-sidebar-container"></div>
+                <div class="components-content">
+                    <div class="content-area" style="display: block; width: 100%;">
+                        <!-- Hero -->
+                        <div style="text-align: center; margin-bottom: 60px;">
+                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">Calendar</h1>
+                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                                Componente calendario UBITS. Solo el calendario: se renderiza dentro del contenedor que indiques. Puede ir en una página, en un modal o dentro del popup de un input tipo calendar.
+                            </p>
+                        </div>
+
+                        <!-- Preview -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Preview del componente
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                                El calendario muestra mes y año actuales por defecto. Usa los selectores de mes y año o las flechas para navegar; haz clic en un día para seleccionar.
+                            </p>
+                            <div class="calendar-preview-area">
+                                <div id="calendar-doc-container"></div>
+                            </div>
+                        </div>
+
+                        <!-- Características -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Características generales
+                            </h2>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-calendar-alt"></i></div>
+                                    <div class="ubits-body-sm-bold">Solo calendario</div>
+                                    <div class="ubits-body-sm-regular">Sin borde, border-radius ni elevation. Se integra en página, modal o input.</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-list"></i></div>
+                                    <div class="ubits-body-sm-bold">Mes y año con Input UBITS</div>
+                                    <div class="ubits-body-sm-regular">Selectores de mes y año usan createInput type select; al abrir, scroll a la opción seleccionada.</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-mouse-pointer"></i></div>
+                                    <div class="ubits-body-sm-bold">Callback onDateSelect</div>
+                                    <div class="ubits-body-sm-regular">Devuelve la fecha en formato dd/mm/yyyy al hacer clic en un día.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Prompts útiles -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Prompts útiles
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                Copia el texto que más se parezca a lo que necesitas, cambia lo que está entre [corchetes] por tu caso y pégalo en Cursor.
+                            </p>
+                            <div id="calendar-warning-alert" style="margin-bottom: 24px;"></div>
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                        Poner un calendario en la pantalla
+                                    </h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('calendar-prompt-1')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-size: 15px; line-height: 1.6; color: var(--ubits-fg-1-medium); white-space: pre-wrap; font-family: 'Noto Sans', sans-serif;"><code id="calendar-prompt-1">Quiero que en [dónde, por ejemplo: esta página / el modal de reservas] aparezca un calendario para elegir una fecha. Cuando el usuario elija un día, [qué debe pasar, por ejemplo: que se guarde la fecha / que se muestre un mensaje].</code></pre>
+                                </div>
+                            </div>
+                            <div>
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                        Campo de fecha que abre un calendario
+                                    </h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('calendar-prompt-2')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-size: 15px; line-height: 1.6; color: var(--ubits-fg-1-medium); white-space: pre-wrap; font-family: 'Noto Sans', sans-serif;"><code id="calendar-prompt-2">Quiero un campo de fecha en [formulario o sección] que al hacer clic muestre un calendario para elegir el día. La etiqueta del campo debe decir [texto, por ejemplo: Fecha de nacimiento].</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Documentación técnica -->
+                        <div style="background: var(--ubits-bg-1); border-radius: 16px; margin-bottom: 40px; overflow: hidden;">
+                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Documentación técnica
+                                </h2>
+                            </div>
+                            <div id="calendar-docs-toggle" style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;">
+                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                    <i class="far fa-chevron-down" id="calendar-docs-chevron"></i>
+                                    <span id="calendar-docs-toggle-text">Mostrar</span>
+                                </span>
+                            </div>
+                            <div id="calendar-technical-docs" style="display: none; padding: 32px; border-top: 1px solid var(--ubits-border-1);">
+                                <div style="margin-bottom: 24px;">
+                                    <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Uso básico</h3>
+                                    <pre style="margin: 0; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px; overflow-x: auto; font-size: 13px; color: var(--ubits-fg-1-medium); text-align: left;"><code>&lt;div id="calendar-container"&gt;&lt;/div&gt;
+&lt;link rel="stylesheet" href="components/input.css"&gt;
+&lt;link rel="stylesheet" href="components/calendar.css"&gt;
+&lt;script src="components/input.js"&gt;&lt;/script&gt;
+&lt;script src="components/calendar.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+createCalendar({
+  containerId: 'calendar-container',
+  onDateSelect: function(dateStr) { console.log(dateStr); }
+});
+&lt;/script&gt;</code></pre>
+                                </div>
+                                <div style="margin-bottom: 24px;">
+                                    <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">API: createCalendar(options)</h3>
+                                    <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 8px;"><strong>containerId</strong> (string, requerido): ID del elemento donde se renderiza el calendario.</p>
+                                    <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 8px;"><strong>initialDate</strong> (Date | string dd/mm/yyyy, opcional): Mes y año a mostrar. Por defecto: hoy.</p>
+                                    <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 8px;"><strong>selectedDate</strong> (Date | string dd/mm/yyyy, opcional): Día seleccionado (resaltado).</p>
+                                    <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);"><strong>onDateSelect</strong> (function(dateStr), opcional): Callback al hacer clic en un día; recibe la fecha en formato dd/mm/yyyy.</p>
+                                </div>
+                                <div>
+                                    <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Dependencias</h3>
+                                    <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">El calendario usa <strong>createInput</strong> (input.js) para los selectores de mes y año. Siempre importa input.js e input.css antes de calendar.js y calendar.css.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="ubits-toast-container"></div>
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/input.js"></script>
+    <script src="../../components/calendar.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof loadSubNav === 'function') loadSubNav('top-nav-container', 'documentacion');
+            if (typeof loadDocsSidebar === 'function') loadDocsSidebar('calendar');
+            if (typeof createCalendar === 'function') {
+                createCalendar({
+                    containerId: 'calendar-doc-container',
+                    onDateSelect: function(dateStr) {
+                        if (typeof showToast === 'function') showToast('success', 'Fecha seleccionada: ' + dateStr, { containerId: 'ubits-toast-container', duration: 2500 });
+                    }
+                });
+            }
+            if (typeof showAlert === 'function') {
+                showAlert('warning', 'Antes de pegar el prompt en Cursor, cambia lo que está entre [corchetes] por tu caso concreto.', { containerId: 'calendar-warning-alert' });
+            }
+        });
+        function copyPrompt(promptId) {
+            var el = document.getElementById(promptId);
+            if (!el) return;
+            var text = el.textContent;
+            if (typeof navigator.clipboard !== 'undefined' && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(function() {
+                    var btn = document.querySelector('[onclick="copyPrompt(\'' + promptId + '\')"]');
+                    if (btn) {
+                        var span = btn.querySelector('span');
+                        if (span) span.textContent = 'Copiado';
+                        setTimeout(function() { if (span) span.textContent = 'Copiar'; }, 2000);
+                    }
+                    if (typeof showToast === 'function') showToast('success', 'Prompt copiado', { containerId: 'ubits-toast-container', duration: 2500 });
+                }).catch(function() {
+                    if (typeof showToast === 'function') showToast('error', 'No se pudo copiar', { containerId: 'ubits-toast-container', duration: 2500 });
+                });
+            } else {
+                if (typeof showToast === 'function') showToast('success', 'Prompt copiado', { containerId: 'ubits-toast-container', duration: 2500 });
+            }
+        }
+        document.getElementById('calendar-docs-toggle').addEventListener('click', function() {
+            var content = document.getElementById('calendar-technical-docs');
+            var chevron = document.getElementById('calendar-docs-chevron');
+            var textEl = document.getElementById('calendar-docs-toggle-text');
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                chevron.style.transform = 'rotate(180deg)';
+                if (textEl) textEl.textContent = 'Ocultar';
+            } else {
+                content.style.display = 'none';
+                chevron.style.transform = 'rotate(0deg)';
+                if (textEl) textEl.textContent = 'Mostrar';
+            }
+        });
+    </script>
+</body>
+</html>
