@@ -1099,7 +1099,9 @@ function createInput(options = {}) {
             onFocus = null,
             onBlur = null,
             multiple = false,
-            showCheckboxes = false
+            showCheckboxes = false,
+            calendarMaxDate = undefined,
+            calendarMinDate = undefined
         } = options;
 
     // Validar parámetros requeridos
@@ -1435,14 +1437,17 @@ function createInput(options = {}) {
                     wrapper.style.left = left + 'px';
                     wrapper.style.top = top + 'px';
                 }
-                window.createCalendar({
+                var calendarOpts = {
                     containerId: pickerId,
                     onDateSelect: function (dateStr) {
                         inputElement.value = dateStr;
                         wrapper.style.display = 'none';
                         if (typeof onChange === 'function') onChange(dateStr);
                     }
-                });
+                };
+                if (calendarMaxDate != null) calendarOpts.maxDate = calendarMaxDate;
+                if (calendarMinDate != null) calendarOpts.minDate = calendarMinDate;
+                window.createCalendar(calendarOpts);
                 inputElement.addEventListener('click', function () {
                     if (wrapper.style.display === 'none' || wrapper.style.display === '') {
                         wrapper.style.display = 'block';

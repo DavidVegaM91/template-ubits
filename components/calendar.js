@@ -21,6 +21,10 @@
  *     selectedEndDate?: Date | string,
  *     onRangeSelect?: function(startStr, endStr)  // endStr puede ser null si solo hay inicio
  *   });
+ *
+ * Opcionales para limitar rango seleccionable:
+ *   maxDate?: Date | string (dd/mm/yyyy) - fecha máxima seleccionable
+ *   minDate?: Date | string (dd/mm/yyyy) - fecha mínima seleccionable
  */
 (function () {
     'use strict';
@@ -73,6 +77,11 @@
 
         var onDateSelect = typeof options.onDateSelect === 'function' ? options.onDateSelect : null;
         var onRangeSelect = typeof options.onRangeSelect === 'function' ? options.onRangeSelect : null;
+
+        var maxDate = options.maxDate ? (options.maxDate instanceof Date ? options.maxDate : parseDate(options.maxDate)) : null;
+        var minDate = options.minDate ? (options.minDate instanceof Date ? options.minDate : parseDate(options.minDate)) : null;
+        if (maxDate) maxDate.setHours(23, 59, 59, 999);
+        if (minDate) minDate.setHours(0, 0, 0, 0);
 
         var calendar = document.createElement('div');
         calendar.className = 'ubits-calendar-picker';
@@ -131,6 +140,8 @@
                 }
 
                 if (isToday) dayClass += ' ubits-calendar-day--today';
+                if (maxDate && dateTime > dateToTime(maxDate)) dayClass += ' ubits-calendar-day--disabled';
+                if (minDate && dateTime < dateToTime(minDate)) dayClass += ' ubits-calendar-day--disabled';
                 html += '<div class="' + dayClass + '" data-date="' + formatDate(date) + '">' + day + '</div>';
             }
             html += '</div></div>';
@@ -157,14 +168,17 @@
                         render();
                     }
                 });
+                var yearMin = minDate ? minDate.getFullYear() : currentDate.getFullYear() - 50;
+                var yearMax = maxDate ? maxDate.getFullYear() : currentDate.getFullYear() + 49;
+                var yearRange = yearMax - yearMin + 1;
                 window.createInput({
                     containerId: yearContainerId,
                     type: 'select',
                     variant: 'subtle',
                     size: 'sm',
                     showLabel: false,
-                    selectOptions: Array.from({ length: 100 }, function (_, i) {
-                        var y = currentDate.getFullYear() - 50 + i;
+                    selectOptions: Array.from({ length: yearRange }, function (_, i) {
+                        var y = yearMin + i;
                         return { value: String(y), text: String(y) };
                     }),
                     value: String(year),
@@ -192,6 +206,7 @@
             dayEls.forEach(function (dayEl) {
                 dayEl.addEventListener('click', function (e) {
                     e.stopPropagation();
+                    if (dayEl.classList.contains('ubits-calendar-day--disabled')) return;
                     var dateStr = dayEl.getAttribute('data-date');
                     var parts = dateStr.split('/').map(Number);
                     var clicked = new Date(parts[2], parts[1] - 1, parts[0]);

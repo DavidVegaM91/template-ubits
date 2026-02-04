@@ -146,6 +146,27 @@
     }
 }
 
+/* ========================================
+   VARIANTE: TABS WITH ACTIONS
+   Sin back, info, título ni breadcrumb. Tabs a la izquierda, acciones a la derecha.
+   ======================================== */
+.ubits-header-product--tabs-with-actions .ubits-header-product__primary-row {
+    justify-content: space-between;
+}
+
+.ubits-header-product__tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--ubits-bg-2);
+    border-radius: 8px;
+    padding: 4px;
+    width: fit-content;
+}
+
+.ubits-header-product__tabs .ubits-tab {
+    padding: 8px 12px;
+}
+
 /* Asegurar que el widget-header-product permita que las sombras se vean completas */
 .widget-header-product {
     overflow: visible !important;

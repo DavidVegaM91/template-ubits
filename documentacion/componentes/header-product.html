@@ -18,85 +18,129 @@
     <link rel="stylesheet" href="../../components/header-product.css">
     <link rel="stylesheet" href="../../components/button.css">
     <link rel="stylesheet" href="../../components/ia-button.css">
+    <link rel="stylesheet" href="../../components/tab.css">
     <link rel="stylesheet" href="../../components/toast.css">
     <style>
-        /* Switch styles */
+        /* Switch compacto */
         .switch {
             position: relative;
             display: inline-block;
-            width: 44px;
-            height: 24px;
+            width: 36px;
+            height: 20px;
+            flex-shrink: 0;
         }
-        
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        
+        .switch input { opacity: 0; width: 0; height: 0; }
         .slider {
             position: absolute;
             cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            top: 0; left: 0; right: 0; bottom: 0;
             background-color: var(--ubits-border-1);
             transition: .4s;
-            border-radius: 24px;
+            border-radius: 20px;
         }
-        
         .slider:before {
             position: absolute;
             content: "";
-            height: 18px;
-            width: 18px;
+            height: 14px;
+            width: 14px;
             left: 3px;
             bottom: 3px;
             background-color: white;
             transition: .4s;
             border-radius: 50%;
         }
-        
-        input:checked + .slider {
-            background-color: var(--ubits-accent-brand);
-        }
-        
-        input:checked + .slider:before {
-            transform: translateX(20px);
-        }
-        
-        .switch-container {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .switch-label {
-            color: var(--ubits-fg-1-medium);
-            font-family: 'Noto Sans', sans-serif;
-            font-size: 13px;
-            font-weight: 400;
-            line-height: 19.5px;
-        }
-        
-        .switch-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 0;
-        }
-        
-        .switch-item-indented {
-            padding-left: 24px;
-        }
+        input:checked + .slider { background-color: var(--ubits-accent-brand); }
+        input:checked + .slider:before { transform: translateX(16px); }
         
         .preview-container {
             background: var(--ubits-bg-2);
             padding: 24px;
             border-radius: 12px;
-           
             min-height: 200px;
+        }
+        /* Mostrar título en el preview (el componente lo oculta por defecto salvo en .modo-estudio-ia-page) */
+        .preview-container .ubits-header-product__product-title h1 {
+            display: block;
+        }
+        .preview-container .ubits-header-product__product-title h1:empty {
+            display: none;
+        }
+        
+        /* Controladores compactos: grupos en fila con jerarquía visual */
+        .preview-controls {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .control-group {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px 20px;
+            padding: 10px 12px;
+            background: var(--ubits-bg-2);
+            border-radius: 8px;
+            border: 1px solid var(--ubits-border-1);
+        }
+        .control-group-label {
+            font-family: 'Noto Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--ubits-fg-1-high);
+            min-width: 88px;
+        }
+        .control-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px 16px;
+        }
+        .control-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .control-item .switch-label {
+            font-family: 'Noto Sans', sans-serif;
+            font-size: 12px;
+            color: var(--ubits-fg-1-medium);
+        }
+        .control-group-nested {
+            margin-left: 12px;
+            padding-left: 12px;
+            border-left: 2px solid var(--ubits-border-1);
+        }
+        .variant-radios {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .variant-radios label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--ubits-fg-1-medium);
+            cursor: pointer;
+        }
+        .control-group-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px 16px;
+        }
+        .control-group-tabs label {
+            font-size: 12px;
+            color: var(--ubits-fg-1-medium);
+        }
+        .control-group-tabs select {
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: 1px solid var(--ubits-border-1);
+            background: var(--ubits-bg-1);
+            color: var(--ubits-fg-1-high);
+            font-size: 12px;
         }
     </style>
 </head>
@@ -147,96 +191,96 @@
                             <div id="header-product-preview"></div>
                         </div>
                         
-                        <!-- Preview Controls -->
-                        <div style="margin-top: 24px; display: flex; flex-direction: column; gap: 8px;">
-                            <!-- Back button -->
-                            <div class="switch-item">
-                                <label class="switch">
-                                    <input type="checkbox" id="switch-back-button" checked>
-                                    <span class="slider"></span>
-                                </label>
-                                <span class="switch-label">Back button</span>
+                        <!-- Preview Controls (compactos) -->
+                        <div class="preview-controls">
+                            <!-- Variante -->
+                            <div class="control-group">
+                                <span class="control-group-label">Variante</span>
+                                <div class="variant-radios">
+                                    <label><input type="radio" name="header-variant" value="default" checked> Default (título + back + info + acciones + breadcrumb)</label>
+                                    <label><input type="radio" name="header-variant" value="tabs-with-actions"> Tabs + acciones (sin breadcrumb)</label>
+                                </div>
                             </div>
                             
-                            <!-- Product title -->
-                            <div class="switch-item">
-                                <label class="switch">
-                                    <input type="checkbox" id="switch-product-title" checked>
-                                    <span class="slider"></span>
-                                </label>
-                                <span class="switch-label">Product title</span>
+                            <!-- Controles variante Default -->
+                            <div id="controls-default" class="control-group">
+                                <span class="control-group-label">Fila principal</span>
+                                <div class="control-row">
+                                    <div class="control-item">
+                                        <label class="switch"><input type="checkbox" id="switch-back-button" checked><span class="slider"></span></label>
+                                        <span class="switch-label">Back</span>
+                                    </div>
+                                    <div class="control-item">
+                                        <label class="switch"><input type="checkbox" id="switch-product-title" checked><span class="slider"></span></label>
+                                        <span class="switch-label">Título</span>
+                                    </div>
+                                    <div class="control-item">
+                                        <label class="switch"><input type="checkbox" id="switch-info-button" checked><span class="slider"></span></label>
+                                        <span class="switch-label">Info</span>
+                                    </div>
+                                    <div class="control-item">
+                                        <label class="switch"><input type="checkbox" id="switch-actions" checked><span class="slider"></span></label>
+                                        <span class="switch-label">Actions</span>
+                                    </div>
+                                </div>
+                                <div class="control-row control-group-nested">
+                                    <div class="control-item">
+                                        <label class="switch"><input type="checkbox" id="switch-primary-action" checked><span class="slider"></span></label>
+                                        <span class="switch-label">Primary</span>
+                                    </div>
+                                    <div class="control-item">
+                                        <label class="switch"><input type="checkbox" id="switch-ai-button" checked><span class="slider"></span></label>
+                                        <span class="switch-label">AI</span>
+                                    </div>
+                                    <div class="control-item">
+                                        <label class="switch"><input type="checkbox" id="switch-secondary-actions" checked><span class="slider"></span></label>
+                                        <span class="switch-label">Secondary</span>
+                                    </div>
+                                    <div class="control-item">
+                                        <label class="switch"><input type="checkbox" id="switch-more-actions" checked><span class="slider"></span></label>
+                                        <span class="switch-label">More</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="controls-default-secondary" class="control-group">
+                                <span class="control-group-label">Fila secundaria</span>
+                                <div class="control-row">
+                                    <div class="control-item">
+                                        <label class="switch"><input type="checkbox" id="switch-secondary-row" checked><span class="slider"></span></label>
+                                        <span class="switch-label">Fila</span>
+                                    </div>
+                                    <div class="control-item">
+                                        <label class="switch"><input type="checkbox" id="switch-breadcrumb" checked><span class="slider"></span></label>
+                                        <span class="switch-label">Breadcrumb</span>
+                                    </div>
+                                </div>
                             </div>
                             
-                            <!-- Info button -->
-                            <div class="switch-item">
-                                <label class="switch">
-                                    <input type="checkbox" id="switch-info-button" checked>
-                                    <span class="slider"></span>
-                                </label>
-                                <span class="switch-label">Info button</span>
-                            </div>
-                            
-                            <!-- Actions -->
-                            <div class="switch-item">
-                                <label class="switch">
-                                    <input type="checkbox" id="switch-actions" checked>
-                                    <span class="slider"></span>
-                                </label>
-                                <span class="switch-label">Actions</span>
-                            </div>
-                            
-                            <!-- Primary action (indented) -->
-                            <div class="switch-item switch-item-indented">
-                                <label class="switch">
-                                    <input type="checkbox" id="switch-primary-action" checked>
-                                    <span class="slider"></span>
-                                </label>
-                                <span class="switch-label">Primary action</span>
-                            </div>
-                            
-                            <!-- AI button (indented) -->
-                            <div class="switch-item switch-item-indented">
-                                <label class="switch">
-                                    <input type="checkbox" id="switch-ai-button" checked>
-                                    <span class="slider"></span>
-                                </label>
-                                <span class="switch-label">AI button</span>
-                            </div>
-                            
-                            <!-- Secondary actions (indented) -->
-                            <div class="switch-item switch-item-indented">
-                                <label class="switch">
-                                    <input type="checkbox" id="switch-secondary-actions" checked>
-                                    <span class="slider"></span>
-                                </label>
-                                <span class="switch-label">Secondary actions</span>
-                            </div>
-                            
-                            <!-- More actions (indented) -->
-                            <div class="switch-item switch-item-indented">
-                                <label class="switch">
-                                    <input type="checkbox" id="switch-more-actions" checked>
-                                    <span class="slider"></span>
-                                </label>
-                                <span class="switch-label">More actions</span>
-                            </div>
-                            
-                            <!-- Secondary row -->
-                            <div class="switch-item">
-                                <label class="switch">
-                                    <input type="checkbox" id="switch-secondary-row" checked>
-                                    <span class="slider"></span>
-                                </label>
-                                <span class="switch-label">Secondary row</span>
-                            </div>
-                            
-                            <!-- Breadcrumb (indented) -->
-                            <div class="switch-item switch-item-indented">
-                                <label class="switch">
-                                    <input type="checkbox" id="switch-breadcrumb" checked>
-                                    <span class="slider"></span>
-                                </label>
-                                <span class="switch-label">breadcrumb</span>
+                            <!-- Controles variante Tabs + acciones -->
+                            <div id="controls-tabs" class="control-group" style="display: none;">
+                                <span class="control-group-label">Tabs</span>
+                                <div class="control-group-tabs">
+                                    <label for="select-active-tab">Tab activo:</label>
+                                    <select id="select-active-tab">
+                                        <option value="tareas">Tareas</option>
+                                        <option value="planes">Planes</option>
+                                    </select>
+                                </div>
+                                <span class="control-group-label" style="min-width: auto;">Acciones</span>
+                                <div class="control-row control-group-nested">
+                                    <div class="control-item">
+                                        <label class="switch"><input type="checkbox" id="switch-tabs-primary" checked><span class="slider"></span></label>
+                                        <span class="switch-label">Primary</span>
+                                    </div>
+                                    <div class="control-item">
+                                        <label class="switch"><input type="checkbox" id="switch-tabs-secondary" checked><span class="slider"></span></label>
+                                        <span class="switch-label">Secondary</span>
+                                    </div>
+                                    <div class="control-item">
+                                        <label class="switch"><input type="checkbox" id="switch-tabs-more" checked><span class="slider"></span></label>
+                                        <span class="switch-label">More</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -371,6 +415,8 @@
             
             // Estado de los switches
             let previewState = {
+                variant: 'default',
+                activeTabId: 'tareas',
                 backButton: true,
                 productTitle: true,
                 infoButton: true,
@@ -383,8 +429,55 @@
                 breadcrumb: true
             };
             
+            function getVariant() {
+                const r = document.querySelector('input[name="header-variant"]:checked');
+                return r ? r.value : 'default';
+            }
+            
+            function updateControlsVisibility() {
+                const isTabs = getVariant() === 'tabs-with-actions';
+                document.getElementById('controls-default').style.display = isTabs ? 'none' : 'flex';
+                document.getElementById('controls-default-secondary').style.display = isTabs ? 'none' : 'flex';
+                document.getElementById('controls-tabs').style.display = isTabs ? 'flex' : 'none';
+            }
+            
             // Función para actualizar el preview
             function updatePreview() {
+                previewState.variant = getVariant();
+                const container = document.getElementById('header-product-preview');
+                if (!container || typeof loadHeaderProduct !== 'function') return;
+                
+                if (previewState.variant === 'tabs-with-actions') {
+                    previewState.activeTabId = document.getElementById('select-active-tab').value;
+                    var elPrimary = document.getElementById('switch-tabs-primary');
+                    var elSecondary = document.getElementById('switch-tabs-secondary');
+                    var elMore = document.getElementById('switch-tabs-more');
+                    loadHeaderProduct('header-product-preview', {
+                        variant: 'tabs-with-actions',
+                        tabs: [
+                            { id: 'tareas', label: 'Tareas' },
+                            { id: 'planes', label: 'Planes' }
+                        ],
+                        activeTabId: previewState.activeTabId,
+                        onTabChange: function(tabId) {
+                            previewState.activeTabId = tabId;
+                            document.getElementById('select-active-tab').value = tabId;
+                            console.log('Tab changed to', tabId);
+                        },
+                        primaryButton: (elPrimary && elPrimary.checked) ? {
+                            text: 'Crear',
+                            icon: 'fa-plus',
+                            onClick: function() { console.log('Primary clicked'); }
+                        } : null,
+                        secondaryButtons: (elSecondary && elSecondary.checked) ? [
+                            { text: 'Filtros', icon: 'fa-filter', onClick: function() { console.log('Secondary clicked'); } }
+                        ] : [],
+                        aiButton: null,
+                        menuButton: (elMore && elMore.checked) ? { onClick: function() { console.log('Menu clicked'); } } : null
+                    });
+                    return;
+                }
+                
                 const options = {
                     productName: previewState.productTitle ? 'Name product' : '',
                     breadcrumbItems: (previewState.secondaryRow && previewState.breadcrumb) ? [
@@ -393,20 +486,14 @@
                         { text: 'Active', active: true }
                     ] : [],
                     backButton: previewState.backButton ? {
-                        onClick: function() {
-                            console.log('Back button clicked');
-                        }
+                        onClick: function() { console.log('Back button clicked'); }
                     } : null,
                     infoButton: previewState.infoButton ? {
-                        onClick: function() {
-                            console.log('Info button clicked');
-                        }
+                        onClick: function() { console.log('Info button clicked'); }
                     } : null,
                     aiButton: (previewState.actions && previewState.aiButton) ? {
                         text: 'AI button',
-                        onClick: function() {
-                            console.log('AI button clicked');
-                        }
+                        onClick: function() { console.log('AI button clicked'); }
                     } : null,
                     secondaryButtons: (previewState.actions && previewState.secondaryActions) ? [
                         { text: 'Button text', icon: 'fa-th', onClick: function() { console.log('Secondary button clicked'); } }
@@ -414,21 +501,13 @@
                     primaryButton: (previewState.actions && previewState.primaryAction) ? {
                         text: 'Primary action',
                         icon: 'fa-th',
-                        onClick: function() {
-                            console.log('Primary button clicked');
-                        }
+                        onClick: function() { console.log('Primary button clicked'); }
                     } : null,
                     menuButton: (previewState.actions && previewState.moreActions) ? {
-                        onClick: function() {
-                            console.log('Menu button clicked');
-                        }
+                        onClick: function() { console.log('Menu button clicked'); }
                     } : null
                 };
-                
-                const container = document.getElementById('header-product-preview');
-                if (container && typeof loadHeaderProduct === 'function') {
-                    loadHeaderProduct('header-product-preview', options);
-                }
+                loadHeaderProduct('header-product-preview', options);
             }
             
             // Event listeners para los switches
@@ -515,7 +594,6 @@
             
             document.getElementById('switch-breadcrumb').addEventListener('change', function() {
                 previewState.breadcrumb = this.checked;
-                // Si se activa breadcrumb, activar también secondary row
                 if (this.checked && !previewState.secondaryRow) {
                     previewState.secondaryRow = true;
                     document.getElementById('switch-secondary-row').checked = true;
@@ -523,7 +601,24 @@
                 updatePreview();
             });
             
-            // Inicializar el preview
+            document.querySelectorAll('input[name="header-variant"]').forEach(function(radio) {
+                radio.addEventListener('change', function() {
+                    updateControlsVisibility();
+                    updatePreview();
+                });
+            });
+            
+            document.getElementById('select-active-tab').addEventListener('change', function() {
+                previewState.activeTabId = this.value;
+                updatePreview();
+            });
+            
+            ['switch-tabs-primary', 'switch-tabs-secondary', 'switch-tabs-more'].forEach(function(id) {
+                var el = document.getElementById(id);
+                if (el) el.addEventListener('change', updatePreview);
+            });
+            
+            updateControlsVisibility();
             updatePreview();
         });
     </script>

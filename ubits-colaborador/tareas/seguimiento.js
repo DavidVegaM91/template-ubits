@@ -19,6 +19,14 @@
     const TASK_EDIT = true;
     const TASK_DELETE = true;
 
+    // Límite de fechas en calendarios: máximo 3 años en el futuro (solo páginas de seguimiento)
+    function getSeguimientoCalendarMaxDate() {
+        var d = new Date();
+        d.setFullYear(d.getFullYear() + 3);
+        d.setHours(23, 59, 59, 999);
+        return d;
+    }
+
     // Estado global
     let activeTab = 'tareas'; // 'tareas' | 'planes'
     let SEGUIMIENTO_DATA = [];
@@ -1435,12 +1443,14 @@
         });
 
         if (typeof createInput === 'function') {
-            // Fechas de vencimiento
+            var calendarMax = getSeguimientoCalendarMaxDate();
+            // Fechas de vencimiento (límite: 3 años en el futuro)
             createInput({
                 containerId: 'filtros-fecha-vencimiento-desde',
                 type: 'calendar',
                 placeholder: 'Desde',
                 size: 'md',
+                calendarMaxDate: calendarMax,
                 onChange: function(val) {
                     currentFilters.fechaVencimientoDesde = val || null;
                 }
@@ -1451,6 +1461,7 @@
                 type: 'calendar',
                 placeholder: 'Hasta',
                 size: 'md',
+                calendarMaxDate: calendarMax,
                 onChange: function(val) {
                     currentFilters.fechaVencimientoHasta = val || null;
                 }
@@ -2148,6 +2159,13 @@
                     }
                     return;
                 }
+                var maxDate = getSeguimientoCalendarMaxDate();
+                if (fechaInicio.getTime() > maxDate.getTime() || fechaFin.getTime() > maxDate.getTime()) {
+                    if (typeof showToast === 'function') {
+                        showToast('warning', 'Las fechas no pueden ser mayores a 3 años en el futuro');
+                    }
+                    return;
+                }
 
                 // Formatear fechas para el filtro (formato: "1 ene 2026")
                 const fechaInicioStr = formatearFechaParaMostrar(fechaInicio);
@@ -2206,8 +2224,15 @@
                 
                 const fecha = parsearFechaDesdeInput(texto);
                 if (fecha) {
+                    fecha.setHours(0, 0, 0, 0);
+                    if (fecha.getTime() > getSeguimientoCalendarMaxDate().getTime()) {
+                        this.value = '';
+                        fechaInicio = null;
+                        if (typeof showToast === 'function') showToast('warning', 'La fecha no puede ser mayor a 3 años en el futuro');
+                        renderCalendar();
+                        return;
+                    }
                     fechaInicio = fecha;
-                    fechaInicio.setHours(0, 0, 0, 0);
                     this.value = formatearFechaParaInput(fechaInicio);
                     
                     // Actualizar mes mostrado si es necesario
@@ -2239,8 +2264,15 @@
                 
                 const fecha = parsearFechaDesdeInput(texto);
                 if (fecha) {
+                    fecha.setHours(23, 59, 59, 999);
+                    if (fecha.getTime() > getSeguimientoCalendarMaxDate().getTime()) {
+                        this.value = '';
+                        fechaFin = null;
+                        if (typeof showToast === 'function') showToast('warning', 'La fecha no puede ser mayor a 3 años en el futuro');
+                        renderCalendar();
+                        return;
+                    }
                     fechaFin = fecha;
-                    fechaFin.setHours(23, 59, 59, 999);
                     this.value = formatearFechaParaInput(fechaFin);
                     
                     // Actualizar mes mostrado si es necesario
@@ -2275,7 +2307,7 @@
             });
         }
 
-        // Renderizar calendario oficial UBITS (createCalendar) en modo rango en el modal de fecha personalizada
+        // Renderizar calendario oficial UBITS (createCalendar) en modo rango en el modal de fecha personalizada (límite: 3 años en el futuro)
         function renderCalendar() {
             if (!calendarContainer || typeof window.createCalendar !== 'function') return;
             calendarContainer.innerHTML = '';
@@ -2286,6 +2318,7 @@
                 initialDate: initialDate,
                 selectedStartDate: fechaInicio || undefined,
                 selectedEndDate: fechaFin || undefined,
+                maxDate: getSeguimientoCalendarMaxDate(),
                 onRangeSelect: function (startStr, endStr) {
                     if (!startStr) return;
                     var partsInicio = startStr.split('/').map(Number);
@@ -3184,7 +3217,7 @@
             planFechaSelected = null;
         }
 
-        // Calendario oficial UBITS (createCalendar) en el modal cambiar fecha
+        // Calendario oficial UBITS (createCalendar) en el modal cambiar fecha (límite: 3 años en el futuro)
         function renderPlanFechaCalendar() {
             if (!planFechaCalendar || typeof window.createCalendar !== 'function') return;
             planFechaCalendar.innerHTML = '';
@@ -3193,6 +3226,7 @@
                 containerId: 'plan-fecha-calendar',
                 initialDate: initialDate,
                 selectedDate: planFechaSelected || undefined,
+                maxDate: getSeguimientoCalendarMaxDate(),
                 onDateSelect: function (dateStr) {
                     var parts = dateStr.split('/').map(Number);
                     planFechaSelected = new Date(parts[2], parts[1] - 1, parts[0]);
@@ -3229,6 +3263,14 @@
                 }
                 var f = parsearFechaPlan(texto);
                 if (f) {
+                    f.setHours(0, 0, 0, 0);
+                    if (f.getTime() > getSeguimientoCalendarMaxDate().getTime()) {
+                        planFechaSelected = null;
+                        this.value = '';
+                        if (typeof showToast === 'function') showToast('warning', 'La fecha no puede ser mayor a 3 años en el futuro');
+                        renderPlanFechaCalendar();
+                        return;
+                    }
                     planFechaSelected = f;
                     this.value = formatearFechaPlan(planFechaSelected);
                     planFechaCurrentMonth = new Date(planFechaSelected);
@@ -3252,6 +3294,10 @@
             planFechaAplicar.addEventListener('click', function() {
                 if (!planFechaSelected) {
                     if (typeof showToast === 'function') showToast('warning', 'Selecciona una fecha en el calendario o escríbela en el campo (DD/MM/YYYY)');
+                    return;
+                }
+                if (planFechaSelected.getTime() > getSeguimientoCalendarMaxDate().getTime()) {
+                    if (typeof showToast === 'function') showToast('warning', 'La fecha no puede ser mayor a 3 años en el futuro');
                     return;
                 }
                 var fechaStr = formatearFechaPlanParaTabla(planFechaSelected);

@@ -209,12 +209,29 @@
  * 
  * ```html
  * <div class="section-single">
- *     <div id="header-product-container"></div>
+ *     <div class="widget-header-product" id="header-product-container"></div>
  * </div>
  * ```
  * 
  * El componente automáticamente ocupará todo el ancho disponible y se ajustará
  * a su contenido sin alturas fijas.
+ *
+ * 🚨 REGLA OBLIGATORIA - EL HEADER NUNCA DEBE TENER CAJA:
+ * Cuando el contenedor del header-product está dentro de .section-single (o .section-dual, etc.),
+ * el sistema modular suele aplicar a los hijos fondo y padding (estilo "caja"). Para este
+ * componente eso no debe aplicarse: el header debe verse plano, sin caja. En la página
+ * que use el componente hay que añadir SIEMPRE esta regla CSS:
+ *
+ * ```css
+ * .section-single > .widget-header-product {
+ *     background-color: transparent !important;
+ *     padding: 0 !important;
+ * }
+ * ```
+ * (Desde subcarpetas usar el selector que corresponda al contenedor padre, por ejemplo
+ * .section-single > .widget-header-product en el CSS de la página.)
+ * Sin esta regla el header se verá como un bloque con fondo y padding, lo cual no es
+ * el diseño deseado.
  *
  * @param {string} containerId - ID del contenedor donde se renderizará el header-product.
  * @param {object} options - Opciones de configuración del header-product.
@@ -252,14 +269,14 @@
  * <link rel="stylesheet" href="components/header-product.css">
  * ```
  *
- * PASO 2: Agregar el estilo CSS para widget-header-product (si usas sistema modular):
+ * PASO 2: OBLIGATORIO - Sin caja en el header. Agregar el estilo CSS para que el header
+ * no tenga caja (fondo transparente, sin padding). Ver "REGLA OBLIGATORIA - EL HEADER NUNCA DEBE TENER CAJA" arriba.
  * ```css
  * .section-single > .widget-header-product {
  *     background-color: transparent !important;
  *     padding: 0 !important;
  * }
  * ```
- * Nota: Este estilo hace que el widget-header-product tenga fondo transparente y sin padding.
  *
  * PASO 3: Agregar el contenedor en el HTML dentro de content-sections:
  * ```html
@@ -460,11 +477,70 @@ function createHeaderProductHTML(options = {}) {
         aiButton = null,
         secondaryButtons = [],
         primaryButton = null,
-        menuButton = null
+        menuButton = null,
+        variant = 'default', // 'default' | 'tabs-with-actions'
+        tabs = [], // Para variant tabs-with-actions: [{ id: string, label: string }, ...]
+        activeTabId = null // Para variant tabs-with-actions: id del tab activo
     } = options;
     
     // Si breadcrumbItems no se pasó o es undefined, usar array vacío
     const finalBreadcrumbItems = breadcrumbItems !== undefined ? breadcrumbItems : [];
+    const isTabsVariant = variant === 'tabs-with-actions' && tabs && tabs.length > 0;
+
+    // --- Variante tabs-with-actions: solo una fila (tabs + acciones), sin breadcrumb ---
+    if (isTabsVariant) {
+        const tabsHTML = tabs.map(t => {
+            const isActive = activeTabId === t.id;
+            return `<button type="button" class="ubits-tab ${isActive ? 'ubits-tab--active' : ''}" data-tab-id="${t.id}" data-tab="${t.id}" role="tab" aria-selected="${isActive}">
+                <span>${t.label}</span>
+            </button>`;
+        }).join('');
+
+        const aiButtonHTML = aiButton ? `
+            <button class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--md" ${aiButton.onClick ? `onclick="${aiButton.onClick}"` : ''}>
+                <i class="far fa-sparkles"></i>
+                <span>${aiButton.text || 'AI button'}</span>
+            </button>
+        ` : '';
+        const secondaryButtonsHTML = secondaryButtons.map(btn => `
+            <button class="ubits-button ubits-button--secondary ubits-button--md" ${btn.onClick ? `onclick="${btn.onClick}"` : ''}>
+                ${btn.icon ? `<i class="far ${btn.icon}"></i>` : ''}
+                <span>${btn.text || 'Button text'}</span>
+            </button>
+        `).join('');
+        const primaryButtonHTML = primaryButton ? `
+            <button class="ubits-button ubits-button--primary ubits-button--md" ${primaryButton.onClick ? `onclick="${primaryButton.onClick}"` : ''}>
+                ${primaryButton.icon ? `<i class="far ${primaryButton.icon}"></i>` : ''}
+                <span>${primaryButton.text || 'Primary action'}</span>
+            </button>
+        ` : '';
+        const menuButtonHTML = menuButton ? `
+            <button class="ubits-button ubits-button--tertiary ubits-button--md ubits-button--icon-only" ${menuButton.onClick ? `onclick="${menuButton.onClick}"` : ''}>
+                <i class="far fa-ellipsis-v"></i>
+            </button>
+        ` : '';
+        const actionsHTML = (aiButtonHTML || secondaryButtonsHTML || primaryButtonHTML || menuButtonHTML) ? `
+            <div class="ubits-header-product__actions">
+                ${aiButtonHTML}
+                ${secondaryButtonsHTML}
+                ${primaryButtonHTML}
+                ${menuButtonHTML}
+            </div>
+        ` : '';
+
+        return `
+        <div class="ubits-header-product ubits-header-product--tabs-with-actions">
+            <div class="ubits-header-product__primary-row">
+                <div class="ubits-header-product__tabs" role="tablist">
+                    ${tabsHTML}
+                </div>
+                ${actionsHTML}
+            </div>
+        </div>
+        `;
+    }
+
+    // --- Variante default ---
 
     // Botón back
     const backButtonHTML = backButton ? `
@@ -698,6 +774,24 @@ function loadHeaderProduct(containerId, options = {}) {
             if (options.secondaryButtons[index] && options.secondaryButtons[index].onClick && typeof options.secondaryButtons[index].onClick === 'function') {
                 btn.addEventListener('click', options.secondaryButtons[index].onClick);
             }
+        });
+    }
+
+    // Variante tabs-with-actions: listeners para tabs
+    if (options.variant === 'tabs-with-actions' && options.tabs && options.tabs.length > 0 && typeof options.onTabChange === 'function') {
+        const tabButtons = container.querySelectorAll('.ubits-header-product__tabs .ubits-tab');
+        tabButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const tabId = this.getAttribute('data-tab-id');
+                if (!tabId) return;
+                tabButtons.forEach(b => {
+                    b.classList.remove('ubits-tab--active');
+                    b.setAttribute('aria-selected', 'false');
+                });
+                this.classList.add('ubits-tab--active');
+                this.setAttribute('aria-selected', 'true');
+                options.onTabChange(tabId);
+            });
         });
     }
 }

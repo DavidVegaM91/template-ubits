@@ -36,6 +36,17 @@
     margin-bottom: 0;
 }
 
+/* Fila: tabs a la izquierda, botón Crear a la derecha. Sin caja ni padding. */
+.seguimiento-tabs-wrapper > .seguimiento-tabs-row {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 !important;
+    width: 100%;
+    background: transparent;
+    border: none;
+}
+
 .seguimiento-tabs-wrapper .seguimiento-tabs {
     display: flex;
     gap: 4px;
@@ -61,14 +72,20 @@
     flex-direction: column;
 }
 
-/* Tabs: mantener en fila y sin padding (sobrescribe .section-single > div) */
-.seguimiento-tabs-wrapper > .seguimiento-tabs {
+/* Tabs: mantener en fila y sin padding dentro de la row */
+.seguimiento-tabs-row .seguimiento-tabs {
     flex-direction: row;
     padding: 0 !important;
 }
 
 .section-single > div {
     flex: 1;
+}
+
+/* Header product (tabs + Crear): sin caja, igual que antes */
+.section-single > .widget-header-product {
+    background-color: transparent !important;
+    padding: 0 !important;
 }
 
 /* Header bar */

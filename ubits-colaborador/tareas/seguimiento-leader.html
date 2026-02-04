@@ -31,6 +31,7 @@
     <link rel="stylesheet" href="../../components/tooltip.css">
     <link rel="stylesheet" href="../../components/avatar.css">
     <link rel="stylesheet" href="../../components/tab.css">
+    <link rel="stylesheet" href="../../components/header-product.css">
     <link rel="stylesheet" href="../../components/modal.css">
     <link rel="stylesheet" href="../../components/table.css">
 
@@ -47,16 +48,9 @@
             <div id="top-nav-container"></div>
             <div class="content-area">
                 <div class="content-sections">
-                    <!-- Tabs Tareas | Planes -->
-                    <div class="section-single seguimiento-tabs-wrapper">
-                        <div class="seguimiento-tabs" id="seguimiento-tabs" role="tablist" aria-label="Vista de seguimiento">
-                            <button type="button" class="ubits-tab ubits-tab--active" data-tab="tareas" role="tab" aria-selected="true" id="tab-tareas">
-                                <span>Tareas</span>
-                            </button>
-                            <button type="button" class="ubits-tab" data-tab="planes" role="tab" aria-selected="false" id="tab-planes">
-                                <span>Planes</span>
-                            </button>
-                        </div>
+                    <!-- Header product: Tabs Tareas | Planes + botón Crear -->
+                    <div class="section-single">
+                        <div class="widget-header-product" id="header-product-seguimiento"></div>
                     </div>
                     <!-- Header + indicador + botones búsqueda/filtros/columnas -->
                     <div class="section-single">
@@ -551,6 +545,33 @@
     <script src="../../components/tab-bar.js"></script>
     <script src="../../components/floating-menu.js"></script>
     <script src="../../components/profile-menu.js"></script>
+    <script src="../../components/header-product.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof loadHeaderProduct !== 'function') return;
+            loadHeaderProduct('header-product-seguimiento', {
+                variant: 'tabs-with-actions',
+                tabs: [
+                    { id: 'tareas', label: 'Tareas' },
+                    { id: 'planes', label: 'Planes' }
+                ],
+                activeTabId: 'tareas',
+                onTabChange: function() { /* switchToTab vía listener en #seguimiento-tabs */ },
+                primaryButton: {
+                    text: 'Crear',
+                    icon: 'fa-plus',
+                    onClick: function() { /* TODO: abrir flujo crear */ }
+                }
+            });
+            var container = document.getElementById('header-product-seguimiento');
+            if (container) {
+                var tabsEl = container.querySelector('.ubits-header-product__tabs');
+                if (tabsEl) tabsEl.id = 'seguimiento-tabs';
+                var primaryBtn = container.querySelector('.ubits-header-product__actions .ubits-button--primary');
+                if (primaryBtn) primaryBtn.id = 'seguimiento-crear-btn';
+            }
+        });
+    </script>
     <script src="../../components/input.js"></script>
     <script src="../../components/calendar.js"></script>
     <script src="../../components/alert.js"></script>
