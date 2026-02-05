@@ -224,67 +224,8 @@
     <div id="floating-menu-container"></div>
     <div id="profile-menu-container"></div>
 
-    <!-- Modal filtros (componente UBITS Modal, variante md 800px) -->
-    <div class="ubits-modal-overlay" id="filtros-modal-overlay" style="display: none;" aria-hidden="true">
-        <div class="ubits-modal-content ubits-modal-content--md">
-            <div class="ubits-modal-header">
-                <h2 class="ubits-heading-h2">Filtros</h2>
-                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="filtros-modal-close" aria-label="Cerrar">
-                    <i class="far fa-times"></i>
-                </button>
-            </div>
-            <div class="ubits-modal-body">
-                <div class="filtros-group">
-                    <label class="ubits-body-sm-bold filtros-label">Buscar asignados</label>
-                    <div id="filtros-buscar-personas"></div>
-                </div>
-                <div class="filtros-group">
-                    <label class="ubits-body-sm-bold filtros-label">Buscar áreas</label>
-                    <div id="filtros-areas"></div>
-                </div>
-                <div class="filtros-group filtros-group-row">
-                    <div class="filtros-field">
-                        <label class="ubits-body-sm-bold filtros-label">Estado</label>
-                        <div class="filtros-checkbox-list" id="filtros-estado">
-                            <label class="filtros-checkbox-option">
-                                <input type="checkbox" value="Iniciada">
-                                <span class="ubits-body-sm-regular">Iniciada</span>
-                            </label>
-                            <label class="filtros-checkbox-option">
-                                <input type="checkbox" value="Vencida">
-                                <span class="ubits-body-sm-regular">Vencida</span>
-                            </label>
-                            <label class="filtros-checkbox-option">
-                                <input type="checkbox" value="Finalizada">
-                                <span class="ubits-body-sm-regular">Finalizada</span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="filtros-field">
-                        <label class="ubits-body-sm-bold filtros-label">Prioridad</label>
-                        <div class="filtros-checkbox-list" id="filtros-prioridad">
-                            <label class="filtros-checkbox-option">
-                                <input type="checkbox" value="Alta">
-                                <span class="ubits-body-sm-regular">Alta</span>
-                            </label>
-                            <label class="filtros-checkbox-option">
-                                <input type="checkbox" value="Media">
-                                <span class="ubits-body-sm-regular">Media</span>
-                            </label>
-                            <label class="filtros-checkbox-option">
-                                <input type="checkbox" value="Baja">
-                                <span class="ubits-body-sm-regular">Baja</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="ubits-modal-footer">
-                <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="filtros-limpiar">Limpiar filtros</button>
-                <button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="filtros-aplicar">Aplicar filtros</button>
-            </div>
-        </div>
-    </div>
+    <!-- Modales inyectados por componente oficial (modal.js getModalHtml) -->
+    <div id="seguimiento-modals-container"></div>
 
     <!-- Modal columnas -->
     <div class="columns-menu-overlay" id="columns-menu-overlay" style="display: none;" aria-hidden="true"></div>
@@ -326,39 +267,6 @@
         </div>
     </div>
 
-    <!-- Modal de fecha personalizada (componente UBITS Modal) -->
-    <div class="ubits-modal-overlay date-picker-overlay" id="date-picker-overlay" style="display: none;" aria-hidden="true"></div>
-    <div class="ubits-modal-content ubits-modal-content--sm date-picker-modal-content" id="date-picker-modal" style="display: none;" role="dialog" aria-label="Fecha personalizada">
-        <div class="ubits-modal-header date-picker-modal-header">
-            <h2 class="ubits-heading-h2">Fecha personalizada</h2>
-            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="date-picker-close" aria-label="Cerrar">
-                <i class="far fa-times"></i>
-            </button>
-        </div>
-        <div class="ubits-modal-body date-picker-modal-body">
-            <div class="date-picker-inputs">
-                <div class="date-picker-input-group">
-                    <label class="ubits-body-sm-regular date-picker-label">Fecha de inicio</label>
-                    <div class="date-picker-input-wrapper">
-                        <input type="text" class="date-picker-input" id="date-picker-fecha-inicio" placeholder="DD/MM/YYYY">
-                    </div>
-                </div>
-                <span class="date-picker-separator">-</span>
-                <div class="date-picker-input-group">
-                    <label class="ubits-body-sm-regular date-picker-label">Fecha de fin</label>
-                    <div class="date-picker-input-wrapper">
-                        <input type="text" class="date-picker-input" id="date-picker-fecha-fin" placeholder="DD/MM/YYYY">
-                    </div>
-                </div>
-            </div>
-            <div class="date-picker-calendar" id="date-picker-calendar"></div>
-        </div>
-        <div class="ubits-modal-footer date-picker-modal-footer">
-            <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="date-picker-cancelar">Cancelar</button>
-            <button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="date-picker-aplicar">Aplicar</button>
-        </div>
-    </div>
-
     <!-- Menú de ordenamiento por fecha -->
     <div class="sort-menu-overlay" id="sort-menu-overlay" style="display: none;"></div>
     <div class="sort-menu" id="sort-menu" style="display: none;" role="dialog" aria-label="Ordenar columna">
@@ -397,45 +305,6 @@
         <div class="checkbox-menu-footer">
             <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="checkbox-menu-cancel">Cancelar</button>
             <button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="checkbox-menu-apply">Aplicar</button>
-        </div>
-    </div>
-
-    <!-- Modal de confirmación de eliminación (componente UBITS Modal, variante xs, botón error) -->
-    <div class="ubits-modal-overlay" id="delete-modal-overlay" style="display: none;" aria-hidden="true">
-        <div class="ubits-modal-content ubits-modal-content--xs">
-            <div class="ubits-modal-header">
-                <h2 class="ubits-heading-h2">Confirmar eliminación</h2>
-                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="delete-modal-close" aria-label="Cerrar">
-                    <i class="far fa-times"></i>
-                </button>
-            </div>
-            <div class="ubits-modal-body">
-                <p class="ubits-body-md-regular">¿Estás seguro de que deseas eliminar <strong id="delete-count">0</strong> elemento(s) seleccionado(s)?</p>
-                <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Esta acción no se puede deshacer.</p>
-            </div>
-            <div class="ubits-modal-footer">
-                <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="delete-modal-cancel">Cancelar</button>
-                <button type="button" class="ubits-button ubits-button--error ubits-button--md" id="delete-modal-confirm">Eliminar</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal reabrir plan (componente UBITS Modal, variante xs) -->
-    <div class="ubits-modal-overlay" id="reabrir-plan-overlay" style="display: none;" aria-hidden="true">
-        <div class="ubits-modal-content ubits-modal-content--xs">
-            <div class="ubits-modal-header">
-                <h2 class="ubits-heading-h2" id="reabrir-plan-title">Cambiar estado del plan</h2>
-                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="reabrir-plan-close" aria-label="Cerrar">
-                    <i class="far fa-times"></i>
-                </button>
-            </div>
-            <div class="ubits-modal-body">
-                <p class="ubits-body-md-regular" id="reabrir-plan-message">Al reabrir este(s) plan(es), las tareas en estado Iniciada se marcarán como Finalizadas. ¿Continuar?</p>
-            </div>
-            <div class="ubits-modal-footer">
-                <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="reabrir-plan-cancel">Cancelar</button>
-                <button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="reabrir-plan-confirm">Continuar</button>
-            </div>
         </div>
     </div>
 
@@ -501,30 +370,6 @@
         </div>
     </div>
 
-    <!-- Modal cambiar fecha (Planes / Tareas) - componente UBITS Modal -->
-    <div class="ubits-modal-overlay date-picker-overlay" id="plan-fecha-overlay" style="display: none;" aria-hidden="true"></div>
-    <div class="ubits-modal-content ubits-modal-content--sm date-picker-modal-content" id="plan-fecha-modal" style="display: none;" role="dialog" aria-label="Cambiar fecha de finalización">
-        <div class="ubits-modal-header date-picker-modal-header">
-            <h2 class="ubits-heading-h2" id="plan-fecha-modal-title">Cambiar fecha de finalización</h2>
-            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="plan-fecha-close" aria-label="Cerrar">
-                <i class="far fa-times"></i>
-            </button>
-        </div>
-        <div class="ubits-modal-body date-picker-modal-body">
-            <div class="date-picker-input-group">
-                <label class="ubits-body-sm-regular date-picker-label">Nueva fecha de finalización</label>
-                <div class="date-picker-input-wrapper">
-                    <input type="text" class="date-picker-input" id="plan-fecha-input" placeholder="DD/MM/YYYY">
-                </div>
-            </div>
-            <div class="date-picker-calendar" id="plan-fecha-calendar"></div>
-        </div>
-        <div class="ubits-modal-footer date-picker-modal-footer">
-            <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="plan-fecha-cancel">Cancelar</button>
-            <button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="plan-fecha-aplicar">Aplicar</button>
-        </div>
-    </div>
-
     <!-- Menú añadir colaborador -->
     <div class="anadir-colaborador-overlay" id="anadir-colaborador-overlay" style="display: none;"></div>
     <div class="anadir-colaborador-menu" id="anadir-colaborador-menu" style="display: none;" role="dialog" aria-label="Añadir colaborador al plan">
@@ -580,6 +425,7 @@
     <script src="../../components/empty-state.js"></script>
     <script src="../../script.js"></script>
     <script src="../../components/avatar.js"></script>
+    <script src="../../components/modal.js"></script>
     <!-- Vista líder: solo actividades de reportes directos del líder (TASK_VIEW_SCOPE_LEADER). Misma base de datos. -->
     <script>
     window.SEGUIMIENTO_SCOPE = 'leader';

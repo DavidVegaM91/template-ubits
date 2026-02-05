@@ -7,6 +7,45 @@
 (function() {
     'use strict';
 
+    // Inyectar modales con componente oficial (modal.js getModalHtml) — una sola fuente de verdad
+    if (typeof getModalHtml === 'function') {
+        var modalsContainer = document.getElementById('seguimiento-modals-container');
+        if (modalsContainer) {
+            var filtrosBody = '<div class="filtros-group"><label class="ubits-body-sm-bold filtros-label">Buscar asignados</label><div id="filtros-buscar-personas"></div></div>' +
+                '<div class="filtros-group"><label class="ubits-body-sm-bold filtros-label">Buscar áreas</label><div id="filtros-areas"></div></div>' +
+                '<div class="filtros-group filtros-group-row"><div class="filtros-field"><label class="ubits-body-sm-bold filtros-label">Estado</label><div class="filtros-checkbox-list" id="filtros-estado">' +
+                '<label class="filtros-checkbox-option"><input type="checkbox" value="Iniciada"><span class="ubits-body-sm-regular">Iniciada</span></label>' +
+                '<label class="filtros-checkbox-option"><input type="checkbox" value="Vencida"><span class="ubits-body-sm-regular">Vencida</span></label>' +
+                '<label class="filtros-checkbox-option"><input type="checkbox" value="Finalizada"><span class="ubits-body-sm-regular">Finalizada</span></label></div></div>' +
+                '<div class="filtros-field"><label class="ubits-body-sm-bold filtros-label">Prioridad</label><div class="filtros-checkbox-list" id="filtros-prioridad">' +
+                '<label class="filtros-checkbox-option"><input type="checkbox" value="Alta"><span class="ubits-body-sm-regular">Alta</span></label>' +
+                '<label class="filtros-checkbox-option"><input type="checkbox" value="Media"><span class="ubits-body-sm-regular">Media</span></label>' +
+                '<label class="filtros-checkbox-option"><input type="checkbox" value="Baja"><span class="ubits-body-sm-regular">Baja</span></label></div></div></div>';
+            var filtrosFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="filtros-limpiar">Limpiar filtros</button>' +
+                '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="filtros-aplicar">Aplicar filtros</button>';
+            modalsContainer.innerHTML += getModalHtml({ overlayId: 'filtros-modal-overlay', title: 'Filtros', bodyHtml: filtrosBody, footerHtml: filtrosFooter, size: 'md', closeButtonId: 'filtros-modal-close' });
+
+            var datePickerBody = '<div class="date-picker-inputs"><div class="date-picker-input-group"><label class="ubits-body-sm-regular date-picker-label">Fecha de inicio</label><div class="date-picker-input-wrapper"><input type="text" class="date-picker-input" id="date-picker-fecha-inicio" placeholder="DD/MM/YYYY"></div></div>' +
+                '<span class="date-picker-separator">-</span><div class="date-picker-input-group"><label class="ubits-body-sm-regular date-picker-label">Fecha de fin</label><div class="date-picker-input-wrapper"><input type="text" class="date-picker-input" id="date-picker-fecha-fin" placeholder="DD/MM/YYYY"></div></div></div>' +
+                '<div class="date-picker-calendar" id="date-picker-calendar"></div>';
+            var datePickerFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="date-picker-cancelar"><span>Cancelar</span></button>' +
+                '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="date-picker-aplicar"><span>Aplicar</span></button>';
+            modalsContainer.innerHTML += getModalHtml({ overlayId: 'date-picker-overlay', title: 'Fecha personalizada', bodyHtml: datePickerBody, footerHtml: datePickerFooter, size: 'sm', contentId: 'date-picker-modal', closeButtonId: 'date-picker-close', overlayClass: 'date-picker-overlay', contentClass: 'date-picker-modal-content', headerClass: 'date-picker-modal-header', bodyClass: 'date-picker-modal-body', footerClass: 'date-picker-modal-footer' });
+
+            var deleteBody = '<p class="ubits-body-md-regular">¿Estás seguro de que deseas eliminar <strong id="delete-count">0</strong> elemento(s) seleccionado(s)?</p><p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Esta acción no se puede deshacer.</p>';
+            var deleteFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="delete-modal-cancel">Cancelar</button><button type="button" class="ubits-button ubits-button--error ubits-button--md" id="delete-modal-confirm">Eliminar</button>';
+            modalsContainer.innerHTML += getModalHtml({ overlayId: 'delete-modal-overlay', title: 'Confirmar eliminación', bodyHtml: deleteBody, footerHtml: deleteFooter, size: 'xs', closeButtonId: 'delete-modal-close' });
+
+            var reabrirBody = '<p class="ubits-body-md-regular" id="reabrir-plan-message">Al reabrir este(s) plan(es), las tareas en estado Iniciada se marcarán como Finalizadas. ¿Continuar?</p>';
+            var reabrirFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="reabrir-plan-cancel">Cancelar</button><button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="reabrir-plan-confirm">Continuar</button>';
+            modalsContainer.innerHTML += getModalHtml({ overlayId: 'reabrir-plan-overlay', title: 'Cambiar estado del plan', bodyHtml: reabrirBody, footerHtml: reabrirFooter, size: 'xs', titleId: 'reabrir-plan-title', closeButtonId: 'reabrir-plan-close' });
+
+            var planFechaBody = '<div class="date-picker-input-group"><label class="ubits-body-sm-regular date-picker-label">Nueva fecha de finalización</label><div class="date-picker-input-wrapper"><input type="text" class="date-picker-input" id="plan-fecha-input" placeholder="DD/MM/YYYY"></div></div><div class="date-picker-calendar" id="plan-fecha-calendar"></div>';
+            var planFechaFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="plan-fecha-cancel"><span>Cancelar</span></button><button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="plan-fecha-aplicar"><span>Aplicar</span></button>';
+            modalsContainer.innerHTML += getModalHtml({ overlayId: 'plan-fecha-overlay', title: 'Cambiar fecha de finalización', bodyHtml: planFechaBody, footerHtml: planFechaFooter, size: 'sm', contentId: 'plan-fecha-modal', titleId: 'plan-fecha-modal-title', closeButtonId: 'plan-fecha-close', overlayClass: 'date-picker-overlay', contentClass: 'date-picker-modal-content', headerClass: 'date-picker-modal-header', bodyClass: 'date-picker-modal-body', footerClass: 'date-picker-modal-footer' });
+        }
+    }
+
     // Los datos se cargan desde seguimiento-data.js (SEGUIMIENTO_DATABASE)
     // 3.2.2 Columnas disponibles en tab Tareas (selector con checkboxes 3.2.1)
     const COLUMN_IDS_TAREAS = ['id', 'nombre', 'asignado', 'creador', 'area', 'estado', 'prioridad', 'plan', 'fechaCreacion', 'fechaFinalizacion', 'comentarios'];
@@ -1998,9 +2037,8 @@
         });
     }
 
-    // Inicializar selector de fechas personalizado
+    // Inicializar selector de fechas personalizado (modal inyectado: overlay contiene el contenido)
     function initDatePicker() {
-        const datePickerModal = document.getElementById('date-picker-modal');
         const datePickerOverlay = document.getElementById('date-picker-overlay');
         const datePickerCancelar = document.getElementById('date-picker-cancelar');
         const datePickerAplicar = document.getElementById('date-picker-aplicar');
@@ -2009,7 +2047,7 @@
         const calendarContainer = document.getElementById('date-picker-calendar');
         const datePickerClose = document.getElementById('date-picker-close');
         
-        if (!datePickerModal || !datePickerOverlay) return;
+        if (!datePickerOverlay) return;
 
         let fechaInicio = null;
         let fechaFin = null;
@@ -2074,8 +2112,8 @@
                 fechaCreacionHasta: currentFilters.fechaCreacionHasta
             };
             
-            datePickerModal.style.display = 'block';
-            datePickerOverlay.style.display = 'block';
+            datePickerOverlay.style.display = 'flex';
+            datePickerOverlay.setAttribute('aria-hidden', 'false');
             
             // Si hay fechas guardadas, restaurarlas
             if (currentFilters.fechaCreacionDesde && currentFilters.fechaCreacionHasta) {
@@ -2101,8 +2139,8 @@
 
         // Función para cerrar el selector
         function closeDatePicker() {
-            datePickerModal.style.display = 'none';
             datePickerOverlay.style.display = 'none';
+            datePickerOverlay.setAttribute('aria-hidden', 'true');
         }
         
         // Función para cancelar y restaurar estado anterior
@@ -2137,8 +2175,10 @@
             closeDatePicker();
         }
 
-        // Cerrar con overlay
-        datePickerOverlay.addEventListener('click', cancelDatePicker);
+        // Cerrar con clic en el overlay (no en el contenido)
+        datePickerOverlay.addEventListener('click', function(e) {
+            if (e.target === datePickerOverlay) cancelDatePicker();
+        });
 
         // Cerrar con botón X del header
         if (datePickerClose) {
@@ -3181,7 +3221,6 @@
         // Cambiar fecha de finalización (Planes) - date picker + input sincronizados (mismo estilo que fecha personalizada)
         var planFechaBtn = document.getElementById('seguimiento-cambiar-fecha-plan');
         var planFechaOverlay = document.getElementById('plan-fecha-overlay');
-        var planFechaModal = document.getElementById('plan-fecha-modal');
         var planFechaInput = document.getElementById('plan-fecha-input');
         var planFechaCalendar = document.getElementById('plan-fecha-calendar');
         var planFechaClose = document.getElementById('plan-fecha-close');
@@ -3212,7 +3251,6 @@
 
         function closePlanFechaModal() {
             if (planFechaOverlay) { planFechaOverlay.style.display = 'none'; planFechaOverlay.setAttribute('aria-hidden', 'true'); }
-            if (planFechaModal) planFechaModal.style.display = 'none';
             if (planFechaInput) planFechaInput.value = '';
             planFechaSelected = null;
         }
@@ -3238,15 +3276,14 @@
         }
 
         var planFechaModalTitle = document.getElementById('plan-fecha-modal-title');
-        if (planFechaBtn && planFechaModal) {
+        if (planFechaBtn && planFechaOverlay) {
             planFechaBtn.addEventListener('click', function() {
                 if (selectedIds.size === 0) return;
                 if (planFechaModalTitle) planFechaModalTitle.textContent = activeTab === 'tareas' ? 'Cambiar fecha de vencimiento' : 'Cambiar fecha de finalización';
                 planFechaSelected = null;
                 planFechaCurrentMonth = new Date(2026, 2, 1);
                 if (planFechaInput) planFechaInput.value = '';
-                if (planFechaOverlay) { planFechaOverlay.style.display = 'block'; planFechaOverlay.setAttribute('aria-hidden', 'false'); }
-                planFechaModal.style.display = 'block';
+                if (planFechaOverlay) { planFechaOverlay.style.display = 'flex'; planFechaOverlay.setAttribute('aria-hidden', 'false'); }
                 renderPlanFechaCalendar();
             });
         }
