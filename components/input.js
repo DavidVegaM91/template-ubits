@@ -1414,10 +1414,7 @@ function createInput(options = {}) {
                 wrapper.id = pickerId;
                 wrapper.className = 'ubits-calendar-dropdown';
                 wrapper.style.cssText = 'position:fixed;display:none;z-index:10000;';
-                container.appendChild(wrapper);
-                if (getComputedStyle(container).position === 'static') {
-                    container.style.position = 'relative';
-                }
+                document.body.appendChild(wrapper);
                 function positionWrapper() {
                     var pad = 16;
                     var w = 312;
@@ -1426,14 +1423,18 @@ function createInput(options = {}) {
                     var vw = window.innerWidth;
                     var vh = window.innerHeight;
                     var left = rect.left;
-                    var top = rect.bottom + 4;
+                    var top;
+                    var spaceBelow = vh - rect.bottom - pad;
+                    var spaceAbove = rect.top - pad;
+                    if (spaceBelow >= h) {
+                        top = rect.bottom + 4;
+                    } else if (spaceAbove >= h) {
+                        top = rect.top - h - 4;
+                    } else {
+                        top = spaceBelow >= spaceAbove ? rect.bottom + 4 : rect.top - h - 4;
+                    }
                     if (left + w > vw - pad) left = Math.max(pad, rect.right - w);
                     if (left < pad) left = pad;
-                    if (top + h > vh - pad) {
-                        if (rect.top - pad >= h || rect.top - pad > vh - rect.bottom - pad) top = rect.top - h - 4;
-                        else top = vh - h - pad;
-                    }
-                    if (top < pad) top = pad;
                     wrapper.style.left = left + 'px';
                     wrapper.style.top = top + 'px';
                 }

@@ -47,6 +47,81 @@
     background: var(--ubits-scroll-bar-color-bg-default);
 }
 
+/* Contenedor que ocupa el espacio y centra el mensaje de bienvenida */
+.ubits-study-chat__welcome-wrapper {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 0;
+}
+
+.ubits-study-chat__welcome-wrapper.ubits-study-chat__welcome--hidden {
+    display: none !important;
+}
+
+/* Bloque de bienvenida centrado (estilo Gemini: no es mensaje del chat) */
+.ubits-study-chat__welcome {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 12px;
+}
+
+.ubits-study-chat__welcome-icon {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--ubits-bg-2);
+    color: var(--ubits-fg-1-high);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+}
+
+.ubits-study-chat__welcome-greeting {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    color: var(--ubits-fg-1-high);
+    margin: 0;
+}
+
+.ubits-study-chat__welcome-prompt {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 28px;
+    color: var(--ubits-fg-1-high);
+    margin: 0;
+}
+
+/* Mensaje de IA con botones de elección de material (Quiz, Flashcards, Guía) debajo */
+.ubits-study-chat__message-with-choices {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+}
+
+.ubits-study-chat__material-choices {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.ubits-study-chat__material-choice-btn {
+    flex-shrink: 0;
+}
+
 /* Estilos para cards compactos dentro del chat */
 .study-chat-courses-section {
     margin-top: 16px;
@@ -89,7 +164,7 @@
 .study-chat-plan-title {
     font-family: 'Noto Sans', sans-serif;
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 400;
     line-height: 24px;
     color: var(--ubits-fg-1-high);
     margin-bottom: 12px;
@@ -111,7 +186,7 @@
 }
 
 .study-chat-plan-detail-item strong {
-    font-weight: 600;
+    font-weight: 400;
     color: var(--ubits-fg-1-high);
 }
 
@@ -204,10 +279,10 @@
 
 /* Mensaje de usuario */
 .ubits-study-chat__text-globe--user {
-    background: #626974; /* Color gris para mensajes de usuario */
-    color: var(--ubits-fg-bold);
+    background: var(--ubits-bg-3);
+    color: var(--ubits-fg-1-low);
     border-radius: 8px;
-    border-bottom-right-radius: 0; /* Sin radius en esquina inferior derecha */
+    border-bottom-right-radius: 0;
     width: auto;
     max-width: 85%;
 }
@@ -258,7 +333,7 @@
 
 .ubits-study-chat__text-globe--user .ubits-study-chat__message-text {
     font-weight: 400;
-    color: var(--ubits-fg-bold);
+    color: var(--ubits-fg-1-low);
 }
 
 /* Timestamp */
@@ -287,34 +362,76 @@
     margin-top: 4px;
 }
 
-/* Mensaje de carga (typing) */
+/* Mensaje de IA en streaming: ocultar acciones hasta que termine de escribir */
+.ubits-study-chat__message--streaming .ubits-study-chat__message-actions {
+    visibility: hidden;
+    pointer-events: none;
+}
+
+/* Mensajes de recurso (quiz/flashcards/guía): botón "Abrir" visible solo cuando el panel derecho está cerrado */
+.study-chat-resource-msg .study-chat-resource-open-wrap {
+    display: none;
+}
+
+.study-chat-resource-msg.open-btn-visible .study-chat-resource-open-wrap {
+    display: inline-block;
+}
+
+/* Revelado línea a línea (typewriter estilo Gemini) */
+.ubits-study-chat__message-text--reveal {
+    animation: ubits-study-chat-reveal 0.18s ease-out;
+}
+
+@keyframes ubits-study-chat-reveal {
+    from {
+        opacity: 0;
+        transform: translateY(2px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Mensaje de carga (typing): indicador mínimo */
 .ubits-study-chat__text-globe--typing {
     display: flex;
-    gap: 5px;
+    gap: 6px;
     align-items: center;
-    height: 43px;
+    height: 40px;
+    padding: 0 12px;
 }
 
 .ubits-study-chat__typing-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 14px;
-    border-radius: 8px;
+    gap: 3px;
+    padding: 0;
+    border-radius: 0;
 }
 
-.ubits-study-chat__typing-icon i {
-    font-size: 16px;
-    width: 20px;
-    height: 16px;
-    color: var(--ubits-fg-1-high);
+.ubits-study-chat__typing-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ubits-fg-1-medium);
+    animation: ubits-study-chat-bounce 0.6s ease-in-out infinite;
+}
+
+.ubits-study-chat__typing-dot:nth-child(2) { animation-delay: 0.1s; }
+.ubits-study-chat__typing-dot:nth-child(3) { animation-delay: 0.2s; }
+
+@keyframes ubits-study-chat-bounce {
+    0%, 100% { opacity: 0.4; transform: translateY(0); }
+    50% { opacity: 1; transform: translateY(-2px); }
 }
 
 .ubits-study-chat__typing-text {
     font-family: 'Noto Sans', sans-serif;
-    font-style: italic;
-    font-size: 16px;
-    line-height: 24px;
+    font-style: normal;
+    font-size: 14px;
+    line-height: 20px;
     color: var(--ubits-fg-1-high);
     margin: 0;
 }
@@ -327,12 +444,31 @@
     flex-shrink: 0;
 }
 
+.ubits-study-chat__disclaimer {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--ubits-fg-1-low);
+    margin: 0;
+    flex-shrink: 0;
+}
+
 /* Botones de sugerencias - usar componente UBITS button */
 .ubits-study-chat__suggestions {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
     align-items: center;
+}
+
+/* Ocultar sugerencias cuando el chat ha iniciado (primer mensaje o interacción) */
+.ubits-study-chat__suggestions--hidden {
+    display: none !important;
+}
+
+.ubits-study-chat__suggestions-label {
+    color: var(--ubits-fg-1-medium);
+    margin-right: 4px;
 }
 
 /* Los botones de sugerencias ahora usan el componente UBITS button oficial */
@@ -399,11 +535,693 @@
     gap: 8px;
 }
 
+/* Chips de competencias (Modo Tutor empty state) */
+.ubits-study-chat__competency-chip {
+    flex-shrink: 0;
+}
+
+/* ========== Panel derecho (Canvas): Quiz, Flashcards, Guía ========== */
+.study-chat-canvas-content {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+/* Header, body y footer del panel (mismos estilos que componente modal UBITS) */
+.study-chat-canvas-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--ubits-border-1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.study-chat-canvas-header .ubits-body-md-bold {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.study-chat-canvas-body {
+    padding: 20px;
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
+}
+
+.study-chat-canvas-footer {
+    padding: 16px 20px;
+    border-top: 1px solid var(--ubits-border-1);
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.study-chat-canvas-quiz .study-chat-quiz-q {
+    margin-bottom: 16px;
+}
+
+.study-chat-quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.study-chat-quiz-opt {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--ubits-fg-1-medium);
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--ubits-border-1);
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.study-chat-quiz-opt:hover {
+    background: var(--ubits-bg-1);
+    border-color: var(--ubits-border-1);
+}
+
+.study-chat-quiz-opt--correct {
+    background: var(--ubits-feedback-bg-success-subtle) !important;
+    border-color: var(--ubits-feedback-accent-success) !important;
+    color: var(--ubits-fg-1-high);
+}
+
+.study-chat-quiz-opt--wrong {
+    background: var(--ubits-feedback-bg-error-subtle) !important;
+    border-color: var(--ubits-feedback-accent-error) !important;
+    color: var(--ubits-fg-1-high);
+}
+
+.study-chat-quiz-opt input:disabled {
+    cursor: default;
+}
+
+.study-chat-quiz-opt--correct .study-chat-quiz-opt-text,
+.study-chat-quiz-opt--wrong .study-chat-quiz-opt-text {
+    font-weight: 400;
+}
+
+.study-chat-quiz-feedback {
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--ubits-fg-1-medium);
+    background: var(--ubits-bg-2);
+    border: 1px solid var(--ubits-border-1);
+}
+
+.study-chat-quiz-feedback strong {
+    font-weight: 400;
+    color: var(--ubits-fg-1-high);
+}
+
+.study-chat-quiz-feedback-icon {
+    color: var(--ubits-feedback-accent-success);
+    margin-right: 4px;
+}
+
+.study-chat-quiz-feedback-icon--wrong {
+    color: var(--ubits-feedback-accent-error);
+}
+
+.study-chat-quiz-opt input {
+    margin: 0;
+    accent-color: var(--ubits-accent-brand);
+}
+
+/* Barra de progreso del quiz (entre título y pregunta): barras | X/X | acertadas y erradas */
+.study-chat-quiz-progress {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    flex-wrap: nowrap;
+    min-width: 0;
+}
+
+/* Contenedor de barras (1–19 preguntas): aprovecha todo el ancho disponible */
+.study-chat-quiz-progress-bars {
+    display: flex;
+    gap: 3px;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+}
+
+.study-chat-quiz-progress-bar {
+    flex: 1;
+    min-width: 4px;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--ubits-bg-2);
+    transition: background 0.2s;
+}
+
+.study-chat-quiz-progress-bar--filled {
+    background: var(--ubits-accent-brand);
+}
+
+/* Slider de progreso (20+ preguntas): una barra con puntito que marca el avance */
+.study-chat-quiz-progress-slider {
+    flex: 1;
+    min-width: 0;
+}
+
+.study-chat-quiz-progress-track {
+    position: relative;
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    background: var(--ubits-bg-2);
+}
+
+.study-chat-quiz-progress-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    border-radius: 4px;
+    background: var(--ubits-accent-brand);
+    transition: width 0.2s ease;
+}
+
+.study-chat-quiz-progress-thumb {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 14px;
+    height: 14px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: var(--ubits-accent-brand);
+    border: 2px solid var(--ubits-bg-1);
+    transition: left 0.2s ease;
+    pointer-events: none;
+}
+
+.study-chat-quiz-progress-text {
+    flex-shrink: 0;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--ubits-fg-1-high);
+}
+
+.study-chat-quiz-progress-stats {
+    flex-shrink: 0;
+    display: flex;
+    gap: 10px;
+}
+
+.study-chat-quiz-progress-wrong {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 13px;
+    color: var(--ubits-feedback-accent-error);
+    font-weight: 400;
+}
+
+.study-chat-quiz-progress-correct {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 13px;
+    color: var(--ubits-feedback-accent-success);
+    font-weight: 400;
+}
+
+.study-chat-quiz-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.study-chat-canvas-footer .study-chat-quiz-actions {
+    margin-top: 0;
+}
+
+.study-chat-quiz-actions #study-chat-quiz-back {
+    margin-right: auto;
+}
+
+.study-chat-quiz-result {
+    margin-top: 0;
+    padding: 0;
+    background: transparent;
+    border: none;
+}
+
+/* Pantalla de resultados del quiz (estilo Gemini) */
+.study-chat-quiz-result-screen {
+    padding: 8px 0;
+}
+
+.study-chat-quiz-result-title {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 28px;
+    color: var(--ubits-fg-1-high);
+    margin: 0 0 20px 0;
+}
+
+.study-chat-quiz-result-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.study-chat-quiz-result-card {
+    flex: 1;
+    min-width: 100px;
+    padding: 14px 16px;
+    background: var(--ubits-bg-2);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.study-chat-quiz-result-card--breakdown {
+    min-width: 120px;
+}
+
+.study-chat-quiz-result-card-label {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--ubits-fg-1-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.study-chat-quiz-result-card-value {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 24px;
+    font-weight: 400;
+    color: var(--ubits-fg-1-high);
+}
+
+.study-chat-quiz-result-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.study-chat-quiz-result-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 14px;
+    color: var(--ubits-fg-1-medium);
+}
+
+.study-chat-quiz-result-row span:last-child {
+    font-weight: 400;
+    color: var(--ubits-fg-1-high);
+}
+
+.study-chat-quiz-result-section-title {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--ubits-fg-1-high);
+    margin: 0 0 12px 0;
+}
+
+.study-chat-quiz-result-learn {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.study-chat-quiz-result-option {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 14px 16px;
+    background: var(--ubits-bg-2);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.study-chat-quiz-result-option:hover {
+    background: var(--ubits-bg-3);
+    border-color: var(--ubits-border-1);
+}
+
+.study-chat-quiz-result-option-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: var(--ubits-bg-3);
+    color: var(--ubits-accent-brand);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+.study-chat-quiz-result-option-title {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--ubits-fg-1-high);
+}
+
+.study-chat-quiz-result-option-desc {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 13px;
+    line-height: 18px;
+    color: var(--ubits-fg-1-medium);
+}
+
+.study-chat-quiz-result-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+
+/* Flashcards: barra de progreso */
+.study-chat-fc-progress {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.study-chat-fc-progress-bars {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.study-chat-fc-progress-bar {
+    width: 20px;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--ubits-bg-2);
+    transition: background 0.2s;
+}
+
+.study-chat-fc-progress-bar--filled {
+    background: var(--ubits-accent-brand);
+}
+
+.study-chat-fc-progress-text {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--ubits-fg-1-high);
+}
+
+/* Flashcards: tarjeta con volteo al clic (estilo Gemini) */
+.study-chat-fc-card {
+    position: relative;
+    min-height: 140px;
+    margin-bottom: 16px;
+    cursor: pointer;
+    perspective: 1000px;
+    outline: none;
+}
+
+.study-chat-fc-card:focus-visible {
+    box-shadow: 0 0 0 2px var(--ubits-accent-brand);
+    border-radius: 12px;
+}
+
+.study-chat-fc-card-inner {
+    position: relative;
+    width: 100%;
+    min-height: 140px;
+    transform-style: preserve-3d;
+    transition: transform 0.4s ease;
+}
+
+.study-chat-fc-card--flipped .study-chat-fc-card-inner {
+    transform: rotateY(180deg);
+}
+
+.study-chat-fc-face {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 12px;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+.study-chat-fc-front {
+    transform: rotateY(0deg);
+}
+
+.study-chat-fc-back {
+    transform: rotateY(180deg);
+}
+
+.study-chat-fc-face p {
+    margin: 0;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--ubits-fg-1-high);
+    text-align: center;
+}
+
+.study-chat-fc-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+}
+
+.study-chat-fc-actions .ubits-button {
+    flex-shrink: 0;
+}
+
+/* Header del panel (título + cerrar) */
+/* Títulos del panel: study-chat-canvas-header + ubits-heading-h2 */
+
+.study-chat-canvas-courses-container,
+.study-chat-canvas-plan .study-chat-courses-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.study-chat-canvas-plan .study-chat-plan-title {
+    margin-bottom: 8px;
+}
+
+.study-chat-canvas-plan .study-chat-plan-details {
+    margin-bottom: 12px;
+}
+
+/* Guía de estudio */
+.study-chat-guide-list {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.study-chat-guide-list li {
+    margin-bottom: 8px;
+}
+
+/* Plan de estudio (propuesta: nombre, fechas, prioridad, tareas) */
+.study-chat-canvas-study-plan .study-chat-study-plan-title {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ubits-fg-1-high);
+    margin-bottom: 12px;
+}
+
+.study-chat-study-plan-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 20px;
+    margin-bottom: 16px;
+}
+
+.study-chat-study-plan-detail-item {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 14px;
+    color: var(--ubits-fg-1-medium);
+}
+
+.study-chat-study-plan-detail-item strong {
+    color: var(--ubits-fg-1-high);
+}
+
+.study-chat-study-plan-tasks-label {
+    margin-bottom: 8px;
+    color: var(--ubits-fg-1-high);
+}
+
+.study-chat-study-plan-tasks {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.study-chat-study-plan-task {
+    margin-bottom: 8px;
+    color: var(--ubits-fg-1-medium);
+}
+
+.study-chat-study-plan-task-num {
+    color: var(--ubits-fg-1-high);
+    margin-right: 4px;
+}
+
+/* Plan de estudio editable: filas, prioridad, fechas, cards de tareas */
+.study-chat-canvas-study-plan-editable .study-chat-study-plan-edit-row {
+    margin-bottom: 12px;
+}
+
+.study-chat-plan-edit-label {
+    display: block;
+    color: var(--ubits-fg-1-medium);
+    margin-bottom: 4px;
+}
+
+/* Contenedores de inputs UBITS (createInput) */
+.study-chat-canvas-study-plan-editable #study-chat-plan-input-title,
+.study-chat-canvas-study-plan-editable #study-chat-plan-input-date-fin {
+    width: 100%;
+}
+
+/* Prioridad: menú desplegable con iconos en cada opción (como seguimiento) */
+.study-chat-plan-priority-dropdown-wrap {
+    position: relative;
+    display: inline-block;
+}
+
+.study-chat-plan-priority-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.study-chat-plan-priority-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 4px;
+    min-width: 160px;
+    padding: 4px 0;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.study-chat-plan-priority-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 8px 12px;
+    border: none;
+    background: transparent;
+    color: var(--ubits-fg-1-high);
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.15s;
+}
+
+.study-chat-plan-priority-option:hover {
+    background: var(--ubits-bg-2);
+}
+
+.study-chat-plan-priority-option i {
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.study-chat-study-plan-tasks-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.study-chat-plan-task-card {
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 8px;
+    background: var(--ubits-bg-2);
+    overflow: hidden;
+}
+
+.study-chat-plan-task-card-inner {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.study-chat-plan-task-card-title-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.study-chat-plan-task-card-title {
+    color: var(--ubits-fg-1-high);
+    flex: 1;
+    min-width: 0;
+}
+
+.study-chat-plan-task-card-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.study-chat-plan-task-card-actions .ubits-button {
+    margin: 0;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .ubits-study-chat {
         padding: 12px;
         gap: 16px;
+    }
+
+    .study-chat-canvas-body {
+        padding: 16px;
     }
     
     .ubits-study-chat__text-globe {

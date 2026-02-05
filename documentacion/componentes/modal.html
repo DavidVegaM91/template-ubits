@@ -59,7 +59,7 @@
                         <div class="ubits-modal-overlay" id="modal-demo-overlay" style="display: none;" aria-hidden="true" onclick="if(event.target===this) { this.style.display='none'; this.setAttribute('aria-hidden','true'); }">
                             <div class="ubits-modal-content ubits-modal-content--sm" onclick="event.stopPropagation();">
                                 <div class="ubits-modal-header">
-                                    <h2 class="ubits-heading-h2">Título del modal</h2>
+                                    <span class="ubits-modal-title ubits-body-md-bold">Título del modal</span>
                                     <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" aria-label="Cerrar" onclick="document.getElementById('modal-demo-overlay').style.display='none'; document.getElementById('modal-demo-overlay').setAttribute('aria-hidden','true');">
                                         <i class="far fa-times"></i>
                                     </button>
@@ -236,7 +236,7 @@ Usa las clases: ubits-modal-overlay, ubits-modal-content, ubits-modal-header, ub
                                         <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="modal-structure-code">&lt;div class="ubits-modal-overlay" id="mi-modal-overlay" style="display: none;"&gt;
   &lt;div class="ubits-modal-content"&gt;
     &lt;div class="ubits-modal-header"&gt;
-      &lt;h2 class="ubits-heading-h2"&gt;Título&lt;/h2&gt;
+      &lt;span class="ubits-modal-title ubits-body-md-bold"&gt;Título&lt;/span&gt;
       &lt;button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" aria-label="Cerrar"&gt;
         &lt;i class="far fa-times"&gt;&lt;/i&gt;
       &lt;/button&gt;
@@ -299,7 +299,7 @@ Usa las clases: ubits-modal-overlay, ubits-modal-content, ubits-modal-header, ub
 &lt;div class="ubits-modal-overlay" id="mi-modal" style="display: none;" onclick="if(event.target===this) document.getElementById('mi-modal').style.display='none';"&gt;
   &lt;div class="ubits-modal-content" onclick="event.stopPropagation();"&gt;
     &lt;div class="ubits-modal-header"&gt;
-      &lt;h2 class="ubits-heading-h2"&gt;Título&lt;/h2&gt;
+      &lt;span class="ubits-modal-title ubits-body-md-bold"&gt;Título&lt;/span&gt;
       &lt;button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" aria-label="Cerrar" onclick="document.getElementById('mi-modal').style.display='none';"&gt;&lt;i class="far fa-times"&gt;&lt;/i&gt;&lt;/button&gt;
     &lt;/div&gt;
     &lt;div class="ubits-modal-body"&gt;&lt;p class="ubits-body-md-regular"&gt;Contenido.&lt;/p&gt;&lt;/div&gt;
@@ -316,7 +316,7 @@ Usa las clases: ubits-modal-overlay, ubits-modal-content, ubits-modal-header, ub
 &lt;div class="ubits-modal-overlay" id="delete-modal" style="display: none;"&gt;
   &lt;div class="ubits-modal-content ubits-modal-content--xs"&gt;
     &lt;div class="ubits-modal-header"&gt;
-      &lt;h2 class="ubits-heading-h2"&gt;Confirmar eliminación&lt;/h2&gt;
+      &lt;span class="ubits-modal-title ubits-body-md-bold"&gt;Confirmar eliminación&lt;/span&gt;
       &lt;button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" aria-label="Cerrar"&gt;&lt;i class="far fa-times"&gt;&lt;/i&gt;&lt;/button&gt;
     &lt;/div&gt;
     &lt;div class="ubits-modal-body"&gt;

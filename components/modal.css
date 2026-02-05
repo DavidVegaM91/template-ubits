@@ -55,7 +55,7 @@
     align-items: center;
 }
 
-.ubits-modal-header h2 {
+.ubits-modal-header .ubits-modal-title {
     margin: 0;
     color: var(--ubits-fg-1-high);
 }

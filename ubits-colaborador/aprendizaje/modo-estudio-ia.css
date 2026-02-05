@@ -93,8 +93,78 @@
     padding: 0 !important;
 }
 
+/* ========== Modo Tutor IA: layout chat (izq) + panel derecho (Canvas) ========== */
+.modo-tutor-ia-chat-section {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 20px !important;
+    flex: 1 1 0 !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+}
+
+.modo-tutor-ia-chat-main {
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Panel derecho (Canvas): oculto por defecto; solo visible al generar recurso (quiz, flashcards, guía, cursos, plan) */
+/* Especificidad mayor que .section-single > div para que no lo muestre al cargar */
+.modo-tutor-ia-chat-section > .modo-tutor-ia-canvas-panel {
+    display: none !important;
+    flex-shrink: 0;
+}
+
+.modo-tutor-ia-chat-section > .modo-tutor-ia-canvas-panel.is-open {
+    display: flex !important;
+    flex: 1 1 0;
+    min-width: 0;
+    width: 50%;
+    padding: 0 !important;
+    overflow-y: auto;
+    min-height: 0;
+    background: var(--ubits-bg-1) !important;
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 12px;
+    animation: tutor-panel-open 0.2s ease;
+}
+
+@keyframes tutor-panel-open {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modo-tutor-ia-chat-section > .modo-tutor-ia-canvas-panel.is-open .study-chat-canvas-placeholder {
+    display: flex;
+}
+
+.modo-tutor-ia-chat-section > .modo-tutor-ia-canvas-panel.has-content .study-chat-canvas-placeholder {
+    display: none;
+}
+
+/* Placeholder del panel (solo visible si el panel está abierto y vacío) */
+.study-chat-canvas-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    min-height: 200px;
+    text-align: center;
+    color: var(--ubits-fg-1-medium);
+}
+
+.study-chat-canvas-placeholder i {
+    font-size: 32px;
+    color: var(--ubits-fg-1-low);
+}
+
 /* Widget chat: sin fondo blanco ni padding, usar flexbox para ocupar todo el espacio */
-.section-single > .widget-chat {
+.section-single > .widget-chat,
+.modo-tutor-ia-chat-main .widget-chat {
     background-color: transparent !important;
     padding: 0 !important;
     flex: 1 1 0; /* Ocupar todo el espacio disponible */
@@ -111,8 +181,19 @@
     flex-direction: column !important;
 }
 
-/* Responsive para secciones */
+/* Responsive: panel derecho debajo del chat en pantallas medianas/pequeñas */
 @media (max-width: 1023px) {
+    .modo-tutor-ia-chat-section {
+        flex-direction: column !important;
+    }
+    
+    .modo-tutor-ia-chat-section > .modo-tutor-ia-canvas-panel.is-open {
+        width: 100%;
+        min-width: 0;
+        max-width: none;
+        max-height: 40vh;
+    }
+    
     .content-sections {
         padding-bottom: 0;
     }
@@ -123,8 +204,6 @@
         flex-direction: column;
         gap: 16px;
     }
-    
-    /* Ajustar widgets para móvil - sin altura mínima forzada */
 }
 
 /* Asegurar que también se aplique en responsive */

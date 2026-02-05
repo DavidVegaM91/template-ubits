@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
-    <title>UBITS Playground - Modo Estudio IA</title>
+    <title>UBITS Playground - Modo estudio IA</title>
     
     <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
     <link rel="stylesheet" href="../../general-styles/styles.css">
@@ -16,16 +16,17 @@
     <link rel="stylesheet" href="../../components/floating-menu.css">
     <link rel="stylesheet" href="../../components/profile-menu.css">
     <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/calendar.css">
     <link rel="stylesheet" href="../../components/ia-button.css">
     <link rel="stylesheet" href="../../components/header-product.css">
     <link rel="stylesheet" href="../../components/study-chat.css">
     <link rel="stylesheet" href="../../components/card-content-compact.css">
     <link rel="stylesheet" href="../../components/toast.css">
     <link rel="stylesheet" href="../../components/tooltip.css">
-    <link rel="stylesheet" href="./profile.css">
     <link rel="stylesheet" href="./modo-estudio-ia.css">
 </head>
-<body class="modo-estudio-ia-page" data-theme="light">
+<body class="modo-estudio-ia-page modo-tutor-ia-page" data-theme="light">
     <div class="dashboard-container">
         <div class="tooltip" id="tooltip"></div>
         
@@ -45,9 +46,18 @@
                         <div class="widget-header-product" id="header-product-container"></div>
                     </div>
                     
-                    <!-- Sección chat -->
-                    <div class="section-single">
-                        <div class="widget-chat" id="study-chat-container"></div>
+                    <!-- Sección chat + panel derecho (Canvas tipo Gemini) -->
+                    <div class="section-single modo-tutor-ia-chat-section">
+                        <div class="modo-tutor-ia-chat-main">
+                            <div class="widget-chat" id="study-chat-container"></div>
+                        </div>
+                        <div class="modo-tutor-ia-canvas-panel" id="tutor-canvas-panel" aria-label="Panel de materiales de estudio">
+                            <!-- Quiz / Flashcards / Guía se inyectan aquí desde study-chat.js -->
+                            <div class="study-chat-canvas-placeholder" id="tutor-canvas-placeholder">
+                                <i class="far fa-lightbulb"></i>
+                                <p class="ubits-body-md-regular">Elige un tema y pide un quiz, flashcards o guía de estudio para verlo aquí.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -72,6 +82,8 @@
     <script src="../../components/tab-bar.js"></script>
     <script src="../../components/floating-menu.js"></script>
     <script src="../../components/profile-menu.js"></script>
+    <script src="../../components/calendar.js"></script>
+    <script src="../../components/input.js"></script>
     <script src="../../components/header-product.js"></script>
     <script src="../../components/toast.js"></script>
     <script src="../../components/card-content-compact.js"></script>
@@ -101,7 +113,7 @@
             // Cargar header-product
             if (typeof loadHeaderProduct === 'function') {
                 loadHeaderProduct('header-product-container', {
-                    productName: 'Modo Estudio IA',
+                    productName: 'Modo estudio IA',
                     breadcrumbItems: [], // Array vacío para ocultar breadcrumb
                     backButton: {
                         onClick: function() {
@@ -122,9 +134,14 @@
                 });
             }
             
-            // Inicializar chat de estudio
+            // Inicializar chat de tutor (empty state con nombre + competencias, panel derecho)
             if (typeof initStudyChat === 'function') {
-                initStudyChat('study-chat-container');
+                initStudyChat('study-chat-container', {
+                    userFirstName: 'María Alejandra',
+                    competencies: ['Liderazgo', 'Comunicación', 'Inglés'],
+                    rightPanelId: 'tutor-canvas-panel',
+                    placeholderId: 'tutor-canvas-placeholder'
+                });
             }
         });
     </script>
