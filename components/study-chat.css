@@ -9,9 +9,9 @@
     gap: 24px;
     height: 100%;
     width: 100%;
-    background: var(--ubits-bg-1);
-    border-radius: 10px;
-    padding: 16px;
+    background: transparent;
+    border-radius: 0;
+    padding: 0;
     box-sizing: border-box;
     min-height: 0; /* Permitir que flexbox funcione correctamente */
     flex: 1 1 0; /* Ocupar todo el espacio disponible */
@@ -368,13 +368,68 @@
     pointer-events: none;
 }
 
-/* Mensajes de recurso (quiz/flashcards/guía): botón "Abrir" visible solo cuando el panel derecho está cerrado */
+/* Mensajes de recurso: card con icono, título, cantidad y botón Abrir (visible solo cuando el panel está cerrado) */
 .study-chat-resource-msg .study-chat-resource-open-wrap {
     display: none;
 }
 
 .study-chat-resource-msg.open-btn-visible .study-chat-resource-open-wrap {
-    display: inline-block;
+    display: flex;
+    flex-shrink: 0;
+}
+
+.study-chat-resource-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+    padding: 12px;
+    background: var(--ubits-bg-2);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 12px;
+}
+
+.study-chat-resource-card__main {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+}
+
+.study-chat-resource-card__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background: var(--ubits-bg-3);
+    color: var(--ubits-accent-brand);
+}
+
+.study-chat-resource-card__icon i {
+    font-size: 18px;
+}
+
+.study-chat-resource-card__content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.study-chat-resource-card__title {
+    color: var(--ubits-fg-1-high);
+}
+
+.study-chat-resource-card__meta {
+    color: var(--ubits-fg-2-medium);
+}
+
+.study-chat-resource-card__action {
+    flex-shrink: 0;
 }
 
 /* Revelado línea a línea (typewriter estilo Gemini) */
@@ -440,7 +495,7 @@
 .ubits-study-chat__input-area {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 6px;
     flex-shrink: 0;
 }
 
@@ -450,6 +505,7 @@
     line-height: 16px;
     color: var(--ubits-fg-1-low);
     margin: 0;
+    margin-top: -12px;
     flex-shrink: 0;
 }
 
@@ -745,18 +801,31 @@
     gap: 10px;
 }
 
-.study-chat-quiz-progress-wrong {
+.study-chat-quiz-progress-stat-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 8px;
     font-family: 'Noto Sans', sans-serif;
     font-size: 13px;
-    color: var(--ubits-feedback-accent-error);
     font-weight: 400;
 }
 
+.study-chat-quiz-progress-stat-pill i {
+    font-size: 12px;
+}
+
+.study-chat-quiz-progress-wrong {
+    color: var(--ubits-feedback-accent-error);
+    background: var(--ubits-feedback-bg-error-subtle);
+    border: 1px solid var(--ubits-feedback-accent-error);
+}
+
 .study-chat-quiz-progress-correct {
-    font-family: 'Noto Sans', sans-serif;
-    font-size: 13px;
     color: var(--ubits-feedback-accent-success);
-    font-weight: 400;
+    background: var(--ubits-feedback-bg-success-subtle);
+    border: 1px solid var(--ubits-feedback-accent-success);
 }
 
 .study-chat-quiz-actions {
@@ -922,23 +991,33 @@
     flex-wrap: wrap;
 }
 
-/* Flashcards: barra de progreso */
+/* Cuando los botones de cierre van en el footer del panel */
+.study-chat-quiz-actions .study-chat-quiz-result-actions,
+.study-chat-fc-actions .study-chat-quiz-result-actions {
+    width: 100%;
+}
+
+/* Flashcards: barra de progreso (misma fórmula que quiz: progreso ocupa todo el ancho) */
 .study-chat-fc-progress {
     display: flex;
     align-items: center;
     gap: 10px;
     margin-bottom: 16px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    min-width: 0;
 }
 
 .study-chat-fc-progress-bars {
     display: flex;
-    gap: 4px;
+    gap: 3px;
     align-items: center;
+    flex: 1;
+    min-width: 0;
 }
 
 .study-chat-fc-progress-bar {
-    width: 20px;
+    flex: 1;
+    min-width: 4px;
     height: 6px;
     border-radius: 3px;
     background: var(--ubits-bg-2);
@@ -950,6 +1029,7 @@
 }
 
 .study-chat-fc-progress-text {
+    flex-shrink: 0;
     font-family: 'Noto Sans', sans-serif;
     font-size: 14px;
     font-weight: 400;
@@ -1014,12 +1094,22 @@
     text-align: center;
 }
 
+.study-chat-fc-hint {
+    margin: 0 0 16px;
+    color: var(--ubits-fg-2-medium);
+    text-align: center;
+}
+
 .study-chat-fc-actions {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 8px;
-    justify-content: center;
+    width: 100%;
+    gap: 12px;
+}
+
+.study-chat-fc-actions #study-chat-fc-shuffle {
+    margin-right: auto;
 }
 
 .study-chat-fc-actions .ubits-button {
@@ -1106,16 +1196,54 @@
     margin-bottom: 12px;
 }
 
+/* Prioridad y Fin en una sola línea */
+.study-chat-study-plan-edit-row--dual {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.study-chat-study-plan-edit-row--dual .study-chat-study-plan-edit-field {
+    flex: 1;
+    min-width: 120px;
+}
+
 .study-chat-plan-edit-label {
     display: block;
     color: var(--ubits-fg-1-medium);
     margin-bottom: 4px;
 }
 
-/* Contenedores de inputs UBITS (createInput) */
+/* Contenedores de inputs UBITS (createInput) - tamaño sm */
 .study-chat-canvas-study-plan-editable #study-chat-plan-input-title,
+.study-chat-canvas-study-plan-editable #study-chat-plan-input-priority,
 .study-chat-canvas-study-plan-editable #study-chat-plan-input-date-fin {
     width: 100%;
+}
+
+/* Título editable inline en tareas del plan */
+.study-chat-plan-task-card-title.study-chat-plan-task-title-editable {
+    cursor: text;
+}
+
+.study-chat-plan-task-title-input {
+    width: 100%;
+    min-width: 0;
+    padding: 4px 8px;
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 6px;
+    background: var(--ubits-bg-1);
+    color: var(--ubits-fg-1-high);
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    box-sizing: border-box;
+}
+
+.study-chat-plan-task-title-input:focus {
+    outline: none;
+    border-color: var(--ubits-feedback-accent-info);
+    box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);
 }
 
 /* Prioridad: menú desplegable con iconos en cada opción (como seguimiento) */
@@ -1175,6 +1303,16 @@
     gap: 12px;
 }
 
+.study-chat-plan-add-task-wrap {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 12px;
+}
+
+.study-chat-plan-add-task-wrap .ubits-button {
+    flex-shrink: 0;
+}
+
 .study-chat-plan-task-card {
     border: 1px solid var(--ubits-border-1);
     border-radius: 8px;
@@ -1189,24 +1327,73 @@
     gap: 10px;
 }
 
+/* Fila imagen (curso) a la izquierda + título a la derecha para diferenciar tareas tipo curso */
+.study-chat-plan-task-card-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    min-width: 0;
+}
+
+.study-chat-plan-task-card-thumb {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--ubits-bg-3);
+}
+
+.study-chat-plan-task-card-thumb-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.study-chat-plan-task-card-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.study-chat-plan-task-card-meta {
+    color: var(--ubits-fg-1-medium);
+    font-family: 'Noto Sans', sans-serif;
+}
+
+.study-chat-plan-task-card-row .study-chat-plan-task-card-title-wrap {
+    flex: 1;
+    min-width: 0;
+}
+
 .study-chat-plan-task-card-title-wrap {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
 }
 
-.study-chat-plan-task-card-title {
-    color: var(--ubits-fg-1-high);
+.study-chat-plan-task-card-title,
+.study-chat-plan-task-title-input {
     flex: 1;
     min-width: 0;
 }
 
+.study-chat-plan-task-card-title {
+    color: var(--ubits-fg-1-high);
+}
+
 .study-chat-plan-task-card-actions {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 8px;
+    flex-shrink: 0;
 }
 
 .study-chat-plan-task-card-actions .ubits-button {

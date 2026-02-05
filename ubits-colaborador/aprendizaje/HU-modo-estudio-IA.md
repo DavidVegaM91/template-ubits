@@ -29,11 +29,12 @@
 - [ ] El **panel derecho** está **oculto** al cargar; solo se muestra cuando la IA genera un recurso (quiz, flashcards, guía, cursos sugeridos o plan).
 - [ ] El **panel derecho** usa fondo **bg-1** (no bg-2) cuando está abierto.
 - [ ] Puedo cerrar el panel con un botón (X) y seguir chateando a ancho completo.
-- [ ] El **panel derecho** tiene siempre **tres zonas**: **encabezado** (título del recurso y botón cerrar), **cuerpo** (contenido con scroll si aplica) y **pie** (acciones). En quiz y flashcards el pie muestra Anterior y Siguiente; en Plan de estudio el pie muestra "Cancelar" y "Crear plan". Cursos sugeridos y Plan de formación pueden tener pie vacío.
+- [ ] El **panel derecho** tiene siempre **tres zonas**: **encabezado** (título del recurso y botón cerrar), **cuerpo** (contenido con scroll si aplica) y **pie** (acciones). En quiz y flashcards el pie muestra Anterior y Siguiente; en Plan de estudio el pie muestra "Cancelar" y "Crear plan" (o "Ver plan" si el plan ya fue creado y se reabre; en prototipo ese botón no hace nada; en producción abriría un drawer con el plan). Cursos sugeridos y Plan de formación pueden tener pie vacío.
 - [ ] En el panel se muestran correctamente: quiz (preguntas, opciones, resultado), flashcards (voltear, navegar, barajar), guía (secciones), cursos sugeridos y plan de formación.
 - [ ] En el **quiz**, al elegir una respuesta obtengo **feedback inmediato**: si acierto se muestra la opción en verde con "¡Exacto!" y la explicación; si fallo se indica la respuesta correcta y la explicación (estilo Gemini).
-- [ ] Cuando la IA genera un recurso (quiz, flashcards, guía), en el chat aparece el mensaje **“He creado un [quiz/flashcards/plan de estudio] para ti: {título}”** y un botón **“Abrir”** (primario, sm). El botón **solo es visible cuando el panel derecho está cerrado**; si el panel está abierto, solo se ve el texto del mensaje. Al pulsar “Abrir” se reabre el panel con ese recurso.
+- [ ] Cuando la IA genera un recurso (quiz, flashcards, plan de estudio), en el chat aparece un texto intro y una **card del recurso** (icono, título elaborado, cantidad debajo y botón Abrir a la derecha). El botón Abrir solo es visible cuando el panel está cerrado; al pulsar Abrir se reabre el panel con ese recurso.
 - [ ] En el quiz, el botón **“Más preguntas”** (en la pantalla de resultados) genera un **nuevo quiz** sobre el mismo tema **sin cerrar el panel**. En el chat aparece un nuevo mensaje: **“He creado un nuevo quiz para ti: {título}”**. Análogamente, desde resultados se puede pasar a Flashcards o Guía y en el chat aparece “He creado flashcards/guía para ti: {título}”.
+- [ ] En **plan de estudio**, si el plan ya fue creado, al reabrir con "Abrir" los campos salen en modo lectura y el pie muestra **"Ver plan"** (en este prototipo el botón no hace nada; en producción llevaría a ver el plan en un drawer).
 - [ ] Bajo el área de escritura del chat hay un **mensaje de aviso**: que las conversaciones no se usan para mejorar modelos, que el tutor puede cometer errores (verificar respuestas) y referencia a privacidad y UBITS.
 - [ ] La experiencia es usable en móvil (panel debajo del chat o adaptado).
 - [ ] Cumplimiento de identidad UBITS (tokens, tipografía, componentes; validable con `validador-ubits.html`).
@@ -44,7 +45,7 @@
 
 - **Apertura:** El panel derecho **solo aparece** cuando la IA genera un recurso (quiz, flashcards, guía, cursos, plan). No es visible al entrar.
 - **Cierre:** El usuario puede cerrar el panel y seguir usando solo el chat.
-- **Reapertura:** Por cada recurso generado, en el chat aparece el mensaje **“He creado un [quiz/flashcards/plan de estudio] para ti: {título}”** y un botón **“Abrir”** (primario, sm). El botón **solo se muestra cuando el panel está cerrado**; si el panel está abierto, el mensaje no muestra el botón. Al pulsar “Abrir” se reabre el panel con ese recurso.
+- **Reapertura:** Por cada recurso generado, en el chat aparece un texto intro y una **card del recurso** (icono, título elaborado, cantidad —p. ej. "5 preguntas"— y botón "Abrir" a la derecha). El botón solo se muestra cuando el panel está cerrado. Al pulsar "Abrir" se reabre el panel con ese recurso.
 - **Más preguntas:** Desde la pantalla de resultados del quiz, “Más preguntas” genera un nuevo quiz sin cerrar el panel; en el chat se inserta “He creado un nuevo quiz para ti: {título}”. Mismo patrón para cambio a Flashcards o Plan de estudio desde resultados.
 - Referencia visual: patrón tipo “Examen de Hiragana Básico” en Gemini (mensaje en el chat con botón “Abrir” visible solo con panel cerrado).
 
@@ -137,9 +138,10 @@ Usar estas tablas para validar cada flujo al iterar.
 
 ## Recursos del panel (contenido simulado)
 
+- **Mensaje de recurso en el chat:** Tras generar un recurso (quiz, flashcards, plan), el mensaje de la IA incluye un texto corto ("He creado un quiz para ti.", etc.) y una **card**: icono del tipo de recurso, **título elaborado** (ej. "Quiz Maratón de Hiragana", "Plan de estudio: Liderazgo"), **meta** con la cantidad (ej. "50 preguntas", "5 flashcards", "5 tareas") y botón **Abrir** a la derecha (visible solo con el panel cerrado).
 - **Quiz:** Preguntas de opción múltiple; **feedback inmediato** al elegir (correcto: verde + "¡Exacto!" + explicación; incorrecto: se muestra la respuesta correcta y explicación); navegación libre (Atrás/Siguiente sin obligar a contestar), botón de avanzar siempre primario; barra de progreso: 1–19 preguntas = barras a ancho completo, 20+ = slider con puntito; resultado al final; **“Más preguntas”** en resultados genera nuevo quiz sin cerrar el panel y añade mensaje “He creado un nuevo quiz para ti: {título}” en el chat.
 - **Flashcards:** Tarjetas frente/dorso; Voltear, Anterior, Siguiente, Barajar.
-- **Plan de estudio:** Solo para Liderazgo, Comunicación e Inglés (y Japonés con tareas del chat). Panel editable: título (input UBITS), prioridad (menú desplegable con **iconos dentro de cada opción**: Alta, Media, Baja, mismos iconos/colores que en seguimiento), **solo fecha fin** (date picker UBITS; la fecha de inicio la fija el backend como hoy). Tareas como cards (curso o actividad) con editar nombre, eliminar, Cambiar/Rehacer. Pie del panel: "Cancelar" y "Crear plan". Se relaciona con el módulo de planes y tareas (seguimiento).
+- **Plan de estudio:** Solo para Liderazgo, Comunicación e Inglés (y Japonés con tareas del chat). **Solo se sugieren 5 tareas** en todos los planes. Panel editable: título, prioridad y fecha fin con **inputs UBITS tamaño sm**; prioridad es un **select oficial** (Alta, Media, Baja); prioridad y fin en **una sola línea** para ahorrar espacio. La fecha de inicio la fija el backend como hoy. Tareas como cards: **nombre editable inline** (clic en el nombre para editar; sin botón "Editar"); botones **Cambiar** (curso) o **Rehacer** (actividad) y **Eliminar**, ambos **icon-only tamaño xs**, en la misma fila que el nombre (los botones no bajan al editar). **Botón Cambiar (tarea tipo curso):** al hacer clic la tarea **cambia automáticamente** al siguiente curso en la fila de sugerencias del tema; **no se abre modal** para elegir. No se puede asignar un curso que ya esté en otra tarea del mismo plan (evitar duplicados). **Tareas tipo actividad (texto, ej. Japonés):** misma lógica que contenidos: hay **30+ opciones** y **Rehacer** asigna la siguiente opción disponible que **no** esté ya usada en otra tarea del plan. Pie del panel: "Cancelar" y "Crear plan". **Tras crear el plan**, al reabrir con "Abrir" los campos (título, prioridad, fin) se muestran en **modo lectura** y el botón del pie es **"Ver plan"** (en prototipo no hace nada; en producción abriría un drawer con el plan completo). Se relaciona con el módulo de planes y tareas (seguimiento).
 - **Cursos sugeridos:** Cards compactas de cursos (catálogo UBITS).
 - **Plan de formación:** Título, fechas, lista de cursos del plan.
 
@@ -163,6 +165,18 @@ Temas de ejemplo en datos: liderazgo, comunicacion, ingles, japones, hiragana. Q
 
 ---
 
+## Caso de uso en producción: sugerencia de cursos en el plan (vida real)
+
+En **producción**, la IA tendría en cuenta el historial del colaborador para sugerir cursos en las tareas del plan:
+
+- **Objetivo:** Que las tareas del plan de estudio propongan **cursos que el usuario aún no ha visto o completado** para esa competencia o habilidad.
+- **Fuente de verdad:** Historial de aprendizaje (cursos iniciados, completados, en progreso) y catálogo UBITS por competencia.
+- **Comportamiento esperado:** La IA identifica qué cursos de la competencia elegida (ej. Liderazgo, Comunicación) el usuario **no** ha cursado y los prioriza al armar o actualizar el plan. Así se evita repetir contenidos ya vistos y se aprovechan mejor las tareas.
+
+**En este prototipo** no hay integración con historial real: se usa una **lista fija** de cursos por tema (`COURSES_BY_TOPIC` / `LEADERSHIP_COURSES`, etc.) y, al cambiar una tarea con el botón **Cambiar**, se avanza a la **siguiente sugerencia disponible** en esa lista sin repetir un curso que ya esté en otra tarea del mismo plan. Al desarrollar el producto real, reemplazar esta lógica por la recomendación basada en “cursos no vistos de la competencia”.
+
+---
+
 ## Registro de cambios
 
 *Actualizar esta sección en cada iteración.*
@@ -178,3 +192,7 @@ Temas de ejemplo en datos: liderazgo, comunicacion, ingles, japones, hiragana. Q
 | 2026-02-05 | **Plan de estudio (sustituye Guía de estudio):** Solo para Liderazgo, Comunicación e Inglés. Al elegir "Plan de estudio" se abre en el panel una propuesta con nombre, fechas inicio/fin, prioridad Media y lista de tareas (ver contenido UBITS). Relación con módulo planes y tareas. Para Japonés/hiragana no se muestra la opción; si el usuario pide "plan de estudio" se indica que solo está para las 3 competencias en catálogo. HU actualizada; backlog: qué hacer con Japonés (contenidos no UBITS). |
 | 2026-02-05 | **Recomendado para ti:** solo 3 chips (Liderazgo, Comunicación, Inglés). Japonés no aparece porque no está en UBITS; se accede únicamente escribiendo en el chat algo como "japonés" o "japon". HU actualizada. |
 | 2026-02-05 | **Panel derecho:** estructura fija encabezado + cuerpo + pie. Quiz y flashcards: pie con Anterior y Siguiente. Plan de estudio: pie con Cancelar y Crear plan. **Plan de estudio editable:** título y fecha fin con inputs UBITS; prioridad con menú desplegable (iconos en cada opción: Alta/Media/Baja); sin fecha de inicio (backend = hoy); cards de tareas (curso/actividad) con editar, eliminar, Cambiar/Rehacer. HU actualizada. |
+| 2026-02-05 | **Plan de estudio:** Inputs en tamaño **sm**; prioridad como **select oficial** UBITS; prioridad y fin en **una línea**. Tareas: **nombre editable inline** (clic para editar, sin botón Editar); botones **Cambiar/Rehacer** y **Eliminar** en **icon-only xs** en la misma fila (sin bajar al editar). **Tras crear plan:** al reabrir, campos en **modo lectura** y botón **"Editar plan"**; al pulsar se vuelve a modo edición. HU actualizada. |
+| 2026-02-05 | **Botón Cambiar (tarea curso):** al clic la tarea pasa automáticamente al **siguiente** curso en la fila de sugerencias (sin modal). No se asigna un curso que ya esté en otra tarea del plan. **HU:** sección "Caso de uso en producción: sugerencia de cursos en el plan (vida real)" documentando que en producción la IA identificaría cursos no vistos de la competencia para sugerirlos; en el prototipo se usa lista fija y se evitan duplicados. |
+| 2026-02-05 | **Planes: 5 tareas** en todos los temas (antes 6). **Tareas tipo actividad (Japonés):** 30+ opciones; **Rehacer** usa la misma lógica que Cambiar en contenidos: no sugiere una opción que ya esté en otra tarea del plan. **Botón "Ver plan":** sustituye a "Editar plan" tras crear el plan; en prototipo no hace nada; en producción abriría un drawer con el plan. HU actualizada (criterios, recursos del panel, registro). |
+| 2026-02-05 | **Mensaje de recurso en el chat:** Los recursos generados (quiz, flashcards, plan) se muestran con un texto intro + **card**: icono del tipo, título elaborado (ej. "Quiz Maratón de Hiragana"), cantidad debajo (ej. "50 preguntas", "5 flashcards", "5 tareas") y botón Abrir a la derecha. HU actualizada (criterios, referencia de diseño, recursos del panel, registro). |

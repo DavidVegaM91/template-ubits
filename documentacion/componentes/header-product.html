@@ -396,6 +396,23 @@
                             </li>
                         </ul>
                     </div>
+
+                    <!-- Documentación técnica: alineación cuando se oculta título/flecha -->
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px; border: 1px solid var(--ubits-border-1);">
+                        <h2 class="ubits-heading-h2" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-align-right" style="margin-right: 8px; color: var(--ubits-fg-1-medium);"></i>
+                            Alineación de acciones (header sin título ni flecha atrás)
+                        </h2>
+                        <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 12px;">
+                            En muchas páginas el header se usa sin nombre de producto y sin botón atrás (ocultando <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px;">.ubits-header-product__product-info</code> con CSS). En ese caso las acciones deben seguir siempre a la <strong>derecha</strong>, igual que en el preview.
+                        </p>
+                        <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 12px;">
+                            <strong>Por qué ocurría el error:</strong> <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px;">product-info</code> tiene <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px;">flex: 1</code> y ocupa el espacio disponible, empujando las acciones a la derecha. Al ocultar <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px;">product-info</code> (display: none), ese bloque deja de ocupar espacio y la fila solo contiene <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px;">__actions</code>; en un contenedor flex sin más reglas, el único hijo queda al inicio (izquierda).
+                        </p>
+                        <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 0;">
+                            <strong>Solución en el componente:</strong> En <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px;">header-product.css</code>, <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px;">.ubits-header-product__actions</code> usa <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px;">margin-left: auto</code> (en la shorthand <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px;">margin: -16px -16px -16px auto</code>). Así las acciones quedan siempre alineadas a la derecha, con o sin <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px;">product-info</code> visible. No hace falta añadir estilos en la página (p. ej. justify-content: flex-end).
+                        </p>
+                    </div>
                 </div>
             </div>
             </div>

@@ -233,6 +233,16 @@
  * Sin esta regla el header se verá como un bloque con fondo y padding, lo cual no es
  * el diseño deseado.
  *
+ * ⚠️ ALINEACIÓN DE ACCIONES CUANDO SE OCULTA TÍTULO O BOTÓN ATRÁS:
+ * Si en una página se oculta .ubits-header-product__product-info (por CSS, ej. display: none)
+ * para no mostrar el título ni la flecha atrás, las acciones (botones) deben seguir
+ * alineadas a la derecha como en el diseño oficial. Causa del fallo: product-info tiene
+ * flex: 1 y empuja las acciones a la derecha; al ocultarlo, la fila solo tiene __actions
+ * y en un flex sin más reglas los hijos quedan al inicio (izquierda). Solución en el
+ * componente (header-product.css): .ubits-header-product__actions tiene margin-left: auto,
+ * de modo que las acciones siempre se alinean a la derecha con o sin product-info visible.
+ * No es necesario añadir justify-content: flex-end en la página.
+ *
  * @param {string} containerId - ID del contenedor donde se renderizará el header-product.
  * @param {object} options - Opciones de configuración del header-product.
  * @param {string} [options.productName='Name product'] - Nombre del producto (título principal).

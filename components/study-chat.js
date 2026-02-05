@@ -5,6 +5,12 @@
 
 /** Estado del plan de estudio cuando el panel está abierto (para edición). */
 var currentStudyPlanState = null;
+/** Planes ya creados por tema (al reabrir se muestran en modo lectura con botón "Ver plan"; en prototipo no hace nada, en producción abriría un drawer con el plan). */
+var createdStudyPlansByTopic = {};
+
+function getStudyPlanForTopic(topicKey) {
+    return createdStudyPlansByTopic[topicKey] || generateStudyPlan(topicKey);
+}
 
 // Función para obtener la ruta base de imágenes según la ubicación actual
 function getImageBasePath() {
@@ -112,7 +118,7 @@ const COURSES_BY_TOPIC = {
 /** Temas que tienen Plan de estudio (catálogo UBITS o japonés con tareas del chat). */
 const STUDY_PLAN_TOPICS = ['liderazgo', 'comunicacion', 'ingles', 'japones'];
 
-/** Tareas tipo actividad para Japonés (relacionadas con el chat): 10 alternativas por tarea para "Rehacer". */
+/** Tareas tipo actividad para Japonés (relacionadas con el chat): 30+ alternativas; "Rehacer" no repite una ya usada en otra tarea. */
 var ACTIVITY_ALTERNATIVES_JAPANESE = [
     'Completar quiz de saludos japoneses',
     'Practicar flashcards de hiragana',
@@ -123,7 +129,31 @@ var ACTIVITY_ALTERNATIVES_JAPANESE = [
     'Repasar flashcards de partículas básicas',
     'Completar quiz de frases útiles',
     'Practicar flashcards de verbos básicos',
-    'Hacer quiz de escritura (hiragana)'
+    'Hacer quiz de escritura (hiragana)',
+    'Completar quiz de vocales en hiragana',
+    'Practicar flashcards de la serie ka-wa',
+    'Hacer quiz de hiragana ん y dakuten',
+    'Repasar flashcards de expresiones de cortesía',
+    'Completar quiz de días y meses',
+    'Practicar flashcards de colores en japonés',
+    'Hacer quiz de familia y personas',
+    'Repasar flashcards de comida y bebida',
+    'Completar quiz de verbos en presente',
+    'Practicar flashcards de lugares y direcciones',
+    'Hacer quiz de katakana básico',
+    'Repasar flashcards de tiempo y frecuencia',
+    'Completar quiz de adjetivos i y na',
+    'Practicar flashcards de transporte',
+    'Hacer quiz de contar objetos (contadores)',
+    'Repasar flashcards de verbos en pasado',
+    'Completar quiz de te-form (verbos)',
+    'Practicar flashcards de invitaciones y ofertas',
+    'Hacer quiz de partículas wa, ga, o, ni',
+    'Repasar flashcards de compras y precios',
+    'Completar quiz de oraciones negativas',
+    'Practicar flashcards de salud y cuerpo',
+    'Hacer quiz de hiragana con handakuten (ぱ)',
+    'Repasar flashcards de kana combinados (きゃ, しゅ)'
 ];
 
 function formatStudyPlanDate(d) {
@@ -163,14 +193,14 @@ function generateStudyPlan(topicKey) {
     var tasks = [];
     var courses = COURSES_BY_TOPIC[topicKey];
     if (courses && courses.length) {
-        tasks = courses.slice(0, 6).map(function(c) {
+        tasks = courses.slice(0, 5).map(function(c) {
             return { type: 'course', title: 'Ver contenido: ' + c.title, course: c };
         });
     } else if (topicKey === 'japones') {
-        tasks = ACTIVITY_ALTERNATIVES_JAPANESE.slice(0, 6).map(function(text, i) {
-            var alts = ACTIVITY_ALTERNATIVES_JAPANESE.slice();
+        var alts = ACTIVITY_ALTERNATIVES_JAPANESE.slice();
+        tasks = ACTIVITY_ALTERNATIVES_JAPANESE.slice(0, 5).map(function(text, i) {
             var idx = alts.indexOf(text);
-            if (idx < 0) idx = 0;
+            if (idx < 0) idx = i;
             return { type: 'activity', title: text, alternatives: alts, currentIndex: idx };
         });
     } else {
@@ -272,31 +302,120 @@ const TUTOR_QUIZ = {
     ]
 };
 
+/** Sets de flashcards por tema: 3 iteraciones × 5 cartas = 15 por tema (liderazgo, comunicacion, ingles, japones, hiragana). */
 const TUTOR_FLASHCARDS = {
     liderazgo: [
         { front: 'Liderazgo transformacional', back: 'Estilo que inspira cambios positivos y motiva al equipo con una visión compartida.' },
         { front: 'Feedback 360°', back: 'Evaluación que recibe un líder desde jefes, pares y colaboradores para mejorar.' },
-        { front: 'Delegación efectiva', back: 'Asignar tareas y autoridad a otros manteniendo responsabilidad y seguimiento.' }
+        { front: 'Delegación efectiva', back: 'Asignar tareas y autoridad a otros manteniendo responsabilidad y seguimiento.' },
+        { front: 'Coaching', back: 'Acompañar al colaborador con preguntas y reflexión para que encuentre sus propias soluciones.' },
+        { front: 'Empoderamiento', back: 'Dar autonomía y recursos para que el equipo tome decisiones y asuma responsabilidades.' }
     ],
     comunicacion: [
         { front: 'Comunicación no verbal', back: 'Mensajes transmitidos con gestos, postura, mirada y tono de voz.' },
         { front: 'Barreras de comunicación', back: 'Ruido, suposiciones, emociones o idioma que dificultan el entendimiento.' },
-        { front: 'Parafrasear', back: 'Repetir con tus palabras lo que dijo el otro para confirmar que entendiste.' }
+        { front: 'Parafrasear', back: 'Repetir con tus palabras lo que dijo el otro para confirmar que entendiste.' },
+        { front: 'Escucha activa', back: 'Atender con atención plena, hacer preguntas y resumir lo que dijo el otro.' },
+        { front: 'Mensaje yo', back: 'Expresar lo que sientes o necesitas sin culpar: "Yo me siento..." en lugar de "Tú siempre..."' }
     ],
     ingles: [
         { front: 'Present continuous', back: 'Estructura: am/is/are + verbo -ing. Ej: I am working.' },
         { front: 'Phrasal verb "take off"', back: 'Puede significar: despegar (avión) o quitarse (ropa).' },
-        { front: ' "Actually"', back: 'En inglés suele significar "en realidad", no "actualmente".' }
+        { front: '"Actually"', back: 'En inglés suele significar "en realidad", no "actualmente".' },
+        { front: 'Present simple', back: 'Para rutinas y hechos. Ej: She works from home.' },
+        { front: '"Eventually"', back: 'Significa "al final" o "con el tiempo", no "eventualmente" en español.' }
     ],
     japones: [
         { front: 'Kana', back: 'Sistemas de escritura silábicos: hiragana y katakana.' },
         { front: 'Kanji', back: 'Caracteres de origen chino usados en japonés para muchas palabras.' },
-        { front: 'Kudasai', back: 'Sufijo de cortesía que significa "por favor".' }
+        { front: 'Kudasai', back: 'Sufijo de cortesía que significa "por favor".' },
+        { front: 'Ohayou gozaimasu', back: 'Buenos días (formal).' },
+        { front: 'Konnichiwa', back: 'Hola / Buenas tardes.' }
     ],
     hiragana: [
         { front: 'Vocales (a, i, u, e, o)', back: 'あ い う え お' },
         { front: 'Serie ka (か き く け こ)', back: 'Sonidos ka, ki, ku, ke, ko en hiragana.' },
-        { front: 'Tsu pequeño (っ)', back: 'Indica pausa o geminación (consonante doble).' }
+        { front: 'Tsu pequeño (っ)', back: 'Indica pausa o geminación (consonante doble).' },
+        { front: 'Serie sa (さ し す せ そ)', back: 'Sonidos sa, shi, su, se, so en hiragana.' },
+        { front: 'Serie ta (た ち つ て と)', back: 'Sonidos ta, chi, tsu, te, to en hiragana.' }
+    ]
+};
+
+/** Set 2 de flashcards (iteración 2 de "Más flashcards"). */
+const TUTOR_FLASHCARDS_ALT = {
+    liderazgo: [
+        { front: 'Escucha activa', back: 'Prestar atención plena al otro, preguntar y parafrasear para entender bien.' },
+        { front: 'Inteligencia emocional', back: 'Capacidad de reconocer y gestionar las propias emociones y las de otros.' },
+        { front: 'Visión compartida', back: 'Objetivo común que une al equipo y guía las decisiones.' },
+        { front: 'Resolución de conflictos', back: 'Identificar el problema, escuchar a las partes y buscar soluciones que sumen.' },
+        { front: 'Mentoring', back: 'Transmitir experiencia y guiar el desarrollo de otra persona a largo plazo.' }
+    ],
+    comunicacion: [
+        { front: 'Feedback constructivo', back: 'Comentario específico, a tiempo y centrado en comportamientos mejorables.' },
+        { front: 'Asertividad', back: 'Expresar tu opinión o necesidad con claridad y respeto.' },
+        { front: 'Comunicación asertiva', back: 'Decir lo que piensas sin agredir ni someterte; defender tus derechos con educación.' },
+        { front: 'Preguntas abiertas', back: 'Preguntas que no se responden con sí/no; invitan a explicar (qué, cómo, por qué).' },
+        { front: 'Resumen en reuniones', back: 'Cerrar acuerdos repitiendo qué se decidió, quién hace qué y para cuándo.' }
+    ],
+    ingles: [
+        { front: 'Phrasal verb "look up"', back: 'Buscar (información) o levantar la vista.' },
+        { front: 'Past simple', back: 'Para acciones acabadas en el pasado. Ej: I worked yesterday.' },
+        { front: 'Phrasal verb "carry out"', back: 'Llevar a cabo, realizar (ej. carry out a project).' },
+        { front: '"Due to" vs "because of"', back: 'Ambos indican causa; "due to" suele ir tras be (The delay was due to...).' },
+        { front: 'Email: "Please find attached"', back: 'Fórmula formal para indicar que adjuntas un archivo al correo.' }
+    ],
+    japones: [
+        { front: 'Arigatou gozaimasu', back: 'Gracias (formal).' },
+        { front: 'Sumimasen', back: 'Perdón / Disculpe / Gracias (cuando molestas a alguien).' },
+        { front: '-san (honorífico)', back: 'Sufijo de respeto tras el apellido o nombre. Ej: Tanaka-san.' },
+        { front: 'Hai / Iie', back: 'Sí / No. "Hai" también se usa para mostrar que estás escuchando.' },
+        { front: 'Onegaishimasu', back: 'Por favor (al pedir algo). También al inicio de una actividad.' }
+    ],
+    hiragana: [
+        { front: 'Dakuten (゛)', back: 'Marcas que cambian consonantes: か→が, た→だ, さ→ざ.' },
+        { front: 'Serie na (な に ぬ ね の)', back: 'Sonidos na, ni, nu, ne, no en hiragana.' },
+        { front: 'Serie ha (は ひ ふ へ ほ)', back: 'Sonidos ha, hi, fu, he, ho. は como partícula se lee "wa".' },
+        { front: 'Handakuten (゜)', back: 'Solo con は: ぱ ぴ ぷ ぺ ぽ (pa, pi, pu, pe, po).' },
+        { front: 'Tsu pequeño (っ)', back: 'Geminación: la siguiente consonante se duplica (e.g. がっこう gakkou).' }
+    ]
+};
+
+/** Set 3 de flashcards (iteración 3 de "Más flashcards"). */
+const TUTOR_FLASHCARDS_SET2 = {
+    liderazgo: [
+        { front: 'Estilos de liderazgo', back: 'Directivo, participativo, orientado a resultados, transformacional; el contexto define cuál usar.' },
+        { front: 'Gestión del cambio', back: 'Comunicar el porqué, involucrar a las personas y celebrar avances para adoptar lo nuevo.' },
+        { front: 'Reuniones 1:1', back: 'Espacio periódico con cada colaborador para feedback, prioridades y desarrollo.' },
+        { front: 'Objetivos SMART', back: 'Específicos, Medibles, Alcanzables, Relevantes y con un Tiempo definido.' },
+        { front: 'Cultura de equipo', back: 'Valores, normas y ritos compartidos que definen cómo se trabaja y se relacionan.' }
+    ],
+    comunicacion: [
+        { front: 'Comunicación en crisis', back: 'Ser claro, frecuente y honesto; dar información aunque sea parcial para reducir rumores.' },
+        { front: 'Escucha empática', back: 'Ponerse en el lugar del otro sin juzgar; validar emociones antes de dar soluciones.' },
+        { front: 'Storytelling', back: 'Usar historias o ejemplos para que un mensaje sea memorable y conecte con la audiencia.' },
+        { front: 'Mensaje clave', back: 'Una idea principal que la audiencia debe recordar; repetirla al inicio, desarrollo y cierre.' },
+        { front: 'Comunicación escrita', back: 'En emails: asunto claro, un tema por mensaje, párrafos cortos y llamada a la acción.' }
+    ],
+    ingles: [
+        { front: 'Present perfect', back: 'Conecta pasado con presente. Ej: I have finished the report (ya está listo).' },
+        { front: 'Phrasal verb "follow up"', back: 'Dar seguimiento (e.g. follow up on the meeting).' },
+        { front: 'Reuniones: "Let\'s move on"', back: 'Frase para pasar al siguiente punto del orden del día.' },
+        { front: '"Looking forward to"', back: 'Esperar con ganas. Va seguido de -ing: I am looking forward to hearing from you.' },
+        { front: 'Small talk', back: 'Conversación ligera para romper el hielo (weather, weekend, travel) antes de temas de trabajo.' }
+    ],
+    japones: [
+        { front: 'Konbanwa', back: 'Buenas noches.' },
+        { front: 'Oyasumi nasai', back: 'Buenas noches (al despedirse para dormir).' },
+        { front: 'Ittekimasu / Itterasshai', back: 'Quien sale: "Me voy". Quien se queda: "Que vaya bien".' },
+        { front: 'Tadaima / Okaeri', back: 'Al volver a casa: "Ya llegué" / "Bienvenido de vuelta".' },
+        { front: 'Gochisousama', back: 'Se dice al terminar de comer; agradece la comida (y a quien la preparó).' }
+    ],
+    hiragana: [
+        { front: 'Serie ma (ま み む め も)', back: 'Sonidos ma, mi, mu, me, mo en hiragana.' },
+        { front: 'Serie ya (や ゆ よ)', back: 'Solo tres caracteres: ya, yu, yo.' },
+        { front: 'Serie ra (ら り る れ ろ)', back: 'Sonidos ra, ri, ru, re, ro (entre r y l).' },
+        { front: 'Serie wa (わ を ん)', back: 'わ (wa), を (wo, partícula de objeto), ん (n).' },
+        { front: 'Combinaciones きゃ きゅ きょ', back: 'Sílabas con y: kya, kyu, kyo. Se escriben con や ゆ よ pequeños.' }
     ]
 };
 
@@ -314,6 +433,28 @@ const TUTOR_GUIDE = {
  * @param {string} topic - tema para quiz/flashcards/guia
  * @param {Object} extraData - para 'courses' o 'plan': { courses } o { plan }
  */
+/**
+ * Baraja las opciones de cada pregunta y actualiza el índice correcto (evita que la correcta sea siempre la A).
+ * @param {Array} questions - Array de { q, options, correct, explanation }
+ * @returns {Array} Nuevo array de preguntas con opciones reordenadas
+ */
+function shuffleQuizOptions(questions) {
+    if (!questions || !questions.length) return questions;
+    return questions.map(function(qu) {
+        var opts = qu.options.slice();
+        var correctIdx = qu.correct;
+        var correctValue = opts[correctIdx];
+        for (var i = opts.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var t = opts[i];
+            opts[i] = opts[j];
+            opts[j] = t;
+        }
+        var newCorrect = opts.indexOf(correctValue);
+        return { q: qu.q, options: opts, correct: newCorrect, explanation: qu.explanation };
+    });
+}
+
 function renderTutorPanel(type, topic, extraData) {
     const panel = chatState.rightPanelId ? document.getElementById(chatState.rightPanelId) : null;
     const placeholder = chatState.placeholderId ? document.getElementById(chatState.placeholderId) : null;
@@ -324,7 +465,7 @@ function renderTutorPanel(type, topic, extraData) {
     const topicKey = dataTopic in TUTOR_QUIZ ? dataTopic : 'liderazgo';
     let html = '';
     if (type === 'quiz') {
-        const questions = TUTOR_QUIZ[topicKey] || TUTOR_QUIZ.liderazgo;
+        const questions = shuffleQuizOptions(TUTOR_QUIZ[topicKey] || TUTOR_QUIZ.liderazgo);
         const totalQuestions = questions.length;
         const useBars = totalQuestions >= 1 && totalQuestions <= 19;
         const progressBlock = useBars
@@ -340,12 +481,12 @@ function renderTutorPanel(type, topic, extraData) {
                     ${progressBlock}
                     <span class="study-chat-quiz-progress-text">1 / ${totalQuestions}</span>
                     <span class="study-chat-quiz-progress-stats">
-                        <span class="study-chat-quiz-progress-wrong" aria-hidden="true">× <span class="study-chat-quiz-progress-wrong-n">0</span></span>
-                        <span class="study-chat-quiz-progress-correct" aria-hidden="true">✓ <span class="study-chat-quiz-progress-correct-n">0</span></span>
+                        <span class="study-chat-quiz-progress-stat-pill study-chat-quiz-progress-wrong" title="Respuestas incorrectas" aria-label="Respuestas incorrectas"><i class="far fa-times"></i><span class="study-chat-quiz-progress-wrong-n">0</span></span>
+                        <span class="study-chat-quiz-progress-stat-pill study-chat-quiz-progress-correct" title="Respuestas correctas" aria-label="Respuestas correctas"><i class="far fa-check"></i><span class="study-chat-quiz-progress-correct-n">0</span></span>
                     </span>
                 </div>
                 <div class="study-chat-quiz-questions">${questions.map((qu, i) => `
-                    <div class="study-chat-quiz-q" data-index="${i}" ${i > 0 ? 'style="display:none;"' : ''}>
+                    <div class="study-chat-quiz-q" data-index="${i}" data-correct-index="${qu.correct}" data-explanation="${(qu.explanation || '').replace(/"/g, '&quot;')}" ${i > 0 ? 'style="display:none;"' : ''}>
                         <p class="ubits-body-md-regular study-chat-quiz-question-text">${i + 1}. ${qu.q}</p>
                         <div class="study-chat-quiz-options">${qu.options.map((opt, j) => `<label class="study-chat-quiz-opt" data-option-index="${j}"><input type="radio" name="quiz-${i}" value="${j}"><span class="study-chat-quiz-opt-text">${opt}</span></label>`).join('')}</div>
                         <div class="study-chat-quiz-feedback" style="display:none;" role="status"></div>
@@ -361,32 +502,40 @@ function renderTutorPanel(type, topic, extraData) {
             </div>
         </div>`;
     } else if (type === 'flashcards') {
-        const cards = TUTOR_FLASHCARDS[topicKey] || TUTOR_FLASHCARDS.liderazgo;
+        const fcSetIndex = extraData && typeof extraData.fcSetIndex === 'number' ? Math.max(0, Math.min(2, extraData.fcSetIndex)) : 0;
+        const sets = [TUTOR_FLASHCARDS, TUTOR_FLASHCARDS_ALT, TUTOR_FLASHCARDS_SET2];
+        const cards = (sets[fcSetIndex][topicKey] || sets[fcSetIndex].liderazgo).slice();
+        const fcSet = String(fcSetIndex);
         const fcTotal = cards.length;
         const fcProgressBarsHtml = Array.from({ length: fcTotal }, (_, i) => '<span class="study-chat-fc-progress-bar" data-bar-index="' + i + '"></span>').join('');
-        html = `<div class="study-chat-canvas-content study-chat-canvas-flashcards" data-topic="${topicKey}">
+        html = `<div class="study-chat-canvas-content study-chat-canvas-flashcards" data-topic="${topicKey}" data-fc-set="${fcSet}">
             <div class="study-chat-canvas-header">
                 <span class="ubits-body-md-bold">Flashcards</span>
                 <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only study-chat-canvas-close" title="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>
             </div>
             <div class="study-chat-canvas-body">
-                <div class="study-chat-fc-progress">
-                    <div class="study-chat-fc-progress-bars">${fcProgressBarsHtml}</div>
-                    <span class="study-chat-fc-progress-text">1 / ${fcTotal}</span>
-                </div>
-                <div class="study-chat-fc-card" data-index="0" role="button" tabindex="0" aria-label="Clic para voltear la tarjeta">
-                    <div class="study-chat-fc-card-inner">
-                        <div class="study-chat-fc-face study-chat-fc-front"><p class="ubits-body-md-regular">${cards[0].front}</p></div>
-                        <div class="study-chat-fc-face study-chat-fc-back"><p class="ubits-body-md-regular">${cards[0].back}</p></div>
+                <div class="study-chat-fc-main">
+                    <div class="study-chat-fc-progress">
+                        <div class="study-chat-fc-progress-bars">${fcProgressBarsHtml}</div>
+                        <span class="study-chat-fc-progress-text">1 / ${fcTotal}</span>
                     </div>
+                    <div class="study-chat-fc-card" data-index="0" role="button" tabindex="0" aria-label="Clic para voltear la tarjeta">
+                        <div class="study-chat-fc-card-inner">
+                            <div class="study-chat-fc-face study-chat-fc-front"><p class="ubits-body-md-regular">${cards[0].front}</p></div>
+                            <div class="study-chat-fc-face study-chat-fc-back"><p class="ubits-body-md-regular">${cards[0].back}</p></div>
+                        </div>
+                    </div>
+                    <p class="study-chat-fc-hint ubits-body-sm-regular">Tocá la tarjeta para girarla y ver la respuesta.</p>
+                    <div class="study-chat-fc-deck" data-cards='${JSON.stringify(cards).replace(/'/g, "&#39;")}' style="display:none;"></div>
                 </div>
-                <div class="study-chat-fc-deck" data-cards='${JSON.stringify(cards).replace(/'/g, "&#39;")}' style="display:none;"></div>
+                <div class="study-chat-fc-result" style="display:none;" role="region" aria-label="Seguir aprendiendo"></div>
             </div>
             <div class="study-chat-canvas-footer">
                 <div class="study-chat-fc-actions">
-                    <button class="ubits-button ubits-button--secondary ubits-button--sm" id="study-chat-fc-prev"><i class="far fa-chevron-left"></i><span>Anterior</span></button>
-                    <button class="ubits-button ubits-button--secondary ubits-button--sm" id="study-chat-fc-next"><span>Siguiente</span><i class="far fa-chevron-right"></i></button>
                     <button class="ubits-button ubits-button--tertiary ubits-button--sm" id="study-chat-fc-shuffle"><i class="far fa-shuffle"></i><span>Barajar</span></button>
+                    <button class="ubits-button ubits-button--secondary ubits-button--sm" id="study-chat-fc-prev" style="display:none;"><i class="far fa-chevron-left"></i><span>Anterior</span></button>
+                    <button class="ubits-button ubits-button--primary ubits-button--sm" id="study-chat-fc-next"><span>Siguiente</span><i class="far fa-chevron-right"></i></button>
+                    <button class="ubits-button ubits-button--primary ubits-button--sm" id="study-chat-fc-done" style="display:none;"><span>Hecho</span></button>
                 </div>
             </div>
         </div>`;
@@ -431,12 +580,10 @@ function renderTutorPanel(type, topic, extraData) {
         return;
     } else if (type === 'studyPlan' && extraData && extraData.studyPlan) {
         const sp = extraData.studyPlan;
+        const viewMode = !!sp.created;
         currentStudyPlanState = { plan: sp, topicKey: topicKey || '' };
-        var priorityOpts = [
-            { value: 'Alta', icon: 'far fa-chevrons-up', color: 'var(--ubits-feedback-accent-error)' },
-            { value: 'Media', icon: 'far fa-chevron-up', color: 'var(--ubits-fg-1-medium)' },
-            { value: 'Baja', icon: 'far fa-chevron-down', color: 'var(--ubits-feedback-accent-info)' }
-        ];
+        var footerPrimaryLabel = viewMode ? 'Ver plan' : 'Crear plan';
+        var footerPrimaryId = viewMode ? 'study-chat-plan-view-btn' : 'study-chat-plan-create';
         html = '<div class="study-chat-canvas-content study-chat-canvas-study-plan study-chat-canvas-study-plan-editable" data-topic="' + (topicKey || '') + '">' +
             '<div class="study-chat-canvas-header">' +
             '<span class="ubits-body-md-bold">Plan de estudio</span>' +
@@ -444,32 +591,25 @@ function renderTutorPanel(type, topic, extraData) {
             '</div>' +
             '<div class="study-chat-canvas-body">' +
             '<div class="study-chat-study-plan-edit-row" id="study-chat-plan-input-title-wrap"><div id="study-chat-plan-input-title"></div></div>' +
-            '<div class="study-chat-study-plan-edit-row study-chat-plan-priority-row">' +
-            '<label class="study-chat-plan-edit-label ubits-body-sm-regular">Prioridad</label>' +
-            '<div class="study-chat-plan-priority-dropdown-wrap">' +
-            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm study-chat-plan-priority-trigger" id="study-chat-plan-priority-trigger" aria-haspopup="true" aria-expanded="false">' +
-            '<span class="study-chat-plan-priority-trigger-text">' + (sp.priority || 'Media') + '</span><i class="far fa-chevron-down"></i></button>' +
-            '<div class="study-chat-plan-priority-menu" id="study-chat-plan-priority-menu" role="menu" aria-label="Prioridad" style="display:none;">' +
-            priorityOpts.map(function(o) {
-                return '<button type="button" class="study-chat-plan-priority-option" role="menuitem" data-value="' + o.value + '"><i class="' + o.icon + '" style="color:' + o.color + '"></i><span class="ubits-body-sm-regular">' + o.value + '</span></button>';
-            }).join('') +
+            '<div class="study-chat-study-plan-edit-row study-chat-study-plan-edit-row--dual">' +
+            '<div class="study-chat-study-plan-edit-field" id="study-chat-plan-input-priority-wrap"><div id="study-chat-plan-input-priority"></div></div>' +
+            '<div class="study-chat-study-plan-edit-field" id="study-chat-plan-input-date-fin-wrap"><div id="study-chat-plan-input-date-fin"></div></div>' +
             '</div>' +
-            '</div></div>' +
-            '<div class="study-chat-study-plan-edit-row" id="study-chat-plan-input-date-fin-wrap"><div id="study-chat-plan-input-date-fin"></div></div>' +
             '<p class="study-chat-study-plan-tasks-label ubits-body-sm-bold">Tareas</p>' +
             '<div class="study-chat-study-plan-tasks-cards" id="study-chat-plan-tasks-container"></div>' +
+            (viewMode ? '' : '<div class="study-chat-plan-add-task-wrap" id="study-chat-plan-add-task-wrap"><button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="study-chat-plan-add-task"><span>+ Agregar tarea</span></button></div>') +
             '</div>' +
             '<div class="study-chat-canvas-footer">' +
             '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="study-chat-plan-cancel"><span>Cancelar</span></button>' +
-            '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="study-chat-plan-create"><span>Crear plan</span></button>' +
+            '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="' + footerPrimaryId + '"><span>' + footerPrimaryLabel + '</span></button>' +
             '</div></div>';
         panel.innerHTML = html;
         panel.classList.add('has-content');
         bindCanvasClose(panel);
         renderStudyPlanTaskCards(panel.querySelector('#study-chat-plan-tasks-container'), sp, topicKey || '');
-        renderStudyPlanUbitsInputs(panel, sp, priorityOpts);
-        bindStudyPlanPriorityMenu(panel, sp, priorityOpts);
-        bindStudyPlanFooter(panel);
+        renderStudyPlanUbitsInputs(panel, sp, viewMode);
+        bindStudyPlanFooter(panel, sp, topicKey || '', viewMode);
+        if (!viewMode) bindStudyPlanAddTaskButton(panel, sp, topicKey || '');
         return;
     } else {
         return;
@@ -500,24 +640,47 @@ function renderStudyPlanTaskCards(container, plan, topicKey) {
         { value: 'Media', icon: 'far fa-chevron-up', color: 'var(--ubits-fg-1-medium)' },
         { value: 'Baja', icon: 'far fa-chevron-down', color: 'var(--ubits-feedback-accent-info)' }
     ];
+    var basePath = getImageBasePath();
     plan.tasks.forEach(function(task, idx) {
         var card = document.createElement('div');
         card.className = 'study-chat-plan-task-card study-chat-plan-task-card--' + (task.type || 'course');
         card.setAttribute('data-task-index', idx);
         var titleEsc = (task.title || '').replace(/</g, '&lt;').replace(/"/g, '&quot;');
-        var titleHtml = '<div class="study-chat-plan-task-card-title-wrap">' +
-            '<span class="study-chat-plan-task-card-title ubits-body-sm-regular" data-task-index="' + idx + '">' + (task.title || '') + '</span>' +
-            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm study-chat-plan-task-edit-name" data-task-index="' + idx + '" title="Editar nombre"><i class="far fa-pen"></i><span>Editar</span></button>' +
-            '</div>';
-        var actionsHtml = '<div class="study-chat-plan-task-card-actions">' +
-            '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--sm ubits-button--icon-only study-chat-plan-task-delete" data-task-index="' + idx + '" title="Eliminar" aria-label="Eliminar"><i class="far fa-trash"></i></button>';
-        if (task.type === 'activity') {
-            actionsHtml += '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm study-chat-plan-task-rehacer" data-task-index="' + idx + '" title="Rehacer (otra opción)"><i class="far fa-rotate-right"></i><span>Rehacer</span></button>';
+        var actionsHtml = '';
+        if (task.type === 'custom') {
+            actionsHtml = '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--xs ubits-button--icon-only study-chat-plan-task-delete" data-task-index="' + idx + '" title="Eliminar" aria-label="Eliminar"><i class="far fa-trash"></i></button>';
+        } else if (task.type === 'activity') {
+            actionsHtml = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs ubits-button--icon-only study-chat-plan-task-rehacer" data-task-index="' + idx + '" title="Rehacer (otra opción)" aria-label="Rehacer"><i class="far fa-rotate-right"></i></button>' +
+                '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--xs ubits-button--icon-only study-chat-plan-task-delete" data-task-index="' + idx + '" title="Eliminar" aria-label="Eliminar"><i class="far fa-trash"></i></button>';
         } else {
-            actionsHtml += '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm study-chat-plan-task-cambiar" data-task-index="' + idx + '" title="Cambiar por otro curso"><i class="far fa-arrows-rotate"></i><span>Cambiar</span></button>';
+            actionsHtml = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs ubits-button--icon-only study-chat-plan-task-cambiar" data-task-index="' + idx + '" title="Cambiar por otro curso" aria-label="Cambiar"><i class="far fa-arrows-rotate"></i></button>' +
+                '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--xs ubits-button--icon-only study-chat-plan-task-delete" data-task-index="' + idx + '" title="Eliminar" aria-label="Eliminar"><i class="far fa-trash"></i></button>';
         }
-        actionsHtml += '</div>';
-        card.innerHTML = '<div class="study-chat-plan-task-card-inner">' + titleHtml + actionsHtml + '</div>';
+        var titleHtml = '<div class="study-chat-plan-task-card-title-wrap">' +
+            '<span class="study-chat-plan-task-card-title ubits-body-sm-regular study-chat-plan-task-title-editable" data-task-index="' + idx + '" title="Clic para editar">' + (task.title || '') + '</span>' +
+            '<div class="study-chat-plan-task-card-actions">' + actionsHtml + '</div></div>';
+        var metaHtml = '';
+        if (task.type === 'course' && task.course) {
+            var contentType = (task.course.type != null && task.course.type !== '') ? task.course.type : 'Curso';
+            var contentDuration = (task.course.duration != null && task.course.duration !== '') ? task.course.duration : '60 min';
+            metaHtml = '<div class="study-chat-plan-task-card-meta ubits-body-xs-regular">' + contentType + ' · ' + contentDuration + '</div>';
+        }
+        var thumbHtml = '';
+        if (task.type === 'course' && task.course && task.course.imagePath) {
+            var imgSrc = basePath + task.course.imagePath;
+            var imgAlt = (task.title || task.course.title || 'Curso').replace(/"/g, '&quot;');
+            thumbHtml = '<div class="study-chat-plan-task-card-thumb"><img src="' + imgSrc + '" alt="' + imgAlt + '" class="study-chat-plan-task-card-thumb-img"></div>';
+        }
+        var bodyBlock = titleHtml + (metaHtml ? metaHtml : '');
+        var innerContent;
+        if (thumbHtml) {
+            innerContent = '<div class="study-chat-plan-task-card-row">' + thumbHtml + '<div class="study-chat-plan-task-card-body">' + bodyBlock + '</div></div>';
+        } else if (metaHtml) {
+            innerContent = '<div class="study-chat-plan-task-card-body">' + bodyBlock + '</div>';
+        } else {
+            innerContent = titleHtml;
+        }
+        card.innerHTML = '<div class="study-chat-plan-task-card-inner">' + innerContent + '</div>';
         container.appendChild(card);
     });
     bindStudyPlanTaskCardEvents(container, plan, topicKey);
@@ -532,19 +695,61 @@ function bindStudyPlanTaskCardEvents(container, plan, topicKey) {
         { value: 'Media', icon: 'far fa-chevron-up', color: 'var(--ubits-fg-1-medium)' },
         { value: 'Baja', icon: 'far fa-chevron-down', color: 'var(--ubits-feedback-accent-info)' }
     ];
-    tasksContainer.querySelectorAll('.study-chat-plan-task-edit-name').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            var idx = parseInt(btn.getAttribute('data-task-index'), 10);
+    // Edición inline del nombre: clic en el título → input; blur/Enter → guardar
+    tasksContainer.querySelectorAll('.study-chat-plan-task-title-editable').forEach(function(span) {
+        span.addEventListener('click', function() {
+            var idx = parseInt(span.getAttribute('data-task-index'), 10);
             var task = plan.tasks[idx];
             if (!task) return;
-            var titleEl = tasksContainer.querySelector('.study-chat-plan-task-card-title[data-task-index="' + idx + '"]');
-            if (!titleEl) return;
             var current = task.title || '';
-            var newTitle = window.prompt('Editar nombre de la tarea', current);
-            if (newTitle !== null && newTitle.trim() !== '') {
-                task.title = newTitle.trim();
-                titleEl.textContent = task.title;
+            var input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'study-chat-plan-task-title-input ubits-body-sm-regular';
+            input.value = current;
+            input.setAttribute('data-task-index', String(idx));
+            span.parentNode.replaceChild(input, span);
+            input.focus();
+            input.select();
+            function saveAndRevert() {
+                var newTitle = (input.value || '').trim();
+                if (task._isNew) {
+                    if (newTitle === '' || newTitle === 'Nueva tarea') {
+                        plan.tasks.splice(idx, 1);
+                        renderStudyPlanTaskCards(tasksContainer, plan, topicKey);
+                        return;
+                    }
+                    task.title = newTitle;
+                    delete task._isNew;
+                } else if (newTitle !== '') {
+                    task.title = newTitle;
+                }
+                var newSpan = document.createElement('span');
+                newSpan.className = 'study-chat-plan-task-card-title ubits-body-sm-regular study-chat-plan-task-title-editable';
+                newSpan.setAttribute('data-task-index', String(idx));
+                newSpan.title = 'Clic para editar';
+                newSpan.textContent = task.title || '';
+                input.parentNode.replaceChild(newSpan, input);
+                bindStudyPlanTaskCardEvents(tasksContainer, plan, topicKey);
             }
+            input.addEventListener('blur', saveAndRevert);
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+                if (e.key === 'Escape') {
+                    e.preventDefault();
+                    if (task._isNew) {
+                        plan.tasks.splice(idx, 1);
+                        renderStudyPlanTaskCards(tasksContainer, plan, topicKey);
+                        return;
+                    }
+                    var newSpan = document.createElement('span');
+                    newSpan.className = 'study-chat-plan-task-card-title ubits-body-sm-regular study-chat-plan-task-title-editable';
+                    newSpan.setAttribute('data-task-index', String(idx));
+                    newSpan.title = 'Clic para editar';
+                    newSpan.textContent = task.title || '';
+                    input.parentNode.replaceChild(newSpan, input);
+                    bindStudyPlanTaskCardEvents(tasksContainer, plan, topicKey);
+                }
+            });
         });
     });
     tasksContainer.querySelectorAll('.study-chat-plan-task-delete').forEach(function(btn) {
@@ -559,8 +764,25 @@ function bindStudyPlanTaskCardEvents(container, plan, topicKey) {
             var idx = parseInt(btn.getAttribute('data-task-index'), 10);
             var task = plan.tasks[idx];
             if (!task || task.type !== 'activity' || !task.alternatives || !task.alternatives.length) return;
-            task.currentIndex = ((task.currentIndex || 0) + 1) % task.alternatives.length;
-            task.title = task.alternatives[task.currentIndex];
+            var usedTitles = new Set();
+            plan.tasks.forEach(function(t, i) {
+                if (i !== idx && t.type === 'activity' && t.title) usedTitles.add(t.title);
+            });
+            var currentIdx = task.currentIndex != null ? task.currentIndex : 0;
+            var nextTitle = null;
+            var nextIndex = currentIdx;
+            for (var off = 1; off <= task.alternatives.length; off++) {
+                var j = (currentIdx + off) % task.alternatives.length;
+                var candidate = task.alternatives[j];
+                if (!usedTitles.has(candidate)) {
+                    nextTitle = candidate;
+                    nextIndex = j;
+                    break;
+                }
+            }
+            if (nextTitle == null) return;
+            task.currentIndex = nextIndex;
+            task.title = nextTitle;
             var titleEl = tasksContainer.querySelector('.study-chat-plan-task-card-title[data-task-index="' + idx + '"]');
             if (titleEl) titleEl.textContent = task.title;
         });
@@ -569,35 +791,58 @@ function bindStudyPlanTaskCardEvents(container, plan, topicKey) {
         btn.addEventListener('click', function() {
             var idx = parseInt(btn.getAttribute('data-task-index'), 10);
             var task = plan.tasks[idx];
-            if (!task || task.type !== 'course') return;
+            if (!task || task.type !== 'course' || !task.course) return;
             var courses = COURSES_BY_TOPIC[topicKey];
             if (!courses || !courses.length) return;
-            var others = courses.filter(function(c) { return c !== task.course && c.title !== task.course.title; });
-            if (others.length === 0) return;
-            var titles = others.map(function(c) { return c.title; });
-            var chosen = window.prompt('Elige otro curso (escribe el número):\n' + others.map(function(c, i) { return (i + 1) + '. ' + c.title; }).join('\n'), '1');
-            if (chosen === null) return;
-            var num = parseInt(chosen, 10);
-            if (num >= 1 && num <= others.length) {
-                var newCourse = others[num - 1];
-                task.course = newCourse;
-                task.title = 'Ver contenido: ' + newCourse.title;
-                var titleEl = tasksContainer.querySelector('.study-chat-plan-task-card-title[data-task-index="' + idx + '"]');
-                if (titleEl) titleEl.textContent = task.title;
+            var usedTitles = new Set();
+            plan.tasks.forEach(function(t, i) {
+                if (i !== idx && t.type === 'course' && t.course && t.course.title) usedTitles.add(t.course.title);
+            });
+            var currentIdx = courses.findIndex(function(c) { return c.title === task.course.title; });
+            if (currentIdx < 0) currentIdx = 0;
+            var nextCourse = null;
+            for (var off = 1; off <= courses.length; off++) {
+                var i = (currentIdx + off) % courses.length;
+                var c = courses[i];
+                if (usedTitles.has(c.title)) continue;
+                nextCourse = c;
+                break;
             }
+            if (!nextCourse) return;
+            task.course = nextCourse;
+            task.title = 'Ver contenido: ' + nextCourse.title;
+            renderStudyPlanTaskCards(tasksContainer, plan, topicKey);
         });
     });
 }
 
-function renderStudyPlanUbitsInputs(panel, sp, priorityOpts) {
+function renderStudyPlanUbitsInputs(panel, sp, viewMode) {
     if (!panel || !sp || typeof window.createInput !== 'function') return;
+    var inputState = viewMode ? 'disabled' : 'default';
     window.createInput({
         containerId: 'study-chat-plan-input-title',
         type: 'text',
         label: 'Título',
         placeholder: 'Nombre del plan',
         value: sp.title || '',
+        size: 'sm',
+        state: inputState,
         onChange: function(v) { sp.title = v; }
+    });
+    window.createInput({
+        containerId: 'study-chat-plan-input-priority',
+        type: 'select',
+        label: 'Prioridad',
+        placeholder: 'Selecciona prioridad',
+        size: 'sm',
+        state: inputState,
+        value: sp.priority || 'Media',
+        selectOptions: [
+            { value: 'Alta', text: 'Alta' },
+            { value: 'Media', text: 'Media' },
+            { value: 'Baja', text: 'Baja' }
+        ],
+        onChange: function(v) { sp.priority = v; }
     });
     window.createInput({
         containerId: 'study-chat-plan-input-date-fin',
@@ -605,6 +850,8 @@ function renderStudyPlanUbitsInputs(panel, sp, priorityOpts) {
         label: 'Fin',
         placeholder: 'Selecciona una fecha...',
         value: studyPlanDateToCalendarValue(sp.endDateValue),
+        size: 'sm',
+        state: inputState,
         onChange: function(dateStr) {
             var iso = studyPlanDateFromCalendarValue(dateStr);
             sp.endDateValue = iso;
@@ -644,22 +891,48 @@ function bindStudyPlanPriorityMenu(panel, sp, priorityOpts) {
     });
 }
 
-function bindStudyPlanFooter(panel) {
+function bindStudyPlanAddTaskButton(panel, sp, topicKey) {
+    var addBtn = panel.querySelector('#study-chat-plan-add-task');
+    var addWrap = panel.querySelector('#study-chat-plan-add-task-wrap');
+    var tasksContainer = panel.querySelector('#study-chat-plan-tasks-container');
+    if (!addBtn || !tasksContainer || !sp || !sp.tasks) return;
+    addBtn.addEventListener('click', function() {
+        sp.tasks.push({ type: 'custom', title: 'Nueva tarea', _isNew: true });
+        renderStudyPlanTaskCards(tasksContainer, sp, topicKey);
+        var lastIdx = sp.tasks.length - 1;
+        setTimeout(function() {
+            var lastTitle = tasksContainer.querySelector('.study-chat-plan-task-title-editable[data-task-index="' + lastIdx + '"]');
+            if (lastTitle) lastTitle.click();
+            if (addWrap) addWrap.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        }, 0);
+    });
+}
+
+function bindStudyPlanFooter(panel, sp, topicKey, viewMode) {
     var cancelBtn = panel.querySelector('#study-chat-plan-cancel');
     var createBtn = panel.querySelector('#study-chat-plan-create');
+    var viewBtn = panel.querySelector('#study-chat-plan-view-btn');
     if (cancelBtn) cancelBtn.addEventListener('click', function() {
         panel.classList.remove('is-open', 'has-content');
         panel.innerHTML = '';
         currentStudyPlanState = null;
         showOpenButtonsInChat();
     });
-    if (createBtn) createBtn.addEventListener('click', function() {
-        if (typeof showToast === 'function') showToast('success', 'Plan creado correctamente.');
-        panel.classList.remove('is-open', 'has-content');
-        panel.innerHTML = '';
-        currentStudyPlanState = null;
-        showOpenButtonsInChat();
-    });
+    if (viewMode && viewBtn) {
+        viewBtn.addEventListener('click', function() {
+            /* En producción abriría un drawer con el plan completo. En este prototipo no hace nada. */
+        });
+    } else if (createBtn) {
+        createBtn.addEventListener('click', function() {
+            sp.created = true;
+            createdStudyPlansByTopic[topicKey] = sp;
+            if (typeof showToast === 'function') showToast('success', 'Plan creado correctamente.');
+            panel.classList.remove('is-open', 'has-content');
+            panel.innerHTML = '';
+            currentStudyPlanState = null;
+            showOpenButtonsInChat();
+        });
+    }
 }
 
 function renderCoursesInPanel(containerId, courses) {
@@ -703,13 +976,13 @@ function bindTutorPanelEvents(panel, type, topicKey) {
         const resultDiv = panel.querySelector('.study-chat-quiz-result');
         const questionsContainer = panel.querySelector('.study-chat-quiz-questions');
         const actionsDiv = panel.querySelector('.study-chat-quiz-actions');
+        const quizFooterOriginalHtml = actionsDiv ? actionsDiv.innerHTML : '';
         let currentIdx = 0;
         const total = questions.length;
         const answers = [];
         const answered = [];
         let correctCount = 0;
         let wrongCount = 0;
-        const questionsData = TUTOR_QUIZ[topicKey] || TUTOR_QUIZ.liderazgo;
         function updateProgressBar() {
             if (!progressText) return;
             if (progressBars.length) {
@@ -737,7 +1010,8 @@ function bindTutorPanelEvents(panel, type, topicKey) {
             });
             const isCorrect = selectedValue === correctIdx;
             if (isCorrect) correctCount++; else wrongCount++;
-            const correctText = questionsData[currentIdx].options[correctIdx];
+            const correctOpt = qEl.querySelectorAll('.study-chat-quiz-opt-text')[correctIdx];
+            const correctText = correctOpt ? correctOpt.textContent : '';
             if (isCorrect) {
                 feedbackEl.innerHTML = '<span class="study-chat-quiz-feedback-icon"><i class="far fa-check-circle"></i></span> <strong>¡Exacto!</strong> ' + (explanation || '');
             } else {
@@ -775,27 +1049,25 @@ function bindTutorPanelEvents(panel, type, topicKey) {
                             <span class="study-chat-quiz-result-option-icon"><i class="far fa-layer-group"></i></span>
                             <span class="study-chat-quiz-result-option-title">Flashcards</span>
                             <span class="study-chat-quiz-result-option-desc">Crea un set de flashcards con el material del quiz. Ideal para repasar y afianzar conceptos.</span>
-                        </button>
+                    </button>
                         <button type="button" class="study-chat-quiz-result-option study-chat-quiz-result-option-study-plan" data-action="studyPlan" style="display:${STUDY_PLAN_TOPICS.indexOf(topicKey) >= 0 ? 'flex' : 'none'};">
                             <span class="study-chat-quiz-result-option-icon"><i class="far fa-list-check"></i></span>
                             <span class="study-chat-quiz-result-option-title">Plan de estudio</span>
                             <span class="study-chat-quiz-result-option-desc">Crea un plan con tareas para ver contenidos UBITS sobre este tema.</span>
-                        </button>
-                    </div>
-                    <div class="study-chat-quiz-result-actions">
-                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm" id="study-chat-quiz-review"><span>Revisar quiz</span></button>
-                        <button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="study-chat-quiz-more"><span>Más preguntas</span></button>
-                    </div>
+                    </button>
+                </div>
                 </div>`;
             questionsContainer.style.display = 'none';
             if (progressWrap) progressWrap.style.display = 'none';
-            actionsDiv.style.display = 'none';
+            actionsDiv.innerHTML = '<div class="study-chat-quiz-result-actions"><button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm" id="study-chat-quiz-review"><span>Revisar quiz</span></button><button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="study-chat-quiz-more"><span>Más preguntas</span></button></div>';
+            actionsDiv.style.display = 'flex';
             resultDiv.style.display = 'block';
             panel.querySelector('#study-chat-quiz-review').addEventListener('click', function() {
                 resultDiv.style.display = 'none';
                 resultDiv.innerHTML = '';
                 if (progressWrap) progressWrap.style.display = 'flex';
                 questionsContainer.style.display = 'block';
+                actionsDiv.innerHTML = quizFooterOriginalHtml;
                 actionsDiv.style.display = 'flex';
                 currentIdx = 0;
                 correctCount = 0;
@@ -809,9 +1081,16 @@ function bindTutorPanelEvents(panel, type, topicKey) {
                     const fb = qEl.querySelector('.study-chat-quiz-feedback'); if (fb) { fb.style.display = 'none'; fb.innerHTML = ''; }
                 });
                 updateProgressBar();
-                backBtn.style.display = 'none';
-                nextBtn.style.display = 'none';
-                submitBtn.style.display = 'none';
+                const backBtnNew = panel.querySelector('#study-chat-quiz-back');
+                const nextBtnNew = panel.querySelector('#study-chat-quiz-next');
+                const submitBtnNew = panel.querySelector('#study-chat-quiz-submit');
+                if (backBtnNew) backBtnNew.style.display = 'none';
+                if (nextBtnNew) nextBtnNew.style.display = 'none';
+                if (submitBtnNew) submitBtnNew.style.display = 'none';
+                if (backBtnNew) backBtnNew.addEventListener('click', function() { currentIdx--; updateVisibility(); });
+                if (nextBtnNew) nextBtnNew.addEventListener('click', function() { currentIdx++; updateVisibility(); });
+                if (submitBtnNew) submitBtnNew.addEventListener('click', showResultsScreen);
+                updateVisibility();
             });
             panel.querySelector('#study-chat-quiz-more').addEventListener('click', function() {
                 renderTutorPanel('quiz', topicKey);
@@ -822,9 +1101,11 @@ function bindTutorPanelEvents(panel, type, topicKey) {
                     const action = this.getAttribute('data-action');
                     panel.classList.remove('is-open', 'has-content');
                     panel.innerHTML = '';
-                    if (action === 'flashcards') renderTutorPanel('flashcards', topicKey);
-                    else if (action === 'studyPlan') {
-                        var plan = generateStudyPlan(topicKey);
+                    if (action === 'flashcards') {
+                        renderTutorPanel('flashcards', topicKey);
+                        if (typeof addResourceMessage === 'function') addResourceMessage('flashcards', topicKey, false);
+                    } else if (action === 'studyPlan') {
+                        var plan = getStudyPlanForTopic(topicKey);
                         if (plan) {
                             renderTutorPanel('studyPlan', topicKey, { studyPlan: plan });
                             if (typeof addResourceMessage === 'function') addResourceMessage('studyPlan', topicKey, false);
@@ -847,9 +1128,9 @@ function bindTutorPanelEvents(panel, type, topicKey) {
                     const val = parseInt(this.value, 10);
                     answers[i] = val;
                     answered[i] = true;
-                    const qu = questionsData[i];
-                    const explanation = qu.explanation || '';
-                    showImmediateFeedback(qEl, val, qu.correct, explanation);
+                    const correctIdx = parseInt(qEl.getAttribute('data-correct-index'), 10);
+                    const explanation = (qEl.getAttribute('data-explanation') || '').replace(/&quot;/g, '"');
+                    showImmediateFeedback(qEl, val, correctIdx, explanation);
                     updateVisibility();
                 });
             });
@@ -868,9 +1149,17 @@ function bindTutorPanelEvents(panel, type, topicKey) {
         const backEl = panel.querySelector('.study-chat-fc-back');
         const progressBars = panel.querySelectorAll('.study-chat-fc-progress-bar');
         const progressText = panel.querySelector('.study-chat-fc-progress-text');
+        const prevBtn = panel.querySelector('#study-chat-fc-prev');
+        const nextBtn = panel.querySelector('#study-chat-fc-next');
+        const doneBtn = panel.querySelector('#study-chat-fc-done');
         function updateFcProgress() {
             if (progressBars.length) progressBars.forEach((bar, i) => bar.classList.toggle('study-chat-fc-progress-bar--filled', i <= fcIndex));
             if (progressText) progressText.textContent = (fcIndex + 1) + ' / ' + cards.length;
+            var isFirst = fcIndex === 0;
+            var isLast = fcIndex === cards.length - 1;
+            if (prevBtn) prevBtn.style.display = isFirst ? 'none' : '';
+            if (nextBtn) nextBtn.style.display = isLast ? 'none' : '';
+            if (doneBtn) doneBtn.style.display = isLast ? '' : 'none';
         }
         function showCard() {
             frontEl.innerHTML = '<p class="ubits-body-md-regular">' + cards[fcIndex].front + '</p>';
@@ -891,8 +1180,89 @@ function bindTutorPanelEvents(panel, type, topicKey) {
                 if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flipCard(); }
             });
         }
-        panel.querySelector('#study-chat-fc-prev').addEventListener('click', function(e) { e.stopPropagation(); fcIndex = (fcIndex - 1 + cards.length) % cards.length; showCard(); });
-        panel.querySelector('#study-chat-fc-next').addEventListener('click', function(e) { e.stopPropagation(); fcIndex = (fcIndex + 1) % cards.length; showCard(); });
+        if (prevBtn) prevBtn.addEventListener('click', function(e) { e.stopPropagation(); fcIndex = (fcIndex - 1 + cards.length) % cards.length; showCard(); });
+        if (nextBtn) nextBtn.addEventListener('click', function(e) { e.stopPropagation(); fcIndex = Math.min(fcIndex + 1, cards.length - 1); showCard(); });
+        const fcMain = panel.querySelector('.study-chat-fc-main');
+        const resultDiv = panel.querySelector('.study-chat-fc-result');
+        const actionsDiv = panel.querySelector('.study-chat-fc-actions');
+        const fcFooterOriginalHtml = actionsDiv ? actionsDiv.innerHTML : '';
+        const showFcResultScreen = function() {
+            var content = panel.querySelector('.study-chat-canvas-content');
+            var showPlan = STUDY_PLAN_TOPICS.indexOf(topicKey) >= 0;
+            resultDiv.innerHTML = '<div class="study-chat-quiz-result-screen">' +
+                '<h3 class="study-chat-quiz-result-section-title">Seguir aprendiendo</h3>' +
+                '<div class="study-chat-quiz-result-learn">' +
+                '<button type="button" class="study-chat-quiz-result-option" data-action="quiz">' +
+                '<span class="study-chat-quiz-result-option-icon"><i class="far fa-circle-question"></i></span>' +
+                '<span class="study-chat-quiz-result-option-title">Quiz</span>' +
+                '<span class="study-chat-quiz-result-option-desc">Responde preguntas sobre el tema y recibe feedback inmediato para afianzar conceptos.</span></button>' +
+                (showPlan ? '<button type="button" class="study-chat-quiz-result-option study-chat-quiz-result-option-study-plan" data-action="studyPlan">' +
+                '<span class="study-chat-quiz-result-option-icon"><i class="far fa-list-check"></i></span>' +
+                '<span class="study-chat-quiz-result-option-title">Plan de estudio</span>' +
+                '<span class="study-chat-quiz-result-option-desc">Crea un plan con tareas para ver contenidos UBITS sobre este tema.</span></button>' : '') +
+                '</div></div>';
+            if (fcMain) fcMain.style.display = 'none';
+            if (actionsDiv) {
+                actionsDiv.innerHTML = '<div class="study-chat-quiz-result-actions"><button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm" id="study-chat-fc-review"><span>Revisar flashcards</span></button><button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="study-chat-fc-more"><span>Más flashcards</span></button></div>';
+                actionsDiv.style.display = 'flex';
+            }
+            resultDiv.style.display = 'block';
+            panel.querySelector('#study-chat-fc-review').addEventListener('click', function() {
+                resultDiv.style.display = 'none';
+                resultDiv.innerHTML = '';
+                if (fcMain) fcMain.style.display = '';
+                if (actionsDiv) {
+                    actionsDiv.innerHTML = fcFooterOriginalHtml;
+                    actionsDiv.style.display = 'flex';
+                    const prevBtnNew = panel.querySelector('#study-chat-fc-prev');
+                    const nextBtnNew = panel.querySelector('#study-chat-fc-next');
+                    const doneBtnNew = panel.querySelector('#study-chat-fc-done');
+                    const shuffleBtnNew = panel.querySelector('#study-chat-fc-shuffle');
+                    if (prevBtnNew) prevBtnNew.addEventListener('click', function(e) { e.stopPropagation(); fcIndex = (fcIndex - 1 + cards.length) % cards.length; showCard(); });
+                    if (nextBtnNew) nextBtnNew.addEventListener('click', function(e) { e.stopPropagation(); fcIndex = Math.min(fcIndex + 1, cards.length - 1); showCard(); });
+                    if (doneBtnNew) doneBtnNew.addEventListener('click', function(e) { e.stopPropagation(); showFcResultScreen(); });
+                    if (shuffleBtnNew) shuffleBtnNew.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        for (let i = cards.length - 1; i > 0; i--) {
+                            const j = Math.floor(Math.random() * (i + 1));
+                            [cards[i], cards[j]] = [cards[j], cards[i]];
+                        }
+                        fcIndex = 0;
+                        deck.setAttribute('data-cards', JSON.stringify(cards).replace(/'/g, '&#39;'));
+                        showCard();
+                    });
+                }
+                fcIndex = 0;
+                showCard();
+            });
+            panel.querySelector('#study-chat-fc-more').addEventListener('click', function() {
+                var currentSet = parseInt(content.getAttribute('data-fc-set') || '0', 10);
+                var nextSet = (currentSet + 1) % 3;
+                renderTutorPanel('flashcards', topicKey, { fcSetIndex: nextSet });
+                if (typeof addResourceMessage === 'function') addResourceMessage('flashcards', topicKey, true);
+            });
+            panel.querySelectorAll('.study-chat-fc-result .study-chat-quiz-result-option').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var action = this.getAttribute('data-action');
+                    panel.classList.remove('is-open', 'has-content');
+                    panel.innerHTML = '';
+                    if (action === 'quiz') {
+                        renderTutorPanel('quiz', topicKey);
+                        if (typeof addResourceMessage === 'function') addResourceMessage('quiz', topicKey, false);
+                    } else if (action === 'studyPlan') {
+                        var plan = getStudyPlanForTopic(topicKey);
+                        if (plan) {
+                            renderTutorPanel('studyPlan', topicKey, { studyPlan: plan });
+                            if (typeof addResourceMessage === 'function') addResourceMessage('studyPlan', topicKey, false);
+                        }
+                    }
+                });
+            });
+        };
+        if (doneBtn) doneBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            showFcResultScreen();
+        });
         panel.querySelector('#study-chat-fc-shuffle').addEventListener('click', function(e) {
             e.stopPropagation();
             for (let i = cards.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [cards[i], cards[j]] = [cards[j], cards[i]]; }
@@ -1269,8 +1639,8 @@ function addMessageAIWithStreaming(text, showActions, regenerateFunction) {
         if (index >= linesHTML.length) {
             messageEl.classList.remove('ubits-study-chat__message--streaming');
             chatState.lastAIMessageElement = messageEl;
-            chatState.lastAIMessageText = text;
-            chatState.lastRegenerateFunction = regenerateFunction;
+        chatState.lastAIMessageText = text;
+        chatState.lastRegenerateFunction = regenerateFunction;
             attachAIMessageActions(messageEl, text, regenerateFunction);
             runPendingCardsRender(messageEl);
             body.scrollTop = body.scrollHeight;
@@ -1290,48 +1660,48 @@ function addMessageAIWithStreaming(text, showActions, regenerateFunction) {
 
 function runPendingCardsRender(messageElement) {
     if (!messageElement) return;
-    setTimeout(() => {
-        if (chatState.pendingCoursesContainer && typeof loadCardContentCompact === 'function') {
-            const { containerId, courses } = chatState.pendingCoursesContainer;
-            const container = messageElement.querySelector(`#${containerId}`);
-            if (container && courses && courses.length > 0) {
-                const basePath = getImageBasePath();
-                const cardsData = courses.map(course => ({
+        setTimeout(() => {
+            if (chatState.pendingCoursesContainer && typeof loadCardContentCompact === 'function') {
+                const { containerId, courses } = chatState.pendingCoursesContainer;
+                const container = messageElement.querySelector(`#${containerId}`);
+                if (container && courses && courses.length > 0) {
+                    const basePath = getImageBasePath();
+                    const cardsData = courses.map(course => ({
                     type: 'Curso', title: course.title, provider: 'UBITS',
                     providerLogo: basePath + 'Favicons/UBITS.jpg', duration: '60 min', level: 'Intermedio',
                     progress: 0, status: 'default', image: basePath + course.imagePath, competency: 'Liderazgo', language: 'Español'
-                }));
-                loadCardContentCompact(containerId, cardsData);
-                chatState.pendingCoursesContainer = null;
+                    }));
+                    loadCardContentCompact(containerId, cardsData);
+                    chatState.pendingCoursesContainer = null;
+                }
             }
-        }
-        if (chatState.pendingPlanContainer && typeof loadCardContentCompact === 'function') {
-            const { containerId, plan } = chatState.pendingPlanContainer;
-            const container = messageElement.querySelector(`#${containerId}`);
-            if (container && plan && plan.courses && plan.courses.length > 0) {
-                const basePath = getImageBasePath();
-                const cardsData = plan.courses.map(course => ({
+            if (chatState.pendingPlanContainer && typeof loadCardContentCompact === 'function') {
+                const { containerId, plan } = chatState.pendingPlanContainer;
+                const container = messageElement.querySelector(`#${containerId}`);
+                if (container && plan && plan.courses && plan.courses.length > 0) {
+                    const basePath = getImageBasePath();
+                    const cardsData = plan.courses.map(course => ({
                     type: 'Curso', title: course.title, provider: 'UBITS',
                     providerLogo: basePath + 'Favicons/UBITS.jpg', duration: '60 min', level: 'Intermedio',
                     progress: 0, status: 'default', image: basePath + course.imagePath, competency: 'Liderazgo', language: 'Español'
-                }));
-                loadCardContentCompact(containerId, cardsData);
-                chatState.pendingPlanContainer = null;
+                    }));
+                    loadCardContentCompact(containerId, cardsData);
+                    chatState.pendingPlanContainer = null;
+                }
             }
-        }
     }, 150);
-}
-
+    }
+    
 function attachAIMessageActions(messageElement, text, regenerateFunction) {
     if (!messageElement) return;
-    const copyBtn = messageElement.querySelector('button[title="Copiar"]');
-    const regenerateBtn = messageElement.querySelector('button[title="Regenerar"]');
+        const copyBtn = messageElement.querySelector('button[title="Copiar"]');
+        const regenerateBtn = messageElement.querySelector('button[title="Regenerar"]');
     const plainText = (() => {
         const div = document.createElement('div');
         div.innerHTML = text;
         return div.textContent || div.innerText || text;
     })();
-    if (copyBtn) {
+        if (copyBtn) {
         copyBtn.addEventListener('click', () => {
             navigator.clipboard.writeText(plainText).then(() => {
                 if (typeof showToast === 'function') showToast('success', '¡Texto copiado exitosamente! 😉', { containerId: 'ubits-toast-container', duration: 3500 });
@@ -1363,10 +1733,29 @@ var TOPIC_LABELS = { liderazgo: 'Liderazgo', comunicacion: 'Comunicación', ingl
 
 function getResourceTitle(type, topicKey) {
     var label = TOPIC_LABELS[topicKey] || topicKey;
-    if (type === 'quiz') return 'Quiz de ' + label;
+    if (type === 'quiz') return topicKey === 'hiragana' ? 'Quiz Maratón de Hiragana' : 'Quiz de ' + label;
     if (type === 'flashcards') return 'Flashcards de ' + label;
     if (type === 'studyPlan') return 'Plan de estudio: ' + label;
     return type + ' ' + label;
+}
+
+/** Devuelve { count, label } para el recurso (preguntas, flashcards, tareas). */
+function getResourceCount(type, topicKey) {
+    if (type === 'quiz') {
+        var q = (typeof TUTOR_QUIZ !== 'undefined' && TUTOR_QUIZ[topicKey]) ? TUTOR_QUIZ[topicKey] : (typeof TUTOR_QUIZ !== 'undefined' ? TUTOR_QUIZ.liderazgo : []);
+        return { count: q.length, label: q.length === 1 ? 'pregunta' : 'preguntas' };
+    }
+    if (type === 'flashcards') {
+        var fc = (typeof TUTOR_FLASHCARDS !== 'undefined' && TUTOR_FLASHCARDS[topicKey]) ? TUTOR_FLASHCARDS[topicKey] : (typeof TUTOR_FLASHCARDS !== 'undefined' ? TUTOR_FLASHCARDS.liderazgo : []);
+        var n = Array.isArray(fc) ? fc.length : 5;
+        return { count: n, label: n === 1 ? 'flashcard' : 'flashcards' };
+    }
+    if (type === 'studyPlan') {
+        var plan = typeof getStudyPlanForTopic === 'function' ? getStudyPlanForTopic(topicKey) : null;
+        var t = plan && plan.tasks ? plan.tasks.length : 5;
+        return { count: t, label: t === 1 ? 'tarea' : 'tareas' };
+    }
+    return { count: 0, label: '' };
 }
 
 function hideOpenButtonsInChat() {
@@ -1378,40 +1767,61 @@ function showOpenButtonsInChat() {
 }
 
 /**
- * Añade mensaje "He creado un [recurso] para ti: {título}" con botón Abrir (visible solo cuando el panel está cerrado).
- * @param {string} type - 'quiz' | 'flashcards' | 'guia'
+ * Iconos por tipo de recurso (FontAwesome).
+ */
+function getResourceIcon(type) {
+    if (type === 'quiz') return 'far fa-circle-question';
+    if (type === 'flashcards') return 'far fa-layer-group';
+    if (type === 'studyPlan') return 'far fa-list-check';
+    return 'far fa-file';
+}
+
+/**
+ * Añade mensaje con texto intro + card del recurso (icono, título elaborado, cantidad, botón Abrir).
+ * El botón Abrir solo se muestra cuando el panel derecho está cerrado.
+ * @param {string} type - 'quiz' | 'flashcards' | 'studyPlan'
  * @param {string} topicKey - tema (liderazgo, comunicacion, etc.)
- * @param {boolean} isNew - true para "He creado un nuevo quiz..." / "He creado nuevas flashcards..."
+ * @param {boolean} isNew - true para "He creado un nuevo..."
  */
 function addResourceMessage(type, topicKey, isNew) {
     var body = document.getElementById('ubits-study-chat-body');
     if (!body) return;
     var title = getResourceTitle(type, topicKey);
-    var text = '';
-    if (type === 'quiz') text = isNew ? 'He creado un nuevo quiz para ti: ' + title + '.' : 'He creado un quiz para ti: ' + title + '.';
-    else if (type === 'flashcards') text = isNew ? 'He creado nuevas flashcards para ti: ' + title + '.' : 'He creado flashcards para ti: ' + title + '.';
-    else if (type === 'studyPlan') text = isNew ? 'He creado un nuevo plan de estudio para ti: ' + title + '.' : 'He creado un plan de estudio para ti: ' + title + '.';
+    var intro = '';
+    if (type === 'quiz') intro = isNew ? 'He creado un nuevo quiz para ti.' : 'He creado un quiz para ti.';
+    else if (type === 'flashcards') intro = isNew ? 'He creado nuevas flashcards para ti.' : 'He creado flashcards para ti.';
+    else if (type === 'studyPlan') intro = isNew ? 'He creado un nuevo plan de estudio para ti.' : 'He creado un plan de estudio para ti.';
     else return;
+    var countInfo = getResourceCount(type, topicKey);
+    var countText = countInfo.count + ' ' + countInfo.label;
+    var iconClass = getResourceIcon(type);
     var panel = chatState.rightPanelId ? document.getElementById(chatState.rightPanelId) : null;
     var panelIsOpen = panel && panel.classList.contains('is-open');
     var openVisibleClass = panelIsOpen ? '' : ' open-btn-visible';
     var timestamp = formatTime();
-    var msgId = 'resource-msg-' + type + '-' + topicKey + '-' + Date.now();
     var html = '<div class="ubits-study-chat__message ubits-study-chat__message--ai study-chat-resource-msg' + openVisibleClass + '" data-resource-type="' + type + '" data-resource-topic="' + topicKey + '">' +
         '<div class="ubits-study-chat__text-globe ubits-study-chat__text-globe--ai">' +
-        '<p class="ubits-study-chat__message-text">' + text + '</p>' +
-        '<span class="study-chat-resource-open-wrap">' +
+        '<p class="ubits-study-chat__message-text">' + intro + '</p>' +
+        '<div class="study-chat-resource-card">' +
+        '<div class="study-chat-resource-card__main">' +
+        '<span class="study-chat-resource-card__icon"><i class="' + iconClass + '"></i></span>' +
+        '<div class="study-chat-resource-card__content">' +
+        '<span class="study-chat-resource-card__title ubits-body-sm-bold">' + (title.replace(/</g, '&lt;').replace(/"/g, '&quot;')) + '</span>' +
+        '<span class="study-chat-resource-card__meta ubits-body-xs-regular">' + countText + '</span>' +
+        '</div></div>' +
+        '<div class="study-chat-resource-card__action study-chat-resource-open-wrap">' +
         '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm study-chat-resource-open-btn" data-type="' + type + '" data-topic="' + topicKey + '"><span>Abrir</span></button>' +
-        '</span></div>' +
+        '</div></div></div>' +
         '<p class="ubits-study-chat__timestamp">' + timestamp + '</p></div>';
     body.insertAdjacentHTML('beforeend', html);
     body.scrollTop = body.scrollHeight;
-    var btn = body.querySelector('.study-chat-resource-open-btn[data-type="' + type + '"][data-topic="' + topicKey + '"]');
+    var lastMsg = body.lastElementChild;
+    var btn = lastMsg ? lastMsg.querySelector('.study-chat-resource-open-btn') : null;
     if (btn) btn.addEventListener('click', function() {
         var t = this.getAttribute('data-type');
         var top = this.getAttribute('data-topic');
         if (t === 'studyPlan') {
-            var plan = generateStudyPlan(top);
+            var plan = getStudyPlanForTopic(top);
             if (plan) renderTutorPanel('studyPlan', top, { studyPlan: plan });
         } else if (t === 'flashcards') renderTutorPanel('flashcards', top);
         else renderTutorPanel('quiz', top);
@@ -1456,9 +1866,9 @@ function addMessageWithMaterialChoiceButtons(label, topic) {
             if (!choice) return;
             chatState.waitingForMaterialChoice = false;
             if (choice === 'studyPlan') {
-                var plan = generateStudyPlan(topic);
+                var plan = getStudyPlanForTopic(topic);
                 if (plan) renderTutorPanel('studyPlan', topic, { studyPlan: plan });
-            } else {
+                } else {
                 renderTutorPanel(choice, topic);
             }
             choicesEl.style.display = 'none';
@@ -1533,7 +1943,7 @@ function initStudyChat(containerId, options = {}) {
     container.innerHTML = createStudyChatHTML(options);
     
     if (chatState.competencies.length === 0) {
-        addMessage('ai', '¡Hola! ¿En qué puedo ayudarte?', true);
+    addMessage('ai', '¡Hola! ¿En qué puedo ayudarte?', true);
     }
     
     const input = document.getElementById('ubits-study-chat-input');
@@ -1640,7 +2050,7 @@ function initStudyChat(containerId, options = {}) {
             if (lowerMessage.includes('plan de estudio') || lowerMessage.includes('guía') || lowerMessage.includes('guia')) {
                 chatState.waitingForMaterialChoice = false;
                 if (STUDY_PLAN_TOPICS.indexOf(topicKey) >= 0) {
-                    var plan = generateStudyPlan(topicKey);
+                    var plan = getStudyPlanForTopic(topicKey);
                     if (plan) renderTutorPanel('studyPlan', topicKey, { studyPlan: plan });
                     return { resourceMessage: { type: 'studyPlan', topic: topicKey }, regenerateFunction: null };
                 }
@@ -1938,7 +2348,7 @@ function initStudyChat(containerId, options = {}) {
             } else if (resourceMessage) {
                 addResourceMessage(resourceMessage.type, resourceMessage.topic, false);
             } else {
-                addMessage('ai', response, true, regenerateFunction);
+            addMessage('ai', response, true, regenerateFunction);
             }
         }, 1500);
     }

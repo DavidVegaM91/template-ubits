@@ -41,6 +41,15 @@ This is a UBITS template for creating interfaces quickly with Cursor AI. The val
 3. **📦 IMPORT**: Add required CSS for each component used (rutas relativas desde subcarpetas: `../../components/...`)
 4. **✅ VALIDATE**: Use `documentacion/validador-ubits.html` before finishing (MANDATORY)
 
+### **🚨 WHEN CHANGING AN OFFICIAL COMPONENT (modal, input, button, etc.):**
+**Los componentes UBITS se usan con HTML hardcodeado en varias páginas. Si cambias la estructura o clases de un componente oficial (en `components/*.css`, `components/*.js` o su documentación), DEBES:**
+
+1. **BUSCAR en todo el repo** todos los archivos que usan ese componente (p. ej. `ubits-modal-header`, `ubits-heading-h2` dentro de modal, etc.).
+2. **ACTUALIZAR cada uso** para que coincida con la nueva estructura/clases del componente.
+3. **NO DAR POR TERMINADO** el cambio hasta haber actualizado documentación, páginas de ejemplo Y cualquier otra página (ubits-colaborador, ubits-admin, documentacion) que use el componente.
+
+**Ejemplo:** Si cambias el título del modal de `<h2 class="ubits-heading-h2">` a `<span class="ubits-modal-title ubits-body-md-bold">`, debes buscar en todo el proyecto "ubits-modal-header" + "h2" o "ubits-heading-h2" en contexto de modal y reemplazar en **todas** las páginas que tengan modales (seguimiento.html, seguimiento-leader.html, documentacion/componentes/modal.html, etc.).
+
 ### **WHEN CREATING UI ELEMENTS:**
 1. **🔘 Buttons** → ALWAYS use `ubits-button` + import `../../components/button.css` (desde subcarpetas) - **RENDERIZADO: HTML directo**
 2. **🚨 Alerts** → ALWAYS use `ubits-alert` + import `../../components/alert.css` (desde subcarpetas) - **RENDERIZADO: showAlert() o HTML directo**
@@ -198,6 +207,33 @@ loadCardContent('cards-container', [{
 }]);
 </script>
 ```
+
+#### **Modal Component (openModal() or HTML directo):**
+```html
+<!-- CSS Required -->
+<link rel="stylesheet" href="../../components/modal.css">
+<link rel="stylesheet" href="../../components/button.css">
+<link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+
+<!-- JavaScript Required -->
+<script src="../../components/modal.js"></script>
+
+<!-- Uso recomendado: openModal() asegura estructura correcta (título con ubits-modal-title) -->
+<script>
+openModal({
+    overlayId: 'mi-modal',
+    title: 'Título del modal',
+    bodyHtml: '<p class="ubits-body-md-regular">Contenido.</p>',
+    footerHtml: '<button class="ubits-button ubits-button--secondary ubits-button--md"><span>Cancelar</span></button><button class="ubits-button ubits-button--primary ubits-button--md"><span>Aceptar</span></button>',
+    size: 'sm',
+    closeOnOverlayClick: true,
+    onClose: function() { }
+});
+// Cerrar: closeModal('mi-modal');
+</script>
+```
+**Si usas HTML directo:** mismo estructura que genera openModal(); título = `<span class="ubits-modal-title ubits-body-md-bold">Título</span>` (NO h2).
+
 7. **📝 Typography** → ALWAYS use official UBITS classes
 
 ### **VALIDATION MANDATORY:**
@@ -251,6 +287,7 @@ loadCardContent('cards-container', [{
 
 #### **3. 🔧 UTILITY COMPONENTS:**
 - **Profile Menu** → `components/profile-menu.css` + `components/profile-menu.js`
+- **Modal** (overlay, header/body/footer) → `components/modal.css` + `components/modal.js`. **Renderizado recomendado:** `openModal({ overlayId, title, bodyHtml, footerHtml?, size?, closeOnOverlayClick?, onClose? })` para estructura siempre correcta. **Si usas HTML directo:** título = `<span class="ubits-modal-title ubits-body-md-bold">Título</span>` (NO usar h2). Cerrar con `closeModal(overlayId)`.
 - **Docs Sidebar** → `docs/docs-sidebar.css` + `docs/docs-sidebar.js`
 
 ## 📋 ARCHIVOS DEL PROYECTO - QUÉ HACE CADA UNO
@@ -1889,6 +1926,7 @@ When issues are found, the validator creates a detailed prompt for Cursor with:
 - `components/floating-menu.css` + `components/floating-menu.js` - Floating Menu component
 - `components/alert.css` + `components/alert.js` - Alert component
 - `components/toast.css` + `components/toast.js` - Toast component
+- `components/modal.css` + `components/modal.js` - Modal component
 - `components/button.css` - Button component
 - `docs/docs-sidebar.css` + `docs/docs-sidebar.js` - Docs Sidebar component
 

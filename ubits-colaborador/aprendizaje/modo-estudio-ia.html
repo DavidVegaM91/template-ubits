@@ -98,15 +98,15 @@
             loadFloatingMenu('floating-menu-container');
             loadProfileMenu('profile-menu-container');
             
-            // Activar el tab de catálogo en el SubNav
+            // Activar el tab Modo estudio IA en el SubNav
             setTimeout(() => {
-                const catalogTab = document.querySelector('.nav-tab[data-tab="catalog"]');
-                const catalogSelectorItem = document.querySelector('.module-selector-item[data-tab="catalog"]');
-                if (catalogTab) {
-                    catalogTab.classList.add('active');
+                const modoEstudioTab = document.querySelector('.nav-tab[data-tab="modo-estudio-ia"]');
+                const modoEstudioSelectorItem = document.querySelector('.module-selector-item[data-tab="modo-estudio-ia"]');
+                if (modoEstudioTab) {
+                    modoEstudioTab.classList.add('active');
                 }
-                if (catalogSelectorItem) {
-                    catalogSelectorItem.classList.add('active');
+                if (modoEstudioSelectorItem) {
+                    modoEstudioSelectorItem.classList.add('active');
                 }
             }, 300);
             

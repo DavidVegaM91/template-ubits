@@ -93,6 +93,12 @@
     padding: 0 !important;
 }
 
+/* Modo estudio IA: ocultar título y botón atrás del header (solo mostrar acciones).
+   Las acciones se mantienen a la derecha por el componente: .ubits-header-product__actions tiene margin-left: auto. */
+.modo-estudio-ia-page .ubits-header-product__product-info {
+    display: none !important;
+}
+
 /* ========== Modo Tutor IA: layout chat (izq) + panel derecho (Canvas) ========== */
 .modo-tutor-ia-chat-section {
     display: flex !important;
@@ -120,16 +126,36 @@
 
 .modo-tutor-ia-chat-section > .modo-tutor-ia-canvas-panel.is-open {
     display: flex !important;
+    flex-direction: column !important;
     flex: 1 1 0;
     min-width: 0;
     width: 50%;
     padding: 0 !important;
-    overflow-y: auto;
+    overflow: hidden;
     min-height: 0;
     background: var(--ubits-bg-1) !important;
     border: 1px solid var(--ubits-border-1);
     border-radius: 12px;
     animation: tutor-panel-open 0.2s ease;
+}
+
+/* Contenido del canvas: flex para que el footer quede siempre abajo */
+.modo-tutor-ia-canvas-panel.is-open .study-chat-canvas-content {
+    flex: 1 1 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.modo-tutor-ia-canvas-panel.is-open .study-chat-canvas-body {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.modo-tutor-ia-canvas-panel.is-open .study-chat-canvas-footer {
+    flex-shrink: 0;
 }
 
 @keyframes tutor-panel-open {
@@ -162,7 +188,7 @@
     color: var(--ubits-fg-1-low);
 }
 
-/* Widget chat: sin fondo blanco ni padding, usar flexbox para ocupar todo el espacio */
+/* Widget chat: rellenar el espacio sin añadir caja extra (la sección .modo-tutor-ia-chat-main ya tiene fondo) */
 .section-single > .widget-chat,
 .modo-tutor-ia-chat-main .widget-chat {
     background-color: transparent !important;
@@ -173,6 +199,12 @@
     flex-direction: column !important;
 }
 
+/* Solo los mensajes de la IA sin fondo ni padding (burbujas transparentes y sin relleno) */
+.modo-estudio-ia-page .ubits-study-chat__text-globe--ai {
+    background: transparent !important;
+    padding: 0 !important;
+}
+
 /* Asegurar que el contenedor del chat tenga altura completa */
 #study-chat-container {
     height: 100% !important;
@@ -180,6 +212,7 @@
     display: flex !important;
     flex-direction: column !important;
 }
+
 
 /* Responsive: panel derecho debajo del chat en pantallas medianas/pequeñas */
 @media (max-width: 1023px) {

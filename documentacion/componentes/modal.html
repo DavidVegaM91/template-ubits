@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="../../components/alert.css">
     <link rel="stylesheet" href="../../components/toast.css">
     <link rel="stylesheet" href="../../components/modal.css">
+    <script src="../../components/modal.js"></script>
 </head>
 <body class="componentes-page" data-theme="light">
     <div class="dashboard-container">
@@ -271,6 +272,7 @@ Usa las clases: ubits-modal-overlay, ubits-modal-content, ubits-modal-header, ub
 .ubits-modal-content--md  /* Ancho máx. 800px */
 .ubits-modal-content--lg  /* Ancho máx. 1200px */
 .ubits-modal-header    /* Header: padding, border-bottom, título + botón cerrar */
+.ubits-modal-title     /* Título del header: usar con ubits-body-md-bold (no h2) */
 .ubits-modal-body      /* Body: padding, overflow-y auto, flex 1 */
 .ubits-modal-footer    /* Footer: padding, border-top, flex end, gap 12px */</code></pre>
                                     </div>
@@ -290,11 +292,27 @@ Usa las clases: ubits-modal-overlay, ubits-modal-content, ubits-modal-header, ub
                                         <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">🔧 REQUISITOS OBLIGATORIOS:</h3>
                                         <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.5;">
                                             <strong>CSS:</strong> <code>components/modal.css</code>, <code>ubits-colors.css</code>, <code>ubits-typography.css</code>, <code>fontawesome-icons.css</code> (botón cerrar), <code>components/button.css</code> (botones del header/footer).<br>
-                                            <strong>JavaScript:</strong> No incluido en el componente; mostrar/ocultar y lógica a cargo de tu página.<br>
-                                            <strong>Renderizado:</strong> HTML directo con clases UBITS.
+                                            <strong>JavaScript:</strong> <code>components/modal.js</code> (recomendado). Proporciona <code>openModal()</code>, <code>closeModal()</code>, <code>showModal()</code>, <code>hideModal()</code>. Si no usas JS, mostrar/ocultar y lógica a cargo de tu página.<br>
+                                            <strong>Renderizado:</strong> Recomendado: <code>openModal({ overlayId, title, bodyHtml, footerHtml?, size?, closeOnOverlayClick?, onClose? })</code> para estructura siempre correcta. Alternativa: HTML directo con las mismas clases (ver ejemplos abajo).
                                         </div>
                                     </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                                        <h3 class="ubits-body-md-bold" style="margin-bottom: 8px; color: var(--ubits-fg-1-high);">Con JavaScript (recomendado)</h3>
+                                        <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 12px;">Una sola fuente de verdad: el título y la estructura los genera <code>openModal()</code>, así no se desincronizan otras páginas.</p>
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 13px; line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>openModal({
+  overlayId: 'mi-modal',
+  title: 'Título del modal',
+  bodyHtml: '&lt;p class="ubits-body-md-regular"&gt;Contenido.&lt;/p&gt;',
+  footerHtml: '&lt;button class="ubits-button ubits-button--secondary ubits-button--md"&gt;&lt;span&gt;Cancelar&lt;/span&gt;&lt;/button&gt;&lt;button class="ubits-button ubits-button--primary ubits-button--md"&gt;&lt;span&gt;Aceptar&lt;/span&gt;&lt;/button&gt;',
+  size: 'sm',
+  closeOnOverlayClick: true,
+  onClose: function() { }
+});
+closeModal('mi-modal');</code></pre>
+                                    </div>
                                     <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                        <h3 class="ubits-body-md-bold" style="margin-bottom: 8px; color: var(--ubits-fg-1-high);">HTML directo</h3>
+                                        <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 12px;">Misma estructura que genera <code>openModal()</code>. Título: <code>&lt;span class="ubits-modal-title ubits-body-md-bold"&gt;</code> (no usar h2).</p>
                                         <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="modal-implementation-code">&lt;!-- Modal genérico --&gt;
 &lt;div class="ubits-modal-overlay" id="mi-modal" style="display: none;" onclick="if(event.target===this) document.getElementById('mi-modal').style.display='none';"&gt;
   &lt;div class="ubits-modal-content" onclick="event.stopPropagation();"&gt;
