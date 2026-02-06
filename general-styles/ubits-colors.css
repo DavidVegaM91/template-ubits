@@ -8,7 +8,7 @@
      BRAND COLORS
      ======================================== */
   
-  /* Accent Brand */
+  /* Use it to represent the brand color in interface elements, icons, borders, illustrations, and more. */
   --ubits-accent-brand: #0c5bef;
   --ubits-accent-brand-inverted: #0c5bef;
   --ubits-accent-brand-static: #0c5bef;
@@ -17,6 +17,7 @@
   /* Accent Green */
   --ubits-accent-green: #1E8D58;
   
+  /* Use this color for the primary button background, aligned with the brand tone. Button foreground: for bold text/icons on primary surfaces. */
   /* Button Colors */
   --ubits-button-primary-bg-default: #0c5bef;
   --ubits-button-primary-hover: #223a91;
@@ -33,15 +34,15 @@
   --ubits-btn-secondary-fg-default: #303a47;
   --ubits-btn-secondary-border: #d0d2d5;
 
-  /* Tertiary Button Colors - LIGHT MODE */
+  /* Tertiary Button Colors - LIGHT MODE (sub-surface oficial: pec-gray-16 10%/20%) */
   --ubits-btn-tertiary-fg: #5c646f;
-  --ubits-btn-tertiary-bg-hover: rgba(231, 232, 234, 0.5);
-  --ubits-btn-tertiary-bg-pressed: rgba(231, 232, 234, 0.7);
+  --ubits-btn-tertiary-bg-hover: #2028371a;
+  --ubits-btn-tertiary-bg-pressed: #20283733;
 
-  /* Error Button Colors - LIGHT MODE (eliminación, acciones destructivas) */
-  --ubits-btn-error-primary-bg-default: #CF0E34;
-  --ubits-btn-error-primary-bg-hover: #B00C2E;
-  --ubits-btn-error-primary-bg-pressed: #9A0A28;
+  /* Error Button Colors - LIGHT MODE (eliminación, acciones destructivas; oficial: red-36/28) */
+  --ubits-btn-error-primary-bg-default: #cf0e34;
+  --ubits-btn-error-primary-bg-hover: #a41f22;
+  --ubits-btn-error-primary-bg-pressed: #801b21;
   --ubits-btn-error-primary-fg: #ffffff;
   --ubits-btn-error-secondary-bg-default: #FFF0EE;
   --ubits-btn-error-secondary-bg-hover: #FFE0DD;
@@ -62,7 +63,7 @@
      FOREGROUND COLORS
      ======================================== */
   
-  /* Primary Text */
+  /* Use it for primary foreground elements (such as text or icons) on primary backgrounds. */
   --ubits-fg-1-high: #303a47;
   --ubits-fg-1-high-inverted: #edeeef;
   --ubits-fg-1-medium: #5c646f;
@@ -72,7 +73,7 @@
   --ubits-fg-1-medium-static: #5c646f;
   --ubits-fg-1-medium-static-inverted: #d0d2d5;
   
-  /* Secondary Text */
+  /* Use it for primary foreground elements (such as text or icons) on secondary backgrounds. */
   --ubits-fg-2-high: #2a303f;
   --ubits-fg-2-high-inverted: #ffffff;
   --ubits-fg-2-medium: #5a5e6a;
@@ -81,7 +82,7 @@
   --ubits-fg-2-medium-static: #5a5e6a;
   --ubits-fg-2-medium-static-inverted: #d0d2d5;
   
-  /* Disabled Text */
+  /* Use it for disabled foreground elements, such as text or icons. Use -on-disabled for text/icons on disabled surfaces. */
   --ubits-fg-disabled: #a2a6ad;
   --ubits-fg-disabled-inverted: #777c86;
   --ubits-fg-on-disabled: #8d9199;
@@ -90,13 +91,14 @@
   --ubits-fg-disabled-static: #a2a6ad;
   --ubits-fg-on-disabled-static: #8d9199;
   
-  /* Bold Text */
+  /* Use it for bold foreground elements (such as text or icons) on default, hover and pressed-state bold surfaces, when the color has no specific meaning. */
   --ubits-fg-bold: #ffffff;
   
   /* ========================================
      COLORED FOREGROUNDS
      ======================================== */
   
+  /* Use it for foreground elements (such as text or icons) on default-state blue subtle surfaces, when the color has no specific meaning. */
   /* Blue */
   --ubits-fg-blue-subtle: #212f70;
   --ubits-fg-blue-subtle-inverted: #d6dbff;
@@ -107,6 +109,7 @@
   --ubits-fg-blue-subtle-static-hover: #c3c1fd;
   --ubits-fg-blue-subtle-static-inverted-hover: #141e3f;
   
+  /* Use it for foreground elements (such as text or icons) on default-state gray subtle surfaces, when the color has no specific meaning. */
   /* Gray */
   --ubits-fg-gray-subtle: #2b3543;
   --ubits-fg-gray-subtle-inverted: #2b3543;
@@ -117,6 +120,7 @@
   --ubits-fg-gray-subtle-static-hover: #16202f;
   --ubits-fg-gray-subtle-static-inverted-hover: #c5c6cb;
   
+  /* Use it for foreground elements on default-state yellow subtle surfaces, when the color has no specific meaning. */
   /* Yellow */
   --ubits-fg-yellow-subtle: #433214;
   --ubits-fg-yellow-subtle-inverted: #ffd555;
@@ -135,6 +139,7 @@
   --ubits-fg-yellow-bold-static-hover: #251f0e;
   --ubits-fg-yellow-bold-static-inverted-hover: #1c170a;
   
+  /* Use it for foreground elements on default-state green subtle surfaces (e.g. success). */
   /* Green */
   --ubits-fg-green-subtle: #183b28;
   --ubits-fg-green-subtle-inverted: #bce7c3;
@@ -145,6 +150,7 @@
   --ubits-fg-green-subtle-static-hover: #142318;
   --ubits-fg-green-subtle-static-inverted-hover: #82d8a5;
   
+  /* Use it for foreground elements on default-state teal subtle surfaces, when the color has no specific meaning. */
   /* Teal */
   --ubits-fg-teal-subtle: #183a3b;
   --ubits-fg-teal-subtle-inverted: #c9e2e3;
@@ -155,6 +161,7 @@
   --ubits-fg-teal-subtle-static-hover: #122224;
   --ubits-fg-teal-subtle-static-inverted-hover: #a4ced4;
   
+  /* Use it for foreground elements on default-state purple subtle surfaces, when the color has no specific meaning. */
   /* Purple */
   --ubits-fg-purple-subtle-default: #272a79;
   --ubits-fg-purple-subtle-inverted-default: #e3d7ff;
@@ -166,6 +173,7 @@
   --ubits-fg-purple-subtle-static-hover: #221940;
   --ubits-fg-purple-subtle-static-inverted-hover: #d8bafd;
   
+  /* Use it for foreground elements on default-state pink subtle surfaces, when the color has no specific meaning. */
   /* Pink */
   --ubits-fg-pink-subtle-default: #542440;
   --ubits-fg-pink-subtle-inverted-default: #fcd1e5;
@@ -177,6 +185,7 @@
   --ubits-fg-pink-subtle-static-hover: #301824;
   --ubits-fg-pink-subtle-static-inverted-hover: #fab2ce;
   
+  /* Use it for foreground elements on default-state rose subtle surfaces, when the color has no specific meaning. */
   /* Rose */
   --ubits-fg-rose-subtle-default: #4a255b;
   --ubits-fg-rose-subtle-inverted-default: #f0d4f6;
@@ -192,16 +201,17 @@
      FEEDBACK COLORS
      ======================================== */
   
-  /* Success */
-  --ubits-feedback-accent-success: #4ab028;
-  --ubits-feedback-accent-success-inverted: #328e2c;
+  /* Use it to communicate a favorable outcome, such as a success message in an input field or a border on a neutral surface. */
+  /* Success (light: pec-lime-52 #328e2c; dark: lime-64 #4ab028) */
+  --ubits-feedback-accent-success: #328e2c;
+  --ubits-feedback-accent-success-inverted: #4ab028;
   --ubits-feedback-bg-success-subtle: #e8f8e4;
   --ubits-feedback-bg-success-subtle-inverted: #223b16;
-  --ubits-feedback-bg-success-subtle-hover: #d4f0d0;
+  --ubits-feedback-bg-success-subtle-hover: #bde9ac;
   --ubits-feedback-bg-success-subtle-inverted-hover: #152311;
   --ubits-feedback-bg-success-subtle-static: #e8f8e4;
   --ubits-feedback-bg-success-subtle-static-inverted: #223b16;
-  --ubits-feedback-bg-success-subtle-static-hover: #d4f0d0;
+  --ubits-feedback-bg-success-subtle-static-hover: #bde9ac;
   --ubits-feedback-bg-success-subtle-static-inverted-hover: #152311;
   --ubits-feedback-fg-success-subtle: #223b16;
   --ubits-feedback-fg-success-subtle-inverted: #bde9ac;
@@ -214,9 +224,10 @@
   --ubits-feedback-fg-success-subtle-static-hover: #152311;
   --ubits-feedback-fg-success-subtle-static-inverted-hover: #7ddb7f;
   
-  /* Info */
-  --ubits-feedback-accent-info: #7397fe;
-  --ubits-feedback-accent-info-inverted: #4a74ee;
+  /* Use it to communicate a previous state to continue, or that something is in progress — such as validations, loading states, or progress bars. */
+  /* Info (light: pec-indigo-52 #4a74ee; dark: indigo-64 #7397fe) */
+  --ubits-feedback-accent-info: #4a74ee;
+  --ubits-feedback-accent-info-inverted: #7397fe;
   --ubits-feedback-bg-info-subtle: #f3f2ff;
   --ubits-feedback-bg-info-subtle-inverted: #20335f;
   --ubits-feedback-bg-info-subtle-hover: #e6e4ff;
@@ -236,9 +247,10 @@
   --ubits-feedback-fg-info-subtle-static-hover: #1b1e34;
   --ubits-feedback-fg-info-subtle-static-inverted-hover: #c4c1fc;
   
-  /* Warning */
-  --ubits-feedback-accent-warning: #d68b0d;
-  --ubits-feedback-accent-warning-inverted: #b16c19;
+  /* Use it to emphasize caution, such as in warning text or borders on neutral surfaces. */
+  /* Warning (light: pec-orange-52 #b16c19; dark: orange-64 #d68b0d) */
+  --ubits-feedback-accent-warning: #b16c19;
+  --ubits-feedback-accent-warning-inverted: #d68b0d;
   --ubits-feedback-bg-warning-subtle: #fff1e0;
   --ubits-feedback-bg-warning-subtle-inverted: #4c2e15;
   --ubits-feedback-bg-warning-subtle-hover: #ffe8c7;
@@ -260,6 +272,7 @@
   --ubits-feedback-fg-warning-subtle-static-hover: #2a1d0d;
   --ubits-feedback-fg-warning-subtle-static-inverted-hover: #ffb954;
   
+  /* Use it in critical contexts, such as error messages or borders on neutral surfaces. */
   /* Error */
   --ubits-feedback-accent-error: #e9343c;
   --ubits-feedback-accent-error-inverted: #f96f6f;
@@ -284,18 +297,25 @@
      BACKGROUND COLORS
      ======================================== */
   
+  /* Use it for active/selected state backgrounds (e.g. selected list item). */
   --ubits-bg-active: rgba(12, 91, 239, 0.2);
   --ubits-bg-level-1: var(--ubits-bg-1);
+  /* Use it for primary surfaces (those with the highest z-index). */
   --ubits-bg-1: #ffffff;
+  /* Use it for secondary surfaces. This is the base background color for screens. */
   --ubits-bg-2: #F3F3F4;
+  /* Use it for tertiary surfaces. */
   --ubits-bg-3: #e7e8ea;
+  /* Use it for quaternary surfaces. */
   --ubits-bg-4: #dbdde0;
   --ubits-bg-4-static: #DBDDE0;
   --ubits-bg-5: #ced0d5;
   --ubits-bg-dim: #00000080;
+  /* Use it for disabled surfaces (e.g. disabled input, disabled button). */
   --ubits-bg-disabled: #edeeef;
   --ubits-bg-disabled-button: #edeeef;
   
+  /* Use it for default-state blue bold surfaces (e.g. primary button, prominent CTAs). */
   /* Background Blue Bold */
   --ubits-bg-blue-bold-default: #0C5BEF;
   
@@ -312,6 +332,7 @@
      BORDER COLORS
      ======================================== */
   
+  /* Use it to visually group or separate UI elements on primary surfaces (those with the highest z-index), such as flat cards, input fields or side panel dividers. */
   /* Main Borders */
   --ubits-border-1: #d0d2d5;
   --ubits-border-2: #b9bbc1;
@@ -400,6 +421,7 @@
   --ubits-border-yellow-static-inverted: #8e6d1b;
   --ubits-border-rose-static-inverted: #ad3fcb;
   
+  /* Use for borders on non-bold success/info/warning/error surfaces (e.g. input validation, alert borders). */
   /* Feedback Borders */
   --ubits-feedback-border-success: #41c433;
   --ubits-feedback-border-info: #97a5fd;
@@ -422,6 +444,7 @@
      SIDEBAR COLORS
      ======================================== */
   
+  /* Use these tokens for the sidebar navigation: background, logo, button states (default, hover, pressed, active, disabled). */
   --ubits-sidebar-bg: #202837;
   --ubits-sidebar-logo: #ffffff;
   --ubits-sidebar-button-bg-pressed: #3b4350;
@@ -434,35 +457,82 @@
   --ubits-sidebar-button-fg-disabled: #828690;
   
   /* ========================================
+     FOCUS & FOCUS RING (desde tokens oficiales)
+     ======================================== */
+  
+  /* Use this token for focused state components. Inner/outer ring for focus outline. */
+  --ubits-focus: #1953d766;
+  --ubits-focus-ring-inner: #ffffff;
+  --ubits-focus-ring-outer: #000000;
+  
+  /* ========================================
+     SUB-SURFACE (hover/pressed en chips, tertiary; oficial)
+     ======================================== */
+  
+  /* Use it for interactive inner surfaces, such as the chip close button in its hovered state, or tertiary button hover/pressed. */
+  --ubits-bg-sub-surface-hover: #2028371a;
+  --ubits-bg-sub-surface-pressed: #20283733;
+  
+  /* ========================================
+     TOGGLE (estado activo; oficial)
+     ======================================== */
+  
+  /* Use it for the toggle component in its active state. */
+  --ubits-toggle-bg-active: #13bd74;
+  
+  /* ========================================
+     ACCENT DECORATIVOS (sin significado semántico; oficial)
+     ======================================== */
+  
+  /* Use accent tokens to highlight elements on light neutral surfaces when the color carries no semantic meaning or status. Ideal for decorative borders or foreground elements. */
+  --ubits-accent-blue: #5470f6;
+  --ubits-accent-gray: #777c86;
+  --ubits-accent-yellow: #98781a;
+  --ubits-accent-teal: #128992;
+  --ubits-accent-purple: #8060fd;
+  --ubits-accent-pink: #d34593;
+  --ubits-accent-rose: #be48d2;
+  
+  /* ========================================
      CHART COLORS
      ======================================== */
   
+  /* Use these tokens for chart components: background levels, neutral blue scale, subtle/bold foreground. */
   --ubits-chart-bg-level-1: #ffffff;
   --ubits-chart-bg-neutral-blue-base: #557593;
+  --ubits-chart-fg-subtle: #000000;
+  --ubits-chart-fg-bold: #ffffff;
+  --ubits-chart-bg-neutral-blue-1: #7c93ab;
+  --ubits-chart-bg-neutral-blue-2: #6f89a3;
+  --ubits-chart-bg-neutral-blue-3: #627f9b;
   
   /* ========================================
      TOAST COLORS
      ======================================== */
   
+  /* Use it for the toast notification background. */
   --ubits-toast-feedback-bg: #ffffff;
   
   /* ========================================
      BOTTOM NAVIGATION
      ======================================== */
   
+  /* Use it for bottom navigation shadow. */
   --ubits-bottom-nav-shadow-opacity: rgba(0, 0, 0, 0.36);
   
   /* ========================================
      SCROLL BAR
      ======================================== */
   
-  --ubits-scroll-bar-color-bg-default: #C5C6CB;
+  /* Use this token for the scroll bar background component in its default state. */
+  --ubits-scroll-bar-color-bg-default: #c5c6cb;
 }
 
 /* ========================================
    DARK MODE OVERRIDES
    ======================================== */
 
+/* Same usage as light mode; values below override for dark theme. */
 [data-theme="dark"] {
   /* ========================================
      BRAND COLORS - DARK MODE
@@ -489,15 +559,15 @@
   --ubits-btn-secondary-fg-default: #edeeef;
   --ubits-btn-secondary-border: #4f5561;
 
-  /* Tertiary Button Colors - DARK MODE */
+  /* Tertiary Button Colors - DARK MODE (sub-surface oficial: white 10%/20%) */
   --ubits-btn-tertiary-fg: #d0d2d5;
-  --ubits-btn-tertiary-bg-hover: rgba(231, 232, 234, 0.5);
-  --ubits-btn-tertiary-bg-pressed: rgba(231, 232, 234, 0.7);
+  --ubits-btn-tertiary-bg-hover: #ffffff1a;
+  --ubits-btn-tertiary-bg-pressed: #ffffff33;
 
-  /* Error Button Colors - DARK MODE */
-  --ubits-btn-error-primary-bg-default: #E20D34;
-  --ubits-btn-error-primary-bg-hover: #C90B2E;
-  --ubits-btn-error-primary-bg-pressed: #B00C2E;
+  /* Error Button Colors - DARK MODE (oficial: red-48/40/36) */
+  --ubits-btn-error-primary-bg-default: #e20d34;
+  --ubits-btn-error-primary-bg-hover: #b62221;
+  --ubits-btn-error-primary-bg-pressed: #a41f22;
   --ubits-btn-error-primary-fg: #ffffff;
   --ubits-btn-error-secondary-bg-default: #801B21;
   --ubits-btn-error-secondary-bg-hover: #65181E;
@@ -644,11 +714,11 @@
   --ubits-feedback-accent-success-inverted: #328e2c;
   --ubits-feedback-bg-success-subtle: #e8f8e4;
   --ubits-feedback-bg-success-subtle-inverted: #223b16;
-  --ubits-feedback-bg-success-subtle-hover: #d4f0d0;
+  --ubits-feedback-bg-success-subtle-hover: #bde9ac;
   --ubits-feedback-bg-success-subtle-inverted-hover: #152311;
   --ubits-feedback-bg-success-subtle-static: #e8f8e4;
   --ubits-feedback-bg-success-subtle-static-inverted: #223b16;
-  --ubits-feedback-bg-success-subtle-static-hover: #d4f0d0;
+  --ubits-feedback-bg-success-subtle-static-hover: #bde9ac;
   --ubits-feedback-bg-success-subtle-static-inverted-hover: #152311;
   --ubits-feedback-fg-success-subtle: #223b16;
   --ubits-feedback-fg-success-subtle-inverted: #223b16;
@@ -851,11 +921,37 @@
   --ubits-sidebar-button-fg-disabled: #828690;
   
   /* ========================================
+     FOCUS & SUB-SURFACE & TOGGLE - DARK MODE (oficial)
+     ======================================== */
+  
+  --ubits-focus: #6a7bf799;
+  --ubits-bg-sub-surface-hover: #ffffff1a;
+  --ubits-bg-sub-surface-pressed: #ffffff33;
+  --ubits-toggle-bg-active: #1aa566;
+  
+  /* ========================================
+     ACCENT DECORATIVOS - DARK MODE (oficial)
+     ======================================== */
+  
+  --ubits-accent-blue: #8c91fa;
+  --ubits-accent-gray: #979ba3;
+  --ubits-accent-yellow: #b69918;
+  --ubits-accent-teal: #54a8ac;
+  --ubits-accent-purple: #9a8bff;
+  --ubits-accent-pink: #e873b6;
+  --ubits-accent-rose: #c97de4;
+  
+  /* ========================================
      CHART COLORS - DARK MODE
      ======================================== */
   
   --ubits-chart-bg-level-1: #ffffff;
-  --ubits-chart-bg-neutral-blue-base: #899DB3;
+  --ubits-chart-bg-neutral-blue-base: #899db3;
+  --ubits-chart-fg-subtle: #000000;
+  --ubits-chart-fg-bold: #ffffff;
+  --ubits-chart-bg-neutral-blue-1: #7c93ab;
+  --ubits-chart-bg-neutral-blue-2: #6f89a3;
+  --ubits-chart-bg-neutral-blue-3: #627f9b;
   
   /* ========================================
      TOAST COLORS - DARK MODE
@@ -873,5 +969,5 @@
      SCROLL BAR - DARK MODE
      ======================================== */
   
-  --ubits-scroll-bar-color-bg-default: #979BA3;
+  --ubits-scroll-bar-color-bg-default: #979ba3;
 }
