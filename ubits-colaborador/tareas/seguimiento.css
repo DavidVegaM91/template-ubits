@@ -368,6 +368,12 @@
     justify-content: center;
 }
 
+.widget-paginador-seguimiento .ubits-paginator,
+#seguimiento-paginador .ubits-paginator {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
 /* Empty State */
 #seguimiento-empty-state {
     width: 100%;

@@ -8,7 +8,7 @@
      BRAND COLORS
      ======================================== */
   
-  /* Use it to represent the brand color in interface elements, icons, borders, illustrations, and more. */
+  /* Use it to represent the brand color in interface elements, icons, borders, illustrations, and more. (btn blue 44 and 48) */
   --ubits-accent-brand: #0c5bef;
   --ubits-accent-brand-inverted: #0c5bef;
   --ubits-accent-brand-static: #0c5bef;
@@ -66,6 +66,7 @@
   /* Use it for primary foreground elements (such as text or icons) on primary backgrounds. */
   --ubits-fg-1-high: #303a47;
   --ubits-fg-1-high-inverted: #edeeef;
+  /* Use it for secondary foreground elements (such as text or icons) on primary backgrounds. */
   --ubits-fg-1-medium: #5c646f;
   --ubits-fg-1-medium-inverted: #d0d2d5;
   --ubits-fg-1-high-static: #303a47;
@@ -76,15 +77,17 @@
   /* Use it for primary foreground elements (such as text or icons) on secondary backgrounds. */
   --ubits-fg-2-high: #2a303f;
   --ubits-fg-2-high-inverted: #ffffff;
+  /* Use it for secondary foreground elements (such as text or icons) on secondary backgrounds. */
   --ubits-fg-2-medium: #5a5e6a;
   --ubits-fg-2-medium-inverted: #d0d2d5;
   --ubits-fg-2-high-static: #2a303f;
   --ubits-fg-2-medium-static: #5a5e6a;
   --ubits-fg-2-medium-static-inverted: #d0d2d5;
   
-  /* Use it for disabled foreground elements, such as text or icons. Use -on-disabled for text/icons on disabled surfaces. */
+  /* Use it for disabled foreground elements, such as text or icons. */
   --ubits-fg-disabled: #a2a6ad;
   --ubits-fg-disabled-inverted: #777c86;
+  /* Use it for disabled foreground elements on disabled surfaces, such as text or icons. */
   --ubits-fg-on-disabled: #8d9199;
   --ubits-fg-on-disabled-button: #8d9199;
   --ubits-fg-on-disabled-inverted: #828690;
@@ -120,7 +123,7 @@
   --ubits-fg-gray-subtle-static-hover: #16202f;
   --ubits-fg-gray-subtle-static-inverted-hover: #c5c6cb;
   
-  /* Use it for foreground elements on default-state yellow subtle surfaces, when the color has no specific meaning. */
+  /* Use it for foreground elements (such as text or icons) on default-state yellow subtle surfaces, when the color has no specific meaning. */
   /* Yellow */
   --ubits-fg-yellow-subtle: #433214;
   --ubits-fg-yellow-subtle-inverted: #ffd555;
@@ -139,7 +142,7 @@
   --ubits-fg-yellow-bold-static-hover: #251f0e;
   --ubits-fg-yellow-bold-static-inverted-hover: #1c170a;
   
-  /* Use it for foreground elements on default-state green subtle surfaces (e.g. success). */
+  /* Use it for foreground elements (such as text or icons) on default-state green subtle surfaces, when the color has no specific meaning. */
   /* Green */
   --ubits-fg-green-subtle: #183b28;
   --ubits-fg-green-subtle-inverted: #bce7c3;
@@ -150,7 +153,7 @@
   --ubits-fg-green-subtle-static-hover: #142318;
   --ubits-fg-green-subtle-static-inverted-hover: #82d8a5;
   
-  /* Use it for foreground elements on default-state teal subtle surfaces, when the color has no specific meaning. */
+  /* Use it for foreground elements (such as text or icons) on default-state teal subtle surfaces, when the color has no specific meaning. */
   /* Teal */
   --ubits-fg-teal-subtle: #183a3b;
   --ubits-fg-teal-subtle-inverted: #c9e2e3;
@@ -161,7 +164,7 @@
   --ubits-fg-teal-subtle-static-hover: #122224;
   --ubits-fg-teal-subtle-static-inverted-hover: #a4ced4;
   
-  /* Use it for foreground elements on default-state purple subtle surfaces, when the color has no specific meaning. */
+  /* Use it for foreground elements (such as text or icons) on default-state purple subtle surfaces, when the color has no specific meaning. */
   /* Purple */
   --ubits-fg-purple-subtle-default: #272a79;
   --ubits-fg-purple-subtle-inverted-default: #e3d7ff;
@@ -173,7 +176,7 @@
   --ubits-fg-purple-subtle-static-hover: #221940;
   --ubits-fg-purple-subtle-static-inverted-hover: #d8bafd;
   
-  /* Use it for foreground elements on default-state pink subtle surfaces, when the color has no specific meaning. */
+  /* Use it for foreground elements (such as text or icons) on default-state pink subtle surfaces, when the color has no specific meaning. */
   /* Pink */
   --ubits-fg-pink-subtle-default: #542440;
   --ubits-fg-pink-subtle-inverted-default: #fcd1e5;
@@ -185,7 +188,7 @@
   --ubits-fg-pink-subtle-static-hover: #301824;
   --ubits-fg-pink-subtle-static-inverted-hover: #fab2ce;
   
-  /* Use it for foreground elements on default-state rose subtle surfaces, when the color has no specific meaning. */
+  /* Use it for foreground elements (such as text or icons) on default-state rose subtle surfaces, when the color has no specific meaning. */
   /* Rose */
   --ubits-fg-rose-subtle-default: #4a255b;
   --ubits-fg-rose-subtle-inverted-default: #f0d4f6;
@@ -311,7 +314,7 @@
   --ubits-bg-4-static: #DBDDE0;
   --ubits-bg-5: #ced0d5;
   --ubits-bg-dim: #00000080;
-  /* Use it for disabled surfaces (e.g. disabled input, disabled button). */
+  /* Use it for disabled-state surfaces, such as disabled buttons, cards or containers. */
   --ubits-bg-disabled: #edeeef;
   --ubits-bg-disabled-button: #edeeef;
   
@@ -333,8 +336,8 @@
      ======================================== */
   
   /* Use it to visually group or separate UI elements on primary surfaces (those with the highest z-index), such as flat cards, input fields or side panel dividers. */
-  /* Main Borders */
   --ubits-border-1: #d0d2d5;
+  /* Use it to visually group or separate UI elements on secondary surfaces. */
   --ubits-border-2: #b9bbc1;
   --ubits-border-disabled: #e1e2e5;
   --ubits-border-disabled-button: #e1e2e5;
@@ -421,11 +424,13 @@
   --ubits-border-yellow-static-inverted: #8e6d1b;
   --ubits-border-rose-static-inverted: #ad3fcb;
   
-  /* Use for borders on non-bold success/info/warning/error surfaces (e.g. input validation, alert borders). */
-  /* Feedback Borders */
+  /* Use it for borders on non-bold success surfaces. */
   --ubits-feedback-border-success: #41c433;
+  /* Use it for borders on non-bold info surfaces. */
   --ubits-feedback-border-info: #97a5fd;
+  /* Use it for borders on non-bold warning surfaces. */
   --ubits-feedback-border-warning: #ec9907;
+  /* Use it for borders on non-bold error surfaces. */
   --ubits-feedback-border-error: #fd8a82;
   --ubits-feedback-border-success-inverted: #368226;
   --ubits-feedback-border-info-inverted: #3a6cda;
@@ -444,23 +449,29 @@
      SIDEBAR COLORS
      ======================================== */
   
-  /* Use these tokens for the sidebar navigation: background, logo, button states (default, hover, pressed, active, disabled). */
+  /* Sidebar: background. */
   --ubits-sidebar-bg: #202837;
   --ubits-sidebar-logo: #ffffff;
   --ubits-sidebar-button-bg-pressed: #3b4350;
   --ubits-sidebar-button-bg-disabled: #3b4350;
+  /* Background color for the active state of the sidebar button component. */
   --ubits-sidebar-button-bg-active: #ffffff;
+  /* Foreground color for the default state of the sidebar button component. */
   --ubits-sidebar-button-fg-default: #d0d2d5;
+  /* Foreground color for the hovered state of the sidebar button component. */
   --ubits-sidebar-button-fg-hover: #edeeef;
+  /* Foreground color for the pressed state of the sidebar button component. */
   --ubits-sidebar-button-fg-pressed: #edeeef;
+  /* Foreground color for the active state of the sidebar button component. */
   --ubits-sidebar-button-fg-active: #303a47;
+  /* Foreground color for the disabled state of the sidebar button component. */
   --ubits-sidebar-button-fg-disabled: #828690;
   
   /* ========================================
      FOCUS & FOCUS RING (desde tokens oficiales)
      ======================================== */
   
-  /* Use this token for focused state components. Inner/outer ring for focus outline. */
+  /* Use this token for focused state components: light: pec-blue-40 (40%) | dark: pec-blue-56 (60%) */
   --ubits-focus: #1953d766;
   --ubits-focus-ring-inner: #ffffff;
   --ubits-focus-ring-outer: #000000;
@@ -469,8 +480,9 @@
      SUB-SURFACE (hover/pressed en chips, tertiary; oficial)
      ======================================== */
   
-  /* Use it for interactive inner surfaces, such as the chip close button in its hovered state, or tertiary button hover/pressed. */
+  /* Use it for interactive inner surfaces, such as chip close buttons or row tables in its hovered state. Light mode: pec-gray-16 at 10%. Dark mode: pec-white at 10%. */
   --ubits-bg-sub-surface-hover: #2028371a;
+  /* Use it for interactive inner surfaces, such as chip close buttons or row tables in its pressed state. Light mode: pec-gray-16 at 20%. Dark mode: pec-white at 20%. */
   --ubits-bg-sub-surface-pressed: #20283733;
   
   /* ========================================
@@ -484,26 +496,38 @@
      ACCENT DECORATIVOS (sin significado semántico; oficial)
      ======================================== */
   
-  /* Use accent tokens to highlight elements on light neutral surfaces when the color carries no semantic meaning or status. Ideal for decorative borders or foreground elements. */
+  /* Use accent-blue to highlight elements on light neutral surfaces when the color carries no semantic meaning or status. Ideal for decorative borders or foreground elements. */
   --ubits-accent-blue: #5470f6;
+  /* Use accent-gray to highlight elements on light neutral surfaces when the color carries no semantic meaning or status. Ideal for decorative borders or foreground elements. */
   --ubits-accent-gray: #777c86;
+  /* Use accent-yellow to highlight elements on light neutral surfaces when the color carries no semantic meaning or status. Ideal for decorative borders or foreground elements. */
   --ubits-accent-yellow: #98781a;
+  /* Use accent-teal to highlight elements on light neutral surfaces when the color carries no semantic meaning or status. Ideal for decorative borders or foreground elements. */
   --ubits-accent-teal: #128992;
+  /* Use accent-purple to highlight elements on light neutral surfaces when the color carries no semantic meaning or status. Ideal for decorative borders or foreground elements. */
   --ubits-accent-purple: #8060fd;
+  /* Use accent-pink to highlight elements on light neutral surfaces when the color carries no semantic meaning or status. Ideal for decorative borders or foreground elements. */
   --ubits-accent-pink: #d34593;
+  /* Use accent-rose to highlight elements on light neutral surfaces when the color carries no semantic meaning or status. Ideal for decorative borders or foreground elements. */
   --ubits-accent-rose: #be48d2;
   
   /* ========================================
      CHART COLORS
      ======================================== */
   
-  /* Use these tokens for chart components: background levels, neutral blue scale, subtle/bold foreground. */
+  /* Use it for the subtle success background of the heatmap-item component. (chart tokens) */
   --ubits-chart-bg-level-1: #ffffff;
+  /* Use it when it's necessary to show only one chart or graph. */
   --ubits-chart-bg-neutral-blue-base: #557593;
+  /* Use it for subtle foreground (such as text or icons) of the heatmap-item component, when the color has no specific meaning. */
   --ubits-chart-fg-subtle: #000000;
+  /* Use it for bold foreground (such as text or icons) of the heatmap-item component when the color has no specific meaning. */
   --ubits-chart-fg-bold: #ffffff;
+  /* Use it to represent the clearest chart when it's necessary to display more than one. */
   --ubits-chart-bg-neutral-blue-1: #7c93ab;
+  /* Use it to represent a level 2 chart when it's necessary to display more than one. */
   --ubits-chart-bg-neutral-blue-2: #6f89a3;
+  /* Use it to represent a level 3 chart when it's necessary to display more than one. */
   --ubits-chart-bg-neutral-blue-3: #627f9b;
   
   /* ========================================
