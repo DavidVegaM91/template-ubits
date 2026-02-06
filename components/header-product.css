@@ -135,6 +135,8 @@
     .ubits-header-product__actions {
         width: 100%;
         flex-wrap: wrap;
+        padding-left: 0;
+        margin-left: 0;
     }
     
     .ubits-header-product__secondary-row {
@@ -178,9 +180,37 @@
     overflow: visible !important;
 }
 
+/* Solo celulares (no tablets): botón primario como FAB icon-only (cuadrado, componente oficial), 16px arriba del tab bar */
+@media (max-width: 767px) {
+    .ubits-header-product__primary-action {
+        position: fixed !important;
+        /* ~32px de separación sobre el tab bar */
+        bottom: calc(60px + 32px + env(safe-area-inset-bottom, 0px));
+        right: 16px;
+        z-index: 1001;
+        /* Icon-only oficial: cuadrado 40px (md) o 48px (lg); usamos 48px para FAB táctil */
+        width: 48px !important;
+        height: 48px !important;
+        min-width: 48px !important;
+        min-height: 48px !important;
+        max-width: 48px !important;
+        max-height: 48px !important;
+        padding: 0 !important;
+        border-radius: 8px !important; /* mismo que componente botón UBITS, no redondo */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    .ubits-header-product__primary-action span {
+        display: none !important;
+    }
+    .ubits-header-product__primary-action i {
+        margin: 0;
+    }
+}
+
 /* En mobile pequeño (< 480px), todos los botones se transforman a icon-only */
 @media (max-width: 480px) {
     /* Botones secundarios sm - ocultar texto y hacer icon-only (32x32px) */
+    /* No aplicar icon-only 32px al botón primario: en celulares ya es FAB (ver regla @media max-width 767px) */
     .ubits-header-product__actions .ubits-button--secondary.ubits-button--sm:not(.ubits-button--icon-only) span {
         display: none;
     }

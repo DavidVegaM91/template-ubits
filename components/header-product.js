@@ -519,7 +519,7 @@ function createHeaderProductHTML(options = {}) {
             </button>
         `).join('');
         const primaryButtonHTML = primaryButton ? `
-            <button class="ubits-button ubits-button--primary ubits-button--md" ${primaryButton.onClick ? `onclick="${primaryButton.onClick}"` : ''}>
+            <button class="ubits-button ubits-button--primary ubits-button--md ubits-header-product__primary-action" ${primaryButton.onClick ? `onclick="${primaryButton.onClick}"` : ''}>
                 ${primaryButton.icon ? `<i class="far ${primaryButton.icon}"></i>` : ''}
                 <span>${primaryButton.text || 'Primary action'}</span>
             </button>
@@ -584,7 +584,7 @@ function createHeaderProductHTML(options = {}) {
 
     // Botón primario
     const primaryButtonHTML = primaryButton ? `
-        <button class="ubits-button ubits-button--primary ubits-button--md" ${primaryButton.onClick ? `onclick="${primaryButton.onClick}"` : ''}>
+        <button class="ubits-button ubits-button--primary ubits-button--md ubits-header-product__primary-action" ${primaryButton.onClick ? `onclick="${primaryButton.onClick}"` : ''}>
             ${primaryButton.icon ? `<i class="far ${primaryButton.icon}"></i>` : ''}
             <span>${primaryButton.text || 'Primary action'}</span>
         </button>
@@ -764,7 +764,7 @@ function loadHeaderProduct(containerId, options = {}) {
     }
 
     if (options.primaryButton && options.primaryButton.onClick && typeof options.primaryButton.onClick === 'function') {
-        const primaryBtn = container.querySelector('.ubits-header-product__actions .ubits-button--primary');
+        const primaryBtn = container.querySelector('.ubits-header-product__actions .ubits-header-product__primary-action');
         if (primaryBtn) {
             primaryBtn.addEventListener('click', options.primaryButton.onClick);
         }
