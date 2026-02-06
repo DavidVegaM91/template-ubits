@@ -132,11 +132,12 @@
         width: 100%;
     }
     
+    /* En móvil anular margen/padding negativo para evitar espacio extra arriba/abajo del header */
     .ubits-header-product__actions {
         width: 100%;
         flex-wrap: wrap;
-        padding-left: 0;
-        margin-left: 0;
+        padding: var(--padding-sm) 0 !important;
+        margin: 0 !important;
     }
     
     .ubits-header-product__secondary-row {
@@ -163,7 +164,7 @@
     gap: var(--gap-xs);
     background: var(--ubits-bg-2);
     border-radius: var(--border-radius-sm);
-    padding: var(--padding-xs);
+    padding: 0;
     width: fit-content;
 }
 
@@ -178,6 +179,34 @@
 
 .section-single > .widget-header-product {
     overflow: visible !important;
+}
+
+/* Tablet (769px–1279px): sin altura mínima extra; mantener gap normal debajo del header */
+@media (min-width: 769px) and (max-width: 1279px) {
+    .widget-header-product,
+    .section-single > .widget-header-product {
+        min-height: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+    }
+}
+
+/* Solo móvil (≤768px): quitar banda de gap debajo del header-product (espacio morado abajo) */
+@media (max-width: 768px) {
+    .widget-header-product,
+    .section-single > .widget-header-product {
+        min-height: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+    }
+    
+    .content-sections > .section-single:first-child:has(.widget-header-product) {
+        margin-bottom: calc(-1 * var(--gap-lg));
+    }
 }
 
 /* Solo celulares (no tablets): botón primario como FAB icon-only (cuadrado, componente oficial), arriba del tab bar */

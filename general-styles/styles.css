@@ -407,17 +407,29 @@ body[data-theme="light"] .dashboard-container {
     }
 }
 
-/* Ajustar gap en móvil/tablet cuando no hay subnav - hasta 1280px */
-@media (max-width: 1279px) {
+/* Tablet (769px–1279px): espaciado normal entre subnav, contenido y secciones */
+@media (min-width: 769px) and (max-width: 1279px) {
     .main-content {
         gap: var(--gap-xl);
         margin: var(--gap-lg) var(--padding-md) 0 var(--padding-md);
         width: calc(100% - 24px);
     }
     
-    /* Eliminar margen superior del primer elemento para compensar el gap */
     .main-content > *:first-child {
         margin-top: calc(-1 * var(--gap-lg));
+    }
+}
+
+/* Solo móvil (≤768px): sin banda entre subnav y content-area para evitar espacio morado arriba */
+@media (max-width: 768px) {
+    .main-content {
+        gap: 0;
+        margin: var(--gap-lg) var(--padding-md) 0 var(--padding-md);
+        width: calc(100% - 24px);
+    }
+    
+    .main-content > *:first-child {
+        margin-top: 0;
     }
 }
 
