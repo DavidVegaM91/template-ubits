@@ -649,9 +649,9 @@ Los tokens de espaciado viven en `general-styles/ubits-spacing-tokens.css` y se 
 **Escala base (--space-1 a --space-10):** 4, 8, 12, 16, 20, 24, 28, 32, 36, 40 px.
 
 **Cuándo usar cada familia:**
-- **Gap** (`--gap-xs` … `--gap-5xl`): `gap`, `margin` entre elementos, espaciado entre ítems en flex/grid.
-- **Padding** (`--padding-xs` … `--padding-6xl`): `padding` en contenedores, botones, cards.
-- **Border radius** (`--border-radius-xs` … `--border-radius-xl`): `border-radius`.
+- **Gap** (`--gap-none`, `--gap-xs` … `--gap-5xl`): `gap`, `margin` entre elementos. Usar `--gap-none` para 0.
+- **Padding** (`--padding-none`, `--padding-xs` … `--padding-6xl`): `padding` en contenedores, botones, cards. Usar `--padding-none` para 0.
+- **Border radius** (`--border-radius-none`, `--border-radius-full`, `--border-radius-xs` … `--border-radius-xl`): `border-radius`. Usar `--border-radius-none` para 0 (esquinas rectas) y `--border-radius-full` para pill/círculo (1000px).
 - **Size** (`--size-xs` … `--size-6xl`): anchos/alturas fijas (iconos, avatares, etc.) cuando coincidan con la escala.
 
 **Mapeo rápido:** 4→xs, 8→sm, 12→md, 16→lg, 20→xl, 24→2xl, 28→3xl, 32→4xl, 36→5xl, 40→6xl (solo padding/size).
@@ -661,6 +661,12 @@ Los tokens de espaciado viven en `general-styles/ubits-spacing-tokens.css` y se 
 gap: var(--gap-lg);
 padding: var(--padding-md);
 border-radius: var(--border-radius-sm);
+
+/* ✅ Casos especiales: cero y pill */
+gap: var(--gap-none);
+padding: var(--padding-none);
+border-radius: var(--border-radius-none);   /* esquinas rectas */
+border-radius: var(--border-radius-full);   /* pill / círculo */
 
 /* ❌ Evitar valores fijos que estén en la escala */
 gap: 16px;

@@ -53,7 +53,7 @@
 /* Contenido principal sin fondo ni padding */
 .section-dual .widget-contenido-izquierdo {
     background-color: transparent !important;
-    padding: 0 !important;
+    padding: var(--padding-none) !important;
 }
 
 /* Estilos para subsecciones del perfil */

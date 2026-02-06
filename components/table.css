@@ -72,7 +72,7 @@
     width: 55px;
     min-width: 55px;
     max-width: 55px;
-    padding: 0;
+    padding: var(--padding-none);
     box-sizing: border-box;
     text-align: center;
     vertical-align: middle;

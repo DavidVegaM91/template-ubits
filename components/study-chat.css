@@ -10,8 +10,8 @@
     height: 100%;
     width: 100%;
     background: transparent;
-    border-radius: 0;
-    padding: 0;
+    border-radius: var(--border-radius-none);
+    padding: var(--padding-none);
     box-sizing: border-box;
     min-height: 0; /* Permitir que flexbox funcione correctamente */
     flex: 1 1 0; /* Ocupar todo el espacio disponible */
@@ -462,8 +462,8 @@
     align-items: center;
     justify-content: center;
     gap: 3px;
-    padding: 0;
-    border-radius: 0;
+    padding: var(--padding-none);
+    border-radius: var(--border-radius-none);
 }
 
 .ubits-study-chat__typing-dot {
@@ -548,7 +548,7 @@
     display: flex;
     align-items: center;
     width: 100%;
-    gap: 0;
+    gap: var(--gap-none);
 }
 
 .ubits-study-chat__input-placeholder {
@@ -845,7 +845,7 @@
 
 .study-chat-quiz-result {
     margin-top: 0;
-    padding: 0;
+    padding: var(--padding-none);
     background: transparent;
     border: none;
 }

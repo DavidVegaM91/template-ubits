@@ -11,7 +11,7 @@
     width: 100%;
     background: var(--ubits-sidebar-bg);
     border: 1px solid var(--ubits-border-1);
-    border-radius: 0;
+    border-radius: var(--border-radius-none);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     z-index: 2000;
     padding: var(--padding-sm) 0;
@@ -29,7 +29,7 @@
     text-decoration: none;
     color: var(--ubits-sidebar-button-fg-default);
     transition: all 0.2s ease;
-    border-radius: 0;
+    border-radius: var(--border-radius-none);
     margin: 0;
 }
 

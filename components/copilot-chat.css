@@ -152,7 +152,7 @@
 /* Botones de feedback */
 .copilot-feedback {
     display: flex;
-    gap: 0;
+    gap: var(--gap-none);
     margin-top: 4px;
 }
 
@@ -691,7 +691,7 @@
 
 .copilot-feedback {
     display: flex;
-    gap: 0px;
+    gap: var(--gap-none);
     margin-top: 4px;
     opacity: 1;
     transition: opacity 0.2s ease;

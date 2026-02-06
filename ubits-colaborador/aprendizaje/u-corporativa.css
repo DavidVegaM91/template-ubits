@@ -25,7 +25,7 @@
 .section-single > .widget-encabezado-universidad,
 .section-single > .widget-buscador-filtros,
 .section-single > .widget-grid-cursos-propios {
-    padding: 0 !important;
+    padding: var(--padding-none) !important;
     background: transparent !important;
 }
         

@@ -7,7 +7,7 @@
 body {
     background-color: #F3F3F4 !important; /* Color directo para Netlify */
     margin: 0;
-    padding: 0;
+    padding: var(--padding-none);
     overflow-x: hidden;
     overflow-y: auto !important; /* Forzar scroll visible */
     /* Scroll bar: color UBITS, fondo transparente */
@@ -159,7 +159,7 @@ body[data-theme="light"] .dashboard-container {
     background: rgba(255, 255, 255, 0);
     border: none;
     padding: var(--padding-sm);
-    border-radius: 1000px;
+    border-radius: var(--border-radius-full);
     cursor: pointer;
     display: flex;
     flex-direction: column;
@@ -423,7 +423,7 @@ body[data-theme="light"] .dashboard-container {
 /* Solo móvil (≤768px): sin banda entre subnav y content-area para evitar espacio morado arriba */
 @media (max-width: 768px) {
     .main-content {
-        gap: 0;
+        gap: var(--gap-none);
         margin: var(--gap-lg) var(--padding-md) 0 var(--padding-md);
         width: calc(100% - 24px);
     }
@@ -465,7 +465,7 @@ body[data-theme="light"] .dashboard-container {
     position: relative;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: hidden;
-    border-radius: 0;
+    border-radius: var(--border-radius-none);
 }
 
 .nav-tab i {
@@ -489,7 +489,7 @@ body[data-theme="light"] .dashboard-container {
     width: 100%;
     height: 100%;
     background: rgba(12, 91, 239, 0.03);
-    border-radius: 0;
+    border-radius: var(--border-radius-none);
     opacity: 0;
     transition: opacity 0.2s ease;
     pointer-events: none;

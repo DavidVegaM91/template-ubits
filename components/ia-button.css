@@ -19,7 +19,7 @@
     justify-content: center;
     gap: var(--gap-sm);
     border: none;
-    border-radius: 1000px; /* Pill shape - completo */
+    border-radius: var(--border-radius-full); /* Pill shape - completo */
     font-family: 'Noto Sans', sans-serif;
     font-weight: 600;
     line-height: 1;
@@ -312,8 +312,8 @@
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    gap: 0;
-    padding: 0 !important;
+    gap: var(--gap-none);
+    padding: var(--padding-none) !important;
     width: 40px !important;
     height: 40px !important;
     min-width: 40px !important;
@@ -329,7 +329,7 @@
 .ubits-ia-button.ubits-ia-button--icon-only--xs,
 .ubits-ia-button--icon-only.ubits-ia-button--xs,
 .ubits-ia-button--icon-only--xs {
-    padding: 0 !important;
+    padding: var(--padding-none) !important;
     width: 28px !important;
     height: 28px !important;
     min-width: 28px !important;
@@ -353,7 +353,7 @@
 .ubits-ia-button.ubits-ia-button--icon-only--sm,
 .ubits-ia-button--icon-only.ubits-ia-button--sm,
 .ubits-ia-button--icon-only--sm {
-    padding: 0 !important;
+    padding: var(--padding-none) !important;
     width: 32px !important;
     height: 32px !important;
     min-width: 32px !important;
@@ -376,7 +376,7 @@
 
 .ubits-ia-button--icon-only--md,
 .ubits-ia-button--icon-only {
-    padding: 0 !important;
+    padding: var(--padding-none) !important;
     width: 40px !important;
     height: 40px !important;
     min-width: 40px !important;
@@ -396,7 +396,7 @@
 }
 
 .ubits-ia-button--icon-only--lg {
-    padding: 0 !important;
+    padding: var(--padding-none) !important;
     width: 48px !important;
     height: 48px !important;
     min-width: 48px !important;
@@ -425,7 +425,7 @@
     width: 10px;
     height: 10px;
     background: var(--ubits-button-badge);
-    border-radius: 1000px;
+    border-radius: var(--border-radius-full);
     z-index: 1;
 }
 

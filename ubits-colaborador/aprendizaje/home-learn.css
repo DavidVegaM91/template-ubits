@@ -93,7 +93,7 @@
 .section-triple > .widget-outstanding,
 .section-quad > .widget-outstanding,
 .widget-outstanding {
-    padding: 0 !important;
+    padding: var(--padding-none) !important;
     background: transparent !important;
 }
 

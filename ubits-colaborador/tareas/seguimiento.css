@@ -41,7 +41,7 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    padding: 0 !important;
+    padding: var(--padding-none) !important;
     width: 100%;
     background: transparent;
     border: none;
@@ -75,7 +75,7 @@
 /* Tabs: mantener en fila y sin padding dentro de la row */
 .seguimiento-tabs-row .seguimiento-tabs {
     flex-direction: row;
-    padding: 0 !important;
+    padding: var(--padding-none) !important;
 }
 
 .section-single > div {
@@ -85,7 +85,7 @@
 /* Header product (tabs + Crear): sin caja, igual que antes */
 .section-single > .widget-header-product {
     background-color: transparent !important;
-    padding: 0 !important;
+    padding: var(--padding-none) !important;
 }
 
 /* Header bar */
@@ -250,7 +250,7 @@
 .asignados-popover-list {
     display: flex;
     flex-direction: column;
-    gap: 0;
+    gap: var(--gap-none);
 }
 
 .asignados-popover-item {
@@ -295,7 +295,7 @@
     min-height: 20px;
     max-width: 120px;
     background: var(--ubits-bg-2); /* bg-gray/subtle/default #f3f3f4 */
-    border-radius: 1000px; /* Full rounded como en Figma */
+    border-radius: var(--border-radius-full); /* Full rounded como en Figma */
     font-size: 11px;
     line-height: 13px;
     font-family: 'Noto Sans', sans-serif;
@@ -343,7 +343,7 @@
     margin: 0;
     background: transparent;
     border: none;
-    border-radius: 1000px; /* Full rounded */
+    border-radius: var(--border-radius-full); /* Full rounded */
     cursor: pointer;
     color: inherit;
     transition: background-color 0.2s ease;

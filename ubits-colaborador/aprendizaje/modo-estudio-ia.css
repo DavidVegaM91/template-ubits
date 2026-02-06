@@ -90,7 +90,7 @@
 /* Widget header-product: sin fondo blanco ni padding */
 .section-single > .widget-header-product {
     background-color: transparent !important;
-    padding: 0 !important;
+    padding: var(--padding-none) !important;
 }
 
 /* Modo estudio IA: ocultar título y botón atrás del header (solo mostrar acciones).
@@ -130,7 +130,7 @@
     flex: 1 1 0;
     min-width: 0;
     width: 50%;
-    padding: 0 !important;
+    padding: var(--padding-none) !important;
     overflow: hidden;
     min-height: 0;
     background: var(--ubits-bg-1) !important;
@@ -192,7 +192,7 @@
 .section-single > .widget-chat,
 .modo-tutor-ia-chat-main .widget-chat {
     background-color: transparent !important;
-    padding: 0 !important;
+    padding: var(--padding-none) !important;
     flex: 1 1 0; /* Ocupar todo el espacio disponible */
     min-height: 0; /* Permitir que flexbox funcione */
     display: flex !important;
@@ -202,7 +202,7 @@
 /* Solo los mensajes de la IA sin fondo ni padding (burbujas transparentes y sin relleno) */
 .modo-estudio-ia-page .ubits-study-chat__text-globe--ai {
     background: transparent !important;
-    padding: 0 !important;
+    padding: var(--padding-none) !important;
 }
 
 /* Asegurar que el contenedor del chat tenga altura completa */
@@ -250,7 +250,7 @@
     }
     
     .section-single > .widget-header-product {
-        padding: 0 !important;
+        padding: var(--padding-none) !important;
     }
     
     .section-single > .widget-chat {

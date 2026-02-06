@@ -177,7 +177,7 @@
     position: relative;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: hidden;
-    border-radius: 0;
+    border-radius: var(--border-radius-none);
 }
 
 /* Nav Tab Icon */
@@ -202,7 +202,7 @@
     width: 100%;
     height: 100%;
     background: transparent;
-    border-radius: 0;
+    border-radius: var(--border-radius-none);
     opacity: 0;
     transition: opacity 0.2s ease;
     pointer-events: none;
@@ -451,7 +451,7 @@
         max-width: 100vw;
         margin-left: calc(-50vw + 50%);
         margin-right: calc(-50vw + 50%);
-        border-radius: 0;
+        border-radius: var(--border-radius-none);
     }
     
     .sub-nav.use-selector {

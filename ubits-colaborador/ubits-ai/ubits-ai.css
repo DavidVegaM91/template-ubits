@@ -111,5 +111,5 @@
 /* Widget header-product: sin fondo blanco ni padding */
 .section-single > .widget-header-product {
     background-color: transparent !important;
-    padding: 0 !important;
+    padding: var(--padding-none) !important;
 }

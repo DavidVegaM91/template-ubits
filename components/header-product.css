@@ -164,7 +164,7 @@
     gap: var(--gap-xs);
     background: var(--ubits-bg-2);
     border-radius: var(--border-radius-sm);
-    padding: 0;
+    padding: var(--padding-none);
     width: fit-content;
 }
 
@@ -224,7 +224,7 @@
         min-height: 48px !important;
         max-width: 48px !important;
         max-height: 48px !important;
-        padding: 0 !important;
+        padding: var(--padding-none) !important;
         border-radius: var(--border-radius-sm) !important; /* mismo que componente botón UBITS, no redondo */
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
@@ -236,7 +236,7 @@
     }
     /* Evitar hueco debajo de tabs: el primario es FAB (fuera del flujo), __actions no debe reservar espacio */
     .ubits-header-product__actions:has(.ubits-header-product__primary-action) {
-        padding: 0 !important;
+        padding: var(--padding-none) !important;
         margin: 0 !important;
         min-height: 0 !important;
     }
@@ -283,7 +283,7 @@
     }
     
     .ubits-header-product__actions .ubits-ia-button--secondary.ubits-ia-button--sm:not(.ubits-ia-button--icon-only) {
-        padding: 0 !important;
+        padding: var(--padding-none) !important;
         width: 32px !important;
         height: 32px !important;
         min-width: 32px !important;

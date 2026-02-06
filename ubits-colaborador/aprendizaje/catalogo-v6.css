@@ -19,7 +19,7 @@
 /* Hero de búsqueda minimalista */
 .catalog-hero {
     background: transparent;
-    padding: 0;
+    padding: var(--padding-none);
     margin-bottom: 0;
     text-align: center;
 }
@@ -318,7 +318,7 @@
     overflow-x: auto;
     overflow-y: visible;
     scroll-behavior: smooth;
-    padding: 0;
+    padding: var(--padding-none);
     -webkit-overflow-scrolling: touch;
 }
 
@@ -337,11 +337,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0;
+    gap: var(--gap-none);
     cursor: pointer;
     transition: transform 0.2s ease, border-color 0.2s ease;
     overflow: visible;
-    padding: 0;
+    padding: var(--padding-none);
     margin: 0;
     border: 1px solid transparent;
     flex: 0 0 calc((100% - (7 * 24px)) / 8);
@@ -447,7 +447,7 @@
     justify-content: center;
     flex-shrink: 0;
     overflow: hidden;
-    padding: 0;
+    padding: var(--padding-none);
 }
 
 .tipo-contenido-image img {
@@ -470,7 +470,7 @@
     overflow-x: auto;
     overflow-y: hidden;
     scroll-behavior: smooth;
-    padding: 0;
+    padding: var(--padding-none);
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -622,7 +622,7 @@
 .academia-card-spotify.variant-image-top {
     background: var(--ubits-bg-1);
     background-image: none;
-    padding: 0;
+    padding: var(--padding-none);
     aspect-ratio: auto;
     overflow: hidden;
     border-radius: var(--border-radius-md);
@@ -717,7 +717,7 @@
     display: flex;
     flex-direction: row;
     align-items: stretch;
-    gap: 0;
+    gap: var(--gap-none);
     height: 48px;
     position: relative;
     transition: border-color 0.2s ease;
@@ -812,7 +812,7 @@
 .competencia-habilidades-container {
     display: none;
     margin-top: 8px;
-    padding: 0;
+    padding: var(--padding-none);
     background: var(--ubits-bg-2);
     border-radius: 6px;
     overflow: hidden;
@@ -1024,7 +1024,7 @@
 
 @media (max-width: 480px) {
     .catalog-hero {
-        padding: 0;
+        padding: var(--padding-none);
     }
 
     .catalog-hero h1 {
