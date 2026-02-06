@@ -9,7 +9,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
+    gap: var(--gap-md);
     width: auto;
     max-width: 560px;
     z-index: 10000;
@@ -18,9 +18,9 @@
 
 .ubits-toast {
     display: flex;
-    gap: 8px; /* match alert */
+    gap: var(--gap-sm); /* match alert */
     align-items: center;
-    padding: 8px; /* match alert */
+    padding: var(--padding-sm); /* match alert */
     border-radius: 10px; /* match alert */
     position: relative; /* for pseudo border */
     font-family: 'Noto Sans', sans-serif;
@@ -55,7 +55,7 @@
 
 .ubits-toast__content {
     display: flex;
-    gap: 8px; /* match alert */
+    gap: var(--gap-sm); /* match alert */
     align-items: center;
     min-width: 0;
 }
@@ -84,7 +84,7 @@
     color: var(--ubits-fg-1-medium);
     opacity: 0.7;
     transition: opacity 0.2s ease;
-    border-radius: 4px;
+    border-radius: var(--border-radius-xs);
 }
 
 .ubits-toast__close:hover {

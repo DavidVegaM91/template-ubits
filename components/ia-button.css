@@ -17,7 +17,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: var(--gap-sm);
     border: none;
     border-radius: 1000px; /* Pill shape - completo */
     font-family: 'Noto Sans', sans-serif;
@@ -222,23 +222,23 @@
 /* Medium (default) - altura 40px (igual que ubits-button--md) */
 .ubits-ia-button.ubits-ia-button--md,
 .ubits-ia-button--md {
-    padding: 12px 16px !important;
+    padding: var(--padding-md) var(--padding-lg) !important;
     height: 40px !important;
     min-height: 40px !important;
     max-height: 40px !important;
     font-size: 16px !important;
-    gap: 8px;
+    gap: var(--gap-sm);
     box-sizing: border-box;
 }
 
 /* Base button sin clase de tamaño - por defecto md */
 .ubits-ia-button:not(.ubits-ia-button--xs):not(.ubits-ia-button--sm):not(.ubits-ia-button--md):not(.ubits-ia-button--lg) {
-    padding: 12px 16px !important;
+    padding: var(--padding-md) var(--padding-lg) !important;
     height: 40px !important;
     min-height: 40px !important;
     max-height: 40px !important;
     font-size: 16px;
-    gap: 8px;
+    gap: var(--gap-sm);
     box-sizing: border-box;
 }
 

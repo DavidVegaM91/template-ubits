@@ -6,7 +6,7 @@
 .content-sections {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: var(--gap-lg);
     flex: 1;
     min-width: 0;
     width: 100%;
@@ -39,17 +39,17 @@
 
 .section-dual {
     display: flex;
-    gap: 20px;
+    gap: var(--gap-xl);
 }
 
 .section-triple {
     display: flex;
-    gap: 20px;
+    gap: var(--gap-xl);
 }
 
 .section-quad {
     display: flex;
-    gap: 20px;
+    gap: var(--gap-xl);
 }
 
 /* Widgets en secciones - sin altura mínima forzada */
@@ -59,8 +59,8 @@
 .section-quad > div {
     background-color: var(--ubits-bg-1);
     border: none;
-    border-radius: 8px;
-    padding: 12px !important; /* !important para sobrescribir el reset */
+    border-radius: var(--border-radius-sm);
+    padding: var(--padding-md) !important; /* !important para sobrescribir el reset */
     width: 100%;
     box-sizing: border-box;
     display: flex;
@@ -100,7 +100,7 @@
     .section-triple,
     .section-quad {
         flex-direction: column;
-        gap: 16px;
+        gap: var(--gap-lg);
     }
     
     /* Ajustar widgets para móvil - sin altura mínima forzada */
@@ -119,6 +119,6 @@
     .section-dual > div,
     .section-triple > div,
     .section-quad > div {
-        padding: 12px !important; /* !important para sobrescribir el reset */
+        padding: var(--padding-md) !important; /* !important para sobrescribir el reset */
     }
 }

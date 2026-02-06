@@ -7,7 +7,7 @@
 .content-sections {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: var(--gap-2xl);
     flex: 1;
     min-width: 0;
     width: 100%;
@@ -31,7 +31,7 @@
 
 .catalog-search-wrapper {
     display: flex;
-    gap: 8px;
+    gap: var(--gap-sm);
     align-items: flex-start;
     margin-bottom: 12px;
     justify-content: center;
@@ -54,7 +54,7 @@
     transform: translateY(-50%);
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--gap-sm);
     z-index: 10;
 }
 
@@ -108,7 +108,7 @@
     right: 0;
     width: 100%;
     background: var(--ubits-bg-1);
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     max-height: 400px;
     overflow-y: auto;
@@ -123,7 +123,7 @@
 }
 
 .search-suggestion-item {
-    padding: 12px 16px;
+    padding: var(--padding-md) var(--padding-lg);
     cursor: pointer;
     transition: background-color 0.2s ease;
     border-bottom: 1px solid var(--ubits-border-1);
@@ -164,7 +164,7 @@
 
 /* Reducir padding de items para que quepan 5 items completos (igual que v6) */
 #academia-selector-container .ubits-select-option {
-    padding: 12px 16px !important; /* Igual que v6 */
+    padding: var(--padding-md) var(--padding-lg) !important; /* Igual que v6 */
     min-height: auto !important;
     height: auto !important;
     max-height: 44px !important; /* 12px + 20px + 12px = 44px por item */
@@ -179,7 +179,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
+    gap: var(--gap-md);
     margin-top: 8px;
 }
 
@@ -190,7 +190,7 @@
 
 .catalog-chips {
     display: flex;
-    gap: 8px;
+    gap: var(--gap-sm);
     overflow-x: auto;
     overflow-y: hidden;
     scroll-behavior: smooth;
@@ -211,8 +211,8 @@
 .catalog-chip {
     background: var(--ubits-bg-1);
     border: 1px solid transparent;
-    border-radius: 20px;
-    padding: 4px 8px;
+    border-radius: var(--border-radius-xl);
+    padding: var(--padding-xs) var(--padding-sm);
     cursor: pointer;
     transition: all 0.2s ease;
     color: var(--ubits-fg-1-medium);
@@ -259,14 +259,14 @@
 
 .tipos-contenido-controls {
     display: flex;
-    gap: 8px;
+    gap: var(--gap-sm);
 }
 
 /* Carrusel de tipos de contenido (nuevo - rectangular) */
 .tipos-contenido-carousel-nuevo {
     display: flex;
     flex-direction: row;
-    gap: 24px;
+    gap: var(--gap-2xl);
     overflow-x: auto;
     overflow-y: visible;
     scroll-behavior: smooth;
@@ -418,7 +418,7 @@
 .tipos-contenido-carousel-nuevo {
     display: flex;
     flex-direction: row;
-    gap: 24px;
+    gap: var(--gap-2xl);
     overflow-x: auto;
     overflow-y: hidden;
     scroll-behavior: smooth;
@@ -437,12 +437,12 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: var(--gap-sm);
     cursor: pointer;
-    padding: 16px;
+    padding: var(--padding-lg);
     background: var(--ubits-bg-1);
     border: 1px solid transparent;
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     flex: 0 0 calc((100% - (7 * 24px)) / 8);
     width: calc((100% - (7 * 24px)) / 8);
     max-width: calc((100% - (7 * 24px)) / 8);
@@ -487,7 +487,7 @@
 .academias-grid-spotify {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 16px;
+    gap: var(--gap-lg);
     margin-bottom: 24px;
 }
 
@@ -496,8 +496,8 @@
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    border-radius: 12px;
-    padding: 12px;
+    border-radius: var(--border-radius-md);
+    padding: var(--padding-md);
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
@@ -517,7 +517,7 @@
     right: 0;
     bottom: 0;
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.4) 100%);
-    border-radius: 12px;
+    border-radius: var(--border-radius-md);
     z-index: 0;
 }
 
@@ -545,7 +545,7 @@
 .academia-card-spotify-content {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: var(--gap-xs);
 }
 
 .academia-card-spotify-content p {
@@ -577,7 +577,7 @@
     padding: 0;
     aspect-ratio: auto;
     overflow: hidden;
-    border-radius: 12px;
+    border-radius: var(--border-radius-md);
     border: 1px solid transparent;
 }
 
@@ -603,11 +603,11 @@
 }
 
 .academia-card-spotify.variant-image-top .academia-card-spotify-content {
-    padding: 16px;
+    padding: var(--padding-lg);
     background: var(--ubits-bg-1);
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: var(--gap-xs);
 }
 
 .academia-card-spotify.variant-image-top .academia-card-spotify-title {
@@ -641,7 +641,7 @@
 /* Grid de competencias estilo v1 - cards horizontales */
 .competencias-grid-v1 {
     display: flex;
-    gap: 16px;
+    gap: var(--gap-lg);
     align-items: flex-start;
     overflow: visible;
 }
@@ -650,7 +650,7 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: var(--gap-lg);
 }
 
 /* Wrapper para competencia y habilidades */
@@ -682,7 +682,7 @@
 .competencia-card-v1-actions {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--gap-xs);
     padding: 0 8px;
     flex-shrink: 0;
 }
@@ -777,17 +777,17 @@
 .competencias-habilidades-grid {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: var(--gap-sm);
 }
 
 .habilidad-chip {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 4px 8px;
+    gap: var(--gap-sm);
+    padding: var(--padding-xs) var(--padding-sm);
     background: var(--ubits-bg-1);
     border: 1px solid transparent;
-    border-radius: 20px;
+    border-radius: var(--border-radius-xl);
     color: var(--ubits-fg-1-medium);
     white-space: nowrap;
     flex-shrink: 0;
@@ -928,7 +928,7 @@
 
     .academias-grid-spotify {
         grid-template-columns: repeat(3, 1fr);
-        gap: 12px;
+        gap: var(--gap-md);
     }
 
 
@@ -970,7 +970,7 @@
 
     .academias-grid-spotify {
         grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
+        gap: var(--gap-md);
     }
 }
 
@@ -997,7 +997,7 @@
     .catalog-chips-wrapper {
         flex-direction: column;
         align-items: flex-start;
-        gap: 8px;
+        gap: var(--gap-sm);
     }
 
     .catalog-chips {

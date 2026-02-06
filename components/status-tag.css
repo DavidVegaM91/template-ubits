@@ -130,7 +130,7 @@
     padding: 2px 8px;
     font-size: 10px;
     line-height: 16px;
-    gap: 4px;
+    gap: var(--gap-xs);
     height: 20px;
 }
 
@@ -160,7 +160,7 @@
     padding: 10px 12px;
     font-size: 13px;
     line-height: 16px;
-    gap: 8px;
+    gap: var(--gap-sm);
     height: 36px;
 }
 
@@ -175,7 +175,7 @@
     padding: 12px 14px;
     font-size: 14px;
     line-height: 16px;
-    gap: 8px;
+    gap: var(--gap-sm);
     height: 40px;
 }
 

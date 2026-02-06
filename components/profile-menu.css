@@ -14,7 +14,7 @@
     border-radius: 0;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     z-index: 2000;
-    padding: 8px 0;
+    padding: var(--padding-sm) 0;
 }
 
 .profile-menu.show {
@@ -25,7 +25,7 @@
 .profile-menu-item {
     display: flex;
     align-items: center;
-    padding: 12px 16px;
+    padding: var(--padding-md) var(--padding-lg);
     text-decoration: none;
     color: var(--ubits-sidebar-button-fg-default);
     transition: all 0.2s ease;

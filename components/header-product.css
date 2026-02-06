@@ -7,7 +7,7 @@
 .ubits-header-product {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: var(--gap-lg);
     width: 100%;
     min-height: auto;
     height: auto;
@@ -17,7 +17,7 @@
 /* Primera fila: Información del producto y acciones */
 .ubits-header-product__primary-row {
     display: flex;
-    gap: 16px;
+    gap: var(--gap-lg);
     align-items: center;
     width: 100%;
     flex-wrap: wrap;
@@ -27,7 +27,7 @@
 /* Información del producto (izquierda) */
 .ubits-header-product__product-info {
     display: flex;
-    gap: 12px;
+    gap: var(--gap-md);
     align-items: center;
     flex: 1;
     min-width: 0;
@@ -36,7 +36,7 @@
 /* Título del producto con icono de información */
 .ubits-header-product__product-title {
     display: flex;
-    gap: 4px;
+    gap: var(--gap-xs);
     align-items: center;
 }
 
@@ -66,18 +66,18 @@
    Ver documentación en header-product.js y header-product.html. */
 .ubits-header-product__actions {
     display: flex;
-    gap: 8px;
+    gap: var(--gap-sm);
     align-items: center;
     flex-shrink: 0;
     overflow: visible; /* Permitir que las sombras de los botones se vean completas */
-    padding: 16px; /* Espacio suficiente para que las sombras (28px blur) no se corten */
+    padding: var(--padding-lg); /* Espacio suficiente para que las sombras (28px blur) no se corten */
     margin: -16px -16px -16px auto; /* Compensar padding; left: auto = acciones siempre a la derecha */
 }
 
 /* Segunda fila: Breadcrumb */
 .ubits-header-product__secondary-row {
     display: flex;
-    gap: 12px;
+    gap: var(--gap-md);
     align-items: center;
     width: 100%;
     flex-wrap: wrap;
@@ -93,7 +93,7 @@
 /* Breadcrumb (izquierda) */
 .ubits-header-product__breadcrumb {
     display: flex;
-    gap: 8px;
+    gap: var(--gap-sm);
     align-items: center;
     flex: 1;
     min-width: 0;
@@ -101,7 +101,7 @@
 
 .ubits-header-product__breadcrumb-item {
     display: flex;
-    gap: 8px;
+    gap: var(--gap-sm);
     align-items: center;
 }
 
@@ -160,15 +160,15 @@
 
 .ubits-header-product__tabs {
     display: flex;
-    gap: 4px;
+    gap: var(--gap-xs);
     background: var(--ubits-bg-2);
-    border-radius: 8px;
-    padding: 4px;
+    border-radius: var(--border-radius-sm);
+    padding: var(--padding-xs);
     width: fit-content;
 }
 
 .ubits-header-product__tabs .ubits-tab {
-    padding: 8px 12px;
+    padding: var(--padding-sm) var(--padding-md);
 }
 
 /* Asegurar que el widget-header-product permita que las sombras se vean completas */
@@ -180,7 +180,7 @@
     overflow: visible !important;
 }
 
-/* Solo celulares (no tablets): botón primario como FAB icon-only (cuadrado, componente oficial), 16px arriba del tab bar */
+/* Solo celulares (no tablets): botón primario como FAB icon-only (cuadrado, componente oficial), arriba del tab bar */
 @media (max-width: 767px) {
     .ubits-header-product__primary-action {
         position: fixed !important;
@@ -196,7 +196,7 @@
         max-width: 48px !important;
         max-height: 48px !important;
         padding: 0 !important;
-        border-radius: 8px !important; /* mismo que componente botón UBITS, no redondo */
+        border-radius: var(--border-radius-sm) !important; /* mismo que componente botón UBITS, no redondo */
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
     .ubits-header-product__primary-action span {
@@ -204,6 +204,12 @@
     }
     .ubits-header-product__primary-action i {
         margin: 0;
+    }
+    /* Evitar hueco debajo de tabs: el primario es FAB (fuera del flujo), __actions no debe reservar espacio */
+    .ubits-header-product__actions:has(.ubits-header-product__primary-action) {
+        padding: 0 !important;
+        margin: 0 !important;
+        min-height: 0 !important;
     }
 }
 
@@ -223,7 +229,7 @@
         min-height: 32px !important;
         max-width: 32px !important;
         max-height: 32px !important;
-        border-radius: 8px !important;
+        border-radius: var(--border-radius-sm) !important;
     }
     
     /* Botón primario sm - ocultar texto y hacer icon-only (32x32px) */
@@ -239,7 +245,7 @@
         min-height: 32px !important;
         max-width: 32px !important;
         max-height: 32px !important;
-        border-radius: 8px !important;
+        border-radius: var(--border-radius-sm) !important;
     }
     
     /* Botón IA secundario sm - ocultar texto y hacer icon-only (32x32px circular) */

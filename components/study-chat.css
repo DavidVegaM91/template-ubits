@@ -6,7 +6,7 @@
 .ubits-study-chat {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: var(--gap-2xl);
     height: 100%;
     width: 100%;
     background: transparent;
@@ -21,7 +21,7 @@
 .ubits-study-chat__body {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: var(--gap-2xl);
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
@@ -54,7 +54,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 24px 0;
+    padding: var(--padding-2xl) 0;
 }
 
 .ubits-study-chat__welcome-wrapper.ubits-study-chat__welcome--hidden {
@@ -68,7 +68,7 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    gap: 12px;
+    gap: var(--gap-md);
 }
 
 .ubits-study-chat__welcome-icon {
@@ -106,7 +106,7 @@
 .ubits-study-chat__message-with-choices {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: var(--gap-md);
     width: 100%;
 }
 
@@ -114,7 +114,7 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: var(--gap-sm);
     align-items: center;
 }
 
@@ -133,7 +133,7 @@
 .study-chat-courses-container {
     display: flex;
     flex-direction: row;
-    gap: 12px;
+    gap: var(--gap-md);
     margin-bottom: 16px;
     width: 100%;
     flex-wrap: wrap;
@@ -235,7 +235,7 @@
 .ubits-study-chat__message {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: var(--gap-xs);
     width: 100%;
 }
 
@@ -252,7 +252,7 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding: 12px 16px;
+    padding: var(--padding-md) var(--padding-lg);
     word-wrap: break-word;
     position: relative;
 }
@@ -273,7 +273,7 @@
 .ubits-study-chat__text-globe--ai {
     background: var(--ubits-bg-2);
     color: var(--ubits-fg-1-high);
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     border-bottom-left-radius: 0; /* Sin radius en esquina inferior izquierda */
 }
 
@@ -281,7 +281,7 @@
 .ubits-study-chat__text-globe--user {
     background: var(--ubits-bg-3);
     color: var(--ubits-fg-1-low);
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     border-bottom-right-radius: 0;
     width: auto;
     max-width: 85%;
@@ -357,7 +357,7 @@
 /* Botones de acción en mensajes de IA */
 .ubits-study-chat__message-actions {
     display: flex;
-    gap: 4px;
+    gap: var(--gap-xs);
     align-items: center;
     margin-top: 4px;
 }
@@ -381,18 +381,18 @@
 .study-chat-resource-card {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: var(--gap-md);
     margin-top: 8px;
-    padding: 12px;
+    padding: var(--padding-md);
     background: var(--ubits-bg-2);
     border: 1px solid var(--ubits-border-1);
-    border-radius: 12px;
+    border-radius: var(--border-radius-md);
 }
 
 .study-chat-resource-card__main {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: var(--gap-md);
     flex: 1;
     min-width: 0;
 }
@@ -536,8 +536,8 @@
 .ubits-study-chat__input-container {
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
-    border-radius: 12px;
-    padding: 12px;
+    border-radius: var(--border-radius-md);
+    padding: var(--padding-md);
     display: flex;
     flex-direction: column;
     gap: 25px;
@@ -588,7 +588,7 @@
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    gap: 8px;
+    gap: var(--gap-sm);
 }
 
 /* Chips de competencias (Modo Tutor empty state) */
@@ -606,7 +606,7 @@
 
 /* Header, body y footer del panel (mismos estilos que componente modal UBITS) */
 .study-chat-canvas-header {
-    padding: 16px 20px;
+    padding: var(--padding-lg) var(--padding-xl);
     border-bottom: 1px solid var(--ubits-border-1);
     display: flex;
     justify-content: space-between;
@@ -619,18 +619,18 @@
 }
 
 .study-chat-canvas-body {
-    padding: 20px;
+    padding: var(--padding-xl);
     overflow-y: auto;
     flex: 1;
     min-height: 0;
 }
 
 .study-chat-canvas-footer {
-    padding: 16px 20px;
+    padding: var(--padding-lg) var(--padding-xl);
     border-top: 1px solid var(--ubits-border-1);
     display: flex;
     justify-content: flex-end;
-    gap: 12px;
+    gap: var(--gap-md);
 }
 
 .study-chat-canvas-quiz .study-chat-quiz-q {
@@ -640,21 +640,21 @@
 .study-chat-quiz-options {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: var(--gap-sm);
     margin-top: 8px;
 }
 
 .study-chat-quiz-opt {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--gap-sm);
     cursor: pointer;
     font-family: 'Noto Sans', sans-serif;
     font-size: 14px;
     line-height: 20px;
     color: var(--ubits-fg-1-medium);
-    padding: 8px 12px;
-    border-radius: 8px;
+    padding: var(--padding-sm) var(--padding-md);
+    border-radius: var(--border-radius-sm);
     border: 1px solid var(--ubits-border-1);
     transition: background-color 0.2s, border-color 0.2s;
 }
@@ -688,7 +688,7 @@
 .study-chat-quiz-feedback {
     margin-top: 12px;
     padding: 10px 12px;
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     font-family: 'Noto Sans', sans-serif;
     font-size: 14px;
     line-height: 20px;
@@ -758,7 +758,7 @@
     position: relative;
     width: 100%;
     height: 8px;
-    border-radius: 4px;
+    border-radius: var(--border-radius-xs);
     background: var(--ubits-bg-2);
 }
 
@@ -768,7 +768,7 @@
     top: 0;
     bottom: 0;
     width: 0;
-    border-radius: 4px;
+    border-radius: var(--border-radius-xs);
     background: var(--ubits-accent-brand);
     transition: width 0.2s ease;
 }
@@ -806,7 +806,7 @@
     align-items: center;
     gap: 6px;
     padding: 4px 10px;
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     font-family: 'Noto Sans', sans-serif;
     font-size: 13px;
     font-weight: 400;
@@ -830,7 +830,7 @@
 
 .study-chat-quiz-actions {
     display: flex;
-    gap: 12px;
+    gap: var(--gap-md);
     flex-wrap: wrap;
     align-items: center;
 }
@@ -852,7 +852,7 @@
 
 /* Pantalla de resultados del quiz (estilo Gemini) */
 .study-chat-quiz-result-screen {
-    padding: 8px 0;
+    padding: var(--padding-sm) 0;
 }
 
 .study-chat-quiz-result-title {
@@ -867,7 +867,7 @@
 .study-chat-quiz-result-cards {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: var(--gap-md);
     margin-bottom: 20px;
 }
 
@@ -880,7 +880,7 @@
     border-radius: 10px;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: var(--gap-xs);
 }
 
 .study-chat-quiz-result-card--breakdown {
@@ -961,7 +961,7 @@
 .study-chat-quiz-result-option-icon {
     width: 36px;
     height: 36px;
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     background: var(--ubits-bg-3);
     color: var(--ubits-accent-brand);
     display: flex;
@@ -986,7 +986,7 @@
 
 .study-chat-quiz-result-actions {
     display: flex;
-    gap: 8px;
+    gap: var(--gap-sm);
     justify-content: flex-end;
     flex-wrap: wrap;
 }
@@ -1048,7 +1048,7 @@
 
 .study-chat-fc-card:focus-visible {
     box-shadow: 0 0 0 2px var(--ubits-accent-brand);
-    border-radius: 12px;
+    border-radius: var(--border-radius-md);
 }
 
 .study-chat-fc-card-inner {
@@ -1069,10 +1069,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: var(--padding-xl);
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
-    border-radius: 12px;
+    border-radius: var(--border-radius-md);
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
 }
@@ -1105,7 +1105,7 @@
     flex-wrap: wrap;
     align-items: center;
     width: 100%;
-    gap: 12px;
+    gap: var(--gap-md);
 }
 
 .study-chat-fc-actions #study-chat-fc-shuffle {
@@ -1123,7 +1123,7 @@
 .study-chat-canvas-plan .study-chat-courses-container {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: var(--gap-md);
     margin-top: 12px;
 }
 
@@ -1157,7 +1157,7 @@
 .study-chat-study-plan-details {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px 20px;
+    gap: var(--gap-md) var(--gap-xl);
     margin-bottom: 16px;
 }
 
@@ -1199,7 +1199,7 @@
 /* Prioridad y Fin en una sola línea */
 .study-chat-study-plan-edit-row--dual {
     display: flex;
-    gap: 16px;
+    gap: var(--gap-lg);
     flex-wrap: wrap;
 }
 
@@ -1229,7 +1229,7 @@
 .study-chat-plan-task-title-input {
     width: 100%;
     min-width: 0;
-    padding: 4px 8px;
+    padding: var(--padding-xs) var(--padding-sm);
     border: 1px solid var(--ubits-border-1);
     border-radius: 6px;
     background: var(--ubits-bg-1);
@@ -1255,7 +1255,7 @@
 .study-chat-plan-priority-trigger {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--gap-sm);
 }
 
 .study-chat-plan-priority-menu {
@@ -1264,10 +1264,10 @@
     left: 0;
     margin-top: 4px;
     min-width: 160px;
-    padding: 4px 0;
+    padding: var(--padding-xs) 0;
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     z-index: 1000;
 }
@@ -1277,7 +1277,7 @@
     align-items: center;
     gap: 10px;
     width: 100%;
-    padding: 8px 12px;
+    padding: var(--padding-sm) var(--padding-md);
     border: none;
     background: transparent;
     color: var(--ubits-fg-1-high);
@@ -1300,7 +1300,7 @@
 .study-chat-study-plan-tasks-cards {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: var(--gap-md);
 }
 
 .study-chat-plan-add-task-wrap {
@@ -1315,13 +1315,13 @@
 
 .study-chat-plan-task-card {
     border: 1px solid var(--ubits-border-1);
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     background: var(--ubits-bg-2);
     overflow: hidden;
 }
 
 .study-chat-plan-task-card-inner {
-    padding: 12px;
+    padding: var(--padding-md);
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -1332,7 +1332,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 12px;
+    gap: var(--gap-md);
     width: 100%;
     min-width: 0;
 }
@@ -1358,7 +1358,7 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: var(--gap-xs);
 }
 
 .study-chat-plan-task-card-meta {
@@ -1375,7 +1375,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 8px;
+    gap: var(--gap-sm);
     flex-wrap: nowrap;
 }
 
@@ -1392,7 +1392,7 @@
 .study-chat-plan-task-card-actions {
     display: flex;
     flex-wrap: nowrap;
-    gap: 8px;
+    gap: var(--gap-sm);
     flex-shrink: 0;
 }
 
@@ -1403,12 +1403,12 @@
 /* Responsive */
 @media (max-width: 768px) {
     .ubits-study-chat {
-        padding: 12px;
-        gap: 16px;
+        padding: var(--padding-md);
+        gap: var(--gap-lg);
     }
 
     .study-chat-canvas-body {
-        padding: 16px;
+        padding: var(--padding-lg);
     }
     
     .ubits-study-chat__text-globe {
@@ -1416,7 +1416,7 @@
     }
     
     .ubits-study-chat__suggestions {
-        gap: 8px;
+        gap: var(--gap-sm);
     }
     
     .ubits-study-chat__suggestion-btn {

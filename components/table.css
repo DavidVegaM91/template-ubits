@@ -21,7 +21,7 @@
     border-collapse: separate;
     border-spacing: 0;
     border: 1px solid var(--ubits-border-1);
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     overflow: hidden;
 }
 
@@ -99,14 +99,14 @@
 .ubits-table__cell-progress {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--gap-sm);
 }
 
 .ubits-table__progress-bar {
     width: 60px;
     height: 8px;
     background-color: var(--ubits-bg-4-static);
-    border-radius: 4px;
+    border-radius: var(--border-radius-xs);
     overflow: hidden;
     flex-shrink: 0;
 }
@@ -114,7 +114,7 @@
 .ubits-table__progress-bar-fill {
     height: 100%;
     background-color: var(--ubits-chart-bg-neutral-blue-base);
-    border-radius: 4px;
+    border-radius: var(--border-radius-xs);
     transition: width 0.3s ease;
 }
 
@@ -122,7 +122,7 @@
 .ubits-table__cell-assignee {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--gap-sm);
     min-width: 0;
 }
 

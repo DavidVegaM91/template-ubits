@@ -13,10 +13,10 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 20px;
-    gap: 12px;
+    padding: var(--padding-xl);
+    gap: var(--gap-md);
     background-color: var(--ubits-bg-1);
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     width: 100%;
     box-sizing: border-box;
 }
@@ -29,7 +29,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: var(--gap-sm);
     width: 100%;
 }
 
@@ -39,7 +39,7 @@
 
 .ubits-empty-state__icon-container {
     background-color: var(--ubits-bg-2);
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -51,7 +51,7 @@
 .ubits-empty-state__icon-container--sm {
     width: 28px;
     height: 28px;
-    padding: 8px;
+    padding: var(--padding-sm);
 }
 
 .ubits-empty-state__icon-container--sm .ubits-empty-state__icon {
@@ -67,7 +67,7 @@
 .ubits-empty-state__icon-container--md {
     width: 32px;
     height: 32px;
-    padding: 8px;
+    padding: var(--padding-sm);
 }
 
 .ubits-empty-state__icon-container--md .ubits-empty-state__icon {
@@ -83,7 +83,7 @@
 .ubits-empty-state__icon-container--lg {
     width: 36px;
     height: 36px;
-    padding: 8px;
+    padding: var(--padding-sm);
 }
 
 .ubits-empty-state__icon-container--lg .ubits-empty-state__icon {
@@ -128,7 +128,7 @@
 
 .ubits-empty-state__footer {
     display: flex;
-    gap: 12px;
+    gap: var(--gap-md);
     align-items: center;
     justify-content: center;
     width: 100%;
@@ -141,32 +141,32 @@
 
 @media (max-width: 768px) {
     .ubits-empty-state {
-        padding: 16px;
-        gap: 12px;
+        padding: var(--padding-lg);
+        gap: var(--gap-md);
     }
 
     /* En mobile, los tamaños se mantienen iguales */
     .ubits-empty-state__icon-container--sm {
         width: 28px;
         height: 28px;
-        padding: 8px;
+        padding: var(--padding-sm);
     }
 
     .ubits-empty-state__icon-container--md {
         width: 32px;
         height: 32px;
-        padding: 8px;
+        padding: var(--padding-sm);
     }
 
     .ubits-empty-state__icon-container--lg {
         width: 36px;
         height: 36px;
-        padding: 8px;
+        padding: var(--padding-sm);
     }
 
     /* Las clases de tipografía UBITS ya manejan el responsive */
 
     .ubits-empty-state__footer {
-        gap: 8px;
+        gap: var(--gap-sm);
     }
 }

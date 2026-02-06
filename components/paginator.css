@@ -20,12 +20,12 @@
 
 .ubits-paginator {
     display: flex;
-    gap: 4px;
+    gap: var(--gap-xs);
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
     min-height: 40px;
-    padding: 8px 0;
+    padding: var(--padding-sm) 0;
     width: 100%;
     margin: 0 auto;
 }
@@ -50,7 +50,7 @@
 .ubits-paginator__items-select .ubits-input {
     background: transparent;
     border: none;
-    padding: 8px 8px 8px 12px !important; /* Padding sm para tamaño sm */
+    padding: var(--padding-sm) var(--padding-sm) var(--padding-sm) var(--padding-md) !important; /* Padding sm para tamaño sm */
     color: var(--ubits-btn-tertiary-fg);
     cursor: pointer;
     width: 140px !important;
@@ -105,8 +105,8 @@
 
 @media (max-width: 768px) {
     .ubits-paginator {
-        gap: 4px;
-        padding: 8px 0;
+        gap: var(--gap-xs);
+        padding: var(--padding-sm) 0;
     }
 }
 

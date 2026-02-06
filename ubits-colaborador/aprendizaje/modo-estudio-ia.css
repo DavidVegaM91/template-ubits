@@ -6,7 +6,7 @@
 .content-sections {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: var(--gap-lg);
     flex: 1;
     min-width: 0;
     min-height: 0; /* Permitir que flexbox funcione correctamente */
@@ -18,7 +18,7 @@
 
 /* Espaciador para alinear elementos - idéntico a left-wrapper */
 .content-sections > *:not(:last-child):not(.section-dual):not(.section-single):not(.section-triple):not(.section-quad) {
-    margin-bottom: 16px;
+    margin-bottom: var(--gap-lg);
 }
 
 /* Espaciador final - idéntico a left-wrapper */
@@ -42,17 +42,17 @@
 
 .section-dual {
     display: flex;
-    gap: 20px;
+    gap: var(--gap-xl);
 }
 
 .section-triple {
     display: flex;
-    gap: 20px;
+    gap: var(--gap-xl);
 }
 
 .section-quad {
     display: flex;
-    gap: 20px;
+    gap: var(--gap-xl);
 }
 
 /* Widgets en secciones - sin altura mínima forzada */
@@ -62,8 +62,8 @@
 .section-quad > div {
     background-color: var(--ubits-bg-1);
     border: none;
-    border-radius: 8px;
-    padding: 12px !important; /* !important para sobrescribir el reset */
+    border-radius: var(--border-radius-sm);
+    padding: var(--padding-md) !important; /* !important para sobrescribir el reset */
     width: 100%;
     box-sizing: border-box;
     display: flex;
@@ -103,7 +103,7 @@
 .modo-tutor-ia-chat-section {
     display: flex !important;
     flex-direction: row !important;
-    gap: 20px !important;
+    gap: var(--gap-xl) !important;
     flex: 1 1 0 !important;
     min-height: 0 !important;
     overflow: hidden !important;
@@ -135,7 +135,7 @@
     min-height: 0;
     background: var(--ubits-bg-1) !important;
     border: 1px solid var(--ubits-border-1);
-    border-radius: 12px;
+    border-radius: var(--border-radius-md);
     animation: tutor-panel-open 0.2s ease;
 }
 
@@ -177,7 +177,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 12px;
+    gap: var(--gap-md);
     min-height: 200px;
     text-align: center;
     color: var(--ubits-fg-1-medium);
@@ -235,7 +235,7 @@
     .section-triple,
     .section-quad {
         flex-direction: column;
-        gap: 16px;
+        gap: var(--gap-lg);
     }
 }
 
@@ -246,7 +246,7 @@
     .section-dual > div,
     .section-triple > div,
     .section-quad > div {
-        padding: 12px !important; /* !important para sobrescribir el reset */
+        padding: var(--padding-md) !important; /* !important para sobrescribir el reset */
     }
     
     .section-single > .widget-header-product {
@@ -265,7 +265,7 @@
     flex-direction: column !important;
     min-height: 0 !important;
     height: 100% !important;
-    padding-bottom: 16px !important; /* Mantener padding inferior para que no esté pegado */
+    padding-bottom: var(--padding-lg) !important; /* Mantener padding inferior para que no esté pegado */
 }
 
 .content-sections {

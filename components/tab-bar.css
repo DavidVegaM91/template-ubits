@@ -12,7 +12,7 @@
     background: var(--ubits-sidebar-bg);
     border-top: 1px solid var(--ubits-sidebar-button-fg-default);
     z-index: 1000;
-    padding: 8px 0;
+    padding: var(--padding-sm) 0;
 }
 
 .tab-bar-content {
@@ -30,8 +30,8 @@
     justify-content: center;
     cursor: pointer;
     transition: all 0.2s ease;
-    padding: 4px 8px;
-    border-radius: 8px;
+    padding: var(--padding-xs) var(--padding-sm);
+    border-radius: var(--border-radius-sm);
     min-width: 60px;
     flex: 1;
     max-width: 120px;

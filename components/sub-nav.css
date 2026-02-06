@@ -9,7 +9,7 @@
 .sub-nav {
     background-color: var(--ubits-bg-1);
     height: 40px;
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     padding: 0 12px;
     display: flex;
     align-items: center;
@@ -18,7 +18,7 @@
     max-width: 100%;
     box-sizing: border-box;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    gap: 12px;
+    gap: var(--gap-md);
     position: relative;
     z-index: 1001; /* Crear stacking context para que el dropdown esté por encima del buscador */
 }
@@ -41,7 +41,7 @@
 /* Nav Tabs Container */
 .nav-tabs {
     display: flex;
-    gap: 8px;
+    gap: var(--gap-sm);
     align-items: center;
     height: 100%;
     flex: 1;
@@ -74,7 +74,7 @@
 .hamburger-menu {
     background: none;
     border: none;
-    padding: 8px;
+    padding: var(--padding-sm);
     cursor: pointer;
     display: none; /* Oculto por defecto en desktop */
     align-items: center;
@@ -105,7 +105,7 @@
     z-index: 1002; /* Mayor que el buscador (1000) y sus sugerencias (1000) */
     display: none;
     flex-direction: column;
-    padding: 8px 0;
+    padding: var(--padding-sm) 0;
     margin-top: 4px;
 }
 
@@ -117,11 +117,11 @@
 .hamburger-item {
     background: none;
     border: none;
-    padding: 12px 16px;
+    padding: var(--padding-md) var(--padding-lg);
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: var(--gap-md);
     width: 100%;
     text-align: left;
     transition: background-color 0.2s ease;
@@ -168,11 +168,11 @@
 .nav-tab {
     background: none;
     border: none;
-    padding: 8px;
+    padding: var(--padding-sm);
     cursor: pointer;
     display: flex;
     flex-direction: row;
-    gap: 8px;
+    gap: var(--gap-sm);
     align-items: center;
     position: relative;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -270,7 +270,7 @@
 .module-name {
     display: none;
     flex-direction: column;
-    gap: 4px;
+    gap: var(--gap-xs);
     width: auto;
     align-items: flex-start;
 }
@@ -298,13 +298,13 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 8px;
+    gap: var(--gap-sm);
     padding: 9.5px 12px; /* Tamaño SM: igual que ubits-button--sm */
     height: 32px; /* Tamaño SM */
     background: var(--ubits-btn-secondary-bg-default);
     color: var(--ubits-btn-secondary-fg-default);
     border: 1px solid var(--ubits-btn-secondary-border);
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     font-family: 'Noto Sans', sans-serif;
     font-weight: 600;
     line-height: 0;
@@ -355,12 +355,12 @@
     right: 0;
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     z-index: 1000;
     max-height: 300px;
     overflow-y: auto;
-    padding: 8px 0;
+    padding: var(--padding-sm) 0;
 }
 
 .module-selector-dropdown.show {
@@ -370,8 +370,8 @@
 .module-selector-item {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
+    gap: var(--gap-md);
+    padding: var(--padding-md) var(--padding-lg);
     cursor: pointer;
     transition: background-color 0.2s ease;
     color: var(--ubits-fg-1-medium);
@@ -418,7 +418,7 @@
 .sub-nav.use-selector .nav-tabs {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: var(--gap-xs);
     width: auto;
     flex: 0 0 auto;
     align-items: flex-start;
@@ -455,7 +455,7 @@
     }
     
     .sub-nav.use-selector {
-        padding: 12px 12px;
+        padding: var(--padding-md) var(--padding-md);
         gap: 10px;
     }
     

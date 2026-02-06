@@ -7,7 +7,7 @@
 .course-card {
     background: var(--ubits-bg-1);
     border: 1px solid transparent;
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     overflow: hidden;
     transition: border-color 0.2s ease;
     cursor: pointer;
@@ -82,10 +82,10 @@
 
 /* Course Content */
 .course-content {
-    padding: 8px 16px 16px 16px;
+    padding: var(--padding-sm) var(--padding-lg) var(--padding-lg) var(--padding-lg);
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: var(--gap-sm);
 }
 
 /* Course Header */
@@ -99,7 +99,7 @@
 .course-type-status {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--gap-xs);
 }
 
 .course-type {
@@ -135,13 +135,13 @@
 .course-provider {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--gap-xs);
 }
 
 .course-provider--multiple {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--gap-xs);
 }
 
 .provider-name {
@@ -158,7 +158,7 @@
 .course-competency {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--gap-xs);
     color: var(--ubits-fg-1-medium);
 }
 
@@ -166,7 +166,7 @@
 .course-specs {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--gap-sm);
     min-width: 0; /* Permitir que el contenedor se achique */
     overflow: hidden; /* Evitar desbordamiento */
 }
@@ -174,7 +174,7 @@
 .spec-item {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--gap-xs);
     color: var(--ubits-fg-1-medium);
     flex-shrink: 1;
     min-width: 0;
@@ -234,7 +234,7 @@
     }
     
     .course-content {
-        padding: 16px;
+        padding: var(--padding-lg);
     }
 }
 

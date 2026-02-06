@@ -9,7 +9,7 @@
     position: relative;
     width: 100%;
     aspect-ratio: 21 / 9;
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     overflow: hidden;
     background: var(--ubits-bg-1);
     touch-action: pan-x pan-y pinch-zoom; /* Permitir swipe horizontal y vertical */
@@ -52,7 +52,7 @@
     width: 100%;
     height: 100%;
     z-index: 1;
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     overflow: hidden;
 }
 
@@ -84,10 +84,10 @@
     bottom: 0;
     left: 0;
     right: 0;
-    padding: 16px;
+    padding: var(--padding-lg);
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: var(--gap-sm);
     z-index: 2;
 }
 
@@ -106,7 +106,7 @@
 /* Title Section */
 .carousel-contents--hero__title-wrapper {
     display: flex;
-    gap: 8px;
+    gap: var(--gap-sm);
     align-items: flex-start;
 }
 
@@ -120,7 +120,7 @@
 /* Provider Info */
 .carousel-contents--hero__provider {
     display: flex;
-    gap: 4px;
+    gap: var(--gap-xs);
     align-items: center;
 }
 
@@ -158,7 +158,7 @@
 .carousel-contents--hero__provider--multiple {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--gap-xs);
 }
 
 .carousel-contents--hero__provider-avatars-list {
@@ -202,7 +202,7 @@
 /* Competency */
 .carousel-contents--hero__competency {
     display: flex;
-    gap: 4px;
+    gap: var(--gap-xs);
     align-items: center;
     color: var(--ubits-fg-1-high-static-inverted);
 }
@@ -228,13 +228,13 @@
 /* Specs */
 .carousel-contents--hero__specs {
     display: flex;
-    gap: 8px;
+    gap: var(--gap-sm);
     align-items: center;
 }
 
 .carousel-contents--hero__spec-item {
     display: flex;
-    gap: 4px;
+    gap: var(--gap-xs);
     align-items: center;
     color: var(--ubits-fg-1-high-static-inverted);
 }
@@ -263,7 +263,7 @@
     align-items: flex-end;
     justify-content: space-between;
     width: 100%;
-    gap: 8px;
+    gap: var(--gap-sm);
     position: relative;
 }
 
@@ -330,7 +330,7 @@
     bottom: 16px;
     right: 16px;
     display: flex;
-    gap: 8px;
+    gap: var(--gap-sm);
     align-items: center;
     z-index: 10;
     flex-shrink: 0;
@@ -351,7 +351,7 @@
     }
     
     .carousel-contents--hero__content {
-        padding: 12px;
+        padding: var(--padding-md);
     }
     
     /* Ocultar controles de navegación en mobile */
@@ -413,7 +413,7 @@
     max-width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: var(--gap-sm);
     box-sizing: border-box;
 }
 
@@ -422,7 +422,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 8px;
+    gap: var(--gap-sm);
     height: 32px;
 }
 
@@ -438,7 +438,7 @@
 
 .carousel-contents--promo-vertical__controls {
     display: flex;
-    gap: 8px;
+    gap: var(--gap-sm);
     align-items: center;
 }
 
@@ -452,7 +452,7 @@
 /* Container de cards */
 .carousel-contents--promo-vertical__cards-container {
     display: flex;
-    gap: 24px;
+    gap: var(--gap-2xl);
     align-items: center;
     overflow-x: auto;
     scroll-behavior: smooth;
@@ -472,7 +472,7 @@
     max-width: calc((100% - (3 * 24px)) / 4);
     min-width: calc((100% - (3 * 24px)) / 4);
     aspect-ratio: 3 / 4;
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     overflow: hidden;
     position: relative;
     background: var(--ubits-bg-1);
@@ -508,7 +508,7 @@
 /* Indicadores (dots) para mobile */
 .carousel-contents--promo-vertical__indicators {
     display: none;
-    gap: 8px;
+    gap: var(--gap-sm);
     align-items: center;
     justify-content: center;
     margin-top: 8px;
@@ -544,7 +544,7 @@
     }
     
     .carousel-contents--promo-vertical__cards-container {
-        gap: 24px;
+        gap: var(--gap-2xl);
     }
     
     .carousel-contents--promo-vertical__card {
@@ -575,7 +575,7 @@
     max-width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: var(--gap-sm);
     position: relative;
     box-sizing: border-box;
 }
@@ -599,7 +599,7 @@
 
 .carousel-contents--allies__controls {
     display: flex;
-    gap: 8px;
+    gap: var(--gap-sm);
     align-items: center;
 }
 
@@ -614,7 +614,7 @@
 .carousel-contents--allies__carousel {
     display: flex;
     flex-direction: row;
-    gap: 24px;
+    gap: var(--gap-2xl);
     overflow-x: auto;
     overflow-y: visible;
     scroll-behavior: smooth;
@@ -771,7 +771,7 @@
 /* Indicadores (dots) para mobile - Allies */
 .carousel-contents--allies__indicators {
     display: none;
-    gap: 8px;
+    gap: var(--gap-sm);
     align-items: center;
     justify-content: center;
     margin-top: 8px;
@@ -824,7 +824,7 @@
     max-width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: var(--gap-sm);
     box-sizing: border-box;
 }
 
@@ -833,7 +833,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 8px;
+    gap: var(--gap-sm);
     height: 32px;
 }
 
@@ -849,7 +849,7 @@
 
 .carousel-contents--content-cards__controls {
     display: flex;
-    gap: 8px;
+    gap: var(--gap-sm);
     align-items: center;
 }
 
@@ -863,7 +863,7 @@
 /* Container de cards */
 .carousel-contents--content-cards__cards-container {
     display: flex;
-    gap: 24px;
+    gap: var(--gap-2xl);
     align-items: flex-start;
     overflow-x: auto;
     scroll-behavior: smooth;
@@ -903,7 +903,7 @@
 /* Indicadores (dots) para mobile */
 .carousel-contents--content-cards__indicators {
     display: none;
-    gap: 8px;
+    gap: var(--gap-sm);
     align-items: center;
     justify-content: center;
     margin-top: 8px;
@@ -939,7 +939,7 @@
     }
     
     .carousel-contents--content-cards__cards-container {
-        gap: 24px;
+        gap: var(--gap-2xl);
     }
     
     .carousel-contents--content-cards__cards-container .course-card {
@@ -969,7 +969,7 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: var(--gap-lg);
     touch-action: pan-x pan-y pinch-zoom; /* Permitir swipe horizontal y vertical */
 }
 
@@ -1003,7 +1003,7 @@
     gap: 0;
     align-items: stretch;
     background: var(--ubits-bg-1);
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     overflow: hidden;
     width: 100%;
     max-width: 100%;
@@ -1016,9 +1016,9 @@
     width: 40%;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: var(--gap-sm);
     min-width: 0;
-    padding: 20px;
+    padding: var(--padding-xl);
     box-sizing: border-box;
     justify-content: center;
 }
@@ -1063,7 +1063,7 @@
 .carousel-contents--outstanding__provider {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--gap-xs);
 }
 
 .carousel-contents--outstanding__provider-avatar {
@@ -1101,7 +1101,7 @@
 .carousel-contents--outstanding__provider--multiple {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--gap-xs);
 }
 
 .carousel-contents--outstanding__provider-avatars-list {
@@ -1145,7 +1145,7 @@
 .carousel-contents--outstanding__competency {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--gap-xs);
     color: var(--ubits-fg-1-medium);
 }
 
@@ -1175,7 +1175,7 @@
 .carousel-contents--outstanding__specs {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--gap-sm);
     flex-wrap: wrap;
     min-width: 0;
     overflow: hidden;
@@ -1184,7 +1184,7 @@
 .carousel-contents--outstanding__spec-item {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--gap-xs);
     color: var(--ubits-fg-1-medium);
     flex-shrink: 1;
     min-width: 0;
@@ -1249,7 +1249,7 @@
     top: 16px;
     right: 16px;
     display: flex;
-    gap: 8px;
+    gap: var(--gap-sm);
     z-index: 10;
 }
 
@@ -1307,12 +1307,12 @@
     }
 
     .carousel-contents--outstanding__content {
-        gap: 8px;
-        padding: 16px;
+        gap: var(--gap-sm);
+        padding: var(--padding-lg);
     }
 
     .carousel-contents--outstanding__specs {
-        gap: 8px;
+        gap: var(--gap-sm);
     }
 
     /* Ocultar controles en mobile */
@@ -1323,7 +1323,7 @@
     /* Mostrar indicadores solo en mobile */
     .carousel-contents--outstanding__indicators {
         display: flex;
-        gap: 8px;
+        gap: var(--gap-sm);
         align-items: center;
         justify-content: center;
         margin-top: 8px;

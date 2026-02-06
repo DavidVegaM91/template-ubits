@@ -7,7 +7,7 @@
 .content-sections {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: var(--gap-2xl);
     flex: 1;
     min-width: 0;
     width: 100%;
@@ -41,17 +41,17 @@
 
 .section-dual {
     display: flex;
-    gap: 20px;
+    gap: var(--gap-xl);
 }
 
 .section-triple {
     display: flex;
-    gap: 20px;
+    gap: var(--gap-xl);
 }
 
 .section-quad {
     display: flex;
-    gap: 20px;
+    gap: var(--gap-xl);
 }
 
 /* Widgets en secciones - sin altura mínima forzada */
@@ -61,8 +61,8 @@
 .section-quad > div {
     background-color: var(--ubits-bg-1);
     border: none;
-    border-radius: 8px;
-    padding: 12px !important;
+    border-radius: var(--border-radius-sm);
+    padding: var(--padding-md) !important;
     width: 100%;
     box-sizing: border-box;
     display: flex;
@@ -126,7 +126,7 @@
     .section-triple,
     .section-quad {
         flex-direction: column;
-        gap: 16px;
+        gap: var(--gap-lg);
     }
 }
 
@@ -135,7 +135,7 @@
     .section-dual > div,
     .section-triple > div,
     .section-quad > div {
-        padding: 12px !important;
+        padding: var(--padding-md) !important;
     }
 }
 
@@ -153,7 +153,7 @@
 
 .catalog-search-wrapper-v2 {
     display: flex;
-    gap: 8px;
+    gap: var(--gap-sm);
     align-items: flex-start;
     justify-content: center;
     max-width: 600px;
@@ -193,7 +193,7 @@ body.search-overlay-active .catalog-search-container-v2 {
 
 body.search-overlay-active .catalog-search-container-v2 .ubits-input-wrapper {
     box-shadow: 0 0 0 2px var(--ubits-accent-brand) !important;
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     background: var(--ubits-bg-1) !important;
     z-index: 999999 !important;
     position: relative;
@@ -236,7 +236,7 @@ body.search-overlay-active .catalog-search-container-v2 .ubits-input-wrapper * {
 
 .catalog-search-container-v2-overlay .ubits-input-wrapper {
     box-shadow: 0 0 0 2px var(--ubits-accent-brand) !important;
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     background: var(--ubits-bg-1) !important;
     z-index: 1;
     position: relative;
@@ -268,7 +268,7 @@ body.search-overlay-active .catalog-search-container-v2 .ubits-input-wrapper * {
     right: 0;
     width: 100%;
     background: var(--ubits-bg-1);
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     max-height: 400px;
     overflow-y: auto;
@@ -295,7 +295,7 @@ body.search-overlay-active .tipos-contenido-section-wrapper {
 }
 
 .search-suggestion-item {
-    padding: 12px 16px;
+    padding: var(--padding-md) var(--padding-lg);
     cursor: pointer;
     transition: background-color 0.2s ease;
     border-bottom: 1px solid var(--ubits-border-1);
@@ -456,7 +456,7 @@ body.search-overlay-active .search-close-button {
     z-index: 1001 !important;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 20px 20px 40px;
+    padding: var(--padding-xl) var(--padding-xl) var(--padding-6xl);
     opacity: 0;
     visibility: hidden;
     transform: translateY(-20px);
@@ -582,14 +582,14 @@ body.search-overlay-active .catalog-search-container-v2 .ubits-input-wrapper i {
 
 .tipos-contenido-controls {
     display: flex;
-    gap: 8px;
+    gap: var(--gap-sm);
 }
 
 /* Carrusel de tipos de contenido */
 .tipos-contenido-carousel {
     display: flex;
     flex-direction: row;
-    gap: 24px;
+    gap: var(--gap-2xl);
     overflow-x: auto;
     overflow-y: visible;
     scroll-behavior: smooth;
@@ -739,7 +739,7 @@ body.search-overlay-active .catalog-search-container-v2 .ubits-input-wrapper i {
 .tipos-contenido-carousel-nuevo {
     display: flex;
     flex-direction: row;
-    gap: 24px;
+    gap: var(--gap-2xl);
     overflow-x: auto;
     overflow-y: hidden;
     scroll-behavior: smooth;
@@ -761,12 +761,12 @@ body.search-overlay-active .catalog-search-container-v2 .ubits-input-wrapper i {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: var(--gap-sm);
     cursor: pointer;
-    padding: 16px;
+    padding: var(--padding-lg);
     background: var(--ubits-bg-1);
     border: 1px solid transparent;
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     flex: 0 0 calc((100% - (7 * 24px)) / 8);
     width: calc((100% - (7 * 24px)) / 8);
     max-width: calc((100% - (7 * 24px)) / 8);
@@ -811,7 +811,7 @@ body.search-overlay-active .catalog-search-container-v2 .ubits-input-wrapper i {
 .academias-grid-spotify {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 16px;
+    gap: var(--gap-lg);
     margin-bottom: 24px;
     width: 100%;
     box-sizing: border-box;
@@ -821,8 +821,8 @@ body.search-overlay-active .catalog-search-container-v2 .ubits-input-wrapper i {
 .academia-card-spotify {
     background: var(--ubits-bg-1);
     border: 1px solid transparent;
-    border-radius: 8px;
-    padding: 12px 16px;
+    border-radius: var(--border-radius-sm);
+    padding: var(--padding-md) var(--padding-lg);
     cursor: pointer;
     transition: border-color 0.2s ease;
     display: flex;
@@ -845,7 +845,7 @@ body.search-overlay-active .catalog-search-container-v2 .ubits-input-wrapper i {
 .academia-card-spotify-content {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: var(--gap-xs);
 }
 
 .academia-card-spotify-content p {
@@ -879,7 +879,7 @@ body.search-overlay-active .catalog-search-container-v2 .ubits-input-wrapper i {
 /* Grid de competencias estilo v1 - cards horizontales */
 .competencias-grid-v1 {
     display: flex;
-    gap: 16px;
+    gap: var(--gap-lg);
     align-items: flex-start;
     overflow: visible;
 }
@@ -888,7 +888,7 @@ body.search-overlay-active .catalog-search-container-v2 .ubits-input-wrapper i {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: var(--gap-lg);
 }
 
 /* Wrapper para competencia y habilidades */
@@ -919,7 +919,7 @@ body.search-overlay-active .catalog-search-container-v2 .ubits-input-wrapper i {
 .competencia-card-v1-actions {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--gap-xs);
     padding: 0 8px;
     flex-shrink: 0;
 }
@@ -1022,17 +1022,17 @@ body.search-overlay-active .catalog-search-container-v2 .ubits-input-wrapper i {
 .competencias-habilidades-grid {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: var(--gap-sm);
 }
 
 .habilidad-chip {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 4px 8px;
+    gap: var(--gap-sm);
+    padding: var(--padding-xs) var(--padding-sm);
     background: var(--ubits-bg-1);
     border: 1px solid transparent;
-    border-radius: 20px;
+    border-radius: var(--border-radius-xl);
     color: var(--ubits-fg-1-medium);
     white-space: nowrap;
     flex-shrink: 0;
@@ -1283,7 +1283,7 @@ body.search-overlay-active .catalog-search-container-v2 .ubits-input-wrapper i {
 
     .academias-grid-spotify {
         grid-template-columns: repeat(3, 1fr);
-        gap: 12px;
+        gap: var(--gap-md);
     }
 
     .competencia-card-v1-image {
@@ -1310,7 +1310,7 @@ body.search-overlay-active .catalog-search-container-v2 .ubits-input-wrapper i {
 
     .academias-grid-spotify {
         grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
+        gap: var(--gap-md);
     }
 
     .competencias-grid-v1 {

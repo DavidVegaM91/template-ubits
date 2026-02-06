@@ -1,6 +1,7 @@
 /* ========================================
    Seguimiento - Vista líder (TASK_VIEW_SCOPE_LEADER)
    Reutiliza estilos de seguimiento.css.
+   Los tokens de espaciado (gap, padding, border-radius) se aplican vía seguimiento.css.
    Añade aquí solo overrides específicos de la vista líder si los necesitas.
    ======================================== */
 @import url('./seguimiento.css');

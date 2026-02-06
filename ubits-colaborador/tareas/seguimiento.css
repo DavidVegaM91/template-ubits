@@ -6,7 +6,7 @@
 .content-sections {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: var(--gap-lg);
     flex: 1;
     min-width: 0;
     width: 100%;
@@ -15,7 +15,7 @@
 }
 
 .content-sections > *:not(:last-child):not(.section-dual):not(.section-single):not(.section-triple):not(.section-quad) {
-    margin-bottom: 16px;
+    margin-bottom: var(--gap-lg);
 }
 
 .content-sections::after {
@@ -49,9 +49,9 @@
 
 .seguimiento-tabs-wrapper .seguimiento-tabs {
     display: flex;
-    gap: 4px;
+    gap: var(--gap-xs);
     background: var(--ubits-bg-2);
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     width: fit-content;
 }
 
@@ -64,8 +64,8 @@
 .section-dual > div {
     background-color: var(--ubits-bg-1);
     border: none;
-    border-radius: 8px;
-    padding: 12px !important;
+    border-radius: var(--border-radius-sm);
+    padding: var(--padding-md) !important;
     width: 100%;
     box-sizing: border-box;
     display: flex;
@@ -92,7 +92,7 @@
 .widget-header-seguimiento {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: var(--gap-md);
 }
 
 .seguimiento-header-bar {
@@ -100,13 +100,13 @@
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: var(--gap-md);
 }
 
 .seguimiento-header-left {
     display: flex;
     align-items: baseline;
-    gap: 12px;
+    gap: var(--gap-md);
 }
 
 .seguimiento-header-left h1 {
@@ -121,7 +121,7 @@
 .seguimiento-header-right {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--gap-sm);
 }
 
 /* Action bar (visible cuando hay selección) */
@@ -130,8 +130,8 @@
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 12px;
-    padding: 12px 0;
+    gap: var(--gap-md);
+    padding: var(--padding-md) 0;
 }
 
 .widget-action-bar-seguimiento.is-visible {
@@ -141,12 +141,12 @@
 .seguimiento-action-buttons {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--gap-sm);
 }
 
 /* Alert experiencia desktop */
 .seguimiento-alert-experiencia {
-    margin-bottom: 12px;
+    margin-bottom: var(--gap-md);
 }
 
 /* Tabla: usa componente UBITS (components/table.css). Solo layout del widget. */
@@ -163,7 +163,7 @@
 .seguimiento-search-inline {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--gap-sm);
 }
 
 /* Overlay fecha personalizada (usa componente ubits-modal-overlay) */
@@ -197,22 +197,22 @@
     min-width: 220px;
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
     z-index: 1001;
-    padding: 12px;
+    padding: var(--padding-md);
 }
 
 .columns-menu-list {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: var(--gap-sm);
 }
 
 .columns-menu-option {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--gap-sm);
     cursor: pointer;
 }
 
@@ -241,10 +241,10 @@
     overflow-y: auto;
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
     z-index: 1001;
-    padding: 8px 0;
+    padding: var(--padding-sm) 0;
 }
 
 .asignados-popover-list {
@@ -257,7 +257,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 8px 12px;
+    padding: var(--padding-sm) var(--padding-md);
     color: var(--ubits-fg-1-medium);
 }
 
@@ -276,21 +276,21 @@
 .widget-filtros-aplicados {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: var(--gap-md);
     flex-wrap: wrap;
 }
 
 .filtros-chips-container {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--gap-xs);
     flex-wrap: wrap;
 }
 
 .filtro-chip {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--gap-xs);
     padding: 0 8px;
     min-height: 20px;
     max-width: 120px;
@@ -339,7 +339,7 @@
     height: 20px;
     min-width: 20px;
     min-height: 20px;
-    padding: 4px;
+    padding: var(--padding-xs);
     margin: 0;
     background: transparent;
     border: none;
@@ -371,7 +371,7 @@
 /* Empty State */
 #seguimiento-empty-state {
     width: 100%;
-    padding: 40px 20px;
+    padding: var(--padding-6xl) var(--padding-xl);
 }
 
 /* Columnas con ordenamiento */
@@ -418,10 +418,10 @@
     max-width: 306px;
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
     z-index: 1001;
-    padding: 12px;
+    padding: var(--padding-md);
     overflow: visible; /* Permitir que el dropdown se muestre fuera del menú */
 }
 
@@ -481,8 +481,8 @@
 .seguimiento-filter-option {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 8px 0;
+    gap: var(--gap-sm);
+    padding: var(--padding-sm) 0;
     cursor: pointer;
     border-bottom: 1px solid var(--ubits-border-1);
     transition: background-color 0.2s ease;
@@ -521,7 +521,7 @@
 
 .filter-menu-footer {
     display: flex;
-    gap: 8px;
+    gap: var(--gap-sm);
     justify-content: flex-end;
 }
 
@@ -540,22 +540,22 @@
     min-width: 180px;
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
     z-index: 1001;
-    padding: 12px;
+    padding: var(--padding-md);
 }
 
 .checkbox-menu-options {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: var(--gap-sm);
 }
 
 .checkbox-menu-option {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--gap-sm);
     cursor: pointer;
 }
 
@@ -588,13 +588,13 @@
 .filtros-checkbox-list {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: var(--gap-sm);
 }
 
 .filtros-checkbox-option {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--gap-sm);
     cursor: pointer;
 }
 
@@ -609,13 +609,13 @@
 .filtros-radio-list {
     display: flex;
     flex-wrap: wrap;
-    gap: 16px;
+    gap: var(--gap-lg);
 }
 
 .filtros-radio-option {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--gap-sm);
     cursor: pointer;
 }
 
@@ -629,7 +629,7 @@
 .filtros-group-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 16px;
+    gap: var(--gap-lg);
 }
 
 .filtros-date-field,
@@ -653,16 +653,16 @@
     min-width: 200px;
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
     z-index: 1001;
-    padding: 8px;
+    padding: var(--padding-sm);
 }
 
 .sort-menu-options {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: var(--gap-xs);
 }
 
 .sort-menu-option {
@@ -730,17 +730,17 @@
     min-width: 160px;
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
     z-index: 1001;
-    padding: 8px;
+    padding: var(--padding-sm);
 }
 
 .priority-menu-options,
 .status-menu-options {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: var(--gap-xs);
 }
 
 .priority-menu-option,
@@ -775,10 +775,10 @@
     min-width: 300px;
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
     z-index: 1001;
-    padding: 12px;
+    padding: var(--padding-md);
 }
 
 .reasignar-menu-content {
@@ -788,7 +788,7 @@
 .reasignar-menu-footer {
     display: flex;
     justify-content: flex-end;
-    gap: 8px;
+    gap: var(--gap-sm);
     padding-top: 8px;
     border-top: 1px solid var(--ubits-border-1);
 }
@@ -808,10 +808,10 @@
     min-width: 300px;
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
     z-index: 1001;
-    padding: 12px;
+    padding: var(--padding-md);
 }
 
 .anadir-colaborador-content {
@@ -821,7 +821,7 @@
 .anadir-colaborador-footer {
     display: flex;
     justify-content: flex-end;
-    gap: 8px;
+    gap: var(--gap-sm);
     padding-top: 8px;
     border-top: 1px solid var(--ubits-border-1);
 }
@@ -841,16 +841,16 @@
     min-width: 200px;
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
     z-index: 1001;
-    padding: 8px;
+    padding: var(--padding-sm);
 }
 
 .periodo-menu-options {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: var(--gap-xs);
 }
 
 .periodo-menu-option {
@@ -910,7 +910,7 @@
     }
 
     .widget-action-bar-seguimiento .ubits-button {
-        padding: 8px;
+        padding: var(--padding-sm);
     }
 
     /* Menús flotantes */
@@ -928,12 +928,12 @@
 
 @media (max-width: 480px) {
     .section-single > div {
-        padding: 12px !important;
+        padding: var(--padding-md) !important;
     }
 
     .seguimiento-header-left {
         flex-direction: column;
-        gap: 4px;
+        gap: var(--gap-xs);
         align-items: flex-start;
     }
 }
@@ -945,7 +945,7 @@
 .widget-indicadores-seguimiento {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
+    gap: var(--gap-sm);
     margin-top: 8px;
 }
 
@@ -953,7 +953,7 @@
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
     border-radius: 6px;
-    padding: 8px 12px;
+    padding: var(--padding-sm) var(--padding-md);
     display: flex;
     align-items: center;
     gap: 10px;
@@ -1053,7 +1053,7 @@
     left: 50%;
     transform: translate(-50%, -50%);
     background: var(--ubits-bg-1);
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     z-index: 1001;
     width: 320px;
     max-height: 90vh;
@@ -1063,7 +1063,7 @@
 }
 
 .date-picker-modal-header {
-    padding: 16px 20px;
+    padding: var(--padding-lg) var(--padding-xl);
     border-bottom: 1px solid var(--ubits-border-1);
     display: flex;
     justify-content: space-between;
@@ -1076,18 +1076,18 @@
 }
 
 .date-picker-modal-body {
-    padding: 20px;
+    padding: var(--padding-xl);
     overflow-y: auto;
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: var(--gap-xl);
 }
 
 .date-picker-inputs {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: var(--gap-md);
 }
 
 .date-picker-input-group {
@@ -1144,19 +1144,19 @@
 .date-picker-calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 4px;
+    gap: var(--gap-xs);
 }
 
 .date-picker-calendar-header {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 4px;
+    gap: var(--gap-xs);
     margin-bottom: 8px;
 }
 
 .date-picker-calendar-day-header {
     text-align: center;
-    padding: 8px;
+    padding: var(--padding-sm);
     font-size: 12px;
     font-weight: 600;
     color: var(--ubits-fg-1-medium);
@@ -1237,11 +1237,11 @@
 }
 
 .date-picker-modal-footer {
-    padding: 16px 20px;
+    padding: var(--padding-lg) var(--padding-xl);
     border-top: 1px solid var(--ubits-border-1);
     display: flex;
     justify-content: flex-end;
-    gap: 12px;
+    gap: var(--gap-md);
 }
 
 /* Responsive */
@@ -1252,8 +1252,8 @@
     }
 
     .date-picker-modal-body {
-        padding: 16px;
-        gap: 16px;
+        padding: var(--padding-lg);
+        gap: var(--gap-lg);
     }
 
     .date-picker-inputs {

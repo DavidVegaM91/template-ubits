@@ -12,10 +12,10 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    padding: 12px 16px;
+    gap: var(--gap-sm);
+    padding: var(--padding-md) var(--padding-lg);
     border: none;
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     font-family: 'Noto Sans', sans-serif;
     font-weight: 600;
     line-height: 1;
@@ -86,7 +86,7 @@
     right: 0;
     bottom: 0;
     border: 1px solid var(--ubits-border-disabled-button);
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     pointer-events: none;
 }
 
@@ -292,7 +292,7 @@
 
 /* Icon Only Button - Base (sin restricciones de tamaño) */
 .ubits-button--icon-only {
-    padding: 12px;
+    padding: var(--padding-md);
 }
 
 /* ========================================
@@ -315,7 +315,7 @@
 
 /* Medium (default) Icon Only */
 .ubits-button.ubits-button--icon-only {
-    padding: 12px;
+    padding: var(--padding-md);
     width: 40px;
     height: 40px;
 }

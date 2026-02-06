@@ -7,7 +7,7 @@
 .course-card-compact {
     background: var(--ubits-bg-1);
     border: 1px solid transparent;
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     overflow: hidden;
     transition: border-color 0.2s ease;
     cursor: pointer;
@@ -25,15 +25,15 @@
 .course-card-compact-inner {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    padding: 8px;
+    gap: var(--gap-sm);
+    padding: var(--padding-sm);
 }
 
 /* Course Header Compact - Imagen y título en la parte superior */
 .course-header-compact-wrapper {
     display: flex;
     flex-direction: row;
-    gap: 12px;
+    gap: var(--gap-md);
     align-items: center;
 }
 
@@ -127,7 +127,7 @@
 .course-content-compact {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: var(--gap-xs);
     min-width: 0;
 }
 
@@ -142,7 +142,7 @@
 .course-type-status-compact {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--gap-xs);
 }
 
 .course-type-compact {
@@ -167,7 +167,7 @@
 .course-provider-compact {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--gap-xs);
 }
 
 .provider-avatar-compact {
@@ -204,7 +204,7 @@
 .course-provider-compact--multiple {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--gap-xs);
 }
 
 .provider-avatars-list-compact {
@@ -248,7 +248,7 @@
 .course-specs-compact {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--gap-sm);
     min-width: 0;
     overflow: hidden;
 }
@@ -256,7 +256,7 @@
 .spec-item-compact {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--gap-xs);
     color: var(--ubits-fg-1-medium);
     flex-shrink: 1;
     min-width: 0;
@@ -297,7 +297,7 @@
     }
     
     .course-card-compact-inner {
-        gap: 8px;
-        padding: 8px;
+        gap: var(--gap-sm);
+        padding: var(--padding-sm);
     }
 }

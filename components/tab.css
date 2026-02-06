@@ -12,10 +12,10 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 4px;
-    padding: 12px;
+    gap: var(--gap-xs);
+    padding: var(--padding-md);
     border: none;
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     font-family: 'Noto Sans', sans-serif;
     font-weight: 600;
     line-height: 1;
@@ -144,7 +144,7 @@
 /* Medium (default) - usa ubits-body-sm-semibold */
 .ubits-tab {
     height: 40px;
-    padding: 12px;
+    padding: var(--padding-md);
     /* Hereda de ubits-body-sm-semibold: 13px, weight 600, line-height 19.5px */
 }
 
@@ -162,7 +162,7 @@
 
 /* Medium (default) Icon Only */
 .ubits-tab.ubits-tab--icon-only {
-    padding: 12px;
+    padding: var(--padding-md);
     width: 40px;
     height: 40px;
 }
@@ -316,7 +316,7 @@
     
     .ubits-tab--lg {
         font-size: 18px;
-        padding: 12px 16px;
+        padding: var(--padding-md) var(--padding-lg);
     }
 }
 

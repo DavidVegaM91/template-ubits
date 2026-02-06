@@ -470,7 +470,7 @@ ubits-colaborador/
 .widget-estadisticas {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
+    gap: var(--gap-lg);
 }
 
 @media (max-width: 1023px) {
@@ -642,6 +642,33 @@ line-height: [appropriate line-height];
 ```
 
 **CRITICAL:** FontAwesome is REQUIRED for all components with icons. Without it, icons won't render.
+
+### 3.1. UBITS SPACING TOKENS (Gap, Padding, Border-Radius, Size)
+Los tokens de espaciado viven en `general-styles/ubits-spacing-tokens.css` y se cargan vía `styles.css`. **Usar estos tokens en lugar de valores fijos** para gaps, padding, border-radius y tamaños cuando el valor coincida con la escala.
+
+**Escala base (--space-1 a --space-10):** 4, 8, 12, 16, 20, 24, 28, 32, 36, 40 px.
+
+**Cuándo usar cada familia:**
+- **Gap** (`--gap-xs` … `--gap-5xl`): `gap`, `margin` entre elementos, espaciado entre ítems en flex/grid.
+- **Padding** (`--padding-xs` … `--padding-6xl`): `padding` en contenedores, botones, cards.
+- **Border radius** (`--border-radius-xs` … `--border-radius-xl`): `border-radius`.
+- **Size** (`--size-xs` … `--size-6xl`): anchos/alturas fijas (iconos, avatares, etc.) cuando coincidan con la escala.
+
+**Mapeo rápido:** 4→xs, 8→sm, 12→md, 16→lg, 20→xl, 24→2xl, 28→3xl, 32→4xl, 36→5xl, 40→6xl (solo padding/size).
+
+```css
+/* ✅ Preferir tokens cuando el valor esté en la escala */
+gap: var(--gap-lg);
+padding: var(--padding-md);
+border-radius: var(--border-radius-sm);
+
+/* ❌ Evitar valores fijos que estén en la escala */
+gap: 16px;
+padding: 12px;
+border-radius: 8px;
+```
+
+Valores que **no** están en la escala (ej. 2px, 6px, 10px, 22px) se dejan en px o se documentan si se amplía la escala.
 
 ### 4. ALWAYS USE UBITS BORDERS
 ```css

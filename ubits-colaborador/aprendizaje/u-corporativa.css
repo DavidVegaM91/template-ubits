@@ -6,7 +6,7 @@
 .content-sections {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: var(--gap-2xl);
     flex: 1;
     min-width: 0;
     width: 100%;
@@ -35,7 +35,7 @@
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     overflow: hidden;
     background: var(--ubits-bg-1);
     border-left: 4px solid var(--ubits-accent-brand);
@@ -47,10 +47,10 @@
 
 .encabezado-content {
     flex: 0 0 50%;
-    padding: 24px;
+    padding: var(--padding-2xl);
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: var(--gap-lg);
     justify-content: center;
     background: var(--ubits-bg-1);
     order: 1;
@@ -99,7 +99,7 @@
 .widget-buscador-filtros {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: var(--gap-2xl);
     width: 100%;
 }
 
@@ -112,7 +112,7 @@
 
 .buscador-title-container {
     display: flex;
-    gap: 8px;
+    gap: var(--gap-sm);
     align-items: center;
     flex: 0 0 auto;
 }
@@ -128,7 +128,7 @@
 
 .buscador-results {
     display: flex;
-    gap: 4px;
+    gap: var(--gap-xs);
     align-items: center;
 }
 
@@ -150,7 +150,7 @@
 
 .buscador-actions {
     display: flex;
-    gap: 8px;
+    gap: var(--gap-sm);
     align-items: center;
     flex: 0 0 auto;
 }
@@ -187,14 +187,14 @@
 .widget-grid-cursos-propios {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: var(--gap-2xl);
     width: 100%;
 }
 
 .grid-cards-container {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 24px;
+    gap: var(--gap-2xl);
 }
 
 /* Empty state ocupa todo el ancho */
@@ -205,7 +205,7 @@
 /* Asegurar que el componente empty state mantenga sus gaps y paddings */
 #empty-state-no-results.ubits-empty-state {
     display: flex !important; /* Forzar flex para que gap funcione */
-    padding: 20px !important;
+    padding: var(--padding-xl) !important;
     gap: 12px !important;
 }
 
@@ -232,7 +232,7 @@
 /* Responsive: Tablet y Mobile */
 @media (max-width: 1023px) {
     .content-sections {
-        gap: 16px;
+        gap: var(--gap-lg);
     }
 
     .widget-encabezado-universidad {
@@ -246,7 +246,7 @@
         order: 2;
         width: 100%;
         box-sizing: border-box;
-        padding: 16px;
+        padding: var(--padding-lg);
         background: var(--ubits-bg-1);
     }
 
@@ -261,7 +261,7 @@
     .buscador-header {
         flex-direction: column;
         align-items: flex-start;
-        gap: 16px;
+        gap: var(--gap-lg);
     }
     
     .buscador-title-container {
@@ -275,7 +275,7 @@
 
     .grid-cards-container {
         grid-template-columns: repeat(2, 1fr);
-        gap: 16px;
+        gap: var(--gap-lg);
     }
 }
 
@@ -291,7 +291,7 @@
     }
 
     .encabezado-content {
-        padding: 12px;
+        padding: var(--padding-md);
         min-height: auto;
         height: auto;
     }
