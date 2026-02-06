@@ -217,6 +217,43 @@
                             </div>
                         </div>
 
+                        <!-- Botones en encabezados de columna -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-sliders" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Botones en encabezados de columna
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                Las columnas pueden incluir botones de acción en el <code>th</code>. Según el tipo de acción, se debe usar un icono u otro para que la persona entienda qué opciones va a encontrar al hacer clic:
+                            </p>
+                            <div style="display: grid; gap: 16px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: flex-start; gap: 16px; padding: 16px; background: var(--ubits-bg-2); border-radius: 12px; border: 1px solid var(--ubits-border-1);">
+                                    <span style="flex-shrink: 0; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: var(--ubits-bg-1); border-radius: 8px;"><i class="far fa-filter" style="color: var(--ubits-accent-brand); font-size: 1.25rem;"></i></span>
+                                    <div>
+                                        <div class="ubits-body-md-bold" style="margin-bottom: 4px; color: var(--ubits-fg-1-high);">Filtros</div>
+                                        <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Cuando el botón abre opciones de filtrado (por valor, checkboxes, etc.), usar el icono <code>fa-filter</code>.</div>
+                                    </div>
+                                </div>
+                                <div style="display: flex; align-items: flex-start; gap: 16px; padding: 16px; background: var(--ubits-bg-2); border-radius: 12px; border: 1px solid var(--ubits-border-1);">
+                                    <span style="flex-shrink: 0; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: var(--ubits-bg-1); border-radius: 8px;"><i class="far fa-ellipsis" style="color: var(--ubits-accent-brand); font-size: 1.25rem;"></i></span>
+                                    <div>
+                                        <div class="ubits-body-md-bold" style="margin-bottom: 4px; color: var(--ubits-fg-1-high);">Organización</div>
+                                        <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Cuando el botón abre un menú con varias opciones de organización (no solo orden), usar el icono <code>fa-ellipsis</code> (tres puntos).</div>
+                                    </div>
+                                </div>
+                                <div style="display: flex; align-items: flex-start; gap: 16px; padding: 16px; background: var(--ubits-bg-2); border-radius: 12px; border: 1px solid var(--ubits-border-1);">
+                                    <span style="flex-shrink: 0; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: var(--ubits-bg-1); border-radius: 8px;"><i class="far fa-arrow-up-arrow-down" style="color: var(--ubits-accent-brand); font-size: 1.25rem;"></i></span>
+                                    <div>
+                                        <div class="ubits-body-md-bold" style="margin-bottom: 4px; color: var(--ubits-fg-1-high);">Orden</div>
+                                        <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Cuando el botón solo abre opciones de orden (más reciente primero / al final, etc.), usar el icono <code>fa-arrow-up-arrow-down</code>. Es más intuitivo que los tres puntos para este caso.</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="ubits-body-sm-regular" style="padding: 12px 16px; background: var(--ubits-bg-2); border-radius: 8px; border-left: 4px solid var(--ubits-accent-brand); color: var(--ubits-fg-1-medium);">
+                                <strong>Nota:</strong> Un mismo encabezado puede tener hasta 2 botones de acción (por ejemplo, filtro + orden). No está limitado a un solo botón por columna.
+                            </p>
+                        </div>
+
                         <!-- Prompts útiles -->
                         <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
                             <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
@@ -343,7 +380,13 @@ Tipos de celda (contenido dentro de td):
 .ubits-table__cell-status      /* Contenedor para ubits-status-tag */
 .ubits-table__cell-priority    /* Icono + texto prioridad */
 
-data-col en th/td: opcional, para anchos por columna (nombre, asignado, plan, creador, id, avance, estado, prioridad, comentarios, fechaCreacion, fechaFinalizacion).</code></pre>
+data-col en th/td: opcional, para anchos por columna (nombre, asignado, plan, creador, id, avance, estado, prioridad, comentarios, fechaCreacion, fechaFinalizacion).
+
+Botones de acción en th (icono según tipo de acción):
+• Filtros: fa-filter
+• Organización (varias opciones): fa-ellipsis
+• Orden (solo ordenar): fa-arrow-up-arrow-down
+Un mismo th puede tener hasta 2 botones (ej. filtro + orden).</code></pre>
                                     </div>
                                 </div>
                                 <div style="padding: 32px;">

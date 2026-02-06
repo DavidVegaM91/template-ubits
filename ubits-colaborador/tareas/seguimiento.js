@@ -250,13 +250,15 @@
             } else if (col === 'prioridad' && activeTab === 'tareas') {
                 html += `<th class="seguimiento-th-filterable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-checkbox-btn" data-checkbox="prioridad" aria-label="Filtrar por prioridad"><i class="far fa-filter"></i></button></th>`;
             } else if ((col === 'fechaCreacion' || col === 'fechaFinalizacion') && (activeTab === 'tareas' || activeTab === 'planes')) {
-                html += `<th class="seguimiento-th-sortable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-date-sort-btn" data-sort="${col}" aria-label="Ordenar por ${label}"><i class="far fa-ellipsis"></i></button></th>`;
+                html += `<th class="seguimiento-th-sortable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-date-sort-btn" data-sort="${col}" aria-label="Ordenar por ${label}"><i class="far fa-arrow-up-arrow-down"></i></button></th>`;
             } else if (activeTab === 'tareas' && ['nombre', 'asignado', 'area', 'creador', 'plan'].indexOf(col) >= 0) {
                 html += `<th class="seguimiento-th-filterable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-filter-btn" data-filter="${col}" aria-label="Filtrar por ${label}"><i class="far fa-filter"></i></button></th>`;
             } else if (activeTab === 'planes' && (col === 'nombre' || col === 'creador')) {
                 html += `<th class="seguimiento-th-filterable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-filter-btn" data-filter="${col}" aria-label="Filtrar por ${label}"><i class="far fa-filter"></i></button></th>`;
             } else if (activeTab === 'planes' && col === 'estado') {
                 html += `<th class="seguimiento-th-filterable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-checkbox-btn" data-checkbox="estado" aria-label="Filtrar por estado"><i class="far fa-filter"></i></button></th>`;
+            } else if (activeTab === 'planes' && col === 'avance') {
+                html += `<th class="seguimiento-th-sortable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-date-sort-btn" data-sort="${col}" aria-label="Ordenar por ${label}"><i class="far fa-arrow-up-arrow-down"></i></button></th>`;
             } else {
                 html += `<th data-col="${col}"${style}>${label}</th>`;
             }
@@ -465,6 +467,84 @@
         filteredData = data;
     }
 
+    // Devuelve datos filtrados solo por búsqueda y filtros de columna (sin período ni fechas).
+    // Sirve para detectar si el vacío se debe solo al período/fechas (empty state distinto).
+    function getDataFilteredExcludingPeriodAndDateRange() {
+        let data = [...getDataForCurrentTab()];
+
+        if (searchQuery) {
+            const q = normalizeText(searchQuery);
+            if (activeTab === 'planes') {
+                data = data.filter(row =>
+                    normalizeText(row.nombre).includes(q) ||
+                    normalizeText(row.creador).includes(q) ||
+                    String(row.id).includes(q)
+                );
+            } else {
+                data = data.filter(row => normalizeText(row.nombre).includes(q));
+            }
+        }
+        if (currentFilters.nombre.length > 0) {
+            data = data.filter(row =>
+                currentFilters.nombre.some(nombre =>
+                    normalizeText(row.nombre).includes(normalizeText(nombre))
+                )
+            );
+        }
+        if (currentFilters.creador.length > 0) {
+            data = data.filter(row =>
+                currentFilters.creador.some(creador =>
+                    normalizeText(row.creador).includes(normalizeText(creador))
+                )
+            );
+        }
+        if (currentFilters.plan.length > 0) {
+            data = data.filter(row =>
+                currentFilters.plan.some(plan =>
+                    normalizeText(row.plan).includes(normalizeText(plan)) ||
+                    normalizeText(row.nombre).includes(normalizeText(plan))
+                )
+            );
+        }
+        if (currentFilters.persona.length > 0) {
+            data = data.filter(row => {
+                const nombreAsignado = row.asignado && row.asignado.nombre;
+                if (!nombreAsignado && !(row.asignados && row.asignados.length)) return false;
+                return currentFilters.persona.some(persona =>
+                    normalizeText(nombreAsignado || (row.asignados[0] && row.asignados[0].nombre) || '').includes(normalizeText(persona))
+                );
+            });
+        }
+        if (currentFilters.username.length > 0) {
+            data = data.filter(row =>
+                currentFilters.username.some(username =>
+                    row.asignado && row.asignado.username && normalizeText(row.asignado.username).includes(normalizeText(username))
+                )
+            );
+        }
+        if (currentFilters.area.length > 0) {
+            data = data.filter(row =>
+                currentFilters.area.some(area =>
+                    normalizeText(row.area).includes(normalizeText(area))
+                )
+            );
+        }
+        if (currentFilters.lider.length > 0) {
+            data = data.filter(row =>
+                currentFilters.lider.some(lider =>
+                    row.lider && normalizeText(row.lider).includes(normalizeText(lider))
+                )
+            );
+        }
+        if (currentFilters.estado.length > 0) {
+            data = data.filter(row => currentFilters.estado.includes(row.estado));
+        }
+        if (currentFilters.prioridad.length > 0) {
+            data = data.filter(row => currentFilters.prioridad.includes(row.prioridad));
+        }
+        return data;
+    }
+
     // Datos ya filtrados solo por período y búsqueda (sin filtros de columna). Usado para que las opciones
     // de los filtros de encabezado (Nombre, Asignado, etc.) muestren solo valores que existen en la vista actual.
     function getDataFilteredByPeriodAndSearchOnly() {
@@ -634,6 +714,13 @@
                 return 0;
             }
 
+            // Manejar progreso/avance (planes): número 0-100
+            if (currentSort.column === 'avance') {
+                const numA = typeof valA === 'number' ? valA : (parseInt(valA, 10) || 0);
+                const numB = typeof valB === 'number' ? valB : (parseInt(valB, 10) || 0);
+                return currentSort.direction === 'asc' ? numA - numB : numB - numA;
+            }
+
             // Comparar strings
             if (typeof valA === 'string' && typeof valB === 'string') {
                 const cmp = valA.localeCompare(valB, 'es', { sensitivity: 'base' });
@@ -670,45 +757,116 @@
         if (!tbody) return;
 
         const data = getDisplayData();
-        
-        // Si no hay resultados, mostrar empty state
+        const totalEnTab = getDataForCurrentTab().length;
+
+        // Si no hay resultados, mostrar empty state (tres variantes)
         if (data.length === 0) {
             // Ocultar tabla y paginador
             if (tableWrapper) tableWrapper.style.display = 'none';
             if (paginatorContainer) paginatorContainer.style.display = 'none';
-            
-            // Mostrar empty state
+
+            const isNothingCreated = totalEnTab === 0;
+            const dataWithoutPeriodAndDates = getDataFilteredExcludingPeriodAndDateRange();
+            const isEmptyOnlyBecauseOfPeriodOrDates = totalEnTab > 0 && dataWithoutPeriodAndDates.length > 0;
+
             if (emptyStateContainer && typeof loadEmptyState === 'function') {
                 emptyStateContainer.style.display = 'flex';
-                loadEmptyState('seguimiento-empty-state', {
-                    icon: 'fa-search',
-                    iconSize: 'lg',
-                    title: 'No se encontraron resultados',
-                    description: 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.',
-                    buttons: {
-                        primary: {
-                            text: 'Limpiar búsqueda',
-                            icon: 'fa-times',
-                            onClick: function() {
-                                // Placeholder, manejaremos el click directamente
+
+                if (isNothingCreated) {
+                    // 1) Aún no hay tareas/planes creados: iconos iguales al subnav (fa-tasks / fa-layer-group)
+                    const isTareas = activeTab === 'tareas';
+                    loadEmptyState('seguimiento-empty-state', {
+                        icon: isTareas ? 'fa-tasks' : 'fa-layer-group',
+                        iconSize: 'lg',
+                        title: isTareas ? 'Aún no hay tareas' : 'Aún no hay planes',
+                        description: isTareas
+                            ? 'Crea tu primera tarea para comenzar el seguimiento.'
+                            : 'Crea tu primer plan para organizar las tareas.',
+                        buttons: {
+                            primary: {
+                                text: isTareas ? 'Crear tarea' : 'Crear plan',
+                                icon: 'fa-plus',
+                                onClick: function() { /* se delega al botón del header */ }
                             }
                         }
-                    }
-                });
-                
-                // Agregar event listener directo al botón después de que se carga
-                setTimeout(() => {
-                    const clearBtn = emptyStateContainer.querySelector('.ubits-button--primary');
-                    if (clearBtn) {
-                        clearBtn.onclick = function(e) {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            clearAllFilters();
-                        };
-                    }
-                }, 50);
+                    });
+                    setTimeout(() => {
+                        const createBtn = emptyStateContainer.querySelector('.ubits-button--primary');
+                        if (createBtn) {
+                            createBtn.onclick = function(e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                const headerCreate = document.getElementById('seguimiento-crear-btn');
+                                if (headerCreate) headerCreate.click();
+                            };
+                        }
+                    }, 50);
+                } else if (isEmptyOnlyBecauseOfPeriodOrDates) {
+                    // 2) Hay datos pero el período/fechas seleccionados no tienen actividades
+                    const isTareas = activeTab === 'tareas';
+                    const periodoLabels = {
+                        '7': 'últimos 7 días',
+                        '15': 'últimos 15 días',
+                        '30': 'últimos 30 días',
+                        '90': 'últimos 3 meses',
+                        '180': 'últimos 6 meses',
+                        '365': 'el último año'
+                    };
+                    const periodoLabel = (currentFilters.fechaCreacionDesde && currentFilters.fechaCreacionHasta)
+                        ? 'el período elegido'
+                        : (periodoLabels[currentFilters.periodo] || 'el período seleccionado');
+                    loadEmptyState('seguimiento-empty-state', {
+                        icon: 'fa-calendar',
+                        iconSize: 'lg',
+                        title: isTareas ? 'Nada en este período' : 'Nada en este período',
+                        description: 'No hay ' + (isTareas ? 'tareas' : 'planes') + ' en ' + periodoLabel + '. Cambia el período para ver más.',
+                        buttons: {
+                            primary: {
+                                text: 'Cambiar período',
+                                icon: 'fa-calendar-days',
+                                onClick: function() { /* abre el menú de período */ }
+                            }
+                        }
+                    });
+                    setTimeout(() => {
+                        const periodBtn = emptyStateContainer.querySelector('.ubits-button--primary');
+                        if (periodBtn) {
+                            periodBtn.onclick = function(e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                const periodoToggle = document.getElementById('seguimiento-periodo-toggle');
+                                if (periodoToggle) periodoToggle.click();
+                            };
+                        }
+                    }, 50);
+                } else {
+                    // 3) No se encontraron resultados por búsqueda/filtros de columna
+                    loadEmptyState('seguimiento-empty-state', {
+                        icon: 'fa-search',
+                        iconSize: 'lg',
+                        title: 'No se encontraron resultados',
+                        description: 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.',
+                        buttons: {
+                            primary: {
+                                text: 'Limpiar búsqueda',
+                                icon: 'fa-times',
+                                onClick: function() { /* se maneja con listener directo */ }
+                            }
+                        }
+                    });
+                    setTimeout(() => {
+                        const clearBtn = emptyStateContainer.querySelector('.ubits-button--primary');
+                        if (clearBtn) {
+                            clearBtn.onclick = function(e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                clearAllFilters();
+                            };
+                        }
+                    }, 50);
+                }
             }
-            
+
             // Actualizar contador e indicadores
             updateResultsCount();
             updateIndicadores();
@@ -2381,7 +2539,7 @@
         initDateInputs();
     }
 
-    // Inicializar menú de ordenamiento por fecha
+    // Inicializar menú de ordenamiento (fechas y progreso). Delegación para que funcione con botones re-renderizados (p. ej. al cambiar a Planes).
     function initSortMenu() {
         const sortMenu = document.getElementById('sort-menu');
         const sortOverlay = document.getElementById('sort-menu-overlay');
@@ -2390,31 +2548,44 @@
         let activeSortColumn = null;
         let selectedDirection = null;
 
-        document.querySelectorAll('.seguimiento-date-sort-btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                const col = this.dataset.sort;
-                activeSortColumn = col;
+        document.addEventListener('click', function(e) {
+            const btn = e.target.closest('.seguimiento-date-sort-btn');
+            if (!btn) return;
+            e.stopPropagation();
+            const col = btn.dataset.sort;
+            activeSortColumn = col;
 
-                // Posicionar menú inteligentemente
-                const rect = this.getBoundingClientRect();
-                sortMenu.style.display = 'block';
-                positionMenuSmartly(sortMenu, rect, 200, 150);
-                sortOverlay.style.display = 'block';
+            // Posicionar menú inteligentemente
+            const rect = btn.getBoundingClientRect();
+            sortMenu.style.display = 'block';
+            positionMenuSmartly(sortMenu, rect, 200, 150);
+            sortOverlay.style.display = 'block';
 
-                // Resetear selección
-                sortMenu.querySelectorAll('.sort-menu-option').forEach(o => o.classList.remove('selected'));
-                selectedDirection = null;
-
-                // Si ya hay un orden en esta columna, marcarlo
-                if (currentSort.column === col) {
-                    const opt = sortMenu.querySelector(`.sort-menu-option[data-dir="${currentSort.direction}"]`);
-                    if (opt) {
-                        opt.classList.add('selected');
-                        selectedDirection = currentSort.direction;
-                    }
+            // Copys del menú según columna: avance (progreso) vs fechas
+            const descOpt = sortMenu.querySelector('.sort-menu-option[data-dir="desc"] span');
+            const ascOpt = sortMenu.querySelector('.sort-menu-option[data-dir="asc"] span');
+            if (descOpt && ascOpt) {
+                if (col === 'avance') {
+                    descOpt.textContent = 'Más avance primero';
+                    ascOpt.textContent = 'Menos avance primero';
+                } else {
+                    descOpt.textContent = 'Más reciente primero';
+                    ascOpt.textContent = 'Más reciente al final';
                 }
-            });
+            }
+
+            // Resetear selección
+            sortMenu.querySelectorAll('.sort-menu-option').forEach(o => o.classList.remove('selected'));
+            selectedDirection = null;
+
+            // Si ya hay un orden en esta columna, marcarlo
+            if (currentSort.column === col) {
+                const opt = sortMenu.querySelector(`.sort-menu-option[data-dir="${currentSort.direction}"]`);
+                if (opt) {
+                    opt.classList.add('selected');
+                    selectedDirection = currentSort.direction;
+                }
+            }
         });
 
         sortMenu.querySelectorAll('.sort-menu-option').forEach(opt => {

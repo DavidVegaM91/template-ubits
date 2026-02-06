@@ -1166,15 +1166,13 @@ function createInput(options = {}) {
     
     if (type === 'select') {
         console.log('Rendering SELECT with options:', selectOptions);
-        // SELECT - usar input normal pero readonly y con rightIcon de angle-down
+        // SELECT - usar input normal pero readonly y con rightIcon angle-down (siempre, no chevron-down)
         const selectValue = value ? selectOptions.find(opt => opt.value === value)?.text || placeholder : placeholder;
         inputHTML += `<input type="text" class="${inputClasses.join(' ')}" style="${inputStyle}" value="${selectValue}" readonly>`;
         
-        // Forzar rightIcon a angle-down si no hay rightIcon personalizado
-        if (!hasRightIcon) {
-            finalRightIcon = 'fa-angle-down';
-            finalHasRightIcon = true;
-        }
+        // Siempre usar angle-down en selects (icono desplegable)
+        finalRightIcon = 'fa-angle-down';
+        finalHasRightIcon = true;
     } else if (type === 'textarea') {
         console.log('Rendering TEXTAREA');
         // TEXTAREA - campo multilínea con redimensionamiento

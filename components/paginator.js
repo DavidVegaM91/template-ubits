@@ -270,6 +270,7 @@ function loadPaginator(containerId, options = {}) {
                             selectOptions: selectOptions,
                             value: itemsPerPage.toString(),
                             size: 'sm', // Tamaño sm para que coincida con los botones del paginador
+                            rightIcon: 'fa-angle-down', // angle-down para el desplegable (no chevron-down)
                             onChange: function(newValue) {
                                 changeItemsPerPage(parseInt(newValue));
                             }
