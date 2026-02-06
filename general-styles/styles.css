@@ -35,7 +35,7 @@ body[data-theme="light"] .dashboard-container {
 
 ::-webkit-scrollbar-thumb {
     background: var(--ubits-scroll-bar-color-bg-default);
-    border-radius: 6px;
+    border-radius: var(--border-radius-sm);
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -60,7 +60,7 @@ body[data-theme="light"] .dashboard-container {
     min-width: 96px;
     max-width: 96px;
     height: 578px;
-    padding: var(--padding-lg) 28px;
+    padding: var(--padding-lg) var(--padding-4xl);
     display: flex;
     flex-direction: column;
     gap: var(--gap-lg);
@@ -102,7 +102,7 @@ body[data-theme="light"] .dashboard-container {
     cursor: pointer;
     transition: all 0.2s ease;
     padding: var(--padding-xs);
-    border-radius: 6px;
+    border-radius: var(--border-radius-sm);
 }
 
 .logo:hover {
@@ -174,7 +174,7 @@ body[data-theme="light"] .dashboard-container {
 }
 
 .nav-button i {
-    font-size: 16px;
+    font-size: var(--font-size-md);
     color: var(--ubits-sidebar-button-fg-default);
     width: 24px;
     height: 24px;
@@ -305,7 +305,7 @@ body[data-theme="light"] .dashboard-container {
     background: var(--ubits-sidebar-bg);
     color: var(--ubits-fg-1-high-static-inverted);
     padding: var(--padding-sm) var(--padding-md);
-    border-radius: 6px;
+    border-radius: var(--border-radius-sm);
     white-space: nowrap;
     z-index: 10000;
     box-shadow: 0px 2px 8px rgba(0,0,0,0.15);
@@ -313,7 +313,7 @@ body[data-theme="light"] .dashboard-container {
     opacity: 0;
     transition: opacity 0.2s ease;
     font-family: 'Noto Sans', sans-serif;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 400;
 }
 
@@ -469,7 +469,7 @@ body[data-theme="light"] .dashboard-container {
 }
 
 .nav-tab i {
-    font-size: 16px;
+    font-size: var(--font-size-md);
     color: var(--ubits-fg-1-medium);
     width: 16px;
     height: 16px;
@@ -518,7 +518,7 @@ body[data-theme="light"] .dashboard-container {
     right: 0;
     height: 3px;
     background-color: var(--ubits-accent-brand);
-    border-radius: 2px;
+    border-radius: var(--border-radius-xs);
 }
 
 /* Hover effects para nav-tab */
@@ -537,7 +537,7 @@ body[data-theme="light"] .dashboard-container {
 /* Content Area */
 .content-area {
     background-color: transparent !important;
-    border-radius: 10px;
+    border-radius: var(--border-radius-md);
     border: none !important;
     flex: 1;
     min-height: 0;
@@ -629,13 +629,13 @@ body[data-theme="dark"] .content-area.no-background {
 }
 
 .content-placeholder h2 {
-    font-size: 24px;
+    font-size: var(--font-size-h1);
     margin-bottom: var(--gap-lg);
     font-weight: 600;
 }
 
 .content-placeholder p {
-    font-size: 16px;
+    font-size: var(--font-size-md);
     color: var(--ubits-fg-1-medium);
 }
 
@@ -665,7 +665,7 @@ body[data-theme="dark"] .content-area.no-background {
     .nav-button i {
         width: 20px;
         height: 20px;
-        font-size: 14px;
+        font-size: var(--font-size-sm);
     }
     
     .top-nav {
@@ -674,11 +674,11 @@ body[data-theme="dark"] .content-area.no-background {
     }
     
     .nav-tab {
-        padding: 6px;
+        padding: var(--padding-sm);
     }
     
     .nav-tab span {
-        font-size: 14px;
+        font-size: var(--font-size-sm);
         line-height: 20px;
     }
 }
@@ -691,7 +691,7 @@ body[data-theme="dark"] .content-area.no-background {
     }
     
     .sidebar-body {
-        gap: 6px;
+        gap: var(--gap-sm);
     }
     
     .sidebar-footer {
@@ -702,13 +702,13 @@ body[data-theme="dark"] .content-area.no-background {
     .nav-button {
         width: 36px;
         height: 36px;
-        padding: 6px;
+        padding: var(--padding-sm);
     }
     
     .nav-button i {
         width: 20px;
         height: 20px;
-        font-size: 14px;
+        font-size: var(--font-size-sm);
     }
 }
 
@@ -839,7 +839,7 @@ body[data-theme="dark"] .content-placeholder p {
 /* ===== STEP NUMBERS ===== */
 .step-number {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 24px;
+    font-size: var(--font-size-h1);
     font-weight: 700;
     line-height: 1;
 }
@@ -951,7 +951,7 @@ body {
 .sidebar-profile-menu .profile-menu-item span {
     color: inherit;
     font-family: 'Noto Sans', sans-serif;
-    font-size: 13px;
+    font-size: var(--font-size-sm);
     font-weight: 400;
     line-height: 19.5px;
 }
@@ -967,7 +967,7 @@ body {
 }
 
 .sidebar-profile-menu .profile-menu-item i {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     margin-right: 10px;
     color: var(--ubits-sidebar-button-fg-default);
     width: 16px;

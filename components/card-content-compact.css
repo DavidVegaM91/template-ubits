@@ -43,7 +43,7 @@
     flex-shrink: 0;
     width: 85px;
     height: 48px;
-    border-radius: 6px;
+    border-radius: var(--border-radius-sm);
     overflow: hidden;
 }
 
@@ -54,7 +54,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 32px;
+    font-size: var(--font-size-d3);
     color: var(--ubits-btn-primary-fg);
     overflow: hidden;
 }
@@ -150,7 +150,7 @@
 }
 
 .course-status-compact {
-    font-size: 11px;
+    font-size: var(--font-size-xs);
     font-weight: 700;
 }
 
@@ -236,7 +236,7 @@
 
 .provider-count-text-compact {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 13px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     line-height: 19.5px;
     color: var(--ubits-fg-1-high);
@@ -279,7 +279,7 @@
     justify-content: center;
     flex-shrink: 0;
     color: var(--ubits-fg-1-medium);
-    font-size: 12px;
+    font-size: var(--font-size-sm);
 }
 
 /* Separador entre provider y tipo */

@@ -25,7 +25,7 @@
 
 .sidebar-title {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     color: var(--ubits-fg-1-high);
     padding: 0 16px 8px;
@@ -40,7 +40,7 @@
 
 .sidebar-subtitle {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 13px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
     color: var(--ubits-fg-1-medium);
     padding: var(--padding-sm) var(--padding-lg) var(--padding-xs);
@@ -73,7 +73,7 @@
 
 .sidebar-text {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     color: var(--ubits-fg-1-high);
     transition: color 0.2s ease;
 }
@@ -94,7 +94,7 @@
 
 .sidebar-content::-webkit-scrollbar-thumb {
     background: var(--ubits-scroll-bar-color-bg-default);
-    border-radius: 3px;
+    border-radius: var(--border-radius-xs);
 }
 
 .sidebar-content::-webkit-scrollbar-thumb:hover {
@@ -182,7 +182,7 @@
 }
 
 .dropdown-icon {
-    font-size: 12px;
+    font-size: var(--font-size-sm);
     color: var(--ubits-fg-1-medium);
     transition: transform 0.2s ease;
 }
@@ -259,7 +259,7 @@
 }
 
 .dropdown-subgroup-title {
-    padding: 6px 0 4px;
+    padding: var(--padding-sm) 0 var(--padding-xs);
     color: var(--ubits-fg-2-medium);
     font-weight: 500;
 }

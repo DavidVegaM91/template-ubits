@@ -21,7 +21,7 @@
         .colors-container {
             display: flex;
             min-height: 100vh;
-            border-radius: 10px;
+            border-radius: var(--border-radius-md);
             overflow: hidden;
             background: var(--ubits-bg-1);
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
@@ -45,7 +45,7 @@
         .section {
             margin-bottom: 20px;
             padding: 10px;
-            border-radius: 6px;
+            border-radius: var(--border-radius-sm);
         }
         
         .light-section {
@@ -65,8 +65,8 @@
             justify-content: space-between;
             margin: 8px 0;
             padding: 8px 12px;
-            border-radius: 4px;
-            font-size: 10px;
+            border-radius: var(--border-radius-xs);
+            font-size: var(--font-size-xs);
         }
         
         .token-left {
@@ -98,31 +98,31 @@
         .color-box {
             width: 20px;
             height: 12px;
-            border-radius: 2px;
+            border-radius: var(--border-radius-xs);
             margin-right: 6px;
             border: 1px solid #ccc;
         }
         
         .token-name {
             font-family: 'Courier New', monospace;
-            font-size: 9px;
+            font-size: var(--font-size-xs);
             margin-right: 6px;
             min-width: 150px;
         }
         
         .hex-value {
             font-family: 'Courier New', monospace;
-            font-size: 9px;
+            font-size: var(--font-size-xs);
             font-weight: bold;
         }
         
         .category-title {
-            font-size: 16px;
+            font-size: var(--font-size-md);
             font-weight: bold;
             margin: 20px 0 10px 0;
             padding: 8px;
             background-color: #e9ecef;
-            border-radius: 4px;
+            border-radius: var(--border-radius-xs);
         }
         
         .dark-category-title {
@@ -166,7 +166,7 @@
         /* Estilos para token-item clickeables */
         .light-section .token-item {
             border: 1px solid var(--ubits-border-1);
-            border-radius: 8px;
+            border-radius: var(--border-radius-sm);
             transition: border-color 0.2s ease;
         }
         
@@ -176,7 +176,7 @@
         
         .dark-section .token-item {
             border: 1px solid var(--ubits-border-1);
-            border-radius: 8px;
+            border-radius: var(--border-radius-sm);
             transition: border-color 0.2s ease;
         }
         

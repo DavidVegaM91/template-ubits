@@ -37,7 +37,7 @@
 
 .floating-menu-title {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 18px;
+    font-size: var(--font-size-h2);
     font-weight: 600;
     color: var(--ubits-sidebar-button-fg-default);
 }
@@ -46,7 +46,7 @@
     background: none;
     border: none;
     color: var(--ubits-sidebar-button-fg-default);
-    font-size: 24px;
+    font-size: var(--font-size-h1);
     cursor: pointer;
     padding: var(--padding-xs);
     border-radius: var(--border-radius-xs);
@@ -86,7 +86,7 @@
     display: flex;
     align-items: center;
     font-family: 'Noto Sans', sans-serif;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     color: var(--ubits-sidebar-button-fg-default);
 }
@@ -101,7 +101,7 @@
 }
 
 .accordion-title i {
-    font-size: 16px;
+    font-size: var(--font-size-md);
     margin-right: 12px;
     color: var(--ubits-sidebar-button-fg-default);
     width: 20px;
@@ -109,7 +109,7 @@
 }
 
 .accordion-chevron {
-    font-size: 12px;
+    font-size: var(--font-size-sm);
     color: var(--ubits-sidebar-button-fg-default);
     transition: transform 0.2s ease;
 }
@@ -126,7 +126,7 @@
     text-decoration: none;
     color: var(--ubits-sidebar-button-fg-default);
     transition: all 0.2s ease;
-    border-radius: 6px;
+    border-radius: var(--border-radius-sm);
     margin-bottom: 2px;
 }
 
@@ -136,7 +136,7 @@
 }
 
 .accordion-link i {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     margin-right: 10px;
     color: var(--ubits-sidebar-button-fg-default);
     width: 16px;
@@ -181,7 +181,7 @@
 /* Reglas normales para direct-links (sin forzar activo) */
 
 .accordion-link.direct-link .accordion-chevron {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     color: var(--ubits-sidebar-button-fg-default);
     margin-left: auto;
     width: 16px;
@@ -247,7 +247,7 @@
 }
 
 .floating-menu-icon {
-    font-size: 20px;
+    font-size: var(--font-size-h2);
     color: var(--ubits-sidebar-button-fg-default);
     margin-right: 12px;
     width: 24px;
@@ -272,7 +272,7 @@
 }
 
 .floating-menu-chevron {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     color: var(--ubits-sidebar-button-fg-default);
     transition: all 0.3s ease;
     margin-left: 8px;
@@ -303,7 +303,7 @@
     padding: var(--padding-sm) var(--padding-lg);
     cursor: pointer;
     transition: all 0.2s ease;
-    border-radius: 6px;
+    border-radius: var(--border-radius-sm);
     margin-bottom: 2px;
 }
 
@@ -337,7 +337,7 @@
 }
 
 .floating-menu-subicon {
-    font-size: 16px;
+    font-size: var(--font-size-md);
     color: var(--ubits-sidebar-button-fg-default);
     margin-right: 12px;
     width: 20px;
@@ -372,7 +372,7 @@
 
 .floating-menu::-webkit-scrollbar-thumb {
     background: var(--ubits-scroll-bar-color-bg-default);
-    border-radius: 3px;
+    border-radius: var(--border-radius-xs);
 }
 
 .floating-menu::-webkit-scrollbar-thumb:hover {
@@ -418,7 +418,7 @@
 }
 
 .accordion-icon-circle i {
-    font-size: 16px;
+    font-size: var(--font-size-md);
     color: var(--ubits-sidebar-button-fg-default);
     transition: color 0.2s ease;
     margin: 0;

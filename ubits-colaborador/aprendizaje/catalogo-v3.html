@@ -1264,7 +1264,7 @@
                     // Crear tooltip temporal para calcular dimensiones
                     const tempTooltip = document.createElement('div');
                     tempTooltip.textContent = tooltipText;
-                    tempTooltip.style.cssText = 'position: absolute; visibility: hidden; white-space: nowrap; padding: 6px 10px; font-size: 12px; font-family: "Noto Sans", sans-serif;';
+                    tempTooltip.style.cssText = 'position: absolute; visibility: hidden; white-space: nowrap; padding: 6px 10px; font-size: var(--font-size-sm); font-family: "Noto Sans", sans-serif;';
                     document.body.appendChild(tempTooltip);
                     const tooltipWidth = tempTooltip.offsetWidth;
                     const tooltipHeight = tempTooltip.offsetHeight;

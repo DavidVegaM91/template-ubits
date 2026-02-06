@@ -238,17 +238,17 @@
                         </h2>
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
                             <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                                <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-toggle-on"></i></div>
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-toggle-on"></i></div>
                                 <div class="ubits-body-sm-bold">Estados</div>
                                 <div class="ubits-body-sm-regular">Activo e inactivo</div>
                             </div>
                             <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                                <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-expand-arrows-alt"></i></div>
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-expand-arrows-alt"></i></div>
                                 <div class="ubits-body-sm-bold">Tamaños</div>
                                 <div class="ubits-body-sm-regular">XS, SM, MD y LG</div>
                             </div>
                             <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                                <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-icons"></i></div>
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-icons"></i></div>
                                 <div class="ubits-body-sm-bold">Variantes</div>
                                 <div class="ubits-body-sm-regular">Con texto y solo icono</div>
                             </div>
@@ -280,7 +280,7 @@
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tab-prompt-1">Crea un tab UBITS con estas características:
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tab-prompt-1">Crea un tab UBITS con estas características:
 - Texto: [especifica texto]
 - Icono: [especifica icono FontAwesome]
 - Tamaño: [xs/sm/md/lg]
@@ -303,7 +303,7 @@ Para estado activo, agrega la clase ubits-tab--active.</code></pre>
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tab-prompt-2">Cambia el tab [descripción_del_tab] a estado [activo o inactivo]. Agrega o quita la clase ubits-tab--active según corresponda.</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tab-prompt-2">Cambia el tab [descripción_del_tab] a estado [activo o inactivo]. Agrega o quita la clase ubits-tab--active según corresponda.</code></pre>
                         </div>
                     </div>
 
@@ -319,7 +319,7 @@ Para estado activo, agrega la clase ubits-tab--active.</code></pre>
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tab-prompt-3">Cambia el tamaño del tab [descripción_del_tab] a [xs, sm, md o lg]. Actualiza la clase ubits-tab--[tamaño] correspondiente.</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tab-prompt-3">Cambia el tamaño del tab [descripción_del_tab] a [xs, sm, md o lg]. Actualiza la clase ubits-tab--[tamaño] correspondiente.</code></pre>
                         </div>
                     </div>
 
@@ -335,7 +335,7 @@ Para estado activo, agrega la clase ubits-tab--active.</code></pre>
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tab-prompt-4">Convierte el tab [descripción_del_tab] a la variante de solo icono. Quita el elemento &lt;span&gt; con el texto y agrega la clase ubits-tab--icon-only.</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tab-prompt-4">Convierte el tab [descripción_del_tab] a la variante de solo icono. Quita el elemento &lt;span&gt; con el texto y agrega la clase ubits-tab--icon-only.</code></pre>
                         </div>
                     </div>
 
@@ -351,7 +351,7 @@ Para estado activo, agrega la clase ubits-tab--active.</code></pre>
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tab-prompt-5">Agrega el icono [nombre_del_icono] al tab [descripción_del_tab]. Usa FontAwesome con la clase far fa-[nombre_del_icono].</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tab-prompt-5">Agrega el icono [nombre_del_icono] al tab [descripción_del_tab]. Usa FontAwesome con la clase far fa-[nombre_del_icono].</code></pre>
                         </div>
                     </div>
 
@@ -367,7 +367,7 @@ Para estado activo, agrega la clase ubits-tab--active.</code></pre>
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tab-prompt-6">Crea un grupo de tabs navegables en [ubicación] con los siguientes tabs: [lista de tabs]. Implementa la funcionalidad para que al hacer clic en un tab, se active ese tab (agregando la clase ubits-tab--active) y se desactiven los demás (quitando la clase ubits-tab--active). Si los tabs están dentro de una sección con fondo blanco (bg-1), envuélvelos en un contenedor con fondo bg-2 y padding de 4px.</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tab-prompt-6">Crea un grupo de tabs navegables en [ubicación] con los siguientes tabs: [lista de tabs]. Implementa la funcionalidad para que al hacer clic en un tab, se active ese tab (agregando la clase ubits-tab--active) y se desactiven los demás (quitando la clase ubits-tab--active). Si los tabs están dentro de una sección con fondo blanco (bg-1), envuélvelos en un contenedor con fondo bg-2 y padding de 4px.</code></pre>
                         </div>
                     </div>
 
@@ -383,7 +383,7 @@ Para estado activo, agrega la clase ubits-tab--active.</code></pre>
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tab-prompt-7">Crea un grupo de tabs navegables en [ubicación] que estará dentro de una sección con fondo blanco (bg-1). Los tabs deben estar envueltos en un contenedor con fondo bg-2 y padding de 4px para mantener el contraste visual.</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tab-prompt-7">Crea un grupo de tabs navegables en [ubicación] que estará dentro de una sección con fondo blanco (bg-1). Los tabs deben estar envueltos en un contenedor con fondo bg-2 y padding de 4px para mantener el contraste visual.</code></pre>
                         </div>
                     </div>
                 </div>
@@ -424,7 +424,7 @@ Para estado activo, agrega la clase ubits-tab--active.</code></pre>
                                     </button>
                                 </div>
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="structure-code">&lt;!-- Tab inactivo con icono y texto --&gt;
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="structure-code">&lt;!-- Tab inactivo con icono y texto --&gt;
 &lt;button class="ubits-tab ubits-tab--md"&gt;
     &lt;i class="far fa-grid"&gt;&lt;/i&gt;
     &lt;span&gt;Label&lt;/span&gt;
@@ -456,7 +456,7 @@ Para estado activo, agrega la clase ubits-tab--active.</code></pre>
                                     </button>
                                 </div>
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="classes-code">/* Estados */
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="classes-code">/* Estados */
 .ubits-tab--active           /* Tab activo (fondo blanco, texto oscuro, bold) */
 
 /* Tamaños */
@@ -499,7 +499,7 @@ Para estado activo, agrega la clase ubits-tab--active.</code></pre>
                                 </div>
                                 
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="implementation-code">&lt;!-- IMPLEMENTACIÓN BÁSICA --&gt;
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="implementation-code">&lt;!-- IMPLEMENTACIÓN BÁSICA --&gt;
 &lt;!-- Tab inactivo pequeño --&gt;
 &lt;button class="ubits-tab ubits-tab--sm"&gt;
   &lt;i class="far fa-home"&gt;&lt;/i&gt;

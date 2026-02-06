@@ -64,7 +64,7 @@
 .nav-title {
     font-family: 'Noto Sans', sans-serif;
     font-weight: 600;
-    font-size: 16px;
+    font-size: var(--font-size-md);
     line-height: 24px;
     white-space: nowrap;
     flex-shrink: 0;
@@ -88,7 +88,7 @@
 }
 
 .hamburger-menu i {
-    font-size: 18px;
+    font-size: var(--font-size-h2);
 }
 
 /* Hamburger Dropdown */
@@ -148,7 +148,7 @@
 }
 
 .hamburger-item i {
-    font-size: 16px;
+    font-size: var(--font-size-md);
     width: 16px;
     height: 16px;
     display: flex;
@@ -159,7 +159,7 @@
 
 .hamburger-item span {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     line-height: 20px;
     white-space: nowrap;
 }
@@ -182,7 +182,7 @@
 
 /* Nav Tab Icon */
 .nav-tab i {
-    font-size: 16px;
+    font-size: var(--font-size-md);
     color: var(--ubits-fg-1-medium);
     width: 16px;
     height: 16px;
@@ -211,7 +211,7 @@
 /* Nav Tab Text */
 .nav-tab span {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 16px;
+    font-size: var(--font-size-md);
     color: var(--ubits-fg-1-medium);
     text-align: left;
     line-height: 24px;
@@ -236,13 +236,13 @@
     right: 0;
     height: 3px;
     background-color: var(--ubits-accent-brand);
-    border-radius: 2px;
+    border-radius: var(--border-radius-xs);
 }
 
 /* Hover States */
 .nav-tab:hover {
     background-color: var(--ubits-bg-2);
-    border-radius: 6px;
+    border-radius: var(--border-radius-sm);
 }
 
 .nav-tab:hover i {
@@ -277,7 +277,7 @@
 
 .module-name-label {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 11px;
+    font-size: var(--font-size-xs);
     line-height: 11px;
     color: var(--ubits-fg-1-medium);
     font-weight: 400;
@@ -330,13 +330,13 @@
     overflow: hidden;
     text-overflow: ellipsis;
     font-family: 'Noto Sans', sans-serif;
-    font-size: 13px; /* Tamaño SM: igual que ubits-button--sm span */
+    font-size: var(--font-size-sm); /* Tamaño SM: igual que ubits-button--sm span */
     font-weight: 600;
     line-height: 19.5px;
 }
 
 .module-selector-button-chevron {
-    font-size: 13px;
+    font-size: var(--font-size-sm);
     color: var(--ubits-btn-secondary-fg-default);
     flex-shrink: 0;
     transition: transform 0.2s ease;
@@ -390,7 +390,7 @@
 }
 
 .module-selector-item i {
-    font-size: 16px;
+    font-size: var(--font-size-md);
     width: 16px;
     height: 16px;
     display: flex;
@@ -401,7 +401,7 @@
 
 .module-selector-item span {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     line-height: 20px;
     white-space: nowrap;
 }
@@ -456,7 +456,7 @@
     
     .sub-nav.use-selector {
         padding: var(--padding-md) var(--padding-md);
-        gap: 10px;
+        gap: var(--gap-md);
     }
     
     .nav-tabs {
@@ -469,22 +469,22 @@
     }
     
     .nav-tab {
-        padding: 6px;
+        padding: var(--padding-sm);
     }
     
     .nav-tab span {
-        font-size: 14px;
+        font-size: var(--font-size-sm);
         line-height: 20px;
     }
     
     .nav-tab i {
-        font-size: 14px;
+        font-size: var(--font-size-sm);
         width: 14px;
         height: 14px;
     }
     
     .nav-title {
-        font-size: 14px;
+        font-size: var(--font-size-sm);
         line-height: 20px;
         margin-right: 12px;
     }

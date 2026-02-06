@@ -184,7 +184,7 @@
 }
 
 .study-chat-canvas-placeholder i {
-    font-size: 32px;
+    font-size: var(--font-size-d3);
     color: var(--ubits-fg-1-low);
 }
 

@@ -36,7 +36,7 @@
             position: relative !important;
             width: 96px !important;
             height: 650px !important;
-            border-radius: 8px !important;
+            border-radius: var(--border-radius-sm) !important;
             
             top: 0 !important;
             left: 0 !important;
@@ -44,7 +44,7 @@
             padding: 16px 28px !important;
             display: flex !important;
             flex-direction: column !important;
-            gap: 16px !important;
+            gap: var(--gap-lg) !important;
             align-items: center !important;
             justify-content: flex-start !important;
             overflow: visible !important;
@@ -98,7 +98,7 @@
                 </div>
 
                 <!-- Preview Section -->
-                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
                     <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
                         <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                         Preview del componente
@@ -108,7 +108,7 @@
                     </p>
                     
                     <!-- Preview Container -->
-                    <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; position: relative;">
+                    <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md); position: relative;">
                         
                         <!-- Sidebar Real de UBITS -->
                         <div style="display: flex; justify-content: center; align-items: center; height: 650px;">
@@ -119,7 +119,7 @@
                     </div>
                     
                     <!-- Preview Controls -->
-                    <div style="margin-top: 16px; display: flex; gap: 12px; flex-wrap: wrap;">
+                    <div style="margin-top: 16px; display: flex; gap: var(--gap-md); flex-wrap: wrap;">
                         <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" onclick="setPreviewVariant('default')">
                             <span>Variante Default</span>
                         </button>
@@ -130,24 +130,24 @@
                 </div>
 
                 <!-- Características generales -->
-                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
                     <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
                         <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                         Características generales
                     </h2>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
-                        <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                            <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-desktop"></i></div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--gap-lg);">
+                        <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                            <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-desktop"></i></div>
                             <div class="ubits-body-sm-bold">Desktop</div>
                             <div class="ubits-body-sm-regular">Fijo lateral</div>
                         </div>
-                        <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                            <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-mobile"></i></div>
+                        <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                            <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-mobile"></i></div>
                             <div class="ubits-body-sm-bold">Móvil</div>
                             <div class="ubits-body-sm-regular">Oculto (se reemplaza por el tab-bar)</div>
                         </div>
-                        <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                            <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-palette"></i></div>
+                        <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                            <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-palette"></i></div>
                             <div class="ubits-body-sm-bold">Temas</div>
                             <div class="ubits-body-sm-regular">Claro/Oscuro (mismos colores en ambos)</div>
                         </div>
@@ -155,7 +155,7 @@
                 </div>
 
                 <!-- PROMPTS ÚTILES -->
-                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
                     <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
                         <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                         Prompts útiles
@@ -178,8 +178,8 @@
                                 <span>Copiar</span>
                             </button>
                         </div>
-                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="sidebar-prompt-0">En la página [nombre-pagina.html], cambia la variante del sidebar de default a admin. Usa loadSidebar('admin', 'inicio')</code></pre>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="sidebar-prompt-0">En la página [nombre-pagina.html], cambia la variante del sidebar de default a admin. Usa loadSidebar('admin', 'inicio')</code></pre>
                         </div>
                     </div>
 
@@ -194,8 +194,8 @@
                                 <span>Copiar</span>
                             </button>
                         </div>
-                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="sidebar-prompt-1">En la página [nombre-pagina.html] en el componente SIDEBAR UBITS (navegación lateral izquierda) haz que se vea activa la sección de [opciones: aprendizaje, diagnóstico, desempeño, encuestas, reclutamiento, tareas, ubits-ai] activa. Usa la función loadSidebar().</code></pre>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="sidebar-prompt-1">En la página [nombre-pagina.html] en el componente SIDEBAR UBITS (navegación lateral izquierda) haz que se vea activa la sección de [opciones: aprendizaje, diagnóstico, desempeño, encuestas, reclutamiento, tareas, ubits-ai] activa. Usa la función loadSidebar().</code></pre>
                         </div>
                     </div>
 
@@ -210,8 +210,8 @@
                                 <span>Copiar</span>
                             </button>
                         </div>
-                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="sidebar-prompt-2">En la página [nombre-pagina.html], cambia la sección activa del sidebar de [sección actual] a [nueva sección que quieres activar].</code></pre>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="sidebar-prompt-2">En la página [nombre-pagina.html], cambia la sección activa del sidebar de [sección actual] a [nueva sección que quieres activar].</code></pre>
                         </div>
                     </div>
 
@@ -226,14 +226,14 @@
                                 <span>Copiar</span>
                             </button>
                         </div>
-                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="sidebar-prompt-3">En la página [nombre-pagina.html], oculta el sidebar pero mantén el TabBar para responsive. Cambia el margin-left del main-content de 131px a 12px para que el contenido ocupe todo el ancho disponible.</code></pre>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="sidebar-prompt-3">En la página [nombre-pagina.html], oculta el sidebar pero mantén el TabBar para responsive. Cambia el margin-left del main-content de 131px a 12px para que el contenido ocupe todo el ancho disponible.</code></pre>
                         </div>
                     </div>
                 </div>
 
                 <!-- ACORDEÓN DE DOCUMENTACIÓN TÉCNICA -->
-                <div style="background: var(--ubits-bg-1); border-radius: 16px; margin-bottom: 40px; overflow: hidden;">
+                <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
                     <!-- Header del acordeón -->
                     <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
                         <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
@@ -244,7 +244,7 @@
                     
                     <!-- Botón de expansión -->
                     <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
-                        <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: var(--gap-sm);">
                             <i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>
                             Mostrar
                         </span>
@@ -264,8 +264,8 @@
                                     <span>Copiar</span>
                                 </button>
                             </div>
-                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px;">
-                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="structure-code">&lt;aside class="sidebar" id="sidebar"&gt;
+                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="structure-code">&lt;aside class="sidebar" id="sidebar"&gt;
   &lt;div class="sidebar-main"&gt;
     &lt;div class="sidebar-header"&gt;
       &lt;div class="logo" onclick="window.location.href='index.html'"&gt;
@@ -308,8 +308,8 @@
                                     <span>Copiar</span>
                                 </button>
                             </div>
-                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="implement-code">&lt;!-- HTML --&gt;
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="implement-code">&lt;!-- HTML --&gt;
 &lt;div id="sidebar-container"&gt;&lt;/div&gt;
 
 &lt;!-- CSS --&gt;
@@ -334,7 +334,7 @@ updateActiveSidebarButton('desempeño'); // Cambiar botón activo</code></pre>
                                 <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
                                     Carga el componente sidebar en el contenedor 'sidebar-container'. Busca automáticamente el contenedor y activa la sección especificada.
                                 </p>
-                                <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: 6px; border-left: 4px solid var(--ubits-accent-brand);">
+                                <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: var(--border-radius-sm); border-left: 4px solid var(--ubits-accent-brand);">
                                     <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
                                         <strong>Parámetros:</strong> activeButton (string, opcional) - Sección a activar<br>
                                         <strong>Ejemplo:</strong> loadSidebar('aprendizaje')<br>
@@ -347,7 +347,7 @@ updateActiveSidebarButton('desempeño'); // Cambiar botón activo</code></pre>
                                 <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
                                     Actualiza el botón activo del sidebar sin recargar el componente.
                                 </p>
-                                <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: 6px; border-left: 4px solid var(--ubits-accent-brand);">
+                                <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: var(--border-radius-sm); border-left: 4px solid var(--ubits-accent-brand);">
                                     <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
                                         <strong>Parámetros:</strong> activeButton (string) - ID del nuevo botón activo<br>
                                         <strong>Ejemplo:</strong> updateActiveSidebarButton('desempeño')
@@ -373,8 +373,8 @@ updateActiveSidebarButton('desempeño'); // Cambiar botón activo</code></pre>
                                 <p class="ubits-body-md-regular" style="margin-bottom: 12px; line-height: 1.5;">
                                     Para agregar nuevos botones de navegación, edita el HTML del sidebar en <code>components/sidebar.js</code>:
                                 </p>
-                                <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="add-buttons-code">// En sidebar.js, dentro del sidebarHTML (línea 45-66)
+                                <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: var(--border-radius-sm);">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="add-buttons-code">// En sidebar.js, dentro del sidebarHTML (línea 45-66)
 &lt;button class="nav-button" data-section="nueva-seccion" data-tooltip="Nueva Sección"&gt;
   &lt;i class="far fa-nuevo-icono"&gt;&lt;/i&gt;
 &lt;/button&gt;</code></pre>
@@ -391,8 +391,8 @@ updateActiveSidebarButton('desempeño'); // Cambiar botón activo</code></pre>
                                 <p class="ubits-body-md-regular" style="margin-bottom: 12px; line-height: 1.5;">
                                     Los estilos se pueden personalizar editando las variables CSS en <code>styles.css</code>:
                                 </p>
-                                <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="modify-styles-code">/* Personalizar colores del sidebar */
+                                <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: var(--border-radius-sm);">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="modify-styles-code">/* Personalizar colores del sidebar */
 .sidebar {
   background-color: var(--ubits-sidebar-bg);
   width: 96px;

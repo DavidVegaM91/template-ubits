@@ -43,7 +43,7 @@
             bottom: 0;
             background-color: var(--ubits-border-1);
             transition: .4s;
-            border-radius: 24px;
+            border-radius: var(--border-radius-xl);
         }
         
         .slider:before {
@@ -101,7 +101,7 @@
                     </div>
 
                     <!-- Preview Section -->
-                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
                         <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
                             <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                             Preview del componente
@@ -111,7 +111,7 @@
                         </p>
                         
                         <!-- Preview Container -->
-                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; position: relative; min-height: 300px;">
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md); position: relative; min-height: 300px;">
                             
                             <!-- Empty State Preview -->
                             <div id="empty-state-preview"></div>
@@ -119,9 +119,9 @@
                         
                         <!-- Preview Controls -->
                         <div style="margin-top: 24px;">
-                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--gap-lg);">
                                 <!-- Switch Header -->
-                                <div style="display: flex; align-items: center; gap: 8px;">
+                                <div style="display: flex; align-items: center; gap: var(--gap-sm);">
                                     <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Header:</span>
                                     <label class="switch">
                                         <input type="checkbox" id="preview-header-toggle" onchange="updatePreview()" checked>
@@ -130,7 +130,7 @@
                                 </div>
                                 
                                 <!-- Switch Title -->
-                                <div style="display: flex; align-items: center; gap: 8px;">
+                                <div style="display: flex; align-items: center; gap: var(--gap-sm);">
                                     <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Title:</span>
                                     <label class="switch">
                                         <input type="checkbox" id="preview-title-toggle" onchange="updatePreview()" checked>
@@ -139,7 +139,7 @@
                                 </div>
                                 
                                 <!-- Switch Media Content (Icono) -->
-                                <div style="display: flex; align-items: center; gap: 8px;">
+                                <div style="display: flex; align-items: center; gap: var(--gap-sm);">
                                     <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Media content:</span>
                                     <label class="switch">
                                         <input type="checkbox" id="preview-icon-toggle" onchange="updatePreview()" checked>
@@ -148,7 +148,7 @@
                                 </div>
                                 
                                 <!-- Switch Body -->
-                                <div style="display: flex; align-items: center; gap: 8px;">
+                                <div style="display: flex; align-items: center; gap: var(--gap-sm);">
                                     <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Body:</span>
                                     <label class="switch">
                                         <input type="checkbox" id="preview-body-toggle" onchange="updatePreview()" checked>
@@ -157,7 +157,7 @@
                                 </div>
                                 
                                 <!-- Switch Footer -->
-                                <div style="display: flex; align-items: center; gap: 8px;">
+                                <div style="display: flex; align-items: center; gap: var(--gap-sm);">
                                     <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Footer:</span>
                                     <label class="switch">
                                         <input type="checkbox" id="preview-footer-toggle" onchange="updatePreview()" checked>
@@ -166,7 +166,7 @@
                                 </div>
                                 
                                 <!-- Switch Secondary Action -->
-                                <div style="display: flex; align-items: center; gap: 8px;">
+                                <div style="display: flex; align-items: center; gap: var(--gap-sm);">
                                     <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Secondary action:</span>
                                     <label class="switch">
                                         <input type="checkbox" id="preview-secondary-toggle" onchange="updatePreview()" checked>
@@ -175,7 +175,7 @@
                                 </div>
                                 
                                 <!-- Switch Primary Action -->
-                                <div style="display: flex; align-items: center; gap: 8px;">
+                                <div style="display: flex; align-items: center; gap: var(--gap-sm);">
                                     <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Primary action:</span>
                                     <label class="switch">
                                         <input type="checkbox" id="preview-primary-toggle" onchange="updatePreview()" checked>
@@ -184,9 +184,9 @@
                                 </div>
                                 
                                 <!-- Selector Icon Container Size -->
-                                <div style="display: flex; align-items: center; gap: 8px;">
+                                <div style="display: flex; align-items: center; gap: var(--gap-sm);">
                                     <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Icon container size:</span>
-                                    <select id="preview-icon-size-select" onchange="updatePreview()" style="padding: 6px 12px; border-radius: 6px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-family: 'Noto Sans', sans-serif; font-size: 14px;">
+                                    <select id="preview-icon-size-select" onchange="updatePreview()" style="padding: 6px 12px; border-radius: var(--border-radius-sm); background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm);">
                                         <option value="sm">sm</option>
                                         <option value="md">md</option>
                                         <option value="lg" selected>lg</option>
@@ -197,7 +197,7 @@
                     </div>
 
                     <!-- Características Generales -->
-                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
                         <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
                             <i class="far fa-list-check" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                             Características generales
@@ -236,14 +236,14 @@
                             <li style="margin-bottom: 16px; padding-left: 32px; position: relative;">
                                 <i class="far fa-check-circle" style="position: absolute; left: 0; top: 2px; color: var(--ubits-accent-brand);"></i>
                                 <span class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium);">
-                                    <strong style="color: var(--ubits-fg-1-high);">Ancho completo:</strong> Puede ocupar todo el ancho disponible cuando se coloca directamente en secciones con <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px;">flex-direction: column</code>.
+                                    <strong style="color: var(--ubits-fg-1-high);">Ancho completo:</strong> Puede ocupar todo el ancho disponible cuando se coloca directamente en secciones con <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: var(--font-size-sm);">flex-direction: column</code>.
                                 </span>
                             </li>
                         </ul>
                     </div>
 
                     <!-- Documentación Técnica -->
-                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
                         <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
                             <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                             Documentación técnica
@@ -252,7 +252,7 @@
                         <div style="margin-bottom: 32px;">
                             <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">Requisitos obligatorios</h3>
                             <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px;">
-                                <pre style="margin: 0; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>&lt;!-- CSS Requerido --&gt;
+                                <pre style="margin: 0; font-family: 'Courier New', monospace; font-size: var(--font-size-sm); line-height: 1.6; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>&lt;!-- CSS Requerido --&gt;
 &lt;link rel="stylesheet" href="../../components/empty-state.css"&gt;
 &lt;link rel="stylesheet" href="../../components/button.css"&gt; &lt;!-- Si se usa botón de acción --&gt;
 &lt;link rel="stylesheet" href="../../general-styles/fontawesome-icons.css"&gt; &lt;!-- Si se usa icono en botón --&gt;
@@ -267,7 +267,7 @@
                         <div style="margin-bottom: 32px;">
                             <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">Implementación básica</h3>
                             <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px;">
-                                <pre style="margin: 0; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>&lt;div id="mi-empty-state-container"&gt;&lt;/div&gt;
+                                <pre style="margin: 0; font-family: 'Courier New', monospace; font-size: var(--font-size-sm); line-height: 1.6; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>&lt;div id="mi-empty-state-container"&gt;&lt;/div&gt;
 &lt;script&gt;
     document.addEventListener('DOMContentLoaded', function() {
         loadEmptyState('mi-empty-state-container', {
@@ -284,7 +284,7 @@
                         <div style="margin-bottom: 32px;">
                             <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">Con botones (secondary y primary)</h3>
                             <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px;">
-                                <pre style="margin: 0; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>&lt;div id="mi-empty-state-container"&gt;&lt;/div&gt;
+                                <pre style="margin: 0; font-family: 'Courier New', monospace; font-size: var(--font-size-sm); line-height: 1.6; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>&lt;div id="mi-empty-state-container"&gt;&lt;/div&gt;
 &lt;script&gt;
     document.addEventListener('DOMContentLoaded', function() {
         loadEmptyState('mi-empty-state-container', {
@@ -319,7 +319,7 @@
                                 Para que el empty state ocupe todo el ancho de una sección (como un encabezado o widget completo), sigue estos pasos:
                             </p>
                             <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
-                                <pre style="margin: 0; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>&lt;!-- 1. Coloca el contenedor directamente en la sección, no dentro de grids --&gt;
+                                <pre style="margin: 0; font-family: 'Courier New', monospace; font-size: var(--font-size-sm); line-height: 1.6; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>&lt;!-- 1. Coloca el contenedor directamente en la sección, no dentro de grids --&gt;
 &lt;div class="section-single"&gt;
     &lt;div id="mi-empty-state-container"&gt;&lt;/div&gt;
 &lt;/div&gt;
@@ -352,7 +352,7 @@
                             </div>
                             <div style="background: var(--ubits-feedback-bg-info); padding: 16px; border-radius: 8px; border-left: 4px solid var(--ubits-feedback-accent-info);">
                                 <p class="ubits-body-sm-regular" style="margin: 0; color: var(--ubits-fg-1-medium); line-height: 1.6;">
-                                    <strong style="color: var(--ubits-fg-1-high);">💡 Importante:</strong> El componente <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px;">.ubits-empty-state</code> automáticamente ocupará todo el ancho disponible y mantendrá sus paddings originales (20px en desktop, 16px en mobile). No necesitas agregar estilos adicionales al componente interno.
+                                    <strong style="color: var(--ubits-fg-1-high);">💡 Importante:</strong> El componente <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: var(--font-size-sm);">.ubits-empty-state</code> automáticamente ocupará todo el ancho disponible y mantendrá sus paddings originales (20px en desktop, 16px en mobile). No necesitas agregar estilos adicionales al componente interno.
                                 </p>
                             </div>
                         </div>
@@ -360,10 +360,10 @@
                         <div style="margin-bottom: 32px;">
                             <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">⚠️ Problema común: Display y Gap</h3>
                             <p class="ubits-body-md-regular" style="margin-bottom: 16px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
-                                El componente usa <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px;">display: flex</code> y <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px;">gap</code> para el espaciado entre elementos. Si necesitas mostrar/ocultar el contenedor manualmente, <strong>usa <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px;">display: 'flex'</code> en lugar de <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px;">display: 'block'</code></strong>, de lo contrario el <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px;">gap</code> no funcionará y los elementos se verán pegados.
+                                El componente usa <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: var(--font-size-sm);">display: flex</code> y <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: var(--font-size-sm);">gap</code> para el espaciado entre elementos. Si necesitas mostrar/ocultar el contenedor manualmente, <strong>usa <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: var(--font-size-sm);">display: 'flex'</code> en lugar de <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: var(--font-size-sm);">display: 'block'</code></strong>, de lo contrario el <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: var(--font-size-sm);">gap</code> no funcionará y los elementos se verán pegados.
                             </p>
                             <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
-                                <pre style="margin: 0; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>// ✅ CORRECTO - El gap funcionará correctamente
+                                <pre style="margin: 0; font-family: 'Courier New', monospace; font-size: var(--font-size-sm); line-height: 1.6; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>// ✅ CORRECTO - El gap funcionará correctamente
 const emptyStateContainer = document.getElementById('mi-empty-state');
 emptyStateContainer.style.display = 'flex'; // Usar flex para que gap funcione
 
@@ -372,7 +372,7 @@ emptyStateContainer.style.display = 'block'; // display: block previene que gap 
                             </div>
                             <div style="background: var(--ubits-feedback-bg-warning); padding: 16px; border-radius: 8px; border-left: 4px solid var(--ubits-feedback-accent-warning);">
                                 <p class="ubits-body-sm-regular" style="margin: 0; color: var(--ubits-fg-1-medium); line-height: 1.6;">
-                                    <strong style="color: var(--ubits-fg-1-high);">⚠️ Advertencia:</strong> Si usas <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px;">display: 'block'</code>, el navegador mostrará un warning: <em>"The display: block property prevents gap from having an effect"</em>. El componente automáticamente aplica <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px;">display: flex</code> al renderizarse, pero si necesitas controlar el display manualmente (por ejemplo, para mostrar/ocultar), siempre usa <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px;">'flex'</code>.
+                                    <strong style="color: var(--ubits-fg-1-high);">⚠️ Advertencia:</strong> Si usas <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: var(--font-size-sm);">display: 'block'</code>, el navegador mostrará un warning: <em>"The display: block property prevents gap from having an effect"</em>. El componente automáticamente aplica <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: var(--font-size-sm);">display: flex</code> al renderizarse, pero si necesitas controlar el display manualmente (por ejemplo, para mostrar/ocultar), siempre usa <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: var(--font-size-sm);">'flex'</code>.
                                 </p>
                             </div>
                         </div>
@@ -380,10 +380,10 @@ emptyStateContainer.style.display = 'block'; // display: block previene que gap 
                         <div style="margin-bottom: 32px;">
                             <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">⚠️ Problema común: onClick y funciones globales</h3>
                             <p class="ubits-body-md-regular" style="margin-bottom: 16px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
-                                El componente crea funciones globales para manejar los onClick de los botones. Si necesitas que el onClick acceda a funciones definidas en tu código, asegúrate de que esas funciones estén disponibles en el scope global (<code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px;">window</code>) o captura la referencia directamente.
+                                El componente crea funciones globales para manejar los onClick de los botones. Si necesitas que el onClick acceda a funciones definidas en tu código, asegúrate de que esas funciones estén disponibles en el scope global (<code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: var(--font-size-sm);">window</code>) o captura la referencia directamente.
                             </p>
                             <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
-                                <pre style="margin: 0; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>// ✅ CORRECTO - Función global (recomendado para búsquedas)
+                                <pre style="margin: 0; font-family: 'Courier New', monospace; font-size: var(--font-size-sm); line-height: 1.6; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>// ✅ CORRECTO - Función global (recomendado para búsquedas)
 window.limpiarBusqueda = function() {
     // Tu código para limpiar búsqueda
     console.log('Limpiando búsqueda...');
@@ -421,7 +421,7 @@ loadEmptyState('mi-container', {
                             </div>
                             <div style="background: var(--ubits-feedback-bg-info); padding: 16px; border-radius: 8px; border-left: 4px solid var(--ubits-feedback-accent-info);">
                                 <p class="ubits-body-sm-regular" style="margin: 0; color: var(--ubits-fg-1-medium); line-height: 1.6;">
-                                    <strong style="color: var(--ubits-fg-1-high);">💡 Importante:</strong> El componente automáticamente limpia las funciones globales anteriores cuando se renderiza de nuevo, así que puedes llamar a <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px;">loadEmptyState</code> múltiples veces sin problemas. Para casos de búsqueda donde necesitas limpiar resultados, usar funciones globales es la mejor práctica.
+                                    <strong style="color: var(--ubits-fg-1-high);">💡 Importante:</strong> El componente automáticamente limpia las funciones globales anteriores cuando se renderiza de nuevo, así que puedes llamar a <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: var(--font-size-sm);">loadEmptyState</code> múltiples veces sin problemas. Para casos de búsqueda donde necesitas limpiar resultados, usar funciones globales es la mejor práctica.
                                 </p>
                             </div>
                         </div>
@@ -432,7 +432,7 @@ loadEmptyState('mi-container', {
                                 Si el onClick del botón no funciona (problema común en casos de búsqueda), usa un event listener directo. Esta es la solución más simple y confiable (KISS approach):
                             </p>
                             <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
-                                <pre style="margin: 0; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>// 1. Define la función global ANTES de renderizar
+                                <pre style="margin: 0; font-family: 'Courier New', monospace; font-size: var(--font-size-sm); line-height: 1.6; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>// 1. Define la función global ANTES de renderizar
 window.limpiarBusqueda = function() {
     // Tu código para limpiar búsqueda
     currentSearchValue = '';
@@ -478,7 +478,7 @@ setTimeout(() => {
                             </div>
                             <div style="background: var(--ubits-feedback-bg-warning); padding: 16px; border-radius: 8px; border-left: 4px solid var(--ubits-feedback-accent-warning);">
                                 <p class="ubits-body-sm-regular" style="margin: 0; color: var(--ubits-fg-1-medium); line-height: 1.6;">
-                                    <strong style="color: var(--ubits-fg-1-high);">⚠️ Por qué esta solución:</strong> En casos de búsqueda donde el empty state se renderiza dinámicamente, el sistema de funciones globales del componente puede tener problemas de scope o timing. Usar un event listener directo es más simple, confiable y funciona siempre. El <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px;">setTimeout</code> de 50ms asegura que el botón ya esté en el DOM.
+                                    <strong style="color: var(--ubits-fg-1-high);">⚠️ Por qué esta solución:</strong> En casos de búsqueda donde el empty state se renderiza dinámicamente, el sistema de funciones globales del componente puede tener problemas de scope o timing. Usar un event listener directo es más simple, confiable y funciona siempre. El <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: var(--font-size-sm);">setTimeout</code> de 50ms asegura que el botón ya esté en el DOM.
                                 </p>
                             </div>
                         </div>
@@ -489,48 +489,48 @@ setTimeout(() => {
                                 <table style="width: 100%; border-collapse: collapse;">
                                     <thead>
                                         <tr style="background: var(--ubits-bg-2);">
-                                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-high); font-family: 'Noto Sans', sans-serif; font-size: 13px; font-weight: 700;">Parámetro</th>
-                                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-high); font-family: 'Noto Sans', sans-serif; font-size: 13px; font-weight: 700;">Tipo</th>
-                                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-high); font-family: 'Noto Sans', sans-serif; font-size: 13px; font-weight: 700;">Requerido</th>
-                                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-high); font-family: 'Noto Sans', sans-serif; font-size: 13px; font-weight: 700;">Descripción</th>
+                                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-high); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm); font-weight: 700;">Parámetro</th>
+                                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-high); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm); font-weight: 700;">Tipo</th>
+                                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-high); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm); font-weight: 700;">Requerido</th>
+                                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-high); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm); font-weight: 700;">Descripción</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Courier New', monospace; font-size: 13px;">containerId</td>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: 13px;">string</td>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: 13px;">Sí</td>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: 13px;">ID del contenedor donde se renderizará el empty state</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Courier New', monospace; font-size: var(--font-size-sm);">containerId</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm);">string</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm);">Sí</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm);">ID del contenedor donde se renderizará el empty state</td>
                                         </tr>
                                         <tr>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Courier New', monospace; font-size: 13px;">options.icon</td>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: 13px;">string</td>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: 13px;">No</td>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: 13px;">Clase FontAwesome del icono (ej: 'fa-grid', default: 'fa-grid')</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Courier New', monospace; font-size: var(--font-size-sm);">options.icon</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm);">string</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm);">No</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm);">Clase FontAwesome del icono (ej: 'fa-grid', default: 'fa-grid')</td>
                                         </tr>
                                         <tr>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Courier New', monospace; font-size: 13px;">options.iconSize</td>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: 13px;">string</td>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: 13px;">No</td>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: 13px;">Tamaño del contenedor: 'sm' (28x28px, icono 12px), 'md' (32x32px, icono 16px), 'lg' (36x36px, icono 20px). Default: 'lg'</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Courier New', monospace; font-size: var(--font-size-sm);">options.iconSize</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm);">string</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm);">No</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm);">Tamaño del contenedor: 'sm' (28x28px, icono 12px), 'md' (32x32px, icono 16px), 'lg' (36x36px, icono 20px). Default: 'lg'</td>
                                         </tr>
                                         <tr>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Courier New', monospace; font-size: 13px;">options.title</td>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: 13px;">string</td>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: 13px;">Sí</td>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: 13px;">Título del empty state</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Courier New', monospace; font-size: var(--font-size-sm);">options.title</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm);">string</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm);">Sí</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm);">Título del empty state</td>
                                         </tr>
                                         <tr>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Courier New', monospace; font-size: 13px;">options.description</td>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: 13px;">string</td>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: 13px;">Sí</td>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: 13px;">Descripción del empty state</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Courier New', monospace; font-size: var(--font-size-sm);">options.description</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm);">string</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm);">Sí</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm);">Descripción del empty state</td>
                                         </tr>
                                         <tr>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Courier New', monospace; font-size: 13px;">options.buttons</td>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: 13px;">object</td>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: 13px;">No</td>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: 13px;">Configuración de los botones (secondary: {text, icon, onClick}, primary: {text, icon, onClick})</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Courier New', monospace; font-size: var(--font-size-sm);">options.buttons</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm);">object</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm);">No</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm);">Configuración de los botones (secondary: {text, icon, onClick}, primary: {text, icon, onClick})</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -540,7 +540,7 @@ setTimeout(() => {
                         <div style="margin-bottom: 32px;">
                             <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">Métodos disponibles</h3>
                             <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px;">
-                                <pre style="margin: 0; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>const emptyStateInstance = loadEmptyState('mi-container', {...});
+                                <pre style="margin: 0; font-family: 'Courier New', monospace; font-size: var(--font-size-sm); line-height: 1.6; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>const emptyStateInstance = loadEmptyState('mi-container', {...});
 
 // Actualizar configuración
 emptyStateInstance.update({

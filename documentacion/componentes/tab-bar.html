@@ -57,7 +57,7 @@
         /* Component preview container - reemplaza con estilos específicos del componente */
         .component-preview {
             position: relative !important;
-            border-radius: 8px !important;
+            border-radius: var(--border-radius-sm) !important;
             
             background: var(--ubits-bg-1) !important;
             border: 1px solid var(--ubits-border-1) !important;
@@ -75,7 +75,7 @@
             max-height: 600px !important;
             overflow-y: auto !important;
             margin-bottom: 12px !important;
-            border-radius: 12px !important;
+            border-radius: var(--border-radius-md) !important;
             width: 100% !important;
             max-width: 400px !important;
             margin-left: auto !important;
@@ -127,7 +127,7 @@
         #profile-menu-content .profile-menu {
             position: relative !important;
             background: var(--ubits-sidebar-bg) !important;
-            border-radius: 8px !important;
+            border-radius: var(--border-radius-sm) !important;
             
             padding: 8px 0 !important;
             width: 100% !important;
@@ -193,7 +193,7 @@
                 </div>
 
                 <!-- Preview Section -->
-                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
                     <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
                         <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                         Preview del componente
@@ -203,7 +203,7 @@
                     </p>
                     
                     <!-- Preview Container -->
-                    <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; position: relative;">
+                    <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md); position: relative;">
                         
                         <!-- Floating Menu Container -->
                         <div id="floating-menu-container"></div>
@@ -238,7 +238,7 @@
                     </div>
                     
                     <!-- Preview Controls -->
-                    <div style="margin-top: 16px; display: flex; gap: 12px; flex-wrap: wrap;">
+                    <div style="margin-top: 16px; display: flex; gap: var(--gap-md); flex-wrap: wrap;">
                         <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" onclick="setPreviewOption('modulos')">
                             <span>Módulos (Floating Menu)</span>
                         </button>
@@ -249,7 +249,7 @@
                 </div>
 
                 <!-- Características generales -->
-                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
                     <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
                         <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                         Características generales
@@ -257,19 +257,19 @@
                     <p class="ubits-body-md-regular" style="margin-bottom: 24px; color: var(--ubits-fg-1-medium);">
                         Reemplaza esta sección con las características específicas del componente que estés documentando.
                     </p>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
-                        <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                            <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-mobile"></i></div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--gap-lg);">
+                        <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                            <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-mobile"></i></div>
                             <div class="ubits-body-sm-bold">Móvil</div>
                             <div class="ubits-body-sm-regular">Fijo inferior</div>
                         </div>
-                        <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                            <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-desktop"></i></div>
+                        <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                            <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-desktop"></i></div>
                             <div class="ubits-body-sm-bold">Desktop</div>
                             <div class="ubits-body-sm-regular">Oculto (se reemplaza por el sidebar)</div>
                         </div>
-                        <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                            <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-cog"></i></div>
+                        <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                            <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-cog"></i></div>
                             <div class="ubits-body-sm-bold">Personalizable</div>
                             <div class="ubits-body-sm-regular">Fácil de modificar y extender</div>
                         </div>
@@ -277,7 +277,7 @@
                 </div>
 
                 <!-- FLOATING MENU - SUBCOMPONENTE -->
-                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
                     <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
                         <i class="far fa-window-maximize" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                         Floating Menu - Subcomponente
@@ -292,11 +292,11 @@
                             <i class="far fa-sitemap" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                             Estructura y componentes
                         </h3>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
-                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--gap-lg);">
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
                                 <div style="display: flex; align-items: center; margin-bottom: 12px;">
                                     <div style="width: 32px; height: 32px; background: var(--ubits-accent-brand); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px;">
-                                        <i class="far fa-graduation-cap" style="color: white; font-size: 14px;"></i>
+                                        <i class="far fa-graduation-cap" style="color: white; font-size: var(--font-size-sm);"></i>
                                     </div>
                                     <div class="ubits-body-sm-bold">Accordions</div>
                                 </div>
@@ -304,10 +304,10 @@
                                     Secciones expandibles: Aprendizaje, Diagnóstico, Desempeño, Tareas
                                 </div>
                             </div>
-                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
                                 <div style="display: flex; align-items: center; margin-bottom: 12px;">
                                     <div style="width: 32px; height: 32px; background: var(--ubits-accent-brand); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px;">
-                                        <i class="far fa-link" style="color: white; font-size: 14px;"></i>
+                                        <i class="far fa-link" style="color: white; font-size: var(--font-size-sm);"></i>
                                     </div>
                                     <div class="ubits-body-sm-bold">Enlaces directos</div>
                                 </div>
@@ -324,7 +324,7 @@
                             <i class="far fa-cogs" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                             Comportamiento
                         </h3>
-                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
                             <ul style="margin: 0; padding-left: 20px; list-style: none;">
                                 <li style="margin-bottom: 12px; display: flex; align-items: flex-start;">
                                     <i class="far fa-check-circle" style="color: var(--ubits-accent-brand); margin-right: 8px; margin-top: 2px; flex-shrink: 0;"></i>
@@ -349,7 +349,7 @@
                 </div>
 
                 <!-- PROMPTS ÚTILES -->
-                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
                     <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
                         <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                         Prompts útiles
@@ -372,8 +372,8 @@
                                 <span>Copiar</span>
                             </button>
                         </div>
-                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tabbar-prompt-1">En la página [nombre-pagina.html], activa el botón [Módulos o Mi perfil] del Tab-bar móvil para que se vea seleccionado.</code></pre>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tabbar-prompt-1">En la página [nombre-pagina.html], activa el botón [Módulos o Mi perfil] del Tab-bar móvil para que se vea seleccionado.</code></pre>
                         </div>
                     </div>
 
@@ -388,8 +388,8 @@
                                 <span>Copiar</span>
                             </button>
                         </div>
-                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tabbar-prompt-2">En la página [nombre-pagina.html], cuando se abra el menú "Módulos", activa la opción [nombre_de_la_opcion] que está dentro del grupo [Aprendizaje, Diagnóstico, Desempeño o Tareas].</code></pre>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tabbar-prompt-2">En la página [nombre-pagina.html], cuando se abra el menú "Módulos", activa la opción [nombre_de_la_opcion] que está dentro del grupo [Aprendizaje, Diagnóstico, Desempeño o Tareas].</code></pre>
                         </div>
                     </div>
 
@@ -404,14 +404,14 @@
                                 <span>Copiar</span>
                             </button>
                         </div>
-                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tabbar-prompt-3">En la página [nombre-pagina.html], cuando se abra el menú "Módulos", haz que se vea activa la opción de [nombre de la sección que deseas ver activa].</code></pre>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tabbar-prompt-3">En la página [nombre-pagina.html], cuando se abra el menú "Módulos", haz que se vea activa la opción de [nombre de la sección que deseas ver activa].</code></pre>
                         </div>
                     </div>
                 </div>
 
                 <!-- ACORDEÓN DE DOCUMENTACIÓN TÉCNICA -->
-                <div style="background: var(--ubits-bg-1); border-radius: 16px; margin-bottom: 40px; overflow: hidden;">
+                <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
                     <!-- Header del acordeón -->
                     <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
                         <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
@@ -425,7 +425,7 @@
                     
                     <!-- Botón de expansión -->
                     <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
-                        <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: var(--gap-sm);">
                             <i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>
                             Mostrar
                         </span>
@@ -445,8 +445,8 @@
                                     <span>Copiar</span>
                                 </button>
                             </div>
-                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px;">
-                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="structure-code">&lt;div class="tab-bar" id="tab-bar"&gt;
+                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="structure-code">&lt;div class="tab-bar" id="tab-bar"&gt;
   &lt;div class="tab-bar-content"&gt;
     &lt;div class="tab-bar-item" data-tab="modulos" onclick="navigateToTab('modulos')"&gt;
       &lt;i class="far fa-grid-2 tab-bar-icon"&gt;&lt;/i&gt;
@@ -477,8 +477,8 @@
                                     <span>Copiar</span>
                                 </button>
                             </div>
-                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="implement-code">&lt;!-- HTML --&gt;
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="implement-code">&lt;!-- HTML --&gt;
 &lt;div id="tab-bar-container"&gt;&lt;/div&gt;
 
 &lt;!-- CSS --&gt;
@@ -503,7 +503,7 @@ updateActiveTabBarItem('modulos'); // Cambiar item activo</code></pre>
                                 <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
                                     Carga el componente Tab-bar en el contenedor especificado.
                                 </p>
-                                <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: 6px; border-left: 4px solid var(--ubits-accent-brand);">
+                                <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: var(--border-radius-sm); border-left: 4px solid var(--ubits-accent-brand);">
                                     <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
                                         <strong>Parámetros:</strong> containerId (string) - ID del contenedor<br>
                                         <strong>Ejemplo:</strong> loadTabBar('tab-bar-container')
@@ -515,7 +515,7 @@ updateActiveTabBarItem('modulos'); // Cambiar item activo</code></pre>
                                 <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
                                     Actualiza el item activo del Tab-bar sin recargar el componente.
                                 </p>
-                                <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: 6px; border-left: 4px solid var(--ubits-accent-brand);">
+                                <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: var(--border-radius-sm); border-left: 4px solid var(--ubits-accent-brand);">
                                     <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
                                         <strong>Parámetros:</strong> itemId (string) - ID del nuevo item activo<br>
                                         <strong>Ejemplo:</strong> updateActiveTabBarItem('modulos')
@@ -536,7 +536,7 @@ updateActiveTabBarItem('modulos'); // Cambiar item activo</code></pre>
                                 <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
                                     Activa un enlace directo del floating menu (como UBITS AI, Encuestas).
                                 </p>
-                                <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: 6px; border-left: 4px solid var(--ubits-accent-brand);">
+                                <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: var(--border-radius-sm); border-left: 4px solid var(--ubits-accent-brand);">
                                     <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
                                         <strong>Parámetros:</strong> linkId (string) - ID del enlace directo<br>
                                         <strong>IDs disponibles:</strong> 'ubits-ai', 'encuestas'<br>
@@ -550,7 +550,7 @@ updateActiveTabBarItem('modulos'); // Cambiar item activo</code></pre>
                                 <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
                                     Activa un subitem dentro de los accordions del floating menu.
                                 </p>
-                                <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: 6px; border-left: 4px solid var(--ubits-accent-brand);">
+                                <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: var(--border-radius-sm); border-left: 4px solid var(--ubits-accent-brand);">
                                     <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
                                         <strong>Parámetros:</strong> linkId (string) - ID del subitem<br>
                                         <strong>IDs disponibles:</strong> 'inicio', 'catalogo', 'corporativa', 'zona-estudio', 'evaluaciones', 'objetivos', 'metricas', 'reportes', 'planes', 'tareas'<br>
@@ -564,8 +564,8 @@ updateActiveTabBarItem('modulos'); // Cambiar item activo</code></pre>
                                 <p class="ubits-body-md-regular" style="margin-bottom: 12px; line-height: 1.5;">
                                     Para activar automáticamente un item cuando se carga una página:
                                 </p>
-                                <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);">// En el HTML de la página específica
+                                <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: var(--border-radius-sm);">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium);">// En el HTML de la página específica
 document.addEventListener('DOMContentLoaded', function() {
     // Cargar componentes
     loadFloatingMenu('floating-menu-container');
@@ -598,8 +598,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <p class="ubits-body-md-regular" style="margin-bottom: 12px; line-height: 1.5;">
                                     Para agregar nuevos items, edita el HTML del Tab-bar en <code>components/tab-bar.html</code>:
                                 </p>
-                                <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="add-features-code">// En tab-bar.html, dentro del tab-bar-content
+                                <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: var(--border-radius-sm);">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="add-features-code">// En tab-bar.html, dentro del tab-bar-content
 &lt;div class="tab-bar-item" data-tab="nueva-opcion" onclick="navigateToTab('nueva-opcion')"&gt;
   &lt;i class="far fa-nuevo-icono tab-bar-icon"&gt;&lt;/i&gt;
   &lt;span class="tab-bar-text ubits-body-xs-regular"&gt;Nueva Opción&lt;/span&gt;
@@ -617,8 +617,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <p class="ubits-body-md-regular" style="margin-bottom: 12px; line-height: 1.5;">
                                     Los estilos se pueden personalizar editando las variables CSS en <code>components/tab-bar.css</code>:
                                 </p>
-                                <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="modify-styles-code">/* Personalizar colores del Tab-bar */
+                                <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: var(--border-radius-sm);">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="modify-styles-code">/* Personalizar colores del Tab-bar */
 .tab-bar {
   background-color: var(--ubits-bg-1);
   border-top: 1px solid var(--ubits-border-1);

@@ -57,19 +57,19 @@
 }
 
 .ubits-avatar--xs .ubits-avatar__fallback i {
-    font-size: 9px;
+    font-size: var(--font-size-xs);
 }
 
 .ubits-avatar--sm .ubits-avatar__fallback i {
-    font-size: 11px;
+    font-size: var(--font-size-xs);
 }
 
 .ubits-avatar--md .ubits-avatar__fallback i {
-    font-size: 13px;
+    font-size: var(--font-size-sm);
 }
 
 .ubits-avatar--lg .ubits-avatar__fallback i {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
 }
 
 /* ========================================
@@ -125,25 +125,25 @@
 .ubits-profile-list--xs .ubits-profile-list__count {
     width: 20px;
     height: 20px;
-    font-size: 9px;
+    font-size: var(--font-size-xs);
 }
 
 .ubits-profile-list--sm .ubits-profile-list__count {
     width: 28px;
     height: 28px;
-    font-size: 11px;
+    font-size: var(--font-size-xs);
 }
 
 .ubits-profile-list--md .ubits-profile-list__count {
     width: 36px;
     height: 36px;
-    font-size: 13px;
+    font-size: var(--font-size-sm);
 }
 
 .ubits-profile-list--lg .ubits-profile-list__count {
     width: 40px;
     height: 40px;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
 }
 
 .ubits-profile-list__count-text {

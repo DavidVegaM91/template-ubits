@@ -50,7 +50,7 @@
 
         .validator-icon {
             color: var(--ubits-accent-brand);
-            font-size: 24px;
+            font-size: var(--font-size-h1);
         }
 
         .validation-results {
@@ -99,7 +99,7 @@
 
         .validation-description {
             color: var(--ubits-fg-1-medium);
-            font-size: 14px;
+            font-size: var(--font-size-sm);
             line-height: 1.4;
         }
 
@@ -143,14 +143,14 @@
 
         .stat-number {
             color: var(--ubits-accent-brand);
-            font-size: 24px;
+            font-size: var(--font-size-h1);
             font-weight: 700;
             margin-bottom: 4px;
         }
 
         .stat-label {
             color: var(--ubits-fg-1-medium);
-            font-size: 12px;
+            font-size: var(--font-size-sm);
         }
 
         /* ========================================
@@ -221,7 +221,7 @@
                             Validador UBITS
                         </h1>
                         <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto; line-height: 1.6;">
-                            Verifica automáticamente el uso correcto de tokens UBITS, clases de tipografía y componentes en tus páginas. Actualizado con todos los componentes y tokens disponibles (2024).
+                            Verifica automáticamente el uso correcto de tokens UBITS: colores, tipografía, espaciado (font-size, border-radius, gap, padding) y componentes. Actualizado con todos los componentes y tokens disponibles.
                         </p>
                     </div>
 
@@ -242,7 +242,7 @@
                         </div>
                         
                         <div class="file-input" onclick="document.getElementById('file-upload').click()" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
-                            <i class="far fa-cloud-upload" style="font-size: 32px; color: var(--ubits-accent-brand); margin-bottom: 12px; display: block;"></i>
+                            <i class="far fa-cloud-upload" style="font-size: var(--font-size-d3); color: var(--ubits-accent-brand); margin-bottom: 12px; display: block;"></i>
                             <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium);">
                                 Arrastra un archivo HTML aquí o haz clic para seleccionar
                             </p>
@@ -286,7 +286,7 @@
                                         <span>Copiar prompt</span>
                                     </button>
                                 </div>
-                                <div class="code-example" id="cursor-prompt-content" style="max-height: 300px; overflow-y: auto; font-size: 13px; line-height: 1.4;">
+                                <div class="code-example" id="cursor-prompt-content" style="max-height: 300px; overflow-y: auto; font-size: var(--font-size-sm); line-height: 1.4;">
                                     <!-- El prompt se generará aquí -->
                                 </div>
                                 <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin-top: 12px; font-style: italic;">
@@ -330,6 +330,20 @@
                                 </ul>
                             </div>
 
+
+                            <div style="background: var(--ubits-bg-2); border-radius: 8px; padding: 16px;">
+                                <h3 class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high); margin-bottom: 8px;">
+                                    <i class="far fa-ruler-combined" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Tokens de espaciado y estilos
+                                </h3>
+                                <ul class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6; padding-left: 20px;">
+                                    <li>Detecta <strong>font-size</strong> en px → usar var(--font-size-xs|sm|md|h2|h1|d4|d3|d2|d1)</li>
+                                    <li>Detecta <strong>border-radius</strong> en px → usar var(--border-radius-xs|sm|md|lg|xl|full)</li>
+                                    <li>Detecta <strong>gap</strong> en px → usar var(--gap-xs|sm|md|lg|xl|2xl|4xl)</li>
+                                    <li>Detecta <strong>padding</strong> en px → usar var(--padding-xs|sm|md|lg|xl|2xl|4xl|6xl)</li>
+                                    <li>Comprueba importación de styles.css / ubits-spacing-tokens.css</li>
+                                </ul>
+                            </div>
 
                             <div style="background: var(--ubits-bg-2); border-radius: 8px; padding: 16px;">
                                 <h3 class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high); margin-bottom: 8px;">
@@ -420,7 +434,16 @@
                 /rgba\([^)]+\)/g,       // RGBA colors
                 /hsl\([^)]+\)/g,        // HSL colors
                 /hsla\([^)]+\)/g        // HSLA colors
-            ]
+            ],
+
+            // Patrones de espaciado/estilos hardcodeados (deben usar tokens oficiales)
+            hardcodedFontSizePattern: /font-size:\s*[0-9]+px/g,
+            hardcodedBorderRadiusPattern: /border-radius:\s*[0-9]+px(?:\s+[0-9]+px)*(?:\s+[0-9]+)?/g,
+            hardcodedGapPattern: /gap:\s*[0-9]+px(?:\s+[0-9]+px)*(?:\s+[0-9]+)?/g,
+            hardcodedPaddingPattern: /padding:\s*[0-9]+px(?:\s+[0-9]+px)*(?:\s+[0-9]+)?/g,
+
+            // Tokens oficiales de espaciado (para mensajes de ayuda)
+            spacingTokenFiles: ['ubits-spacing-tokens.css', 'styles.css']
         };
 
         // Función principal de validación
@@ -480,6 +503,13 @@
             successCount += structureValidation.success;
             warningCount += structureValidation.warnings;
             errorCount += structureValidation.errors;
+
+            // 6. Validar tokens de espaciado (font-size, border-radius, gap, padding)
+            const spacingValidation = validateSpacingTokens(cleanContent);
+            results.push(...spacingValidation.results);
+            successCount += spacingValidation.success;
+            warningCount += spacingValidation.warnings;
+            errorCount += spacingValidation.errors;
 
             // Calcular puntuación
             const totalChecks = successCount + warningCount + errorCount;
@@ -1094,6 +1124,108 @@
             return { results, success, warnings, errors };
         }
 
+        // Validar tokens de espaciado (font-size, border-radius, gap, padding)
+        function validateSpacingTokens(html) {
+            const results = [];
+            let success = 0, warnings = 0, errors = 0;
+
+            // 1. Font-size hardcodeado
+            const fontSizeMatches = html.match(UBITS_VALIDATORS.hardcodedFontSizePattern) || [];
+            const uniqueFontSize = [...new Set(fontSizeMatches)];
+            if (uniqueFontSize.length > 0) {
+                results.push({
+                    type: 'error',
+                    title: `Font-size hardcodeados (${uniqueFontSize.length})`,
+                    description: `Usa tokens oficiales: var(--font-size-xs), var(--font-size-sm), var(--font-size-md), var(--font-size-h2), var(--font-size-h1), var(--font-size-d4), var(--font-size-d3), var(--font-size-d2), var(--font-size-d1). Ejemplos detectados: ${uniqueFontSize.slice(0, 3).join(', ')}${uniqueFontSize.length > 3 ? '...' : ''}.`
+                });
+                errors++;
+            } else {
+                results.push({
+                    type: 'success',
+                    title: 'Font-size con tokens',
+                    description: 'No se detectaron font-size en px. Usa var(--font-size-*) de ubits-typography.css.'
+                });
+                success++;
+            }
+
+            // 2. Border-radius hardcodeado
+            const radiusMatches = html.match(UBITS_VALIDATORS.hardcodedBorderRadiusPattern) || [];
+            const uniqueRadius = [...new Set(radiusMatches)];
+            if (uniqueRadius.length > 0) {
+                results.push({
+                    type: 'error',
+                    title: `Border-radius hardcodeados (${uniqueRadius.length})`,
+                    description: `Usa tokens oficiales: var(--border-radius-xs), var(--border-radius-sm), var(--border-radius-md), var(--border-radius-lg), var(--border-radius-xl), var(--border-radius-full). Ejemplos: ${uniqueRadius.slice(0, 3).join(', ')}${uniqueRadius.length > 3 ? '...' : ''}.`
+                });
+                errors++;
+            } else {
+                results.push({
+                    type: 'success',
+                    title: 'Border-radius con tokens',
+                    description: 'No se detectaron border-radius en px. Usa var(--border-radius-*) de ubits-spacing-tokens.css.'
+                });
+                success++;
+            }
+
+            // 3. Gap hardcodeado
+            const gapMatches = html.match(UBITS_VALIDATORS.hardcodedGapPattern) || [];
+            const uniqueGap = [...new Set(gapMatches)];
+            if (uniqueGap.length > 0) {
+                results.push({
+                    type: 'error',
+                    title: `Gap hardcodeados (${uniqueGap.length})`,
+                    description: `Usa tokens oficiales: var(--gap-xs), var(--gap-sm), var(--gap-md), var(--gap-lg), var(--gap-xl), var(--gap-2xl), var(--gap-4xl), etc. Ejemplos: ${uniqueGap.slice(0, 3).join(', ')}${uniqueGap.length > 3 ? '...' : ''}.`
+                });
+                errors++;
+            } else {
+                results.push({
+                    type: 'success',
+                    title: 'Gap con tokens',
+                    description: 'No se detectaron gap en px. Usa var(--gap-*) de ubits-spacing-tokens.css.'
+                });
+                success++;
+            }
+
+            // 4. Padding hardcodeado (solo el primer valor para no duplicar con shorthand)
+            const paddingMatches = html.match(UBITS_VALIDATORS.hardcodedPaddingPattern) || [];
+            const uniquePadding = [...new Set(paddingMatches)];
+            if (uniquePadding.length > 0) {
+                results.push({
+                    type: 'error',
+                    title: `Padding hardcodeados (${uniquePadding.length})`,
+                    description: `Usa tokens oficiales: var(--padding-xs), var(--padding-sm), var(--padding-md), var(--padding-lg), var(--padding-xl), var(--padding-2xl), var(--padding-4xl), var(--padding-6xl). Ejemplos: ${uniquePadding.slice(0, 3).join(', ')}${uniquePadding.length > 3 ? '...' : ''}.`
+                });
+                errors++;
+            } else {
+                results.push({
+                    type: 'success',
+                    title: 'Padding con tokens',
+                    description: 'No se detectaron padding en px. Usa var(--padding-*) de ubits-spacing-tokens.css.'
+                });
+                success++;
+            }
+
+            // 5. Importación de estilos con tokens de espaciado (styles.css importa ubits-spacing-tokens.css)
+            const hasSpacingTokens = UBITS_VALIDATORS.spacingTokenFiles.some(f => html.includes(f));
+            if (hasSpacingTokens) {
+                results.push({
+                    type: 'success',
+                    title: 'Tokens de espaciado disponibles',
+                    description: 'La página importa styles.css o ubits-spacing-tokens.css (tokens de padding, gap, border-radius).'
+                });
+                success++;
+            } else {
+                results.push({
+                    type: 'warning',
+                    title: 'Tokens de espaciado no detectados',
+                    description: 'Para usar var(--padding-*), var(--gap-*), var(--border-radius-*), importa styles.css (que incluye ubits-spacing-tokens.css) o ubits-spacing-tokens.css directamente.'
+                });
+                warnings++;
+            }
+
+            return { results, success, warnings, errors };
+        }
+
         // Función para validar archivo subido
         function validateFile(file) {
             if (!file || !file.name.endsWith('.html')) {
@@ -1188,6 +1320,13 @@
                 });
                 successCount++;
             }
+
+            // Validar tokens de espaciado (font-size, border-radius, gap, padding)
+            const spacingValidation = validateSpacingTokens(htmlContent);
+            results.push(...spacingValidation.results);
+            successCount += spacingValidation.success;
+            warningCount += spacingValidation.warnings;
+            errorCount += spacingValidation.errors;
 
             // Calcular puntuación
             const totalChecks = successCount + warningCount + errorCount;
@@ -1342,6 +1481,19 @@
                 instructions.push('• Para subtítulos (h3-h6): usa ubits-body-md-bold o ubits-body-sm-bold.');
             }
 
+            if (errors.some(e => e.title.includes('Font-size hardcodeados'))) {
+                instructions.push('• Reemplaza TODOS los font-size en px por tokens: var(--font-size-xs), var(--font-size-sm), var(--font-size-md), var(--font-size-h2), var(--font-size-h1), var(--font-size-d4), var(--font-size-d3), var(--font-size-d2), var(--font-size-d1). Aproxima al valor oficial más cercano.');
+            }
+            if (errors.some(e => e.title.includes('Border-radius hardcodeados'))) {
+                instructions.push('• Reemplaza TODOS los border-radius en px por tokens: var(--border-radius-xs), var(--border-radius-sm), var(--border-radius-md), var(--border-radius-lg), var(--border-radius-xl), var(--border-radius-full). Aproxima al valor oficial más cercano.');
+            }
+            if (errors.some(e => e.title.includes('Gap hardcodeados'))) {
+                instructions.push('• Reemplaza TODOS los gap en px por tokens: var(--gap-xs), var(--gap-sm), var(--gap-md), var(--gap-lg), var(--gap-xl), var(--gap-2xl), var(--gap-4xl). Aproxima al valor oficial más cercano.');
+            }
+            if (errors.some(e => e.title.includes('Padding hardcodeados'))) {
+                instructions.push('• Reemplaza TODOS los padding en px por tokens: var(--padding-xs), var(--padding-sm), var(--padding-md), var(--padding-lg), var(--padding-xl), var(--padding-2xl), var(--padding-4xl), var(--padding-6xl). Aproxima al valor oficial más cercano.');
+            }
+
             if (instructions.length === 0) {
                 instructions.push('• Revisa el código siguiendo las reglas UBITS del template.');
                 instructions.push('• Mantén la identidad visual UBITS usando solo tokens oficiales.');
@@ -1354,6 +1506,7 @@
             prompt += '✅ VERIFICACIÓN FINAL:\n';
             prompt += 'Después de hacer los cambios, verifica que:\n';
             prompt += '• No hay colores hardcodeados (solo tokens var(--ubits-*))\n';
+            prompt += '• No hay font-size, border-radius, gap ni padding en px (solo var(--font-size-*), var(--border-radius-*), var(--gap-*), var(--padding-*))\n';
             prompt += '• Solo se usan clases de tipografía oficiales UBITS\n';
             prompt += '• Todos los CSS/JS requeridos están importados con rutas correctas\n';
             prompt += '• Se usan componentes UBITS oficiales en lugar de custom\n';

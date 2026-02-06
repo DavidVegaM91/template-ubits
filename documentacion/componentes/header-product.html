@@ -36,7 +36,7 @@
             top: 0; left: 0; right: 0; bottom: 0;
             background-color: var(--ubits-border-1);
             transition: .4s;
-            border-radius: 20px;
+            border-radius: var(--border-radius-xl);
         }
         .slider:before {
             position: absolute;
@@ -55,7 +55,7 @@
         .preview-container {
             background: var(--ubits-bg-2);
             padding: 24px;
-            border-radius: 12px;
+            border-radius: var(--border-radius-md);
             min-height: 200px;
         }
         /* Mostrar título en el preview (el componente lo oculta por defecto salvo en .modo-estudio-ia-page) */
@@ -71,21 +71,21 @@
             margin-top: 20px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: var(--gap-md);
         }
         .control-group {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            gap: 8px 20px;
+            gap: var(--gap-sm) 20px;
             padding: 10px 12px;
             background: var(--ubits-bg-2);
-            border-radius: 8px;
+            border-radius: var(--border-radius-sm);
             border: 1px solid var(--ubits-border-1);
         }
         .control-group-label {
             font-family: 'Noto Sans', sans-serif;
-            font-size: 12px;
+            font-size: var(--font-size-sm);
             font-weight: 600;
             color: var(--ubits-fg-1-high);
             min-width: 88px;
@@ -94,16 +94,16 @@
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            gap: 8px 16px;
+            gap: var(--gap-sm) 16px;
         }
         .control-item {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: var(--gap-sm);
         }
         .control-item .switch-label {
             font-family: 'Noto Sans', sans-serif;
-            font-size: 12px;
+            font-size: var(--font-size-sm);
             color: var(--ubits-fg-1-medium);
         }
         .control-group-nested {
@@ -114,13 +114,13 @@
         .variant-radios {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: var(--gap-lg);
         }
         .variant-radios label {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            font-size: 13px;
+            gap: var(--gap-sm);
+            font-size: var(--font-size-sm);
             color: var(--ubits-fg-1-medium);
             cursor: pointer;
         }
@@ -128,19 +128,19 @@
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            gap: 8px 16px;
+            gap: var(--gap-sm) 16px;
         }
         .control-group-tabs label {
-            font-size: 12px;
+            font-size: var(--font-size-sm);
             color: var(--ubits-fg-1-medium);
         }
         .control-group-tabs select {
             padding: 6px 10px;
-            border-radius: 6px;
+            border-radius: var(--border-radius-sm);
             border: 1px solid var(--ubits-border-1);
             background: var(--ubits-bg-1);
             color: var(--ubits-fg-1-high);
-            font-size: 12px;
+            font-size: var(--font-size-sm);
         }
     </style>
 </head>
@@ -177,7 +177,7 @@
                     </div>
 
                     <!-- Preview Section -->
-                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
                         <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
                             <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                             Preview del componente
@@ -286,29 +286,29 @@
                     </div>
 
                     <!-- Características generales -->
-                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
                         <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
                             <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                             Características generales
                         </h2>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
-                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                                <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-sliders-h"></i></div>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--gap-lg);">
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-sliders-h"></i></div>
                                 <div class="ubits-body-sm-bold">Componente flexible</div>
                                 <div class="ubits-body-sm-regular">Todos los elementos son opcionales y configurables</div>
                             </div>
-                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                                <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-mobile-alt"></i></div>
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-mobile-alt"></i></div>
                                 <div class="ubits-body-sm-bold">Responsive</div>
                                 <div class="ubits-body-sm-regular">Se adapta automáticamente a diferentes tamaños de pantalla</div>
                             </div>
-                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                                <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-compress-arrows-alt"></i></div>
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-compress-arrows-alt"></i></div>
                                 <div class="ubits-body-sm-bold">Abraza su contenido</div>
                                 <div class="ubits-body-sm-regular">Se ajusta automáticamente sin alturas fijas</div>
                             </div>
-                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                                <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-sitemap"></i></div>
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-sitemap"></i></div>
                                 <div class="ubits-body-sm-bold">Breadcrumb opcional</div>
                                 <div class="ubits-body-sm-regular">Configurable con múltiples niveles (máx. 3 recomendado)</div>
                             </div>
@@ -316,13 +316,13 @@
                     </div>
 
                     <!-- Implementación básica -->
-                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
                         <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
                             <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                             Implementación básica
                         </h2>
-                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; margin-bottom: 16px;">
-                            <pre style="margin: 0; color: var(--ubits-fg-1-high); font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; white-space: pre-wrap; word-wrap: break-word;"><code>&lt;!-- Contenedor para el header-product --&gt;
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); margin-bottom: 16px;">
+                            <pre style="margin: 0; color: var(--ubits-fg-1-high); font-family: 'Courier New', monospace; font-size: var(--font-size-sm); line-height: 1.6; white-space: pre-wrap; word-wrap: break-word;"><code>&lt;!-- Contenedor para el header-product --&gt;
 &lt;div id="header-product-container"&gt;&lt;/div&gt;
 
 &lt;!-- JavaScript para cargar el componente --&gt;
@@ -372,45 +372,45 @@
                     </div>
 
                     <!-- Requisitos obligatorios -->
-                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
                         <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
                             <i class="far fa-check-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                             Requisitos obligatorios
                         </h2>
                         <ul style="list-style: none; padding: 0; margin: 0;">
-                            <li style="margin-bottom: 12px; display: flex; align-items: flex-start; gap: 12px;">
+                            <li style="margin-bottom: 12px; display: flex; align-items: flex-start; gap: var(--gap-md);">
                                 <i class="far fa-check" style="color: var(--ubits-accent-brand); margin-top: 4px;"></i>
-                                <span class="ubits-body-md-regular">CSS: <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace;">&lt;link rel="stylesheet" href="../../components/header-product.css"&gt;</code></span>
+                                <span class="ubits-body-md-regular">CSS: <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs); font-family: 'Courier New', monospace;">&lt;link rel="stylesheet" href="../../components/header-product.css"&gt;</code></span>
                             </li>
-                            <li style="margin-bottom: 12px; display: flex; align-items: flex-start; gap: 12px;">
+                            <li style="margin-bottom: 12px; display: flex; align-items: flex-start; gap: var(--gap-md);">
                                 <i class="far fa-check" style="color: var(--ubits-accent-brand); margin-top: 4px;"></i>
-                                <span class="ubits-body-md-regular">JavaScript: <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace;">&lt;script src="../../components/header-product.js"&gt;&lt;/script&gt;</code></span>
+                                <span class="ubits-body-md-regular">JavaScript: <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs); font-family: 'Courier New', monospace;">&lt;script src="../../components/header-product.js"&gt;&lt;/script&gt;</code></span>
                             </li>
-                            <li style="margin-bottom: 12px; display: flex; align-items: flex-start; gap: 12px;">
+                            <li style="margin-bottom: 12px; display: flex; align-items: flex-start; gap: var(--gap-md);">
                                 <i class="far fa-check" style="color: var(--ubits-accent-brand); margin-top: 4px;"></i>
                                 <span class="ubits-body-md-regular">Componentes dependientes: Button, IA-Button (para el botón de IA)</span>
                             </li>
-                            <li style="margin-bottom: 12px; display: flex; align-items: flex-start; gap: 12px;">
+                            <li style="margin-bottom: 12px; display: flex; align-items: flex-start; gap: var(--gap-md);">
                                 <i class="far fa-check" style="color: var(--ubits-accent-brand); margin-top: 4px;"></i>
-                                <span class="ubits-body-md-regular">FontAwesome: <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace;">&lt;link rel="stylesheet" href="../../general-styles/fontawesome-icons.css"&gt;</code></span>
+                                <span class="ubits-body-md-regular">FontAwesome: <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs); font-family: 'Courier New', monospace;">&lt;link rel="stylesheet" href="../../general-styles/fontawesome-icons.css"&gt;</code></span>
                             </li>
                         </ul>
                     </div>
 
                     <!-- Documentación técnica: alineación cuando se oculta título/flecha -->
-                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px; border: 1px solid var(--ubits-border-1);">
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px; border: 1px solid var(--ubits-border-1);">
                         <h2 class="ubits-heading-h2" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">
                             <i class="far fa-align-right" style="margin-right: 8px; color: var(--ubits-fg-1-medium);"></i>
                             Alineación de acciones (header sin título ni flecha atrás)
                         </h2>
                         <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 12px;">
-                            En muchas páginas el header se usa sin nombre de producto y sin botón atrás (ocultando <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px;">.ubits-header-product__product-info</code> con CSS). En ese caso las acciones deben seguir siempre a la <strong>derecha</strong>, igual que en el preview.
+                            En muchas páginas el header se usa sin nombre de producto y sin botón atrás (ocultando <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">.ubits-header-product__product-info</code> con CSS). En ese caso las acciones deben seguir siempre a la <strong>derecha</strong>, igual que en el preview.
                         </p>
                         <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 12px;">
-                            <strong>Por qué ocurría el error:</strong> <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px;">product-info</code> tiene <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px;">flex: 1</code> y ocupa el espacio disponible, empujando las acciones a la derecha. Al ocultar <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px;">product-info</code> (display: none), ese bloque deja de ocupar espacio y la fila solo contiene <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px;">__actions</code>; en un contenedor flex sin más reglas, el único hijo queda al inicio (izquierda).
+                            <strong>Por qué ocurría el error:</strong> <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">product-info</code> tiene <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">flex: 1</code> y ocupa el espacio disponible, empujando las acciones a la derecha. Al ocultar <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">product-info</code> (display: none), ese bloque deja de ocupar espacio y la fila solo contiene <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">__actions</code>; en un contenedor flex sin más reglas, el único hijo queda al inicio (izquierda).
                         </p>
                         <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 0;">
-                            <strong>Solución en el componente:</strong> En <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px;">header-product.css</code>, <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px;">.ubits-header-product__actions</code> usa <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px;">margin-left: auto</code> (en la shorthand <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px;">margin: -16px -16px -16px auto</code>). Así las acciones quedan siempre alineadas a la derecha, con o sin <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px;">product-info</code> visible. No hace falta añadir estilos en la página (p. ej. justify-content: flex-end).
+                            <strong>Solución en el componente:</strong> En <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">header-product.css</code>, <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">.ubits-header-product__actions</code> usa <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">margin-left: auto</code> (en la shorthand <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">margin: -16px -16px -16px auto</code>). Así las acciones quedan siempre alineadas a la derecha, con o sin <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">product-info</code> visible. No hace falta añadir estilos en la página (p. ej. justify-content: flex-end).
                         </p>
                     </div>
                 </div>

@@ -140,7 +140,7 @@
 
 .search-suggestion-item .suggestion-text {
     color: var(--ubits-fg-1-high);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     line-height: 1.5;
     text-align: left;
 }
@@ -296,9 +296,9 @@
     transform: translateX(-50%);
     background: var(--ubits-fg-1-high);
     color: var(--ubits-logo-inverted);
-    padding: 6px 10px;
-    border-radius: 6px;
-    font-size: 12px;
+    padding: var(--padding-sm) var(--padding-md);
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-sm);
     white-space: nowrap;
     opacity: 0;
     pointer-events: none;
@@ -448,7 +448,7 @@
 }
 
 .tipo-contenido-icon-nuevo i {
-    font-size: 32px;
+    font-size: var(--font-size-d3);
 }
 
 .tipo-contenido-name-nuevo {
@@ -516,14 +516,14 @@
     right: 0;
     height: 4px;
     background: var(--ubits-accent-brand);
-    border-radius: 0 0 12px 12px;
+    border-radius: 0 0 var(--border-radius-md) var(--border-radius-md);
     z-index: 10;
 }
 
 .academia-card-spotify-content {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-xs);
+    gap: var(--gap-none);
 }
 
 .academia-card-spotify-content p {
@@ -580,7 +580,7 @@
     aspect-ratio: 16 / 9;
     object-fit: cover;
     display: block;
-    border-radius: 12px 12px 0 0;
+    border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
     transition: transform 0.3s ease;
 }
 
@@ -593,7 +593,7 @@
     background: var(--ubits-bg-1);
     display: flex;
     flex-direction: column;
-    gap: var(--gap-xs);
+    gap: var(--gap-none);
 }
 
 .academia-card-spotify.variant-image-top .academia-card-spotify-title {
@@ -657,7 +657,7 @@
 .competencia-card-v1 {
     background: var(--ubits-bg-1);
     border: 1px solid transparent;
-    border-radius: 6px;
+    border-radius: var(--border-radius-sm);
     overflow: visible;
     cursor: default;
     display: flex;
@@ -676,7 +676,7 @@
 .competencia-card-v1-actions {
     display: flex;
     align-items: center;
-    gap: var(--gap-xs);
+    gap: var(--gap-none);
     padding: 0 8px;
     flex-shrink: 0;
 }
@@ -696,14 +696,14 @@
     object-fit: cover;
     background: var(--ubits-bg-2);
     flex-shrink: 0;
-    border-radius: 6px 0 0 6px;
+    border-radius: var(--border-radius-sm) 0 0 var(--border-radius-sm);
 }
 
 .competencia-card-v1-content {
-    padding: 6px 8px;
+    padding: var(--padding-sm) var(--padding-sm);
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: var(--gap-none);
     flex: 1;
     min-width: 0;
     justify-content: center;
@@ -723,7 +723,7 @@
     line-height: 1.5;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: var(--gap-sm);
     max-width: 100%;
 }
 
@@ -760,7 +760,7 @@
     margin-top: 8px;
     padding: var(--padding-none);
     background: var(--ubits-bg-2);
-    border-radius: 6px;
+    border-radius: var(--border-radius-sm);
     overflow: hidden;
 }
 
@@ -794,7 +794,7 @@
 
 .habilidad-chip i {
     color: var(--ubits-fg-1-medium);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     transition: color 0.2s ease;
 }
 
@@ -815,9 +815,9 @@
     transform: translateX(-50%);
     background: var(--ubits-fg-1-high);
     color: var(--ubits-logo-inverted);
-    padding: 6px 10px;
-    border-radius: 6px;
-    font-size: 12px;
+    padding: var(--padding-sm) var(--padding-md);
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-sm);
     white-space: nowrap;
     opacity: 0;
     pointer-events: none;
@@ -889,11 +889,11 @@
 /* Estado vacío */
 .catalog-empty-state {
     text-align: center;
-    padding: 60px 20px;
+    padding: var(--padding-6xl) var(--padding-xl);
 }
 
 .catalog-empty-state-icon {
-    font-size: 64px;
+    font-size: var(--font-size-d1);
     color: var(--ubits-fg-1-low);
     margin-bottom: 16px;
 }
@@ -974,7 +974,7 @@
     }
 
     .catalog-hero h1 {
-        font-size: 24px;
+        font-size: var(--font-size-h1);
     }
 
     .catalog-search-wrapper {

@@ -78,7 +78,7 @@
             background: var(--ubits-bg-1);
             color: var(--ubits-fg-1-medium);
             font-family: 'Noto Sans', sans-serif;
-            font-size: 14px;
+            font-size: var(--font-size-sm);
             font-weight: 400;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -331,17 +331,17 @@
                     </p>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
                         <div style="text-align: center; padding: 24px; background: var(--ubits-bg-2); border-radius: 12px;">
-                            <div style="font-size: 32px; color: var(--ubits-accent-brand); margin-bottom: 16px;"><i class="far fa-circle-play"></i></div>
+                            <div style="font-size: var(--font-size-d3); color: var(--ubits-accent-brand); margin-bottom: 16px;"><i class="far fa-circle-play"></i></div>
                             <div class="ubits-body-md-bold" style="margin-bottom: 8px;">Estados visuales</div>
                             <div class="ubits-body-sm-regular">Default, En progreso, Completado con barras dinámicas y colores diferenciados</div>
                         </div>
                         <div style="text-align: center; padding: 24px; background: var(--ubits-bg-2); border-radius: 12px;">
-                            <div style="font-size: 32px; color: var(--ubits-accent-brand); margin-bottom: 16px;"><i class="far fa-expand"></i></div>
+                            <div style="font-size: var(--font-size-d3); color: var(--ubits-accent-brand); margin-bottom: 16px;"><i class="far fa-expand"></i></div>
                             <div class="ubits-body-md-bold" style="margin-bottom: 8px;">Aspect ratio 16:9</div>
                             <div class="ubits-body-sm-regular">Mantiene las proporciones perfectas para cualquier imagen de contenido</div>
                         </div>
                         <div style="text-align: center; padding: 24px; background: var(--ubits-bg-2); border-radius: 12px;">
-                            <div style="font-size: 32px; color: var(--ubits-accent-brand); margin-bottom: 16px;"><i class="far fa-mobile"></i></div>
+                            <div style="font-size: var(--font-size-d3); color: var(--ubits-accent-brand); margin-bottom: 16px;"><i class="far fa-mobile"></i></div>
                             <div class="ubits-body-md-bold" style="margin-bottom: 8px;">Responsive</div>
                             <div class="ubits-body-sm-regular">Adaptable a todos los dispositivos con grid automático y breakpoints optimizados</div>
                         </div>
@@ -373,7 +373,7 @@
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontent-prompt-1">Crea un grid de [número] cards de contenido de aprendizaje sobre [tema] con [número] cards por fila en [ubicación donde quieres el grid]. Agrega los breakpoints responsive que consideres necesarios.</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontent-prompt-1">Crea un grid de [número] cards de contenido de aprendizaje sobre [tema] con [número] cards por fila en [ubicación donde quieres el grid]. Agrega los breakpoints responsive que consideres necesarios.</code></pre>
                         </div>
                     </div>
 
@@ -389,7 +389,7 @@
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontent-prompt-2">Cambia la card [nombre_del_card] de [tipo_actual] a [nuevo_tipo: Curso, Short, Charla, Artículo, Podcast, Libro, etc.].</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontent-prompt-2">Cambia la card [nombre_del_card] de [tipo_actual] a [nuevo_tipo: Curso, Short, Charla, Artículo, Podcast, Libro, etc.].</code></pre>
                         </div>
                     </div>
 
@@ -405,7 +405,7 @@
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontent-prompt-3">Cambia la card [nombre_del_card] para que muestre contenido de la competencia [nombre_de_la_competencia].</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontent-prompt-3">Cambia la card [nombre_del_card] para que muestre contenido de la competencia [nombre_de_la_competencia].</code></pre>
                         </div>
                     </div>
 
@@ -421,7 +421,7 @@
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontent-prompt-4">Cambia la card [nombre_del_card] para que muestre contenido del proveedor [nombre_del_proveedor: UBITS, Microsoft, TED, AWS, Harvard, etc.].</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontent-prompt-4">Cambia la card [nombre_del_card] para que muestre contenido del proveedor [nombre_del_proveedor: UBITS, Microsoft, TED, AWS, Harvard, etc.].</code></pre>
                         </div>
                     </div>
 
@@ -437,7 +437,7 @@
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontent-prompt-5">Cambia la card [nombre_del_card] para mostrar contenido de nivel [Básico, Intermedio o Avanzado].</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontent-prompt-5">Cambia la card [nombre_del_card] para mostrar contenido de nivel [Básico, Intermedio o Avanzado].</code></pre>
                         </div>
                     </div>
 
@@ -453,7 +453,7 @@
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontent-prompt-6">Haz que la card [nombre_del_card] muestre contenido completado al 100% con barra de progreso verde.</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontent-prompt-6">Haz que la card [nombre_del_card] muestre contenido completado al 100% con barra de progreso verde.</code></pre>
                         </div>
                     </div>
 
@@ -469,7 +469,7 @@
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontent-prompt-7">Haz que la card [nombre_del_card] muestre contenido en progreso con [porcentaje]% completado.</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontent-prompt-7">Haz que la card [nombre_del_card] muestre contenido en progreso con [porcentaje]% completado.</code></pre>
                         </div>
                     </div>
 
@@ -485,7 +485,7 @@
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontent-prompt-8">Cambia la duración de la card [nombre_del_card] para que muestre [nueva_duracion] minutos.</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontent-prompt-8">Cambia la duración de la card [nombre_del_card] para que muestre [nueva_duracion] minutos.</code></pre>
                         </div>
                     </div>
 
@@ -501,7 +501,7 @@
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontent-prompt-9">Cambia la card [nombre_del_card] para mostrar contenido en [idioma: Español, Inglés, Portugués, etc.].</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontent-prompt-9">Cambia la card [nombre_del_card] para mostrar contenido en [idioma: Español, Inglés, Portugués, etc.].</code></pre>
                         </div>
                     </div>
 
@@ -517,7 +517,7 @@
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontent-prompt-10">Cambia la imagen de la card [nombre_del_card] para que use [descripción_de_la_nueva_imagen].</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontent-prompt-10">Cambia la imagen de la card [nombre_del_card] para que use [descripción_de_la_nueva_imagen].</code></pre>
                         </div>
                     </div>
                 </div>
@@ -558,7 +558,7 @@
                                 </button>
                             </div>
                             <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px;">
-                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="structure-code">&lt;div class="course-card" data-progress="75" data-status="progress"&gt;
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="structure-code">&lt;div class="course-card" data-progress="75" data-status="progress"&gt;
   &lt;div class="course-thumbnail-wrapper"&gt;
     &lt;div class="course-thumbnail"&gt;
       &lt;img src="imagen.jpg" alt="Título" class="course-image"&gt;
@@ -635,7 +635,7 @@
                             </div>
                             
                             <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="implement-code">&lt;!-- 1. HTML: Crear contenedor --&gt;
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="implement-code">&lt;!-- 1. HTML: Crear contenedor --&gt;
 &lt;div id="mi-contenedor-cards"&gt;&lt;/div&gt;
 
 &lt;!-- 2. CSS: Importar dependencias --&gt;
@@ -683,7 +683,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             
                             <div style="background: var(--ubits-feedback-bg-warning); padding: 20px; border-radius: 12px; border: 1px solid var(--ubits-feedback-accent-warning); margin-bottom: 24px;">
                                 <div style="display: flex; align-items: start; gap: 12px;">
-                                    <i class="far fa-triangle-exclamation" style="font-size: 24px; color: var(--ubits-feedback-accent-warning); margin-top: 2px;"></i>
+                                    <i class="far fa-triangle-exclamation" style="font-size: var(--font-size-h1); color: var(--ubits-feedback-accent-warning); margin-top: 2px;"></i>
                                     <div>
                                         <h3 class="ubits-body-md-bold" style="margin-bottom: 8px; color: var(--ubits-fg-1-high);">
                                             ⚠️ IMPORTANTE: Rutas relativas desde la ubicación del HTML
@@ -703,7 +703,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     Si tu HTML está en una subcarpeta como <code>ubits-colaborador/aprendizaje/catalogo.html</code>, usa rutas con <code>../../images/</code>:
                                 </p>
                                 <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code>const datosCards = [
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium);"><code>const datosCards = [
     {
         type: 'Curso',
         title: 'Mi contenido',
@@ -724,7 +724,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     Si tu HTML está en la raíz del proyecto, usa rutas con <code>images/</code>:
                                 </p>
                                 <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code>const datosCards = [
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium);"><code>const datosCards = [
     {
         type: 'Curso',
         title: 'Mi contenido',
@@ -863,7 +863,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     Para agregar nuevos tipos de contenido, modifica el array CONTENT_TYPES en el archivo JavaScript:
                                 </p>
                                 <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="add-features-code">// En card-content.js, línea 11-23
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="add-features-code">// En card-content.js, línea 11-23
 const CONTENT_TYPES = [
     'Curso',
     'Short', 
@@ -893,7 +893,7 @@ const CONTENT_TYPES = [
                                     Puedes personalizar la apariencia del componente sobrescribiendo las clases CSS:
                                 </p>
                                 <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="modify-styles-code">/* Personalizar el hover del card */
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="modify-styles-code">/* Personalizar el hover del card */
 .course-card:hover {
   transform: translateY(-4px); /* Más elevación */
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); /* Sombra más fuerte */
@@ -911,7 +911,7 @@ const CONTENT_TYPES = [
 
 /* Personalizar tipografía del título */
 .course-title {
-  font-size: 18px; /* Título más grande */
+  font-size: var(--font-size-h2); /* Título más grande */
   line-height: 1.4;
 }</code></pre>
                                 </div>
@@ -928,7 +928,7 @@ const CONTENT_TYPES = [
                                     Para agregar nuevos aliados/proveedores, actualiza el objeto PROVIDERS:
                                 </p>
                                 <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="add-providers-code">// En card-content.js, línea 98-120
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="add-providers-code">// En card-content.js, línea 98-120
 const PROVIDERS = {
     'UBITS': '../../images/Favicons/UBITS.jpg',
     'Microsoft': '../../images/Favicons/Microsoft.jpg',

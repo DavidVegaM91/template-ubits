@@ -109,7 +109,7 @@
    ======================================== */
 
 .ubits-tab i {
-    font-size: 16px;
+    font-size: var(--font-size-md);
     line-height: 1;
     color: var(--ubits-fg-1-medium);
     transition: color 0.2s ease;
@@ -125,7 +125,7 @@
 
 .ubits-tab span {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 13px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     line-height: 13px;
     color: var(--ubits-fg-1-medium);
@@ -151,13 +151,13 @@
 /* Aplicar tipografía UBITS al texto del tab medium */
 .ubits-tab span {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 13px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     line-height: 13px;
 }
 
 .ubits-tab i {
-    font-size: 16px;
+    font-size: var(--font-size-md);
 }
 
 /* Medium (default) Icon Only */
@@ -168,7 +168,7 @@
 }
 
 .ubits-tab.ubits-tab--icon-only i {
-    font-size: 16px;
+    font-size: var(--font-size-md);
 }
 
 /* Extra Small - usa ubits-body-xs-semibold */
@@ -181,13 +181,13 @@
 /* Aplicar tipografía UBITS al texto del tab extra small - ubits-body-xs-semibold */
 .ubits-tab--xs span {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 11px;
+    font-size: var(--font-size-xs);
     font-weight: 600;
     line-height: 11px;
 }
 
 .ubits-tab--xs i {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
 }
 
 .ubits-tab--xs.ubits-tab--icon-only {
@@ -197,7 +197,7 @@
 }
 
 .ubits-tab--xs.ubits-tab--icon-only i {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
 }
 
 /* Small - usa ubits-body-sm-semibold */
@@ -210,13 +210,13 @@
 /* Aplicar tipografía UBITS al texto del tab small - ubits-body-sm-semibold */
 .ubits-tab--sm span {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 13px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     line-height: 13px;
 }
 
 .ubits-tab--sm i {
-    font-size: 15px;
+    font-size: var(--font-size-md);
 }
 
 .ubits-tab--sm.ubits-tab--icon-only {
@@ -226,12 +226,12 @@
 }
 
 .ubits-tab--sm.ubits-tab--icon-only i {
-    font-size: 15px;
+    font-size: var(--font-size-md);
 }
 
 /* Large - usa ubits-body-lg-semibold */
 .ubits-tab--lg {
-    padding: 14px 20px;
+    padding: var(--padding-lg) var(--padding-xl);
     height: 48px;
     /* Hereda de ubits-body-lg-semibold: 20px, weight 600, line-height 30px */
 }
@@ -239,23 +239,23 @@
 /* Aplicar tipografía UBITS al texto del tab large */
 .ubits-tab--lg span {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 20px;
+    font-size: var(--font-size-h2);
     font-weight: 600;
     line-height: 20px;
 }
 
 .ubits-tab--lg i {
-    font-size: 18px;
+    font-size: var(--font-size-h2);
 }
 
 .ubits-tab--lg.ubits-tab--icon-only {
-    padding: 14px;
+    padding: var(--padding-lg);
     width: 48px;
     height: 48px;
 }
 
 .ubits-tab--lg.ubits-tab--icon-only i {
-    font-size: 18px;
+    font-size: var(--font-size-h2);
 }
 
 /* ========================================
@@ -300,22 +300,22 @@
 
 @media (max-width: 768px) {
     .ubits-tab {
-        font-size: 12px;
-        padding: 10px 12px;
+        font-size: var(--font-size-sm);
+        padding: var(--padding-md) var(--padding-md);
     }
     
     .ubits-tab--xs {
-        font-size: 10px;
-        padding: 6px 8px;
+        font-size: var(--font-size-xs);
+        padding: var(--padding-sm) var(--padding-sm);
     }
     
     .ubits-tab--sm {
-        font-size: 12px;
-        padding: 8px 10px;
+        font-size: var(--font-size-sm);
+        padding: var(--padding-sm) var(--padding-md);
     }
     
     .ubits-tab--lg {
-        font-size: 18px;
+        font-size: var(--font-size-h2);
         padding: var(--padding-md) var(--padding-lg);
     }
 }

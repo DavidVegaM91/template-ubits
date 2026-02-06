@@ -195,22 +195,22 @@
                             </h2>
                             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                                    <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-columns"></i></div>
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-columns"></i></div>
                                     <div class="ubits-body-sm-bold">Columnas flexibles</div>
                                     <div class="ubits-body-sm-regular">Añade o quita columnas según necesites; data-col opcional para anchos</div>
                                 </div>
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                                    <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-th-large"></i></div>
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-th-large"></i></div>
                                     <div class="ubits-body-sm-bold">Tipos de celda</div>
                                     <div class="ubits-body-sm-regular">Texto, checkbox, progress bar, avatar, profile list, status tag, prioridad</div>
                                 </div>
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                                    <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-mobile-alt"></i></div>
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-mobile-alt"></i></div>
                                     <div class="ubits-body-sm-bold">Responsive</div>
                                     <div class="ubits-body-sm-regular">Wrapper con overflow-x para scroll horizontal en pantallas pequeñas</div>
                                 </div>
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                                    <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-palette"></i></div>
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-palette"></i></div>
                                     <div class="ubits-body-sm-bold">Tokens UBITS</div>
                                     <div class="ubits-body-sm-regular">Colores, bordes y tipografía oficiales</div>
                                 </div>
@@ -237,7 +237,7 @@
                                     </button>
                                 </div>
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="table-prompt-0">Crea una tabla UBITS con:
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="table-prompt-0">Crea una tabla UBITS con:
 - Contenedor: div.ubits-table-wrapper (y opcional ubits-table-wrapper--min-width para min-width 900px)
 - Tabla: table.ubits-table
 - Cabecera: thead > tr > th (primera columna opcional: th.ubits-table__th--checkbox con input checkbox)
@@ -255,7 +255,7 @@
                                     </button>
                                 </div>
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="table-prompt-1">Añade a la tabla [id o descripción] una columna [nombre]. Cabecera: th con data-col="[id]". Celdas: td con data-col="[id]" y el tipo de contenido adecuado (texto con ubits-body-sm-regular, o ubits-table__cell-progress, ubits-table__cell-assignee, ubits-status-tag, ubits-table__cell-priority). Usa las clases del componente Tabla UBITS (documentacion/componentes/table.html).</code></pre>
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="table-prompt-1">Añade a la tabla [id o descripción] una columna [nombre]. Cabecera: th con data-col="[id]". Celdas: td con data-col="[id]" y el tipo de contenido adecuado (texto con ubits-body-sm-regular, o ubits-table__cell-progress, ubits-table__cell-assignee, ubits-status-tag, ubits-table__cell-priority). Usa las clases del componente Tabla UBITS (documentacion/componentes/table.html).</code></pre>
                                 </div>
                             </div>
                         </div>
@@ -290,7 +290,7 @@
                                         </button>
                                     </div>
                                     <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="table-structure-code">&lt;div class="ubits-table-wrapper ubits-table-wrapper--min-width"&gt;
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="table-structure-code">&lt;div class="ubits-table-wrapper ubits-table-wrapper--min-width"&gt;
   &lt;table class="ubits-table"&gt;
     &lt;thead&gt;
       &lt;tr&gt;
@@ -327,7 +327,7 @@
                                         </button>
                                     </div>
                                     <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="table-classes-code">.ubits-table-wrapper           /* Contenedor con overflow-x auto */
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="table-classes-code">.ubits-table-wrapper           /* Contenedor con overflow-x auto */
 .ubits-table-wrapper--min-width  /* Opcional: min-width 900px */
 .ubits-table                    /* Tabla: borde, border-radius, thead/tbody estilos base */
 .ubits-table__th--checkbox     /* Cabecera columna checkbox (55px) */
@@ -365,7 +365,7 @@ data-col en th/td: opcional, para anchos por columna (nombre, asignado, plan, cr
                                         </div>
                                     </div>
                                     <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="table-implementation-code">&lt;!-- Progress bar en celda --&gt;
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="table-implementation-code">&lt;!-- Progress bar en celda --&gt;
 &lt;td data-col="avance"&gt;
   &lt;div class="ubits-table__cell-progress"&gt;
     &lt;div class="ubits-table__progress-bar"&gt;&lt;div class="ubits-table__progress-bar-fill" style="width: 75%"&gt;&lt;/div&gt;&lt;/div&gt;

@@ -34,7 +34,7 @@
         /* Component preview container - reemplaza con estilos específicos del componente */
         .component-preview {
             position: relative !important;
-            border-radius: 8px !important;
+            border-radius: var(--border-radius-sm) !important;
             
             background: var(--ubits-bg-1) !important;
             border: 1px solid var(--ubits-border-1) !important;
@@ -75,7 +75,7 @@
                 </div>
 
                 <!-- Preview Section -->
-                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
                     <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
                         <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                         Preview del componente
@@ -85,12 +85,12 @@
                     </p>
                     
                     <!-- Preview Container -->
-                    <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; position: relative;">
+                    <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md); position: relative;">
                         
                         <!-- Component Preview Placeholder -->
                         <div style="display: flex; justify-content: center; align-items: center; text-align: center;">
                             <div>
-                                <i class="far fa-cube" style="font-size: 48px; color: var(--ubits-fg-1-medium); margin-bottom: 16px;"></i>
+                                <i class="far fa-cube" style="font-size: var(--font-size-d1); color: var(--ubits-fg-1-medium); margin-bottom: 16px;"></i>
                                 <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium); margin: 0;">
                                     Reemplaza este contenido con el preview específico del componente
                                 </p>
@@ -99,7 +99,7 @@
                     </div>
                     
                     <!-- Preview Controls Placeholder -->
-                    <div style="margin-top: 16px; display: flex; gap: 12px; flex-wrap: wrap;">
+                    <div style="margin-top: 16px; display: flex; gap: var(--gap-md); flex-wrap: wrap;">
                         <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin: 0;">
                             Reemplaza estos controles con los específicos del componente (variantes, estados, etc.)
                         </p>
@@ -107,7 +107,7 @@
                 </div>
 
                 <!-- Características generales -->
-                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
                     <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
                         <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                         Características generales
@@ -115,19 +115,19 @@
                     <p class="ubits-body-md-regular" style="margin-bottom: 24px; color: var(--ubits-fg-1-medium);">
                         Reemplaza esta sección con las características específicas del componente que estés documentando.
                     </p>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
-                        <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                            <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-cube"></i></div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--gap-lg);">
+                        <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                            <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-cube"></i></div>
                             <div class="ubits-body-sm-bold">Característica 1</div>
                             <div class="ubits-body-sm-regular">Descripción de la característica</div>
                         </div>
-                        <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                            <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-cube"></i></div>
+                        <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                            <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-cube"></i></div>
                             <div class="ubits-body-sm-bold">Característica 2</div>
                             <div class="ubits-body-sm-regular">Descripción de la característica</div>
                         </div>
-                        <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                            <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-cube"></i></div>
+                        <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                            <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-cube"></i></div>
                             <div class="ubits-body-sm-bold">Característica 3</div>
                             <div class="ubits-body-sm-regular">Descripción de la característica</div>
                         </div>
@@ -135,7 +135,7 @@
                 </div>
 
                 <!-- PROMPTS ÚTILES -->
-                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
                     <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
                         <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                         Prompts útiles
@@ -158,8 +158,8 @@
                                 <span>Copiar</span>
                             </button>
                         </div>
-                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="component-prompt-1">[CONTENIDO_PROMPT_1]</code></pre>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="component-prompt-1">[CONTENIDO_PROMPT_1]</code></pre>
                         </div>
                     </div>
 
@@ -174,8 +174,8 @@
                                 <span>Copiar</span>
                             </button>
                         </div>
-                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="component-prompt-2">[CONTENIDO_PROMPT_2]</code></pre>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="component-prompt-2">[CONTENIDO_PROMPT_2]</code></pre>
                         </div>
                     </div>
 
@@ -190,14 +190,14 @@
                                 <span>Copiar</span>
                             </button>
                         </div>
-                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="component-prompt-3">[CONTENIDO_PROMPT_3]</code></pre>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="component-prompt-3">[CONTENIDO_PROMPT_3]</code></pre>
                         </div>
                     </div>
                 </div>
 
                 <!-- ACORDEÓN DE DOCUMENTACIÓN TÉCNICA -->
-                <div style="background: var(--ubits-bg-1); border-radius: 16px; margin-bottom: 40px; overflow: hidden;">
+                <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
                     <!-- Header del acordeón -->
                     <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
                         <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
@@ -211,7 +211,7 @@
                     
                     <!-- Botón de expansión -->
                     <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
-                        <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: var(--gap-sm);">
                             <i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>
                             Mostrar
                         </span>
@@ -231,8 +231,8 @@
                                     <span>Copiar</span>
                                 </button>
                             </div>
-                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px;">
-                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="structure-code">&lt;!-- Reemplaza con la estructura HTML del componente --&gt;
+                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="structure-code">&lt;!-- Reemplaza con la estructura HTML del componente --&gt;
 &lt;div class="component-name"&gt;
   &lt;!-- Contenido del componente --&gt;
 &lt;/div&gt;</code></pre>
@@ -251,8 +251,8 @@
                                     <span>Copiar</span>
                                 </button>
                             </div>
-                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="implement-code">&lt;!-- Reemplaza con las instrucciones de implementación del componente --&gt;
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="implement-code">&lt;!-- Reemplaza con las instrucciones de implementación del componente --&gt;
 &lt;!-- HTML --&gt;
 &lt;div id="component-container"&gt;&lt;/div&gt;
 
@@ -275,7 +275,7 @@ loadComponent(); // Cargar componente</code></pre>
                                 <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
                                     Reemplaza con la descripción de la función principal del componente.
                                 </p>
-                                <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: 6px; border-left: 4px solid var(--ubits-accent-brand);">
+                                <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: var(--border-radius-sm); border-left: 4px solid var(--ubits-accent-brand);">
                                     <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
                                         <strong>Parámetros:</strong> [Descripción de parámetros]<br>
                                         <strong>Ejemplo:</strong> loadComponent()
@@ -287,7 +287,7 @@ loadComponent(); // Cargar componente</code></pre>
                                 <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
                                     Reemplaza con la descripción de la función de actualización del componente.
                                 </p>
-                                <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: 6px; border-left: 4px solid var(--ubits-accent-brand);">
+                                <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: var(--border-radius-sm); border-left: 4px solid var(--ubits-accent-brand);">
                                     <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
                                         <strong>Parámetros:</strong> state (string) - Nuevo estado del componente<br>
                                         <strong>Ejemplo:</strong> updateComponentState('active')
@@ -313,8 +313,8 @@ loadComponent(); // Cargar componente</code></pre>
                                 <p class="ubits-body-md-regular" style="margin-bottom: 12px; line-height: 1.5;">
                                     Reemplaza con instrucciones específicas para personalizar el componente:
                                 </p>
-                                <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="add-features-code">// Reemplaza con código de personalización específico
+                                <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: var(--border-radius-sm);">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="add-features-code">// Reemplaza con código de personalización específico
 // Ejemplo: Agregar nuevas opciones
 &lt;div class="component-option"&gt;
   &lt;!-- Nueva funcionalidad --&gt;
@@ -332,12 +332,12 @@ loadComponent(); // Cargar componente</code></pre>
                                 <p class="ubits-body-md-regular" style="margin-bottom: 12px; line-height: 1.5;">
                                     Reemplaza con instrucciones específicas para modificar estilos:
                                 </p>
-                                <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="modify-styles-code">/* Reemplaza con estilos específicos del componente */
+                                <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: var(--border-radius-sm);">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="modify-styles-code">/* Reemplaza con estilos específicos del componente */
 .component-name {
   background-color: var(--ubits-bg-1);
  
-  border-radius: 8px;
+  border-radius: var(--border-radius-sm);
 }
 
 /* Personalizar elementos del componente */

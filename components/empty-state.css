@@ -60,7 +60,7 @@
 }
 
 .ubits-empty-state__icon-container--sm .ubits-empty-state__icon i {
-    font-size: 12px;
+    font-size: var(--font-size-sm);
 }
 
 /* Tamaño Medium (md) */
@@ -76,7 +76,7 @@
 }
 
 .ubits-empty-state__icon-container--md .ubits-empty-state__icon i {
-    font-size: 16px;
+    font-size: var(--font-size-md);
 }
 
 /* Tamaño Large (lg) - Default */
@@ -92,7 +92,7 @@
 }
 
 .ubits-empty-state__icon-container--lg .ubits-empty-state__icon i {
-    font-size: 20px;
+    font-size: var(--font-size-h2);
 }
 
 .ubits-empty-state__icon {

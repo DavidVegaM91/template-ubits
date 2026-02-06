@@ -50,7 +50,7 @@
 .copilot-title {
     font-family: 'Noto Sans', sans-serif;
     font-weight: 700;
-    font-size: 16px;
+    font-size: var(--font-size-md);
     line-height: 16px;
     color: var(--ubits-fg-2-high);
     margin: 0;
@@ -81,7 +81,7 @@
 }
 
 .copilot-action-btn i {
-    font-size: 16px;
+    font-size: var(--font-size-md);
     color: var(--ubits-fg-1-medium);
 }
 
@@ -114,7 +114,7 @@
 .copilot-messages {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: var(--gap-sm);
     align-items: flex-end;
 }
 
@@ -130,7 +130,7 @@
     max-width: 100%;
     font-family: 'Noto Sans', sans-serif;
     font-weight: 400;
-    font-size: 16px;
+    font-size: var(--font-size-md);
     line-height: 24px;
     word-wrap: break-word;
     align-self: flex-start;
@@ -143,7 +143,7 @@
 .copilot-timestamp {
     font-family: 'Noto Sans', sans-serif;
     font-weight: 400;
-    font-size: 13px;
+    font-size: var(--font-size-sm);
     line-height: 19.5px;
     color: var(--ubits-fg-1-medium);
     margin-top: 4px;
@@ -173,7 +173,7 @@
 }
 
 .copilot-feedback-btn i {
-    font-size: 13px;
+    font-size: var(--font-size-sm);
     color: var(--ubits-fg-1-medium);
 }
 
@@ -187,7 +187,7 @@
 /* Botones de acción */
 .copilot-action-buttons {
     display: flex;
-    gap: 16px;
+    gap: var(--gap-lg);
     margin-bottom: 16px;
 }
 
@@ -203,7 +203,7 @@
     gap: var(--gap-sm);
     font-family: 'Noto Sans', sans-serif;
     font-weight: 600;
-    font-size: 16px;
+    font-size: var(--font-size-md);
     line-height: 16px;
     color: var(--ubits-fg-1-high);
 }
@@ -213,14 +213,14 @@
 }
 
 .copilot-action-button i {
-    font-size: 16px;
+    font-size: var(--font-size-md);
     color: var(--ubits-fg-1-medium);
 }
 
 /* Input de mensaje */
 .copilot-input-wrapper {
     display: flex;
-    gap: 10px;
+    gap: var(--gap-md);
     align-items: center;
 }
 
@@ -247,7 +247,7 @@
     padding: var(--padding-md);
     font-family: 'Noto Sans', sans-serif;
     font-weight: 400;
-    font-size: 16px;
+    font-size: var(--font-size-md);
     line-height: 16px;
     color: var(--ubits-fg-1-high);
     outline: none;
@@ -277,7 +277,7 @@
 }
 
 .copilot-send-btn i {
-    font-size: 16px;
+    font-size: var(--font-size-md);
     color: var(--ubits-fg-1-medium);
     transition: color 0.2s ease;
 }
@@ -319,7 +319,7 @@
 }
 
 .copilot-voice-btn i {
-    font-size: 16px;
+    font-size: var(--font-size-md);
     color: #ffffff;
 }
 
@@ -366,14 +366,14 @@
 .copilot-audio-visualizer {
     display: flex;
     align-items: center;
-    gap: 2px;
+    gap: var(--gap-none);
     height: 20px;
 }
 
 .copilot-audio-bar {
     width: 3px;
     background: var(--ubits-accent-brand);
-    border-radius: 2px;
+    border-radius: var(--border-radius-xs);
     animation: audioWave 0.5s infinite alternate;
 }
 
@@ -390,14 +390,14 @@
 .copilot-audio-timer {
     font-family: 'Noto Sans', sans-serif;
     font-weight: 600;
-    font-size: 12px;
+    font-size: var(--font-size-sm);
     color: var(--ubits-fg-1-high);
     min-width: 40px;
 }
 
 .copilot-audio-actions {
     display: flex;
-    gap: var(--gap-xs);
+    gap: var(--gap-none);
 }
 
 .copilot-audio-btn {
@@ -414,7 +414,7 @@
 }
 
 .copilot-audio-btn i {
-    font-size: 12px;
+    font-size: var(--font-size-sm);
     color: var(--ubits-fg-1-medium);
 }
 
@@ -462,7 +462,7 @@
 }
 
 .copilot-audio-play-btn i {
-    font-size: 12px;
+    font-size: var(--font-size-sm);
     color: #ffffff;
 }
 
@@ -470,7 +470,7 @@
     flex: 1;
     height: 4px;
     background: var(--ubits-bg-3);
-    border-radius: 2px;
+    border-radius: var(--border-radius-xs);
     position: relative;
     cursor: pointer;
 }
@@ -478,7 +478,7 @@
 .copilot-audio-progress-bar {
     height: 100%;
     background: var(--ubits-accent-brand);
-    border-radius: 2px;
+    border-radius: var(--border-radius-xs);
     width: 0%;
     transition: width 0.1s ease;
 }
@@ -486,7 +486,7 @@
 .copilot-audio-duration {
     font-family: 'Noto Sans', sans-serif;
     font-weight: 400;
-    font-size: 11px;
+    font-size: var(--font-size-xs);
     color: var(--ubits-fg-1-medium);
     min-width: 35px;
 }
@@ -548,7 +548,7 @@
 .copilot-history-title {
     font-family: 'Noto Sans', sans-serif;
     font-weight: 700;
-    font-size: 13px;
+    font-size: var(--font-size-sm);
     line-height: 13px;
     color: var(--ubits-fg-2-high);
     margin: 0;
@@ -572,14 +572,14 @@
 }
 
 .copilot-new-chat-btn i {
-    font-size: 13px;
+    font-size: var(--font-size-sm);
     color: var(--ubits-fg-1-medium);
 }
 
 .copilot-new-chat-btn span {
     font-family: 'Noto Sans', sans-serif;
     font-weight: 600;
-    font-size: 16px;
+    font-size: var(--font-size-md);
     line-height: 16px;
     color: var(--ubits-fg-1-medium);
 }
@@ -591,7 +591,7 @@
     padding: 0 24px 24px 24px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: var(--gap-lg);
 }
 
 /* Item del historial */
@@ -618,7 +618,7 @@
 .copilot-history-item-title {
     font-family: 'Noto Sans', sans-serif;
     font-weight: 600;
-    font-size: 13px;
+    font-size: var(--font-size-sm);
     line-height: 13px;
     color: var(--ubits-fg-1-high);
     margin: 0;
@@ -632,18 +632,18 @@
 .copilot-history-timestamp {
     display: flex;
     align-items: center;
-    gap: var(--gap-xs);
+    gap: var(--gap-none);
 }
 
 .copilot-history-timestamp i {
-    font-size: 13px;
+    font-size: var(--font-size-sm);
     color: var(--ubits-fg-1-medium);
 }
 
 .copilot-history-timestamp span {
     font-family: 'Noto Sans', sans-serif;
     font-weight: 400;
-    font-size: 13px;
+    font-size: var(--font-size-sm);
     line-height: 19.5px;
     color: var(--ubits-fg-1-medium);
 }
@@ -672,7 +672,7 @@
     padding: var(--padding-md) var(--padding-lg);
     font-family: 'Noto Sans', sans-serif;
     font-weight: 400;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     line-height: 20px;
     color: var(--ubits-fg-1-high);
     white-space: pre-line;
@@ -683,7 +683,7 @@
 .copilot-timestamp {
     font-family: 'Noto Sans', sans-serif;
     font-weight: 400;
-    font-size: 11px;
+    font-size: var(--font-size-xs);
     color: var(--ubits-fg-1-medium);
     margin-top: 4px;
     padding: 0 4px;
@@ -716,7 +716,7 @@
 }
 
 .copilot-feedback-btn i {
-    font-size: 13px;
+    font-size: var(--font-size-sm);
     color: var(--ubits-fg-1-medium);
 }
 

@@ -15,7 +15,7 @@
     color: var(--ubits-fg-1-high);
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
-    border-radius: 6px;
+    border-radius: var(--border-radius-sm);
     outline: none;
     transition: all 0.2s ease;
     box-sizing: border-box;
@@ -222,7 +222,7 @@
     color: var(--ubits-fg-1-high);
     margin-bottom: 8px;
     font-family: 'Noto Sans', sans-serif;
-    font-size: 13px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     line-height: 19.5px;
 }
@@ -230,7 +230,7 @@
 .ubits-input-mandatory {
     color: var(--ubits-fg-1-medium);
     font-family: 'Noto Sans', sans-serif;
-    font-size: 11px;
+    font-size: var(--font-size-xs);
     font-weight: 400;
     line-height: 16.5px;
 }
@@ -246,14 +246,14 @@
     justify-content: space-between;
     align-items: center;
     font-family: 'Noto Sans', sans-serif;
-    font-size: 13px;
+    font-size: var(--font-size-sm);
     font-weight: 400;
     line-height: 19.5px;
 }
 
 .ubits-input-counter {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 13px;
+    font-size: var(--font-size-sm);
     font-weight: 400;
     line-height: 19.5px;
 }
@@ -301,7 +301,7 @@
     right: 0;
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
-    border-radius: 6px;
+    border-radius: var(--border-radius-sm);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     z-index: 10000; /* Alto z-index para estar dentro del filter-menu */
     max-height: 200px;
@@ -373,7 +373,7 @@
     right: 0;
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
-    border-radius: 6px;
+    border-radius: var(--border-radius-sm);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     z-index: 1000;
     max-height: 160px;
@@ -406,7 +406,7 @@
     padding: var(--padding-md);
     text-align: center;
     color: var(--ubits-fg-1-medium);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-style: italic;
     border-bottom: 1px solid var(--ubits-border-1);
     display: flex;
@@ -417,7 +417,7 @@
 
 .ubits-select-loading i {
     color: var(--ubits-accent-brand);
-    font-size: 16px;
+    font-size: var(--font-size-md);
 }
 
 .ubits-select-observer {

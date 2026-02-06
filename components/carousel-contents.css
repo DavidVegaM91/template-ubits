@@ -94,7 +94,7 @@
 /* Content Type */
 .carousel-contents--hero__type {
     display: flex;
-    gap: 10px;
+    gap: var(--gap-md);
     align-items: center;
     justify-content: flex-start;
 }
@@ -191,7 +191,7 @@
 
 .carousel-contents--hero__provider-count-text {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 13px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     line-height: 19.5px;
     color: var(--ubits-fg-1-high-static-inverted) !important;
@@ -217,7 +217,7 @@
 }
 
 .carousel-contents--hero__competency-icon i {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     color: var(--ubits-fg-1-high-static-inverted) !important;
 }
 
@@ -249,7 +249,7 @@
 }
 
 .carousel-contents--hero__spec-icon i {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     color: var(--ubits-fg-1-high-static-inverted) !important;
 }
 
@@ -274,7 +274,7 @@
 /* Carousel Indicators - Inside (Desktop/Tablet) */
 .carousel-contents--hero__indicators--inside {
     display: flex;
-    gap: 10px;
+    gap: var(--gap-md);
     align-items: center;
     justify-content: center;
     position: absolute;
@@ -287,7 +287,7 @@
 /* Carousel Indicators - Outside (Mobile) */
 .carousel-contents--hero__indicators--outside {
     display: none;
-    gap: 10px;
+    gap: var(--gap-md);
     align-items: center;
     justify-content: center;
     margin-top: 8px;
@@ -397,7 +397,7 @@
     /* Cambiar título a body-sm-bold en móviles pequeños (igual que outstanding) */
     .carousel-contents--hero__title {
         font-family: 'Noto Sans', sans-serif !important;
-        font-size: 13px !important;
+        font-size: var(--font-size-sm) !important;
         font-weight: 700 !important;
         line-height: 19.5px !important;
     }
@@ -429,7 +429,7 @@
 .carousel-contents--promo-vertical__title {
     flex: 1;
     font-family: 'Noto Sans', sans-serif;
-    font-size: 20px;
+    font-size: var(--font-size-h2);
     font-weight: 700;
     line-height: 1;
     color: var(--ubits-fg-1-high);
@@ -592,7 +592,7 @@
     color: var(--ubits-fg-1-high);
     margin: 0;
     font-family: 'Noto Sans', sans-serif;
-    font-size: 20px;
+    font-size: var(--font-size-h2);
     font-weight: 700;
     line-height: 1;
 }
@@ -690,9 +690,9 @@
     transform: translateX(-50%);
     background: var(--ubits-fg-1-high);
     color: var(--ubits-logo-inverted);
-    padding: 6px 10px;
-    border-radius: 6px;
-    font-size: 12px;
+    padding: var(--padding-sm) var(--padding-md);
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-sm);
     white-space: nowrap;
     opacity: 0;
     pointer-events: none;
@@ -840,7 +840,7 @@
 .carousel-contents--content-cards__title {
     flex: 1;
     font-family: 'Noto Sans', sans-serif;
-    font-size: 20px;
+    font-size: var(--font-size-h2);
     font-weight: 700;
     line-height: 1;
     color: var(--ubits-fg-1-high);
@@ -1031,7 +1031,7 @@
     color: var(--ubits-fg-1-medium);
     /* Usa ubits-body-sm-regular: 13px, 400, 19.5px */
     font-family: 'Noto Sans', sans-serif;
-    font-size: 13px;
+    font-size: var(--font-size-sm);
     font-weight: 400;
     line-height: 19.5px;
 }
@@ -1049,7 +1049,7 @@
     color: var(--ubits-fg-1-high);
     line-height: 42px;
     font-family: 'Noto Sans', sans-serif;
-    font-size: 28px;
+    font-size: var(--font-size-d4);
     font-weight: 700;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -1134,7 +1134,7 @@
 
 .carousel-contents--outstanding__provider-count-text {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 13px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     line-height: 19.5px;
     color: var(--ubits-fg-1-high);
@@ -1159,7 +1159,7 @@
 }
 
 .carousel-contents--outstanding__competency-icon i {
-    font-size: 12px;
+    font-size: var(--font-size-sm);
     color: var(--ubits-fg-1-medium);
 }
 
@@ -1167,7 +1167,7 @@
     color: var(--ubits-fg-1-medium);
     /* Usa ubits-body-sm-regular: 13px, 400, 19.5px */
     font-family: 'Noto Sans', sans-serif;
-    font-size: 13px;
+    font-size: var(--font-size-sm);
     font-weight: 400;
     line-height: 19.5px;
 }
@@ -1200,7 +1200,7 @@
 }
 
 .carousel-contents--outstanding__spec-icon i {
-    font-size: 12px;
+    font-size: var(--font-size-sm);
     color: var(--ubits-fg-1-medium);
 }
 
@@ -1358,7 +1358,7 @@
     .carousel-contents--outstanding__content .carousel-contents--outstanding__title {
         /* Usar estilos de ubits-body-sm-bold */
         font-family: 'Noto Sans', sans-serif;
-        font-size: 13px;
+        font-size: var(--font-size-sm);
         font-weight: 700;
         line-height: 19.5px;
         color: var(--ubits-fg-1-high);

@@ -40,7 +40,7 @@
 
 .ubits-study-chat__body::-webkit-scrollbar-thumb {
     background: var(--ubits-scroll-bar-color-bg-default);
-    border-radius: 2px;
+    border-radius: var(--border-radius-xs);
 }
 
 .ubits-study-chat__body::-webkit-scrollbar-thumb:hover {
@@ -81,12 +81,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 22px;
+    font-size: var(--font-size-h1);
 }
 
 .ubits-study-chat__welcome-greeting {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 16px;
+    font-size: var(--font-size-md);
     font-weight: 400;
     line-height: 24px;
     color: var(--ubits-fg-1-high);
@@ -95,7 +95,7 @@
 
 .ubits-study-chat__welcome-prompt {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 22px;
+    font-size: var(--font-size-h1);
     font-weight: 400;
     line-height: 28px;
     color: var(--ubits-fg-1-high);
@@ -147,7 +147,7 @@
 
 .study-chat-courses-prompt {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 400;
     line-height: 20px;
     color: var(--ubits-fg-1-medium);
@@ -163,7 +163,7 @@
 
 .study-chat-plan-title {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 16px;
+    font-size: var(--font-size-md);
     font-weight: 400;
     line-height: 24px;
     color: var(--ubits-fg-1-high);
@@ -173,13 +173,13 @@
 .study-chat-plan-details {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--gap-sm);
     margin-bottom: 12px;
 }
 
 .study-chat-plan-detail-item {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 400;
     line-height: 20px;
     color: var(--ubits-fg-1-medium);
@@ -192,7 +192,7 @@
 
 .study-chat-plan-courses-title {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     line-height: 20px;
     color: var(--ubits-fg-1-high);
@@ -202,7 +202,7 @@
 
 .study-chat-plan-prompt {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 400;
     line-height: 20px;
     color: var(--ubits-fg-1-medium);
@@ -235,7 +235,7 @@
 .ubits-study-chat__message {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-xs);
+    gap: var(--gap-none);
     width: 100%;
 }
 
@@ -290,7 +290,7 @@
 /* Texto del mensaje */
 .ubits-study-chat__message-text {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 16px;
+    font-size: var(--font-size-md);
     line-height: 24px;
     margin: 0 0 8px 0;
     white-space: pre-wrap;
@@ -339,7 +339,7 @@
 /* Timestamp */
 .ubits-study-chat__timestamp {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 11px;
+    font-size: var(--font-size-xs);
     font-weight: 400;
     line-height: 19.5px;
     color: var(--ubits-btn-tertiary-fg);
@@ -357,7 +357,7 @@
 /* Botones de acción en mensajes de IA */
 .ubits-study-chat__message-actions {
     display: flex;
-    gap: var(--gap-xs);
+    gap: var(--gap-none);
     align-items: center;
     margin-top: 4px;
 }
@@ -404,19 +404,19 @@
     width: 40px;
     height: 40px;
     flex-shrink: 0;
-    border-radius: 10px;
+    border-radius: var(--border-radius-md);
     background: var(--ubits-bg-3);
     color: var(--ubits-accent-brand);
 }
 
 .study-chat-resource-card__icon i {
-    font-size: 18px;
+    font-size: var(--font-size-h2);
 }
 
 .study-chat-resource-card__content {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: var(--gap-none);
     min-width: 0;
 }
 
@@ -451,7 +451,7 @@
 /* Mensaje de carga (typing): indicador mínimo */
 .ubits-study-chat__text-globe--typing {
     display: flex;
-    gap: 6px;
+    gap: var(--gap-sm);
     align-items: center;
     height: 40px;
     padding: 0 12px;
@@ -461,7 +461,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 3px;
+    gap: var(--gap-none);
     padding: var(--padding-none);
     border-radius: var(--border-radius-none);
 }
@@ -485,7 +485,7 @@
 .ubits-study-chat__typing-text {
     font-family: 'Noto Sans', sans-serif;
     font-style: normal;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     line-height: 20px;
     color: var(--ubits-fg-1-high);
     margin: 0;
@@ -495,13 +495,13 @@
 .ubits-study-chat__input-area {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--gap-sm);
     flex-shrink: 0;
 }
 
 .ubits-study-chat__disclaimer {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 12px;
+    font-size: var(--font-size-sm);
     line-height: 16px;
     color: var(--ubits-fg-1-low);
     margin: 0;
@@ -513,7 +513,7 @@
 .ubits-study-chat__suggestions {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: var(--gap-md);
     align-items: center;
 }
 
@@ -540,7 +540,7 @@
     padding: var(--padding-md);
     display: flex;
     flex-direction: column;
-    gap: 25px;
+    gap: var(--gap-2xl);
     align-items: flex-start;
 }
 
@@ -554,7 +554,7 @@
 .ubits-study-chat__input-placeholder {
     flex: 1;
     font-family: 'Noto Sans', sans-serif;
-    font-size: 16px;
+    font-size: var(--font-size-md);
     font-weight: 400;
     line-height: 28.8px;
     color: var(--ubits-fg-1-medium);
@@ -567,7 +567,7 @@
     outline: none;
     background: transparent;
     font-family: 'Noto Sans', sans-serif;
-    font-size: 16px;
+    font-size: var(--font-size-md);
     font-weight: 400;
     line-height: 28.8px;
     color: var(--ubits-fg-1-high);
@@ -650,7 +650,7 @@
     gap: var(--gap-sm);
     cursor: pointer;
     font-family: 'Noto Sans', sans-serif;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     line-height: 20px;
     color: var(--ubits-fg-1-medium);
     padding: var(--padding-sm) var(--padding-md);
@@ -687,10 +687,10 @@
 
 .study-chat-quiz-feedback {
     margin-top: 12px;
-    padding: 10px 12px;
+    padding: var(--padding-md) var(--padding-md);
     border-radius: var(--border-radius-sm);
     font-family: 'Noto Sans', sans-serif;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     line-height: 20px;
     color: var(--ubits-fg-1-medium);
     background: var(--ubits-bg-2);
@@ -720,7 +720,7 @@
 .study-chat-quiz-progress {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: var(--gap-md);
     margin-bottom: 16px;
     flex-wrap: nowrap;
     min-width: 0;
@@ -729,7 +729,7 @@
 /* Contenedor de barras (1–19 preguntas): aprovecha todo el ancho disponible */
 .study-chat-quiz-progress-bars {
     display: flex;
-    gap: 3px;
+    gap: var(--gap-none);
     align-items: center;
     flex: 1;
     min-width: 0;
@@ -739,7 +739,7 @@
     flex: 1;
     min-width: 4px;
     height: 6px;
-    border-radius: 3px;
+    border-radius: var(--border-radius-xs);
     background: var(--ubits-bg-2);
     transition: background 0.2s;
 }
@@ -790,7 +790,7 @@
 .study-chat-quiz-progress-text {
     flex-shrink: 0;
     font-family: 'Noto Sans', sans-serif;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 400;
     color: var(--ubits-fg-1-high);
 }
@@ -798,22 +798,22 @@
 .study-chat-quiz-progress-stats {
     flex-shrink: 0;
     display: flex;
-    gap: 10px;
+    gap: var(--gap-md);
 }
 
 .study-chat-quiz-progress-stat-pill {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 4px 10px;
+    gap: var(--gap-sm);
+    padding: var(--padding-xs) var(--padding-md);
     border-radius: var(--border-radius-sm);
     font-family: 'Noto Sans', sans-serif;
-    font-size: 13px;
+    font-size: var(--font-size-sm);
     font-weight: 400;
 }
 
 .study-chat-quiz-progress-stat-pill i {
-    font-size: 12px;
+    font-size: var(--font-size-sm);
 }
 
 .study-chat-quiz-progress-wrong {
@@ -857,7 +857,7 @@
 
 .study-chat-quiz-result-title {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 20px;
+    font-size: var(--font-size-h2);
     font-weight: 400;
     line-height: 28px;
     color: var(--ubits-fg-1-high);
@@ -874,13 +874,13 @@
 .study-chat-quiz-result-card {
     flex: 1;
     min-width: 100px;
-    padding: 14px 16px;
+    padding: var(--padding-lg) var(--padding-lg);
     background: var(--ubits-bg-2);
     border: 1px solid var(--ubits-border-1);
-    border-radius: 10px;
+    border-radius: var(--border-radius-md);
     display: flex;
     flex-direction: column;
-    gap: var(--gap-xs);
+    gap: var(--gap-none);
 }
 
 .study-chat-quiz-result-card--breakdown {
@@ -889,7 +889,7 @@
 
 .study-chat-quiz-result-card-label {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 12px;
+    font-size: var(--font-size-sm);
     font-weight: 400;
     color: var(--ubits-fg-1-medium);
     text-transform: uppercase;
@@ -898,7 +898,7 @@
 
 .study-chat-quiz-result-card-value {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 24px;
+    font-size: var(--font-size-h1);
     font-weight: 400;
     color: var(--ubits-fg-1-high);
 }
@@ -906,7 +906,7 @@
 .study-chat-quiz-result-breakdown {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--gap-sm);
     margin-top: 4px;
 }
 
@@ -915,7 +915,7 @@
     justify-content: space-between;
     align-items: center;
     font-family: 'Noto Sans', sans-serif;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     color: var(--ubits-fg-1-medium);
 }
 
@@ -926,7 +926,7 @@
 
 .study-chat-quiz-result-section-title {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 16px;
+    font-size: var(--font-size-md);
     font-weight: 400;
     color: var(--ubits-fg-1-high);
     margin: 0 0 12px 0;
@@ -935,7 +935,7 @@
 .study-chat-quiz-result-learn {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: var(--gap-md);
     margin-bottom: 20px;
 }
 
@@ -943,11 +943,11 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 6px;
-    padding: 14px 16px;
+    gap: var(--gap-sm);
+    padding: var(--padding-lg) var(--padding-lg);
     background: var(--ubits-bg-2);
     border: 1px solid var(--ubits-border-1);
-    border-radius: 10px;
+    border-radius: var(--border-radius-md);
     cursor: pointer;
     text-align: left;
     transition: background 0.2s, border-color 0.2s;
@@ -967,19 +967,19 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
+    font-size: var(--font-size-md);
 }
 
 .study-chat-quiz-result-option-title {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 400;
     color: var(--ubits-fg-1-high);
 }
 
 .study-chat-quiz-result-option-desc {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 13px;
+    font-size: var(--font-size-sm);
     line-height: 18px;
     color: var(--ubits-fg-1-medium);
 }
@@ -1001,7 +1001,7 @@
 .study-chat-fc-progress {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: var(--gap-md);
     margin-bottom: 16px;
     flex-wrap: nowrap;
     min-width: 0;
@@ -1009,7 +1009,7 @@
 
 .study-chat-fc-progress-bars {
     display: flex;
-    gap: 3px;
+    gap: var(--gap-none);
     align-items: center;
     flex: 1;
     min-width: 0;
@@ -1019,7 +1019,7 @@
     flex: 1;
     min-width: 4px;
     height: 6px;
-    border-radius: 3px;
+    border-radius: var(--border-radius-xs);
     background: var(--ubits-bg-2);
     transition: background 0.2s;
 }
@@ -1031,7 +1031,7 @@
 .study-chat-fc-progress-text {
     flex-shrink: 0;
     font-family: 'Noto Sans', sans-serif;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 400;
     color: var(--ubits-fg-1-high);
 }
@@ -1088,7 +1088,7 @@
 .study-chat-fc-face p {
     margin: 0;
     font-family: 'Noto Sans', sans-serif;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     line-height: 20px;
     color: var(--ubits-fg-1-high);
     text-align: center;
@@ -1148,7 +1148,7 @@
 /* Plan de estudio (propuesta: nombre, fechas, prioridad, tareas) */
 .study-chat-canvas-study-plan .study-chat-study-plan-title {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 16px;
+    font-size: var(--font-size-md);
     font-weight: 600;
     color: var(--ubits-fg-1-high);
     margin-bottom: 12px;
@@ -1163,7 +1163,7 @@
 
 .study-chat-study-plan-detail-item {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     color: var(--ubits-fg-1-medium);
 }
 
@@ -1231,11 +1231,11 @@
     min-width: 0;
     padding: var(--padding-xs) var(--padding-sm);
     border: 1px solid var(--ubits-border-1);
-    border-radius: 6px;
+    border-radius: var(--border-radius-sm);
     background: var(--ubits-bg-1);
     color: var(--ubits-fg-1-high);
     font-family: 'Noto Sans', sans-serif;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     line-height: 20px;
     box-sizing: border-box;
 }
@@ -1275,14 +1275,14 @@
 .study-chat-plan-priority-option {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: var(--gap-md);
     width: 100%;
     padding: var(--padding-sm) var(--padding-md);
     border: none;
     background: transparent;
     color: var(--ubits-fg-1-high);
     font-family: 'Noto Sans', sans-serif;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     cursor: pointer;
     text-align: left;
     transition: background 0.15s;
@@ -1293,7 +1293,7 @@
 }
 
 .study-chat-plan-priority-option i {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     flex-shrink: 0;
 }
 
@@ -1324,7 +1324,7 @@
     padding: var(--padding-md);
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: var(--gap-md);
 }
 
 /* Fila imagen (curso) a la izquierda + título a la derecha para diferenciar tareas tipo curso */
@@ -1341,7 +1341,7 @@
     flex-shrink: 0;
     width: 48px;
     height: 48px;
-    border-radius: 6px;
+    border-radius: var(--border-radius-sm);
     overflow: hidden;
     background: var(--ubits-bg-3);
 }
@@ -1358,7 +1358,7 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: var(--gap-xs);
+    gap: var(--gap-none);
 }
 
 .study-chat-plan-task-card-meta {
@@ -1420,8 +1420,8 @@
     }
     
     .ubits-study-chat__suggestion-btn {
-        font-size: 14px;
-        padding: 10px 12px;
+        font-size: var(--font-size-sm);
+        padding: var(--padding-md) var(--padding-md);
     }
 }
 

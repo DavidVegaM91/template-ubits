@@ -72,17 +72,17 @@
                             </h2>
                             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                                    <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-arrows-up-down-left-right"></i></div>
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-arrows-up-down-left-right"></i></div>
                                     <div class="ubits-body-sm-bold">12 posiciones + sin colita</div>
                                     <div class="ubits-body-sm-regular">Arriba/abajo/izq/der con alineación left/center/right o top/center/bottom</div>
                                 </div>
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                                    <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-compass"></i></div>
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-compass"></i></div>
                                     <div class="ubits-body-sm-bold">Posicionamiento inteligente</div>
                                     <div class="ubits-body-sm-regular">Se ajusta al viewport si no cabe en la posición preferida</div>
                                 </div>
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                                    <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-palette"></i></div>
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-palette"></i></div>
                                     <div class="ubits-body-sm-bold">Variantes</div>
                                     <div class="ubits-body-sm-regular">Por defecto (invertido) o normal (bg-1). Opción sin flecha</div>
                                 </div>
@@ -110,7 +110,7 @@
                                     </button>
                                 </div>
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tooltip-prompt-1">En [objeto: id, selector o descripción del elemento] quiero que salga un tooltip que diga "[texto del tooltip]".</code></pre>
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tooltip-prompt-1">En [objeto: id, selector o descripción del elemento] quiero que salga un tooltip que diga "[texto del tooltip]".</code></pre>
                                 </div>
                             </div>
                             <div>
@@ -124,7 +124,7 @@
                                     </button>
                                 </div>
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tooltip-prompt-2">Cambia el tooltip de [objeto: id o descripción del elemento] para que diga "[nuevo texto del tooltip]".</code></pre>
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tooltip-prompt-2">Cambia el tooltip de [objeto: id o descripción del elemento] para que diga "[nuevo texto del tooltip]".</code></pre>
                                 </div>
                             </div>
                         </div>
@@ -146,7 +146,7 @@
                             <div id="tooltip-technical-docs" style="display: none; padding: 32px; border-top: 1px solid var(--ubits-border-1);">
                                 <div style="margin-bottom: 24px;">
                                     <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Uso básico (data-tooltip)</h3>
-                                    <pre style="margin: 0; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px; overflow-x: auto; font-size: 13px; color: var(--ubits-fg-1-medium); text-align: left;"><code>&lt;button data-tooltip="Texto del tooltip"&gt;Hover me&lt;/button&gt;
+                                    <pre style="margin: 0; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px; overflow-x: auto; font-size: var(--font-size-sm); color: var(--ubits-fg-1-medium); text-align: left;"><code>&lt;button data-tooltip="Texto del tooltip"&gt;Hover me&lt;/button&gt;
 &lt;script src="components/tooltip.js"&gt;&lt;/script&gt;
 &lt;script&gt;initTooltip('[data-tooltip]');&lt;/script&gt;</code></pre>
                                 </div>
@@ -159,7 +159,7 @@
                                 </div>
                                 <div>
                                     <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">API: showTooltip(elemento, texto, opciones)</h3>
-                                    <pre style="margin: 0; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px; overflow-x: auto; font-size: 13px; color: var(--ubits-fg-1-medium); text-align: left;"><code>showTooltip(document.getElementById('mi-elem'), 'Texto', {
+                                    <pre style="margin: 0; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px; overflow-x: auto; font-size: var(--font-size-sm); color: var(--ubits-fg-1-medium); text-align: left;"><code>showTooltip(document.getElementById('mi-elem'), 'Texto', {
   position: 'top',   // top | bottom | left | right
   align: 'center',   // left | center | right (top/bottom) o top | center | bottom (left/right)
   delay: 200,

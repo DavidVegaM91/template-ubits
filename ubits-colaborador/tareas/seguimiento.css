@@ -49,7 +49,7 @@
 
 .seguimiento-tabs-wrapper .seguimiento-tabs {
     display: flex;
-    gap: var(--gap-xs);
+    gap: var(--gap-none);
     background: var(--ubits-bg-2);
     border-radius: var(--border-radius-sm);
     width: fit-content;
@@ -256,7 +256,7 @@
 .asignados-popover-item {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: var(--gap-md);
     padding: var(--padding-sm) var(--padding-md);
     color: var(--ubits-fg-1-medium);
 }
@@ -283,20 +283,20 @@
 .filtros-chips-container {
     display: flex;
     align-items: center;
-    gap: var(--gap-xs);
+    gap: var(--gap-none);
     flex-wrap: wrap;
 }
 
 .filtro-chip {
     display: inline-flex;
     align-items: center;
-    gap: var(--gap-xs);
+    gap: var(--gap-none);
     padding: 0 8px;
     min-height: 20px;
     max-width: 120px;
     background: var(--ubits-bg-2); /* bg-gray/subtle/default #f3f3f4 */
     border-radius: var(--border-radius-full); /* Full rounded como en Figma */
-    font-size: 11px;
+    font-size: var(--font-size-xs);
     line-height: 13px;
     font-family: 'Noto Sans', sans-serif;
     font-weight: 400;
@@ -359,7 +359,7 @@
 }
 
 .filtro-chip-remove i {
-    font-size: 11px;
+    font-size: var(--font-size-xs);
 }
 
 /* Paginador */
@@ -458,11 +458,11 @@
     padding-top: 0;
     padding-bottom: 0;
     border: 1px solid var(--ubits-border-1);
-    border-radius: 6px;
+    border-radius: var(--border-radius-sm);
     background: var(--ubits-bg-1);
     color: var(--ubits-fg-1-high);
     font-family: var(--ubits-font-family);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     line-height: 20px;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
@@ -515,7 +515,7 @@
     cursor: pointer;
     color: var(--ubits-fg-1-high);
     font-family: var(--ubits-font-family);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     line-height: 20px;
     font-weight: 400;
     user-select: none;
@@ -668,17 +668,17 @@
 .sort-menu-options {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-xs);
+    gap: var(--gap-none);
 }
 
 .sort-menu-option {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 10px 12px;
+    gap: var(--gap-md);
+    padding: var(--padding-md) var(--padding-md);
     background: transparent;
     border: none;
-    border-radius: 6px;
+    border-radius: var(--border-radius-sm);
     cursor: pointer;
     transition: background-color 0.15s ease;
     width: 100%;
@@ -695,7 +695,7 @@
 
 .sort-menu-option i {
     color: var(--ubits-fg-1-medium);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
 }
 
 .sort-menu-footer {
@@ -705,7 +705,7 @@
 /* Botón Descargar con chevron (menú desplegable) */
 #seguimiento-descargar .fa-chevron-down {
     margin-left: 4px;
-    font-size: 10px;
+    font-size: var(--font-size-xs);
 }
 
 /* Overlay del menú Descargar (mismo patrón que sort-menu) */
@@ -746,18 +746,18 @@
 .status-menu-options {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-xs);
+    gap: var(--gap-none);
 }
 
 .priority-menu-option,
 .status-menu-option {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 10px 12px;
+    gap: var(--gap-md);
+    padding: var(--padding-md) var(--padding-md);
     background: transparent;
     border: none;
-    border-radius: 6px;
+    border-radius: var(--border-radius-sm);
     cursor: pointer;
     transition: background-color 0.15s ease;
     width: 100%;
@@ -770,7 +770,7 @@
 }
 
 .priority-menu-option i {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     width: 16px;
     text-align: center;
 }
@@ -856,17 +856,17 @@
 .periodo-menu-options {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-xs);
+    gap: var(--gap-none);
 }
 
 .periodo-menu-option {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 10px 12px;
+    gap: var(--gap-md);
+    padding: var(--padding-md) var(--padding-md);
     background: transparent;
     border: none;
-    border-radius: 6px;
+    border-radius: var(--border-radius-sm);
     cursor: pointer;
     transition: background-color 0.15s ease;
     width: 100%;
@@ -939,7 +939,7 @@
 
     .seguimiento-header-left {
         flex-direction: column;
-        gap: var(--gap-xs);
+        gap: var(--gap-none);
         align-items: flex-start;
     }
 }
@@ -958,18 +958,18 @@
 .seguimiento-indicador-card {
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
-    border-radius: 6px;
+    border-radius: var(--border-radius-sm);
     padding: var(--padding-sm) var(--padding-md);
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: var(--gap-md);
     min-height: 48px;
 }
 
 .seguimiento-indicador-card .indicador-icon-badge {
     width: 28px;
     height: 28px;
-    border-radius: 6px;
+    border-radius: var(--border-radius-sm);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -979,7 +979,7 @@
 }
 
 .seguimiento-indicador-card .indicador-icon-badge i {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-family: "Font Awesome 6 Pro", "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
 }
 
@@ -987,13 +987,13 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: var(--gap-none);
     min-width: 0;
 }
 
 .seguimiento-indicador-card .indicador-number {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 18px;
+    font-size: var(--font-size-h2);
     font-weight: 700;
     line-height: 22px;
     color: var(--ubits-fg-1-high);
@@ -1002,12 +1002,12 @@
 .seguimiento-indicador-card .indicador-meta {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: var(--gap-sm);
 }
 
 .seguimiento-indicador-card .indicador-label {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 10px;
+    font-size: var(--font-size-xs);
     font-weight: 500;
     line-height: 14px;
     color: var(--ubits-fg-1-medium);
@@ -1017,7 +1017,7 @@
 
 .seguimiento-indicador-card .indicador-percentage {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 11px;
+    font-size: var(--font-size-xs);
     font-weight: 500;
     line-height: 14px;
     color: var(--ubits-fg-1-medium);
@@ -1100,7 +1100,7 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--gap-sm);
 }
 
 .date-picker-label {
@@ -1115,13 +1115,13 @@
 
 .date-picker-input {
     width: 100%;
-    padding: 10px 12px;
+    padding: var(--padding-md) var(--padding-md);
     border: 1px solid var(--ubits-border-1);
-    border-radius: 6px;
+    border-radius: var(--border-radius-sm);
     background: var(--ubits-bg-1);
     color: var(--ubits-fg-1-high);
     font-family: 'Noto Sans', sans-serif;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     cursor: text;
     transition: border-color 0.2s;
 }
@@ -1150,20 +1150,20 @@
 .date-picker-calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: var(--gap-xs);
+    gap: var(--gap-none);
 }
 
 .date-picker-calendar-header {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: var(--gap-xs);
+    gap: var(--gap-none);
     margin-bottom: 8px;
 }
 
 .date-picker-calendar-day-header {
     text-align: center;
     padding: var(--padding-sm);
-    font-size: 12px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     color: var(--ubits-fg-1-medium);
     text-transform: uppercase;
@@ -1174,9 +1174,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 6px;
+    border-radius: var(--border-radius-sm);
     cursor: pointer;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     color: var(--ubits-fg-1-high);
     transition: all 0.2s;
     position: relative;
@@ -1217,7 +1217,7 @@
 }
 
 .date-picker-calendar-month-title {
-    font-size: 16px;
+    font-size: var(--font-size-md);
     font-weight: 600;
     color: var(--ubits-fg-1-high);
     text-transform: uppercase;
@@ -1228,7 +1228,7 @@
     height: 32px;
     border: none;
     background: transparent;
-    border-radius: 6px;
+    border-radius: var(--border-radius-sm);
     cursor: pointer;
     display: flex;
     align-items: center;

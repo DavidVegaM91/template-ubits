@@ -78,7 +78,7 @@
 
 .ubits-calendar-weekday {
     text-align: center;
-    font-size: 12px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     color: var(--ubits-fg-1-medium);
     padding: var(--padding-sm) var(--padding-xs);
@@ -97,7 +97,7 @@
     justify-content: center;
     cursor: pointer;
     border-radius: var(--border-radius-xs);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     color: var(--ubits-fg-1-high);
     transition: all 0.2s ease;
 }

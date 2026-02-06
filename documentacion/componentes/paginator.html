@@ -181,17 +181,17 @@
                         </h2>
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
                             <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                                <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-arrows-alt"></i></div>
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-arrows-alt"></i></div>
                                 <div class="ubits-body-sm-bold">Navegación</div>
                                 <div class="ubits-body-sm-regular">Botones anterior/siguiente y números de página</div>
                             </div>
                             <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                                <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-list"></i></div>
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-list"></i></div>
                                 <div class="ubits-body-sm-bold">Selector</div>
                                 <div class="ubits-body-sm-regular">Dropdown para cambiar items por página</div>
                             </div>
                             <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                                <div style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-magic"></i></div>
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-magic"></i></div>
                                 <div class="ubits-body-sm-bold">Inteligente</div>
                                 <div class="ubits-body-sm-regular">Posicionamiento automático del dropdown</div>
                             </div>
@@ -223,7 +223,7 @@
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="paginator-prompt-1">Crea un paginador UBITS con estas características:
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="paginator-prompt-1">Crea un paginador UBITS con estas características:
 - Total de items: [especifica número]
 - Items por página: [16, 20, 32 o 48]
 - Ubicación: [describe en que parte del layout debe estar el paginador]</code></pre>
@@ -242,7 +242,7 @@
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="paginator-prompt-2">Agrega callbacks al paginador [nombre_del_paginador] para que cuando cambie la página o los items por página, ejecute [describe qué acción debe realizar, por ejemplo: actualizar el contenido de las cards, hacer una petición al servidor, etc.].</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="paginator-prompt-2">Agrega callbacks al paginador [nombre_del_paginador] para que cuando cambie la página o los items por página, ejecute [describe qué acción debe realizar, por ejemplo: actualizar el contenido de las cards, hacer una petición al servidor, etc.].</code></pre>
                         </div>
                     </div>
 
@@ -258,7 +258,7 @@
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="paginator-prompt-3">Cambia las opciones del selector de items por página del paginador [nombre_del_paginador] a [lista de opciones, por ejemplo: 10, 20, 50, 100].</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="paginator-prompt-3">Cambia las opciones del selector de items por página del paginador [nombre_del_paginador] a [lista de opciones, por ejemplo: 10, 20, 50, 100].</code></pre>
                         </div>
                     </div>
 
@@ -274,7 +274,7 @@
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="paginator-prompt-4">Oculta el selector de items por página del paginador [nombre_del_paginador]. Agrega la opción showItemsSelector: false en la configuración del paginador.</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="paginator-prompt-4">Oculta el selector de items por página del paginador [nombre_del_paginador]. Agrega la opción showItemsSelector: false en la configuración del paginador.</code></pre>
                         </div>
                     </div>
 
@@ -290,7 +290,7 @@
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="paginator-prompt-5">Actualiza el total de items del paginador [nombre_del_paginador] a [nuevo número] cuando [describe cuándo debe actualizarse, por ejemplo: después de aplicar un filtro, después de una búsqueda, etc.]. Usa el método updateTotalItems() del objeto retornado por loadPaginator().</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="paginator-prompt-5">Actualiza el total de items del paginador [nombre_del_paginador] a [nuevo número] cuando [describe cuándo debe actualizarse, por ejemplo: después de aplicar un filtro, después de una búsqueda, etc.]. Usa el método updateTotalItems() del objeto retornado por loadPaginator().</code></pre>
                         </div>
                     </div>
                 </div>
@@ -331,7 +331,7 @@
                                     </button>
                                 </div>
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="structure-code">&lt;!-- Container para el paginador --&gt;
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="structure-code">&lt;!-- Container para el paginador --&gt;
 &lt;div id="mi-paginador"&gt;&lt;/div&gt;
 
 &lt;!-- JavaScript --&gt;
@@ -385,7 +385,7 @@ loadPaginator('mi-paginador', {
                                         </p>
                                         <div style="background: var(--ubits-bg-1); padding: 12px; border-radius: 6px; margin-top: 12px;">
                                             <strong style="color: var(--ubits-fg-1-high);">✅ CORRECTO:</strong>
-                                            <pre style="margin: 8px 0 0 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 12px; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>// Mostrar paginador (centrado)
+                                            <pre style="margin: 8px 0 0 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>// Mostrar paginador (centrado)
 const paginatorContainer = document.getElementById('paginador-container');
 if (paginatorContainer) {
     paginatorContainer.style.display = 'flex'; // ✅ Usar flex para centrar
@@ -393,7 +393,7 @@ if (paginatorContainer) {
                                         </div>
                                         <div style="background: var(--ubits-bg-1); padding: 12px; border-radius: 6px; margin-top: 12px;">
                                             <strong style="color: var(--ubits-fg-1-high);">❌ INCORRECTO:</strong>
-                                            <pre style="margin: 8px 0 0 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 12px; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>// Mostrar paginador (NO centrado)
+                                            <pre style="margin: 8px 0 0 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>// Mostrar paginador (NO centrado)
 const paginatorContainer = document.getElementById('paginador-container');
 if (paginatorContainer) {
     paginatorContainer.style.display = 'block'; // ❌ NO usar block, no permite centrar
@@ -406,7 +406,7 @@ if (paginatorContainer) {
                                 </div>
                                 
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="implementation-code">&lt;!-- IMPLEMENTACIÓN BÁSICA --&gt;
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="implementation-code">&lt;!-- IMPLEMENTACIÓN BÁSICA --&gt;
 &lt;!-- HTML --&gt;
 &lt;div id="mi-paginador"&gt;&lt;/div&gt;
 
@@ -515,7 +515,7 @@ loadPaginator('mi-paginador', {
                                         Personaliza las opciones disponibles en el selector de items por página:
                                     </p>
                                     <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px;">
-                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="custom-options-code">loadPaginator('mi-paginador', {
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="custom-options-code">loadPaginator('mi-paginador', {
     totalItems: 120,
     itemsPerPage: 10,
     itemsPerPageOptions: [10, 20, 50, 100] // Opciones personalizadas
@@ -534,7 +534,7 @@ loadPaginator('mi-paginador', {
                                         Ejemplo de integración con contenido que se actualiza según la página:
                                     </p>
                                     <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px;">
-                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="dynamic-content-code">// Datos de ejemplo
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="dynamic-content-code">// Datos de ejemplo
 const allItems = [/* ... 120 items ... */];
 let currentPage = 1;
 let itemsPerPage = 16;

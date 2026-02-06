@@ -168,14 +168,14 @@
     height: 28px !important;
     min-height: 28px !important;
     max-height: 28px !important;
-    font-size: 11px !important;
+    font-size: var(--font-size-xs) !important;
     gap: 6px;
     box-sizing: border-box;
 }
 
 .ubits-ia-button.ubits-ia-button--xs i,
 .ubits-ia-button--xs i {
-    font-size: 11px !important;
+    font-size: var(--font-size-xs) !important;
     width: 11px !important;
     height: 11px !important;
 }
@@ -183,7 +183,7 @@
 .ubits-ia-button.ubits-ia-button--xs span,
 .ubits-ia-button--xs span {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 11px !important;
+    font-size: var(--font-size-xs) !important;
     font-weight: 600;
     line-height: 1;
     display: inline-flex;
@@ -197,14 +197,14 @@
     height: 32px !important;
     min-height: 32px !important;
     max-height: 32px !important;
-    font-size: 13px !important;
+    font-size: var(--font-size-sm) !important;
     gap: 6px;
     box-sizing: border-box;
 }
 
 .ubits-ia-button.ubits-ia-button--sm i,
 .ubits-ia-button--sm i {
-    font-size: 13px !important;
+    font-size: var(--font-size-sm) !important;
     width: 13px !important;
     height: 13px !important;
 }
@@ -212,7 +212,7 @@
 .ubits-ia-button.ubits-ia-button--sm span,
 .ubits-ia-button--sm span {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 13px !important;
+    font-size: var(--font-size-sm) !important;
     font-weight: 600;
     line-height: 1;
     display: inline-flex;
@@ -226,7 +226,7 @@
     height: 40px !important;
     min-height: 40px !important;
     max-height: 40px !important;
-    font-size: 16px !important;
+    font-size: var(--font-size-md) !important;
     gap: var(--gap-sm);
     box-sizing: border-box;
 }
@@ -237,14 +237,14 @@
     height: 40px !important;
     min-height: 40px !important;
     max-height: 40px !important;
-    font-size: 16px;
+    font-size: var(--font-size-md);
     gap: var(--gap-sm);
     box-sizing: border-box;
 }
 
 .ubits-ia-button.ubits-ia-button--md i,
 .ubits-ia-button--md i {
-    font-size: 16px !important;
+    font-size: var(--font-size-md) !important;
     width: 16px !important;
     height: 16px !important;
 }
@@ -252,7 +252,7 @@
 .ubits-ia-button.ubits-ia-button--md span,
 .ubits-ia-button--md span {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 16px !important;
+    font-size: var(--font-size-md) !important;
     font-weight: 600;
     line-height: 1;
     display: inline-flex;
@@ -261,14 +261,14 @@
 
 /* Iconos y spans por defecto (md) cuando no hay clase de tamaño */
 .ubits-ia-button:not(.ubits-ia-button--xs):not(.ubits-ia-button--sm):not(.ubits-ia-button--md):not(.ubits-ia-button--lg) i {
-    font-size: 16px;
+    font-size: var(--font-size-md);
     width: 16px;
     height: 16px;
 }
 
 .ubits-ia-button:not(.ubits-ia-button--xs):not(.ubits-ia-button--sm):not(.ubits-ia-button--md):not(.ubits-ia-button--lg) span {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 16px;
+    font-size: var(--font-size-md);
     font-weight: 600;
     line-height: 1;
     display: inline-flex;
@@ -278,18 +278,18 @@
 /* Large - altura 48px (igual que ubits-button--lg) */
 .ubits-ia-button.ubits-ia-button--lg,
 .ubits-ia-button--lg {
-    padding: 14px 20px !important;
+    padding: var(--padding-lg) var(--padding-xl) !important;
     height: 48px !important;
     min-height: 48px !important;
     max-height: 48px !important;
-    font-size: 20px !important;
-    gap: 10px;
+    font-size: var(--font-size-h2) !important;
+    gap: var(--gap-sm);
     box-sizing: border-box;
 }
 
 .ubits-ia-button.ubits-ia-button--lg i,
 .ubits-ia-button--lg i {
-    font-size: 20px !important;
+    font-size: var(--font-size-h2) !important;
     width: 20px !important;
     height: 20px !important;
 }
@@ -297,7 +297,7 @@
 .ubits-ia-button.ubits-ia-button--lg span,
 .ubits-ia-button--lg span {
     font-family: 'Noto Sans', sans-serif;
-    font-size: 20px !important;
+    font-size: var(--font-size-h2) !important;
     font-weight: 600;
     line-height: 1;
     display: inline-flex;
@@ -345,7 +345,7 @@
 .ubits-ia-button.ubits-ia-button--icon-only--xs i,
 .ubits-ia-button--icon-only.ubits-ia-button--xs i,
 .ubits-ia-button--icon-only--xs i {
-    font-size: 11px !important;
+    font-size: var(--font-size-xs) !important;
     width: 11px !important;
     height: 11px !important;
 }
@@ -369,7 +369,7 @@
 .ubits-ia-button.ubits-ia-button--icon-only--sm i,
 .ubits-ia-button--icon-only.ubits-ia-button--sm i,
 .ubits-ia-button--icon-only--sm i {
-    font-size: 13px !important;
+    font-size: var(--font-size-sm) !important;
     width: 13px !important;
     height: 13px !important;
 }
@@ -390,7 +390,7 @@
 
 .ubits-ia-button--icon-only--md i,
 .ubits-ia-button--icon-only i {
-    font-size: 16px !important;
+    font-size: var(--font-size-md) !important;
     width: 16px !important;
     height: 16px !important;
 }
@@ -409,7 +409,7 @@
 }
 
 .ubits-ia-button--icon-only--lg i {
-    font-size: 20px !important;
+    font-size: var(--font-size-h2) !important;
     width: 20px !important;
     height: 20px !important;
 }
