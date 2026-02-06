@@ -168,7 +168,7 @@
 
 /* Overlay fecha personalizada (usa componente ubits-modal-overlay) */
 .date-picker-overlay {
-    background: rgba(0, 0, 0, 0.7);
+    background: var(--ubits-bg-dim);
 }
 
 /* Modal de eliminación: márgenes del body (componente ubits-modal-*) */
@@ -198,7 +198,7 @@
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-sm);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 4px 16px var(--ubits-bottom-nav-shadow-opacity);
     z-index: 1001;
     padding: var(--padding-md);
 }
@@ -242,7 +242,7 @@
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-sm);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 4px 16px var(--ubits-bottom-nav-shadow-opacity);
     z-index: 1001;
     padding: var(--padding-sm) 0;
 }
@@ -306,13 +306,13 @@
 }
 
 .filtro-chip:hover {
-    background: #dbdde0; /* bg-gray/subtle/hover */
-    color: #16202f; /* fg-gray/subtle/hover */
+    background: var(--ubits-bg-4);
+    color: var(--ubits-fg-gray-subtle-inverted-hover);
 }
 
 .filtro-chip:active {
-    background: #c5c6cb; /* bg-gray/subtle/pressed */
-    color: #16202f; /* fg-gray/subtle/hover */
+    background: var(--ubits-bg-5);
+    color: var(--ubits-fg-gray-subtle-inverted-hover);
 }
 
 .filtro-chip-label {
@@ -351,11 +351,11 @@
 }
 
 .filtro-chip-remove:hover {
-    background: rgba(0, 0, 0, 0.05);
+    background: var(--ubits-bg-sub-surface-hover);
 }
 
 .filtro-chip-remove:active {
-    background: rgba(0, 0, 0, 0.1);
+    background: var(--ubits-bg-sub-surface-pressed);
 }
 
 .filtro-chip-remove i {
@@ -425,7 +425,7 @@
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-sm);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 4px 16px var(--ubits-bottom-nav-shadow-opacity);
     z-index: 1001;
     padding: var(--padding-md);
     overflow: visible; /* Permitir que el dropdown se muestre fuera del menú */
@@ -470,7 +470,7 @@
 .seguimiento-filter-input-wrapper .ubits-input:focus {
     outline: none;
     border-color: var(--ubits-accent-brand);
-    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+    box-shadow: 0 0 0 2px var(--ubits-button-focus-ring);
 }
 
 .seguimiento-filter-input-wrapper .ubits-input::placeholder {
@@ -547,7 +547,7 @@
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-sm);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 4px 16px var(--ubits-bottom-nav-shadow-opacity);
     z-index: 1001;
     padding: var(--padding-md);
 }
@@ -660,7 +660,7 @@
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-sm);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 4px 16px var(--ubits-bottom-nav-shadow-opacity);
     z-index: 1001;
     padding: var(--padding-sm);
 }
@@ -737,7 +737,7 @@
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-sm);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 4px 16px var(--ubits-bottom-nav-shadow-opacity);
     z-index: 1001;
     padding: var(--padding-sm);
 }
@@ -782,7 +782,7 @@
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-sm);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 4px 16px var(--ubits-bottom-nav-shadow-opacity);
     z-index: 1001;
     padding: var(--padding-md);
 }
@@ -815,7 +815,7 @@
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-sm);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 4px 16px var(--ubits-bottom-nav-shadow-opacity);
     z-index: 1001;
     padding: var(--padding-md);
 }
@@ -848,7 +848,7 @@
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-sm);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 4px 16px var(--ubits-bottom-nav-shadow-opacity);
     z-index: 1001;
     padding: var(--padding-sm);
 }

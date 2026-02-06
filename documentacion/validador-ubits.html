@@ -233,7 +233,7 @@
                         <div class="validator-header">
                             <h2 class="validator-title ubits-heading-h2">
                                 <i class="far fa-file-code validator-icon"></i>
-                                Validar archivo HTML
+                                Validar página (HTML + CSS)
                             </h2>
                             <button class="ubits-button ubits-button--primary ubits-button--md" onclick="validateCurrentPage()">
                                 <i class="far fa-check-circle"></i>
@@ -241,12 +241,18 @@
                             </button>
                         </div>
                         
-                        <div class="file-input" onclick="document.getElementById('file-upload').click()" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                        <div class="file-input" id="file-drop-zone" onclick="document.getElementById('file-upload').click()" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
                             <i class="far fa-cloud-upload" style="font-size: var(--font-size-d3); color: var(--ubits-accent-brand); margin-bottom: 12px; display: block;"></i>
-                            <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium);">
-                                Arrastra un archivo HTML aquí o haz clic para seleccionar
+                            <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-high); margin-bottom: 8px;">
+                                Sube <strong>dos archivos</strong>: el HTML de la página y su CSS
                             </p>
-                            <input type="file" id="file-upload" accept=".html" style="display: none;" onchange="validateFile(this.files[0])">
+                            <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                Arrastra aquí 1 archivo .html y 1 archivo .css, o haz clic para seleccionarlos
+                            </p>
+                            <p class="ubits-body-xs-regular" style="color: var(--ubits-fg-1-medium); margin-top: 12px;">
+                                El validador revisa tokens y estilos en ambos archivos.
+                            </p>
+                            <input type="file" id="file-upload" accept=".html,.css" multiple style="display: none;" onchange="validateFiles(this.files)">
                         </div>
 
                         <div class="validation-results" id="validation-results">
@@ -374,7 +380,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             
             // Cargar alert informativo
-            showAlert('info', 'Este validador ha sido actualizado con todos los componentes y tokens UBITS disponibles. Verifica tus páginas antes de finalizar para mantener la calidad y consistencia del código UBITS.', {
+            showAlert('info', 'Sube los dos archivos (HTML y CSS) de tu página para validar. El validador revisa tokens de color, tipografía, espaciado (font-size, border-radius, gap, padding) y componentes en ambos archivos.', {
                 containerId: 'info-alert-container',
                 noClose: true
             });
@@ -527,14 +533,17 @@
             const results = [];
             let success = 0, warnings = 0, errors = 0;
 
+            // Quitar comentarios CSS/JS (/* */) para no marcar colores que solo están en comentarios
+            const htmlSinComentariosCss = html.replace(/\/\*[\s\S]*?\*\//g, '');
+
             // Buscar colores hardcodeados (excluyendo comentarios y código del validador)
             const hardcodedColors = [];
             UBITS_VALIDATORS.hardcodedColorPatterns.forEach(pattern => {
-                const matches = html.match(pattern);
+                const matches = htmlSinComentariosCss.match(pattern);
                 if (matches) {
                     matches.forEach(match => {
                         // Ignorar colores en comentarios HTML
-                        const beforeMatch = html.substring(0, html.indexOf(match));
+                        const beforeMatch = htmlSinComentariosCss.substring(0, htmlSinComentariosCss.indexOf(match));
                         const lastComment = beforeMatch.lastIndexOf('<!--');
                         const lastCommentEnd = beforeMatch.lastIndexOf('-->');
                         
@@ -544,7 +553,7 @@
                         }
                         
                         // Ignorar colores en el código del validador mismo (validador-ubits.html)
-                        if (html.includes('validador-ubits.html') && 
+                        if (htmlSinComentariosCss.includes('validador-ubits.html') && 
                             (match.includes('0c5bef') || match.includes('303a47') || match.includes('ffffff'))) {
                             // Estos son tokens del validador mismo, ignorar
                             return;
@@ -830,8 +839,8 @@
                 },
                 'ubits-status-tag': { 
                     css: 'components/status-tag.css', 
-                    js: 'components/status-tag.js',
-                    type: 'HTML directo',
+                    js: null,
+                    type: 'HTML directo (no requiere JavaScript)',
                     classCheck: 'ubits-status-tag'
                 },
                 'ubits-tab': { 
@@ -1013,7 +1022,7 @@
                 'ubits-input-wrapper--left-icon', 'ubits-input-wrapper--right-icon',
                 'ubits-input-icon-left', 'ubits-input-icon-right',
                 'ubits-alert__icon', 'ubits-alert__text', 'ubits-alert__content',
-                'ubits-status-tag__icon', 'ubits-status-tag__text'
+                'ubits-status-tag__icon'
             ];
             
             invalidComponentClasses.forEach(invalidClass => {
@@ -1226,23 +1235,54 @@
             return { results, success, warnings, errors };
         }
 
-        // Función para validar archivo subido
-        function validateFile(file) {
-            if (!file || !file.name.endsWith('.html')) {
-                showToast('error', 'Por favor selecciona un archivo HTML válido', {
+        // Función para validar archivos subidos (HTML + CSS)
+        function validateFiles(files) {
+            if (!files || files.length === 0) {
+                showToast('error', 'Selecciona los dos archivos (HTML y CSS)', {
                     containerId: 'ubits-toast-container',
-                    duration: 6500
+                    duration: 5000
+                });
+                return;
+            }
+            if (files.length !== 2) {
+                showToast('error', 'Debes subir exactamente 2 archivos: uno .html y uno .css', {
+                    containerId: 'ubits-toast-container',
+                    duration: 5500
                 });
                 return;
             }
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const htmlContent = e.target.result;
-                const validation = validateHTML(htmlContent, file.name);
-                displayResults(validation);
-            };
-            reader.readAsText(file);
+            const htmlFile = Array.from(files).find(f => f.name.toLowerCase().endsWith('.html'));
+            const cssFile = Array.from(files).find(f => f.name.toLowerCase().endsWith('.css'));
+
+            if (!htmlFile || !cssFile) {
+                showToast('error', 'Falta un archivo: necesitas 1 archivo .html y 1 archivo .css', {
+                    containerId: 'ubits-toast-container',
+                    duration: 5500
+                });
+                return;
+            }
+
+            const readFile = (file) => new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => resolve(e.target.result);
+                reader.onerror = () => reject(new Error('Error al leer ' + file.name));
+                reader.readAsText(file);
+            });
+
+            Promise.all([readFile(htmlFile), readFile(cssFile)])
+                .then(([htmlContent, cssContent]) => {
+                    const combinedContent = htmlContent + '\n/* === CSS adjunto: ' + cssFile.name + ' === */\n' + cssContent;
+                    const fileLabel = htmlFile.name + ' + ' + cssFile.name;
+                    const validation = validateHTML(combinedContent, fileLabel);
+                    displayResults(validation);
+                })
+                .catch((err) => {
+                    showToast('error', err.message || 'Error al leer los archivos', {
+                        containerId: 'ubits-toast-container',
+                        duration: 5000
+                    });
+                });
         }
 
         // Función para validar página actual
@@ -1585,7 +1625,7 @@
             
             const files = e.dataTransfer.files;
             if (files.length > 0) {
-                validateFile(files[0]);
+                validateFiles(files);
             }
         }
 

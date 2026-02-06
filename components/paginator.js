@@ -190,34 +190,42 @@ function loadPaginator(containerId, options = {}) {
         
         // Solo mostrar botones de navegación si hay más de una página
         if (totalPages > 1) {
-            // Botón anterior
+            // Botón primera página (<<)
             html += `
-                <button class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" ${currentPage === 1 ? 'disabled' : ''} onclick="window.ubitsPaginatorGoToPage('${containerId}', ${currentPage - 1})">
+                <button class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" ${currentPage === 1 ? 'disabled' : ''} onclick="window.ubitsPaginatorGoToPage('${containerId}', 1)" aria-label="Primera página">
+                    <i class="far fa-chevrons-left"></i>
+                </button>
+            `;
+            // Botón anterior (<)
+            html += `
+                <button class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" ${currentPage === 1 ? 'disabled' : ''} onclick="window.ubitsPaginatorGoToPage('${containerId}', ${currentPage - 1})" aria-label="Página anterior">
                     <i class="far fa-chevron-left"></i>
                 </button>
             `;
             
-            // Números de página con lógica de elipses
-            let lastPageNumber = 0;
-            for (let i = 1; i <= totalPages; i++) {
-                if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
-                    if (i > lastPageNumber + 1) {
-                        html += `<span class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium); padding: 0 4px;">...</span>`;
-                    }
-                    const isActive = i === currentPage;
-                    html += `
-                        <button class="ubits-button ubits-button--${isActive ? 'primary' : 'secondary'} ubits-button--sm" onclick="window.ubitsPaginatorGoToPage('${containerId}', ${i})">
-                            <span>${i}</span>
-                        </button>
-                    `;
-                    lastPageNumber = i;
-                }
+            // Siempre mostrar 5 números de página (ventana deslizante)
+            const visibleCount = Math.min(5, totalPages);
+            let start = Math.max(1, Math.min(currentPage - Math.floor(visibleCount / 2), totalPages - visibleCount + 1));
+            for (let i = 0; i < visibleCount; i++) {
+                const pageNum = start + i;
+                const isActive = pageNum === currentPage;
+                html += `
+                    <button class="ubits-button ubits-button--${isActive ? 'secondary' : 'tertiary'} ubits-button--sm" onclick="window.ubitsPaginatorGoToPage('${containerId}', ${pageNum})" ${isActive ? 'aria-current="page"' : ''}>
+                        <span>${pageNum}</span>
+                    </button>
+                `;
             }
             
-            // Botón siguiente
+            // Botón siguiente (>)
             html += `
-                <button class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" ${currentPage === totalPages ? 'disabled' : ''} onclick="window.ubitsPaginatorGoToPage('${containerId}', ${currentPage + 1})">
+                <button class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" ${currentPage === totalPages ? 'disabled' : ''} onclick="window.ubitsPaginatorGoToPage('${containerId}', ${currentPage + 1})" aria-label="Página siguiente">
                     <i class="far fa-chevron-right"></i>
+                </button>
+            `;
+            // Botón última página (>>)
+            html += `
+                <button class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" ${currentPage === totalPages ? 'disabled' : ''} onclick="window.ubitsPaginatorGoToPage('${containerId}', ${totalPages})" aria-label="Última página">
+                    <i class="far fa-chevrons-right"></i>
                 </button>
             `;
         }
