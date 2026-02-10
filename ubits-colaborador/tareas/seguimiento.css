@@ -284,7 +284,7 @@
 .filtros-chips-container {
     display: flex;
     align-items: center;
-    gap: var(--gap-none);
+    gap: var(--gap-xs); /* 4px entre chips */
     flex-wrap: wrap;
 }
 

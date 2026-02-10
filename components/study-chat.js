@@ -1037,7 +1037,6 @@ function bindTutorPanelEvents(panel, type, topicKey) {
                             <span class="study-chat-quiz-result-card-value">${accuracy}%</span>
                         </div>
                         <div class="study-chat-quiz-result-card study-chat-quiz-result-card--breakdown">
-                            <span class="study-chat-quiz-result-card-label">Desglose</span>
                             <div class="study-chat-quiz-result-breakdown">
                                 <div class="study-chat-quiz-result-row"><span>Correctas</span><span>${correctCount}</span></div>
                                 <div class="study-chat-quiz-result-row"><span>Incorrectas</span><span>${wrongCount}</span></div>
@@ -1048,12 +1047,12 @@ function bindTutorPanelEvents(panel, type, topicKey) {
                     <h3 class="study-chat-quiz-result-section-title">Seguir aprendiendo</h3>
                     <div class="study-chat-quiz-result-learn">
                         <button type="button" class="study-chat-quiz-result-option" data-action="flashcards">
-                            <span class="study-chat-quiz-result-option-icon"><i class="far fa-layer-group"></i></span>
+                            <span class="study-chat-quiz-result-option-icon"><i class="far fa-bring-forward"></i></span>
                             <span class="study-chat-quiz-result-option-title">Flashcards</span>
                             <span class="study-chat-quiz-result-option-desc">Crea un set de flashcards con el material del quiz. Ideal para repasar y afianzar conceptos.</span>
                     </button>
                         <button type="button" class="study-chat-quiz-result-option study-chat-quiz-result-option-study-plan" data-action="studyPlan" style="display:${STUDY_PLAN_TOPICS.indexOf(topicKey) >= 0 ? 'flex' : 'none'};">
-                            <span class="study-chat-quiz-result-option-icon"><i class="far fa-list-check"></i></span>
+                            <span class="study-chat-quiz-result-option-icon"><i class="far fa-layer-group"></i></span>
                             <span class="study-chat-quiz-result-option-title">Plan de estudio</span>
                             <span class="study-chat-quiz-result-option-desc">Crea un plan con tareas para ver contenidos UBITS sobre este tema.</span>
                     </button>
@@ -1202,7 +1201,7 @@ function bindTutorPanelEvents(panel, type, topicKey) {
                 '<span class="study-chat-quiz-result-option-title">Quiz</span>' +
                 '<span class="study-chat-quiz-result-option-desc">Responde preguntas sobre el tema y recibe feedback inmediato para afianzar conceptos.</span></button>' +
                 (showPlan ? '<button type="button" class="study-chat-quiz-result-option study-chat-quiz-result-option-study-plan" data-action="studyPlan">' +
-                '<span class="study-chat-quiz-result-option-icon"><i class="far fa-list-check"></i></span>' +
+                '<span class="study-chat-quiz-result-option-icon"><i class="far fa-layer-group"></i></span>' +
                 '<span class="study-chat-quiz-result-option-title">Plan de estudio</span>' +
                 '<span class="study-chat-quiz-result-option-desc">Crea un plan con tareas para ver contenidos UBITS sobre este tema.</span></button>' : '') +
                 '</div></div>';
@@ -2032,8 +2031,8 @@ function showOpenButtonsInChat() {
  */
 function getResourceIcon(type) {
     if (type === 'quiz') return 'far fa-circle-question';
-    if (type === 'flashcards') return 'far fa-layer-group';
-    if (type === 'studyPlan') return 'far fa-list-check';
+    if (type === 'flashcards') return 'far fa-bring-forward';
+    if (type === 'studyPlan') return 'far fa-layer-group';
     return 'far fa-file';
 }
 
@@ -2307,6 +2306,41 @@ function initStudyChat(containerId, options = {}) {
     // Función para generar respuesta predefinida basada en el mensaje del usuario
     function generateResponse(userMessage) {
         const lowerMessage = userMessage.toLowerCase().trim();
+        
+        // ----- Abrir directo si escribe "quiz de [tema]", "flashcards de [tema]" o "plan de [tema]" -----
+        var topicPatterns = [
+            { key: 'liderazgo', regex: /liderazgo|lider/ },
+            { key: 'comunicacion', regex: /comunicaci[oó]n/ },
+            { key: 'ingles', regex: /ingl[eé]s/ },
+            { key: 'japones', regex: /japon[eé]s|japonesa/ },
+            { key: 'hiragana', regex: /hiragana/ }
+        ];
+        for (var i = 0; i < topicPatterns.length; i++) {
+            var topicKey = topicPatterns[i].key;
+            if (!topicPatterns[i].regex.test(lowerMessage)) continue;
+            if (lowerMessage.includes('quiz')) {
+                hideWelcomeBlock();
+                chatState.currentTopic = topicKey;
+                chatState.waitingForMaterialChoice = false;
+                renderTutorPanel('quiz', topicKey);
+                return { resourceMessage: { type: 'quiz', topic: topicKey }, regenerateFunction: null };
+            }
+            if (lowerMessage.includes('flashcard')) {
+                hideWelcomeBlock();
+                chatState.currentTopic = topicKey;
+                chatState.waitingForMaterialChoice = false;
+                renderTutorPanel('flashcards', topicKey);
+                return { resourceMessage: { type: 'flashcards', topic: topicKey }, regenerateFunction: null };
+            }
+            if ((lowerMessage.includes('plan') || lowerMessage.includes('plan de estudio')) && topicKey !== 'hiragana' && STUDY_PLAN_TOPICS.indexOf(topicKey) >= 0) {
+                hideWelcomeBlock();
+                chatState.currentTopic = topicKey;
+                chatState.waitingForMaterialChoice = false;
+                var plan = getStudyPlanForTopic(topicKey);
+                if (plan) renderTutorPanel('studyPlan', topicKey, { studyPlan: plan });
+                return { resourceMessage: { type: 'studyPlan', topic: topicKey }, regenerateFunction: null };
+            }
+        }
         
         // ----- Modo Tutor IA: elección de material (quiz / flashcards / guía) -----
         if (chatState.waitingForMaterialChoice && chatState.currentTopic) {
