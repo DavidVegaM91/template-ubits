@@ -407,7 +407,7 @@ body[data-theme="light"] .dashboard-container {
     }
 }
 
-/* Tablet (769px–1279px): espaciado normal entre subnav, contenido y secciones */
+/* Tablet (769px–1279px): espacio arriba del subnav para que no se vea apeñuscado */
 @media (min-width: 769px) and (max-width: 1279px) {
     .main-content {
         gap: var(--gap-xl);
@@ -416,15 +416,15 @@ body[data-theme="light"] .dashboard-container {
     }
     
     .main-content > *:first-child {
-        margin-top: calc(-1 * var(--gap-lg));
+        margin-top: 0;
     }
 }
 
-/* Solo móvil (≤768px): sin banda entre subnav y content-area para evitar espacio morado arriba */
+/* Solo móvil (≤768px): subnav pegado al borde superior, sin banda entre subnav y content-area */
 @media (max-width: 768px) {
     .main-content {
         gap: var(--gap-none);
-        margin: var(--gap-lg) var(--padding-md) 0 var(--padding-md);
+        margin: 0 var(--padding-md) 0 var(--padding-md);
         width: calc(100% - 24px);
     }
     
@@ -649,7 +649,7 @@ body[data-theme="dark"] .content-area.no-background {
     }
     
     .main-content {
-        margin: var(--gap-lg) var(--padding-md) 0 108px;
+        margin: 0 var(--padding-md) 0 108px;
         width: calc(100% - 108px - 12px);
         gap: var(--gap-xl);
         position: relative;

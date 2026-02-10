@@ -28,95 +28,80 @@ function getImageBasePath() {
     return 'images/';
 }
 
-// Base de datos de cursos de liderazgo (las rutas se ajustan dinámicamente)
+// Base de datos de cursos de liderazgo (las rutas se ajustan dinámicamente). Opcional: duration, level (Básico|Intermedio|Avanzado).
 const LEADERSHIP_COURSES = [
-    { 
-        title: 'Cambio en el estilo de liderazgo', 
-        imagePath: 'cards-learn/cambio-en-el-estilo-de-liderazgo.jpeg' 
-    },
-    { 
-        title: 'Cómo ejercer el liderazgo inclusivo', 
-        imagePath: 'cards-learn/como-ejercer-el-liderazgo-inclusivo.jpeg' 
-    },
-    { 
-        title: 'El buen coaching inspira liderazgo', 
-        imagePath: 'cards-learn/el-buen-coaching-inspira-liderazgo.jpeg' 
-    },
-    { 
-        title: 'Emplea los valores del liderazgo femenino', 
-        imagePath: 'cards-learn/emplea-los-valores-del-liderazgo-femenino.jpeg' 
-    },
-    { 
-        title: 'Implementa el liderazgo colectivo en tu empresa', 
-        imagePath: 'cards-learn/implementa-el-liderazgo-coletivo-en-tu-empresa.jpeg' 
-    },
-    { 
-        title: 'La clave del liderazgo inclusivo', 
-        imagePath: 'cards-learn/la-clave-del-liderazgo-inclusivo.jpeg' 
-    },
-    { 
-        title: 'La confianza: una clave para el liderazgo', 
-        imagePath: 'cards-learn/la-confianza-una-clave-para-el-liderazgo.jpeg' 
-    },
-    { 
-        title: 'Liderar como los grandes directores de orquesta', 
-        imagePath: 'cards-learn/liderar-como-los-grandes-directores-de-orquesta.jpeg' 
-    },
-    { 
-        title: 'Liderar con inteligencia emocional', 
-        imagePath: 'cards-learn/liderar-con-inteligencia-emocional.jpeg' 
-    },
-    { 
-        title: 'Liderazgo en tiempos de crisis', 
-        imagePath: 'cards-learn/liderazgo-en-tiempos-de-crisi.jpeg' 
-    },
-    { 
-        title: 'Liderazgo femenino', 
-        imagePath: 'cards-learn/liderazgo-femenino.jpeg' 
-    },
-    { 
-        title: 'Líderes cotidianos', 
-        imagePath: 'cards-learn/lideres-cotidianos.jpeg' 
-    },
-    { 
-        title: 'Neuroliderazgo: configura tu mente', 
-        imagePath: 'cards-learn/neuroliderazgo-configura-tu-mente.jpeg' 
-    },
-    { 
-        title: 'Potencia tu liderazgo en entornos VUCA', 
-        imagePath: 'cards-learn/potencia-tu-liderazgo-en-entornos-vuca.jpeg' 
-    },
-    { 
-        title: '¿Qué hace que algunos equipos tengan alto desempeño?', 
-        imagePath: 'cards-learn/que-hace-que-alugnos-equipos-tengan-alto-desempeno.jpeg' 
-    },
-    { 
-        title: 'Ruta: Desarrollo de habilidades de liderazgo', 
-        imagePath: 'cards-learn/ruta-desarrollo-de-habilidades-de-liderazgo.jpeg' 
-    }
+    { title: 'Cambio en el estilo de liderazgo', imagePath: 'cards-learn/cambio-en-el-estilo-de-liderazgo.jpeg', duration: '30 min', level: 'Básico' },
+    { title: 'Cómo ejercer el liderazgo inclusivo', imagePath: 'cards-learn/como-ejercer-el-liderazgo-inclusivo.jpeg', duration: '45 min', level: 'Intermedio' },
+    { title: 'El buen coaching inspira liderazgo', imagePath: 'cards-learn/el-buen-coaching-inspira-liderazgo.jpeg', duration: '60 min', level: 'Intermedio' },
+    { title: 'Emplea los valores del liderazgo femenino', imagePath: 'cards-learn/emplea-los-valores-del-liderazgo-femenino.jpeg', duration: '60 min', level: 'Intermedio' },
+    { title: 'Implementa el liderazgo colectivo en tu empresa', imagePath: 'cards-learn/implementa-el-liderazgo-coletivo-en-tu-empresa.jpeg', duration: '90 min', level: 'Avanzado' },
+    { title: 'La clave del liderazgo inclusivo', imagePath: 'cards-learn/la-clave-del-liderazgo-inclusivo.jpeg', duration: '60 min', level: 'Intermedio' },
+    { title: 'La confianza: una clave para el liderazgo', imagePath: 'cards-learn/la-confianza-una-clave-para-el-liderazgo.jpeg', duration: '45 min', level: 'Básico' },
+    { title: 'Liderar como los grandes directores de orquesta', imagePath: 'cards-learn/liderar-como-los-grandes-directores-de-orquesta.jpeg', duration: '60 min', level: 'Intermedio' },
+    { title: 'Liderar con inteligencia emocional', imagePath: 'cards-learn/liderar-con-inteligencia-emocional.jpeg', duration: '75 min', level: 'Avanzado' },
+    { title: 'Liderazgo en tiempos de crisis', imagePath: 'cards-learn/liderazgo-en-tiempos-de-crisi.jpeg', duration: '60 min', level: 'Intermedio' },
+    { title: 'Liderazgo femenino', imagePath: 'cards-learn/liderazgo-femenino.jpeg', duration: '30 min', level: 'Básico' },
+    { title: 'Líderes cotidianos', imagePath: 'cards-learn/lideres-cotidianos.jpeg', duration: '60 min', level: 'Intermedio' },
+    { title: 'Neuroliderazgo: configura tu mente', imagePath: 'cards-learn/neuroliderazgo-configura-tu-mente.jpeg', duration: '90 min', level: 'Avanzado' },
+    { title: 'Potencia tu liderazgo en entornos VUCA', imagePath: 'cards-learn/potencia-tu-liderazgo-en-entornos-vuca.jpeg', duration: '60 min', level: 'Intermedio' },
+    { title: '¿Qué hace que algunos equipos tengan alto desempeño?', imagePath: 'cards-learn/que-hace-que-alugnos-equipos-tengan-alto-desempeno.jpeg', duration: '45 min', level: 'Intermedio' },
+    { title: 'Ruta: Desarrollo de habilidades de liderazgo', imagePath: 'cards-learn/ruta-desarrollo-de-habilidades-de-liderazgo.jpeg', duration: '120 min', level: 'Avanzado' }
 ];
 
 // Cursos UBITS por tema (para Plan de estudio) - solo competencias en catálogo
 const COURSES_BY_TOPIC = {
     liderazgo: LEADERSHIP_COURSES,
     comunicacion: [
-        { title: 'Cómo hablar y escuchar mejor: competencias de comunicación oral', imagePath: 'cards-learn/como-hablar-y-escuchar-mejor-competencias-de-comunicacion-oral.jpeg' },
-        { title: 'Comunicación y empatía: claves para el éxito en equipo', imagePath: 'cards-learn/comunicacion-y-empatia-claves-para-el-exito-en-equipo.jpeg' },
-        { title: 'De la comunicación a la neurocomunicación', imagePath: 'cards-learn/de-la-comunicacion-a-la-neurocomunicacion.jpeg' },
-        { title: 'Agilidad emocional', imagePath: 'cards-learn/agilidad-emocional.jpeg' },
-        { title: 'Reconéctate contigo y con los demás: tips para el bienestar emocional', imagePath: 'cards-learn/reconectate-contigo-y-con-los-demas-tips-para-el-bienestar-emocional.jpeg' }
+        { title: 'Cómo hablar y escuchar mejor: competencias de comunicación oral', imagePath: 'cards-learn/como-hablar-y-escuchar-mejor-competencias-de-comunicacion-oral.jpeg', duration: '60 min', level: 'Intermedio' },
+        { title: 'Comunicación y empatía: claves para el éxito en equipo', imagePath: 'cards-learn/comunicacion-y-empatia-claves-para-el-exito-en-equipo.jpeg', duration: '45 min', level: 'Básico' },
+        { title: 'De la comunicación a la neurocomunicación', imagePath: 'cards-learn/de-la-comunicacion-a-la-neurocomunicacion.jpeg', duration: '90 min', level: 'Avanzado' },
+        { title: 'Agilidad emocional', imagePath: 'cards-learn/agilidad-emocional.jpeg', duration: '30 min', level: 'Básico' },
+        { title: 'Reconéctate contigo y con los demás: tips para el bienestar emocional', imagePath: 'cards-learn/reconectate-contigo-y-con-los-demas-tips-para-el-bienestar-emocional.jpeg', duration: '60 min', level: 'Intermedio' }
     ],
     ingles: [
-        { title: 'Introducción al desarrollo web', imagePath: 'cards-learn/introduccion-al-desarrollo-web.jpeg' },
-        { title: 'Digital marketing master', imagePath: 'cards-learn/digital-marketing-master.jpeg' },
-        { title: 'Introducción al growth marketing', imagePath: 'cards-learn/introduccion-al-growth-marketing.jpeg' },
-        { title: 'Ingeniería de prompts: habla con la IA', imagePath: 'cards-learn/ingenieria-de-prompts-habla-con-la-ia.jpeg' },
-        { title: 'Administración efectiva del tiempo', imagePath: 'cards-learn/administracion-efectiva-del-tiempo.jpg' }
+        { title: 'Introducción al desarrollo web', imagePath: 'cards-learn/introduccion-al-desarrollo-web.jpeg', duration: '60 min', level: 'Básico' },
+        { title: 'Digital marketing master', imagePath: 'cards-learn/digital-marketing-master.jpeg', duration: '120 min', level: 'Avanzado' },
+        { title: 'Introducción al growth marketing', imagePath: 'cards-learn/introduccion-al-growth-marketing.jpeg', duration: '45 min', level: 'Intermedio' },
+        { title: 'Ingeniería de prompts: habla con la IA', imagePath: 'cards-learn/ingenieria-de-prompts-habla-con-la-ia.jpeg', duration: '60 min', level: 'Intermedio' },
+        { title: 'Administración efectiva del tiempo', imagePath: 'cards-learn/administracion-efectiva-del-tiempo.jpg', duration: '30 min', level: 'Básico' }
     ]
 };
 
 /** Temas que tienen Plan de estudio (catálogo UBITS o japonés con tareas del chat). */
 const STUDY_PLAN_TOPICS = ['liderazgo', 'comunicacion', 'ingles', 'japones'];
+
+/** Formato visual del contenido recomendado (según componente Card content compact): nivel, duración e idioma. */
+var RECOMMENDED_CONTENT_LEVELS = ['Básico', 'Intermedio', 'Avanzado'];
+/** Iconos de nivel (mismos que card-content-compact). */
+var RECOMMENDED_CONTENT_LEVEL_ICONS = { 'Básico': 'far fa-gauge-min', 'Intermedio': 'far fa-gauge', 'Avanzado': 'far fa-gauge-max' };
+var RECOMMENDED_CONTENT_DURATIONS = ['15 min', '30 min', '45 min', '60 min', '75 min', '90 min', '120 min', '180 min', '240 min'];
+var RECOMMENDED_CONTENT_DEFAULT_LEVEL = 'Intermedio';
+var RECOMMENDED_CONTENT_DEFAULT_DURATION = '60 min';
+var RECOMMENDED_CONTENT_DEFAULT_LANGUAGE = 'Español';
+
+/**
+ * Construye el objeto card para contenido recomendado (panel y mensajes).
+ * Formato: nivel + duración + idioma (componente card-content-compact).
+ * El curso puede tener opcionalmente .duration y .level; si no, se usan los valores por defecto.
+ */
+function getRecommendedContentCardData(course, basePath) {
+    var level = (course.level && RECOMMENDED_CONTENT_LEVELS.indexOf(course.level) >= 0) ? course.level : RECOMMENDED_CONTENT_DEFAULT_LEVEL;
+    var duration = (course.duration && RECOMMENDED_CONTENT_DURATIONS.indexOf(course.duration) >= 0) ? course.duration : RECOMMENDED_CONTENT_DEFAULT_DURATION;
+    var language = course.language || RECOMMENDED_CONTENT_DEFAULT_LANGUAGE;
+    return {
+        type: 'Curso',
+        title: course.title,
+        provider: 'UBITS',
+        providerLogo: basePath + 'Favicons/UBITS.jpg',
+        duration: duration,
+        level: level,
+        progress: 0,
+        status: 'default',
+        image: basePath + (course.imagePath || 'cards-learn/cambio-en-el-estilo-de-liderazgo.jpeg'),
+        competency: 'Liderazgo',
+        language: language
+    };
+}
 
 /** Tareas tipo actividad para Japonés (relacionadas con el chat): 30+ alternativas; "Rehacer" no repite una ya usada en otra tarea. */
 var ACTIVITY_ALTERNATIVES_JAPANESE = [
@@ -455,11 +440,21 @@ function shuffleQuizOptions(questions) {
     });
 }
 
+function setCanvasPanelOpen(open) {
+    document.body.classList.toggle('canvas-panel-open', !!open);
+}
+
 function renderTutorPanel(type, topic, extraData) {
     const panel = chatState.rightPanelId ? document.getElementById(chatState.rightPanelId) : null;
     const placeholder = chatState.placeholderId ? document.getElementById(chatState.placeholderId) : null;
     if (!panel) return;
+    var historialPanel = document.getElementById('historial-panel');
+    if (historialPanel) {
+        historialPanel.classList.remove('is-open');
+        document.body.classList.remove('historial-panel-open');
+    }
     panel.classList.add('is-open');
+    setCanvasPanelOpen(true);
     hideOpenButtonsInChat();
     const dataTopic = topic || chatState.currentTopic || 'liderazgo';
     const topicKey = dataTopic in TUTOR_QUIZ ? dataTopic : 'liderazgo';
@@ -488,8 +483,11 @@ function renderTutorPanel(type, topic, extraData) {
                 <div class="study-chat-quiz-questions">${questions.map((qu, i) => `
                     <div class="study-chat-quiz-q" data-index="${i}" data-correct-index="${qu.correct}" data-explanation="${(qu.explanation || '').replace(/"/g, '&quot;')}" ${i > 0 ? 'style="display:none;"' : ''}>
                         <p class="ubits-body-md-regular study-chat-quiz-question-text">${i + 1}. ${qu.q}</p>
-                        <div class="study-chat-quiz-options">${qu.options.map((opt, j) => `<label class="study-chat-quiz-opt" data-option-index="${j}"><input type="radio" name="quiz-${i}" value="${j}"><span class="study-chat-quiz-opt-text">${opt}</span></label>`).join('')}</div>
-                        <div class="study-chat-quiz-feedback" style="display:none;" role="status"></div>
+                        <div class="study-chat-quiz-options">${qu.options.map((opt, j) => {
+                    const letter = String.fromCharCode(65 + j);
+                    return `<label class="study-chat-quiz-opt" data-option-index="${j}"><div class="study-chat-quiz-opt-row"><input type="radio" name="quiz-${i}" value="${j}"><span class="study-chat-quiz-opt-letter">${letter}</span><span class="study-chat-quiz-opt-text">${opt}</span></div></label>`;
+                }).join('')}</div>
+                        <div class="study-chat-quiz-feedback" style="display:none;" role="status" aria-hidden="true"></div>
                     </div>`).join('')}</div>
                 <div class="study-chat-quiz-result" style="display:none;" role="region" aria-label="Resultados del quiz"></div>
             </div>
@@ -628,6 +626,7 @@ function bindCanvasClose(panel) {
         panel.classList.remove('is-open', 'has-content');
         panel.innerHTML = '';
         currentStudyPlanState = null;
+        setCanvasPanelOpen(false);
         showOpenButtonsInChat();
     });
 }
@@ -662,8 +661,14 @@ function renderStudyPlanTaskCards(container, plan, topicKey) {
         var metaHtml = '';
         if (task.type === 'course' && task.course) {
             var contentType = (task.course.type != null && task.course.type !== '') ? task.course.type : 'Curso';
-            var contentDuration = (task.course.duration != null && task.course.duration !== '') ? task.course.duration : '60 min';
-            metaHtml = '<div class="study-chat-plan-task-card-meta ubits-body-xs-regular">' + contentType + ' · ' + contentDuration + '</div>';
+            var contentLevel = (task.course.level && RECOMMENDED_CONTENT_LEVELS.indexOf(task.course.level) >= 0) ? task.course.level : RECOMMENDED_CONTENT_DEFAULT_LEVEL;
+            var contentDuration = (task.course.duration != null && task.course.duration !== '') ? task.course.duration : RECOMMENDED_CONTENT_DEFAULT_DURATION;
+            var levelIcon = RECOMMENDED_CONTENT_LEVEL_ICONS[contentLevel] || RECOMMENDED_CONTENT_LEVEL_ICONS['Intermedio'];
+            metaHtml = '<div class="study-chat-plan-task-card-meta study-chat-plan-task-card-specs">' +
+                '<span class="study-chat-plan-task-card-spec study-chat-plan-task-card-spec--type"><span class="ubits-body-xs-regular">' + (contentType.replace(/</g, '&lt;').replace(/"/g, '&quot;')) + '</span></span>' +
+                '<span class="study-chat-plan-task-card-spec"><i class="' + levelIcon + '"></i><span class="ubits-body-xs-regular">' + contentLevel + '</span></span>' +
+                '<span class="study-chat-plan-task-card-spec"><i class="far fa-clock"></i><span class="ubits-body-xs-regular">' + contentDuration + '</span></span>' +
+                '</div>';
         }
         var thumbHtml = '';
         if (task.type === 'course' && task.course && task.course.imagePath) {
@@ -916,6 +921,7 @@ function bindStudyPlanFooter(panel, sp, topicKey, viewMode) {
         panel.classList.remove('is-open', 'has-content');
         panel.innerHTML = '';
         currentStudyPlanState = null;
+        setCanvasPanelOpen(false);
         showOpenButtonsInChat();
     });
     if (viewMode && viewBtn) {
@@ -930,6 +936,7 @@ function bindStudyPlanFooter(panel, sp, topicKey, viewMode) {
             panel.classList.remove('is-open', 'has-content');
             panel.innerHTML = '';
             currentStudyPlanState = null;
+            setCanvasPanelOpen(false);
             showOpenButtonsInChat();
         });
     }
@@ -939,19 +946,7 @@ function renderCoursesInPanel(containerId, courses) {
     const container = document.getElementById(containerId);
     if (!container || !courses.length || typeof loadCardContentCompact !== 'function') return;
     const basePath = getImageBasePath();
-    const cardsData = courses.map(c => ({
-        type: 'Curso',
-        title: c.title,
-        provider: 'UBITS',
-        providerLogo: basePath + 'Favicons/UBITS.jpg',
-        duration: '60 min',
-        level: 'Intermedio',
-        progress: 0,
-        status: 'default',
-        image: basePath + (c.imagePath || 'cards-learn/cambio-en-el-estilo-de-liderazgo.jpeg'),
-        competency: 'Liderazgo',
-        language: 'Español'
-    }));
+    const cardsData = courses.map(function(c) { return getRecommendedContentCardData(c, basePath); });
     loadCardContentCompact(containerId, cardsData);
 }
 
@@ -1000,24 +995,31 @@ function bindTutorPanelEvents(panel, type, topicKey) {
         }
         function showImmediateFeedback(qEl, selectedValue, correctIdx, explanation) {
             const opts = qEl.querySelectorAll('.study-chat-quiz-opt');
-            const feedbackEl = qEl.querySelector('.study-chat-quiz-feedback');
-            opts.forEach((label, j) => {
+            var explanationEsc = (explanation || '').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+            opts.forEach(function(label, j) {
+                var existing = label.querySelector('.study-chat-quiz-opt-inline-feedback');
+                if (existing) existing.remove();
                 label.classList.remove('study-chat-quiz-opt--correct', 'study-chat-quiz-opt--wrong');
-                const input = label.querySelector('input');
+                var input = label.querySelector('input');
                 if (input) input.disabled = true;
-                if (j === correctIdx) label.classList.add('study-chat-quiz-opt--correct');
-                if (j === selectedValue && j !== correctIdx) label.classList.add('study-chat-quiz-opt--wrong');
+                if (j === correctIdx) {
+                    label.classList.add('study-chat-quiz-opt--correct');
+                    var correctHtml = '<div class="study-chat-quiz-opt-inline-feedback study-chat-quiz-opt-inline-feedback--correct">' +
+                        '<span class="study-chat-quiz-opt-inline-feedback-status"><i class="far fa-check"></i> Respuesta correcta</span>' +
+                        (explanationEsc ? '<p class="study-chat-quiz-opt-inline-feedback-explanation">' + explanationEsc + '</p>' : '') +
+                        '</div>';
+                    label.insertAdjacentHTML('beforeend', correctHtml);
+                } else if (j === selectedValue && j !== correctIdx) {
+                    label.classList.add('study-chat-quiz-opt--wrong');
+                    var wrongHtml = '<div class="study-chat-quiz-opt-inline-feedback study-chat-quiz-opt-inline-feedback--wrong">' +
+                        '<span class="study-chat-quiz-opt-inline-feedback-status"><i class="far fa-times"></i> Respuesta incorrecta</span>' +
+                        (explanationEsc ? '<p class="study-chat-quiz-opt-inline-feedback-explanation">' + explanationEsc + '</p>' : '') +
+                        '</div>';
+                    label.insertAdjacentHTML('beforeend', wrongHtml);
+                }
             });
-            const isCorrect = selectedValue === correctIdx;
+            var isCorrect = selectedValue === correctIdx;
             if (isCorrect) correctCount++; else wrongCount++;
-            const correctOpt = qEl.querySelectorAll('.study-chat-quiz-opt-text')[correctIdx];
-            const correctText = correctOpt ? correctOpt.textContent : '';
-            if (isCorrect) {
-                feedbackEl.innerHTML = '<span class="study-chat-quiz-feedback-icon"><i class="far fa-check-circle"></i></span> <strong>¡Exacto!</strong> ' + (explanation || '');
-            } else {
-                feedbackEl.innerHTML = '<span class="study-chat-quiz-feedback-icon study-chat-quiz-feedback-icon--wrong"><i class="far fa-times-circle"></i></span> La respuesta correcta es: <strong>' + correctText + '</strong>. ' + (explanation || '');
-            }
-            feedbackEl.style.display = 'block';
         }
         function showResultsScreen() {
             const accuracy = total > 0 ? Math.round((correctCount / total) * 100) : 0;
@@ -1077,8 +1079,11 @@ function bindTutorPanelEvents(panel, type, topicKey) {
                 questions.forEach((qEl, i) => {
                     qEl.style.display = i === 0 ? 'block' : 'none';
                     qEl.querySelectorAll('input[type="radio"]').forEach(function(inp) { inp.checked = false; inp.disabled = false; });
-                    qEl.querySelectorAll('.study-chat-quiz-opt').forEach(function(l) { l.classList.remove('study-chat-quiz-opt--correct', 'study-chat-quiz-opt--wrong'); });
-                    const fb = qEl.querySelector('.study-chat-quiz-feedback'); if (fb) { fb.style.display = 'none'; fb.innerHTML = ''; }
+                    qEl.querySelectorAll('.study-chat-quiz-opt').forEach(function(l) {
+                    l.classList.remove('study-chat-quiz-opt--correct', 'study-chat-quiz-opt--wrong');
+                    var inlineFb = l.querySelector('.study-chat-quiz-opt-inline-feedback'); if (inlineFb) inlineFb.remove();
+                });
+                    var fb = qEl.querySelector('.study-chat-quiz-feedback'); if (fb) { fb.style.display = 'none'; fb.innerHTML = ''; }
                 });
                 updateProgressBar();
                 const backBtnNew = panel.querySelector('#study-chat-quiz-back');
@@ -1291,8 +1296,240 @@ let chatState = {
     competencyTopics: {}, // { 'Liderazgo': 'liderazgo', 'Comunicación': 'comunicacion', 'Inglés': 'ingles' }
     rightPanelId: null,
     placeholderId: null,
-    waitingForMaterialChoice: false // true cuando IA ofreció quiz/flashcards/guía
+    waitingForMaterialChoice: false, // true cuando IA ofreció quiz/flashcards/guía
+    // Historial y nuevo chat (Bloque 2)
+    chats: [],
+    currentChat: { id: null, title: '', createdAt: 0, messages: [] }
 };
+
+/**
+ * Añade un mensaje al chat actual en memoria (para historial).
+ * Si es el primer mensaje de usuario, asigna title, createdAt e id del chat.
+ */
+function pushCurrentChatMessage(type, text) {
+    if (!chatState.currentChat.messages) chatState.currentChat.messages = [];
+    var isFirstUserMessage = type === 'user' && !chatState.currentChat.messages.some(function(m) { return m.type === 'user'; });
+    chatState.currentChat.messages.push({ type: type, text: text || '' });
+    if (isFirstUserMessage) {
+        var title = (text || '').trim();
+        chatState.currentChat.title = title.length > 40 ? title.substring(0, 40) + '…' : title;
+        chatState.currentChat.createdAt = Date.now();
+        if (chatState.currentChat.id == null) chatState.currentChat.id = 'chat-' + Date.now();
+    }
+    refreshHistorialIfOpen();
+}
+
+/**
+ * Refresca la lista del panel de historial solo si el panel está abierto.
+ * Útil para actualizar en tiempo real al enviar/recibir mensajes.
+ */
+function refreshHistorialIfOpen() {
+    var panel = document.getElementById('historial-panel');
+    if (panel && panel.classList.contains('is-open')) renderHistorialList();
+}
+
+/**
+ * Indica si ya existen conversaciones (chat actual con mensajes de usuario o chats guardados).
+ * Usado por Modo estudio IA para mostrar/ocultar botones "Nuevo chat" e "Historial".
+ */
+function hasAnyConversations() {
+    var cur = chatState.currentChat;
+    var hasCurrent = cur && cur.messages && cur.messages.some(function(m) { return m.type === 'user'; });
+    var savedCount = (chatState.chats || []).length;
+    return hasCurrent || savedCount > 0;
+}
+
+/**
+ * Notifica a la página (Modo estudio IA) que actualice la visibilidad de la barra de acciones (Nuevo chat / Historial).
+ */
+function notifyModoEstudioIaActionsVisibility() {
+    if (typeof window.updateModoEstudioIaActionsVisibility === 'function') window.updateModoEstudioIaActionsVisibility();
+}
+
+/**
+ * Guarda el chat actual en chats (si tiene al menos un mensaje de usuario), cierra canvas (no el historial),
+ * resetea currentChat y muestra de nuevo la pantalla de bienvenida.
+ * Si el panel de historial está abierto, se mantiene abierto y se actualiza la lista.
+ */
+function startNewChat() {
+    saveCurrentChatIfHasMessages();
+
+    var panel = chatState.rightPanelId ? document.getElementById(chatState.rightPanelId) : null;
+    if (panel && panel.classList.contains('is-open')) {
+        panel.classList.remove('is-open', 'has-content');
+        panel.innerHTML = '';
+        if (typeof setCanvasPanelOpen === 'function') setCanvasPanelOpen(false);
+    }
+
+    chatState.currentChat = { id: null, title: '', createdAt: 0, messages: [] };
+
+    var body = document.getElementById('ubits-study-chat-body');
+    if (body) {
+        var welcome = document.getElementById('ubits-study-chat-welcome');
+        var toRemove = [];
+        for (var i = 0; i < body.children.length; i++) {
+            if (body.children[i] !== welcome) toRemove.push(body.children[i]);
+        }
+        toRemove.forEach(function(el) { el.remove(); });
+    }
+    showWelcomeBlock();
+    refreshHistorialIfOpen();
+    notifyModoEstudioIaActionsVisibility();
+}
+
+/**
+ * Re-renderiza los mensajes del chat actual en el DOM (para cargar un chat desde el historial).
+ * Limpia el cuerpo, inserta cada mensaje con createMessageHTML y oculta el bloque de bienvenida.
+ */
+function renderChatMessages() {
+    var body = document.getElementById('ubits-study-chat-body');
+    if (!body) return;
+    var welcome = document.getElementById('ubits-study-chat-welcome');
+    var toRemove = [];
+    for (var i = 0; i < body.children.length; i++) {
+        if (body.children[i] !== welcome) toRemove.push(body.children[i]);
+    }
+    toRemove.forEach(function(el) { el.remove(); });
+
+    var messages = (chatState.currentChat && chatState.currentChat.messages) ? chatState.currentChat.messages : [];
+    messages.forEach(function(msg) {
+        var text = (msg && msg.text) ? msg.text : '';
+        var type = (msg && msg.type === 'user') ? 'user' : 'ai';
+        var html = createMessageHTML(type, text, '', false, false);
+        body.insertAdjacentHTML('beforeend', html);
+    });
+
+    if (messages.length > 0) hideWelcomeBlock();
+    body.scrollTop = body.scrollHeight;
+}
+
+/**
+ * Guarda el chat actual en chats si tiene al menos un mensaje de usuario (reutilizable).
+ */
+function saveCurrentChatIfHasMessages() {
+    var cur = chatState.currentChat;
+    if (!cur || !cur.messages || !cur.messages.some(function(m) { return m.type === 'user'; })) return;
+    var chatCopy = {
+        id: cur.id,
+        title: cur.title || 'Sin título',
+        createdAt: cur.createdAt || Date.now(),
+        messages: cur.messages.slice()
+    };
+    if (!chatState.chats) chatState.chats = [];
+    var idx = chatState.chats.findIndex(function(c) { return c.id === chatCopy.id; });
+    if (idx >= 0) chatState.chats[idx] = chatCopy; else chatState.chats.push(chatCopy);
+}
+
+/** ID del chat pendiente de eliminar (modal de confirmación) */
+var pendingDeleteChatId = null;
+
+/**
+ * Abre el modal de confirmación de eliminación para un chat.
+ * @param {string} chatId - ID del chat a eliminar
+ */
+function openDeleteChatModal(chatId) {
+    pendingDeleteChatId = chatId;
+    if (typeof showModal === 'function') showModal('delete-chat-modal-overlay');
+}
+
+/**
+ * Cierra el modal de eliminación y limpia pendingDeleteChatId.
+ */
+function cancelDeleteChatModal() {
+    if (typeof closeModal === 'function') closeModal('delete-chat-modal-overlay');
+    pendingDeleteChatId = null;
+}
+
+/**
+ * Confirma la eliminación: quita el chat de chats, re-renderiza la lista y, si era el actual, muestra bienvenida.
+ */
+function confirmDeleteChat() {
+    if (pendingDeleteChatId == null) return;
+    var idToRemove = pendingDeleteChatId;
+    if (chatState.chats) {
+        chatState.chats = chatState.chats.filter(function(c) { return c.id !== idToRemove; });
+    }
+    renderHistorialList();
+    if (chatState.currentChat && chatState.currentChat.id === idToRemove) {
+        chatState.currentChat = { id: null, title: '', createdAt: 0, messages: [] };
+        var body = document.getElementById('ubits-study-chat-body');
+        if (body) {
+            var welcome = document.getElementById('ubits-study-chat-welcome');
+            var toRemove = [];
+            for (var i = 0; i < body.children.length; i++) {
+                if (body.children[i] !== welcome) toRemove.push(body.children[i]);
+            }
+            toRemove.forEach(function(el) { el.remove(); });
+        }
+        showWelcomeBlock();
+    }
+    if (typeof closeModal === 'function') closeModal('delete-chat-modal-overlay');
+    pendingDeleteChatId = null;
+    notifyModoEstudioIaActionsVisibility();
+}
+
+/**
+ * Rellena la lista del panel de historial: conversación actual (si tiene mensajes) + chats guardados.
+ * Añade listeners para que al clic en un ítem se cargue ese chat y al clic en eliminar se abra el modal.
+ */
+function renderHistorialList() {
+    var listEl = document.getElementById('historial-list');
+    var emptyEl = document.getElementById('historial-empty');
+    if (!listEl || !emptyEl) return;
+    var cur = chatState.currentChat;
+    var hasCurrent = cur && cur.messages && cur.messages.length > 0;
+    var saved = (chatState.chats || []).slice().sort(function(a, b) { return (b.createdAt || 0) - (a.createdAt || 0); });
+    var items = hasCurrent ? [cur].concat(saved) : saved;
+    if (items.length === 0) {
+        emptyEl.style.display = '';
+        listEl.innerHTML = '';
+        listEl.style.display = 'none';
+        return;
+    }
+    emptyEl.style.display = 'none';
+    listEl.style.display = 'flex';
+    var currentId = (chatState.currentChat && chatState.currentChat.id) ? chatState.currentChat.id : null;
+    var html = '';
+    items.forEach(function(chat) {
+        var id = chat.id || '';
+        var title = (chat.title || 'Sin título').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+        var isActive = id && currentId === id;
+        var activeClass = isActive ? ' modo-estudio-ia-historial-item--active' : '';
+        html += '<div class="modo-estudio-ia-historial-item' + activeClass + '" data-chat-id="' + id + '" role="button" tabindex="0"' + (isActive ? ' aria-current="true"' : '') + '>' +
+            '<span class="ubits-body-sm-regular modo-estudio-ia-historial-item__title">' + title + '</span>' +
+            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only modo-estudio-ia-historial-item__delete" data-delete-chat-id="' + id + '" aria-label="Eliminar chat" title="Eliminar">' +
+            '<i class="far fa-trash"></i></button>' +
+            '</div>';
+    });
+    listEl.innerHTML = html;
+
+    listEl.querySelectorAll('.modo-estudio-ia-historial-item').forEach(function(item) {
+        item.addEventListener('click', function(e) {
+            if (e.target.closest('.modo-estudio-ia-historial-item__delete')) return;
+            var chatId = this.getAttribute('data-chat-id');
+            if (!chatId) return;
+            saveCurrentChatIfHasMessages();
+            var chat = (chatState.chats || []).find(function(c) { return c.id === chatId; });
+            if (!chat) return;
+            chatState.currentChat = {
+                id: chat.id,
+                title: chat.title || '',
+                createdAt: chat.createdAt || 0,
+                messages: (chat.messages || []).slice()
+            };
+            renderChatMessages();
+            notifyModoEstudioIaActionsVisibility();
+        });
+    });
+    listEl.querySelectorAll('.modo-estudio-ia-historial-item__delete').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var chatId = this.getAttribute('data-delete-chat-id');
+            if (chatId && typeof openDeleteChatModal === 'function') openDeleteChatModal(chatId);
+        });
+    });
+}
 
 /**
  * Mapeo de competencia (label) a id de tema
@@ -1314,7 +1551,7 @@ function createStudyChatHTML(options = {}) {
     const isTutorMode = competencies.length > 0;
     const userFirstName = options.userFirstName || 'Usuario';
     const suggestionButtons = isTutorMode
-        ? `<span class="ubits-study-chat__suggestions-label ubits-body-sm-regular">Recomendado para ti:</span>` + competencies.map(c => `<button class="ubits-button ubits-button--secondary ubits-button--xs ubits-study-chat__competency-chip" data-competency="${COMPETENCY_TO_TOPIC[c] || c.toLowerCase().replace(/\s/g, '')}" data-label="${c}"><span>${c}</span></button>`).join('\n')
+        ? `<span class="ubits-study-chat__suggestions-label ubits-body-xs-regular">Recomendado para ti:</span>` + competencies.map(c => `<button class="ubits-button ubits-button--secondary ubits-button--xs ubits-study-chat__competency-chip" data-competency="${COMPETENCY_TO_TOPIC[c] || c.toLowerCase().replace(/\s/g, '')}" data-label="${c}"><span>${c}</span></button>`).join('\n')
         : `
                     <button class="ubits-button ubits-button--secondary ubits-button--sm" data-suggestion="contenidos"><span>Sugerencias de contenidos</span></button>
                     <button class="ubits-button ubits-button--secondary ubits-button--sm" data-suggestion="plan"><span>Crear plan de formación</span></button>
@@ -1322,8 +1559,10 @@ function createStudyChatHTML(options = {}) {
     const welcomeBlock = isTutorMode ? `
             <div class="ubits-study-chat__welcome-wrapper" id="ubits-study-chat-welcome">
                 <div class="ubits-study-chat__welcome">
-                    <div class="ubits-study-chat__welcome-icon"><i class="far fa-sparkles"></i></div>
-                    <p class="ubits-study-chat__welcome-greeting">Hola, ${userFirstName}</p>
+                    <div class="ubits-study-chat__welcome-head">
+                        <div class="ubits-study-chat__welcome-icon"><i class="far fa-sparkles"></i></div>
+                        <p class="ubits-study-chat__welcome-greeting">Hola, ${userFirstName}</p>
+                    </div>
                     <p class="ubits-study-chat__welcome-prompt">¿Qué quieres aprender hoy?</p>
                 </div>
             </div>` : '';
@@ -1331,18 +1570,20 @@ function createStudyChatHTML(options = {}) {
         <div class="ubits-study-chat" id="ubits-study-chat">
             <div class="ubits-study-chat__body" id="ubits-study-chat-body">${welcomeBlock}</div>
             <div class="ubits-study-chat__input-area">
-                <div class="ubits-study-chat__suggestions" id="ubits-study-chat-suggestions">${suggestionButtons}</div>
                 <div class="ubits-study-chat__input-container">
                     <div class="ubits-study-chat__input-wrapper">
-                        <textarea class="ubits-study-chat__input" id="ubits-study-chat-input" placeholder="Escribe tu mensaje..." rows="1"></textarea>
+                        <textarea class="ubits-study-chat__input" id="ubits-study-chat-input" placeholder="Escribir mensaje..." rows="1"></textarea>
                     </div>
-                    <div class="ubits-study-chat__input-actions">
-                        <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="ubits-study-chat-attach-btn" title="Adjuntar"><i class="far fa-paperclip"></i></button>
-                        <button class="ubits-button ubits-button--primary ubits-button--sm ubits-button--icon-only" id="ubits-study-chat-send-btn" title="Enviar"><i class="far fa-paper-plane"></i></button>
+                    <div class="ubits-study-chat__input-bottom">
+                        <div class="ubits-study-chat__suggestions" id="ubits-study-chat-suggestions">${suggestionButtons}</div>
+                        <div class="ubits-study-chat__input-actions">
+                            <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="ubits-study-chat-attach-btn" title="Adjuntar"><i class="far fa-paperclip"></i></button>
+                            <button class="ubits-button ubits-button--primary ubits-button--sm ubits-button--icon-only" id="ubits-study-chat-send-btn" title="Enviar"><i class="far fa-paper-plane"></i></button>
+                        </div>
                     </div>
                 </div>
             </div>
-            <p class="ubits-study-chat__disclaimer">El chat de modo estudio IA puede cometer errores; verifica sus respuestas.</p>
+            <p class="ubits-study-chat__disclaimer ubits-body-xs-regular">El chat de modo estudio IA puede cometer errores; verifica sus respuestas.</p>
         </div>
     `;
 }
@@ -1621,6 +1862,7 @@ var AI_STREAMING_LINE_DELAY_MS = 65;
 function addMessageAIWithStreaming(text, showActions, regenerateFunction) {
     const body = document.getElementById('ubits-study-chat-body');
     if (!body) return;
+    pushCurrentChatMessage('ai', text);
     removeTypingMessage();
     const timestamp = formatTime();
     const linesHTML = getMessageLinesAsHTML(text);
@@ -1666,11 +1908,7 @@ function runPendingCardsRender(messageElement) {
                 const container = messageElement.querySelector(`#${containerId}`);
                 if (container && courses && courses.length > 0) {
                     const basePath = getImageBasePath();
-                    const cardsData = courses.map(course => ({
-                    type: 'Curso', title: course.title, provider: 'UBITS',
-                    providerLogo: basePath + 'Favicons/UBITS.jpg', duration: '60 min', level: 'Intermedio',
-                    progress: 0, status: 'default', image: basePath + course.imagePath, competency: 'Liderazgo', language: 'Español'
-                    }));
+                    const cardsData = courses.map(function(course) { return getRecommendedContentCardData(course, basePath); });
                     loadCardContentCompact(containerId, cardsData);
                     chatState.pendingCoursesContainer = null;
                 }
@@ -1680,11 +1918,7 @@ function runPendingCardsRender(messageElement) {
                 const container = messageElement.querySelector(`#${containerId}`);
                 if (container && plan && plan.courses && plan.courses.length > 0) {
                     const basePath = getImageBasePath();
-                    const cardsData = plan.courses.map(course => ({
-                    type: 'Curso', title: course.title, provider: 'UBITS',
-                    providerLogo: basePath + 'Favicons/UBITS.jpg', duration: '60 min', level: 'Intermedio',
-                    progress: 0, status: 'default', image: basePath + course.imagePath, competency: 'Liderazgo', language: 'Español'
-                    }));
+                    const cardsData = plan.courses.map(function(course) { return getRecommendedContentCardData(course, basePath); });
                     loadCardContentCompact(containerId, cardsData);
                     chatState.pendingPlanContainer = null;
                 }
@@ -1727,6 +1961,33 @@ function hideWelcomeBlock() {
     if (welcome) welcome.classList.add('ubits-study-chat__welcome--hidden');
     const suggestions = document.getElementById('ubits-study-chat-suggestions');
     if (suggestions) suggestions.classList.add('ubits-study-chat__suggestions--hidden');
+    if (chatState.welcomeLayout) {
+        const root = document.getElementById('ubits-study-chat');
+        if (root) {
+            root.classList.remove('ubits-study-chat--welcome');
+            const wrapper = root.closest('.modo-tutor-ia-chat-main');
+            if (wrapper) wrapper.classList.remove('study-chat-wrapper--welcome');
+        }
+    }
+}
+
+/**
+ * Muestra de nuevo el bloque de bienvenida y las sugerencias (reversa de hideWelcomeBlock).
+ * Usado al iniciar un nuevo chat o al resetear la vista.
+ */
+function showWelcomeBlock() {
+    const welcome = document.getElementById('ubits-study-chat-welcome');
+    if (welcome) welcome.classList.remove('ubits-study-chat__welcome--hidden');
+    const suggestions = document.getElementById('ubits-study-chat-suggestions');
+    if (suggestions) suggestions.classList.remove('ubits-study-chat__suggestions--hidden');
+    if (chatState.welcomeLayout) {
+        const root = document.getElementById('ubits-study-chat');
+        if (root) {
+            root.classList.add('ubits-study-chat--welcome');
+            const wrapper = root.closest('.modo-tutor-ia-chat-main');
+            if (wrapper) wrapper.classList.add('study-chat-wrapper--welcome');
+        }
+    }
 }
 
 var TOPIC_LABELS = { liderazgo: 'Liderazgo', comunicacion: 'Comunicación', ingles: 'Inglés', japones: 'Japonés', hiragana: 'Maratón Hiragana' };
@@ -1848,9 +2109,9 @@ function addMessageWithMaterialChoiceButtons(label, topic) {
     const choicesHTML = '<div class="ubits-study-chat__message-with-choices">' +
         messageHTML +
         '<div class="ubits-study-chat__material-choices" id="' + choicesId + '">' +
+        planBtnHtml +
         '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-choice="quiz"><span>Quiz</span></button>' +
         '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-choice="flashcards"><span>Flashcards</span></button>' +
-        planBtnHtml +
         '</div></div>';
     body.insertAdjacentHTML('beforeend', choicesHTML);
     body.scrollTop = body.scrollHeight;
@@ -1881,7 +2142,11 @@ function addMessage(type, text, showActions = false, regenerateFunction = null) 
     const body = document.getElementById('ubits-study-chat-body');
     if (!body) return;
     
-    if (type === 'user') hideWelcomeBlock();
+    if (type === 'user') {
+        hideWelcomeBlock();
+        pushCurrentChatMessage('user', text);
+        notifyModoEstudioIaActionsVisibility();
+    }
     
     if (type === 'ai') {
         addMessageAIWithStreaming(text, showActions, regenerateFunction);
@@ -1937,10 +2202,19 @@ function initStudyChat(containerId, options = {}) {
     chatState.competencies = options.competencies || [];
     chatState.rightPanelId = options.rightPanelId || null;
     chatState.placeholderId = options.placeholderId || null;
+    chatState.welcomeLayout = options.welcomeLayout === true; // Pantalla bienvenida: input debajo del mensaje, menos ancho, sin icono ni advertencia
     chatState.competencyTopics = {};
     chatState.competencies.forEach(c => { chatState.competencyTopics[c] = COMPETENCY_TO_TOPIC[c] || c.toLowerCase().replace(/\s/g, ''); });
     
     container.innerHTML = createStudyChatHTML(options);
+    if (chatState.welcomeLayout) {
+        const root = document.getElementById('ubits-study-chat');
+        if (root) {
+            root.classList.add('ubits-study-chat--welcome');
+            const wrapper = root.closest('.modo-tutor-ia-chat-main');
+            if (wrapper) wrapper.classList.add('study-chat-wrapper--welcome');
+        }
+    }
     
     if (chatState.competencies.length === 0) {
     addMessage('ai', '¡Hola! ¿En qué puedo ayudarte?', true);
@@ -2352,11 +2626,20 @@ function initStudyChat(containerId, options = {}) {
             }
         }, 1500);
     }
+
+    notifyModoEstudioIaActionsVisibility();
 }
 
 // Exportar funciones para uso global
 window.initStudyChat = initStudyChat;
+window.hasAnyConversations = hasAnyConversations;
 window.addMessage = addMessage;
 window.showTypingMessage = showTypingMessage;
 window.removeTypingMessage = removeTypingMessage;
+window.renderHistorialList = renderHistorialList;
+window.startNewChat = startNewChat;
+window.showOpenButtonsInChat = showOpenButtonsInChat;
+window.openDeleteChatModal = openDeleteChatModal;
+window.cancelDeleteChatModal = cancelDeleteChatModal;
+window.confirmDeleteChat = confirmDeleteChat;
 

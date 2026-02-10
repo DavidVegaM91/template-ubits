@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="../../components/card-content-compact.css">
     <link rel="stylesheet" href="../../components/toast.css">
     <link rel="stylesheet" href="../../components/tooltip.css">
+    <link rel="stylesheet" href="../../components/modal.css">
     <link rel="stylesheet" href="./modo-estudio-ia.css">
 </head>
 <body class="modo-estudio-ia-page modo-tutor-ia-page" data-theme="light">
@@ -48,7 +49,30 @@
                     
                     <!-- Sección chat + panel derecho (Canvas tipo Gemini) -->
                     <div class="section-single modo-tutor-ia-chat-section">
+                        <!-- Panel historial (izquierda, 30%) - se muestra con clase is-open -->
+                        <div class="modo-estudio-ia-historial-panel" id="historial-panel" aria-label="Historial de chats">
+                            <div class="modo-estudio-ia-historial-panel__header">
+                                <span class="ubits-body-md-bold">Historial</span>
+                                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="historial-panel-close" title="Cerrar" aria-label="Cerrar panel historial">
+                                    <i class="far fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="modo-estudio-ia-historial-panel__body">
+                                <div id="historial-list" class="modo-estudio-ia-historial-panel__list"></div>
+                                <div id="historial-empty" class="modo-estudio-ia-historial-panel__empty">
+                                    <p class="ubits-body-sm-regular">Aún no hay chats en esta sesión.</p>
+                                </div>
+                            </div>
+                        </div>
                         <div class="modo-tutor-ia-chat-main">
+                            <div class="modo-estudio-ia-chat-actions">
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" id="btn-historial" data-tooltip="Historial" data-tooltip-position="bottom" aria-label="Abrir historial de chats">
+                                    <i class="far fa-clock"></i>
+                                </button>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" id="btn-nuevo-chat" data-tooltip="Nuevo chat" data-tooltip-position="bottom" aria-label="Iniciar nuevo chat">
+                                    <i class="far fa-comment-plus"></i>
+                                </button>
+                            </div>
                             <div class="widget-chat" id="study-chat-container"></div>
                         </div>
                         <div class="modo-tutor-ia-canvas-panel" id="tutor-canvas-panel" aria-label="Panel de materiales de estudio">
@@ -76,6 +100,9 @@
     <!-- Contenedor para Toast UBITS -->
     <div id="ubits-toast-container"></div>
 
+    <!-- Contenedor para modales (ej. confirmación eliminar chat) -->
+    <div id="modo-estudio-ia-modals-container"></div>
+
         <script src="../../components/tooltip.js"></script>
 <script src="../../components/sidebar.js"></script>
     <script src="../../components/sub-nav.js"></script>
@@ -87,6 +114,7 @@
     <script src="../../components/header-product.js"></script>
     <script src="../../components/toast.js"></script>
     <script src="../../components/card-content-compact.js"></script>
+    <script src="../../components/modal.js"></script>
     <script src="../../components/study-chat.js"></script>
     <script src="../../script.js"></script>
     <script>
@@ -97,6 +125,21 @@
             loadTabBar('tab-bar-container');
             loadFloatingMenu('floating-menu-container');
             loadProfileMenu('profile-menu-container');
+            
+            // Modal de confirmación eliminar chat (getModalHtml)
+            var modalsContainer = document.getElementById('modo-estudio-ia-modals-container');
+            if (modalsContainer && typeof getModalHtml === 'function') {
+                var deleteBody = '<p class="ubits-body-md-regular">¿Estás seguro de que deseas eliminar este chat?</p>';
+                var deleteFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="delete-chat-cancel">Cancelar</button><button type="button" class="ubits-button ubits-button--error ubits-button--md" id="delete-chat-confirm">Eliminar</button>';
+                modalsContainer.innerHTML = getModalHtml({
+                    overlayId: 'delete-chat-modal-overlay',
+                    title: 'Confirmar eliminación',
+                    bodyHtml: deleteBody,
+                    footerHtml: deleteFooter,
+                    size: 'xs',
+                    closeButtonId: 'delete-chat-modal-close'
+                });
+            }
             
             // Activar el tab Modo estudio IA en el SubNav
             setTimeout(() => {
@@ -127,22 +170,68 @@
                             }
                         }
                     },
-                    secondaryButtons: [
-                        { text: 'Historial', icon: 'fa-clock', onClick: function() { console.log('Historial clicked'); } },
-                        { text: 'Nuevo chat', icon: 'fa-comment', onClick: function() { console.log('Nuevo chat clicked'); } }
-                    ]
+                    secondaryButtons: []
                 });
             }
             
+            // Mostrar botones "Nuevo chat" e "Historial" solo si ya existen conversaciones (ocultos a la primera)
+            window.updateModoEstudioIaActionsVisibility = function() {
+                var has = typeof window.hasAnyConversations === 'function' && window.hasAnyConversations();
+                var bar = document.querySelector('.modo-estudio-ia-chat-actions');
+                if (bar) bar.style.display = has ? '' : 'none';
+            };
+
             // Inicializar chat de tutor (empty state con nombre + competencias, panel derecho)
             if (typeof initStudyChat === 'function') {
                 initStudyChat('study-chat-container', {
                     userFirstName: 'María Alejandra',
                     competencies: ['Liderazgo', 'Comunicación', 'Inglés'],
                     rightPanelId: 'tutor-canvas-panel',
-                    placeholderId: 'tutor-canvas-placeholder'
+                    placeholderId: 'tutor-canvas-placeholder',
+                    welcomeLayout: true
                 });
             }
+            
+            // Panel historial: abrir (cerrando canvas si está abierto) y cerrar con la X
+            function openHistorialPanel() {
+                var canvasPanel = document.getElementById('tutor-canvas-panel');
+                if (canvasPanel && canvasPanel.classList.contains('is-open')) {
+                    canvasPanel.classList.remove('is-open', 'has-content');
+                    canvasPanel.innerHTML = '';
+                    if (typeof setCanvasPanelOpen === 'function') setCanvasPanelOpen(false);
+                    if (typeof showOpenButtonsInChat === 'function') showOpenButtonsInChat();
+                }
+                var historialPanel = document.getElementById('historial-panel');
+                if (historialPanel) {
+                    historialPanel.classList.add('is-open');
+                    document.body.classList.add('historial-panel-open');
+                }
+                if (typeof renderHistorialList === 'function') renderHistorialList();
+            }
+            window.openHistorialPanel = openHistorialPanel;
+            
+            var historialCloseBtn = document.getElementById('historial-panel-close');
+            var historialPanelEl = document.getElementById('historial-panel');
+            if (historialCloseBtn && historialPanelEl) {
+                historialCloseBtn.addEventListener('click', function() {
+                    historialPanelEl.classList.remove('is-open');
+                    document.body.classList.remove('historial-panel-open');
+                });
+            }
+            var btnHistorial = document.getElementById('btn-historial');
+            var btnNuevoChat = document.getElementById('btn-nuevo-chat');
+            if (btnHistorial) btnHistorial.addEventListener('click', function() { if (typeof openHistorialPanel === 'function') openHistorialPanel(); });
+            if (btnNuevoChat) btnNuevoChat.addEventListener('click', function() { if (typeof startNewChat === 'function') startNewChat(); });
+            
+            // Listeners modal eliminar chat
+            var deleteModalClose = document.getElementById('delete-chat-modal-close');
+            var deleteModalCancel = document.getElementById('delete-chat-cancel');
+            var deleteModalConfirm = document.getElementById('delete-chat-confirm');
+            var deleteOverlay = document.getElementById('delete-chat-modal-overlay');
+            if (deleteModalClose) deleteModalClose.addEventListener('click', function() { if (typeof cancelDeleteChatModal === 'function') cancelDeleteChatModal(); });
+            if (deleteModalCancel) deleteModalCancel.addEventListener('click', function() { if (typeof cancelDeleteChatModal === 'function') cancelDeleteChatModal(); });
+            if (deleteOverlay) deleteOverlay.addEventListener('click', function(e) { if (e.target === deleteOverlay && typeof cancelDeleteChatModal === 'function') cancelDeleteChatModal(); });
+            if (deleteModalConfirm) deleteModalConfirm.addEventListener('click', function() { if (typeof confirmDeleteChat === 'function') confirmDeleteChat(); });
         });
     </script>
 </body>

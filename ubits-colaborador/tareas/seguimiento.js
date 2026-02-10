@@ -23,7 +23,7 @@
                 '<label class="filtros-checkbox-option"><input type="checkbox" value="Baja"><span class="ubits-body-sm-regular">Baja</span></label></div></div></div>';
             var filtrosFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="filtros-limpiar">Limpiar filtros</button>' +
                 '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="filtros-aplicar">Aplicar filtros</button>';
-            modalsContainer.innerHTML += getModalHtml({ overlayId: 'filtros-modal-overlay', title: 'Filtros', bodyHtml: filtrosBody, footerHtml: filtrosFooter, size: 'md', closeButtonId: 'filtros-modal-close' });
+            modalsContainer.innerHTML += getModalHtml({ overlayId: 'filtros-modal-overlay', title: 'Filtros', bodyHtml: filtrosBody, footerHtml: filtrosFooter, size: 'md', closeButtonId: 'filtros-modal-close', overlayClass: 'filtros-drawer-overlay', contentClass: 'filtros-drawer-content' });
 
             var datePickerBody = '<div class="date-picker-inputs"><div class="date-picker-input-group"><label class="ubits-body-sm-regular date-picker-label">Fecha de inicio</label><div class="date-picker-input-wrapper"><input type="text" class="date-picker-input" id="date-picker-fecha-inicio" placeholder="DD/MM/YYYY"></div></div>' +
                 '<span class="date-picker-separator">-</span><div class="date-picker-input-group"><label class="ubits-body-sm-regular date-picker-label">Fecha de fin</label><div class="date-picker-input-wrapper"><input type="text" class="date-picker-input" id="date-picker-fecha-fin" placeholder="DD/MM/YYYY"></div></div></div>' +
@@ -251,9 +251,9 @@
                 html += `<th class="seguimiento-th-filterable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-checkbox-btn" data-checkbox="prioridad" aria-label="Filtrar por prioridad"><i class="far fa-filter"></i></button></th>`;
             } else if ((col === 'fechaCreacion' || col === 'fechaFinalizacion') && (activeTab === 'tareas' || activeTab === 'planes')) {
                 html += `<th class="seguimiento-th-sortable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-date-sort-btn" data-sort="${col}" aria-label="Ordenar por ${label}"><i class="far fa-arrow-up-arrow-down"></i></button></th>`;
-            } else if (activeTab === 'tareas' && ['nombre', 'asignado', 'area', 'creador', 'plan'].indexOf(col) >= 0) {
+            } else if (activeTab === 'tareas' && ['asignado', 'area', 'creador', 'plan'].indexOf(col) >= 0) {
                 html += `<th class="seguimiento-th-filterable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-filter-btn" data-filter="${col}" aria-label="Filtrar por ${label}"><i class="far fa-filter"></i></button></th>`;
-            } else if (activeTab === 'planes' && (col === 'nombre' || col === 'creador')) {
+            } else if (activeTab === 'planes' && col === 'creador') {
                 html += `<th class="seguimiento-th-filterable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-filter-btn" data-filter="${col}" aria-label="Filtrar por ${label}"><i class="far fa-filter"></i></button></th>`;
             } else if (activeTab === 'planes' && col === 'estado') {
                 html += `<th class="seguimiento-th-filterable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-checkbox-btn" data-checkbox="estado" aria-label="Filtrar por estado"><i class="far fa-filter"></i></button></th>`;
@@ -1912,8 +1912,7 @@
             btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
         });
         const headerTitle = document.getElementById('seguimiento-header-title');
-        var vistaSuffix = (typeof SEGUIMIENTO_SCOPE !== 'undefined' && SEGUIMIENTO_SCOPE === 'leader') ? ' (vista líder)' : '';
-        if (headerTitle) headerTitle.textContent = (tab === 'planes' ? 'Lista de planes' : 'Lista de tareas') + vistaSuffix;
+        if (headerTitle) headerTitle.textContent = tab === 'planes' ? 'Lista de planes' : 'Lista de tareas';
         selectedIds.clear();
         currentPage = 1;
         initColumnVisibility();

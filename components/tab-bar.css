@@ -126,11 +126,11 @@
         display: none !important;
     }
     
-    /* Ajustar contenido para el tab-bar */
+    /* Ajustar contenido para el tab-bar (subnav pegado al borde superior) */
     .main-content {
         padding-bottom: 60px;
         margin-left: 12px !important;
-        margin-top: 16px !important;
+        margin-top: 0 !important;
     }
     
     .content-area {

@@ -576,6 +576,26 @@
     display: none;
 }
 
+/* Drawer de filtros: mismo overlay que modal, panel fijo a la derecha, alto completo */
+.filtros-drawer-overlay {
+    justify-content: flex-end;
+    align-items: stretch;
+    padding: 0;
+}
+
+.filtros-drawer-overlay .filtros-drawer-content {
+    max-width: 480px;
+    width: 100%;
+    max-height: none;
+    height: 100%;
+    border-radius: 0;
+    border-left: 1px solid var(--ubits-border-1);
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.12);
+}
+
 /* Modal filtros - grupos */
 .filtros-group {
     margin-bottom: 20px;
@@ -906,8 +926,9 @@
         grid-template-columns: 1fr;
     }
 
-    #filtros-modal-overlay .ubits-modal-content {
-        max-height: 80vh;
+    /* Drawer de filtros: en móvil ocupa ancho completo */
+    .filtros-drawer-overlay .filtros-drawer-content {
+        max-width: 100%;
     }
 
     /* Ocultar texto en botones de acción en móvil */

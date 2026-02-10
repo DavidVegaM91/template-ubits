@@ -2,6 +2,11 @@
    ESTILOS ESPECÍFICOS PARA MODO-ESTUDIO-IA
    ======================================== */
 
+/* Reducir espacio entre subnav y contenido (en otras páginas main-content usa gap-xl) */
+.modo-estudio-ia-page .main-content {
+    gap: var(--gap-sm);
+}
+
 /* Estilos específicos para content-sections - idéntico a left-wrapper */
 .content-sections {
     display: flex;
@@ -100,6 +105,13 @@
 }
 
 /* ========== Modo Tutor IA: layout chat (izq) + panel derecho (Canvas) ========== */
+/* El contenedor es .section-single.modo-tutor-ia-chat-section; sus hijos coinciden con .section-single > div y reciben el padding. Quitarlo aquí. */
+.modo-tutor-ia-chat-section > .modo-estudio-ia-historial-panel,
+.modo-tutor-ia-chat-section > .modo-tutor-ia-chat-main,
+.modo-tutor-ia-chat-section > .modo-tutor-ia-canvas-panel {
+    padding: 0 !important;
+}
+
 .modo-tutor-ia-chat-section {
     display: flex !important;
     flex-direction: row !important;
@@ -109,12 +121,166 @@
     overflow: hidden !important;
 }
 
+/* Panel historial (izquierda): oculto y sin espacio por defecto; solo visible con clase is-open */
+.modo-estudio-ia-historial-panel {
+    display: none !important;
+    visibility: hidden !important;
+    flex: 0 0 0 !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+}
+
+.modo-estudio-ia-historial-panel.is-open {
+    display: flex !important;
+    visibility: visible !important;
+    flex-direction: column;
+    flex: 0 0 25% !important;
+    width: 25% !important;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-md);
+}
+
+/* Header y body alineados con el canvas (study-chat-canvas-header / study-chat-canvas-body) */
+.modo-estudio-ia-historial-panel__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    padding: var(--padding-sm) var(--padding-xl);
+    border-bottom: 1px solid var(--ubits-border-1);
+}
+
+.modo-estudio-ia-historial-panel__header .ubits-body-md-bold {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.modo-estudio-ia-historial-panel__body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: var(--padding-sm);
+}
+
+.modo-estudio-ia-historial-panel__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+}
+
+.modo-estudio-ia-historial-panel__empty {
+    color: var(--ubits-fg-1-medium);
+}
+
+.modo-estudio-ia-historial-item {
+    display: flex;
+    align-items: center;
+    padding: var(--padding-xs) var(--padding-md);
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    color: var(--ubits-fg-1-high);
+    border: 1px solid transparent;
+}
+
+.modo-estudio-ia-historial-item:hover {
+    background: var(--ubits-bg-2);
+}
+
+/* Chat actualmente abierto en el historial */
+.modo-estudio-ia-historial-item--active {
+    background: var(--ubits-feedback-bg-info-subtle);
+    color: var(--ubits-fg-1-high);
+}
+
+.modo-estudio-ia-historial-item--active:hover {
+    background: var(--ubits-feedback-bg-info-subtle);
+}
+
+.modo-estudio-ia-historial-item__title {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.modo-estudio-ia-historial-item__delete {
+    flex-shrink: 0;
+    margin-left: var(--gap-xs);
+}
+
 .modo-tutor-ia-chat-main {
     flex: 1 1 0;
     min-width: 0;
     min-height: 0;
     display: flex;
     flex-direction: column;
+    background-color: transparent;
+    border-radius: var(--border-radius-md);
+}
+
+/* Barra de acciones dentro del chat: Historial y Nuevo chat (icon-only, alineados a la derecha; tooltip vía title) */
+.modo-estudio-ia-chat-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--gap-sm);
+    flex-shrink: 0;
+    padding-bottom: var(--padding-sm);
+}
+
+/* Pantalla de bienvenida: sin fondo en la caja del chat */
+.modo-estudio-ia-page .modo-tutor-ia-chat-section > .modo-tutor-ia-chat-main.study-chat-wrapper--welcome {
+    background-color: transparent !important;
+    padding: var(--padding-none) !important;
+}
+
+/* Historial abierto + bienvenida: permitir que el resplandor del input se dibuje sin recorte (el chat sigue ocupando el espacio restante; el gap se respeta por .modo-tutor-ia-chat-section gap) */
+.modo-estudio-ia-page .modo-tutor-ia-chat-section:has(.modo-estudio-ia-historial-panel.is-open):has(.study-chat-wrapper--welcome) {
+    overflow: visible !important;
+}
+
+/* Cuando ya inició el chat: fondo y padding en la caja */
+.modo-estudio-ia-page .modo-tutor-ia-chat-section > .modo-tutor-ia-chat-main:not(.study-chat-wrapper--welcome) {
+    background-color: var(--ubits-bg-1) !important;
+    padding: var(--padding-md) !important;
+}
+
+/* Desktop: canvas abierto → chat 60% y canvas 40%; historial abierto → chat usa el resto (sin max); solo sin paneles abiertos → chat max 800px centrado */
+@media (min-width: 1024px) {
+    .modo-tutor-ia-chat-section:has(.modo-tutor-ia-canvas-panel.is-open) .modo-tutor-ia-chat-main {
+        flex: 0 0 60%;
+        width: 60%;
+        max-width: 60%;
+    }
+    .modo-tutor-ia-chat-section > .modo-tutor-ia-canvas-panel.is-open {
+        flex: 0 0 40%;
+        width: 40%;
+        max-width: 40%;
+    }
+    /* Solo chat (sin historial ni canvas): la caja del chat abraza el contenido (max 800px) y se centra */
+    .modo-tutor-ia-chat-section:not(:has(.modo-tutor-ia-canvas-panel.is-open)):not(:has(.modo-estudio-ia-historial-panel.is-open)) .modo-tutor-ia-chat-main {
+        max-width: 800px;
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .modo-tutor-ia-chat-section:not(:has(.modo-tutor-ia-canvas-panel.is-open)):not(:has(.modo-estudio-ia-historial-panel.is-open)) .modo-tutor-ia-chat-main:not(.study-chat-wrapper--welcome) #study-chat-container {
+        max-width: none;
+        margin-left: 0;
+        margin-right: 0;
+        width: 100%;
+    }
 }
 
 /* Panel derecho (Canvas): oculto por defecto; solo visible al generar recurso (quiz, flashcards, guía, cursos, plan) */
@@ -129,12 +295,12 @@
     flex-direction: column !important;
     flex: 1 1 0;
     min-width: 0;
-    width: 50%;
+    width: 50%; /* Desktop: se sobrescribe a 40% en @media (min-width: 1024px) */
     padding: var(--padding-none) !important;
     overflow: hidden;
     min-height: 0;
     background: var(--ubits-bg-1) !important;
-    border: 1px solid var(--ubits-border-1);
+    border: none;
     border-radius: var(--border-radius-md);
     animation: tutor-panel-open 0.2s ease;
 }
@@ -205,26 +371,67 @@
     padding: var(--padding-none) !important;
 }
 
-/* Asegurar que el contenedor del chat tenga altura completa */
+/* Asegurar que el contenedor del chat tenga altura completa y no desborde (cadena min-width: 0) */
 #study-chat-container {
     height: 100% !important;
     min-height: 0 !important;
+    min-width: 0 !important;
     display: flex !important;
     flex-direction: column !important;
 }
 
+.modo-estudio-ia-page .modo-tutor-ia-chat-main .widget-chat {
+    min-width: 0 !important;
+}
 
-/* Responsive: panel derecho debajo del chat en pantallas medianas/pequeñas */
+
+/* Responsive: en móvil/tablet el canvas y el historial se abren como modal encima del contenido */
 @media (max-width: 1023px) {
     .modo-tutor-ia-chat-section {
         flex-direction: column !important;
     }
     
     .modo-tutor-ia-chat-section > .modo-tutor-ia-canvas-panel.is-open {
+        position: fixed;
+        inset: 0;
+        z-index: 1002;
         width: 100%;
-        min-width: 0;
-        max-width: none;
-        max-height: 40vh;
+        height: 100%;
+        max-height: none;
+        min-height: 0;
+        border-radius: 0;
+        box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.15);
+        animation: tutor-panel-open 0.2s ease;
+    }
+    
+    [data-theme="dark"] .modo-tutor-ia-chat-section > .modo-tutor-ia-canvas-panel.is-open {
+        box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.4);
+    }
+    
+    /* Panel historial en móvil: mismo comportamiento que el canvas (modal a pantalla completa) */
+    .modo-tutor-ia-chat-section > .modo-estudio-ia-historial-panel.is-open {
+        position: fixed !important;
+        inset: 0 !important;
+        z-index: 1002;
+        width: 100% !important;
+        height: 100% !important;
+        max-width: none !important;
+        max-height: none !important;
+        min-height: 0;
+        flex: none !important;
+        border-radius: 0;
+        box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.15);
+        animation: tutor-panel-open 0.2s ease;
+    }
+    
+    [data-theme="dark"] .modo-tutor-ia-chat-section > .modo-estudio-ia-historial-panel.is-open {
+        box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.4);
+    }
+    
+    /* Ocultar tab-bar cuando el canvas o el historial están abiertos */
+    body.canvas-panel-open #tab-bar-container,
+    body.historial-panel-open #tab-bar-container {
+        display: none !important;
     }
     
     .content-sections {
@@ -237,6 +444,195 @@
         flex-direction: column;
         gap: var(--gap-lg);
     }
+}
+
+/* ========== Pantalla de bienvenida (solo Modo estudio IA): chat debajo del mensaje, menos ancho, sin icono ni advertencia ========== */
+/* Espaciado: espacio entre "¿Qué quieres aprender hoy?" e input (--gap-3xl) */
+/* Contenido centrado horizontalmente; posición vertical dinámica (un poco más arriba del centro) */
+.modo-estudio-ia-page .ubits-study-chat--welcome {
+    flex: 1;
+    min-height: 0;
+    min-width: 0;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap-3xl);
+    /* Padding asimétrico en vh: centro visual desplazado hacia arriba en todas las resoluciones */
+    padding-top: 12vh;
+    padding-bottom: 38vh;
+}
+
+.modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__body {
+    flex: 0 0 auto;
+    justify-content: flex-start;
+    align-self: center;
+    width: 100%;
+    max-width: 100%;
+}
+
+.modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__welcome-wrapper {
+    flex: 0 0 auto;
+    padding-bottom: 0;
+}
+
+.modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__welcome {
+    gap: var(--gap-lg);
+}
+
+/* Icono sparkles arriba del "Hola, María Alejandra" */
+.modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__welcome-head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--gap-sm);
+    flex-shrink: 0;
+}
+
+.modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__welcome-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--ubits-bg-2);
+    color: var(--ubits-accent-brand);
+    font-size: 1.25rem;
+    animation: modo-estudio-ia-sparkles-float 2.5s ease-in-out infinite;
+}
+
+@keyframes modo-estudio-ia-sparkles-float {
+    0%, 100% { transform: translateY(0) scale(1); opacity: 1; }
+    50% { transform: translateY(-6px) scale(1.08); opacity: 0.9; }
+}
+
+.modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__input-area {
+    gap: var(--gap-lg);
+}
+
+.modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__input-area {
+    align-self: center;
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
+    flex-shrink: 0;
+}
+
+.modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__input-container {
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: visible; /* No recortar el resplandor (box-shadow) cuando el historial está abierto */
+}
+
+.modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__disclaimer {
+    display: none;
+}
+
+.modo-estudio-ia-page .ubits-study-chat--welcome #ubits-study-chat-attach-btn {
+    display: none;
+}
+
+/* Pantalla de bienvenida: recomendaciones a la izquierda, botón enviar a la derecha (input-bottom) */
+.modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__suggestions {
+    justify-content: flex-start;
+}
+
+/* Móvil: pantalla de bienvenida al 100% de ancho (override posterior a las reglas 70%) */
+@media (max-width: 1023px) {
+    .modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__body,
+    .modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__input-area {
+        max-width: 100% !important;
+    }
+}
+
+/* ========== Input del chat tipo ChatGPT: compacto, una línea inicial, bordes redondeados (pill) ========== */
+.modo-estudio-ia-page .ubits-study-chat__input-container {
+    flex-direction: row;
+    align-items: center;
+    padding: 8px 12px 8px 16px;
+    gap: var(--gap-sm);
+    min-height: 48px;
+}
+
+/* Chat iniciado (no bienvenida): cadena min-width 0 para que el input no desborde el padre */
+.modo-estudio-ia-page .ubits-study-chat:not(.ubits-study-chat--welcome) {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.modo-estudio-ia-page .ubits-study-chat:not(.ubits-study-chat--welcome) .ubits-study-chat__input-area {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.modo-estudio-ia-page .ubits-study-chat:not(.ubits-study-chat--welcome) .ubits-study-chat__input-container {
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.modo-estudio-ia-page .ubits-study-chat:not(.ubits-study-chat--welcome) .ubits-study-chat__input-bottom {
+    width: auto;
+    flex: 0 0 auto;
+    min-width: 0;
+}
+
+.modo-estudio-ia-page .ubits-study-chat:not(.ubits-study-chat--welcome) .ubits-study-chat__input-wrapper {
+    min-width: 0;
+    flex: 1 1 0;
+    overflow: hidden;
+}
+
+.modo-estudio-ia-page .ubits-study-chat:not(.ubits-study-chat--welcome) .ubits-study-chat__input {
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* Pantalla de bienvenida: cuadro blanco con input arriba y recomendaciones + enviar abajo; resplandor azul (acción 1.3) */
+.modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__input-container {
+    flex-direction: column;
+    align-items: stretch;
+    min-height: auto;
+    padding: var(--padding-md);
+    gap: var(--gap-md);
+    border: 1px solid var(--ubits-border-1);
+    /* Light: resplandor (mitad de tamaño) */
+    box-shadow: 0 0 0 1px var(--ubits-feedback-border-info),
+                0 0 12px var(--ubits-feedback-border-info),
+                0 0 24px var(--ubits-feedback-bg-info-subtle);
+}
+
+/* Dark: resplandor más sutil y compacto */
+[data-theme="dark"] .modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__input-container {
+    box-shadow: 0 0 0 1px var(--ubits-feedback-border-info-inverted),
+                0 0 4px var(--ubits-feedback-bg-info-subtle-inverted),
+                0 0 8px var(--ubits-feedback-bg-info-subtle-inverted);
+}
+
+.modo-estudio-ia-page .ubits-study-chat__input-wrapper {
+    flex: 1;
+    min-width: 0;
+    align-self: center;
+}
+
+.modo-estudio-ia-page .ubits-study-chat__input {
+    min-height: 24px;
+    line-height: 24px;
+    padding: 4px 0;
+    font-size: var(--font-size-sm);
+}
+
+.modo-estudio-ia-page .ubits-study-chat__input-actions {
+    width: auto;
+    flex-shrink: 0;
 }
 
 /* Asegurar que también se aplique en responsive */
