@@ -8,8 +8,17 @@ var currentStudyPlanState = null;
 /** Planes ya creados por tema (al reabrir se muestran en modo lectura con botón "Ver plan"; en prototipo no hace nada, en producción abriría un drawer con el plan). */
 var createdStudyPlansByTopic = {};
 
-function getStudyPlanForTopic(topicKey) {
-    return createdStudyPlansByTopic[topicKey] || generateStudyPlan(topicKey);
+function getStudyPlanForTopic(topicKey, planIndex) {
+    if (typeof planIndex !== 'number' || planIndex < 0) planIndex = 0;
+    return createdStudyPlansByTopic[topicKey] || generateStudyPlan(topicKey, planIndex);
+}
+
+/** Número de variantes de plan por tema (por cortes de 5 cursos/actividades). */
+function getNumPlanVariants(topicKey) {
+    var courses = COURSES_BY_TOPIC[topicKey];
+    if (courses && courses.length) return Math.max(1, Math.ceil(courses.length / 5));
+    if (topicKey === 'japones') return Math.max(1, Math.ceil(ACTIVITY_ALTERNATIVES_JAPANESE.length / 5));
+    return 1;
 }
 
 // Función para obtener la ruta base de imágenes según la ubicación actual
@@ -170,7 +179,8 @@ function studyPlanDateFromCalendarValue(s) {
     return parts[2] + '-' + parts[1] + '-' + parts[0];
 }
 
-function generateStudyPlan(topicKey) {
+function generateStudyPlan(topicKey, planIndex) {
+    if (typeof planIndex !== 'number' || planIndex < 0) planIndex = 0;
     var label = TOPIC_LABELS[topicKey] || topicKey;
     var start = new Date();
     var end = new Date();
@@ -178,14 +188,23 @@ function generateStudyPlan(topicKey) {
     var tasks = [];
     var courses = COURSES_BY_TOPIC[topicKey];
     if (courses && courses.length) {
-        tasks = courses.slice(0, 5).map(function(c) {
+        var numVariants = Math.ceil(courses.length / 5);
+        var variant = planIndex % numVariants;
+        var from = variant * 5;
+        var to = Math.min(from + 5, courses.length);
+        tasks = courses.slice(from, to).map(function(c) {
             return { type: 'course', title: 'Ver contenido: ' + c.title, course: c };
         });
     } else if (topicKey === 'japones') {
         var alts = ACTIVITY_ALTERNATIVES_JAPANESE.slice();
-        tasks = ACTIVITY_ALTERNATIVES_JAPANESE.slice(0, 5).map(function(text, i) {
+        var numVariants = Math.ceil(ACTIVITY_ALTERNATIVES_JAPANESE.length / 5);
+        var variant = planIndex % numVariants;
+        var from = variant * 5;
+        var to = Math.min(from + 5, ACTIVITY_ALTERNATIVES_JAPANESE.length);
+        var sliceAlts = ACTIVITY_ALTERNATIVES_JAPANESE.slice(from, to);
+        tasks = sliceAlts.map(function(text, i) {
             var idx = alts.indexOf(text);
-            if (idx < 0) idx = i;
+            if (idx < 0) idx = from + i;
             return { type: 'activity', title: text, alternatives: alts, currentIndex: idx };
         });
     } else {
@@ -287,7 +306,153 @@ const TUTOR_QUIZ = {
     ]
 };
 
-/** Sets de flashcards por tema: 3 iteraciones × 5 cartas = 15 por tema (liderazgo, comunicacion, ingles, japones, hiragana). */
+/** Sets 2 a 5 de quiz por tema (5 preguntas por set; hiragana usa slice del set principal). */
+const TUTOR_QUIZ_SET1 = {
+    liderazgo: [
+        { q: '¿Qué favorece la confianza en un equipo?', options: ['Ocultar errores', 'Transparencia y coherencia entre decir y hacer', 'Solo reuniones formales', 'Evitar el conflicto'], correct: 1, explanation: 'La transparencia y la coherencia entre lo que se dice y se hace construyen confianza.' },
+        { q: 'Un líder que delega bien:', options: ['Controla cada detalle', 'Define resultado esperado, da recursos y hace seguimiento', 'Solo asigna tareas fáciles', 'No pide cuentas'], correct: 1, explanation: 'Delegar bien implica claridad en el resultado, recursos y seguimiento.' },
+        { q: 'El feedback efectivo debe darse:', options: ['Solo al final del año', 'A tiempo y con ejemplos concretos', 'Solo por escrito', 'Solo cuando hay problemas'], correct: 1, explanation: 'El feedback es más útil cuando es oportuno y está basado en hechos.' },
+        { q: '¿Qué es la escucha activa en liderazgo?', options: ['Oír mientras se piensa la respuesta', 'Prestar atención plena, preguntar y parafrasear', 'Asentir siempre', 'Interrumpir para aclarar'], correct: 1, explanation: 'La escucha activa implica atención plena, preguntas y parafraseo.' },
+        { q: 'La resiliencia en liderazgo se refiere a:', options: ['No mostrar debilidad', 'Recuperarse de adversidades y aprender', 'Evitar el estrés', 'Trabajar más horas'], correct: 1, explanation: 'La resiliencia es la capacidad de recuperarse y aprender de las dificultades.' }
+    ],
+    comunicacion: [
+        { q: '¿Qué es un mensaje "yo"?', options: ['Hablar solo de uno mismo', 'Expresar lo que sientes o necesitas sin culpar al otro', 'Siempre empezar con "Yo"', 'Evitar el conflicto'], correct: 1, explanation: 'El mensaje yo expresa sentimientos o necesidades sin acusar: "Yo me siento..."' },
+        { q: 'Las preguntas abiertas sirven para:', options: ['Obtener sí o no', 'Profundizar y que el otro explique (qué, cómo, por qué)', 'Cerrar temas', 'Interrogar'], correct: 1, explanation: 'Las preguntas abiertas invitan a explicar y profundizar.' },
+        { q: 'En una reunión, parafrasear ayuda a:', options: ['Ganar tiempo', 'Confirmar que se entendió y alinear a todos', 'Dominar la conversación', 'Evitar desacuerdos'], correct: 1, explanation: 'Parafrasear confirma el entendimiento y alinea al equipo.' },
+        { q: 'La comunicación no verbal incluye:', options: ['Solo los gestos', 'Gestos, postura, mirada, tono de voz y espacio', 'Solo el tono', 'Solo la mirada'], correct: 1, explanation: 'Incluye cuerpo, voz, mirada y uso del espacio.' },
+        { q: '¿Cuándo es mejor dar feedback negativo?', options: ['En público', 'En privado, a tiempo y con foco en el comportamiento', 'Solo por email', 'Nunca'], correct: 1, explanation: 'En privado, pronto y centrado en comportamientos concretos.' }
+    ],
+    ingles: [
+        { q: '"Brief" como sustantivo en trabajo significa:', options: ['Corto', 'Resumen o instrucciones (e.g. project brief)', 'Rápido', 'Reunión'], correct: 1, explanation: '"Brief" puede ser un resumen o documento de instrucciones.' },
+        { q: '¿Cuál es el pasado de "to have"?', options: ['haved', 'had', 'has', 'having'], correct: 1, explanation: 'El pasado simple de "to have" es "had".' },
+        { q: '"To schedule a meeting" significa:', options: ['Cancelar una reunión', 'Programar o agendar una reunión', 'Llegar tarde', 'Terminar una reunión'], correct: 1, explanation: '"To schedule" es programar o agendar.' },
+        { q: 'En un email formal, "I am writing to..." sirve para:', options: ['Despedirse', 'Introducir el motivo del mensaje', 'Pedir disculpas', 'Adjuntar archivos'], correct: 1, explanation: 'Introduce el propósito del correo de forma formal.' },
+        { q: '"Deadline" se refiere a:', options: ['Fecha de inicio', 'Fecha límite de entrega', 'Reunión', 'Vacaciones'], correct: 1, explanation: '"Deadline" es la fecha límite para entregar algo.' }
+    ],
+    japones: [
+        { q: "¿Qué partícula indica el objeto directo en japonés?", options: ['は (wa)', 'を (wo)', 'に (ni)', 'で (de)'], correct: 1, explanation: 'を (wo) marca el objeto directo del verbo.' },
+        { q: "¿Cuál es un saludo para la mañana?", options: ['Konnichiwa', 'Ohayou gozaimasu', 'Konbanwa', 'Sayounara'], correct: 1, explanation: '"Ohayou gozaimasu" es buenos días (formal).' },
+        { q: "¿Qué significa 'Itadakimasu'?", options: ['Gracias', 'Se dice antes de comer (como bendición)', 'Buen provecho', 'Adiós'], correct: 1, explanation: 'Se dice antes de comer, agradeciendo la comida.' },
+        { q: "El sufijo '-san' se usa para:", options: ['Insultar', 'Mostrar respeto (ej. Tanaka-san)', 'Hablar de uno mismo', 'Objetos'], correct: 1, explanation: '-san es un sufijo de respeto tras el nombre.' },
+        { q: "¿Cómo se dice 'No' en japonés?", options: ['Hai', 'Iie', 'Ee', 'Un'], correct: 1, explanation: '"Iie" es la forma estándar de decir no.' }
+    ],
+    hiragana: [] // se rellena con slice de TUTOR_QUIZ.hiragana
+};
+const TUTOR_QUIZ_SET2 = {
+    liderazgo: [
+        { q: '¿Qué es un objetivo SMART?', options: ['Cualquier meta', 'Específico, Medible, Alcanzable, Relevante y con Tiempo', 'Solo medible', 'Solo a largo plazo'], correct: 1, explanation: 'SMART: Specific, Measurable, Achievable, Relevant, Time-bound.' },
+        { q: 'La gestión del cambio requiere:', options: ['Solo comunicar una vez', 'Comunicar el porqué, involucrar y celebrar avances', 'Ocultar resistencias', 'Imponer sin explicar'], correct: 1, explanation: 'Comunicación, involucración y reconocimiento facilitan el cambio.' },
+        { q: 'Las reuniones 1:1 sirven para:', options: ['Solo dar órdenes', 'Feedback, prioridades y desarrollo del colaborador', 'Solo revisar tareas', 'Evitar hablar en grupo'], correct: 1, explanation: 'Son espacios para feedback, alineación y desarrollo.' },
+        { q: '¿Qué caracteriza al liderazgo situacional?', options: ['Un solo estilo', 'Adaptar el estilo al nivel de madurez y la tarea', 'Solo apoyar', 'Solo dirigir'], correct: 1, explanation: 'Se adapta el estilo al contexto y a la persona.' },
+        { q: 'La rendición de cuentas (accountability) implica:', options: ['Culpar a otros', 'Asumir responsabilidad por resultados y acciones', 'Solo informar', 'Delegar todo'], correct: 1, explanation: 'Es asumir la responsabilidad por lo que nos corresponde.' }
+    ],
+    comunicacion: [
+        { q: 'En comunicación en crisis, es importante:', options: ['Esperar a tener toda la información', 'Ser claro, frecuente y honesto aunque la info sea parcial', 'Solo comunicar por escrito', 'Evitar mencionar problemas'], correct: 1, explanation: 'Comunicar pronto y con transparencia reduce rumores.' },
+        { q: 'La escucha empática consiste en:', options: ['Dar soluciones rápido', 'Ponerse en el lugar del otro y validar emociones', 'Interrumpir para aconsejar', 'Solo asentir'], correct: 1, explanation: 'Validar emociones antes de proponer soluciones.' },
+        { q: 'El storytelling en presentaciones:', options: ['Solo entretiene', 'Hace el mensaje memorable y conecta con la audiencia', 'Sustituye datos', 'Solo para niños'], correct: 1, explanation: 'Las historias ayudan a que el mensaje se recuerde.' },
+        { q: 'Un mensaje clave en una presentación debe:', options: ['Decirse solo al final', 'Repetirse al inicio, desarrollo y cierre', 'Ser muy largo', 'Incluir todo el detalle'], correct: 1, explanation: 'Una idea clave repetida se fija mejor.' },
+        { q: 'En emails profesionales conviene:', options: ['Un tema por mensaje y párrafos cortos', 'Varios temas en un solo mail', 'Solo asunto', 'Sin llamada a la acción'], correct: 0, explanation: 'Un tema por correo y estructura clara mejoran la respuesta.' }
+    ],
+    ingles: [
+        { q: '"To meet a deadline" significa:', options: ['Perder el plazo', 'Cumplir la fecha límite', 'Posponer', 'Cancelar'], correct: 1, explanation: '"To meet" aquí es cumplir o llegar a.' },
+        { q: 'En reuniones, "Could you repeat that?" sirve para:', options: ['Terminar', 'Pedir que repitan lo dicho', 'Estar de acuerdo', 'Presentarse'], correct: 1, explanation: 'Pide que repitan para entender mejor.' },
+        { q: '"As per" en un email significa:', options: ['Según (as per our conversation)', 'Antes de', 'Después de', 'En contra de'], correct: 0, explanation: '"As per" es "según" en contexto formal.' },
+        { q: 'El "past continuous" se usa para:', options: ['Acciones futuras', 'Acción en curso en un momento del pasado', 'Solo hábitos', 'Condicionales'], correct: 1, explanation: 'Was/were + -ing: algo estaba ocurriendo en el pasado.' },
+        { q: '"Looking forward to" va seguido de:', options: ['Infinitivo (to + verbo)', 'Verbo en -ing', 'Pasado', 'Sustantivo solo'], correct: 1, explanation: 'I am looking forward to hearing from you ( -ing ).' }
+    ],
+    japones: [
+        { q: "¿Qué expresión se usa al volver a casa?", options: ['Ittekimasu', 'Tadaima', 'Gochisousama', 'Oyasumi'], correct: 1, explanation: '"Tadaima" = "Ya llegué".' },
+        { q: "¿Cuál es la respuesta a 'Tadaima'?", options: ['Sayounara', 'Okaeri (nasai)', 'Ittekimasu', 'Konnichiwa'], correct: 1, explanation: '"Okaeri" = "Bienvenido de vuelta".' },
+        { q: "¿Qué se dice al terminar de comer?", options: ['Itadakimasu', 'Gochisousama', 'Sumimasen', 'Arigatou'], correct: 1, explanation: '"Gochisousama" agradece la comida.' },
+        { q: "La partícula 'ni' puede indicar:", options: ['Solo lugar', 'Lugar, tiempo, destino o receptor', 'Solo tiempo', 'Solo objeto'], correct: 1, explanation: 'に (ni) tiene varios usos: lugar, tiempo, destino.' },
+        { q: "¿Qué significa 'Onegaishimasu'?", options: ['Gracias', 'Por favor / al pedir algo', 'Lo siento', 'No'], correct: 1, explanation: 'Por favor, o al iniciar una actividad.' }
+    ],
+    hiragana: []
+};
+const TUTOR_QUIZ_SET3 = {
+    liderazgo: [
+        { q: 'El liderazgo servicial (servant leadership) prioriza:', options: ['El poder del líder', 'Las necesidades del equipo y su desarrollo', 'Solo resultados a corto plazo', 'La jerarquía'], correct: 1, explanation: 'El líder sirve al equipo para que este brille.' },
+        { q: '¿Qué ayuda a resolver conflictos en equipo?', options: ['Evitar el tema', 'Escuchar a las partes, identificar intereses y buscar opciones', 'Imponer una solución', 'Solo mediar una vez'], correct: 1, explanation: 'Escucha, intereses comunes y opciones facilitan acuerdos.' },
+        { q: 'La visión compartida en un equipo:', options: ['Solo la tiene el líder', 'Une al equipo y guía las decisiones', 'Es opcional', 'Solo para proyectos grandes'], correct: 1, explanation: 'Una visión compartida alinea y motiva.' },
+        { q: 'El mentoring se diferencia del coaching en que:', options: ['Son lo mismo', 'El mentoring transmite experiencia; el coaching hace preguntas', 'Solo el coaching existe', 'El mentoring es más corto'], correct: 1, explanation: 'Mentoring = experiencia; coaching = preguntas y reflexión.' },
+        { q: '¿Qué es la autoconciencia en liderazgo?', options: ['Conocer solo al equipo', 'Reconocer las propias emociones, fortalezas y límites', 'No mostrar emociones', 'Solo escuchar'], correct: 1, explanation: 'La autoconciencia es la base de la IE.' }
+    ],
+    comunicacion: [
+        { q: 'La asertividad se sitúa entre:', options: ['Pasividad y agresividad', 'Solo pasividad', 'Solo agresividad', 'Indiferencia'], correct: 0, explanation: 'Es el punto medio: defender derechos con respeto.' },
+        { q: 'Un resumen al cerrar una reunión debe incluir:', options: ['Solo quién asistió', 'Qué se decidió, quién hace qué y para cuándo', 'Solo el próximo encuentro', 'Nada'], correct: 1, explanation: 'Acuerdos, responsables y plazos cierran bien.' },
+        { q: 'El feedback "sandwich" (positivo-negativo-positivo):', options: ['Siempre es la mejor opción', 'Puede diluir el mensaje; a veces es mejor ser directo', 'Solo debe usarse con jefes', 'Sustituye el feedback negativo'], correct: 1, explanation: 'A veces la claridad directa es más útil.' },
+        { q: 'La comunicación escrita en remoto debe:', options: ['Ser muy breve siempre', 'Ser clara, con contexto y llamada a la acción cuando aplique', 'Solo por chat', 'Evitar emojis siempre'], correct: 1, explanation: 'Claridad, contexto y siguiente paso ayudan.' },
+        { q: '¿Qué es validar en una conversación difícil?', options: ['Estar de acuerdo con todo', 'Reconocer la emoción o perspectiva del otro sin juzgar', 'Ceder siempre', 'Cortar la conversación'], correct: 1, explanation: 'Validar es reconocer lo que siente el otro.' }
+    ],
+    ingles: [
+        { q: '"To reach out" significa:', options: ['Colgar', 'Contactar o comunicarse con alguien', 'Alejarse', 'Rechazar'], correct: 1, explanation: '"To reach out" = contactar o tender la mano.' },
+        { q: '"Follow up" como verbo significa:', options: ['Empezar', 'Dar seguimiento', 'Terminar', 'Cancelar'], correct: 1, explanation: 'Dar seguimiento a algo (reunión, tarea).' },
+        { q: 'En un email, "Please find attached" indica:', options: ['Que no hay adjuntos', 'Que se adjunta un archivo', 'Una disculpa', 'El cierre'], correct: 1, explanation: 'Fórmula formal para indicar adjunto.' },
+        { q: '"To wrap up" una reunión es:', options: ['Empezarla', 'Terminarla o cerrar temas', 'Posponerla', 'Cancelarla'], correct: 1, explanation: '"To wrap up" = concluir o cerrar.' },
+        { q: '"Backlog" en trabajo suele referirse a:', options: ['El futuro', 'Tareas o ítems pendientes acumulados', 'Solo bugs', 'Reuniones'], correct: 1, explanation: 'Acumulado de trabajo pendiente.' }
+    ],
+    japones: [
+        { q: "¿Qué partícula suele indicar lugar donde ocurre la acción?", options: ['を', 'で', 'は', 'が'], correct: 1, explanation: 'で (de) indica lugar donde se realiza la acción.' },
+        { q: "¿Cuál es la forma cortés de 'gracias'?", options: ['Arigatou', 'Arigatou gozaimasu', 'Doumo', 'Iie'], correct: 1, explanation: '"Arigatou gozaimasu" es la forma formal.' },
+        { q: "¿Qué se dice al salir de casa (el que se va)?", options: ['Tadaima', 'Ittekimasu', 'Okaeri', 'Gochisousama'], correct: 1, explanation: '"Ittekimasu" = "Me voy" (el que sale).' },
+        { q: "La partícula 'ga' marca:", options: ['Solo objeto', 'Sujeto (énfasis) o preferencia', 'Solo tiempo', 'Solo lugar'], correct: 1, explanation: 'が (ga) marca el sujeto o preferencia (X ga suki).' },
+        { q: "¿Cómo se dice 'Por favor' al pedir un favor?", options: ['Iie', 'Onegaishimasu', 'Sumimasen', 'Hai'], correct: 1, explanation: '"Onegaishimasu" al solicitar algo.' }
+    ],
+    hiragana: []
+};
+const TUTOR_QUIZ_SET4 = {
+    liderazgo: [
+        { q: 'La diversidad en equipo aporta:', options: ['Solo conflictos', 'Perspectivas distintas y mejor toma de decisiones', 'Solo lentitud', 'Solo en creatividad'], correct: 1, explanation: 'Diversidad bien gestionada mejora decisiones e innovación.' },
+        { q: 'Un líder que da reconocimiento:', options: ['Solo lo hace en público', 'Reconoce esfuerzos y logros de forma específica y oportuna', 'Solo al final del año', 'Solo con dinero'], correct: 1, explanation: 'Reconocimiento específico y a tiempo motiva.' },
+        { q: 'La toma de decisiones en consenso busca:', options: ['Que gane la mayoría', 'Acuerdo que todos pueden apoyar', 'Solo la opinión del líder', 'Votación secreta'], correct: 1, explanation: 'Consenso = todos pueden apoyar la decisión.' },
+        { q: '¿Qué es el burnout y cómo lo previene un líder?', options: ['Solo estrés; no se puede prevenir', 'Agotamiento crónico; se previene con límites, prioridades y apoyo', 'Solo cansancio', 'Solo falta de motivación'], correct: 1, explanation: 'Burnout es agotamiento; límites y apoyo ayudan.' },
+        { q: 'La humildad en liderazgo implica:', options: ['Saberlo todo', 'Reconocer límites, aprender de otros y dar crédito', 'Solo ser amable', 'Nunca equivocarse'], correct: 1, explanation: 'Reconocer límites y dar crédito al equipo.' }
+    ],
+    comunicacion: [
+        { q: 'En una negociación, la escucha activa permite:', options: ['Solo ganar tiempo', 'Entender intereses del otro y buscar opciones ganar-ganar', 'Solo defender tu posición', 'Solo ceder'], correct: 1, explanation: 'Entender intereses abre opciones mutuamente beneficiosas.' },
+        { q: 'El lenguaje inclusivo en el trabajo:', options: ['Solo es político', 'Incluye a todas las personas y evita suposiciones', 'Solo en escritos', 'Solo con clientes'], correct: 1, explanation: 'Incluye a todos y evita exclusiones.' },
+        { q: 'Una "elevator pitch" debe ser:', options: ['Muy larga', 'Breve, clara y memorable (ej. 30-60 segundos)', 'Solo para ventas', 'Solo oral'], correct: 1, explanation: 'Pitch corto que resume la idea en poco tiempo.' },
+        { q: 'Al dar malas noticias, conviene:', options: ['Ocultar detalles', 'Ser claro, empático y ofrecer próximos pasos', 'Solo por email', 'Dejar que otros lo comuniquen'], correct: 1, explanation: 'Claridad, empatía y pasos siguientes.' },
+        { q: 'La comunicación intercultural requiere:', options: ['Solo hablar más alto', 'Curiosidad, evitar suposiciones y adaptar el estilo', 'Solo traducir', 'Solo gestos'], correct: 1, explanation: 'Curiosidad y adaptación reducen malentendidos.' }
+    ],
+    ingles: [
+        { q: '"To step down" significa:', options: ['Subir', 'Dejar un cargo o posición', 'Continuar', 'Empezar'], correct: 1, explanation: '"To step down" = renunciar o dejar el cargo.' },
+        { q: '"Onboarding" se refiere a:', options: ['Despedida', 'Proceso de integración de un nuevo empleado', 'Reunión', 'Proyecto'], correct: 1, explanation: 'Integración de nuevos en la empresa.' },
+        { q: 'En un email, "I hope this email finds you well" es:', options: ['Una queja', 'Un saludo formal de apertura', 'El cierre', 'Una pregunta'], correct: 1, explanation: 'Fórmula de cortesía al inicio del correo.' },
+        { q: '"To brainstorm" significa:', options: ['Criticar', 'Generar ideas en grupo sin juzgar al inicio', 'Votar', 'Decidir'], correct: 1, explanation: 'Lluvia de ideas, sin filtrar al principio.' },
+        { q: '"Quarter" en contexto empresarial suele ser:', options: ['Medio año', 'Trimestre (Q1, Q2, etc.)', 'Mes', 'Año'], correct: 1, explanation: 'Quarter = trimestre (Q1-Q4).' }
+    ],
+    japones: [
+        { q: "¿Qué partícula indica tema o contraste (como 'respecto a')?", options: ['を', 'に', 'は', 'で'], correct: 2, explanation: 'は (wa) marca el tema de la oración.' },
+        { q: "¿Cuál es una despedida formal?", options: ['Bye', 'Sayounara', 'Mata ne', 'Otsukaresama desu'], correct: 3, explanation: '"Otsukaresama desu" se usa al terminar la jornada.' },
+        { q: "¿Qué significa 'Sumimasen'?", options: ['Solo gracias', 'Perdón / Disculpe / Gracias (cuando molestas)', 'Solo no', 'Sí'], correct: 1, explanation: 'Tiene varios usos según el contexto.' },
+        { q: "Los números japoneses 1-10 (hitotsu, futatsu...):", options: ['Solo para contar personas', 'Son contadores; la forma depende de qué se cuenta', 'Solo para tiempo', 'Son iguales siempre'], correct: 1, explanation: 'Hay distintos contadores según el objeto.' },
+        { q: "¿Cómo se responde a 'Ogenki desu ka?'?", options: ['Iie', 'Hai, genki desu', 'Sayounara', 'Sumimasen'], correct: 1, explanation: '"¿Cómo estás?" → "Sí, estoy bien".' }
+    ],
+    hiragana: []
+};
+
+(function () {
+    var h = TUTOR_QUIZ.hiragana;
+    var L = h ? h.length : 0;
+    if (L >= 10) {
+        TUTOR_QUIZ_SET1.hiragana = h.slice(10, 20);
+        TUTOR_QUIZ_SET2.hiragana = h.slice(20, 30);
+        TUTOR_QUIZ_SET3.hiragana = h.slice(30, 40);
+        TUTOR_QUIZ_SET4.hiragana = h.slice(40, 50);
+    }
+})();
+
+/** 5 sets de quiz por tema; set 0 usa TUTOR_QUIZ con hiragana slice(0,10); sets 1-4 usan TUTOR_QUIZ_SET1..SET4 (hiragana ya asignado por slice). */
+var TUTOR_QUIZ_SETS = [
+    { liderazgo: TUTOR_QUIZ.liderazgo, comunicacion: TUTOR_QUIZ.comunicacion, ingles: TUTOR_QUIZ.ingles, japones: TUTOR_QUIZ.japones, hiragana: TUTOR_QUIZ.hiragana.slice(0, 10) },
+    TUTOR_QUIZ_SET1,
+    TUTOR_QUIZ_SET2,
+    TUTOR_QUIZ_SET3,
+    TUTOR_QUIZ_SET4
+];
+
+/** Sets de flashcards por tema: 5 iteraciones × 5 cartas = 25 por tema (liderazgo, comunicacion, ingles, japones, hiragana). */
 const TUTOR_FLASHCARDS = {
     liderazgo: [
         { front: 'Liderazgo transformacional', back: 'Estilo que inspira cambios positivos y motiva al equipo con una visión compartida.' },
@@ -404,6 +569,84 @@ const TUTOR_FLASHCARDS_SET2 = {
     ]
 };
 
+/** Set 4 de flashcards. */
+const TUTOR_FLASHCARDS_SET3 = {
+    liderazgo: [
+        { front: 'Liderazgo servicial', back: 'Prioriza las necesidades del equipo y su desarrollo; el líder sirve al equipo.' },
+        { front: 'Rendición de cuentas', back: 'Asumir responsabilidad por los resultados y acciones propias.' },
+        { front: 'Resolución de conflictos', back: 'Identificar el problema, escuchar a las partes y buscar soluciones que sumen.' },
+        { front: 'Reconocimiento', back: 'Valorar esfuerzos y logros de forma específica y oportuna para motivar.' },
+        { front: 'Autoconciencia', back: 'Reconocer las propias emociones, fortalezas y límites (base de la IE).' }
+    ],
+    comunicacion: [
+        { front: 'Negociación', back: 'Proceso para alcanzar acuerdos; la escucha activa permite entender intereses.' },
+        { front: 'Lenguaje inclusivo', back: 'Formas de comunicar que incluyen a todas las personas y evitan suposiciones.' },
+        { front: 'Elevator pitch', back: 'Presentación breve (30-60 s), clara y memorable de una idea o proyecto.' },
+        { front: 'Malas noticias', back: 'Comunicarlas con claridad, empatía y ofreciendo próximos pasos.' },
+        { front: 'Comunicación intercultural', back: 'Curiosidad, evitar suposiciones y adaptar el estilo al contexto cultural.' }
+    ],
+    ingles: [
+        { front: '"To step down"', back: 'Dejar un cargo o posición (renunciar al rol).' },
+        { front: '"Onboarding"', back: 'Proceso de integración de un nuevo empleado en la empresa.' },
+        { front: '"To reach out"', back: 'Contactar o comunicarse con alguien.' },
+        { front: '"To brainstorm"', back: 'Generar ideas en grupo sin juzgar al inicio (lluvia de ideas).' },
+        { front: '"Quarter" (Q1, Q2...)', back: 'Trimestre en contexto empresarial.' }
+    ],
+    japones: [
+        { front: 'Partícula で (de)', back: 'Indica lugar donde ocurre la acción o medio/instrumento.' },
+        { front: 'Partícula は (wa)', back: 'Marca el tema de la oración (a veces se lee "wa").' },
+        { front: 'Otsukaresama desu', back: 'Se dice al terminar la jornada; reconoce el esfuerzo.' },
+        { front: 'Contadores japoneses', back: 'La forma del número depende de qué se cuenta (hitotsu, futatsu...).' },
+        { front: 'Ogenki desu ka?', back: '¿Cómo estás? Respuesta: Hai, genki desu (estoy bien).' }
+    ],
+    hiragana: [
+        { front: 'Vocales largas', back: 'Se alargan con otra vocal: ああ (aa), いい (ii).' },
+        { front: 'Serie ga (が ぎ ぐ げ ご)', back: 'Dakuten en か: ga, gi, gu, ge, go.' },
+        { front: 'Serie za (ざ じ ず ぜ ぞ)', back: 'Dakuten en さ: za, ji, zu, ze, zo.' },
+        { front: 'Serie da (だ ぢ づ で ど)', back: 'Dakuten en た: da, ji, zu, de, do.' },
+        { front: 'Serie ba (ば び ぶ べ ぼ)', back: 'Dakuten en は: ba, bi, bu, be, bo.' }
+    ]
+};
+
+/** Set 5 de flashcards. */
+const TUTOR_FLASHCARDS_SET4 = {
+    liderazgo: [
+        { front: 'Diversidad en equipo', back: 'Perspectivas distintas que mejoran la toma de decisiones e innovación.' },
+        { front: 'Burnout', back: 'Agotamiento crónico; el líder puede prevenir con límites, prioridades y apoyo.' },
+        { front: 'Consenso', back: 'Decisión que todos pueden apoyar, no solo mayoría.' },
+        { front: 'Humildad en liderazgo', back: 'Reconocer límites, aprender de otros y dar crédito al equipo.' },
+        { front: 'Liderazgo situacional', back: 'Adaptar el estilo al nivel de madurez y la tarea del colaborador.' }
+    ],
+    comunicacion: [
+        { front: 'Feedback sandwich', back: 'Positivo-negativo-positivo; a veces la claridad directa es mejor.' },
+        { front: 'Validar', back: 'Reconocer la emoción o perspectiva del otro sin juzgar.' },
+        { front: 'Comunicación remota', back: 'Claridad, contexto y llamada a la acción en escritos y reuniones.' },
+        { front: 'Cerrar reuniones', back: 'Resumir: qué se decidió, quién hace qué y para cuándo.' },
+        { front: 'Mensaje clave', back: 'Una idea principal a repetir al inicio, desarrollo y cierre.' }
+    ],
+    ingles: [
+        { front: '"I hope this email finds you well"', back: 'Saludo formal de apertura en correos.' },
+        { front: '"To wrap up"', back: 'Terminar o cerrar (reunión, tema).' },
+        { front: '"Backlog"', back: 'Acumulado de tareas o ítems pendientes.' },
+        { front: '"As per"', back: 'Según (as per our conversation).' },
+        { front: 'Past continuous', back: 'Was/were + -ing: acción en curso en un momento del pasado.' }
+    ],
+    japones: [
+        { front: 'Partícula を (wo)', back: 'Marca el objeto directo del verbo.' },
+        { front: 'Partícula に (ni)', back: 'Lugar, tiempo, destino o receptor (indirecto).' },
+        { front: 'Partícula が (ga)', back: 'Sujeto (con énfasis) o preferencia (X ga suki).' },
+        { front: 'Ittekimasu / Itterasshai', back: 'Quien sale: "Me voy". Quien se queda: "Que vaya bien".' },
+        { front: 'Tadaima / Okaeri', back: 'Al volver: "Ya llegué" / "Bienvenido de vuelta".' }
+    ],
+    hiragana: [
+        { front: 'Serie pa (ぱ ぴ ぷ ぺ ぽ)', back: 'Handakuten en は: pa, pi, pu, pe, po.' },
+        { front: 'Combinaciones con や ゆ よ', back: 'Sílabas como kya, kyu, kyo con や ゆ よ pequeños.' },
+        { front: 'Geminación (っ)', back: 'Tsu pequeño: la siguiente consonante se duplica (gakkou).' },
+        { front: 'ん (n) final', back: 'Único carácter que es solo consonante; nasal.' },
+        { front: 'Lectura de は y を', back: 'は como partícula = "wa"; を como partícula = "o".' }
+    ]
+};
+
 const TUTOR_GUIDE = {
     liderazgo: { title: 'Guía rápida: Liderazgo', sections: ['Concepto: capacidad de influir y guiar a otros hacia metas comunes.', 'Estilos: directivo, participativo, orientado a resultados, transformacional.', 'Claves: comunicación clara, escucha activa, feedback y delegación.', 'Práctica: pide feedback a tu equipo y trabaja un plan de mejora.'] },
     comunicacion: { title: 'Guía rápida: Comunicación efectiva', sections: ['Escucha activa: atención plena, preguntas y parafraseo.', 'Asertividad: expresar tu postura con respeto y claridad.', 'Feedback: específico, a tiempo y orientado a comportamientos.', 'No verbal: coherencia entre lo que dices y tu cuerpo y tono.'] },
@@ -460,7 +703,12 @@ function renderTutorPanel(type, topic, extraData) {
     const topicKey = dataTopic in TUTOR_QUIZ ? dataTopic : 'liderazgo';
     let html = '';
     if (type === 'quiz') {
-        const questions = shuffleQuizOptions(TUTOR_QUIZ[topicKey] || TUTOR_QUIZ.liderazgo);
+        var quizSetIndex = (chatState.shownQuizIndex[topicKey] || 0) % 5;
+        chatState.shownQuizIndex[topicKey] = (chatState.shownQuizIndex[topicKey] || 0) + 1;
+        var questionSet = (typeof TUTOR_QUIZ_SETS !== 'undefined' && TUTOR_QUIZ_SETS[quizSetIndex]) ? TUTOR_QUIZ_SETS[quizSetIndex] : { liderazgo: TUTOR_QUIZ.liderazgo, comunicacion: TUTOR_QUIZ.comunicacion, ingles: TUTOR_QUIZ.ingles, japones: TUTOR_QUIZ.japones, hiragana: TUTOR_QUIZ.hiragana.slice(0, 10) };
+        var questionList = questionSet[topicKey] || questionSet.liderazgo;
+        if (!questionList || !questionList.length) questionList = TUTOR_QUIZ.liderazgo;
+        const questions = shuffleQuizOptions(questionList);
         const totalQuestions = questions.length;
         const useBars = totalQuestions >= 1 && totalQuestions <= 19;
         const progressBlock = useBars
@@ -500,8 +748,9 @@ function renderTutorPanel(type, topic, extraData) {
             </div>
         </div>`;
     } else if (type === 'flashcards') {
-        const fcSetIndex = extraData && typeof extraData.fcSetIndex === 'number' ? Math.max(0, Math.min(2, extraData.fcSetIndex)) : 0;
-        const sets = [TUTOR_FLASHCARDS, TUTOR_FLASHCARDS_ALT, TUTOR_FLASHCARDS_SET2];
+        const fcSetIndex = (extraData && typeof extraData.fcSetIndex === 'number') ? Math.max(0, Math.min(4, extraData.fcSetIndex)) : ((chatState.shownFcSetIndex[topicKey] || 0) % 5);
+        chatState.shownFcSetIndex[topicKey] = (chatState.shownFcSetIndex[topicKey] || 0) + 1;
+        const sets = [TUTOR_FLASHCARDS, TUTOR_FLASHCARDS_ALT, TUTOR_FLASHCARDS_SET2, TUTOR_FLASHCARDS_SET3, TUTOR_FLASHCARDS_SET4];
         const cards = (sets[fcSetIndex][topicKey] || sets[fcSetIndex].liderazgo).slice();
         const fcSet = String(fcSetIndex);
         const fcTotal = cards.length;
@@ -576,8 +825,11 @@ function renderTutorPanel(type, topic, extraData) {
         renderPlanCoursesInPanel(planContainerId, plan.courses);
         bindCanvasClose(panel);
         return;
-    } else if (type === 'studyPlan' && extraData && extraData.studyPlan) {
-        const sp = extraData.studyPlan;
+    } else if (type === 'studyPlan' && topicKey && STUDY_PLAN_TOPICS.indexOf(topicKey) >= 0) {
+        var planIndex = (chatState.shownPlanIndex[topicKey] || 0) % getNumPlanVariants(topicKey);
+        var sp = getStudyPlanForTopic(topicKey, planIndex);
+        if (!sp) return;
+        chatState.shownPlanIndex[topicKey] = (chatState.shownPlanIndex[topicKey] || 0) + 1;
         const viewMode = !!sp.created;
         currentStudyPlanState = { plan: sp, topicKey: topicKey || '' };
         var footerPrimaryLabel = viewMode ? 'Ver plan' : 'Crear plan';
@@ -609,6 +861,53 @@ function renderTutorPanel(type, topic, extraData) {
         bindStudyPlanFooter(panel, sp, topicKey || '', viewMode);
         if (!viewMode) bindStudyPlanAddTaskButton(panel, sp, topicKey || '');
         return;
+    } else if (type === 'podcast') {
+        const podTopic = topic || chatState.currentTopic || 'liderazgo';
+        const podTitle = (extraData && extraData.title) ? String(extraData.title).replace(/</g, '&lt;').replace(/"/g, '&quot;') : 'Podcast';
+        const audioUrl = (extraData && extraData.audioUrl) ? String(extraData.audioUrl) : '';
+        const transcriptionRaw = (extraData && extraData.transcription) ? String(extraData.transcription) : 'La transcripción se mostrará aquí cuando el chat genere el podcast.';
+        const transcription = transcriptionRaw.replace(/</g, '&lt;').replace(/"/g, '&quot;').replace(/\n/g, '<br>');
+        const showPlanPodcast = STUDY_PLAN_TOPICS.indexOf(podTopic) >= 0;
+        html = '<div class="study-chat-canvas-content study-chat-canvas-podcast" data-topic="' + (podTopic.replace(/"/g, '&quot;')) + '">' +
+            '<div class="study-chat-canvas-header">' +
+            '<span class="ubits-body-md-bold">Podcast</span>' +
+            '<button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only study-chat-canvas-close" title="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>' +
+            '</div>' +
+            '<div class="study-chat-canvas-body">' +
+            '<div class="study-chat-podcast-player">' +
+            '<p class="study-chat-podcast-title ubits-body-md-bold">' + podTitle + '</p>' +
+            '<audio class="study-chat-podcast-audio" controls preload="metadata" ' + (audioUrl ? 'src="' + audioUrl.replace(/"/g, '&quot;') + '"' : '') + '></audio>' +
+            '</div>' +
+            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm study-chat-podcast-transcription-btn" id="study-chat-podcast-toggle-transcription" aria-expanded="false">' +
+            '<i class="far fa-file-lines"></i><span>Ver transcripción del podcast</span>' +
+            '</button>' +
+            '<div class="study-chat-podcast-transcription" id="study-chat-podcast-transcription" role="region" aria-label="Transcripción" hidden>' +
+            '<div class="study-chat-podcast-transcription-inner ubits-body-sm-regular">' + transcription + '</div>' +
+            '</div>' +
+            '<h3 class="study-chat-quiz-result-section-title study-chat-podcast-seguir-title">Seguir aprendiendo</h3>' +
+            '<div class="study-chat-quiz-result-learn study-chat-podcast-seguir">' +
+            '<button type="button" class="study-chat-quiz-result-option" data-action="quiz">' +
+            '<span class="study-chat-quiz-result-option-icon"><i class="far fa-circle-question"></i></span>' +
+            '<span class="study-chat-quiz-result-option-title">Quiz</span>' +
+            '<span class="study-chat-quiz-result-option-desc">Responde preguntas sobre el tema y recibe feedback inmediato.</span></button>' +
+            '<button type="button" class="study-chat-quiz-result-option" data-action="flashcards">' +
+            '<span class="study-chat-quiz-result-option-icon"><i class="far fa-bring-forward"></i></span>' +
+            '<span class="study-chat-quiz-result-option-title">Flashcards</span>' +
+            '<span class="study-chat-quiz-result-option-desc">Crea un set de flashcards para repasar y afianzar conceptos.</span></button>' +
+            (showPlanPodcast ? '<button type="button" class="study-chat-quiz-result-option study-chat-quiz-result-option-study-plan" data-action="studyPlan">' +
+            '<span class="study-chat-quiz-result-option-icon"><i class="far fa-layer-group"></i></span>' +
+            '<span class="study-chat-quiz-result-option-title">Plan de estudio</span>' +
+            '<span class="study-chat-quiz-result-option-desc">Crea un plan con tareas para ver contenidos UBITS sobre este tema.</span></button>' : '') +
+            '</div>' +
+            '</div>' +
+            '</div>';
+        panel.innerHTML = html;
+        panel.classList.add('has-content');
+        if (placeholder) placeholder.style.display = 'none';
+        bindCanvasClose(panel);
+        bindPodcastTranscriptionToggle(panel);
+        bindPodcastSeguirAprendiendo(panel);
+        return;
     } else {
         return;
     }
@@ -628,6 +927,51 @@ function bindCanvasClose(panel) {
         currentStudyPlanState = null;
         setCanvasPanelOpen(false);
         showOpenButtonsInChat();
+    });
+}
+
+function bindPodcastTranscriptionToggle(panel) {
+    const btn = panel && panel.querySelector('#study-chat-podcast-toggle-transcription');
+    const region = panel && panel.querySelector('#study-chat-podcast-transcription');
+    if (!btn || !region) return;
+    btn.addEventListener('click', function() {
+        const isOpen = region.classList.toggle('is-open');
+        region.hidden = !isOpen;
+        btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        const span = btn.querySelector('span');
+        if (span) span.textContent = isOpen ? 'Ocultar transcripción' : 'Ver transcripción del podcast';
+    });
+}
+
+function bindPodcastSeguirAprendiendo(panel) {
+    const content = panel && panel.querySelector('.study-chat-canvas-podcast');
+    const topicKey = content && content.getAttribute('data-topic') ? content.getAttribute('data-topic') : (chatState.currentTopic || 'liderazgo');
+    const options = panel && panel.querySelectorAll('.study-chat-podcast-seguir .study-chat-quiz-result-option');
+    if (!options || !options.length) return;
+    options.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const action = this.getAttribute('data-action');
+            panel.classList.remove('is-open', 'has-content');
+            panel.innerHTML = '';
+            currentStudyPlanState = null;
+            if (action === 'quiz') {
+                renderTutorPanel('quiz', topicKey);
+                if (typeof addResourceMessage === 'function') addResourceMessage('quiz', topicKey, true);
+            } else if (action === 'flashcards') {
+                renderTutorPanel('flashcards', topicKey);
+                if (typeof addResourceMessage === 'function') addResourceMessage('flashcards', topicKey, false);
+            } else if (action === 'studyPlan') {
+                var plan = getStudyPlanForTopic(topicKey);
+                if (plan) {
+                    renderTutorPanel('studyPlan', topicKey, { studyPlan: plan });
+                    if (typeof addResourceMessage === 'function') addResourceMessage('studyPlan', topicKey, false);
+                }
+            } else if (action === 'podcast') {
+                var podLabel = TOPIC_LABELS[topicKey] || topicKey;
+                renderTutorPanel('podcast', topicKey, { title: 'Podcast de ' + podLabel, audioUrl: '', transcription: 'La transcripción se mostrará aquí cuando tengas el audio generado.' });
+                if (typeof addResourceMessage === 'function') addResourceMessage('podcast', topicKey, false);
+            }
+        });
     });
 }
 
@@ -1026,7 +1370,7 @@ function bindTutorPanelEvents(panel, type, topicKey) {
             const skipped = total - correctCount - wrongCount;
             resultDiv.innerHTML = `
                 <div class="study-chat-quiz-result-screen">
-                    <h2 class="study-chat-quiz-result-title">¡Lo lograste! Quiz completado.</h2>
+                    <h2 class="study-chat-quiz-result-title">Quiz completado</h2>
                     <div class="study-chat-quiz-result-cards">
                         <div class="study-chat-quiz-result-card">
                             <span class="study-chat-quiz-result-card-label">Puntuación</span>
@@ -1055,6 +1399,11 @@ function bindTutorPanelEvents(panel, type, topicKey) {
                             <span class="study-chat-quiz-result-option-icon"><i class="far fa-layer-group"></i></span>
                             <span class="study-chat-quiz-result-option-title">Plan de estudio</span>
                             <span class="study-chat-quiz-result-option-desc">Crea un plan con tareas para ver contenidos UBITS sobre este tema.</span>
+                    </button>
+                        <button type="button" class="study-chat-quiz-result-option" data-action="podcast">
+                            <span class="study-chat-quiz-result-option-icon"><i class="far fa-podcast"></i></span>
+                            <span class="study-chat-quiz-result-option-title">Podcast</span>
+                            <span class="study-chat-quiz-result-option-desc">Escucha un podcast sobre este tema para aprender mientras haces otras cosas.</span>
                     </button>
                 </div>
                 </div>`;
@@ -1114,6 +1463,10 @@ function bindTutorPanelEvents(panel, type, topicKey) {
                             renderTutorPanel('studyPlan', topicKey, { studyPlan: plan });
                             if (typeof addResourceMessage === 'function') addResourceMessage('studyPlan', topicKey, false);
                         }
+                    } else if (action === 'podcast') {
+                        var podLabel = TOPIC_LABELS[topicKey] || topicKey;
+                        renderTutorPanel('podcast', topicKey, { title: 'Podcast de ' + podLabel, audioUrl: '', transcription: 'La transcripción se mostrará aquí cuando tengas el audio generado.' });
+                        if (typeof addResourceMessage === 'function') addResourceMessage('podcast', topicKey, false);
                     }
                 });
             });
@@ -1204,6 +1557,10 @@ function bindTutorPanelEvents(panel, type, topicKey) {
                 '<span class="study-chat-quiz-result-option-icon"><i class="far fa-layer-group"></i></span>' +
                 '<span class="study-chat-quiz-result-option-title">Plan de estudio</span>' +
                 '<span class="study-chat-quiz-result-option-desc">Crea un plan con tareas para ver contenidos UBITS sobre este tema.</span></button>' : '') +
+                '<button type="button" class="study-chat-quiz-result-option" data-action="podcast">' +
+                '<span class="study-chat-quiz-result-option-icon"><i class="far fa-podcast"></i></span>' +
+                '<span class="study-chat-quiz-result-option-title">Podcast</span>' +
+                '<span class="study-chat-quiz-result-option-desc">Escucha un podcast sobre este tema para aprender mientras haces otras cosas.</span></button>' +
                 '</div></div>';
             if (fcMain) fcMain.style.display = 'none';
             if (actionsDiv) {
@@ -1259,6 +1616,10 @@ function bindTutorPanelEvents(panel, type, topicKey) {
                             renderTutorPanel('studyPlan', topicKey, { studyPlan: plan });
                             if (typeof addResourceMessage === 'function') addResourceMessage('studyPlan', topicKey, false);
                         }
+                    } else if (action === 'podcast') {
+                        var podLabel = TOPIC_LABELS[topicKey] || topicKey;
+                        renderTutorPanel('podcast', topicKey, { title: 'Podcast de ' + podLabel, audioUrl: '', transcription: 'La transcripción se mostrará aquí cuando tengas el audio generado.' });
+                        if (typeof addResourceMessage === 'function') addResourceMessage('podcast', topicKey, false);
                     }
                 });
             });
@@ -1296,6 +1657,11 @@ let chatState = {
     rightPanelId: null,
     placeholderId: null,
     waitingForMaterialChoice: false, // true cuando IA ofreció quiz/flashcards/guía
+    waitingForTopicForResource: null, // 'quiz' | 'flashcards' | 'studyPlan' | 'podcast' cuando el usuario pidió recurso sin tema
+    // Índices de recurso mostrado por tema (para no repetir: siguiente quiz, siguiente set de flashcards, siguiente plan)
+    shownQuizIndex: {},   // por tema: cuántas veces se ha mostrado quiz (se usa shuffle cada vez)
+    shownFcSetIndex: {},  // por tema: 0, 1, 2 para TUTOR_FLASHCARDS, _ALT, _SET2
+    shownPlanIndex: {},   // por tema: variante del plan (diferentes cortes de cursos)
     // Historial y nuevo chat (Bloque 2)
     chats: [],
     currentChat: { id: null, title: '', createdAt: 0, messages: [] }
@@ -1304,13 +1670,21 @@ let chatState = {
 /**
  * Añade un mensaje al chat actual en memoria (para historial).
  * Si es el primer mensaje de usuario, asigna title, createdAt e id del chat.
+ * @param {string|Object} typeOrMsg - Tipo ('user'|'ai') o objeto mensaje { type, text?, resource?, quickReplies?, topic?, waitingForTopicForResource? }
+ * @param {string} [text] - Texto (si typeOrMsg es tipo)
  */
-function pushCurrentChatMessage(type, text) {
+function pushCurrentChatMessage(typeOrMsg, text) {
     if (!chatState.currentChat.messages) chatState.currentChat.messages = [];
-    var isFirstUserMessage = type === 'user' && !chatState.currentChat.messages.some(function(m) { return m.type === 'user'; });
-    chatState.currentChat.messages.push({ type: type, text: text || '' });
-    if (isFirstUserMessage) {
-        var title = (text || '').trim();
+    var msg;
+    if (typeof typeOrMsg === 'object' && typeOrMsg !== null && typeof typeOrMsg.type === 'string') {
+        msg = typeOrMsg;
+    } else {
+        msg = { type: typeOrMsg, text: text || '' };
+    }
+    var isFirstUserMessage = msg.type === 'user' && !chatState.currentChat.messages.some(function(m) { return m.type === 'user'; });
+    chatState.currentChat.messages.push(msg);
+    if (isFirstUserMessage && msg.text) {
+        var title = String(msg.text).trim();
         chatState.currentChat.title = title.length > 40 ? title.substring(0, 40) + '…' : title;
         chatState.currentChat.createdAt = Date.now();
         if (chatState.currentChat.id == null) chatState.currentChat.id = 'chat-' + Date.now();
@@ -1378,7 +1752,7 @@ function startNewChat() {
 
 /**
  * Re-renderiza los mensajes del chat actual en el DOM (para cargar un chat desde el historial).
- * Limpia el cuerpo, inserta cada mensaje con createMessageHTML y oculta el bloque de bienvenida.
+ * Soporta mensajes simples, recursos (quiz/flashcards/plan/podcast) y mensajes con botones (material/tema).
  */
 function renderChatMessages() {
     var body = document.getElementById('ubits-study-chat-body');
@@ -1391,7 +1765,122 @@ function renderChatMessages() {
     toRemove.forEach(function(el) { el.remove(); });
 
     var messages = (chatState.currentChat && chatState.currentChat.messages) ? chatState.currentChat.messages : [];
+    var panel = chatState.rightPanelId ? document.getElementById(chatState.rightPanelId) : null;
+    var panelIsOpen = panel && panel.classList.contains('is-open');
+
     messages.forEach(function(msg) {
+        if (!msg || !msg.type) return;
+        if (msg.resource) {
+            var r = msg.resource;
+            var resHtml = getResourceMessageHTML(r.type, r.topicKey, r.isNew, !panelIsOpen);
+            if (resHtml) {
+                body.insertAdjacentHTML('beforeend', resHtml);
+                var lastMsg = body.lastElementChild;
+                var btn = lastMsg ? lastMsg.querySelector('.study-chat-resource-open-btn') : null;
+                if (btn) btn.addEventListener('click', function() {
+                    var t = this.getAttribute('data-type');
+                    var top = this.getAttribute('data-topic');
+                    if (t === 'studyPlan') {
+                        var plan = getStudyPlanForTopic(top);
+                        if (plan) renderTutorPanel('studyPlan', top, { studyPlan: plan });
+                    } else if (t === 'flashcards') renderTutorPanel('flashcards', top);
+                    else if (t === 'podcast') {
+                        var podLabel = TOPIC_LABELS[top] || top;
+                        renderTutorPanel('podcast', top, { title: 'Podcast de ' + podLabel, audioUrl: '', transcription: 'La transcripción se mostrará aquí cuando tengas el audio generado.' });
+                    } else renderTutorPanel('quiz', top);
+                    hideOpenButtonsInChat();
+                });
+            }
+            return;
+        }
+        if (msg.quickReplies === 'material' && msg.topic) {
+            var showPlan = STUDY_PLAN_TOPICS.indexOf(msg.topic) >= 0;
+            var planBtnHtml = showPlan ? '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-choice="studyPlan"><span>Plan de estudio</span></button>' : '';
+            var choicesId = 'material-choices-restore-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+            var messageHTML = createMessageHTML('ai', msg.text, '', false, false);
+            var choicesHTML = '<div class="ubits-study-chat__message-with-choices">' +
+                messageHTML +
+                '<div class="ubits-study-chat__material-choices" id="' + choicesId + '">' +
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-choice="quiz"><span>Quiz</span></button>' +
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-choice="flashcards"><span>Flashcards</span></button>' +
+                planBtnHtml +
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-choice="podcast"><span>Podcast</span></button>' +
+                '</div></div>';
+            body.insertAdjacentHTML('beforeend', choicesHTML);
+            var choicesEl = document.getElementById(choicesId);
+            if (choicesEl) {
+                choicesEl.querySelectorAll('.ubits-study-chat__material-choice-btn').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        var choice = this.getAttribute('data-choice');
+                        if (!choice) return;
+                        chatState.waitingForMaterialChoice = false;
+                        var topic = msg.topic;
+                        if (choice === 'studyPlan') {
+                            var plan = getStudyPlanForTopic(topic);
+                            if (plan) renderTutorPanel('studyPlan', topic, { studyPlan: plan });
+                        } else if (choice === 'podcast') {
+                            var podLabel = TOPIC_LABELS[topic] || topic;
+                            renderTutorPanel('podcast', topic, { title: 'Podcast de ' + podLabel, audioUrl: '', transcription: 'La transcripción se mostrará aquí cuando tengas el audio generado.' });
+                        } else renderTutorPanel(choice, topic);
+                        choicesEl.style.display = 'none';
+                        addResourceMessage(choice, topic, false);
+                    });
+                });
+            }
+            return;
+        }
+        if (msg.quickReplies === 'topic' && msg.waitingForTopicForResource) {
+            var topicText = msg.text || '';
+            var topicChoicesId = 'topic-choices-restore-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+            var topicMessageHTML = createMessageHTML('ai', topicText, '', false, false);
+            var topicButtonsHTML = SUGGESTED_TOPIC_BUTTONS.map(function(t) {
+                return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-topic-key="' + (t.key.replace(/"/g, '&quot;')) + '" data-topic-label="' + (t.label.replace(/"/g, '&quot;')) + '"><span>' + t.label + '</span></button>';
+            }).join('');
+            var topicChoicesHTML = '<div class="ubits-study-chat__message-with-choices">' +
+                topicMessageHTML +
+                '<div class="ubits-study-chat__material-choices" id="' + topicChoicesId + '">' +
+                topicButtonsHTML +
+                '</div></div>';
+            body.insertAdjacentHTML('beforeend', topicChoicesHTML);
+            var topicChoicesEl = document.getElementById(topicChoicesId);
+            if (topicChoicesEl) {
+                topicChoicesEl.querySelectorAll('.ubits-study-chat__material-choice-btn').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        var topicKey = this.getAttribute('data-topic-key');
+                        var topicLabel = this.getAttribute('data-topic-label');
+                        if (!topicKey) return;
+                        chatState.waitingForTopicForResource = null;
+                        chatState.currentTopic = topicKey;
+                        hideWelcomeBlock();
+                        var resType = msg.waitingForTopicForResource;
+                        if (resType === 'quiz') {
+                            renderTutorPanel('quiz', topicKey);
+                            if (typeof addResourceMessage === 'function') addResourceMessage('quiz', topicKey, false);
+                        } else if (resType === 'flashcards') {
+                            renderTutorPanel('flashcards', topicKey);
+                            if (typeof addResourceMessage === 'function') addResourceMessage('flashcards', topicKey, false);
+                        } else if (resType === 'studyPlan') {
+                            var plan = getStudyPlanForTopic(topicKey);
+                            if (plan) {
+                                renderTutorPanel('studyPlan', topicKey, { studyPlan: plan });
+                                if (typeof addResourceMessage === 'function') addResourceMessage('studyPlan', topicKey, false);
+                            }
+                        } else if (resType === 'podcast') {
+                            var podLabel = TOPIC_LABELS[topicKey] || topicKey;
+                            renderTutorPanel('podcast', topicKey, { title: 'Podcast de ' + podLabel, audioUrl: '', transcription: 'La transcripción se mostrará aquí cuando tengas el audio generado.' });
+                            if (typeof addResourceMessage === 'function') addResourceMessage('podcast', topicKey, false);
+                        }
+                        topicChoicesEl.style.display = 'none';
+                        pushCurrentChatMessage('user', topicLabel);
+                        var userMsgHtml = createMessageHTML('user', topicLabel, formatTime(), false, false);
+                        body.insertAdjacentHTML('beforeend', userMsgHtml);
+                        body.scrollTop = body.scrollHeight;
+                        refreshHistorialIfOpen();
+                    });
+                });
+            }
+            return;
+        }
         var text = (msg && msg.text) ? msg.text : '';
         var type = (msg && msg.type === 'user') ? 'user' : 'ai';
         var html = createMessageHTML(type, text, '', false, false);
@@ -1996,13 +2485,15 @@ function getResourceTitle(type, topicKey) {
     if (type === 'quiz') return topicKey === 'hiragana' ? 'Quiz Maratón de Hiragana' : 'Quiz de ' + label;
     if (type === 'flashcards') return 'Flashcards de ' + label;
     if (type === 'studyPlan') return 'Plan de estudio: ' + label;
+    if (type === 'podcast') return 'Podcast de ' + label;
     return type + ' ' + label;
 }
 
 /** Devuelve { count, label } para el recurso (preguntas, flashcards, tareas). */
 function getResourceCount(type, topicKey) {
     if (type === 'quiz') {
-        var q = (typeof TUTOR_QUIZ !== 'undefined' && TUTOR_QUIZ[topicKey]) ? TUTOR_QUIZ[topicKey] : (typeof TUTOR_QUIZ !== 'undefined' ? TUTOR_QUIZ.liderazgo : []);
+        var qSet = (typeof TUTOR_QUIZ_SETS !== 'undefined' && TUTOR_QUIZ_SETS[0]) ? TUTOR_QUIZ_SETS[0] : (typeof TUTOR_QUIZ !== 'undefined' ? { liderazgo: TUTOR_QUIZ.liderazgo, comunicacion: TUTOR_QUIZ.comunicacion, ingles: TUTOR_QUIZ.ingles, japones: TUTOR_QUIZ.japones, hiragana: (TUTOR_QUIZ.hiragana || []).slice(0, 10) } : { liderazgo: [] });
+        var q = (qSet[topicKey] || qSet.liderazgo) || [];
         return { count: q.length, label: q.length === 1 ? 'pregunta' : 'preguntas' };
     }
     if (type === 'flashcards') {
@@ -2015,6 +2506,7 @@ function getResourceCount(type, topicKey) {
         var t = plan && plan.tasks ? plan.tasks.length : 5;
         return { count: t, label: t === 1 ? 'tarea' : 'tareas' };
     }
+    if (type === 'podcast') return { count: 1, label: 'episodio' };
     return { count: 0, label: '' };
 }
 
@@ -2033,33 +2525,32 @@ function getResourceIcon(type) {
     if (type === 'quiz') return 'far fa-circle-question';
     if (type === 'flashcards') return 'far fa-bring-forward';
     if (type === 'studyPlan') return 'far fa-layer-group';
+    if (type === 'podcast') return 'far fa-podcast';
     return 'far fa-file';
 }
 
 /**
- * Añade mensaje con texto intro + card del recurso (icono, título elaborado, cantidad, botón Abrir).
- * El botón Abrir solo se muestra cuando el panel derecho está cerrado.
- * @param {string} type - 'quiz' | 'flashcards' | 'studyPlan'
+ * Devuelve el HTML de un mensaje de recurso (para añadir al DOM o para restaurar en historial).
+ * @param {string} type - 'quiz' | 'flashcards' | 'studyPlan' | 'podcast'
  * @param {string} topicKey - tema (liderazgo, comunicacion, etc.)
  * @param {boolean} isNew - true para "He creado un nuevo..."
+ * @param {boolean} showOpenButton - si el botón Abrir debe ser visible (ej. al restaurar historial)
+ * @returns {string} HTML del mensaje
  */
-function addResourceMessage(type, topicKey, isNew) {
-    var body = document.getElementById('ubits-study-chat-body');
-    if (!body) return;
+function getResourceMessageHTML(type, topicKey, isNew, showOpenButton) {
     var title = getResourceTitle(type, topicKey);
     var intro = '';
     if (type === 'quiz') intro = isNew ? 'He creado un nuevo quiz para ti.' : 'He creado un quiz para ti.';
     else if (type === 'flashcards') intro = isNew ? 'He creado nuevas flashcards para ti.' : 'He creado flashcards para ti.';
     else if (type === 'studyPlan') intro = isNew ? 'He creado un nuevo plan de estudio para ti.' : 'He creado un plan de estudio para ti.';
-    else return;
+    else if (type === 'podcast') intro = isNew ? 'He creado un nuevo podcast para ti.' : 'He creado un podcast para ti.';
+    else return '';
     var countInfo = getResourceCount(type, topicKey);
     var countText = countInfo.count + ' ' + countInfo.label;
     var iconClass = getResourceIcon(type);
-    var panel = chatState.rightPanelId ? document.getElementById(chatState.rightPanelId) : null;
-    var panelIsOpen = panel && panel.classList.contains('is-open');
-    var openVisibleClass = panelIsOpen ? '' : ' open-btn-visible';
+    var openVisibleClass = showOpenButton ? ' open-btn-visible' : '';
     var timestamp = formatTime();
-    var html = '<div class="ubits-study-chat__message ubits-study-chat__message--ai study-chat-resource-msg' + openVisibleClass + '" data-resource-type="' + type + '" data-resource-topic="' + topicKey + '">' +
+    return '<div class="ubits-study-chat__message ubits-study-chat__message--ai study-chat-resource-msg' + openVisibleClass + '" data-resource-type="' + type + '" data-resource-topic="' + topicKey + '">' +
         '<div class="ubits-study-chat__text-globe ubits-study-chat__text-globe--ai">' +
         '<p class="ubits-study-chat__message-text">' + intro + '</p>' +
         '<div class="study-chat-resource-card">' +
@@ -2073,8 +2564,25 @@ function addResourceMessage(type, topicKey, isNew) {
         '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm study-chat-resource-open-btn" data-type="' + type + '" data-topic="' + topicKey + '"><span>Abrir</span></button>' +
         '</div></div></div>' +
         '<p class="ubits-study-chat__timestamp">' + timestamp + '</p></div>';
+}
+
+/**
+ * Añade mensaje con texto intro + card del recurso (icono, título elaborado, cantidad, botón Abrir).
+ * El botón Abrir solo se muestra cuando el panel derecho está cerrado.
+ * @param {string} type - 'quiz' | 'flashcards' | 'studyPlan' | 'podcast'
+ * @param {string} topicKey - tema (liderazgo, comunicacion, etc.)
+ * @param {boolean} isNew - true para "He creado un nuevo..."
+ */
+function addResourceMessage(type, topicKey, isNew) {
+    var body = document.getElementById('ubits-study-chat-body');
+    if (!body) return;
+    var panel = chatState.rightPanelId ? document.getElementById(chatState.rightPanelId) : null;
+    var panelIsOpen = panel && panel.classList.contains('is-open');
+    var html = getResourceMessageHTML(type, topicKey, isNew, !panelIsOpen);
+    if (!html) return;
     body.insertAdjacentHTML('beforeend', html);
     body.scrollTop = body.scrollHeight;
+    pushCurrentChatMessage({ type: 'ai', resource: { type: type, topicKey: topicKey, isNew: isNew } });
     var lastMsg = body.lastElementChild;
     var btn = lastMsg ? lastMsg.querySelector('.study-chat-resource-open-btn') : null;
     if (btn) btn.addEventListener('click', function() {
@@ -2084,7 +2592,10 @@ function addResourceMessage(type, topicKey, isNew) {
             var plan = getStudyPlanForTopic(top);
             if (plan) renderTutorPanel('studyPlan', top, { studyPlan: plan });
         } else if (t === 'flashcards') renderTutorPanel('flashcards', top);
-        else renderTutorPanel('quiz', top);
+        else if (t === 'podcast') {
+            var podLabel = TOPIC_LABELS[top] || top;
+            renderTutorPanel('podcast', top, { title: 'Podcast de ' + podLabel, audioUrl: '', transcription: 'La transcripción se mostrará aquí cuando tengas el audio generado.' });
+        } else renderTutorPanel('quiz', top);
         hideOpenButtonsInChat();
     });
 }
@@ -2098,9 +2609,14 @@ function addMessageWithMaterialChoiceButtons(label, topic) {
     const body = document.getElementById('ubits-study-chat-body');
     if (!body) return;
     const showPlan = STUDY_PLAN_TOPICS.indexOf(topic) >= 0;
-    const text = showPlan
-        ? 'Perfecto, trabajemos <strong>' + label + '</strong>. Puedo hacerte un quiz, crear flashcards o un plan de estudio con contenidos UBITS. ¿Qué prefieres?'
-        : 'Perfecto, trabajemos <strong>' + label + '</strong>. Puedo hacerte un quiz o crear flashcards. ¿Qué prefieres?';
+    var text;
+    if (topic === 'japones') {
+        text = 'Perfecto, trabajemos <strong>Japonés</strong>. Puedo hacerte un quiz, crear flashcards, un plan de estudio o un podcast. ¿Qué prefieres?';
+    } else if (showPlan) {
+        text = 'Perfecto, trabajemos <strong>' + label + '</strong>. Puedo hacerte un quiz, crear flashcards, un plan de estudio o un podcast con contenidos UBITS. ¿Qué prefieres?';
+    } else {
+        text = 'Perfecto, trabajemos <strong>' + label + '</strong>. Puedo hacerte un quiz, crear flashcards o un podcast. ¿Qué prefieres?';
+    }
     const timestamp = formatTime();
     const messageHTML = createMessageHTML('ai', text, timestamp, false, false);
     const choicesId = 'material-choices-' + Date.now();
@@ -2108,12 +2624,14 @@ function addMessageWithMaterialChoiceButtons(label, topic) {
     const choicesHTML = '<div class="ubits-study-chat__message-with-choices">' +
         messageHTML +
         '<div class="ubits-study-chat__material-choices" id="' + choicesId + '">' +
-        planBtnHtml +
         '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-choice="quiz"><span>Quiz</span></button>' +
         '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-choice="flashcards"><span>Flashcards</span></button>' +
+        planBtnHtml +
+        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-choice="podcast"><span>Podcast</span></button>' +
         '</div></div>';
     body.insertAdjacentHTML('beforeend', choicesHTML);
     body.scrollTop = body.scrollHeight;
+    pushCurrentChatMessage({ type: 'ai', text: text, quickReplies: 'material', topic: topic });
     chatState.lastAIMessageElement = body.lastElementChild.querySelector('.ubits-study-chat__message');
     chatState.lastAIMessageText = text;
     chatState.lastRegenerateFunction = null;
@@ -2128,11 +2646,82 @@ function addMessageWithMaterialChoiceButtons(label, topic) {
             if (choice === 'studyPlan') {
                 var plan = getStudyPlanForTopic(topic);
                 if (plan) renderTutorPanel('studyPlan', topic, { studyPlan: plan });
-                } else {
+            } else if (choice === 'podcast') {
+                var podLabel = TOPIC_LABELS[topic] || topic;
+                renderTutorPanel('podcast', topic, { title: 'Podcast de ' + podLabel, audioUrl: '', transcription: 'La transcripción se mostrará aquí cuando tengas el audio generado.' });
+            } else {
                 renderTutorPanel(choice, topic);
             }
             choicesEl.style.display = 'none';
             addResourceMessage(choice, topic, false);
+        });
+    });
+}
+
+/** Temas sugeridos cuando se pide recurso sin tema (mismo orden que en el mensaje). */
+var SUGGESTED_TOPIC_BUTTONS = [
+    { key: 'liderazgo', label: 'Liderazgo' },
+    { key: 'comunicacion', label: 'Comunicación' },
+    { key: 'ingles', label: 'Inglés' }
+];
+
+/**
+ * Añade mensaje de IA con botones de tema sugeridos (Liderazgo, Comunicación, Inglés).
+ * Se usa cuando el usuario pidió un recurso sin tema (quiz, flashcards, plan, podcast).
+ * @param {string} resourceType - 'quiz' | 'flashcards' | 'studyPlan' | 'podcast'
+ * @param {string} text - Texto del mensaje (ej: "¿Sobre qué tema quieres el quiz?...")
+ */
+function addMessageWithTopicChoiceButtons(resourceType, text) {
+    var body = document.getElementById('ubits-study-chat-body');
+    if (!body) return;
+    var timestamp = formatTime();
+    var messageHTML = createMessageHTML('ai', text, timestamp, false, false);
+    var choicesId = 'topic-choices-' + Date.now();
+    var buttonsHTML = SUGGESTED_TOPIC_BUTTONS.map(function(t) {
+        return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-topic-key="' + (t.key.replace(/"/g, '&quot;')) + '" data-topic-label="' + (t.label.replace(/"/g, '&quot;')) + '"><span>' + t.label + '</span></button>';
+    }).join('');
+    var choicesHTML = '<div class="ubits-study-chat__message-with-choices">' +
+        messageHTML +
+        '<div class="ubits-study-chat__material-choices" id="' + choicesId + '">' +
+        buttonsHTML +
+        '</div></div>';
+    body.insertAdjacentHTML('beforeend', choicesHTML);
+    body.scrollTop = body.scrollHeight;
+    pushCurrentChatMessage({ type: 'ai', text: text, quickReplies: 'topic', waitingForTopicForResource: resourceType });
+
+    var choicesEl = document.getElementById(choicesId);
+    if (!choicesEl) return;
+    choicesEl.querySelectorAll('.ubits-study-chat__material-choice-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var topicKey = this.getAttribute('data-topic-key');
+            var topicLabel = this.getAttribute('data-topic-label');
+            if (!topicKey) return;
+            chatState.waitingForTopicForResource = null;
+            chatState.currentTopic = topicKey;
+            hideWelcomeBlock();
+            if (resourceType === 'quiz') {
+                renderTutorPanel('quiz', topicKey);
+                if (typeof addResourceMessage === 'function') addResourceMessage('quiz', topicKey, false);
+            } else if (resourceType === 'flashcards') {
+                renderTutorPanel('flashcards', topicKey);
+                if (typeof addResourceMessage === 'function') addResourceMessage('flashcards', topicKey, false);
+            } else if (resourceType === 'studyPlan') {
+                var plan = getStudyPlanForTopic(topicKey);
+                if (plan) {
+                    renderTutorPanel('studyPlan', topicKey, { studyPlan: plan });
+                    if (typeof addResourceMessage === 'function') addResourceMessage('studyPlan', topicKey, false);
+                }
+            } else if (resourceType === 'podcast') {
+                var podLabel = TOPIC_LABELS[topicKey] || topicKey;
+                renderTutorPanel('podcast', topicKey, { title: 'Podcast de ' + podLabel, audioUrl: '', transcription: 'La transcripción se mostrará aquí cuando tengas el audio generado.' });
+                if (typeof addResourceMessage === 'function') addResourceMessage('podcast', topicKey, false);
+            }
+            choicesEl.style.display = 'none';
+            pushCurrentChatMessage('user', topicLabel);
+            var userMsgHtml = createMessageHTML('user', topicLabel, formatTime(), false, false);
+            body.insertAdjacentHTML('beforeend', userMsgHtml);
+            body.scrollTop = body.scrollHeight;
+            refreshHistorialIfOpen();
         });
     });
 }
@@ -2306,8 +2895,6 @@ function initStudyChat(containerId, options = {}) {
     // Función para generar respuesta predefinida basada en el mensaje del usuario
     function generateResponse(userMessage) {
         const lowerMessage = userMessage.toLowerCase().trim();
-        
-        // ----- Abrir directo si escribe "quiz de [tema]", "flashcards de [tema]" o "plan de [tema]" -----
         var topicPatterns = [
             { key: 'liderazgo', regex: /liderazgo|lider/ },
             { key: 'comunicacion', regex: /comunicaci[oó]n/ },
@@ -2315,6 +2902,85 @@ function initStudyChat(containerId, options = {}) {
             { key: 'japones', regex: /japon[eé]s|japonesa/ },
             { key: 'hiragana', regex: /hiragana/ }
         ];
+        var hasTopicInMessage = topicPatterns.some(function(p) { return p.regex.test(lowerMessage); });
+
+        // ----- Usuario ya pidió un recurso sin tema: ahora respondió con el tema -----
+        if (chatState.waitingForTopicForResource) {
+            var resourceType = chatState.waitingForTopicForResource;
+            chatState.waitingForTopicForResource = null;
+            var matchedTopic = null;
+            for (var t = 0; t < topicPatterns.length; t++) {
+                if (topicPatterns[t].regex.test(lowerMessage)) {
+                    matchedTopic = topicPatterns[t].key;
+                    break;
+                }
+            }
+            if (matchedTopic) {
+                hideWelcomeBlock();
+                chatState.currentTopic = matchedTopic;
+                var label = TOPIC_LABELS[matchedTopic] || matchedTopic;
+                if (resourceType === 'quiz') {
+                    renderTutorPanel('quiz', matchedTopic);
+                    return { resourceMessage: { type: 'quiz', topic: matchedTopic }, regenerateFunction: null };
+                }
+                if (resourceType === 'flashcards') {
+                    renderTutorPanel('flashcards', matchedTopic);
+                    return { resourceMessage: { type: 'flashcards', topic: matchedTopic }, regenerateFunction: null };
+                }
+                if (resourceType === 'studyPlan' && matchedTopic !== 'hiragana' && STUDY_PLAN_TOPICS.indexOf(matchedTopic) >= 0) {
+                    var plan = getStudyPlanForTopic(matchedTopic);
+                    if (plan) {
+                        renderTutorPanel('studyPlan', matchedTopic, { studyPlan: plan });
+                        return { resourceMessage: { type: 'studyPlan', topic: matchedTopic }, regenerateFunction: null };
+                    }
+                }
+                if (resourceType === 'podcast') {
+                    var podLabel = TOPIC_LABELS[matchedTopic] || matchedTopic;
+                    renderTutorPanel('podcast', matchedTopic, { title: 'Podcast de ' + podLabel, audioUrl: '', transcription: 'La transcripción se mostrará aquí cuando tengas el audio generado.' });
+                    return { resourceMessage: { type: 'podcast', topic: matchedTopic }, regenerateFunction: null };
+                }
+            }
+            var resourceLabel = resourceType === 'quiz' ? 'quiz' : resourceType === 'flashcards' ? 'flashcards' : resourceType === 'studyPlan' ? 'plan de estudio' : 'podcast';
+            chatState.waitingForTopicForResource = resourceType;
+            return { text: 'No reconozco ese tema. Te recomiendo Liderazgo, Comunicación o Inglés. ¿Sobre cuál quieres el ' + resourceLabel + '?', regenerateFunction: null, topicChoice: { resourceType: resourceType } };
+        }
+
+        // ----- Pidió solo el recurso sin tema: si ya hay tema en el chat, usarlo; si no, preguntar -----
+        var resourceOnly = !hasTopicInMessage && lowerMessage.length <= 50 && (
+            /^quiz$/.test(lowerMessage) || /^flashcards?$/.test(lowerMessage) || /^podcast$/.test(lowerMessage) ||
+            /^plan(\s+de\s+estudio)?$/.test(lowerMessage) || /^(dame|quiero|genera|quiero un?)\s+(un?\s+)?(quiz|podcast|flashcards?|plan(\s+de\s+estudio)?)$/.test(lowerMessage)
+        );
+        if (resourceOnly) {
+            var resType = /podcast/.test(lowerMessage) ? 'podcast' : /flashcard/.test(lowerMessage) ? 'flashcards' : /plan/.test(lowerMessage) ? 'studyPlan' : 'quiz';
+            var inferredTopic = chatState.currentTopic && topicPatterns.some(function(p) { return p.key === chatState.currentTopic; }) ? chatState.currentTopic : null;
+            if (inferredTopic) {
+                hideWelcomeBlock();
+                chatState.waitingForTopicForResource = null;
+                if (resType === 'quiz') {
+                    renderTutorPanel('quiz', inferredTopic);
+                    return { resourceMessage: { type: 'quiz', topic: inferredTopic }, regenerateFunction: null };
+                }
+                if (resType === 'flashcards') {
+                    renderTutorPanel('flashcards', inferredTopic);
+                    return { resourceMessage: { type: 'flashcards', topic: inferredTopic }, regenerateFunction: null };
+                }
+                if (resType === 'studyPlan' && STUDY_PLAN_TOPICS.indexOf(inferredTopic) >= 0) {
+                    var plan = getStudyPlanForTopic(inferredTopic);
+                    if (plan) renderTutorPanel('studyPlan', inferredTopic, { studyPlan: plan });
+                    return { resourceMessage: { type: 'studyPlan', topic: inferredTopic }, regenerateFunction: null };
+                }
+                if (resType === 'podcast') {
+                    var podLabel = TOPIC_LABELS[inferredTopic] || inferredTopic;
+                    renderTutorPanel('podcast', inferredTopic, { title: 'Podcast de ' + podLabel, audioUrl: '', transcription: 'La transcripción se mostrará aquí cuando tengas el audio generado.' });
+                    return { resourceMessage: { type: 'podcast', topic: inferredTopic }, regenerateFunction: null };
+                }
+            }
+            chatState.waitingForTopicForResource = resType;
+            var resName = resType === 'quiz' ? 'quiz' : resType === 'flashcards' ? 'flashcards' : resType === 'studyPlan' ? 'plan de estudio' : 'podcast';
+            return { text: '¿Sobre qué tema quieres el ' + resName + '? Te recomiendo Liderazgo, Comunicación o Inglés, pero puedes escribir el tema que prefieras.', regenerateFunction: null, topicChoice: { resourceType: resType } };
+        }
+
+        // ----- Abrir directo si escribe "quiz de [tema]", "flashcards de [tema]" o "plan de [tema]" -----
         for (var i = 0; i < topicPatterns.length; i++) {
             var topicKey = topicPatterns[i].key;
             if (!topicPatterns[i].regex.test(lowerMessage)) continue;
@@ -2340,6 +3006,14 @@ function initStudyChat(containerId, options = {}) {
                 if (plan) renderTutorPanel('studyPlan', topicKey, { studyPlan: plan });
                 return { resourceMessage: { type: 'studyPlan', topic: topicKey }, regenerateFunction: null };
             }
+            if (lowerMessage.includes('podcast')) {
+                hideWelcomeBlock();
+                chatState.currentTopic = topicKey;
+                chatState.waitingForMaterialChoice = false;
+                var podLabel = TOPIC_LABELS[topicKey] || topicKey;
+                renderTutorPanel('podcast', topicKey, { title: 'Podcast de ' + podLabel, audioUrl: '', transcription: 'La transcripción se mostrará aquí cuando tengas el audio generado.' });
+                return { resourceMessage: { type: 'podcast', topic: topicKey }, regenerateFunction: null };
+            }
         }
         
         // ----- Modo Tutor IA: elección de material (quiz / flashcards / guía) -----
@@ -2363,6 +3037,12 @@ function initStudyChat(containerId, options = {}) {
                     return { resourceMessage: { type: 'studyPlan', topic: topicKey }, regenerateFunction: null };
                 }
                 return { text: 'El plan de estudio con contenidos UBITS está disponible solo para Liderazgo, Comunicación e Inglés. Para ' + (topicKey === 'japones' || topicKey === 'hiragana' ? 'Japonés' : 'este tema') + ' puedes usar Quiz o Flashcards.', regenerateFunction: null };
+            }
+            if (lowerMessage.includes('podcast')) {
+                chatState.waitingForMaterialChoice = false;
+                var podLabel = TOPIC_LABELS[topicKey] || topicKey;
+                renderTutorPanel('podcast', topicKey, { title: 'Podcast de ' + podLabel, audioUrl: '', transcription: 'La transcripción se mostrará aquí cuando tengas el audio generado.' });
+                return { resourceMessage: { type: 'podcast', topic: topicKey }, regenerateFunction: null };
             }
         }
         
@@ -2648,11 +3328,14 @@ function initStudyChat(containerId, options = {}) {
         const regenerateFunction = typeof responseData === 'object' ? responseData.regenerateFunction : null;
         const materialChoice = typeof responseData === 'object' ? responseData.materialChoice : null;
         const resourceMessage = typeof responseData === 'object' ? responseData.resourceMessage : null;
+        const topicChoice = typeof responseData === 'object' ? responseData.topicChoice : null;
         
         // Simular respuesta de IA después de un delay (solo efecto escritura línea a línea, sin indicador de typing)
         setTimeout(() => {
             if (materialChoice) {
                 addMessageWithMaterialChoiceButtons(materialChoice.label, materialChoice.topic);
+            } else if (topicChoice && topicChoice.resourceType) {
+                addMessageWithTopicChoiceButtons(topicChoice.resourceType, response);
             } else if (resourceMessage) {
                 addResourceMessage(resourceMessage.type, resourceMessage.topic, false);
             } else {

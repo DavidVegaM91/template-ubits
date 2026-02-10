@@ -256,17 +256,17 @@
     padding: var(--padding-md) !important;
 }
 
-/* Desktop: canvas abierto → chat 60% y canvas 40%; historial abierto → chat usa el resto (sin max); solo sin paneles abiertos → chat max 800px centrado */
+/* Desktop: canvas abierto → chat 50% y canvas 50%; historial abierto → chat usa el resto (sin max); solo sin paneles abiertos → chat max 800px centrado */
 @media (min-width: 1024px) {
     .modo-tutor-ia-chat-section:has(.modo-tutor-ia-canvas-panel.is-open) .modo-tutor-ia-chat-main {
-        flex: 0 0 60%;
-        width: 60%;
-        max-width: 60%;
+        flex: 0 0 50%;
+        width: 50%;
+        max-width: 50%;
     }
     .modo-tutor-ia-chat-section > .modo-tutor-ia-canvas-panel.is-open {
-        flex: 0 0 40%;
-        width: 40%;
-        max-width: 40%;
+        flex: 0 0 50%;
+        width: 50%;
+        max-width: 50%;
     }
     /* Solo chat (sin historial ni canvas): la caja del chat abraza el contenido (max 800px) y se centra */
     .modo-tutor-ia-chat-section:not(:has(.modo-tutor-ia-canvas-panel.is-open)):not(:has(.modo-estudio-ia-historial-panel.is-open)) .modo-tutor-ia-chat-main {
@@ -295,7 +295,7 @@
     flex-direction: column !important;
     flex: 1 1 0;
     min-width: 0;
-    width: 50%; /* Desktop: se sobrescribe a 40% en @media (min-width: 1024px) */
+    width: 50%; /* Desktop: chat y canvas 50% / 50% en @media (min-width: 1024px) */
     padding: var(--padding-none) !important;
     overflow: hidden;
     min-height: 0;

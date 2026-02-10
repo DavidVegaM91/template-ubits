@@ -638,6 +638,70 @@
     gap: var(--gap-md);
 }
 
+/* ========== Canvas Podcast: reproductor + botón Ver transcripción + zona scrolleable ========== */
+.study-chat-canvas-podcast .study-chat-canvas-body {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.study-chat-podcast-player {
+    flex-shrink: 0;
+    margin-bottom: var(--gap-md);
+}
+
+.study-chat-podcast-title {
+    margin: 0 0 var(--gap-sm) 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.study-chat-podcast-audio {
+    width: 100%;
+    height: 40px;
+}
+
+.study-chat-podcast-transcription-btn {
+    flex-shrink: 0;
+    margin-top: 0;
+    margin-bottom: var(--gap-sm);
+}
+
+.study-chat-podcast-transcription {
+    display: none;
+    flex: 1 1 0;
+    min-height: 0;
+    overflow: hidden;
+    margin-top: 0;
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    background: var(--ubits-bg-2);
+}
+
+.study-chat-podcast-transcription.is-open {
+    display: flex;
+    flex-direction: column;
+    min-height: 120px;
+}
+
+.study-chat-podcast-transcription-inner {
+    overflow-y: auto;
+    padding: var(--padding-lg);
+    white-space: pre-wrap;
+    color: var(--ubits-fg-1-medium);
+    flex: 1 1 0;
+    min-height: 0;
+}
+
+.study-chat-podcast-seguir-title {
+    margin-top: var(--padding-lg);
+    margin-bottom: var(--gap-sm);
+}
+
+.study-chat-podcast-seguir {
+    margin-top: 0;
+}
+
 .study-chat-canvas-quiz .study-chat-quiz-q {
     margin-bottom: 16px;
 }
@@ -881,13 +945,13 @@
 .study-chat-quiz-progress-wrong {
     color: var(--ubits-feedback-accent-error);
     background: var(--ubits-feedback-bg-error-subtle);
-    border: 1px solid var(--ubits-border-1);
+    border: none;
 }
 
 .study-chat-quiz-progress-correct {
     color: var(--ubits-feedback-accent-success);
     background: var(--ubits-feedback-bg-success-subtle);
-    border: 1px solid var(--ubits-border-1);
+    border: none;
 }
 
 .study-chat-quiz-actions {
@@ -942,7 +1006,7 @@
     border-radius: var(--border-radius-md);
     display: flex;
     flex-direction: column;
-    gap: var(--gap-none);
+    gap: var(--gap-sm);
 }
 
 .study-chat-quiz-result-card--breakdown {
@@ -1069,7 +1133,7 @@
 
 .study-chat-fc-progress-bars {
     display: flex;
-    gap: var(--gap-none);
+    gap: var(--gap-xs);
     align-items: center;
     flex: 1;
     min-width: 0;
@@ -1472,6 +1536,16 @@
 
 .study-chat-plan-task-card-title {
     color: var(--ubits-fg-1-high);
+}
+
+/* Todas las tareas del plan de estudio: título máximo 2 líneas, truncar con ellipsis */
+.study-chat-plan-task-card .study-chat-plan-task-card-title {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
 }
 
 .study-chat-plan-task-card-actions {

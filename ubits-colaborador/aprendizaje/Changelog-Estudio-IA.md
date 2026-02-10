@@ -8,7 +8,7 @@ Lista completa de cambios sugeridos en la reunión. Marca con `[x]` lo que ya es
 
 ## 1. Interfaz visual y contenedores
 
-|`[x]`|  **Integrar visualmente las dos columnas** (chat + plan de estudio / canvas) para que se sientan "familia" poniendole fondo blanco al chat - Solicitud de Carlos.
+|`[x]`|  **Integrar visualmente las columnas** (chat / canvas) para que se sientan "familia" poniendole fondo blanco al chat - Solicitud de Carlos.
 |`[ ]`|  Diferenciar las burbujas de chat del usuario: no solo bordes y una punta, algo más elaborado - Solicitud de Carlos.
 |`[x]`|  Mejorar **input del mensaje** solo en la bienvenida: cajita más trabajada visualmente, puede ser poniendo un resplandor al rededor con una leve gradiente de azules en la pestaña de bienvenida - Solicitud de Carlos.
 
@@ -36,53 +36,35 @@ Lista completa de cambios sugeridos en la reunión. Marca con `[x]` lo que ya es
 ## 5. Recomendación de contenido en el plan de estudio
 
 |`[x]`|  **Priorizar** el plan de estudio sobre el Quiz y los Flashcards, asi que debe ir de primero antes del quiz - Solicitud de Esteban
-|`[x]`|  Definir **formato visual** de las tareas de tipo contenido: ¿solo duración, se puede añadir otra cosa, puede ser el nivel? (ver componenteCard content compact) para implementar esto y consultar la documentacion del componente Card content para ver las opciones de nivel que hay - Solicitud de Esteban
+|`[x]`|  Definir **formato visual** de las tareas de tipo contenido: ¿solo duración, se puede añadir otra cosa? algun dato de valor para el usuario - Solicitud de Esteban
 
 ---
 
 ## 6. Quiz – diseño e interacción
 
-|`[ ]`|  Hacer el **quiz más dinámico y atractivo** por ejemplo **Opciones (A, B, C) sin borde, solo color de relleno bg-2 y al hover bg-3 (referencia Gemini)
-|`[ ]`|  **Mostrar respuesta correcta e incorrecta dentro de la misma interfaz de respuesta** (no abajo), para que el usuario entienda el porqué de cada opción. Luisa: "ese tipo de interacción en donde te da la respuesta correcta dentro de la respuesta y te muestra que la tuya es incorrecta, más que salir abajo, que adentro es donde se muestra" |
+|`[x]`|  Hacer el **quiz más dinámico y atractivo** por ejemplo **Opciones (A, B, C) sin color de borde, solo color de relleno bg-2 y al hover bg-3 (conservar border radius) - Solicitud de Luisa
+|`[x]`|  **Mostrar feedback de respuesta correcta e incorrecta dentro de la misma interfaz de respuestas** (no abajo), para que el usuario entienda el porqué de cada opción. Tambien quitarle el color de borde, pero conservar el border radius - Solicitud de Luisa
 |`[ ]`|  **Ser más atrevidos con el diseño** del Modo estudio IA dentro del design system actual | "Podemos ser más atrevidos en el diseño"; "bajo los parámetros que puedan hacerlo" |
-|`[ ]`|  Permitir **crear componentes nuevos solo para Modo estudio IA** si hace falta; luego valorar llevarlos al design system | Luisa (00:10): "si podemos crear un así to que crear un nuevo componente, solo lo vamos a usar acá" |
+|`[ ]`|  Permitir **crear componentes nuevos solo para Modo estudio IA** si hace falta - Solicitud Luisa
 |`[ ]`|  Valorar **"mostrar pista"** en el quiz (referencia Gemini) para que el usuario pueda pedir ayuda | Luisa (00:07): "tiene mostrar pista; que se vea así" – ref. experiencia en Gemini |
 
 ---
 
 ## 7. Quiz – resultados y rendimiento
 
-|`[ ]`|  **Visualización de resultados** (puntuación, rendimiento) en **cuadros con información super puntual y números** (estilo "Analyse My Performance" / Gemini) | Luisa: "cómo lo muestra en los cuadritos; lo más importante; hace que el ojo sea mucho más fácil porque no es texto, sino cosas super puntuales que la mayor parte siempre van a ser números" |
-|`[ ]`|  Mostrar **puntuación y datos clave** de forma escaneable (cuadritos, números), no solo texto | Relacionado con 7.1 |
-
----
-
-## 8. Tareas y subtareas (versión 2)
-
-|`[ ]`|  Considerar **tareas como alternativa** dado que estudiantes no pueden crear planes de formación (restricción de roles) | Luisa: "la funcionalidad de tareas y subtareas sería una alternativa valiosa" |
-|`[ ]`|  **V2**: agente genera **subtareas a partir del plan de contenido**; usuario con una tarea principal y subtareas (ej. "aprender japonés" + subtareas) | "Como versión dos, el agente podría generar subtareas basadas en el plan de contenido" |
-|`[ ]`|  Conectar con **Planes y tareas** existente para que tengan sus "planes" ahí | "Se podría usar planes y tareas para que ellos tengan como sus planes ahí" |
+|`[x]`|  **Visualización de resultados** Referencia de Gemini, quitar color de bordes, más limpio
 
 ---
 
 ## 9. Otros componentes e ideas de producto
 
 |`[ ]`|  Valorar **componente de audio / podcast** (ej. podcast básico de liderazgo) para usuarios que hacen otras cosas | David: "un componente de audio o podcast sería útil; generarme un podcast de liderazgo básico" |
-|`[ ]`|  Lanzar **versiones sencillas** de quiz, mapa mental, short de video y **refinar según demanda** en pruebas | `[ ]` | Esteban: "hacer unos en varias direcciones bien sencillos y cuando los usuarios estén hundiendo mucho un tab, ahí sí refinémoslo" |
-|`[ ]`|  **Hipótesis a validar**: quiz puede no ser tan demandado (soft skills, respuestas matizadas); validar con pruebas | Esteban (00:12): "hay una gran posibilidad en que no termine siendo tan demandado" |
-|`[ ]`|  **Diseño con visión a largo plazo**: pensar no solo Q1 sino todo el año para que las siguientes versiones estén alineadas | Luisa (00:17): "piensen siempre el diseño a todo lo que quisiéramos hacer durante todo el año para que las siguientes versiones estén tiradas a donde empezamos versus donde terminamos el año" |
+
+|`[ ]`|  **Diseño con visión a largo plazo**: pensar no solo Q1 sino todo el año para que las siguientes versiones estén alineadas | 
 
 ---
 
-## 10. Proceso de diseño y calidad
-
-|`[ ]`|  **Llevar primera respuesta / home a Figma** para iteración manual y refinamiento antes de codificar | Carlos: "pasemos algo a Figma y en Figma lo iteramos y después eso volvemos y lo codeamos con ese refinamiento" |
-|`[ ]`|  **No depender solo de web coding por prompts**; incluir refinamiento manual en Figma para llegar a la solución deseada | "Si le tiras y le tiras prompts con la interfaz que tienes y los estilos del design system, no creo que llegues a la solución que nos estamos imaginando" |
-|`[ ]`|  **Subir el nivel de calidad** del entregable (alineado con lo que pide Luisa en diseño) | Carlos: "mejorar la interfaz", "subir un poquitico más el nivel de esa calidad del entregable" |
-
----
-
-## 11. Pruebas con usuarios y priorización
+## 10. Pruebas con usuarios y priorización
 
 |`[ ]`|  **Pruebas de usuario pequeñas antes del lanzamiento** (ej. 10 usuarios reales) para validar dirección del producto | Carlos: "por qué no hacerlo antes; testearía con 10 personas" |
 |`[ ]`|  **Planificar pruebas** para tercera semana de febrero (ya en curso; incluye agente "Aprende con IA") | Esteban: "ya estamos planificando unas pruebas con usuarios para la tercera semana de febrero".
@@ -93,7 +75,7 @@ Lista completa de cambios sugeridos en la reunión. Marca con `[x]` lo que ya es
 
 ---
 
-## 12. Seguimiento y entrega
+## 11. Seguimiento y entrega
 
 |`[ ]`|  **Pre-entrega de avances en Slack**; con base en esa revisión, agendar reunión de seguimiento | Carlos: "puede ser como una preentrega y que lo veamos en Slack" |
 |`[ ]`|  **Reunión de seguimiento** (ej. jueves antes del almuerzo, media hora) | David: "el jueves antes del almuerzo" |
