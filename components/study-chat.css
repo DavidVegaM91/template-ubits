@@ -310,6 +310,53 @@
     margin-bottom: 0;
 }
 
+/* Animación palabra por palabra en mensajes de IA (efecto typewriter rápido) */
+.ubits-study-chat__text-globe--ai .ubits-study-chat__word {
+    opacity: 0;
+    transition: opacity 0.06s ease-out;
+}
+
+.ubits-study-chat__text-globe--ai .ubits-study-chat__word--visible {
+    opacity: 1;
+}
+
+/* Reveal de arriba a abajo: timestamp, acciones, botones de recurso, card (solo en mensajes nuevos con --reveal) */
+@keyframes ubits-study-chat-reveal-down {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.ubits-study-chat__message--reveal .ubits-study-chat__timestamp {
+    opacity: 0;
+    animation: ubits-study-chat-reveal-down 0.22s ease-out 120ms forwards;
+}
+
+.ubits-study-chat__message--reveal .ubits-study-chat__message-actions {
+    opacity: 0;
+    animation: ubits-study-chat-reveal-down 0.22s ease-out 220ms forwards;
+}
+
+.ubits-study-chat__message-with-choices--reveal .ubits-study-chat__timestamp {
+    opacity: 0;
+    animation: ubits-study-chat-reveal-down 0.22s ease-out 120ms forwards;
+}
+
+.ubits-study-chat__message-with-choices--reveal .ubits-study-chat__material-choices {
+    opacity: 0;
+    animation: ubits-study-chat-reveal-down 0.22s ease-out 220ms forwards;
+}
+
+.study-chat-resource-msg--reveal {
+    opacity: 0;
+    animation: ubits-study-chat-reveal-down 0.22s ease-out 120ms forwards;
+}
+
 /* Links dentro del mensaje */
 .ubits-study-chat__message-text a.ubits-study-chat__link {
     color: var(--ubits-accent-brand-static);
@@ -430,22 +477,6 @@
 
 .study-chat-resource-card__action {
     flex-shrink: 0;
-}
-
-/* Revelado línea a línea (typewriter estilo Gemini) */
-.ubits-study-chat__message-text--reveal {
-    animation: ubits-study-chat-reveal 0.18s ease-out;
-}
-
-@keyframes ubits-study-chat-reveal {
-    from {
-        opacity: 0;
-        transform: translateY(2px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
 }
 
 /* Mensaje de carga (typing): indicador mínimo */

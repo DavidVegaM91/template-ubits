@@ -25,6 +25,7 @@
     <link rel="stylesheet" href="../../components/toast.css">
     <link rel="stylesheet" href="../../components/tooltip.css">
     <link rel="stylesheet" href="../../components/modal.css">
+    <link rel="stylesheet" href="../../components/empty-state.css">
     <link rel="stylesheet" href="./modo-estudio-ia.css">
 </head>
 <body class="modo-estudio-ia-page modo-tutor-ia-page" data-theme="light">
@@ -60,14 +61,14 @@
                             <div class="modo-estudio-ia-historial-panel__body">
                                 <div id="historial-list" class="modo-estudio-ia-historial-panel__list"></div>
                                 <div id="historial-empty" class="modo-estudio-ia-historial-panel__empty">
-                                    <p class="ubits-body-sm-regular">Aún no hay chats en esta sesión.</p>
+                                    <div id="historial-empty-state-container"></div>
                                 </div>
                             </div>
                         </div>
                         <div class="modo-tutor-ia-chat-main">
                             <div class="modo-estudio-ia-chat-actions">
                                 <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" id="btn-historial" data-tooltip="Historial" data-tooltip-position="bottom" aria-label="Abrir historial de chats">
-                                    <i class="far fa-clock"></i>
+                                    <i class="far fa-clock-rotate-left"></i>
                                 </button>
                                 <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" id="btn-nuevo-chat" data-tooltip="Nuevo chat" data-tooltip-position="bottom" aria-label="Iniciar nuevo chat">
                                     <i class="far fa-comment-plus"></i>
@@ -115,6 +116,7 @@
     <script src="../../components/toast.js"></script>
     <script src="../../components/card-content-compact.js"></script>
     <script src="../../components/modal.js"></script>
+    <script src="../../components/empty-state.js"></script>
     <script src="../../components/study-chat.js"></script>
     <script src="../../script.js"></script>
     <script>
@@ -192,15 +194,8 @@
                 });
             }
             
-            // Panel historial: abrir (cerrando canvas si está abierto) y cerrar con la X
+            // Panel historial: abrir (historial, chat y canvas pueden estar abiertos a la vez)
             function openHistorialPanel() {
-                var canvasPanel = document.getElementById('tutor-canvas-panel');
-                if (canvasPanel && canvasPanel.classList.contains('is-open')) {
-                    canvasPanel.classList.remove('is-open', 'has-content');
-                    canvasPanel.innerHTML = '';
-                    if (typeof setCanvasPanelOpen === 'function') setCanvasPanelOpen(false);
-                    if (typeof showOpenButtonsInChat === 'function') showOpenButtonsInChat();
-                }
                 var historialPanel = document.getElementById('historial-panel');
                 if (historialPanel) {
                     historialPanel.classList.add('is-open');

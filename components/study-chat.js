@@ -691,11 +691,6 @@ function renderTutorPanel(type, topic, extraData) {
     const panel = chatState.rightPanelId ? document.getElementById(chatState.rightPanelId) : null;
     const placeholder = chatState.placeholderId ? document.getElementById(chatState.placeholderId) : null;
     if (!panel) return;
-    var historialPanel = document.getElementById('historial-panel');
-    if (historialPanel) {
-        historialPanel.classList.remove('is-open');
-        document.body.classList.remove('historial-panel-open');
-    }
     panel.classList.add('is-open');
     setCanvasPanelOpen(true);
     hideOpenButtonsInChat();
@@ -1683,6 +1678,7 @@ function pushCurrentChatMessage(typeOrMsg, text) {
     }
     var isFirstUserMessage = msg.type === 'user' && !chatState.currentChat.messages.some(function(m) { return m.type === 'user'; });
     chatState.currentChat.messages.push(msg);
+    chatState.currentChat.lastInteractedAt = Date.now();
     if (isFirstUserMessage && msg.text) {
         var title = String(msg.text).trim();
         chatState.currentChat.title = title.length > 40 ? title.substring(0, 40) + '…' : title;
@@ -1888,19 +1884,26 @@ function renderChatMessages() {
     });
 
     if (messages.length > 0) hideWelcomeBlock();
+    /* Al restaurar desde historial, mostrar todo el texto de IA sin animación palabra por palabra */
+    body.querySelectorAll('.ubits-study-chat__word').forEach(function(w) {
+        w.classList.add('ubits-study-chat__word--visible');
+    });
     body.scrollTop = body.scrollHeight;
 }
 
 /**
  * Guarda el chat actual en chats si tiene al menos un mensaje de usuario (reutilizable).
+ * Usa lastInteractedAt para ordenar por interacción más reciente.
  */
 function saveCurrentChatIfHasMessages() {
     var cur = chatState.currentChat;
     if (!cur || !cur.messages || !cur.messages.some(function(m) { return m.type === 'user'; })) return;
+    var now = Date.now();
     var chatCopy = {
         id: cur.id,
         title: cur.title || 'Sin título',
-        createdAt: cur.createdAt || Date.now(),
+        createdAt: cur.createdAt || now,
+        lastInteractedAt: cur.lastInteractedAt || now,
         messages: cur.messages.slice()
     };
     if (!chatState.chats) chatState.chats = [];
@@ -1934,11 +1937,9 @@ function cancelDeleteChatModal() {
 function confirmDeleteChat() {
     if (pendingDeleteChatId == null) return;
     var idToRemove = pendingDeleteChatId;
-    if (chatState.chats) {
-        chatState.chats = chatState.chats.filter(function(c) { return c.id !== idToRemove; });
-    }
-    renderHistorialList();
-    if (chatState.currentChat && chatState.currentChat.id === idToRemove) {
+    var wasCurrentChat = chatState.currentChat && chatState.currentChat.id === idToRemove;
+    /* Limpiar currentChat antes de renderHistorialList para que el ítem no vuelva a aparecer en la lista */
+    if (wasCurrentChat) {
         chatState.currentChat = { id: null, title: '', createdAt: 0, messages: [] };
         var body = document.getElementById('ubits-study-chat-body');
         if (body) {
@@ -1951,32 +1952,46 @@ function confirmDeleteChat() {
         }
         showWelcomeBlock();
     }
+    if (chatState.chats) {
+        chatState.chats = chatState.chats.filter(function(c) { return c.id !== idToRemove; });
+    }
+    renderHistorialList();
     if (typeof closeModal === 'function') closeModal('delete-chat-modal-overlay');
     pendingDeleteChatId = null;
     notifyModoEstudioIaActionsVisibility();
 }
 
 /**
- * Rellena la lista del panel de historial: conversación actual (si tiene mensajes) + chats guardados.
- * Añade listeners para que al clic en un ítem se cargue ese chat y al clic en eliminar se abra el modal.
+ * Rellena la lista del panel de historial: cada chat una sola vez, ordenado por interacción más reciente.
+ * El activo es el que coincide con currentChat.id (el que se ve a la derecha).
  */
 function renderHistorialList() {
     var listEl = document.getElementById('historial-list');
     var emptyEl = document.getElementById('historial-empty');
     if (!listEl || !emptyEl) return;
     var cur = chatState.currentChat;
+    var currentId = (cur && cur.id) ? cur.id : null;
     var hasCurrent = cur && cur.messages && cur.messages.length > 0;
-    var saved = (chatState.chats || []).slice().sort(function(a, b) { return (b.createdAt || 0) - (a.createdAt || 0); });
+    var saved = (chatState.chats || []).slice();
+    if (hasCurrent && currentId) saved = saved.filter(function(c) { return c.id !== currentId; });
     var items = hasCurrent ? [cur].concat(saved) : saved;
+    var sortTime = function(c) { return c.lastInteractedAt || c.createdAt || 0; };
+    items.sort(function(a, b) { return sortTime(b) - sortTime(a); });
     if (items.length === 0) {
-        emptyEl.style.display = '';
+        if (typeof loadEmptyState === 'function') {
+            loadEmptyState('historial-empty-state-container', {
+                icon: 'fa-comments',
+                title: 'No hay conversaciones',
+                description: 'Aún no hay chats en esta sesión. Inicia uno nuevo desde el chat.'
+            });
+        }
+        emptyEl.style.display = 'flex';
         listEl.innerHTML = '';
         listEl.style.display = 'none';
         return;
     }
     emptyEl.style.display = 'none';
     listEl.style.display = 'flex';
-    var currentId = (chatState.currentChat && chatState.currentChat.id) ? chatState.currentChat.id : null;
     var html = '';
     items.forEach(function(chat) {
         var id = chat.id || '';
@@ -1996,16 +2011,26 @@ function renderHistorialList() {
             if (e.target.closest('.modo-estudio-ia-historial-item__delete')) return;
             var chatId = this.getAttribute('data-chat-id');
             if (!chatId) return;
+            if (chatId === currentId) {
+                if (cur) cur.lastInteractedAt = Date.now();
+                renderHistorialList();
+                return;
+            }
             saveCurrentChatIfHasMessages();
             var chat = (chatState.chats || []).find(function(c) { return c.id === chatId; });
             if (!chat) return;
+            var now = Date.now();
+            var chatInList = chatState.chats.findIndex(function(c) { return c.id === chatId; });
+            if (chatInList >= 0) chatState.chats[chatInList].lastInteractedAt = now;
             chatState.currentChat = {
                 id: chat.id,
                 title: chat.title || '',
                 createdAt: chat.createdAt || 0,
+                lastInteractedAt: now,
                 messages: (chat.messages || []).slice()
             };
             renderChatMessages();
+            renderHistorialList();
             notifyModoEstudioIaActionsVisibility();
         });
     });
@@ -2091,6 +2116,16 @@ function formatTime() {
 }
 
 /**
+ * Envuelve cada palabra (token separado por espacios) en un span para animación palabra por palabra.
+ * Respeta HTML existente (ej. <strong>...</strong> se trata como una palabra).
+ */
+function wrapWordsInSpans(html) {
+    if (!html || !html.trim()) return html;
+    var tokens = html.split(/\s+/).filter(function(t) { return t.length > 0; });
+    return tokens.map(function(t) { return '<span class="ubits-study-chat__word">' + t + '</span>'; }).join(' ');
+}
+
+/**
  * Crea el HTML de un mensaje
  * @param {string} type - Tipo de mensaje: 'ai' o 'user'
  * @param {string} text - Texto del mensaje
@@ -2134,7 +2169,8 @@ function createMessageHTML(type, text, timestamp, showActions = false, isTyping 
                 } else if (trimmedLine.length > 0) {
                     // Es texto plano, convertir URLs y envolver en párrafo
                     const textWithLinks = trimmedLine.replace(linkRegex, '<a href="$1" class="ubits-study-chat__link" target="_blank" rel="noopener noreferrer">$1</a>');
-                    processedText += `<p class="ubits-study-chat__message-text">${textWithLinks}</p>`;
+                    const content = type === 'ai' ? wrapWordsInSpans(textWithLinks) : textWithLinks;
+                    processedText += '<p class="ubits-study-chat__message-text">' + content + '</p>';
                 }
             });
             
@@ -2144,8 +2180,11 @@ function createMessageHTML(type, text, timestamp, showActions = false, isTyping 
         const linkRegex = /(https?:\/\/[^\s]+)/g;
         const textWithLinks = text.replace(linkRegex, '<a href="$1" class="ubits-study-chat__link" target="_blank" rel="noopener noreferrer">$1</a>');
             // Dividir por saltos de línea y crear párrafos
-            const lines = textWithLinks.split('\n').filter(line => line.trim());
-            textHTML = lines.map(line => `<p class="ubits-study-chat__message-text">${line}</p>`).join('');
+            const lines = textWithLinks.split('\n').filter(function(line) { return line.trim(); });
+            textHTML = lines.map(function(line) {
+                var content = type === 'ai' ? wrapWordsInSpans(line) : line;
+                return '<p class="ubits-study-chat__message-text">' + content + '</p>';
+            }).join('');
         }
     }
     
@@ -2337,12 +2376,28 @@ function getMessageLinesAsHTML(text) {
         const trimmed = line.trim();
         if (trimmed.startsWith('<div')) return trimmed;
         const withLinks = trimmed.replace(linkRegex, '<a href="$1" class="ubits-study-chat__link" target="_blank" rel="noopener noreferrer">$1</a>');
-        return '<p class="ubits-study-chat__message-text ubits-study-chat__message-text--reveal">' + withLinks + '</p>';
+        return '<p class="ubits-study-chat__message-text">' + withLinks + '</p>';
     });
 }
 
-/** Delay por línea (ms) para el efecto typewriter estilo Gemini */
-var AI_STREAMING_LINE_DELAY_MS = 65;
+/** Delay por palabra (ms) para animación palabra por palabra en mensajes de IA */
+var AI_WORD_REVEAL_DELAY_MS = 35;
+
+/**
+ * Anima la aparición palabra por palabra en un mensaje de IA (text-globe--ai).
+ * @param {HTMLElement} messageEl - Elemento .ubits-study-chat__message
+ */
+function animateWordsInMessage(messageEl) {
+    if (!messageEl) return;
+    var words = messageEl.querySelectorAll('.ubits-study-chat__text-globe--ai .ubits-study-chat__word');
+    if (words.length === 0) return;
+    var delay = AI_WORD_REVEAL_DELAY_MS;
+    words.forEach(function(word, i) {
+        setTimeout(function() {
+            word.classList.add('ubits-study-chat__word--visible');
+        }, i * delay);
+    });
+}
 
 /**
  * Añade mensaje de IA con efecto typewriter línea a línea (estilo Gemini).
@@ -2380,7 +2435,7 @@ function addMessageAIWithStreaming(text, showActions, regenerateFunction) {
         index++;
         body.scrollTop = body.scrollHeight;
         if (index < linesHTML.length) {
-            setTimeout(appendNext, AI_STREAMING_LINE_DELAY_MS);
+            setTimeout(appendNext, 65);
         } else {
             appendNext();
         }
@@ -2581,9 +2636,13 @@ function addResourceMessage(type, topicKey, isNew) {
     var html = getResourceMessageHTML(type, topicKey, isNew, !panelIsOpen);
     if (!html) return;
     body.insertAdjacentHTML('beforeend', html);
+    var lastMsg = body.lastElementChild;
+    if (lastMsg) {
+        lastMsg.classList.add('study-chat-resource-msg--reveal');
+        setTimeout(function() { lastMsg.classList.remove('study-chat-resource-msg--reveal'); }, 520);
+    }
     body.scrollTop = body.scrollHeight;
     pushCurrentChatMessage({ type: 'ai', resource: { type: type, topicKey: topicKey, isNew: isNew } });
-    var lastMsg = body.lastElementChild;
     var btn = lastMsg ? lastMsg.querySelector('.study-chat-resource-open-btn') : null;
     if (btn) btn.addEventListener('click', function() {
         var t = this.getAttribute('data-type');
@@ -2630,9 +2689,14 @@ function addMessageWithMaterialChoiceButtons(label, topic) {
         '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-choice="podcast"><span>Podcast</span></button>' +
         '</div></div>';
     body.insertAdjacentHTML('beforeend', choicesHTML);
+    var wrapperEl = body.lastElementChild;
+    var messageEl = wrapperEl.querySelector('.ubits-study-chat__message');
+    if (messageEl) animateWordsInMessage(messageEl);
+    wrapperEl.classList.add('ubits-study-chat__message-with-choices--reveal');
+    setTimeout(function() { wrapperEl.classList.remove('ubits-study-chat__message-with-choices--reveal'); }, 520);
     body.scrollTop = body.scrollHeight;
     pushCurrentChatMessage({ type: 'ai', text: text, quickReplies: 'material', topic: topic });
-    chatState.lastAIMessageElement = body.lastElementChild.querySelector('.ubits-study-chat__message');
+    chatState.lastAIMessageElement = messageEl;
     chatState.lastAIMessageText = text;
     chatState.lastRegenerateFunction = null;
 
@@ -2686,6 +2750,11 @@ function addMessageWithTopicChoiceButtons(resourceType, text) {
         buttonsHTML +
         '</div></div>';
     body.insertAdjacentHTML('beforeend', choicesHTML);
+    var wrapperEl = body.lastElementChild;
+    var messageEl = wrapperEl.querySelector('.ubits-study-chat__message');
+    if (messageEl) animateWordsInMessage(messageEl);
+    wrapperEl.classList.add('ubits-study-chat__message-with-choices--reveal');
+    setTimeout(function() { wrapperEl.classList.remove('ubits-study-chat__message-with-choices--reveal'); }, 520);
     body.scrollTop = body.scrollHeight;
     pushCurrentChatMessage({ type: 'ai', text: text, quickReplies: 'topic', waitingForTopicForResource: resourceType });
 
@@ -2737,7 +2806,23 @@ function addMessage(type, text, showActions = false, regenerateFunction = null) 
     }
     
     if (type === 'ai') {
-        addMessageAIWithStreaming(text, showActions, regenerateFunction);
+        pushCurrentChatMessage('ai', text);
+        removeTypingMessage();
+        const timestamp = formatTime();
+        const messageHTML = createMessageHTML(type, text, timestamp, showActions, false);
+        body.insertAdjacentHTML('beforeend', messageHTML);
+        const messageEl = body.lastElementChild;
+        chatState.lastAIMessageElement = messageEl;
+        chatState.lastAIMessageText = text;
+        chatState.lastRegenerateFunction = regenerateFunction;
+        if (messageEl) {
+            messageEl.classList.add('ubits-study-chat__message--reveal');
+            setTimeout(function() { messageEl.classList.remove('ubits-study-chat__message--reveal'); }, 520);
+            animateWordsInMessage(messageEl);
+            attachAIMessageActions(messageEl, text, regenerateFunction);
+        }
+        runPendingCardsRender(messageEl);
+        body.scrollTop = body.scrollHeight;
         return;
     }
     
@@ -2851,9 +2936,7 @@ function initStudyChat(containerId, options = {}) {
             chatState.currentTopic = topic;
             chatState.waitingForMaterialChoice = true;
             addMessage('user', label);
-            setTimeout(() => {
-                addMessageWithMaterialChoiceButtons(label, topic);
-            }, 1200);
+            addMessageWithMaterialChoiceButtons(label, topic);
         });
     });
     
@@ -2887,7 +2970,7 @@ function initStudyChat(containerId, options = {}) {
             }
             if (message && response) {
                 addMessage('user', message);
-                setTimeout(() => { addMessage('ai', response, true); }, 1500);
+                addMessage('ai', response, true);
             }
         });
     });
@@ -3330,18 +3413,16 @@ function initStudyChat(containerId, options = {}) {
         const resourceMessage = typeof responseData === 'object' ? responseData.resourceMessage : null;
         const topicChoice = typeof responseData === 'object' ? responseData.topicChoice : null;
         
-        // Simular respuesta de IA después de un delay (solo efecto escritura línea a línea, sin indicador de typing)
-        setTimeout(() => {
-            if (materialChoice) {
-                addMessageWithMaterialChoiceButtons(materialChoice.label, materialChoice.topic);
-            } else if (topicChoice && topicChoice.resourceType) {
-                addMessageWithTopicChoiceButtons(topicChoice.resourceType, response);
-            } else if (resourceMessage) {
-                addResourceMessage(resourceMessage.type, resourceMessage.topic, false);
-            } else {
+        // Mostrar respuesta de IA de inmediato (sin delay artificial)
+        if (materialChoice) {
+            addMessageWithMaterialChoiceButtons(materialChoice.label, materialChoice.topic);
+        } else if (topicChoice && topicChoice.resourceType) {
+            addMessageWithTopicChoiceButtons(topicChoice.resourceType, response);
+        } else if (resourceMessage) {
+            addResourceMessage(resourceMessage.type, resourceMessage.topic, false);
+        } else {
             addMessage('ai', response, true, regenerateFunction);
-            }
-        }, 1500);
+        }
     }
 
     notifyModoEstudioIaActionsVisibility();
