@@ -698,8 +698,14 @@ function renderTutorPanel(type, topic, extraData) {
     const topicKey = dataTopic in TUTOR_QUIZ ? dataTopic : 'liderazgo';
     let html = '';
     if (type === 'quiz') {
-        var quizSetIndex = (chatState.shownQuizIndex[topicKey] || 0) % 5;
-        chatState.shownQuizIndex[topicKey] = (chatState.shownQuizIndex[topicKey] || 0) + 1;
+        var lastResult = chatState.quizLastResultByTopic && chatState.quizLastResultByTopic[topicKey];
+        var quizSetIndex;
+        if (lastResult && typeof lastResult.setIndex === 'number') {
+            quizSetIndex = lastResult.setIndex % 5;
+        } else {
+            quizSetIndex = (chatState.shownQuizIndex[topicKey] || 0) % 5;
+            chatState.shownQuizIndex[topicKey] = (chatState.shownQuizIndex[topicKey] || 0) + 1;
+        }
         var questionSet = (typeof TUTOR_QUIZ_SETS !== 'undefined' && TUTOR_QUIZ_SETS[quizSetIndex]) ? TUTOR_QUIZ_SETS[quizSetIndex] : { liderazgo: TUTOR_QUIZ.liderazgo, comunicacion: TUTOR_QUIZ.comunicacion, ingles: TUTOR_QUIZ.ingles, japones: TUTOR_QUIZ.japones, hiragana: TUTOR_QUIZ.hiragana.slice(0, 10) };
         var questionList = questionSet[topicKey] || questionSet.liderazgo;
         if (!questionList || !questionList.length) questionList = TUTOR_QUIZ.liderazgo;
@@ -1363,6 +1369,16 @@ function bindTutorPanelEvents(panel, type, topicKey) {
         function showResultsScreen() {
             const accuracy = total > 0 ? Math.round((correctCount / total) * 100) : 0;
             const skipped = total - correctCount - wrongCount;
+            var setIndexUsed = ((chatState.shownQuizIndex[topicKey] || 1) - 1) % 5;
+            if (!chatState.quizLastResultByTopic) chatState.quizLastResultByTopic = {};
+            chatState.quizLastResultByTopic[topicKey] = {
+                setIndex: setIndexUsed,
+                correctCount: correctCount,
+                wrongCount: wrongCount,
+                total: total,
+                accuracy: accuracy,
+                userAnswers: answers.slice()
+            };
             resultDiv.innerHTML = `
                 <div class="study-chat-quiz-result-screen">
                     <h2 class="study-chat-quiz-result-title">Quiz completado</h2>
@@ -1404,46 +1420,93 @@ function bindTutorPanelEvents(panel, type, topicKey) {
                 </div>`;
             questionsContainer.style.display = 'none';
             if (progressWrap) progressWrap.style.display = 'none';
-            actionsDiv.innerHTML = '<div class="study-chat-quiz-result-actions"><button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm" id="study-chat-quiz-review"><span>Revisar quiz</span></button><button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="study-chat-quiz-more"><span>Más preguntas</span></button></div>';
+            actionsDiv.innerHTML = '<div class="study-chat-quiz-result-actions">' +
+                '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm" id="study-chat-quiz-reset"><span>Resetear quiz</span></button>' +
+                '<div class="study-chat-quiz-result-actions-right">' +
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="study-chat-quiz-review"><span>Revisar quiz</span></button>' +
+                '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="study-chat-quiz-more"><span>Más preguntas</span></button>' +
+                '</div></div>';
             actionsDiv.style.display = 'flex';
             resultDiv.style.display = 'block';
             panel.querySelector('#study-chat-quiz-review').addEventListener('click', function() {
                 resultDiv.style.display = 'none';
-                resultDiv.innerHTML = '';
                 if (progressWrap) progressWrap.style.display = 'flex';
                 questionsContainer.style.display = 'block';
-                actionsDiv.innerHTML = quizFooterOriginalHtml;
-                actionsDiv.style.display = 'flex';
+                actionsDiv.innerHTML = '<div class="study-chat-quiz-result-actions">' +
+                    '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="study-chat-quiz-back-to-results"><span>Volver a resultados</span></button>' +
+                    '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="study-chat-quiz-review-prev"><span>Anterior</span></button>' +
+                    '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="study-chat-quiz-review-next"><span>Siguiente</span></button>' +
+                    '</div>';
                 currentIdx = 0;
-                correctCount = 0;
-                wrongCount = 0;
-                answers.length = 0;
-                answered.length = 0;
-                questions.forEach((qEl, i) => {
-                    qEl.style.display = i === 0 ? 'block' : 'none';
-                    qEl.querySelectorAll('input[type="radio"]').forEach(function(inp) { inp.checked = false; inp.disabled = false; });
-                    qEl.querySelectorAll('.study-chat-quiz-opt').forEach(function(l) {
-                    l.classList.remove('study-chat-quiz-opt--correct', 'study-chat-quiz-opt--wrong');
-                    var inlineFb = l.querySelector('.study-chat-quiz-opt-inline-feedback'); if (inlineFb) inlineFb.remove();
-                });
-                    var fb = qEl.querySelector('.study-chat-quiz-feedback'); if (fb) { fb.style.display = 'none'; fb.innerHTML = ''; }
-                });
-                updateProgressBar();
-                const backBtnNew = panel.querySelector('#study-chat-quiz-back');
-                const nextBtnNew = panel.querySelector('#study-chat-quiz-next');
-                const submitBtnNew = panel.querySelector('#study-chat-quiz-submit');
-                if (backBtnNew) backBtnNew.style.display = 'none';
-                if (nextBtnNew) nextBtnNew.style.display = 'none';
-                if (submitBtnNew) submitBtnNew.style.display = 'none';
-                if (backBtnNew) backBtnNew.addEventListener('click', function() { currentIdx--; updateVisibility(); });
-                if (nextBtnNew) nextBtnNew.addEventListener('click', function() { currentIdx++; updateVisibility(); });
-                if (submitBtnNew) submitBtnNew.addEventListener('click', showResultsScreen);
                 updateVisibility();
+                function updateReviewNav() {
+                    var prev = panel.querySelector('#study-chat-quiz-review-prev');
+                    var next = panel.querySelector('#study-chat-quiz-review-next');
+                    if (prev) prev.style.display = currentIdx > 0 ? 'inline-flex' : 'none';
+                    if (next) next.style.display = currentIdx < total - 1 ? 'inline-flex' : 'none';
+                }
+                updateReviewNav();
+                panel.querySelector('#study-chat-quiz-review-prev').addEventListener('click', function() { currentIdx--; updateVisibility(); updateReviewNav(); });
+                panel.querySelector('#study-chat-quiz-review-next').addEventListener('click', function() { currentIdx++; updateVisibility(); updateReviewNav(); });
+                panel.querySelector('#study-chat-quiz-back-to-results').addEventListener('click', function() {
+                    questionsContainer.style.display = 'none';
+                    if (progressWrap) progressWrap.style.display = 'none';
+                    actionsDiv.innerHTML = '<div class="study-chat-quiz-result-actions">' +
+                        '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm" id="study-chat-quiz-reset"><span>Resetear quiz</span></button>' +
+                        '<div class="study-chat-quiz-result-actions-right">' +
+                        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="study-chat-quiz-review"><span>Revisar quiz</span></button>' +
+                        '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="study-chat-quiz-more"><span>Más preguntas</span></button>' +
+                        '</div></div>';
+                    resultDiv.style.display = 'block';
+                    bindQuizResultButtons();
+                });
             });
-            panel.querySelector('#study-chat-quiz-more').addEventListener('click', function() {
-                renderTutorPanel('quiz', topicKey);
-                if (typeof addResourceMessage === 'function') addResourceMessage('quiz', topicKey, true);
-            });
+            function bindQuizResultButtons() {
+                panel.querySelector('#study-chat-quiz-more').addEventListener('click', function() {
+                    if (chatState.quizLastResultByTopic) delete chatState.quizLastResultByTopic[topicKey];
+                    renderTutorPanel('quiz', topicKey);
+                    if (typeof addResourceMessage === 'function') addResourceMessage('quiz', topicKey, true);
+                });
+                panel.querySelector('#study-chat-quiz-review').addEventListener('click', function() {
+                    resultDiv.style.display = 'none';
+                    if (progressWrap) progressWrap.style.display = 'flex';
+                    questionsContainer.style.display = 'block';
+                    actionsDiv.innerHTML = '<div class="study-chat-quiz-result-actions">' +
+                        '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="study-chat-quiz-back-to-results"><span>Volver a resultados</span></button>' +
+                        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="study-chat-quiz-review-prev"><span>Anterior</span></button>' +
+                        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="study-chat-quiz-review-next"><span>Siguiente</span></button>' +
+                        '</div>';
+                    currentIdx = 0;
+                    updateVisibility();
+                    function updateReviewNav() {
+                        var prev = panel.querySelector('#study-chat-quiz-review-prev');
+                        var next = panel.querySelector('#study-chat-quiz-review-next');
+                        if (prev) prev.style.display = currentIdx > 0 ? 'inline-flex' : 'none';
+                        if (next) next.style.display = currentIdx < total - 1 ? 'inline-flex' : 'none';
+                    }
+                    updateReviewNav();
+                    panel.querySelector('#study-chat-quiz-review-prev').addEventListener('click', function() { currentIdx--; updateVisibility(); updateReviewNav(); });
+                    panel.querySelector('#study-chat-quiz-review-next').addEventListener('click', function() { currentIdx++; updateVisibility(); updateReviewNav(); });
+                    panel.querySelector('#study-chat-quiz-back-to-results').addEventListener('click', function() {
+                        questionsContainer.style.display = 'none';
+                        if (progressWrap) progressWrap.style.display = 'none';
+                        actionsDiv.innerHTML = '<div class="study-chat-quiz-result-actions">' +
+                            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm" id="study-chat-quiz-reset"><span>Resetear quiz</span></button>' +
+                            '<div class="study-chat-quiz-result-actions-right">' +
+                            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="study-chat-quiz-review"><span>Revisar quiz</span></button>' +
+                            '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="study-chat-quiz-more"><span>Más preguntas</span></button>' +
+                            '</div></div>';
+                        resultDiv.style.display = 'block';
+                        bindQuizResultButtons();
+                    });
+                });
+                panel.querySelector('#study-chat-quiz-reset').addEventListener('click', function() {
+                    if (chatState.quizLastResultByTopic) delete chatState.quizLastResultByTopic[topicKey];
+                    chatState.shownQuizIndex[topicKey] = 0;
+                    renderTutorPanel('quiz', topicKey);
+                });
+            }
+            bindQuizResultButtons();
             panel.querySelectorAll('.study-chat-quiz-result-option').forEach(function(btn) {
                 btn.addEventListener('click', function() {
                     const action = this.getAttribute('data-action');
@@ -1491,6 +1554,27 @@ function bindTutorPanelEvents(panel, type, topicKey) {
         if (nextBtn) nextBtn.addEventListener('click', function() { currentIdx++; updateVisibility(); });
         if (submitBtn) submitBtn.addEventListener('click', showResultsScreen);
         updateVisibility();
+        var lastResult = chatState.quizLastResultByTopic && chatState.quizLastResultByTopic[topicKey];
+        if (lastResult && lastResult.userAnswers && lastResult.userAnswers.length > 0) {
+            correctCount = 0;
+            wrongCount = 0;
+            lastResult.userAnswers.forEach(function(sel, i) {
+                if (sel === undefined) return;
+                var qEl = questions[i];
+                if (!qEl) return;
+                var correctIdx = parseInt(qEl.getAttribute('data-correct-index'), 10);
+                var explanation = (qEl.getAttribute('data-explanation') || '').replace(/&quot;/g, '"');
+                qEl.querySelectorAll('input[type="radio"]').forEach(function(inp) {
+                    inp.checked = parseInt(inp.value, 10) === sel;
+                    inp.disabled = true;
+                });
+                answers[i] = sel;
+                answered[i] = true;
+                showImmediateFeedback(qEl, sel, correctIdx, explanation);
+            });
+            updateProgressBar();
+            showResultsScreen();
+        }
     } else if (type === 'flashcards') {
         const deck = panel.querySelector('.study-chat-fc-deck');
         const cards = JSON.parse(deck.getAttribute('data-cards').replace(/&#39;/g, "'"));
@@ -1655,6 +1739,7 @@ let chatState = {
     waitingForTopicForResource: null, // 'quiz' | 'flashcards' | 'studyPlan' | 'podcast' cuando el usuario pidió recurso sin tema
     // Índices de recurso mostrado por tema (para no repetir: siguiente quiz, siguiente set de flashcards, siguiente plan)
     shownQuizIndex: {},   // por tema: cuántas veces se ha mostrado quiz (se usa shuffle cada vez)
+    quizLastResultByTopic: {}, // por tema: último resultado completado { setIndex, correctCount, wrongCount, total, accuracy, userAnswers } para reabrir en resultados
     shownFcSetIndex: {},  // por tema: 0, 1, 2 para TUTOR_FLASHCARDS, _ALT, _SET2
     shownPlanIndex: {},   // por tema: variante del plan (diferentes cortes de cursos)
     // Historial y nuevo chat (Bloque 2)

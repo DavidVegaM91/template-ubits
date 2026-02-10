@@ -669,6 +669,11 @@
     gap: var(--gap-md);
 }
 
+/* Quiz resultados: el bloque de botones ocupa todo el ancho para Resetear izquierda y los otros derecha */
+.study-chat-canvas-footer .study-chat-quiz-actions:has(.study-chat-quiz-result-actions) {
+    width: 100%;
+}
+
 /* ========== Canvas Podcast: reproductor + botón Ver transcripción + zona scrolleable ========== */
 .study-chat-canvas-podcast .study-chat-canvas-body {
     display: flex;
@@ -1141,14 +1146,28 @@
 
 .study-chat-quiz-result-actions {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
     gap: var(--gap-sm);
-    justify-content: flex-end;
-    flex-wrap: wrap;
 }
 
-/* Cuando los botones de cierre van en el footer del panel */
+/* Revisar y Más preguntas pegados al extremo derecho; Resetear al extremo izquierdo */
+.study-chat-quiz-result-actions-right {
+    display: flex;
+    gap: var(--gap-sm);
+    align-items: center;
+    margin-left: auto;
+}
+
+/* Cuando los botones de cierre van en el footer del panel: acciones a ancho completo */
 .study-chat-quiz-actions .study-chat-quiz-result-actions,
 .study-chat-fc-actions .study-chat-quiz-result-actions {
+    width: 100%;
+    min-width: 100%;
+}
+
+.study-chat-quiz-actions:has(.study-chat-quiz-result-actions) {
     width: 100%;
 }
 
