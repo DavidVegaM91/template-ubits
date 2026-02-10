@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Drawer | UBITS Playground</title>
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/drawer.css">
+    <script src="../../components/drawer.js"></script>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div style="display: flex;">
+                <div id="docs-dropdown-container"></div>
+                <div id="docs-sidebar-container"></div>
+                <div class="components-content">
+                    <div class="content-area" style="display: block; width: 100%;">
+                        <!-- Hero Section -->
+                        <div style="text-align: center; margin-bottom: 60px;">
+                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">Drawer</h1>
+                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                                Panel lateral que se abre desde la derecha. Overlay con fondo oscuro, panel a altura completa, header (título + cerrar), body y footer. Ideal para filtros, formularios laterales y contenido secundario.
+                            </p>
+                        </div>
+
+                        <!-- Preview Section -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Preview del componente
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                                Haz clic en el botón para abrir el drawer de ejemplo. Cierra con el botón X, Cancelar, Aplicar o clic fuera del panel.
+                            </p>
+                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; position: relative;">
+                                <div id="drawer-preview">
+                                    <button type="button" class="ubits-button ubits-button--primary ubits-button--md" onclick="document.getElementById('drawer-demo-overlay').style.display='flex'; document.getElementById('drawer-demo-overlay').setAttribute('aria-hidden','false');">
+                                        <i class="far fa-sliders"></i>
+                                        <span>Abrir drawer de ejemplo</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Drawer de ejemplo (oculto por defecto) -->
+                        <div class="ubits-drawer-overlay" id="drawer-demo-overlay" style="display: none;" aria-hidden="true" onclick="if(event.target===this) { this.style.display='none'; this.setAttribute('aria-hidden','true'); }">
+                            <div class="ubits-drawer-content ubits-drawer-content--md" onclick="event.stopPropagation();">
+                                <div class="ubits-drawer-header">
+                                    <span class="ubits-drawer-title ubits-body-md-bold">Título del drawer</span>
+                                    <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" aria-label="Cerrar" onclick="document.getElementById('drawer-demo-overlay').style.display='none'; document.getElementById('drawer-demo-overlay').setAttribute('aria-hidden','true');">
+                                        <i class="far fa-times"></i>
+                                    </button>
+                                </div>
+                                <div class="ubits-drawer-body">
+                                    <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium);">Contenido del body. Aquí puedes poner filtros, formularios, listas, etc. El panel ocupa todo el alto de la pantalla y está fijo a la derecha.</p>
+                                </div>
+                                <div class="ubits-drawer-footer">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" onclick="document.getElementById('drawer-demo-overlay').style.display='none'; document.getElementById('drawer-demo-overlay').setAttribute('aria-hidden','true');">
+                                        <span>Cancelar</span>
+                                    </button>
+                                    <button type="button" class="ubits-button ubits-button--primary ubits-button--md">
+                                        <span>Aplicar</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Características generales -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Características generales
+                            </h2>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-layer-group"></i></div>
+                                    <div class="ubits-body-sm-bold">Overlay</div>
+                                    <div class="ubits-body-sm-regular">Fondo oscuro 70%, panel alineado a la derecha, cierre al clic fuera</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-window-maximize"></i></div>
+                                    <div class="ubits-body-sm-bold">Estructura</div>
+                                    <div class="ubits-body-sm-regular">Header (título + cerrar), body con scroll, footer con acciones</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-filter"></i></div>
+                                    <div class="ubits-body-sm-bold">Uso típico</div>
+                                    <div class="ubits-body-sm-regular">Filtros (Seguimiento), formularios laterales, opciones avanzadas</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-palette"></i></div>
+                                    <div class="ubits-body-sm-bold">Tokens UBITS</div>
+                                    <div class="ubits-body-sm-regular">Colores, bordes y tipografía oficiales</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Prompts útiles -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Prompts útiles
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                Usa estos prompts con Cursor AI para configurar el componente Drawer.
+                            </p>
+                            <div id="drawer-warning-alert" style="margin-bottom: 32px;"></div>
+
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Crear drawer UBITS</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('drawer-prompt-0')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="drawer-prompt-0">Crea un drawer UBITS con:
+- Título: [título del drawer]
+- Contenido del body: [descripción del contenido]
+- Botones del footer: [ej. Limpiar y Aplicar]
+
+Usa getDrawerHtml() o las clases: ubits-drawer-overlay, ubits-drawer-content, ubits-drawer-header, ubits-drawer-body, ubits-drawer-footer. Importa components/drawer.css y components/drawer.js.</code></pre>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Reemplazar modal por drawer</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('drawer-prompt-1')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="drawer-prompt-1">Reemplaza el modal [id del overlay] por el componente Drawer UBITS. Usa getDrawerHtml() en lugar de getModalHtml() con el mismo overlayId, title, bodyHtml, footerHtml y closeButtonId. Importa components/drawer.css y components/drawer.js. La lógica de show/hide del overlay (display flex/none) se mantiene igual.</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Documentación técnica -->
+                        <div style="background: var(--ubits-bg-1); border-radius: 16px; margin-bottom: 40px; overflow: hidden;">
+                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Documentación técnica
+                                </h2>
+                                <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
+                                    Información técnica para implementar el componente Drawer.
+                                </p>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                    <i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>
+                                    Mostrar
+                                </span>
+                            </div>
+                            <div id="technical-docs-content" style="display: none; padding: 0;">
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                            <i class="far fa-sitemap" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                            Estructura del componente
+                                        </h2>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('drawer-structure-code')">
+                                            <i class="far fa-copy"></i>
+                                            <span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="drawer-structure-code">&lt;div class="ubits-drawer-overlay" id="mi-drawer-overlay" style="display: none;"&gt;
+  &lt;div class="ubits-drawer-content ubits-drawer-content--md"&gt;
+    &lt;div class="ubits-drawer-header"&gt;
+      &lt;span class="ubits-drawer-title ubits-body-md-bold"&gt;Título&lt;/span&gt;
+      &lt;button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" aria-label="Cerrar"&gt;
+        &lt;i class="far fa-times"&gt;&lt;/i&gt;
+      &lt;/button&gt;
+    &lt;/div&gt;
+    &lt;div class="ubits-drawer-body"&gt;
+      &lt;!-- Contenido --&gt;
+    &lt;/div&gt;
+    &lt;div class="ubits-drawer-footer"&gt;
+      &lt;button class="ubits-button ubits-button--secondary ubits-button--md"&gt;Cancelar&lt;/button&gt;
+      &lt;button class="ubits-button ubits-button--primary ubits-button--md"&gt;Aplicar&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                                    </div>
+                                </div>
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                            <i class="far fa-tags" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                            Clases disponibles
+                                        </h2>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('drawer-classes-code')">
+                                            <i class="far fa-copy"></i>
+                                            <span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="drawer-classes-code">.ubits-drawer-overlay   /* Overlay pantalla completa, fondo rgba(0,0,0,0.7), flex justify-end, z-index 1000 */
+.ubits-drawer-content   /* Panel: ancho máx. 480px por defecto, alto 100%, borde izquierdo, sombra */
+.ubits-drawer-content--xs  /* Ancho máx. 320px (desktop); 100% en móvil */
+.ubits-drawer-content--sm  /* Ancho máx. 400px */
+.ubits-drawer-content--md  /* Ancho máx. 480px */
+.ubits-drawer-content--lg  /* Ancho máx. 560px */
+.ubits-drawer-header    /* Header: padding, border-bottom, título + botón cerrar */
+.ubits-drawer-title     /* Título: usar con ubits-body-md-bold */
+.ubits-drawer-body      /* Body: padding, overflow-y auto, flex 1 */
+.ubits-drawer-footer    /* Footer: padding, border-top, flex end, gap 12px */</code></pre>
+                                    </div>
+                                </div>
+                                <div style="padding: 32px;">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                            <i class="far fa-code-branch" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                            Cómo implementar
+                                        </h2>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('drawer-implementation-code')">
+                                            <i class="far fa-copy"></i>
+                                            <span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                                        <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">🔧 REQUISITOS:</h3>
+                                        <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.5;">
+                                            <strong>CSS:</strong> <code>components/drawer.css</code>, <code>ubits-colors.css</code>, <code>ubits-typography.css</code>, <code>fontawesome-icons.css</code>, <code>components/button.css</code>.<br>
+                                            <strong>JavaScript:</strong> <code>components/drawer.js</code>. Proporciona <code>openDrawer()</code>, <code>closeDrawer()</code>, <code>showDrawer()</code>, <code>hideDrawer()</code>, <code>getDrawerHtml()</code>.
+                                        </div>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                        <h3 class="ubits-body-md-bold" style="margin-bottom: 8px; color: var(--ubits-fg-1-high);">Inyectar con getDrawerHtml() (recomendado)</h3>
+                                        <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 12px;">Para páginas que ya tienen un contenedor de modales/drawers y muestran/ocultan por ID:</p>
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="drawer-implementation-code">modalsContainer.innerHTML += getDrawerHtml({
+  overlayId: 'filtros-drawer-overlay',
+  title: 'Filtros',
+  bodyHtml: '&lt;div class="filtros-group"&gt;...&lt;/div&gt;',
+  footerHtml: '&lt;button class="ubits-button ubits-button--secondary ubits-button--md" id="filtros-limpiar"&gt;Limpiar&lt;/button&gt;&lt;button class="ubits-button ubits-button--primary ubits-button--md" id="filtros-aplicar"&gt;Aplicar&lt;/button&gt;',
+  size: 'md',
+  closeButtonId: 'filtros-drawer-close'
+});
+// Mostrar: document.getElementById('filtros-drawer-overlay').style.display = 'flex';
+// Cerrar: document.getElementById('filtros-drawer-overlay').style.display = 'none'; o closeDrawer('filtros-drawer-overlay');</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="ubits-toast-container"></div>
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof loadSubNav === 'function') loadSubNav('top-nav-container', 'documentacion');
+            if (typeof loadDocsSidebar === 'function') loadDocsSidebar('drawer');
+            if (typeof showAlert === 'function') {
+                showAlert('warning', 'Antes de enviar estos prompts a Cursor, reemplaza los textos entre [corchetes] con la información de tu proyecto.', {
+                    containerId: 'drawer-warning-alert',
+                    noClose: true
+                });
+            }
+        });
+        function toggleTechnicalDocs() {
+            var content = document.getElementById('technical-docs-content');
+            var chevron = document.getElementById('tech-docs-chevron');
+            var toggleText = chevron.parentElement;
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                chevron.style.transform = 'rotate(180deg)';
+                toggleText.innerHTML = '<i class="far fa-chevron-up" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Ocultar';
+            } else {
+                content.style.display = 'none';
+                chevron.style.transform = 'rotate(0deg)';
+                toggleText.innerHTML = '<i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Mostrar';
+            }
+        }
+        function copyPrompt(promptId) {
+            var el = document.getElementById(promptId);
+            var text = el.textContent;
+            navigator.clipboard.writeText(text).then(function() {
+                var btn = document.querySelector('[onclick="copyPrompt(\'' + promptId + '\')"]');
+                if (btn) {
+                    var icon = btn.querySelector('i');
+                    var span = btn.querySelector('span');
+                    if (icon) icon.className = 'far fa-check';
+                    if (span) span.textContent = 'Copiado';
+                    setTimeout(function() {
+                        if (icon) icon.className = 'far fa-copy';
+                        if (span) span.textContent = 'Copiar';
+                    }, 2000);
+                }
+                if (typeof showToast === 'function') showToast('success', 'Prompt copiado', { containerId: 'ubits-toast-container', duration: 3500 });
+            });
+        }
+        function copyCode(elementId) {
+            var el = document.getElementById(elementId);
+            var text = el ? el.textContent : '';
+            navigator.clipboard.writeText(text).then(function() {
+                var btn = event.target.closest('button');
+                if (btn) {
+                    var icon = btn.querySelector('i');
+                    var span = btn.querySelector('span');
+                    var oIcon = icon ? icon.className : '';
+                    var oSpan = span ? span.textContent : '';
+                    if (icon) icon.className = 'far fa-check';
+                    if (span) span.textContent = 'Copiado!';
+                    setTimeout(function() {
+                        if (icon) icon.className = oIcon;
+                        if (span) span.textContent = oSpan;
+                    }, 2000);
+                }
+            });
+        }
+    </script>
+</body>
+</html>

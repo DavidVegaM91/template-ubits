@@ -1,0 +1,93 @@
+/* ========================================
+   UBITS Drawer - Componente reutilizable
+   Overlay + panel fijo a la derecha, alto completo.
+   Estructura: header (título + cerrar), body, footer.
+   Usar para filtros, formularios laterales, etc.
+   ======================================== */
+
+.ubits-drawer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: stretch;
+    justify-content: flex-end;
+    padding: 0;
+}
+
+.ubits-drawer-content {
+    background: var(--ubits-bg-1);
+    border-left: 1px solid var(--ubits-border-1);
+    width: 100%;
+    max-width: 480px;
+    height: 100%;
+    max-height: none;
+    display: flex;
+    flex-direction: column;
+    z-index: 1001;
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.12);
+}
+
+/* Variantes de ancho (desktop); en móvil se adapta al viewport */
+.ubits-drawer-content--xs {
+    max-width: 320px;
+}
+
+.ubits-drawer-content--sm {
+    max-width: 400px;
+}
+
+.ubits-drawer-content--md {
+    max-width: 480px;
+}
+
+.ubits-drawer-content--lg {
+    max-width: 560px;
+}
+
+.ubits-drawer-header {
+    padding: var(--padding-lg) var(--padding-xl);
+    border-bottom: 1px solid var(--ubits-border-1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.ubits-drawer-header .ubits-drawer-title {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-drawer-body {
+    padding: var(--padding-xl);
+    overflow-y: auto;
+    flex: 1;
+}
+
+.ubits-drawer-footer {
+    padding: var(--padding-lg) var(--padding-xl);
+    border-top: 1px solid var(--ubits-border-1);
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--gap-md);
+    flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+    .ubits-drawer-content,
+    .ubits-drawer-content--xs,
+    .ubits-drawer-content--sm,
+    .ubits-drawer-content--md,
+    .ubits-drawer-content--lg {
+        max-width: 100%;
+    }
+
+    .ubits-drawer-body {
+        padding: var(--padding-lg);
+    }
+}

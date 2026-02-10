@@ -219,6 +219,7 @@
 .columns-menu-option input {
     width: 16px;
     height: 16px;
+    margin: 0;
     cursor: pointer;
     accent-color: var(--ubits-accent-brand);
 }
@@ -568,6 +569,7 @@
 .checkbox-menu-option input {
     width: 16px;
     height: 16px;
+    margin: 0;
     cursor: pointer;
     accent-color: var(--ubits-accent-brand);
 }
@@ -576,27 +578,7 @@
     display: none;
 }
 
-/* Drawer de filtros: mismo overlay que modal, panel fijo a la derecha, alto completo */
-.filtros-drawer-overlay {
-    justify-content: flex-end;
-    align-items: stretch;
-    padding: 0;
-}
-
-.filtros-drawer-overlay .filtros-drawer-content {
-    max-width: 480px;
-    width: 100%;
-    max-height: none;
-    height: 100%;
-    border-radius: 0;
-    border-left: 1px solid var(--ubits-border-1);
-    border-top: none;
-    border-right: none;
-    border-bottom: none;
-    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.12);
-}
-
-/* Modal filtros - grupos */
+/* Modal filtros - grupos (contenido dentro del drawer de filtros) */
 .filtros-group {
     margin-bottom: 20px;
 }
@@ -627,6 +609,7 @@
 .filtros-checkbox-option input {
     width: 16px;
     height: 16px;
+    margin: 0;
     cursor: pointer;
     accent-color: var(--ubits-accent-brand);
 }
@@ -648,6 +631,7 @@
 .filtros-radio-option input {
     width: 16px;
     height: 16px;
+    margin: 0;
     cursor: pointer;
     accent-color: var(--ubits-accent-brand);
 }
@@ -924,11 +908,6 @@
 
     .filtros-group-row {
         grid-template-columns: 1fr;
-    }
-
-    /* Drawer de filtros: en móvil ocupa ancho completo */
-    .filtros-drawer-overlay .filtros-drawer-content {
-        max-width: 100%;
     }
 
     /* Ocultar texto en botones de acción en móvil */

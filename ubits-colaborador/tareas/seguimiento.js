@@ -7,24 +7,26 @@
 (function() {
     'use strict';
 
-    // Inyectar modales con componente oficial (modal.js getModalHtml) — una sola fuente de verdad
-    if (typeof getModalHtml === 'function') {
-        var modalsContainer = document.getElementById('seguimiento-modals-container');
-        if (modalsContainer) {
-            var filtrosBody = '<div class="filtros-group"><label class="ubits-body-sm-bold filtros-label">Buscar asignados</label><div id="filtros-buscar-personas"></div></div>' +
-                '<div class="filtros-group"><label class="ubits-body-sm-bold filtros-label">Buscar áreas</label><div id="filtros-areas"></div></div>' +
-                '<div class="filtros-group filtros-group-row"><div class="filtros-field"><label class="ubits-body-sm-bold filtros-label">Estado</label><div class="filtros-checkbox-list" id="filtros-estado">' +
-                '<label class="filtros-checkbox-option"><input type="checkbox" value="Iniciada"><span class="ubits-body-sm-regular">Iniciada</span></label>' +
-                '<label class="filtros-checkbox-option"><input type="checkbox" value="Vencida"><span class="ubits-body-sm-regular">Vencida</span></label>' +
-                '<label class="filtros-checkbox-option"><input type="checkbox" value="Finalizada"><span class="ubits-body-sm-regular">Finalizada</span></label></div></div>' +
-                '<div class="filtros-field"><label class="ubits-body-sm-bold filtros-label">Prioridad</label><div class="filtros-checkbox-list" id="filtros-prioridad">' +
-                '<label class="filtros-checkbox-option"><input type="checkbox" value="Alta"><span class="ubits-body-sm-regular">Alta</span></label>' +
-                '<label class="filtros-checkbox-option"><input type="checkbox" value="Media"><span class="ubits-body-sm-regular">Media</span></label>' +
-                '<label class="filtros-checkbox-option"><input type="checkbox" value="Baja"><span class="ubits-body-sm-regular">Baja</span></label></div></div></div>';
-            var filtrosFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="filtros-limpiar">Limpiar filtros</button>' +
-                '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="filtros-aplicar">Aplicar filtros</button>';
-            modalsContainer.innerHTML += getModalHtml({ overlayId: 'filtros-modal-overlay', title: 'Filtros', bodyHtml: filtrosBody, footerHtml: filtrosFooter, size: 'md', closeButtonId: 'filtros-modal-close', overlayClass: 'filtros-drawer-overlay', contentClass: 'filtros-drawer-content' });
+    // Inyectar drawer de filtros (componente oficial) y modales (modal.js getModalHtml)
+    var modalsContainer = document.getElementById('seguimiento-modals-container');
+    if (modalsContainer) {
+        var filtrosBody = '<div class="filtros-group"><label class="ubits-body-sm-bold filtros-label">Buscar asignados</label><div id="filtros-buscar-personas"></div></div>' +
+            '<div class="filtros-group"><label class="ubits-body-sm-bold filtros-label">Buscar áreas</label><div id="filtros-areas"></div></div>' +
+            '<div class="filtros-group filtros-group-row"><div class="filtros-field"><label class="ubits-body-sm-bold filtros-label">Estado</label><div class="filtros-checkbox-list" id="filtros-estado">' +
+            '<label class="filtros-checkbox-option"><input type="checkbox" value="Iniciada"><span class="ubits-body-sm-regular">Iniciada</span></label>' +
+            '<label class="filtros-checkbox-option"><input type="checkbox" value="Vencida"><span class="ubits-body-sm-regular">Vencida</span></label>' +
+            '<label class="filtros-checkbox-option"><input type="checkbox" value="Finalizada"><span class="ubits-body-sm-regular">Finalizada</span></label></div></div>' +
+            '<div class="filtros-field"><label class="ubits-body-sm-bold filtros-label">Prioridad</label><div class="filtros-checkbox-list" id="filtros-prioridad">' +
+            '<label class="filtros-checkbox-option"><input type="checkbox" value="Alta"><span class="ubits-body-sm-regular">Alta</span></label>' +
+            '<label class="filtros-checkbox-option"><input type="checkbox" value="Media"><span class="ubits-body-sm-regular">Media</span></label>' +
+            '<label class="filtros-checkbox-option"><input type="checkbox" value="Baja"><span class="ubits-body-sm-regular">Baja</span></label></div></div></div>';
+        var filtrosFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="filtros-limpiar">Limpiar filtros</button>' +
+            '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="filtros-aplicar">Aplicar filtros</button>';
+        if (typeof getDrawerHtml === 'function') {
+            modalsContainer.innerHTML += getDrawerHtml({ overlayId: 'filtros-modal-overlay', title: 'Filtros', bodyHtml: filtrosBody, footerHtml: filtrosFooter, size: 'md', closeButtonId: 'filtros-modal-close' });
+        }
 
+        if (typeof getModalHtml === 'function') {
             var datePickerBody = '<div class="date-picker-inputs"><div class="date-picker-input-group"><label class="ubits-body-sm-regular date-picker-label">Fecha de inicio</label><div class="date-picker-input-wrapper"><input type="text" class="date-picker-input" id="date-picker-fecha-inicio" placeholder="DD/MM/YYYY"></div></div>' +
                 '<span class="date-picker-separator">-</span><div class="date-picker-input-group"><label class="ubits-body-sm-regular date-picker-label">Fecha de fin</label><div class="date-picker-input-wrapper"><input type="text" class="date-picker-input" id="date-picker-fecha-fin" placeholder="DD/MM/YYYY"></div></div></div>' +
                 '<div class="date-picker-calendar" id="date-picker-calendar"></div>';

@@ -82,6 +82,7 @@
 .ubits-table .ubits-table__td--checkbox input {
     width: 16px;
     height: 16px;
+    margin: 0;
     cursor: pointer;
     accent-color: var(--ubits-accent-brand);
 }
