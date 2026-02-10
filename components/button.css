@@ -25,6 +25,7 @@
     position: relative;
     user-select: none;
     white-space: nowrap;
+    overflow: visible;
     
     /* Default state */
     background: var(--ubits-button-primary-bg-default);
@@ -384,20 +385,69 @@
 }
 
 /* ========================================
-   BUTTON BADGE
+   BUTTON BADGE (puntito o número: 1, 2, 3…)
+   Texto siempre blanco (token oficial) en todos los tipos de botón.
    ======================================== */
 
 .ubits-button__badge {
     position: absolute;
-    top: -2px;
-    right: -3px;
+    top: -8px;
+    right: -12px;
+    min-width: 10px;
+    min-height: 10px;
+    background: var(--ubits-button-badge);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Noto Sans', sans-serif;
+    line-height: 1;
+    color: var(--ubits-btn-primary-fg) !important;
+}
+
+/* Texto blanco en badge para todos los tipos de botón (forzado para que no herede del botón) */
+.ubits-button--primary .ubits-button__badge,
+.ubits-button--secondary .ubits-button__badge,
+.ubits-button--tertiary .ubits-button__badge,
+.ubits-button--error .ubits-button__badge,
+.ubits-button--error-secondary .ubits-button__badge,
+.ubits-button--error-tertiary .ubits-button__badge {
+    color: var(--ubits-btn-primary-fg) !important;
+}
+
+/* Badge vacío = solo puntito (más adentro que el badge con número) */
+.ubits-button__badge:empty {
     width: 10px;
     height: 10px;
-    background: var(--ubits-button-badge);
+    top: -2px;
+    right: -4px;
+}
+
+/* Badge con número: por defecto pill que abraza el contenido */
+.ubits-button__badge:not(:empty) {
+    padding: 0 5px;
+    height: 18px;
+    min-width: 18px;
+    border-radius: var(--border-radius-full);
+    font-size: 10px;
+    font-weight: 500;
+}
+
+/* Un solo dígito: circular. Añadir clase ubits-button__badge--circle al span del badge. */
+.ubits-button__badge--circle:not(:empty) {
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    padding: 0;
     border-radius: 50%;
 }
 
 .ubits-button--icon-only .ubits-button__badge {
+    top: -8px;
+    right: -8px;
+}
+
+.ubits-button--icon-only .ubits-button__badge:empty {
     top: -2px;
     right: -2px;
 }

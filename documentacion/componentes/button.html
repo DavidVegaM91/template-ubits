@@ -77,15 +77,39 @@
             transform: translateX(20px);
         }
         
-        /* Badge styles */
+        /* Badge: posición igual que components/button.css (salido para no tapar texto) */
         .ubits-button__badge {
             position: absolute;
-            top: -2px;
-            right: -3px;
-            width: 10px;
-            height: 10px;
+            top: -8px;
+            right: -12px;
+            min-width: 10px;
+            min-height: 10px;
             background: var(--ubits-button-badge);
             border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--ubits-btn-primary-fg) !important;
+        }
+        .ubits-button--icon-only .ubits-button__badge {
+            top: -8px;
+            right: -8px;
+        }
+        .ubits-button__badge:empty { width: 10px; height: 10px; top: -2px; right: -4px; }
+        .ubits-button--icon-only .ubits-button__badge:empty { top: -2px; right: -2px; }
+        .ubits-button__badge:not(:empty) {
+            padding: 0 5px;
+            height: 18px;
+            min-width: 18px;
+            border-radius: var(--border-radius-full);
+            font-size: 10px;
+            font-weight: 500;
+            color: var(--ubits-btn-primary-fg) !important;
+        }
+        .ubits-button__badge--circle:not(:empty) {
+            width: 18px; height: 18px; min-width: 18px; padding: 0; border-radius: 50%;
         }
         
         .ubits-button {
@@ -222,6 +246,26 @@
                                     <span class="slider"></span>
                                 </label>
                             </div>
+                            
+                            <!-- Switch para Badge + selector puntito / número -->
+                            <div style="display: flex; align-items: center; gap: 8px; margin-left: 16px;">
+                                <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Badge:</span>
+                                <label class="switch">
+                                    <input type="checkbox" id="badge-toggle" onchange="toggleBadge()">
+                                    <span class="slider"></span>
+                                </label>
+                                <div id="badge-type-wrapper" style="display: none; align-items: center; gap: 8px; margin-left: 8px; padding-left: 8px; border-left: 1px solid var(--ubits-border-1);">
+                                    <label style="display: flex; align-items: center; gap: 4px; cursor: pointer;" class="ubits-body-sm-regular">
+                                        <input type="radio" name="badge-type" value="dot" checked onchange="updatePreview(currentPreviewOption)">
+                                        <span style="color: var(--ubits-fg-1-medium);">Puntito</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 4px; cursor: pointer;" class="ubits-body-sm-regular">
+                                        <input type="radio" name="badge-type" value="number" onchange="toggleBadgeNumberInput(); updatePreview(currentPreviewOption)">
+                                        <span style="color: var(--ubits-fg-1-medium);">Con número</span>
+                                    </label>
+                                    <input type="number" id="badge-number-input" min="1" max="99" value="3" style="width: 48px; padding: 4px 8px; border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-sm); font-size: var(--font-size-sm); color: var(--ubits-fg-1-high); background: var(--ubits-bg-1); display: none;" onchange="updatePreview(currentPreviewOption)" oninput="updatePreview(currentPreviewOption)">
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -245,7 +289,7 @@
                             <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                                 <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-tag"></i></div>
                                 <div class="ubits-body-sm-bold">Badge</div>
-                                <div class="ubits-body-sm-regular">Indicador opcional de estado</div>
+                                <div class="ubits-body-sm-regular">Indicador opcional: puntito o número (1, 2, 3…)</div>
                             </div>
                         </div>
                 </div>
@@ -360,7 +404,7 @@
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="button-prompt-5">Agrega un punto rojo de notificación al botón [nombre_del_boton].</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="button-prompt-5">Agrega un indicador al botón [nombre_del_boton]: un punto rojo de notificación o un número (por ejemplo &lt;span class="ubits-button__badge"&gt;3&lt;/span&gt;).</code></pre>
                         </div>
                     </div>
 
@@ -547,6 +591,20 @@
 &lt;!-- Botón de solo icono --&gt;
 &lt;button class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only"&gt;
   &lt;i class="far fa-trash"&gt;&lt;/i&gt;
+&lt;/button&gt;
+
+&lt;!-- Badge: puntito (vacío) --&gt;
+&lt;button class="ubits-button ubits-button--primary ubits-button--md"&gt;
+  &lt;i class="far fa-bell"&gt;&lt;/i&gt;
+  &lt;span&gt;Notificaciones&lt;/span&gt;
+  &lt;span class="ubits-button__badge"&gt;&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- Badge con número (1, 2, 3…) --&gt;
+&lt;button class="ubits-button ubits-button--primary ubits-button--md"&gt;
+  &lt;i class="far fa-bell"&gt;&lt;/i&gt;
+  &lt;span&gt;Notificaciones&lt;/span&gt;
+  &lt;span class="ubits-button__badge"&gt;3&lt;/span&gt;
 &lt;/button&gt;</code></pre>
                                 </div>
                             </div>
@@ -642,29 +700,61 @@
         
         // Función para toggle de icon-only
         function toggleIconOnly() {
-            // Usar la variable global que guarda la opción actual
             updatePreview(currentPreviewOption);
         }
         
+        // Función para toggle de badge: muestra/oculta selector puntito vs número y actualiza preview
+        function toggleBadge() {
+            const showBadge = document.getElementById('badge-toggle').checked;
+            const wrapper = document.getElementById('badge-type-wrapper');
+            if (wrapper) wrapper.style.display = showBadge ? 'flex' : 'none';
+            toggleBadgeNumberInput();
+            updatePreview(currentPreviewOption);
+        }
+        
+        // Muestra/oculta el input de número según el radio "Con número"
+        function toggleBadgeNumberInput() {
+            const isNumber = document.querySelector('input[name="badge-type"]:checked')?.value === 'number';
+            const input = document.getElementById('badge-number-input');
+            if (input) input.style.display = isNumber ? 'inline-block' : 'none';
+        }
+        
         // Función auxiliar para generar HTML de botón con/sin badge y con/sin iconos
-        function generateButtonHTML(variant, size, text, icon, isIconOnly = false, showIcons = true, isDisabled = false) {
+        // badgeValue: null = sin badge, '' = puntito, '3' = número dentro del badge
+        function generateButtonHTML(variant, size, text, icon, isIconOnly = false, showIcons = true, isDisabled = false, badgeValue = null) {
             const iconHTML = showIcons ? `<i class="far fa-${icon}"></i>` : '';
             const disabledAttr = isDisabled ? ' disabled' : '';
             const iconOnlyClass = isIconOnly ? ` ubits-button--icon-only` : '';
             const textHTML = isIconOnly ? '' : `<span>${text}</span>`;
+            const circleClass = (badgeValue !== null && badgeValue !== '' && String(badgeValue).length === 1) ? ' ubits-button__badge--circle' : '';
+            const badgeHTML = badgeValue === null ? '' : `<span class="ubits-button__badge${circleClass}">${badgeValue}</span>`;
             return `<button class="ubits-button ubits-button--${variant} ubits-button--${size}${iconOnlyClass}"${disabledAttr}>
                 ${iconHTML}
                 ${textHTML}
+                ${badgeHTML}
             </button>`;
         }
         
         // Función interna para actualizar preview sin cambiar estado visual
         function updatePreview(option) {
-            // Obtener estado del icon-only e iconos
+            // Obtener estado del icon-only, iconos y badge
             const iconOnlyToggle = document.getElementById('icon-only-toggle');
             const iconToggle = document.getElementById('icon-toggle');
+            const badgeToggle = document.getElementById('badge-toggle');
             const isIconOnly = iconOnlyToggle ? iconOnlyToggle.checked : false;
             const showIcons = iconToggle ? iconToggle.checked : true;
+            const showBadge = badgeToggle ? badgeToggle.checked : false;
+            let badgeParam = null;
+            if (showBadge) {
+                const typeRadio = document.querySelector('input[name="badge-type"]:checked');
+                if (typeRadio && typeRadio.value === 'number') {
+                    const numInput = document.getElementById('badge-number-input');
+                    const n = numInput ? Math.max(1, Math.min(99, parseInt(numInput.value, 10) || 1)) : 3;
+                    badgeParam = String(n);
+                } else {
+                    badgeParam = '';
+                }
+            }
             
             // Cambiar el preview
             const preview = document.getElementById('button-preview');
@@ -677,19 +767,19 @@
                         <div style="display: flex; flex-direction: column; gap: 16px; align-items: flex-start;">
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Extra Small (xs)</span>
-                                ${generateButtonHTML('primary', 'xs', 'Botón primario', 'check', isIconOnly, showIcons)}
+                                ${generateButtonHTML('primary', 'xs', 'Botón primario', 'check', isIconOnly, showIcons, false, badgeParam)}
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Small (sm)</span>
-                                ${generateButtonHTML('primary', 'sm', 'Botón primario', 'check', isIconOnly, showIcons)}
+                                ${generateButtonHTML('primary', 'sm', 'Botón primario', 'check', isIconOnly, showIcons, false, badgeParam)}
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Medium (md)</span>
-                                ${generateButtonHTML('primary', 'md', 'Botón primario', 'check', isIconOnly, showIcons)}
+                                ${generateButtonHTML('primary', 'md', 'Botón primario', 'check', isIconOnly, showIcons, false, badgeParam)}
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Large (lg)</span>
-                                ${generateButtonHTML('primary', 'lg', 'Botón primario', 'check', isIconOnly, showIcons)}
+                                ${generateButtonHTML('primary', 'lg', 'Botón primario', 'check', isIconOnly, showIcons, false, badgeParam)}
                             </div>
                         </div>
                     `;
@@ -699,19 +789,19 @@
                         <div style="display: flex; flex-direction: column; gap: 16px; align-items: flex-start;">
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Extra Small (xs)</span>
-                                ${generateButtonHTML('secondary', 'xs', 'Botón secundario', 'times', isIconOnly, showIcons)}
+                                ${generateButtonHTML('secondary', 'xs', 'Botón secundario', 'times', isIconOnly, showIcons, false, badgeParam)}
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Small (sm)</span>
-                                ${generateButtonHTML('secondary', 'sm', 'Botón secundario', 'times', isIconOnly, showIcons)}
+                                ${generateButtonHTML('secondary', 'sm', 'Botón secundario', 'times', isIconOnly, showIcons, false, badgeParam)}
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Medium (md)</span>
-                                ${generateButtonHTML('secondary', 'md', 'Botón secundario', 'times', isIconOnly, showIcons)}
+                                ${generateButtonHTML('secondary', 'md', 'Botón secundario', 'times', isIconOnly, showIcons, false, badgeParam)}
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Large (lg)</span>
-                                ${generateButtonHTML('secondary', 'lg', 'Botón secundario', 'times', isIconOnly, showIcons)}
+                                ${generateButtonHTML('secondary', 'lg', 'Botón secundario', 'times', isIconOnly, showIcons, false, badgeParam)}
                             </div>
                         </div>
                     `;
@@ -721,19 +811,19 @@
                         <div style="display: flex; flex-direction: column; gap: 16px; align-items: flex-start;">
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Extra Small (xs)</span>
-                                ${generateButtonHTML('tertiary', 'xs', 'Botón terciario', 'plus', isIconOnly, showIcons)}
+                                ${generateButtonHTML('tertiary', 'xs', 'Botón terciario', 'plus', isIconOnly, showIcons, false, badgeParam)}
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Small (sm)</span>
-                                ${generateButtonHTML('tertiary', 'sm', 'Botón terciario', 'plus', isIconOnly, showIcons)}
+                                ${generateButtonHTML('tertiary', 'sm', 'Botón terciario', 'plus', isIconOnly, showIcons, false, badgeParam)}
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Medium (md)</span>
-                                ${generateButtonHTML('tertiary', 'md', 'Botón terciario', 'plus', isIconOnly, showIcons)}
+                                ${generateButtonHTML('tertiary', 'md', 'Botón terciario', 'plus', isIconOnly, showIcons, false, badgeParam)}
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Large (lg)</span>
-                                ${generateButtonHTML('tertiary', 'lg', 'Botón terciario', 'plus', isIconOnly, showIcons)}
+                                ${generateButtonHTML('tertiary', 'lg', 'Botón terciario', 'plus', isIconOnly, showIcons, false, badgeParam)}
                             </div>
                         </div>
                     `;
@@ -743,19 +833,19 @@
                         <div style="display: flex; flex-direction: column; gap: 16px; align-items: flex-start;">
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Extra Small (xs)</span>
-                                ${generateButtonHTML('primary', 'xs', 'Botón deshabilitado', 'check', isIconOnly, showIcons, true)}
+                                ${generateButtonHTML('primary', 'xs', 'Botón deshabilitado', 'check', isIconOnly, showIcons, true, badgeParam)}
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Small (sm)</span>
-                                ${generateButtonHTML('primary', 'sm', 'Botón deshabilitado', 'check', isIconOnly, showIcons, true)}
+                                ${generateButtonHTML('primary', 'sm', 'Botón deshabilitado', 'check', isIconOnly, showIcons, true, badgeParam)}
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Medium (md)</span>
-                                ${generateButtonHTML('secondary', 'md', 'Botón deshabilitado', 'times', isIconOnly, showIcons, true)}
+                                ${generateButtonHTML('secondary', 'md', 'Botón deshabilitado', 'times', isIconOnly, showIcons, true, badgeParam)}
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Large (lg)</span>
-                                ${generateButtonHTML('tertiary', 'lg', 'Botón deshabilitado', 'plus', isIconOnly, showIcons, true)}
+                                ${generateButtonHTML('tertiary', 'lg', 'Botón deshabilitado', 'plus', isIconOnly, showIcons, true, badgeParam)}
                             </div>
                         </div>
                     `;
@@ -766,19 +856,19 @@
                         <div style="display: flex; flex-direction: column; gap: 16px; align-items: flex-start;">
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Extra Small (xs)</span>
-                                ${generateButtonHTML(errorVariant, 'xs', 'Eliminar', 'trash-alt', isIconOnly, showIcons)}
+                                ${generateButtonHTML(errorVariant, 'xs', 'Eliminar', 'trash-alt', isIconOnly, showIcons, false, badgeParam)}
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Small (sm)</span>
-                                ${generateButtonHTML(errorVariant, 'sm', 'Eliminar', 'trash-alt', isIconOnly, showIcons)}
+                                ${generateButtonHTML(errorVariant, 'sm', 'Eliminar', 'trash-alt', isIconOnly, showIcons, false, badgeParam)}
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Medium (md)</span>
-                                ${generateButtonHTML(errorVariant, 'md', 'Eliminar', 'trash-alt', isIconOnly, showIcons)}
+                                ${generateButtonHTML(errorVariant, 'md', 'Eliminar', 'trash-alt', isIconOnly, showIcons, false, badgeParam)}
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Large (lg)</span>
-                                ${generateButtonHTML(errorVariant, 'lg', 'Eliminar', 'trash-alt', isIconOnly, showIcons)}
+                                ${generateButtonHTML(errorVariant, 'lg', 'Eliminar', 'trash-alt', isIconOnly, showIcons, false, badgeParam)}
                             </div>
                         </div>
                     `;
