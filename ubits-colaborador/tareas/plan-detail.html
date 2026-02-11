@@ -121,7 +121,6 @@
     <div id="tab-bar-container"></div>
     <div id="floating-menu-container"></div>
     <div id="profile-menu-container"></div>
-    <div id="fab-button-container"></div>
 
     <script src="../../components/tooltip.js"></script>
     <script src="../../components/sidebar.js"></script>
@@ -157,11 +156,6 @@
 
             if (typeof initPlanDetail === 'function') {
                 initPlanDetail();
-            }
-
-            // Inicializar FAB flotante con el mismo HTML que el módulo de referencia
-            if (typeof initFabButton === 'function') {
-                initFabButton();
             }
 
             setTimeout(() => {
