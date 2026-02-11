@@ -380,8 +380,8 @@
             data = data.filter(row => currentFilters.estado.includes(row.estado));
         }
 
-        // Filtro prioridad
-        if (currentFilters.prioridad.length > 0) {
+        // Filtro prioridad (solo tab Tareas)
+        if (activeTab === 'tareas' && currentFilters.prioridad.length > 0) {
             data = data.filter(row => currentFilters.prioridad.includes(row.prioridad));
         }
 
@@ -541,7 +541,7 @@
         if (currentFilters.estado.length > 0) {
             data = data.filter(row => currentFilters.estado.includes(row.estado));
         }
-        if (currentFilters.prioridad.length > 0) {
+        if (activeTab === 'tareas' && currentFilters.prioridad.length > 0) {
             data = data.filter(row => currentFilters.prioridad.includes(row.prioridad));
         }
         return data;
@@ -1331,8 +1331,8 @@
             });
         }
 
-        // Prioridad - un chip por cada valor
-        if (currentFilters.prioridad.length > 0) {
+        // Prioridad - un chip por cada valor (solo tab Tareas)
+        if (activeTab === 'tareas' && currentFilters.prioridad.length > 0) {
             hasFilters = true;
             currentFilters.prioridad.forEach((prioridadValue, index) => {
                 chips.push({
@@ -1520,6 +1520,12 @@
             document.querySelectorAll('#filtros-prioridad input').forEach(function(cb) {
                 cb.checked = currentFilters.prioridad.indexOf(cb.value) >= 0;
             });
+            // Prioridad solo aplica a Tareas: ocultar bloque en tab Planes
+            var prioridadEl = document.getElementById('filtros-prioridad');
+            if (prioridadEl) {
+                var prioridadField = prioridadEl.closest('.filtros-field');
+                if (prioridadField) prioridadField.style.display = activeTab === 'tareas' ? '' : 'none';
+            }
         }
     }
 
@@ -1678,9 +1684,13 @@
         const estadoChecks = document.querySelectorAll('#filtros-estado input:checked');
         currentFilters.estado = Array.from(estadoChecks).map(cb => cb.value);
 
-        // Prioridad
-        const prioridadChecks = document.querySelectorAll('#filtros-prioridad input:checked');
-        currentFilters.prioridad = Array.from(prioridadChecks).map(cb => cb.value);
+        // Prioridad (solo tab Tareas; en Planes no se usa)
+        if (activeTab === 'tareas') {
+            const prioridadChecks = document.querySelectorAll('#filtros-prioridad input:checked');
+            currentFilters.prioridad = Array.from(prioridadChecks).map(cb => cb.value);
+        } else {
+            currentFilters.prioridad = [];
+        }
     }
 
     // Limpiar filtros (solo del tab activo)
