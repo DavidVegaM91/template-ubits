@@ -59,7 +59,6 @@ Lista completa de cambios sugeridos en la reunión. Marca con `[x]` lo que ya es
 ## 9. Otros componentes e ideas de producto
 
 |`[ ]`|  Valorar **componente de audio / podcast** (ej. podcast básico de liderazgo) para usuarios que hacen otras cosas | David: "un componente de audio o podcast sería útil; generarme un podcast de liderazgo básico" |
-
 |`[ ]`|  **Diseño con visión a largo plazo**: pensar no solo Q1 sino todo el año para que las siguientes versiones estén alineadas | 
 
 ---
@@ -72,11 +71,3 @@ Lista completa de cambios sugeridos en la reunión. Marca con `[x]` lo que ya es
 |`[ ]`|  **Agentes a priorizar para pruebas**: quiz, planes y tareas, recomendador, organizativa | Luisa: "quiz, planes y tareas, el recomendador, y organizativa" |
 |`[ ]`|  **Reunión con Javi** para definir qué agentes deberían funcionar (Esteban + Luisa) | Luisa (00:17): "Esteban y yo nos llevamos con Javi entonces los agentes que deberían funcionar" |
 |`[ ]`|  **Evitar "datos vanidosos"** en pruebas: diseñar pruebas para sacar información que realmente sirva | Carlos (00:15): "que no sean data… datos vanidosos que no nos sirven de nada"; Esteban: "pensemos muy bien esas pruebas para sacar la información que más nos sirve" |
-
----
-
-## 11. Seguimiento y entrega
-
-|`[ ]`|  **Pre-entrega de avances en Slack**; con base en esa revisión, agendar reunión de seguimiento | Carlos: "puede ser como una preentrega y que lo veamos en Slack" |
-|`[ ]`|  **Reunión de seguimiento** (ej. jueves antes del almuerzo, media hora) | David: "el jueves antes del almuerzo" |
-|`[ ]`|  **Llevar interfaz a Figma** para iterar y refinar (David + Carlos) | Pasos siguientes del doc |

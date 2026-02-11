@@ -30,12 +30,7 @@
     box-shadow: 0 0 0 2px rgba(12, 91, 239, 0.1);
 }
 
-.ubits-input:disabled {
-    background: var(--ubits-bg-3);
-    color: var(--ubits-fg-1-low);
-    border-color: var(--ubits-border-2);
-    cursor: not-allowed;
-}
+/* Disabled: ver INPUT STATES más abajo (.ubits-input--disabled, .ubits-input:disabled) */
 
 .ubits-input:read-only {
     background: var(--ubits-bg-1);
@@ -121,25 +116,29 @@
 }
 
 /* ========================================
-   INPUT STATES
+   INPUT STATES (oficiales: preview y todos los consumidores usan estas clases)
    ======================================== */
 
 .ubits-input--hover {
     border-color: var(--ubits-accent-brand);
+    border-width: 1px;
 }
 
 .ubits-input--focus {
     border-color: var(--ubits-accent-brand);
+    border-width: 1px;
     box-shadow: 0 0 0 2px rgba(12, 91, 239, 0.1);
 }
 
 .ubits-input--active {
     border-color: var(--ubits-accent-brand);
+    border-width: 1px;
     background: var(--ubits-bg-2);
 }
 
 .ubits-input--invalid {
     border-color: var(--ubits-feedback-accent-error);
+    border-width: 1px;
 }
 
 .ubits-input--invalid.ubits-input--focus {
@@ -147,11 +146,15 @@
     box-shadow: 0 0 0 2px rgba(233, 52, 60, 0.1);
 }
 
-.ubits-input--disabled {
-    background: var(--ubits-bg-3);
-    color: var(--ubits-fg-1-low);
-    border-color: var(--ubits-border-2);
-    cursor: not-allowed;
+/* Solo el control (input/textarea) recibe el fondo disabled, no contenedores */
+input.ubits-input--disabled,
+input.ubits-input:disabled,
+textarea.ubits-input--disabled,
+textarea.ubits-input:disabled {
+    background: var(--ubits-bg-3) !important;
+    color: var(--ubits-fg-1-low) !important;
+    border-color: var(--ubits-border-2) !important;
+    cursor: not-allowed !important;
 }
 
 /* ========================================

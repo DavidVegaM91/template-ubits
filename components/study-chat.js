@@ -687,6 +687,21 @@ function setCanvasPanelOpen(open) {
     document.body.classList.toggle('canvas-panel-open', !!open);
 }
 
+function getCanvasLoaderHTML() {
+    var loaderBody = (typeof getLoaderHTML === 'function')
+        ? getLoaderHTML({ text: 'Generando recurso...', wrap: false })
+        : '<span class="ubits-loader"></span><p class="ubits-loader-text ubits-body-md-regular">Generando recurso...</p>';
+    return '<div class="study-chat-canvas-content study-chat-canvas-content--generating">' +
+        '<div class="study-chat-canvas-header">' +
+        '<span class="ubits-body-md-bold">Recurso</span>' +
+        '<button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only study-chat-canvas-close" title="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>' +
+        '</div>' +
+        '<div class="study-chat-canvas-body study-chat-canvas-body--generating">' +
+        loaderBody +
+        '</div>' +
+        '</div>';
+}
+
 function renderTutorPanel(type, topic, extraData) {
     const panel = chatState.rightPanelId ? document.getElementById(chatState.rightPanelId) : null;
     const placeholder = chatState.placeholderId ? document.getElementById(chatState.placeholderId) : null;
@@ -748,6 +763,23 @@ function renderTutorPanel(type, topic, extraData) {
                 </div>
             </div>
         </div>`;
+        var resourceKey = 'quiz:' + topicKey;
+        var needLoader = !lastResult && !(chatState.canvasResourceGenerated && chatState.canvasResourceGenerated[resourceKey]);
+        if (needLoader) {
+            panel.innerHTML = getCanvasLoaderHTML();
+            panel.classList.add('has-content');
+            if (placeholder) placeholder.style.display = 'none';
+            setTimeout(function() {
+                var contentHtml = html.replace(/class="study-chat-canvas-content study-chat-canvas-quiz"/, 'class="study-chat-canvas-content study-chat-canvas-quiz study-chat-canvas-content--reveal-stagger"');
+                panel.innerHTML = contentHtml;
+                panel.classList.add('has-content');
+                bindCanvasClose(panel);
+                bindTutorPanelEvents(panel, 'quiz', topicKey);
+                if (!chatState.canvasResourceGenerated) chatState.canvasResourceGenerated = {};
+                chatState.canvasResourceGenerated[resourceKey] = true;
+            }, 2000);
+            return;
+        }
     } else if (type === 'flashcards') {
         const fcSetIndex = (extraData && typeof extraData.fcSetIndex === 'number') ? Math.max(0, Math.min(4, extraData.fcSetIndex)) : ((chatState.shownFcSetIndex[topicKey] || 0) % 5);
         chatState.shownFcSetIndex[topicKey] = (chatState.shownFcSetIndex[topicKey] || 0) + 1;
@@ -787,6 +819,23 @@ function renderTutorPanel(type, topic, extraData) {
                 </div>
             </div>
         </div>`;
+        var resourceKeyFc = 'flashcards:' + topicKey;
+        var needLoaderFc = !(chatState.canvasResourceGenerated && chatState.canvasResourceGenerated[resourceKeyFc]);
+        if (needLoaderFc) {
+            panel.innerHTML = getCanvasLoaderHTML();
+            panel.classList.add('has-content');
+            if (placeholder) placeholder.style.display = 'none';
+            setTimeout(function() {
+                var contentHtml = html.replace(/class="study-chat-canvas-content study-chat-canvas-flashcards"/, 'class="study-chat-canvas-content study-chat-canvas-flashcards study-chat-canvas-content--reveal-stagger"');
+                panel.innerHTML = contentHtml;
+                panel.classList.add('has-content');
+                bindCanvasClose(panel);
+                bindTutorPanelEvents(panel, 'flashcards', topicKey);
+                if (!chatState.canvasResourceGenerated) chatState.canvasResourceGenerated = {};
+                chatState.canvasResourceGenerated[resourceKeyFc] = true;
+            }, 2000);
+            return;
+        }
     } else if (type === 'courses' && extraData && extraData.courses && extraData.courses.length > 0) {
         const containerId = 'tutor-panel-courses-' + Date.now();
         html = `<div class="study-chat-canvas-content study-chat-canvas-courses">
@@ -832,9 +881,8 @@ function renderTutorPanel(type, topic, extraData) {
         if (!sp) return;
         chatState.shownPlanIndex[topicKey] = (chatState.shownPlanIndex[topicKey] || 0) + 1;
         const viewMode = !!sp.created;
-        currentStudyPlanState = { plan: sp, topicKey: topicKey || '' };
-        var footerPrimaryLabel = viewMode ? 'Ver plan' : 'Crear plan';
-        var footerPrimaryId = viewMode ? 'study-chat-plan-view-btn' : 'study-chat-plan-create';
+        currentStudyPlanState = { plan: sp, topicKey: topicKey || '', planUiState: viewMode ? 'readonly' : 'unsaved' };
+        var footerPrimaryLabel = viewMode ? 'Editar plan' : 'Crear plan';
         html = '<div class="study-chat-canvas-content study-chat-canvas-study-plan study-chat-canvas-study-plan-editable" data-topic="' + (topicKey || '') + '">' +
             '<div class="study-chat-canvas-header">' +
             '<span class="ubits-body-md-bold">Plan de estudio</span>' +
@@ -848,19 +896,44 @@ function renderTutorPanel(type, topic, extraData) {
             '</div>' +
             '<p class="study-chat-study-plan-tasks-label ubits-body-sm-bold">Tareas</p>' +
             '<div class="study-chat-study-plan-tasks-cards" id="study-chat-plan-tasks-container"></div>' +
-            (viewMode ? '' : '<div class="study-chat-plan-add-task-wrap" id="study-chat-plan-add-task-wrap"><button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="study-chat-plan-add-task"><span>+ Agregar tarea</span></button></div>') +
+            '<div class="study-chat-plan-add-task-wrap" id="study-chat-plan-add-task-wrap"><button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="study-chat-plan-add-task"><span>+ Agregar tarea</span></button></div>' +
             '</div>' +
             '<div class="study-chat-canvas-footer">' +
             '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="study-chat-plan-cancel"><span>Cancelar</span></button>' +
-            '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="' + footerPrimaryId + '"><span>' + footerPrimaryLabel + '</span></button>' +
+            '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="study-chat-plan-primary-btn"><span>' + footerPrimaryLabel + '</span></button>' +
             '</div></div>';
+        var resourceKeySp = 'studyPlan:' + (topicKey || '');
+        var needLoaderSp = !(chatState.canvasResourceGenerated && chatState.canvasResourceGenerated[resourceKeySp]);
+        if (needLoaderSp) {
+            panel.innerHTML = getCanvasLoaderHTML();
+            panel.classList.add('has-content');
+            setTimeout(function() {
+                var contentHtml = html.replace('study-chat-canvas-content study-chat-canvas-study-plan study-chat-canvas-study-plan-editable', 'study-chat-canvas-content study-chat-canvas-study-plan study-chat-canvas-study-plan-editable study-chat-canvas-content--reveal-stagger');
+                panel.innerHTML = contentHtml;
+                panel.classList.add('has-content');
+                bindCanvasClose(panel);
+                var tasksContainer = panel.querySelector('#study-chat-plan-tasks-container');
+                var readonly = currentStudyPlanState.planUiState === 'readonly';
+                renderStudyPlanTaskCards(tasksContainer, sp, topicKey || '', { readonly: readonly });
+                sp._inputInstances = renderStudyPlanUbitsInputs(panel, sp, readonly);
+                bindStudyPlanFooter(panel, sp, topicKey || '');
+                if (currentStudyPlanState.planUiState === 'unsaved') bindStudyPlanAddTaskButton(panel, sp, topicKey || '');
+                applyStudyPlanUiState(panel, sp, topicKey || '');
+                if (!chatState.canvasResourceGenerated) chatState.canvasResourceGenerated = {};
+                chatState.canvasResourceGenerated[resourceKeySp] = true;
+            }, 2000);
+            return;
+        }
         panel.innerHTML = html;
         panel.classList.add('has-content');
         bindCanvasClose(panel);
-        renderStudyPlanTaskCards(panel.querySelector('#study-chat-plan-tasks-container'), sp, topicKey || '');
-        renderStudyPlanUbitsInputs(panel, sp, viewMode);
-        bindStudyPlanFooter(panel, sp, topicKey || '', viewMode);
-        if (!viewMode) bindStudyPlanAddTaskButton(panel, sp, topicKey || '');
+        var tasksContainer = panel.querySelector('#study-chat-plan-tasks-container');
+        var readonlyInitial = currentStudyPlanState.planUiState === 'readonly';
+        renderStudyPlanTaskCards(tasksContainer, sp, topicKey || '', { readonly: readonlyInitial });
+        sp._inputInstances = renderStudyPlanUbitsInputs(panel, sp, readonlyInitial);
+        bindStudyPlanFooter(panel, sp, topicKey || '');
+        if (currentStudyPlanState.planUiState === 'unsaved') bindStudyPlanAddTaskButton(panel, sp, topicKey || '');
+        applyStudyPlanUiState(panel, sp, topicKey || '');
         return;
     } else if (type === 'podcast') {
         const podTopic = topic || chatState.currentTopic || 'liderazgo';
@@ -902,6 +975,24 @@ function renderTutorPanel(type, topic, extraData) {
             '</div>' +
             '</div>' +
             '</div>';
+        var resourceKeyPod = 'podcast:' + (podTopic || topicKey || 'liderazgo');
+        var needLoaderPod = !(chatState.canvasResourceGenerated && chatState.canvasResourceGenerated[resourceKeyPod]);
+        if (needLoaderPod) {
+            panel.innerHTML = getCanvasLoaderHTML();
+            panel.classList.add('has-content');
+            if (placeholder) placeholder.style.display = 'none';
+            setTimeout(function() {
+                var contentHtml = html.replace('class="study-chat-canvas-content study-chat-canvas-podcast"', 'class="study-chat-canvas-content study-chat-canvas-podcast study-chat-canvas-content--reveal-stagger"');
+                panel.innerHTML = contentHtml;
+                panel.classList.add('has-content');
+                bindCanvasClose(panel);
+                bindPodcastTranscriptionToggle(panel);
+                bindPodcastSeguirAprendiendo(panel);
+                if (!chatState.canvasResourceGenerated) chatState.canvasResourceGenerated = {};
+                chatState.canvasResourceGenerated[resourceKeyPod] = true;
+            }, 2000);
+            return;
+        }
         panel.innerHTML = html;
         panel.classList.add('has-content');
         if (placeholder) placeholder.style.display = 'none';
@@ -976,8 +1067,9 @@ function bindPodcastSeguirAprendiendo(panel) {
     });
 }
 
-function renderStudyPlanTaskCards(container, plan, topicKey) {
+function renderStudyPlanTaskCards(container, plan, topicKey, options) {
     if (!container || !plan || !plan.tasks) return;
+    var readonly = options && options.readonly;
     container.innerHTML = '';
     var priorityOpts = [
         { value: 'Alta', icon: 'far fa-chevrons-up', color: 'var(--ubits-feedback-accent-error)' },
@@ -991,14 +1083,16 @@ function renderStudyPlanTaskCards(container, plan, topicKey) {
         card.setAttribute('data-task-index', idx);
         var titleEsc = (task.title || '').replace(/</g, '&lt;').replace(/"/g, '&quot;');
         var actionsHtml = '';
-        if (task.type === 'custom') {
-            actionsHtml = '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--xs ubits-button--icon-only study-chat-plan-task-delete" data-task-index="' + idx + '" title="Eliminar" aria-label="Eliminar"><i class="far fa-trash"></i></button>';
-        } else if (task.type === 'activity') {
-            actionsHtml = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs ubits-button--icon-only study-chat-plan-task-rehacer" data-task-index="' + idx + '" title="Rehacer (otra opción)" aria-label="Rehacer"><i class="far fa-rotate-right"></i></button>' +
-                '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--xs ubits-button--icon-only study-chat-plan-task-delete" data-task-index="' + idx + '" title="Eliminar" aria-label="Eliminar"><i class="far fa-trash"></i></button>';
-        } else {
-            actionsHtml = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs ubits-button--icon-only study-chat-plan-task-cambiar" data-task-index="' + idx + '" title="Cambiar por otro curso" aria-label="Cambiar"><i class="far fa-arrows-rotate"></i></button>' +
-                '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--xs ubits-button--icon-only study-chat-plan-task-delete" data-task-index="' + idx + '" title="Eliminar" aria-label="Eliminar"><i class="far fa-trash"></i></button>';
+        if (!readonly) {
+            if (task.type === 'custom') {
+                actionsHtml = '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--xs ubits-button--icon-only study-chat-plan-task-delete" data-task-index="' + idx + '" title="Eliminar" aria-label="Eliminar"><i class="far fa-trash"></i></button>';
+            } else if (task.type === 'activity') {
+                actionsHtml = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs ubits-button--icon-only study-chat-plan-task-rehacer" data-task-index="' + idx + '" title="Rehacer (otra opción)" aria-label="Rehacer"><i class="far fa-rotate-right"></i></button>' +
+                    '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--xs ubits-button--icon-only study-chat-plan-task-delete" data-task-index="' + idx + '" title="Eliminar" aria-label="Eliminar"><i class="far fa-trash"></i></button>';
+            } else {
+                actionsHtml = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs ubits-button--icon-only study-chat-plan-task-cambiar" data-task-index="' + idx + '" title="Cambiar por otro curso" aria-label="Cambiar"><i class="far fa-arrows-rotate"></i></button>' +
+                    '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--xs ubits-button--icon-only study-chat-plan-task-delete" data-task-index="' + idx + '" title="Eliminar" aria-label="Eliminar"><i class="far fa-trash"></i></button>';
+            }
         }
         var titleHtml = '<div class="study-chat-plan-task-card-title-wrap">' +
             '<span class="study-chat-plan-task-card-title ubits-body-sm-regular study-chat-plan-task-title-editable" data-task-index="' + idx + '" title="Clic para editar">' + (task.title || '') + '</span>' +
@@ -1033,11 +1127,12 @@ function renderStudyPlanTaskCards(container, plan, topicKey) {
         card.innerHTML = '<div class="study-chat-plan-task-card-inner">' + innerContent + '</div>';
         container.appendChild(card);
     });
-    bindStudyPlanTaskCardEvents(container, plan, topicKey);
+    bindStudyPlanTaskCardEvents(container, plan, topicKey, options);
 }
 
-function bindStudyPlanTaskCardEvents(container, plan, topicKey) {
+function bindStudyPlanTaskCardEvents(container, plan, topicKey, options) {
     if (!container || !plan) return;
+    var readonly = options && options.readonly;
     var tasksContainer = container;
     var panel = container.closest('.study-chat-canvas-study-plan-editable');
     var priorityOpts = [
@@ -1045,7 +1140,8 @@ function bindStudyPlanTaskCardEvents(container, plan, topicKey) {
         { value: 'Media', icon: 'far fa-chevron-up', color: 'var(--ubits-fg-1-medium)' },
         { value: 'Baja', icon: 'far fa-chevron-down', color: 'var(--ubits-feedback-accent-info)' }
     ];
-    // Edición inline del nombre: clic en el título → input; blur/Enter → guardar
+    // Edición inline del nombre: clic en el título → input; blur/Enter → guardar (solo si no readonly)
+    if (!readonly) {
     tasksContainer.querySelectorAll('.study-chat-plan-task-title-editable').forEach(function(span) {
         span.addEventListener('click', function() {
             var idx = parseInt(span.getAttribute('data-task-index'), 10);
@@ -1065,7 +1161,7 @@ function bindStudyPlanTaskCardEvents(container, plan, topicKey) {
                 if (task._isNew) {
                     if (newTitle === '' || newTitle === 'Nueva tarea') {
                         plan.tasks.splice(idx, 1);
-                        renderStudyPlanTaskCards(tasksContainer, plan, topicKey);
+                        renderStudyPlanTaskCards(tasksContainer, plan, topicKey, options);
                         return;
                     }
                     task.title = newTitle;
@@ -1079,7 +1175,7 @@ function bindStudyPlanTaskCardEvents(container, plan, topicKey) {
                 newSpan.title = 'Clic para editar';
                 newSpan.textContent = task.title || '';
                 input.parentNode.replaceChild(newSpan, input);
-                bindStudyPlanTaskCardEvents(tasksContainer, plan, topicKey);
+                bindStudyPlanTaskCardEvents(tasksContainer, plan, topicKey, options);
             }
             input.addEventListener('blur', saveAndRevert);
             input.addEventListener('keydown', function(e) {
@@ -1088,7 +1184,7 @@ function bindStudyPlanTaskCardEvents(container, plan, topicKey) {
                     e.preventDefault();
                     if (task._isNew) {
                         plan.tasks.splice(idx, 1);
-                        renderStudyPlanTaskCards(tasksContainer, plan, topicKey);
+                        renderStudyPlanTaskCards(tasksContainer, plan, topicKey, options);
                         return;
                     }
                     var newSpan = document.createElement('span');
@@ -1097,16 +1193,17 @@ function bindStudyPlanTaskCardEvents(container, plan, topicKey) {
                     newSpan.title = 'Clic para editar';
                     newSpan.textContent = task.title || '';
                     input.parentNode.replaceChild(newSpan, input);
-                    bindStudyPlanTaskCardEvents(tasksContainer, plan, topicKey);
+                    bindStudyPlanTaskCardEvents(tasksContainer, plan, topicKey, options);
                 }
             });
         });
     });
+    }
     tasksContainer.querySelectorAll('.study-chat-plan-task-delete').forEach(function(btn) {
         btn.addEventListener('click', function() {
             var idx = parseInt(btn.getAttribute('data-task-index'), 10);
             plan.tasks.splice(idx, 1);
-            renderStudyPlanTaskCards(tasksContainer, plan, topicKey);
+            renderStudyPlanTaskCards(tasksContainer, plan, topicKey, options);
         });
     });
     tasksContainer.querySelectorAll('.study-chat-plan-task-rehacer').forEach(function(btn) {
@@ -1161,15 +1258,15 @@ function bindStudyPlanTaskCardEvents(container, plan, topicKey) {
             if (!nextCourse) return;
             task.course = nextCourse;
             task.title = 'Ver contenido: ' + nextCourse.title;
-            renderStudyPlanTaskCards(tasksContainer, plan, topicKey);
+            renderStudyPlanTaskCards(tasksContainer, plan, topicKey, options);
         });
     });
 }
 
-function renderStudyPlanUbitsInputs(panel, sp, viewMode) {
-    if (!panel || !sp || typeof window.createInput !== 'function') return;
-    var inputState = viewMode ? 'disabled' : 'default';
-    window.createInput({
+function renderStudyPlanUbitsInputs(panel, sp, isReadonly) {
+    if (!panel || !sp || typeof window.createInput !== 'function') return null;
+    var inputState = isReadonly ? 'disabled' : 'default';
+    var titleInput = window.createInput({
         containerId: 'study-chat-plan-input-title',
         type: 'text',
         label: 'Título',
@@ -1179,7 +1276,7 @@ function renderStudyPlanUbitsInputs(panel, sp, viewMode) {
         state: inputState,
         onChange: function(v) { sp.title = v; }
     });
-    window.createInput({
+    var priorityInput = window.createInput({
         containerId: 'study-chat-plan-input-priority',
         type: 'select',
         label: 'Prioridad',
@@ -1194,7 +1291,7 @@ function renderStudyPlanUbitsInputs(panel, sp, viewMode) {
         ],
         onChange: function(v) { sp.priority = v; }
     });
-    window.createInput({
+    var dateInput = window.createInput({
         containerId: 'study-chat-plan-input-date-fin',
         type: 'calendar',
         label: 'Fin',
@@ -1211,6 +1308,7 @@ function renderStudyPlanUbitsInputs(panel, sp, viewMode) {
             }
         }
     });
+    return { title: titleInput, priority: priorityInput, date: dateInput };
 }
 
 function bindStudyPlanPriorityMenu(panel, sp, priorityOpts) {
@@ -1258,10 +1356,66 @@ function bindStudyPlanAddTaskButton(panel, sp, topicKey) {
     });
 }
 
-function bindStudyPlanFooter(panel, sp, topicKey, viewMode) {
+function applyStudyPlanUiState(panel, sp, topicKey) {
+    if (!currentStudyPlanState || !panel || !sp) return;
+    var state = currentStudyPlanState.planUiState;
+    var addWrap = panel.querySelector('#study-chat-plan-add-task-wrap');
+    var primaryBtn = panel.querySelector('#study-chat-plan-primary-btn');
+    var primaryLabel = primaryBtn && primaryBtn.querySelector('span');
+    var tasksContainer = panel.querySelector('#study-chat-plan-tasks-container');
+    var inst = sp._inputInstances;
+
+    var planInputContainers = '#study-chat-plan-input-title, #study-chat-plan-input-priority, #study-chat-plan-input-date-fin';
+    var planInputs = panel.querySelectorAll(planInputContainers + ' .ubits-input');
+
+    function setPlanInputsDisabled(disabled) {
+        planInputs.forEach(function(el) {
+            if (disabled) {
+                el.classList.add('ubits-input--disabled');
+                el.disabled = true;
+            } else {
+                el.classList.remove('ubits-input--disabled');
+                el.disabled = false;
+            }
+        });
+    }
+
+    if (state === 'readonly') {
+        if (addWrap) addWrap.style.display = 'none';
+        if (primaryLabel) primaryLabel.textContent = 'Editar plan';
+        if (inst) {
+            [inst.title, inst.priority, inst.date].forEach(function(inputApi) {
+                if (inputApi && (typeof inputApi.disable === 'function')) inputApi.disable();
+                else if (inputApi && (typeof inputApi.setState === 'function')) inputApi.setState('disabled');
+            });
+        }
+        setPlanInputsDisabled(true);
+        if (tasksContainer) {
+            renderStudyPlanTaskCards(tasksContainer, sp, topicKey, { readonly: true });
+        }
+    } else if (state === 'editing') {
+        if (addWrap) addWrap.style.display = '';
+        if (primaryLabel) primaryLabel.textContent = 'Guardar plan';
+        if (inst) {
+            [inst.title, inst.priority, inst.date].forEach(function(inputApi) {
+                if (inputApi && (typeof inputApi.enable === 'function')) inputApi.enable();
+                else if (inputApi && (typeof inputApi.setState === 'function')) inputApi.setState('default');
+            });
+        }
+        setPlanInputsDisabled(false);
+        if (tasksContainer) {
+            renderStudyPlanTaskCards(tasksContainer, sp, topicKey, { readonly: false });
+        }
+    } else {
+        if (addWrap) addWrap.style.display = '';
+        if (primaryLabel) primaryLabel.textContent = 'Crear plan';
+        setPlanInputsDisabled(false);
+    }
+}
+
+function bindStudyPlanFooter(panel, sp, topicKey) {
     var cancelBtn = panel.querySelector('#study-chat-plan-cancel');
-    var createBtn = panel.querySelector('#study-chat-plan-create');
-    var viewBtn = panel.querySelector('#study-chat-plan-view-btn');
+    var primaryBtn = panel.querySelector('#study-chat-plan-primary-btn');
     if (cancelBtn) cancelBtn.addEventListener('click', function() {
         panel.classList.remove('is-open', 'has-content');
         panel.innerHTML = '';
@@ -1269,22 +1423,22 @@ function bindStudyPlanFooter(panel, sp, topicKey, viewMode) {
         setCanvasPanelOpen(false);
         showOpenButtonsInChat();
     });
-    if (viewMode && viewBtn) {
-        viewBtn.addEventListener('click', function() {
-            /* En producción abriría un drawer con el plan completo. En este prototipo no hace nada. */
-        });
-    } else if (createBtn) {
-        createBtn.addEventListener('click', function() {
+    if (primaryBtn) primaryBtn.addEventListener('click', function() {
+        var state = currentStudyPlanState && currentStudyPlanState.planUiState;
+        if (state === 'unsaved') {
             sp.created = true;
-            createdStudyPlansByTopic[topicKey] = sp;
-            if (typeof showToast === 'function') showToast('success', 'Plan creado correctamente.');
-            panel.classList.remove('is-open', 'has-content');
-            panel.innerHTML = '';
-            currentStudyPlanState = null;
-            setCanvasPanelOpen(false);
-            showOpenButtonsInChat();
-        });
-    }
+            if (typeof createdStudyPlansByTopic !== 'undefined') createdStudyPlansByTopic[topicKey] = sp;
+            currentStudyPlanState.planUiState = 'readonly';
+            applyStudyPlanUiState(panel, sp, topicKey);
+        } else if (state === 'readonly') {
+            currentStudyPlanState.planUiState = 'editing';
+            applyStudyPlanUiState(panel, sp, topicKey);
+        } else if (state === 'editing') {
+            if (typeof showToast === 'function') showToast('success', 'Cambios guardados.');
+            currentStudyPlanState.planUiState = 'readonly';
+            applyStudyPlanUiState(panel, sp, topicKey);
+        }
+    });
 }
 
 function renderCoursesInPanel(containerId, courses) {
@@ -1503,6 +1657,7 @@ function bindTutorPanelEvents(panel, type, topicKey) {
                 panel.querySelector('#study-chat-quiz-reset').addEventListener('click', function() {
                     if (chatState.quizLastResultByTopic) delete chatState.quizLastResultByTopic[topicKey];
                     chatState.shownQuizIndex[topicKey] = 0;
+                    if (chatState.canvasResourceGenerated) delete chatState.canvasResourceGenerated['quiz:' + topicKey];
                     renderTutorPanel('quiz', topicKey);
                 });
             }
@@ -1740,6 +1895,7 @@ let chatState = {
     // Índices de recurso mostrado por tema (para no repetir: siguiente quiz, siguiente set de flashcards, siguiente plan)
     shownQuizIndex: {},   // por tema: cuántas veces se ha mostrado quiz (se usa shuffle cada vez)
     quizLastResultByTopic: {}, // por tema: último resultado completado { setIndex, correctCount, wrongCount, total, accuracy, userAnswers } para reabrir en resultados
+    canvasResourceGenerated: {}, // 'quiz:liderazgo', 'flashcards:liderazgo', etc. Si está generado no se muestra loader al reabrir
     shownFcSetIndex: {},  // por tema: 0, 1, 2 para TUTOR_FLASHCARDS, _ALT, _SET2
     shownPlanIndex: {},   // por tema: variante del plan (diferentes cortes de cursos)
     // Historial y nuevo chat (Bloque 2)

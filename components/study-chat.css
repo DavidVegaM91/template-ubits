@@ -661,6 +661,55 @@
     min-height: 0;
 }
 
+/* ========== Canvas: pantalla de generación (usa componente ubits-loader) ========== */
+.study-chat-canvas-body--generating {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap-lg);
+    min-height: 200px;
+}
+
+/* Revelado secuencial del contenido tras el loader: de arriba a abajo, ≤1s total */
+.study-chat-canvas-content--reveal-stagger .study-chat-canvas-header,
+.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body > *,
+.study-chat-canvas-content--reveal-stagger .study-chat-canvas-footer {
+    opacity: 0;
+    animation: study-chat-canvas-stagger-reveal 0.2s ease-out forwards;
+}
+
+.study-chat-canvas-content--reveal-stagger .study-chat-canvas-header {
+    animation-delay: 0s;
+}
+.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body > *:nth-child(1) { animation-delay: 0.06s; }
+.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body > *:nth-child(2) { animation-delay: 0.12s; }
+.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body > *:nth-child(3) { animation-delay: 0.18s; }
+.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body > *:nth-child(4) { animation-delay: 0.24s; }
+.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body > *:nth-child(5) { animation-delay: 0.30s; }
+.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body > *:nth-child(6) { animation-delay: 0.36s; }
+.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body > *:nth-child(7) { animation-delay: 0.42s; }
+.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body > *:nth-child(8) { animation-delay: 0.48s; }
+.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body > *:nth-child(9) { animation-delay: 0.54s; }
+.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body > *:nth-child(10) { animation-delay: 0.60s; }
+.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body > *:nth-child(11) { animation-delay: 0.66s; }
+.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body > *:nth-child(12) { animation-delay: 0.72s; }
+.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body > *:nth-child(13) { animation-delay: 0.78s; }
+.study-chat-canvas-content--reveal-stagger .study-chat-canvas-footer {
+    animation-delay: 0.78s; /* cierra la secuencia en ≤1s (0.78 + 0.2 = 0.98s) */
+}
+
+@keyframes study-chat-canvas-stagger-reveal {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .study-chat-canvas-footer {
     padding: var(--padding-lg) var(--padding-xl);
     border-top: 1px solid var(--ubits-border-1);
@@ -1392,11 +1441,17 @@
     margin-bottom: 4px;
 }
 
-/* Contenedores de inputs UBITS (createInput) - tamaño sm */
+/* Contenedores de inputs UBITS (createInput) - tamaño sm; sin fondo para que solo el .ubits-input muestre disabled */
 .study-chat-canvas-study-plan-editable #study-chat-plan-input-title,
 .study-chat-canvas-study-plan-editable #study-chat-plan-input-priority,
 .study-chat-canvas-study-plan-editable #study-chat-plan-input-date-fin {
     width: 100%;
+    background: transparent;
+}
+.study-chat-canvas-study-plan-editable #study-chat-plan-input-title > div,
+.study-chat-canvas-study-plan-editable #study-chat-plan-input-priority > div,
+.study-chat-canvas-study-plan-editable #study-chat-plan-input-date-fin > div {
+    background: transparent;
 }
 
 /* Título editable inline en tareas del plan */

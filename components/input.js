@@ -893,12 +893,12 @@ function createAutocompleteDropdown(container, inputElement, autocompleteOptions
         });
     }
     
-    // Cerrar dropdown al hacer click fuera
+    // Cerrar dropdown al hacer click fuera (capture para que funcione dentro de drawer/modal con stopPropagation)
     document.addEventListener('click', function(e) {
         if (!container.contains(e.target)) {
             dropdown.style.display = 'none';
         }
-    });
+    }, true);
     
     container.appendChild(dropdown);
     
@@ -1064,12 +1064,12 @@ function createSelectDropdown(container, inputElement, selectOptions, value, pla
         }
     });
     
-    // Cerrar dropdown al hacer click fuera
+    // Cerrar dropdown al hacer click fuera (capture para que funcione dentro de drawer/modal con stopPropagation)
     document.addEventListener('click', function(e) {
         if (!container.contains(e.target)) {
             dropdown.style.display = 'none';
         }
-    });
+    }, true);
 }
 
 function createInput(options = {}) {
@@ -1459,7 +1459,7 @@ function createInput(options = {}) {
                     if (!container.contains(e.target) && !wrapper.contains(e.target)) {
                         wrapper.style.display = 'none';
                     }
-                });
+                }, true);
             })();
         } else {
             console.warn('UBITS Input type calendar: carga components/calendar.js y components/calendar.css.');

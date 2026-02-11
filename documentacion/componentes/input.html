@@ -1601,44 +1601,32 @@ input.setState(state)     // Cambiar estado (default, hover, focus, invalid, dis
                     }
                     
                     // Remover todas las clases de estado primero del input
-                    inputElement.classList.remove('ubits-input--hover', 'ubits-input--invalid', 'ubits-input--disabled');
+                    inputElement.classList.remove('ubits-input--hover', 'ubits-input--focus', 'ubits-input--invalid', 'ubits-input--disabled');
                     
                     // Remover todas las clases de estado primero del wrapper si existe
                     if (wrapperElement) {
-                        wrapperElement.classList.remove('ubits-input--hover', 'ubits-input--invalid', 'ubits-input--disabled');
+                        wrapperElement.classList.remove('ubits-input--hover', 'ubits-input--focus', 'ubits-input--invalid', 'ubits-input--disabled');
                     }
                     
-                    // Resetear estilos primero
+                    // Resetear estilos inline para que rijan los del componente (input.css)
                     inputElement.style.borderColor = '';
                     inputElement.style.borderWidth = '';
+                    inputElement.style.boxShadow = '';
                     inputElement.style.backgroundColor = '';
                     inputElement.style.color = '';
                     inputElement.style.cursor = '';
                     inputElement.disabled = false;
                     
-                    // Aplicar el estado seleccionado con estilos directos
+                    // Aplicar el estado usando las clases oficiales del componente (input.css)
                     if (state === 'Hover') {
-                        inputElement.style.borderColor = 'var(--ubits-accent-brand)';
-                        inputElement.style.borderWidth = '1px';
-                        console.log('Aplicado hover con estilos directos');
+                        inputElement.classList.add('ubits-input--hover');
                     } else if (state === 'Focus') {
-                        inputElement.style.borderColor = 'var(--ubits-accent-brand)';
-                        inputElement.style.borderWidth = '1px';
-                        inputElement.style.boxShadow = '0 0 0 2px var(--ubits-accent-brand)';
-                        console.log('Aplicado focus con estilos directos');
+                        inputElement.classList.add('ubits-input--focus');
                     } else if (state === 'Invalid') {
-                        inputElement.style.borderColor = 'var(--ubits-feedback-accent-error)';
-                        inputElement.style.borderWidth = '1px';
-                        console.log('Aplicado invalid con estilos directos');
+                        inputElement.classList.add('ubits-input--invalid');
                     } else if (state === 'Disabled') {
-                        inputElement.style.backgroundColor = 'var(--ubits-bg-3)';
-                        inputElement.style.color = 'var(--ubits-fg-1-low)';
-                        inputElement.style.borderColor = 'var(--ubits-border-2)';
-                        inputElement.style.cursor = 'not-allowed';
+                        inputElement.classList.add('ubits-input--disabled');
                         inputElement.disabled = true;
-                        console.log('Aplicado disabled con estilos directos');
-                    } else {
-                        console.log('Estado default - sin estilos especiales');
                     }
                     
                     // Aplicar el mandatory seleccionado
