@@ -36,8 +36,9 @@
     <link rel="stylesheet" href="../../components/drawer.css">
     <link rel="stylesheet" href="../../components/table.css">
 
-    <!-- Página -->
+    <!-- Página + estilos compartidos planes (drawers y menú Crear) -->
     <link rel="stylesheet" href="./seguimiento.css">
+    <link rel="stylesheet" href="./planes.css">
 </head>
 <body data-theme="light">
     <div class="dashboard-container">
@@ -388,6 +389,14 @@
     <!-- Toast container -->
     <div id="ubits-toast-container"></div>
 
+    <!-- Drawers Crear plan / Crear plantilla (compartidos con planes.js) -->
+    <div id="create-template-drawer-overlay" class="template-drawer-overlay" style="display: none;">
+        <div class="template-drawer-content" id="create-template-drawer"></div>
+    </div>
+    <div id="create-plan-drawer-overlay" class="template-drawer-overlay plan-drawer-overlay" style="display: none;">
+        <div class="template-drawer-content plan-drawer-content" id="create-plan-drawer"></div>
+    </div>
+
         <script src="../../components/tooltip.js"></script>
         <script src="../../components/sidebar.js"></script>
         <script src="../../components/sub-nav.js"></script>
@@ -409,7 +418,11 @@
                     primaryButton: {
                         text: 'Crear',
                         icon: 'fa-plus',
-                        onClick: function() { /* TODO: abrir flujo crear */ }
+                        onClick: function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            if (typeof window.openCrearMenu === 'function') window.openCrearMenu(e.currentTarget);
+                        }
                     }
                 });
                 var container = document.getElementById('header-product-seguimiento');
@@ -432,6 +445,7 @@
     <script src="../../components/modal.js"></script>
     <script src="../../components/drawer.js"></script>
     <script src="./tareas-base-unificada.js"></script>
+    <script src="./planes.js"></script>
     <script src="./seguimiento.js"></script>
 </body>
 </html>

@@ -319,39 +319,96 @@ function initPlansInterface() {
     renderPlansInterface();
 }
 
-// Opciones del menú FAB
+// Opciones del menú FAB y del menú Crear del header (compartidas). Iconos alineados con subnav (plan, tarea, plantilla, IA).
 const fabMenuOptions = [
     {
         label: 'Un plan',
-        icon: null,
+        icon: 'fa-layer-group',
         onClick: () => {
-            openPlanDrawer();
+            if (typeof window.openPlanDrawer === 'function') window.openPlanDrawer();
         }
     },
     {
         label: 'Una tarea',
-        icon: null,
+        icon: 'fa-tasks',
         onClick: () => {
-            console.log('Crear tarea');
-            // TODO: Implementar creación de tarea
+            // Sin acción
         }
     },
     {
         label: 'Una plantilla',
-        icon: null,
+        icon: 'fa-rectangle-history',
         onClick: () => {
-            openTemplateDrawer();
+            if (typeof window.openTemplateDrawer === 'function') window.openTemplateDrawer();
         }
     },
     {
         label: 'Con IA',
         icon: 'fa-sparkles',
         onClick: () => {
-            console.log('Crear con IA');
-            // TODO: Implementar creación con IA
+            // Sin acción
         }
     }
 ];
+
+/** Abre el menú desplegable "Crear" anclado al botón (header product o FAB). Usar desde planes, tareas y seguimiento. */
+function openCrearMenu(anchorElement) {
+    if (!anchorElement || !anchorElement.getBoundingClientRect) return;
+    var existing = document.getElementById('crear-menu-dropdown-root');
+    if (existing) {
+        existing.remove();
+        return;
+    }
+    var rect = anchorElement.getBoundingClientRect();
+    var menuWidth = 192;
+    var gap = 4;
+    var viewportW = window.innerWidth || document.documentElement.clientWidth;
+    var viewportH = window.innerHeight || document.documentElement.clientHeight;
+    var menuLeft = Math.max(8, Math.min(rect.right - menuWidth, viewportW - menuWidth - 8));
+    var menuTop = rect.bottom + gap;
+    if (menuTop + 220 > viewportH - 8) menuTop = Math.max(8, rect.top - 220);
+    var root = document.createElement('div');
+    root.id = 'crear-menu-dropdown-root';
+    root.style.position = 'fixed';
+    root.style.left = '0';
+    root.style.top = '0';
+    root.style.width = '100%';
+    root.style.height = '100%';
+    root.style.zIndex = '9999';
+    root.style.pointerEvents = 'none';
+    var menu = document.createElement('div');
+    menu.className = 'flux-dropdown-content fab-menu crear-menu-dropdown';
+    menu.setAttribute('role', 'menu');
+    menu.style.pointerEvents = 'auto';
+    menu.style.setProperty('--crear-menu-top', menuTop + 'px');
+    menu.style.setProperty('--crear-menu-left', menuLeft + 'px');
+    fabMenuOptions.forEach(function (option, index) {
+        var item = document.createElement('button');
+        item.type = 'button';
+        item.className = 'flux-dropdown-item fab-menu-item';
+        item.setAttribute('role', 'menuitem');
+        item.dataset.action = String(index);
+        if (option.icon) {
+            item.innerHTML = '<i class="far ' + option.icon + ' fab-menu-item__icon"></i><span>' + escapePlanHtml(option.label) + '</span>';
+        } else {
+            item.innerHTML = '<span class="fab-menu-item__icon"></span><span>' + escapePlanHtml(option.label) + '</span>';
+        }
+        item.addEventListener('click', function (e) {
+            e.stopPropagation();
+            root.remove();
+            if (option.onClick) option.onClick();
+        });
+        menu.appendChild(item);
+    });
+    root.appendChild(menu);
+    document.body.appendChild(root);
+    function closeMenu(e) {
+        if (e && e.target && root.contains(e.target)) return;
+        root.remove();
+        document.removeEventListener('click', closeMenu);
+    }
+    setTimeout(function () { document.addEventListener('click', closeMenu); }, 0);
+}
 
 // Renderizar FAB Button (opcional: forceOpen = true para forzar que se muestre el menú/popper)
 function renderFabButton(forceOpen) {
@@ -1882,4 +1939,5 @@ document.addEventListener('DOMContentLoaded', function() {
     window.initFabButton = initFabButton;
     window.renderFabButton = renderFabButton;
     window.fabState = fabState;
+    window.openCrearMenu = openCrearMenu;
 });

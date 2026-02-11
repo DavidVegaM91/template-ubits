@@ -56,6 +56,7 @@ const FLOATING_MENU_SECTIONS = [
         subitems: [
             { id: 'planes', title: 'Planes', icon: 'far fa-calendar', url: '../../ubits-colaborador/tareas/planes.html' },
             { id: 'tareas', title: 'Tareas', icon: 'far fa-tasks', url: '../../ubits-colaborador/tareas/tareas.html' },
+            { id: 'plantillas', title: 'Plantillas', icon: 'far fa-rectangle-history', url: '../../ubits-colaborador/tareas/plantilla.html' },
             { id: 'seguimiento', title: 'Seguimiento', icon: 'far fa-chart-line', url: '../../ubits-colaborador/tareas/seguimiento.html' }
         ]
     },
@@ -256,7 +257,8 @@ function setActiveItemByCurrentPage() {
         'reportes.html': 'reportes',
         'encuestas.html': 'encuestas',
         'planes.html': 'planes',
-        'tareas.html': 'tareas'
+        'tareas.html': 'tareas',
+        'plantilla.html': 'plantillas'
     };
     
     const activeElementId = pageToElementMap[currentPage];

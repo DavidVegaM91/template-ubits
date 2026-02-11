@@ -79,6 +79,7 @@ const TOP_NAV_VARIANTS = {
         tabs: [
             { id: 'plans', label: 'Planes', icon: 'far fa-layer-group', url: '../../ubits-colaborador/tareas/planes.html' },
             { id: 'tasks', label: 'Tareas', icon: 'far fa-tasks', url: '../../ubits-colaborador/tareas/tareas.html' },
+            { id: 'plantillas', label: 'Plantillas', icon: 'far fa-rectangle-history', url: '../../ubits-colaborador/tareas/plantilla.html' },
             { id: 'seguimiento', label: 'Seguimiento', icon: 'far fa-chart-line', url: '../../ubits-colaborador/tareas/seguimiento.html' }
         ]
     },
@@ -304,6 +305,7 @@ const PAGE_TO_TAB = {
     // Tareas
     'planes.html': 'plans',
     'tareas.html': 'tasks',
+    'plantilla.html': 'plantillas',
     // Documentación
     'documentacion.html': 'section1',
     'guia-prompts.html': 'section2',

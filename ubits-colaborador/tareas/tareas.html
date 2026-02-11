@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="../../components/tab-bar.css">
     <link rel="stylesheet" href="../../components/floating-menu.css">
     <link rel="stylesheet" href="../../components/profile-menu.css">
+    <link rel="stylesheet" href="../../components/header-product.css">
     <link rel="stylesheet" href="../../components/tooltip.css">
     <link rel="stylesheet" href="../../components/tab.css">
     <link rel="stylesheet" href="../../components/button.css">
@@ -25,7 +26,7 @@
     <link rel="stylesheet" href="../../components/input.css">
     <link rel="stylesheet" href="../../components/alert.css">
 </head>
-<body data-theme="light">
+<body data-theme="light" class="page-tareas">
     <div class="dashboard-container">
         <div class="tooltip" id="tooltip"></div>
         
@@ -40,6 +41,10 @@
             <div class="content-area">
                 <!-- Content wrapper con secciones de widgets -->
                 <div class="content-sections">
+                    <!-- Sección header-product -->
+                    <div class="section-single">
+                        <div class="widget-header-product" id="header-product-container"></div>
+                    </div>
                     <!-- Sección vista de tareas -->
                     <div class="section-single">
                         <div class="widget-vista-tareas">
@@ -167,24 +172,6 @@
     <!-- Profile Menu Container -->
     <div id="profile-menu-container"></div>
 
-    <!-- FAB Button Container: implementación propia para Tareas (solo botón; el menú se crea dinámicamente) -->
-    <div id="fab-button-container">
-        <button
-            type="button"
-            class="flux-button-root flux-button tone-info tone-brand primary m flux-button-only-icon fab-button"
-            id="fab-button-main"
-            aria-label="Abrir menú rápido"
-            aria-haspopup="menu"
-            aria-expanded="false"
-            data-state="closed"
-        >
-            <div class="flux-button-content">
-                <span class="flux-button-icon"><i class="fa-solid fa-plus"></i></span>
-                <span>Crear</span>
-            </div>
-        </button>
-    </div>
-
     <!-- Drawer de crear plantilla -->
     <div id="create-template-drawer-overlay" class="template-drawer-overlay" style="display: none;">
         <div class="template-drawer-content" id="create-template-drawer">
@@ -212,6 +199,7 @@
     <script src="../../components/tab-bar.js"></script>
     <script src="../../components/floating-menu.js"></script>
     <script src="../../components/profile-menu.js"></script>
+    <script src="../../components/header-product.js"></script>
     <script src="../../script.js"></script>
     <script src="../../components/input.js"></script>
     <script src="../../components/alert.js"></script>
@@ -226,6 +214,23 @@
             loadTabBar('tab-bar-container');
             loadFloatingMenu('floating-menu-container');
             loadProfileMenu('profile-menu-container');
+
+            // Cargar header-product con variante solo botón primario
+            if (typeof loadHeaderProduct === 'function') {
+                loadHeaderProduct('header-product-container', {
+                    productName: 'Tareas',
+                    breadcrumbItems: [],
+                    primaryButton: {
+                        text: 'Crear',
+                        icon: 'fa-plus',
+                        onClick: function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            if (typeof window.openCrearMenu === 'function') window.openCrearMenu(e.currentTarget);
+                        }
+                    }
+                });
+            }
 
             // Activar el tab "Tareas" específicamente después de cargar el SubNav
             // NOTA: El reordenamiento de tabs, eliminación de logo e icono se maneja en sub-nav.js
@@ -281,125 +286,6 @@
                 // Drawers (necesarios para Crear plan / plantilla)
                 if (typeof renderTemplateDrawer === 'function') renderTemplateDrawer();
                 if (typeof renderPlanDrawer === 'function') renderPlanDrawer();
-
-                // FAB propio de Tareas (independiente de planes.js, menú creado/desechado dinámicamente)
-                (function initTareasFab() {
-                    var fabButton = document.getElementById('fab-button-main');
-                    var fabContainer = document.getElementById('fab-button-container');
-                    if (!fabButton || !fabContainer) return;
-
-                    var isOpen = false;
-                    var fabMenu = null;
-
-                    function buildMenu() {
-                        if (fabMenu) return fabMenu;
-                        var menu = document.createElement('div');
-                        menu.className = 'flux-dropdown-content fab-menu';
-                        menu.id = 'fab-menu-tareas';
-                        menu.setAttribute('role', 'menu');
-                        menu.setAttribute('data-side', 'top');
-                        menu.setAttribute('data-align', 'end');
-
-                        var labels = ['Un plan', 'Una tarea', 'Una plantilla', 'Con IA'];
-                        labels.forEach(function(label, index) {
-                            var item = document.createElement('button');
-                            item.className = 'flux-dropdown-item fab-menu-item';
-                            item.setAttribute('role', 'menuitem');
-                            item.dataset.action = String(index);
-                            if (index === 3) {
-                                item.innerHTML = '<i class="fa-sparkles fab-menu-item__icon"></i><span>' + label + '</span>';
-                            } else {
-                                item.innerHTML = '<span class="fab-menu-item__icon"></span><span>' + label + '</span>';
-                            }
-                            menu.appendChild(item);
-                        });
-
-                        fabContainer.appendChild(menu);
-                        fabMenu = menu;
-
-                        // Acciones del menú
-                        var itemPlan = fabMenu.querySelector('[data-action="0"]');
-                        var itemTarea = fabMenu.querySelector('[data-action="1"]');
-                        var itemPlantilla = fabMenu.querySelector('[data-action="2"]');
-                        var itemIA = fabMenu.querySelector('[data-action="3"]');
-
-                        if (itemPlan) {
-                            itemPlan.addEventListener('click', function(e) {
-                                e.stopPropagation();
-                                closeMenu();
-                                if (typeof window.openPlanDrawer === 'function') {
-                                    window.openPlanDrawer();
-                                }
-                            });
-                        }
-
-                        if (itemTarea) {
-                            itemTarea.addEventListener('click', function(e) {
-                                e.stopPropagation();
-                                closeMenu();
-                                console.log('Crear tarea (Tareas)');
-                            });
-                        }
-
-                        if (itemPlantilla) {
-                            itemPlantilla.addEventListener('click', function(e) {
-                                e.stopPropagation();
-                                closeMenu();
-                                if (typeof window.openTemplateDrawer === 'function') {
-                                    window.openTemplateDrawer();
-                                }
-                            });
-                        }
-
-                        if (itemIA) {
-                            itemIA.addEventListener('click', function(e) {
-                                e.stopPropagation();
-                                closeMenu();
-                                console.log('Crear con IA (Tareas)');
-                            });
-                        }
-
-                        return menu;
-                    }
-
-                    function openMenu() {
-                        if (isOpen) return;
-                        var menu = buildMenu();
-                        isOpen = true;
-                        menu.style.display = 'flex';
-                        fabButton.setAttribute('aria-expanded', 'true');
-                        fabButton.setAttribute('data-state', 'open');
-                    }
-
-                    function closeMenu() {
-                        if (!isOpen) return;
-                        isOpen = false;
-                        if (fabMenu && fabMenu.parentNode) {
-                            fabMenu.parentNode.removeChild(fabMenu);
-                        }
-                        fabMenu = null;
-                        fabButton.setAttribute('aria-expanded', 'false');
-                        fabButton.setAttribute('data-state', 'closed');
-                    }
-
-                    fabButton.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        if (isOpen) {
-                            closeMenu();
-                        } else {
-                            openMenu();
-                        }
-                    });
-
-                    // Cerrar al hacer clic fuera
-                    document.addEventListener('click', function(e) {
-                        if (!isOpen) return;
-                        if (!fabContainer.contains(e.target)) {
-                            closeMenu();
-                        }
-                    });
-                })();
             }, 500);
         });
     </script>

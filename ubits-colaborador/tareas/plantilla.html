@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Plantillas - UBITS Playground</title>
+
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../components/tab-bar.css">
+    <link rel="stylesheet" href="../../components/floating-menu.css">
+    <link rel="stylesheet" href="../../components/profile-menu.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/header-product.css">
+    <link rel="stylesheet" href="../../components/tooltip.css">
+    <link rel="stylesheet" href="./planes.css">
+    <link rel="stylesheet" href="./plantilla.css">
+</head>
+<body data-theme="light" class="page-plantillas">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        <div id="sidebar-container"></div>
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div class="content-area">
+                <div class="content-sections">
+                    <div class="section-single">
+                        <div class="widget-header-product" id="header-product-container"></div>
+                    </div>
+                    <div class="section-single">
+                        <div class="widget-plantillas-placeholder" style="padding: var(--padding-xl); background: var(--ubits-bg-1); border-radius: var(--border-radius-sm);">
+                            <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium);">Contenido de plantillas (página en blanco).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="tab-bar-container"></div>
+    <div id="floating-menu-container"></div>
+    <div id="profile-menu-container"></div>
+
+    <div id="create-template-drawer-overlay" class="template-drawer-overlay" style="display: none;">
+        <div class="template-drawer-content" id="create-template-drawer"></div>
+    </div>
+    <div id="create-plan-drawer-overlay" class="template-drawer-overlay plan-drawer-overlay" style="display: none;">
+        <div class="template-drawer-content plan-drawer-content" id="create-plan-drawer"></div>
+    </div>
+
+    <script src="../../components/tooltip.js"></script>
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/tab-bar.js"></script>
+    <script src="../../components/floating-menu.js"></script>
+    <script src="../../components/profile-menu.js"></script>
+    <script src="../../components/header-product.js"></script>
+    <script src="../../script.js"></script>
+    <script src="./tareas-base-unificada.js"></script>
+    <script src="./planes.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSidebar('sidebar-container', 'tareas');
+            loadSubNav('top-nav-container', 'tareas');
+            loadTabBar('tab-bar-container');
+            loadFloatingMenu('floating-menu-container');
+            loadProfileMenu('profile-menu-container');
+
+            if (typeof loadHeaderProduct === 'function') {
+                loadHeaderProduct('header-product-container', {
+                    productName: 'Plantillas',
+                    breadcrumbItems: [],
+                    primaryButton: {
+                        text: 'Crear',
+                        icon: 'fa-plus',
+                        onClick: function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            if (typeof window.openCrearMenu === 'function') window.openCrearMenu(e.currentTarget);
+                        }
+                    }
+                });
+            }
+
+            setTimeout(function() {
+                var tabs = document.querySelectorAll('.nav-tab, .hamburger-item');
+                tabs.forEach(function(item) { item.classList.remove('active'); });
+                var plantillasTab = document.querySelector('.nav-tab[data-tab="plantillas"]');
+                if (plantillasTab) plantillasTab.classList.add('active');
+                var plantillasHamburger = document.querySelector('.hamburger-item[data-tab="plantillas"]');
+                if (plantillasHamburger) plantillasHamburger.classList.add('active');
+
+                var tareasBtn = document.querySelector('.nav-button[data-section="tareas"]');
+                if (tareasBtn) {
+                    document.querySelectorAll('.nav-button').forEach(function(btn) { btn.classList.remove('active'); });
+                    tareasBtn.classList.add('active');
+                }
+
+                var modulosTabBar = document.querySelector('.tab-bar-item[data-tab="modulos"]');
+                if (modulosTabBar) {
+                    document.querySelectorAll('.tab-bar-item').forEach(function(item) { item.classList.remove('active'); });
+                    modulosTabBar.classList.add('active');
+                }
+
+                if (typeof setActiveAccordionLink === 'function') setActiveAccordionLink('plantillas');
+            }, 200);
+        });
+    </script>
+</body>
+</html>

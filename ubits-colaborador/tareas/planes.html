@@ -65,9 +65,6 @@
     <!-- Profile Menu Container -->
     <div id="profile-menu-container"></div>
 
-    <!-- FAB Button Container -->
-    <div id="fab-button-container"></div>
-
     <!-- Drawer de crear plantilla -->
     <div id="create-template-drawer-overlay" class="template-drawer-overlay" style="display: none;">
         <div class="template-drawer-content" id="create-template-drawer">
@@ -103,11 +100,20 @@
             loadFloatingMenu('floating-menu-container');
             loadProfileMenu('profile-menu-container');
             
-            // Cargar header-product (sin botones adicionales para la interfaz de planes)
+            // Cargar header-product con variante solo botón primario
             if (typeof loadHeaderProduct === 'function') {
                 loadHeaderProduct('header-product-container', {
                     productName: 'Planes',
-                    breadcrumbItems: []
+                    breadcrumbItems: [],
+                    primaryButton: {
+                        text: 'Crear',
+                        icon: 'fa-plus',
+                        onClick: function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            if (typeof window.openCrearMenu === 'function') window.openCrearMenu(e.currentTarget);
+                        }
+                    }
                 });
             }
             

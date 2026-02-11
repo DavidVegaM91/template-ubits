@@ -1,0 +1,14 @@
+/* ========================================
+   ESTILOS ESPECÍFICOS PARA plantilla
+   Página en blanco del módulo Plantillas (subnav Tareas).
+   ======================================== */
+
+.section-single > .widget-header-product {
+    background-color: transparent !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+}
+
+.page-plantillas .ubits-header-product__product-info {
+    display: none !important;
+}

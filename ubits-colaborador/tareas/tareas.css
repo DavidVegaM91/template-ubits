@@ -71,6 +71,31 @@
     flex: 1;
 }
 
+/* En página tareas: quitar border-radius del content-area para que no enmascare el header product */
+.page-tareas .content-area {
+    border-radius: 0 !important;
+}
+
+/* Widget header-product: sin fondo, padding ni borde redondeado (evitar máscara rara) */
+.section-single > .widget-header-product {
+    background-color: transparent !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+}
+/* Sección del header: que no se encoja ni se recorte (flex-shrink: 0; overflow: visible) */
+.page-tareas .content-sections > .section-single:first-child {
+    flex-shrink: 0 !important;
+    min-height: 0; /* no forzar altura mínima para que use la natural del contenido */
+    overflow: visible !important;
+}
+.page-tareas .content-sections > .section-single:first-child .widget-header-product {
+    overflow: visible !important;
+}
+/* Solo botón primario: ocultar título de producto */
+.page-tareas .ubits-header-product__product-info {
+    display: none !important;
+}
+
 .section-dual > div {
     flex: 1;
 }

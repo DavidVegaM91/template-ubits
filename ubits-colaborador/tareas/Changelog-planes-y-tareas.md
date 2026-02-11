@@ -41,9 +41,21 @@ Orden sugerido: primero datos y usuario, luego estructura de páginas, después 
    - **plan-detail.html:** `getPlanDetalle(planId)` y `getTareasPorPlan(planId)`; misma estructura de plan.  
    - **seguimiento.html / seguimiento-leader.html:** `getActividadesSeguimiento()` y `getActividadesParaLider(nombre)`; solo actividades grupales (tareas y planes de área); sin `seguimiento-data.js`.
 
+7. [x] **Seguimiento: filtro por período con fecha real**  
+   En `seguimiento.js` el filtro "últimos 7 días", "último año", etc. usa la **fecha actual** (`new Date()`) para que los rangos y totales sean coherentes con la BD unificada.
+
+8. [x] **Seguimiento – tab Planes con datos**  
+   En `tareas-base-unificada.js` se agregó la generación de actividades `tipo: 'plan'` para seguimiento: se agrupan las tareas grupales por nombre de plan y se crea una fila de plan por grupo. Incluido en `getActividadesParaLider()` cuando algún asignado es reporte directo del líder.
+
+9. [x] **tareas.html: vencidas alineadas con seguimiento (~6%)**  
+   En `getTareasVistaTareas()` las vencidas se calculan con **`status === 'Vencido'`** (igual que en seguimiento), no por `endDate < hoy && !done`.
+
+10. [x] **Indicadores de seguimiento con formato numérico**  
+    En `seguimiento.html` y `seguimiento-leader.html` los indicadores (Total, Finalizadas, Iniciadas, Vencidas) y el contador del header usan `formatIndicatorNumber()` en `seguimiento.js`: **< 10.000** → 1,556; **≥ 10.000** → 10,5 K; **≥ 1.000.000** → 2,7 M.
+
 ### 2. Estructura de páginas
 
-3. [ ] **Header product en planes y tareas**  
+3. [x] **Header product en planes y tareas**  
    Implementar el componente **header product** oficial en `planes.html` y `tareas.html`.
 
 4. [ ] **Plan detail: tres secciones reales**  
@@ -68,7 +80,7 @@ Orden sugerido: primero datos y usuario, luego estructura de páginas, después 
 
 ### 4. Lógica e integración
 
-10. [ ] **Botón del header product: opciones y drawers**  
+10. [x] **Botón del header product: opciones y drawers**  
     Pasar la lógica del botón que actualmente despliega opciones (y cada opción abre el drawer flotante de creación correspondiente) en `planes.html` al **botón del header product**, de modo que ese botón sea el que despliegue las opciones y abra el drawer de crear plan o crear plantilla según corresponda.
 
 11. [ ] **En seguimiento: nombres clicables que abren detalle**  
@@ -76,20 +88,4 @@ Orden sugerido: primero datos y usuario, luego estructura de páginas, después 
 
 ---
 
-## Hechos
-
-- **Seguimiento: filtro por período con fecha real**  
-  En `seguimiento.js` el filtro "últimos 7 días", "último año", etc. usaba una fecha fija (22 mar 2026), por eso los totales no cuadraban con la BD unificada (20 tareas grupales por persona y mes). Se cambió a usar la **fecha actual** (`new Date()`) para que los rangos y totales sean coherentes con los datos.
-
-- **Seguimiento – tab Planes con datos**  
-  La BD unificada solo enviaba actividades `tipo: 'tarea'` a seguimiento, por eso el tab **Planes** no mostraba nada. En `tareas-base-unificada.js` se agregó la generación de actividades `tipo: 'plan'`: se agrupan las tareas grupales por nombre de plan (`Plan Área MM/YYYY`) y se crea una fila de plan por grupo (asignados, avance, estado, fechas min/max). Esos planes también se incluyen en `getActividadesParaLider()` cuando algún asignado es reporte directo del líder.
-
-- **tareas.html: vencidas alineadas con seguimiento (~6%)**  
-  En la vista tareas, la sección "vencidas" se calculaba como `endDate < hoy && !done`, por lo que aparecían cientos (cualquier tarea con fecha pasada y no finalizada). En seguimiento sí se usa el estado (Finalizada / Iniciada / Vencida ~5–15%). En `getTareasVistaTareas()` se cambió a usar **`status === 'Vencido'`** para las vencidas, de modo que la lista coincida con la ficha de seguimiento.
-
-- **BD unificada completa**  
-  Una sola fuente (`tareas-base-unificada.js`), estructura Fiqsha Decoraciones S.A.S. integrada, tareas con planId/description y 95% en plan / 5% sueltas, planes con estado por distribución (70–85% Finalizados, 10–20% Iniciados, 5–15% Vencidos) independiente del avance de tareas, eliminación de `seguimiento-data.js` y `tareas-db-analisis.md`, y vistas sin datos de fallback.
-
----
-
-*Última actualización: Changelog sección 1 actualizada para reflejar la BD unificada completa — 11 pendientes.*
+*Última actualización: una sola lista sin repeticiones; completados [x] en su sección — 11 pendientes.*
