@@ -15,29 +15,31 @@ Orden sugerido: primero datos y usuario, luego estructura de páginas, después 
 
 ### 1. Datos y usuario
 
-1. [x] **Base de datos (seguimiento-data.js)**  
-   Agregar a **María Alejandra Sánchez Pardo** como el usuario que abre la plataforma: mismo avatar que usa el componente sidebar. Hacerla **líder de un área** (reemplazar a uno de los líderes actuales; idealmente un área de operaciones).
+1. [x] **Base de datos unificada única**  
+   **`tareas-base-unificada.js`** es la única fuente de datos. Se eliminaron `seguimiento-data.js` y `tareas-db-analisis.md`. Las páginas `tareas.html`, `planes.html`, `plan-detail.html`, `seguimiento.html` y `seguimiento-leader.html` solo cargan esta BD; no hay datos de fallback en `tareas.js`, `planes.js` ni `plan-detail.js`.
 
-2. [ ] **Tareas y planes propios de María Alejandra**  
-   Objetivo: datos realistas de tareas y planes **individuales** de María Alejandra que aparezcan en `planes.html` y `tareas.html` pero **no** en seguimiento. Implementación subdividida en:
+2. [x] **Estructura de empresa integrada**  
+   La BD incluye la empresa de ejemplo **Fiqsha Decoraciones S.A.S.**: 8 áreas, 1 gerente, 7 jefes, 51 empleados (id, nombre, cargo, área, jefe, avatar, username). Expone `getReportesDirectos(nombreLider)`, `getEmpleadosEjemplo()`, `getJefesEjemplo()`, `getAreasEjemplo()`, `getEmpresaEjemplo()` para uso en seguimiento y filtros.
 
-   - 2.1 [ ] **Fuente de datos y usuario actual**  
-     Usar la base unificada (`tareas-base-unificada.js`). Asegurar que el usuario actual sea **María Alejandra** con correo y avatar alineados con la base (ej. `masanchez@fiqsha.demo`, avatar del sidebar). Si `tareas.js` tiene datos propios de tareas, reemplazarlos por la fuente unificada.
+3. [x] **Usuario actual**  
+   **María Alejandra Sánchez Pardo** (Jefe de Logística, id J005) como usuario que abre la plataforma: correo `masanchez@fiqsha.demo`, avatar alineado con el sidebar. `getUsuarioActual()` y el filtrado por asignado/participación usan este usuario.
 
-   - 2.2 [ ] **Tareas sueltas individuales (~30 por mes)**  
-     Poblar en la BD unificada tareas sueltas (sin plan), creadas y asignadas a María Alejandra, en volumen ~30 por mes y rango 1 ene 2025 – 30 jun 2026. Formato compatible con `tareas.html` (vencidas + porDia). Criterio vencidas: `endDate < hoy && !done`. Estas tareas **no** deben incluirse en las actividades de seguimiento.
+4. [x] **Tareas: modelo y distribución**  
+   - 30 tareas por usuario por mes: 10 individuales (no en seguimiento), 20 grupales (sí en seguimiento).  
+   - Campos: id, name, done, status, endDate, priority, assignee_email, etiqueta, created_by, created_by_avatar_url, role, **planId**, **planNombre**, **description** (opcional).  
+   - 95% con plan, 5% sueltas (solo las ve el creador en su lista).  
+   - Estados por seed: Finalizadas 70–85%, Iniciadas 10–20%, Vencidas 5–15% (`repartoEstados`). Rango de fechas: constantes INICIO_RANGO – FIN_RANGO (ej. 1 ene 2025 – 28 feb 2026).
 
-   - 2.3 [ ] **Planes individuales (~3 por mes)**  
-     Poblar en la BD unificada planes donde **solo** está María Alejandra como participante (~3 por mes, mismo rango de fechas). Cada plan con sus tareas (plan = agrupación de tareas). No deben aparecer en seguimiento; **sí** en `planes.html` y en detalle al abrir un plan.
+5. [x] **Planes: modelo único y distribución de estado**  
+   - Una sola estructura de plan (lista y detalle usan el mismo objeto): id, name, description, end_date, status, tasksDone, tasksTotal, finished, hasMembers, created_by, fechaCreacion, progress.  
+   - Estado del plan **asignado por distribución** (no derivado del avance de tareas): Finalizados 70–85%, Iniciados 10–20%, Vencidos 5–15% (`repartoEstadoPlan` por seed). El progreso (tasksDone/tasksTotal) sigue siendo el real; el estado refleja que el plan se puede finalizar manualmente y mover tareas pendientes a otro plan.  
+   - Planes individuales (~3 por mes para María) + planes grupales (por área/mes); ambos con la misma distribución de estados.
 
-   - 2.4 [ ] **Vista tareas.html: conectar y filtrar por asignado**  
-     Conectar `tareas.html` a la base unificada para que muestre **solo tareas asignadas a María Alejandra**. En `tareas.js`, sustituir la fuente actual (ej. `tareasEjemplo`) por el getter de la BD (ej. `getTareasVistaTareas()`). Usar fecha actual real para vencidas y calendario.
-
-   - 2.5 [ ] **Vista planes.html: conectar y filtrar por participación**  
-     Conectar `planes.html` a la base unificada para que muestre **solo planes donde participa María Alejandra** (individuales + grupales). En `planes.js`, sustituir la fuente actual (ej. `planesEjemplo`) por el getter correspondiente (ej. `getPlanesVistaPlanes()`).
-
-   - 2.6 [ ] **Seguimiento: excluir actividades individuales**  
-     Asegurar que en `seguimiento.html` y `seguimiento-leader.html` la lista de actividades **excluya** planes y tareas “solo para sí mismo” (mostrar solo actividades **grupales**). La BD unificada debe exponer esto en `getActividadesSeguimiento()` (o la fuente que use seguimiento).
+6. [x] **Vistas conectadas solo a la BD unificada**  
+   - **tareas.html:** `getTareasVistaTareas()` (vencidas + porDia); solo tareas asignadas a María Alejandra; fecha real para vencidas y calendario.  
+   - **planes.html:** `getPlanesVistaPlanes()`; solo planes donde participa María (individuales + grupales).  
+   - **plan-detail.html:** `getPlanDetalle(planId)` y `getTareasPorPlan(planId)`; misma estructura de plan.  
+   - **seguimiento.html / seguimiento-leader.html:** `getActividadesSeguimiento()` y `getActividadesParaLider(nombre)`; solo actividades grupales (tareas y planes de área); sin `seguimiento-data.js`.
 
 ### 2. Estructura de páginas
 
@@ -76,8 +78,18 @@ Orden sugerido: primero datos y usuario, luego estructura de páginas, después 
 
 ## Hechos
 
-*(Se moverán aquí los ítems ya implementados)*
+- **Seguimiento: filtro por período con fecha real**  
+  En `seguimiento.js` el filtro "últimos 7 días", "último año", etc. usaba una fecha fija (22 mar 2026), por eso los totales no cuadraban con la BD unificada (20 tareas grupales por persona y mes). Se cambió a usar la **fecha actual** (`new Date()`) para que los rangos y totales sean coherentes con los datos.
+
+- **Seguimiento – tab Planes con datos**  
+  La BD unificada solo enviaba actividades `tipo: 'tarea'` a seguimiento, por eso el tab **Planes** no mostraba nada. En `tareas-base-unificada.js` se agregó la generación de actividades `tipo: 'plan'`: se agrupan las tareas grupales por nombre de plan (`Plan Área MM/YYYY`) y se crea una fila de plan por grupo (asignados, avance, estado, fechas min/max). Esos planes también se incluyen en `getActividadesParaLider()` cuando algún asignado es reporte directo del líder.
+
+- **tareas.html: vencidas alineadas con seguimiento (~6%)**  
+  En la vista tareas, la sección "vencidas" se calculaba como `endDate < hoy && !done`, por lo que aparecían cientos (cualquier tarea con fecha pasada y no finalizada). En seguimiento sí se usa el estado (Finalizada / Iniciada / Vencida ~5–15%). En `getTareasVistaTareas()` se cambió a usar **`status === 'Vencido'`** para las vencidas, de modo que la lista coincida con la ficha de seguimiento.
+
+- **BD unificada completa**  
+  Una sola fuente (`tareas-base-unificada.js`), estructura Fiqsha Decoraciones S.A.S. integrada, tareas con planId/description y 95% en plan / 5% sueltas, planes con estado por distribución (70–85% Finalizados, 10–20% Iniciados, 5–15% Vencidos) independiente del avance de tareas, eliminación de `seguimiento-data.js` y `tareas-db-analisis.md`, y vistas sin datos de fallback.
 
 ---
 
-*Última actualización: agregados drawer full-screen para detalle del plan e integración en seguimiento (nombres clicables) — 11 pendientes.*
+*Última actualización: Changelog sección 1 actualizada para reflejar la BD unificada completa — 11 pendientes.*

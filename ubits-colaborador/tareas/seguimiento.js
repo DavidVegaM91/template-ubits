@@ -1,7 +1,7 @@
 /* ========================================
    SEGUIMIENTO - Página de seguimiento
-   Empresa: Decoraciones Premium S.A.S.
-   Base de datos: seguimiento-data.js
+   Empresa: Fiqsha Decoraciones S.A.S.
+   Base de datos: tareas-base-unificada.js (TAREAS_PLANES_DB) — única fuente
    ======================================== */
 
 (function() {
@@ -48,7 +48,7 @@
         }
     }
 
-    // Los datos se cargan desde seguimiento-data.js (SEGUIMIENTO_DATABASE)
+    // Los datos se cargan desde TAREAS_PLANES_DB (tareas-base-unificada.js)
     // 3.2.2 Columnas disponibles en tab Tareas (selector con checkboxes 3.2.1)
     const COLUMN_IDS_TAREAS = ['id', 'nombre', 'asignado', 'creador', 'area', 'estado', 'prioridad', 'plan', 'fechaCreacion', 'fechaFinalizacion', 'comentarios'];
     // 3.2.3 Por defecto mostrar: Nombre, Asignado, Creador, Estado, Prioridad, Fecha de vencimiento
@@ -66,6 +66,20 @@
         d.setFullYear(d.getFullYear() + 3);
         d.setHours(23, 59, 59, 999);
         return d;
+    }
+
+    // Formato de números para indicadores: < 10k con comas (1,556); >= 10k en K (10,5 K); >= 1M en M (2,7 M)
+    function formatIndicatorNumber(n) {
+        if (n == null || typeof n !== 'number' || isNaN(n)) return '0';
+        if (n >= 1000000) {
+            var val = n / 1000000;
+            return (val % 1 === 0 ? val : val.toFixed(1).replace('.', ',')) + ' M';
+        }
+        if (n >= 10000) {
+            var val = n / 1000;
+            return (val % 1 === 0 ? val : val.toFixed(1).replace('.', ',')) + ' K';
+        }
+        return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }
 
     // Estado global
@@ -157,37 +171,16 @@
         menu.style.top = Math.max(padding, Math.min(top, viewportHeight - menuHeight - padding)) + 'px';
     }
 
-    // Generar datos desde la base de datos realista (seguimiento-data.js)
-    // Empresa: Decoraciones Premium S.A.S.
-    // Si SEGUIMIENTO_SCOPE === 'leader' y SEGUIMIENTO_CURRENT_LEADER está definido, solo actividades de reportes directos (TASK_VIEW_SCOPE_LEADER).
+    // Generar datos: única fuente TAREAS_PLANES_DB (tareas-base-unificada.js).
     function generateData() {
-        if (typeof SEGUIMIENTO_DATABASE === 'undefined') return [];
-        if (typeof SEGUIMIENTO_SCOPE !== 'undefined' && SEGUIMIENTO_SCOPE === 'leader' && typeof SEGUIMIENTO_CURRENT_LEADER !== 'undefined' && SEGUIMIENTO_DATABASE.getActividadesParaLider) {
-            return SEGUIMIENTO_DATABASE.getActividadesParaLider(SEGUIMIENTO_CURRENT_LEADER);
+        if (typeof TAREAS_PLANES_DB === 'undefined') {
+            console.warn('tareas-base-unificada.js no cargado.');
+            return [];
         }
-        if (SEGUIMIENTO_DATABASE.generarActividades) {
-            return SEGUIMIENTO_DATABASE.generarActividades();
+        if (typeof SEGUIMIENTO_SCOPE !== 'undefined' && SEGUIMIENTO_SCOPE === 'leader' && typeof SEGUIMIENTO_CURRENT_LEADER !== 'undefined') {
+            return TAREAS_PLANES_DB.getActividadesParaLider(SEGUIMIENTO_CURRENT_LEADER);
         }
-        
-        // Fallback si no se carga el archivo de datos
-        console.warn('seguimiento-data.js no cargado. Usando datos de ejemplo mínimos.');
-            return [{
-                id: 10001,
-                tipo: 'tarea',
-                nombre: 'Tarea de ejemplo',
-                plan: 'Plan de ejemplo',
-                asignado: { nombre: 'Usuario Ejemplo', avatar: null },
-                idColaborador: '1011000001',
-                area: 'Administración',
-                lider: 'Gerente Administrativa',
-                estado: 'Iniciada',
-                prioridad: 'Media',
-                avance: 50,
-                fechaCreacion: '1 ene 2025',
-                fechaFinalizacion: '28 feb 2025',
-                creador: 'Gerencia General',
-                comentarios: 0
-            }];
+        return TAREAS_PLANES_DB.getActividadesSeguimiento();
     }
 
     // Obtener IDs de columnas y visibilidad por defecto según tab activo
@@ -435,19 +428,17 @@
 
         // Filtro por período (últimos X días desde hoy) - solo si no hay filtro personalizado
         if (currentFilters.periodo && !currentFilters.fechaCreacionDesde && !currentFilters.fechaCreacionHasta) {
-            const hoy = new Date(2026, 2, 22); // Domingo 22 de marzo de 2026
+            const hoy = new Date(); // Fecha real para que los totales coincidan con la BD
             hoy.setHours(23, 59, 59, 999); // Fin del día de hoy
             
-            // Calcular fecha límite: para "últimos X días" desde el 22 de marzo (incluyendo hoy),
-            // debemos incluir desde (X-1) días atrás desde hoy
+            // Calcular fecha límite: "últimos X días" incluyendo hoy = desde (X-1) días atrás
             const periodoDias = parseInt(currentFilters.periodo);
             if (isNaN(periodoDias)) return; // Si no es un número válido, no aplicar filtro
             
             const diasAtras = periodoDias - 1; // Para incluir el día de hoy: restar (periodoDias - 1) días
             
-            // Crear fecha límite: usar milisegundos de forma precisa
-            // 22 de marzo 2026, 00:00:00 - diasAtras días
-            const hoyInicio = new Date(2026, 2, 22, 0, 0, 0, 0);
+            const hoyInicio = new Date(hoy);
+            hoyInicio.setHours(0, 0, 0, 0);
             const milisegundosPorDia = 24 * 60 * 60 * 1000;
             const fechaLimiteTimestamp = hoyInicio.getTime() - (diasAtras * milisegundosPorDia);
             const fechaLimite = new Date(fechaLimiteTimestamp);
@@ -606,12 +597,13 @@
         }
 
         if (currentFilters.periodo && !currentFilters.fechaCreacionDesde && !currentFilters.fechaCreacionHasta) {
-            const hoy = new Date(2026, 2, 22);
+            const hoy = new Date();
             hoy.setHours(23, 59, 59, 999);
             const periodoDias = parseInt(currentFilters.periodo);
             if (!isNaN(periodoDias)) {
                 const diasAtras = periodoDias - 1;
-                const hoyInicio = new Date(2026, 2, 22, 0, 0, 0, 0);
+                const hoyInicio = new Date(hoy);
+                hoyInicio.setHours(0, 0, 0, 0);
                 const milisegundosPorDia = 24 * 60 * 60 * 1000;
                 const fechaLimite = new Date(hoyInicio.getTime() - (diasAtras * milisegundosPorDia));
                 data = data.filter(row => {
@@ -1028,7 +1020,7 @@
         if (!el) return;
         const data = getDisplayData();
         const totalTab = getDataForCurrentTab().length;
-        el.textContent = `${data.length}/${totalTab}`;
+        el.textContent = `${formatIndicatorNumber(data.length)}/${formatIndicatorNumber(totalTab)}`;
     }
 
     // Actualizar indicadores de seguimiento (según tab: Tareas o Planes)
@@ -1049,14 +1041,14 @@
         const cardTotal = document.querySelector('#seguimiento-indicadores .seguimiento-indicador-card:nth-child(1)');
         if (cardTotal) {
             const numberEl = cardTotal.querySelector('.indicador-number');
-            if (numberEl) numberEl.textContent = totalItems;
+            if (numberEl) numberEl.textContent = formatIndicatorNumber(totalItems);
         }
         const cardFinalizadas = document.querySelector('#seguimiento-indicadores .seguimiento-indicador-card:nth-child(2)');
         if (cardFinalizadas) {
             const numberEl = cardFinalizadas.querySelector('.indicador-number');
             const percentageEl = cardFinalizadas.querySelector('.indicador-percentage');
             const labelEl = cardFinalizadas.querySelector('.indicador-label');
-            if (numberEl) numberEl.textContent = finalizadas;
+            if (numberEl) numberEl.textContent = formatIndicatorNumber(finalizadas);
             if (percentageEl) percentageEl.textContent = `${porcentajeFinalizadas}%`;
             if (labelEl) labelEl.textContent = labelFinalizadas;
         }
@@ -1065,7 +1057,7 @@
             const numberEl = cardIniciadas.querySelector('.indicador-number');
             const percentageEl = cardIniciadas.querySelector('.indicador-percentage');
             const labelEl = cardIniciadas.querySelector('.indicador-label');
-            if (numberEl) numberEl.textContent = iniciadas;
+            if (numberEl) numberEl.textContent = formatIndicatorNumber(iniciadas);
             if (percentageEl) percentageEl.textContent = `${porcentajeIniciadas}%`;
             if (labelEl) labelEl.textContent = labelIniciadas;
         }
@@ -1074,7 +1066,7 @@
             const numberEl = cardVencidas.querySelector('.indicador-number');
             const percentageEl = cardVencidas.querySelector('.indicador-percentage');
             const labelEl = cardVencidas.querySelector('.indicador-label');
-            if (numberEl) numberEl.textContent = vencidas;
+            if (numberEl) numberEl.textContent = formatIndicatorNumber(vencidas);
             if (percentageEl) percentageEl.textContent = `${porcentajeVencidas}%`;
             if (labelEl) labelEl.textContent = labelVencidas;
         }

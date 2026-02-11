@@ -51,49 +51,24 @@ let planDrawerState = {
 
 // ========================================
 //   INTERFAZ DE PLANES - Basado en PlanCard.tsx
+//   Datos: solo tareas-base-unificada.js (TAREAS_PLANES_DB).
 // ========================================
-
-// Planes de ejemplo (simular API) - Múltiples planes como en la imagen de referencia
-const planesEjemplo = [
-    // En curso - Iniciados (19 total)
-    { id: '1', name: 'Plan dayli', end_date: null, status: 'Activo', tasksDone: 0, tasksTotal: 2, finished: false, hasMembers: true },
-    { id: '2', name: 'Plan dayli', end_date: null, status: 'Activo', tasksDone: 0, tasksTotal: 2, finished: false, hasMembers: true },
-    { id: '3', name: 'Plan dayli', end_date: null, status: 'Activo', tasksDone: 0, tasksTotal: 2, finished: false, hasMembers: true },
-    { id: '4', name: 'Proyecto lanzamiento de una evaluación', end_date: '2026-01-31', status: 'Vencido', tasksDone: 1, tasksTotal: 6, finished: false, hasMembers: true },
-    { id: '5', name: 'Onboarding externos flota - Ciclo 1', end_date: '2026-01-31', status: 'Vencido', tasksDone: 0, tasksTotal: 10, finished: false, hasMembers: true },
-    { id: '6', name: 'Checklist operativo ciclo 1 - enero', end_date: '2026-01-31', status: 'Vencido', tasksDone: 1, tasksTotal: 11, finished: false, hasMembers: true },
-    { id: '7', name: 'Plan de capacitación Q1', end_date: '2026-03-15', status: 'Activo', tasksDone: 2, tasksTotal: 8, finished: false, hasMembers: true },
-    { id: '8', name: 'Plan de onboarding 2026', end_date: '2026-02-28', status: 'Activo', tasksDone: 3, tasksTotal: 5, finished: false, hasMembers: true },
-    { id: '9', name: 'Evaluación de desempeño - Ciclo 1', end_date: '2026-02-15', status: 'Activo', tasksDone: 0, tasksTotal: 4, finished: false, hasMembers: true },
-    { id: '10', name: 'Plan de desarrollo profesional', end_date: null, status: 'Activo', tasksDone: 1, tasksTotal: 6, finished: false, hasMembers: true },
-    { id: '11', name: 'Seguimiento de metas trimestrales', end_date: '2026-03-31', status: 'Activo', tasksDone: 5, tasksTotal: 12, finished: false, hasMembers: true },
-    { id: '12', name: 'Formación en liderazgo', end_date: '2026-04-15', status: 'Activo', tasksDone: 0, tasksTotal: 3, finished: false, hasMembers: true },
-    { id: '13', name: 'Plan de integración equipo nuevo', end_date: null, status: 'Activo', tasksDone: 2, tasksTotal: 7, finished: false, hasMembers: true },
-    { id: '14', name: 'Certificación de competencias', end_date: '2026-02-28', status: 'Activo', tasksDone: 4, tasksTotal: 8, finished: false, hasMembers: true },
-    { id: '15', name: 'Plan de mejora continua', end_date: '2026-05-01', status: 'Activo', tasksDone: 1, tasksTotal: 5, finished: false, hasMembers: true },
-    { id: '16', name: 'Evaluación 360 - Ciclo anual', end_date: null, status: 'Activo', tasksDone: 0, tasksTotal: 10, finished: false, hasMembers: true },
-    { id: '17', name: 'Plan de bienestar laboral', end_date: '2026-06-30', status: 'Activo', tasksDone: 3, tasksTotal: 6, finished: false, hasMembers: true },
-    { id: '18', name: 'Capacitación en seguridad', end_date: '2026-02-15', status: 'Activo', tasksDone: 1, tasksTotal: 4, finished: false, hasMembers: true },
-    { id: '19', name: 'Plan de mentoría Q1', end_date: null, status: 'Activo', tasksDone: 0, tasksTotal: 3, finished: false, hasMembers: true },
-    { id: '20', name: 'Revisión de objetivos anuales', end_date: '2026-01-31', status: 'Vencido', tasksDone: 2, tasksTotal: 5, finished: false, hasMembers: true },
-    { id: '21', name: 'Inducción nuevos colaboradores', end_date: '2026-01-15', status: 'Activo', tasksDone: 4, tasksTotal: 6, finished: false, hasMembers: true },
-    { id: '22', name: 'Plan de formación técnica', end_date: '2025-12-31', status: 'Activo', tasksDone: 1, tasksTotal: 4, finished: false, hasMembers: true },
-    // Finalizados (4 total)
-    { id: '23', name: 'Checklist operativo ciclo 1', end_date: '2025-12-28', status: 'Finalizado', tasksDone: 10, tasksTotal: 10, finished: true, hasMembers: true },
-    { id: '24', name: 'Checklist operativo ciclo 1', end_date: null, status: 'Finalizado', tasksDone: 10, tasksTotal: 10, finished: true, hasMembers: true },
-    { id: '25', name: 'Plan de capacitación T&P', end_date: '2025-10-30', status: 'Finalizado', tasksDone: 4, tasksTotal: 4, finished: true, hasMembers: true },
-    { id: '26', name: 'Plan de Onboarding - Ventas', end_date: '2025-11-30', status: 'Finalizado', tasksDone: 4, tasksTotal: 4, finished: true, hasMembers: true }
-];
 
 let estadoPlanes = {
     plans: [],
     loading: false,
-    filterInProgress: 'grupal', // 'individual' | 'grupal' - por defecto grupal como en la imagen
-    filterFinished: 'grupal',
+    filterInProgress: 'individual', // por defecto individual (planes dinámicos de María)
+    filterFinished: 'individual',
     pageInProgress: 1,
     pageFinished: 1,
     plansPerPage: 6
 };
+
+// Planes solo desde BD unificada (tareas-base-unificada.js se carga antes que este script)
+(function () {
+    var db = typeof window !== 'undefined' ? window.TAREAS_PLANES_DB : (typeof TAREAS_PLANES_DB !== 'undefined' ? TAREAS_PLANES_DB : null);
+    estadoPlanes.plans = (db && typeof db.getPlanesVistaPlanes === 'function') ? db.getPlanesVistaPlanes() : [];
+})();
 
 function escapePlanHtml(str) {
     if (str == null || str === '') return '';
@@ -144,7 +119,9 @@ function renderPlansInterface() {
     const container = document.getElementById('plans-content');
     if (!container) return;
 
-    estadoPlanes.plans = planesEjemplo;
+    // SIEMPRE usar BD unificada para los plan-cards. Sin fallback a datos quemados.
+    var db = typeof window !== 'undefined' ? window.TAREAS_PLANES_DB : (typeof TAREAS_PLANES_DB !== 'undefined' ? TAREAS_PLANES_DB : null);
+    estadoPlanes.plans = (db && typeof db.getPlanesVistaPlanes === 'function') ? db.getPlanesVistaPlanes() : [];
     const allInProgress = estadoPlanes.plans.filter(p => !p.finished);
     const allFinished = estadoPlanes.plans.filter(p => p.finished);
     const inProgress = allInProgress.filter(p =>
@@ -337,7 +314,8 @@ function handlePlanClick(planId) {
 }
 
 function initPlansInterface() {
-    estadoPlanes.plans = planesEjemplo;
+    var db = typeof window !== 'undefined' ? window.TAREAS_PLANES_DB : (typeof TAREAS_PLANES_DB !== 'undefined' ? TAREAS_PLANES_DB : null);
+    estadoPlanes.plans = (db && typeof db.getPlanesVistaPlanes === 'function') ? db.getPlanesVistaPlanes() : [];
     renderPlansInterface();
 }
 

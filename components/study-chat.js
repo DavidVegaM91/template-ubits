@@ -2330,12 +2330,12 @@ function createStudyChatHTML(options = {}) {
                     </div>
                     <div class="ubits-study-chat__input-bottom">
                         <div class="ubits-study-chat__suggestions" id="ubits-study-chat-suggestions">${suggestionButtons}</div>
-                        <div class="ubits-study-chat__input-actions">
+                    <div class="ubits-study-chat__input-actions">
                             <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="ubits-study-chat-attach-btn" title="Adjuntar"><i class="far fa-paperclip"></i></button>
                             <button class="ubits-button ubits-button--primary ubits-button--sm ubits-button--icon-only" id="ubits-study-chat-send-btn" title="Enviar"><i class="far fa-paper-plane"></i></button>
-                        </div>
                     </div>
                 </div>
+            </div>
             </div>
             <p class="ubits-study-chat__disclaimer ubits-body-xs-regular">El chat de modo estudio IA puede cometer errores; verifica sus respuestas.</p>
         </div>
@@ -2959,10 +2959,10 @@ function addMessageWithMaterialChoiceButtons(label, topic) {
             }
             choicesEl.style.display = 'none';
             addResourceMessage(choice, topic, false);
-        });
-    });
-}
-
+                });
+            });
+        }
+        
 /** Temas sugeridos cuando se pide recurso sin tema (mismo orden que en el mensaje). */
 var SUGGESTED_TOPIC_BUTTONS = [
     { key: 'liderazgo', label: 'Liderazgo' },
@@ -3211,7 +3211,7 @@ function initStudyChat(containerId, options = {}) {
             }
             if (message && response) {
                 addMessage('user', message);
-                addMessage('ai', response, true);
+                    addMessage('ai', response, true);
             }
         });
     });
@@ -3663,7 +3663,7 @@ function initStudyChat(containerId, options = {}) {
             addResourceMessage(resourceMessage.type, resourceMessage.topic, false);
         } else {
             addMessage('ai', response, true, regenerateFunction);
-        }
+    }
     }
 
     notifyModoEstudioIaActionsVisibility();

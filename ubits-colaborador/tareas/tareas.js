@@ -1,263 +1,29 @@
 /* ========================================
    VISTA DE TAREAS - BASADO EN COMPONENTE REACT
-   Renderiza días del calendario dinámicamente con scroll infinito
+   Renderiza días del calendario dinámicamente con scroll infinito.
+   Datos: solo tareas-base-unificada.js (TAREAS_PLANES_DB).
    ======================================== */
 
-// Datos de ejemplo para tareas (simular API)
-const tareasEjemplo = {
-    vencidas: [
-        {
-            id: 1,
-            name: 'Responde la evaluación "360 Talent Experience"',
-            done: false,
-            status: 'Vencido',
-            endDate: '2025-12-31',
-            priority: 'media',
-            assignee_email: null,
-            etiqueta: null,
-            created_by: 'María Fernanda Ramírez Barrera',
-            created_by_avatar_url: 'https://i.pravatar.cc/64?img=1',
-            role: 'colaborador'
-        },
-        {
-            id: 101,
-            name: 'Completar informe trimestral',
-            done: false,
-            status: 'Vencido',
-            endDate: '2026-01-15',
-            priority: 'alta',
-            assignee_email: 'usuario1@ejemplo.com',
-            etiqueta: null,
-            created_by: 'María Fernanda Ramírez Barrera',
-            created_by_avatar_url: 'https://i.pravatar.cc/64?img=1',
-            role: 'colaborador'
-        },
-        {
-            id: 102,
-            name: 'Revisar documentación de onboarding',
-            done: false,
-            status: 'Vencido',
-            endDate: '2026-01-20',
-            priority: 'baja',
-            assignee_email: null,
-            etiqueta: null,
-            created_by: 'Usuario Dos',
-            created_by_avatar_url: 'https://i.pravatar.cc/64?img=2',
-            role: 'administrador'
-        }
-    ],
-    porDia: {
-        '2026-01-28': [
-            {
-                id: 10,
-                name: 'Reunión de seguimiento semanal',
-                done: false,
-                status: 'Activo',
-                endDate: '2026-01-28',
-                priority: 'alta',
-                assignee_email: 'usuario1@ejemplo.com',
-                etiqueta: null,
-                created_by: 'María Fernanda Ramírez Barrera',
-                created_by_avatar_url: 'https://i.pravatar.cc/64?img=1',
-                role: 'colaborador'
-            },
-            {
-                id: 11,
-                name: 'Actualizar reportes de ventas',
-                done: false,
-                status: 'Activo',
-                endDate: '2026-01-28',
-                priority: 'media',
-                assignee_email: null,
-                etiqueta: null,
-                created_by: 'Usuario Tres',
-                created_by_avatar_url: 'https://i.pravatar.cc/64?img=3',
-                role: 'colaborador'
-            }
-        ],
-        '2026-01-29': [
-            {
-                id: 2,
-                name: 'Nombre de la tarea',
-                done: false,
-                status: 'Activo',
-                endDate: '2026-01-29',
-                priority: 'alta',
-                assignee_email: null,
-                etiqueta: null,
-                created_by: 'María Fernanda Ramírez Barrera',
-                created_by_avatar_url: 'https://i.pravatar.cc/64?img=1',
-                role: 'colaborador'
-            },
-            {
-                id: 3,
-                name: 'Nombre de la tarea',
-                done: false,
-                status: 'Activo',
-                endDate: '2026-01-29',
-                priority: 'alta',
-                assignee_email: null,
-                etiqueta: null,
-                created_by: 'María Fernanda Ramírez Barrera',
-                created_by_avatar_url: 'https://i.pravatar.cc/64?img=1',
-                role: 'colaborador'
-            },
-            {
-                id: 4,
-                name: 'Segunda tarea en la app',
-                done: false,
-                status: 'Activo',
-                endDate: null,
-                priority: 'baja',
-                assignee_email: null,
-                etiqueta: null,
-                created_by: 'María Fernanda Ramírez Barrera',
-                created_by_avatar_url: 'https://i.pravatar.cc/64?img=1',
-                role: 'colaborador'
-            },
-            {
-                id: 5,
-                name: 'Preparar presentación para stakeholders',
-                done: false,
-                status: 'Activo',
-                endDate: '2026-01-29',
-                priority: 'alta',
-                assignee_email: 'usuario2@ejemplo.com',
-                etiqueta: null,
-                created_by: 'Usuario Dos',
-                created_by_avatar_url: 'https://i.pravatar.cc/64?img=2',
-                role: 'administrador'
-            },
-            {
-                id: 6,
-                name: 'Revisar pull requests pendientes',
-                done: true,
-                status: 'Finalizado',
-                endDate: '2026-01-29',
-                priority: 'media',
-                assignee_email: null,
-                etiqueta: null,
-                created_by: 'María Fernanda Ramírez Barrera',
-                created_by_avatar_url: 'https://i.pravatar.cc/64?img=1',
-                role: 'colaborador'
-            }
-        ],
-        '2026-01-30': [
-            {
-                id: 7,
-                name: 'Enviar reporte mensual',
-                done: false,
-                status: 'Activo',
-                endDate: '2026-01-30',
-                priority: 'alta',
-                assignee_email: null,
-                etiqueta: 'Revisión',
-                created_by: 'María Fernanda Ramírez Barrera',
-                created_by_avatar_url: 'https://i.pravatar.cc/64?img=1',
-                role: 'colaborador'
-            },
-            {
-                id: 8,
-                name: 'Capacitación equipo nuevo',
-                done: false,
-                status: 'Activo',
-                endDate: '2026-01-30',
-                priority: 'media',
-                assignee_email: 'usuario1@ejemplo.com',
-                etiqueta: null,
-                created_by: 'Usuario Tres',
-                created_by_avatar_url: 'https://i.pravatar.cc/64?img=3',
-                role: 'colaborador'
-            }
-        ],
-        '2026-01-31': [
-            {
-                id: 9,
-                name: 'Cierre de mes - conciliación',
-                done: false,
-                status: 'Activo',
-                endDate: '2026-01-31',
-                priority: 'alta',
-                assignee_email: null,
-                etiqueta: null,
-                created_by: 'María Fernanda Ramírez Barrera',
-                created_by_avatar_url: 'https://i.pravatar.cc/64?img=1',
-                role: 'colaborador'
-            },
-            {
-                id: 12,
-                name: 'Planificación sprint febrero',
-                done: false,
-                status: 'Activo',
-                endDate: '2026-01-31',
-                priority: 'media',
-                assignee_email: 'usuario2@ejemplo.com',
-                etiqueta: null,
-                created_by: 'Usuario Dos',
-                created_by_avatar_url: 'https://i.pravatar.cc/64?img=2',
-                role: 'administrador'
-            }
-        ],
-        '2026-02-01': [
-            {
-                id: 13,
-                name: 'Inicio proyecto Q1',
-                done: false,
-                status: 'Activo',
-                endDate: '2026-02-01',
-                priority: 'alta',
-                assignee_email: null,
-                etiqueta: null,
-                created_by: 'María Fernanda Ramírez Barrera',
-                created_by_avatar_url: 'https://i.pravatar.cc/64?img=1',
-                role: 'colaborador'
-            },
-            {
-                id: 14,
-                name: 'Reunión kick-off equipo',
-                done: false,
-                status: 'Activo',
-                endDate: '2026-02-01',
-                priority: 'media',
-                assignee_email: null,
-                etiqueta: null,
-                created_by: 'Usuario Tres',
-                created_by_avatar_url: 'https://i.pravatar.cc/64?img=3',
-                role: 'colaborador'
-            }
-        ],
-        '2026-02-07': [
-            { id: 15, name: 'Revisión avance semanal', done: false, status: 'Activo', endDate: '2026-02-07', priority: 'alta', assignee_email: null, etiqueta: null, created_by: 'María Fernanda Ramírez Barrera', created_by_avatar_url: 'https://i.pravatar.cc/64?img=1', role: 'colaborador' },
-            { id: 16, name: 'Enviar propuestas a clientes', done: false, status: 'Activo', endDate: '2026-02-07', priority: 'media', assignee_email: null, etiqueta: null, created_by: 'Usuario Dos', created_by_avatar_url: 'https://i.pravatar.cc/64?img=2', role: 'administrador' }
-        ],
-        '2026-02-08': [
-            { id: 17, name: 'Capacitación herramienta nueva', done: false, status: 'Activo', endDate: '2026-02-08', priority: 'media', assignee_email: 'usuario1@ejemplo.com', etiqueta: null, created_by: 'María Fernanda Ramírez Barrera', created_by_avatar_url: 'https://i.pravatar.cc/64?img=1', role: 'colaborador' },
-            { id: 18, name: 'Actualizar documentación técnica', done: false, status: 'Activo', endDate: '2026-02-08', priority: 'baja', assignee_email: null, etiqueta: null, created_by: 'Usuario Tres', created_by_avatar_url: 'https://i.pravatar.cc/64?img=3', role: 'colaborador' }
-        ],
-        '2026-02-09': [
-            { id: 19, name: 'Preparar demo para stakeholder', done: false, status: 'Activo', endDate: '2026-02-09', priority: 'alta', assignee_email: null, etiqueta: null, created_by: 'María Fernanda Ramírez Barrera', created_by_avatar_url: 'https://i.pravatar.cc/64?img=1', role: 'colaborador' },
-            { id: 20, name: 'Revisar métricas de performance', done: false, status: 'Activo', endDate: '2026-02-09', priority: 'media', assignee_email: 'usuario2@ejemplo.com', etiqueta: null, created_by: 'Usuario Dos', created_by_avatar_url: 'https://i.pravatar.cc/64?img=2', role: 'administrador' }
-        ],
-        '2026-02-10': [
-            { id: 21, name: 'Seguimiento feedback clientes', done: false, status: 'Activo', endDate: '2026-02-10', priority: 'media', assignee_email: null, etiqueta: null, created_by: 'María Fernanda Ramírez Barrera', created_by_avatar_url: 'https://i.pravatar.cc/64?img=1', role: 'colaborador' },
-            { id: 22, name: 'Planificar sprint siguiente', done: false, status: 'Activo', endDate: '2026-02-10', priority: 'alta', assignee_email: null, etiqueta: null, created_by: 'Usuario Tres', created_by_avatar_url: 'https://i.pravatar.cc/64?img=3', role: 'colaborador' }
-        ]
+// Datos de tareas: única fuente TAREAS_PLANES_DB.getTareasVistaTareas() (estructura { vencidas, porDia }).
+let tareasEjemplo = { vencidas: [], porDia: {} };
+
+// Planes y usuarios para dropdowns (mover tarea / asignar): desde BD unificada si existe.
+function getPlanesParaDropdown() {
+    if (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getPlanesVistaPlanes === 'function') {
+        const plans = TAREAS_PLANES_DB.getPlanesVistaPlanes();
+        return plans.map(p => ({ id: String(p.id), name: p.name || p.title || ('Plan ' + p.id) }));
     }
-};
-
-// Planes de ejemplo (simular API)
-const planesEjemplo = [
-    { id: '1', name: 'Plan 1' },
-    { id: '2', name: 'Plan 2' },
-    { id: '3', name: 'Plan 3' }
-];
-
-// Usuarios de ejemplo (simular API)
-const usuariosEjemplo = [
-    { id: '1', email: 'usuario1@ejemplo.com', full_name: 'Maria Fernanda Ramirez Barrera', avatar_url: 'https://i.pravatar.cc/64?img=1' },
-    { id: '2', email: 'usuario2@ejemplo.com', full_name: 'Usuario Dos', avatar_url: 'https://i.pravatar.cc/64?img=2' },
-    { id: '3', email: 'usuario3@ejemplo.com', full_name: 'Usuario Tres', avatar_url: 'https://i.pravatar.cc/64?img=3' }
-];
+    return [];
+}
+function getUsuariosParaDropdown() {
+    if (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getEmpleadosEjemplo === 'function') {
+        const emp = TAREAS_PLANES_DB.getEmpleadosEjemplo();
+        return emp.map((e, i) => ({ id: String(e.id || i), email: e.username || '', full_name: e.nombre || '', avatar_url: e.avatar || null }));
+    }
+    return [];
+}
+const planesEjemplo = getPlanesParaDropdown();
+const usuariosEjemplo = getUsuariosParaDropdown();
 
 // Estado de la aplicación
 let estadoTareas = {
@@ -304,19 +70,20 @@ const parseDateString = (dateString) => {
     return new Date(year, month - 1, day);
 };
 
-// Usar fecha fija para demo: todos los datos de ejemplo (incl. Feb 7-10) serán visibles
-const USE_DEMO_DATE = true;
-const DEMO_TODAY = '2026-01-28';
-
 const getTodayString = () => {
-    if (USE_DEMO_DATE) return DEMO_TODAY;
+    if (typeof TAREAS_PLANES_DB !== 'undefined' && TAREAS_PLANES_DB.getTodayString)
+        return TAREAS_PLANES_DB.getTodayString();
     const now = new Date();
     return createLocalDate(now.getFullYear(), now.getMonth(), now.getDate());
 };
 
-const today = getTodayString();
+let today = getTodayString();
 
-// Inicializar selectedDay con hoy
+// Datos solo desde BD unificada
+if (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getTareasVistaTareas === 'function') {
+    tareasEjemplo = TAREAS_PLANES_DB.getTareasVistaTareas();
+    today = getTodayString();
+}
 if (!estadoTareas.selectedDay) {
     estadoTareas.selectedDay = today;
 }
@@ -483,9 +250,10 @@ function renderCalendarHorizontal() {
 }
 
 // Renderizar tarea individual según diseño React
-function renderTarea(tarea, esVencida = false) {
+// esVencidaSection = true cuando se pinta dentro de tareas-overdue-container (solo vencidas)
+function renderTarea(tarea, esVencidaSection = false) {
     const fechaDisplay = tarea.endDate ? formatDateForDisplayDDMM(tarea.endDate) : null;
-    const esVencidaReal = esVencida && tarea.endDate && tarea.endDate < today;
+    const esVencidaReal = esVencidaSection || (tarea.endDate && tarea.endDate < today && !tarea.done);
     const estadoTag = esVencidaReal
         ? 'error'
         : (tarea.status === 'Activo'
@@ -553,19 +321,24 @@ function renderTarea(tarea, esVencida = false) {
     `;
 }
 
-// Renderizar sección de tareas vencidas
+// Renderizar sección de tareas vencidas (solo tareas vencidas, nunca finalizadas)
 function renderTareasVencidas() {
     const container = document.getElementById('overdue-content');
+    const section = document.getElementById('overdue-section');
     if (!container) return;
 
-    const tareasVencidas = tareasEjemplo.vencidas || [];
-    
-    if (tareasVencidas.length === 0) {
+    const soloVencidas = (tareasEjemplo.vencidas || []).filter(t => {
+        if (t.done === true || t.status === 'Finalizado') return false;
+        return t.status === 'Vencido';
+    });
+
+    if (section) section.style.display = soloVencidas.length === 0 ? 'none' : '';
+    if (soloVencidas.length === 0) {
         container.innerHTML = '';
         return;
     }
 
-    container.innerHTML = tareasVencidas.map(tarea => renderTarea(tarea, true)).join('');
+    container.innerHTML = soloVencidas.map(tarea => renderTarea(tarea, true)).join('');
 }
 
 // Renderizar sección de día

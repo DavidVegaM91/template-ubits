@@ -1,16 +1,17 @@
 /* ========================================
    VISTA DETALLE DEL PLAN
-   Basado en plan-detail.tsx
-   La tirilla de tareas es igual a la del tab de tareas
+   Basado en plan-detail.tsx. Datos: solo tareas-base-unificada.js (TAREAS_PLANES_DB).
    ======================================== */
 
-// Utilidades de fecha
+// Utilidades de fecha (usa fecha real de BD unificada si está cargada)
 const pad = (n) => String(n).padStart(2, '0');
 const getTodayString = () => {
+    if (typeof TAREAS_PLANES_DB !== 'undefined' && TAREAS_PLANES_DB.getTodayString)
+        return TAREAS_PLANES_DB.getTodayString();
     const now = new Date();
     return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
 };
-const today = getTodayString();
+let today = getTodayString();
 
 function formatDateForDisplayDDMM(dateString) {
     if (!dateString) return null;
@@ -24,45 +25,6 @@ function escapeHtml(str) {
     div.textContent = str;
     return div.innerHTML;
 }
-
-// Planes con descripción (para detalle) - IDs deben coincidir con planesEjemplo en planes.js
-const planesDetalle = {
-    '1': { name: 'Plan dayli', description: 'Plan de tareas diarias para seguimiento.', created_by: 'Maria Fernanda Ramirez Barrera', end_date: null, status: 'Activo' },
-    '2': { name: 'Plan dayli', description: 'Plan de tareas diarias.', created_by: 'Maria Fernanda Ramirez Barrera', end_date: null, status: 'Activo' },
-    '3': { name: 'Plan dayli', description: 'Plan de tareas diarias.', end_date: null, status: 'Activo' },
-    '4': { name: 'Proyecto lanzamiento de una evaluación', description: 'Proyecto para el lanzamiento de evaluaciones.', end_date: '2026-01-31', status: 'Vencido' },
-    '5': { name: 'Onboarding externos flota - Ciclo 1', description: 'Proceso de onboarding para externos.', end_date: '2026-01-31', status: 'Vencido' },
-    '6': { name: 'Checklist operativo ciclo 1 - enero', description: 'Checklist operativo del primer ciclo.', end_date: '2026-01-31', status: 'Vencido' },
-    '7': { name: 'Plan de capacitación Q1', description: 'Capacitaciones del primer trimestre.', end_date: '2026-03-15', status: 'Activo' },
-    '8': { name: 'Plan de onboarding 2026', description: 'Onboarding de nuevos colaboradores.', end_date: '2026-02-28', status: 'Activo' },
-    '23': { name: 'Checklist operativo ciclo 1', description: 'Checklist completado.', end_date: '2025-12-28', status: 'Finalizado' },
-    '24': { name: 'Checklist operativo ciclo 1', description: 'Checklist completado.', end_date: null, status: 'Finalizado' },
-    '25': { name: 'Plan de capacitación T&P', description: 'Capacitación T&P completada.', end_date: '2025-10-30', status: 'Finalizado' },
-    '26': { name: 'Plan de Onboarding - Ventas', description: 'Onboarding equipo de ventas.', end_date: '2025-11-30', status: 'Finalizado' }
-};
-
-// Tareas por plan (simular API) - estructura igual a tareas del tab
-const tareasPorPlan = {
-    '1': [
-        { id: 101, name: 'tarea 2', done: false, status: 'Activo', endDate: null, priority: 'media', assignee_email: null, etiqueta: null },
-        { id: 102, name: 'tarea 1', done: false, status: 'Activo', endDate: null, priority: 'baja', assignee_email: null, etiqueta: null }
-    ],
-    '4': [
-        { id: 401, name: 'Responde la evaluación "360 Talent Experience"', done: false, status: 'Vencido', endDate: '2025-12-31', priority: 'media', assignee_email: null, etiqueta: null },
-        { id: 402, name: 'Revisar resultados de evaluación', done: false, status: 'Activo', endDate: '2026-02-15', priority: 'alta', assignee_email: null, etiqueta: null }
-    ],
-    '5': [
-        { id: 501, name: 'Completar documentación de ingreso', done: false, status: 'Vencido', endDate: '2026-01-31', priority: 'alta', assignee_email: null, etiqueta: null },
-        { id: 502, name: 'Asistir a sesión de bienvenida', done: false, status: 'Activo', endDate: null, priority: 'media', assignee_email: null, etiqueta: null }
-    ],
-    '8': [
-        { id: 801, name: 'Completar módulo 1 de inducción', done: true, status: 'Finalizado', endDate: '2026-02-15', priority: 'alta', assignee_email: null, etiqueta: null },
-        { id: 802, name: 'Reunión con mentor asignado', done: false, status: 'Activo', endDate: '2026-02-20', priority: 'media', assignee_email: null, etiqueta: null }
-    ],
-    '23': [
-        { id: 2301, name: 'Revisión de checklist', done: true, status: 'Finalizado', endDate: '2025-12-28', priority: 'media', assignee_email: null, etiqueta: null }
-    ]
-};
 
 // Tirilla de tarea - IGUAL al tab de tareas (tarea-item)
 function renderTarea(tarea, esVencida = false) {
@@ -138,11 +100,34 @@ function getPlanIdFromUrl() {
     return params.get('id');
 }
 
+// Cache local por plan (para mutaciones cuando se usa BD unificada)
+window.planDetailTasksCache = window.planDetailTasksCache || {};
+window.planDetailPlanCache = window.planDetailPlanCache || {};
+
+function getTasksForPlan(planId) {
+    if (window.planDetailTasksCache[planId]) return window.planDetailTasksCache[planId];
+    if (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getTareasPorPlan === 'function')
+        return TAREAS_PLANES_DB.getTareasPorPlan(planId) || [];
+    return [];
+}
+
 function loadPlanAndTasks(planId) {
-    const plan = planesDetalle[planId] || { name: 'Plan ' + planId, description: 'Descripción del plan.', created_by: 'Usuario', end_date: null, status: 'Activo' };
-    const tasks = tareasPorPlan[planId] || [
-        { id: 9001, name: 'Tarea de ejemplo', done: false, status: 'Activo', endDate: null, priority: 'media', assignee_email: null, etiqueta: null }
-    ];
+    let plan, tasks;
+    const db = typeof TAREAS_PLANES_DB !== 'undefined' ? TAREAS_PLANES_DB : null;
+    if (db && typeof db.getPlanDetalle === 'function' && typeof db.getTareasPorPlan === 'function') {
+        if (!window.planDetailPlanCache[planId]) {
+            plan = db.getPlanDetalle(planId);
+            window.planDetailPlanCache[planId] = plan ? Object.assign({}, plan) : { name: 'Plan ' + planId, description: 'Sin datos.', created_by: '', end_date: null, status: 'Activo' };
+            tasks = db.getTareasPorPlan(planId) || [];
+            window.planDetailTasksCache[planId] = tasks.map(t => Object.assign({}, t));
+        }
+        plan = window.planDetailPlanCache[planId];
+        tasks = window.planDetailTasksCache[planId] || [];
+    } else {
+        plan = { name: 'Plan ' + planId, description: 'Sin datos. Cargue tareas-base-unificada.js.', created_by: '', end_date: null, status: 'Activo' };
+        tasks = [];
+    }
+    today = getTodayString();
     return { plan, tasks };
 }
 
@@ -217,8 +202,9 @@ function attachTaskListeners() {
         input.addEventListener('change', (e) => {
             const id = e.target.dataset.tareaId;
             const planId = getPlanIdFromUrl();
-            if (!planId || !tareasPorPlan[planId]) return;
-            const t = tareasPorPlan[planId].find(x => String(x.id) === id);
+            const tasks = getTasksForPlan(planId);
+            if (!planId || !tasks.length) return;
+            const t = tasks.find(x => String(x.id) === id);
             if (t) {
                 t.done = e.target.checked;
                 t.status = t.done ? 'Finalizado' : 'Activo';
@@ -240,8 +226,10 @@ function attachTaskListeners() {
             e.stopPropagation();
             const id = e.currentTarget.dataset.tareaId;
             const planId = getPlanIdFromUrl();
-            if (planId && tareasPorPlan[planId] && confirm('¿Eliminar esta tarea?')) {
-                tareasPorPlan[planId] = tareasPorPlan[planId].filter(t => String(t.id) !== id);
+            const tasks = getTasksForPlan(planId);
+            if (planId && tasks.length && confirm('¿Eliminar esta tarea?')) {
+                const i = tasks.findIndex(t => String(t.id) === id);
+                if (i >= 0) tasks.splice(i, 1);
                 renderPlanDetail(planId);
             }
         });
@@ -277,7 +265,7 @@ function initPlanDetail() {
     const finalizarBtn = document.getElementById('plan-detail-finalizar');
     if (finalizarBtn) {
         finalizarBtn.addEventListener('click', () => {
-            const plan = planesDetalle[planId];
+            const plan = (window.planDetailPlanCache && window.planDetailPlanCache[planId]) || loadPlanAndTasks(planId).plan;
             if (plan) { plan.status = 'Finalizado'; renderPlanDetail(planId); }
         });
     }
@@ -285,10 +273,11 @@ function initPlanDetail() {
     const addTaskBtn = document.getElementById('plan-detail-add-task-btn');
     if (addTaskBtn) {
         addTaskBtn.addEventListener('click', () => {
-            if (tareasPorPlan[planId]) {
+            const tasks = getTasksForPlan(planId);
+            if (tasks) {
                 const name = prompt('Nombre de la tarea:', 'Nueva tarea') || 'Nueva tarea';
                 const newId = 9000 + Date.now() % 1000;
-                tareasPorPlan[planId].push({ id: newId, name: name.trim() || 'Nueva tarea', done: false, status: 'Activo', endDate: null, priority: 'media', assignee_email: null, etiqueta: null });
+                tasks.push({ id: newId, name: name.trim() || 'Nueva tarea', done: false, status: 'Activo', endDate: null, priority: 'media', assignee_email: null, etiqueta: null });
                 renderPlanDetail(planId);
             }
         });
