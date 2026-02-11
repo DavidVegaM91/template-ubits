@@ -58,7 +58,7 @@ Orden sugerido: primero datos y usuario, luego estructura de páginas, después 
 3. [x] **Header product en planes y tareas**  
    Implementar el componente **header product** oficial en `planes.html` y `tareas.html`.
 
-4. [ ] **Plan detail: tres secciones reales**  
+4. [x] **Plan detail: tres secciones reales**  
    En `plan-detail` la PM pintó las 3 secciones dentro de una sola. Corregir para que haya **3 secciones independientes** (no todo dentro de una). Al hacerlo, no romper la lógica actual de llenado de datos.
 
 ### 3. Componentes oficiales UBITS

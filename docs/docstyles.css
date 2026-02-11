@@ -307,7 +307,7 @@
     color: var(--ubits-fg-2-high);
     margin: 0;
     font-size: var(--font-size-h1);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     line-height: 1;
     font-family: 'Noto Sans', sans-serif;
 }
@@ -338,7 +338,7 @@
 
 .results-title {
     font-size: var(--font-size-md);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     color: var(--ubits-fg-2-high);
     line-height: 24px;
     font-family: 'Noto Sans', sans-serif;
@@ -398,7 +398,7 @@
     min-width: 0;
     padding: var(--padding-sm) 0;
     font-size: var(--font-size-sm);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     border: none;
     outline: none;
     transition: all 0.2s ease;
@@ -462,7 +462,7 @@
 .icon-name {
     font-size: var(--font-size-sm);
     color: var(--ubits-fg-1-medium);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     line-height: 19.5px;
     font-family: 'Noto Sans', sans-serif;
     display: -webkit-box;
@@ -480,7 +480,7 @@
     margin-bottom: 24px;
     color: var(--ubits-fg-1-medium);
     font-size: var(--font-size-sm);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     line-height: 20px;
 }
 
@@ -524,7 +524,7 @@
 
 .empty-state-title {
     font-size: var(--font-size-h2);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-high);
     margin-bottom: 8px;
     font-family: 'Noto Sans', sans-serif;
@@ -596,7 +596,7 @@
     text-decoration: none;
     color: var(--ubits-fg-1-medium);
     font-size: var(--font-size-sm);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     padding: var(--padding-sm) var(--padding-sm);
     margin: 2px 0;
     border-radius: var(--border-radius-md);
@@ -722,7 +722,7 @@
     padding: var(--padding-md) var(--padding-2xl);
     border-radius: var(--border-radius-sm);
     text-decoration: none;
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     transition: all 0.3s ease;
     border: none;
     cursor: pointer;
@@ -883,7 +883,7 @@
     padding: var(--padding-sm) var(--padding-md);
     background: var(--ubits-fg-2-medium);
     font-size: var(--font-size-sm);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-high);
 }
 
@@ -902,7 +902,7 @@
     padding: var(--padding-sm) var(--padding-md);
     border-radius: var(--border-radius-xs);
     font-size: var(--font-size-sm);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     cursor: pointer;
 }
 

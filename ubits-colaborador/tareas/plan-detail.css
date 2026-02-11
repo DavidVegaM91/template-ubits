@@ -32,20 +32,34 @@
     background: var(--ubits-bg-2);
 }
 
-/* Contenedor principal: alineado con .task-group-detail (padding 16px, flex column) */
+/* Contenedor principal: 3 secciones independientes (section-single) con gap estándar */
 .page-plan-detail .plan-detail-sections {
     display: flex;
     flex-direction: column;
-    padding: var(--padding-lg, 16px);
+    padding: 0;
     background: var(--ubits-bg-2);
+    gap: var(--gap-lg, 16px);
 }
 
-/* Header: alineado con .task-group-detail-header (gap 1rem, margin-bottom 22px) */
+/* Sección 1: header product oficial (solo back + nombre). Sin caja. */
+.page-plan-detail .plan-detail-section--header > .widget-header-product {
+    background: transparent !important;
+    padding: 0 !important;
+}
+
+/* Mostrar título del plan en el header product (el componente lo oculta por defecto) */
+.page-plan-detail .ubits-header-product__product-info {
+    display: flex;
+}
+.page-plan-detail .ubits-header-product__product-title h2 {
+    display: block;
+}
+
+/* Legacy: header custom (ya no se usa; se mantiene por si se referencia en otros estilos) */
 .plan-detail-header {
     display: flex;
     align-items: center;
     gap: var(--gap-lg, 16px);
-    margin-bottom: 22px; /* sin token - valor del módulo */
 }
 
 .plan-detail-back {
@@ -76,38 +90,35 @@
     font-family: var(--font-family, "Noto Sans"), sans-serif;
     font-size: var(--font-size-h2, 20px);
     font-style: normal;
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     line-height: 100%;
     color: var(--ubits-fg-2-high);
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.page-plan-detail .plan-detail-sections .plan-detail-card,
-.page-plan-detail .plan-detail-sections .plan-detail-tasks-card,
-.page-plan-detail .plan-detail-sections .plan-detail-feedback__ai-content {
-    margin-bottom: var(--gap-2xl, 24px);
-}
-
-.page-plan-detail .plan-detail-sections .plan-detail-feedback__ai-content:last-child {
+/* Espacio entre secciones lo da .plan-detail-sections { gap }. Sin margin-bottom extra en las cards. */
+.page-plan-detail .plan-detail-section .plan-detail-card,
+.page-plan-detail .plan-detail-section .plan-detail-tasks-card {
     margin-bottom: 0;
 }
 
+/* Plan detail card: tokens Figma/UBITS (tipografía, color, espaciado, border-radius) */
 .plan-detail-card {
     position: relative;
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-md);
-    padding: var(--padding-2xl, 24px);
+    padding: var(--padding-2xl);
     display: flex;
     flex-direction: column;
-    gap: var(--gap-sm, 8px);
+    gap: 0;
 }
 
 .plan-detail-card__more {
     position: absolute;
-    top: var(--gap-lg, 16px);
-    right: var(--gap-lg, 16px);
+    top: var(--gap-lg);
+    right: var(--gap-lg);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -116,7 +127,7 @@
     padding: 0;
     background: transparent;
     border: none;
-    border-radius: var(--border-radius-full, 1000px);
+    border-radius: var(--border-radius-full);
     cursor: pointer;
     color: var(--ubits-fg-1-medium);
 }
@@ -126,29 +137,57 @@
 }
 
 .plan-detail-card__more i {
-    font-size: var(--font-size-h2, 20px);
+    font-size: var(--font-size-h2);
 }
 
-/* Textos de card: alineado con módulo (font-family, font-size-md, color-fg-1-high/medium) */
+/* Labels: body/md semibold, fg-1-high */
 .plan-detail-card__label-row {
-    font-family: var(--font-family, "Noto Sans"), sans-serif;
-    font-size: var(--font-size-md, 16px);
-    font-weight: 600;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+    line-height: 24px;
     color: var(--ubits-fg-1-high);
-    margin: 0;
+    margin: 0 0 var(--gap-sm) 0;
 }
 
+/* Descripción body: body/md regular, fg-1-medium */
 .plan-detail-card__desc-text {
-    font-family: var(--font-family, "Noto Sans"), sans-serif;
-    font-size: var(--font-size-md, 16px);
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-regular);
+    line-height: 24px;
     color: var(--ubits-fg-1-medium);
-    margin: 0 0 var(--gap-sm, 8px) 0;
-    line-height: 1.5;
+    margin: 0 0 var(--gap-lg) 0;
+}
+
+.plan-detail-card__creado-row {
+    display: flex;
+    align-items: baseline;
+    gap: var(--gap-xs);
+    margin: 0 0 var(--gap-lg) 0;
+}
+
+.plan-detail-card__creado-label {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+    line-height: 24px;
+    color: var(--ubits-fg-1-high);
+}
+
+.plan-detail-card__creado-value {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-regular);
+    line-height: 24px;
+    color: var(--ubits-fg-1-medium);
 }
 
 .plan-detail-card__text {
-    font-family: var(--font-family, "Noto Sans"), sans-serif;
-    font-size: var(--font-size-md, 16px);
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-regular);
+    line-height: 24px;
     color: var(--ubits-fg-1-medium);
     margin: 0;
 }
@@ -157,7 +196,13 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: var(--gap-lg, 16px);
+    gap: var(--gap-lg);
+}
+
+.plan-detail-card__percent-date-wrap {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
 }
 
 .plan-detail-card__progress-row .plan-detail-card__bar {
@@ -165,55 +210,74 @@
     min-width: 100px;
 }
 
+/* Contador tareas: body/md regular, fg-1-high (legible en barra) */
+.plan-detail-card__progress-row > span:first-child {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-regular);
+    line-height: 24px;
+    color: var(--ubits-fg-1-high);
+}
+
 .plan-detail-card__bar {
     height: 8px;
-    background: var(--ubits-bg-2);
-    border-radius: var(--border-radius-full, 9999px);
+    background: var(--ubits-bg-3);
+    border-radius: var(--border-radius-full);
     overflow: hidden;
 }
 
 .plan-detail-card__bar-fill {
     height: 100%;
     background: var(--ubits-accent-brand);
-    border-radius: var(--border-radius-full, 9999px);
+    border-radius: var(--border-radius-full);
     transition: width 0.3s ease;
 }
 
+/* Porcentaje: body/sm semibold, fg-1-medium */
 .plan-detail-card__percent {
-    font-family: var(--font-family, "Noto Sans"), sans-serif;
-    font-size: var(--font-size-sm, 13px);
-    font-weight: 600;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    line-height: 19.5px;
     color: var(--ubits-fg-1-medium);
 }
 
 .plan-detail-card__date-wrap {
     display: flex;
     align-items: center;
-    gap: var(--gap-sm, 8px);
+    gap: var(--gap-sm);
 }
 
 .plan-detail-card__date-label {
-    font-family: var(--font-family, "Noto Sans"), sans-serif;
-    font-size: var(--font-size-md, 16px);
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-regular);
+    line-height: 24px;
     color: var(--ubits-fg-1-medium);
 }
 
 .plan-detail-card__date-input {
-    width: 112px; /* sin token */
-    padding: var(--padding-xs, 4px) var(--padding-sm, 8px);
+    width: 112px;
+    padding: var(--padding-xs) var(--padding-sm);
     border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-sm);
-    font-size: var(--font-size-md, 16px); /* 14px → superior */
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-regular);
+    line-height: 24px;
     color: var(--ubits-fg-1-high);
     text-align: center;
     background: var(--ubits-bg-1);
 }
 
+/* Status tag: body/sm semibold + feedback tokens */
 .plan-detail-card__status {
-    padding: var(--padding-xs, 4px) var(--padding-md, 12px);
+    padding: var(--padding-xs) var(--padding-md);
     border-radius: var(--border-radius-sm);
-    font-size: var(--font-size-sm, 13px);
-    font-weight: 600;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    line-height: 19.5px;
 }
 
 .plan-detail-card__status--activo {
@@ -234,19 +298,22 @@
     color: var(--ubits-feedback-accent-success);
 }
 
+/* Botón Finalizar plan = secondary (Figma: bg white, border, fg high) */
 .plan-detail-card__btn-finalizar {
-    padding: var(--padding-xs, 4px) var(--padding-md, 12px);
-    border: 1px solid var(--ubits-border-1);
+    padding: var(--padding-sm) var(--padding-md);
+    border: 1px solid var(--ubits-btn-secondary-border);
     border-radius: var(--border-radius-sm);
-    font-size: var(--font-size-md, 16px); /* 14px → superior */
-    font-weight: 600;
-    color: var(--ubits-fg-1-high);
-    background: var(--ubits-bg-1);
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+    line-height: 24px;
+    color: var(--ubits-btn-secondary-fg-default);
+    background: var(--ubits-btn-secondary-bg-default);
     cursor: pointer;
 }
 
 .plan-detail-card__btn-finalizar:hover {
-    background: var(--ubits-bg-2);
+    background: var(--ubits-btn-secondary-bg-hover);
 }
 
 /* Card Tareas del plan */
@@ -270,7 +337,7 @@
     margin: 0;
     font-family: var(--font-family, "Noto Sans"), sans-serif;
     font-size: var(--font-size-md, 16px);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     color: var(--ubits-fg-1-high);
 }
 
@@ -346,7 +413,7 @@
     background: var(--ubits-feedback-bg-info-subtle);
     color: var(--ubits-fg-1-high);
     font-size: var(--font-size-md, 16px); /* 14px → superior */
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     cursor: pointer;
     transition: background 0.2s ease;
 }
@@ -408,7 +475,7 @@
     margin: 0 0 var(--gap-sm, 8px) 0;
     font-family: var(--font-family, "Noto Sans"), sans-serif;
     font-size: var(--font-size-h2, 20px);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     color: var(--ubits-fg-1-high);
 }
 
@@ -416,7 +483,7 @@
     margin: 0 0 var(--gap-2xl, 24px) 0;
     font-family: var(--font-family, "Noto Sans"), sans-serif;
     font-size: var(--font-size-md, 16px);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     line-height: 1.5;
     color: var(--ubits-fg-1-medium);
 }
@@ -440,7 +507,7 @@
 
 .plan-detail-feedback__ai-text span {
     font-family: var(--font-family, "Noto Sans"), sans-serif;
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     font-size: var(--font-size-sm, 13px);
     font-style: normal;
     line-height: 1.5em;

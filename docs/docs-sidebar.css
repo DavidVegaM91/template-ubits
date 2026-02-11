@@ -37,7 +37,7 @@
 .docs-sidebar-title {
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-sm);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-high);
     margin-bottom: 16px;
     text-transform: uppercase;
@@ -79,13 +79,13 @@
 
 .docs-sidebar-item.active .docs-sidebar-text {
     color: var(--ubits-accent-brand);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
 }
 
 .docs-sidebar-text {
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-sm);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     color: var(--ubits-fg-1-medium);
     transition: all 0.2s ease;
 }
@@ -121,7 +121,7 @@
 .docs-dropdown-text {
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-sm);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     color: var(--ubits-fg-1-medium);
 }
 
@@ -178,7 +178,7 @@
 .docs-dropdown-item-text {
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-sm);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     color: var(--ubits-fg-1-medium);
 }
 
@@ -194,7 +194,7 @@
 .docs-dropdown-group-title {
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-sm);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-high);
     margin-bottom: 12px;
     text-transform: uppercase;

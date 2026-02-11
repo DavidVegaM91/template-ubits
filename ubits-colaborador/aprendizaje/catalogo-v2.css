@@ -650,7 +650,7 @@ body.search-overlay-active .catalog-search-container-v2 .ubits-input-wrapper i {
     transition: opacity 0.2s ease;
     z-index: 10000;
     font-family: 'Noto Sans', sans-serif;
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     visibility: hidden;
 }
 
@@ -1113,7 +1113,7 @@ body.search-overlay-active .catalog-search-container-v2 .ubits-input-wrapper i {
     transition: opacity 0.2s ease;
     z-index: 1000;
     font-family: 'Noto Sans', sans-serif;
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
 }
 
 .competencia-card-v1-assigned-tooltip.tooltip-right {
@@ -1192,7 +1192,7 @@ body.search-overlay-active .catalog-search-container-v2 .ubits-input-wrapper i {
     transition: opacity 0.2s ease;
     z-index: 1000;
     font-family: 'Noto Sans', sans-serif;
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
 }
 
 .competencia-card-v1-actions .ubits-button.tooltip-right::after {

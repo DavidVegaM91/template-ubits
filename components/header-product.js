@@ -155,7 +155,7 @@
  * 
  * - **Desktop (> 768px)**: Layout completo con todas las acciones visibles
  * - **Mobile (≤ 768px)**: 
- *   - El título cambia de `ubits-heading-h1` a `ubits-body-md-bold` (16px, 700 weight)
+ *   - El título cambia de `ubits-heading-h2` a `ubits-body-md-bold` (16px, 700 weight)
  *   - Las filas se apilan verticalmente
  * - **Mobile pequeño (≤ 480px)**:
  *   - Todos los botones (excepto icon-only) se transforman automáticamente a icon-only
@@ -645,7 +645,7 @@ function createHeaderProductHTML(options = {}) {
                     
                     <!-- Título del producto con icono de información -->
                     <div class="ubits-header-product__product-title">
-                        <h1 class="ubits-heading-h1">${productName}</h1>
+                        <h2 class="ubits-heading-h2">${productName}</h2>
                         ${infoButtonHTML}
                     </div>
                 </div>

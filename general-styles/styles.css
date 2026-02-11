@@ -314,7 +314,7 @@ body[data-theme="light"] .dashboard-container {
     transition: opacity 0.2s ease;
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-sm);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
 }
 
 .tooltip::before {
@@ -507,7 +507,7 @@ body[data-theme="light"] .dashboard-container {
 
 /* Estado activo del tab */
 .nav-tab.active span {
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
 }
 
 .nav-tab.active::after {
@@ -631,7 +631,7 @@ body[data-theme="dark"] .content-area.no-background {
 .content-placeholder h2 {
     font-size: var(--font-size-h1);
     margin-bottom: var(--gap-lg);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
 }
 
 .content-placeholder p {
@@ -840,7 +840,7 @@ body[data-theme="dark"] .content-placeholder p {
 .step-number {
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-h1);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     line-height: 1;
 }
 
@@ -952,7 +952,7 @@ body {
     color: inherit;
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-sm);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     line-height: 19.5px;
 }
 

@@ -253,7 +253,7 @@
     color: var(--ubits-fg-1-high);
     font-family: var(--font-family, "Noto Sans"), sans-serif;
     font-size: var(--font-size-sm, 13px);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     cursor: pointer;
     transition: background-color 0.2s ease;
     width: 100%;
@@ -417,7 +417,7 @@
 .template-form-label {
     color: var(--ubits-fg-1-high);
     font-size: 14px;
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     font-family: 'Noto Sans', sans-serif;
 }
 
@@ -732,12 +732,12 @@
     display: inline-flex;
     align-items: center;
     font-size: 14px;
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     color: var(--ubits-fg-1-high);
 }
 
 .plan-accordion__title {
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     font-size: 14px;
     color: var(--ubits-fg-1-high);
 }
@@ -867,7 +867,7 @@
 .plan-upload-area__title {
     margin: 0;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-high);
 }
 
@@ -1133,7 +1133,7 @@
 .plans-empty__title {
     font-family: var(--font-family, "Noto Sans"), sans-serif;
     font-size: var(--font-size-h1, 24px);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     color: var(--ubits-fg-1-high);
     margin: 0 0 var(--gap-sm, 8px) 0;
 }
@@ -1141,7 +1141,7 @@
 .plans-empty__desc {
     font-family: var(--font-family, "Noto Sans"), sans-serif;
     font-size: var(--font-size-md, 16px);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     line-height: 1.5;
     color: var(--ubits-fg-1-medium);
     margin: 0 0 var(--gap-2xl, 24px) 0;
@@ -1234,7 +1234,7 @@
     font-family: var(--font-family, "Noto Sans"), sans-serif;
     font-size: var(--font-size-h1, 24px);
     font-style: normal;
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     color: var(--ubits-fg-1-medium);
     margin: 0;
 }
@@ -1278,7 +1278,7 @@
     font-family: var(--font-family, "Noto Sans"), sans-serif;
     font-size: var(--font-size-md, 16px);
     font-style: normal;
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     line-height: 1.5;
     color: var(--ubits-fg-1-medium);
     margin: 0;
@@ -1317,7 +1317,7 @@
     background: var(--ubits-bg-1);
     font-family: var(--font-family, "Noto Sans"), sans-serif;
     font-size: var(--font-size-sm, 13px);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-medium);
     cursor: pointer;
     transition: all 0.2s ease;
@@ -1426,7 +1426,7 @@
     flex: 1;
     min-width: 0;
     font-size: 16px;
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-high);
     margin: 0;
     white-space: nowrap;
@@ -1453,7 +1453,7 @@
 }
 
 .plan-card__date-value {
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     color: var(--ubits-fg-1-high);
     display: inline-block;
 }
@@ -1462,7 +1462,7 @@
     padding: 4px 12px;
     border-radius: 4px;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     border: 1px solid;
     flex-shrink: 0;
 }
@@ -1497,14 +1497,14 @@
 }
 
 .plan-card__tasks-value {
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     color: var(--ubits-fg-1-high);
     margin-left: 4px;
 }
 
 .plan-card__progress-val {
     font-size: 16px;
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     color: var(--ubits-fg-1-high);
 }
 

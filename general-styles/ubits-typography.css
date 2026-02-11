@@ -4,7 +4,7 @@
 
 /* NOTA: ubits-colors.css debe cargarse ANTES de este archivo en el HTML */
 
-/* Tokens de tamaño de fuente (fuente única para todas las páginas) */
+/* Tokens de tamaño de fuente y peso (fuente única para todas las páginas) */
 :root {
     --font-size-d1: 40px;
     --font-size-d2: 36px;
@@ -15,6 +15,11 @@
     --font-size-md: 16px;
     --font-size-sm: 13px;
     --font-size-xs: 11px;
+
+    /* Font weight tokens (alineados con Figma: regular 400, semibold 600, bold 700) */
+    --font-weight-regular: 400;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
 }
 
 /* ========================================
@@ -259,15 +264,15 @@
 
 /* Clases de peso para aplicar sobre cualquier estilo */
 .ubits-weight-regular {
-    font-weight: 400 !important;
+    font-weight: var(--font-weight-regular) !important;
 }
 
 .ubits-weight-semibold {
-    font-weight: 600 !important;
+    font-weight: var(--font-weight-semibold) !important;
 }
 
 .ubits-weight-bold {
-    font-weight: 700 !important;
+    font-weight: var(--font-weight-bold) !important;
 }
 
 /* Clases de tamaño para aplicar sobre cualquier estilo */

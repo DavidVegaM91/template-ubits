@@ -134,7 +134,7 @@ function loadPlanAndTasks(planId) {
 function renderPlanDetail(planId) {
     const { plan, tasks } = loadPlanAndTasks(planId);
 
-    const titleEl = document.getElementById('plan-detail-title');
+    const headerTitleEl = document.querySelector('#header-product-container .ubits-header-product__product-title h2');
     const cardEl = document.getElementById('plan-detail-card');
     const tasksCardEl = document.getElementById('plan-detail-tasks-card');
     const descEl = document.getElementById('plan-detail-desc');
@@ -149,11 +149,13 @@ function renderPlanDetail(planId) {
     const countVencidasEl = document.getElementById('plan-detail-count-vencidas');
     const countFinalizadasEl = document.getElementById('plan-detail-count-finalizadas');
 
-    if (titleEl) titleEl.textContent = (plan.name || 'Plan') + ':';
+    if (headerTitleEl) headerTitleEl.textContent = (plan.name || 'Plan') + ':';
     if (cardEl) cardEl.style.display = 'block';
     if (tasksCardEl) tasksCardEl.style.display = 'block';
 
     if (descEl) descEl.textContent = plan.description || 'Sin descripción';
+    const createdByEl = document.getElementById('plan-detail-created-by');
+    if (createdByEl) createdByEl.textContent = plan.created_by || 'Sin especificar';
     if (countEl) countEl.textContent = `Tareas finalizadas ${tasks.filter(t => t.done).length}/${tasks.length}`;
 
     const progress = tasks.length > 0 ? Math.round((tasks.filter(t => t.done).length / tasks.length) * 100) : 0;
@@ -249,17 +251,6 @@ function initPlanDetail() {
     if (!planId) {
         window.location.href = 'planes.html';
         return;
-    }
-
-    const backBtn = document.getElementById('plan-detail-back');
-    if (backBtn) {
-        backBtn.addEventListener('click', () => {
-            if (window.history.length > 1) {
-                window.history.back();
-            } else {
-                window.location.href = 'planes.html';
-            }
-        });
     }
 
     const finalizarBtn = document.getElementById('plan-detail-finalizar');

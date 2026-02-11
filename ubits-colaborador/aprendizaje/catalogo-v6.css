@@ -205,7 +205,7 @@
     border-bottom: 1px solid var(--ubits-border-1);
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-sm);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     line-height: 20px;
 }
 
@@ -220,7 +220,7 @@
 .academia-selector-custom__dropdown-item.active {
     background: var(--ubits-bg-2);
     color: var(--ubits-fg-1-high);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
 }
 
 .catalog-chips-wrapper {
@@ -375,7 +375,7 @@
     transition: opacity 0.2s ease;
     z-index: 10000;
     font-family: 'Noto Sans', sans-serif;
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     visibility: hidden;
 }
 
@@ -878,7 +878,7 @@
     transition: opacity 0.2s ease;
     z-index: 1000;
     font-family: 'Noto Sans', sans-serif;
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
 }
 
 .competencia-card-v1-actions .ubits-button.tooltip-right::after {

@@ -327,7 +327,7 @@
 .calendar-horizontal__day--selected .calendar-horizontal__weekday,
 .calendar-horizontal__day--selected .calendar-horizontal__day-number {
     color: var(--ubits-btn-primary-fg);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
 }
 
 /* Cuando el día de hoy está seleccionado, debe verse azul igual que los demás días seleccionados */
@@ -339,7 +339,7 @@
 .calendar-horizontal__day--selected.calendar-horizontal__day--today .calendar-horizontal__weekday,
 .calendar-horizontal__day--selected.calendar-horizontal__day--today .calendar-horizontal__day-number {
     color: var(--ubits-btn-primary-fg);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
 }
 
 .calendar-horizontal__day--today {
@@ -347,19 +347,19 @@
 }
 
 .calendar-horizontal__day--today .calendar-horizontal__day-number {
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
 }
 
 .calendar-horizontal__weekday {
     font-size: var(--font-size-xs, 11px);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-medium);
     text-transform: lowercase;
 }
 
 .calendar-horizontal__day-number {
     font-size: var(--font-size-md, 16px);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-high);
 }
 
@@ -413,7 +413,7 @@
     transition: all 0.2s ease;
     font-family: var(--font-family, "Noto Sans"), sans-serif;
     font-size: var(--font-size-sm, 13px);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-high);
 }
 
@@ -451,7 +451,7 @@
 
 .calendar-month-picker__year {
     font-size: var(--font-size-md, 16px);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     color: var(--ubits-fg-1-high);
 }
 
@@ -487,7 +487,7 @@
     background: var(--ubits-bg-1);
     color: var(--ubits-fg-1-high);
     font-size: var(--font-size-sm, 13px);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     cursor: pointer;
 }
 
@@ -724,7 +724,7 @@
     cursor: pointer;
     font-family: var(--font-family, "Noto Sans"), sans-serif;
     font-size: var(--font-size-sm, 13px);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     font-style: normal;
     line-height: var(--line-height-sm, 19.5px);
     color: var(--ubits-fg-1-medium);
@@ -758,7 +758,7 @@
     color: var(--ubits-fg-1-medium);
     border: 1px solid var(--ubits-border-1);
     font-size: var(--font-size-xs, 11px);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     white-space: nowrap;
 }
 
@@ -796,7 +796,7 @@
     font-family: var(--font-family, "Noto Sans"), sans-serif;
     font-size: var(--font-size-sm, 13px);
     font-style: normal;
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     line-height: var(--line-height-sm, 19.5px);
     padding: var(--padding-xs, 4px) var(--padding-sm, 8px);
     background: var(--ubits-bg-2);
@@ -849,7 +849,7 @@
     background: var(--ubits-bg-2);
     color: var(--ubits-fg-1-high);
     font-size: var(--font-size-xs, 11px);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     padding: 0 var(--padding-md, 12px);
     width: auto;
     min-width: var(--size-4xl, 32px);
@@ -910,7 +910,7 @@
     justify-content: center;
     color: var(--ubits-fg-1-high);
     font-size: var(--font-size-xs, 11px);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     flex-shrink: 0;
 }
 
@@ -942,7 +942,7 @@
     cursor: pointer;
     font-family: var(--font-family, "Noto Sans"), sans-serif;
     font-size: var(--font-size-sm, 13px);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     color: var(--ubits-accent-brand);
     transition: all 0.2s ease;
     width: 100%;
@@ -1136,7 +1136,7 @@
 .task-detail-header__title {
     margin: 0;
     font-size: var(--font-size-h2, 20px);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     color: var(--ubits-fg-1-high);
 }
 
@@ -1183,7 +1183,7 @@
     align-items: center;
     justify-content: center;
     font-size: var(--font-size-xs, 11px);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-high);
     flex-shrink: 0;
     overflow: hidden;
@@ -1285,7 +1285,7 @@
     align-items: center;
     justify-content: center;
     font-size: var(--font-size-xs, 11px);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-high);
     flex-shrink: 0;
     overflow: hidden;
@@ -1379,7 +1379,7 @@
 .task-detail-info-title {
     margin: 0;
     font-size: var(--font-size-sm, 13px);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-high);
 }
 
@@ -1456,7 +1456,7 @@
 .task-detail-section__title {
     margin: 0 0 var(--gap-sm, 8px) 0;
     font-size: var(--font-size-md, 16px);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     color: var(--ubits-fg-1-high);
 }
 
@@ -1469,7 +1469,7 @@
 }
 
 .task-detail-label-optional {
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     color: var(--ubits-fg-1-medium);
 }
 
@@ -1490,7 +1490,7 @@
     align-items: center;
     justify-content: center;
     font-size: var(--font-size-xs, 11px);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-high);
     flex-shrink: 0;
 }
@@ -1504,7 +1504,7 @@
 
 .task-detail-assignee__name {
     font-size: var(--font-size-sm, 13px);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-high);
 }
 
@@ -1656,7 +1656,7 @@
 .task-detail-sidebar__title {
     margin: 0;
     font-size: var(--font-size-md, 16px);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     color: var(--ubits-fg-1-high);
 }
 
