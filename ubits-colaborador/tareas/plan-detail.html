@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>UBITS - Detalle del plan</title>
+    
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../components/tab-bar.css">
+    <link rel="stylesheet" href="../../components/floating-menu.css">
+    <link rel="stylesheet" href="../../components/profile-menu.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/tooltip.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/status-tag.css">
+    <link rel="stylesheet" href="./tareas.css">
+    <link rel="stylesheet" href="./profile.css">
+    <link rel="stylesheet" href="./planes.css">
+    <link rel="stylesheet" href="./plan-detail.css">
+</head>
+<body data-theme="light" class="page-plan-detail">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        
+        <div id="sidebar-container"></div>
+
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div class="content-area">
+                <div class="content-sections plan-detail-sections">
+                    <!-- Header: volver + nombre del plan (como plan-detail.tsx) -->
+                    <div class="plan-detail-header">
+                        <button type="button" class="plan-detail-back" id="plan-detail-back" aria-label="Volver">
+                            <i class="far fa-arrow-left"></i>
+                        </button>
+                        <h1 class="plan-detail-title" id="plan-detail-title">Plan:</h1>
+                    </div>
+
+                    <!-- Card de información del plan (como plan-detail.tsx) -->
+                    <div id="plan-detail-card" class="plan-detail-card" style="display: none;">
+                        <button type="button" class="plan-detail-card__more" aria-label="Más opciones">
+                            <i class="far fa-ellipsis-v"></i>
+                        </button>
+                        <div class="plan-detail-card__label-row">Descripción:</div>
+                        <div class="plan-detail-card__text plan-detail-card__desc-text" id="plan-detail-desc"></div>
+                        <div class="plan-detail-card__progress-row">
+                            <span id="plan-detail-tasks-count">Tareas finalizadas 0/0</span>
+                            <div class="plan-detail-card__bar">
+                                <div class="plan-detail-card__bar-fill" id="plan-detail-bar-fill"></div>
+                            </div>
+                            <span class="plan-detail-card__percent" id="plan-detail-percent">0%</span>
+                            <div class="plan-detail-card__date-wrap">
+                                <span class="plan-detail-card__date-label">Finalización:</span>
+                                <input type="text" class="plan-detail-card__date-input" id="plan-detail-end-date" readonly />
+                            </div>
+                            <span class="plan-detail-card__status" id="plan-detail-status"></span>
+                            <button type="button" class="plan-detail-card__btn-finalizar" id="plan-detail-finalizar">Finalizar plan</button>
+                        </div>
+                    </div>
+
+                    <!-- Card Tareas del plan -->
+                    <div id="plan-detail-tasks-card" class="plan-detail-tasks-card" style="display: none;">
+                        <div class="plan-detail-tasks-card__header">
+                            <h2 class="plan-detail-tasks-card__title">Tareas del plan</h2>
+                            <div class="plan-detail-tasks-card__filters">
+                                <button type="button" class="plan-detail-tasks-card__search-btn" aria-label="Buscar">
+                                    <i class="far fa-search"></i>
+                                </button>
+                                <button type="button" class="plan-detail-tasks-card__filter-btn">
+                                    <i class="far fa-sliders-h"></i>
+                                    <span>Ver filtros</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="plan-detail-tasks-card__counters">
+                            <span class="plan-detail-tasks-card__counter plan-detail-tasks-card__counter--iniciadas">
+                                <i class="far fa-circle"></i> Iniciadas: <strong id="plan-detail-count-iniciadas">0</strong>
+                            </span>
+                            <span class="plan-detail-tasks-card__counter plan-detail-tasks-card__counter--vencidas">
+                                <i class="far fa-circle"></i> Vencidas: <strong id="plan-detail-count-vencidas">0</strong>
+                            </span>
+                            <span class="plan-detail-tasks-card__counter plan-detail-tasks-card__counter--finalizadas">
+                                <i class="far fa-circle"></i> Finalizadas: <strong id="plan-detail-count-finalizadas">0</strong>
+                            </span>
+                        </div>
+                        <div class="plan-detail-tasks-card__add">
+                            <button type="button" class="plan-detail-tasks-card__add-btn" id="plan-detail-add-task-btn">
+                                <i class="far fa-plus"></i> Agregar tarea
+                            </button>
+                        </div>
+                        <div id="plan-detail-tasks" class="plan-detail-tasks">
+                        <div id="plan-detail-tasks-list" class="plan-detail-tasks-list">
+                            <!-- Las tareas se renderizan dinámicamente -->
+                        </div>
+                        <div id="plan-detail-empty" class="plan-detail-empty" style="display: none;">
+                            <i class="far fa-clipboard-list plan-detail-empty__icon"></i>
+                            <h2 class="plan-detail-empty__title">¡Crea tu primera tarea!</h2>
+                            <p class="plan-detail-empty__desc">Empieza a organizar tus actividades creando una tarea.</p>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="tab-bar-container"></div>
+    <div id="floating-menu-container"></div>
+    <div id="profile-menu-container"></div>
+    <div id="fab-button-container"></div>
+
+    <script src="../../components/tooltip.js"></script>
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/tab-bar.js"></script>
+    <script src="../../components/floating-menu.js"></script>
+    <script src="../../components/profile-menu.js"></script>
+    <script src="../../script.js"></script>
+    <script src="./planes.js"></script>
+    <script src="./plan-detail.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSidebar('sidebar-container', 'tareas');
+            loadSubNav('top-nav-container', 'tareas');
+            loadTabBar('tab-bar-container');
+            loadFloatingMenu('floating-menu-container');
+            loadProfileMenu('profile-menu-container');
+            
+            if (typeof initPlanDetail === 'function') {
+                initPlanDetail();
+            }
+
+            // Inicializar FAB flotante con el mismo HTML que el módulo de referencia
+            if (typeof initFabButton === 'function') {
+                initFabButton();
+            }
+
+            setTimeout(() => {
+                document.querySelectorAll('.nav-tab, .hamburger-item').forEach(item => item.classList.remove('active'));
+                const planesTab = document.querySelector('.nav-tab[data-tab="plans"]');
+                if (planesTab) planesTab.classList.add('active');
+                const planesHamburger = document.querySelector('.hamburger-item[data-tab="plans"]');
+                if (planesHamburger) planesHamburger.classList.add('active');
+                const tareasButton = document.querySelector('.nav-button[data-section="tareas"]');
+                if (tareasButton) {
+                    document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
+                    tareasButton.classList.add('active');
+                }
+                const modulosTabBar = document.querySelector('.tab-bar-item[data-tab="modulos"]');
+                if (modulosTabBar) {
+                    document.querySelectorAll('.tab-bar-item').forEach(item => item.classList.remove('active'));
+                    modulosTabBar.classList.add('active');
+                }
+                if (typeof setActiveAccordionLink === 'function') {
+                    setActiveAccordionLink('planes');
+                }
+            }, 200);
+        });
+    </script>
+</body>
+</html>

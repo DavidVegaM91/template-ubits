@@ -1,6 +1,19 @@
 /* ========================================
    ESTILOS ESPECÍFICOS PARA planes
+   Alineado con task-group-home y task-group-card-list: colores --ubits-*,
+   fuentes Noto Sans, tokens --font-size-*, --gap-*, --padding-*, --border-radius-*
    ======================================== */
+
+/* Fuente coherente con task-group (var(--font-family, "Noto Sans")) */
+.page-planes,
+.page-planes .content-sections,
+.page-planes .plan-section,
+.page-planes .plans-content,
+.page-planes .plans-empty,
+.page-planes .plan-card,
+.page-planes .plan-grid {
+    font-family: var(--font-family, "Noto Sans"), sans-serif;
+}
 
 /* Estilos específicos para content-sections - idéntico a left-wrapper */
 .content-sections {
@@ -14,9 +27,9 @@
     max-height: none;
 }
 
-/* Espaciador para alinear elementos - idéntico a left-wrapper */
+/* Espaciador para alinear elementos - idéntico a left-wrapper (token) */
 .content-sections > *:not(:last-child):not(.section-dual):not(.section-single):not(.section-triple):not(.section-quad) {
-    margin-bottom: 16px;
+    margin-bottom: var(--gap-lg, 16px);
 }
 
 /* Espaciador final - idéntico a left-wrapper */
@@ -114,4 +127,1451 @@
 .section-single > .widget-header-product {
     background-color: transparent !important;
     padding: var(--padding-none) !important;
+}
+
+/* Página planes: acercar contenedores al header de tabs (tokens como task-group) */
+.page-planes .main-content {
+    gap: var(--gap-sm, 8px);
+}
+.page-planes .content-sections {
+    gap: var(--gap-sm, 8px);
+}
+.page-planes .content-sections > *:not(:last-child):not(.section-dual):not(.section-single):not(.section-triple):not(.section-quad) {
+    margin-bottom: var(--gap-sm, 8px);
+}
+/* Header "Planes" más compacto para acercar secciones a los tabs */
+.page-planes .section-single:first-child .widget-header-product {
+    margin-bottom: 0;
+}
+/* Contenedores de planes: mismo ancho que el header de tabs (sin padding que restrinja) */
+.page-planes .content-area {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+.page-planes .section-single--plans,
+.page-planes .section-single--plans > .plans-content {
+    padding: 0 !important;
+    max-width: 100%;
+}
+
+/* Sección planes: evita overflow horizontal y mantiene contenido dentro de pantalla */
+.section-single--plans {
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+/* ========================================
+   FAB BUTTON (BOTÓN FLOTANTE)
+   ======================================== */
+
+#fab-button-container {
+    position: fixed !important;
+    bottom: var(--space-5, 20px) !important;
+    right: var(--space-5, 20px) !important;
+    z-index: 9999 !important;
+    display: block !important;
+    visibility: visible !important;
+    width: auto !important;
+    height: auto !important;
+    pointer-events: auto !important;
+    overflow: visible !important;
+}
+
+.fab-button {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: var(--gap-sm, 8px) !important;
+    padding: var(--padding-md, 12px) var(--padding-lg, 16px) !important;
+    background: var(--ubits-accent-brand) !important;
+    color: var(--ubits-btn-primary-fg) !important;
+    border: none !important;
+    border-radius: var(--border-radius-sm, 8px) !important;
+    font-family: var(--font-family, "Noto Sans"), sans-serif !important;
+    font-size: var(--font-size-md, 16px) !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease;
+    box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.2), 0px 14px 28.8px 0px rgba(0, 0, 0, 0.24) !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: auto !important;
+    height: auto !important;
+    min-width: 100px !important;
+    min-height: 40px !important;
+    pointer-events: auto !important;
+    line-height: 1 !important;
+}
+
+.fab-button:hover {
+    background: var(--ubits-button-primary-hover);
+    box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.25), 0px 16px 32px 0px rgba(0, 0, 0, 0.28);
+}
+
+.fab-button__icon {
+    font-size: 20px;
+    line-height: 1;
+}
+
+/* Wrapper del menú: ya posicionado (bottom: 100%), el menú va en flujo para darle altura */
+[data-radix-popper-content-wrapper] {
+    margin-bottom: var(--gap-sm, 8px) !important;
+}
+
+[data-radix-popper-content-wrapper] .fab-menu {
+    position: static !important;
+    bottom: auto !important;
+    right: auto !important;
+    margin-bottom: 0 !important;
+}
+
+.fab-menu {
+    position: absolute !important;
+    bottom: 100% !important;
+    right: 0 !important;
+    margin-bottom: var(--gap-sm, 8px) !important;
+    background: var(--ubits-bg-1) !important;
+    border: 1px solid var(--ubits-border-1) !important;
+    border-radius: var(--border-radius-sm, 8px) !important;
+    box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.12), 0px 4px 8px 0px rgba(0, 0, 0, 0.14) !important;
+    min-width: 192px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    z-index: 10000 !important;
+}
+
+.fab-menu-item {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm, 8px);
+    padding: var(--padding-sm, 8px) var(--padding-md, 12px);
+    background: transparent;
+    border: none;
+    text-align: left;
+    color: var(--ubits-fg-1-high);
+    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-size: var(--font-size-sm, 13px);
+    font-weight: 400;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    width: 100%;
+}
+
+.fab-menu-item:hover {
+    background: var(--ubits-bg-2);
+}
+
+.fab-menu-item__icon {
+    font-size: 16px;
+    color: var(--ubits-fg-1-medium);
+    width: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ========================================
+   DRAWER DE CREAR PLANTILLA
+   ======================================== */
+
+.template-drawer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 10001;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.template-drawer-content {
+    background: var(--ubits-bg-1);
+    width: 100%;
+    max-width: 1200px;
+    height: 100vh;
+    max-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -4px 0px 12px rgba(0, 0, 0, 0.15);
+    animation: slideInRight 0.3s ease;
+    overflow: hidden;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+.template-drawer-header {
+    padding: var(--padding-2xl, 24px);
+    border-bottom: 1px solid var(--ubits-border-1);
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs, 4px);
+    flex-shrink: 0;
+}
+
+.template-drawer-header__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.template-drawer-header h2 {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.template-drawer-header p {
+    margin: 0;
+    color: var(--ubits-fg-1-medium);
+    font-size: var(--font-size-sm, 13px);
+}
+
+.template-drawer-close {
+    background: transparent;
+    border: none;
+    color: var(--ubits-fg-1-medium);
+    cursor: pointer;
+    padding: var(--padding-xs, 4px);
+    border-radius: var(--border-radius-xs, 4px);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--size-4xl, 32px);
+    height: var(--size-4xl, 32px);
+}
+
+.template-drawer-close:hover {
+    background: var(--ubits-bg-2);
+    color: var(--ubits-fg-1-high);
+}
+
+.template-drawer-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 24px;
+    padding-bottom: 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.template-drawer-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--ubits-border-1);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    flex-shrink: 0;
+    background: var(--ubits-bg-1);
+}
+
+/* Formulario de plantilla */
+.template-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.template-form-group--spaced-above {
+    margin-top: 28px;
+}
+
+.template-form-group--spaced-above-lg {
+    margin-top: 20px;
+}
+
+.template-form-label {
+    color: var(--ubits-fg-1-high);
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'Noto Sans', sans-serif;
+}
+
+.template-form-helper {
+    color: var(--ubits-fg-1-medium);
+    font-size: 14px;
+    font-family: 'Noto Sans', sans-serif;
+}
+
+.template-form-helper--close-to-field {
+    margin-top: -4px;
+}
+
+.template-form-helper--close-to-title {
+    margin-top: -4px;
+}
+
+/* Radio buttons */
+.template-radio-group {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.template-radio-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.template-radio-item input[type="radio"] {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    cursor: pointer;
+    accent-color: var(--ubits-accent-brand);
+}
+
+.template-radio-item label {
+    color: var(--ubits-fg-1-high);
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'Noto Sans', sans-serif;
+    cursor: pointer;
+}
+
+/* Área de carga de archivo */
+.template-upload-area {
+    border: 2px dashed var(--ubits-border-1);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: var(--ubits-bg-1);
+}
+
+.template-upload-area:hover {
+    border-color: var(--ubits-accent-brand);
+    background: var(--ubits-bg-2);
+}
+
+.template-upload-area.drag-over {
+    border-color: var(--ubits-accent-brand);
+    background: var(--ubits-feedback-bg-info-subtle);
+    transform: scale(1.02);
+}
+
+.template-upload-icon {
+    width: 48px;
+    height: 48px;
+    background: var(--ubits-bg-2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px;
+    color: var(--ubits-fg-1-medium);
+}
+
+.template-upload-text {
+    color: var(--ubits-fg-1-high);
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.template-upload-subtext {
+    color: var(--ubits-fg-1-medium);
+    font-size: 12px;
+    margin-bottom: 12px;
+}
+
+.template-upload-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 8px;
+    color: var(--ubits-fg-1-high);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.template-upload-button:hover {
+    background: var(--ubits-bg-2);
+    border-color: var(--ubits-border-1);
+}
+
+/* Archivo cargado */
+.template-file-loaded {
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.template-file-loaded__info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+}
+
+.template-file-loaded__icon {
+    width: 32px;
+    height: 32px;
+    background: var(--ubits-feedback-bg-success-subtle);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ubits-feedback-accent-success);
+    flex-shrink: 0;
+}
+
+.template-file-loaded__details {
+    flex: 1;
+}
+
+.template-file-loaded__name {
+    color: var(--ubits-fg-1-high);
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.template-file-loaded__meta {
+    color: var(--ubits-fg-1-medium);
+    font-size: 12px;
+}
+
+.template-file-loaded__remove {
+    background: transparent;
+    border: none;
+    color: var(--ubits-fg-1-medium);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+}
+
+.template-file-loaded__remove:hover {
+    color: var(--ubits-feedback-accent-error);
+    background: var(--ubits-feedback-bg-error-subtle);
+}
+
+/* Alert info */
+.template-info-alert {
+    border: 1px solid var(--ubits-feedback-border-info);
+    background: var(--ubits-feedback-bg-info-subtle);
+    color: var(--ubits-feedback-fg-info-subtle);
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    line-height: 1.35;
+}
+
+.template-info-alert__icon {
+    color: var(--ubits-feedback-accent-info);
+    flex-shrink: 0;
+    font-size: 18px;
+    line-height: 1.35;
+    align-self: center;
+}
+
+/* Lista de tareas */
+.template-tasks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.template-task-item {
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.template-task-item__content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.template-task-item__title {
+    color: var(--ubits-fg-1-high);
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0;
+}
+
+.template-task-item__description {
+    color: var(--ubits-fg-1-medium);
+    font-size: 12px;
+    margin: 0;
+}
+
+.template-task-item__remove {
+    background: transparent;
+    border: none;
+    color: var(--ubits-feedback-accent-error);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.template-task-item__remove:hover {
+    background: var(--ubits-feedback-bg-error-subtle);
+}
+
+/* Input file oculto */
+.template-file-input {
+    display: none;
+}
+
+/* ========================================
+   DRAWER DE CREAR PLAN (PlanForm)
+   ======================================== */
+
+.plan-drawer-content {
+    max-width: 1200px;
+}
+
+.plan-drawer-header__subtitle {
+    margin: 6px 0 0 0;
+    font-size: 14px;
+    color: var(--ubits-fg-1-medium);
+    line-height: 1.4;
+}
+
+.plan-accordion {
+    border-bottom: 1px solid var(--ubits-border-1);
+    overflow: hidden;
+}
+
+.plan-accordion:first-of-type {
+    border-top: 1px solid var(--ubits-border-1);
+}
+
+.plan-accordion__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 0;
+    cursor: pointer;
+    gap: 16px;
+}
+
+.plan-accordion__header:hover {
+    background: transparent;
+}
+
+.plan-accordion__header-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.plan-accordion__title-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.plan-accordion__number {
+    display: inline-flex;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ubits-fg-1-high);
+}
+
+.plan-accordion__title {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--ubits-fg-1-high);
+}
+
+.plan-accordion__subtitle {
+    margin: 0;
+    padding-left: 0;
+    font-size: 13px;
+    color: var(--ubits-fg-1-medium);
+    line-height: 1.4;
+}
+
+.plan-accordion__chevron {
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+    color: var(--ubits-fg-1-medium);
+    font-size: 14px;
+}
+
+.plan-accordion.plan-accordion--open .plan-accordion__chevron {
+    transform: rotate(180deg);
+}
+
+.plan-accordion__body {
+    padding: 20px 0 24px 0;
+    display: none;
+}
+
+.plan-accordion.plan-accordion--open .plan-accordion__body {
+    display: block;
+}
+
+.plan-accordion--disabled {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.plan-accordion--disabled .plan-accordion__header {
+    cursor: default;
+}
+
+.plan-accordion__description {
+    font-size: 13px;
+    color: var(--ubits-fg-1-medium);
+    margin-bottom: 16px;
+}
+
+.plan-add-task-btn {
+    width: 100%;
+    justify-content: center;
+}
+
+.plan-accordion__body .template-form-group {
+    margin-top: 0;
+}
+
+.plan-accordion__body .template-form-group + .template-form-group {
+    margin-top: 20px;
+}
+
+.plan-accordion__body .template-form-group + div[style*="margin-top"] {
+    margin-top: 20px;
+}
+
+.plan-task-creation-section .template-form-group + .plan-task-actions {
+    margin-top: 20px;
+}
+
+/* Creación masiva de tareas (plan) */
+.plan-massive-upload {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.plan-massive-upload__download {
+    display: flex;
+}
+
+.plan-massive-upload__download .ubits-button {
+    width: 100%;
+    justify-content: center;
+}
+
+.plan-massive-upload__file-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.plan-upload-area {
+    border: 2px dashed var(--ubits-border-1);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: var(--ubits-bg-1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.plan-upload-area:hover {
+    border-color: var(--ubits-accent-brand);
+    background: var(--ubits-feedback-bg-info-subtle);
+}
+
+.plan-upload-area.plan-upload-area--drag-over {
+    border-color: var(--ubits-accent-brand);
+    background: var(--ubits-feedback-bg-info-subtle);
+}
+
+.plan-upload-area__icon {
+    width: 48px;
+    height: 48px;
+    background: var(--ubits-bg-2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ubits-fg-1-high);
+    font-size: 20px;
+}
+
+.plan-upload-area__title {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ubits-fg-1-high);
+}
+
+.plan-upload-area__subtitle {
+    margin: 0;
+    font-size: 13px;
+    color: var(--ubits-fg-1-medium);
+}
+
+.plan-upload-area__limits {
+    margin: 0;
+    font-size: 12px;
+    color: var(--ubits-fg-1-medium);
+}
+
+.plan-upload-area__btn {
+    margin-top: 4px;
+    width: auto;
+    min-width: 160px;
+    padding: 8px 16px;
+    justify-content: center;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    color: var(--ubits-fg-1-high);
+}
+
+.plan-upload-area__btn:hover {
+    background: var(--ubits-bg-2);
+    border-color: var(--ubits-border-1);
+}
+
+.plan-radio-with-info {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.plan-radio-info-icon {
+    font-size: 12px;
+    color: var(--ubits-fg-1-medium);
+}
+
+.plan-task-creator {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 8px;
+}
+
+.plan-task-creator__title-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.plan-task-creator__input-wrap {
+    flex: 1;
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 8px;
+    background: var(--ubits-bg-1);
+    overflow: hidden;
+}
+
+.plan-task-creator__input-wrap:focus-within {
+    border-color: var(--ubits-accent-brand);
+    box-shadow: 0 0 0 2px var(--ubits-feedback-bg-info-subtle);
+}
+
+.plan-task-creator__input {
+    width: 100%;
+    padding: 12px 16px;
+    border: none;
+    background: transparent;
+    font-size: 14px;
+    color: var(--ubits-fg-1-high);
+    outline: none;
+    box-sizing: border-box;
+}
+
+.plan-task-creator__input::placeholder {
+    color: var(--ubits-fg-1-medium);
+}
+
+.plan-task-creator__icons {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.plan-task-creator__icon-btn {
+    background: transparent;
+    border: none;
+    color: var(--ubits-fg-1-medium);
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.plan-task-creator__icon-btn:hover {
+    background: var(--ubits-bg-2);
+    color: var(--ubits-fg-1-high);
+}
+
+.plan-task-creator__icon-btn--remove:hover {
+    background: var(--ubits-feedback-bg-error-subtle);
+    color: var(--ubits-feedback-accent-error);
+}
+
+.plan-task-creator__textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 8px;
+    font-size: 14px;
+    color: var(--ubits-fg-1-high);
+    resize: vertical;
+    min-height: 80px;
+    outline: none;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+.plan-task-creator__textarea:focus {
+    border-color: var(--ubits-accent-brand);
+}
+
+.plan-task-creator__textarea::placeholder {
+    color: var(--ubits-fg-1-medium);
+}
+
+.plan-task-creator__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.plan-task-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: var(--ubits-bg-2);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 8px;
+    color: var(--ubits-fg-1-medium);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.plan-task-action-btn:hover {
+    background: var(--ubits-bg-1);
+    border-color: var(--ubits-border-1);
+    color: var(--ubits-fg-1-high);
+}
+
+
+.plan-member-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--ubits-feedback-bg-info-subtle);
+    border: 1px solid var(--ubits-border-1);
+    font-size: 13px;
+    color: var(--ubits-fg-1-high);
+}
+
+.plan-member-chip__remove {
+    background: none;
+    border: none;
+    color: var(--ubits-fg-1-medium);
+    cursor: pointer;
+    padding: 0 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.plan-member-chip__remove:hover {
+    color: var(--ubits-feedback-accent-error);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .template-drawer-content,
+    .plan-drawer-content {
+        max-width: 100%;
+        width: 100%;
+    }
+
+    #fab-button-container {
+        bottom: 16px;
+        right: 16px;
+    }
+}
+
+/* ========================================
+   INTERFAZ DE PLANES - PlanCard y secciones
+   ======================================== */
+
+/* Contenedor principal - alineado con .task-group-card-list__empty-state (min-height 200px) */
+.plans-content {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    min-height: 200px;
+    background: transparent !important;
+    padding: 0 !important;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+.plans-loading {
+    text-align: center;
+    color: var(--ubits-fg-1-medium);
+    padding: 32px;
+}
+
+/* Empty state - alineado con .task-group-card-list__empty-state (min-height 200px, center) */
+.plans-empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    width: 100%;
+}
+
+.plans-empty__content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    padding: 32px;
+    max-width: 1014px;
+    width: 100%;
+}
+
+.plans-empty__visual {
+    flex: 0 0 auto;
+}
+
+.plans-empty__icon {
+    font-size: 140px;
+    color: var(--ubits-fg-1-medium);
+    opacity: 0.5;
+}
+
+.plans-empty__text {
+    flex: 1;
+}
+
+/* Empty state - alineado con task-group-card-list__empty-state y tipografía módulo */
+.plans-empty__title {
+    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-size: var(--font-size-h1, 24px);
+    font-weight: 700;
+    color: var(--ubits-fg-1-high);
+    margin: 0 0 var(--gap-sm, 8px) 0;
+}
+
+.plans-empty__desc {
+    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-size: var(--font-size-md, 16px);
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--ubits-fg-1-medium);
+    margin: 0 0 var(--gap-2xl, 24px) 0;
+}
+
+.plans-empty__btn {
+    min-width: 140px;
+}
+
+/* Secciones En curso / Finalizado - alineado con .task-group-home (gap 24px, margin-top en tablet) */
+.plans-sections {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-2xl, 24px);
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+@media (max-width: 1024px) {
+    .plans-sections {
+        margin-top: var(--padding-lg, 16px);
+    }
+}
+
+/* Card list container - alineado con .task-group-card-list (padding 16px, border-radius-md, color-bg-1) */
+.plan-section {
+    background: var(--ubits-bg-1);
+    border-radius: var(--border-radius-md);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06); /* sin token */
+    padding: var(--padding-lg, 16px);
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+.plan-section__header {
+    margin-bottom: var(--space-5, 20px);
+}
+
+/* Header de sección - alineado con .task-group-card-list__header (space-between, row) */
+.plan-section__top {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--gap-md, 12px);
+    margin-bottom: var(--gap-md, 12px);
+    min-width: 0;
+}
+
+.plan-section__top-left {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md, 12px);
+    flex-wrap: wrap;
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.plan-section__ver-filtros {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm, 8px);
+    padding: var(--padding-md, 12px) var(--padding-lg, 16px) var(--padding-md, 12px) var(--padding-md, 12px);
+    background: transparent;
+    border: none;
+    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-size: var(--font-size-sm, 13px);
+    font-weight: 500;
+    color: var(--ubits-fg-1-medium);
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.plan-section__ver-filtros:hover {
+    background: var(--ubits-bg-2);
+}
+
+.plan-section__ver-filtros i {
+    font-size: var(--font-size-sm, 13px);
+}
+
+/* Título de sección - alineado con .task-group-card-list__title (font-size-h2 24px, color-fg-1-medium) */
+.plan-section__title {
+    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-size: var(--font-size-h1, 24px);
+    font-style: normal;
+    font-weight: 700;
+    color: var(--ubits-fg-1-medium);
+    margin: 0;
+}
+
+/* Wrapper título + botones vista (task-group-card-list__title-section) */
+.plan-section__title-section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--gap-lg, 16px);
+}
+
+/* Botones tipo de vista Individual/Grupo (task-group-card-list__view-type-buttons) */
+.plan-section__view-type-buttons {
+    display: flex;
+    gap: var(--gap-sm, 8px);
+}
+
+/* Badges de estado activo/vencido/finalizado (task-group-card-list__status-badges) */
+.plan-section__status-badges {
+    display: flex;
+    gap: var(--gap-lg, 16px);
+    flex-wrap: wrap;
+}
+
+.plan-section__status-badge {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm, 8px);
+}
+
+.plan-section__status-badge__text {
+    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-size: var(--font-size-sm, 13px);
+    font-weight: 500;
+    color: var(--ubits-fg-1-medium);
+}
+
+/* Subtítulo de sección vacía (task-group-card-list__subtitle) */
+.plan-section__subtitle {
+    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-size: var(--font-size-md, 16px);
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--ubits-fg-1-medium);
+    margin: 0;
+}
+
+/* Contenedor del paginador (task-group-card-list__paginator) */
+.plan-section__paginator {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Contenedor del empty state con ancho máx (task-group-card-list__empty-state-container) */
+.plan-section__empty-state-container {
+    max-width: 925px; /* sin token - valor del módulo */
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.plan-section__filters {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md, 12px);
+}
+
+/* Chip de filtro - alineado con task-group-card-list__status-badge (font-size 14px → sm, color-text-secondary → fg-1-medium) */
+.plan-filter-chip {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm, 8px);
+    padding: var(--padding-xs, 4px) var(--padding-md, 12px) var(--padding-xs, 4px) var(--padding-sm, 8px);
+    border-radius: var(--border-radius-full, 9999px);
+    border: 1px solid var(--ubits-border-1);
+    background: var(--ubits-bg-1);
+    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-size: var(--font-size-sm, 13px);
+    font-weight: 600;
+    color: var(--ubits-fg-1-medium);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.plan-filter-chip:hover {
+    border-color: var(--ubits-fg-1-medium);
+}
+
+.plan-filter-chip--active {
+    background: var(--ubits-feedback-bg-info-subtle);
+    border-color: var(--ubits-feedback-border-info);
+    color: var(--ubits-accent-brand);
+}
+
+.plan-filter-chip__icon {
+    font-size: 13px;
+}
+
+.plan-section__counters {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.plan-counter {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--ubits-fg-1-high);
+}
+
+.plan-counter__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.plan-counter__dot--blue {
+    background: var(--ubits-accent-brand);
+}
+
+.plan-counter__dot--red {
+    background: var(--ubits-feedback-accent-error);
+}
+
+.plan-counter__dot--green {
+    background: var(--ubits-feedback-accent-success);
+}
+
+.plan-section__empty {
+    padding: 24px;
+    text-align: center;
+    color: var(--ubits-fg-1-medium);
+}
+
+/* Grid de PlanCards - alineado con .task-group-card-list__body (gap 16px 24px, 1/2/3 cols) */
+.plan-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--gap-2xl, 24px) var(--gap-lg, 16px);
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+/* PlanCard - min-width:0 permite que se encoja dentro del grid */
+.plan-card {
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 8px;
+    padding: 12px;
+    min-height: 130px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    box-sizing: border-box;
+}
+
+.plan-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.plan-card__header {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.plan-card__new-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--ubits-feedback-accent-success);
+    flex-shrink: 0;
+    margin-top: 4px;
+}
+
+.plan-card__title {
+    flex: 1;
+    min-width: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ubits-fg-1-high);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.plan-card__body {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-width: 0;
+}
+
+.plan-card__date {
+    font-size: 14px;
+    color: var(--ubits-fg-1-medium);
+    min-width: 0;
+}
+
+.plan-card__date-label {
+    display: inline;
+}
+
+.plan-card__date-value {
+    font-weight: 700;
+    color: var(--ubits-fg-1-high);
+    display: inline-block;
+}
+
+.plan-card__status {
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid;
+    flex-shrink: 0;
+}
+
+.plan-card-status--iniciada {
+    background: var(--ubits-feedback-bg-info-subtle);
+    border-color: var(--ubits-feedback-border-info);
+    color: var(--ubits-feedback-fg-info-subtle-static);
+}
+
+.plan-card-status--vencido {
+    background: var(--ubits-feedback-bg-error-subtle);
+    border-color: var(--ubits-feedback-border-error);
+    color: var(--ubits-feedback-fg-error-subtle-static);
+}
+
+.plan-card-status--finalizado {
+    background: var(--ubits-feedback-bg-success-subtle);
+    border-color: var(--ubits-feedback-border-success);
+    color: var(--ubits-feedback-fg-success-subtle-static);
+}
+
+.plan-card__tasks {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.plan-card__tasks-info {
+    font-size: 14px;
+    color: var(--ubits-fg-1-medium);
+}
+
+.plan-card__tasks-value {
+    font-weight: 700;
+    color: var(--ubits-fg-1-high);
+    margin-left: 4px;
+}
+
+.plan-card__progress-val {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ubits-fg-1-high);
+}
+
+.plan-card__progress-bar {
+    width: 100%;
+    height: 8px;
+    background: var(--ubits-bg-2);
+    border-radius: 9999px;
+    overflow: hidden;
+    margin-top: 4px;
+}
+
+.plan-card__progress-fill {
+    height: 100%;
+    background: var(--ubits-accent-brand);
+    border-radius: 9999px;
+    transition: width 0.2s ease;
+}
+
+/* Paginación */
+.plan-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 16px;
+    font-size: 14px;
+    color: var(--ubits-fg-1-medium);
+}
+
+.plan-pagination__btn {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 6px;
+    background: var(--ubits-bg-1);
+    color: var(--ubits-fg-1-high);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.plan-pagination__btn:hover:not(:disabled) {
+    background: var(--ubits-bg-2);
+}
+
+.plan-pagination__btn:disabled {
+    color: var(--ubits-fg-disabled);
+    border-color: var(--ubits-border-1);
+    cursor: not-allowed;
+}
+
+@media (max-width: 1024px) {
+    .plan-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 640px) {
+    .plan-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    /* Header de sección en columna en móvil - alineado con task-group-card-list__header */
+    .plan-section__top {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--gap-sm, 8px);
+    }
+
+    .plans-empty__content {
+        flex-direction: column;
+    }
+
+    .plans-content {
+        padding: 0 !important;
+    }
 }

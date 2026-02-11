@@ -1,8 +1,12 @@
 /* ========================================
    ESTILOS ESPECÍFICOS PARA tareas
+   Formateado con design system tokens (gap, padding, font-size, border-radius).
+   Valores sin token: width/height fijos, box-shadow, calc(); marcados con /* sin token */
    ======================================== */
 
-/* Estilos específicos para content-sections - idéntico a left-wrapper */
+/* FAB Tareas: sin reglas extra; el menú se crea y destruye dinámicamente en tareas.html */
+
+/* Estilos específicos para content-sections */
 .content-sections {
     display: flex;
     flex-direction: column;
@@ -14,19 +18,16 @@
     max-height: none;
 }
 
-/* Espaciador para alinear elementos - idéntico a left-wrapper */
 .content-sections > *:not(:last-child):not(.section-dual):not(.section-single):not(.section-triple):not(.section-quad) {
-    margin-bottom: 16px;
+    margin-bottom: var(--gap-lg, 16px);
 }
 
-/* Espaciador final - idéntico a left-wrapper */
 .content-sections::after {
     content: '';
-    height: 0px;
+    height: var(--space-0, 0);
     flex-shrink: 0;
 }
 
-/* Reducir el gap del último elemento - idéntico a left-wrapper */
 .content-sections > *:last-child {
     margin-bottom: 0;
 }
@@ -52,7 +53,6 @@
     gap: var(--gap-xl);
 }
 
-/* Widgets en secciones - sin altura mínima forzada */
 .section-single > div,
 .section-dual > div,
 .section-triple > div,
@@ -67,7 +67,6 @@
     flex-direction: column;
 }
 
-/* Distribución de anchos */
 .section-single > div {
     flex: 1;
 }
@@ -84,6 +83,910 @@
     flex: 1;
 }
 
+/* ========================================
+   VISTA DE TAREAS - ESTILOS ESPECÍFICOS
+   ======================================== */
+
+/* OBLIGATORIO: limitar altura del main para que el scroll sea solo del listado, no del body.
+   Si main crece con el contenido, el body hace scroll y la barra se mueve. */
+.main-content:has(.widget-vista-tareas) {
+    min-height: 0 !important;
+    max-height: calc(100vh - 16px) !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.main-content:has(.widget-vista-tareas) .content-area {
+    min-height: 0 !important;
+    flex: 1 !important;
+    overflow: hidden !important;
+}
+
+/* Cadena flex para que el contenedor de tareas llegue hasta donde termina el sidebar.
+   content-area tiene align-items: flex-start por defecto, por eso no estira; aquí forzamos stretch. */
+.content-area:has(.widget-vista-tareas) {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    flex: 1 !important;
+    min-height: 0 !important;
+}
+
+.content-area:has(.widget-vista-tareas) .content-sections {
+    flex: 1 !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.content-area:has(.widget-vista-tareas) .section-single:has(.widget-vista-tareas) {
+    flex: 1 !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* Contenedor de tareas: ocupa toda la altura disponible.
+   Barra del calendario fija arriba; solo el listado hace scroll. */
+.widget-vista-tareas {
+    background-color: var(--ubits-bg-1) !important;
+    padding: var(--padding-xl, 20px) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 !important;
+    min-height: 578px !important; /* sin token - valor fijo del sidebar */
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+}
+
+/* Barra del calendario: bloque fijo, no hace scroll (separada del listado) */
+.calendar-module {
+    flex-shrink: 0 !important;
+    margin-bottom: 0 !important;
+    padding-bottom: var(--gap-lg, 16px) !important;
+    border-bottom: 1px solid var(--ubits-border-1);
+    background: var(--ubits-bg-1);
+}
+
+/* Header del calendario */
+.calendar-header {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: var(--gap-lg, 16px) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+.calendar-header__title {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.calendar-header__controls {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: var(--gap-md, 12px) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+}
+
+/* Forzar que el calendario horizontal ocupe el espacio disponible */
+.calendar-header__controls > .calendar-horizontal {
+    flex: 1 1 0% !important;
+    flex-grow: 1 !important;
+    flex-shrink: 1 !important;
+    flex-basis: 0% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    width: auto !important;
+}
+
+/* Selector de mes/año - no se encoge */
+.calendar-month-selector {
+    display: flex !important;
+    align-items: center !important;
+    gap: var(--gap-sm, 8px) !important;
+    padding: var(--padding-sm, 8px) var(--padding-md, 12px) !important;
+    background: var(--ubits-bg-1) !important;
+    border: 1px solid var(--ubits-border-1) !important;
+    border-radius: var(--border-radius-sm, 8px) !important;
+    cursor: pointer !important;
+    font-family: var(--font-family, "Noto Sans"), sans-serif !important;
+    font-size: var(--font-size-sm, 13px) !important;
+    font-weight: 600 !important;
+    color: var(--ubits-fg-1-high) !important;
+    transition: all 0.2s ease !important;
+    flex-shrink: 0 !important;
+    flex-grow: 0 !important;
+    white-space: nowrap !important;
+    width: auto !important;
+    max-width: none !important;
+}
+
+.calendar-month-selector:hover {
+    background: var(--ubits-bg-2);
+    border-color: var(--ubits-accent-brand);
+}
+
+.calendar-month-selector__month,
+.calendar-month-selector__year {
+    color: var(--ubits-fg-1-high);
+}
+
+.calendar-month-selector__icon {
+    display: flex;
+    align-items: center;
+    color: var(--ubits-fg-1-medium);
+    font-size: var(--font-size-xs, 11px);
+}
+
+.calendar-month-selector__icon i {
+    font-size: var(--font-size-xs, 11px);
+}
+
+/* Calendario horizontal - 7 días - OCUPA TODO EL ESPACIO entre mes y botón Hoy */
+.calendar-horizontal {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    gap: var(--gap-sm, 8px) !important;
+    overflow-x: hidden !important;
+    overflow-y: hidden !important;
+    flex: 1 1 0% !important;
+    flex-grow: 1 !important;
+    flex-shrink: 1 !important;
+    flex-basis: 0% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    width: auto !important;
+    padding: var(--padding-xs, 4px) 0 !important;
+    white-space: nowrap !important;
+    justify-content: stretch !important;
+}
+
+.calendar-horizontal__day {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: var(--gap-xs, 4px);
+    padding: var(--padding-sm, 8px) var(--padding-md, 12px);
+    flex: 1 1 0% !important;
+    flex-grow: 1 !important;
+    flex-shrink: 1 !important;
+    flex-basis: 0% !important;
+    min-width: 0 !important;
+    background: transparent;
+    border: none;
+    border-radius: var(--border-radius-sm, 8px);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    position: relative;
+    white-space: nowrap;
+    box-sizing: border-box;
+}
+
+.calendar-horizontal__day:hover {
+    background: var(--ubits-feedback-bg-info-subtle);
+}
+
+.calendar-horizontal__day:hover .calendar-horizontal__weekday,
+.calendar-horizontal__day:hover .calendar-horizontal__day-number {
+    color: var(--ubits-fg-1-high);
+}
+
+.calendar-horizontal__day--selected:hover {
+    background: var(--ubits-accent-brand);
+}
+
+.calendar-horizontal__day--selected:hover .calendar-horizontal__weekday,
+.calendar-horizontal__day--selected:hover .calendar-horizontal__day-number {
+    color: var(--ubits-btn-primary-fg);
+}
+
+.calendar-horizontal__day--selected {
+    background: var(--ubits-accent-brand);
+    color: var(--ubits-btn-primary-fg);
+}
+
+.calendar-horizontal__day--selected .calendar-horizontal__weekday,
+.calendar-horizontal__day--selected .calendar-horizontal__day-number {
+    color: var(--ubits-btn-primary-fg);
+    font-weight: 700;
+}
+
+/* Cuando el día de hoy está seleccionado, debe verse azul igual que los demás días seleccionados */
+.calendar-horizontal__day--selected.calendar-horizontal__day--today {
+    background: var(--ubits-accent-brand);
+    color: var(--ubits-btn-primary-fg);
+}
+
+.calendar-horizontal__day--selected.calendar-horizontal__day--today .calendar-horizontal__weekday,
+.calendar-horizontal__day--selected.calendar-horizontal__day--today .calendar-horizontal__day-number {
+    color: var(--ubits-btn-primary-fg);
+    font-weight: 700;
+}
+
+.calendar-horizontal__day--today {
+    background: var(--ubits-bg-2);
+}
+
+.calendar-horizontal__day--today .calendar-horizontal__day-number {
+    font-weight: 700;
+}
+
+.calendar-horizontal__weekday {
+    font-size: var(--font-size-xs, 11px);
+    font-weight: 600;
+    color: var(--ubits-fg-1-medium);
+    text-transform: lowercase;
+}
+
+.calendar-horizontal__day-number {
+    font-size: var(--font-size-md, 16px);
+    font-weight: 600;
+    color: var(--ubits-fg-1-high);
+}
+
+/* Controles de navegación (Hoy + flechas) - no se encogen */
+.calendar-today-nav {
+    display: flex !important;
+    gap: var(--gap-sm, 8px) !important;
+    align-items: center !important;
+    flex-shrink: 0 !important;
+    flex-grow: 0 !important;
+    white-space: nowrap !important;
+    width: auto !important;
+    max-width: none !important;
+}
+
+.calendar-today-nav__arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--size-4xl, 32px); /* sin token - tamaño fijo */
+    height: var(--size-4xl, 32px);
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm, 8px);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: var(--ubits-fg-1-high);
+    padding: 0;
+    font-family: var(--font-family, "Noto Sans"), sans-serif;
+}
+
+.calendar-today-nav__arrow:hover {
+    background: var(--ubits-bg-2);
+    border-color: var(--ubits-accent-brand);
+}
+
+.calendar-today-nav__arrow i {
+    font-size: var(--font-size-sm, 13px);
+}
+
+.calendar-today-nav__today {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 var(--padding-md, 12px);
+    height: var(--size-4xl, 32px); /* sin token */
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm, 8px);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-size: var(--font-size-sm, 13px);
+    font-weight: 600;
+    color: var(--ubits-fg-1-high);
+}
+
+.calendar-today-nav__today:hover {
+    background: var(--ubits-bg-2);
+    border-color: var(--ubits-accent-brand);
+}
+
+/* Contenedor del selector de mes + popup (para posicionar el popup debajo del botón) */
+.calendar-month-selector-wrap {
+    position: relative;
+}
+
+/* Popup del date picker (mes/año) */
+.calendar-month-popup {
+    position: absolute;
+    left: 0;
+    top: 100%;
+    z-index: 1000;
+    margin-top: var(--gap-sm, 8px);
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm, 8px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12); /* sin token */
+    padding: var(--padding-lg, 16px);
+    min-width: 240px; /* sin token */
+}
+
+.calendar-month-picker__year-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--gap-md, 12px);
+}
+
+.calendar-month-picker__year {
+    font-size: var(--font-size-md, 16px);
+    font-weight: 700;
+    color: var(--ubits-fg-1-high);
+}
+
+.calendar-month-picker__nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--size-4xl, 32px); /* sin token */
+    height: var(--size-4xl, 32px);
+    padding: 0;
+    border: none;
+    border-radius: var(--border-radius-sm, 8px); /* 6px → superior en escala */
+    background: transparent;
+    color: var(--ubits-fg-1-medium);
+    cursor: pointer;
+}
+
+.calendar-month-picker__nav:hover {
+    background: var(--ubits-bg-2);
+    color: var(--ubits-fg-1-high);
+}
+
+.calendar-month-picker__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--gap-sm, 8px); /* 6px → superior en escala */
+}
+
+.calendar-month-picker__month {
+    padding: var(--padding-sm, 8px) var(--padding-xs, 4px);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm, 8px); /* 6px → superior */
+    background: var(--ubits-bg-1);
+    color: var(--ubits-fg-1-high);
+    font-size: var(--font-size-sm, 13px);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.calendar-month-picker__month:hover {
+    background: var(--ubits-bg-2);
+    border-color: var(--ubits-accent-brand);
+    color: var(--ubits-accent-brand);
+}
+
+.calendar-month-picker__month--selected {
+    background: var(--ubits-feedback-bg-info-subtle);
+    border-color: var(--ubits-accent-brand);
+    color: var(--ubits-accent-brand);
+}
+
+/* Contenedor con scroll infinito */
+.tareas-scroll-container {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: var(--padding-sm, 8px);
+    scrollbar-width: thin;
+    scrollbar-color: var(--ubits-border-1) transparent;
+}
+
+.tareas-scroll-container::-webkit-scrollbar {
+    width: 6px; /* sin token */
+}
+
+.tareas-scroll-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.tareas-scroll-container::-webkit-scrollbar-thumb {
+    background: var(--ubits-border-1);
+    border-radius: var(--border-radius-xs, 4px); /* 3px → superior */
+}
+
+.tareas-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: var(--ubits-fg-1-medium);
+}
+
+/* Contenedor de tareas vencidas (PRIMERO) */
+.tareas-overdue-container {
+    /* Un poco más de aire respecto a la línea del calendario sin romper el layout */
+    padding-top: var(--gap-xl, 20px);
+    margin-bottom: var(--space-8, 32px);
+}
+
+.tareas-overdue-header {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md, 12px);
+    margin-bottom: var(--gap-lg, 16px);
+}
+
+.tareas-overdue-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--size-2xl, 24px); /* sin token */
+    height: var(--size-2xl, 24px);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--ubits-fg-1-medium);
+    transition: transform 0.2s ease;
+    padding: 0;
+}
+
+.tareas-overdue-toggle i {
+    font-size: var(--font-size-sm, 13px);
+    transition: transform 0.2s ease;
+}
+
+.tareas-overdue-header h2 {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+    flex: 1;
+}
+
+.tareas-overdue-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm, 8px);
+}
+
+/* Contenedores de días del calendario */
+.tareas-day-container {
+    margin-bottom: var(--space-8, 32px);
+}
+
+.tareas-day-header {
+    margin-bottom: var(--gap-lg, 16px);
+}
+
+.tareas-day-header h2 {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.tareas-day-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm, 8px);
+}
+
+/* ========================================
+   TIRILLA DE TAREA (task-strip) - Alineado a task-strip / task-strip-input
+   Referencia: techubits-task-manager-mf task-strip, task-strip-input
+   Estilos tokenizados (UBITS).
+   ======================================== */
+
+/* Contenedor principal: grid 2 columnas (main | actions) como task-strip */
+.tarea-item {
+    display: grid;
+    width: 100%;
+    min-width: 343px; /* sin token - valor del módulo */
+    padding: var(--space-2, 8px) var(--space-1, 4px);
+    align-items: center;
+    background: var(--ubits-bg-1);
+    grid-template-columns: minmax(0, 1fr) minmax(200px, auto);
+    transition: background 0.2s;
+    border: none;
+    border-radius: var(--border-radius-sm, 8px);
+    box-shadow: none;
+}
+
+.tarea-item:hover {
+    background: var(--ubits-bg-2);
+    border: none;
+    box-shadow: none;
+}
+
+.tarea-item--overdue {
+    border: none;
+}
+
+/* Bloque izquierdo: checkbox + contenido + etiqueta (task-strip__main) - una sola línea */
+.tarea-item__main {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    height: var(--size-5xl, 40px);
+    gap: var(--gap-xs, 4px);
+    overflow: hidden;
+    width: 100%;
+    min-width: 0;
+    padding-left: 0;
+    flex: 1;
+}
+
+/* Wrapper del checkbox (task-strip__radio) */
+.tarea-item__radio {
+    display: flex;
+    width: 36px; /* sin token - valor del módulo */
+    height: var(--size-4xl, 32px);
+    padding: var(--padding-xs, 4px) var(--padding-sm, 8px);
+    align-items: center;
+    flex-shrink: 0;
+}
+
+/* Checkbox circular (custom-check equivalente) */
+.tarea-checkbox {
+    position: relative;
+    flex-shrink: 0;
+    width: 20px; /* sin token - custom-check size */
+    height: 20px;
+}
+
+.tarea-checkbox input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    cursor: pointer;
+    appearance: none;
+    border: 2.5px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-full, 1000px);
+    background: var(--ubits-bg-1);
+    transition: background 0.2s, border-color 0.2s;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.tarea-checkbox input[type="checkbox"]:checked {
+    background: var(--ubits-accent-brand);
+    border-color: var(--ubits-accent-brand);
+}
+
+.tarea-checkbox input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: var(--size-sm, 8px);
+    height: var(--size-sm, 8px);
+    background: var(--ubits-fg-1-low);
+    border-radius: var(--border-radius-full, 1000px);
+}
+
+.tarea-item--overdue .tarea-checkbox input[type="checkbox"] {
+    border-color: var(--ubits-feedback-accent-error);
+}
+
+.tarea-item--overdue .tarea-checkbox input[type="checkbox"]:checked {
+    background: var(--ubits-feedback-accent-error);
+    border-color: var(--ubits-feedback-accent-error);
+}
+
+/* Contenido título (task-strip__content + task-strip-input__display) */
+.tarea-content {
+    flex: 1;
+    min-width: 0;
+    max-width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0;
+}
+
+.tarea-titulo {
+    display: block;
+    /* Que el texto tenga todo el ancho disponible dentro de la tirilla */
+    width: auto;
+    flex: 1 1 auto;
+    min-width: 0;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-size: var(--font-size-sm, 13px);
+    font-weight: 400;
+    font-style: normal;
+    line-height: var(--line-height-sm, 19.5px);
+    color: var(--ubits-fg-1-medium);
+    background: none;
+    padding: 9.5px var(--padding-sm, 8px); /* 9.5px sin token - valor del módulo */
+    border: 1px solid transparent;
+}
+
+.tarea-titulo:hover {
+    border-color: var(--ubits-border-1);
+    background: var(--ubits-bg-2);
+}
+
+.tarea-item--completed .tarea-titulo {
+    text-decoration: line-through;
+    color: var(--ubits-fg-1-medium);
+}
+
+/* Etiqueta de tarea */
+.tarea-etiqueta {
+    flex-shrink: 0;
+}
+
+.tarea-etiqueta-text {
+    display: inline-flex;
+    align-items: center;
+    height: 21px; /* sin token */
+    padding: 0 var(--padding-sm, 8px);
+    border-radius: var(--border-radius-md, 12px);
+    background: var(--ubits-bg-2);
+    color: var(--ubits-fg-1-medium);
+    border: 1px solid var(--ubits-border-1);
+    font-size: var(--font-size-xs, 11px);
+    font-weight: 400;
+    white-space: nowrap;
+}
+
+/* Bloque derecho: status, fecha, acciones (task-strip__actions) - una sola línea */
+.tarea-item__actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: var(--gap-md, 12px);
+    height: var(--size-5xl, 40px);
+    padding: 0 var(--padding-xs, 4px);
+    text-align: center;
+    min-width: 0;
+}
+
+.tarea-status {
+    flex-shrink: 0;
+}
+
+.tarea-status .ubits-status-tag--info {
+    background: var(--ubits-feedback-bg-info-subtle);
+    color: var(--ubits-accent-brand);
+    border-color: var(--ubits-accent-brand);
+}
+
+/* Fecha (task-strip__date) */
+.tarea-fecha {
+    width: 100px; /* sin token - valor del módulo */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1 0 0;
+    color: var(--ubits-fg-1-medium);
+    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-size: var(--font-size-sm, 13px);
+    font-style: normal;
+    font-weight: 400;
+    line-height: var(--line-height-sm, 19.5px);
+    padding: var(--padding-xs, 4px) var(--padding-sm, 8px);
+    background: var(--ubits-bg-2);
+    border-radius: var(--border-radius-sm, 8px);
+    white-space: nowrap;
+    text-align: center;
+}
+
+.tarea-fecha--sin-fecha,
+.tarea-fecha--overdue {
+    background: var(--ubits-bg-2);
+}
+
+/* Acciones (task-strip__action-btn) - una sola línea */
+.tarea-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: var(--gap-sm, 8px);
+    flex-shrink: 0;
+}
+
+.tarea-action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--size-4xl, 32px);
+    height: var(--size-4xl, 32px);
+    padding: 0 var(--padding-xs, 4px);
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm, 8px);
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+    color: var(--ubits-fg-1-medium);
+    font-weight: 500;
+}
+
+.tarea-action-btn:hover {
+    background: var(--ubits-bg-2);
+    border-color: var(--ubits-accent-brand);
+    color: var(--ubits-fg-1-high);
+}
+
+.tarea-action-btn i {
+    font-size: var(--font-size-sm, 13px);
+}
+
+.tarea-action-btn--add-plan {
+    background: var(--ubits-bg-2);
+    color: var(--ubits-fg-1-high);
+    font-size: var(--font-size-xs, 11px);
+    font-weight: 600;
+    padding: 0 var(--padding-md, 12px);
+    width: auto;
+    min-width: var(--size-4xl, 32px);
+}
+
+.tarea-action-btn--delete {
+    color: var(--ubits-feedback-accent-error);
+}
+
+.tarea-action-btn--delete:hover {
+    background: var(--ubits-feedback-bg-error-subtle);
+    border-color: var(--ubits-feedback-accent-error);
+}
+
+.tarea-action-btn--details {
+    color: var(--ubits-fg-1-medium);
+}
+
+/* Botón de prioridad */
+.tarea-priority-btn {
+    border-radius: 50%;
+}
+
+.tarea-priority-btn.tarea-priority--high {
+    background: var(--ubits-bg-2);
+    border-color: var(--ubits-border-1);
+    color: var(--ubits-fg-1-high);
+}
+
+.tarea-priority-btn.tarea-priority--medium {
+    background: var(--ubits-bg-2);
+    border-color: var(--ubits-border-1);
+    color: var(--ubits-fg-1-medium);
+}
+
+.tarea-priority-btn.tarea-priority--low {
+    background: var(--ubits-feedback-bg-warning-subtle);
+    border-color: var(--ubits-feedback-border-warning);
+    color: var(--ubits-feedback-fg-warning-subtle);
+}
+
+/* Asignado */
+.tarea-assigned {
+    flex-shrink: 0;
+    width: var(--size-4xl, 32px); /* sin token */
+    height: var(--size-4xl, 32px);
+    position: relative;
+}
+
+.tarea-assigned-avatar-initials {
+    width: var(--size-4xl, 32px);
+    height: var(--size-4xl, 32px);
+    border-radius: 50%;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ubits-fg-1-high);
+    font-size: var(--font-size-xs, 11px);
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.tarea-assigned-placeholder {
+    width: var(--size-4xl, 32px);
+    height: var(--size-4xl, 32px);
+    border-radius: 50%;
+    background: var(--ubits-bg-2);
+    border: 1px solid var(--ubits-border-1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ubits-fg-1-medium);
+    flex-shrink: 0;
+}
+
+.tarea-assigned-placeholder i {
+    font-size: var(--font-size-sm, 13px);
+}
+
+/* Botón añadir tarea */
+.tarea-add-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm, 8px);
+    padding: var(--padding-md, 12px);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-size: var(--font-size-sm, 13px);
+    font-weight: 600;
+    color: var(--ubits-accent-brand);
+    transition: all 0.2s ease;
+    width: 100%;
+    margin-top: var(--gap-lg, 16px);
+}
+
+.tarea-add-btn:hover {
+    color: var(--ubits-accent-brand);
+    opacity: 0.8;
+}
+
+.tarea-add-btn i {
+    font-size: var(--font-size-sm, 13px);
+}
+
+/* Formulario añadir tarea inline */
+.tarea-add-form {
+    margin-top: var(--gap-lg, 16px);
+    width: 100%;
+}
+
+.tarea-add-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md, 12px);
+    padding: var(--padding-sm, 8px) var(--padding-md, 12px);
+    border: 1px solid var(--ubits-accent-brand);
+    border-radius: var(--border-radius-sm, 8px);
+    background: var(--ubits-bg-1);
+}
+
+.tarea-add-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--ubits-accent-brand);
+    color: var(--ubits-bg-1);
+    flex-shrink: 0;
+}
+
+.tarea-add-icon i {
+    font-size: var(--font-size-xs, 11px);
+}
+
+.tarea-add-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm, 13px);
+    color: var(--ubits-fg-1-high);
+    padding: 0;
+}
+
+.tarea-add-input::placeholder {
+    color: var(--ubits-fg-1-medium);
+}
+
+/* Indicador de carga */
+.loading-indicator {
+    text-align: center;
+    padding: 20px;
+    color: var(--ubits-fg-1-medium);
+}
+
 /* Responsive para secciones */
 @media (max-width: 1023px) {
     .content-sections {
@@ -96,16 +999,720 @@
         flex-direction: column;
         gap: var(--gap-lg);
     }
-    
-    /* Ajustar widgets para móvil - sin altura mínima forzada */
+
+    .main-content:has(.widget-vista-tareas) {
+        max-height: calc(100vh - 120px) !important;
+    }
+
+    .widget-vista-tareas {
+        min-height: 0 !important;
+        height: auto !important;
+        padding: var(--padding-lg, 16px) !important;
+    }
+
+    .calendar-header__controls {
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        overflow-x: visible !important;
+        width: 100% !important;
+    }
+
+    .calendar-month-selector {
+        flex-shrink: 0 !important;
+        flex-grow: 0 !important;
+    }
+
+    .calendar-horizontal {
+        flex: 1 1 0% !important;
+        min-width: 0 !important;
+        width: auto !important;
+    }
+
+    .calendar-today-nav {
+        justify-content: center;
+        flex-shrink: 0 !important;
+        flex-grow: 0 !important;
+    }
+}
+
+/* Tirilla en una sola línea: mantener grid 2 columnas hasta 600px (como task-strip) */
+@media (max-width: 600px) {
+    .tarea-item {
+        grid-template-columns: minmax(0, 1.2fr) minmax(80px, 0.6fr);
+        min-width: 0;
+    }
+
+    .tarea-item__main {
+        min-height: var(--size-5xl, 40px);
+        height: auto;
+    }
+
+    .tarea-item__actions {
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+        gap: var(--gap-sm, 8px);
+        height: auto;
+        min-height: var(--size-5xl, 40px);
+    }
 }
 
 @media (max-width: 480px) {
-    /* Padding reducido en móviles pequeños - sin altura mínima forzada */
     .section-single > div,
     .section-dual > div,
     .section-triple > div,
     .section-quad > div {
         padding: var(--padding-md) !important; /* !important para sobrescribir el reset */
+    }
+
+    .widget-vista-tareas {
+        padding: var(--padding-md, 12px) !important;
+    }
+}
+
+/* ========================================
+   PANEL DE DETALLE DE TAREA (Supermodal)
+   ======================================== */
+
+.task-detail-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--ubits-bg-1);
+    z-index: 10050;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.task-detail-panel {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.task-detail-panel__inner {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.task-detail-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: var(--padding-lg, 16px) var(--padding-2xl, 24px);
+    border-bottom: 1px solid var(--ubits-border-1);
+    flex-shrink: 0;
+}
+
+.task-detail-header__title {
+    margin: 0;
+    font-size: var(--font-size-h2, 20px);
+    font-weight: 700;
+    color: var(--ubits-fg-1-high);
+}
+
+.task-detail-header__subtitle {
+    margin: var(--padding-xs, 4px) 0 0 0;
+    font-size: var(--font-size-sm, 13px);
+    color: var(--ubits-fg-1-medium);
+}
+
+.task-detail-close {
+    background: transparent;
+    border: none;
+    padding: var(--padding-sm, 8px);
+    cursor: pointer;
+    color: var(--ubits-fg-1-medium);
+    border-radius: var(--border-radius-sm, 8px);
+    transition: all 0.2s ease;
+}
+
+.task-detail-close:hover {
+    background: var(--ubits-bg-2);
+    color: var(--ubits-fg-1-high);
+}
+
+.task-detail-assignee-select {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md, 12px);
+    padding: var(--padding-xs, 4px) 0;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.task-detail-assignee-select:hover {
+    opacity: 0.85;
+}
+
+.task-detail-assignee-avatar {
+    width: var(--size-4xl, 32px); /* sin token */
+    height: var(--size-4xl, 32px);
+    border-radius: 50%;
+    background: var(--ubits-bg-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-xs, 11px);
+    font-weight: 600;
+    color: var(--ubits-fg-1-high);
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.task-detail-assignee-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.task-detail-assignee-avatar--empty {
+    border: 1px solid var(--ubits-border-1);
+}
+
+.task-detail-assignee-avatar--empty i {
+    color: var(--ubits-fg-1-medium);
+    font-size: var(--font-size-sm, 13px);
+}
+
+.task-detail-assignee-text {
+    flex: 1;
+    font-size: var(--font-size-sm, 13px);
+    color: var(--ubits-fg-1-high);
+    text-align: left;
+}
+
+.task-detail-assignee-chevron {
+    color: var(--ubits-fg-1-medium);
+    font-size: var(--font-size-xs, 11px);
+}
+
+.task-detail-dropdown-avatar,
+.task-detail-dropdown-item-avatar img {
+    width: var(--size-2xl, 24px); /* sin token */
+    height: var(--size-2xl, 24px);
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.task-detail-dropdown-item-avatar {
+    width: var(--size-2xl, 24px);
+    height: var(--size-2xl, 24px);
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.task-detail-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: var(--padding-xs, 4px);
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm, 8px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* sin token */
+    z-index: 10;
+    max-height: 200px; /* sin token */
+    overflow-y: auto;
+}
+
+.task-detail-dropdown-item {
+    padding: 10px var(--padding-md, 12px); /* 10px sin token */
+    font-size: var(--font-size-sm, 13px);
+    color: var(--ubits-fg-1-high);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm, 8px);
+}
+
+.task-detail-dropdown-item:hover {
+    background: var(--ubits-bg-2);
+}
+
+.task-detail-dropdown-item--selected {
+    background: var(--ubits-feedback-bg-info-subtle);
+    color: var(--ubits-accent-brand);
+}
+
+.task-detail-section.task-detail-section--has-dropdown {
+    position: relative;
+}
+
+.task-detail-created-by-row {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md, 12px);
+}
+
+.task-detail-created-by-avatar {
+    width: var(--size-4xl, 32px);
+    height: var(--size-4xl, 32px);
+    border-radius: 50%;
+    background: var(--ubits-bg-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-xs, 11px);
+    font-weight: 600;
+    color: var(--ubits-fg-1-high);
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.task-detail-created-by-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.task-detail-created-by-text {
+    margin: 0;
+    font-size: var(--font-size-sm, 13px);
+    color: var(--ubits-fg-1-high);
+}
+
+.task-detail-role-wrap {
+    position: relative;
+}
+
+.task-detail-role-btn--open {
+    background: var(--ubits-accent-brand);
+    border-color: var(--ubits-accent-brand);
+    color: var(--ubits-btn-primary-fg);
+}
+
+.task-detail-role-btn--open i {
+    color: var(--ubits-btn-primary-fg);
+}
+
+.task-detail-dropdown--role {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    left: auto;
+    min-width: 160px; /* sin token */
+}
+
+.task-detail-label-required {
+    color: var(--ubits-feedback-accent-error);
+}
+
+.task-detail-name-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.task-detail-name-input {
+    flex: 1;
+    padding: 10px 60px 10px var(--padding-md, 12px); /* 10px/60px sin token */
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm, 8px);
+    font-size: var(--font-size-sm, 13px);
+    color: var(--ubits-fg-1-high);
+    outline: none;
+    box-sizing: border-box;
+}
+
+.task-detail-name-input:focus {
+    border-color: var(--ubits-accent-brand);
+}
+
+.task-detail-name-input::placeholder {
+    color: var(--ubits-fg-1-medium);
+}
+
+.task-detail-char-count {
+    position: absolute;
+    right: var(--padding-md, 12px);
+    font-size: var(--font-size-xs, 11px);
+    color: var(--ubits-fg-1-medium);
+}
+
+.task-detail-info-box {
+    display: flex;
+    gap: var(--gap-md, 12px);
+    padding: var(--padding-lg, 16px);
+    background: var(--ubits-feedback-bg-info-subtle);
+    border-radius: var(--border-radius-sm, 8px);
+    margin-bottom: var(--gap-lg, 16px);
+}
+
+.task-detail-info-icon {
+    color: var(--ubits-feedback-accent-info);
+    font-size: var(--font-size-lg, 18px);
+    flex-shrink: 0;
+}
+
+.task-detail-info-title {
+    margin: 0;
+    font-size: var(--font-size-sm, 13px);
+    font-weight: 600;
+    color: var(--ubits-fg-1-high);
+}
+
+.task-detail-info-text {
+    margin: var(--padding-xs, 4px) 0 0 0;
+    font-size: var(--font-size-sm, 13px);
+    color: var(--ubits-fg-1-medium);
+}
+
+.task-detail-section--tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--gap-sm, 8px);
+}
+
+.task-detail-priority-btn,
+.task-detail-role-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm, 8px);
+    background: var(--ubits-bg-1);
+    font-size: var(--font-size-sm, 13px);
+    color: var(--ubits-fg-1-high);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.task-detail-priority-btn:hover,
+.task-detail-role-btn:hover {
+    background: var(--ubits-bg-2);
+}
+
+.task-detail-delete-link {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: var(--font-size-sm, 13px);
+    color: var(--ubits-feedback-accent-error);
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.task-detail-delete-link:hover {
+    text-decoration: underline;
+}
+
+.task-detail-body {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+    overflow: hidden;
+    background: var(--ubits-bg-2);
+}
+
+.task-detail-main {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--padding-2xl, 24px);
+    background: var(--ubits-bg-1);
+}
+
+.task-detail-section {
+    margin-bottom: var(--gap-lg, 16px);
+}
+
+.task-detail-section:last-child {
+    margin-bottom: 0;
+}
+
+.task-detail-section__title {
+    margin: 0 0 var(--gap-sm, 8px) 0;
+    font-size: var(--font-size-md, 16px);
+    font-weight: 700;
+    color: var(--ubits-fg-1-high);
+}
+
+.task-detail-label {
+    display: block;
+    margin: 0 0 var(--gap-sm, 8px) 0;
+    font-size: var(--font-size-sm, 13px);
+    font-weight: 500;
+    color: var(--ubits-fg-1-high);
+}
+
+.task-detail-label-optional {
+    font-weight: 400;
+    color: var(--ubits-fg-1-medium);
+}
+
+.task-detail-assignee {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md, 12px);
+    padding: var(--padding-md, 12px) 0;
+}
+
+.task-detail-assignee__avatar {
+    width: var(--size-4xl, 32px);
+    height: var(--size-4xl, 32px);
+    border-radius: 50%;
+    background: var(--ubits-bg-2);
+    border: 1px solid var(--ubits-border-1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-xs, 11px);
+    font-weight: 600;
+    color: var(--ubits-fg-1-high);
+    flex-shrink: 0;
+}
+
+.task-detail-assignee__info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.task-detail-assignee__name {
+    font-size: var(--font-size-sm, 13px);
+    font-weight: 600;
+    color: var(--ubits-fg-1-high);
+}
+
+.task-detail-assignee__role {
+    font-size: var(--font-size-xs, 11px);
+    color: var(--ubits-fg-1-medium);
+}
+
+.task-detail-assignee__menu {
+    background: transparent;
+    border: none;
+    padding: var(--padding-sm, 8px);
+    cursor: pointer;
+    color: var(--ubits-fg-1-medium);
+}
+
+.task-detail-textarea {
+    width: 100%;
+    padding: var(--padding-md, 12px);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm, 8px);
+    font-size: var(--font-size-sm, 13px);
+    font-family: inherit;
+    color: var(--ubits-fg-1-high);
+    resize: vertical;
+    min-height: 100px;
+    box-sizing: border-box;
+}
+
+.task-detail-textarea:focus {
+    outline: none;
+    border-color: var(--ubits-accent-brand);
+}
+
+.task-detail-date-wrap {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm, 8px);
+    padding: var(--padding-md, 12px);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm, 8px);
+    background: var(--ubits-bg-1);
+}
+
+.task-detail-date-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-size: var(--font-size-sm, 13px);
+    color: var(--ubits-fg-1-high);
+    outline: none;
+}
+
+
+.task-detail-select-wrap {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm, 8px);
+    padding: var(--padding-md, 12px);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm, 8px);
+    background: var(--ubits-bg-1);
+    cursor: pointer;
+}
+
+.task-detail-select-icon {
+    color: var(--ubits-fg-1-medium);
+}
+
+.task-detail-select-placeholder {
+    flex: 1;
+    font-size: var(--font-size-sm, 13px);
+    color: var(--ubits-fg-1-medium);
+}
+
+.task-detail-helper {
+    margin: var(--gap-sm, 8px) 0 0 0;
+    font-size: var(--font-size-sm, 13px);
+    color: var(--ubits-fg-1-medium);
+}
+
+.task-detail-section--row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-2xl, 24px);
+    align-items: flex-start;
+}
+
+.task-detail-field {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm, 8px);
+}
+
+.task-detail-status-badge {
+    padding: 4px 12px;
+    border-radius: 5px;
+    font-size: var(--font-size-xs, 11px);
+    font-weight: 500;
+}
+
+.task-detail-status-badge.task-detail-status--iniciada {
+    background: rgba(12, 91, 239, 0.15);
+    border: 1px solid var(--ubits-accent-brand);
+    color: var(--ubits-accent-brand);
+}
+
+.task-detail-status-badge.task-detail-status--vencida {
+    background: var(--ubits-feedback-bg-error-subtle);
+    border: 1px solid var(--ubits-feedback-accent-error);
+    color: var(--ubits-feedback-accent-error);
+}
+
+.task-detail-status-badge.task-detail-status--finalizada {
+    background: var(--ubits-feedback-bg-success-subtle);
+    border: 1px solid var(--ubits-feedback-accent-success);
+    color: var(--ubits-feedback-accent-success);
+}
+
+.task-detail-select {
+    padding: var(--padding-sm, 8px) var(--padding-md, 12px);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm, 8px);
+    font-size: var(--font-size-sm, 13px);
+    color: var(--ubits-fg-1-high);
+    background: var(--ubits-bg-1);
+    cursor: pointer;
+}
+
+.task-detail-sidebar {
+    width: 40%;
+    min-width: 280px;
+    display: flex;
+    flex-direction: column;
+    background: var(--ubits-bg-2);
+    border-left: 1px solid var(--ubits-border-1);
+}
+
+.task-detail-sidebar-header {
+    padding: var(--padding-lg, 16px);
+    background: var(--ubits-bg-1);
+    border-bottom: 1px solid var(--ubits-border-1);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--gap-md, 12px);
+}
+
+.task-detail-sidebar__title {
+    margin: 0;
+    font-size: var(--font-size-md, 16px);
+    font-weight: 700;
+    color: var(--ubits-fg-1-high);
+}
+
+.task-detail-sidebar__subtitle {
+    margin: var(--padding-xs, 4px) 0 0 0;
+    font-size: var(--font-size-sm, 13px);
+    color: var(--ubits-fg-1-medium);
+}
+
+.task-detail-btn-add {
+    padding: var(--padding-sm, 8px) var(--padding-md, 12px);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm, 8px);
+    background: var(--ubits-bg-1);
+    font-size: var(--font-size-sm, 13px);
+    color: var(--ubits-fg-1-high);
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.task-detail-btn-add:hover {
+    background: var(--ubits-bg-2);
+}
+
+.task-detail-sidebar-content {
+    flex: 1;
+    padding: var(--padding-2xl, 24px);
+    overflow-y: auto;
+}
+
+.task-detail-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--padding-2xl, 24px);
+    border-top: 1px solid var(--ubits-border-1);
+    background: var(--ubits-bg-1);
+    flex-shrink: 0;
+}
+
+.task-detail-footer-btn {
+    padding: 10px 16px;
+    min-width: 136px;
+    height: 40px;
+    border-radius: var(--border-radius-sm, 8px);
+    font-size: var(--font-size-md, 16px);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.task-detail-footer-btn--delete {
+    background: transparent;
+    border: 1px solid var(--ubits-border-1);
+    color: var(--ubits-feedback-accent-error);
+}
+
+.task-detail-footer-btn--delete:hover {
+    background: var(--ubits-feedback-bg-error-subtle);
+}
+
+.task-detail-footer-btn--finish {
+    background: var(--ubits-accent-brand);
+    border: none;
+    color: var(--ubits-btn-primary-fg);
+}
+
+.task-detail-footer-btn--finish:hover {
+    opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+    .task-detail-body {
+        flex-direction: column;
+    }
+
+    .task-detail-sidebar {
+        width: 100%;
+        min-width: 0;
+        border-left: none;
+        border-top: 1px solid var(--ubits-border-1);
+>>>>>>> Stashed changes
     }
 }

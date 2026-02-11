@@ -83,12 +83,12 @@ const JEFES = [
     },
     {
         id: 'J005',
-        nombre: 'Jorge Ramírez Torres',
+        nombre: 'María Alejandra Sánchez Pardo',
         cargo: 'Jefe de Logística',
         area: 'Logística',
-        genero: 'M',
-        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop',
-        username: 'jramit@fiqsha.demo'
+        genero: 'F',
+        avatar: '../../images/Profile-image.jpg',
+        username: 'masanchez@fiqsha.demo'
     },
     {
         id: 'J006',
@@ -444,7 +444,7 @@ const EMPLEADOS = [
         area: 'Logística',
         genero: 'M',
         avatar: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&h=100&fit=crop',
-        jefe: 'Jorge Ramírez Torres',
+        jefe: 'María Alejandra Sánchez Pardo',
         esJefe: false
     },
     {
@@ -455,7 +455,7 @@ const EMPLEADOS = [
         area: 'Logística',
         genero: 'F',
         avatar: 'https://images.unsplash.com/photo-1601412436009-d964bd02edbc?w=100&h=100&fit=crop',
-        jefe: 'Jorge Ramírez Torres',
+        jefe: 'María Alejandra Sánchez Pardo',
         esJefe: false
     },
     {
@@ -466,7 +466,7 @@ const EMPLEADOS = [
         area: 'Logística',
         genero: 'M',
         avatar: 'https://images.unsplash.com/photo-1595152772835-219674b2a8a6?w=100&h=100&fit=crop',
-        jefe: 'Jorge Ramírez Torres',
+        jefe: 'María Alejandra Sánchez Pardo',
         esJefe: false
     },
     {
@@ -477,7 +477,7 @@ const EMPLEADOS = [
         area: 'Logística',
         genero: 'F',
         avatar: 'https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=100&h=100&fit=crop',
-        jefe: 'Jorge Ramírez Torres',
+        jefe: 'María Alejandra Sánchez Pardo',
         esJefe: false
     },
     {
@@ -488,7 +488,7 @@ const EMPLEADOS = [
         area: 'Logística',
         genero: 'M',
         avatar: 'https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?w=100&h=100&fit=crop',
-        jefe: 'Jorge Ramírez Torres',
+        jefe: 'María Alejandra Sánchez Pardo',
         esJefe: false
     },
     {
@@ -499,7 +499,7 @@ const EMPLEADOS = [
         area: 'Logística',
         genero: 'F',
         avatar: 'https://images.unsplash.com/photo-1592621385612-4d7129426394?w=100&h=100&fit=crop',
-        jefe: 'Jorge Ramírez Torres',
+        jefe: 'María Alejandra Sánchez Pardo',
         esJefe: false
     },
     

@@ -20,10 +20,12 @@
     <link rel="stylesheet" href="../../components/ia-button.css">
     <link rel="stylesheet" href="../../components/header-product.css">
     <link rel="stylesheet" href="../../components/tooltip.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/alert.css">
     <link rel="stylesheet" href="./profile.css">
     <link rel="stylesheet" href="./planes.css">
 </head>
-<body data-theme="light">
+<body data-theme="light" class="page-planes">
     <div class="dashboard-container">
         <div class="tooltip" id="tooltip"></div>
         
@@ -44,10 +46,9 @@
                     </div>
                     
                     <!-- Sección contenido planes -->
-                    <div class="section-single">
-                        <div class="widget-contenido-planes">
-                            <p class="ubits-body-md-regular">Contenido planes</p>
-                            <br><br><br><br><br><br><br><br><br><br><br>
+                    <div class="section-single section-single--plans">
+                        <div id="plans-content" class="plans-content">
+                            <!-- La interfaz de planes se renderiza dinámicamente con JavaScript -->
                         </div>
                     </div>
                 </div>
@@ -64,14 +65,34 @@
     <!-- Profile Menu Container -->
     <div id="profile-menu-container"></div>
 
+    <!-- FAB Button Container -->
+    <div id="fab-button-container"></div>
+
+    <!-- Drawer de crear plantilla -->
+    <div id="create-template-drawer-overlay" class="template-drawer-overlay" style="display: none;">
+        <div class="template-drawer-content" id="create-template-drawer">
+            <!-- El contenido se generará dinámicamente con JavaScript -->
+        </div>
+    </div>
+
+    <!-- Drawer de crear plan -->
+    <div id="create-plan-drawer-overlay" class="template-drawer-overlay plan-drawer-overlay" style="display: none;">
+        <div class="template-drawer-content plan-drawer-content" id="create-plan-drawer">
+            <!-- El contenido se generará dinámicamente con JavaScript -->
+        </div>
+    </div>
+
         <script src="../../components/tooltip.js"></script>
-<script src="../../components/sidebar.js"></script>
-    <script src="../../components/sub-nav.js"></script>
-    <script src="../../components/tab-bar.js"></script>
-    <script src="../../components/floating-menu.js"></script>
-    <script src="../../components/profile-menu.js"></script>
-    <script src="../../components/header-product.js"></script>
-    <script src="../../script.js"></script>
+        <script src="../../components/sidebar.js"></script>
+        <script src="../../components/sub-nav.js"></script>
+        <script src="../../components/tab-bar.js"></script>
+        <script src="../../components/floating-menu.js"></script>
+        <script src="../../components/profile-menu.js"></script>
+        <script src="../../components/header-product.js"></script>
+        <script src="../../components/input.js"></script>
+        <script src="../../components/alert.js"></script>
+        <script src="../../script.js"></script>
+        <script src="./planes.js"></script>
     <script>
         // Cargar componentes dinámicamente
         document.addEventListener('DOMContentLoaded', function() {
@@ -81,35 +102,19 @@
             loadFloatingMenu('floating-menu-container');
             loadProfileMenu('profile-menu-container');
             
-            // Cargar header-product
+            // Cargar header-product (sin botones adicionales para la interfaz de planes)
             if (typeof loadHeaderProduct === 'function') {
                 loadHeaderProduct('header-product-container', {
                     productName: 'Planes',
-                    breadcrumbItems: [], // Array vacío para ocultar breadcrumb
-                    aiButton: {
-                        text: 'AI button',
-                        onClick: function() {
-                            console.log('AI button clicked');
-                        }
-                    },
-                    secondaryButtons: [
-                        { text: 'Button text', icon: 'fa-th', onClick: function() { console.log('Secondary button clicked'); } }
-                    ],
-                    primaryButton: {
-                        text: 'Primary action',
-                        icon: 'fa-th',
-                        onClick: function() {
-                            console.log('Primary button clicked');
-                        }
-                    },
-                    menuButton: {
-                        onClick: function() {
-                            console.log('Menu button clicked');
-                        }
-                    }
+                    breadcrumbItems: []
                 });
             }
             
+            // Inicializar interfaz de planes
+            if (typeof initPlansInterface === 'function') {
+                initPlansInterface();
+            }
+
             // Activar el tab "Planes" específicamente después de cargar el SubNav
             setTimeout(() => {
                 // Remover active de todos los tabs (desktop y móvil)

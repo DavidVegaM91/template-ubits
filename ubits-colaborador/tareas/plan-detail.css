@@ -1,0 +1,454 @@
+/* ========================================
+   ESTILOS DETALLE DEL PLAN
+   Alineado con task-group-detail: colores --ubits-*, fuentes Noto Sans,
+   tokens --font-size-*, --padding-*, --gap-*, --border-radius-*
+   ======================================== */
+
+/* Coherencia de fuentes: Noto Sans en toda la página (design system) */
+.page-plan-detail,
+.page-plan-detail .main-content,
+.page-plan-detail .content-area,
+.page-plan-detail .plan-detail-sections,
+.page-plan-detail .plan-detail-header,
+.page-plan-detail .plan-detail-card,
+.page-plan-detail .plan-detail-tasks-card,
+.page-plan-detail .plan-detail-empty,
+.page-plan-detail .plan-detail-tasks-list,
+.page-plan-detail .plan-detail-feedback__ai-content,
+.page-plan-detail .plan-detail-feedback__ai-text span,
+.page-plan-detail input,
+.page-plan-detail button {
+    font-family: var(--font-family, "Noto Sans"), sans-serif;
+}
+
+/* Iconos: mantener Font Awesome (no heredar Noto Sans) */
+.page-plan-detail i[class*="fa-"],
+.page-plan-detail .plan-detail-empty__icon {
+    font-family: "Font Awesome 6 Pro", "Font Awesome 6 Free", "Font Awesome 6 Brands", sans-serif !important;
+}
+
+.page-plan-detail .main-content,
+.page-plan-detail .content-area {
+    background: var(--ubits-bg-2);
+}
+
+/* Contenedor principal: alineado con .task-group-detail (padding 16px, flex column) */
+.page-plan-detail .plan-detail-sections {
+    display: flex;
+    flex-direction: column;
+    padding: var(--padding-lg, 16px);
+    background: var(--ubits-bg-2);
+}
+
+/* Header: alineado con .task-group-detail-header (gap 1rem, margin-bottom 22px) */
+.plan-detail-header {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-lg, 16px);
+    margin-bottom: 22px; /* sin token - valor del módulo */
+}
+
+.plan-detail-back {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: var(--padding-sm, 8px);
+    background: transparent;
+    border: none;
+    border-radius: var(--border-radius-sm, 8px);
+    cursor: pointer;
+    color: var(--ubits-fg-1-high);
+}
+
+.plan-detail-back:hover {
+    background: var(--ubits-bg-2);
+}
+
+.plan-detail-back i {
+    font-size: var(--font-size-h1, 24px);
+}
+
+/* Título: alineado con .task-group-detail-header__title (h2 20px, color-fg-2-high, line-height 100%) */
+.plan-detail-title {
+    margin: 0;
+    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-size: var(--font-size-h2, 20px);
+    font-style: normal;
+    font-weight: 700;
+    line-height: 100%;
+    color: var(--ubits-fg-2-high);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.page-plan-detail .plan-detail-sections .plan-detail-card,
+.page-plan-detail .plan-detail-sections .plan-detail-tasks-card,
+.page-plan-detail .plan-detail-sections .plan-detail-feedback__ai-content {
+    margin-bottom: var(--gap-2xl, 24px);
+}
+
+.page-plan-detail .plan-detail-sections .plan-detail-feedback__ai-content:last-child {
+    margin-bottom: 0;
+}
+
+.plan-detail-card {
+    position: relative;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-md);
+    padding: var(--padding-2xl, 24px);
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm, 8px);
+}
+
+.plan-detail-card__more {
+    position: absolute;
+    top: var(--gap-lg, 16px);
+    right: var(--gap-lg, 16px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: var(--border-radius-full, 1000px);
+    cursor: pointer;
+    color: var(--ubits-fg-1-medium);
+}
+
+.plan-detail-card__more:hover {
+    background: var(--ubits-bg-2);
+}
+
+.plan-detail-card__more i {
+    font-size: var(--font-size-h2, 20px);
+}
+
+/* Textos de card: alineado con módulo (font-family, font-size-md, color-fg-1-high/medium) */
+.plan-detail-card__label-row {
+    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-size: var(--font-size-md, 16px);
+    font-weight: 600;
+    color: var(--ubits-fg-1-high);
+    margin: 0;
+}
+
+.plan-detail-card__desc-text {
+    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-size: var(--font-size-md, 16px);
+    color: var(--ubits-fg-1-medium);
+    margin: 0 0 var(--gap-sm, 8px) 0;
+    line-height: 1.5;
+}
+
+.plan-detail-card__text {
+    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-size: var(--font-size-md, 16px);
+    color: var(--ubits-fg-1-medium);
+    margin: 0;
+}
+
+.plan-detail-card__progress-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--gap-lg, 16px);
+}
+
+.plan-detail-card__progress-row .plan-detail-card__bar {
+    flex: 1;
+    min-width: 100px;
+}
+
+.plan-detail-card__bar {
+    height: 8px;
+    background: var(--ubits-bg-2);
+    border-radius: var(--border-radius-full, 9999px);
+    overflow: hidden;
+}
+
+.plan-detail-card__bar-fill {
+    height: 100%;
+    background: var(--ubits-accent-brand);
+    border-radius: var(--border-radius-full, 9999px);
+    transition: width 0.3s ease;
+}
+
+.plan-detail-card__percent {
+    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-size: var(--font-size-sm, 13px);
+    font-weight: 600;
+    color: var(--ubits-fg-1-medium);
+}
+
+.plan-detail-card__date-wrap {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm, 8px);
+}
+
+.plan-detail-card__date-label {
+    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-size: var(--font-size-md, 16px);
+    color: var(--ubits-fg-1-medium);
+}
+
+.plan-detail-card__date-input {
+    width: 112px; /* sin token */
+    padding: var(--padding-xs, 4px) var(--padding-sm, 8px);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-md, 16px); /* 14px → superior */
+    color: var(--ubits-fg-1-high);
+    text-align: center;
+    background: var(--ubits-bg-1);
+}
+
+.plan-detail-card__status {
+    padding: var(--padding-xs, 4px) var(--padding-md, 12px);
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-sm, 13px);
+    font-weight: 600;
+}
+
+.plan-detail-card__status--activo {
+    background: var(--ubits-feedback-bg-info-subtle);
+    border: 1px solid var(--ubits-accent-brand);
+    color: var(--ubits-accent-brand);
+}
+
+.plan-detail-card__status--vencido {
+    background: var(--ubits-feedback-bg-error-subtle);
+    border: 1px solid var(--ubits-feedback-border-error);
+    color: var(--ubits-feedback-accent-error);
+}
+
+.plan-detail-card__status--finalizado {
+    background: var(--ubits-feedback-bg-success-subtle);
+    border: 1px solid var(--ubits-feedback-border-success);
+    color: var(--ubits-feedback-accent-success);
+}
+
+.plan-detail-card__btn-finalizar {
+    padding: var(--padding-xs, 4px) var(--padding-md, 12px);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-md, 16px); /* 14px → superior */
+    font-weight: 600;
+    color: var(--ubits-fg-1-high);
+    background: var(--ubits-bg-1);
+    cursor: pointer;
+}
+
+.plan-detail-card__btn-finalizar:hover {
+    background: var(--ubits-bg-2);
+}
+
+/* Card Tareas del plan */
+.plan-detail-tasks-card {
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-md);
+    padding: var(--padding-2xl, 24px);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06); /* sin token */
+}
+
+.plan-detail-tasks-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--gap-lg, 16px);
+}
+
+/* Título sección tareas: alineado con módulo (font-family, font-size-md, color-fg-1-high) */
+.plan-detail-tasks-card__title {
+    margin: 0;
+    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-size: var(--font-size-md, 16px);
+    font-weight: 700;
+    color: var(--ubits-fg-1-high);
+}
+
+.plan-detail-tasks-card__filters {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md, 12px);
+}
+
+.plan-detail-tasks-card__search-btn,
+.plan-detail-tasks-card__filter-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm, 8px); /* 6px → superior */
+    padding: var(--padding-sm, 8px) var(--padding-md, 12px); /* 6px → superior */
+    background: transparent;
+    border: none;
+    border-radius: var(--border-radius-sm, 8px); /* 6px → superior */
+    cursor: pointer;
+    color: var(--ubits-fg-1-medium);
+    font-size: var(--font-size-md, 16px); /* 14px → superior */
+}
+
+.plan-detail-tasks-card__search-btn:hover,
+.plan-detail-tasks-card__filter-btn:hover {
+    background: var(--ubits-bg-2);
+}
+
+.plan-detail-tasks-card__counters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-lg, 16px);
+    margin-bottom: var(--gap-lg, 16px);
+}
+
+.plan-detail-tasks-card__counter {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm, 8px); /* 6px → superior */
+    font-size: var(--font-size-md, 16px); /* 14px → superior */
+    color: var(--ubits-fg-1-medium);
+}
+
+.plan-detail-tasks-card__counter i {
+    font-size: var(--font-size-xs, 11px); /* 6px → superior en escala */
+}
+
+.plan-detail-tasks-card__counter--iniciadas i {
+    color: var(--ubits-accent-brand);
+}
+
+.plan-detail-tasks-card__counter--vencidas i {
+    color: var(--ubits-feedback-accent-error);
+}
+
+.plan-detail-tasks-card__counter--finalizadas i {
+    color: var(--ubits-feedback-accent-success);
+}
+
+.plan-detail-tasks-card__add {
+    margin-bottom: var(--gap-lg, 16px);
+}
+
+.plan-detail-tasks-card__add-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap-sm, 8px);
+    width: 100%;
+    padding: var(--padding-md, 12px) var(--padding-lg, 16px);
+    border: 1px solid var(--ubits-accent-brand);
+    border-radius: var(--border-radius-sm, 8px);
+    background: var(--ubits-feedback-bg-info-subtle);
+    color: var(--ubits-fg-1-high);
+    font-size: var(--font-size-md, 16px); /* 14px → superior */
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.plan-detail-tasks-card__add-btn:hover {
+    background: var(--ubits-feedback-bg-info-subtle);
+    opacity: 0.9;
+}
+
+/* Tirilla "Mover tarea" en contexto de plan */
+.plan-detail-tasks-list .tarea-action-btn--mover .tarea-action-btn__label {
+    display: inline;
+}
+
+.tarea-action-btn__label {
+    display: none;
+}
+
+/* Lista de tareas - misma estructura que tab tareas */
+.plan-detail-tasks {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm, 8px);
+}
+
+.plan-detail-tasks-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm, 8px);
+}
+
+/* Tirillas en detalle del plan: mismos estilos que el tab de tareas (tareas.css).
+   Solo añadimos borde suave para separar filas en la lista. */
+.page-plan-detail .plan-detail-tasks-list .tarea-item {
+    border: 1px solid var(--ubits-border-1);
+}
+
+/* Empty state */
+.plan-detail-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-12, 48px) var(--padding-2xl, 24px);
+    background: var(--ubits-bg-1);
+    border-radius: var(--border-radius-md);
+    border: 1px dashed var(--ubits-border-1);
+}
+
+.plan-detail-empty__icon {
+    font-size: var(--font-size-d1, 40px); /* 80px → superior en escala (máx token) */
+    color: var(--ubits-fg-1-medium);
+    opacity: 0.5;
+    margin-bottom: var(--gap-lg, 16px);
+}
+
+/* Empty state: alineado con task-group (font-family, font-size, color-fg-1-high/medium) */
+.plan-detail-empty__title {
+    margin: 0 0 var(--gap-sm, 8px) 0;
+    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-size: var(--font-size-h2, 20px);
+    font-weight: 700;
+    color: var(--ubits-fg-1-high);
+}
+
+.plan-detail-empty__desc {
+    margin: 0 0 var(--gap-2xl, 24px) 0;
+    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-size: var(--font-size-md, 16px);
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--ubits-fg-1-medium);
+}
+
+/* ========================================
+   BLOQUE FEEDBACK IA (alineado con task-group-feedback__ai-*)
+   Visible cuando el plan es creado por IA (label AIMade)
+   ======================================== */
+.plan-detail-feedback__ai-content {
+    display: flex;
+    align-items: center;
+    gap: 11px; /* sin token - valor del módulo */
+    padding-top: var(--padding-lg, 16px);
+}
+
+.plan-detail-feedback__ai-text {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-xs, 4px);
+}
+
+.plan-detail-feedback__ai-text span {
+    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-weight: 400;
+    font-size: var(--font-size-sm, 13px);
+    font-style: normal;
+    line-height: 1.5em;
+    color: var(--ubits-fg-1-high);
+}
+
+.plan-detail-feedback__ai-buttons {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-xs, 4px);
+}

@@ -17,8 +17,13 @@
     <link rel="stylesheet" href="../../components/floating-menu.css">
     <link rel="stylesheet" href="../../components/profile-menu.css">
     <link rel="stylesheet" href="../../components/tooltip.css">
-    <link rel="stylesheet" href="./profile.css">
+    <link rel="stylesheet" href="../../components/tab.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/status-tag.css">
     <link rel="stylesheet" href="./tareas.css">
+    <link rel="stylesheet" href="./planes.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/alert.css">
 </head>
 <body data-theme="light">
     <div class="dashboard-container">
@@ -35,11 +40,117 @@
             <div class="content-area">
                 <!-- Content wrapper con secciones de widgets -->
                 <div class="content-sections">
-                    <!-- Sección contenido tareas -->
+                    <!-- Sección vista de tareas -->
                     <div class="section-single">
-                        <div class="widget-contenido-tareas">
-                            <p class="ubits-body-md-regular">Contenido tareas</p>
-                            <br><br><br><br><br><br><br><br><br><br><br>
+                        <div class="widget-vista-tareas">
+                            <!-- CONTENEDOR GENERAL DEL MÓDULO -->
+                            <section class="calendar-module">
+                                <!-- TÍTULO PRINCIPAL -->
+                                <header class="calendar-header">
+                                    <!-- BARRA SUPERIOR: SELECTOR DE MES + NAV HORIZONTAL + BOTÓN HOY -->
+                                    <div class="calendar-header__controls">
+                                        <!-- Contenedor selector de mes + popup date picker -->
+                                        <div class="calendar-month-selector-wrap">
+                                            <button
+                                                class="calendar-month-selector"
+                                                type="button"
+                                                data-role="month-selector"
+                                                aria-haspopup="dialog"
+                                                aria-expanded="false"
+                                            >
+                                                <span class="calendar-month-selector__month" id="current-month">enero</span>
+                                                <span class="calendar-month-selector__year" id="current-year">2026</span>
+                                                <span class="calendar-month-selector__icon" aria-hidden="true">
+                                                    <i class="far fa-chevron-down"></i>
+                                                </span>
+                                            </button>
+                                            <!-- Popup date picker: navegación entre meses -->
+                                            <div
+                                                class="calendar-month-popup"
+                                                data-role="month-popup"
+                                                hidden
+                                                aria-label="Seleccionar mes y año"
+                                                id="month-popup"
+                                            >
+                                                <div class="calendar-month-picker">
+                                                    <div class="calendar-month-picker__year-row">
+                                                        <button type="button" class="calendar-month-picker__nav" data-role="year-prev" aria-label="Año anterior">
+                                                            <i class="far fa-chevron-left"></i>
+                                                        </button>
+                                                        <span class="calendar-month-picker__year" id="month-picker-year">2026</span>
+                                                        <button type="button" class="calendar-month-picker__nav" data-role="year-next" aria-label="Año siguiente">
+                                                            <i class="far fa-chevron-right"></i>
+                                                        </button>
+                                                    </div>
+                                                    <div class="calendar-month-picker__grid" id="month-picker-grid">
+                                                        <!-- 12 meses se generan con JS -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- TIRA HORIZONTAL DE DÍAS (7 días: 3 antes, seleccionado, 3 después) -->
+                                        <div class="calendar-horizontal" data-role="horizontal-days" id="calendar-horizontal">
+                                            <!-- Los días se generan dinámicamente con JavaScript -->
+                                        </div>
+
+                                        <!-- BOTÓN HOY + FLECHAS DE NAVEGACIÓN -->
+                                        <div class="calendar-today-nav">
+                                            <button
+                                                class="calendar-today-nav__arrow"
+                                                type="button"
+                                                data-role="horizontal-prev"
+                                                aria-label="Ver días anteriores"
+                                            >
+                                                <i class="far fa-chevron-left"></i>
+                                            </button>
+
+                                            <button
+                                                class="calendar-today-nav__today"
+                                                type="button"
+                                                data-role="go-today"
+                                            >
+                                                Hoy
+                                            </button>
+
+                                            <button
+                                                class="calendar-today-nav__arrow"
+                                                type="button"
+                                                data-role="horizontal-next"
+                                                aria-label="Ver días siguientes"
+                                            >
+                                                <i class="far fa-chevron-right"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </header>
+                            </section>
+
+                            <!-- Contenedor principal con scroll infinito -->
+                            <div class="tareas-scroll-container" id="tareas-scroll-container">
+                                <!-- Contenedor de tareas vencidas (PRIMERO) -->
+                                <div class="tareas-overdue-container" id="overdue-section">
+                                    <div class="tareas-overdue-header" id="overdue-header">
+                                        <button class="tareas-overdue-toggle" id="overdue-toggle">
+                                            <i class="far fa-chevron-down"></i>
+                                        </button>
+                                        <h2 class="ubits-body-md-bold">Vencidas</h2>
+                                    </div>
+                                    <div class="tareas-overdue-content" id="overdue-content">
+                                        <!-- Las tareas vencidas se generan dinámicamente -->
+                                    </div>
+                                </div>
+
+                                <!-- Contenedores de días (se renderizan con scroll infinito) -->
+                                <div id="days-container">
+                                    <!-- Los días se generan dinámicamente con JavaScript -->
+                                </div>
+
+                                <!-- Indicador de carga -->
+                                <div class="loading-indicator" id="loading-indicator" style="display: none;">
+                                    <p class="ubits-body-sm-regular">Cargando más días...</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -56,13 +167,56 @@
     <!-- Profile Menu Container -->
     <div id="profile-menu-container"></div>
 
-        <script src="../../components/tooltip.js"></script>
-<script src="../../components/sidebar.js"></script>
+    <!-- FAB Button Container: implementación propia para Tareas (solo botón; el menú se crea dinámicamente) -->
+    <div id="fab-button-container">
+        <button
+            type="button"
+            class="flux-button-root flux-button tone-info tone-brand primary m flux-button-only-icon fab-button"
+            id="fab-button-main"
+            aria-label="Abrir menú rápido"
+            aria-haspopup="menu"
+            aria-expanded="false"
+            data-state="closed"
+        >
+            <div class="flux-button-content">
+                <span class="flux-button-icon"><i class="fa-solid fa-plus"></i></span>
+                <span>Crear</span>
+            </div>
+        </button>
+    </div>
+
+    <!-- Drawer de crear plantilla -->
+    <div id="create-template-drawer-overlay" class="template-drawer-overlay" style="display: none;">
+        <div class="template-drawer-content" id="create-template-drawer">
+            <!-- El contenido se generará dinámicamente con JavaScript -->
+        </div>
+    </div>
+
+    <!-- Drawer de crear plan -->
+    <div id="create-plan-drawer-overlay" class="template-drawer-overlay plan-drawer-overlay" style="display: none;">
+        <div class="template-drawer-content plan-drawer-content" id="create-plan-drawer">
+            <!-- El contenido se generará dinámicamente con JavaScript -->
+        </div>
+    </div>
+
+    <!-- Panel de detalle de tarea (supermodal) -->
+    <div id="task-detail-overlay" class="task-detail-overlay" style="display: none;">
+        <div id="task-detail-panel" class="task-detail-panel">
+            <!-- El contenido se generará dinámicamente con JavaScript -->
+        </div>
+    </div>
+
+    <script src="../../components/tooltip.js"></script>
+    <script src="../../components/sidebar.js"></script>
     <script src="../../components/sub-nav.js"></script>
     <script src="../../components/tab-bar.js"></script>
     <script src="../../components/floating-menu.js"></script>
     <script src="../../components/profile-menu.js"></script>
     <script src="../../script.js"></script>
+    <script src="../../components/input.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="./tareas.js"></script>
+    <script src="./planes.js"></script>
     <script>
         // Cargar componentes dinámicamente
         document.addEventListener('DOMContentLoaded', function() {
@@ -71,8 +225,9 @@
             loadTabBar('tab-bar-container');
             loadFloatingMenu('floating-menu-container');
             loadProfileMenu('profile-menu-container');
-            
+
             // Activar el tab "Tareas" específicamente después de cargar el SubNav
+            // NOTA: El reordenamiento de tabs, eliminación de logo e icono se maneja en sub-nav.js
             setTimeout(() => {
                 // Remover active de todos los tabs (desktop y móvil)
                 document.querySelectorAll('.nav-tab, .hamburger-item').forEach(item => {
@@ -113,7 +268,138 @@
                 if (typeof setActiveAccordionLink === 'function') {
                     setActiveAccordionLink('tareas');
                 }
-            }, 200);
+
+                // Inicializar vista de tareas
+                if (typeof initTareasView === 'function') {
+                    console.log('Inicializando vista de tareas...');
+                    initTareasView();
+                } else {
+                    console.error('initTareasView no está definida. Verificar que tareas.js se cargó correctamente.');
+                }
+
+                // Drawers (necesarios para Crear plan / plantilla)
+                if (typeof renderTemplateDrawer === 'function') renderTemplateDrawer();
+                if (typeof renderPlanDrawer === 'function') renderPlanDrawer();
+
+                // FAB propio de Tareas (independiente de planes.js, menú creado/desechado dinámicamente)
+                (function initTareasFab() {
+                    var fabButton = document.getElementById('fab-button-main');
+                    var fabContainer = document.getElementById('fab-button-container');
+                    if (!fabButton || !fabContainer) return;
+
+                    var isOpen = false;
+                    var fabMenu = null;
+
+                    function buildMenu() {
+                        if (fabMenu) return fabMenu;
+                        var menu = document.createElement('div');
+                        menu.className = 'flux-dropdown-content fab-menu';
+                        menu.id = 'fab-menu-tareas';
+                        menu.setAttribute('role', 'menu');
+                        menu.setAttribute('data-side', 'top');
+                        menu.setAttribute('data-align', 'end');
+
+                        var labels = ['Un plan', 'Una tarea', 'Una plantilla', 'Con IA'];
+                        labels.forEach(function(label, index) {
+                            var item = document.createElement('button');
+                            item.className = 'flux-dropdown-item fab-menu-item';
+                            item.setAttribute('role', 'menuitem');
+                            item.dataset.action = String(index);
+                            if (index === 3) {
+                                item.innerHTML = '<i class="fa-sparkles fab-menu-item__icon"></i><span>' + label + '</span>';
+                            } else {
+                                item.innerHTML = '<span class="fab-menu-item__icon"></span><span>' + label + '</span>';
+                            }
+                            menu.appendChild(item);
+                        });
+
+                        fabContainer.appendChild(menu);
+                        fabMenu = menu;
+
+                        // Acciones del menú
+                        var itemPlan = fabMenu.querySelector('[data-action="0"]');
+                        var itemTarea = fabMenu.querySelector('[data-action="1"]');
+                        var itemPlantilla = fabMenu.querySelector('[data-action="2"]');
+                        var itemIA = fabMenu.querySelector('[data-action="3"]');
+
+                        if (itemPlan) {
+                            itemPlan.addEventListener('click', function(e) {
+                                e.stopPropagation();
+                                closeMenu();
+                                if (typeof window.openPlanDrawer === 'function') {
+                                    window.openPlanDrawer();
+                                }
+                            });
+                        }
+
+                        if (itemTarea) {
+                            itemTarea.addEventListener('click', function(e) {
+                                e.stopPropagation();
+                                closeMenu();
+                                console.log('Crear tarea (Tareas)');
+                            });
+                        }
+
+                        if (itemPlantilla) {
+                            itemPlantilla.addEventListener('click', function(e) {
+                                e.stopPropagation();
+                                closeMenu();
+                                if (typeof window.openTemplateDrawer === 'function') {
+                                    window.openTemplateDrawer();
+                                }
+                            });
+                        }
+
+                        if (itemIA) {
+                            itemIA.addEventListener('click', function(e) {
+                                e.stopPropagation();
+                                closeMenu();
+                                console.log('Crear con IA (Tareas)');
+                            });
+                        }
+
+                        return menu;
+                    }
+
+                    function openMenu() {
+                        if (isOpen) return;
+                        var menu = buildMenu();
+                        isOpen = true;
+                        menu.style.display = 'flex';
+                        fabButton.setAttribute('aria-expanded', 'true');
+                        fabButton.setAttribute('data-state', 'open');
+                    }
+
+                    function closeMenu() {
+                        if (!isOpen) return;
+                        isOpen = false;
+                        if (fabMenu && fabMenu.parentNode) {
+                            fabMenu.parentNode.removeChild(fabMenu);
+                        }
+                        fabMenu = null;
+                        fabButton.setAttribute('aria-expanded', 'false');
+                        fabButton.setAttribute('data-state', 'closed');
+                    }
+
+                    fabButton.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (isOpen) {
+                            closeMenu();
+                        } else {
+                            openMenu();
+                        }
+                    });
+
+                    // Cerrar al hacer clic fuera
+                    document.addEventListener('click', function(e) {
+                        if (!isOpen) return;
+                        if (!fabContainer.contains(e.target)) {
+                            closeMenu();
+                        }
+                    });
+                })();
+            }, 500);
         });
     </script>
 </body>
