@@ -433,6 +433,15 @@ body[data-theme="light"] .dashboard-container {
     }
 }
 
+/* Documentación: subnav variante documentacion pegado al borde superior solo en móvil y tablet */
+@media (max-width: 1279px) {
+    body.componentes-page .main-content,
+    body.documentacion-page .main-content,
+    body.iconos-page .main-content {
+        margin-top: 0 !important;
+    }
+}
+
 /* Top Navigation */
 .top-nav {
     background-color: var(--ubits-bg-1);
