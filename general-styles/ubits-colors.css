@@ -550,6 +550,18 @@
   
   /* Use this token for the scroll bar background component in its default state. */
   --ubits-scroll-bar-color-bg-default: #c5c6cb;
+
+  /* ========================================
+     ELEVATION (Figma Planes y Tareas R4)
+     ======================================== */
+  /* Default: sombra sutil para cards, dropdowns en reposo. */
+  --ubits-elevation-default: 0 0 2px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.14);
+  /* Hover: mismo nivel que default (dropdown/cards al pasar el cursor). */
+  --ubits-elevation-hover: 0 0 2px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.14);
+  /* Overlay: modales, popovers, capas sobre contenido. */
+  --ubits-elevation-overlay: 0 0 2px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.14);
+  /* Floating: elementos muy elevados (tooltips flotantes, menus de contexto). */
+  --ubits-elevation-floating: 0 0 8px rgba(0, 0, 0, 0.2), 0 14px 29px rgba(0, 0, 0, 0.24);
 }
 
 /* ========================================

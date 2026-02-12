@@ -101,12 +101,16 @@
      * Horizontal: alineado al ancla; si se sale por la derecha o izquierda, se ajusta para no salir nunca.
      * @param {string} overlayId - ID del overlay.
      * @param {Object|HTMLElement} position - { top, left } en px, o elemento ancla (getBoundingClientRect()).
+     * @param {Object} [options] - { alignRight: true } para alinear siempre la derecha del dropdown con la derecha del botón.
      */
-    function openDropdownMenu(overlayId, position) {
+    function openDropdownMenu(overlayId, position, options) {
         var overlay = document.getElementById(overlayId);
         if (!overlay) return;
         var content = overlay.querySelector('.ubits-dropdown-menu__content');
         if (!content) return;
+
+        options = options || {};
+        var alignRight = options.alignRight === true;
 
         var gap = 4;
         var viewportPadding = 8;
@@ -147,9 +151,8 @@
             }
             content.style.top = Math.max(viewportPadding, Math.min(vh - contentHeight - viewportPadding, top)) + 'px';
 
-            // Si alinear izquierda con el botón haría que el dropdown se salga por la derecha,
-            // alinear la parte derecha del dropdown con la parte derecha del botón.
-            if (left + contentWidth > vw - viewportPadding) {
+            // Alinear derecha del dropdown con derecha del botón: por opción explícita (alignRight) o si se saldría por la derecha
+            if (alignRight || left + contentWidth > vw - viewportPadding) {
                 left = rect.right - contentWidth;
             }
         }

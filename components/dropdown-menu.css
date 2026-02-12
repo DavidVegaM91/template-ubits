@@ -22,7 +22,7 @@
     max-width: 320px;
     background: var(--ubits-bg-1);
     border-radius: var(--border-radius-sm);
-    box-shadow: 0 4px 16px var(--ubits-bottom-nav-shadow-opacity);
+    box-shadow: var(--ubits-elevation-overlay);
     padding: 0;
     z-index: 1000;
     display: flex;

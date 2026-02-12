@@ -2192,7 +2192,7 @@
                     if (ev.target === overlayEl) window.closeDropdownMenu(overlayId);
                 });
             }
-            window.openDropdownMenu(overlayId, periodoBtn);
+            window.openDropdownMenu(overlayId, periodoBtn, { alignRight: true });
         });
     }
 
