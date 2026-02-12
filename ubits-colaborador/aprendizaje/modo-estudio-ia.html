@@ -67,14 +67,6 @@
                             </div>
                         </div>
                         <div class="modo-tutor-ia-chat-main">
-                            <div class="modo-estudio-ia-chat-actions">
-                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" id="btn-historial" data-tooltip="Historial" data-tooltip-position="bottom" aria-label="Abrir historial de chats">
-                                    <i class="far fa-clock-rotate-left"></i>
-                                </button>
-                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" id="btn-nuevo-chat" data-tooltip="Nuevo chat" data-tooltip-position="bottom" aria-label="Iniciar nuevo chat">
-                                    <i class="far fa-comment-plus"></i>
-                                </button>
-                            </div>
                             <div class="widget-chat" id="study-chat-container"></div>
                         </div>
                         <div class="modo-tutor-ia-canvas-panel" id="tutor-canvas-panel" aria-label="Panel de materiales de estudio">
@@ -178,12 +170,8 @@
                 });
             }
             
-            // Mostrar botones "Nuevo chat" e "Historial" solo si ya existen conversaciones (ocultos a la primera)
-            window.updateModoEstudioIaActionsVisibility = function() {
-                var has = typeof window.hasAnyConversations === 'function' && window.hasAnyConversations();
-                var bar = document.querySelector('.modo-estudio-ia-chat-actions');
-                if (bar) bar.style.display = has ? '' : 'none';
-            };
+            // Los botones Historial y Nuevo chat están en el encabezado del chat (dentro del componente)
+            window.updateModoEstudioIaActionsVisibility = function() {};
 
             // Inicializar chat de tutor (empty state con nombre + competencias, panel derecho)
             if (typeof initStudyChat === 'function') {

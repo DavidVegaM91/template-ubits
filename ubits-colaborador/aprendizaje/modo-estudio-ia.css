@@ -303,10 +303,13 @@ body[data-theme="dark"] .modo-estudio-ia-page::before {
     overflow: visible !important;
 }
 
-/* Cuando ya inició el chat: fondo y padding en la caja */
+/* Cuando ya inició el chat: fondo; sin padding horizontal para que el encabezado vaya de lado a lado (como canvas) */
 .modo-estudio-ia-page .modo-tutor-ia-chat-section > .modo-tutor-ia-chat-main:not(.study-chat-wrapper--welcome) {
     background-color: var(--ubits-bg-1) !important;
-    padding: var(--padding-md) !important;
+    padding-top: 0 !important;
+    padding-bottom: var(--padding-md) !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
 }
 
 /* Desktop: historial, chat y canvas pueden estar abiertos a la vez.
@@ -590,13 +593,21 @@ body[data-theme="dark"] .modo-estudio-ia-page::before {
     50% { transform: translateY(-6px) scale(1.08); opacity: 0.9; }
 }
 
-/* "aprender hoy" con la misma gradación que el icono sparkles y peso semibold */
+/* "aprender hoy" con la misma gradación que el icono sparkles y peso semibold; animación sutil de la gradiente (solo el color se mueve) */
 .modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__welcome-prompt-accent {
     font-weight: var(--font-weight-semibold);
-    background: linear-gradient(135deg, rgb(0, 215, 255) 0%, rgb(0, 152, 253) 50%, rgb(0, 89, 250) 100%);
+    background: linear-gradient(90deg, rgb(0, 215, 255), rgb(0, 152, 253), rgb(0, 89, 250), rgb(0, 215, 255));
+    background-size: 300% 100%;
+    background-position: 0% 50%;
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    animation: modo-estudio-ia-gradient-shift 5s ease-in-out infinite;
+}
+
+@keyframes modo-estudio-ia-gradient-shift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
 }
 
 .modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__input-area {

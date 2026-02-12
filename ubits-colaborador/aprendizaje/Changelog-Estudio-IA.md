@@ -9,7 +9,7 @@ Lista completa de cambios sugeridos en la reunión. Marca con `[x]` lo que ya es
 ## 1. Interfaz visual y contenedores
 
 |`[x]`|  **Integrar visualmente las columnas** (chat / canvas) para que se sientan "familia" poniendole fondo blanco al chat - Solicitud de Carlos.
-|`[ ]`|  Diferenciar las burbujas de chat del usuario: no solo bordes y una punta, algo más elaborado - Solicitud de Carlos.
+|`[x]`|  Diferenciar las burbujas de chat del usuario: no solo bordes y una punta, algo más elaborado - Solicitud de Carlos.
 |`[x]`|  Mejorar **input del mensaje** solo en la bienvenida: cajita más trabajada visualmente, puede ser poniendo un resplandor al rededor con una leve gradiente de azules en la pestaña de bienvenida - Solicitud de Carlos.
 
 ---
@@ -23,6 +23,7 @@ Lista completa de cambios sugeridos en la reunión. Marca con `[x]` lo que ya es
 ## 3. Pantalla de bienvenida e input
 
 |`[x]`|  Estructura bienvenida: **input arriba**, **recomendaciones + enviar abajo** dentro del mismo cuadro blanco  - Solicitud de Carlos.
+|`[ ]`|  Reducir el **espacio entre el input y la advertencia** (disclaimer) a un token de **8px**.
 
 ---
 
@@ -30,6 +31,7 @@ Lista completa de cambios sugeridos en la reunión. Marca con `[x]` lo que ya es
 
 |`[x]`|  **Mostrar los botones de "Nuevo chat" e "Historial" solo si ya existen conversaciones**; si es primera vez no mostrarlo (porque no tiene sentido) - Solicitud de Luisa
 |`[x]`|  **Hacer un poco menos ancho el historial** - Solicitud de Luisa
+|`[ ]`|  **Historial con filtro** y descripción con **fecha y hora** en cada ítem.
 
 ---
 
@@ -58,7 +60,7 @@ Lista completa de cambios sugeridos en la reunión. Marca con `[x]` lo que ya es
 
 ## 9. Otros componentes e ideas de producto
 
-|`[ ]`|  Valorar **componente de audio / podcast** (ej. podcast básico de liderazgo) para usuarios que hacen otras cosas | Propuesta de David
+|`[x]`|  Valorar **componente de audio / podcast** (ej. podcast básico de liderazgo) para usuarios que hacen otras cosas mientras estudian | Propuesta de David
 |`[ ]`|  **Diseño con visión a largo plazo**: pensar no solo Q1 sino todo el año para que las siguientes versiones estén alineadas | 
 
 ---
@@ -71,8 +73,8 @@ Lista completa de cambios sugeridos en la reunión. Marca con `[x]` lo que ya es
 
 ## 11. Encabezado del chat
 
-|`[ ]`|  **Añadir encabezado al chat** con el nombre del chat (el mismo que sale en el historial). |
-|`[ ]`|  El nombre del chat debe ser **editable inline** en el encabezado; si se edita ahí, también debe actualizarse en el historial (sincronizado). |
+|`[x]`|  **Añadir encabezado al chat** con el nombre del chat (el mismo que sale en el historial). |
+|`[x]`|  El nombre del chat debe ser **editable inline** en el encabezado; si se edita ahí, también debe actualizarse en el historial (sincronizado). |
 |`[ ]`|  En ese encabezado del chat, **botón "Recursos generados"** que abra un canvas a la derecha (similar a los otros canvas) con el listado de recursos/cursos generados. |
 |`[ ]`|  Si no hay recursos generados, el canvas debe usar el **componente oficial de empty state**. |
 
@@ -103,5 +105,19 @@ Lista completa de cambios sugeridos en la reunión. Marca con `[x]` lo que ya es
 |`[ ]`|  Si el usuario escribe la palabra clave **"definición"** (ej. "definición de liderazgo"), mostrar una **respuesta en el chat** con la definición del tema (ej. liderazgo). |
 |`[ ]`|  En la respuesta de definición, **añadir tags "Contenido"** al lado de ciertas frases; al hacer **clic** en un tag, abrir un **canvas a la derecha** con la ficha del contenido, con este orden: |
 |`[ ]`|  **Contenido del canvas:** imagen del curso arriba, badge de tipo de contenido, nombre del contenido, nivel / tiempo / idioma, botón primario "Ver contenido", botón secundario "Ver descripción", competencia, **3 habilidades** (solo una de la competencia principal, ej. Liderazgo, y las otras dos de Comunicación o soft skills según la frase citada), **imagen y nombre del proveedor** (según lista de aliados en componente card-content), **imagen y nombre de experto** (avatar + nombre genérico inventado). |
+|`[ ]`|  **Citas**: poder **guardar como una tarea** para verlo después (ej. contenido citado en definiciones o en respuestas).
+
+---
+
+## 16. Razonamiento rápido antes de responder
+
+|`[ ]`|  Antes de mostrar la respuesta al usuario, mostrar un **"razonamiento rápido"** (indicador o texto breve de que el asistente está pensando/razonando).
+
+---
+
+## 17. Buscador de contenido (sugerencias de cursos)
+
+|`[ ]`|  Si el estudiante pide **sugerencias de cursos** sobre un tema con **tipo de contenido específico**, **nivel específico** y **tiempo aproximado**, mostrar los resultados en un **canvas de resultados de búsqueda** a la derecha. |
+|`[ ]`|  El canvas debe **arrojar resultados de contenidos** usando el componente oficial **card-content-compact**.
 
 ---
