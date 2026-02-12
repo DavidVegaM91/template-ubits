@@ -115,9 +115,13 @@
             rect = position.getBoundingClientRect();
             top = rect.bottom + gap;
             left = rect.left;
-        } else if (position && typeof position.top !== 'undefined' && typeof position.left !== 'undefined') {
-            top = position.top;
-            left = position.left;
+            content.style.minWidth = rect.width + 'px';
+        } else {
+            content.style.minWidth = '';
+            if (position && typeof position.top !== 'undefined' && typeof position.left !== 'undefined') {
+                top = position.top;
+                left = position.left;
+            }
         }
 
         content.style.top = top + 'px';

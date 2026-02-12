@@ -908,7 +908,117 @@ function createAutocompleteDropdown(container, inputElement, autocompleteOptions
     }
 }
 
-// Función para crear dropdown personalizado para SELECT
+/**
+ * Configura el select del Input usando el componente oficial Dropdown Menu.
+ * Requiere que dropdown-menu.css y dropdown-menu.js estén cargados.
+ * @param {string} containerId - ID del contenedor del input
+ * @param {HTMLElement} container - Elemento contenedor (ancla para posicionar el menú)
+ * @param {HTMLInputElement} inputElement - Input readonly que muestra el valor seleccionado
+ * @param {Array<{value: string, text: string}>} selectOptions - Opciones del select
+ * @param {string} value - Valor inicial seleccionado
+ * @param {string} placeholder - Texto cuando no hay selección
+ * @param {function} onChange - Callback al cambiar valor
+ */
+var INPUT_SELECT_ITEMS_PER_PAGE = 50;
+var INPUT_SELECT_LOAD_MORE_DELAY_MS = 333;
+
+function setupSelectWithDropdownMenu(containerId, container, inputElement, selectOptions, value, placeholder, onChange) {
+    var overlayId = 'ubits-input-select-' + containerId;
+    var overlayContainer = document.getElementById('ubits-input-select-overlay-container');
+    if (!overlayContainer) {
+        overlayContainer = document.createElement('div');
+        overlayContainer.id = 'ubits-input-select-overlay-container';
+        document.body.appendChild(overlayContainer);
+    }
+    var existing = document.getElementById(overlayId);
+    if (existing) existing.remove();
+
+    var valueStr = value != null ? String(value) : '';
+    var allOptions = selectOptions || [];
+    var initialCount = allOptions.length > INPUT_SELECT_ITEMS_PER_PAGE ? INPUT_SELECT_ITEMS_PER_PAGE : allOptions.length;
+    var initialSlice = allOptions.slice(0, initialCount);
+    var options = initialSlice.map(function (opt) {
+        var optVal = opt.value != null ? String(opt.value) : '';
+        return {
+            text: opt.text != null ? String(opt.text) : '',
+            value: optVal,
+            selected: optVal === valueStr
+        };
+    });
+    var config = {
+        overlayId: overlayId,
+        options: options
+    };
+    var html = window.getDropdownMenuHtml(config);
+    overlayContainer.insertAdjacentHTML('beforeend', html);
+
+    var overlay = document.getElementById(overlayId);
+    if (!overlay) return;
+
+    function onOptionClick(btn) {
+        var val = btn.getAttribute('data-value') || '';
+        var textEl = btn.querySelector('.ubits-dropdown-menu__option-text');
+        var text = textEl ? textEl.textContent : '';
+        inputElement.value = text;
+        window.closeDropdownMenu(overlayId);
+        if (typeof onChange === 'function') onChange(val);
+    }
+
+    overlay.querySelectorAll('.ubits-dropdown-menu__option').forEach(function (btn) {
+        btn.addEventListener('click', function () { onOptionClick(btn); });
+    });
+    overlay.addEventListener('click', function (e) {
+        if (e.target === overlay) window.closeDropdownMenu(overlayId);
+    });
+
+    inputElement.addEventListener('click', function (e) {
+        e.preventDefault();
+        window.openDropdownMenu(overlayId, container);
+    });
+
+    if (allOptions.length > INPUT_SELECT_ITEMS_PER_PAGE) {
+        var optionsContainer = overlay.querySelector('.ubits-dropdown-menu__options');
+        var loadedCount = initialCount;
+        var isLoading = false;
+        if (optionsContainer) {
+            optionsContainer.addEventListener('scroll', function () {
+                if (isLoading || loadedCount >= allOptions.length) return;
+                var el = optionsContainer;
+                var threshold = 80;
+                var nearBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - threshold;
+                if (!nearBottom) return;
+                isLoading = true;
+                var loadingRow = document.createElement('div');
+                loadingRow.className = 'ubits-dropdown-menu__loading';
+                loadingRow.setAttribute('role', 'status');
+                loadingRow.setAttribute('aria-live', 'polite');
+                loadingRow.innerHTML = '<i class="far fa-spinner fa-spin"></i> Cargando items...';
+                optionsContainer.appendChild(loadingRow);
+                setTimeout(function () {
+                    var nextSlice = allOptions.slice(loadedCount, loadedCount + INPUT_SELECT_ITEMS_PER_PAGE);
+                    nextSlice.forEach(function (opt) {
+                        var optVal = opt.value != null ? String(opt.value) : '';
+                        var btn = document.createElement('button');
+                        btn.type = 'button';
+                        btn.className = 'ubits-dropdown-menu__option' + (optVal === valueStr ? ' ubits-dropdown-menu__option--selected' : '');
+                        btn.setAttribute('data-value', optVal);
+                        var textSpan = document.createElement('span');
+                        textSpan.className = 'ubits-dropdown-menu__option-text';
+                        textSpan.textContent = opt.text != null ? String(opt.text) : '';
+                        btn.appendChild(textSpan);
+                        btn.addEventListener('click', function () { onOptionClick(btn); });
+                        optionsContainer.appendChild(btn);
+                    });
+                    loadedCount += nextSlice.length;
+                    if (loadingRow.parentNode) loadingRow.remove();
+                    isLoading = false;
+                }, INPUT_SELECT_LOAD_MORE_DELAY_MS);
+            });
+        }
+    }
+}
+
+// Función para crear dropdown personalizado para SELECT (fallback si dropdown-menu.js no está cargado)
 function createSelectDropdown(container, inputElement, selectOptions, value, placeholder, onChange) {
     console.log('createSelectDropdown called with:', { container, inputElement, selectOptions, value, placeholder, onChange });
     
@@ -1309,12 +1419,15 @@ function createInput(options = {}) {
     const isSelect = type === 'select';
     const isSearch = type === 'search';
     
-    // Si es SELECT, crear dropdown personalizado
+    // Si es SELECT, usar componente oficial Dropdown Menu (getDropdownMenuHtml + openDropdownMenu + closeDropdownMenu)
     if (isSelect) {
-        console.log('SELECT detected, options:', selectOptions);
         inputElement.style.cursor = 'pointer';
-        // Crear dropdown personalizado
-        createSelectDropdown(container, inputElement, selectOptions, value, placeholder, onChange);
+        if (typeof window.getDropdownMenuHtml === 'function' && typeof window.openDropdownMenu === 'function' && typeof window.closeDropdownMenu === 'function') {
+            setupSelectWithDropdownMenu(containerId, container, inputElement, selectOptions, value, placeholder, onChange);
+        } else {
+            // Fallback si dropdown-menu.js no está cargado
+            createSelectDropdown(container, inputElement, selectOptions, value, placeholder, onChange);
+        }
     }
     
     // Si es SEARCH, agregar funcionalidad de limpiar

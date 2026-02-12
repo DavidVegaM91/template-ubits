@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="../../components/button.css">
     <link rel="stylesheet" href="../../components/toast.css">
     <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/dropdown-menu.css">
     <link rel="stylesheet" href="../../components/calendar.css">
     <style>
         /* Preview Styles */
@@ -896,6 +897,7 @@ createInput({
                                     • <code>ubits-typography.css</code> - Tipografía UBITS<br><br>
                                     <strong>JavaScript Requerido:</strong><br>
                                     • <code>components/input.js</code> - Función createInput()<br><br>
+                                    <strong>Si usas type: 'select':</strong> incluir también <code>components/dropdown-menu.css</code> y <code>components/dropdown-menu.js</code> (antes de input.js).<br><br>
                                     <strong>Renderizado:</strong> createInput() function con containerId
                                 </div>
                             </div>
@@ -1254,6 +1256,7 @@ input.setState(state)     // Cambiar estado (default, hover, focus, invalid, dis
     <script src="../../components/sub-nav.js"></script>
     <script src="../../components/alert.js"></script>
     <script src="../../components/toast.js"></script>
+    <script src="../../components/dropdown-menu.js"></script>
     <script src="../../components/input.js"></script>
     <script src="../../components/calendar.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
@@ -1301,62 +1304,26 @@ input.setState(state)     // Cambiar estado (default, hover, focus, invalid, dis
                 const stateSelect = document.querySelector('#state-select-control');
                 const mandatorySelect = document.querySelector('#mandatory-type-control');
                 
-                // Para Size Select
-                if (sizeSelect) {
-                    const sizeInput = sizeSelect.querySelector('input');
-                    if (sizeInput) {
-                        sizeInput.addEventListener('change', updateInput);
-                        sizeInput.addEventListener('input', updateInput);
-                        console.log('Event listeners agregados a size select');
+                // Listeners en inputs de los selects (change/input)
+                [sizeSelect, stateSelect, mandatorySelect].forEach(container => {
+                    if (!container) return;
+                    const input = container.querySelector('input');
+                    if (input) {
+                        input.addEventListener('change', updateInput);
+                        input.addEventListener('input', updateInput);
                     }
-                    
-                    // Agregar listeners a las opciones del dropdown
-                    const sizeOptions = sizeSelect.querySelectorAll('.ubits-select-option');
-                    sizeOptions.forEach(option => {
-                        option.addEventListener('click', () => {
-                            setTimeout(updateInput, 100);
-                            console.log('Size option clicked');
-                        });
-                    });
-                }
+                });
                 
-                // Para State Select
-                if (stateSelect) {
-                    const stateInput = stateSelect.querySelector('input');
-                    if (stateInput) {
-                        stateInput.addEventListener('change', updateInput);
-                        stateInput.addEventListener('input', updateInput);
-                        console.log('Event listeners agregados a state select');
-                    }
-                    
-                    // Agregar listeners a las opciones del dropdown
-                    const stateOptions = stateSelect.querySelectorAll('.ubits-select-option');
-                    stateOptions.forEach(option => {
-                        option.addEventListener('click', () => {
-                            setTimeout(updateInput, 100);
-                            console.log('State option clicked');
-                        });
-                    });
-                }
-                
-                // Para Mandatory Select
-                if (mandatorySelect) {
-                    const mandatoryInput = mandatorySelect.querySelector('input');
-                    if (mandatoryInput) {
-                        mandatoryInput.addEventListener('change', updateInput);
-                        mandatoryInput.addEventListener('input', updateInput);
-                        console.log('Event listeners agregados a mandatory select');
-                    }
-                    
-                    // Agregar listeners a las opciones del dropdown
-                    const mandatoryOptions = mandatorySelect.querySelectorAll('.ubits-select-option');
-                    mandatoryOptions.forEach(option => {
-                        option.addEventListener('click', () => {
-                            setTimeout(updateInput, 100);
-                            console.log('Mandatory option clicked');
-                        });
-                    });
-                }
+                // Delegación: opciones del Dropdown Menu oficial (createInput type select inyecta en #ubits-input-select-overlay-container)
+                const previewOverlayIds = ['ubits-input-select-size-select-control', 'ubits-input-select-state-select-control', 'ubits-input-select-mandatory-type-control'];
+                document.body.addEventListener('click', function previewSelectOptionHandler(e) {
+                    if (!e.target.closest('#ubits-input-select-overlay-container')) return;
+                    const option = e.target.closest('.ubits-dropdown-menu__option');
+                    if (!option) return;
+                    const overlay = option.closest('.ubits-dropdown-menu__overlay');
+                    if (!overlay || !previewOverlayIds.includes(overlay.id)) return;
+                    setTimeout(updateInput, 100);
+                });
             }, 200);
         });
 
@@ -1975,7 +1942,7 @@ input.setState(state)     // Cambiar estado (default, hover, focus, invalid, dis
             });
 
             // Select Input (scroll infinito) - 50+ opciones para activar scroll infinito
-            const largeOptions = Array.from({length: 50}, (_, i) => ({
+            const largeOptions = Array.from({length: 150}, (_, i) => ({
                 value: `country-${i + 1}`,
                 text: `País ${i + 1}`
             }));

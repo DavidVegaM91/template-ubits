@@ -34,11 +34,11 @@ Aquí se modifica la *lógica interna* de los componentes para que sus menús de
 
 **Checklist Fase 1.1**
 
-- [ ] input.js: type select usa getDropdownMenuHtml + openDropdownMenu + closeDropdownMenu.
-- [ ] input.js: overlay inyectado en contenedor definido; overlayId único por select.
-- [ ] input.css: sin estilos hardcode del dropdown de select (o solo compat temporal).
-- [ ] Docs: indicar que createInput(type select) requiere dropdown-menu.css y dropdown-menu.js.
-- [ ] Probar input.html (todos los selects).
+- [x] input.js: type select usa getDropdownMenuHtml + openDropdownMenu + closeDropdownMenu.
+- [x] input.js: overlay inyectado en contenedor definido; overlayId único por select.
+- [x] input.css: sin estilos hardcode del dropdown de select (o solo compat temporal).
+- [x] Docs: indicar que createInput(type select) requiere dropdown-menu.css y dropdown-menu.js.
+- [x] Probar input.html (todos los selects).
 
 ### 1.2 Componente Paginator (`components/paginator.js` + `components/paginator.css`)
 
