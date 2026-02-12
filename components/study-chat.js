@@ -936,6 +936,12 @@ function renderTutorPanel(type, topic, extraData) {
         applyStudyPlanUiState(panel, sp, topicKey || '');
         return;
     } else if (type === 'podcast') {
+        extraData = extraData || {};
+        if (chatState.podcastDefaults) {
+            if (!extraData.audioUrl) extraData.audioUrl = chatState.podcastDefaults.audioUrl;
+            if (!extraData.transcription || String(extraData.transcription).indexOf('La transcripción se mostrará aquí') === 0) extraData.transcription = chatState.podcastDefaults.transcription;
+            if (!extraData.title || String(extraData.title).indexOf('Podcast de ') === 0) extraData.title = chatState.podcastDefaults.title;
+        }
         const podTopic = topic || chatState.currentTopic || 'liderazgo';
         const podTitle = (extraData && extraData.title) ? String(extraData.title).replace(/</g, '&lt;').replace(/"/g, '&quot;') : 'Podcast';
         const audioUrl = (extraData && extraData.audioUrl) ? String(extraData.audioUrl) : '';
@@ -1890,6 +1896,7 @@ let chatState = {
     competencyTopics: {}, // { 'Liderazgo': 'liderazgo', 'Comunicación': 'comunicacion', 'Inglés': 'ingles' }
     rightPanelId: null,
     placeholderId: null,
+    podcastDefaults: null, // { title, audioUrl, transcription } para modo-estudio-ia cuando se abre podcast sin audio generado
     waitingForMaterialChoice: false, // true cuando IA ofreció quiz/flashcards/guía
     waitingForTopicForResource: null, // 'quiz' | 'flashcards' | 'studyPlan' | 'podcast' cuando el usuario pidió recurso sin tema
     // Índices de recurso mostrado por tema (para no repetir: siguiente quiz, siguiente set de flashcards, siguiente plan)
@@ -3117,6 +3124,7 @@ function initStudyChat(containerId, options = {}) {
     chatState.rightPanelId = options.rightPanelId || null;
     chatState.placeholderId = options.placeholderId || null;
     chatState.welcomeLayout = options.welcomeLayout === true; // Pantalla bienvenida: input debajo del mensaje, menos ancho, sin icono ni advertencia
+    chatState.podcastDefaults = options.podcastDefaults || null;
     chatState.competencyTopics = {};
     chatState.competencies.forEach(c => { chatState.competencyTopics[c] = COMPETENCY_TO_TOPIC[c] || c.toLowerCase().replace(/\s/g, ''); });
     

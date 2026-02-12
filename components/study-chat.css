@@ -77,11 +77,18 @@
     height: 48px;
     border-radius: 50%;
     background: var(--ubits-bg-2);
-    color: var(--ubits-fg-1-high);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: var(--font-size-h1);
+}
+
+/* Gradación en el icono (como botón IA), no en el círculo */
+.ubits-study-chat__welcome-icon i {
+    background: linear-gradient(135deg, rgb(0, 215, 255) 0%, rgb(0, 152, 253) 50%, rgb(0, 89, 250) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
 }
 
 .ubits-study-chat__welcome-greeting {
@@ -655,6 +662,9 @@
 }
 
 .study-chat-canvas-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
     padding: var(--padding-xl);
     overflow-y: auto;
     flex: 1;
@@ -732,12 +742,14 @@
 }
 
 .study-chat-podcast-player {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
     flex-shrink: 0;
-    margin-bottom: var(--gap-md);
 }
 
 .study-chat-podcast-title {
-    margin: 0 0 var(--gap-sm) 0;
+    margin: 0;
     color: var(--ubits-fg-1-high);
 }
 
@@ -748,8 +760,6 @@
 
 .study-chat-podcast-transcription-btn {
     flex-shrink: 0;
-    margin-top: 0;
-    margin-bottom: var(--gap-sm);
 }
 
 .study-chat-podcast-transcription {
@@ -757,8 +767,7 @@
     flex: 1 1 0;
     min-height: 0;
     overflow: hidden;
-    margin-top: 0;
-    border: 1px solid var(--ubits-border-1);
+    border: none;
     border-radius: var(--border-radius-sm);
     background: var(--ubits-bg-2);
 }
@@ -766,7 +775,7 @@
 .study-chat-podcast-transcription.is-open {
     display: flex;
     flex-direction: column;
-    min-height: 120px;
+    min-height: 240px;
 }
 
 .study-chat-podcast-transcription-inner {
@@ -779,16 +788,21 @@
 }
 
 .study-chat-podcast-seguir-title {
-    margin-top: var(--padding-lg);
-    margin-bottom: var(--gap-sm);
+    margin: 0;
 }
 
 .study-chat-podcast-seguir {
-    margin-top: 0;
+    margin: 0;
+}
+
+.study-chat-quiz-questions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
 }
 
 .study-chat-canvas-quiz .study-chat-quiz-q {
-    margin-bottom: 16px;
+    margin: 0;
 }
 
 .study-chat-quiz-options {
@@ -932,7 +946,6 @@
     display: flex;
     align-items: center;
     gap: var(--gap-md);
-    margin-bottom: 16px;
     flex-wrap: nowrap;
     min-width: 0;
 }
@@ -1063,6 +1076,9 @@
 
 /* Pantalla de resultados del quiz. Referencia: diseño tipo Gemini; bordes neutros (ubits-border-1). */
 .study-chat-quiz-result-screen {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
     padding: var(--padding-sm) 0;
 }
 
@@ -1072,14 +1088,13 @@
     font-weight: 400;
     line-height: 28px;
     color: var(--ubits-fg-1-high);
-    margin: 0 0 20px 0;
+    margin: 0;
 }
 
 .study-chat-quiz-result-cards {
     display: flex;
     flex-wrap: wrap;
     gap: var(--gap-md);
-    margin-bottom: 20px;
 }
 
 .study-chat-quiz-result-card {
@@ -1138,14 +1153,13 @@
     font-size: var(--font-size-md);
     font-weight: 400;
     color: var(--ubits-fg-1-high);
-    margin: 0 0 12px 0;
+    margin: 0;
 }
 
 .study-chat-quiz-result-learn {
     display: flex;
     flex-direction: column;
     gap: var(--gap-md);
-    margin-bottom: 20px;
 }
 
 .study-chat-quiz-result-option {
@@ -1220,12 +1234,18 @@
     width: 100%;
 }
 
+/* Flashcards: contenedor principal (gap entre progreso, tarjeta e hint) */
+.study-chat-fc-main {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+}
+
 /* Flashcards: barra de progreso (misma fórmula que quiz: progreso ocupa todo el ancho) */
 .study-chat-fc-progress {
     display: flex;
     align-items: center;
     gap: var(--gap-md);
-    margin-bottom: 16px;
     flex-wrap: nowrap;
     min-width: 0;
 }
@@ -1263,7 +1283,6 @@
 .study-chat-fc-card {
     position: relative;
     min-height: 140px;
-    margin-bottom: 16px;
     cursor: pointer;
     perspective: 1000px;
     outline: none;
@@ -1322,7 +1341,7 @@
 }
 
 .study-chat-fc-hint {
-    margin: 0 0 16px;
+    margin: 0;
     color: var(--ubits-fg-2-medium);
     text-align: center;
 }
@@ -1351,15 +1370,14 @@
     display: flex;
     flex-direction: column;
     gap: var(--gap-md);
-    margin-top: 12px;
 }
 
 .study-chat-canvas-plan .study-chat-plan-title {
-    margin-bottom: 8px;
+    margin: 0;
 }
 
 .study-chat-canvas-plan .study-chat-plan-details {
-    margin-bottom: 12px;
+    margin: 0;
 }
 
 /* Guía de estudio */
@@ -1378,14 +1396,14 @@
     font-size: var(--font-size-md);
     font-weight: 600;
     color: var(--ubits-fg-1-high);
-    margin-bottom: 12px;
+    margin: 0;
 }
 
 .study-chat-study-plan-details {
     display: flex;
     flex-wrap: wrap;
     gap: var(--gap-md) var(--gap-xl);
-    margin-bottom: 16px;
+    margin: 0;
 }
 
 .study-chat-study-plan-detail-item {
@@ -1399,7 +1417,7 @@
 }
 
 .study-chat-study-plan-tasks-label {
-    margin-bottom: 8px;
+    margin: 0;
     color: var(--ubits-fg-1-high);
 }
 
@@ -1409,8 +1427,12 @@
 }
 
 .study-chat-study-plan-task {
-    margin-bottom: 8px;
+    margin: 0 0 8px 0;
     color: var(--ubits-fg-1-medium);
+}
+
+.study-chat-study-plan-task:last-child {
+    margin-bottom: 0;
 }
 
 .study-chat-study-plan-task-num {
@@ -1418,9 +1440,9 @@
     margin-right: 4px;
 }
 
-/* Plan de estudio editable: filas, prioridad, fechas, cards de tareas */
+/* Plan de estudio editable: filas, prioridad, fechas, cards de tareas (gap en body) */
 .study-chat-canvas-study-plan-editable .study-chat-study-plan-edit-row {
-    margin-bottom: 12px;
+    margin: 0;
 }
 
 /* Prioridad y Fin en una sola línea */

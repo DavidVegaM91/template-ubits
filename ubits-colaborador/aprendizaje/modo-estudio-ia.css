@@ -2,6 +2,49 @@
    ESTILOS ESPECÍFICOS PARA MODO-ESTUDIO-IA
    ======================================== */
 
+/* Fondo de página entera: gradaciones azules detrás del contenido.
+   Body tiene color base; body::before (z-index 0) lleva el glow; dashboard/main/content transparentes. */
+@keyframes modo-ia-glow-breathe {
+    0%, 100% { opacity: 0.88; }
+    50% { opacity: 1; }
+}
+
+body.modo-estudio-ia-page {
+    background-color: var(--ubits-bg-2);
+}
+
+body.modo-estudio-ia-page::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    /* Azul (izq) + verde (der) - tokens UBITS */
+    background:
+        radial-gradient(ellipse 100% 80% at 10% -5%, rgba(12, 91, 239, 0.1) 0%, transparent 50%),
+        radial-gradient(ellipse 95% 75% at 90% -5%, rgba(30, 141, 88, 0.1) 0%, transparent 50%);
+    animation: modo-ia-glow-breathe 10s ease-in-out infinite;
+}
+
+body.modo-estudio-ia-page .dashboard-container {
+    position: relative;
+    z-index: 1;
+    background-color: transparent !important;
+}
+
+/* Fondos transparentes en esta página para que el glow (body::before) se vea */
+.modo-estudio-ia-page .main-content,
+.modo-estudio-ia-page .content-area {
+    background-color: transparent !important;
+}
+
+body[data-theme="dark"] .modo-estudio-ia-page::before {
+    /* Azul (izq) + verde (der) en dark - accent-green y fg-green-subtle-inverted */
+    background:
+        radial-gradient(ellipse 100% 80% at 10% -5%, rgba(56, 101, 245, 0.22) 0%, transparent 50%),
+        radial-gradient(ellipse 95% 75% at 90% -5%, rgba(189, 231, 195, 0.22) 0%, transparent 50%);
+}
+
 /* Reducir espacio entre subnav y contenido (en otras páginas main-content usa gap-xl) */
 .modo-estudio-ia-page .main-content {
     gap: var(--gap-sm);
@@ -634,25 +677,19 @@
     box-sizing: border-box;
 }
 
-/* Pantalla de bienvenida: cuadro blanco con input arriba y recomendaciones + enviar abajo; resplandor azul (acción 1.3) */
+/* Pantalla de bienvenida: input con borde azul, sin resplandor */
 .modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__input-container {
     flex-direction: column;
     align-items: stretch;
     min-height: auto;
     padding: var(--padding-md);
     gap: var(--gap-md);
-    border: 1px solid var(--ubits-border-1);
-    /* Light: resplandor (mitad de tamaño) */
-    box-shadow: 0 0 0 1px var(--ubits-feedback-border-info),
-                0 0 12px var(--ubits-feedback-border-info),
-                0 0 24px var(--ubits-feedback-bg-info-subtle);
+    border: 1px solid var(--ubits-border-blue);
+    box-shadow: none;
 }
 
-/* Dark: resplandor más sutil y compacto */
 [data-theme="dark"] .modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__input-container {
-    box-shadow: 0 0 0 1px var(--ubits-feedback-border-info-inverted),
-                0 0 4px var(--ubits-feedback-bg-info-subtle-inverted),
-                0 0 8px var(--ubits-feedback-bg-info-subtle-inverted);
+    box-shadow: none;
 }
 
 .modo-estudio-ia-page .ubits-study-chat__input-wrapper {
