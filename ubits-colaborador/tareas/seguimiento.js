@@ -2660,20 +2660,48 @@
                     acContainer.innerHTML = '';
                     var inputWrap = document.createElement('div');
                     inputWrap.className = 'ubits-input-wrapper seguimiento-filter-input-wrapper';
+                    var placeholder = 'Filtrar por ' + col + '...';
                     var inputEl = document.createElement('input');
                     inputEl.type = 'text';
                     inputEl.className = 'ubits-input ubits-input--md';
-                    inputEl.placeholder = 'Filtrar por ' + col + '...';
+                    inputEl.placeholder = placeholder;
                     inputEl.setAttribute('aria-label', 'Filtrar por ' + col);
+                    inputEl.setAttribute('autocomplete', 'off');
+                    inputEl.style.width = '100%';
+                    inputEl.style.paddingLeft = '32px';
+                    inputEl.style.paddingRight = '32px';
                     inputWrap.appendChild(inputEl);
+                    var leftIcon = document.createElement('i');
+                    leftIcon.className = 'far fa-search';
+                    leftIcon.setAttribute('aria-hidden', 'true');
+                    leftIcon.style.cssText = 'position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--ubits-fg-1-medium); pointer-events: none;';
+                    inputWrap.appendChild(leftIcon);
+                    var clearIcon = document.createElement('i');
+                    clearIcon.className = 'far fa-times';
+                    clearIcon.setAttribute('aria-hidden', 'true');
+                    clearIcon.style.cssText = 'position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--ubits-fg-1-medium); pointer-events: none; display: none; cursor: pointer;';
+                    inputWrap.appendChild(clearIcon);
                     acContainer.appendChild(inputWrap);
-                    filterVisibleOptions('');
+                    clearIcon.style.pointerEvents = 'auto';
+                    function toggleClearIcon() {
+                        clearIcon.style.display = inputEl.value.length > 0 ? 'block' : 'none';
+                    }
+                    clearIcon.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        inputEl.value = '';
+                        toggleClearIcon();
+                        filterVisibleOptions('');
+                        inputEl.focus();
+                    });
                     inputEl.addEventListener('input', function() {
+                        toggleClearIcon();
                         filterVisibleOptions(this.value);
                     });
                     inputEl.addEventListener('focus', function() {
                         filterVisibleOptions(this.value);
                     });
+                    filterVisibleOptions('');
                     setTimeout(function() { inputEl.focus(); }, 100);
                 } else {
                     filterVisibleOptions('');
