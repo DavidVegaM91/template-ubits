@@ -108,30 +108,36 @@
                                 Prompts útiles
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
-                                Usa estos prompts con Cursor AI para implementar el Dropdown Menu.
+                                Usa estos prompts con Cursor AI para añadir o personalizar menús desplegables de forma sencilla.
                             </p>
                             <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
                                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Usar Dropdown Menu UBITS</h3>
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Crear menú desplegable UBITS</h3>
                                     <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('dropdown-menu-prompt-0')">
                                         <i class="far fa-copy"></i>
                                         <span>Copiar</span>
                                     </button>
                                 </div>
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="dropdown-menu-prompt-0">Usa el componente Dropdown Menu UBITS para los menús desplegables. Importa components/dropdown-menu.css y components/dropdown-menu.js. Genera el HTML con getDropdownMenuHtml({ overlayId, options, hasAutocomplete?, autocompletePlaceholder?, footerSecondaryLabel?, footerPrimaryLabel? }). Posiciona y abre con openDropdownMenu(overlayId, anchorElement). Cierra con closeDropdownMenu(overlayId) o clic en el overlay. Opciones: array de { text, value?, leftIcon?, rightIcon?, checkbox?, switch?, selected? }.</code></pre>
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="dropdown-menu-prompt-0">Añade un menú desplegable UBITS con estas características:
+- Se abre al hacer clic en [describe el botón o elemento que abre el menú]
+- Opciones: [lista las opciones que debe mostrar, ej: Últimos 7 días, Últimos 15 días, Personalizado]
+- Si necesitas que el usuario pueda buscar/filtrar entre muchas opciones: incluye el input de búsqueda (lupa y botón X para limpiar)
+- Si el menú debe tener botones al pie: incluye Cancelar y Aplicar
+
+Ubicación: [describe dónde debe estar el botón que abre el menú]</code></pre>
                                 </div>
                             </div>
                             <div>
                                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Reemplazar menús por Dropdown Menu</h3>
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Reemplazar menús por el Dropdown UBITS</h3>
                                     <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('dropdown-menu-prompt-1')">
                                         <i class="far fa-copy"></i>
                                         <span>Copiar</span>
                                     </button>
                                 </div>
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="dropdown-menu-prompt-1">Reemplaza los menús desplegables (prioridad, estado, filtros, ordenamiento) por el componente Dropdown Menu UBITS. Usa getDropdownMenuHtml() con las mismas opciones y footer (Cancelar / Aplicar donde aplique). Mantén la lógica de open/close con openDropdownMenu(overlayId, anchorElement) y closeDropdownMenu(overlayId). Importa components/dropdown-menu.css y components/dropdown-menu.js.</code></pre>
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="dropdown-menu-prompt-1">Sustituye los menús desplegables de [prioridad, estado, filtros, ordenamiento, período, etc.] por el menú desplegable UBITS. Mantén el mismo comportamiento: al elegir una opción [describe qué debe pasar] y, donde corresponda, botones Cancelar y Aplicar. Usa el componente oficial (dropdown-menu.css y dropdown-menu.js).</code></pre>
                                 </div>
                             </div>
                         </div>
@@ -157,15 +163,17 @@
                                 <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
                                     <h2 class="ubits-heading-h2" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">Estructura</h2>
                                     <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
-                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="dropdown-structure-code">.ubits-dropdown-menu__overlay   /* Overlay transparente, cierre al clic */
-.ubits-dropdown-menu__content   /* Panel: padding sm, bg-1, elevation, border-radius-sm */
-  .ubits-dropdown-menu__autocomplete-wrap  /* Opcional: contenedor para input autocomplete */
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="dropdown-structure-code">.ubits-dropdown-menu__overlay   /* Overlay transparente, cierre al clic fuera */
+.ubits-dropdown-menu__content   /* Panel: bg-1, elevation-overlay, border-radius-sm */
+  .ubits-dropdown-menu__autocomplete-wrap  /* Opcional: input de búsqueda (lupa + X) */
+    #overlayId-autocomplete-input   /* Input tipo búsqueda, tamaño sm */
+    #overlayId-autocomplete-clear   /* Icono X para limpiar (visible al escribir) */
   .ubits-dropdown-menu__options
-    .ubits-dropdown-menu__option         /* Botón por ítem: left + text + right */
-      .ubits-dropdown-menu__option-left  /* Icono o checkbox */
-      .ubits-dropdown-menu__option-text  /* Texto regular, alineado izquierda */
-      .ubits-dropdown-menu__option-right /* Icono o switch */
-  .ubits-dropdown-menu__footer           /* Secundario + Primario a la derecha */</code></pre>
+    .ubits-dropdown-menu__option   /* Botón o label por ítem: left + text + right */
+      .ubits-dropdown-menu__option-left   /* Icono o checkbox */
+      .ubits-dropdown-menu__option-text   /* Texto, alineado izquierda */
+      .ubits-dropdown-menu__option-right  /* Icono o switch */
+  .ubits-dropdown-menu__footer    /* Opcional: Secundario + Primario a la derecha */</code></pre>
                                     </div>
                                 </div>
                                 <div style="padding: 32px;">
@@ -174,12 +182,14 @@
                                         <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="dropdown-api-code">getDropdownMenuHtml(config)
   config.overlayId, config.contentId
   config.options = [{ text, value?, leftIcon?, rightIcon?, checkbox?, switch?, selected? }]
-  config.hasAutocomplete?, config.autocompletePlaceholder?, config.autocompleteContainerId?
+  config.hasAutocomplete?     → incluye input de búsqueda (lupa + botón limpiar)
+  config.autocompletePlaceholder?, config.autocompleteContainerId?
   config.footerSecondaryLabel?, config.footerPrimaryLabel?
   config.footerSecondaryId?, config.footerPrimaryId?
 
-openDropdownMenu(overlayId, position)
-  position = { top, left } en px, o elemento ancla (getBoundingClientRect)
+openDropdownMenu(overlayId, position, options?)
+  position = elemento ancla (botón) o { top, left } en px
+  options.alignRight = true  → alinear derecha del dropdown con derecha del botón
 
 closeDropdownMenu(overlayId)</code></pre>
                                     </div>
