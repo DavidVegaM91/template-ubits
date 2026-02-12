@@ -1593,22 +1593,12 @@ function bindTutorPanelEvents(panel, type, topicKey) {
                 if (progressWrap) progressWrap.style.display = 'flex';
                 questionsContainer.style.display = 'block';
                 actionsDiv.innerHTML = '<div class="study-chat-quiz-result-actions">' +
-                    '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="study-chat-quiz-back-to-results"><span>Volver a resultados</span></button>' +
                     '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="study-chat-quiz-review-prev"><span>Anterior</span></button>' +
-                    '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="study-chat-quiz-review-next"><span>Siguiente</span></button>' +
+                    '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="study-chat-quiz-review-next"><span>Siguiente</span></button>' +
                     '</div>';
                 currentIdx = 0;
                 updateVisibility();
-                function updateReviewNav() {
-                    var prev = panel.querySelector('#study-chat-quiz-review-prev');
-                    var next = panel.querySelector('#study-chat-quiz-review-next');
-                    if (prev) prev.style.display = currentIdx > 0 ? 'inline-flex' : 'none';
-                    if (next) next.style.display = currentIdx < total - 1 ? 'inline-flex' : 'none';
-                }
-                updateReviewNav();
-                panel.querySelector('#study-chat-quiz-review-prev').addEventListener('click', function() { currentIdx--; updateVisibility(); updateReviewNav(); });
-                panel.querySelector('#study-chat-quiz-review-next').addEventListener('click', function() { currentIdx++; updateVisibility(); updateReviewNav(); });
-                panel.querySelector('#study-chat-quiz-back-to-results').addEventListener('click', function() {
+                function goBackToResults() {
                     questionsContainer.style.display = 'none';
                     if (progressWrap) progressWrap.style.display = 'none';
                     actionsDiv.innerHTML = '<div class="study-chat-quiz-result-actions">' +
@@ -1619,6 +1609,21 @@ function bindTutorPanelEvents(panel, type, topicKey) {
                         '</div></div>';
                     resultDiv.style.display = 'block';
                     bindQuizResultButtons();
+                }
+                function updateReviewNav() {
+                    var prev = panel.querySelector('#study-chat-quiz-review-prev');
+                    var next = panel.querySelector('#study-chat-quiz-review-next');
+                    if (prev) prev.style.display = currentIdx > 0 ? 'inline-flex' : 'none';
+                    if (next) {
+                        next.style.display = 'inline-flex';
+                        var nextLabel = next.querySelector('span');
+                        if (nextLabel) nextLabel.textContent = currentIdx < total - 1 ? 'Siguiente' : 'Volver a resultados';
+                    }
+                }
+                updateReviewNav();
+                panel.querySelector('#study-chat-quiz-review-prev').addEventListener('click', function() { currentIdx--; updateVisibility(); updateReviewNav(); });
+                panel.querySelector('#study-chat-quiz-review-next').addEventListener('click', function() {
+                    if (currentIdx < total - 1) { currentIdx++; updateVisibility(); updateReviewNav(); } else { goBackToResults(); }
                 });
             });
             function bindQuizResultButtons() {
@@ -1632,22 +1637,12 @@ function bindTutorPanelEvents(panel, type, topicKey) {
                     if (progressWrap) progressWrap.style.display = 'flex';
                     questionsContainer.style.display = 'block';
                     actionsDiv.innerHTML = '<div class="study-chat-quiz-result-actions">' +
-                        '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="study-chat-quiz-back-to-results"><span>Volver a resultados</span></button>' +
                         '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="study-chat-quiz-review-prev"><span>Anterior</span></button>' +
-                        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="study-chat-quiz-review-next"><span>Siguiente</span></button>' +
+                        '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="study-chat-quiz-review-next"><span>Siguiente</span></button>' +
                         '</div>';
                     currentIdx = 0;
                     updateVisibility();
-                    function updateReviewNav() {
-                        var prev = panel.querySelector('#study-chat-quiz-review-prev');
-                        var next = panel.querySelector('#study-chat-quiz-review-next');
-                        if (prev) prev.style.display = currentIdx > 0 ? 'inline-flex' : 'none';
-                        if (next) next.style.display = currentIdx < total - 1 ? 'inline-flex' : 'none';
-                    }
-                    updateReviewNav();
-                    panel.querySelector('#study-chat-quiz-review-prev').addEventListener('click', function() { currentIdx--; updateVisibility(); updateReviewNav(); });
-                    panel.querySelector('#study-chat-quiz-review-next').addEventListener('click', function() { currentIdx++; updateVisibility(); updateReviewNav(); });
-                    panel.querySelector('#study-chat-quiz-back-to-results').addEventListener('click', function() {
+                    function goBackToResults() {
                         questionsContainer.style.display = 'none';
                         if (progressWrap) progressWrap.style.display = 'none';
                         actionsDiv.innerHTML = '<div class="study-chat-quiz-result-actions">' +
@@ -1658,6 +1653,21 @@ function bindTutorPanelEvents(panel, type, topicKey) {
                             '</div></div>';
                         resultDiv.style.display = 'block';
                         bindQuizResultButtons();
+                    }
+                    function updateReviewNav() {
+                        var prev = panel.querySelector('#study-chat-quiz-review-prev');
+                        var next = panel.querySelector('#study-chat-quiz-review-next');
+                        if (prev) prev.style.display = currentIdx > 0 ? 'inline-flex' : 'none';
+                        if (next) {
+                            next.style.display = 'inline-flex';
+                            var nextLabel = next.querySelector('span');
+                            if (nextLabel) nextLabel.textContent = currentIdx < total - 1 ? 'Siguiente' : 'Volver a resultados';
+                        }
+                    }
+                    updateReviewNav();
+                    panel.querySelector('#study-chat-quiz-review-prev').addEventListener('click', function() { currentIdx--; updateVisibility(); updateReviewNav(); });
+                    panel.querySelector('#study-chat-quiz-review-next').addEventListener('click', function() {
+                        if (currentIdx < total - 1) { currentIdx++; updateVisibility(); updateReviewNav(); } else { goBackToResults(); }
                     });
                 });
                 panel.querySelector('#study-chat-quiz-reset').addEventListener('click', function() {
@@ -2248,7 +2258,7 @@ function renderHistorialList() {
         var activeClass = isActive ? ' modo-estudio-ia-historial-item--active' : '';
         html += '<div class="modo-estudio-ia-historial-item' + activeClass + '" data-chat-id="' + id + '" role="button" tabindex="0"' + (isActive ? ' aria-current="true"' : '') + '>' +
             '<span class="ubits-body-sm-regular modo-estudio-ia-historial-item__title">' + title + '</span>' +
-            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only modo-estudio-ia-historial-item__delete" data-delete-chat-id="' + id + '" aria-label="Eliminar chat" title="Eliminar">' +
+            '<button type="button" class="ubits-button ubits-button--error-tertiary ubits-button--xs ubits-button--icon-only modo-estudio-ia-historial-item__delete" data-delete-chat-id="' + id + '" aria-label="Eliminar chat" title="Eliminar">' +
             '<i class="far fa-trash"></i></button>' +
             '</div>';
     });
@@ -2324,7 +2334,7 @@ function createStudyChatHTML(options = {}) {
                         <div class="ubits-study-chat__welcome-icon"><i class="far fa-sparkles"></i></div>
                         <p class="ubits-study-chat__welcome-greeting">Hola, ${userFirstName}</p>
                     </div>
-                    <p class="ubits-study-chat__welcome-prompt">¿Qué quieres aprender hoy?</p>
+                    <p class="ubits-study-chat__welcome-prompt">¿Qué quieres <span class="ubits-study-chat__welcome-prompt-accent">aprender hoy</span>?</p>
                 </div>
             </div>` : '';
     return `

@@ -282,6 +282,14 @@
     left: var(--crear-menu-left, 0) !important;
 }
 
+/* Móvil: anclar por bottom para que el menú quede justo encima del botón (sin depender de top) */
+@media (max-width: 768px) {
+    #crear-menu-dropdown-root .crear-menu-dropdown {
+        top: auto !important;
+        bottom: var(--crear-menu-bottom, auto) !important;
+    }
+}
+
 /* ========================================
    DRAWER DE CREAR PLANTILLA
    ======================================== */
@@ -1070,6 +1078,14 @@
     #fab-button-container {
         bottom: 16px;
         right: 16px;
+    }
+
+    /* Menú Crear FAB: justo encima del botón en móvil (menos gap) */
+    [data-radix-popper-content-wrapper] {
+        margin-bottom: 4px !important;
+    }
+    .fab-menu {
+        margin-bottom: 4px !important;
     }
 }
 

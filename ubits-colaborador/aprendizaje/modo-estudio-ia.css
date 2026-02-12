@@ -41,8 +41,8 @@ body.modo-estudio-ia-page .dashboard-container {
 body[data-theme="dark"] .modo-estudio-ia-page::before {
     /* Azul (izq) + verde (der) en dark - accent-green y fg-green-subtle-inverted */
     background:
-        radial-gradient(ellipse 100% 80% at 10% -5%, rgba(56, 101, 245, 0.22) 0%, transparent 50%),
-        radial-gradient(ellipse 95% 75% at 90% -5%, rgba(189, 231, 195, 0.22) 0%, transparent 50%);
+        radial-gradient(ellipse 100% 80% at 10% -5%, rgba(56, 101, 245, 0.25) 0%, transparent 50%),
+        radial-gradient(ellipse 95% 75% at 90% -5%, rgba(189, 231, 195, 0.25) 0%, transparent 50%);
 }
 
 /* Reducir espacio entre subnav y contenido (en otras páginas main-content usa gap-xl) */
@@ -588,6 +588,15 @@ body[data-theme="dark"] .modo-estudio-ia-page::before {
 @keyframes modo-estudio-ia-sparkles-float {
     0%, 100% { transform: translateY(0) scale(1); opacity: 1; }
     50% { transform: translateY(-6px) scale(1.08); opacity: 0.9; }
+}
+
+/* "aprender hoy" con la misma gradación que el icono sparkles y peso semibold */
+.modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__welcome-prompt-accent {
+    font-weight: var(--font-weight-semibold);
+    background: linear-gradient(135deg, rgb(0, 215, 255) 0%, rgb(0, 152, 253) 50%, rgb(0, 89, 250) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
 }
 
 .modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__input-area {

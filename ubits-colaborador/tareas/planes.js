@@ -361,12 +361,23 @@ function openCrearMenu(anchorElement) {
     }
     var rect = anchorElement.getBoundingClientRect();
     var menuWidth = 192;
-    var gap = 4;
+    var menuHeight = 220;
+    var gapBelow = 4;
+    var gapAbove = 4;
     var viewportW = window.innerWidth || document.documentElement.clientWidth;
     var viewportH = window.innerHeight || document.documentElement.clientHeight;
+    var isMobile = viewportW <= 768;
     var menuLeft = Math.max(8, Math.min(rect.right - menuWidth, viewportW - menuWidth - 8));
-    var menuTop = rect.bottom + gap;
-    if (menuTop + 220 > viewportH - 8) menuTop = Math.max(8, rect.top - 220);
+    var menuTop;
+    var menuBottomPx = null;
+    if (isMobile) {
+        /* En móvil: siempre justo encima del botón usando bottom para anclar sin errores */
+        menuBottomPx = viewportH - rect.top + gapAbove;
+        menuTop = 0;
+    } else {
+        menuTop = rect.bottom + gapBelow;
+        if (menuTop + menuHeight > viewportH - 8) menuTop = rect.top - menuHeight - gapAbove;
+    }
     var root = document.createElement('div');
     root.id = 'crear-menu-dropdown-root';
     root.style.position = 'fixed';
@@ -381,6 +392,7 @@ function openCrearMenu(anchorElement) {
     menu.setAttribute('role', 'menu');
     menu.style.pointerEvents = 'auto';
     menu.style.setProperty('--crear-menu-top', menuTop + 'px');
+    if (menuBottomPx !== null) menu.style.setProperty('--crear-menu-bottom', menuBottomPx + 'px');
     menu.style.setProperty('--crear-menu-left', menuLeft + 'px');
     fabMenuOptions.forEach(function (option, index) {
         var item = document.createElement('button');
