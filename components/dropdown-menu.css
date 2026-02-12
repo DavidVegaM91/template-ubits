@@ -38,6 +38,12 @@
 }
 
 .ubits-dropdown-menu__autocomplete-wrap .ubits-input-wrapper,
+.ubits-dropdown-menu__autocomplete-wrap .ubits-dropdown-menu__search-wrapper {
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
+}
+
 .ubits-dropdown-menu__autocomplete-wrap input {
     width: 100%;
     box-sizing: border-box;

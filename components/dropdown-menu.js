@@ -75,8 +75,15 @@
             return '<button type="button" class="ubits-dropdown-menu__option' + selectedClass + '" data-value="' + value + '">' + inner + '</button>';
         }).join('');
 
+        var searchInputId = overlayId + '-autocomplete-input';
+        var searchClearId = overlayId + '-autocomplete-clear';
         var autocompleteBlock = hasAutocomplete
-            ? '<div class="ubits-dropdown-menu__autocomplete-wrap"><div id="' + escapeHtml(autocompleteContainerId) + '"></div></div>'
+            ? '<div class="ubits-dropdown-menu__autocomplete-wrap"><div id="' + escapeHtml(autocompleteContainerId) + '">' +
+            '<div class="ubits-input-wrapper ubits-dropdown-menu__search-wrapper">' +
+            '<input type="text" id="' + escapeHtml(searchInputId) + '" class="ubits-input ubits-input--sm" placeholder="' + escapeHtml(autocompletePlaceholder) + '" autocomplete="off" aria-label="Buscar" style="width:100%;padding-left:36px;padding-right:36px;box-sizing:border-box;">' +
+            '<i class="far fa-search" aria-hidden="true" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--ubits-fg-1-medium);pointer-events:none;"></i>' +
+            '<i class="far fa-times" id="' + escapeHtml(searchClearId) + '" aria-hidden="true" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--ubits-fg-1-medium);cursor:pointer;display:none;"></i>' +
+            '</div></div></div>'
             : '';
 
         var footerBlock = (footerSecondaryLabel || footerPrimaryLabel)

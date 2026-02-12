@@ -60,7 +60,7 @@
                                     <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-high);">Mostrar bloques</span>
                                     <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
                                         <input type="checkbox" id="preview-autocomplete" style="accent-color: var(--ubits-accent-brand);">
-                                        <span class="ubits-body-sm-regular">Input autocomplete</span>
+                                        <span class="ubits-body-sm-regular">Input de búsqueda</span>
                                     </label>
                                     <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
                                         <input type="checkbox" id="preview-footer" checked style="accent-color: var(--ubits-accent-brand);">
@@ -85,8 +85,8 @@
                                 </div>
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-search"></i></div>
-                                    <div class="ubits-body-sm-bold">Autocomplete opcional</div>
-                                    <div class="ubits-body-sm-regular">Para menús con búsqueda (p. ej. encabezados de tabla)</div>
+                                    <div class="ubits-body-sm-bold">Input de búsqueda opcional</div>
+                                    <div class="ubits-body-sm-regular">Lupa y botón limpiar; para filtrar opciones (p. ej. encabezados de tabla)</div>
                                 </div>
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-list"></i></div>
@@ -269,14 +269,38 @@ closeDropdownMenu(overlayId)</code></pre>
                 container.innerHTML = getDropdownMenuHtml(config);
 
                 if (s.autocomplete) {
-                    var acWrap = document.getElementById(overlayId + '-autocomplete');
-                    if (acWrap) {
-                        var input = document.createElement('input');
-                        input.type = 'text';
-                        input.placeholder = 'Buscar...';
-                        input.setAttribute('aria-label', 'Buscar');
-                        input.style.cssText = 'width:100%;padding:8px 12px;border:1px solid var(--ubits-border-1);border-radius:var(--border-radius-sm);font-size:var(--font-size-sm);color:var(--ubits-fg-1-high);background:var(--ubits-bg-1);box-sizing:border-box;';
-                        acWrap.appendChild(input);
+                    var overlay = document.getElementById(overlayId);
+                    var searchInput = document.getElementById(overlayId + '-autocomplete-input');
+                    var searchClear = document.getElementById(overlayId + '-autocomplete-clear');
+                    if (searchInput && searchClear && overlay) {
+                        searchClear.style.pointerEvents = 'auto';
+                        function filterPreviewOptions(q) {
+                            var opts = overlay.querySelectorAll('.ubits-dropdown-menu__option');
+                            var qn = (q || '').toLowerCase().trim();
+                            opts.forEach(function(opt) {
+                                var textEl = opt.querySelector('.ubits-dropdown-menu__option-text');
+                                var text = textEl ? textEl.textContent : '';
+                                opt.style.display = !qn || text.toLowerCase().indexOf(qn) >= 0 ? '' : 'none';
+                            });
+                        }
+                        function toggleClear() {
+                            searchClear.style.display = searchInput.value.length > 0 ? 'block' : 'none';
+                        }
+                        searchClear.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            searchInput.value = '';
+                            toggleClear();
+                            filterPreviewOptions('');
+                            searchInput.focus();
+                        });
+                        searchInput.addEventListener('input', function() {
+                            toggleClear();
+                            filterPreviewOptions(this.value);
+                        });
+                        searchInput.addEventListener('focus', function() {
+                            filterPreviewOptions(searchInput.value);
+                        });
                     }
                 }
 
