@@ -351,87 +351,57 @@ const fabMenuOptions = [
     }
 ];
 
-/** Abre el menú desplegable "Crear" anclado al botón (header product o FAB). Usar desde planes, tareas y seguimiento. */
-function openCrearMenu(anchorElement) {
-    if (!anchorElement || !anchorElement.getBoundingClientRect) return;
-    var existing = document.getElementById('crear-menu-dropdown-root');
-    if (existing) {
-        existing.remove();
-        return;
-    }
-    var rect = anchorElement.getBoundingClientRect();
-    var menuWidth = 192;
-    var menuHeight = 220;
-    var gapBelow = 4;
-    var gapAbove = 4;
-    var viewportW = window.innerWidth || document.documentElement.clientWidth;
-    var viewportH = window.innerHeight || document.documentElement.clientHeight;
-    var isMobile = viewportW <= 768;
-    var menuLeft = Math.max(8, Math.min(rect.right - menuWidth, viewportW - menuWidth - 8));
-    var menuTop;
-    var menuBottomPx = null;
-    if (isMobile) {
-        /* En móvil: siempre justo encima del botón usando bottom para anclar sin errores */
-        menuBottomPx = viewportH - rect.top + gapAbove;
-        menuTop = 0;
-    } else {
-        menuTop = rect.bottom + gapBelow;
-        if (menuTop + menuHeight > viewportH - 8) menuTop = rect.top - menuHeight - gapAbove;
-    }
-    var root = document.createElement('div');
-    root.id = 'crear-menu-dropdown-root';
-    root.style.position = 'fixed';
-    root.style.left = '0';
-    root.style.top = '0';
-    root.style.width = '100%';
-    root.style.height = '100%';
-    root.style.zIndex = '9999';
-    root.style.pointerEvents = 'none';
-    var menu = document.createElement('div');
-    menu.className = 'flux-dropdown-content fab-menu crear-menu-dropdown';
-    menu.setAttribute('role', 'menu');
-    menu.style.pointerEvents = 'auto';
-    menu.style.setProperty('--crear-menu-top', menuTop + 'px');
-    if (menuBottomPx !== null) menu.style.setProperty('--crear-menu-bottom', menuBottomPx + 'px');
-    menu.style.setProperty('--crear-menu-left', menuLeft + 'px');
-    fabMenuOptions.forEach(function (option, index) {
-        var item = document.createElement('button');
-        item.type = 'button';
-        item.className = 'flux-dropdown-item fab-menu-item';
-        item.setAttribute('role', 'menuitem');
-        item.dataset.action = String(index);
-        if (option.icon) {
-            item.innerHTML = '<i class="far ' + option.icon + ' fab-menu-item__icon"></i><span>' + escapePlanHtml(option.label) + '</span>';
-        } else {
-            item.innerHTML = '<span class="fab-menu-item__icon"></span><span>' + escapePlanHtml(option.label) + '</span>';
-        }
-        item.addEventListener('click', function (e) {
-            e.stopPropagation();
-            root.remove();
-            if (option.onClick) option.onClick();
-        });
-        menu.appendChild(item);
+var CREAR_MENU_OVERLAY_ID = 'crear-menu-overlay';
+
+/** Asegura que exista el overlay del menú Crear (componente oficial). */
+function ensureCrearMenuOverlay() {
+    if (document.getElementById(CREAR_MENU_OVERLAY_ID)) return;
+    if (typeof window.getDropdownMenuHtml !== 'function') return;
+    var options = fabMenuOptions.map(function (opt, index) {
+        var icon = (opt.icon && String(opt.icon).replace(/^fa-/, '')) || '';
+        return { text: opt.label, value: String(index), leftIcon: icon || undefined };
     });
-    root.appendChild(menu);
-    document.body.appendChild(root);
-    function closeMenu(e) {
-        if (e && e.target && root.contains(e.target)) return;
-        root.remove();
-        document.removeEventListener('click', closeMenu);
+    var html = window.getDropdownMenuHtml({ overlayId: CREAR_MENU_OVERLAY_ID, options: options });
+    document.body.insertAdjacentHTML('beforeend', html);
+    var overlay = document.getElementById(CREAR_MENU_OVERLAY_ID);
+    if (!overlay) return;
+    var content = overlay.querySelector('.ubits-dropdown-menu__content');
+    if (content) {
+        content.addEventListener('click', function (e) {
+            var opt = e.target.closest('.ubits-dropdown-menu__option');
+            if (!opt) return;
+            var val = opt.getAttribute('data-value');
+            if (val === null) return;
+            var index = parseInt(val, 10);
+            if (typeof window.closeDropdownMenu === 'function') window.closeDropdownMenu(CREAR_MENU_OVERLAY_ID);
+            if (fabMenuOptions[index] && typeof fabMenuOptions[index].onClick === 'function') fabMenuOptions[index].onClick();
+        });
     }
-    setTimeout(function () { document.addEventListener('click', closeMenu); }, 0);
+    overlay.addEventListener('click', function (e) {
+        if (e.target === overlay && typeof window.closeDropdownMenu === 'function') window.closeDropdownMenu(CREAR_MENU_OVERLAY_ID);
+    });
 }
 
-// Renderizar FAB Button (opcional: forceOpen = true para forzar que se muestre el menú/popper)
+/** Abre el menú desplegable "Crear" (componente oficial). Desktop: debajo, alineado a la derecha con el botón. Móvil: arriba del FAB, misma alineación. */
+function openCrearMenu(anchorElement) {
+    if (!anchorElement || !anchorElement.getBoundingClientRect) return;
+    if (typeof window.openDropdownMenu !== 'function' || typeof window.closeDropdownMenu !== 'function') return;
+    var overlay = document.getElementById(CREAR_MENU_OVERLAY_ID);
+    if (overlay && overlay.style.display === 'block') {
+        window.closeDropdownMenu(CREAR_MENU_OVERLAY_ID);
+        return;
+    }
+    ensureCrearMenuOverlay();
+    window.openDropdownMenu(CREAR_MENU_OVERLAY_ID, anchorElement, { alignRight: true });
+}
+
+// Renderizar FAB Button. Al hacer clic abre el menú Crear (componente oficial) arriba del botón, alineado a la derecha.
 function renderFabButton(forceOpen) {
     const container = document.getElementById('fab-button-container');
     if (!container) return;
 
-    if (forceOpen === true) fabState.open = true;
-
     container.innerHTML = '';
 
-    // Botón principal: replicar estructura del módulo (flux-button + icono + aria)
     const fabButton = document.createElement('button');
     fabButton.className = 'flux-button-root flux-button tone-info tone-brand primary m flux-button-only-icon fab-button';
     fabButton.id = 'fab-button-main';
@@ -441,8 +411,7 @@ function renderFabButton(forceOpen) {
     fabButton.setAttribute('data-accent', 'default');
     fabButton.setAttribute('aria-label', 'Abrir menú rápido');
     fabButton.setAttribute('aria-haspopup', 'menu');
-    fabButton.setAttribute('aria-expanded', fabState.open ? 'true' : 'false');
-    fabButton.setAttribute('data-state', fabState.open ? 'open' : 'closed');
+    fabButton.setAttribute('aria-expanded', 'false');
     fabButton.innerHTML = `
         <div class="flux-button-content">
             <span class="flux-button-icon">
@@ -453,76 +422,17 @@ function renderFabButton(forceOpen) {
     `;
     container.appendChild(fabButton);
 
-    // Menú: estructura equivalente a data-radix-popper-content-wrapper + flux-dropdown-content
-    if (fabState.open) {
-        const popperWrapper = document.createElement('div');
-        popperWrapper.setAttribute('data-radix-popper-content-wrapper', '');
-        popperWrapper.style.position = 'absolute';
-        popperWrapper.style.right = '0';
-        popperWrapper.style.bottom = '100%';
-        popperWrapper.style.pointerEvents = 'auto';
-        popperWrapper.style.zIndex = '10000';
-
-        const fabMenu = document.createElement('div');
-        fabMenu.className = 'flux-dropdown-content fab-menu';
-        fabMenu.id = 'fab-menu';
-        fabMenu.setAttribute('role', 'menu');
-        fabMenu.setAttribute('data-side', 'top');
-        fabMenu.setAttribute('data-align', 'end');
-        fabMenu.setAttribute('data-state', 'open');
-        
-        fabMenuOptions.forEach((option, index) => {
-            const menuItem = document.createElement('button');
-            menuItem.className = 'flux-dropdown-item fab-menu-item';
-            menuItem.dataset.action = index;
-            menuItem.setAttribute('role', 'menuitem');
-            menuItem.innerHTML = `
-                ${option.icon ? `<i class="${option.icon} fab-menu-item__icon"></i>` : '<span class="fab-menu-item__icon"></span>'}
-                <span>${escapeHtml(option.label)}</span>
-            `;
-            fabMenu.appendChild(menuItem);
-        });
-
-        popperWrapper.appendChild(fabMenu);
-        container.appendChild(popperWrapper);
-    }
-
-    // Event listeners
     const mainButton = document.getElementById('fab-button-main');
     if (mainButton) {
-        mainButton.addEventListener('click', (e) => {
+        mainButton.addEventListener('click', function (e) {
             e.stopPropagation();
-            fabState.open = !fabState.open;
-            renderFabButton();
+            if (typeof window.openCrearMenu === 'function') window.openCrearMenu(mainButton);
         });
     }
 
-    // Cerrar menú al hacer clic fuera
-    if (fabState.open) {
-        setTimeout(() => {
-            const closeFabMenu = (e) => {
-                if (!container.contains(e.target)) {
-                    fabState.open = false;
-                    renderFabButton();
-                    document.removeEventListener('click', closeFabMenu);
-                }
-            };
-            document.addEventListener('click', closeFabMenu);
-        }, 100);
+    if (forceOpen === true && mainButton && typeof window.openCrearMenu === 'function') {
+        setTimeout(function () { window.openCrearMenu(mainButton); }, 0);
     }
-
-    // Event listeners para items del menú
-    fabMenuOptions.forEach((option, index) => {
-        const item = container.querySelector(`[data-action="${index}"]`);
-        if (item) {
-            item.addEventListener('click', (e) => {
-                e.stopPropagation();
-                fabState.open = false;
-                renderFabButton();
-                option.onClick();
-            });
-        }
-    });
 }
 
 // Abrir drawer de plantilla

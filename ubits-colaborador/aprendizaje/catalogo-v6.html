@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="../../components/profile-menu.css">
     <link rel="stylesheet" href="../../components/input.css">
     <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/dropdown-menu.css">
     <link rel="stylesheet" href="../../components/carousel-contents.css">
     <link rel="stylesheet" href="../../components/status-tag.css">
     <link rel="stylesheet" href="../../components/ia-button.css">
@@ -104,6 +105,7 @@
     <script src="../../components/floating-menu.js"></script>
     <script src="../../components/profile-menu.js"></script>
     <script src="../../components/input.js"></script>
+    <script src="../../components/dropdown-menu.js"></script>
     <script src="../../components/carousel-contents.js"></script>
     <script src="../../script.js"></script>
     <script>
@@ -1151,181 +1153,67 @@
             }
         }
         
+        var ACADEMIA_OVERLAY_ID = 'catalogo-v6-academia-overlay';
+
+        function ensureAcademiaOverlay(academias) {
+            var existing = document.getElementById(ACADEMIA_OVERLAY_ID);
+            if (existing) existing.remove();
+            if (typeof window.getDropdownMenuHtml !== 'function') return;
+            var options = academias.map(function(a) {
+                return { text: a.nombre, value: a.nombre, selected: a.nombre === selectedAcademia2 };
+            });
+            var html = window.getDropdownMenuHtml({
+                overlayId: ACADEMIA_OVERLAY_ID,
+                options: options
+            });
+            document.body.insertAdjacentHTML('beforeend', html);
+            var overlay = document.getElementById(ACADEMIA_OVERLAY_ID);
+            var content = overlay && overlay.querySelector('.ubits-dropdown-menu__content');
+            if (content) {
+                content.addEventListener('click', function(e) {
+                    var opt = e.target.closest('.ubits-dropdown-menu__option');
+                    if (!opt) return;
+                    var val = opt.getAttribute('data-value');
+                    if (val) {
+                        selectedAcademia2 = val;
+                        var textEl = document.querySelector('#academia-selector-container .academia-selector-custom__text');
+                        if (textEl) textEl.textContent = selectedAcademia2;
+                        if (typeof window.closeDropdownMenu === 'function') window.closeDropdownMenu(ACADEMIA_OVERLAY_ID);
+                        var resultsContainer = document.getElementById('catalog-results');
+                        if (resultsContainer) renderCompetenciasForSelector(resultsContainer, selectedAcademia2, academias);
+                    }
+                });
+            }
+            if (overlay) {
+                overlay.addEventListener('click', function(e) {
+                    if (e.target === overlay && typeof window.closeDropdownMenu === 'function') window.closeDropdownMenu(ACADEMIA_OVERLAY_ID);
+                });
+            }
+        }
+
         function createCustomAcademiaSelector(container, academias) {
-            // Limpiar contenedor
             container.innerHTML = '';
-            
-            // Crear texto con nombre de academia
-            const textElement = document.createElement('p');
+            var textElement = document.createElement('p');
             textElement.className = 'ubits-body-md-regular academia-selector-custom__text';
             textElement.textContent = selectedAcademia2;
             container.appendChild(textElement);
-            
-            // Crear contenedor del dropdown
-            const dropdownContainer = document.createElement('div');
-            dropdownContainer.className = 'academia-selector-custom__dropdown';
-            
-            // Crear botón con chevron-down
-            const button = document.createElement('button');
+            var button = document.createElement('button');
+            button.type = 'button';
             button.className = 'ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only';
             button.setAttribute('aria-label', 'Desplegar academias');
             button.innerHTML = '<i class="far fa-chevron-down"></i>';
-            dropdownContainer.appendChild(button);
-            
-            // Crear menú dropdown
-            const dropdownMenu = document.createElement('div');
-            dropdownMenu.className = 'academia-selector-custom__dropdown-menu';
-            
-            // Crear items del dropdown (5 academias, sin scroll)
-            academias.forEach(academia => {
-                const item = document.createElement('div');
-                item.className = 'academia-selector-custom__dropdown-item';
-                if (academia.nombre === selectedAcademia2) {
-                    item.classList.add('active');
-                }
-                item.textContent = academia.nombre;
-                item.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    selectedAcademia2 = academia.nombre;
-                    textElement.textContent = selectedAcademia2;
-                    dropdownMenu.classList.remove('visible');
-                    // Rotar chevron de vuelta
-                    const chevronIcon = button.querySelector('i');
-                    if (chevronIcon) {
-                        chevronIcon.style.transform = '';
-                    }
-                    // Actualizar items activos
-                    dropdownMenu.querySelectorAll('.academia-selector-custom__dropdown-item').forEach(item => {
-                        if (item.textContent === selectedAcademia2) {
-                            item.classList.add('active');
-                        } else {
-                            item.classList.remove('active');
-                        }
-                    });
-                    // Renderizar competencias de la academia seleccionada
-                    const resultsContainer = document.getElementById('catalog-results');
-                    if (resultsContainer) {
-                        renderCompetenciasForSelector(resultsContainer, selectedAcademia2, academias);
-                    }
-                });
-                dropdownMenu.appendChild(item);
-            });
-            
-            dropdownContainer.appendChild(dropdownMenu);
-            container.appendChild(dropdownContainer);
-            
-            // Función para calcular posición del dropdown
-            function calculateDropdownPosition() {
-                const buttonRect = button.getBoundingClientRect();
-                const dropdownHeight = dropdownMenu.offsetHeight || 240; // Aproximadamente 5 items * 48px
-                const spaceBelow = window.innerHeight - buttonRect.bottom;
-                const spaceAbove = buttonRect.top;
-                
-                // Si hay menos espacio abajo que arriba, desplegar hacia arriba
-                if (spaceBelow < dropdownHeight && spaceAbove > spaceBelow) {
-                    dropdownMenu.classList.add('dropdown-up');
-                } else {
-                    dropdownMenu.classList.remove('dropdown-up');
-                }
-            }
-            
-            // Toggle del dropdown al hacer clic en el botón
+            container.appendChild(button);
+            ensureAcademiaOverlay(academias);
             button.addEventListener('click', function(e) {
                 e.stopPropagation();
-                const isVisible = dropdownMenu.classList.contains('visible');
-                if (isVisible) {
-                    dropdownMenu.classList.remove('visible');
-                    dropdownMenu.classList.remove('dropdown-up');
-                    const chevronIcon = button.querySelector('i');
-                    if (chevronIcon) {
-                        chevronIcon.style.transform = '';
-                    }
-                } else {
-                    // Calcular posición antes de mostrar
-                    calculateDropdownPosition();
-                    dropdownMenu.classList.add('visible');
-                    const chevronIcon = button.querySelector('i');
-                    if (chevronIcon) {
-                        chevronIcon.style.transform = 'rotate(180deg)';
-                    }
-                }
-            });
-            
-            // Cerrar dropdown al hacer clic fuera
-            document.addEventListener('click', function(e) {
-                if (!dropdownContainer.contains(e.target)) {
-                    dropdownMenu.classList.remove('visible');
-                    dropdownMenu.classList.remove('dropdown-up');
-                    const chevronIcon = button.querySelector('i');
-                    if (chevronIcon) {
-                        chevronIcon.style.transform = '';
-                    }
-                }
-            });
-            
-            // Recalcular posición al hacer scroll o resize
-            window.addEventListener('scroll', function() {
-                if (dropdownMenu.classList.contains('visible')) {
-                    calculateDropdownPosition();
-                }
-            }, true);
-            
-            window.addEventListener('resize', function() {
-                if (dropdownMenu.classList.contains('visible')) {
-                    calculateDropdownPosition();
-                }
+                if (typeof window.openDropdownMenu === 'function') window.openDropdownMenu(ACADEMIA_OVERLAY_ID, button);
             });
         }
-        
+
         function updateCustomAcademiaSelector(container, academias) {
-            // Actualizar texto
-            const textElement = container.querySelector('.academia-selector-custom__text');
-            if (textElement) {
-                textElement.textContent = selectedAcademia2;
-            }
-            
-            // Actualizar items del dropdown
-            const dropdownMenu = container.querySelector('.academia-selector-custom__dropdown-menu');
-            const button = container.querySelector('.academia-selector-custom__dropdown button');
-            
-            if (dropdownMenu && button) {
-                dropdownMenu.innerHTML = '';
-                academias.forEach(academia => {
-                    const item = document.createElement('div');
-                    item.className = 'academia-selector-custom__dropdown-item';
-                    if (academia.nombre === selectedAcademia2) {
-                        item.classList.add('active');
-                    }
-                    item.textContent = academia.nombre;
-                    item.addEventListener('click', function(e) {
-                        e.stopPropagation();
-                        selectedAcademia2 = academia.nombre;
-                        if (textElement) {
-                            textElement.textContent = selectedAcademia2;
-                        }
-                        dropdownMenu.classList.remove('visible');
-                        dropdownMenu.classList.remove('dropdown-up');
-                        const chevronIcon = button.querySelector('i');
-                        if (chevronIcon) {
-                            chevronIcon.style.transform = '';
-                        }
-                        // Actualizar items activos
-                        dropdownMenu.querySelectorAll('.academia-selector-custom__dropdown-item').forEach(item => {
-                            if (item.textContent === selectedAcademia2) {
-                                item.classList.add('active');
-                            } else {
-                                item.classList.remove('active');
-                            }
-                        });
-                        // Renderizar competencias
-                        const resultsContainer = document.getElementById('catalog-results');
-                        if (resultsContainer) {
-                            renderCompetenciasForSelector(resultsContainer, selectedAcademia2, academias);
-                        }
-                    });
-                    dropdownMenu.appendChild(item);
-                });
-            }
+            var textElement = container.querySelector('.academia-selector-custom__text');
+            if (textElement) textElement.textContent = selectedAcademia2;
+            ensureAcademiaOverlay(academias);
         }
 
         function renderCompetenciasForSelector(container, academiaNombre, academias) {

@@ -88,8 +88,7 @@ Aquí se modifica la *lógica interna* de los componentes para que sus menús de
 - [x] Todos los menús usan getDropdownMenuHtml + openDropdownMenu + closeDropdownMenu.
 - [x] HTML sin overlays/paneles custom; solo contenedores para inyectar (menús inyectados en body por JS).
 - [x] seguimiento.js sin lógica de mostrar/ocultar/posicionar menús propios (sort, filter, checkbox, priority, status, periodo, columns, reasignar, descargar).
-- [ ] CSS sin estilos de los menús viejos (seguimiento.css: comentar o eliminar estilos .sort-menu, .filter-menu, .checkbox-menu, .priority-menu, .status-menu, .periodo-menu, .columns-menu, .reasignar-menu, .descargar-menu cuando se confirme que no se usan).
-- [ ] Pruebas en ambas páginas (modo claro/oscuro, viewport pequeño).
+- [x] Pruebas en ambas páginas (modo claro/oscuro, viewport pequeño).
 
 ---
 
@@ -112,9 +111,9 @@ Aquí se modifica la *lógica interna* de los componentes para que sus menús de
 
 **Checklist Fase 3**
 
-- [ ] Inventario de páginas colaborador con dropdown actualizado.
-- [ ] catalogo-v5 y catalogo-v6 (y otras que tengan dropdown) migradas al componente oficial.
-- [ ] Sin dropdowns hardcodeados en colaborador (salvo los ya migrados en Fase 2).
+- [x] Inventario de páginas colaborador con dropdown actualizado.
+- [x] catalogo-v6 migrado al componente oficial (catalogo-v5 usa `createInput` type select, no requiere migración).
+- [x] Sin dropdowns hardcodeados en colaborador.
 
 ---
 
@@ -124,6 +123,8 @@ Aquí se modifica la *lógica interna* de los componentes para que sus menús de
 
 **Objetivo:** Todas las páginas admin que tengan dropdown o menú desplegable usan el componente oficial.
 
+**Inventario (revisado):** En `ubits-admin/` no hay ningún `<select>` nativo, ni `createInput` type select, ni menús desplegables custom (sin overlays con getBoundingClientRect ni clases tipo `.dropdown-menu`). Solo se usan Floating Menu y Profile Menu (componentes oficiales). No hay páginas que requieran migración al Dropdown Menu oficial.
+
 **Pasos:**
 
 1. Listar todos los HTML en ubits-admin que tengan `<select>`, overlays de menú, filtros desplegables, etc. (grep o revisión).
@@ -132,9 +133,9 @@ Aquí se modifica la *lógica interna* de los componentes para que sus menús de
 
 **Checklist Fase 4**
 
-- [ ] Inventario de páginas admin con dropdown.
-- [ ] Todas migradas al Dropdown Menu oficial.
-- [ ] Sin dropdowns hardcodeados en admin.
+- [x] Inventario de páginas admin con dropdown.
+- [x] Todas migradas al Dropdown Menu oficial (ninguna requería migración).
+- [x] Sin dropdowns hardcodeados en admin.
 
 ---
 

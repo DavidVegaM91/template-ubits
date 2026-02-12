@@ -272,24 +272,6 @@
     justify-content: center;
 }
 
-/* Menú Crear del header: posicionamiento fixed (no absolute/bottom como el FAB) para que no se salga del viewport */
-#crear-menu-dropdown-root .crear-menu-dropdown {
-    position: fixed !important;
-    bottom: auto !important;
-    right: auto !important;
-    margin-bottom: 0 !important;
-    top: var(--crear-menu-top, 0) !important;
-    left: var(--crear-menu-left, 0) !important;
-}
-
-/* Móvil: anclar por bottom para que el menú quede justo encima del botón (sin depender de top) */
-@media (max-width: 768px) {
-    #crear-menu-dropdown-root .crear-menu-dropdown {
-        top: auto !important;
-        bottom: var(--crear-menu-bottom, auto) !important;
-    }
-}
-
 /* ========================================
    DRAWER DE CREAR PLANTILLA
    ======================================== */
