@@ -318,15 +318,10 @@ textarea.ubits-input:disabled {
     padding: var(--padding-sm) var(--padding-md);
     cursor: pointer;
     color: var(--ubits-fg-1-high);
-    border-bottom: 1px solid var(--ubits-border-1);
     transition: background-color 0.2s ease;
     display: flex;
     align-items: center;
     gap: var(--gap-sm);
-}
-
-.ubits-autocomplete-option:last-child {
-    border-bottom: none;
 }
 
 .ubits-autocomplete-option:hover {
@@ -390,19 +385,11 @@ textarea.ubits-input:disabled {
     padding: var(--padding-sm) var(--padding-md);
     cursor: pointer;
     color: var(--ubits-fg-1-high);
-    border-bottom: 1px solid var(--ubits-border-1);
-    border-left: none;
-    border-right: none;
-    border-top: none;
     transition: background-color 0.2s ease;
 }
 
 .ubits-select-option:hover {
     background-color: var(--ubits-bg-2);
-}
-
-.ubits-select-option:last-child {
-    border-bottom: none;
 }
 
 .ubits-select-loading {
@@ -411,7 +398,6 @@ textarea.ubits-input:disabled {
     color: var(--ubits-fg-1-medium);
     font-size: var(--font-size-sm);
     font-style: italic;
-    border-bottom: 1px solid var(--ubits-border-1);
     display: flex;
     align-items: center;
     justify-content: center;

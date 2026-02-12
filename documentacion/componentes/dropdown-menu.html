@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Dropdown Menu | UBITS Playground</title>
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/dropdown-menu.css">
+    <script src="../../components/input.js"></script>
+    <script src="../../components/dropdown-menu.js"></script>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div style="display: flex;">
+                <div id="docs-dropdown-container"></div>
+                <div id="docs-sidebar-container"></div>
+                <div class="components-content">
+                    <div class="content-area" style="display: block; width: 100%;">
+                        <!-- Hero -->
+                        <div style="text-align: center; margin-bottom: 60px;">
+                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">Dropdown Menu</h1>
+                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                                Menú desplegable unificado: padding sm, fondo blanco (bg-1), elevation, texto regular alineado a la izquierda. Opcional: autocomplete (p. ej. encabezados de tabla), opciones con icono/checkbox/switch a izquierda o derecha. Footer con botón secundario y primario a la derecha.
+                            </p>
+                        </div>
+
+                        <!-- Preview -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Preview del componente
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                                Haz clic en "Abrir menú" para ver el resultado. Los controles debajo permiten activar/desactivar autocomplete y footer, y elegir una variante para las opciones. Hover usa <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">bg-2</code>.
+                            </p>
+                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md); position: relative;">
+                                <div id="dropdown-menu-preview">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="dropdown-menu-trigger">
+                                        <i class="far fa-chevron-down"></i>
+                                        <span>Abrir menú</span>
+                                    </button>
+                                </div>
+                                <div id="dropdown-menu-container"></div>
+                            </div>
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; margin-top: 24px; align-items: flex-end;">
+                                <div style="display: flex; flex-direction: column; gap: 8px;">
+                                    <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-high);">Mostrar bloques</span>
+                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                        <input type="checkbox" id="preview-autocomplete" style="accent-color: var(--ubits-accent-brand);">
+                                        <span class="ubits-body-sm-regular">Input autocomplete</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                        <input type="checkbox" id="preview-footer" checked style="accent-color: var(--ubits-accent-brand);">
+                                        <span class="ubits-body-sm-regular">Footer (Cancelar / Aplicar)</span>
+                                    </label>
+                                </div>
+                                <div id="preview-opciones-tipo-container" style="min-width: 200px;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Características -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Características
+                            </h2>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-palette"></i></div>
+                                    <div class="ubits-body-sm-bold">Estilo unificado</div>
+                                    <div class="ubits-body-sm-regular">Padding sm, fondo bg-1, elevation, texto regular alineado a la izquierda</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-search"></i></div>
+                                    <div class="ubits-body-sm-bold">Autocomplete opcional</div>
+                                    <div class="ubits-body-sm-regular">Para menús con búsqueda (p. ej. encabezados de tabla)</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-list"></i></div>
+                                    <div class="ubits-body-sm-bold">Opciones flexibles</div>
+                                    <div class="ubits-body-sm-regular">Icono, checkbox o switch a izquierda o derecha de cada ítem</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-window-minimize"></i></div>
+                                    <div class="ubits-body-sm-bold">Footer</div>
+                                    <div class="ubits-body-sm-regular">Dos botones a la derecha: secundario y primario</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Prompts -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Prompts útiles
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                Usa estos prompts con Cursor AI para implementar el Dropdown Menu.
+                            </p>
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Usar Dropdown Menu UBITS</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('dropdown-menu-prompt-0')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="dropdown-menu-prompt-0">Usa el componente Dropdown Menu UBITS para los menús desplegables. Importa components/dropdown-menu.css y components/dropdown-menu.js. Genera el HTML con getDropdownMenuHtml({ overlayId, options, hasAutocomplete?, autocompletePlaceholder?, footerSecondaryLabel?, footerPrimaryLabel? }). Posiciona y abre con openDropdownMenu(overlayId, anchorElement). Cierra con closeDropdownMenu(overlayId) o clic en el overlay. Opciones: array de { text, value?, leftIcon?, rightIcon?, checkbox?, switch?, selected? }.</code></pre>
+                                </div>
+                            </div>
+                            <div>
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Reemplazar menús por Dropdown Menu</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('dropdown-menu-prompt-1')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="dropdown-menu-prompt-1">Reemplaza los menús desplegables (prioridad, estado, filtros, ordenamiento) por el componente Dropdown Menu UBITS. Usa getDropdownMenuHtml() con las mismas opciones y footer (Cancelar / Aplicar donde aplique). Mantén la lógica de open/close con openDropdownMenu(overlayId, anchorElement) y closeDropdownMenu(overlayId). Importa components/dropdown-menu.css y components/dropdown-menu.js.</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Documentación técnica -->
+                        <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
+                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Documentación técnica
+                                </h2>
+                                <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
+                                    Estructura, clases y API del componente Dropdown Menu.
+                                </p>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                    <i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>
+                                    Mostrar
+                                </span>
+                            </div>
+                            <div id="technical-docs-content" style="display: none; padding: 0;">
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <h2 class="ubits-heading-h2" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">Estructura</h2>
+                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="dropdown-structure-code">.ubits-dropdown-menu__overlay   /* Overlay transparente, cierre al clic */
+.ubits-dropdown-menu__content   /* Panel: padding sm, bg-1, elevation, border-radius-sm */
+  .ubits-dropdown-menu__autocomplete-wrap  /* Opcional: contenedor para input autocomplete */
+  .ubits-dropdown-menu__options
+    .ubits-dropdown-menu__option         /* Botón por ítem: left + text + right */
+      .ubits-dropdown-menu__option-left  /* Icono o checkbox */
+      .ubits-dropdown-menu__option-text  /* Texto regular, alineado izquierda */
+      .ubits-dropdown-menu__option-right /* Icono o switch */
+  .ubits-dropdown-menu__footer           /* Secundario + Primario a la derecha */</code></pre>
+                                    </div>
+                                </div>
+                                <div style="padding: 32px;">
+                                    <h2 class="ubits-heading-h2" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">API JavaScript</h2>
+                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="dropdown-api-code">getDropdownMenuHtml(config)
+  config.overlayId, config.contentId
+  config.options = [{ text, value?, leftIcon?, rightIcon?, checkbox?, switch?, selected? }]
+  config.hasAutocomplete?, config.autocompletePlaceholder?, config.autocompleteContainerId?
+  config.footerSecondaryLabel?, config.footerPrimaryLabel?
+  config.footerSecondaryId?, config.footerPrimaryId?
+
+openDropdownMenu(overlayId, position)
+  position = { top, left } en px, o elemento ancla (getBoundingClientRect)
+
+closeDropdownMenu(overlayId)</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof loadSubNav === 'function') loadSubNav('top-nav-container', 'documentacion');
+            if (typeof loadDocsSidebar === 'function') loadDocsSidebar('dropdown-menu');
+
+            var container = document.getElementById('dropdown-menu-container');
+            var trigger = document.getElementById('dropdown-menu-trigger');
+            if (!container || !trigger || typeof getDropdownMenuHtml !== 'function') return;
+
+            var overlayId = 'dropdown-demo-overlay';
+            var previewOpcionesTipoInput = null;
+
+            var opcionesTipoSelectOptions = [
+                { value: 'ninguno', text: 'Ninguno' },
+                { value: 'iconos', text: 'Iconos' },
+                { value: 'checklist', text: 'Checklist (checkbox)' },
+                { value: 'switches', text: 'Switches' }
+            ];
+
+            function opcionesTipoTextToValue(text) {
+                var opt = opcionesTipoSelectOptions.find(function(o) { return o.text === text; });
+                return opt ? opt.value : 'ninguno';
+            }
+
+            function getPreviewState() {
+                var opcionesTipo = 'ninguno';
+                if (previewOpcionesTipoInput && typeof previewOpcionesTipoInput.getValue === 'function') {
+                    opcionesTipo = opcionesTipoTextToValue(previewOpcionesTipoInput.getValue());
+                }
+                return {
+                    autocomplete: document.getElementById('preview-autocomplete') && document.getElementById('preview-autocomplete').checked,
+                    footer: document.getElementById('preview-footer') && document.getElementById('preview-footer').checked,
+                    opcionesTipo: opcionesTipo
+                };
+            }
+
+            function buildOptions(s) {
+                var opt1 = { text: 'Más reciente primero', value: 'desc' };
+                var opt2 = { text: 'Más reciente al final', value: 'asc', selected: true };
+                var opt3 = { text: 'Sin orden', value: 'none' };
+                var t = s.opcionesTipo || 'ninguno';
+                if (t === 'iconos') {
+                    opt1.leftIcon = 'arrow-up';
+                    opt2.leftIcon = 'arrow-down';
+                    opt3.leftIcon = 'filter';
+                    opt3.rightIcon = 'chevron-right';
+                } else if (t === 'checklist') {
+                    opt1.checkbox = true;
+                    opt2.checkbox = true;
+                    opt2.selected = true;
+                    opt3.checkbox = true;
+                } else if (t === 'switches') {
+                    opt1.switch = true;
+                    opt2.switch = true;
+                    opt2.selected = true;
+                    opt3.switch = true;
+                }
+                return [opt1, opt2, opt3];
+            }
+
+            function renderDropdown() {
+                var s = getPreviewState();
+                var config = {
+                    overlayId: overlayId,
+                    options: buildOptions(s),
+                    hasAutocomplete: s.autocomplete,
+                    autocompletePlaceholder: 'Buscar...'
+                };
+                if (s.footer) {
+                    config.footerSecondaryLabel = 'Cancelar';
+                    config.footerPrimaryLabel = 'Aplicar';
+                }
+                container.innerHTML = getDropdownMenuHtml(config);
+
+                if (s.autocomplete) {
+                    var acWrap = document.getElementById(overlayId + '-autocomplete');
+                    if (acWrap) {
+                        var input = document.createElement('input');
+                        input.type = 'text';
+                        input.placeholder = 'Buscar...';
+                        input.setAttribute('aria-label', 'Buscar');
+                        input.style.cssText = 'width:100%;padding:8px 12px;border:1px solid var(--ubits-border-1);border-radius:var(--border-radius-sm);font-size:var(--font-size-sm);color:var(--ubits-fg-1-high);background:var(--ubits-bg-1);box-sizing:border-box;';
+                        acWrap.appendChild(input);
+                    }
+                }
+
+                var overlay = document.getElementById(overlayId);
+                if (overlay) {
+                    overlay.addEventListener('click', function(e) {
+                        if (e.target === overlay) closeDropdownMenu(overlayId);
+                    });
+                }
+                var btnSecondary = document.getElementById(overlayId + '-footer-secondary');
+                var btnPrimary = document.getElementById(overlayId + '-footer-primary');
+                if (btnSecondary) btnSecondary.addEventListener('click', function() { closeDropdownMenu(overlayId); });
+                if (btnPrimary) btnPrimary.addEventListener('click', function() { closeDropdownMenu(overlayId); });
+            }
+
+            if (typeof createInput === 'function') {
+                previewOpcionesTipoInput = createInput({
+                    containerId: 'preview-opciones-tipo-container',
+                    type: 'select',
+                    label: 'En las opciones (solo una)',
+                    placeholder: 'Selecciona...',
+                    selectOptions: opcionesTipoSelectOptions,
+                    value: 'ninguno'
+                });
+            }
+
+            renderDropdown();
+            trigger.addEventListener('click', function(e) {
+                e.stopPropagation();
+                renderDropdown();
+                openDropdownMenu(overlayId, trigger);
+            });
+        });
+        function toggleTechnicalDocs() {
+            var content = document.getElementById('technical-docs-content');
+            var chevron = document.getElementById('tech-docs-chevron');
+            var toggleText = chevron && chevron.parentElement;
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                if (chevron) chevron.style.transform = 'rotate(180deg)';
+                if (toggleText) toggleText.innerHTML = '<i class="far fa-chevron-up" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Ocultar';
+            } else {
+                content.style.display = 'none';
+                if (chevron) chevron.style.transform = 'rotate(0deg)';
+                if (toggleText) toggleText.innerHTML = '<i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Mostrar';
+            }
+        }
+        function copyPrompt(promptId) {
+            var el = document.getElementById(promptId);
+            if (!el) return;
+            var text = el.textContent;
+            navigator.clipboard.writeText(text).then(function() {
+                var btn = document.querySelector('[onclick="copyPrompt(\'' + promptId + '\')"]');
+                if (btn) {
+                    var icon = btn.querySelector('i');
+                    var span = btn.querySelector('span');
+                    if (icon) icon.className = 'far fa-check';
+                    if (span) span.textContent = 'Copiado';
+                    setTimeout(function() {
+                        if (icon) icon.className = 'far fa-copy';
+                        if (span) span.textContent = 'Copiar';
+                    }, 2000);
+                }
+            });
+        }
+    </script>
+</body>
+</html>

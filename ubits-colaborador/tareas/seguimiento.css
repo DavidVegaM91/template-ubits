@@ -214,6 +214,13 @@
     align-items: center;
     gap: var(--gap-sm);
     cursor: pointer;
+    padding: var(--padding-sm) var(--padding-md);
+    border-radius: var(--border-radius-sm);
+    transition: background-color 0.15s ease;
+}
+
+.columns-menu-option:hover {
+    background: var(--ubits-bg-2);
 }
 
 .columns-menu-option input {
@@ -491,12 +498,7 @@
     gap: var(--gap-sm);
     padding: var(--padding-sm) 0;
     cursor: pointer;
-    border-bottom: 1px solid var(--ubits-border-1);
     transition: background-color 0.2s ease;
-}
-
-.seguimiento-filter-option:last-child {
-    border-bottom: none;
 }
 
 .seguimiento-filter-option:hover {
@@ -564,6 +566,14 @@
     align-items: center;
     gap: var(--gap-sm);
     cursor: pointer;
+    padding: var(--padding-sm) var(--padding-md);
+    margin: 0 calc(-1 * var(--padding-md));
+    border-radius: var(--border-radius-sm);
+    transition: background-color 0.15s ease;
+}
+
+.checkbox-menu-option:hover {
+    background: var(--ubits-bg-2);
 }
 
 .checkbox-menu-option input {
@@ -604,6 +614,14 @@
     align-items: center;
     gap: var(--gap-sm);
     cursor: pointer;
+    padding: var(--padding-sm) var(--padding-md);
+    margin: 0 calc(-1 * var(--padding-md));
+    border-radius: var(--border-radius-sm);
+    transition: background-color 0.15s ease;
+}
+
+.filtros-checkbox-option:hover {
+    background: var(--ubits-bg-2);
 }
 
 .filtros-checkbox-option input {
@@ -678,6 +696,7 @@
 .sort-menu-option {
     display: flex;
     align-items: center;
+    justify-content: flex-start;
     gap: var(--gap-md);
     padding: var(--padding-md) var(--padding-md);
     background: transparent;
@@ -687,10 +706,23 @@
     transition: background-color 0.15s ease;
     width: 100%;
     text-align: left;
+    transform: none;
+    box-shadow: none;
+}
+
+.sort-menu-option span {
+    font-weight: var(--font-weight-regular);
+    text-align: left;
 }
 
 .sort-menu-option:hover {
     background: var(--ubits-bg-2);
+    transform: none;
+    box-shadow: none;
+}
+
+.sort-menu-option:active {
+    transform: none;
 }
 
 .sort-menu-option.selected {
@@ -767,17 +799,26 @@
     transition: background-color 0.15s ease;
     width: 100%;
     text-align: left;
+    transform: none;
+    box-shadow: none;
+}
+
+.priority-menu-option:hover,
+.status-menu-option:hover {
+    background: var(--ubits-bg-2);
+    transform: none;
+    box-shadow: none;
+}
+
+.priority-menu-option:active,
+.status-menu-option:active {
+    transform: none;
 }
 
 .priority-menu-option span,
 .status-menu-option span {
     font-weight: var(--font-weight-regular);
     text-align: left;
-}
-
-.priority-menu-option:hover,
-.status-menu-option:hover {
-    background: var(--ubits-bg-2);
 }
 
 .priority-menu-option i {
