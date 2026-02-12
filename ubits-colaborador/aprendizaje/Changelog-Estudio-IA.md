@@ -58,16 +58,50 @@ Lista completa de cambios sugeridos en la reunión. Marca con `[x]` lo que ya es
 
 ## 9. Otros componentes e ideas de producto
 
-|`[ ]`|  Valorar **componente de audio / podcast** (ej. podcast básico de liderazgo) para usuarios que hacen otras cosas | David: "un componente de audio o podcast sería útil; generarme un podcast de liderazgo básico" |
+|`[ ]`|  Valorar **componente de audio / podcast** (ej. podcast básico de liderazgo) para usuarios que hacen otras cosas | Propuesta de David
 |`[ ]`|  **Diseño con visión a largo plazo**: pensar no solo Q1 sino todo el año para que las siguientes versiones estén alineadas | 
 
 ---
 
-## 10. Pruebas con usuarios y priorización
+## 10. Bienvenida y hero "¿Qué quieres aprender hoy?"
 
-|`[ ]`|  **Pruebas de usuario pequeñas antes del lanzamiento** (ej. 10 usuarios reales) para validar dirección del producto | Carlos: "por qué no hacerlo antes; testearía con 10 personas" |
-|`[ ]`|  **Planificar pruebas** para tercera semana de febrero (ya en curso; incluye agente "Aprende con IA") | Esteban: "ya estamos planificando unas pruebas con usuarios para la tercera semana de febrero".
-|`[ ]`|  **Rotar boceto** del agente "Aprende con IA" con Carlos y planificar pruebas (Esteban + Carlos) | Pasos siguientes del doc |
-|`[ ]`|  **Agentes a priorizar para pruebas**: quiz, planes y tareas, recomendador, organizativa | Luisa: "quiz, planes y tareas, el recomendador, y organizativa" |
-|`[ ]`|  **Reunión con Javi** para definir qué agentes deberían funcionar (Esteban + Luisa) | Luisa (00:17): "Esteban y yo nos llevamos con Javi entonces los agentes que deberían funcionar" |
-|`[ ]`|  **Evitar "datos vanidosos"** en pruebas: diseñar pruebas para sacar información que realmente sirva | Carlos (00:15): "que no sean data… datos vanidosos que no nos sirven de nada"; Esteban: "pensemos muy bien esas pruebas para sacar la información que más nos sirve" |
+|`[ ]`|  Hacer que la **gradación del "aprender hoy" se mueva**: solo el color, no la letra (animación sutil de la gradiente). |
+
+---
+
+## 11. Encabezado del chat
+
+|`[ ]`|  **Añadir encabezado al chat** con el nombre del chat (el mismo que sale en el historial). |
+|`[ ]`|  El nombre del chat debe ser **editable inline** en el encabezado; si se edita ahí, también debe actualizarse en el historial (sincronizado). |
+|`[ ]`|  En ese encabezado del chat, **botón "Recursos generados"** que abra un canvas a la derecha (similar a los otros canvas) con el listado de recursos/cursos generados. |
+|`[ ]`|  Si no hay recursos generados, el canvas debe usar el **componente oficial de empty state**. |
+
+---
+
+## 12. Generación de recursos por palabra clave
+
+|`[ ]`|  Si el usuario escribe una **variación con palabra clave del recurso** (ej. "quiero hacer un quiz", "quiero un quiz", "dame un quiz", o cualquier frase que contenga "quiz"), debe **generar ese recurso directamente**, no solo cuando escriba exactamente "quiz". Aplicar la misma lógica para **todos los tipos de recurso** (plan, flashcards, quiz, etc.). |
+
+---
+
+## 13. Competencias UBITS: ofrecer subtemas antes de recursos
+
+|`[ ]`|  Si el usuario escribe una **competencia de UBITS** (ej. "Liderazgo", "Inglés", "Comunicación"), en vez de sugerir recursos de una vez, **ofrecerle primero** si quiere alguna de las habilidades/subtemas de esa competencia en UBITS (consultar estructura en `ubits-colaborador/aprendizaje/catalogo.html`), con un mensaje tipo: "¿Te interesa alguno de estos temas de [competencia]: [lista] o prefieres otra cosa?" |
+|`[ ]`|  **Una vez seleccione el tema** (ej. "Fundamentos de liderazgo"), o si dice algo como "no, simplemente quiero aprender sobre fundamentos de liderazgo", **ahí sí** sugerir la generación de recursos. |
+|`[ ]`|  Para **competencias que no están en UBITS** (ej. Japonés): no sugerir subtemas basados en habilidades UBITS, pero sí **otras sugerencias** genéricas (ej. "Escritura y alfabeto", "Saludos", "Estructura básica de una oración", "Partículas gramaticales", u otras similares). |
+
+---
+
+## 14. Sets de recursos por subtema
+
+|`[ ]`|  **Ampliar los sets**: asegurar **3 sets de cada tipo de recurso** (excepto podcast) para cada uno de los **subtemas sugeridos** para Inglés, Japonés, Liderazgo y Comunicación. Los de Inglés, Liderazgo y Comunicación se consultan en el catálogo (`catalogo.html`). |
+
+---
+
+## 15. Respuesta "Definición" y citas con contenido
+
+|`[ ]`|  Si el usuario escribe la palabra clave **"definición"** (ej. "definición de liderazgo"), mostrar una **respuesta en el chat** con la definición del tema (ej. liderazgo). |
+|`[ ]`|  En la respuesta de definición, **añadir tags "Contenido"** al lado de ciertas frases; al hacer **clic** en un tag, abrir un **canvas a la derecha** con la ficha del contenido, con este orden: |
+|`[ ]`|  **Contenido del canvas:** imagen del curso arriba, badge de tipo de contenido, nombre del contenido, nivel / tiempo / idioma, botón primario "Ver contenido", botón secundario "Ver descripción", competencia, **3 habilidades** (solo una de la competencia principal, ej. Liderazgo, y las otras dos de Comunicación o soft skills según la frase citada), **imagen y nombre del proveedor** (según lista de aliados en componente card-content), **imagen y nombre de experto** (avatar + nombre genérico inventado). |
+
+---

@@ -757,6 +757,7 @@
 .status-menu-option {
     display: flex;
     align-items: center;
+    justify-content: flex-start;
     gap: var(--gap-md);
     padding: var(--padding-md) var(--padding-md);
     background: transparent;
@@ -765,6 +766,12 @@
     cursor: pointer;
     transition: background-color 0.15s ease;
     width: 100%;
+    text-align: left;
+}
+
+.priority-menu-option span,
+.status-menu-option span {
+    font-weight: var(--font-weight-regular);
     text-align: left;
 }
 

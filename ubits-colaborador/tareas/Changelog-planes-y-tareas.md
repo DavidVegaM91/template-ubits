@@ -86,6 +86,25 @@ Orden sugerido: primero datos y usuario, luego estructura de páginas, después 
 11. [ ] **En seguimiento: nombres clicables que abren detalle**  
     Una vez el detalle del plan (y detalle de tarea si aplica) esté verificado y pulido en `plan-detail.html`: en **seguimiento.html** y **seguimiento-leader.html**, hacer que los textos de las columnas **Nombre de la tarea** y **Nombre del plan** sean **clicables** (con subrayado / underline). Al hacer clic debe abrirse el **detalle de la tarea** o el **detalle del plan** correspondiente.
 
+### 5. Tareas vencidas (tareas.html – tareas-overdue-container)
+
+12. [x] **Ordenar tareas vencidas por fecha de vencimiento**  
+    En `tareas.html`, en la sección **tareas-overdue-container**, mostrar las tareas vencidas ordenadas de la **fecha de vencimiento más antigua a la más reciente**.
+
+13. [x] **Marcar tarea vencida como finalizada y animar movimiento**  
+    Permitir **marcar como finalizada** una tarea vencida. Al hacerlo: (1) cambiar su **status tag a "Finalizada"**, (2) **moverla al final de la lista** de vencidas. El movimiento debe ser **visible**: que se vea la tarea desplazándose hacia abajo de forma rápida (animación/transición), no que desaparezca y reaparezca al final, para evitar la sensación de error.
+
+### 6. Panel detalle de tarea y seguimiento
+
+14. [x] **Detalle de tarea: Asignado a y Creada por en una sola fila**  
+    En el panel de detalle de la tarea, poner **"Creada por"** al lado derecho de **"Asignado a"**, de modo que ambos queden uno al lado del otro.
+
+15. [x] **Seguimiento: control de seguridad para eliminar**  
+    En `seguimiento.html`, en el flujo de eliminar tareas/planes: añadir un **control de seguridad**: el usuario debe escribir **"eliminar"** en un input; solo entonces se **habilita el botón de eliminar** en el modal.
+
+16. [x] **Seguimiento: menú cambiar estado con texto, no status tag**  
+    En `seguimiento.html`, en el botón/menú desplegable de **"Cambiar estado"**, mostrar **texto** en las opciones en lugar de **status tag** (Iniciada, Vencida, Finalizada como texto plano).
+
 ---
 
-*Última actualización: una sola lista sin repeticiones; completados [x] en su sección — 11 pendientes.*
+*Última actualización: 14–16 implementados — 11 pendientes.*

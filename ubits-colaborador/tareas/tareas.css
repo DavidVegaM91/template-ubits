@@ -1267,6 +1267,18 @@
     color: var(--ubits-accent-brand);
 }
 
+.task-detail-row-asignado-creada {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-2xl, 24px);
+    align-items: flex-start;
+}
+
+.task-detail-row-asignado-creada > .task-detail-section {
+    flex: 1;
+    min-width: 200px;
+}
+
 .task-detail-section.task-detail-section--has-dropdown {
     position: relative;
 }

@@ -253,19 +253,18 @@ function renderCalendarHorizontal() {
 // esVencidaSection = true cuando se pinta dentro de tareas-overdue-container (solo vencidas)
 function renderTarea(tarea, esVencidaSection = false) {
     const fechaDisplay = tarea.endDate ? formatDateForDisplayDDMM(tarea.endDate) : null;
-    const esVencidaReal = esVencidaSection || (tarea.endDate && tarea.endDate < today && !tarea.done);
-    const estadoTag = esVencidaReal
-        ? 'error'
-        : (tarea.status === 'Activo'
-            ? 'info'
-            : (tarea.status === 'Finalizado' ? 'success' : 'neutral'));
-    const estadoTexto = esVencidaReal
-        ? 'Vencida'
-        : (tarea.status === 'Activo' ? 'Iniciada' : 'Finalizada');
+    const esFinalizada = tarea.done === true || tarea.status === 'Finalizado';
+    const esVencidaReal = !esFinalizada && (esVencidaSection || (tarea.endDate && tarea.endDate < today));
+    const estadoTag = esFinalizada
+        ? 'success'
+        : (esVencidaReal ? 'error' : (tarea.status === 'Activo' ? 'info' : 'neutral'));
+    const estadoTexto = esFinalizada
+        ? 'Finalizada'
+        : (esVencidaReal ? 'Vencida' : (tarea.status === 'Activo' ? 'Iniciada' : 'Finalizada'));
     const prioridadClass = tarea.priority === 'alta' ? 'tarea-priority--high' : (tarea.priority === 'baja' ? 'tarea-priority--low' : 'tarea-priority--medium');
     
     return `
-        <div class="tarea-item ${tarea.done ? 'tarea-item--completed' : ''} ${esVencidaReal ? 'tarea-item--overdue' : ''}">
+        <div class="tarea-item ${tarea.done ? 'tarea-item--completed' : ''} ${esVencidaReal ? 'tarea-item--overdue' : ''}" data-tarea-id="${tarea.id}">
             <div class="tarea-item__main">
                 <span class="tarea-item__radio">
                     <div class="tarea-checkbox">
@@ -321,24 +320,24 @@ function renderTarea(tarea, esVencidaSection = false) {
     `;
 }
 
-// Renderizar sección de tareas vencidas (solo tareas vencidas, nunca finalizadas)
+// Renderizar sección de tareas vencidas: pendientes ordenadas por fecha (antigua → reciente) y finalizadas al final
 function renderTareasVencidas() {
     const container = document.getElementById('overdue-content');
     const section = document.getElementById('overdue-section');
     if (!container) return;
 
-    const soloVencidas = (tareasEjemplo.vencidas || []).filter(t => {
-        if (t.done === true || t.status === 'Finalizado') return false;
-        return t.status === 'Vencido';
-    });
+    const todasVencidas = (tareasEjemplo.vencidas || []).filter(t => t.status === 'Vencido' || t.done === true || t.status === 'Finalizado');
+    const pendientes = todasVencidas.filter(t => !t.done && t.status !== 'Finalizado').sort((a, b) => (a.endDate || '').localeCompare(b.endDate || ''));
+    const finalizadas = todasVencidas.filter(t => t.done === true || t.status === 'Finalizado');
+    const listaOrdenada = pendientes.concat(finalizadas);
 
-    if (section) section.style.display = soloVencidas.length === 0 ? 'none' : '';
-    if (soloVencidas.length === 0) {
+    if (section) section.style.display = listaOrdenada.length === 0 ? 'none' : '';
+    if (listaOrdenada.length === 0) {
         container.innerHTML = '';
         return;
     }
 
-    container.innerHTML = soloVencidas.map(tarea => renderTarea(tarea, true)).join('');
+    container.innerHTML = listaOrdenada.map(tarea => renderTarea(tarea, true)).join('');
 }
 
 // Renderizar sección de día
@@ -637,13 +636,44 @@ function initTareasView() {
                 const checkbox = e.target.type === 'checkbox' ? e.target : e.target.closest('.tarea-checkbox').querySelector('input[type="checkbox"]');
                 if (checkbox && checkbox.dataset.tareaId) {
                     const tareaId = parseInt(checkbox.dataset.tareaId);
-                    
+                    const overdueContent = document.getElementById('overdue-content');
+                    const isInOverdueSection = overdueContent && overdueContent.contains(checkbox);
+
                     // Buscar en tareas vencidas
                     let tarea = tareasEjemplo.vencidas.find(t => t.id === tareaId);
                     if (tarea) {
-                        tarea.done = checkbox.checked;
-                        tarea.status = checkbox.checked ? 'Finalizado' : 'Vencido';
-                        renderTareasVencidas();
+                        if (isInOverdueSection && checkbox.checked) {
+                            // Marcar como finalizada con animación FLIP (se mueve al final de la lista)
+                            const row = checkbox.closest('.tarea-item');
+                            const oldRect = row ? row.getBoundingClientRect() : null;
+                            tarea.done = true;
+                            tarea.status = 'Finalizado';
+                            renderTareasVencidas();
+                            if (oldRect) {
+                                const newRow = document.querySelector(`#overdue-content .tarea-item[data-tarea-id="${tareaId}"]`);
+                                if (newRow) {
+                                    const newRect = newRow.getBoundingClientRect();
+                                    const deltaY = oldRect.top - newRect.top;
+                                    if (Math.abs(deltaY) > 2) {
+                                        newRow.style.transition = 'none';
+                                        newRow.style.transform = `translateY(${deltaY}px)`;
+                                        newRow.offsetHeight; // reflow
+                                        newRow.style.transition = 'transform 0.35s ease-out';
+                                        newRow.style.transform = '';
+                                        requestAnimationFrame(() => {
+                                            newRow.addEventListener('transitionend', function onEnd() {
+                                                newRow.style.transition = '';
+                                                newRow.removeEventListener('transitionend', onEnd);
+                                            }, { once: true });
+                                        });
+                                    }
+                                }
+                            }
+                        } else {
+                            tarea.done = checkbox.checked;
+                            tarea.status = checkbox.checked ? 'Finalizado' : 'Vencido';
+                            renderTareasVencidas();
+                        }
                         return;
                     }
                     
@@ -1014,48 +1044,49 @@ function renderTaskDetailModal() {
 
             <div class="task-detail-body">
                 <div class="task-detail-main">
-                    <div class="task-detail-section task-detail-section--has-dropdown">
-                        <h3 class="task-detail-section__title">Asignado a:</h3>
-                        <div class="task-detail-assignee-select" id="task-detail-assignee-trigger" role="button" tabindex="0">
-                            ${hasAssignee ? `
-                                <div class="task-detail-assignee-avatar">
-                                    ${assigneeAvatar ? `<img src="${escapeTaskHtml(assigneeAvatar)}" alt="" class="task-detail-assignee-avatar-img" />` : assigneeName.substring(0, 2).toUpperCase()}
-                                </div>
-                                <span class="task-detail-assignee-text">${escapeTaskHtml(assigneeName)}</span>
-                            ` : `
-                                <div class="task-detail-assignee-avatar task-detail-assignee-avatar--empty">
-                                    <i class="far fa-user"></i>
-                                </div>
-                                <span class="task-detail-assignee-text">Sin asignar</span>
-                            `}
-                            <i class="far fa-chevron-down task-detail-assignee-chevron"></i>
-                        </div>
-                        ${showAssigneeDropdown ? `
-                            <div class="task-detail-dropdown" id="task-detail-assignee-dropdown">
-                                <div class="task-detail-dropdown-item" data-assign="none">
-                                    <i class="far fa-user"></i>
-                                    <span>Sin asignar</span>
-                                </div>
-                                ${usuariosEjemplo.map(u => {
-                                    const name = u.full_name || u.email.split('@')[0];
-                                    const avatar = u.avatar_url ? `<img src="${escapeTaskHtml(u.avatar_url)}" alt="" class="task-detail-dropdown-avatar" />` : '';
-                                    return `
+                    <div class="task-detail-row-asignado-creada">
+                        <div class="task-detail-section task-detail-section--has-dropdown">
+                            <h3 class="task-detail-section__title">Asignado a:</h3>
+                            <div class="task-detail-assignee-select" id="task-detail-assignee-trigger" role="button" tabindex="0">
+                                ${hasAssignee ? `
+                                    <div class="task-detail-assignee-avatar">
+                                        ${assigneeAvatar ? `<img src="${escapeTaskHtml(assigneeAvatar)}" alt="" class="task-detail-assignee-avatar-img" />` : assigneeName.substring(0, 2).toUpperCase()}
+                                    </div>
+                                    <span class="task-detail-assignee-text">${escapeTaskHtml(assigneeName)}</span>
+                                ` : `
+                                    <div class="task-detail-assignee-avatar task-detail-assignee-avatar--empty">
+                                        <i class="far fa-user"></i>
+                                    </div>
+                                    <span class="task-detail-assignee-text">Sin asignar</span>
+                                `}
+                                <i class="far fa-chevron-down task-detail-assignee-chevron"></i>
+                            </div>
+                            ${showAssigneeDropdown ? `
+                                <div class="task-detail-dropdown" id="task-detail-assignee-dropdown">
+                                    <div class="task-detail-dropdown-item" data-assign="none">
+                                        <i class="far fa-user"></i>
+                                        <span>Sin asignar</span>
+                                    </div>
+                                    ${usuariosEjemplo.map(u => {
+                                        const name = u.full_name || u.email.split('@')[0];
+                                        const avatar = u.avatar_url ? `<img src="${escapeTaskHtml(u.avatar_url)}" alt="" class="task-detail-dropdown-avatar" />` : '';
+                                        return `
                                     <div class="task-detail-dropdown-item" data-assign-id="${u.id}" data-assign-email="${escapeTaskHtml(u.email)}" data-assign-name="${escapeTaskHtml(name)}" data-assign-avatar="${escapeTaskHtml(u.avatar_url || '')}">
                                         ${avatar ? `<div class="task-detail-dropdown-item-avatar">${avatar}</div>` : ''}
                                         <span>${escapeTaskHtml(name)}</span>
                                     </div>
                                 `}).join('')}
+                                </div>
+                            ` : ''}
+                        </div>
+                        <div class="task-detail-section">
+                            <h3 class="task-detail-section__title">Creada por:</h3>
+                            <div class="task-detail-created-by-row">
+                                <div class="task-detail-created-by-avatar">
+                                    ${createdByAvatar ? `<img src="${escapeTaskHtml(createdByAvatar)}" alt="" class="task-detail-created-by-avatar-img" />` : escapeTaskHtml(createdBy.substring(0, 2).toUpperCase())}
+                                </div>
+                                <span class="task-detail-created-by-text">${escapeTaskHtml(createdBy)}</span>
                             </div>
-                        ` : ''}
-                    </div>
-
-                    <div class="task-detail-section">
-                        <h3 class="task-detail-section__title">Creada por:</h3>
-                        <div class="task-detail-created-by-row">
-                            <div class="task-detail-created-by-avatar">
-                                ${createdByAvatar ? `<img src="${escapeTaskHtml(createdByAvatar)}" alt="" class="task-detail-created-by-avatar-img" />` : escapeTaskHtml(createdBy.substring(0, 2).toUpperCase())}
-                            </div>
-                            <span class="task-detail-created-by-text">${escapeTaskHtml(createdBy)}</span>
                         </div>
                     </div>
 

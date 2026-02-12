@@ -34,8 +34,8 @@
                 '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="date-picker-aplicar"><span>Aplicar</span></button>';
             modalsContainer.innerHTML += getModalHtml({ overlayId: 'date-picker-overlay', title: 'Fecha personalizada', bodyHtml: datePickerBody, footerHtml: datePickerFooter, size: 'sm', contentId: 'date-picker-modal', closeButtonId: 'date-picker-close', overlayClass: 'date-picker-overlay', contentClass: 'date-picker-modal-content', headerClass: 'date-picker-modal-header', bodyClass: 'date-picker-modal-body', footerClass: 'date-picker-modal-footer' });
 
-            var deleteBody = '<p class="ubits-body-md-regular">¿Estás seguro de que deseas eliminar <strong id="delete-count">0</strong> elemento(s) seleccionado(s)?</p><p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Esta acción no se puede deshacer.</p>';
-            var deleteFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="delete-modal-cancel">Cancelar</button><button type="button" class="ubits-button ubits-button--error ubits-button--md" id="delete-modal-confirm">Eliminar</button>';
+            var deleteBody = '<p class="ubits-body-md-regular">¿Estás seguro de que deseas eliminar <strong id="delete-count">0</strong> elemento(s) seleccionado(s)?</p><p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Esta acción no se puede deshacer.</p><div class="delete-confirm-group" style="margin-top: var(--gap-lg, 16px);"><label class="ubits-body-sm-regular" for="delete-modal-type-input">Escriba <strong>eliminar</strong> para habilitar el botón:</label><input type="text" id="delete-modal-type-input" class="ubits-input delete-modal-type-input" placeholder="Escriba la palabra de confirmación" autocomplete="off" style="margin-top: var(--gap-sm, 8px); width: 100%; padding: var(--padding-sm, 8px) var(--padding-md, 12px); border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-sm, 8px); font-size: var(--font-size-sm, 13px); color: var(--ubits-fg-1-high); box-sizing: border-box;"></div>';
+            var deleteFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="delete-modal-cancel">Cancelar</button><button type="button" class="ubits-button ubits-button--error ubits-button--md" id="delete-modal-confirm" disabled>Eliminar</button>';
             modalsContainer.innerHTML += getModalHtml({ overlayId: 'delete-modal-overlay', title: 'Confirmar eliminación', bodyHtml: deleteBody, footerHtml: deleteFooter, size: 'xs', closeButtonId: 'delete-modal-close' });
 
             var reabrirBody = '<p class="ubits-body-md-regular" id="reabrir-plan-message">Al reabrir este(s) plan(es), las tareas en estado Iniciada se marcarán como Finalizadas. ¿Continuar?</p>';
@@ -2989,6 +2989,7 @@
         const deleteCancel = document.getElementById('delete-modal-cancel');
         const deleteConfirm = document.getElementById('delete-modal-confirm');
         const deleteCount = document.getElementById('delete-count');
+        const deleteTypeInput = document.getElementById('delete-modal-type-input');
 
         var deleteBodyText = document.querySelector('#delete-modal-overlay .ubits-modal-body p.ubits-body-md-regular');
         if (eliminar) {
@@ -2998,10 +2999,21 @@
                 if (deleteBodyText) deleteBodyText.innerHTML = activeTab === 'planes'
                     ? '¿Estás seguro de que deseas eliminar <strong id="delete-count">' + selectedIds.size + '</strong> plan(es) seleccionado(s)?'
                     : '¿Estás seguro de que deseas eliminar <strong id="delete-count">' + selectedIds.size + '</strong> elemento(s) seleccionado(s)?';
+                if (deleteTypeInput) {
+                    deleteTypeInput.value = '';
+                    deleteTypeInput.focus();
+                }
+                if (deleteConfirm) deleteConfirm.disabled = true;
                 if (deleteOverlay) {
                     deleteOverlay.style.display = 'flex';
                     deleteOverlay.setAttribute('aria-hidden', 'false');
                 }
+            });
+        }
+
+        if (deleteTypeInput && deleteConfirm) {
+            deleteTypeInput.addEventListener('input', function() {
+                deleteConfirm.disabled = this.value.trim().toLowerCase() !== 'eliminar';
             });
         }
 
@@ -3010,6 +3022,8 @@
                 deleteOverlay.style.display = 'none';
                 deleteOverlay.setAttribute('aria-hidden', 'true');
             }
+            if (deleteTypeInput) deleteTypeInput.value = '';
+            if (deleteConfirm) deleteConfirm.disabled = true;
         }
 
         if (deleteClose) deleteClose.addEventListener('click', closeDeleteModal);
