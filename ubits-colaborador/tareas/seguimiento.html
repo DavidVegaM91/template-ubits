@@ -21,6 +21,7 @@
 
     <!-- Componentes UI -->
     <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/dropdown-menu.css">
     <link rel="stylesheet" href="../../components/input.css">
     <link rel="stylesheet" href="../../components/calendar.css">
     <link rel="stylesheet" href="../../components/status-tag.css">
@@ -229,150 +230,13 @@
     <!-- Modales inyectados por componente oficial (modal.js getModalHtml) -->
     <div id="seguimiento-modals-container"></div>
 
-    <!-- Modal columnas -->
-    <div class="columns-menu-overlay" id="columns-menu-overlay" style="display: none;" aria-hidden="true"></div>
-    <div class="columns-menu" id="columns-menu" style="display: none;" role="dialog" aria-label="Mostrar u ocultar columnas">
-        <div class="columns-menu-list" id="columns-menu-list"></div>
-    </div>
-
     <!-- Popover asignados (+N del profile list en Planes): solo visualización -->
     <div class="asignados-popover-overlay" id="asignados-popover-overlay" style="display: none;" aria-hidden="true"></div>
     <div class="asignados-popover" id="asignados-popover" style="display: none;" role="dialog" aria-label="Personas asignadas">
         <div class="asignados-popover-list" id="asignados-popover-list"></div>
     </div>
 
-    <!-- Menú de período -->
-    <div class="periodo-menu-overlay" id="periodo-menu-overlay" style="display: none;" aria-hidden="true"></div>
-    <div class="periodo-menu" id="periodo-menu" style="display: none;" role="dialog" aria-label="Seleccionar período">
-        <div class="periodo-menu-options">
-            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm periodo-menu-option" data-value="7">
-                <span class="ubits-body-sm-regular">Últimos 7 días</span>
-            </button>
-            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm periodo-menu-option" data-value="15">
-                <span class="ubits-body-sm-regular">Últimos 15 días</span>
-            </button>
-            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm periodo-menu-option" data-value="30">
-                <span class="ubits-body-sm-regular">Últimos 30 días</span>
-            </button>
-            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm periodo-menu-option" data-value="90">
-                <span class="ubits-body-sm-regular">Últimos 3 meses</span>
-            </button>
-            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm periodo-menu-option" data-value="180">
-                <span class="ubits-body-sm-regular">Últimos 6 meses</span>
-            </button>
-            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm periodo-menu-option" data-value="365">
-                <span class="ubits-body-sm-regular">Último año</span>
-            </button>
-            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm periodo-menu-option" data-value="personalizado" id="periodo-personalizado-btn">
-                <span class="ubits-body-sm-regular">Personalizado</span>
-            </button>
-        </div>
-    </div>
-
-    <!-- Menú de ordenamiento por fecha -->
-    <div class="sort-menu-overlay" id="sort-menu-overlay" style="display: none;"></div>
-    <div class="sort-menu" id="sort-menu" style="display: none;" role="dialog" aria-label="Ordenar columna">
-        <div class="sort-menu-options">
-            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm sort-menu-option" data-dir="desc">
-                <i class="far fa-arrow-up"></i>
-                <span class="ubits-body-sm-regular">Más reciente primero</span>
-            </button>
-            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm sort-menu-option" data-dir="asc">
-                <i class="far fa-arrow-down"></i>
-                <span class="ubits-body-sm-regular">Más reciente al final</span>
-            </button>
-        </div>
-        <div class="sort-menu-footer">
-            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="sort-menu-cancel">Cancelar</button>
-            <button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="sort-menu-apply">Aceptar</button>
-        </div>
-    </div>
-
-    <!-- Menú de filtro con autocomplete (para Nombre, Asignado, Plan, Creador) -->
-    <div class="filter-menu-overlay" id="filter-menu-overlay" style="display: none;"></div>
-    <div class="filter-menu" id="filter-menu" style="display: none;" role="dialog" aria-label="Filtrar columna">
-        <div class="filter-menu-content">
-            <div id="filter-autocomplete-container"></div>
-        </div>
-        <div class="filter-menu-footer">
-            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="filter-menu-cancel">Cancelar</button>
-            <button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="filter-menu-apply">Aplicar</button>
-        </div>
-    </div>
-
-    <!-- Menú de checkboxes (para Estado, Prioridad) -->
-    <div class="checkbox-menu-overlay" id="checkbox-menu-overlay" style="display: none;"></div>
-    <div class="checkbox-menu" id="checkbox-menu" style="display: none;" role="dialog" aria-label="Filtrar por opciones">
-        <div class="checkbox-menu-options" id="checkbox-menu-options">
-            <!-- Opciones se generan dinámicamente -->
-        </div>
-        <div class="checkbox-menu-footer">
-            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="checkbox-menu-cancel">Cancelar</button>
-            <button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="checkbox-menu-apply">Aplicar</button>
-        </div>
-    </div>
-
-    <!-- Menú flotante para cambiar prioridad -->
-    <div class="priority-menu-overlay" id="priority-menu-overlay" style="display: none;"></div>
-    <div class="priority-menu" id="priority-menu" style="display: none;" role="dialog" aria-label="Cambiar prioridad">
-        <div class="priority-menu-options">
-            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm priority-menu-option" data-value="Alta">
-                <i class="far fa-chevrons-up" style="color: var(--ubits-feedback-accent-error);"></i>
-                <span class="ubits-body-sm-regular">Alta</span>
-            </button>
-            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm priority-menu-option" data-value="Media">
-                <i class="far fa-chevron-up" style="color: var(--ubits-fg-1-medium);"></i>
-                <span class="ubits-body-sm-regular">Media</span>
-            </button>
-            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm priority-menu-option" data-value="Baja">
-                <i class="far fa-chevron-down" style="color: var(--ubits-feedback-accent-info);"></i>
-                <span class="ubits-body-sm-regular">Baja</span>
-            </button>
-        </div>
-    </div>
-
-    <!-- Menú flotante para cambiar estado (texto, no status tag) -->
-    <div class="status-menu-overlay" id="status-menu-overlay" style="display: none;"></div>
-    <div class="status-menu" id="status-menu" style="display: none;" role="dialog" aria-label="Cambiar estado">
-        <div class="status-menu-options">
-            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm status-menu-option" data-value="Iniciada">
-                <span class="ubits-body-sm-regular">Iniciada</span>
-            </button>
-            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm status-menu-option" data-value="Vencida">
-                <span class="ubits-body-sm-regular">Vencida</span>
-            </button>
-            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm status-menu-option" data-value="Finalizada">
-                <span class="ubits-body-sm-regular">Finalizada</span>
-            </button>
-        </div>
-    </div>
-
-    <!-- Menú flotante para reasignar -->
-    <div class="reasignar-menu-overlay" id="reasignar-menu-overlay" style="display: none;"></div>
-    <div class="reasignar-menu" id="reasignar-menu" style="display: none;" role="dialog" aria-label="Reasignar">
-        <div class="reasignar-menu-content">
-            <div id="reasignar-autocomplete"></div>
-        </div>
-        <div class="reasignar-menu-footer">
-            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="reasignar-cancel">Cancelar</button>
-            <button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="reasignar-apply">Aplicar</button>
-        </div>
-    </div>
-
-    <!-- Menú desplegable Descargar (Excel / CSV) -->
-    <div class="descargar-menu-overlay" id="descargar-menu-overlay" style="display: none;"></div>
-    <div class="descargar-menu sort-menu" id="descargar-menu" style="display: none;" role="menu" aria-label="Opciones de descarga">
-        <div class="sort-menu-options">
-            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm sort-menu-option" data-format="excel" role="menuitem">
-                <i class="far fa-file-excel"></i>
-                <span class="ubits-body-sm-regular">Descargar Excel</span>
-            </button>
-            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm sort-menu-option" data-format="csv" role="menuitem">
-                <i class="far fa-file-csv"></i>
-                <span class="ubits-body-sm-regular">Descargar CSV</span>
-            </button>
-        </div>
-    </div>
+    <!-- Menús ordenar, filtro, checkbox, prioridad, estado, período, columnas, reasignar, descargar: inyectados por JS con Dropdown Menu oficial -->
 
     <!-- Menú flotante añadir colaborador al plan -->
     <div class="anadir-colaborador-overlay" id="anadir-colaborador-overlay" style="display: none;"></div>
@@ -444,6 +308,7 @@
     <script src="../../components/avatar.js"></script>
     <script src="../../components/modal.js"></script>
     <script src="../../components/drawer.js"></script>
+    <script src="../../components/dropdown-menu.js"></script>
     <script src="./tareas-base-unificada.js"></script>
     <script src="./planes.js"></script>
     <script src="./seguimiento.js"></script>

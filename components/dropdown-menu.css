@@ -78,15 +78,15 @@
     cursor: pointer;
     width: 100%;
     min-width: 0;
+    box-sizing: border-box;
     text-align: left;
-    transition: background-color 0.15s ease;
-    transform: none;
-    box-shadow: none;
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-regular);
     color: var(--ubits-fg-1-high);
-    box-sizing: border-box;
+    transition: background-color 0.15s ease;
+    transform: none;
+    box-shadow: none;
 }
 
 .ubits-dropdown-menu__option:hover {

@@ -8,8 +8,8 @@
    ======================================== */
 
 /* Asegurar que cualquier contenedor del paginador esté centrado */
-[id*="paginador"],
-[id*="paginator"],
+/* Solo el contenedor raíz del paginador (no el overlay del dropdown, cuyo id también contiene "paginator") */
+.ubits-paginator,
 .paginador-container,
 .paginator-container {
     display: flex !important;
@@ -41,57 +41,55 @@
     /* Ancho fijo de 140px */
 }
 
-/* Ocultar label del selector de items por página */
-.ubits-paginator__items-select .ubits-input-label {
-    display: none;
+/* Botón terciario del selector de items por página */
+.ubits-paginator__items-select .ubits-button {
+    width: 140px;
+    max-width: 140px;
+    min-width: 140px;
+    justify-content: space-between;
 }
 
-/* Estilo del input select para que se vea como botón tertiary */
-.ubits-paginator__items-select .ubits-input {
+/* ========================================
+   DROPDOWN DEL SELECTOR: ESTILOS COMO DROPDOWN MENU OFICIAL
+   (solo apariencia; lógica y posicionamiento intactos)
+   ======================================== */
+
+.ubits-paginator__items-select .ubits-select-dropdown {
+    background: var(--ubits-bg-1);
+    border-radius: var(--border-radius-sm);
+    box-shadow: 0 4px 16px var(--ubits-bottom-nav-shadow-opacity);
+    border: none;
+    padding: 0;
+    overflow: hidden;
+    max-height: 350px;
+}
+
+.ubits-paginator__items-select .ubits-select-option {
+    padding: var(--padding-sm) var(--padding-md);
+    cursor: pointer;
+    width: 100%;
+    min-width: 0;
+    text-align: left;
+    box-sizing: border-box;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    color: var(--ubits-fg-1-high);
     background: transparent;
     border: none;
-    padding: var(--padding-sm) var(--padding-sm) var(--padding-sm) var(--padding-md) !important; /* Padding sm para tamaño sm */
-    color: var(--ubits-btn-tertiary-fg);
-    cursor: pointer;
-    width: 140px !important;
-    max-width: 140px !important;
-    min-width: 140px !important;
-    display: inline-block;
-    box-sizing: border-box;
+    border-radius: 0;
+    transition: background-color 0.15s ease;
 }
 
-.ubits-paginator__items-select .ubits-input:hover {
-    background: var(--ubits-btn-tertiary-bg-hover);
+.ubits-paginator__items-select .ubits-select-option:hover {
+    background: var(--ubits-bg-2);
 }
 
-.ubits-paginator__items-select .ubits-input-wrapper {
-    border: none;
-    width: 140px !important;
-    max-width: 140px !important;
-    min-width: 140px !important;
-    display: inline-block;
-    box-sizing: border-box;
+.ubits-paginator__items-select .ubits-select-option--selected {
+    background: var(--ubits-bg-3);
 }
 
-/* Asegurar que el input dentro del wrapper se ajuste al contenido */
-.ubits-paginator__items-select .ubits-input-wrapper .ubits-input {
-    width: 140px !important;
-    max-width: 140px !important;
-    min-width: 140px !important;
-    display: inline-block;
-    box-sizing: border-box;
-}
-
-/* Asegurar que el select dentro del input también se ajuste */
-.ubits-paginator__items-select .ubits-input select {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: auto !important;
-    padding-right: 24px; /* Espacio para el icono chevron */
-    box-sizing: border-box;
-}
-
-/* Dropdown hacia arriba cuando no hay espacio abajo */
+/* Dropdown hacia arriba cuando no hay espacio abajo (fallback) */
 .ubits-paginator__items-select .ubits-select-dropdown.dropdown-up {
     top: auto;
     bottom: 100%;

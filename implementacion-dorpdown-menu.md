@@ -55,9 +55,11 @@ Aquí se modifica la *lógica interna* de los componentes para que sus menús de
 
 **Checklist Fase 1.2**
 
-- [ ] Paginator usa el mismo dropdown que Input (Dropdown Menu oficial) o se integra con getDropdownMenuHtml/open/close.
-- [ ] Sin HTML/CSS hardcode de menú en paginator.
-- [ ] Probar paginator en doc.
+- [x] Paginator usa el mismo dropdown que Input (Dropdown Menu oficial) o se integra con getDropdownMenuHtml/open/close.
+- [x] Sin HTML/CSS hardcode de menú en paginator.
+- [x] Probar paginator en doc.
+
+**Fase 1.2 finalizada:** Selector "X por página" reemplazado por botón terciario + Dropdown Menu oficial (overlay en body); fallback con .ubits-select-dropdown si no hay dropdown-menu.js. CSS del paginator restringido a .ubits-paginator para no afectar al overlay. Doc paginator.html incluye dropdown-menu.css y dropdown-menu.js.
 
 ---
 
@@ -82,12 +84,12 @@ Aquí se modifica la *lógica interna* de los componentes para que sus menús de
 
 **Checklist Fase 2**
 
-- [ ] seguimiento.html y seguimiento-leader.html con dropdown-menu.css y dropdown-menu.js.
-- [ ] Todos los menús usan getDropdownMenuHtml + openDropdownMenu + closeDropdownMenu.
-- [ ] HTML sin overlays/paneles custom; solo contenedores para inyectar.
-- [ ] seguimiento.js (y leader si aplica) sin lógica de mostrar/ocultar/posicionar menús propios.
-- [ ] CSS sin estilos de los menús viejos.
-- [ ] Pruebas en ambas páginas.
+- [x] seguimiento.html y seguimiento-leader.html con dropdown-menu.css y dropdown-menu.js.
+- [x] Todos los menús usan getDropdownMenuHtml + openDropdownMenu + closeDropdownMenu.
+- [x] HTML sin overlays/paneles custom; solo contenedores para inyectar (menús inyectados en body por JS).
+- [x] seguimiento.js sin lógica de mostrar/ocultar/posicionar menús propios (sort, filter, checkbox, priority, status, periodo, columns, reasignar, descargar).
+- [ ] CSS sin estilos de los menús viejos (seguimiento.css: comentar o eliminar estilos .sort-menu, .filter-menu, .checkbox-menu, .priority-menu, .status-menu, .periodo-menu, .columns-menu, .reasignar-menu, .descargar-menu cuando se confirme que no se usan).
+- [ ] Pruebas en ambas páginas (modo claro/oscuro, viewport pequeño).
 
 ---
 

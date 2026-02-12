@@ -248,41 +248,106 @@ function loadPaginator(containerId, options = {}) {
                 if (selectContainer.parentElement !== container) {
                     container.appendChild(selectContainer);
                 }
-                // Limpiar contenido anterior si existe
                 selectContainer.innerHTML = '';
             }
             
-            // Crear select usando UBITS Input component
-            setTimeout(() => {
-                if (typeof createInput === 'function') {
-                    const selectContainerCheck = document.getElementById(`${containerId}-items-select`);
-                    if (selectContainerCheck) {
-                        // Convertir opciones numéricas a formato del selector
-                        const selectOptions = config.itemsPerPageOptions.map(opt => ({
-                            value: opt.toString(),
-                            text: `${opt} por página`
-                        }));
-                        
-                        createInput({
-                            containerId: `${containerId}-items-select`,
-                            type: 'select',
-                            placeholder: `${itemsPerPage} por página`,
-                            selectOptions: selectOptions,
-                            value: itemsPerPage.toString(),
-                            size: 'sm', // Tamaño sm para que coincida con los botones del paginador
-                            rightIcon: 'fa-angle-down', // angle-down para el desplegable (no chevron-down)
-                            onChange: function(newValue) {
-                                changeItemsPerPage(parseInt(newValue));
-                            }
+            // Botón terciario que abre el dropdown de "X por página"
+            const buttonLabel = itemsPerPage + ' por página';
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'ubits-button ubits-button--tertiary ubits-button--sm';
+            btn.setAttribute('aria-haspopup', 'listbox');
+            btn.setAttribute('aria-expanded', 'false');
+            btn.innerHTML = '<span class="ubits-paginator__items-label">' + buttonLabel + '</span><i class="far fa-angle-down"></i>';
+            selectContainer.appendChild(btn);
+            
+            const optionsData = config.itemsPerPageOptions.map(function (n) {
+                return { value: n.toString(), text: n + ' por página', selected: n === itemsPerPage };
+            });
+            
+            if (typeof window.getDropdownMenuHtml === 'function' && typeof window.openDropdownMenu === 'function' && typeof window.closeDropdownMenu === 'function') {
+                var overlayId = 'ubits-paginator-items-' + containerId;
+                var existingOverlay = document.getElementById(overlayId);
+                if (existingOverlay) existingOverlay.remove();
+                var configDropdown = { overlayId: overlayId, options: optionsData };
+                var overlayHtml = window.getDropdownMenuHtml(configDropdown);
+                document.body.insertAdjacentHTML('beforeend', overlayHtml);
+                var overlayEl = document.getElementById(overlayId);
+                if (overlayEl) {
+                    overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function (optionBtn) {
+                        optionBtn.addEventListener('click', function () {
+                            var val = this.getAttribute('data-value') || '';
+                            var textEl = this.querySelector('.ubits-dropdown-menu__option-text');
+                            var text = textEl ? textEl.textContent : buttonLabel;
+                            var labelSpan = selectContainer.querySelector('.ubits-paginator__items-label');
+                            if (labelSpan) labelSpan.textContent = text;
+                            btn.setAttribute('aria-expanded', 'false');
+                            window.closeDropdownMenu(overlayId);
+                            changeItemsPerPage(parseInt(val, 10));
                         });
-                        
-                        // Agregar lógica de posicionamiento inteligente del dropdown
-                        setTimeout(() => {
-                            setupSmartDropdownPositioning(`${containerId}-items-select`);
-                        }, 100);
-                    }
+                    });
+                    overlayEl.addEventListener('click', function (e) {
+                        if (e.target === overlayEl) {
+                            window.closeDropdownMenu(overlayId);
+                            btn.setAttribute('aria-expanded', 'false');
+                        }
+                    });
                 }
-            }, 50);
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    var isOpen = btn.getAttribute('aria-expanded') === 'true';
+                    if (isOpen) {
+                        window.closeDropdownMenu(overlayId);
+                        btn.setAttribute('aria-expanded', 'false');
+                    } else {
+                        window.openDropdownMenu(overlayId, btn);
+                        btn.setAttribute('aria-expanded', 'true');
+                    }
+                });
+            } else {
+                var dropdownFallback = document.createElement('div');
+                dropdownFallback.className = 'ubits-select-dropdown ubits-paginator__items-dropdown';
+                dropdownFallback.style.display = 'none';
+                optionsData.forEach(function (opt) {
+                    var div = document.createElement('div');
+                    div.className = 'ubits-select-option' + (opt.selected ? ' ubits-select-option--selected' : '');
+                    div.textContent = opt.text;
+                    div.setAttribute('data-value', opt.value);
+                    div.addEventListener('click', function () {
+                        var labelSpan = selectContainer.querySelector('.ubits-paginator__items-label');
+                        if (labelSpan) labelSpan.textContent = this.textContent;
+                        dropdownFallback.style.display = 'none';
+                        changeItemsPerPage(parseInt(this.getAttribute('data-value'), 10));
+                    });
+                    dropdownFallback.appendChild(div);
+                });
+                selectContainer.appendChild(dropdownFallback);
+                selectContainer.style.position = 'relative';
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    var isVisible = dropdownFallback.style.display === 'block';
+                    dropdownFallback.style.display = isVisible ? 'none' : 'block';
+                    if (!isVisible) setTimeout(function () { setupPaginatorDropdownPosition(selectContainer, btn, dropdownFallback); }, 10);
+                });
+                document.addEventListener('click', function (e) {
+                    if (!selectContainer.contains(e.target)) dropdownFallback.style.display = 'none';
+                }, true);
+            }
+        }
+    }
+    
+    function setupPaginatorDropdownPosition(selectContainer, triggerBtn, dropdown) {
+        if (dropdown.style.display !== 'block') return;
+        var triggerRect = triggerBtn.getBoundingClientRect();
+        var dropdownRect = dropdown.getBoundingClientRect();
+        var viewportHeight = window.innerHeight;
+        var spaceBelow = viewportHeight - triggerRect.bottom;
+        var spaceAbove = triggerRect.top;
+        var dropdownHeight = dropdownRect.height || 160;
+        if (spaceBelow < dropdownHeight && spaceAbove > dropdownHeight) {
+            dropdown.classList.add('dropdown-up');
+        } else {
+            dropdown.classList.remove('dropdown-up');
         }
     }
     
@@ -321,63 +386,6 @@ function loadPaginator(containerId, options = {}) {
         if (config.onItemsPerPageChange && typeof config.onItemsPerPageChange === 'function') {
             config.onItemsPerPageChange(itemsPerPage);
         }
-    }
-    
-    // Función para posicionar el dropdown inteligentemente
-    function setupSmartDropdownPositioning(selectContainerId) {
-        const selectContainer = document.getElementById(selectContainerId);
-        if (!selectContainer) return;
-        
-        const inputElement = selectContainer.querySelector('.ubits-input');
-        const dropdown = selectContainer.querySelector('.ubits-select-dropdown');
-        
-        if (!inputElement || !dropdown) return;
-        
-        // Función para calcular y ajustar posición
-        function adjustDropdownPosition() {
-            if (dropdown.style.display === 'none' || dropdown.style.display === '') {
-                return;
-            }
-            
-            const inputRect = inputElement.getBoundingClientRect();
-            const dropdownRect = dropdown.getBoundingClientRect();
-            const viewportHeight = window.innerHeight;
-            
-            // Calcular espacio disponible hacia abajo y hacia arriba
-            const spaceBelow = viewportHeight - inputRect.bottom;
-            const spaceAbove = inputRect.top;
-            const dropdownHeight = dropdownRect.height || 160; // max-height del dropdown
-            
-            // Si no hay suficiente espacio abajo pero sí arriba, posicionar hacia arriba
-            if (spaceBelow < dropdownHeight && spaceAbove > dropdownHeight) {
-                dropdown.classList.add('dropdown-up');
-            } else {
-                dropdown.classList.remove('dropdown-up');
-            }
-        }
-        
-        // Observar cuando se abre el dropdown
-        if (inputElement) {
-            inputElement.addEventListener('click', function() {
-                setTimeout(() => {
-                    adjustDropdownPosition();
-                }, 50);
-            });
-        }
-        
-        // Ajustar posición cuando cambia el tamaño de la ventana
-        window.addEventListener('resize', function() {
-            if (dropdown.style.display === 'block') {
-                adjustDropdownPosition();
-            }
-        });
-        
-        // Ajustar posición cuando se hace scroll
-        window.addEventListener('scroll', function() {
-            if (dropdown.style.display === 'block') {
-                adjustDropdownPosition();
-            }
-        }, true);
     }
     
     // Renderizar inicialmente

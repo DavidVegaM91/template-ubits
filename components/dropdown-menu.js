@@ -48,16 +48,18 @@
         var footerSecondaryId = config.footerSecondaryId || overlayId + '-footer-secondary';
         var footerPrimaryId = config.footerPrimaryId || overlayId + '-footer-primary';
 
-        var optionsHtml = options.map(function (opt) {
+        var optionsHtml = options.map(function (opt, index) {
             var value = opt.value != null ? escapeHtml(String(opt.value)) : '';
             var text = escapeHtml(opt.text != null ? String(opt.text) : '');
             var selectedClass = opt.selected ? ' ubits-dropdown-menu__option--selected' : '';
             var left = '';
+            var checkboxId = '';
             if (opt.leftIcon) {
                 left = '<span class="ubits-dropdown-menu__option-left"><i class="far fa-' + escapeHtml(opt.leftIcon) + '"></i></span>';
             } else if (opt.checkbox) {
+                checkboxId = overlayId + '-opt-' + index;
                 var checked = opt.selected ? ' checked' : '';
-                left = '<span class="ubits-dropdown-menu__option-left"><input type="checkbox" data-value="' + value + '"' + checked + '></span>';
+                left = '<span class="ubits-dropdown-menu__option-left"><input type="checkbox" id="' + escapeHtml(checkboxId) + '" data-value="' + value + '"' + checked + '></span>';
             }
             var right = '';
             if (opt.rightIcon) {
@@ -66,11 +68,11 @@
                 var checkedSwitch = opt.selected ? ' checked' : '';
                 right = '<span class="ubits-dropdown-menu__option-right"><input type="checkbox" role="switch" data-value="' + value + '"' + checkedSwitch + '></span>';
             }
-            return '<button type="button" class="ubits-dropdown-menu__option' + selectedClass + '" data-value="' + value + '">' +
-                left +
-                '<span class="ubits-dropdown-menu__option-text">' + text + '</span>' +
-                right +
-                '</button>';
+            var inner = left + '<span class="ubits-dropdown-menu__option-text">' + text + '</span>' + right;
+            if (opt.checkbox && checkboxId) {
+                return '<label class="ubits-dropdown-menu__option' + selectedClass + '" for="' + escapeHtml(checkboxId) + '" data-value="' + value + '">' + inner + '</label>';
+            }
+            return '<button type="button" class="ubits-dropdown-menu__option' + selectedClass + '" data-value="' + value + '">' + inner + '</button>';
         }).join('');
 
         var autocompleteBlock = hasAutocomplete
@@ -94,10 +96,11 @@
     }
 
     /**
-     * Abre el menú desplegable y lo posiciona. Si no hay espacio suficiente abajo en el viewport,
-     * lo despliega hacia arriba.
+     * Abre el menú desplegable y lo posiciona dentro del viewport.
+     * Vertical: debajo del ancla; si no hay espacio, arriba; si no cabe, se recorta con padding.
+     * Horizontal: alineado al ancla; si se sale por la derecha o izquierda, se ajusta para no salir nunca.
      * @param {string} overlayId - ID del overlay.
-     * @param {Object|HTMLElement} position - { top, left } en px, o elemento ancla (se usa getBoundingClientRect()).
+     * @param {Object|HTMLElement} position - { top, left } en px, o elemento ancla (getBoundingClientRect()).
      */
     function openDropdownMenu(overlayId, position) {
         var overlay = document.getElementById(overlayId);
@@ -107,6 +110,8 @@
 
         var gap = 4;
         var viewportPadding = 8;
+        var vw = window.innerWidth;
+        var vh = window.innerHeight;
         var top = 0;
         var left = 0;
         var rect = null;
@@ -115,9 +120,8 @@
             rect = position.getBoundingClientRect();
             top = rect.bottom + gap;
             left = rect.left;
-            content.style.minWidth = rect.width + 'px';
+            // No forzar minWidth al ancho del botón (evita dropdown muy angosto con botones icon-only)
         } else {
-            content.style.minWidth = '';
             if (position && typeof position.top !== 'undefined' && typeof position.left !== 'undefined') {
                 top = position.top;
                 left = position.left;
@@ -130,20 +134,28 @@
         overlay.style.display = 'block';
         overlay.setAttribute('aria-hidden', 'false');
 
+        var contentWidth = content.offsetWidth;
+        var contentHeight = content.offsetHeight;
+
         if (rect) {
-            var contentHeight = content.offsetHeight;
-            var spaceBelow = window.innerHeight - rect.bottom - gap - viewportPadding;
-            if (spaceBelow < contentHeight) {
-                var spaceAbove = rect.top - gap - viewportPadding;
-                if (spaceAbove >= contentHeight || spaceAbove >= spaceBelow) {
-                    top = rect.top - contentHeight - gap;
-                    content.style.top = top + 'px';
-                } else {
-                    top = Math.max(viewportPadding, window.innerHeight - contentHeight - viewportPadding);
-                    content.style.top = top + 'px';
-                }
+            var spaceBelow = vh - rect.bottom - gap - viewportPadding;
+            var spaceAbove = rect.top - gap - viewportPadding;
+            if (spaceBelow < contentHeight && spaceAbove >= contentHeight) {
+                top = rect.top - contentHeight - gap;
+            } else if (spaceBelow < contentHeight && spaceAbove < contentHeight) {
+                top = Math.max(viewportPadding, vh - contentHeight - viewportPadding);
+            }
+            content.style.top = Math.max(viewportPadding, Math.min(vh - contentHeight - viewportPadding, top)) + 'px';
+
+            // Si alinear izquierda con el botón haría que el dropdown se salga por la derecha,
+            // alinear la parte derecha del dropdown con la parte derecha del botón.
+            if (left + contentWidth > vw - viewportPadding) {
+                left = rect.right - contentWidth;
             }
         }
+
+        left = Math.max(viewportPadding, Math.min(vw - contentWidth - viewportPadding, left));
+        content.style.left = left + 'px';
     }
 
     /**

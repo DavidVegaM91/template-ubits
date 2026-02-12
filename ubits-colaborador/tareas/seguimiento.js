@@ -1666,7 +1666,7 @@
         }
     }
 
-    // Leer checkboxes y radios de filtros
+    // Leer checkboxes y radios de filtros (y selección de asignados/áreas del modal)
     function readFilterCheckboxes() {
         // Tipo actividad (radio button - solo uno)
         const tipoRadio = document.querySelector('#filtros-tipo-actividad input[type="radio"]:checked');
@@ -1683,6 +1683,44 @@
         } else {
             currentFilters.prioridad = [];
         }
+
+        // Asignados: leer del autocomplete (merge con lo ya seleccionado para no perder opciones fuera del dropdown visible)
+        const personasContainer = document.getElementById('filtros-buscar-personas');
+        if (personasContainer) {
+            const dropdown = personasContainer.querySelector('.ubits-autocomplete-dropdown');
+            if (dropdown) {
+                const nextPersona = new Set(currentFilters.persona || []);
+                dropdown.querySelectorAll('.ubits-autocomplete-option').forEach(function(opt) {
+                    const textEl = opt.querySelector('.ubits-autocomplete-option-text');
+                    const cb = opt.querySelector('.ubits-autocomplete-checkbox');
+                    const text = textEl ? textEl.textContent.trim() : '';
+                    if (text) {
+                        if (cb && cb.checked) nextPersona.add(text);
+                        else nextPersona.delete(text);
+                    }
+                });
+                currentFilters.persona = Array.from(nextPersona);
+            }
+        }
+
+        // Áreas: igual que asignados
+        const areasContainer = document.getElementById('filtros-areas');
+        if (areasContainer) {
+            const dropdown = areasContainer.querySelector('.ubits-autocomplete-dropdown');
+            if (dropdown) {
+                const nextArea = new Set(currentFilters.area || []);
+                dropdown.querySelectorAll('.ubits-autocomplete-option').forEach(function(opt) {
+                    const textEl = opt.querySelector('.ubits-autocomplete-option-text');
+                    const cb = opt.querySelector('.ubits-autocomplete-checkbox');
+                    const text = textEl ? textEl.textContent.trim() : '';
+                    if (text) {
+                        if (cb && cb.checked) nextArea.add(text);
+                        else nextArea.delete(text);
+                    }
+                });
+                currentFilters.area = Array.from(nextArea);
+            }
+        }
     }
 
     // Limpiar filtros (solo del tab activo)
@@ -1692,14 +1730,6 @@
         
         const periodoText = document.getElementById('seguimiento-periodo-text');
         if (periodoText) periodoText.textContent = 'Últimos 7 días';
-        
-        const periodoMenu = document.getElementById('periodo-menu');
-        if (periodoMenu) {
-            periodoMenu.querySelectorAll('.periodo-menu-option').forEach(opt => {
-                opt.classList.remove('selected');
-                if (opt.dataset.value === '7') opt.classList.add('selected');
-            });
-        }
 
         document.querySelectorAll('#filtros-estado input, #filtros-prioridad input').forEach(cb => {
             cb.checked = false;
@@ -1745,14 +1775,39 @@
         }
     }
 
-    // Toggle menú de columnas
+    // Toggle menú de columnas (Dropdown Menu oficial); si no hay API, no-op
     function toggleColumnsMenu() {
-        const menu = document.getElementById('columns-menu');
-        const overlay = document.getElementById('columns-menu-overlay');
-        if (!menu || !overlay) return;
-        const visible = menu.style.display === 'block';
-        menu.style.display = visible ? 'none' : 'block';
-        overlay.style.display = visible ? 'none' : 'block';
+        if (typeof window.getDropdownMenuHtml !== 'function') return;
+        var overlayId = 'seguimiento-columns-overlay';
+        var overlayEl = document.getElementById(overlayId);
+        if (overlayEl && overlayEl.style.display === 'block') {
+            window.closeDropdownMenu(overlayId);
+            return;
+        }
+        var labelsTareas = { id: 'ID de la tarea', nombre: 'Nombre de la tarea', asignado: 'Asignado', creador: 'Creador', area: 'Área', estado: 'Estado', prioridad: 'Prioridad', plan: 'Plan al que pertenece', fechaCreacion: 'Fecha de creación', fechaFinalizacion: 'Fecha de vencimiento', comentarios: 'Número de comentarios' };
+        var labelsPlanes = { id: 'ID del plan', nombre: 'Nombre del plan', asignados: 'Personas asignadas', creador: 'Creador del plan', estado: 'Estado del plan', avance: 'Progreso del plan', fechaCreacion: 'Fecha de creación', fechaFinalizacion: 'Fecha de finalización' };
+        var labels = activeTab === 'planes' ? labelsPlanes : labelsTareas;
+        var columnIds = getColumnIds();
+        var options = columnIds.map(function(col) {
+            return { text: labels[col] || col, value: col, checkbox: true, selected: columnVisibility[col] !== false };
+        });
+        if (document.getElementById(overlayId)) document.getElementById(overlayId).remove();
+        var html = window.getDropdownMenuHtml({ overlayId: overlayId, options: options });
+        document.body.insertAdjacentHTML('beforeend', html);
+        overlayEl = document.getElementById(overlayId);
+        var columnsBtn = document.getElementById('seguimiento-columns-toggle');
+        if (overlayEl && columnsBtn) {
+            overlayEl.querySelectorAll('.ubits-dropdown-menu__option-left input[type="checkbox"]').forEach(function(cb) {
+                cb.addEventListener('change', function() {
+                    columnVisibility[this.dataset.value] = this.checked;
+                    renderTable();
+                });
+            });
+            overlayEl.addEventListener('click', function(ev) {
+                if (ev.target === overlayEl) window.closeDropdownMenu(overlayId);
+            });
+            window.openDropdownMenu(overlayId, columnsBtn);
+        }
     }
 
     // Inicializar paginador
@@ -2070,17 +2125,13 @@
         });
     }
 
-    // Inicializar menú de período
+    // Inicializar menú de período (Dropdown Menu oficial)
     function initPeriodoMenu() {
-        const periodoBtn = document.getElementById('seguimiento-periodo-toggle');
-        const periodoMenu = document.getElementById('periodo-menu');
-        const periodoOverlay = document.getElementById('periodo-menu-overlay');
-        const periodoText = document.getElementById('seguimiento-periodo-text');
-        
-        if (!periodoBtn || !periodoMenu || !periodoOverlay || !periodoText) return;
+        var periodoBtn = document.getElementById('seguimiento-periodo-toggle');
+        var periodoText = document.getElementById('seguimiento-periodo-text');
+        if (!periodoBtn || !periodoText || typeof window.getDropdownMenuHtml !== 'function') return;
 
-        // Mapeo de valores a textos
-        const periodoTexts = {
+        var periodoTexts = {
             '7': 'Últimos 7 días',
             '15': 'Últimos 15 días',
             '30': 'Últimos 30 días',
@@ -2089,112 +2140,59 @@
             '365': 'Último año'
         };
 
-        // Función para determinar qué opción está seleccionada
         function getSelectedPeriodo() {
-            // Si hay fechas personalizadas, "Personalizado" está seleccionado
-            if (currentFilters.fechaCreacionDesde && currentFilters.fechaCreacionHasta) {
-                return 'personalizado';
-            }
-            // Si no, usar el período normal (por defecto 7 días)
+            if (currentFilters.fechaCreacionDesde && currentFilters.fechaCreacionHasta) return 'personalizado';
             return currentFilters.periodo || '7';
         }
-        
-        // Valor inicial (sincronizar con currentFilters)
-        let selectedPeriodo = getSelectedPeriodo();
-        
-        // Sincronizar texto del botón con el valor inicial
-        if (selectedPeriodo === 'personalizado') {
-            // El texto ya está actualizado por el date picker
-        } else if (periodoTexts[selectedPeriodo]) {
+
+        var selectedPeriodo = getSelectedPeriodo();
+        if (selectedPeriodo !== 'personalizado' && periodoTexts[selectedPeriodo]) {
             periodoText.textContent = periodoTexts[selectedPeriodo];
         }
-        
-        // Marcar la opción seleccionada inicialmente
-        periodoMenu.querySelectorAll('.periodo-menu-option').forEach(opt => {
-            opt.classList.remove('selected');
-            if (opt.dataset.value === selectedPeriodo) {
-                opt.classList.add('selected');
-            }
-        });
 
-        // Toggle del menú
+        var overlayId = 'seguimiento-periodo-overlay';
         periodoBtn.addEventListener('click', function(e) {
             e.stopPropagation();
-            const rect = this.getBoundingClientRect();
-            const visible = periodoMenu.style.display === 'block';
-            
-            if (visible) {
-                periodoMenu.style.display = 'none';
-                periodoOverlay.style.display = 'none';
-            } else {
-                periodoMenu.style.display = 'block';
-                periodoOverlay.style.display = 'block';
-                positionMenuSmartly(periodoMenu, rect, 200, 200);
-                
-                // Actualizar selectedPeriodo antes de marcar (por si cambió)
-                selectedPeriodo = getSelectedPeriodo();
-                
-                // Marcar la opción seleccionada
-                periodoMenu.querySelectorAll('.periodo-menu-option').forEach(opt => {
-                    opt.classList.remove('selected');
-                    if (opt.dataset.value === selectedPeriodo) {
-                        opt.classList.add('selected');
-                    }
+            selectedPeriodo = getSelectedPeriodo();
+            var options = [
+                { text: periodoTexts['7'], value: '7', selected: selectedPeriodo === '7' },
+                { text: periodoTexts['15'], value: '15', selected: selectedPeriodo === '15' },
+                { text: periodoTexts['30'], value: '30', selected: selectedPeriodo === '30' },
+                { text: periodoTexts['90'], value: '90', selected: selectedPeriodo === '90' },
+                { text: periodoTexts['180'], value: '180', selected: selectedPeriodo === '180' },
+                { text: periodoTexts['365'], value: '365', selected: selectedPeriodo === '365' },
+                { text: 'Personalizado', value: 'personalizado', selected: selectedPeriodo === 'personalizado' }
+            ];
+            var existing = document.getElementById(overlayId);
+            if (existing) existing.remove();
+            var html = window.getDropdownMenuHtml({ overlayId: overlayId, options: options });
+            document.body.insertAdjacentHTML('beforeend', html);
+            var overlayEl = document.getElementById(overlayId);
+            if (overlayEl) {
+                overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function(opt) {
+                    opt.addEventListener('click', function() {
+                        var value = this.getAttribute('data-value');
+                        window.closeDropdownMenu(overlayId);
+                        if (value === 'personalizado') {
+                            openDatePicker();
+                            return;
+                        }
+                        currentFilters.fechaCreacionDesde = null;
+                        currentFilters.fechaCreacionHasta = null;
+                        periodoText.textContent = periodoTexts[value];
+                        currentFilters.periodo = value;
+                        currentPage = 1;
+                        renderTable();
+                        updateResultsCount();
+                        updateIndicadores();
+                        initPaginator();
+                    });
+                });
+                overlayEl.addEventListener('click', function(ev) {
+                    if (ev.target === overlayEl) window.closeDropdownMenu(overlayId);
                 });
             }
-        });
-
-        // Cerrar al hacer clic en el overlay
-        periodoOverlay.addEventListener('click', function() {
-            periodoMenu.style.display = 'none';
-            periodoOverlay.style.display = 'none';
-        });
-
-        // Manejar selección de opciones
-        periodoMenu.querySelectorAll('.periodo-menu-option').forEach(option => {
-            option.addEventListener('click', function(e) {
-                e.stopPropagation();
-                const value = this.dataset.value;
-                
-                // Si es "personalizado", abrir el selector de fechas
-                if (value === 'personalizado') {
-                    periodoMenu.style.display = 'none';
-                    periodoOverlay.style.display = 'none';
-                    openDatePicker();
-                    return;
-                }
-                
-                selectedPeriodo = value;
-                
-                // Limpiar filtro personalizado si existe
-                currentFilters.fechaCreacionDesde = null;
-                currentFilters.fechaCreacionHasta = null;
-                
-                // Actualizar texto del botón
-                periodoText.textContent = periodoTexts[value];
-                
-                // Actualizar selección visual
-                periodoMenu.querySelectorAll('.periodo-menu-option').forEach(opt => {
-                    opt.classList.remove('selected');
-                });
-                this.classList.add('selected');
-                
-                // Aplicar filtro por período
-                currentFilters.periodo = value;
-                
-                // Cerrar el menú
-                periodoMenu.style.display = 'none';
-                periodoOverlay.style.display = 'none';
-                
-                // Resetear página a 1 cuando se aplica un filtro
-                currentPage = 1;
-                
-                // Renderizar tabla con el nuevo filtro
-                renderTable();
-                updateResultsCount();
-                updateIndicadores();
-                initPaginator();
-            });
+            window.openDropdownMenu(overlayId, periodoBtn);
         });
     }
 
@@ -2542,405 +2540,236 @@
         initDateInputs();
     }
 
-    // Inicializar menú de ordenamiento (fechas y progreso). Delegación para que funcione con botones re-renderizados (p. ej. al cambiar a Planes).
+    // Inicializar menú de ordenamiento (Dropdown Menu oficial, sin footer: se aplica al hacer clic en la opción).
     function initSortMenu() {
-        const sortMenu = document.getElementById('sort-menu');
-        const sortOverlay = document.getElementById('sort-menu-overlay');
-        const sortCancel = document.getElementById('sort-menu-cancel');
-        const sortApply = document.getElementById('sort-menu-apply');
-        let activeSortColumn = null;
-        let selectedDirection = null;
+        if (typeof window.getDropdownMenuHtml !== 'function') return;
+        var overlayId = 'seguimiento-sort-overlay';
 
         document.addEventListener('click', function(e) {
-            const btn = e.target.closest('.seguimiento-date-sort-btn');
+            var btn = e.target.closest('.seguimiento-date-sort-btn');
             if (!btn) return;
             e.stopPropagation();
-            const col = btn.dataset.sort;
-            activeSortColumn = col;
-
-            // Posicionar menú inteligentemente
-            const rect = btn.getBoundingClientRect();
-            sortMenu.style.display = 'block';
-            positionMenuSmartly(sortMenu, rect, 200, 150);
-            sortOverlay.style.display = 'block';
-
-            // Copys del menú según columna: avance (progreso) vs fechas
-            const descOpt = sortMenu.querySelector('.sort-menu-option[data-dir="desc"] span');
-            const ascOpt = sortMenu.querySelector('.sort-menu-option[data-dir="asc"] span');
-            if (descOpt && ascOpt) {
-                if (col === 'avance') {
-                    descOpt.textContent = 'Más avance primero';
-                    ascOpt.textContent = 'Menos avance primero';
-                } else {
-                    descOpt.textContent = 'Más reciente primero';
-                    ascOpt.textContent = 'Más reciente al final';
-                }
-            }
-
-            // Resetear selección
-            sortMenu.querySelectorAll('.sort-menu-option').forEach(o => o.classList.remove('selected'));
-            selectedDirection = null;
-
-            // Si ya hay un orden en esta columna, marcarlo
-            if (currentSort.column === col) {
-                const opt = sortMenu.querySelector(`.sort-menu-option[data-dir="${currentSort.direction}"]`);
-                if (opt) {
-                    opt.classList.add('selected');
-                    selectedDirection = currentSort.direction;
-                }
-            }
-        });
-
-        sortMenu.querySelectorAll('.sort-menu-option').forEach(opt => {
-            opt.addEventListener('click', function() {
-                sortMenu.querySelectorAll('.sort-menu-option').forEach(o => o.classList.remove('selected'));
-                this.classList.add('selected');
-                selectedDirection = this.dataset.dir;
-                
-                // Aplicar inmediatamente
-                if (activeSortColumn && selectedDirection) {
-                    currentSort.column = activeSortColumn;
-                    currentSort.direction = selectedDirection;
-                    renderTable();
-                }
-                
-                // Cerrar menú
-                sortMenu.style.display = 'none';
-                sortOverlay.style.display = 'none';
-                activeSortColumn = null;
-                selectedDirection = null;
-            });
-        });
-
-        if (sortOverlay) {
-            sortOverlay.addEventListener('click', function() {
-                sortMenu.style.display = 'none';
-                sortOverlay.style.display = 'none';
-            });
-        }
-    }
-
-    // Inicializar menú de filtro con autocomplete (Nombre, Asignado, Plan, Creador)
-    function initFilterMenu() {
-        const filterMenu = document.getElementById('filter-menu');
-        const filterOverlay = document.getElementById('filter-menu-overlay');
-        const filterCancel = document.getElementById('filter-menu-cancel');
-        const filterApply = document.getElementById('filter-menu-apply');
-        const filterContainer = document.getElementById('filter-autocomplete-container');
-        let activeFilterColumn = null;
-        let selectedFilterValues = new Set(); // Set de valores (strings) directamente, no índices
-        let filterApplied = false;
-
-        // Opciones solo de lo que hay disponible en la vista actual (período + búsqueda aplicados)
-        const baseData = () => getDataFilteredByPeriodAndSearchOnly();
-        const filterDataMap = {
-            nombre: () => [...new Set(baseData().map(r => r.nombre))].filter(Boolean).sort((a, b) => a.localeCompare(b, 'es')),
-            asignado: () => [...new Set(baseData().map(r => r.asignado && r.asignado.nombre).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'es')),
-            username: () => [...new Set(baseData().map(r => r.asignado && r.asignado.username).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'es')),
-            area: () => [...new Set(baseData().map(r => r.area))].filter(Boolean).sort((a, b) => a.localeCompare(b, 'es')),
-            lider: () => [...new Set(baseData().map(r => r.lider))].filter(Boolean).sort((a, b) => a.localeCompare(b, 'es')),
-            plan: () => [...new Set(baseData().map(r => r.plan))].filter(Boolean).sort((a, b) => a.localeCompare(b, 'es')),
-            creador: () => [...new Set(baseData().map(r => r.creador))].filter(Boolean).sort((a, b) => a.localeCompare(b, 'es'))
-        };
-
-        // Función para aplicar el filtro con valores seleccionados (o vacío si se deseleccionó todo)
-        function applyFilterFromMenu() {
-            if (!activeFilterColumn) return;
-
-            filterApplied = true;
-            const selectedOptions = Array.from(selectedFilterValues).filter(val => val && val.trim());
-
-            if (activeFilterColumn === 'asignado') {
-                currentFilters.persona = selectedOptions;
-            } else if (activeFilterColumn === 'username') {
-                currentFilters.username = selectedOptions;
-            } else if (activeFilterColumn === 'plan') {
-                currentFilters.plan = selectedOptions;
-            } else if (activeFilterColumn === 'area') {
-                currentFilters.area = selectedOptions;
-            } else if (activeFilterColumn === 'lider') {
-                currentFilters.lider = selectedOptions;
-            } else if (activeFilterColumn === 'nombre') {
-                currentFilters.nombre = selectedOptions;
-            } else if (activeFilterColumn === 'creador') {
-                currentFilters.creador = selectedOptions;
-            }
-
-            currentPage = 1;
-            applyFiltersAndSearch();
-            applySorting();
-            renderTable();
-            updateResultsCount();
-            updateIndicadores();
-            initPaginator();
-            renderFiltrosAplicados();
-        }
-
-        // Función para cerrar el menú sin aplicar filtro
-        function closeFilterMenu() {
-            filterMenu.style.display = 'none';
-            filterOverlay.style.display = 'none';
-            filterContainer.innerHTML = '';
-            activeFilterColumn = null;
-            selectedFilterValues.clear();
-            filterApplied = false;
-        }
-
-        document.querySelectorAll('.seguimiento-filter-btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                const col = this.dataset.filter;
-                activeFilterColumn = col;
-                selectedFilterValues.clear();
-                filterApplied = false;
-
-                // Cargar valores ya seleccionados en el filtro actual
-                let currentFilterValues = [];
-                if (col === 'asignado') {
-                    currentFilterValues = currentFilters.persona;
-                } else if (col === 'username') {
-                    currentFilterValues = currentFilters.username;
-                } else if (col === 'plan') {
-                    currentFilterValues = currentFilters.plan;
-                } else if (col === 'area') {
-                    currentFilterValues = currentFilters.area;
-                } else if (col === 'lider') {
-                    currentFilterValues = currentFilters.lider;
-                } else if (col === 'nombre') {
-                    currentFilterValues = currentFilters.nombre;
-                } else if (col === 'creador') {
-                    currentFilterValues = currentFilters.creador;
-                }
-
-                // Posicionar menú inteligentemente
-                const rect = this.getBoundingClientRect();
-                filterMenu.style.display = 'block';
-                positionMenuSmartly(filterMenu, rect, 280, 300); // Aumentar altura para mostrar opciones con checkboxes
-                filterOverlay.style.display = 'block';
-
-                // Crear input con opciones siempre visibles (variante tipo Google Sheets)
-                filterContainer.innerHTML = '';
-                const allOptions = filterDataMap[col]();
-                
-                // Cargar los valores ya seleccionados directamente en el Set
-                if (Array.isArray(currentFilterValues) && currentFilterValues.length > 0) {
-                    currentFilterValues.forEach(value => {
-                        if (value && value.trim()) {
-                            selectedFilterValues.add(value);
-                        }
-                    });
-                }
-                
-                // Crear input básico sin usar createInput (para no interferir con el componente existente)
-                const inputWrapper = document.createElement('div');
-                inputWrapper.className = 'ubits-input-wrapper seguimiento-filter-input-wrapper';
-                
-                const inputElement = document.createElement('input');
-                inputElement.type = 'text';
-                inputElement.className = 'ubits-input ubits-input--md';
-                inputElement.placeholder = `Filtrar por ${col}...`;
-                inputElement.setAttribute('aria-label', `Filtrar por ${col}`);
-                
-                // Icono de búsqueda
-                const searchIcon = document.createElement('i');
-                searchIcon.className = 'far fa-search';
-                searchIcon.style.position = 'absolute';
-                searchIcon.style.right = '12px';
-                searchIcon.style.top = '50%';
-                searchIcon.style.transform = 'translateY(-50%)';
-                searchIcon.style.color = 'var(--ubits-fg-1-medium)';
-                searchIcon.style.pointerEvents = 'none';
-                
-                inputWrapper.style.position = 'relative';
-                inputWrapper.appendChild(inputElement);
-                inputWrapper.appendChild(searchIcon);
-                
-                // Contenedor de opciones siempre visibles
-                const optionsContainer = document.createElement('div');
-                optionsContainer.className = 'seguimiento-filter-options-container';
-                optionsContainer.style.maxHeight = '200px';
-                optionsContainer.style.overflowY = 'auto';
-                optionsContainer.style.marginTop = '8px';
-                optionsContainer.style.background = 'var(--ubits-bg-1)';
-                
-                // Función para renderizar opciones
-                function renderFilterOptions(options) {
-                    optionsContainer.innerHTML = '';
-                    
-                    options.forEach((option) => {
-                        const optionElement = document.createElement('div');
-                        optionElement.className = 'seguimiento-filter-option';
-                        
-                        // Guardar el valor directamente en lugar del índice
-                        optionElement.dataset.value = option;
-                        
-                        // Checkbox
-                        const checkbox = document.createElement('input');
-                        checkbox.type = 'checkbox';
-                        checkbox.className = 'seguimiento-filter-checkbox';
-                        checkbox.checked = selectedFilterValues.has(option);
-                        checkbox.dataset.value = option;
-                        checkbox.id = `filter-option-${option.replace(/\s+/g, '-')}`;
-                        
-                        checkbox.addEventListener('change', function() {
-                            if (this.checked) {
-                                selectedFilterValues.add(this.dataset.value);
-                            } else {
-                                selectedFilterValues.delete(this.dataset.value);
-                            }
-                        });
-                        
-                        // Label para el checkbox
-                        const label = document.createElement('label');
-                        label.htmlFor = checkbox.id;
-                        label.className = 'seguimiento-filter-option-label';
-                        label.textContent = option;
-                        
-                        optionElement.appendChild(checkbox);
-                        optionElement.appendChild(label);
-                        
-                        optionElement.addEventListener('click', function(e) {
-                            if (e.target !== checkbox && e.target !== label) {
-                                checkbox.checked = !checkbox.checked;
-                                checkbox.dispatchEvent(new Event('change'));
-                            }
-                        });
-                        
-                        optionsContainer.appendChild(optionElement);
-                    });
-                }
-                
-                // Mostrar primeras 5 opciones por defecto
-                function showDefaultFilterOptions() {
-                    const defaultOptions = allOptions.slice(0, 5);
-                    renderFilterOptions(defaultOptions);
-                }
-                
-                // Filtrar opciones cuando se escribe - sin tildes
-                inputElement.addEventListener('input', function() {
-                    const searchText = this.value;
-                    
-                    if (searchText.length === 0) {
-                        showDefaultFilterOptions();
-                    } else {
-                        const filtered = allOptions.filter(opt => 
-                            normalizeText(opt).includes(normalizeText(searchText))
-                        ).slice(0, 5);
-                        renderFilterOptions(filtered);
-                    }
-                });
-                
-                // Agregar al contenedor
-                filterContainer.appendChild(inputWrapper);
-                filterContainer.appendChild(optionsContainer);
-                
-                // Mostrar opciones por defecto al abrir
-                showDefaultFilterOptions();
-                
-                // Focus en el input
-                setTimeout(() => {
-                    inputElement.focus();
-                }, 100);
-            });
-        });
-
-        // Cerrar sin aplicar si se hace clic en el overlay
-        if (filterOverlay) {
-            filterOverlay.addEventListener('click', function() {
-                closeFilterMenu();
-            });
-        }
-
-        // Cerrar sin aplicar si se hace clic en cancelar
-        if (filterCancel) {
-            filterCancel.addEventListener('click', function() {
-                closeFilterMenu();
-            });
-        }
-
-        // Aplicar filtro cuando se hace clic en Aplicar
-        if (filterApply) {
-            filterApply.addEventListener('click', function() {
-                applyFilterFromMenu();
-                closeFilterMenu();
-            });
-        }
-    }
-
-    // Inicializar menú de checkboxes (Estado, Prioridad)
-    function initCheckboxMenu() {
-        const checkboxMenu = document.getElementById('checkbox-menu');
-        const checkboxOverlay = document.getElementById('checkbox-menu-overlay');
-        const checkboxCancel = document.getElementById('checkbox-menu-cancel');
-        const checkboxApply = document.getElementById('checkbox-menu-apply');
-        const checkboxOptions = document.getElementById('checkbox-menu-options');
-        let activeCheckboxColumn = null;
-
-        const optionsMap = {
-            estado: ['Iniciada', 'Vencida', 'Finalizada'],
-            prioridad: ['Alta', 'Media', 'Baja']
-        };
-
-        document.querySelectorAll('.seguimiento-checkbox-btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                const col = this.dataset.checkbox;
-                activeCheckboxColumn = col;
-
-                // Posicionar menú inteligentemente
-                const rect = this.getBoundingClientRect();
-                checkboxMenu.style.display = 'block';
-                positionMenuSmartly(checkboxMenu, rect, 180, 180);
-                checkboxOverlay.style.display = 'block';
-
-                // Generar opciones
-                const opts = optionsMap[col] || [];
-                const currentSelected = col === 'estado' ? currentFilters.estado : currentFilters.prioridad;
-
-                checkboxOptions.innerHTML = opts.map(opt => {
-                    const checked = currentSelected.includes(opt) ? ' checked' : '';
-                    return `<label class="checkbox-menu-option">
-                        <input type="checkbox" value="${opt}"${checked}>
-                        <span class="ubits-body-sm-regular">${opt}</span>
-                    </label>`;
-                }).join('');
-                
-                // Agregar event listeners para aplicar en vivo
-                checkboxOptions.querySelectorAll('input').forEach(cb => {
-                    cb.addEventListener('change', function() {
-                        const selected = Array.from(checkboxOptions.querySelectorAll('input:checked')).map(c => c.value);
-                        
-                        if (activeCheckboxColumn === 'estado') {
-                            currentFilters.estado = selected;
-                            document.querySelectorAll('#filtros-estado input').forEach(modalCb => {
-                                modalCb.checked = selected.includes(modalCb.value);
-                            });
-                        } else if (activeCheckboxColumn === 'prioridad') {
-                            currentFilters.prioridad = selected;
-                            document.querySelectorAll('#filtros-prioridad input').forEach(modalCb => {
-                                modalCb.checked = selected.includes(modalCb.value);
-                            });
-                        }
-
-                        currentPage = 1;
-                        applyFiltersAndSearch(); // Asegurar que los filtros se apliquen antes de renderizar
-                        applySorting();
+            var col = btn.dataset.sort;
+            var isAvance = col === 'avance';
+            var descText = isAvance ? 'Más avance primero' : 'Más reciente primero';
+            var ascText = isAvance ? 'Menos avance primero' : 'Más reciente al final';
+            var currentDir = currentSort.column === col ? currentSort.direction : null;
+            var options = [
+                { text: descText, value: 'desc', leftIcon: 'arrow-down', selected: currentDir === 'desc' },
+                { text: ascText, value: 'asc', leftIcon: 'arrow-up', selected: currentDir === 'asc' }
+            ];
+            var existing = document.getElementById(overlayId);
+            if (existing) existing.remove();
+            var config = { overlayId: overlayId, options: options };
+            var html = window.getDropdownMenuHtml(config);
+            document.body.insertAdjacentHTML('beforeend', html);
+            var overlayEl = document.getElementById(overlayId);
+            if (overlayEl) {
+                overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function(opt) {
+                    opt.addEventListener('click', function() {
+                        var dir = this.getAttribute('data-value');
+                        currentSort.column = col;
+                        currentSort.direction = dir;
                         renderTable();
-                        updateResultsCount();
-                        updateIndicadores();
-                        initPaginator();
-                        renderFiltrosAplicados();
+                        window.closeDropdownMenu(overlayId);
                     });
                 });
-            });
+                overlayEl.addEventListener('click', function(ev) {
+                    if (ev.target === overlayEl) window.closeDropdownMenu(overlayId);
+                });
+            }
+            window.openDropdownMenu(overlayId, btn);
         });
+    }
 
-        if (checkboxOverlay) {
-            checkboxOverlay.addEventListener('click', function() {
-                checkboxMenu.style.display = 'none';
-                checkboxOverlay.style.display = 'none';
+    // Inicializar menú de filtro por columna (Dropdown Menu oficial: autocomplete + hasta 5 ítems visibles que cambian al escribir, datos deduplicados)
+    function initFilterMenu() {
+        if (typeof window.getDropdownMenuHtml !== 'function') return;
+        var baseData = function() { return getDataFilteredByPeriodAndSearchOnly(); };
+        // Datos deduplicados con Set (una sola vez cada valor)
+        var filterDataMap = {
+            nombre: function() { var d = baseData(); return [...new Set(d.map(function(r) { return r.nombre; }).filter(Boolean))].sort(function(a, b) { return a.localeCompare(b, 'es'); }); },
+            asignado: function() { var d = baseData(); return [...new Set(d.map(function(r) { return r.asignado && r.asignado.nombre; }).filter(Boolean))].sort(function(a, b) { return a.localeCompare(b, 'es'); }); },
+            username: function() { var d = baseData(); return [...new Set(d.map(function(r) { return r.asignado && r.asignado.username; }).filter(Boolean))].sort(function(a, b) { return a.localeCompare(b, 'es'); }); },
+            area: function() { var d = baseData(); return [...new Set(d.map(function(r) { return r.area; }).filter(Boolean))].sort(function(a, b) { return a.localeCompare(b, 'es'); }); },
+            lider: function() { var d = baseData(); return [...new Set(d.map(function(r) { return r.lider; }).filter(Boolean))].sort(function(a, b) { return a.localeCompare(b, 'es'); }); },
+            plan: function() { var d = baseData(); return [...new Set(d.map(function(r) { return r.plan; }).filter(Boolean))].sort(function(a, b) { return a.localeCompare(b, 'es'); }); },
+            creador: function() { var d = baseData(); return [...new Set(d.map(function(r) { return r.creador; }).filter(Boolean))].sort(function(a, b) { return a.localeCompare(b, 'es'); }); }
+        };
+        var overlayId = 'seguimiento-filter-overlay';
+        var FILTER_VISIBLE_MAX = 5;
+
+        document.addEventListener('click', function(e) {
+            var btn = e.target.closest('.seguimiento-filter-btn');
+            if (!btn) return;
+            e.stopPropagation();
+            var col = btn.dataset.filter;
+            var currentFilterValues = [];
+            if (col === 'asignado') currentFilterValues = currentFilters.persona;
+            else if (col === 'username') currentFilterValues = currentFilters.username;
+            else if (col === 'plan') currentFilterValues = currentFilters.plan;
+            else if (col === 'area') currentFilterValues = currentFilters.area;
+            else if (col === 'lider') currentFilterValues = currentFilters.lider;
+            else if (col === 'nombre') currentFilterValues = currentFilters.nombre;
+            else if (col === 'creador') currentFilterValues = currentFilters.creador;
+            if (!Array.isArray(currentFilterValues)) currentFilterValues = [];
+
+            var allOptions = (filterDataMap[col] || function() { return []; })();
+            var options = allOptions.map(function(v) {
+                return { text: v, value: v, checkbox: true, selected: currentFilterValues.indexOf(v) >= 0 };
             });
-        }
+            var existing = document.getElementById(overlayId);
+            if (existing) existing.remove();
+            var autocompleteContainerId = overlayId + '-autocomplete';
+            var config = {
+                overlayId: overlayId,
+                hasAutocomplete: true,
+                autocompletePlaceholder: 'Filtrar por ' + col + '...',
+                autocompleteContainerId: autocompleteContainerId,
+                options: options,
+                footerSecondaryLabel: 'Cancelar',
+                footerPrimaryLabel: 'Aplicar',
+                footerSecondaryId: overlayId + '-cancel',
+                footerPrimaryId: overlayId + '-apply'
+            };
+            var html = window.getDropdownMenuHtml(config);
+            document.body.insertAdjacentHTML('beforeend', html);
+            var overlayEl = document.getElementById(overlayId);
+            if (overlayEl) {
+                var optionsContainer = overlayEl.querySelector('.ubits-dropdown-menu__options');
+                var optionButtons = optionsContainer ? optionsContainer.querySelectorAll('.ubits-dropdown-menu__option') : [];
+
+                function filterVisibleOptions(searchVal) {
+                    var q = normalizeText(searchVal || '');
+                    var shown = 0;
+                    optionButtons.forEach(function(opt) {
+                        var textEl = opt.querySelector('.ubits-dropdown-menu__option-text');
+                        var text = textEl ? textEl.textContent : '';
+                        var match = !q || normalizeText(text).indexOf(q) >= 0;
+                        if (match && shown < FILTER_VISIBLE_MAX) {
+                            opt.style.display = '';
+                            shown++;
+                        } else {
+                            opt.style.display = 'none';
+                        }
+                    });
+                }
+
+                var acContainer = document.getElementById(autocompleteContainerId);
+                if (acContainer) {
+                    acContainer.innerHTML = '';
+                    var inputWrap = document.createElement('div');
+                    inputWrap.className = 'ubits-input-wrapper seguimiento-filter-input-wrapper';
+                    var inputEl = document.createElement('input');
+                    inputEl.type = 'text';
+                    inputEl.className = 'ubits-input ubits-input--md';
+                    inputEl.placeholder = 'Filtrar por ' + col + '...';
+                    inputEl.setAttribute('aria-label', 'Filtrar por ' + col);
+                    inputWrap.appendChild(inputEl);
+                    acContainer.appendChild(inputWrap);
+                    filterVisibleOptions('');
+                    inputEl.addEventListener('input', function() {
+                        filterVisibleOptions(this.value);
+                    });
+                    inputEl.addEventListener('focus', function() {
+                        filterVisibleOptions(this.value);
+                    });
+                    setTimeout(function() { inputEl.focus(); }, 100);
+                } else {
+                    filterVisibleOptions('');
+                }
+
+                var cancelBtn = document.getElementById(overlayId + '-cancel');
+                var applyBtn = document.getElementById(overlayId + '-apply');
+                if (cancelBtn) cancelBtn.addEventListener('click', function() { window.closeDropdownMenu(overlayId); });
+                if (applyBtn) applyBtn.addEventListener('click', function() {
+                    var selectedOptions = [];
+                    overlayEl.querySelectorAll('.ubits-dropdown-menu__option-left input[type="checkbox"]:checked').forEach(function(cb) {
+                        var v = cb.dataset.value;
+                        if (v && v.trim()) selectedOptions.push(v);
+                    });
+                    if (col === 'asignado') currentFilters.persona = selectedOptions;
+                    else if (col === 'username') currentFilters.username = selectedOptions;
+                    else if (col === 'plan') currentFilters.plan = selectedOptions;
+                    else if (col === 'area') currentFilters.area = selectedOptions;
+                    else if (col === 'lider') currentFilters.lider = selectedOptions;
+                    else if (col === 'nombre') currentFilters.nombre = selectedOptions;
+                    else if (col === 'creador') currentFilters.creador = selectedOptions;
+                    currentPage = 1;
+                    applyFiltersAndSearch();
+                    applySorting();
+                    renderTable();
+                    updateResultsCount();
+                    updateIndicadores();
+                    initPaginator();
+                    renderFiltrosAplicados();
+                    window.closeDropdownMenu(overlayId);
+                });
+                overlayEl.addEventListener('click', function(ev) {
+                    if (ev.target === overlayEl) window.closeDropdownMenu(overlayId);
+                });
+            }
+            window.openDropdownMenu(overlayId, btn);
+        });
+    }
+
+    // Inicializar menú de checkboxes Estado/Prioridad (Dropdown Menu oficial)
+    function initCheckboxMenu() {
+        if (typeof window.getDropdownMenuHtml !== 'function') return;
+        var optionsMap = { estado: ['Iniciada', 'Vencida', 'Finalizada'], prioridad: ['Alta', 'Media', 'Baja'] };
+        var overlayId = 'seguimiento-checkbox-overlay';
+
+        document.addEventListener('click', function(e) {
+            var btn = e.target.closest('.seguimiento-checkbox-btn');
+            if (!btn) return;
+            e.stopPropagation();
+            var col = btn.dataset.checkbox;
+            var opts = optionsMap[col] || [];
+            var currentSelected = col === 'estado' ? currentFilters.estado : currentFilters.prioridad;
+            var options = opts.map(function(opt) {
+                return { text: opt, value: opt, checkbox: true, selected: currentSelected.indexOf(opt) >= 0 };
+            });
+            var existing = document.getElementById(overlayId);
+            if (existing) existing.remove();
+            var config = { overlayId: overlayId, options: options };
+            var html = window.getDropdownMenuHtml(config);
+            document.body.insertAdjacentHTML('beforeend', html);
+            var overlayEl = document.getElementById(overlayId);
+            if (overlayEl) {
+                function applyCheckboxSelection() {
+                    var selected = [];
+                    overlayEl.querySelectorAll('.ubits-dropdown-menu__option-left input[type="checkbox"]:checked').forEach(function(cb) {
+                        selected.push(cb.dataset.value);
+                    });
+                    if (col === 'estado') {
+                        currentFilters.estado = selected;
+                        document.querySelectorAll('#filtros-estado input').forEach(function(modalCb) {
+                            modalCb.checked = selected.indexOf(modalCb.value) >= 0;
+                        });
+                    } else if (col === 'prioridad') {
+                        currentFilters.prioridad = selected;
+                        document.querySelectorAll('#filtros-prioridad input').forEach(function(modalCb) {
+                            modalCb.checked = selected.indexOf(modalCb.value) >= 0;
+                        });
+                    }
+                    currentPage = 1;
+                    applyFiltersAndSearch();
+                    applySorting();
+                    renderTable();
+                    updateResultsCount();
+                    updateIndicadores();
+                    initPaginator();
+                    renderFiltrosAplicados();
+                }
+                overlayEl.querySelectorAll('.ubits-dropdown-menu__option-left input[type="checkbox"]').forEach(function(cb) {
+                    cb.addEventListener('change', applyCheckboxSelection);
+                });
+                overlayEl.addEventListener('click', function(ev) {
+                    if (ev.target === overlayEl) window.closeDropdownMenu(overlayId);
+                });
+            }
+            window.openDropdownMenu(overlayId, btn);
+        });
     }
 
     // Inicializar checkboxes
@@ -3052,232 +2881,217 @@
             });
         }
 
-        // Cambiar prioridad
+        // Cambiar prioridad (Dropdown Menu oficial)
         const cambiarPrioridad = document.getElementById('seguimiento-cambiar-prioridad');
-        const priorityMenu = document.getElementById('priority-menu');
-        const priorityOverlay = document.getElementById('priority-menu-overlay');
-
-        if (cambiarPrioridad && priorityMenu) {
+        if (cambiarPrioridad && typeof window.getDropdownMenuHtml === 'function') {
             cambiarPrioridad.addEventListener('click', function(e) {
                 e.stopPropagation();
                 if (selectedIds.size === 0) return;
-                const rect = this.getBoundingClientRect();
-                priorityMenu.style.top = (rect.bottom + 4) + 'px';
-                priorityMenu.style.left = rect.left + 'px';
-                priorityMenu.style.display = 'block';
-                priorityOverlay.style.display = 'block';
-            });
-
-            priorityMenu.querySelectorAll('.priority-menu-option').forEach(opt => {
-                opt.addEventListener('click', function() {
-                    const val = this.dataset.value;
-                    selectedIds.forEach(id => {
-                        const row = SEGUIMIENTO_DATA.find(r => r.id === id);
-                        if (row) row.prioridad = val;
+                var overlayId = 'seguimiento-priority-overlay';
+                var existing = document.getElementById(overlayId);
+                if (existing) existing.remove();
+                var config = {
+                    overlayId: overlayId,
+                    options: [
+                        { text: 'Alta', value: 'Alta' },
+                        { text: 'Media', value: 'Media' },
+                        { text: 'Baja', value: 'Baja' }
+                    ]
+                };
+                var html = window.getDropdownMenuHtml(config);
+                document.body.insertAdjacentHTML('beforeend', html);
+                var overlayEl = document.getElementById(overlayId);
+                if (overlayEl) {
+                    overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function(opt) {
+                        opt.addEventListener('click', function() {
+                            var val = this.getAttribute('data-value');
+                            selectedIds.forEach(function(id) {
+                                var row = SEGUIMIENTO_DATA.find(function(r) { return r.id === id; });
+                                if (row) row.prioridad = val;
+                            });
+                            window.closeDropdownMenu(overlayId);
+                            renderTable();
+                            if (typeof showToast === 'function') showToast('success', 'Prioridad cambiada a ' + val + ' para ' + selectedIds.size + ' elemento(s)');
+                        });
                     });
-                    priorityMenu.style.display = 'none';
-                    priorityOverlay.style.display = 'none';
-                    renderTable();
-                    if (typeof showToast === 'function') showToast('success', `Prioridad cambiada a ${val} para ${selectedIds.size} elemento(s)`);
-                });
+                    overlayEl.addEventListener('click', function(ev) {
+                        if (ev.target === overlayEl) window.closeDropdownMenu(overlayId);
+                    });
+                }
+                window.openDropdownMenu(overlayId, cambiarPrioridad);
             });
-
-            if (priorityOverlay) {
-                priorityOverlay.addEventListener('click', function() {
-                    priorityMenu.style.display = 'none';
-                    priorityOverlay.style.display = 'none';
-                });
-            }
         }
 
-        // Cambiar estado (Tareas: Iniciada/Vencida/Finalizada; Planes: Iniciada/Finalizada + advertencia al reabrir)
+        // Cambiar estado (Dropdown Menu oficial; Planes: modal reabrir/finalizar)
         const cambiarEstado = document.getElementById('seguimiento-cambiar-estado');
-        const statusMenu = document.getElementById('status-menu');
-        const statusOverlay = document.getElementById('status-menu-overlay');
-        const statusOptionVencida = statusMenu ? statusMenu.querySelector('.status-menu-option[data-value="Vencida"]') : null;
+        var reabrirPlanOverlay = document.getElementById('reabrir-plan-overlay');
+        var reabrirPlanTitle = document.getElementById('reabrir-plan-title');
+        var reabrirPlanMessage = document.getElementById('reabrir-plan-message');
+        var reabrirPlanCancel = document.getElementById('reabrir-plan-cancel');
+        var reabrirPlanConfirm = document.getElementById('reabrir-plan-confirm');
+        var reabrirPlanClose = document.getElementById('reabrir-plan-close');
+        var pendingReabrirPlan = null;
 
-        if (cambiarEstado && statusMenu) {
+        function closeReabrirPlanModal() {
+            if (reabrirPlanOverlay) { reabrirPlanOverlay.style.display = 'none'; reabrirPlanOverlay.setAttribute('aria-hidden', 'true'); }
+            pendingReabrirPlan = null;
+        }
+
+        function applyReabrirPlan() {
+            if (!pendingReabrirPlan) return;
+            var val = pendingReabrirPlan.val;
+            var planNames = pendingReabrirPlan.planNames;
+            selectedIds.forEach(function(id) {
+                var row = SEGUIMIENTO_DATA.find(function(r) { return r.id === id; });
+                if (row) row.estado = val;
+            });
+            if (planNames && planNames.length > 0) {
+                SEGUIMIENTO_DATA.forEach(function(r) {
+                    if (r.tipo === 'tarea' && planNames.indexOf(r.plan) >= 0) r.estado = val;
+                });
+            }
+            closeReabrirPlanModal();
+            renderTable();
+            updateIndicadores();
+            if (typeof showToast === 'function') showToast('success', 'Estado cambiado a ' + val + ' para ' + selectedIds.size + ' plan(es) y sus tareas asociadas');
+        }
+
+        if (reabrirPlanOverlay) reabrirPlanOverlay.addEventListener('click', function(e) { if (e.target === reabrirPlanOverlay) closeReabrirPlanModal(); });
+        if (reabrirPlanClose) reabrirPlanClose.addEventListener('click', closeReabrirPlanModal);
+        if (reabrirPlanCancel) reabrirPlanCancel.addEventListener('click', closeReabrirPlanModal);
+        if (reabrirPlanConfirm) reabrirPlanConfirm.addEventListener('click', applyReabrirPlan);
+
+        if (cambiarEstado && typeof window.getDropdownMenuHtml === 'function') {
             cambiarEstado.addEventListener('click', function(e) {
                 e.stopPropagation();
                 if (selectedIds.size === 0) return;
-                if (statusOptionVencida) statusOptionVencida.style.display = activeTab === 'planes' ? 'none' : '';
-                const rect = this.getBoundingClientRect();
-                statusMenu.style.top = (rect.bottom + 4) + 'px';
-                statusMenu.style.left = rect.left + 'px';
-                statusMenu.style.display = 'block';
-                statusOverlay.style.display = 'block';
-            });
-
-            var reabrirPlanOverlay = document.getElementById('reabrir-plan-overlay');
-            var reabrirPlanTitle = document.getElementById('reabrir-plan-title');
-            var reabrirPlanMessage = document.getElementById('reabrir-plan-message');
-            var reabrirPlanCancel = document.getElementById('reabrir-plan-cancel');
-            var reabrirPlanConfirm = document.getElementById('reabrir-plan-confirm');
-            var reabrirPlanClose = document.getElementById('reabrir-plan-close');
-            var pendingReabrirPlan = null;
-
-            function closeReabrirPlanModal() {
-                if (reabrirPlanOverlay) { reabrirPlanOverlay.style.display = 'none'; reabrirPlanOverlay.setAttribute('aria-hidden', 'true'); }
-                pendingReabrirPlan = null;
-            }
-
-            function applyReabrirPlan() {
-                if (!pendingReabrirPlan) return;
-                var val = pendingReabrirPlan.val;
-                var planNames = pendingReabrirPlan.planNames;
-                selectedIds.forEach(function(id) {
-                    var row = SEGUIMIENTO_DATA.find(function(r) { return r.id === id; });
-                    if (row) row.estado = val;
-                });
-                if (planNames && planNames.length > 0) {
-                    SEGUIMIENTO_DATA.forEach(function(r) {
-                        if (r.tipo === 'tarea' && planNames.indexOf(r.plan) >= 0) r.estado = val;
+                var overlayId = 'seguimiento-status-overlay';
+                var existing = document.getElementById(overlayId);
+                if (existing) existing.remove();
+                var statusOptions = activeTab === 'planes'
+                    ? [{ text: 'Iniciada', value: 'Iniciada' }, { text: 'Finalizada', value: 'Finalizada' }]
+                    : [{ text: 'Iniciada', value: 'Iniciada' }, { text: 'Vencida', value: 'Vencida' }, { text: 'Finalizada', value: 'Finalizada' }];
+                var config = { overlayId: overlayId, options: statusOptions };
+                var html = window.getDropdownMenuHtml(config);
+                document.body.insertAdjacentHTML('beforeend', html);
+                var overlayEl = document.getElementById(overlayId);
+                if (overlayEl) {
+                    overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function(opt) {
+                        opt.addEventListener('click', function() {
+                            var val = this.getAttribute('data-value');
+                            window.closeDropdownMenu(overlayId);
+                            if (activeTab === 'planes' && (val === 'Iniciada' || val === 'Finalizada')) {
+                                var selectedPlans = SEGUIMIENTO_DATA.filter(function(r) { return r.tipo === 'plan' && selectedIds.has(r.id); });
+                                var planNames = selectedPlans.map(function(p) { return p.nombre; });
+                                pendingReabrirPlan = { val: val, planNames: planNames };
+                                if (reabrirPlanTitle) reabrirPlanTitle.textContent = val === 'Iniciada' ? 'Reabrir plan(es)' : 'Finalizar plan(es)';
+                                if (reabrirPlanMessage) {
+                                    reabrirPlanMessage.textContent = val === 'Iniciada'
+                                        ? 'Al reabrir este(s) plan(es), las tareas asociadas pasar\u00e1n a estado Iniciada. \u00bfContinuar?'
+                                        : 'Al finalizar este(s) plan(es), las tareas asociadas pasar\u00e1n a estado Finalizada. \u00bfContinuar?';
+                                }
+                                if (reabrirPlanOverlay) { reabrirPlanOverlay.style.display = 'flex'; reabrirPlanOverlay.setAttribute('aria-hidden', 'false'); }
+                                return;
+                            }
+                            selectedIds.forEach(function(id) {
+                                var row = SEGUIMIENTO_DATA.find(function(r) { return r.id === id; });
+                                if (row) row.estado = val;
+                            });
+                            renderTable();
+                            updateIndicadores();
+                            if (typeof showToast === 'function') showToast('success', 'Estado cambiado a ' + val + ' para ' + selectedIds.size + ' elemento(s)');
+                        });
+                    });
+                    overlayEl.addEventListener('click', function(ev) {
+                        if (ev.target === overlayEl) window.closeDropdownMenu(overlayId);
                     });
                 }
-                statusMenu.style.display = 'none';
-                statusOverlay.style.display = 'none';
-                closeReabrirPlanModal();
-                renderTable();
-                updateIndicadores();
-                if (typeof showToast === 'function') showToast('success', 'Estado cambiado a ' + val + ' para ' + selectedIds.size + ' plan(es) y sus tareas asociadas');
-            }
-
-            if (reabrirPlanOverlay) reabrirPlanOverlay.addEventListener('click', function(e) { if (e.target === reabrirPlanOverlay) { closeReabrirPlanModal(); statusMenu.style.display = 'none'; statusOverlay.style.display = 'none'; } });
-            if (reabrirPlanClose) reabrirPlanClose.addEventListener('click', function() { closeReabrirPlanModal(); statusMenu.style.display = 'none'; statusOverlay.style.display = 'none'; });
-            if (reabrirPlanCancel) reabrirPlanCancel.addEventListener('click', function() { closeReabrirPlanModal(); statusMenu.style.display = 'none'; statusOverlay.style.display = 'none'; });
-            if (reabrirPlanConfirm) reabrirPlanConfirm.addEventListener('click', applyReabrirPlan);
-
-            statusMenu.querySelectorAll('.status-menu-option').forEach(opt => {
-                opt.addEventListener('click', function() {
-                    const val = this.dataset.value;
-                    if (activeTab === 'planes' && (val === 'Iniciada' || val === 'Finalizada')) {
-                        var selectedPlans = SEGUIMIENTO_DATA.filter(function(r) { return r.tipo === 'plan' && selectedIds.has(r.id); });
-                        var planNames = selectedPlans.map(function(p) { return p.nombre; });
-                        statusMenu.style.display = 'none';
-                        statusOverlay.style.display = 'none';
-                        pendingReabrirPlan = { val: val, planNames: planNames };
-                        if (reabrirPlanTitle) reabrirPlanTitle.textContent = val === 'Iniciada' ? 'Reabrir plan(es)' : 'Finalizar plan(es)';
-                        if (reabrirPlanMessage) {
-                            if (val === 'Iniciada') {
-                                reabrirPlanMessage.textContent = 'Al reabrir este(s) plan(es), las tareas asociadas pasar\u00e1n a estado Iniciada. \u00bfContinuar?';
-                            } else {
-                                reabrirPlanMessage.textContent = 'Al finalizar este(s) plan(es), las tareas asociadas pasar\u00e1n a estado Finalizada. \u00bfContinuar?';
-                            }
-                        }
-                        if (reabrirPlanOverlay) { reabrirPlanOverlay.style.display = 'flex'; reabrirPlanOverlay.setAttribute('aria-hidden', 'false'); }
-                        return;
-                    }
-                    selectedIds.forEach(function(id) {
-                        var row = SEGUIMIENTO_DATA.find(function(r) { return r.id === id; });
-                        if (row) row.estado = val;
-                    });
-                    statusMenu.style.display = 'none';
-                    statusOverlay.style.display = 'none';
-                    renderTable();
-                    updateIndicadores();
-                    if (typeof showToast === 'function') showToast('success', 'Estado cambiado a ' + val + ' para ' + selectedIds.size + ' elemento(s)');
-                });
+                window.openDropdownMenu(overlayId, cambiarEstado);
             });
-
-            if (statusOverlay) {
-                statusOverlay.addEventListener('click', function() {
-                    statusMenu.style.display = 'none';
-                    statusOverlay.style.display = 'none';
-                });
-            }
         }
 
-        // Reasignar
-        const reasignar = document.getElementById('seguimiento-reasignar');
-        const reasignarMenu = document.getElementById('reasignar-menu');
-        const reasignarOverlay = document.getElementById('reasignar-menu-overlay');
-        const reasignarCancel = document.getElementById('reasignar-cancel');
-        const reasignarApply = document.getElementById('reasignar-apply');
-        let reasignarPersona = null;
-
-        if (reasignar && reasignarMenu) {
+        // Reasignar (Dropdown Menu oficial: autocomplete + footer)
+        var reasignar = document.getElementById('seguimiento-reasignar');
+        if (reasignar && typeof window.getDropdownMenuHtml === 'function') {
             reasignar.addEventListener('click', function(e) {
                 e.stopPropagation();
                 if (selectedIds.size === 0) return;
-                const rect = this.getBoundingClientRect();
-                reasignarMenu.style.top = (rect.bottom + 4) + 'px';
-                reasignarMenu.style.left = rect.left + 'px';
-                reasignarMenu.style.display = 'block';
-                reasignarOverlay.style.display = 'block';
-
-                // Crear autocomplete si no existe
-                const container = document.getElementById('reasignar-autocomplete');
-                if (container && !container.querySelector('.ubits-input-wrapper') && typeof createInput === 'function') {
-                    const personas = [...new Set(SEGUIMIENTO_DATA.map(r => r.asignado.nombre))];
-                    createInput({
-                        containerId: 'reasignar-autocomplete',
-                        type: 'autocomplete',
-                        placeholder: 'Buscar persona...',
-                        size: 'md',
-                        autocompleteOptions: personas.map((p, i) => ({ value: String(i), text: p })),
-                        onChange: function(val) {
-                            reasignarPersona = personas[parseInt(val)] || val || null;
-                        }
+                var overlayId = 'seguimiento-reasignar-overlay';
+                var autocompleteContainerId = overlayId + '-autocomplete';
+                var reasignarPersona = null;
+                var existing = document.getElementById(overlayId);
+                if (existing) existing.remove();
+                var config = {
+                    overlayId: overlayId,
+                    hasAutocomplete: true,
+                    autocompletePlaceholder: 'Buscar persona...',
+                    autocompleteContainerId: autocompleteContainerId,
+                    footerSecondaryLabel: 'Cancelar',
+                    footerPrimaryLabel: 'Aplicar',
+                    footerSecondaryId: overlayId + '-cancel',
+                    footerPrimaryId: overlayId + '-apply'
+                };
+                var html = window.getDropdownMenuHtml(config);
+                document.body.insertAdjacentHTML('beforeend', html);
+                var overlayEl = document.getElementById(overlayId);
+                if (overlayEl) {
+                    var personas = [];
+                    SEGUIMIENTO_DATA.forEach(function(r) {
+                        var n = r.asignado && r.asignado.nombre;
+                        if (n && personas.indexOf(n) < 0) personas.push(n);
                     });
-                }
-            });
-
-            if (reasignarCancel) {
-                reasignarCancel.addEventListener('click', function() {
-                    reasignarMenu.style.display = 'none';
-                    reasignarOverlay.style.display = 'none';
-                    reasignarPersona = null;
-                });
-            }
-
-            if (reasignarApply) {
-                reasignarApply.addEventListener('click', function() {
-                    if (reasignarPersona) {
-                        const personaExistente = SEGUIMIENTO_DATA.find(r => r.asignado && r.asignado.nombre === reasignarPersona) || SEGUIMIENTO_DATA.find(r => r.asignados && r.asignados.some(a => a.nombre === reasignarPersona));
-                        const avatarPersona = personaExistente && (personaExistente.asignado || (personaExistente.asignados && personaExistente.asignados[0])) ? (personaExistente.asignado || personaExistente.asignados[0]).avatar : null;
-                        const usernamePersona = personaExistente && (personaExistente.asignado || (personaExistente.asignados && personaExistente.asignados[0])) ? (personaExistente.asignado || personaExistente.asignados[0]).username || '' : '';
-                        const nuevoAsignado = { nombre: reasignarPersona, avatar: avatarPersona, username: usernamePersona };
-
-                        selectedIds.forEach(id => {
-                            const row = SEGUIMIENTO_DATA.find(r => r.id === id);
-                            if (row) {
-                                if (row.tipo === 'tarea' && row.plan) {
-                                    var plan = SEGUIMIENTO_DATA.find(function(r) { return r.tipo === 'plan' && r.nombre === row.plan; });
-                                    if (plan && plan.asignados && Array.isArray(plan.asignados)) {
-                                        if (!plan.asignados.some(function(a) { return a.nombre === reasignarPersona; })) {
+                    if (typeof createInput === 'function') {
+                        createInput({
+                            containerId: autocompleteContainerId,
+                            type: 'autocomplete',
+                            placeholder: 'Buscar persona...',
+                            size: 'md',
+                            autocompleteOptions: personas.map(function(p, i) { return { value: String(i), text: p }; }),
+                            onChange: function(val) {
+                                reasignarPersona = personas[parseInt(val, 10)] || val || null;
+                            }
+                        });
+                    }
+                    var cancelBtn = document.getElementById(overlayId + '-cancel');
+                    var applyBtn = document.getElementById(overlayId + '-apply');
+                    if (cancelBtn) cancelBtn.addEventListener('click', function() { window.closeDropdownMenu(overlayId); });
+                    if (applyBtn) applyBtn.addEventListener('click', function() {
+                        if (reasignarPersona) {
+                            var personaExistente = SEGUIMIENTO_DATA.find(function(r) { return r.asignado && r.asignado.nombre === reasignarPersona; }) || SEGUIMIENTO_DATA.find(function(r) { return r.asignados && r.asignados.some(function(a) { return a.nombre === reasignarPersona; }); });
+                            var avatarPersona = personaExistente && (personaExistente.asignado || (personaExistente.asignados && personaExistente.asignados[0])) ? (personaExistente.asignado || personaExistente.asignados[0]).avatar : null;
+                            var usernamePersona = personaExistente && (personaExistente.asignado || (personaExistente.asignados && personaExistente.asignados[0])) ? (personaExistente.asignado || personaExistente.asignados[0]).username || '' : '';
+                            var nuevoAsignado = { nombre: reasignarPersona, avatar: avatarPersona, username: usernamePersona };
+                            selectedIds.forEach(function(id) {
+                                var row = SEGUIMIENTO_DATA.find(function(r) { return r.id === id; });
+                                if (row) {
+                                    if (row.tipo === 'tarea' && row.plan) {
+                                        var plan = SEGUIMIENTO_DATA.find(function(r) { return r.tipo === 'plan' && r.nombre === row.plan; });
+                                        if (plan && plan.asignados && Array.isArray(plan.asignados) && !plan.asignados.some(function(a) { return a.nombre === reasignarPersona; })) {
                                             plan.asignados.push(nuevoAsignado);
                                         }
                                     }
+                                    row.asignado = { nombre: reasignarPersona, avatar: avatarPersona, username: usernamePersona };
                                 }
-                                row.asignado = { nombre: reasignarPersona, avatar: avatarPersona, username: usernamePersona };
-                            }
-                        });
-                        renderTable();
-                        updateIndicadores();
-                        if (typeof showToast === 'function') showToast('success', selectedIds.size + ' elemento(s) reasignado(s) a ' + reasignarPersona);
-                    }
-                    reasignarMenu.style.display = 'none';
-                    reasignarOverlay.style.display = 'none';
-                    reasignarPersona = null;
-                });
-            }
-
-            if (reasignarOverlay) {
-                reasignarOverlay.addEventListener('click', function() {
-                    reasignarMenu.style.display = 'none';
-                    reasignarOverlay.style.display = 'none';
-                });
-            }
+                            });
+                            renderTable();
+                            updateIndicadores();
+                            if (typeof showToast === 'function') showToast('success', selectedIds.size + ' elemento(s) reasignado(s) a ' + reasignarPersona);
+                        }
+                        window.closeDropdownMenu(overlayId);
+                    });
+                    overlayEl.addEventListener('click', function(ev) {
+                        if (ev.target === overlayEl) window.closeDropdownMenu(overlayId);
+                    });
+                }
+                window.openDropdownMenu(overlayId, reasignar);
+            });
         }
 
-        // Descargar: menú desplegable con Excel y CSV (todas las columnas, solo filas seleccionadas)
+        // Descargar: menú desplegable con Excel y CSV (Dropdown Menu oficial)
         const descargar = document.getElementById('seguimiento-descargar');
-        const descargarMenu = document.getElementById('descargar-menu');
-        const descargarOverlay = document.getElementById('descargar-menu-overlay');
 
         function closeDescargarMenu() {
-            if (descargarMenu) descargarMenu.style.display = 'none';
-            if (descargarOverlay) descargarOverlay.style.display = 'none';
+            if (typeof window.closeDropdownMenu === 'function') window.closeDropdownMenu('seguimiento-descargar-overlay');
             if (descargar) descargar.setAttribute('aria-expanded', 'false');
         }
 
@@ -3382,29 +3196,39 @@
             }
         }
 
-        if (descargar) {
+        if (descargar && typeof window.getDropdownMenuHtml === 'function' && typeof window.openDropdownMenu === 'function') {
             descargar.addEventListener('click', function(e) {
                 if (selectedIds.size === 0) return;
                 e.stopPropagation();
-                if (descargarMenu && descargarOverlay) {
-                    var rect = descargar.getBoundingClientRect();
-                    descargarMenu.style.display = 'block';
-                    positionMenuSmartly(descargarMenu, rect, 220, 100);
-                    descargarOverlay.style.display = 'block';
-                    descargar.setAttribute('aria-expanded', 'true');
+                var overlayId = 'seguimiento-descargar-overlay';
+                var existing = document.getElementById(overlayId);
+                if (existing) existing.remove();
+                var config = {
+                    overlayId: overlayId,
+                    options: [
+                        { text: 'Descargar Excel', value: 'excel' },
+                        { text: 'Descargar CSV', value: 'csv' }
+                    ]
+                };
+                var html = window.getDropdownMenuHtml(config);
+                document.body.insertAdjacentHTML('beforeend', html);
+                var overlayEl = document.getElementById(overlayId);
+                if (overlayEl) {
+                    overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function(opt) {
+                        opt.addEventListener('click', function() {
+                            var format = this.getAttribute('data-value');
+                            if (format === 'excel' || format === 'csv') doDownloadExport(format);
+                            closeDescargarMenu();
+                        });
+                    });
+                    overlayEl.addEventListener('click', function(ev) {
+                        if (ev.target === overlayEl) closeDescargarMenu();
+                    });
                 }
+                window.openDropdownMenu(overlayId, descargar);
+                descargar.setAttribute('aria-expanded', 'true');
             });
         }
-        if (descargarMenu) {
-            descargarMenu.querySelectorAll('.sort-menu-option[data-format]').forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    var format = this.getAttribute('data-format');
-                    if (format === 'excel' || format === 'csv') doDownloadExport(format);
-                    closeDescargarMenu();
-                });
-            });
-        }
-        if (descargarOverlay) descargarOverlay.addEventListener('click', closeDescargarMenu);
 
         // Cambiar fecha de finalización (Planes) - date picker + input sincronizados (mismo estilo que fecha personalizada)
         var planFechaBtn = document.getElementById('seguimiento-cambiar-fecha-plan');
