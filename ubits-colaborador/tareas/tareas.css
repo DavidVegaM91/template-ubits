@@ -113,11 +113,12 @@
    ======================================== */
 
 /* OBLIGATORIO: limitar altura del main para que el scroll sea solo del listado, no del body.
-   Si main crece con el contenido, el body hace scroll y la barra se mueve. */
+   Si main crece con el contenido, el body hace scroll y la barra se mueve.
+   overflow: visible para que #top-nav-container pueda hacer breakout y ocupar todo el ancho en móvil/tablet. */
 .main-content:has(.widget-vista-tareas) {
     min-height: 0 !important;
     max-height: calc(100vh - 16px) !important;
-    overflow: hidden !important;
+    overflow: visible !important;
     display: flex !important;
     flex-direction: column !important;
 }
@@ -1738,6 +1739,5 @@
         min-width: 0;
         border-left: none;
         border-top: 1px solid var(--ubits-border-1);
->>>>>>> Stashed changes
     }
 }
