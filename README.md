@@ -61,11 +61,20 @@ Una **plantilla lista para usar** que permite a **Product Managers**, **Diseñad
 - **Card Content Compact** - Variante horizontal compacta de Card Content (misma funcionalidad, diseño optimizado para espacios reducidos, siempre horizontal) - **RENDERIZADO: loadCardContentCompact()**
 - **Carousel Contents** - Carruseles de contenido (navegación horizontal, flechas, responsive) - **RENDERIZADO: loadCarouselContents()**
 - **Status Tag** - Etiquetas de estado (tipos: success, info, warning, error, neutral; tamaños: xs, sm, md, lg; iconos opcionales izquierda/derecha) - **RENDERIZADO: HTML directo**
+- **Badge Tag** - Badge tipo pill con punto de color o icono (outlined/filled; success, info, warning, error; sm, md, lg; normalmente punto, opcionalmente icono FontAwesome) - **RENDERIZADO: HTML directo**
 - **Tab** - Tabs de navegación (estados: active, inactive; tamaños: xs, sm, md, lg; variantes: con texto, icon-only; iconos opcionales) - **RENDERIZADO: HTML directo**
 - **Empty State** - Estados vacíos (icono, título, descripción, botones opcionales; tamaños de icono: sm, md, lg; casos de uso: búsqueda sin resultados, contenido vacío, estados iniciales) - **RENDERIZADO: loadEmptyState()**
 - **Paginator** - Paginación de resultados (navegación por páginas, items por página, callbacks de cambio) - **RENDERIZADO: loadPaginator()**
 - **Copilot Chat** - Chat de asistente IA (interfaz de conversación con mensajes, input, historial) - **RENDERIZADO: loadCopilotChat()**
 - **Study Chat** - Chat de estudio con IA (interfaz especializada para aprendizaje) - **RENDERIZADO: loadStudyChat()**
+- **Avatar** - Avatar de usuario (tamaños, estados) - **RENDERIZADO: HTML directo**
+- **Calendar** - Selector de fechas (usado también por Input type calendar) - **RENDERIZADO: componente interno / HTML**
+- **Drawer** - Panel lateral deslizante - **RENDERIZADO: JS del componente**
+- **Dropdown Menu** - Menú desplegable (usado por Input select, Paginator, etc.) - **RENDERIZADO: getDropdownMenuHtml() + openDropdownMenu() / closeDropdownMenu()**
+- **Loader** - Indicador de carga (spinner) - **RENDERIZADO: HTML directo**
+- **Modal** - Diálogo modal - **RENDERIZADO: JS del componente**
+- **Table** - Tablas de datos - **RENDERIZADO: HTML directo**
+- **Tooltip** - Tooltips - **RENDERIZADO: HTML/JS del componente**
 
 ### **🔧 REQUISITOS DE RENDERIZADO:**
 Todos los componentes UBITS requieren imports obligatorios:
@@ -83,6 +92,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 <link rel="stylesheet" href="../../components/card-content-compact.css">
 <link rel="stylesheet" href="../../components/carousel-contents.css">
 <link rel="stylesheet" href="../../components/status-tag.css">
+<link rel="stylesheet" href="../../components/badge-tag.css">
 <link rel="stylesheet" href="../../components/tab.css">
 <link rel="stylesheet" href="../../components/empty-state.css">
 <link rel="stylesheet" href="../../components/paginator.css">
@@ -93,6 +103,14 @@ Todos los componentes UBITS requieren imports obligatorios:
 <link rel="stylesheet" href="../../components/sidebar.css">
 <link rel="stylesheet" href="../../components/sub-nav.css">
 <link rel="stylesheet" href="../../components/tab-bar.css">
+<link rel="stylesheet" href="../../components/avatar.css">
+<link rel="stylesheet" href="../../components/calendar.css">
+<link rel="stylesheet" href="../../components/drawer.css">
+<link rel="stylesheet" href="../../components/dropdown-menu.css">
+<link rel="stylesheet" href="../../components/loader.css">
+<link rel="stylesheet" href="../../components/modal.css">
+<link rel="stylesheet" href="../../components/table.css">
+<link rel="stylesheet" href="../../components/tooltip.css">
 
 <!-- JavaScript OBLIGATORIO para componentes dinámicos -->
 <script src="../../components/header-product.js"></script>
@@ -111,6 +129,11 @@ Todos los componentes UBITS requieren imports obligatorios:
 <script src="../../components/sidebar.js"></script>
 <script src="../../components/sub-nav.js"></script>
 <script src="../../components/tab-bar.js"></script>
+<script src="../../components/calendar.js"></script>
+<script src="../../components/dropdown-menu.js"></script>
+<script src="../../components/drawer.js"></script>
+<script src="../../components/modal.js"></script>
+<script src="../../components/tooltip.js"></script>
 
 <!-- Base UBITS SIEMPRE REQUERIDA -->
 <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
@@ -234,9 +257,18 @@ Todos los componentes UBITS requieren imports obligatorios:
 - **`documentacion/componentes/card-content.html`** - Documentación del componente Card Content
 - **`documentacion/componentes/card-content-compact.html`** - Documentación del componente Card Content Compact
 - **`documentacion/componentes/status-tag.html`** - Documentación del componente Status Tag
+- **`documentacion/componentes/badge-tag.html`** - Documentación del componente Badge Tag
 - **`documentacion/componentes/tab.html`** - Documentación del componente Tab
 - **`documentacion/componentes/empty-state.html`** - Documentación del componente Empty State
 - **`documentacion/componentes/paginator.html`** - Documentación del componente Paginator
+- **`documentacion/componentes/avatar.html`** - Documentación del componente Avatar
+- **`documentacion/componentes/calendar.html`** - Documentación del componente Calendar
+- **`documentacion/componentes/drawer.html`** - Documentación del componente Drawer
+- **`documentacion/componentes/dropdown-menu.html`** - Documentación del componente Dropdown Menu
+- **`documentacion/componentes/loader.html`** - Documentación del componente Loader
+- **`documentacion/componentes/modal.html`** - Documentación del componente Modal
+- **`documentacion/componentes/table.html`** - Documentación del componente Table
+- **`documentacion/componentes/tooltip.html`** - Documentación del componente Tooltip
 
 #### **🎨 Guías de Diseño (documentacion/guias/):**
 - **`documentacion/guias/colores.html`** - Guía de colores UBITS
@@ -277,12 +309,21 @@ Todos los componentes UBITS requieren imports obligatorios:
 │   ├── card-content.css + card-content.js
 │   ├── card-content-compact.css + card-content-compact.js
 │   ├── carousel-contents.css + carousel-contents.js
-│   ├── status-tag.css + status-tag.js
+│   ├── status-tag.css
+│   ├── badge-tag.css
 │   ├── tab.css + tab.js
 │   ├── empty-state.css + empty-state.js
 │   ├── paginator.css + paginator.js
 │   ├── copilot-chat.css + copilot-chat.js
-│   └── study-chat.css + study-chat.js
+│   ├── study-chat.css + study-chat.js
+│   ├── avatar.css + avatar.js
+│   ├── calendar.css + calendar.js
+│   ├── drawer.css + drawer.js
+│   ├── dropdown-menu.css + dropdown-menu.js
+│   ├── loader.css + loader.js
+│   ├── modal.css + modal.js
+│   ├── table.css
+│   ├── tooltip.css + tooltip.js
 ├── 📁 ubits-admin/           # Módulo de administración
 │   ├── inicio/
 │   ├── empresa/
@@ -628,12 +669,21 @@ loadCardContentCompact('mi-contenedor-compact', [
 - **`documentacion/componentes/card-content.html`** - Documentación del componente Card Content
 - **`documentacion/componentes/card-content-compact.html`** - Documentación del componente Card Content Compact
 - **`documentacion/componentes/status-tag.html`** - Documentación del componente Status Tag
+- **`documentacion/componentes/badge-tag.html`** - Documentación del componente Badge Tag
 - **`documentacion/componentes/tab.html`** - Documentación del componente Tab
 - **`documentacion/componentes/empty-state.html`** - Documentación del componente Empty State
 - **`documentacion/componentes/paginator.html`** - Documentación del componente Paginator
 - **`documentacion/componentes/sidebar.html`** - Documentación del componente Sidebar
 - **`documentacion/componentes/subnav.html`** - Documentación del componente SubNav
 - **`documentacion/componentes/tab-bar.html`** - Documentación del componente TabBar
+- **`documentacion/componentes/avatar.html`** - Documentación del componente Avatar
+- **`documentacion/componentes/calendar.html`** - Documentación del componente Calendar
+- **`documentacion/componentes/drawer.html`** - Documentación del componente Drawer
+- **`documentacion/componentes/dropdown-menu.html`** - Documentación del componente Dropdown Menu
+- **`documentacion/componentes/loader.html`** - Documentación del componente Loader
+- **`documentacion/componentes/modal.html`** - Documentación del componente Modal
+- **`documentacion/componentes/table.html`** - Documentación del componente Table
+- **`documentacion/componentes/tooltip.html`** - Documentación del componente Tooltip
 - **`documentacion/guias/colores.html`** - Guía de colores UBITS
 - **`documentacion/guias/tipografia.html`** - Guía de tipografía UBITS
 - **`documentacion/guias/iconos.html`** - Galería de iconos FontAwesome

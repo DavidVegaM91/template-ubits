@@ -45,6 +45,26 @@ body[data-theme="dark"] .modo-estudio-ia-page::before {
         radial-gradient(ellipse 95% 75% at 90% -5%, rgba(189, 231, 195, 0.25) 0%, transparent 50%);
 }
 
+/* Dropdown de prioridad (y calendario): SIEMPRE por encima del canvas y de la lista de tareas.
+   z-index máximo para que gane sobre cualquier stacking context de la página. */
+body.modo-estudio-ia-page .ubits-input-select-overlay,
+body.modo-estudio-ia-page #ubits-input-select-root {
+    z-index: 2147483647 !important;
+}
+body.modo-estudio-ia-page .ubits-input-select-overlay {
+    position: fixed !important;
+    inset: 0 !important;
+}
+body.modo-estudio-ia-page .ubits-calendar-dropdown {
+    z-index: 2147483647 !important;
+}
+
+/* Canvas body: stacking context explícito por debajo para que no tape los overlays */
+body.modo-estudio-ia-page .modo-tutor-ia-canvas-panel.is-open .study-chat-canvas-body {
+    z-index: 0;
+    position: relative;
+}
+
 /* Reducir espacio entre subnav y contenido (en otras páginas main-content usa gap-xl) */
 .modo-estudio-ia-page .main-content {
     gap: var(--gap-sm);

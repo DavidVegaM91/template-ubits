@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Badge Tag | UBITS Playground</title>
+    
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/tab-bar.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/badge-tag.css">
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div style="display: flex;">
+                <div id="docs-dropdown-container"></div>
+                <div id="docs-sidebar-container"></div>
+
+                <div class="components-content">
+                    <div class="content-area" style="display: block; width: 100%;">
+                        <div style="text-align: center; margin-bottom: 60px;">
+                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                                Badge Tag
+                            </h1>
+                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                                Badge tipo pill con <strong>punto de color</strong> o <strong>icono</strong> a la izquierda. Distinto del Status Tag: usa normalmente un punto; en ocasiones puede llevar icono FontAwesome. Estilos: outlined (fondo blanco, borde) y filled (fondo de color, texto blanco).
+                            </p>
+                        </div>
+
+                        <!-- Preview -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Preview
+                            </h2>
+
+                            <p class="ubits-body-sm-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-medium);">Outlined (punto)</p>
+                            <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 24px;">
+                                <span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--success ubits-badge-tag--sm">
+                                    <span class="ubits-badge-tag__indicator"></span>
+                                    <span class="ubits-badge-tag__text">Badge text</span>
+                                </span>
+                                <span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--info ubits-badge-tag--sm">
+                                    <span class="ubits-badge-tag__indicator"></span>
+                                    <span class="ubits-badge-tag__text">Badge text</span>
+                                </span>
+                                <span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--warning ubits-badge-tag--sm">
+                                    <span class="ubits-badge-tag__indicator"></span>
+                                    <span class="ubits-badge-tag__text">Badge text</span>
+                                </span>
+                                <span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--error ubits-badge-tag--sm">
+                                    <span class="ubits-badge-tag__indicator"></span>
+                                    <span class="ubits-badge-tag__text">Badge text</span>
+                                </span>
+                            </div>
+
+                            <p class="ubits-body-sm-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-medium);">Filled (punto)</p>
+                            <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 24px;">
+                                <span class="ubits-badge-tag ubits-badge-tag--filled ubits-badge-tag--success ubits-badge-tag--sm">
+                                    <span class="ubits-badge-tag__indicator"></span>
+                                    <span class="ubits-badge-tag__text">Badge text</span>
+                                </span>
+                                <span class="ubits-badge-tag ubits-badge-tag--filled ubits-badge-tag--info ubits-badge-tag--sm">
+                                    <span class="ubits-badge-tag__indicator"></span>
+                                    <span class="ubits-badge-tag__text">Badge text</span>
+                                </span>
+                                <span class="ubits-badge-tag ubits-badge-tag--filled ubits-badge-tag--warning ubits-badge-tag--sm">
+                                    <span class="ubits-badge-tag__indicator"></span>
+                                    <span class="ubits-badge-tag__text">Badge text</span>
+                                </span>
+                                <span class="ubits-badge-tag ubits-badge-tag--filled ubits-badge-tag--error ubits-badge-tag--sm">
+                                    <span class="ubits-badge-tag__indicator"></span>
+                                    <span class="ubits-badge-tag__text">Badge text</span>
+                                </span>
+                            </div>
+
+                            <p class="ubits-body-sm-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-medium);">Outlined con icono (en lugar de punto)</p>
+                            <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 24px;">
+                                <span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--success ubits-badge-tag--sm ubits-badge-tag--with-icon">
+                                    <i class="far fa-check-circle"></i>
+                                    <span class="ubits-badge-tag__text">Completado</span>
+                                </span>
+                                <span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--info ubits-badge-tag--sm ubits-badge-tag--with-icon">
+                                    <i class="far fa-clock"></i>
+                                    <span class="ubits-badge-tag__text">En proceso</span>
+                                </span>
+                                <span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--warning ubits-badge-tag--sm ubits-badge-tag--with-icon">
+                                    <i class="far fa-exclamation-triangle"></i>
+                                    <span class="ubits-badge-tag__text">Pendiente</span>
+                                </span>
+                                <span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--error ubits-badge-tag--sm ubits-badge-tag--with-icon">
+                                    <i class="far fa-times-circle"></i>
+                                    <span class="ubits-badge-tag__text">Error</span>
+                                </span>
+                            </div>
+
+                            <p class="ubits-body-sm-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-medium);">Filled con icono</p>
+                            <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 24px;">
+                                <span class="ubits-badge-tag ubits-badge-tag--filled ubits-badge-tag--success ubits-badge-tag--sm ubits-badge-tag--with-icon">
+                                    <i class="far fa-check"></i>
+                                    <span class="ubits-badge-tag__text">Activo</span>
+                                </span>
+                                <span class="ubits-badge-tag ubits-badge-tag--filled ubits-badge-tag--info ubits-badge-tag--sm ubits-badge-tag--with-icon">
+                                    <i class="far fa-info-circle"></i>
+                                    <span class="ubits-badge-tag__text">Info</span>
+                                </span>
+                            </div>
+
+                            <p class="ubits-body-sm-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-medium);">Tamaños (outlined, punto)</p>
+                            <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+                                <span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--success ubits-badge-tag--sm">
+                                    <span class="ubits-badge-tag__indicator"></span>
+                                    <span class="ubits-badge-tag__text">Small</span>
+                                </span>
+                                <span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--success ubits-badge-tag--md">
+                                    <span class="ubits-badge-tag__indicator"></span>
+                                    <span class="ubits-badge-tag__text">Medium</span>
+                                </span>
+                                <span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--success ubits-badge-tag--lg">
+                                    <span class="ubits-badge-tag__indicator"></span>
+                                    <span class="ubits-badge-tag__text">Large</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Características -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Características
+                            </h2>
+                            <ul class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.8; padding-left: 20px;">
+                                <li><strong>Indicador:</strong> por defecto un <strong>punto</strong> de color (<code>span.ubits-badge-tag__indicator</code>); opcionalmente un <strong>icono</strong> FontAwesome: añadir clase <code>ubits-badge-tag--with-icon</code> al badge y usar <code>&lt;i class="far fa-check-circle"&gt;</code> (solo clases FontAwesome en el <code>&lt;i&gt;</code>, sin clases propias).</li>
+                                <li><strong>Estilo:</strong> <code>--outlined</code> (fondo blanco, borde, texto oscuro) o <code>--filled</code> (fondo de color, texto blanco).</li>
+                                <li><strong>Colores:</strong> success, info, warning, error.</li>
+                                <li><strong>Tamaños:</strong> sm (28px), md (32px), lg (36px).</li>
+                                <li><strong>Renderizado:</strong> HTML directo. No requiere JavaScript.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Estructura -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Estructura HTML
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 16px; color: var(--ubits-fg-1-medium);">
+                                Con <strong>punto</strong> (por defecto):
+                            </p>
+                            <pre style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; overflow-x: auto; font-size: var(--font-size-sm); color: var(--ubits-fg-1-medium); margin-bottom: 24px;"><code>&lt;span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--success ubits-badge-tag--sm"&gt;
+  &lt;span class="ubits-badge-tag__indicator"&gt;&lt;/span&gt;
+  &lt;span class="ubits-badge-tag__text"&gt;Badge text&lt;/span&gt;
+&lt;/span&gt;</code></pre>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 16px; color: var(--ubits-fg-1-medium);">
+                                Con <strong>icono</strong> (añadir <code>ubits-badge-tag--with-icon</code> y usar <code>&lt;i&gt;</code> solo con clases FontAwesome, sin clase propia):
+                            </p>
+                            <pre style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; overflow-x: auto; font-size: var(--font-size-sm); color: var(--ubits-fg-1-medium);"><code>&lt;span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--success ubits-badge-tag--sm ubits-badge-tag--with-icon"&gt;
+  &lt;i class="far fa-check-circle"&gt;&lt;/i&gt;
+  &lt;span class="ubits-badge-tag__text"&gt;Completado&lt;/span&gt;
+&lt;/span&gt;</code></pre>
+                        </div>
+
+                        <!-- Clases -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-tags" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Clases
+                            </h2>
+                            <pre style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; overflow-x: auto; font-size: var(--font-size-sm); color: var(--ubits-fg-1-medium);"><code>/* Estilo */
+.ubits-badge-tag--outlined   /* Fondo blanco, borde, texto oscuro */
+.ubits-badge-tag--filled    /* Fondo de color, texto blanco */
+
+/* Color */
+.ubits-badge-tag--success   /* Verde */
+.ubits-badge-tag--info      /* Azul */
+.ubits-badge-tag--warning   /* Amarillo/Naranja */
+.ubits-badge-tag--error     /* Rojo */
+
+/* Tamaño */
+.ubits-badge-tag--sm        /* 28px min-height */
+.ubits-badge-tag--md        /* 32px */
+.ubits-badge-tag--lg        /* 36px */
+
+/* Indicador: icono en lugar de punto */
+.ubits-badge-tag--with-icon</code></pre>
+                        </div>
+
+                        <!-- Requisitos -->
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                            <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Requisitos</h3>
+                            <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.5;">
+                                <strong>CSS:</strong> <code>components/badge-tag.css</code>, <code>general-styles/ubits-colors.css</code>. Si usas icono: <code>general-styles/fontawesome-icons.css</code>.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="floating-menu-container"></div>
+    <div id="profile-menu-container"></div>
+
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/tab-bar.js"></script>
+    <script src="../../components/floating-menu.js"></script>
+    <script src="../../components/profile-menu.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof loadSubNav === 'function') loadSubNav('top-nav-container', 'documentacion');
+            if (typeof loadSidebar === 'function') loadSidebar('ninguno');
+            if (typeof loadTabBar === 'function') loadTabBar('tab-bar-container');
+            if (typeof loadFloatingMenu === 'function') loadFloatingMenu('floating-menu-container');
+            if (typeof loadProfileMenu === 'function') loadProfileMenu('profile-menu-container');
+            if (typeof loadDocsSidebar === 'function') loadDocsSidebar('badge-tag');
+        });
+    </script>
+</body>
+</html>

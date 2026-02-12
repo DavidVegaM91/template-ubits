@@ -13,6 +13,7 @@ const DOCS_SIDEBAR_SECTIONS = [
     // UI en orden alfabético
     { id: 'alert', title: 'Alert', group: 'ui' },
     { id: 'avatar', title: 'Avatar', group: 'ui' },
+    { id: 'badge-tag', title: 'Badge Tag', group: 'ui' },
     { id: 'button', title: 'Button', group: 'ui' },
     { id: 'calendar', title: 'Calendar', group: 'ui' },
     { id: 'card-content', title: 'Card content', group: 'ui' },
@@ -211,6 +212,7 @@ function initDocsSidebar(activeSection) {
             'loader': 'loader.html',
             'alert': 'alert.html',
             'avatar': 'avatar.html',
+            'badge-tag': 'badge-tag.html',
             'card-content': 'card-content.html',
             'card-content-compact': 'card-content-compact.html',
             'input': 'input.html',

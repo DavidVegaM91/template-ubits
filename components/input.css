@@ -426,3 +426,14 @@ textarea.ubits-input:disabled {
         gap: var(--gap-xs);
     }
 }
+
+/* Contenedor de overlays de select: siempre encima de todo (evita que se tapen en modo-estudio-ia, etc.) */
+#ubits-input-select-root {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 2147483647 !important;
+    pointer-events: none !important;
+}
+#ubits-input-select-root .ubits-input-select-overlay {
+    pointer-events: auto !important;
+}

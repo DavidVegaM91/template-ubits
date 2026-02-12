@@ -1,0 +1,191 @@
+/* ========================================
+   UBITS BADGE TAG COMPONENT
+   Badge tipo pill con punto de color o icono (distinto de Status Tag)
+   ======================================== */
+
+/* ========================================
+   BASE
+   ======================================== */
+
+.ubits-badge-tag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap-sm);
+    padding: 4px 8px;
+    min-height: 28px;
+    border-radius: 1000px;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1;
+    white-space: nowrap;
+    box-sizing: border-box;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.ubits-badge-tag__indicator {
+    flex-shrink: 0;
+    border-radius: 50%;
+    width: 8px;
+    height: 8px;
+}
+
+/* Cuando usa icono: solo <i> con clases FontAwesome (far fa-...). Estilo por selector, sin clase extra en el <i> */
+.ubits-badge-tag--with-icon i {
+    flex-shrink: 0;
+    width: auto;
+    height: auto;
+    border-radius: 0;
+    font-size: inherit;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ubits-badge-tag__text {
+    color: inherit;
+}
+
+/* ========================================
+   ESTILO: OUTLINED (fondo blanco, borde, texto oscuro, punto/icono de color)
+   ======================================== */
+
+.ubits-badge-tag--outlined {
+    background: var(--ubits-bg-1);
+    border-color: var(--ubits-border-1);
+    color: var(--ubits-fg-gray-subtle);
+}
+
+.ubits-badge-tag--outlined.ubits-badge-tag--success .ubits-badge-tag__indicator {
+    background: var(--ubits-feedback-accent-success);
+}
+
+.ubits-badge-tag--outlined.ubits-badge-tag--info .ubits-badge-tag__indicator {
+    background: var(--ubits-feedback-accent-info);
+}
+
+.ubits-badge-tag--outlined.ubits-badge-tag--warning .ubits-badge-tag__indicator {
+    background: var(--ubits-feedback-accent-warning);
+}
+
+.ubits-badge-tag--outlined.ubits-badge-tag--error .ubits-badge-tag__indicator {
+    background: var(--ubits-feedback-accent-error);
+}
+
+/* Outlined con icono: color del icono por variante */
+.ubits-badge-tag--outlined.ubits-badge-tag--with-icon.ubits-badge-tag--success i {
+    color: var(--ubits-feedback-accent-success);
+}
+
+.ubits-badge-tag--outlined.ubits-badge-tag--with-icon.ubits-badge-tag--info i {
+    color: var(--ubits-feedback-accent-info);
+}
+
+.ubits-badge-tag--outlined.ubits-badge-tag--with-icon.ubits-badge-tag--warning i {
+    color: var(--ubits-feedback-accent-warning);
+}
+
+.ubits-badge-tag--outlined.ubits-badge-tag--with-icon.ubits-badge-tag--error i {
+    color: var(--ubits-feedback-accent-error);
+}
+
+/* ========================================
+   ESTILO: FILLED (fondo de color, texto blanco, punto/icono claro)
+   ======================================== */
+
+.ubits-badge-tag--filled {
+    border-color: transparent;
+    color: var(--ubits-fg-bold);
+}
+
+.ubits-badge-tag--filled.ubits-badge-tag--success {
+    background: var(--ubits-feedback-bg-success-subtle-inverted);
+}
+
+.ubits-badge-tag--filled.ubits-badge-tag--success .ubits-badge-tag__indicator {
+    background: var(--ubits-feedback-accent-success-inverted);
+}
+
+.ubits-badge-tag--filled.ubits-badge-tag--info {
+    background: var(--ubits-feedback-bg-info-subtle-inverted);
+}
+
+.ubits-badge-tag--filled.ubits-badge-tag--info .ubits-badge-tag__indicator {
+    background: var(--ubits-feedback-accent-info-inverted);
+}
+
+.ubits-badge-tag--filled.ubits-badge-tag--warning {
+    background: var(--ubits-feedback-bg-warning-subtle-inverted);
+}
+
+.ubits-badge-tag--filled.ubits-badge-tag--warning .ubits-badge-tag__indicator {
+    background: var(--ubits-feedback-accent-warning-inverted);
+}
+
+.ubits-badge-tag--filled.ubits-badge-tag--error {
+    background: var(--ubits-feedback-bg-error-subtle-inverted);
+}
+
+.ubits-badge-tag--filled.ubits-badge-tag--error .ubits-badge-tag__indicator {
+    background: var(--ubits-feedback-accent-error-inverted);
+}
+
+/* Filled con icono: icono blanco */
+.ubits-badge-tag--filled.ubits-badge-tag--with-icon i {
+    color: var(--ubits-fg-bold);
+}
+
+/* ========================================
+   TAMAÑOS
+   ======================================== */
+
+.ubits-badge-tag--sm {
+    min-height: 28px;
+    padding: 4px 8px;
+    font-size: 13px;
+    gap: var(--gap-sm);
+}
+
+.ubits-badge-tag--sm .ubits-badge-tag__indicator {
+    width: 8px;
+    height: 8px;
+}
+
+.ubits-badge-tag--sm.ubits-badge-tag--with-icon i {
+    font-size: 12px;
+}
+
+.ubits-badge-tag--md {
+    min-height: 32px;
+    padding: 6px 10px;
+    font-size: 14px;
+    gap: var(--gap-sm);
+}
+
+.ubits-badge-tag--md .ubits-badge-tag__indicator {
+    width: 8px;
+    height: 8px;
+}
+
+.ubits-badge-tag--md.ubits-badge-tag--with-icon i {
+    font-size: 14px;
+}
+
+.ubits-badge-tag--lg {
+    min-height: 36px;
+    padding: 8px 12px;
+    font-size: 14px;
+    gap: var(--gap-md);
+}
+
+.ubits-badge-tag--lg .ubits-badge-tag__indicator {
+    width: 10px;
+    height: 10px;
+}
+
+.ubits-badge-tag--lg.ubits-badge-tag--with-icon i {
+    font-size: 16px;
+}

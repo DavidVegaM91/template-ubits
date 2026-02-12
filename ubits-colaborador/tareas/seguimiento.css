@@ -159,6 +159,15 @@
     cursor: pointer;
 }
 
+/* Badge de prioridad: ancho fijo en la columna Prioridad */
+#seguimiento-table td[data-col="prioridad"] .ubits-badge-tag {
+    width: 72px;
+    min-width: 72px;
+    max-width: 72px;
+    box-sizing: border-box;
+    justify-content: center;
+}
+
 /* Búsqueda inline */
 .seguimiento-search-inline {
     display: flex;

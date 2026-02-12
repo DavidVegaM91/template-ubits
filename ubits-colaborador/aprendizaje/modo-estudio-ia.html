@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
     <title>UBITS Playground - Modo estudio IA</title>
-    
+
     <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
     <link rel="stylesheet" href="../../general-styles/styles.css">
     <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
@@ -27,12 +28,14 @@
     <link rel="stylesheet" href="../../components/tooltip.css">
     <link rel="stylesheet" href="../../components/modal.css">
     <link rel="stylesheet" href="../../components/empty-state.css">
+    <link rel="stylesheet" href="../../components/dropdown-menu.css">
     <link rel="stylesheet" href="./modo-estudio-ia.css">
 </head>
+
 <body class="modo-estudio-ia-page modo-tutor-ia-page" data-theme="light">
     <div class="dashboard-container">
         <div class="tooltip" id="tooltip"></div>
-        
+
         <!-- Sidebar Container -->
         <div id="sidebar-container"></div>
 
@@ -48,14 +51,17 @@
                     <div class="section-single">
                         <div class="widget-header-product" id="header-product-container"></div>
                     </div>
-                    
+
                     <!-- Sección chat + panel derecho (Canvas tipo Gemini) -->
                     <div class="section-single modo-tutor-ia-chat-section">
                         <!-- Panel historial (izquierda, 30%) - se muestra con clase is-open -->
-                        <div class="modo-estudio-ia-historial-panel" id="historial-panel" aria-label="Historial de chats">
+                        <div class="modo-estudio-ia-historial-panel" id="historial-panel"
+                            aria-label="Historial de chats">
                             <div class="modo-estudio-ia-historial-panel__header">
                                 <span class="ubits-body-md-bold">Historial</span>
-                                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="historial-panel-close" title="Cerrar" aria-label="Cerrar panel historial">
+                                <button type="button"
+                                    class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only"
+                                    id="historial-panel-close" title="Cerrar" aria-label="Cerrar panel historial">
                                     <i class="far fa-times"></i>
                                 </button>
                             </div>
@@ -69,11 +75,13 @@
                         <div class="modo-tutor-ia-chat-main">
                             <div class="widget-chat" id="study-chat-container"></div>
                         </div>
-                        <div class="modo-tutor-ia-canvas-panel" id="tutor-canvas-panel" aria-label="Panel de materiales de estudio">
+                        <div class="modo-tutor-ia-canvas-panel" id="tutor-canvas-panel"
+                            aria-label="Panel de materiales de estudio">
                             <!-- Quiz / Flashcards / Guía se inyectan aquí desde study-chat.js -->
                             <div class="study-chat-canvas-placeholder" id="tutor-canvas-placeholder">
                                 <i class="far fa-lightbulb"></i>
-                                <p class="ubits-body-md-regular">Elige un tema y pide un quiz, flashcards o guía de estudio para verlo aquí.</p>
+                                <p class="ubits-body-md-regular">Elige un tema y pide un quiz, flashcards o guía de
+                                    estudio para verlo aquí.</p>
                             </div>
                         </div>
                     </div>
@@ -87,7 +95,7 @@
 
     <!-- Floating Menu Container -->
     <div id="floating-menu-container"></div>
-    
+
     <!-- Profile Menu Container -->
     <div id="profile-menu-container"></div>
 
@@ -97,14 +105,14 @@
     <!-- Contenedor para modales (ej. confirmación eliminar chat) -->
     <div id="modo-estudio-ia-modals-container"></div>
 
-        <script src="../../components/tooltip.js"></script>
-<script src="../../components/sidebar.js"></script>
+    <script src="../../components/tooltip.js"></script>
+    <script src="../../components/sidebar.js"></script>
     <script src="../../components/sub-nav.js"></script>
     <script src="../../components/tab-bar.js"></script>
     <script src="../../components/floating-menu.js"></script>
     <script src="../../components/profile-menu.js"></script>
     <script src="../../components/calendar.js"></script>
-    <script src="../../components/input.js"></script>
+    <script src="../../components/input.js?v=cachebust1"></script>
     <script src="../../components/header-product.js"></script>
     <script src="../../components/toast.js"></script>
     <script src="../../components/card-content-compact.js"></script>
@@ -115,13 +123,13 @@
     <script src="../../script.js"></script>
     <script>
         // Cargar componentes dinámicamente
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             loadSidebar('default', 'aprendizaje');
             loadSubNav('top-nav-container', 'aprendizaje');
             loadTabBar('tab-bar-container');
             loadFloatingMenu('floating-menu-container');
             loadProfileMenu('profile-menu-container');
-            
+
             // Modal de confirmación eliminar chat (getModalHtml)
             var modalsContainer = document.getElementById('modo-estudio-ia-modals-container');
             if (modalsContainer && typeof getModalHtml === 'function') {
@@ -136,7 +144,7 @@
                     closeButtonId: 'delete-chat-modal-close'
                 });
             }
-            
+
             // Activar el tab Modo estudio IA en el SubNav
             setTimeout(() => {
                 const modoEstudioTab = document.querySelector('.nav-tab[data-tab="modo-estudio-ia"]');
@@ -148,30 +156,30 @@
                     modoEstudioSelectorItem.classList.add('active');
                 }
             }, 300);
-            
+
             // Cargar header-product
             if (typeof loadHeaderProduct === 'function') {
                 loadHeaderProduct('header-product-container', {
                     productName: 'Modo estudio IA',
                     breadcrumbItems: [], // Array vacío para ocultar breadcrumb
                     backButton: {
-                        onClick: function() {
+                        onClick: function () {
                             console.log('Back button clicked');
                             // Regresar a la página anterior del historial del navegador
                             if (window.history.length > 1) {
                                 window.history.back();
                             } else {
                                 // Si no hay historial, redirigir a catalogo.html como fallback
-                            window.location.href = 'catalogo.html';
+                                window.location.href = 'catalogo.html';
                             }
                         }
                     },
                     secondaryButtons: []
                 });
             }
-            
+
             // Los botones Historial y Nuevo chat están en el encabezado del chat (dentro del componente)
-            window.updateModoEstudioIaActionsVisibility = function() {};
+            window.updateModoEstudioIaActionsVisibility = function () { };
 
             // Inicializar chat de tutor (empty state con nombre + competencias, panel derecho)
             if (typeof initStudyChat === 'function') {
@@ -188,7 +196,7 @@
                     }
                 });
             }
-            
+
             // Panel historial: abrir (historial, chat y canvas pueden estar abiertos a la vez)
             function openHistorialPanel() {
                 var historialPanel = document.getElementById('historial-panel');
@@ -199,31 +207,31 @@
                 if (typeof renderHistorialList === 'function') renderHistorialList();
             }
             window.openHistorialPanel = openHistorialPanel;
-            
+
             var historialCloseBtn = document.getElementById('historial-panel-close');
             var historialPanelEl = document.getElementById('historial-panel');
             if (historialCloseBtn && historialPanelEl) {
-                historialCloseBtn.addEventListener('click', function() {
+                historialCloseBtn.addEventListener('click', function () {
                     historialPanelEl.classList.remove('is-open');
                     document.body.classList.remove('historial-panel-open');
                 });
             }
             var btnHistorial = document.getElementById('btn-historial');
             var btnNuevoChat = document.getElementById('btn-nuevo-chat');
-            if (btnHistorial) btnHistorial.addEventListener('click', function() { if (typeof openHistorialPanel === 'function') openHistorialPanel(); });
-            if (btnNuevoChat) btnNuevoChat.addEventListener('click', function() { if (typeof startNewChat === 'function') startNewChat(); });
-            
+            if (btnHistorial) btnHistorial.addEventListener('click', function () { if (typeof openHistorialPanel === 'function') openHistorialPanel(); });
+            if (btnNuevoChat) btnNuevoChat.addEventListener('click', function () { if (typeof startNewChat === 'function') startNewChat(); });
+
             // Listeners modal eliminar chat
             var deleteModalClose = document.getElementById('delete-chat-modal-close');
             var deleteModalCancel = document.getElementById('delete-chat-cancel');
             var deleteModalConfirm = document.getElementById('delete-chat-confirm');
             var deleteOverlay = document.getElementById('delete-chat-modal-overlay');
-            if (deleteModalClose) deleteModalClose.addEventListener('click', function() { if (typeof cancelDeleteChatModal === 'function') cancelDeleteChatModal(); });
-            if (deleteModalCancel) deleteModalCancel.addEventListener('click', function() { if (typeof cancelDeleteChatModal === 'function') cancelDeleteChatModal(); });
-            if (deleteOverlay) deleteOverlay.addEventListener('click', function(e) { if (e.target === deleteOverlay && typeof cancelDeleteChatModal === 'function') cancelDeleteChatModal(); });
-            if (deleteModalConfirm) deleteModalConfirm.addEventListener('click', function() { if (typeof confirmDeleteChat === 'function') confirmDeleteChat(); });
+            if (deleteModalClose) deleteModalClose.addEventListener('click', function () { if (typeof cancelDeleteChatModal === 'function') cancelDeleteChatModal(); });
+            if (deleteModalCancel) deleteModalCancel.addEventListener('click', function () { if (typeof cancelDeleteChatModal === 'function') cancelDeleteChatModal(); });
+            if (deleteOverlay) deleteOverlay.addEventListener('click', function (e) { if (e.target === deleteOverlay && typeof cancelDeleteChatModal === 'function') cancelDeleteChatModal(); });
+            if (deleteModalConfirm) deleteModalConfirm.addEventListener('click', function () { if (typeof confirmDeleteChat === 'function') confirmDeleteChat(); });
         });
     </script>
 </body>
-</html>
 
+</html>

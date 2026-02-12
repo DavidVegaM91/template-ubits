@@ -214,3 +214,86 @@ Aquí se modifica la *lógica interna* de los componentes para que sus menús de
 - **options[].:** text, value?, leftIcon?, rightIcon?, checkbox?, switch?, selected?
 
 Archivo temporal; se puede borrar o mover a `docs/` cuando la implementación esté cerrada.
+
+---
+
+## Anexo: Dropdown de prioridad tapado por lista de tareas (modo-estudio-ia)
+
+**Problema:** En la página modo-estudio-ia, al abrir el plan de estudio el dropdown del select "Prioridad" se dibuja **debajo** de la lista de tareas. El dropdown del campo "Fecha" (calendario) sí se ve por encima.
+
+**Regla:** Cuando el usuario indique que una opción no funcionó, moverla de "Opciones que faltan por probar" a "Opciones ya intentadas (no sirvieron)" y no repetirla.
+
+### Opciones ya intentadas (no sirvieron; NO repetir)
+
+1. **CSS z-index en modo-estudio-ia.css**  
+   Dar a `#ubits-input-select-overlay-container` y a `.ubits-dropdown-menu__overlay` / `.ubits-dropdown-menu__content` z-index 1003, 1004, 1005.  
+   → No resolvió.
+
+2. **Z-index muy alto con !important**  
+   Subir a 99999 y 100000 con `!important` en los mismos selectores.  
+   → No resolvió.
+
+3. **Contenedor como capa fija**  
+   Hacer `#ubits-input-select-overlay-container` con `position: fixed; inset: 0; width: 100%; height: 100%; z-index: 99999 !important; pointer-events: none`, y a los overlays hijos `pointer-events: auto`.  
+   → No resolvió.
+
+4. **JavaScript: mover contenedor al final de body**  
+   En `openDropdownMenu`, si `body` tiene clase `modo-estudio-ia-page`, hacer `document.body.appendChild(overlayContainer)` y aplicar estilos inline (z-index 2147483647) al contenedor y al overlay.  
+   → No resolvió.
+
+5. **JavaScript: mover el overlay (no el contenedor) a body**  
+   En `openDropdownMenu`, si el overlay es hijo de `#ubits-input-select-overlay-container`, hacer `document.body.appendChild(overlay)` y `overlay.style.zIndex = '10000'`. En `closeDropdownMenu`, devolver el overlay al contenedor.  
+   → No resolvió.
+
+6. **Dejar de usar el contenedor: inyectar overlay en body desde input.js**  
+   En `setupSelectWithDropdownMenu`, no usar `#ubits-input-select-overlay-container`; hacer `document.body.insertAdjacentHTML('beforeend', html)` y `overlay.style.zIndex = '10000'` (igual que el calendario).  
+   → No resolvió.
+
+7. **Clase + z-index en modo-estudio-ia**  
+   Añadir clase `ubits-input-select-overlay` al overlay en input.js y en modo-estudio-ia.css: `body.modo-estudio-ia-page .ubits-input-select-overlay { z-index: 99999 !important; }`.  
+   → No resolvió.
+
+8. **Bajar el canvas body en el stacking**  
+   En modo-estudio-ia.css: `.modo-tutor-ia-canvas-panel.is-open .study-chat-canvas-body { z-index: 0; position: relative; }` para que quede por debajo en el contexto de apilamiento.  
+   → No resolvió.
+
+9. **Re-apendar el overlay a body al abrir (siempre último hijo)**  
+   En `openDropdownMenu`, si el overlay es hijo de body, hacer `document.body.appendChild(overlay)` para que sea el **último** hijo de body.  
+   → No resolvió.
+
+10. **Mismo patrón que el calendario a nivel de contenedor (wrapper)**  
+    En input.js, solo si `body` tiene `modo-estudio-ia-page`: crear un wrapper div (position:fixed; z-index:10000; pointer-events:none; display:none), append a body, inyectar el overlay dentro del wrapper. Mostrar/ocultar wrapper en open/close.  
+    → No resolvió.
+
+11. **Portal nuevo al abrir**  
+    Al abrir, crear portal div, append a body, meter el overlay dentro del portal (z-index 99999). Al cerrar, devolver overlay a body y eliminar portal.  
+    → No resolvió.
+
+12. **Select nativo dentro del canvas**  
+    Prioridad con `<select>` nativo en el panel.  
+    → No aceptable: rompe la regla de usar solo componentes oficiales UBITS. Revertido.
+
+13. **Dropdown sin overlay full-screen**  
+    Solo el panel de opciones en un div fixed en body, sin overlay a pantalla completa.  
+    → No resolvió.
+
+14. **Usar el componente Modal**  
+    Abrir modal con opciones Alta/Media/Baja para Prioridad.  
+    → No aceptable: más dificultad para los usuarios. Descartada.
+
+15. **Comprobar si algo mueve el overlay**  
+    Revisar en study-chat.js y en modo-estudio-ia si hay código que manipule el DOM del overlay.  
+    → **Revisado:** En study-chat.js no hay referencias a `ubits-input-select-*`.
+
+16. **Solución Implementada: Inyección Directa en Body "Tipo Calendar" (DEFINITIVA)**
+
+    **Causa Raíz Identificada:**
+    Tras análisis en el navegador, se descubrió que `components/input.js` tenía una lógica duplicada. La función `createInput` contenía una condición `if (window.getDropdownMenuHtml ...)` que fallaba frecuentemente, provocando un "fallback" a una función antigua llamada `createSelectDropdown`. Esta función antigua inyectaba el menú **dentro** del contenedor del input (anidado), lo que causaba que fuera recortado o tapado por el contexto de apilamiento del panel lateral ("canvas").
+
+    **Acciones Correctivas:**
+    1.  **Arquitectura Autónoma:** Se reescribió `setupSelectWithDropdownMenu` para que no dependa de funciones globales externas. Ahora esta función maneja por sí misma la creación del DOM, inyectando el menú (`.ubits-dropdown-menu__content`) directamente como hijo inmediato de `<body>`, con `position: fixed` y `z-index: 2147483647` (máximo posible).
+    2.  **Lógica Unificada:** Se modificó `createInput` para eliminar el fallback condicional y forzar el uso de `setupSelectWithDropdownMenu` para todos los inputs de tipo `select`.
+    3.  **Dependencias:** Se agregó la carga de `components/dropdown-menu.css` en `modo-estudio-ia.html` (necesaria para los estilos del nuevo menú autónomo).
+    4.  **Cache Busting:** Se añadió `?v=cachebust1` al script `input.js` en el HTML para asegurar que el navegador cargara la nueva lógica inmediatamente.
+
+    → **Resultado: EXITOSO y VERIFICADO.** El dropdown ahora flota correctamente por encima de todos los elementos de la interfaz.

@@ -1314,10 +1314,10 @@ input.setState(state)     // Cambiar estado (default, hover, focus, invalid, dis
                     }
                 });
                 
-                // Delegación: opciones del Dropdown Menu oficial (createInput type select inyecta en #ubits-input-select-overlay-container)
+                // Delegación: opciones del Dropdown Menu oficial (createInput type select inyecta el overlay en body)
                 const previewOverlayIds = ['ubits-input-select-size-select-control', 'ubits-input-select-state-select-control', 'ubits-input-select-mandatory-type-control'];
                 document.body.addEventListener('click', function previewSelectOptionHandler(e) {
-                    if (!e.target.closest('#ubits-input-select-overlay-container')) return;
+                    if (!e.target.closest('.ubits-dropdown-menu__overlay')) return;
                     const option = e.target.closest('.ubits-dropdown-menu__option');
                     if (!option) return;
                     const overlay = option.closest('.ubits-dropdown-menu__overlay');

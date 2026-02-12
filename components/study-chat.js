@@ -2833,7 +2833,7 @@ function showWelcomeBlock() {
         if (hasAnyConversations()) {
             header.style.display = '';
             if (headerTitle) headerTitle.value = '';
-        } else {
+                    } else {
             header.style.display = 'none';
         }
     }

@@ -880,7 +880,7 @@
 
         const statusClass = { Iniciada: 'info', Vencida: 'error', Finalizada: 'success' };
         const prioridadIcon = { Alta: 'fa-chevrons-up', Media: 'fa-chevron-up', Baja: 'fa-chevron-down' };
-        const prioridadColor = { Alta: 'var(--ubits-feedback-accent-error)', Media: 'var(--ubits-fg-1-medium)', Baja: 'var(--ubits-feedback-accent-info)' };
+        const prioridadBadgeVariant = { Alta: 'error', Media: 'warning', Baja: 'info' };
 
         const columnIds = getColumnIds();
         tbody.innerHTML = slice.map(row => {
@@ -905,7 +905,7 @@
                 asignadoHtml = '';
             }
             const estadoTag = `<span class="ubits-status-tag ubits-status-tag--${statusClass[row.estado]} ubits-status-tag--sm"><span class="ubits-status-tag__text">${row.estado}</span></span>`;
-            const prioridadHtml = row.prioridad ? `<span class="ubits-table__cell-priority" style="color:${prioridadColor[row.prioridad]}"><i class="far ${prioridadIcon[row.prioridad]}"></i> ${row.prioridad}</span>` : '';
+            const prioridadHtml = row.prioridad && prioridadBadgeVariant[row.prioridad] ? `<span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--${prioridadBadgeVariant[row.prioridad]} ubits-badge-tag--sm ubits-badge-tag--with-icon"><i class="far ${prioridadIcon[row.prioridad]}"></i><span class="ubits-badge-tag__text">${row.prioridad}</span></span>` : '';
             const comentariosText = row.comentarios === 0 ? '0 comentarios' : `${row.comentarios} comentario${row.comentarios > 1 ? 's' : ''}`;
             const avanceNum = typeof row.avance === 'number' ? row.avance : parseInt(row.avance) || 0;
             const avanceHtml = `<div class="ubits-table__cell-progress"><div class="ubits-table__progress-bar"><div class="ubits-table__progress-bar-fill" style="width: ${avanceNum}%"></div></div><span class="ubits-body-sm-regular">${avanceNum}%</span></div>`;
