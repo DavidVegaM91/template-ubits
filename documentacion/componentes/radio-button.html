@@ -36,7 +36,7 @@
                                 Radio Button
                             </h1>
                             <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
-                                Selección única circular según diseño Figma (Planes y Tareas R4). Círculo blanco con borde en estado sin marcar; círculo azul con punto blanco al seleccionar. Hover y focus con borde o halo azul. <strong>Solo tamaños sm y md.</strong>
+                                Opción circular para elegir una sola opción entre varias (por ejemplo en formularios o filtros). Tiene dos tamaños: pequeño y mediano.
                             </p>
                         </div>
 
@@ -47,7 +47,7 @@
                                 Preview del componente
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
-                                Radio Button en estados: sin marcar, sin marcar (hover/focus), marcado, marcado (hover/focus), deshabilitado. Tamaños: sm (16px) y md (20px).
+                                Estados: sin marcar, marcado y deshabilitado. Tamaños: pequeño (sm) y mediano (md).
                             </p>
 
                             <p class="ubits-body-sm-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-medium);">Tamaño SM</p>
@@ -123,17 +123,17 @@
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-circle"></i></div>
                                     <div class="ubits-body-sm-bold">Estados</div>
-                                    <div class="ubits-body-sm-regular">Sin marcar, hover, focus, marcado, deshabilitado</div>
+                                    <div class="ubits-body-sm-regular">Sin marcar, marcado y deshabilitado</div>
                                 </div>
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-expand-arrows-alt"></i></div>
                                     <div class="ubits-body-sm-bold">Tamaños</div>
-                                    <div class="ubits-body-sm-regular">SM (16px) y MD (20px) según Figma</div>
+                                    <div class="ubits-body-sm-regular">Dos tamaños: pequeño (sm) y mediano (md)</div>
                                 </div>
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-universal-access"></i></div>
-                                    <div class="ubits-body-sm-bold">Accesibilidad</div>
-                                    <div class="ubits-body-sm-regular">Input nativo oculto, focus-visible, label asociado</div>
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-list"></i></div>
+                                    <div class="ubits-body-sm-bold">Grupo</div>
+                                    <div class="ubits-body-sm-regular">Varios radios con el mismo nombre para elegir una opción</div>
                                 </div>
                             </div>
                         </div>
@@ -145,46 +145,46 @@
                                 Prompts útiles
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
-                                Usa estos prompts con Cursor AI para configurar el componente Radio Button.
+                                Copia el prompt, reemplaza lo que va entre [corchetes] y pide a Cursor que lo aplique. Asegúrate de que importe radio-button.css y alert.css para que no se vea roto.
                             </p>
                             <div id="radio-button-warning-alert" style="margin-bottom: 32px;"></div>
 
                             <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
                                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Crear grupo de radio buttons</h3>
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Insertar grupo de Radio Button</h3>
                                     <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('radio-button-prompt-1')">
                                         <i class="far fa-copy"></i>
                                         <span>Copiar</span>
                                     </button>
                                 </div>
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="radio-button-prompt-1">En [ubicación] crea un grupo de Radio Button UBITS con nombre name="[nombre_grupo]". Opciones: [lista de opciones]. Usa tamaño [sm o md]. Estructura: label.ubits-radio.ubits-radio--[sm|md], input.ubits-radio__input, span.ubits-radio__circle, span.ubits-radio__label.</code></pre>
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="radio-button-prompt-1">En [ubicación] inserta un grupo de Radio Button con opciones [opción 1], [opción 2], [opción 3] y tamaño [sm o md]. Debe importar radio-button.css y alert.css.</code></pre>
                                 </div>
                             </div>
 
                             <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
                                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Cambiar tamaño (sm / md)</h3>
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Cambiar tamaño</h3>
                                     <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('radio-button-prompt-2')">
                                         <i class="far fa-copy"></i>
                                         <span>Copiar</span>
                                     </button>
                                 </div>
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="radio-button-prompt-2">Cambia el tamaño de los Radio Button en [descripción] a [sm o md]. Sustituye ubits-radio--sm por ubits-radio--md o viceversa. Solo existen tamaños sm y md.</code></pre>
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="radio-button-prompt-2">Cambia el tamaño de los Radio Button de [ubicación] a [sm o md]. Debe importar radio-button.css y alert.css.</code></pre>
                                 </div>
                             </div>
 
                             <div>
                                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Deshabilitar un radio</h3>
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Deshabilitar una opción</h3>
                                     <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('radio-button-prompt-3')">
                                         <i class="far fa-copy"></i>
                                         <span>Copiar</span>
                                     </button>
                                 </div>
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="radio-button-prompt-3">Deshabilita el Radio Button [descripción]. Añade el atributo disabled al input.ubits-radio__input correspondiente.</code></pre>
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="radio-button-prompt-3">Deshabilita el Radio Button que dice "[texto de la opción]" en [ubicación]. Debe importar radio-button.css y alert.css.</code></pre>
                                 </div>
                             </div>
                         </div>

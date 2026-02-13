@@ -7,6 +7,8 @@
  *   openDrawer({ overlayId: 'mi-drawer', title: 'Filtros', bodyHtml: '...', footerHtml: '...', size: 'md' });
  *   closeDrawer('mi-drawer');
  *   getDrawerHtml({ overlayId, title, bodyHtml, footerHtml?, size?, closeButtonId? }) para inyectar en el DOM.
+ *
+ * Bugs conocidos / implementación: Ver documentación técnica en documentacion/componentes/drawer.html.
  */
 
 (function () {

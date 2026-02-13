@@ -39,7 +39,7 @@
                         <div style="text-align: center; margin-bottom: 60px;">
                             <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">Tabla</h1>
                             <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
-                                Componente tabla UBITS reutilizable: cabecera, filas y celdas con tipos de contenido configurables. Quien use el componente puede añadir o quitar columnas y elegir el tipo de celda (texto, checkbox, progress bar, avatar, profile list, status tag, prioridad).
+                                Tabla para listar datos en filas y columnas. Permite texto, checkboxes, avatares, barras de avance, etiquetas de estado y prioridad. Se adapta a pantallas pequeñas con scroll horizontal.
                             </p>
                         </div>
 
@@ -196,23 +196,23 @@
                             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-columns"></i></div>
-                                    <div class="ubits-body-sm-bold">Columnas flexibles</div>
-                                    <div class="ubits-body-sm-regular">Añade o quita columnas según necesites; data-col opcional para anchos</div>
+                                    <div class="ubits-body-sm-bold">Columnas</div>
+                                    <div class="ubits-body-sm-regular">Puedes añadir o quitar columnas según lo que necesites mostrar</div>
                                 </div>
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-th-large"></i></div>
                                     <div class="ubits-body-sm-bold">Tipos de celda</div>
-                                    <div class="ubits-body-sm-regular">Texto, checkbox, progress bar, avatar, profile list, status tag, prioridad</div>
+                                    <div class="ubits-body-sm-regular">Texto, checkbox, barra de avance, avatar, etiqueta de estado, prioridad</div>
                                 </div>
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-mobile-alt"></i></div>
-                                    <div class="ubits-body-sm-bold">Responsive</div>
-                                    <div class="ubits-body-sm-regular">Wrapper con overflow-x para scroll horizontal en pantallas pequeñas</div>
+                                    <div class="ubits-body-sm-bold">Móvil</div>
+                                    <div class="ubits-body-sm-regular">En pantallas pequeñas la tabla hace scroll horizontal</div>
                                 </div>
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-palette"></i></div>
-                                    <div class="ubits-body-sm-bold">Tokens UBITS</div>
-                                    <div class="ubits-body-sm-regular">Colores, bordes y tipografía oficiales</div>
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-sliders-h"></i></div>
+                                    <div class="ubits-body-sm-bold">Encabezados</div>
+                                    <div class="ubits-body-sm-regular">Opcional: botones de filtro u orden en las cabeceras</div>
                                 </div>
                             </div>
                         </div>
@@ -261,38 +261,33 @@
                                 Prompts útiles
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
-                                Usa estos prompts con Cursor AI para configurar y personalizar el componente Tabla.
+                                Copia el prompt, reemplaza lo que va entre [corchetes] y pide a Cursor que lo aplique. Asegúrate de que importe table.css y, si usas status tag o avatar, status-tag.css y avatar.css; alert.css para que no se vea roto.
                             </p>
                             <div id="table-warning-alert" style="margin-bottom: 32px;"></div>
 
                             <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
                                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Crear tabla UBITS</h3>
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Insertar Tabla</h3>
                                     <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('table-prompt-0')">
                                         <i class="far fa-copy"></i>
                                         <span>Copiar</span>
                                     </button>
                                 </div>
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="table-prompt-0">Crea una tabla UBITS con:
-- Contenedor: div.ubits-table-wrapper (y opcional ubits-table-wrapper--min-width para min-width 900px)
-- Tabla: table.ubits-table
-- Cabecera: thead > tr > th (primera columna opcional: th.ubits-table__th--checkbox con input checkbox)
-- Cuerpo: tbody > tr > td (celdas con data-col opcional para anchos)
-- Tipos de celda: texto (ubits-body-sm-regular), checkbox (ubits-table__td--checkbox), progress (ubits-table__cell-progress + ubits-table__progress-bar + ubits-table__progress-bar-fill), avatar+nombre (ubits-table__cell-assignee + ubits-table__avatar), status tag (ubits-status-tag), prioridad (ubits-table__cell-priority + icono)</code></pre>
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="table-prompt-0">Inserta una tabla UBITS en [ubicación] con columnas [lista de columnas] y tipos de celda que necesites (texto, checkbox, avatar, barra de avance, etiqueta de estado, prioridad). Debe importar table.css, y si usas status tag o avatar: status-tag.css, avatar.css y alert.css.</code></pre>
                                 </div>
                             </div>
 
                             <div>
                                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Añadir columna a la tabla</h3>
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Añadir columna</h3>
                                     <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('table-prompt-1')">
                                         <i class="far fa-copy"></i>
                                         <span>Copiar</span>
                                     </button>
                                 </div>
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="table-prompt-1">Añade a la tabla [id o descripción] una columna [nombre]. Cabecera: th con data-col="[id]". Celdas: td con data-col="[id]" y el tipo de contenido adecuado (texto con ubits-body-sm-regular, o ubits-table__cell-progress, ubits-table__cell-assignee, ubits-status-tag, ubits-table__cell-priority). Usa las clases del componente Tabla UBITS (documentacion/componentes/table.html).</code></pre>
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="table-prompt-1">Añade a la tabla de [ubicación] una columna "[nombre]" con tipo [texto, checkbox, avatar, avance, estado o prioridad]. Debe importar table.css y alert.css.</code></pre>
                                 </div>
                             </div>
                         </div>

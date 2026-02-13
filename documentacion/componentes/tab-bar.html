@@ -188,7 +188,7 @@
                         Tab-bar
                     </h1>
                     <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
-                        Componente de navegación inferior para dispositivos móviles que reemplaza al sidebar en pantallas pequeñas. Incluye el subcomponente <strong>Floating Menu</strong> que se activa desde el botón "Módulos".
+                        Barra fija abajo en móvil para ir a Módulos, Mi perfil y Modo oscuro. Al tocar "Módulos" se abre un menú con las secciones de la app.
                     </p>
                 </div>
 
@@ -255,13 +255,18 @@
                         Características generales
                     </h2>
                     <p class="ubits-body-md-regular" style="margin-bottom: 24px; color: var(--ubits-fg-1-medium);">
-                        Reemplaza esta sección con las características específicas del componente que estés documentando.
+                        Barra de navegación pensada para móvil; en escritorio suele ocultarse.
                     </p>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--gap-lg);">
                         <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
                             <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-mobile"></i></div>
                             <div class="ubits-body-sm-bold">Móvil</div>
-                            <div class="ubits-body-sm-regular">Fijo inferior</div>
+                            <div class="ubits-body-sm-regular">Fija abajo; reemplaza al menú lateral</div>
+                        </div>
+                        <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                            <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-list"></i></div>
+                            <div class="ubits-body-sm-bold">Módulos</div>
+                            <div class="ubits-body-sm-regular">Abre un menú con todas las secciones (Floating Menu)</div>
                         </div>
                         <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
                             <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-desktop"></i></div>
@@ -355,57 +360,47 @@
                         Prompts útiles
                     </h2>
                     <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
-                        Usa estos prompts con Cursor AI para configurar el Tab-bar y su Floating Menu de manera eficiente.
+                        Copia el prompt, reemplaza lo que va entre [corchetes] y pide a Cursor que lo aplique. Asegúrate de que importe tab-bar.css, floating-menu.css y alert.css para que no se vea roto.
                     </p>
 
-                    <!-- Alert Warning -->
                     <div id="tabbar-warning-alert" style="margin-bottom: 32px;"></div>
 
-                    <!-- Prompt 1: Activar item del Tab-bar -->
                     <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
                         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
-                                Activar botón del Tab-bar móvil
-                            </h3>
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Activar botón del Tab-bar en una página</h3>
                             <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('tabbar-prompt-1')">
                                 <i class="far fa-copy"></i>
                                 <span>Copiar</span>
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tabbar-prompt-1">En la página [nombre-pagina.html], activa el botón [Módulos o Mi perfil] del Tab-bar móvil para que se vea seleccionado.</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tabbar-prompt-1">En [nombre-pagina.html], haz que en móvil se vea activo el botón [Módulos o Mi perfil] del Tab-bar. Debe importar tab-bar.css y alert.css.</code></pre>
                         </div>
                     </div>
 
-                    <!-- Prompt 2: Activar opción dentro de menú -->
                     <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
                         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
-                                Activar opción dentro de menú desplegable
-                            </h3>
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Activar opción del menú Módulos</h3>
                             <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('tabbar-prompt-2')">
                                 <i class="far fa-copy"></i>
                                 <span>Copiar</span>
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tabbar-prompt-2">En la página [nombre-pagina.html], cuando se abra el menú "Módulos", activa la opción [nombre_de_la_opcion] que está dentro del grupo [Aprendizaje, Diagnóstico, Desempeño o Tareas].</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tabbar-prompt-2">En [nombre-pagina.html], cuando se abra "Módulos", haz que se vea activa la opción [nombre de la opción] del grupo [Aprendizaje, Diagnóstico, Desempeño o Tareas]. Debe importar tab-bar.css, floating-menu.css y alert.css.</code></pre>
                         </div>
                     </div>
 
-                    <!-- Prompt 3: Activar enlace directo -->
                     <div>
                         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
-                                Activar enlace directo del menú
-                            </h3>
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Activar enlace directo del menú</h3>
                             <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('tabbar-prompt-3')">
                                 <i class="far fa-copy"></i>
                                 <span>Copiar</span>
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tabbar-prompt-3">En la página [nombre-pagina.html], cuando se abra el menú "Módulos", haz que se vea activa la opción de [nombre de la sección que deseas ver activa].</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tabbar-prompt-3">En [nombre-pagina.html], en el menú "Módulos", haz que se vea activa la sección [nombre de la sección]. Debe importar tab-bar.css, floating-menu.css y alert.css.</code></pre>
                         </div>
                     </div>
                 </div>

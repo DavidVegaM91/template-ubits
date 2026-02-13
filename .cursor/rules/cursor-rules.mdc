@@ -331,13 +331,21 @@ openModal({
 
 ## 📄 PÁGINAS DE DOCUMENTACIÓN DE COMPONENTES (documentacion/componentes/)
 
-### **🚨 OBLIGATORIO AL CREAR O EDITAR DOC DE UN COMPONENTE**
+### **🚨 ESTÁNDAR: PÁGINA DE DOC DE COMPONENTE DECENTE**
 
-**Antes de crear o modificar cualquier página en `documentacion/componentes/*.html`:**
+**Referencias que SÍ cumplen (no tocar):** alert, avatar, button, calendar, card-content, card-content-compact, dropdown-menu, ia-button, input, paginator, toast, tooltip. **Base:** `component-doc-template.html`. **Tono:** como `alert.html` y `button.html`.
 
-1. **Usar siempre como base** la plantilla **`documentacion/componentes/component-doc-template.html`** (no `plantilla-ubits.html` ni copiar de páginas de producto).
-2. **Revisar** **`documentacion/componentes/button.html`** para seguir la misma estructura, orden de secciones y estilo (es la referencia oficial).
-3. **Revisar** otros componentes ya documentados (por ejemplo `badge-tag.html`, `status-tag.html`, `radio-button.html`) para mantener coherencia.
+**1. Descripción (Hero) – Sencilla, nada técnico.** Título + descripción en lenguaje de negocio (para qué sirve, dónde se usa). Sin clases, API ni archivos en la descripción principal.
+
+**2. Preview funcional – Todas las variaciones.** Controles con botones que cambien tipo/tamaño/estado. Usar clase `preview-control-btn` y `active` en el seleccionado; en `<style>`: `.preview-control-btn.active { background: var(--ubits-accent-brand) !important; color: white !important; }` y `.preview-control-btn.active span { color: white !important; }`. Contenedor con fondo `var(--ubits-bg-2)`. Si tiene tamaños o estados, selector para cada uno.
+
+**3. Características generales – Simples, nada técnico.** Grid de tarjetas (icono + título + texto) en lenguaje de producto. Sin clases CSS ni nombres de funciones.
+
+**4. Prompts útiles – Simples, sin código.** Formato: "Inserta [componente] en [ubicación] en tamaño [tamaño]." Placeholders: [ubicación], [tamaño], [texto], [nombre del icono]. Nada de HTML ni ejemplos de código en el prompt. En prompts que inserten componentes: indicar importar estilos necesarios (ej. alert.css) para que no se vea roto. Alert opcional: "Reemplaza los textos entre [corchetes]...".
+
+**5. Documentación técnica – Sección desplegable, muy completa.** Todo lo técnico dentro de "Documentación técnica" con Mostrar/Ocultar (`toggleTechnicalDocs()`, `#technical-docs-content`). Incluir: Estructura del componente (HTML escapado), Requisitos (CSS/JS), Cómo implementar (ejemplo completo), API (parámetros, opciones), bugs/soluciones. En el **.js del componente** (components/): comentarios con bugs encontrados al implementar, ejemplos, datos enlazados.
+
+**6. Sidebar y SubNav.** Siempre añadir el componente en `docs/docs-sidebar.js` (orden alfabético por título) y en el mapeo sectionToFile. En `components/sub-nav.js`, añadir cada `nombre-componente.html` a `PAGE_TO_TAB` con valor `'section3'` para que el SubNav muestre activo "Componentes", no Inicio.
 
 ### **🚫 EN PÁGINAS DE DOCUMENTACIÓN NO DEBE HABER:**
 

@@ -133,7 +133,7 @@
                         SubNav
                     </h1>
                     <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
-                        Componente de navegación superior que muestra las sub-navegaciones de los módulos principales del sidebar. En desktop muestra todos los tabs de forma horizontal, y en mobile se transforma automáticamente en un selector dropdown para mantener la funcionalidad completa.
+                        Barra superior con pestañas para cambiar de subsección (por ejemplo Aprendizaje: Inicio, Catálogo, U. Corporativa). En escritorio se ven todas; en móvil se convierte en un desplegable.
                     </p>
                 </div>
 
@@ -207,7 +207,7 @@
                         <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
                             <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-mobile"></i></div>
                             <div class="ubits-body-sm-bold">Móvil</div>
-                            <div class="ubits-body-sm-regular">Se transforma en selector dropdown (&lt; 1280px)</div>
+                            <div class="ubits-body-sm-regular">En pantallas pequeñas se convierte en un desplegable</div>
                         </div>
                         <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
                             <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-cog"></i></div>
@@ -224,10 +224,9 @@
                         Prompts útiles
                     </h2>
                     <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
-                        Usa estos prompts con Cursor AI para configurar y personalizar el componente Sub-nav de manera eficiente.
+                        Copia el prompt, reemplaza lo que va entre [corchetes] y pide a Cursor que lo aplique. Asegúrate de que importe sub-nav.css y alert.css para que no se vea roto.
                     </p>
 
-                    <!-- Alert Warning -->
                     <div id="subnav-warning-alert" style="margin-bottom: 32px;"></div>
 
                     <!-- Prompt 1: Cambiar variante -->
@@ -242,7 +241,7 @@
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-md); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="subnav-prompt-1">En la página [nombre-pagina.html], cambia el Sub-nav a la variante de [las opciones son: template, aprendizaje, desempeno, encuestas, tareas, documentacion].</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-md); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="subnav-prompt-1">En [nombre-pagina.html] cambia el SubNav a la variante [template, aprendizaje, desempeno, encuestas o tareas]. Debe importar sub-nav.css y alert.css.</code></pre>
                         </div>
                     </div>
 
@@ -258,7 +257,7 @@
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-md); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="subnav-prompt-2">En la página [nombre-pagina.html], activa el tab [nombre_del_tab] en el Sub-nav. Asegúrate de que se vea como seleccionado visualmente.</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-md); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="subnav-prompt-2">En [nombre-pagina.html] haz que el tab [nombre del tab] del SubNav se vea activo. Debe importar sub-nav.css y alert.css.</code></pre>
                         </div>
                     </div>
 
@@ -274,7 +273,7 @@
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-md); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="subnav-prompt-3">En la página [nombre-pagina.html], cambia el tab activo del Sub-nav de [tab_actual] a [nuevo_tab]. Asegúrate de que el nuevo tab se vea seleccionado.</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-md); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="subnav-prompt-3">En [nombre-pagina.html] cambia el tab activo del SubNav de [tab actual] a [nuevo tab]. Debe importar sub-nav.css y alert.css.</code></pre>
                         </div>
                     </div>
 
@@ -290,7 +289,7 @@
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-md); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="subnav-prompt-4">En la página [nombre-pagina.html], oculta el Sub-nav.</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-md); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="subnav-prompt-4">En [nombre-pagina.html] oculta el SubNav. Debe importar sub-nav.css y alert.css.</code></pre>
                         </div>
                     </div>
                 </div>

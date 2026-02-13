@@ -33,7 +33,7 @@
                         <div style="text-align: center; margin-bottom: 60px;">
                             <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">Modal</h1>
                             <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
-                                Componente modal UBITS reutilizable: overlay con fondo oscuro, contenedor centrado, header con título y botón cerrar, body y footer con acciones. Sirve para fecha personalizada, cambiar fecha de finalización, confirmaciones y formularios.
+                                Ventana que se abre encima de la página para confirmar algo, rellenar un formulario o elegir una fecha. Se cierra con la X, los botones o tocando fuera.
                             </p>
                         </div>
 
@@ -89,22 +89,22 @@
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-layer-group"></i></div>
                                     <div class="ubits-body-sm-bold">Overlay</div>
-                                    <div class="ubits-body-sm-regular">Fondo oscuro 70%, centrado, cierre al clic fuera</div>
+                                    <div class="ubits-body-sm-regular">Fondo oscuro; al tocar fuera se cierra</div>
                                 </div>
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-window-maximize"></i></div>
-                                    <div class="ubits-body-sm-bold">Estructura</div>
-                                    <div class="ubits-body-sm-regular">Header (título + cerrar), body, footer con acciones</div>
+                                    <div class="ubits-body-sm-bold">Partes</div>
+                                    <div class="ubits-body-sm-regular">Título con botón cerrar, contenido y pie con botones</div>
                                 </div>
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-calendar-alt"></i></div>
-                                    <div class="ubits-body-sm-bold">Date picker</div>
-                                    <div class="ubits-body-sm-regular">Uso en Seguimiento: fecha personalizada y cambiar fecha</div>
+                                    <div class="ubits-body-sm-bold">Uso</div>
+                                    <div class="ubits-body-sm-regular">Confirmaciones, formularios cortos, selección de fecha</div>
                                 </div>
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-palette"></i></div>
-                                    <div class="ubits-body-sm-bold">Tokens UBITS</div>
-                                    <div class="ubits-body-sm-regular">Colores, bordes y tipografía oficiales</div>
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-ruler"></i></div>
+                                    <div class="ubits-body-sm-bold">Tamaños</div>
+                                    <div class="ubits-body-sm-regular">Varios anchos del modal: pequeño, mediano y grande</div>
                                 </div>
                             </div>
                         </div>
@@ -116,25 +116,20 @@
                                 Prompts útiles
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
-                                Usa estos prompts con Cursor AI para configurar y personalizar el componente Modal.
+                                Copia el prompt, reemplaza lo que va entre [corchetes] y pide a Cursor que lo aplique. Asegúrate de que importe modal.css, button.css y alert.css para que no se vea roto.
                             </p>
                             <div id="modal-warning-alert" style="margin-bottom: 32px;"></div>
 
                             <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
                                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Crear modal UBITS</h3>
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Insertar Modal</h3>
                                     <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('modal-prompt-0')">
                                         <i class="far fa-copy"></i>
                                         <span>Copiar</span>
                                     </button>
                                 </div>
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="modal-prompt-0">Crea un modal UBITS con:
-- Título: [título del modal]
-- Contenido del body: [descripción del contenido]
-- Botones del footer: [ej. Cancelar y Aceptar]
-
-Usa las clases: ubits-modal-overlay, ubits-modal-content, ubits-modal-header, ubits-modal-body, ubits-modal-footer.</code></pre>
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="modal-prompt-0">Inserta un Modal en [ubicación] con título "[título]", contenido [breve descripción] y botones del pie [ej. Cancelar y Aceptar]. Debe importar modal.css, button.css y alert.css.</code></pre>
                                 </div>
                             </div>
 
@@ -147,7 +142,7 @@ Usa las clases: ubits-modal-overlay, ubits-modal-content, ubits-modal-header, ub
                                     </button>
                                 </div>
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="modal-prompt-1">Cambia el título del modal [id o descripción del modal] para que diga "[nuevo título]".</code></pre>
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="modal-prompt-1">Cambia el título del modal de [ubicación] a "[nuevo título]".</code></pre>
                                 </div>
                             </div>
 

@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Save Indicator | UBITS Playground</title>
+    
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/save-indicator.css">
+    <style>
+        /* Controles del preview: mismo patrón que Alert y Button */
+        .preview-control-btn.active {
+            background: var(--ubits-accent-brand) !important;
+            color: white !important;
+            border-color: var(--ubits-accent-brand) !important;
+        }
+        .preview-control-btn.active span {
+            color: white !important;
+        }
+        /* Área de vista previa: el indicador no se estira */
+        #save-indicator-preview {
+            display: flex;
+            align-items: flex-start;
+            min-height: 64px;
+        }
+        /* Fila de tamaños: cada celda con el indicador al natural */
+        .save-indicator-sizes-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            align-items: flex-end;
+        }
+        .save-indicator-size-cell {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+        }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div style="display: flex;">
+            <div id="docs-dropdown-container"></div>
+            <div id="docs-sidebar-container"></div>
+
+            <div class="components-content">
+                <div class="content-area" style="display: block; width: 100%;">
+                <div style="text-align: center; margin-bottom: 60px;">
+                    <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                        Save Indicator
+                    </h1>
+                    <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                        Muestra al usuario si sus cambios se están guardando, ya se guardaron o hubo un error. Se usa en formularios y paneles donde hay autoguardado.
+                    </p>
+                </div>
+
+                <!-- Preview del componente (mismo patrón que Alert y Button) -->
+                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                    <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                        <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                        Preview del componente
+                    </h2>
+                    <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                        Usa los controles para cambiar estado y tamaño. Abajo se muestran los cuatro tamaños en estado Saved (solo icono) para verificar 28×28, 32×32, 40×40 y 48×48.
+                    </p>
+
+                    <!-- Contenedor del preview (controles arriba como Alert/Button) -->
+                    <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: 1px solid var(--ubits-border-1);">
+                        <!-- Controles del preview PRIMERO (selector de tamaño + selector de estado) -->
+                        <p class="ubits-body-sm-bold" style="margin: 0 0 12px 0; color: var(--ubits-fg-1-high);">Controles del preview</p>
+                        <p class="ubits-body-sm-regular" style="margin: 0 0 6px 0; color: var(--ubits-fg-1-medium);">Tamaño</p>
+                        <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
+                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-control="size" data-size="xs"><span>xs (28×28)</span></button>
+                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-control="size" data-size="sm"><span>sm (32×32)</span></button>
+                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-control="size" data-size="md"><span>md (40×40)</span></button>
+                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-control="size" data-size="lg"><span>lg (48×48)</span></button>
+                        </div>
+                        <p class="ubits-body-sm-regular" style="margin: 0 0 6px 0; color: var(--ubits-fg-1-medium);">Estado</p>
+                        <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 24px;">
+                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-control="state" data-state="idle" data-variant="plain"><span>Saved</span></button>
+                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-control="state" data-state="idle" data-variant="subtle"><span>Hover</span></button>
+                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-control="state" data-state="idle" data-variant="highlighted"><span>Focus</span></button>
+                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-control="state" data-state="saving"><span>Saving</span></button>
+                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-control="state" data-state="error"><span>Failed</span></button>
+                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-control="state" data-state="saved"><span>Recently saved</span></button>
+                        </div>
+
+                        <!-- Vista previa dinámica (según controles) -->
+                        <p class="ubits-body-sm-bold" style="margin: 0 0 12px 0; color: var(--ubits-fg-1-medium);">Vista previa</p>
+                        <div id="save-indicator-preview"></div>
+
+                        <!-- Fila de tamaños (Saved) para verificar 28×28, 32×32, 40×40, 48×48 -->
+                        <p class="ubits-body-sm-bold" style="margin: 24px 0 12px 0; color: var(--ubits-fg-1-medium);">Solo icono por tamaño (Saved)</p>
+                        <div class="save-indicator-sizes-row">
+                            <div class="save-indicator-size-cell">
+                                <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">xs 28×28</span>
+                                <div id="save-indicator-preview-xs"></div>
+                            </div>
+                            <div class="save-indicator-size-cell">
+                                <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">sm 32×32</span>
+                                <div id="save-indicator-preview-sm"></div>
+                            </div>
+                            <div class="save-indicator-size-cell">
+                                <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">md 40×40</span>
+                                <div id="save-indicator-preview-md"></div>
+                            </div>
+                            <div class="save-indicator-size-cell">
+                                <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">lg 48×48</span>
+                                <div id="save-indicator-preview-lg"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Características -->
+                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                    <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                        <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                        Características generales
+                    </h2>
+                    <p class="ubits-body-md-regular" style="margin-bottom: 24px; color: var(--ubits-fg-1-medium);">
+                        Qué puedes esperar del componente.
+                    </p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--gap-lg);">
+                        <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                            <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-cloud"></i></div>
+                            <div class="ubits-body-sm-bold">Varios estados</div>
+                            <div class="ubits-body-sm-regular">Guardado, guardando, error y recién guardado. El icono cambia según el estado.</div>
+                        </div>
+                        <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                            <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-arrows-rotate"></i></div>
+                            <div class="ubits-body-sm-bold">Animación al guardar</div>
+                            <div class="ubits-body-sm-regular">Mientras guarda se ve el icono girando y el texto "Guardando...".</div>
+                        </div>
+                        <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                            <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-ruler"></i></div>
+                            <div class="ubits-body-sm-bold">Cuatro tamaños</div>
+                            <div class="ubits-body-sm-regular">xs, sm, md y lg para que encaje en distintos sitios de la interfaz.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Prompts útiles -->
+                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                    <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                        <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                        Prompts útiles
+                    </h2>
+                    <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                        Copia el prompt, reemplaza lo que va entre [corchetes] y pide a Cursor que lo aplique. Asegúrate de que importe save-indicator.css, save-indicator.js y alert.css para que nada se vea roto.
+                    </p>
+                    <div id="save-indicator-warning-alert" style="margin-bottom: 32px;"></div>
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Insertar indicador de guardado</h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('save-indicator-prompt-1')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="save-indicator-prompt-1">Inserta el Save Indicator en [ubicación, por ejemplo: junto al título del formulario o debajo del subtítulo de la tarea] en tamaño [xs, sm, md o lg]. Debe importar save-indicator.css, save-indicator.js y alert.css para que el componente y las alertas no se vean rotos.</code></pre>
+                        </div>
+                    </div>
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Cambiar tamaño del indicador</h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('save-indicator-prompt-2')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="save-indicator-prompt-2">Cambia el Save Indicator de [ubicación o descripción] para que use tamaño [xs, sm, md o lg].</code></pre>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Personalizar textos</h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('save-indicator-prompt-3')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="save-indicator-prompt-3">Cambia los textos del Save Indicator de [ubicación]: que al guardar diga "[texto]" y cuando termine "[texto]". Si hay error, que muestre "[texto]".</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Documentación técnica -->
+                <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
+                    <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                        <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Documentación técnica
+                        </h2>
+                        <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
+                            Estructura, requisitos e implementación del componente Save Indicator.
+                        </p>
+                    </div>
+                    <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                        <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: var(--gap-sm);">
+                            <i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>
+                            Mostrar
+                        </span>
+                    </div>
+                    <div id="technical-docs-content" style="display: none; padding: 0;">
+                        <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-sitemap" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Estructura del componente
+                                </h2>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('structure-code', event)">
+                                    <i class="far fa-copy"></i>
+                                    <span>Copiar</span>
+                                </button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="structure-code">&lt;div class="ubits-save-indicator ubits-save-indicator--saving" role="status" aria-live="polite"&gt;
+  &lt;span class="ubits-save-indicator__icon ubits-save-indicator__icon--spin"&gt;
+    &lt;i class="far fa-arrows-rotate"&gt;&lt;/i&gt;
+  &lt;/span&gt;
+  &lt;span class="ubits-save-indicator__text"&gt;Guardando&lt;/span&gt;
+  &lt;span class="ubits-save-indicator__dots" aria-hidden="true"&gt;
+    &lt;span&gt;.&lt;/span&gt;&lt;span&gt;.&lt;/span&gt;&lt;span&gt;.&lt;/span&gt;
+  &lt;/span&gt;
+&lt;/div&gt;</code></pre>
+                            </div>
+                        </div>
+                        <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Cómo implementar
+                                </h2>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('implement-code', event)">
+                                    <i class="far fa-copy"></i>
+                                    <span>Copiar</span>
+                                </button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: var(--border-radius-sm); margin-bottom: 16px;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Requisitos</h3>
+                                <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.5;">
+                                    <strong>CSS:</strong> <code>components/save-indicator.css</code>, <code>ubits-colors.css</code>, <code>fontawesome-icons.css</code>.<br>
+                                    <strong>JS:</strong> <code>components/save-indicator.js</code> — función <code>renderSaveIndicator(containerId, options)</code>.
+                                </div>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="implement-code">&lt;div id="save-indicator-container"&gt;&lt;/div&gt;
+&lt;script src="../../components/save-indicator.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+renderSaveIndicator('save-indicator-container', { state: 'saving', size: 'md' });
+renderSaveIndicator('save-indicator-container', { state: 'idle', idleVariant: 'subtle', size: 'sm' });
+renderSaveIndicator('save-indicator-container', { state: 'saved', size: 'lg' });
+renderSaveIndicator('save-indicator-container', { state: 'error', errorText: 'No se pudo guardar' });
+&lt;/script&gt;</code></pre>
+                            </div>
+                        </div>
+                        <div style="padding: 32px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-cogs" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                API
+                            </h2>
+                            <div style="margin-bottom: 24px;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">renderSaveIndicator(containerId, options)</h3>
+                                <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
+                                    Renderiza el indicador en el contenedor. <code>options.state</code>: <code>'idle'</code> | <code>'saving'</code> | <code>'saved'</code> | <code>'error'</code>. Para idle: <code>options.idleVariant</code> = <code>'plain'</code> | <code>'subtle'</code> | <code>'highlighted'</code>. <code>options.size</code>: <code>'xs'</code> (28×28) | <code>'sm'</code> (32×32) | <code>'md'</code> (40×40) | <code>'lg'</code> (48×48), por defecto <code>'md'</code>. En solo icono el cuadro es exacto 1:1. Opcionales: <code>savingText</code>, <code>savedText</code>, <code>errorText</code>. Alias: <code>renderAutosaveFeedback()</code>.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="ubits-toast-container"></div>
+
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/save-indicator.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSubNav('top-nav-container', 'documentacion');
+            loadDocsSidebar('save-indicator');
+            showAlert('warning', 'Antes de enviar los prompts a Cursor, reemplaza los textos entre [corchetes] con la información de tu proyecto.', {
+                containerId: 'save-indicator-warning-alert',
+                noClose: true
+            });
+            var currentSize = 'md';
+            var currentState = 'idle';
+            var currentVariant = 'plain';
+
+            function getPreviewOptions() {
+                var opts = { state: currentState, size: currentSize };
+                if (currentState === 'idle' && currentVariant) opts.idleVariant = currentVariant;
+                if (currentState === 'error') opts.errorText = 'Error al guardar';
+                return opts;
+            }
+
+            function updateMainPreview() {
+                if (typeof renderSaveIndicator !== 'function') return;
+                renderSaveIndicator('save-indicator-preview', getPreviewOptions());
+            }
+
+            function renderSizeRow() {
+                if (typeof renderSaveIndicator !== 'function') return;
+                renderSaveIndicator('save-indicator-preview-xs', { state: 'idle', idleVariant: 'plain', size: 'xs' });
+                renderSaveIndicator('save-indicator-preview-sm', { state: 'idle', idleVariant: 'plain', size: 'sm' });
+                renderSaveIndicator('save-indicator-preview-md', { state: 'idle', idleVariant: 'plain', size: 'md' });
+                renderSaveIndicator('save-indicator-preview-lg', { state: 'idle', idleVariant: 'plain', size: 'lg' });
+            }
+
+            updateMainPreview();
+            renderSizeRow();
+
+            document.querySelectorAll('.preview-control-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var control = this.getAttribute('data-control');
+                    if (control === 'size') {
+                        document.querySelectorAll('.preview-control-btn[data-control="size"]').forEach(function(b) { b.classList.remove('active'); });
+                        this.classList.add('active');
+                        currentSize = this.getAttribute('data-size') || 'md';
+                    } else if (control === 'state') {
+                        document.querySelectorAll('.preview-control-btn[data-control="state"]').forEach(function(b) { b.classList.remove('active'); });
+                        this.classList.add('active');
+                        currentState = this.getAttribute('data-state') || 'idle';
+                        currentVariant = this.getAttribute('data-variant') || 'plain';
+                    }
+                    updateMainPreview();
+                });
+            });
+        });
+        function toggleTechnicalDocs() {
+            var content = document.getElementById('technical-docs-content');
+            var chevron = document.getElementById('tech-docs-chevron');
+            var toggleText = chevron.parentElement;
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                chevron.style.transform = 'rotate(180deg)';
+                toggleText.innerHTML = '<i class="far fa-chevron-up" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Ocultar';
+            } else {
+                content.style.display = 'none';
+                chevron.style.transform = 'rotate(0deg)';
+                toggleText.innerHTML = '<i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Mostrar';
+            }
+        }
+        function copyPrompt(promptId) {
+            var el = document.getElementById(promptId);
+            if (!el) return;
+            navigator.clipboard.writeText(el.textContent).then(function() {
+                showToast('success', 'Prompt copiado', { containerId: 'ubits-toast-container', duration: 3500 });
+            });
+        }
+        function copyCode(elementId, evt) {
+            var el = document.getElementById(elementId);
+            if (!el) return;
+            navigator.clipboard.writeText(el.textContent).then(function() {
+                showToast('success', 'Código copiado', { containerId: 'ubits-toast-container', duration: 3500 });
+            });
+        }
+    </script>
+</body>
+</html>

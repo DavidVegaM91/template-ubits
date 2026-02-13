@@ -110,6 +110,9 @@ Orden sugerido: primero datos y usuario, luego estructura de páginas, después 
 17. [x] **Tareas: confirmación de eliminar con modal UBITS y toast**  
     En `tareas.html`, sustituir el `confirm()` nativo al eliminar una tarea por un **modal UBITS** (componente modal): título "Eliminar tarea", mensaje de advertencia y botones "Cancelar" (secondary) y "Eliminar" (error). Tras confirmar, mostrar **toast de éxito** "Tarea eliminada correctamente", alineado con el flujo de finalizar tarea.
 
+18. [x] **Tareas: empty state en Comentarios y evidencias**  
+    En el panel de detalle de tarea, sección **Comentarios y evidencias**: cuando no hay comentarios se muestra el **componente oficial Empty State** (icono, título "Aún no hay comentarios", descripción "Aquí podrás ver el historial de comentarios y evidencias de esta tarea. Agrega el primero para empezar." y botón secundario "Agregar comentarios"). El botón del header "Agregar comentarios" se oculta en ese caso y solo aparece cuando ya hay uno o más comentarios. Acción compartida `taskDetailOnAddComment` para el CTA (placeholder hasta implementar el flujo de agregar comentario).
+
 ---
 
-*Última actualización: 14–17 implementados — 11 pendientes.*
+*Última actualización: 14–18 implementados — 11 pendientes.*

@@ -1082,6 +1082,10 @@ function renderTaskDetailModal() {
     const taskInPlan = !!(t.planId || t.planNombre);
     const plansForAutocomplete = getPlanesParaDropdown();
     const taskPlanDisplayName = t.planNombre || (t.planId && plansForAutocomplete.length ? (plansForAutocomplete.find(p => String(p.id) === String(t.planId)) || {}).name : null) || '';
+    const hasComments = typeof t.comentarios === 'number' && t.comentarios > 0;
+    const sidebarContentHtml = hasComments
+        ? '<p class="ubits-body-sm-regular task-detail-sidebar-content__list-helper">Historial de comentarios (próximamente).</p>'
+        : '<div id="task-detail-sidebar-empty-container"></div>';
 
     var scrollMain = panel.querySelector('.task-detail-main');
     var savedScrollTop = scrollMain ? scrollMain.scrollTop : 0;
@@ -1093,7 +1097,10 @@ function renderTaskDetailModal() {
             <div class="task-detail-header">
                 <div>
                     <h2 class="ubits-heading-h2 task-detail-header__title">Detalle de la tarea</h2>
-                    <p class="ubits-body-md-regular task-detail-header__subtitle">Si haces algún cambio, quedará aplicado inmediatamente.</p>
+                    <div class="task-detail-header__subtitle-row">
+                        <p class="ubits-body-md-regular task-detail-header__subtitle">Si haces algún cambio, quedará aplicado inmediatamente.</p>
+                        <div id="task-detail-save-indicator"></div>
+                    </div>
                 </div>
                 <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" id="task-detail-close" aria-label="Cerrar">
                     <i class="far fa-times"></i>
@@ -1105,8 +1112,8 @@ function renderTaskDetailModal() {
                     <div class="task-detail-meta">
                         <div class="task-detail-meta-row">
                             <span class="task-detail-meta-cell">
-                                <span class="ubits-body-sm-semibold task-detail-meta-label">Asignado a</span>
-                                <div class="task-detail-assignee-select" id="task-detail-assignee-trigger" role="button" tabindex="0">
+                                <span id="task-detail-assignee-label" class="ubits-body-sm-semibold task-detail-meta-label">Asignado a</span>
+                                <div class="task-detail-assignee-select" id="task-detail-assignee-trigger" role="button" tabindex="0" aria-labelledby="task-detail-assignee-label" aria-haspopup="listbox" aria-expanded="false">
                                     ${typeof renderAvatar === 'function' ? renderAvatar({ nombre: assigneeName, avatar: assigneeAvatar || null }, { size: 'sm' }) : `<div class="task-detail-assignee-avatar">${assigneeAvatar ? `<img src="${escapeTaskHtml(assigneeAvatar)}" alt="" class="task-detail-assignee-avatar-img" />` : `<i class="far fa-user"></i>`}</div>`}
                                     <span class="ubits-body-sm-regular task-detail-assignee-text">${escapeTaskHtml(assigneeName)}</span>
                                     <i class="far fa-chevron-down task-detail-assignee-chevron"></i>
@@ -1122,7 +1129,7 @@ function renderTaskDetailModal() {
                         </div>
                         <div class="task-detail-meta-row">
                             <span class="task-detail-meta-cell task-detail-meta-cell--date">
-                                <span class="ubits-body-sm-semibold task-detail-meta-label">Finaliza el</span>
+                                <span id="task-detail-date-label" class="ubits-body-sm-semibold task-detail-meta-label">Finaliza el</span>
                                 <div id="task-detail-date-container"></div>
                             </span>
                             <span class="task-detail-meta-cell">
@@ -1132,8 +1139,8 @@ function renderTaskDetailModal() {
                                 </span>
                             </span>
                             <span class="task-detail-meta-cell">
-                                <span class="ubits-body-sm-semibold task-detail-meta-label">Prioridad</span>
-                                <div class="task-detail-priority-trigger" id="task-detail-priority-btn" role="button" tabindex="0" aria-haspopup="listbox" aria-label="Prioridad: ${escapeTaskHtml(priorityShortLabel)}">
+                                <span id="task-detail-priority-label" class="ubits-body-sm-semibold task-detail-meta-label">Prioridad</span>
+                                <div class="task-detail-priority-trigger" id="task-detail-priority-btn" role="button" tabindex="0" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="task-detail-priority-label" aria-label="Prioridad: ${escapeTaskHtml(priorityShortLabel)}">
                                     <span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--${prioridadBadgeVariant[priority]} ubits-badge-tag--sm ubits-badge-tag--with-icon">
                                         <i class="far ${prioridadIcon[priority]}"></i>
                                         <span class="ubits-badge-tag__text">${escapeTaskHtml(priorityShortLabel)}</span>
@@ -1174,7 +1181,7 @@ function renderTaskDetailModal() {
 
                     <div class="task-detail-section task-detail-section--tags">
                         <div class="task-detail-role-wrap">
-                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="task-detail-role-btn">
+                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="task-detail-role-btn" aria-label="Rol: ${escapeTaskHtml(roleLabel)}" aria-haspopup="listbox" aria-expanded="false">
                                 <i class="far fa-id-card"></i>
                                 <span>${escapeTaskHtml(roleLabel)}</span>
                                 <i class="far fa-chevron-down"></i>
@@ -1189,27 +1196,72 @@ function renderTaskDetailModal() {
                             <p class="ubits-body-md-bold task-detail-sidebar__title">Comentarios y evidencias</p>
                             <p class="ubits-body-sm-regular task-detail-sidebar__subtitle">Mira el historial de esta tarea</p>
                         </div>
-                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm task-detail-btn-add">
-                            <i class="far fa-plus"></i>
-                            <span>Agregar comentarios</span>
-                        </button>
+                        ${hasComments ? '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm task-detail-btn-add"><i class="far fa-plus"></i><span>Agregar comentarios</span></button>' : ''}
                     </div>
-                    <div class="task-detail-sidebar-content">
-                        <!-- Comentarios se cargarán aquí -->
-                    </div>
+                    <div class="task-detail-sidebar-content">${sidebarContentHtml}</div>
                 </div>
             </div>
 
             <div class="task-detail-footer">
-                <button type="button" class="ubits-button ubits-button--error-tertiary ubits-button--md" id="task-detail-delete">
+                <button type="button" class="ubits-button ubits-button--error-tertiary ubits-button--md" id="task-detail-delete" aria-label="Eliminar tarea">
                     <span>Eliminar</span>
                 </button>
-                <button type="button" class="ubits-button ${finishBtnVariant} ubits-button--md" id="task-detail-finish">
+                <button type="button" class="ubits-button ${finishBtnVariant} ubits-button--md" id="task-detail-finish" aria-label="${escapeTaskHtml(finishBtnLabel)}">
                     <span>${escapeTaskHtml(finishBtnLabel)}</span>
                 </button>
             </div>
         </div>
     `;
+
+    if (!hasComments && typeof loadEmptyState === 'function') {
+        var emptyContainer = document.getElementById('task-detail-sidebar-empty-container');
+        if (emptyContainer) {
+            loadEmptyState('task-detail-sidebar-empty-container', {
+                icon: 'fa-comment-dots',
+                iconSize: 'md',
+                title: 'Aún no hay comentarios',
+                description: 'Aquí podrás ver el historial de comentarios y evidencias de esta tarea. Agrega el primero para empezar.',
+                buttons: {
+                    secondary: {
+                        text: 'Agregar comentarios',
+                        icon: 'fa-plus',
+                        onClick: function () {
+                            if (typeof window.taskDetailOnAddComment === 'function') {
+                                window.taskDetailOnAddComment();
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    /* Save Indicator (xs): inicial + flujo saving → saved → idle; opcional error */
+    if (typeof renderSaveIndicator === 'function') {
+        renderSaveIndicator('task-detail-save-indicator', { state: 'idle', size: 'xs' });
+    }
+    window._taskDetailSaveIndicatorTimeouts = window._taskDetailSaveIndicatorTimeouts || [];
+    window.taskDetailTriggerAutosave = function () {
+        if (typeof renderSaveIndicator !== 'function') return;
+        var to = window._taskDetailSaveIndicatorTimeouts;
+        to.forEach(function (t) { clearTimeout(t); });
+        window._taskDetailSaveIndicatorTimeouts = [];
+        renderSaveIndicator('task-detail-save-indicator', { state: 'saving', size: 'xs' });
+        var t1 = setTimeout(function () {
+            renderSaveIndicator('task-detail-save-indicator', { state: 'saved', size: 'xs', savedText: 'Cambios guardados' });
+            var t2 = setTimeout(function () {
+                renderSaveIndicator('task-detail-save-indicator', { state: 'idle', size: 'xs' });
+            }, 2000);
+            to.push(t2);
+        }, 2000);
+        to.push(t1);
+    };
+    window.taskDetailSaveIndicatorError = function (message) {
+        if (typeof renderSaveIndicator !== 'function') return;
+        window._taskDetailSaveIndicatorTimeouts.forEach(function (t) { clearTimeout(t); });
+        window._taskDetailSaveIndicatorTimeouts = [];
+        renderSaveIndicator('task-detail-save-indicator', { state: 'error', size: 'xs', errorText: message || 'Error al guardar' });
+    };
 
     /* Calendario oficial UBITS: valor en dd/mm/yyyy; guardamos en estado como YYYY-MM-DD */
     function endDateToDisplay(ymd) {
@@ -1238,8 +1290,11 @@ function renderTaskDetailModal() {
                 var ymd = displayToEndDate(dateStr);
                 estadoTareas.editingTask.endDate = ymd;
                 if (estadoTareas.selectedTask) estadoTareas.selectedTask.endDate = ymd;
+                if (window.taskDetailTriggerAutosave) window.taskDetailTriggerAutosave();
             }
         });
+        var dateInput = document.querySelector('#task-detail-date-container .ubits-input');
+        if (dateInput) dateInput.setAttribute('aria-labelledby', 'task-detail-date-label');
         createInput({
             containerId: 'task-detail-plan-container',
             type: 'autocomplete',
@@ -1263,6 +1318,7 @@ function renderTaskDetailModal() {
                     }
                 }
                 renderTaskDetailModal();
+                setTimeout(function () { if (window.taskDetailTriggerAutosave) window.taskDetailTriggerAutosave(); }, 0);
             }
         });
         if (estadoTareas.focusPlanInputAfterRender) {
@@ -1287,10 +1343,13 @@ function renderTaskDetailModal() {
     overlay.onclick = (ev) => { if (ev.target === overlay) closeTaskDetail(); };
 
     if (nameEl) {
-        nameEl.addEventListener('input', () => {
+        var nameDebounce;
+        nameEl.addEventListener('input', function () {
             estadoTareas.editingTask.name = nameEl.value;
             if (estadoTareas.selectedTask) estadoTareas.selectedTask.name = nameEl.value;
             if (charCountEl) charCountEl.textContent = nameEl.value.length;
+            clearTimeout(nameDebounce);
+            nameDebounce = setTimeout(function () { if (window.taskDetailTriggerAutosave) window.taskDetailTriggerAutosave(); }, 800);
         });
     }
     if (descEl) {
@@ -1298,10 +1357,13 @@ function renderTaskDetailModal() {
             descEl.style.height = 'auto';
             descEl.style.height = Math.max(80, descEl.scrollHeight) + 'px';
         }
+        var descDebounce;
         descEl.addEventListener('input', function () {
             estadoTareas.editingTask.description = descEl.value;
             if (estadoTareas.selectedTask) estadoTareas.selectedTask.description = descEl.value;
             resizeDescTextarea();
+            clearTimeout(descDebounce);
+            descDebounce = setTimeout(function () { if (window.taskDetailTriggerAutosave) window.taskDetailTriggerAutosave(); }, 800);
         });
         resizeDescTextarea();
     }
@@ -1329,6 +1391,7 @@ function renderTaskDetailModal() {
                 var el = document.getElementById(overlayId);
                 if (el) el.remove();
                 renderTaskDetailModal();
+                setTimeout(function () { if (window.taskDetailTriggerAutosave) window.taskDetailTriggerAutosave(); }, 0);
             }
             overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function (btn) {
                 btn.addEventListener('click', function (ev) {
@@ -1432,6 +1495,7 @@ function renderTaskDetailModal() {
                 var el = document.getElementById(overlayId);
                 if (el) el.remove();
                 renderTaskDetailModal();
+                setTimeout(function () { if (window.taskDetailTriggerAutosave) window.taskDetailTriggerAutosave(); }, 0);
             }
             optionButtons.forEach(function (btn) {
                 btn.addEventListener('click', function (ev) {
@@ -1486,6 +1550,7 @@ function renderTaskDetailModal() {
                 var el = document.getElementById(overlayId);
                 if (el) el.remove();
                 renderTaskDetailModal();
+                setTimeout(function () { if (window.taskDetailTriggerAutosave) window.taskDetailTriggerAutosave(); }, 0);
             }
             overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function (btn) {
                 btn.addEventListener('click', function (ev) {
@@ -1540,6 +1605,20 @@ function renderTaskDetailModal() {
             showToast('success', task.done ? 'Tarea finalizada exitosamente' : 'Tarea reabierta');
         }
     });
+
+    window.taskDetailOnAddComment = function () {
+        if (typeof showToast === 'function') {
+            showToast('info', 'Próximamente: agregar comentario');
+        }
+    };
+    var addCommentBtn = panel.querySelector('.task-detail-btn-add');
+    if (addCommentBtn) {
+        addCommentBtn.addEventListener('click', function () {
+            if (typeof window.taskDetailOnAddComment === 'function') {
+                window.taskDetailOnAddComment();
+            }
+        });
+    }
 
     if (window._taskDetailEscHandler) {
         document.removeEventListener('keydown', window._taskDetailEscHandler);

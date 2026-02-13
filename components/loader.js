@@ -8,6 +8,8 @@
  *   getLoaderHTML({ text: '...', wrap: false }) → loader + texto sin wrapper
  *
  * Requiere: components/loader.css, general-styles/ubits-colors.css
+ *
+ * Bugs conocidos / implementación: Ver documentación técnica en documentacion/componentes/loader.html.
  */
 
 function getLoaderHTML(options) {

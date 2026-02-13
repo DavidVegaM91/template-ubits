@@ -93,7 +93,7 @@
                         Sidebar
                     </h1>
                     <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
-                        Componente de navegación lateral que proporciona acceso rápido a las diferentes secciones de la aplicación. Diseñado para desktop con funcionalidad responsive.
+                        Menú lateral fijo a la izquierda para ir a las secciones (Aprendizaje, Desempeño, Tareas, etc.). En escritorio se ve siempre; en móvil se sustituye por la barra inferior (Tab-bar).
                     </p>
                 </div>
 
@@ -161,73 +161,60 @@
                         Prompts útiles
                     </h2>
                     <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
-                        Usa estos prompts con Cursor AI para configurar y personalizar el componente Sidebar de manera eficiente.
+                        Copia el prompt, reemplaza lo que va entre [corchetes] y pide a Cursor que lo aplique. Asegúrate de que importe sidebar.css y alert.css para que no se vea roto.
                     </p>
 
-                    <!-- Alert Warning -->
                     <div id="sidebar-warning-alert" style="margin-bottom: 32px;"></div>
 
-                    <!-- Prompt 0: Cambiar variante a admin -->
                     <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
                         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
-                                Cambiar sidebar a variante admin
-                            </h3>
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Usar Sidebar de administrador</h3>
                             <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('sidebar-prompt-0')">
                                 <i class="far fa-copy"></i>
                                 <span>Copiar</span>
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="sidebar-prompt-0">En la página [nombre-pagina.html], cambia la variante del sidebar de default a admin. Usa loadSidebar('admin', 'inicio')</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="sidebar-prompt-0">En [nombre-pagina.html] usa el Sidebar de administrador (Inicio, Empresa, Aprendizaje, etc.) en lugar del de colaborador. Debe importar sidebar.css y alert.css.</code></pre>
                         </div>
                     </div>
 
-                    <!-- Prompt 1: Activar sección -->
                     <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
                         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
-                                Activar sección del sidebar
-                            </h3>
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Activar sección del Sidebar</h3>
                             <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('sidebar-prompt-1')">
                                 <i class="far fa-copy"></i>
                                 <span>Copiar</span>
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="sidebar-prompt-1">En la página [nombre-pagina.html] en el componente SIDEBAR UBITS (navegación lateral izquierda) haz que se vea activa la sección de [opciones: aprendizaje, diagnóstico, desempeño, encuestas, reclutamiento, tareas, ubits-ai] activa. Usa la función loadSidebar().</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="sidebar-prompt-1">En [nombre-pagina.html] haz que en el Sidebar se vea activa la sección [aprendizaje, diagnóstico, desempeño, encuestas, reclutamiento, tareas o ubits-ai]. Debe importar sidebar.css y alert.css.</code></pre>
                         </div>
                     </div>
 
-                    <!-- Prompt 2: Cambiar opción activa -->
                     <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
                         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
-                                Cambiar sección activa
-                            </h3>
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Cambiar sección activa</h3>
                             <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('sidebar-prompt-2')">
                                 <i class="far fa-copy"></i>
                                 <span>Copiar</span>
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="sidebar-prompt-2">En la página [nombre-pagina.html], cambia la sección activa del sidebar de [sección actual] a [nueva sección que quieres activar].</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="sidebar-prompt-2">En [nombre-pagina.html] cambia la sección activa del Sidebar de [sección actual] a [nueva sección]. Debe importar sidebar.css y alert.css.</code></pre>
                         </div>
                     </div>
 
-                    <!-- Prompt 3: Ocultar sidebar -->
                     <div>
                         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
-                                Ocultar sidebar en página específica
-                            </h3>
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Ocultar Sidebar en una página</h3>
                             <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('sidebar-prompt-3')">
                                 <i class="far fa-copy"></i>
                                 <span>Copiar</span>
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="sidebar-prompt-3">En la página [nombre-pagina.html], oculta el sidebar pero mantén el TabBar para responsive. Cambia el margin-left del main-content de 131px a 12px para que el contenido ocupe todo el ancho disponible.</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="sidebar-prompt-3">En [nombre-pagina.html] oculta el Sidebar y deja que el contenido ocupe todo el ancho; mantén el Tab-bar en móvil. Debe importar sidebar.css y alert.css.</code></pre>
                         </div>
                     </div>
                 </div>

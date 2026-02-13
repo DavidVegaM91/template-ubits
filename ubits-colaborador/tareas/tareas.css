@@ -1233,8 +1233,15 @@ body.page-tareas .dashboard-container {
     color: var(--ubits-fg-1-high);
 }
 
+.task-detail-header__subtitle-row {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm, 8px);
+    margin-top: var(--padding-xs, 4px);
+}
+
 .task-detail-header__subtitle {
-    margin: var(--padding-xs, 4px) 0 0 0;
+    margin: 0;
     font-size: var(--font-size-sm, 13px);
     color: var(--ubits-fg-1-medium);
 }
@@ -1872,6 +1879,17 @@ body.page-tareas .dashboard-container {
     flex: 1;
     padding: var(--padding-2xl, 24px);
     overflow-y: auto;
+}
+
+/* Contenedor del empty state oficial (Comentarios y evidencias) */
+.task-detail-sidebar-content #task-detail-sidebar-empty-container.ubits-empty-state {
+    min-height: 120px;
+    padding: var(--padding-lg);
+}
+
+.task-detail-sidebar-content__list-helper {
+    margin: 0;
+    color: var(--ubits-fg-1-medium);
 }
 
 .task-detail-footer {

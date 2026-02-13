@@ -172,7 +172,7 @@
                             Header Product
                         </h1>
                         <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
-                            Componente de encabezado para páginas de producto. Incluye botón de retroceso, título del producto, botones de acción y breadcrumb opcionales.
+                            Encabezado de página con volver atrás, título, botones de acción y opcionalmente pestañas o ruta (breadcrumb). Se usa en pantallas de producto o flujos concretos.
                         </p>
                     </div>
 
@@ -294,23 +294,23 @@
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--gap-lg);">
                             <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
                                 <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-sliders-h"></i></div>
-                                <div class="ubits-body-sm-bold">Componente flexible</div>
-                                <div class="ubits-body-sm-regular">Todos los elementos son opcionales y configurables</div>
+                                <div class="ubits-body-sm-bold">Flexible</div>
+                                <div class="ubits-body-sm-regular">Puedes mostrar u ocultar volver, título, botones y ruta</div>
                             </div>
                             <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
                                 <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-mobile-alt"></i></div>
                                 <div class="ubits-body-sm-bold">Responsive</div>
-                                <div class="ubits-body-sm-regular">Se adapta automáticamente a diferentes tamaños de pantalla</div>
+                                <div class="ubits-body-sm-regular">Se adapta a móvil y escritorio</div>
                             </div>
                             <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
-                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-compress-arrows-alt"></i></div>
-                                <div class="ubits-body-sm-bold">Abraza su contenido</div>
-                                <div class="ubits-body-sm-regular">Se ajusta automáticamente sin alturas fijas</div>
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-list"></i></div>
+                                <div class="ubits-body-sm-bold">Ruta (breadcrumb)</div>
+                                <div class="ubits-body-sm-regular">Opcional: muestra la ruta de navegación bajo el título</div>
                             </div>
                             <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
-                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-sitemap"></i></div>
-                                <div class="ubits-body-sm-bold">Breadcrumb opcional</div>
-                                <div class="ubits-body-sm-regular">Configurable con múltiples niveles (máx. 3 recomendado)</div>
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-columns"></i></div>
+                                <div class="ubits-body-sm-bold">Pestañas</div>
+                                <div class="ubits-body-sm-regular">Variante con pestañas (ej. Tareas | Planes) y botones de acción</div>
                             </div>
                         </div>
                     </div>
@@ -322,21 +322,21 @@
                             Prompts útiles
                         </h2>
                         <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
-                            Usa estos prompts con Cursor AI para añadir o cambiar el header de producto en tu página. Copia el que necesites y reemplaza los textos entre [corchetes].
+                            Copia el prompt, reemplaza lo que va entre [corchetes] y pide a Cursor que lo aplique. Asegúrate de que importe header-product.css, button.css, tab.css, ia-button.css y alert.css para que no se vea roto.
                         </p>
 
                         <div id="header-product-warning-alert" style="margin-bottom: 32px;"></div>
 
                         <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
                             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Crear header de producto</h3>
+                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Insertar Header Product</h3>
                                 <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('header-product-prompt-0')">
                                     <i class="far fa-copy"></i>
                                     <span>Copiar</span>
                                 </button>
                             </div>
                             <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
-                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="header-product-prompt-0">Añade un header de producto en [parte de la página]. Debe mostrar el título "[nombre del producto]", botón de volver atrás, y [opcional: breadcrumb con X niveles]. Usa el componente UBITS header-product (loadHeaderProduct).</code></pre>
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="header-product-prompt-0">Inserta un Header Product en [ubicación] con título "[nombre del producto]", botón volver atrás y opcionalmente ruta (breadcrumb). Debe importar header-product.css, button.css y alert.css.</code></pre>
                             </div>
                         </div>
 
@@ -349,20 +349,20 @@
                                 </button>
                             </div>
                             <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
-                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="header-product-prompt-1">Cambia el título del header de producto a "[nuevo título]".</code></pre>
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="header-product-prompt-1">Cambia el título del Header Product a "[nuevo título]".</code></pre>
                             </div>
                         </div>
 
                         <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
                             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Añadir breadcrumb</h3>
+                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Añadir ruta (breadcrumb)</h3>
                                 <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('header-product-prompt-2')">
                                     <i class="far fa-copy"></i>
                                     <span>Copiar</span>
                                 </button>
                             </div>
                             <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
-                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="header-product-prompt-2">En el header de producto, añade un breadcrumb con estos niveles: [nivel 1], [nivel 2], [nivel actual]. El último nivel debe marcarse como activo. Usa breadcrumbItems en loadHeaderProduct.</code></pre>
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="header-product-prompt-2">En el Header Product de [ubicación], añade la ruta: [nivel 1], [nivel 2], [nivel actual]. Debe importar header-product.css y alert.css.</code></pre>
                             </div>
                         </div>
 
@@ -375,20 +375,20 @@
                                 </button>
                             </div>
                             <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
-                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="header-product-prompt-3">En el header de producto, añade un botón de acción principal que diga "[texto del botón]" y al hacer clic [describe qué debe hacer]. Usa primaryButton en loadHeaderProduct.</code></pre>
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="header-product-prompt-3">En el Header Product de [ubicación], añade un botón principal que diga "[texto]" y al hacer clic [acción]. Debe importar button.css y alert.css.</code></pre>
                             </div>
                         </div>
 
                         <div>
                             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Usar header con tabs (Tareas | Planes)</h3>
+                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Header con pestañas</h3>
                                 <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('header-product-prompt-4')">
                                     <i class="far fa-copy"></i>
                                     <span>Copiar</span>
                                 </button>
                             </div>
                             <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
-                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="header-product-prompt-4">Usa la variante del header de producto con tabs: "[Tab 1]" y "[Tab 2]". El tab activo por defecto es [Tab 1 o Tab 2]. Incluye el botón [Crear / nombre] como acción principal. Usa loadHeaderProduct con variant: 'tabs-with-actions' y tabs.</code></pre>
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="header-product-prompt-4">Usa el Header Product con pestañas "[Tab 1]" y "[Tab 2]", tab activo [Tab 1 o Tab 2], y botón principal "[texto]". Debe importar header-product.css, tab.css, button.css y alert.css.</code></pre>
                             </div>
                         </div>
                     </div>

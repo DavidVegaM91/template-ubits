@@ -72,7 +72,7 @@
                             Status Tag
                         </h1>
                         <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
-                            Componente de etiqueta de estado que muestra información de estado con múltiples variantes de color, tamaños y opciones de iconos.
+                            Etiqueta corta para mostrar un estado (activo, pendiente, error, etc.). Tiene varios colores y tamaños y puede llevar icono.
                         </p>
                     </div>
 
@@ -195,41 +195,34 @@
                         Prompts útiles
                     </h2>
                     <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
-                        Usa estos prompts con Cursor AI para configurar y personalizar el componente Status Tag de manera eficiente.
+                        Copia el prompt, reemplaza lo que va entre [corchetes] y pide a Cursor que lo aplique. Asegúrate de que importe status-tag.css y alert.css para que no se vea roto.
                     </p>
 
-                    <!-- Alert Warning -->
                     <div id="status-tag-warning-alert" style="margin-bottom: 32px;"></div>
 
-                    <!-- Prompt 1: Crear status tag básico -->
                     <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
                         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
-                                Crear status tag básico
-                            </h3>
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Insertar Status Tag</h3>
                             <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('status-tag-prompt-1')">
                                 <i class="far fa-copy"></i>
                                 <span>Copiar</span>
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="status-tag-prompt-1">Crea un status tag de [success, info, warning, error o neutral] que diga "[tu_texto]" en [ubicación donde quieres el tag].</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="status-tag-prompt-1">Inserta un Status Tag en [ubicación] con texto "[texto]" y color [success, info, warning, error o neutral] en tamaño [xs, sm, md o lg]. Debe importar status-tag.css y alert.css.</code></pre>
                         </div>
                     </div>
 
-                    <!-- Prompt 2: Agregar icono -->
                     <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
                         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
-                                Agregar icono al status tag
-                            </h3>
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Status Tag con icono</h3>
                             <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('status-tag-prompt-2')">
                                 <i class="far fa-copy"></i>
                                 <span>Copiar</span>
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="status-tag-prompt-2">Agrega el icono [nombre_del_icono] al status tag [descripción_del_tag] en la posición [izquierda o derecha].</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="status-tag-prompt-2">Añade el icono [nombre del icono] al Status Tag de [ubicación], a la [izquierda o derecha]. Debe importar status-tag.css y alert.css.</code></pre>
                         </div>
                     </div>
 

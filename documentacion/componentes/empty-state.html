@@ -96,7 +96,7 @@
                             Empty State
                         </h1>
                         <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
-                            Componente para mostrar estados vacíos con icono, título, descripción y dos botones de acción (secondary y primary). Útil para mostrar cuando no hay contenido disponible, resultados de búsqueda, o estados iniciales.
+                            Mensaje que se muestra cuando no hay contenido: icono, título, descripción y hasta dos botones. Sirve para listas vacías, búsquedas sin resultados o pantallas iniciales.
                         </p>
                     </div>
 
@@ -205,18 +205,18 @@
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--gap-lg);">
                             <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
                                 <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-icons"></i></div>
-                                <div class="ubits-body-sm-bold">Icono en contenedor</div>
-                                <div class="ubits-body-sm-regular">Icono FontAwesome en contenedor con fondo bg-2; tamaños sm, md, lg</div>
+                                <div class="ubits-body-sm-bold">Icono</div>
+                                <div class="ubits-body-sm-regular">Icono grande arriba; puedes elegir tamaño del contenedor</div>
                             </div>
                             <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
                                 <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-font"></i></div>
                                 <div class="ubits-body-sm-bold">Título y descripción</div>
-                                <div class="ubits-body-sm-regular">Textos personalizables con tipografía UBITS</div>
+                                <div class="ubits-body-sm-regular">Textos que explican por qué está vacío y qué hacer</div>
                             </div>
                             <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
                                 <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-buttons"></i></div>
                                 <div class="ubits-body-sm-bold">Dos botones opcionales</div>
-                                <div class="ubits-body-sm-regular">Secondary y Primary con variantes y tamaños UBITS Button</div>
+                                <div class="ubits-body-sm-regular">Uno secundario y uno principal para acciones (ej. Crear, Buscar)</div>
                             </div>
                             <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
                                 <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-mobile-alt"></i></div>
@@ -238,31 +238,31 @@
                             Prompts útiles
                         </h2>
                         <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
-                            Usa estos prompts con Cursor AI para añadir o cambiar el empty state en tu página. Copia el que necesites y reemplaza los textos entre [corchetes].
+                            Copia el prompt, reemplaza lo que va entre [corchetes] y pide a Cursor que lo aplique. Asegúrate de que importe empty-state.css, button.css y alert.css para que no se vea roto.
                         </p>
                         <div id="empty-state-warning-alert" style="margin-bottom: 32px;"></div>
                         <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
                             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Crear empty state</h3>
+                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Insertar Empty State</h3>
                                 <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('empty-state-prompt-0')">
                                     <i class="far fa-copy"></i>
                                     <span>Copiar</span>
                                 </button>
                             </div>
                             <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
-                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="empty-state-prompt-0">Añade un empty state en [parte de la página] cuando [no hay resultados / no hay contenido / etc.]. Debe mostrar el icono [fa-inbox o fa-search], título "[título]" y descripción "[descripción]". Usa loadEmptyState.</code></pre>
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="empty-state-prompt-0">Inserta un Empty State en [ubicación] cuando no haya [contenido / resultados / etc.]. Título "[título]", descripción "[descripción]" e icono [nombre del icono]. Debe importar empty-state.css, button.css y alert.css.</code></pre>
                             </div>
                         </div>
                         <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
                             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Añadir dos botones al empty state</h3>
+                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Añadir botones al Empty State</h3>
                                 <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('empty-state-prompt-1')">
                                     <i class="far fa-copy"></i>
                                     <span>Copiar</span>
                                 </button>
                             </div>
                             <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
-                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="empty-state-prompt-1">En el empty state de [nombre del contenedor], añade dos botones: uno secundario que diga "[texto secundario]" y uno primario que diga "[texto primario]". Al hacer clic en el primario debe [describir la acción]. Usa options.buttons (secondary y primary) en loadEmptyState.</code></pre>
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="empty-state-prompt-1">En el Empty State de [ubicación], añade dos botones: uno que diga "[texto del botón secundario]" y otro "[texto del botón principal]". Debe importar button.css y alert.css.</code></pre>
                             </div>
                         </div>
                         <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">

@@ -47,7 +47,7 @@
                         Loader
                     </h1>
                     <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
-                        Loader circular oficial de UBITS (doble anillo). Usa tokens de color para modo claro y oscuro. Ideal para estados de carga y generación de contenido.
+                        Indicador de carga en forma de doble anillo. Se muestra mientras se cargan datos o se genera contenido. Opcionalmente puede llevar un texto debajo.
                     </p>
                 </div>
 
@@ -58,7 +58,7 @@
                         Preview del componente
                     </h2>
                     <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
-                        Loader solo (HTML directo) y loader con texto generado con <code>getLoaderHTML()</code>.
+                        Puedes usar solo el círculo o añadir un texto debajo (por ejemplo "Cargando...").
                     </p>
                     
                     <!-- Preview Container -->
@@ -80,28 +80,23 @@
                         Características generales
                     </h2>
                     <p class="ubits-body-md-regular" style="margin-bottom: 24px; color: var(--ubits-fg-1-medium);">
-                        Loader ligero y consistente con UBITS: doble anillo animado, tokens de color y opción de texto opcional.
+                        Indicador visual sencillo que se adapta al modo claro y oscuro.
                     </p>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--gap-lg);">
                         <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
                             <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-spinner-third"></i></div>
                             <div class="ubits-body-sm-bold">Doble anillo</div>
-                            <div class="ubits-body-sm-regular">Anillo exterior 48px y interior 40px con animación de rotación continua a 1s.</div>
+                            <div class="ubits-body-sm-regular">Dos círculos concéntricos que giran de forma continua</div>
                         </div>
                         <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
-                            <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-palette"></i></div>
-                            <div class="ubits-body-sm-bold">Tokens UBITS</div>
-                            <div class="ubits-body-sm-regular">Anillo exterior <code>--ubits-border-1</code>, interior <code>--ubits-accent-brand</code>. Compatible con modo claro y oscuro.</div>
+                            <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-sun"></i></div>
+                            <div class="ubits-body-sm-bold">Modo claro y oscuro</div>
+                            <div class="ubits-body-sm-regular">Los colores se adaptan al tema de la página</div>
                         </div>
                         <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
                             <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-font"></i></div>
                             <div class="ubits-body-sm-bold">Texto opcional</div>
-                            <div class="ubits-body-sm-regular">Clase <code>ubits-loader-text</code> con tipografía <code>ubits-body-md-regular</code> para mensajes debajo del loader.</div>
-                        </div>
-                        <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
-                            <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-code"></i></div>
-                            <div class="ubits-body-sm-bold">getLoaderHTML()</div>
-                            <div class="ubits-body-sm-regular">Función JS que genera el HTML del loader con opciones <code>text</code> y <code>wrap</code> para integrar rápido.</div>
+                            <div class="ubits-body-sm-regular">Puedes mostrar un mensaje debajo, por ejemplo "Cargando..."</div>
                         </div>
                     </div>
                 </div>
@@ -113,41 +108,34 @@
                         Prompts útiles
                     </h2>
                     <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
-                        Usa estos prompts con Cursor AI para configurar y personalizar el componente Loader de manera eficiente.
+                        Copia el prompt, reemplaza lo que va entre [corchetes] y pide a Cursor que lo aplique. Asegúrate de que importe loader.css y alert.css para que no se vea roto.
                     </p>
 
-                    <!-- Alert Warning -->
                     <div id="component-warning-alert" style="margin-bottom: 32px;"></div>
 
-                    <!-- Prompt 1 -->
                     <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
                         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
-                                Mostrar loader mientras se carga contenido
-                            </h3>
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Mostrar loader mientras carga</h3>
                             <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('loader-prompt-1')">
                                 <i class="far fa-copy"></i>
                                 <span>Copiar</span>
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="loader-prompt-1">En esta página, mientras se carga [el recurso / los datos], muestra el loader oficial UBITS (componente Loader). Importa components/loader.css y, si quieres texto debajo, usa getLoaderHTML({ text: 'Cargando...' }) desde components/loader.js. Al terminar la carga, oculta el loader y muestra el contenido.</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="loader-prompt-1">Mientras se carga [qué se carga] en [ubicación], muestra el Loader UBITS. Al terminar, oculta el loader y muestra el contenido. Debe importar loader.css y alert.css.</code></pre>
                         </div>
                     </div>
 
-                    <!-- Prompt 2 -->
                     <div>
                         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
-                                Añadir loader solo (sin texto)
-                            </h3>
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Insertar loader (solo círculo o con texto)</h3>
                             <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('loader-prompt-2')">
                                 <i class="far fa-copy"></i>
                                 <span>Copiar</span>
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="loader-prompt-2">En [ubicación] añade el loader oficial UBITS (solo el círculo, sin texto). Usa la clase ubits-loader e importa components/loader.css. Opcional: usa getLoaderHTML() sin opciones para generar solo el &lt;span class="ubits-loader"&gt;&lt;/span&gt;.</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="loader-prompt-2">Añade el Loader UBITS en [ubicación], [solo el círculo o con texto "[texto]"]. Debe importar loader.css y alert.css.</code></pre>
                         </div>
                     </div>
                 </div>

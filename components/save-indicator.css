@@ -1,0 +1,245 @@
+/* ========================================
+   UBITS SAVE INDICATOR COMPONENT
+   Indicador visual de guardado (Saved, Hover, Focus, Saving, Failed, Recently saved)
+   Figma: Planes y Tareas R4 – siempre con padding, focus cuadrado. Solo icono 1:1: xs 28px, sm 32px, md 40px, lg 48px
+   ======================================== */
+
+/* Contenedor base: siempre con padding, nunca sin espacio */
+.ubits-save-indicator {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap-sm);
+    padding: var(--padding-sm) var(--padding-md);
+    min-height: var(--space-10);
+    border-radius: var(--border-radius-sm);
+    font-family: 'Noto Sans', sans-serif;
+    font-weight: 500;
+    color: var(--ubits-fg-1-high);
+    box-sizing: border-box;
+    transition: background-color 0.2s ease;
+}
+
+/* Focus: 4px spread (Figma), contenedor cuadrado en estados solo icono */
+.ubits-save-indicator:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 4px var(--ubits-button-focus-ring);
+}
+
+/* ---- TAMAÑOS (Figma) ---- */
+
+/* Extra small: 28px */
+.ubits-save-indicator--xs {
+    min-height: var(--space-7);
+    padding: var(--padding-xs) var(--padding-sm);
+    gap: var(--gap-xs);
+}
+.ubits-save-indicator--xs .ubits-save-indicator__icon {
+    width: 14px;
+    height: 14px;
+}
+.ubits-save-indicator--xs .ubits-save-indicator__icon i {
+    font-size: 12px;
+}
+.ubits-save-indicator--xs .ubits-save-indicator__text {
+    font-size: 12px;
+}
+
+/* Small: 32px */
+.ubits-save-indicator--sm {
+    min-height: var(--space-8);
+    padding: var(--padding-sm) var(--padding-md);
+    gap: var(--gap-xs);
+}
+
+.ubits-save-indicator--sm .ubits-save-indicator__icon {
+    width: 16px;
+    height: 16px;
+}
+
+.ubits-save-indicator--sm .ubits-save-indicator__icon i {
+    font-size: 12px;
+}
+
+.ubits-save-indicator--sm .ubits-save-indicator__text {
+    font-size: 13px;
+}
+
+/* Medium (default): 40px */
+.ubits-save-indicator--md {
+    min-height: var(--space-10);
+    padding: var(--padding-sm) var(--padding-md);
+}
+
+.ubits-save-indicator--md .ubits-save-indicator__icon {
+    width: 20px;
+    height: 20px;
+}
+
+.ubits-save-indicator--md .ubits-save-indicator__icon i {
+    font-size: var(--font-size-md, 16px);
+}
+
+.ubits-save-indicator--md .ubits-save-indicator__text {
+    font-size: var(--font-size-md, 16px);
+}
+
+/* Large: 48px */
+.ubits-save-indicator--lg {
+    min-height: var(--space-12);
+    padding: var(--padding-md) var(--padding-lg);
+    gap: var(--gap-md);
+}
+
+.ubits-save-indicator--lg .ubits-save-indicator__icon {
+    width: 24px;
+    height: 24px;
+}
+
+.ubits-save-indicator--lg .ubits-save-indicator__icon i {
+    font-size: 20px;
+}
+
+.ubits-save-indicator--lg .ubits-save-indicator__text {
+    font-size: 18px;
+}
+
+/* ---- ESTADOS SOLO ICONO (Saved, Hover, Focus): cuadro exacto 1:1 Figma ---- */
+
+.ubits-save-indicator--idle-plain .ubits-save-indicator__text,
+.ubits-save-indicator--idle-subtle .ubits-save-indicator__text,
+.ubits-save-indicator--idle-highlighted .ubits-save-indicator__text {
+    display: none;
+}
+
+/* xs 28x28 */
+.ubits-save-indicator--xs.ubits-save-indicator--idle-plain,
+.ubits-save-indicator--xs.ubits-save-indicator--idle-subtle,
+.ubits-save-indicator--xs.ubits-save-indicator--idle-highlighted {
+    width: var(--space-7);
+    height: var(--space-7);
+    min-width: var(--space-7);
+    min-height: var(--space-7);
+    padding: 0;
+}
+
+/* sm 32x32 */
+.ubits-save-indicator--sm.ubits-save-indicator--idle-plain,
+.ubits-save-indicator--sm.ubits-save-indicator--idle-subtle,
+.ubits-save-indicator--sm.ubits-save-indicator--idle-highlighted {
+    width: var(--space-8);
+    height: var(--space-8);
+    min-width: var(--space-8);
+    min-height: var(--space-8);
+    padding: 0;
+}
+
+/* md 40x40 */
+.ubits-save-indicator--md.ubits-save-indicator--idle-plain,
+.ubits-save-indicator--md.ubits-save-indicator--idle-subtle,
+.ubits-save-indicator--md.ubits-save-indicator--idle-highlighted {
+    width: var(--space-10);
+    height: var(--space-10);
+    min-width: var(--space-10);
+    min-height: var(--space-10);
+    padding: 0;
+}
+
+/* lg 48x48 */
+.ubits-save-indicator--lg.ubits-save-indicator--idle-plain,
+.ubits-save-indicator--lg.ubits-save-indicator--idle-subtle,
+.ubits-save-indicator--lg.ubits-save-indicator--idle-highlighted {
+    width: var(--space-12);
+    height: var(--space-12);
+    min-width: var(--space-12);
+    min-height: var(--space-12);
+    padding: 0;
+}
+
+/* Saved (Figma): mismo cuadro y padding que Hover, solo cambia el fondo al hacer hover */
+.ubits-save-indicator--idle-plain {
+    background-color: var(--ubits-bg-1);
+}
+.ubits-save-indicator--idle-plain .ubits-save-indicator__icon {
+    color: var(--ubits-fg-1-low);
+}
+.ubits-save-indicator--idle-plain:hover {
+    background-color: var(--ubits-bg-2);
+}
+
+/* Hover (Figma): fondo sutil por defecto */
+.ubits-save-indicator--idle-subtle {
+    background-color: var(--ubits-bg-2);
+}
+
+.ubits-save-indicator--idle-subtle .ubits-save-indicator__icon {
+    color: var(--ubits-fg-1-low);
+}
+
+/* Focus (Figma): solo box-shadow (ring 4px), sin borde */
+.ubits-save-indicator--idle-highlighted {
+    background-color: var(--ubits-bg-1);
+    box-shadow: 0 0 0 4px var(--ubits-button-focus-ring);
+}
+
+.ubits-save-indicator--idle-highlighted .ubits-save-indicator__icon {
+    color: var(--ubits-fg-1-low);
+}
+
+/* Icono base */
+.ubits-save-indicator__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+/* Animación: guardando (flechas rotando) */
+.ubits-save-indicator__icon--spin i {
+    animation: ubits-save-indicator-spin 0.9s linear infinite;
+}
+
+@keyframes ubits-save-indicator-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Texto */
+.ubits-save-indicator__text {
+    line-height: 1.25;
+    color: var(--ubits-fg-1-high);
+}
+
+/* Puntos animados "..." en Guardando... */
+.ubits-save-indicator__dots {
+    display: inline;
+}
+
+.ubits-save-indicator__dots span {
+    animation: ubits-save-indicator-dot 1.2s ease-in-out infinite both;
+    opacity: 0;
+}
+
+.ubits-save-indicator__dots span:nth-child(1) { animation-delay: 0s; }
+.ubits-save-indicator__dots span:nth-child(2) { animation-delay: 0.2s; }
+.ubits-save-indicator__dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes ubits-save-indicator-dot {
+    0%, 60%, 100% { opacity: 0; }
+    30% { opacity: 1; }
+}
+
+/* Failed: icono en color de error */
+.ubits-save-indicator--error .ubits-save-indicator__icon {
+    color: var(--ubits-feedback-accent-error);
+}
+
+.ubits-save-indicator--error .ubits-save-indicator__text {
+    color: var(--ubits-fg-1-high);
+}
+
+/* Recently saved */
+.ubits-save-indicator--saved .ubits-save-indicator__icon {
+    color: var(--ubits-fg-1-high);
+}

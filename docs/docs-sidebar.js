@@ -12,6 +12,7 @@ const DOCS_SIDEBAR_SECTIONS = [
     { id: 'tab-bar', title: 'Tab-bar', group: 'navegacion' },
     // UI en orden alfabético
     { id: 'alert', title: 'Alert', group: 'ui' },
+    { id: 'save-indicator', title: 'Save Indicator', group: 'ui' },
     { id: 'avatar', title: 'Avatar', group: 'ui' },
     { id: 'badge-tag', title: 'Badge Tag', group: 'ui' },
     { id: 'button', title: 'Button', group: 'ui' },
@@ -212,6 +213,7 @@ function initDocsSidebar(activeSection) {
             'ia-button': 'ia-button.html',
             'loader': 'loader.html',
             'alert': 'alert.html',
+            'save-indicator': 'save-indicator.html',
             'avatar': 'avatar.html',
             'badge-tag': 'badge-tag.html',
             'card-content': 'card-content.html',
@@ -232,7 +234,7 @@ function initDocsSidebar(activeSection) {
             'calendar': 'calendar.html'
         };
         
-        const targetFile = sectionToFile[section];
+        let targetFile = sectionToFile[section];
         if (!targetFile) {
             console.log('Unknown section:', section);
             return;

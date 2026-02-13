@@ -108,7 +108,7 @@
                             Tab
                         </h1>
                         <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
-                            Componente de tab para navegación entre secciones con estados activo/inactivo, múltiples tamaños y variante icon-only.
+                            Pestaña para cambiar entre secciones sin recargar la página. Puede llevar solo texto o texto con icono; hay varios tamaños.
                         </p>
                     </div>
 
@@ -245,7 +245,7 @@
                             <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                                 <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-expand-arrows-alt"></i></div>
                                 <div class="ubits-body-sm-bold">Tamaños</div>
-                                <div class="ubits-body-sm-regular">XS, SM, MD y LG</div>
+                                <div class="ubits-body-sm-regular">Cuatro tamaños: xs, sm, md y lg</div>
                             </div>
                             <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                                 <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-icons"></i></div>
@@ -262,64 +262,47 @@
                         Prompts útiles
                     </h2>
                     <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
-                        Usa estos prompts con Cursor AI para configurar y personalizar el componente Tab de manera eficiente.
+                        Copia el prompt, reemplaza lo que va entre [corchetes] y pide a Cursor que lo aplique. Asegúrate de que importe tab.css y alert.css para que no se vea roto.
                     </p>
 
-                    <!-- Alert Warning -->
                     <div id="tab-warning-alert" style="margin-bottom: 32px;"></div>
 
-                    <!-- Prompt 1: Crear tab básico -->
                     <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
                         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
-                                Crear tab básico
-                            </h3>
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Insertar Tab</h3>
                             <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('tab-prompt-1')">
                                 <i class="far fa-copy"></i>
                                 <span>Copiar</span>
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tab-prompt-1">Crea un tab UBITS con estas características:
-- Texto: [especifica texto]
-- Icono: [especifica icono FontAwesome]
-- Tamaño: [xs/sm/md/lg]
-- Estado: [activo o inactivo]
-- Ubicación: [describe en que parte del layout debe estar el tab]
-
-Para estado activo, agrega la clase ubits-tab--active.</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tab-prompt-1">Inserta un Tab en [ubicación] con texto "[texto]", tamaño [xs, sm, md o lg] y estado [activo o inactivo]. Opcional: icono [nombre del icono]. Debe importar tab.css y alert.css.</code></pre>
                         </div>
                     </div>
 
-                    <!-- Prompt 2: Cambiar estado -->
                     <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
                         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
-                                Cambiar estado del tab
-                            </h3>
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Cambiar estado del tab</h3>
                             <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('tab-prompt-2')">
                                 <i class="far fa-copy"></i>
                                 <span>Copiar</span>
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tab-prompt-2">Cambia el tab [descripción_del_tab] a estado [activo o inactivo]. Agrega o quita la clase ubits-tab--active según corresponda.</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tab-prompt-2">Pon el tab "[texto del tab]" de [ubicación] en estado [activo o inactivo]. Debe importar tab.css y alert.css.</code></pre>
                         </div>
                     </div>
 
-                    <!-- Prompt 3: Cambiar tamaño -->
                     <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
                         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
-                                Cambiar tamaño del tab
-                            </h3>
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Cambiar tamaño del tab</h3>
                             <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('tab-prompt-3')">
                                 <i class="far fa-copy"></i>
                                 <span>Copiar</span>
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tab-prompt-3">Cambia el tamaño del tab [descripción_del_tab] a [xs, sm, md o lg]. Actualiza la clase ubits-tab--[tamaño] correspondiente.</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tab-prompt-3">Cambia el tamaño del tab "[texto]" de [ubicación] a [xs, sm, md o lg]. Debe importar tab.css y alert.css.</code></pre>
                         </div>
                     </div>
 
@@ -335,7 +318,7 @@ Para estado activo, agrega la clase ubits-tab--active.</code></pre>
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tab-prompt-4">Convierte el tab [descripción_del_tab] a la variante de solo icono. Quita el elemento &lt;span&gt; con el texto y agrega la clase ubits-tab--icon-only.</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tab-prompt-4">Convierte el tab "[texto]" de [ubicación] a solo icono (sin texto). Debe importar tab.css y alert.css.</code></pre>
                         </div>
                     </div>
 
@@ -351,7 +334,7 @@ Para estado activo, agrega la clase ubits-tab--active.</code></pre>
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tab-prompt-5">Agrega el icono [nombre_del_icono] al tab [descripción_del_tab]. Usa FontAwesome con la clase far fa-[nombre_del_icono].</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tab-prompt-5">Añade el icono [nombre del icono] al tab "[texto]" de [ubicación]. Debe importar tab.css y alert.css.</code></pre>
                         </div>
                     </div>
 
