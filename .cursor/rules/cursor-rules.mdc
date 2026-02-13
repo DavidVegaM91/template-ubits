@@ -325,7 +325,64 @@ openModal({
 - **`documentacion/validador-ubits.html`** - Validador automático (USE ALWAYS)
 - **`documentacion/guia-prompts.html`** - Prompts para personalización
 - **`documentacion/guias/iconos.html`** - Galería de iconos FontAwesome
-- **`documentacion/plantilla-ubits.html`** - Template base para crear nuevas páginas
+- **`documentacion/plantilla-ubits.html`** - Template base para crear nuevas páginas (páginas de producto)
+- **`documentacion/componentes/component-doc-template.html`** - Plantilla base para documentación de componentes (usar al crear doc de un componente)
+- **`documentacion/componentes/button.html`** - Referencia de estructura y estilo de documentación de componente (seguir esta estructura)
+
+## 📄 PÁGINAS DE DOCUMENTACIÓN DE COMPONENTES (documentacion/componentes/)
+
+### **🚨 OBLIGATORIO AL CREAR O EDITAR DOC DE UN COMPONENTE**
+
+**Antes de crear o modificar cualquier página en `documentacion/componentes/*.html`:**
+
+1. **Usar siempre como base** la plantilla **`documentacion/componentes/component-doc-template.html`** (no `plantilla-ubits.html` ni copiar de páginas de producto).
+2. **Revisar** **`documentacion/componentes/button.html`** para seguir la misma estructura, orden de secciones y estilo (es la referencia oficial).
+3. **Revisar** otros componentes ya documentados (por ejemplo `badge-tag.html`, `status-tag.html`, `radio-button.html`) para mantener coherencia.
+
+### **🚫 EN PÁGINAS DE DOCUMENTACIÓN NO DEBE HABER:**
+
+En las páginas de **documentación de componentes** (`documentacion/componentes/*.html`) **NUNCA** incluir:
+
+- **Tab Bar** – No contenedor `tab-bar-container`, no `tab-bar.css`, no `tab-bar.js`, no `loadTabBar()`.
+- **Floating Menu** – No contenedor `floating-menu-container`, no `floating-menu.js`, no `loadFloatingMenu()`.
+- **Profile Menu** – No contenedor `profile-menu-container`, no `profile-menu.js`, no `loadProfileMenu()`.
+
+Si se incluyen, su HTML se inyecta en la página y se ve como “código basura” en pantalla. En documentación solo deben cargarse: **SubNav** (variante `documentacion`), **Docs Sidebar**, **Sidebar** con `loadSidebar('ninguno')`, **Toast** (para mensajes “Copiado”) y los scripts/estilos del componente documentado.
+
+### **✅ ESTRUCTURA OBLIGATORIA (seguir como en button.html):**
+
+1. **Hero**
+   - Título del componente (ej. `ubits-display-d2-bold`) y descripción breve (`ubits-body-md-regular`).
+
+2. **Preview del componente**
+   - Bloque con título “Preview del componente” (`ubits-heading-h2`), descripción y un **preview interactivo** del componente (variantes, tamaños, estados según aplique).
+   - Controles opcionales (botones, switches) para cambiar variante/tamaño/estado en la misma página.
+
+3. **Características generales**
+   - Sección “Características generales” con **tarjetas visuales** (grid de ítems: icono, título, descripción corta). Ej.: variantes, tamaños, estados, opciones (badge, icon-only, etc.).
+
+4. **Prompts útiles**
+   - Sección “Prompts útiles” con **lenguaje simple para usuarios no técnicos** (PM, diseñadores). Cada prompt:
+     - Título claro (ej. “Crear botón UBITS”, “Cambiar estilo del botón”).
+     - Texto del prompt en `<code>` dentro de `<pre>`, con botón “Copiar” que use `copyPrompt('id')`.
+   - Alert opcional de aviso (ej. “Reemplaza los textos entre [corchetes]…”).
+   - Los prompts deben ser accionables y fáciles de personalizar (ej. “[texto]”, “[ubicación]”).
+
+5. **Documentación técnica (sección colapsable)**
+   - Bloque con título “Documentación técnica” y subtítulo descriptivo.
+   - **Botón/fila “Mostrar”** que al hacer clic expande el contenido y cambia a “Ocultar” (función `toggleTechnicalDocs()`, contenido en `#technical-docs-content` con `display: none` por defecto).
+   - Dentro del contenido expandible:
+     - **Estructura del componente**: HTML de ejemplo en `<pre><code>`, escapado (entidades `&lt;` `&gt;`), con botón Copiar.
+     - **Clases disponibles** (si aplica): listado de clases CSS con descripción breve, en bloque de código con Copiar.
+     - **Cómo implementar**: requisitos (CSS/JS obligatorios), ejemplo de HTML y/o llamada de función, con Copiar.
+   - Todo el código dentro de la sección técnica debe estar correctamente escapado para que no se interprete como HTML y no se vea “código basura” en la página.
+
+### **Resumen rápido:**
+
+- **Base:** `component-doc-template.html`.
+- **Referencia de estructura y estilo:** `button.html`.
+- **En doc de componentes:** sin Tab Bar, sin Floating Menu, sin Profile Menu.
+- **Secciones:** Hero → Preview → Características (tarjetas) → Prompts útiles (lenguaje simple, Copiar) → Documentación técnica (colapsable: Mostrar/Ocultar, código escapado).
 
 ### **🚫 NUNCA MODIFIQUES ESTOS ARCHIVOS:**
 - **`general-styles/ubits-colors.css`** - Tokens de color oficiales UBITS
@@ -1685,6 +1742,7 @@ Before finishing any task, verify:
 - [ ] **NO SERVER REQUIRED:** Files work by double-clicking (no npm, yarn, or server needed)
 - [ ] **TITLE ALIGNMENT:** Product interfaces have left-aligned titles (NOT centered)
 - [ ] **COMPONENTS:** Using existing UBITS components (NOT custom buttons/alerts)
+- [ ] **DOC PAGES (documentacion/componentes/):** No tab bar, floating menu, nor profile menu; use `component-doc-template.html` as base and `button.html` as structure reference
 - [ ] **COMPONENTS:** Checked `componentes.html` before creating any UI element
 - [ ] **COMPONENTS:** NO custom buttons created (UBITS Button component exists)
 - [ ] **COMPONENTS:** NO custom alerts created (UBITS Alert component exists)
@@ -2102,6 +2160,8 @@ document.addEventListener('DOMContentLoaded', function() {
 - **`documentacion/componentes.html`** - Component library (check first)
 - **`documentacion/validador-ubits.html`** - Quality validator (use always)
 - **`documentacion/plantilla-ubits.html`** - Base template for new pages
+- **`documentacion/componentes/component-doc-template.html`** - Base template for component docs (doc pages only)
+- **`documentacion/componentes/button.html`** - Reference structure for component docs (Hero → Preview → Características → Prompts → Doc técnica colapsable)
 - **`ubits-colaborador/perfil/profile.html`** - Modular structure example
 
 ### **🚀 SUCCESS FORMULA:**

@@ -315,103 +315,187 @@
                         </div>
                     </div>
 
-                    <!-- Implementación básica -->
+                    <!-- Prompts útiles -->
                     <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
                         <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
-                            <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                            Implementación básica
+                            <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Prompts útiles
                         </h2>
-                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); margin-bottom: 16px;">
-                            <pre style="margin: 0; color: var(--ubits-fg-1-high); font-family: 'Courier New', monospace; font-size: var(--font-size-sm); line-height: 1.6; white-space: pre-wrap; word-wrap: break-word;"><code>&lt;!-- Contenedor para el header-product --&gt;
-&lt;div id="header-product-container"&gt;&lt;/div&gt;
+                        <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                            Usa estos prompts con Cursor AI para añadir o cambiar el header de producto en tu página. Copia el que necesites y reemplaza los textos entre [corchetes].
+                        </p>
 
-&lt;!-- JavaScript para cargar el componente --&gt;
-&lt;script src="../../components/header-product.js"&gt;&lt;/script&gt;
-&lt;script&gt;
-    loadHeaderProduct('header-product-container', {
-        productName: 'Name product',
-        breadcrumbItems: [
-            { text: 'Default', active: false },
-            { text: 'Default', active: false },
-            { text: 'Active', active: true }
-        ],
-        backButton: {
-            onClick: function() {
-                console.log('Back button clicked');
-            }
-        },
-        infoButton: {
-            onClick: function() {
-                console.log('Info button clicked');
-            }
-        },
-        aiButton: {
-            text: 'AI button',
-            onClick: function() {
-                console.log('AI button clicked');
-            }
-        },
-        secondaryButtons: [
-            { text: 'Button text', icon: 'fa-th', onClick: function() { console.log('Secondary button clicked'); } }
-        ],
-        primaryButton: {
-            text: 'Primary action',
-            icon: 'fa-th',
-            onClick: function() {
-                console.log('Primary button clicked');
-            }
-        },
-        menuButton: {
-            onClick: function() {
-                console.log('Menu button clicked');
-            }
-        }
-    });
-&lt;/script&gt;</code></pre>
+                        <div id="header-product-warning-alert" style="margin-bottom: 32px;"></div>
+
+                        <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Crear header de producto</h3>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('header-product-prompt-0')">
+                                    <i class="far fa-copy"></i>
+                                    <span>Copiar</span>
+                                </button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="header-product-prompt-0">Añade un header de producto en [parte de la página]. Debe mostrar el título "[nombre del producto]", botón de volver atrás, y [opcional: breadcrumb con X niveles]. Usa el componente UBITS header-product (loadHeaderProduct).</code></pre>
+                            </div>
+                        </div>
+
+                        <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Cambiar título del header</h3>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('header-product-prompt-1')">
+                                    <i class="far fa-copy"></i>
+                                    <span>Copiar</span>
+                                </button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="header-product-prompt-1">Cambia el título del header de producto a "[nuevo título]".</code></pre>
+                            </div>
+                        </div>
+
+                        <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Añadir breadcrumb</h3>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('header-product-prompt-2')">
+                                    <i class="far fa-copy"></i>
+                                    <span>Copiar</span>
+                                </button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="header-product-prompt-2">En el header de producto, añade un breadcrumb con estos niveles: [nivel 1], [nivel 2], [nivel actual]. El último nivel debe marcarse como activo. Usa breadcrumbItems en loadHeaderProduct.</code></pre>
+                            </div>
+                        </div>
+
+                        <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Añadir botón de acción principal</h3>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('header-product-prompt-3')">
+                                    <i class="far fa-copy"></i>
+                                    <span>Copiar</span>
+                                </button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="header-product-prompt-3">En el header de producto, añade un botón de acción principal que diga "[texto del botón]" y al hacer clic [describe qué debe hacer]. Usa primaryButton en loadHeaderProduct.</code></pre>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Usar header con tabs (Tareas | Planes)</h3>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('header-product-prompt-4')">
+                                    <i class="far fa-copy"></i>
+                                    <span>Copiar</span>
+                                </button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="header-product-prompt-4">Usa la variante del header de producto con tabs: "[Tab 1]" y "[Tab 2]". El tab activo por defecto es [Tab 1 o Tab 2]. Incluye el botón [Crear / nombre] como acción principal. Usa loadHeaderProduct con variant: 'tabs-with-actions' y tabs.</code></pre>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Requisitos obligatorios -->
-                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
-                        <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
-                            <i class="far fa-check-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                            Requisitos obligatorios
-                        </h2>
-                        <ul style="list-style: none; padding: 0; margin: 0;">
-                            <li style="margin-bottom: 12px; display: flex; align-items: flex-start; gap: var(--gap-md);">
-                                <i class="far fa-check" style="color: var(--ubits-accent-brand); margin-top: 4px;"></i>
-                                <span class="ubits-body-md-regular">CSS: <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs); font-family: 'Courier New', monospace;">&lt;link rel="stylesheet" href="../../components/header-product.css"&gt;</code></span>
-                            </li>
-                            <li style="margin-bottom: 12px; display: flex; align-items: flex-start; gap: var(--gap-md);">
-                                <i class="far fa-check" style="color: var(--ubits-accent-brand); margin-top: 4px;"></i>
-                                <span class="ubits-body-md-regular">JavaScript: <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs); font-family: 'Courier New', monospace;">&lt;script src="../../components/header-product.js"&gt;&lt;/script&gt;</code></span>
-                            </li>
-                            <li style="margin-bottom: 12px; display: flex; align-items: flex-start; gap: var(--gap-md);">
-                                <i class="far fa-check" style="color: var(--ubits-accent-brand); margin-top: 4px;"></i>
-                                <span class="ubits-body-md-regular">Componentes dependientes: Button, IA-Button (para el botón de IA)</span>
-                            </li>
-                            <li style="margin-bottom: 12px; display: flex; align-items: flex-start; gap: var(--gap-md);">
-                                <i class="far fa-check" style="color: var(--ubits-accent-brand); margin-top: 4px;"></i>
-                                <span class="ubits-body-md-regular">FontAwesome: <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs); font-family: 'Courier New', monospace;">&lt;link rel="stylesheet" href="../../general-styles/fontawesome-icons.css"&gt;</code></span>
-                            </li>
-                        </ul>
-                    </div>
+                    <!-- Documentación técnica (sección colapsable) -->
+                    <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
+                        <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Documentación técnica
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
+                                Requisitos, código de implementación y notas técnicas del componente Header Product.
+                            </p>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                            <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                <i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>
+                                Mostrar
+                            </span>
+                        </div>
+                        <div id="technical-docs-content" style="display: none; padding: 0;">
+                            <!-- Requisitos obligatorios -->
+                            <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                    <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                        <i class="far fa-check-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                        Requisitos obligatorios
+                                    </h2>
+                                </div>
+                                <ul style="list-style: none; padding: 0; margin: 0;">
+                                    <li style="margin-bottom: 12px; display: flex; align-items: flex-start; gap: var(--gap-md);">
+                                        <i class="far fa-check" style="color: var(--ubits-accent-brand); margin-top: 4px;"></i>
+                                        <span class="ubits-body-md-regular">CSS: <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs); font-family: 'Courier New', monospace;">&lt;link rel="stylesheet" href="../../components/header-product.css"&gt;</code></span>
+                                    </li>
+                                    <li style="margin-bottom: 12px; display: flex; align-items: flex-start; gap: var(--gap-md);">
+                                        <i class="far fa-check" style="color: var(--ubits-accent-brand); margin-top: 4px;"></i>
+                                        <span class="ubits-body-md-regular">JavaScript: <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs); font-family: 'Courier New', monospace;">&lt;script src="../../components/header-product.js"&gt;&lt;/script&gt;</code></span>
+                                    </li>
+                                    <li style="margin-bottom: 12px; display: flex; align-items: flex-start; gap: var(--gap-md);">
+                                        <i class="far fa-check" style="color: var(--ubits-accent-brand); margin-top: 4px;"></i>
+                                        <span class="ubits-body-md-regular">Componentes dependientes: Button, IA-Button (para el botón de IA)</span>
+                                    </li>
+                                    <li style="margin-bottom: 12px; display: flex; align-items: flex-start; gap: var(--gap-md);">
+                                        <i class="far fa-check" style="color: var(--ubits-accent-brand); margin-top: 4px;"></i>
+                                        <span class="ubits-body-md-regular">FontAwesome: <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs); font-family: 'Courier New', monospace;">&lt;link rel="stylesheet" href="../../general-styles/fontawesome-icons.css"&gt;</code></span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- Cómo implementar -->
+                            <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                    <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                        <i class="far fa-code-branch" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                        Cómo implementar
+                                    </h2>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('header-product-implementation-code')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto; white-space: pre-wrap;"><code id="header-product-implementation-code">&lt;!-- Contenedor --&gt;
+&lt;div id="header-product-container"&gt;&lt;/div&gt;
 
-                    <!-- Documentación técnica: alineación cuando se oculta título/flecha -->
-                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px; border: 1px solid var(--ubits-border-1);">
-                        <h2 class="ubits-heading-h2" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">
-                            <i class="far fa-align-right" style="margin-right: 8px; color: var(--ubits-fg-1-medium);"></i>
-                            Alineación de acciones (header sin título ni flecha atrás)
-                        </h2>
-                        <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 12px;">
-                            En muchas páginas el header se usa sin nombre de producto y sin botón atrás (ocultando <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">.ubits-header-product__product-info</code> con CSS). En ese caso las acciones deben seguir siempre a la <strong>derecha</strong>, igual que en el preview.
-                        </p>
-                        <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 12px;">
-                            <strong>Por qué ocurría el error:</strong> <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">product-info</code> tiene <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">flex: 1</code> y ocupa el espacio disponible, empujando las acciones a la derecha. Al ocultar <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">product-info</code> (display: none), ese bloque deja de ocupar espacio y la fila solo contiene <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">__actions</code>; en un contenedor flex sin más reglas, el único hijo queda al inicio (izquierda).
-                        </p>
-                        <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 0;">
-                            <strong>Solución en el componente:</strong> En <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">header-product.css</code>, <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">.ubits-header-product__actions</code> usa <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">margin-left: auto</code> (en la shorthand <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">margin: -16px -16px -16px auto</code>). Así las acciones quedan siempre alineadas a la derecha, con o sin <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">product-info</code> visible. No hace falta añadir estilos en la página (p. ej. justify-content: flex-end).
-                        </p>
+&lt;!-- CSS (en &lt;head&gt;) --&gt;
+&lt;link rel="stylesheet" href="../../components/header-product.css"&gt;
+&lt;link rel="stylesheet" href="../../components/button.css"&gt;
+&lt;link rel="stylesheet" href="../../components/ia-button.css"&gt;
+&lt;link rel="stylesheet" href="../../general-styles/fontawesome-icons.css"&gt;
+
+&lt;!-- JavaScript --&gt;
+&lt;script src="../../components/header-product.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+loadHeaderProduct('header-product-container', {
+    productName: 'Name product',
+    breadcrumbItems: [
+        { text: 'Default', active: false },
+        { text: 'Active', active: true }
+    ],
+    backButton: { onClick: function() { window.history.back(); } },
+    infoButton: { onClick: function() { console.log('Info'); } },
+    aiButton: { text: 'AI', onClick: function() {} },
+    secondaryButtons: [{ text: 'Button', icon: 'fa-th', onClick: function() {} }],
+    primaryButton: { text: 'Primary', icon: 'fa-th', onClick: function() {} },
+    menuButton: { onClick: function() {} }
+});
+&lt;/script&gt;</code></pre>
+                                </div>
+                            </div>
+                            <!-- Alineación de acciones -->
+                            <div style="padding: 32px;">
+                                <h2 class="ubits-heading-h2" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-align-right" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Alineación de acciones (header sin título ni flecha atrás)
+                                </h2>
+                                <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 12px;">
+                                    En muchas páginas el header se usa sin nombre de producto y sin botón atrás (ocultando <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">.ubits-header-product__product-info</code> con CSS). En ese caso las acciones deben seguir siempre a la <strong>derecha</strong>.
+                                </p>
+                                <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 12px;">
+                                    <strong>Por qué:</strong> <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">product-info</code> tiene <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">flex: 1</code>. Al ocultarlo, la fila solo tiene <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">__actions</code> y sin más reglas quedaría a la izquierda.
+                                </p>
+                                <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 0;">
+                                    <strong>Solución:</strong> En <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">header-product.css</code>, <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">.ubits-header-product__actions</code> usa <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">margin-left: auto</code>, así las acciones quedan siempre a la derecha. No hace falta añadir estilos en la página.
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -419,16 +503,76 @@
         </main>
     </div>
 
+    <div id="ubits-toast-container"></div>
 
     <script src="../../components/sub-nav.js"></script>
     <script src="../../components/header-product.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/toast.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
     <script src="../../script.js"></script>
+    <script>
+        function toggleTechnicalDocs() {
+            var content = document.getElementById('technical-docs-content');
+            var isHidden = content.style.display === 'none' || !content.style.display;
+            content.style.display = isHidden ? 'block' : 'none';
+            var trigger = content.previousElementSibling;
+            if (trigger) {
+                var span = trigger.querySelector('span');
+                if (span) {
+                    span.innerHTML = isHidden
+                        ? '<i class="far fa-chevron-up" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Ocultar'
+                        : '<i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Mostrar';
+                }
+            }
+        }
+        function copyPrompt(promptId) {
+            var el = document.getElementById(promptId);
+            if (!el) return;
+            var text = el.textContent;
+            navigator.clipboard.writeText(text).then(function() {
+                var btn = document.querySelector('[onclick="copyPrompt(\'' + promptId + '\')"]');
+                if (btn) {
+                    var icon = btn.querySelector('i');
+                    var span = btn.querySelector('span');
+                    if (icon) icon.className = 'far fa-check';
+                    if (span) span.textContent = 'Copiado';
+                    setTimeout(function() { if (icon) icon.className = 'far fa-copy'; if (span) span.textContent = 'Copiar'; }, 2000);
+                }
+                if (typeof showToast === 'function') showToast('success', '¡Prompt copiado!', { containerId: 'ubits-toast-container', duration: 3500 });
+            }).catch(function() {
+                if (typeof showToast === 'function') showToast('error', 'Error al copiar', { containerId: 'ubits-toast-container', duration: 3500 });
+            });
+        }
+        function copyCode(elementId) {
+            var el = document.getElementById(elementId);
+            if (!el) return;
+            var text = el.textContent;
+            navigator.clipboard.writeText(text).then(function() {
+                var btn = event.target.closest('button');
+                if (btn) {
+                    var icon = btn.querySelector('i');
+                    var span = btn.querySelector('span');
+                    var origIcon = icon ? icon.className : '';
+                    var origText = span ? span.textContent : '';
+                    if (icon) icon.className = 'far fa-check';
+                    if (span) span.textContent = 'Copiado!';
+                    setTimeout(function() { if (icon) icon.className = origIcon; if (span) span.textContent = origText; }, 2000);
+                }
+                if (typeof showToast === 'function') showToast('success', 'Código copiado al portapapeles', { containerId: 'ubits-toast-container', duration: 3500 });
+            }).catch(function() {
+                if (typeof showToast === 'function') showToast('error', 'Error al copiar', { containerId: 'ubits-toast-container', duration: 3500 });
+            });
+        }
+    </script>
     <script>
         // Cargar componentes dinámicamente
         document.addEventListener('DOMContentLoaded', function() {
             loadSubNav('top-nav-container', 'documentacion');
             loadDocsSidebar('header-product');
+            if (typeof showAlert === 'function') {
+                showAlert('warning', 'Antes de enviar estos prompts a Cursor, reemplaza los textos entre [corchetes] con la información de tu página.', { containerId: 'header-product-warning-alert', noClose: true });
+            }
             
             // Estado de los switches
             let previewState = {
@@ -639,7 +783,6 @@
             updatePreview();
         });
     </script>
-    <script>
 </body>
 </html>
 

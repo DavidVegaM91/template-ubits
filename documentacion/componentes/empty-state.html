@@ -12,13 +12,13 @@
     <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
     <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
     <link rel="stylesheet" href="../../components/sub-nav.css">
-    <link rel="stylesheet" href="../../components/tab-bar.css">
     <link rel="stylesheet" href="../../components/alert.css">
     <link rel="stylesheet" href="../../components/sidebar.css">
     <link rel="stylesheet" href="../../docs/docs-sidebar.css">
     <link rel="stylesheet" href="../../docs/docstyles.css">
     <link rel="stylesheet" href="../../components/button.css">
     <link rel="stylesheet" href="../../components/empty-state.css">
+    <link rel="stylesheet" href="../../components/toast.css">
     <style>
         /* Switch styles */
         .switch {
@@ -196,60 +196,120 @@
                         </div>
                     </div>
 
-                    <!-- Características Generales -->
+                    <!-- Características generales -->
                     <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
                         <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
-                            <i class="far fa-list-check" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                             Características generales
                         </h2>
-                        <ul style="list-style: none; padding: 0; margin: 0;">
-                            <li style="margin-bottom: 16px; padding-left: 32px; position: relative;">
-                                <i class="far fa-check-circle" style="position: absolute; left: 0; top: 2px; color: var(--ubits-accent-brand);"></i>
-                                <span class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium);">
-                                    <strong style="color: var(--ubits-fg-1-high);">Icono en contenedor:</strong> Icono FontAwesome dentro de un contenedor con fondo bg-2.
-                                </span>
-                            </li>
-                            <li style="margin-bottom: 16px; padding-left: 32px; position: relative;">
-                                <i class="far fa-check-circle" style="position: absolute; left: 0; top: 2px; color: var(--ubits-accent-brand);"></i>
-                                <span class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium);">
-                                    <strong style="color: var(--ubits-fg-1-high);">Título y descripción:</strong> Textos personalizables con tipografía UBITS.
-                                </span>
-                            </li>
-                            <li style="margin-bottom: 16px; padding-left: 32px; position: relative;">
-                                <i class="far fa-check-circle" style="position: absolute; left: 0; top: 2px; color: var(--ubits-accent-brand);"></i>
-                                <span class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium);">
-                                    <strong style="color: var(--ubits-fg-1-high);">Dos botones opcionales:</strong> Botón Secondary y Primary con todas las variantes y tamaños de UBITS Button.
-                                </span>
-                            </li>
-                            <li style="margin-bottom: 16px; padding-left: 32px; position: relative;">
-                                <i class="far fa-check-circle" style="position: absolute; left: 0; top: 2px; color: var(--ubits-accent-brand);"></i>
-                                <span class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium);">
-                                    <strong style="color: var(--ubits-fg-1-high);">Responsive:</strong> Se adapta automáticamente a diferentes tamaños de pantalla.
-                                </span>
-                            </li>
-                            <li style="margin-bottom: 16px; padding-left: 32px; position: relative;">
-                                <i class="far fa-check-circle" style="position: absolute; left: 0; top: 2px; color: var(--ubits-accent-brand);"></i>
-                                <span class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium);">
-                                    <strong style="color: var(--ubits-fg-1-high);">Tokens UBITS:</strong> Usa colores y tipografía oficiales del sistema de diseño.
-                                </span>
-                            </li>
-                            <li style="margin-bottom: 16px; padding-left: 32px; position: relative;">
-                                <i class="far fa-check-circle" style="position: absolute; left: 0; top: 2px; color: var(--ubits-accent-brand);"></i>
-                                <span class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium);">
-                                    <strong style="color: var(--ubits-fg-1-high);">Ancho completo:</strong> Puede ocupar todo el ancho disponible cuando se coloca directamente en secciones con <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: var(--font-size-sm);">flex-direction: column</code>.
-                                </span>
-                            </li>
-                        </ul>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--gap-lg);">
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-icons"></i></div>
+                                <div class="ubits-body-sm-bold">Icono en contenedor</div>
+                                <div class="ubits-body-sm-regular">Icono FontAwesome en contenedor con fondo bg-2; tamaños sm, md, lg</div>
+                            </div>
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-font"></i></div>
+                                <div class="ubits-body-sm-bold">Título y descripción</div>
+                                <div class="ubits-body-sm-regular">Textos personalizables con tipografía UBITS</div>
+                            </div>
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-buttons"></i></div>
+                                <div class="ubits-body-sm-bold">Dos botones opcionales</div>
+                                <div class="ubits-body-sm-regular">Secondary y Primary con variantes y tamaños UBITS Button</div>
+                            </div>
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-mobile-alt"></i></div>
+                                <div class="ubits-body-sm-bold">Responsive</div>
+                                <div class="ubits-body-sm-regular">Se adapta a diferentes tamaños de pantalla</div>
+                            </div>
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-expand"></i></div>
+                                <div class="ubits-body-sm-bold">Ancho completo</div>
+                                <div class="ubits-body-sm-regular">Puede ocupar todo el ancho en secciones con flex column</div>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Documentación Técnica -->
+                    <!-- Prompts útiles -->
                     <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
                         <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
-                            <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                            Documentación técnica
+                            <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Prompts útiles
                         </h2>
-                        
-                        <div style="margin-bottom: 32px;">
+                        <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                            Usa estos prompts con Cursor AI para añadir o cambiar el empty state en tu página. Copia el que necesites y reemplaza los textos entre [corchetes].
+                        </p>
+                        <div id="empty-state-warning-alert" style="margin-bottom: 32px;"></div>
+                        <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Crear empty state</h3>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('empty-state-prompt-0')">
+                                    <i class="far fa-copy"></i>
+                                    <span>Copiar</span>
+                                </button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="empty-state-prompt-0">Añade un empty state en [parte de la página] cuando [no hay resultados / no hay contenido / etc.]. Debe mostrar el icono [fa-inbox o fa-search], título "[título]" y descripción "[descripción]". Usa loadEmptyState.</code></pre>
+                            </div>
+                        </div>
+                        <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Añadir dos botones al empty state</h3>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('empty-state-prompt-1')">
+                                    <i class="far fa-copy"></i>
+                                    <span>Copiar</span>
+                                </button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="empty-state-prompt-1">En el empty state de [nombre del contenedor], añade dos botones: uno secundario que diga "[texto secundario]" y uno primario que diga "[texto primario]". Al hacer clic en el primario debe [describir la acción]. Usa options.buttons (secondary y primary) en loadEmptyState.</code></pre>
+                            </div>
+                        </div>
+                        <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Cambiar título y descripción</h3>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('empty-state-prompt-2')">
+                                    <i class="far fa-copy"></i>
+                                    <span>Copiar</span>
+                                </button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="empty-state-prompt-2">Cambia el empty state de [nombre del contenedor]: que el título sea "[nuevo título]" y la descripción "[nueva descripción]".</code></pre>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Empty state que ocupe todo el ancho</h3>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('empty-state-prompt-3')">
+                                    <i class="far fa-copy"></i>
+                                    <span>Copiar</span>
+                                </button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="empty-state-prompt-3">Haz que el empty state de [nombre del contenedor] ocupe todo el ancho de la sección. Coloca el contenedor directamente en la sección (section-single) con width: 100% y asegúrate de que la sección tenga flex-direction: column.</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Documentación técnica (sección colapsable) -->
+                    <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
+                        <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Documentación técnica
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
+                                Requisitos, implementación, parámetros y notas técnicas del componente Empty State.
+                            </p>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                            <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                <i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>
+                                Mostrar
+                            </span>
+                        </div>
+                        <div id="technical-docs-content" style="display: none; padding: 0;">
+                        <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1); margin-bottom: 0;">
                             <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">Requisitos obligatorios</h3>
                             <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px;">
                                 <pre style="margin: 0; font-family: 'Courier New', monospace; font-size: var(--font-size-sm); line-height: 1.6; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>&lt;!-- CSS Requerido --&gt;
@@ -552,6 +612,7 @@ emptyStateInstance.update({
 const config = emptyStateInstance.getConfig();</code></pre>
                             </div>
                         </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -559,13 +620,68 @@ const config = emptyStateInstance.getConfig();</code></pre>
         </main>
     </div>
 
-    <!-- Scripts -->
+    <div id="ubits-toast-container"></div>
+
     <script src="../../components/sidebar.js"></script>
     <script src="../../components/sub-nav.js"></script>
-    <script src="../../components/tab-bar.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/toast.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
     <script src="../../components/empty-state.js"></script>
-    
+    <script>
+        function toggleTechnicalDocs() {
+            var content = document.getElementById('technical-docs-content');
+            var isHidden = content.style.display === 'none' || !content.style.display;
+            content.style.display = isHidden ? 'block' : 'none';
+            var trigger = content.previousElementSibling;
+            if (trigger) {
+                var span = trigger.querySelector('span');
+                if (span) {
+                    span.innerHTML = isHidden
+                        ? '<i class="far fa-chevron-up" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Ocultar'
+                        : '<i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Mostrar';
+                }
+            }
+        }
+        function copyPrompt(promptId) {
+            var el = document.getElementById(promptId);
+            if (!el) return;
+            var text = el.textContent;
+            navigator.clipboard.writeText(text).then(function() {
+                var btn = document.querySelector('[onclick="copyPrompt(\'' + promptId + '\')"]');
+                if (btn) {
+                    var icon = btn.querySelector('i');
+                    var span = btn.querySelector('span');
+                    if (icon) icon.className = 'far fa-check';
+                    if (span) span.textContent = 'Copiado';
+                    setTimeout(function() { if (icon) icon.className = 'far fa-copy'; if (span) span.textContent = 'Copiar'; }, 2000);
+                }
+                if (typeof showToast === 'function') showToast('success', '¡Prompt copiado!', { containerId: 'ubits-toast-container', duration: 3500 });
+            }).catch(function() {
+                if (typeof showToast === 'function') showToast('error', 'Error al copiar', { containerId: 'ubits-toast-container', duration: 3500 });
+            });
+        }
+        function copyCode(elementId) {
+            var el = document.getElementById(elementId);
+            if (!el) return;
+            var text = el.textContent;
+            navigator.clipboard.writeText(text).then(function() {
+                var btn = event.target.closest('button');
+                if (btn) {
+                    var icon = btn.querySelector('i');
+                    var span = btn.querySelector('span');
+                    var origIcon = icon ? icon.className : '';
+                    var origText = span ? span.textContent : '';
+                    if (icon) icon.className = 'far fa-check';
+                    if (span) span.textContent = 'Copiado!';
+                    setTimeout(function() { if (icon) icon.className = origIcon; if (span) span.textContent = origText; }, 2000);
+                }
+                if (typeof showToast === 'function') showToast('success', 'Código copiado al portapapeles', { containerId: 'ubits-toast-container', duration: 3500 });
+            }).catch(function() {
+                if (typeof showToast === 'function') showToast('error', 'Error al copiar', { containerId: 'ubits-toast-container', duration: 3500 });
+            });
+        }
+    </script>
     <script>
         // Estado del preview
         let previewState = {
@@ -590,9 +706,10 @@ const config = emptyStateInstance.getConfig();</code></pre>
         document.addEventListener('DOMContentLoaded', function() {
             loadSidebar('ninguno');
             loadSubNav('top-nav-container', 'documentacion');
-            loadTabBar('tab-bar-container');
             loadDocsSidebar('empty-state');
-            
+            if (typeof showAlert === 'function') {
+                showAlert('warning', 'Antes de enviar estos prompts a Cursor, reemplaza los textos entre [corchetes] con la información de tu página.', { containerId: 'empty-state-warning-alert', noClose: true });
+            }
             // Inicializar preview
             updatePreview();
         });
@@ -709,7 +826,6 @@ const config = emptyStateInstance.getConfig();</code></pre>
             container.innerHTML = html;
         }
     </script>
-    <script>
 </body>
 </html>
 
