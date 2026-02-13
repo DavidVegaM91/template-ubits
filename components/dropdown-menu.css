@@ -117,11 +117,20 @@
     color: var(--ubits-fg-1-high);
 }
 
-/* Elementos a la izquierda (icono, checkbox, etc.) */
+/* Elementos a la izquierda (avatar, icono, checkbox, etc.) */
 .ubits-dropdown-menu__option-left {
     display: flex;
     align-items: center;
     flex-shrink: 0;
+}
+
+.ubits-dropdown-menu__option-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    background: var(--ubits-bg-2);
 }
 
 .ubits-dropdown-menu__option-left i {

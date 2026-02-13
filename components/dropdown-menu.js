@@ -25,7 +25,8 @@
      * @param {Object} config
      * @param {string} config.overlayId - ID del overlay (cierre al clic fuera).
      * @param {string} [config.contentId] - ID del panel contenido (para posicionar).
-     * @param {Array<Object>} config.options - Opciones. Cada item: { text, value?, leftIcon?, rightIcon?, checkbox?, switch?, selected? }.
+     * @param {Array<Object>} config.options - Opciones. Cada item: { text, value?, leftIcon?, rightIcon?, checkbox?, switch?, selected?, avatar? }.
+     *   - avatar: URL de imagen (avatar) a mostrar a la izquierda; si se define, tiene prioridad sobre leftIcon para esa opción.
      * @param {boolean} [config.hasAutocomplete=false] - Incluir bloque de autocomplete arriba.
      * @param {string} [config.autocompletePlaceholder] - Placeholder del input autocomplete.
      * @param {string} [config.autocompleteContainerId] - ID del contenedor donde crear el autocomplete (si se usa createInput después).
@@ -54,7 +55,15 @@
             var selectedClass = opt.selected ? ' ubits-dropdown-menu__option--selected' : '';
             var left = '';
             var checkboxId = '';
-            if (opt.leftIcon) {
+            if (opt.avatar !== undefined) {
+                var nombre = opt.text != null ? String(opt.text) : '';
+                var avatarUrl = (opt.avatar && String(opt.avatar).trim()) ? String(opt.avatar).trim() : null;
+                left = '<span class="ubits-dropdown-menu__option-left">' +
+                    (typeof renderAvatar === 'function'
+                        ? renderAvatar({ nombre: nombre, avatar: avatarUrl }, { size: 'sm' })
+                        : (avatarUrl ? '<img class="ubits-dropdown-menu__option-avatar" src="' + escapeHtml(avatarUrl) + '" alt="">' : '<i class="far fa-user"></i>')) +
+                    '</span>';
+            } else if (opt.leftIcon) {
                 left = '<span class="ubits-dropdown-menu__option-left"><i class="far fa-' + escapeHtml(opt.leftIcon) + '"></i></span>';
             } else if (opt.checkbox) {
                 checkboxId = overlayId + '-opt-' + index;

@@ -75,13 +75,7 @@ function renderTarea(tarea, esVencida = false) {
                         <i class="far fa-chevron-up"></i>
                     </button>
                     <div class="tarea-assigned">
-                        ${tarea.assignee_email ? `
-                            <div class="tarea-assigned-avatar-initials">${escapeHtml(tarea.assignee_email.substring(0, 2).toUpperCase())}</div>
-                        ` : `
-                            <div class="tarea-assigned-placeholder">
-                                <i class="far fa-user"></i>
-                            </div>
-                        `}
+                        ${typeof renderAvatar === 'function' ? renderAvatar({ nombre: tarea.assignee_name || tarea.assignee_email || '', avatar: tarea.assignee_avatar_url || null }, { size: 'sm' }) : (tarea.assignee_email ? `<div class="tarea-assigned-avatar-initials">${escapeHtml(tarea.assignee_email.substring(0, 2).toUpperCase())}</div>` : `<div class="tarea-assigned-placeholder"><i class="far fa-user"></i></div>`)}
                     </div>
                     <button class="tarea-action-btn tarea-action-btn--delete" title="Eliminar" data-tarea-id="${tarea.id}">
                         <i class="far fa-trash"></i>

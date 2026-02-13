@@ -763,9 +763,40 @@ function createAutocompleteDropdown(container, inputElement, autocompleteOptions
             return;
         }
 
-        // Si no tiene checkboxes y está vacío, ocultar
+        // Si no tiene checkboxes y está vacío: mostrar primeras opciones al hacer foco (máx. 10)
         if (!searchText || searchText.length < 1) {
-            dropdown.style.display = 'none';
+            if (autocompleteOptions.length === 0) {
+                dropdown.style.display = 'none';
+                return;
+            }
+            const defaultOptions = autocompleteOptions.slice(0, 10);
+            dropdown.innerHTML = '';
+            defaultOptions.forEach(option => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'ubits-autocomplete-option';
+                optionElement.dataset.value = option.value;
+                const textElement = document.createElement('span');
+                textElement.className = 'ubits-autocomplete-option-text';
+                textElement.textContent = option.text;
+                optionElement.appendChild(textElement);
+                optionElement.addEventListener('mouseenter', function () {
+                    this.style.backgroundColor = 'var(--ubits-bg-2)';
+                });
+                optionElement.addEventListener('mouseleave', function () {
+                    this.style.backgroundColor = 'transparent';
+                });
+                optionElement.addEventListener('click', function (e) {
+                    const selectedValue = this.dataset.value;
+                    const selectedText = this.textContent.replace(/<[^>]*>/g, '');
+                    inputElement.value = selectedText;
+                    dropdown.style.display = 'none';
+                    if (onChange && typeof onChange === 'function') {
+                        onChange(selectedValue);
+                    }
+                });
+                dropdown.appendChild(optionElement);
+            });
+            dropdown.style.display = 'block';
             return;
         }
 
@@ -872,14 +903,9 @@ function createAutocompleteDropdown(container, inputElement, autocompleteOptions
         filterOptions(this.value);
     });
 
-    // Event listener para focus
+    // Event listener para focus: mostrar opciones (primeras 10 si vacío, o filtradas si hay texto)
     inputElement.addEventListener('focus', function () {
-        if (showCheckboxes) {
-            // Si tiene checkboxes, mostrar opciones por defecto aunque esté vacío
-            filterOptions('');
-        } else if (this.value.length > 0) {
-            filterOptions(this.value);
-        }
+        filterOptions(this.value);
     });
 
     // Event listener para blur (ocultar dropdown)
@@ -1300,6 +1326,17 @@ function createInput(options = {}) {
         return;
     }
 
+    function escapeAttr(str) {
+        if (str == null) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/"/g, '&quot;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+    var safeValue = escapeAttr(value);
+    var safePlaceholder = escapeAttr(placeholder);
+
     // Crear estructura HTML
     let inputHTML = '';
 
@@ -1352,7 +1389,7 @@ function createInput(options = {}) {
         console.log('Rendering SELECT with options:', selectOptions);
         // SELECT - usar input normal pero readonly y con rightIcon angle-down (siempre, no chevron-down)
         const selectValue = value ? selectOptions.find(opt => opt.value === value)?.text || placeholder : placeholder;
-        inputHTML += `<input type="text" class="${inputClasses.join(' ')}" style="${inputStyle}" value="${selectValue}" readonly>`;
+        inputHTML += `<input type="text" class="${inputClasses.join(' ')}" style="${inputStyle}" value="${escapeAttr(selectValue)}" readonly>`;
 
         // Siempre usar angle-down en selects (icono desplegable)
         finalRightIcon = 'fa-angle-down';
@@ -1364,7 +1401,7 @@ function createInput(options = {}) {
         if (state === 'disabled') {
             textareaStyle += `; background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important; border-color: var(--ubits-border-2) !important;`;
         }
-        inputHTML += `<textarea class="${inputClasses.join(' ')}" style="${textareaStyle}" placeholder="${placeholder}"${disabledAttr}${maxLengthAttr}>${value}</textarea>`;
+        inputHTML += `<textarea class="${inputClasses.join(' ')}" style="${textareaStyle}" placeholder="${safePlaceholder}"${disabledAttr}${maxLengthAttr}>${safeValue}</textarea>`;
     } else if (type === 'search') {
         console.log('Rendering SEARCH');
         // SEARCH - input con icono de búsqueda y botón de limpiar
@@ -1388,7 +1425,7 @@ function createInput(options = {}) {
         if (state === 'disabled') {
             searchStyle += `; background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important; border-color: var(--ubits-border-2) !important;`;
         }
-        inputHTML += `<input type="text" class="${inputClasses.join(' ')}" style="${searchStyle}" placeholder="${placeholder}" value="${value}" autocomplete="off"${disabledAttr}${maxLengthAttr}>`;
+        inputHTML += `<input type="text" class="${inputClasses.join(' ')}" style="${searchStyle}" placeholder="${safePlaceholder}" value="${safeValue}" autocomplete="off"${disabledAttr}${maxLengthAttr}>`;
     } else if (type === 'autocomplete') {
         console.log('Rendering AUTOCOMPLETE');
         // AUTOCOMPLETE - input con dropdown de sugerencias
@@ -1412,7 +1449,7 @@ function createInput(options = {}) {
         if (state === 'disabled') {
             autocompleteStyle += `; background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important; border-color: var(--ubits-border-2) !important;`;
         }
-        inputHTML += `<input type="text" class="${inputClasses.join(' ')}" style="${autocompleteStyle}" placeholder="${placeholder}" value="${value}" autocomplete="off"${disabledAttr}${maxLengthAttr}>`;
+        inputHTML += `<input type="text" class="${inputClasses.join(' ')}" style="${autocompleteStyle}" placeholder="${safePlaceholder}" value="${safeValue}" autocomplete="off"${disabledAttr}${maxLengthAttr}>`;
     } else if (type === 'calendar') {
         console.log('Rendering CALENDAR');
         // CALENDAR - input con date picker
@@ -1429,7 +1466,7 @@ function createInput(options = {}) {
         if (state === 'disabled') {
             calendarStyle += `; background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important; border-color: var(--ubits-border-2) !important;`;
         }
-        inputHTML += `<input type="text" class="${inputClasses.join(' ')}" style="${calendarStyle}" placeholder="${placeholder}" value="${value}" readonly${disabledAttr}>`;
+        inputHTML += `<input type="text" class="${inputClasses.join(' ')}" style="${calendarStyle}" placeholder="${safePlaceholder}" value="${safeValue}" readonly${disabledAttr}>`;
     } else if (type === 'password') {
         console.log('Rendering PASSWORD');
         // PASSWORD - input con toggle de mostrar/ocultar
@@ -1446,11 +1483,11 @@ function createInput(options = {}) {
         if (state === 'disabled') {
             passwordStyle += `; background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important; border-color: var(--ubits-border-2) !important;`;
         }
-        inputHTML += `<input type="password" class="${inputClasses.join(' ')}" style="${passwordStyle}" placeholder="${placeholder}" value="${value}"${disabledAttr}${maxLengthAttr}>`;
+        inputHTML += `<input type="password" class="${inputClasses.join(' ')}" style="${passwordStyle}" placeholder="${safePlaceholder}" value="${safeValue}"${disabledAttr}${maxLengthAttr}>`;
     } else {
         console.log('Rendering normal INPUT');
         // INPUT normal
-        inputHTML += `<input type="${type}" class="${inputClasses.join(' ')}" style="${inputStyle}" placeholder="${placeholder}" value="${value}"${disabledAttr}${maxLengthAttr}>`;
+        inputHTML += `<input type="${type}" class="${inputClasses.join(' ')}" style="${inputStyle}" placeholder="${safePlaceholder}" value="${safeValue}"${disabledAttr}${maxLengthAttr}>`;
     }
 
     // Icono izquierdo con posicionamiento absoluto
@@ -1472,11 +1509,14 @@ function createInput(options = {}) {
         inputHTML += '<div class="ubits-input-helper">';
 
         if (showHelper && helperText) {
-            inputHTML += `<span>${helperText}</span>`;
+            inputHTML += `<span class="ubits-input-helper-text">${helperText}</span>`;
         }
 
         if (showCounter) {
+            inputHTML += '<div class="ubits-input-helper-row">';
+            inputHTML += '<span class="ubits-input-counter-label">Máximo de caracteres</span>';
             inputHTML += `<span class="ubits-input-counter">0/${maxLength}</span>`;
+            inputHTML += '</div>';
         }
 
         inputHTML += '</div>';
@@ -1594,7 +1634,7 @@ function createInput(options = {}) {
                 var wrapper = document.createElement('div');
                 wrapper.id = pickerId;
                 wrapper.className = 'ubits-calendar-dropdown';
-                wrapper.style.cssText = 'position:fixed;display:none;z-index:10000;';
+                wrapper.style.cssText = 'position:fixed;display:none;z-index:10100;';
                 document.body.appendChild(wrapper);
                 function positionWrapper() {
                     var pad = 16;
