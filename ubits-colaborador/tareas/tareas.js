@@ -39,6 +39,7 @@ let estadoTareas = {
     isCreatingTask: false, // Estado de carga al crear tarea
     selectedTask: null, // Tarea seleccionada para ver detalles
     showTaskDetail: false, // Mostrar modal de detalles
+    taskIdToDelete: null, // ID de tarea pendiente de confirmar eliminar (modal)
     editingTask: {}, // Datos en edición dentro del detalle
     editingDateId: null, // ID de tarea cuya fecha se está editando
     moveTaskId: null, // ID de tarea que se está moviendo a otro plan
@@ -301,13 +302,7 @@ function renderTarea(tarea, esVencidaSection = false) {
                         <i class="far fa-chevron-up"></i>
                     </button>
                     <div class="tarea-assigned">
-                        ${tarea.assignee_email ? `
-                            <div class="tarea-assigned-avatar-initials">${tarea.assignee_email.substring(0, 2).toUpperCase()}</div>
-                        ` : `
-                            <div class="tarea-assigned-placeholder">
-                                <i class="far fa-user"></i>
-                            </div>
-                        `}
+                        ${typeof renderAvatar === 'function' ? renderAvatar({ nombre: tarea.assignee_name || tarea.assignee_email || '', avatar: tarea.assignee_avatar_url || null }, { size: 'sm' }) : (tarea.assignee_email ? `<div class="tarea-assigned-avatar-initials">${tarea.assignee_email.substring(0, 2).toUpperCase()}</div>` : `<div class="tarea-assigned-placeholder"><i class="far fa-user"></i></div>`)}
                     </div>
                     <button class="tarea-action-btn tarea-action-btn--delete" title="Eliminar">
                         <i class="far fa-trash"></i>
@@ -567,6 +562,49 @@ function setupMonthPickerCloseOnClickOutside() {
 // Inicializar vista de tareas
 function initTareasView() {
     console.log('Inicializando vista de tareas...');
+
+    // Modal de confirmación eliminar tarea (componente UBITS)
+    var modalsContainer = document.getElementById('tareas-modals-container');
+    if (modalsContainer && typeof getModalHtml === 'function') {
+        var deleteBody = '<p class="ubits-body-md-regular">¿Estás seguro? Esta acción no se puede deshacer y todos los datos de la tarea se perderán.</p>';
+        var deleteFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="task-detail-delete-modal-cancel"><span>Cancelar</span></button><button type="button" class="ubits-button ubits-button--error ubits-button--md" id="task-detail-delete-modal-confirm"><span>Eliminar</span></button>';
+        modalsContainer.innerHTML = getModalHtml({
+            overlayId: 'task-detail-delete-modal-overlay',
+            title: 'Eliminar tarea',
+            bodyHtml: deleteBody,
+            footerHtml: deleteFooter,
+            size: 'xs',
+            closeButtonId: 'task-detail-delete-modal-close'
+        });
+        var deleteOverlay = document.getElementById('task-detail-delete-modal-overlay');
+        var deleteModalClose = document.getElementById('task-detail-delete-modal-close');
+        var deleteModalCancel = document.getElementById('task-detail-delete-modal-cancel');
+        var deleteModalConfirm = document.getElementById('task-detail-delete-modal-confirm');
+        function closeDeleteModal() {
+            if (typeof closeModal === 'function') closeModal('task-detail-delete-modal-overlay');
+        }
+        if (deleteModalClose) deleteModalClose.addEventListener('click', closeDeleteModal);
+        if (deleteModalCancel) deleteModalCancel.addEventListener('click', closeDeleteModal);
+        if (deleteModalConfirm) {
+            deleteModalConfirm.addEventListener('click', function () {
+                var taskId = estadoTareas.taskIdToDelete;
+                if (taskId != null) {
+                    handleDelete(taskId);
+                    closeTaskDetail();
+                    renderTareasVencidas();
+                    renderAllTasks();
+                    estadoTareas.taskIdToDelete = null;
+                    if (typeof showToast === 'function') {
+                        showToast('success', 'Tarea eliminada correctamente');
+                    }
+                }
+                closeDeleteModal();
+            });
+        }
+        deleteOverlay.addEventListener('click', function (ev) {
+            if (ev.target === deleteOverlay) closeDeleteModal();
+        });
+    }
     
     // Actualizar selector de mes/año
     updateMonthYearDisplay();
@@ -985,8 +1023,10 @@ function closeTaskDetail() {
     estadoTareas.showTaskDetail = false;
     estadoTareas.selectedTask = null;
     estadoTareas.editingTask = {};
-    estadoTareas.showAssigneeDropdown = false;
-    estadoTareas.showRoleDropdown = false;
+    var assigneeOverlay = document.getElementById('task-detail-assignee-overlay');
+    if (assigneeOverlay) assigneeOverlay.remove();
+    var roleOverlay = document.getElementById('task-detail-role-overlay');
+    if (roleOverlay) roleOverlay.remove();
     const overlay = document.getElementById('task-detail-overlay');
     if (overlay) overlay.style.display = 'none';
 }
@@ -1016,17 +1056,35 @@ function renderTaskDetailModal() {
     const desc = edit.description !== undefined ? edit.description : (t.description || '');
     const endDate = edit.endDate !== undefined ? edit.endDate : (t.endDate || '');
     const priority = edit.priority !== undefined ? edit.priority : (t.priority || 'media');
-    const priorityLabel = priority === 'alta' ? 'Prioridad Alta' : priority === 'baja' ? 'Prioridad Baja' : 'Prioridad Media';
+    const prioridadIcon = { alta: 'fa-chevrons-up', media: 'fa-chevron-up', baja: 'fa-chevron-down' };
+    const prioridadBadgeVariant = { alta: 'error', media: 'warning', baja: 'info' };
+    const priorityShortLabel = priority === 'alta' ? 'Alta' : priority === 'baja' ? 'Baja' : 'Media';
     const role = edit.role !== undefined ? edit.role : (t.role || 'colaborador');
     const roleLabel = role === 'administrador' ? 'Administrador' : 'Colaborador';
     const statusDisplay = t.status === 'Vencido' ? 'Vencida' : t.status === 'Activo' ? 'Iniciada' : 'Finalizada';
-    const statusClass = t.status === 'Vencido' ? 'task-detail-status--vencida' : t.status === 'Activo' ? 'task-detail-status--iniciada' : 'task-detail-status--finalizada';
-    const assigneeName = t.assignee_name || (t.assignee_email || '').split('@')[0] || 'Sin asignar';
-    const assigneeAvatar = t.assignee_avatar_url || null;
+    const statusSlug = t.status === 'Vencido' ? 'error' : t.status === 'Activo' ? 'info' : 'success';
+    const isFinalizada = t.status === 'Finalizado';
+    const finishBtnLabel = isFinalizada ? 'Reabrir tarea' : 'Finalizar tarea';
+    const finishBtnVariant = isFinalizada ? 'ubits-button--secondary' : 'ubits-button--primary';
+    /* Nombre real y avatar: si la tarea tiene assignee pero sin nombre/avatar, resolver con usuario actual cuando el email coincida */
+    const currentUser = (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getUsuarioActual === 'function') ? TAREAS_PLANES_DB.getUsuarioActual() : null;
+    const assigneeEmailNorm = (t.assignee_email && String(t.assignee_email).trim()) ? String(t.assignee_email).trim() : '';
+    const isCurrentUserAssignee = currentUser && assigneeEmailNorm && (assigneeEmailNorm === (currentUser.username || currentUser.email || ''));
+    const assigneeName = (t.assignee_name && String(t.assignee_name).trim()) ? String(t.assignee_name).trim()
+        : (isCurrentUserAssignee && currentUser.nombre) ? currentUser.nombre
+        : (assigneeEmailNorm ? assigneeEmailNorm.split('@')[0] : null) || 'Sin asignar';
+    const assigneeAvatar = (t.assignee_avatar_url && String(t.assignee_avatar_url).trim()) ? t.assignee_avatar_url
+        : (isCurrentUserAssignee && currentUser.avatar) ? currentUser.avatar
+        : null;
     const hasAssignee = !!(t.assignee_email || t.assignee_name);
-    const createdBy = t.created_by || 'Sin especificar';
+    const createdBy = (t.created_by && String(t.created_by).trim()) ? String(t.created_by).trim() : 'Sin especificar';
     const createdByAvatar = t.created_by_avatar_url || null;
-    const showAssigneeDropdown = estadoTareas.showAssigneeDropdown;
+    const taskInPlan = !!(t.planId || t.planNombre);
+    const plansForAutocomplete = getPlanesParaDropdown();
+    const taskPlanDisplayName = t.planNombre || (t.planId && plansForAutocomplete.length ? (plansForAutocomplete.find(p => String(p.id) === String(t.planId)) || {}).name : null) || '';
+
+    var scrollMain = panel.querySelector('.task-detail-main');
+    var savedScrollTop = scrollMain ? scrollMain.scrollTop : 0;
 
     overlay.style.display = 'flex';
 
@@ -1034,116 +1092,93 @@ function renderTaskDetailModal() {
         <div class="task-detail-panel__inner">
             <div class="task-detail-header">
                 <div>
-                    <h2 class="task-detail-header__title">Detalle de la tarea</h2>
-                    <p class="task-detail-header__subtitle">Si haces algún cambio, quedará aplicado inmediatamente.</p>
+                    <h2 class="ubits-heading-h2 task-detail-header__title">Detalle de la tarea</h2>
+                    <p class="ubits-body-md-regular task-detail-header__subtitle">Si haces algún cambio, quedará aplicado inmediatamente.</p>
                 </div>
-                <button type="button" class="task-detail-close" id="task-detail-close" aria-label="Cerrar">
+                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" id="task-detail-close" aria-label="Cerrar">
                     <i class="far fa-times"></i>
                 </button>
             </div>
 
             <div class="task-detail-body">
                 <div class="task-detail-main">
-                    <div class="task-detail-row-asignado-creada">
-                        <div class="task-detail-section task-detail-section--has-dropdown">
-                            <h3 class="task-detail-section__title">Asignado a:</h3>
-                            <div class="task-detail-assignee-select" id="task-detail-assignee-trigger" role="button" tabindex="0">
-                                ${hasAssignee ? `
-                                    <div class="task-detail-assignee-avatar">
-                                        ${assigneeAvatar ? `<img src="${escapeTaskHtml(assigneeAvatar)}" alt="" class="task-detail-assignee-avatar-img" />` : assigneeName.substring(0, 2).toUpperCase()}
-                                    </div>
-                                    <span class="task-detail-assignee-text">${escapeTaskHtml(assigneeName)}</span>
-                                ` : `
-                                    <div class="task-detail-assignee-avatar task-detail-assignee-avatar--empty">
-                                        <i class="far fa-user"></i>
-                                    </div>
-                                    <span class="task-detail-assignee-text">Sin asignar</span>
-                                `}
-                                <i class="far fa-chevron-down task-detail-assignee-chevron"></i>
-                            </div>
-                            ${showAssigneeDropdown ? `
-                                <div class="task-detail-dropdown" id="task-detail-assignee-dropdown">
-                                    <div class="task-detail-dropdown-item" data-assign="none">
-                                        <i class="far fa-user"></i>
-                                        <span>Sin asignar</span>
-                                    </div>
-                                    ${usuariosEjemplo.map(u => {
-                                        const name = u.full_name || u.email.split('@')[0];
-                                        const avatar = u.avatar_url ? `<img src="${escapeTaskHtml(u.avatar_url)}" alt="" class="task-detail-dropdown-avatar" />` : '';
-                                        return `
-                                    <div class="task-detail-dropdown-item" data-assign-id="${u.id}" data-assign-email="${escapeTaskHtml(u.email)}" data-assign-name="${escapeTaskHtml(name)}" data-assign-avatar="${escapeTaskHtml(u.avatar_url || '')}">
-                                        ${avatar ? `<div class="task-detail-dropdown-item-avatar">${avatar}</div>` : ''}
-                                        <span>${escapeTaskHtml(name)}</span>
-                                    </div>
-                                `}).join('')}
+                    <div class="task-detail-meta">
+                        <div class="task-detail-meta-row">
+                            <span class="task-detail-meta-cell">
+                                <span class="ubits-body-sm-semibold task-detail-meta-label">Asignado a</span>
+                                <div class="task-detail-assignee-select" id="task-detail-assignee-trigger" role="button" tabindex="0">
+                                    ${typeof renderAvatar === 'function' ? renderAvatar({ nombre: assigneeName, avatar: assigneeAvatar || null }, { size: 'sm' }) : `<div class="task-detail-assignee-avatar">${assigneeAvatar ? `<img src="${escapeTaskHtml(assigneeAvatar)}" alt="" class="task-detail-assignee-avatar-img" />` : `<i class="far fa-user"></i>`}</div>`}
+                                    <span class="ubits-body-sm-regular task-detail-assignee-text">${escapeTaskHtml(assigneeName)}</span>
+                                    <i class="far fa-chevron-down task-detail-assignee-chevron"></i>
                                 </div>
-                            ` : ''}
-                        </div>
-                        <div class="task-detail-section">
-                            <h3 class="task-detail-section__title">Creada por:</h3>
-                            <div class="task-detail-created-by-row">
-                                <div class="task-detail-created-by-avatar">
-                                    ${createdByAvatar ? `<img src="${escapeTaskHtml(createdByAvatar)}" alt="" class="task-detail-created-by-avatar-img" />` : escapeTaskHtml(createdBy.substring(0, 2).toUpperCase())}
+                            </span>
+                            <span class="task-detail-meta-cell">
+                                <span class="ubits-body-sm-semibold task-detail-meta-label">Creada por</span>
+                                <div class="task-detail-created-by-row">
+                                    ${typeof renderAvatar === 'function' ? renderAvatar({ nombre: createdBy, avatar: createdByAvatar || null }, { size: 'sm' }) : `<div class="task-detail-created-by-avatar">${createdByAvatar ? `<img src="${escapeTaskHtml(createdByAvatar)}" alt="" class="task-detail-created-by-avatar-img" />` : `<i class="far fa-user"></i>`}</div>`}
+                                    <span class="ubits-body-sm-regular task-detail-created-by-text">${escapeTaskHtml(createdBy)}</span>
                                 </div>
-                                <span class="task-detail-created-by-text">${escapeTaskHtml(createdBy)}</span>
+                            </span>
+                        </div>
+                        <div class="task-detail-meta-row">
+                            <span class="task-detail-meta-cell task-detail-meta-cell--date">
+                                <span class="ubits-body-sm-semibold task-detail-meta-label">Finaliza el</span>
+                                <div id="task-detail-date-container"></div>
+                            </span>
+                            <span class="task-detail-meta-cell">
+                                <span class="ubits-body-sm-semibold task-detail-meta-label">Estado</span>
+                                <span class="ubits-status-tag ubits-status-tag--sm ubits-status-tag--${statusSlug}" aria-label="Estado: ${escapeTaskHtml(statusDisplay)}">
+                                    <span class="ubits-status-tag__text">${escapeTaskHtml(statusDisplay)}</span>
+                                </span>
+                            </span>
+                            <span class="task-detail-meta-cell">
+                                <span class="ubits-body-sm-semibold task-detail-meta-label">Prioridad</span>
+                                <div class="task-detail-priority-trigger" id="task-detail-priority-btn" role="button" tabindex="0" aria-haspopup="listbox" aria-label="Prioridad: ${escapeTaskHtml(priorityShortLabel)}">
+                                    <span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--${prioridadBadgeVariant[priority]} ubits-badge-tag--sm ubits-badge-tag--with-icon">
+                                        <i class="far ${prioridadIcon[priority]}"></i>
+                                        <span class="ubits-badge-tag__text">${escapeTaskHtml(priorityShortLabel)}</span>
+                                    </span>
+                                </div>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="ubits-input-wrapper task-detail-section">
+                        <label for="task-detail-name" class="ubits-input-label">Nombre <span class="ubits-input-mandatory">*</span></label>
+                        <div class="ubits-input-inner">
+                            <input type="text" id="task-detail-name" class="ubits-input ubits-input--md" placeholder="Nombre de la tarea" value="${escapeTaskHtml(taskName)}" maxlength="250" />
+                        </div>
+                        <div class="ubits-input-helper">
+                            <div class="ubits-input-helper-row">
+                                <span class="ubits-input-counter-label">Máximo de caracteres</span>
+                                <span class="ubits-input-counter"><span id="task-detail-char-count">${(taskName || '').length}</span>/250</span>
                             </div>
                         </div>
                     </div>
 
-                    <div class="task-detail-section">
-                        <label class="task-detail-label">Nombre <span class="task-detail-label-required">*</span></label>
-                        <div class="task-detail-name-wrap">
-                            <input type="text" id="task-detail-name" class="task-detail-name-input" placeholder="Nombre de la tarea" value="${escapeTaskHtml(taskName)}" maxlength="250" />
-                            <span class="task-detail-char-count"><span id="task-detail-char-count">${(taskName || '').length}</span>/250</span>
-                        </div>
+                    <div class="ubits-input-wrapper task-detail-section">
+                        <label for="task-detail-desc" class="ubits-input-label">Descripción</label>
+                        <textarea id="task-detail-desc" class="ubits-input ubits-input--md ubits-input-textarea task-detail-desc-textarea" rows="3" placeholder="Descripción de la tarea">${escapeTaskHtml(desc)}</textarea>
                     </div>
 
-                    <div class="task-detail-section">
-                        <label class="task-detail-label">Descripción</label>
-                        <textarea id="task-detail-desc" class="task-detail-textarea" rows="4" placeholder="Nombre de la tarea">${escapeTaskHtml(desc)}</textarea>
-                    </div>
+                    <div class="task-detail-section" id="task-detail-plan-container"></div>
 
-                    <div class="task-detail-section">
-                        <label class="task-detail-label">Fecha de finalización</label>
-                        <div class="task-detail-date-wrap">
-                            <input type="date" id="task-detail-date" class="task-detail-date-input" value="${escapeTaskHtml(endDate)}" />
+                    ${!taskInPlan ? `
+                    <div class="ubits-alert ubits-alert--info ubits-alert--no-close task-detail-plan-alert" role="status" aria-live="off">
+                        <div class="ubits-alert__icon"><i class="far fa-info-circle"></i></div>
+                        <div class="ubits-alert__content">
+                            <div class="ubits-alert__text">Asocia la tarea a un plan. Así podrás mantener todo en un solo lugar y hacerle un mejor seguimiento.</div>
                         </div>
                     </div>
-
-                    <div class="task-detail-info-box">
-                        <i class="far fa-info-circle task-detail-info-icon"></i>
-                        <div>
-                            <p class="task-detail-info-title">Asocia la tarea a un plan</p>
-                            <p class="task-detail-info-text">Así podrás mantener todo en un solo lugar y hacerle un mejor seguimiento.</p>
-                        </div>
-                    </div>
-
-                    <div class="task-detail-section">
-                        <label class="task-detail-label">Mover tarea a un plan:</label>
-                        <div class="task-detail-select-wrap">
-                            <i class="far fa-search task-detail-select-icon"></i>
-                            <span class="task-detail-select-placeholder">Selecciona un plan existente</span>
-                        </div>
-                    </div>
+                    ` : ''}
 
                     <div class="task-detail-section task-detail-section--tags">
-                        <span class="task-detail-status-badge ${statusClass}">${escapeTaskHtml(statusDisplay)}</span>
-                        <button type="button" class="task-detail-priority-btn" id="task-detail-priority-btn">
-                            <i class="far fa-flag"></i>
-                            <span>${escapeTaskHtml(priorityLabel)}</span>
-                        </button>
                         <div class="task-detail-role-wrap">
-                            <button type="button" class="task-detail-role-btn ${estadoTareas.showRoleDropdown ? 'task-detail-role-btn--open' : ''}" id="task-detail-role-btn">
+                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="task-detail-role-btn">
                                 <i class="far fa-id-card"></i>
                                 <span>${escapeTaskHtml(roleLabel)}</span>
                                 <i class="far fa-chevron-down"></i>
                             </button>
-                            ${estadoTareas.showRoleDropdown ? `
-                                <div class="task-detail-dropdown task-detail-dropdown--role" id="task-detail-role-dropdown">
-                                    <div class="task-detail-dropdown-item ${role === 'colaborador' ? 'task-detail-dropdown-item--selected' : ''}" data-role="colaborador">Colaborador</div>
-                                    <div class="task-detail-dropdown-item ${role === 'administrador' ? 'task-detail-dropdown-item--selected' : ''}" data-role="administrador">Administrador</div>
-                                </div>
-                            ` : ''}
                         </div>
                     </div>
                 </div>
@@ -1151,10 +1186,10 @@ function renderTaskDetailModal() {
                 <div class="task-detail-sidebar">
                     <div class="task-detail-sidebar-header">
                         <div>
-                            <h3 class="task-detail-sidebar__title">Comentarios y evidencias</h3>
-                            <p class="task-detail-sidebar__subtitle">Mira el historial de esta tarea</p>
+                            <p class="ubits-body-md-bold task-detail-sidebar__title">Comentarios y evidencias</p>
+                            <p class="ubits-body-sm-regular task-detail-sidebar__subtitle">Mira el historial de esta tarea</p>
                         </div>
-                        <button type="button" class="task-detail-btn-add">
+                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm task-detail-btn-add">
                             <i class="far fa-plus"></i>
                             <span>Agregar comentarios</span>
                         </button>
@@ -1166,21 +1201,84 @@ function renderTaskDetailModal() {
             </div>
 
             <div class="task-detail-footer">
-                <button type="button" class="task-detail-footer-btn task-detail-footer-btn--delete" id="task-detail-delete">
-                    Eliminar
+                <button type="button" class="ubits-button ubits-button--error-tertiary ubits-button--md" id="task-detail-delete">
+                    <span>Eliminar</span>
                 </button>
-                <button type="button" class="task-detail-footer-btn task-detail-footer-btn--finish" id="task-detail-finish">
-                    Finalizar tarea
+                <button type="button" class="ubits-button ${finishBtnVariant} ubits-button--md" id="task-detail-finish">
+                    <span>${escapeTaskHtml(finishBtnLabel)}</span>
                 </button>
             </div>
         </div>
     `;
 
+    /* Calendario oficial UBITS: valor en dd/mm/yyyy; guardamos en estado como YYYY-MM-DD */
+    function endDateToDisplay(ymd) {
+        if (!ymd || !String(ymd).trim()) return '';
+        var parts = String(ymd).trim().split('-');
+        if (parts.length !== 3) return ymd;
+        var y = parts[0], m = parts[1], d = parts[2];
+        return (d.length === 1 ? '0' + d : d) + '/' + (m.length === 1 ? '0' + m : m) + '/' + y;
+    }
+    function displayToEndDate(dmy) {
+        if (!dmy || !String(dmy).trim()) return '';
+        var parts = String(dmy).trim().split('/');
+        if (parts.length !== 3) return '';
+        var d = parts[0].padStart(2, '0'), m = parts[1].padStart(2, '0'), y = parts[2];
+        return y + '-' + m + '-' + d;
+    }
+    if (typeof createInput === 'function') {
+        createInput({
+            containerId: 'task-detail-date-container',
+            type: 'calendar',
+            size: 'sm',
+            showLabel: false,
+            placeholder: 'Selecciona una fecha…',
+            value: endDateToDisplay(endDate),
+            onChange: function (dateStr) {
+                var ymd = displayToEndDate(dateStr);
+                estadoTareas.editingTask.endDate = ymd;
+                if (estadoTareas.selectedTask) estadoTareas.selectedTask.endDate = ymd;
+            }
+        });
+        createInput({
+            containerId: 'task-detail-plan-container',
+            type: 'autocomplete',
+            label: 'Mover tarea a un plan',
+            placeholder: 'Selecciona un plan existente',
+            autocompleteOptions: plansForAutocomplete.map(function (p) { return { value: String(p.id), text: p.name }; }),
+            value: taskPlanDisplayName,
+            onChange: function (selectedValue) {
+                var task = estadoTareas.selectedTask;
+                if (!task) return;
+                var shouldFocusPlan = !selectedValue || selectedValue === '';
+                if (shouldFocusPlan) {
+                    task.planId = null;
+                    task.planNombre = null;
+                    estadoTareas.focusPlanInputAfterRender = true;
+                } else {
+                    var plan = plansForAutocomplete.find(function (p) { return String(p.id) === String(selectedValue); });
+                    if (plan) {
+                        task.planId = plan.id;
+                        task.planNombre = plan.name;
+                    }
+                }
+                renderTaskDetailModal();
+            }
+        });
+        if (estadoTareas.focusPlanInputAfterRender) {
+            estadoTareas.focusPlanInputAfterRender = false;
+            var planContainer = document.getElementById('task-detail-plan-container');
+            if (planContainer) {
+                var planInput = planContainer.querySelector('.ubits-input');
+                if (planInput) setTimeout(function () { planInput.focus(); }, 0);
+            }
+        }
+    }
+
     const closeBtn = document.getElementById('task-detail-close');
     const nameEl = document.getElementById('task-detail-name');
     const charCountEl = document.getElementById('task-detail-char-count');
     const descEl = document.getElementById('task-detail-desc');
-    const dateEl = document.getElementById('task-detail-date');
     const priorityBtn = document.getElementById('task-detail-priority-btn');
     const deleteBtn = document.getElementById('task-detail-delete');
     const finishBtn = document.getElementById('task-detail-finish');
@@ -1195,99 +1293,251 @@ function renderTaskDetailModal() {
             if (charCountEl) charCountEl.textContent = nameEl.value.length;
         });
     }
-    if (descEl) descEl.addEventListener('input', () => {
-        estadoTareas.editingTask.description = descEl.value;
-        if (estadoTareas.selectedTask) estadoTareas.selectedTask.description = descEl.value;
-    });
-    if (dateEl) dateEl.addEventListener('change', () => {
-        estadoTareas.editingTask.endDate = dateEl.value;
-        if (estadoTareas.selectedTask) estadoTareas.selectedTask.endDate = dateEl.value;
-    });
-    if (priorityBtn) {
-        priorityBtn.addEventListener('click', () => {
-            const priorities = ['baja', 'media', 'alta'];
-            const idx = priorities.indexOf(estadoTareas.selectedTask?.priority || 'media');
-            const next = priorities[(idx + 1) % 3];
-            estadoTareas.editingTask.priority = next;
-            if (estadoTareas.selectedTask) estadoTareas.selectedTask.priority = next;
-            const labels = { baja: 'Prioridad Baja', media: 'Prioridad Media', alta: 'Prioridad Alta' };
-            priorityBtn.querySelector('span').textContent = labels[next];
-            renderTaskDetailModal();
+    if (descEl) {
+        function resizeDescTextarea() {
+            descEl.style.height = 'auto';
+            descEl.style.height = Math.max(80, descEl.scrollHeight) + 'px';
+        }
+        descEl.addEventListener('input', function () {
+            estadoTareas.editingTask.description = descEl.value;
+            if (estadoTareas.selectedTask) estadoTareas.selectedTask.description = descEl.value;
+            resizeDescTextarea();
+        });
+        resizeDescTextarea();
+    }
+    if (priorityBtn && typeof window.getDropdownMenuHtml === 'function' && typeof window.openDropdownMenu === 'function' && typeof window.closeDropdownMenu === 'function') {
+        priorityBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            var overlayId = 'task-detail-priority-overlay';
+            var existing = document.getElementById(overlayId);
+            if (existing) existing.remove();
+            var options = [
+                { text: 'Baja', value: 'baja', leftIcon: 'chevron-down' },
+                { text: 'Media', value: 'media', leftIcon: 'chevron-up' },
+                { text: 'Alta', value: 'alta', leftIcon: 'chevrons-up' }
+            ];
+            var config = { overlayId: overlayId, options: options };
+            var html = window.getDropdownMenuHtml(config);
+            document.body.insertAdjacentHTML('beforeend', html);
+            var overlayEl = document.getElementById(overlayId);
+            if (!overlayEl) return;
+            overlayEl.style.zIndex = '10100';
+            var contentEl = overlayEl.querySelector('.ubits-dropdown-menu__content');
+            if (contentEl) contentEl.style.zIndex = '10100';
+            function closeAndApply() {
+                window.closeDropdownMenu(overlayId);
+                var el = document.getElementById(overlayId);
+                if (el) el.remove();
+                renderTaskDetailModal();
+            }
+            overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function (btn) {
+                btn.addEventListener('click', function (ev) {
+                    ev.stopPropagation();
+                    var val = btn.getAttribute('data-value');
+                    if (val) {
+                        estadoTareas.editingTask.priority = val;
+                        if (estadoTareas.selectedTask) estadoTareas.selectedTask.priority = val;
+                    }
+                    closeAndApply();
+                });
+            });
+            overlayEl.addEventListener('click', function (ev) {
+                if (ev.target === overlayEl) closeAndApply();
+            });
+            window.openDropdownMenu(overlayId, priorityBtn);
+        });
+        priorityBtn.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                priorityBtn.click();
+            }
         });
     }
 
     const assigneeTrigger = document.getElementById('task-detail-assignee-trigger');
-    if (assigneeTrigger) {
-        assigneeTrigger.addEventListener('click', (e) => {
+    if (assigneeTrigger && typeof window.getDropdownMenuHtml === 'function' && typeof window.openDropdownMenu === 'function' && typeof window.closeDropdownMenu === 'function') {
+        assigneeTrigger.addEventListener('click', function (e) {
             e.stopPropagation();
-            estadoTareas.showAssigneeDropdown = !estadoTareas.showAssigneeDropdown;
             estadoTareas.showRoleDropdown = false;
-            renderTaskDetailModal();
+            var overlayId = 'task-detail-assignee-overlay';
+            var existing = document.getElementById(overlayId);
+            if (existing) existing.remove();
+            var users = getUsuariosParaDropdown();
+            var options = [{ text: 'Sin asignar', value: 'none', avatar: null }].concat(users.map(function (u) {
+                var hasAvatar = u.avatar_url && String(u.avatar_url).trim();
+                return {
+                    text: u.full_name || u.email || '',
+                    value: String(u.id),
+                    avatar: hasAvatar ? u.avatar_url : null
+                };
+            }));
+            var config = {
+                overlayId: overlayId,
+                hasAutocomplete: true,
+                autocompletePlaceholder: 'Buscar...',
+                options: options
+            };
+            var html = window.getDropdownMenuHtml(config);
+            document.body.insertAdjacentHTML('beforeend', html);
+            var overlayEl = document.getElementById(overlayId);
+            if (!overlayEl) return;
+            overlayEl.style.zIndex = '10100';
+            var contentEl = overlayEl.querySelector('.ubits-dropdown-menu__content');
+            if (contentEl) contentEl.style.zIndex = '10100';
+            var optionsContainer = overlayEl.querySelector('.ubits-dropdown-menu__options');
+            var optionButtons = optionsContainer ? optionsContainer.querySelectorAll('.ubits-dropdown-menu__option') : [];
+            function normalizeText(str) {
+                if (str == null) return '';
+                return String(str).toLowerCase().trim().normalize('NFD').replace(/\u0300-\u036f/g, '');
+            }
+            function filterVisibleOptions(searchVal) {
+                var q = normalizeText(searchVal || '');
+                optionButtons.forEach(function (opt) {
+                    var textEl = opt.querySelector('.ubits-dropdown-menu__option-text');
+                    var text = textEl ? textEl.textContent : '';
+                    var match = !q || normalizeText(text).indexOf(q) >= 0;
+                    opt.style.display = match ? '' : 'none';
+                });
+            }
+            var inputEl = document.getElementById(overlayId + '-autocomplete-input');
+            var clearIcon = document.getElementById(overlayId + '-autocomplete-clear');
+            if (inputEl && clearIcon) {
+                clearIcon.style.pointerEvents = 'auto';
+                clearIcon.style.display = 'none';
+                function toggleClearIcon() {
+                    clearIcon.style.display = inputEl.value.length > 0 ? 'block' : 'none';
+                }
+                clearIcon.addEventListener('click', function (ev) {
+                    ev.preventDefault();
+                    ev.stopPropagation();
+                    inputEl.value = '';
+                    toggleClearIcon();
+                    filterVisibleOptions('');
+                    inputEl.focus();
+                });
+                inputEl.addEventListener('input', function () {
+                    toggleClearIcon();
+                    filterVisibleOptions(this.value);
+                });
+                inputEl.addEventListener('focus', function () {
+                    filterVisibleOptions(this.value);
+                });
+                filterVisibleOptions('');
+                setTimeout(function () { inputEl.focus(); }, 100);
+            } else {
+                filterVisibleOptions('');
+            }
+            function closeAndApply() {
+                window.closeDropdownMenu(overlayId);
+                var el = document.getElementById(overlayId);
+                if (el) el.remove();
+                renderTaskDetailModal();
+            }
+            optionButtons.forEach(function (btn) {
+                btn.addEventListener('click', function (ev) {
+                    ev.stopPropagation();
+                    var val = btn.getAttribute('data-value');
+                    var task = estadoTareas.selectedTask;
+                    if (task) {
+                        if (val === 'none') {
+                            task.assignee_email = null;
+                            task.assignee_name = null;
+                            task.assignee_avatar_url = null;
+                        } else {
+                            var user = users.find(function (u) { return String(u.id) === val; });
+                            if (user) {
+                                task.assignee_email = user.email;
+                                task.assignee_name = user.full_name || user.email;
+                                task.assignee_avatar_url = user.avatar_url || null;
+                            }
+                        }
+                    }
+                    closeAndApply();
+                });
+            });
+            overlayEl.addEventListener('click', function (ev) {
+                if (ev.target === overlayEl) closeAndApply();
+            });
+            window.openDropdownMenu(overlayId, assigneeTrigger);
         });
     }
-
-    document.querySelectorAll('#task-detail-assignee-dropdown .task-detail-dropdown-item').forEach(el => {
-        el.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const assign = el.dataset.assign;
-            if (assign === 'none') {
-                if (estadoTareas.selectedTask) {
-                    estadoTareas.selectedTask.assignee_email = null;
-                    estadoTareas.selectedTask.assignee_name = null;
-                    estadoTareas.selectedTask.assignee_avatar_url = null;
-                }
-            } else {
-                const email = el.dataset.assignEmail;
-                const name = el.dataset.assignName;
-                const avatar = el.dataset.assignAvatar || null;
-                if (estadoTareas.selectedTask) {
-                    estadoTareas.selectedTask.assignee_email = email;
-                    estadoTareas.selectedTask.assignee_name = name;
-                    estadoTareas.selectedTask.assignee_avatar_url = avatar || null;
-                }
-            }
-            estadoTareas.showAssigneeDropdown = false;
-            renderTaskDetailModal();
-        });
-    });
 
     const roleBtn = document.getElementById('task-detail-role-btn');
-    if (roleBtn) {
-        roleBtn.addEventListener('click', (e) => {
+    if (roleBtn && typeof window.getDropdownMenuHtml === 'function' && typeof window.openDropdownMenu === 'function' && typeof window.closeDropdownMenu === 'function') {
+        roleBtn.addEventListener('click', function (e) {
             e.stopPropagation();
-            estadoTareas.showRoleDropdown = !estadoTareas.showRoleDropdown;
-            estadoTareas.showAssigneeDropdown = false;
-            renderTaskDetailModal();
+            var overlayId = 'task-detail-role-overlay';
+            var existing = document.getElementById(overlayId);
+            if (existing) existing.remove();
+            var options = [
+                { text: 'Colaborador', value: 'colaborador', selected: role === 'colaborador' },
+                { text: 'Administrador', value: 'administrador', selected: role === 'administrador' }
+            ];
+            var config = { overlayId: overlayId, options: options };
+            var html = window.getDropdownMenuHtml(config);
+            document.body.insertAdjacentHTML('beforeend', html);
+            var overlayEl = document.getElementById(overlayId);
+            if (!overlayEl) return;
+            overlayEl.style.zIndex = '10100';
+            var contentEl = overlayEl.querySelector('.ubits-dropdown-menu__content');
+            if (contentEl) contentEl.style.zIndex = '10100';
+            function closeAndApply() {
+                window.closeDropdownMenu(overlayId);
+                var el = document.getElementById(overlayId);
+                if (el) el.remove();
+                renderTaskDetailModal();
+            }
+            overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function (btn) {
+                btn.addEventListener('click', function (ev) {
+                    ev.stopPropagation();
+                    var r = btn.getAttribute('data-value');
+                    if (r) {
+                        estadoTareas.editingTask.role = r;
+                        if (estadoTareas.selectedTask) estadoTareas.selectedTask.role = r;
+                    }
+                    closeAndApply();
+                });
+            });
+            overlayEl.addEventListener('click', function (ev) {
+                if (ev.target === overlayEl) closeAndApply();
+            });
+            window.openDropdownMenu(overlayId, roleBtn);
         });
     }
 
-    document.querySelectorAll('#task-detail-role-dropdown .task-detail-dropdown-item').forEach(el => {
-        el.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const r = el.dataset.role;
-            estadoTareas.editingTask.role = r;
-            if (estadoTareas.selectedTask) estadoTareas.selectedTask.role = r;
-            estadoTareas.showRoleDropdown = false;
-            renderTaskDetailModal();
-        });
-    });
-
     if (deleteBtn) deleteBtn.addEventListener('click', () => {
-        if (estadoTareas.selectedTask && confirm('¿Estás seguro de que quieres eliminar esta tarea?')) {
-            handleDelete(estadoTareas.selectedTask.id);
-            closeTaskDetail();
-            renderTareasVencidas();
-            renderAllTasks();
+        if (estadoTareas.selectedTask) {
+            estadoTareas.taskIdToDelete = estadoTareas.selectedTask.id;
+            if (typeof showModal === 'function') {
+                showModal('task-detail-delete-modal-overlay');
+            } else {
+                if (confirm('¿Estás seguro de que quieres eliminar esta tarea?')) {
+                    handleDelete(estadoTareas.selectedTask.id);
+                    closeTaskDetail();
+                    renderTareasVencidas();
+                    renderAllTasks();
+                }
+                estadoTareas.taskIdToDelete = null;
+            }
         }
     });
 
     if (finishBtn) finishBtn.addEventListener('click', () => {
-        if (estadoTareas.selectedTask) {
-            estadoTareas.selectedTask.done = !estadoTareas.selectedTask.done;
-            estadoTareas.selectedTask.status = estadoTareas.selectedTask.done ? 'Finalizado' : 'Activo';
-            closeTaskDetail();
-            renderTareasVencidas();
-            renderAllTasks();
+        var task = estadoTareas.selectedTask;
+        if (!task) return;
+        task.done = !task.done;
+        task.status = task.done ? 'Finalizado' : 'Activo';
+        var fechaKey = task.endDate;
+        if (fechaKey && tareasEjemplo.porDia[fechaKey]) {
+            tareasEjemplo.porDia[fechaKey].sort(function (a, b) {
+                return (a.done ? 1 : 0) - (b.done ? 1 : 0);
+            });
+        }
+        closeTaskDetail();
+        renderTareasVencidas();
+        renderAllTasks();
+        if (typeof showToast === 'function') {
+            showToast('success', task.done ? 'Tarea finalizada exitosamente' : 'Tarea reabierta');
         }
     });
 
@@ -1301,6 +1551,13 @@ function renderTaskDetailModal() {
         }
     };
     document.addEventListener('keydown', window._taskDetailEscHandler);
+
+    if (savedScrollTop > 0) {
+        requestAnimationFrame(function () {
+            var scrollMainRestore = panel.querySelector('.task-detail-main');
+            if (scrollMainRestore) scrollMainRestore.scrollTop = savedScrollTop;
+        });
+    }
 }
 
 // Inicializar editingTask cuando se abre el detalle

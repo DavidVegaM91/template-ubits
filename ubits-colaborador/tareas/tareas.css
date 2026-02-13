@@ -5,6 +5,12 @@
 ========================================*/
 /* FAB Tareas: sin reglas extra; el menú se crea y destruye dinámicamente en tareas.html */
 
+/* Contenedor de modales (eliminar tarea, etc.): por encima del panel de detalle */
+#tareas-modals-container {
+    position: relative;
+    z-index: 10100;
+}
+
 /* Estilos específicos para content-sections */
 .content-sections {
     display: flex;
@@ -1293,7 +1299,8 @@ body.page-tareas .dashboard-container {
 }
 
 .task-detail-assignee-text {
-    flex: 1;
+    flex: 0 0 auto;
+    width: max-content;
     font-size: var(--font-size-sm, 13px);
     color: var(--ubits-fg-1-high);
     text-align: left;
@@ -1356,6 +1363,52 @@ body.page-tareas .dashboard-container {
 .task-detail-dropdown-item--selected {
     background: var(--ubits-feedback-bg-info-subtle);
     color: var(--ubits-accent-brand);
+}
+
+/* Franja meta: dos filas (asignado+creador | fecha+estado+prioridad) */
+.task-detail-meta {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    padding-bottom: var(--gap-md);
+}
+
+.task-detail-meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--gap-md) var(--gap-xl);
+}
+
+.task-detail-meta-cell {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.task-detail-meta-label {
+    color: var(--ubits-fg-1-high);
+}
+
+/* Avatares en la franja meta: tamaño SM oficial (28px), sin override */
+.task-detail-meta .task-detail-assignee-select > .ubits-avatar,
+.task-detail-meta .task-detail-created-by-row > .ubits-avatar {
+    flex-shrink: 0;
+}
+
+.task-detail-meta .task-detail-created-by-row {
+    gap: var(--gap-sm);
+}
+
+.task-detail-meta-cell--date {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+#task-detail-date-container {
+    width: 120px;
+    min-width: 120px;
 }
 
 .task-detail-row-asignado-creada {
@@ -1502,6 +1555,19 @@ body.page-tareas .dashboard-container {
     gap: var(--gap-sm, 8px);
 }
 
+.task-detail-priority-trigger {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    border: none;
+    background: none;
+    padding: 0;
+}
+
+.task-detail-priority-trigger:hover .ubits-badge-tag {
+    opacity: 0.9;
+}
+
 .task-detail-priority-btn,
 .task-detail-role-btn {
     display: inline-flex;
@@ -1549,20 +1615,35 @@ body.page-tareas .dashboard-container {
     overflow-y: auto;
     padding: var(--padding-2xl, 24px);
     background: var(--ubits-bg-1);
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
 }
 
 .task-detail-section {
-    margin-bottom: var(--gap-lg, 16px);
+    margin-bottom: 0;
+}
+
+/* Alert debajo del selector de plan: no interceptar clics para no robar foco del input */
+.task-detail-plan-alert {
+    pointer-events: none;
 }
 
 .task-detail-section:last-child {
     margin-bottom: 0;
 }
 
+/* Textarea descripción: 80px de alto por defecto, se amplía al escribir (JS ajusta height) */
+.task-detail-desc-textarea.ubits-input {
+    min-height: 80px;
+    height: 80px;
+    resize: none;
+    overflow-y: auto;
+}
+
+/* No definir font-size ni font-weight aquí: usar siempre clases UBITS (ubits-body-sm-semibold, etc.) para que body-sm tenga tamaño SM */
 .task-detail-section__title {
     margin: 0 0 var(--gap-sm, 8px) 0;
-    font-size: var(--font-size-md, 16px);
-    font-weight: var(--font-weight-bold);
     color: var(--ubits-fg-1-high);
 }
 
@@ -1797,7 +1878,7 @@ body.page-tareas .dashboard-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: var(--padding-2xl, 24px);
+    padding: var(--padding-lg);
     border-top: 1px solid var(--ubits-border-1);
     background: var(--ubits-bg-1);
     flex-shrink: 0;

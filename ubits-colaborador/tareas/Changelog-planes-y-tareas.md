@@ -1,3 +1,5 @@
+![UBITS](../../images/Ubits-logo-dark.svg)
+
 # Backlog – Tareas y Planes
 
 Ajustes pendientes sobre los archivos entregados por la PM para las páginas de **Tareas**, **Planes** y **Detalle de plan**. Los ítems se irán agregando aquí y luego se implementarán en orden.
@@ -105,6 +107,9 @@ Orden sugerido: primero datos y usuario, luego estructura de páginas, después 
 16. [x] **Seguimiento: menú cambiar estado con texto, no status tag**  
     En `seguimiento.html`, en el botón/menú desplegable de **"Cambiar estado"**, mostrar **texto** en las opciones en lugar de **status tag** (Iniciada, Vencida, Finalizada como texto plano).
 
+17. [x] **Tareas: confirmación de eliminar con modal UBITS y toast**  
+    En `tareas.html`, sustituir el `confirm()` nativo al eliminar una tarea por un **modal UBITS** (componente modal): título "Eliminar tarea", mensaje de advertencia y botones "Cancelar" (secondary) y "Eliminar" (error). Tras confirmar, mostrar **toast de éxito** "Tarea eliminada correctamente", alineado con el flujo de finalizar tarea.
+
 ---
 
-*Última actualización: 14–16 implementados — 11 pendientes.*
+*Última actualización: 14–17 implementados — 11 pendientes.*
