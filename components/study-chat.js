@@ -749,7 +749,7 @@ function renderTutorPanel(type, topic, extraData) {
                         <p class="ubits-body-md-regular study-chat-quiz-question-text">${i + 1}. ${qu.q}</p>
                         <div class="study-chat-quiz-options">${qu.options.map((opt, j) => {
                     const letter = String.fromCharCode(65 + j);
-                    return `<label class="study-chat-quiz-opt" data-option-index="${j}"><div class="study-chat-quiz-opt-row"><input type="radio" name="quiz-${i}" value="${j}"><span class="study-chat-quiz-opt-letter">${letter}</span><span class="study-chat-quiz-opt-text">${opt}</span></div></label>`;
+                    return `<label class="study-chat-quiz-opt" data-option-index="${j}"><div class="study-chat-quiz-opt-row ubits-radio ubits-radio--sm"><input type="radio" name="quiz-${i}" class="ubits-radio__input" value="${j}"><span class="ubits-radio__circle"></span><span class="ubits-radio__label"><span class="study-chat-quiz-opt-letter">${letter}</span> <span class="study-chat-quiz-opt-text">${opt}</span></span></div></label>`;
                 }).join('')}</div>
                         <div class="study-chat-quiz-feedback" style="display:none;" role="status" aria-hidden="true"></div>
                     </div>`).join('')}</div>
