@@ -23,7 +23,7 @@ Lista completa de cambios sugeridos en la reunión. Marca con `[x]` lo que ya es
 ## 3. Pantalla de bienvenida e input
 
 |`[x]`|  Estructura bienvenida: **input arriba**, **recomendaciones + enviar abajo** dentro del mismo cuadro blanco  - Solicitud de Carlos.
-|`[ ]`|  Reducir el **espacio entre el input y la advertencia** (disclaimer) a un token de **8px**.
+|`[x]`|  Reducir el **espacio entre el input y la advertencia** (disclaimer) a un token de **8px**.
 
 ---
 
