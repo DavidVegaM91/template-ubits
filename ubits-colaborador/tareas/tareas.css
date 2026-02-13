@@ -1226,6 +1226,12 @@ body.page-tareas .dashboard-container {
     flex-shrink: 0;
 }
 
+.task-detail-header__title-row {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm, 8px);
+}
+
 .task-detail-header__title {
     margin: 0;
     font-size: var(--font-size-h2, 20px);
@@ -1233,15 +1239,8 @@ body.page-tareas .dashboard-container {
     color: var(--ubits-fg-1-high);
 }
 
-.task-detail-header__subtitle-row {
-    display: flex;
-    align-items: center;
-    gap: var(--gap-sm, 8px);
-    margin-top: var(--padding-xs, 4px);
-}
-
 .task-detail-header__subtitle {
-    margin: 0;
+    margin: var(--padding-xs, 4px) 0 0 0;
     font-size: var(--font-size-sm, 13px);
     color: var(--ubits-fg-1-medium);
 }
@@ -1900,6 +1899,7 @@ body.page-tareas .dashboard-container {
     border-top: 1px solid var(--ubits-border-1);
     background: var(--ubits-bg-1);
     flex-shrink: 0;
+    flex-shrink: 0;
 }
 
 .task-detail-footer-btn {
@@ -1934,6 +1934,10 @@ body.page-tareas .dashboard-container {
 }
 
 @media (max-width: 768px) {
+    #task-detail-save-indicator {
+        display: none !important;
+    }
+
     .task-detail-body {
         flex-direction: column;
     }
@@ -1943,5 +1947,27 @@ body.page-tareas .dashboard-container {
         min-width: 0;
         border-left: none;
         border-top: 1px solid var(--ubits-border-1);
+    }
+
+    /* Mobile: header y footer fijos; solo el body (formulario + comentarios) hace scroll y usa todo el espacio */
+    .task-detail-overlay {
+        min-height: 100dvh;
+        overflow: hidden;
+    }
+
+    .task-detail-body {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .task-detail-main {
+        overflow: visible;
+    }
+
+    .task-detail-sidebar {
+        overflow: visible;
     }
 }

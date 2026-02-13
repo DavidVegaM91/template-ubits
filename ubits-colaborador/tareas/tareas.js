@@ -1096,11 +1096,11 @@ function renderTaskDetailModal() {
         <div class="task-detail-panel__inner">
             <div class="task-detail-header">
                 <div>
-                    <h2 class="ubits-heading-h2 task-detail-header__title">Detalle de la tarea</h2>
-                    <div class="task-detail-header__subtitle-row">
-                        <p class="ubits-body-md-regular task-detail-header__subtitle">Si haces algún cambio, quedará aplicado inmediatamente.</p>
+                    <div class="task-detail-header__title-row">
+                        <h2 class="ubits-heading-h2 task-detail-header__title">Detalle de la tarea</h2>
                         <div id="task-detail-save-indicator"></div>
                     </div>
+                    <p class="ubits-body-md-regular task-detail-header__subtitle">Si haces algún cambio, quedará aplicado inmediatamente.</p>
                 </div>
                 <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" id="task-detail-close" aria-label="Cerrar">
                     <i class="far fa-times"></i>
@@ -1246,9 +1246,11 @@ function renderTaskDetailModal() {
         var to = window._taskDetailSaveIndicatorTimeouts;
         to.forEach(function (t) { clearTimeout(t); });
         window._taskDetailSaveIndicatorTimeouts = [];
+        var isMobile = window.innerWidth <= 768;
+        var savedLabel = isMobile ? 'Guardado' : 'Cambios guardados';
         renderSaveIndicator('task-detail-save-indicator', { state: 'saving', size: 'xs' });
         var t1 = setTimeout(function () {
-            renderSaveIndicator('task-detail-save-indicator', { state: 'saved', size: 'xs', savedText: 'Cambios guardados' });
+            renderSaveIndicator('task-detail-save-indicator', { state: 'saved', size: 'xs', savedText: savedLabel });
             var t2 = setTimeout(function () {
                 renderSaveIndicator('task-detail-save-indicator', { state: 'idle', size: 'xs' });
             }, 2000);
