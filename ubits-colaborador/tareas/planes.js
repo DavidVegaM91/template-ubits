@@ -527,25 +527,15 @@ function renderTemplateDrawer() {
                     <div class="template-form-group template-form-group--spaced-above-lg">
                         <label class="template-form-label">Configuración de permiso</label>
                         <div class="template-radio-group">
-                            <label class="template-radio-item">
-                                <input 
-                                    type="radio" 
-                                    name="templatePermission" 
-                                    value="empresarial"
-                                    ${templateDrawerState.templatePermission === 'empresarial' ? 'checked' : ''}
-                                    onchange="templateDrawerState.templatePermission = 'empresarial'"
-                                />
-                                <span>Plantilla empresarial</span>
+                            <label class="template-radio-item ubits-radio ubits-radio--sm">
+                                <input type="radio" name="templatePermission" class="ubits-radio__input" value="empresarial" ${templateDrawerState.templatePermission === 'empresarial' ? 'checked' : ''} onchange="templateDrawerState.templatePermission = 'empresarial'" />
+                                <span class="ubits-radio__circle"></span>
+                                <span class="ubits-radio__label">Plantilla empresarial</span>
                             </label>
-                            <label class="template-radio-item">
-                                <input 
-                                    type="radio" 
-                                    name="templatePermission" 
-                                    value="individual"
-                                    ${templateDrawerState.templatePermission === 'individual' ? 'checked' : ''}
-                                    onchange="templateDrawerState.templatePermission = 'individual'"
-                                />
-                                <span>Plantilla individual</span>
+                            <label class="template-radio-item ubits-radio ubits-radio--sm">
+                                <input type="radio" name="templatePermission" class="ubits-radio__input" value="individual" ${templateDrawerState.templatePermission === 'individual' ? 'checked' : ''} onchange="templateDrawerState.templatePermission = 'individual'" />
+                                <span class="ubits-radio__circle"></span>
+                                <span class="ubits-radio__label">Plantilla individual</span>
                             </label>
                         </div>
                     </div>
@@ -560,25 +550,15 @@ function renderTemplateDrawer() {
                         <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 12px;">
                             <!-- Radio buttons para modo de creación -->
                             <div class="template-radio-group">
-                                <label class="template-radio-item" id="task-creation-mode-excel">
-                                    <input 
-                                        type="radio" 
-                                        name="taskCreationMode" 
-                                        value="excel"
-                                        ${templateDrawerState.taskCreationMode === 'excel' ? 'checked' : ''}
-                                        onchange="handleTaskCreationModeChange('excel')"
-                                    />
-                                    <span>Con un excel</span>
+                                <label class="template-radio-item ubits-radio ubits-radio--sm" id="task-creation-mode-excel">
+                                    <input type="radio" name="taskCreationMode" class="ubits-radio__input" value="excel" ${templateDrawerState.taskCreationMode === 'excel' ? 'checked' : ''} onchange="handleTaskCreationModeChange('excel')" />
+                                    <span class="ubits-radio__circle"></span>
+                                    <span class="ubits-radio__label">Con un excel</span>
                                 </label>
-                                <label class="template-radio-item" id="task-creation-mode-manual">
-                                    <input 
-                                        type="radio" 
-                                        name="taskCreationMode" 
-                                        value="manual"
-                                        ${templateDrawerState.taskCreationMode === 'manual' ? 'checked' : ''}
-                                        onchange="handleTaskCreationModeChange('manual')"
-                                    />
-                                    <span>Manualmente</span>
+                                <label class="template-radio-item ubits-radio ubits-radio--sm" id="task-creation-mode-manual">
+                                    <input type="radio" name="taskCreationMode" class="ubits-radio__input" value="manual" ${templateDrawerState.taskCreationMode === 'manual' ? 'checked' : ''} onchange="handleTaskCreationModeChange('manual')" />
+                                    <span class="ubits-radio__circle"></span>
+                                    <span class="ubits-radio__label">Manualmente</span>
                                 </label>
                             </div>
 
@@ -1568,13 +1548,15 @@ function renderPlanDrawer() {
                         <div class="template-form-group">
                             <span class="template-form-label">¿Quieres usar una plantilla?</span>
                             <div class="template-radio-group">
-                                <label class="template-radio-item">
-                                    <input type="radio" name="planUseTemplate" value="yes" ${useT === 'yes' ? 'checked' : ''} onchange="handlePlanUseTemplateChange('yes')" />
-                                    <span>Sí</span>
+                                <label class="template-radio-item ubits-radio ubits-radio--sm">
+                                    <input type="radio" name="planUseTemplate" class="ubits-radio__input" value="yes" ${useT === 'yes' ? 'checked' : ''} onchange="handlePlanUseTemplateChange('yes')" />
+                                    <span class="ubits-radio__circle"></span>
+                                    <span class="ubits-radio__label">Sí</span>
                                 </label>
-                                <label class="template-radio-item">
-                                    <input type="radio" name="planUseTemplate" value="no" ${useT === 'no' ? 'checked' : ''} onchange="handlePlanUseTemplateChange('no')" />
-                                    <span>No</span>
+                                <label class="template-radio-item ubits-radio ubits-radio--sm">
+                                    <input type="radio" name="planUseTemplate" class="ubits-radio__input" value="no" ${useT === 'no' ? 'checked' : ''} onchange="handlePlanUseTemplateChange('no')" />
+                                    <span class="ubits-radio__circle"></span>
+                                    <span class="ubits-radio__label">No</span>
                                 </label>
                             </div>
                         </div>
@@ -1626,13 +1608,15 @@ function renderPlanDrawer() {
                             <span class="template-form-label">¿Cómo quieres asignar los usuarios?</span>
                             <span class="template-form-helper" style="margin-left:4px;">(Obligatorio)</span>
                             <div class="template-radio-group" style="margin-top:8px;">
-                                <label class="template-radio-item">
-                                    <input type="radio" name="planUserMode" value="platform" ${planDrawerState.userAssignmentMode === 'platform' ? 'checked' : ''} onchange="handlePlanUserAssignmentModeChange('platform')" />
-                                    <span>Desde la plataforma</span>
+                                <label class="template-radio-item ubits-radio ubits-radio--sm">
+                                    <input type="radio" name="planUserMode" class="ubits-radio__input" value="platform" ${planDrawerState.userAssignmentMode === 'platform' ? 'checked' : ''} onchange="handlePlanUserAssignmentModeChange('platform')" />
+                                    <span class="ubits-radio__circle"></span>
+                                    <span class="ubits-radio__label">Desde la plataforma</span>
                                 </label>
-                                <label class="template-radio-item">
-                                    <input type="radio" name="planUserMode" value="excel" ${planDrawerState.userAssignmentMode === 'excel' ? 'checked' : ''} onchange="handlePlanUserAssignmentModeChange('excel')" />
-                                    <span>Desde un excel</span>
+                                <label class="template-radio-item ubits-radio ubits-radio--sm">
+                                    <input type="radio" name="planUserMode" class="ubits-radio__input" value="excel" ${planDrawerState.userAssignmentMode === 'excel' ? 'checked' : ''} onchange="handlePlanUserAssignmentModeChange('excel')" />
+                                    <span class="ubits-radio__circle"></span>
+                                    <span class="ubits-radio__label">Desde un excel</span>
                                 </label>
                             </div>
                         </div>
@@ -1708,13 +1692,15 @@ function renderPlanDrawer() {
                             <span class="template-form-label">¿Cómo deseas configurar este plan?</span>
                             <span class="template-form-helper" style="margin-left:4px;">(Obligatorio)</span>
                             <div class="template-radio-group" style="margin-top:8px;">
-                                <label class="template-radio-item">
-                                    <input type="radio" name="planConfig" value="everyone" ${cfg === 'everyone' ? 'checked' : ''} onchange="handlePlanConfigChange('everyone')" />
-                                    <span>Un plan para todos</span>
+                                <label class="template-radio-item ubits-radio ubits-radio--sm">
+                                    <input type="radio" name="planConfig" class="ubits-radio__input" value="everyone" ${cfg === 'everyone' ? 'checked' : ''} onchange="handlePlanConfigChange('everyone')" />
+                                    <span class="ubits-radio__circle"></span>
+                                    <span class="ubits-radio__label">Un plan para todos</span>
                                 </label>
-                                <label class="template-radio-item">
-                                    <input type="radio" name="planConfig" value="individual" ${cfg === 'individual' ? 'checked' : ''} onchange="handlePlanConfigChange('individual')" />
-                                    <span>Un plan para cada uno</span>
+                                <label class="template-radio-item ubits-radio ubits-radio--sm">
+                                    <input type="radio" name="planConfig" class="ubits-radio__input" value="individual" ${cfg === 'individual' ? 'checked' : ''} onchange="handlePlanConfigChange('individual')" />
+                                    <span class="ubits-radio__circle"></span>
+                                    <span class="ubits-radio__label">Un plan para cada uno</span>
                                 </label>
                             </div>
                         </div>
@@ -1738,14 +1724,16 @@ function renderPlanDrawer() {
                                 <div class="template-form-group">
                                     <label class="template-form-label">¿Cómo quieres crear las tareas? <span class="template-form-helper" style="margin-left:2px;">(Obligatorio)</span></label>
                                     <div class="template-radio-group" style="margin-top:8px;">
-                                        <label class="template-radio-item plan-radio-with-info">
-                                            <input type="radio" name="planTaskMode" value="manual" ${taskMode === 'manual' ? 'checked' : ''} onchange="handlePlanTaskModeChange('manual')" />
-                                            <span>De forma manual</span>
+                                        <label class="template-radio-item plan-radio-with-info ubits-radio ubits-radio--sm">
+                                            <input type="radio" name="planTaskMode" class="ubits-radio__input" value="manual" ${taskMode === 'manual' ? 'checked' : ''} onchange="handlePlanTaskModeChange('manual')" />
+                                            <span class="ubits-radio__circle"></span>
+                                            <span class="ubits-radio__label">De forma manual</span>
                                             <i class="far fa-info-circle plan-radio-info-icon" title="Crear tareas una por una"></i>
                                         </label>
-                                        <label class="template-radio-item plan-radio-with-info">
-                                            <input type="radio" name="planTaskMode" value="excel" ${taskMode === 'excel' ? 'checked' : ''} onchange="handlePlanTaskModeChange('excel')" />
-                                            <span>De forma masiva</span>
+                                        <label class="template-radio-item plan-radio-with-info ubits-radio ubits-radio--sm">
+                                            <input type="radio" name="planTaskMode" class="ubits-radio__input" value="excel" ${taskMode === 'excel' ? 'checked' : ''} onchange="handlePlanTaskModeChange('excel')" />
+                                            <span class="ubits-radio__circle"></span>
+                                            <span class="ubits-radio__label">De forma masiva</span>
                                             <i class="far fa-info-circle plan-radio-info-icon" title="Cargar varias tareas desde un archivo"></i>
                                         </label>
                                     </div>

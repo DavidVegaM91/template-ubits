@@ -112,12 +112,23 @@
    VISTA DE TAREAS - ESTILOS ESPECÍFICOS
    ======================================== */
 
-/* OBLIGATORIO: limitar altura del main para que el scroll sea solo del listado, no del body.
-   Si main crece con el contenido, el body hace scroll y la barra se mueve.
-   overflow: visible para que #top-nav-container pueda hacer breakout y ocupar todo el ancho en móvil/tablet. */
+/* OBLIGATORIO: en página tareas el scroll es solo de .tareas-scroll-container, no del layout.
+   Body y dashboard-container no hacen scroll; altura fija al viewport. */
+body.page-tareas {
+    overflow: hidden !important;
+    height: 100vh;
+}
+
+body.page-tareas .dashboard-container {
+    overflow: hidden;
+    height: 100vh;
+    min-height: 0;
+}
+
+/* Limitar altura del main: margen inferior var(--gap-lg). overflow: visible para #top-nav-container en móvil. */
 .main-content:has(.widget-vista-tareas) {
     min-height: 0 !important;
-    max-height: calc(100vh - 16px) !important;
+    max-height: calc(100vh - var(--gap-lg, 16px)) !important;
     overflow: visible !important;
     display: flex !important;
     flex-direction: column !important;
@@ -153,15 +164,16 @@
     flex-direction: column !important;
 }
 
-/* Contenedor de tareas: ocupa toda la altura disponible.
-   Barra del calendario fija arriba; solo el listado hace scroll. */
+/* Contenedor de tareas: altura adaptada al viewport (flex: 1 en la cadena).
+   Barra del calendario fija arriba; solo el listado hace scroll.
+   Margen inferior de 16px queda por max-height del main (calc(100vh - var(--gap-lg))). */
 .widget-vista-tareas {
     background-color: var(--ubits-bg-1) !important;
     padding: var(--padding-xl, 20px) !important;
     display: flex !important;
     flex-direction: column !important;
     flex: 1 !important;
-    min-height: 578px !important; /* sin token - valor fijo del sidebar */
+    min-height: 0 !important;
     width: 100% !important;
     max-width: 100% !important;
     box-sizing: border-box !important;
@@ -1027,7 +1039,8 @@
     }
 
     .main-content:has(.widget-vista-tareas) {
-        max-height: calc(100vh - 120px) !important;
+        /* 120px aprox. header + margen inferior token */
+        max-height: calc(100vh - 120px - var(--gap-lg, 16px)) !important;
     }
 
     .widget-vista-tareas {

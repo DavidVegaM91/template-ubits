@@ -267,10 +267,11 @@ function renderTarea(tarea, esVencidaSection = false) {
         <div class="tarea-item ${tarea.done ? 'tarea-item--completed' : ''} ${esVencidaReal ? 'tarea-item--overdue' : ''}" data-tarea-id="${tarea.id}">
             <div class="tarea-item__main">
                 <span class="tarea-item__radio">
-                    <div class="tarea-checkbox">
-                        <input type="checkbox" ${tarea.done ? 'checked' : ''} id="tarea-${tarea.id}" data-tarea-id="${tarea.id}">
-                        <label for="tarea-${tarea.id}"></label>
-                    </div>
+                    <label class="ubits-radio ubits-radio--sm tarea-done-radio" data-tarea-id="${tarea.id}" role="button" tabindex="0">
+                        <input type="radio" class="ubits-radio__input" name="tarea-done-${tarea.id}" value="1" ${tarea.done ? 'checked' : ''} data-tarea-id="${tarea.id}">
+                        <span class="ubits-radio__circle"></span>
+                        <span class="ubits-radio__label" aria-hidden="true">&nbsp;</span>
+                    </label>
                 </span>
                 <div class="tarea-content">
                     <h3 class="tarea-titulo ubits-body-md-regular" title="${tarea.name}">
@@ -631,23 +632,24 @@ function initTareasView() {
     const tareasContainer = document.getElementById('tareas-scroll-container');
     if (tareasContainer) {
         tareasContainer.addEventListener('click', (e) => {
-            // Checkbox toggle
-            if (e.target.type === 'checkbox' || e.target.closest('.tarea-checkbox')) {
-                const checkbox = e.target.type === 'checkbox' ? e.target : e.target.closest('.tarea-checkbox').querySelector('input[type="checkbox"]');
-                if (checkbox && checkbox.dataset.tareaId) {
-                    const tareaId = parseInt(checkbox.dataset.tareaId);
+            // Toggle completado (radio oficial: click = toggle estado)
+            if (e.target.closest('.tarea-done-radio')) {
+                e.preventDefault();
+                const control = e.target.closest('.tarea-done-radio');
+                const input = control.querySelector('input.ubits-radio__input');
+                if (input && input.dataset.tareaId) {
+                    const tareaId = parseInt(input.dataset.tareaId);
                     const overdueContent = document.getElementById('overdue-content');
-                    const isInOverdueSection = overdueContent && overdueContent.contains(checkbox);
+                    const isInOverdueSection = overdueContent && overdueContent.contains(control);
 
-                    // Buscar en tareas vencidas
                     let tarea = tareasEjemplo.vencidas.find(t => t.id === tareaId);
                     if (tarea) {
-                        if (isInOverdueSection && checkbox.checked) {
-                            // Marcar como finalizada con animación FLIP (se mueve al final de la lista)
-                            const row = checkbox.closest('.tarea-item');
+                        tarea.done = !tarea.done;
+                        tarea.status = tarea.done ? 'Finalizado' : 'Vencido';
+                        input.checked = tarea.done;
+                        if (isInOverdueSection && tarea.done) {
+                            const row = control.closest('.tarea-item');
                             const oldRect = row ? row.getBoundingClientRect() : null;
-                            tarea.done = true;
-                            tarea.status = 'Finalizado';
                             renderTareasVencidas();
                             if (oldRect) {
                                 const newRow = document.querySelector(`#overdue-content .tarea-item[data-tarea-id="${tareaId}"]`);
@@ -670,22 +672,20 @@ function initTareasView() {
                                 }
                             }
                         } else {
-                            tarea.done = checkbox.checked;
-                            tarea.status = checkbox.checked ? 'Finalizado' : 'Vencido';
                             renderTareasVencidas();
                         }
                         return;
                     }
-                    
-                    // Buscar en tareas por día
-                    const dayContainer = checkbox.closest('.tareas-day-container');
+
+                    const dayContainer = control.closest('.tareas-day-container');
                     if (dayContainer) {
                         const fechaKey = dayContainer.dataset.date;
                         const tareasDelDia = tareasEjemplo.porDia[fechaKey] || [];
                         tarea = tareasDelDia.find(t => t.id === tareaId);
                         if (tarea) {
-                            tarea.done = checkbox.checked;
-                            tarea.status = checkbox.checked ? 'Finalizado' : 'Activo';
+                            tarea.done = !tarea.done;
+                            tarea.status = tarea.done ? 'Finalizado' : 'Activo';
+                            input.checked = tarea.done;
                             const fecha = parseDateString(fechaKey);
                             const tempDiv = document.createElement('div');
                             tempDiv.innerHTML = renderDaySection(fecha);
@@ -763,7 +763,7 @@ function initTareasView() {
             // Botones de acción
             if (e.target.closest('.tarea-action-btn--add-plan')) {
                 const tareaItem = e.target.closest('.tarea-item');
-                const tareaId = parseInt(tareaItem.querySelector('input[type="checkbox"]')?.dataset.tareaId);
+                const tareaId = parseInt(tareaItem.querySelector('input.ubits-radio__input')?.dataset.tareaId);
                 if (tareaId) {
                     estadoTareas.moveTaskId = estadoTareas.moveTaskId === tareaId ? null : tareaId;
                     renderAllTasks();
@@ -771,21 +771,21 @@ function initTareasView() {
             }
             if (e.target.closest('.tarea-priority-btn')) {
                 const tareaItem = e.target.closest('.tarea-item');
-                const tareaId = parseInt(tareaItem.querySelector('input[type="checkbox"]')?.dataset.tareaId);
+                const tareaId = parseInt(tareaItem.querySelector('input.ubits-radio__input')?.dataset.tareaId);
                 if (tareaId) {
                     handleUpdatePriority(tareaId);
                 }
             }
             if (e.target.closest('.tarea-action-btn--delete')) {
                 const tareaItem = e.target.closest('.tarea-item');
-                const tareaId = parseInt(tareaItem.querySelector('input[type="checkbox"]')?.dataset.tareaId);
+                const tareaId = parseInt(tareaItem.querySelector('input.ubits-radio__input')?.dataset.tareaId);
                 if (tareaId && confirm('¿Estás seguro de que quieres eliminar esta tarea?')) {
                     handleDelete(tareaId);
                 }
             }
             if (e.target.closest('.tarea-action-btn--details')) {
                 const tareaItem = e.target.closest('.tarea-item');
-                const tareaId = parseInt(tareaItem.querySelector('input[type="checkbox"]')?.dataset.tareaId);
+                const tareaId = parseInt(tareaItem.querySelector('input.ubits-radio__input')?.dataset.tareaId);
                 if (tareaId) {
                     handleTaskClick(tareaId);
                 }
