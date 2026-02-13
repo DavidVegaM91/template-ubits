@@ -59,6 +59,27 @@
     color: var(--ubits-fg-gray-subtle);
 }
 
+/* Outlined: borde y texto por variante (feedback-border, feedback-fg-subtle) */
+.ubits-badge-tag--outlined.ubits-badge-tag--success {
+    border-color: var(--ubits-feedback-border-success);
+    color: var(--ubits-feedback-fg-success-subtle);
+}
+
+.ubits-badge-tag--outlined.ubits-badge-tag--info {
+    border-color: var(--ubits-feedback-border-info);
+    color: var(--ubits-feedback-fg-info-subtle);
+}
+
+.ubits-badge-tag--outlined.ubits-badge-tag--warning {
+    border-color: var(--ubits-feedback-border-warning);
+    color: var(--ubits-feedback-fg-warning-subtle);
+}
+
+.ubits-badge-tag--outlined.ubits-badge-tag--error {
+    border-color: var(--ubits-feedback-border-error);
+    color: var(--ubits-feedback-fg-error-subtle);
+}
+
 .ubits-badge-tag--outlined.ubits-badge-tag--success .ubits-badge-tag__indicator {
     background: var(--ubits-feedback-accent-success);
 }
