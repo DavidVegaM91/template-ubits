@@ -72,7 +72,7 @@ function renderTaskStrip(tarea, opts) {
                     '</label>' +
                 '</span>' +
                 '<div class="tarea-content">' +
-                    '<h3 class="tarea-titulo ubits-body-md-regular" data-tooltip="' + escapeAttr(tarea.name || '') + '">' + nameSafe + '</h3>' +
+                    '<h3 class="tarea-titulo ubits-body-md-regular">' + nameSafe + '</h3>' +
                 '</div>' +
                 etiquetaBlock +
             '</div>' +
@@ -92,7 +92,7 @@ function renderTaskStrip(tarea, opts) {
                     '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only tarea-action-btn tarea-action-btn--add-plan" data-tooltip="Agregar a un plan">' +
                         '<i class="far fa-layer-group"></i>' +
                     '</button>' +
-                    '<button type="button" class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--' + (prioridadBadgeVariant[prioridad] || 'warning') + ' ubits-badge-tag--sm ubits-badge-tag--with-icon tarea-priority-badge" data-tarea-id="' + idSafe + '" data-tooltip="Prioridad: ' + escapeAttr(prioridadLabel) + '. Clic para cambiar" aria-label="Prioridad: ' + escapeHtml(prioridadLabel) + '. Clic para cambiar">' +
+                    '<button type="button" class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--' + (prioridadBadgeVariant[prioridad] || 'warning') + ' ubits-badge-tag--sm ubits-badge-tag--with-icon tarea-priority-badge" data-tarea-id="' + idSafe + '" data-tooltip="Prioridad" aria-label="Prioridad">' +
                         '<i class="far ' + (prioridadIcon[prioridad] || 'fa-chevron-up') + '"></i>' +
                         '<span class="ubits-badge-tag__text">' + escapeHtml(prioridadLabel) + '</span>' +
                     '</button>' +

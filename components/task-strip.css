@@ -233,13 +233,22 @@
     display: none !important;
 }
 
+/* Badge de prioridad: mismo aspecto que en seguimiento (tamaño sm, sin heredar fuente del contenedor) */
 .tarea-priority-badge {
     flex-shrink: 0;
     width: 80px;
     min-width: 80px;
     justify-content: center;
     cursor: pointer;
-    font: inherit;
+    font-size: 13px;
+    font-family: 'Noto Sans', sans-serif;
+    font-weight: 400;
+}
+.tarea-priority-badge .ubits-badge-tag__text {
+    font-size: inherit;
+}
+.tarea-priority-badge.ubits-badge-tag--with-icon i {
+    font-size: 12px;
 }
 
 .tarea-assigned {
@@ -338,9 +347,7 @@
     }
 
     .tarea-item .tarea-etiqueta,
-    .tarea-item .tarea-fecha,
     .tarea-item .tarea-action-btn--add-plan,
-    .tarea-item .tarea-priority-badge,
     .tarea-item .tarea-assigned,
     .tarea-item .tarea-action-btn--delete {
         display: none !important;
