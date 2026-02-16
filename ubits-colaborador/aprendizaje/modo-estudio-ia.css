@@ -279,17 +279,50 @@ body.modo-estudio-ia-page .modo-tutor-ia-canvas-panel.is-open .study-chat-canvas
     background: var(--ubits-feedback-bg-info-subtle);
 }
 
-.modo-estudio-ia-historial-item__title {
+.modo-estudio-ia-historial-item__content {
     flex: 1;
     min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.modo-estudio-ia-historial-item__title {
+    color: var(--ubits-fg-1-high);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
+.modo-estudio-ia-historial-item__description {
+    color: var(--ubits-fg-1-medium);
+    font-size: var(--font-size-xs);
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.modo-estudio-ia-historial-item__date {
+    color: var(--ubits-fg-1-medium);
+    font-size: var(--font-size-xs);
+    line-height: 1.3;
+}
+
 .modo-estudio-ia-historial-item__delete {
     flex-shrink: 0;
     margin-left: var(--gap-xs);
+}
+
+/* Desktop: botón eliminar solo al hover (en móvil no hay hover, se muestra siempre) */
+@media (min-width: 1024px) {
+    .modo-estudio-ia-historial-item__delete {
+        opacity: 0;
+        transition: opacity 0.15s ease;
+    }
+    .modo-estudio-ia-historial-item:hover .modo-estudio-ia-historial-item__delete {
+        opacity: 1;
+    }
 }
 
 .modo-tutor-ia-chat-main {

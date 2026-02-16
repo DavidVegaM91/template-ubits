@@ -1942,6 +1942,7 @@ function pushCurrentChatMessage(typeOrMsg, text) {
         chatState.currentChat.title = title.length > 40 ? title.substring(0, 40) + '…' : title;
         chatState.currentChat.createdAt = Date.now();
         if (chatState.currentChat.id == null) chatState.currentChat.id = 'chat-' + Date.now();
+        if (chatState.currentTopic) chatState.currentChat.topic = chatState.currentTopic;
         var headerTitleEl = document.getElementById('ubits-study-chat-header-title');
         if (headerTitleEl) headerTitleEl.value = chatState.currentChat.title || '';
     }
@@ -2077,8 +2078,8 @@ function renderChatMessages() {
                 messageHTML +
                 '<div class="ubits-study-chat__material-choices" id="' + choicesId + '">' +
                 '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-choice="quiz"><span>Quiz</span></button>' +
-                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-choice="flashcards"><span>Flashcards</span></button>' +
                 planBtnHtml +
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-choice="flashcards"><span>Flashcards</span></button>' +
                 '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-choice="podcast"><span>Podcast</span></button>' +
                 '</div></div>';
             body.insertAdjacentHTML('beforeend', choicesHTML);
@@ -2181,6 +2182,7 @@ function saveCurrentChatIfHasMessages() {
     var chatCopy = {
         id: cur.id,
         title: cur.title || 'Sin título',
+        topic: chatState.currentTopic || cur.topic || null,
         createdAt: cur.createdAt || now,
         lastInteractedAt: cur.lastInteractedAt || now,
         messages: cur.messages.slice()
@@ -2241,6 +2243,23 @@ function confirmDeleteChat() {
 }
 
 /**
+ * Formatea la fecha de un chat para el historial: "Hoy", "Ayer" o "DD MMM YYYY" (mes 3 letras).
+ */
+function formatHistorialDate(timestamp) {
+    if (!timestamp) return '';
+    var d = new Date(timestamp);
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+    var yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    var dDay = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    if (dDay.getTime() === today.getTime()) return 'Hoy';
+    if (dDay.getTime() === yesterday.getTime()) return 'Ayer';
+    var months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+    return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+}
+
+/**
  * Rellena la lista del panel de historial: cada chat una sola vez, ordenado por interacción más reciente.
  * El activo es el que coincide con currentChat.id (el que se ve a la derecha).
  */
@@ -2277,8 +2296,18 @@ function renderHistorialList() {
         var title = (chat.title || 'Sin título').replace(/</g, '&lt;').replace(/"/g, '&quot;');
         var isActive = id && currentId === id;
         var activeClass = isActive ? ' modo-estudio-ia-historial-item--active' : '';
+        var dateLabel = formatHistorialDate(chat.createdAt || chat.lastInteractedAt || 0);
+        var dateEscaped = dateLabel.replace(/</g, '&lt;').replace(/"/g, '&quot;');
+        var topicKey = chat.topic || (id && id === currentId ? chatState.currentTopic : null);
+        var topicLabel = (topicKey && TOPIC_LABELS[topicKey]) ? TOPIC_LABELS[topicKey] : null;
+        var descriptionText = topicLabel ? ('Sesión de estudio sobre ' + topicLabel) : 'Sesión de estudio con IA';
+        var descriptionEscaped = descriptionText.replace(/</g, '&lt;').replace(/"/g, '&quot;');
         html += '<div class="modo-estudio-ia-historial-item' + activeClass + '" data-chat-id="' + id + '" role="button" tabindex="0"' + (isActive ? ' aria-current="true"' : '') + '>' +
+            '<div class="modo-estudio-ia-historial-item__content">' +
             '<span class="ubits-body-sm-regular modo-estudio-ia-historial-item__title">' + title + '</span>' +
+            '<span class="ubits-body-sm-regular modo-estudio-ia-historial-item__description">' + descriptionEscaped + '</span>' +
+            (dateEscaped ? '<span class="ubits-body-sm-regular modo-estudio-ia-historial-item__date">' + dateEscaped + '</span>' : '') +
+            '</div>' +
             '<button type="button" class="ubits-button ubits-button--error-tertiary ubits-button--xs ubits-button--icon-only modo-estudio-ia-historial-item__delete" data-delete-chat-id="' + id + '" aria-label="Eliminar chat" title="Eliminar">' +
             '<i class="far fa-trash"></i></button>' +
             '</div>';
@@ -2304,10 +2333,12 @@ function renderHistorialList() {
             chatState.currentChat = {
                 id: chat.id,
                 title: chat.title || '',
+                topic: chat.topic || null,
                 createdAt: chat.createdAt || 0,
                 lastInteractedAt: now,
                 messages: (chat.messages || []).slice()
             };
+            if (chat.topic) chatState.currentTopic = chat.topic;
             renderChatMessages();
             renderHistorialList();
             notifyModoEstudioIaActionsVisibility();
@@ -3008,8 +3039,8 @@ function addMessageWithMaterialChoiceButtons(label, topic) {
         messageHTML +
         '<div class="ubits-study-chat__material-choices" id="' + choicesId + '">' +
         '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-choice="quiz"><span>Quiz</span></button>' +
-        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-choice="flashcards"><span>Flashcards</span></button>' +
         planBtnHtml +
+        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-choice="flashcards"><span>Flashcards</span></button>' +
         '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-choice="podcast"><span>Podcast</span></button>' +
         '</div></div>';
     body.insertAdjacentHTML('beforeend', choicesHTML);
@@ -3340,6 +3371,7 @@ function initStudyChat(containerId, options = {}) {
             if (matchedTopic) {
                 hideWelcomeBlock();
                 chatState.currentTopic = matchedTopic;
+                if (chatState.currentChat) chatState.currentChat.topic = matchedTopic;
                 var label = TOPIC_LABELS[matchedTopic] || matchedTopic;
                 if (resourceType === 'quiz') {
                     renderTutorPanel('quiz', matchedTopic);
@@ -3368,9 +3400,16 @@ function initStudyChat(containerId, options = {}) {
         }
 
         // ----- Pidió solo el recurso sin tema: si ya hay tema en el chat, usarlo; si no, preguntar -----
-        var resourceOnly = !hasTopicInMessage && lowerMessage.length <= 50 && (
-            /^quiz$/.test(lowerMessage) || /^flashcards?$/.test(lowerMessage) || /^podcast$/.test(lowerMessage) ||
-            /^plan(\s+de\s+estudio)?$/.test(lowerMessage) || /^(dame|quiero|genera|quiero un?)\s+(un?\s+)?(quiz|podcast|flashcards?|plan(\s+de\s+estudio)?)$/.test(lowerMessage)
+        // Acepta mensajes exactos O cualquier frase que contenga la palabra clave del recurso (ej. "quiero hacer un quiz", "dame un quiz")
+        var hasResourceKeyword = !hasTopicInMessage && lowerMessage.length <= 60 && !/^\s*no\b/.test(lowerMessage) && (
+            /\bquiz\b/.test(lowerMessage) || /\bflashcards?\b/.test(lowerMessage) || /\bpodcast\b/.test(lowerMessage) ||
+            /\bplan(\s+de\s+estudio)?\b/.test(lowerMessage)
+        );
+        var resourceOnly = hasResourceKeyword || (
+            !hasTopicInMessage && lowerMessage.length <= 50 && (
+                /^quiz$/.test(lowerMessage) || /^flashcards?$/.test(lowerMessage) || /^podcast$/.test(lowerMessage) ||
+                /^plan(\s+de\s+estudio)?$/.test(lowerMessage) || /^(dame|quiero|genera|quiero un?)\s+(un?\s+)?(quiz|podcast|flashcards?|plan(\s+de\s+estudio)?)$/.test(lowerMessage)
+            )
         );
         if (resourceOnly) {
             var resType = /podcast/.test(lowerMessage) ? 'podcast' : /flashcard/.test(lowerMessage) ? 'flashcards' : /plan/.test(lowerMessage) ? 'studyPlan' : 'quiz';
@@ -3482,6 +3521,7 @@ function initStudyChat(containerId, options = {}) {
         for (const [topic, regex] of Object.entries(topicMatch)) {
             if (regex.test(lowerMessage)) {
                 chatState.currentTopic = topic;
+                if (chatState.currentChat) chatState.currentChat.topic = topic;
                 chatState.waitingForMaterialChoice = true;
                 const label = topic === 'liderazgo' ? 'Liderazgo' : topic === 'comunicacion' ? 'Comunicación' : topic === 'ingles' ? 'Inglés' : 'Japonés';
                 return { materialChoice: { label: label, topic: topic }, regenerateFunction: null };
