@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,6 +17,8 @@
     <link rel="stylesheet" href="../../components/button.css">
     <link rel="stylesheet" href="../../components/alert.css">
     <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/dropdown-menu.css">
     <link rel="stylesheet" href="../../components/tooltip.css">
     <style>
         .tooltip-preview-area {
@@ -30,6 +33,7 @@
         }
     </style>
 </head>
+
 <body class="componentes-page" data-theme="light">
     <div class="dashboard-container">
         <main class="main-content">
@@ -41,125 +45,318 @@
                     <div class="content-area" style="display: block; width: 100%;">
                         <!-- Hero -->
                         <div style="text-align: center; margin-bottom: 60px;">
-                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">Tooltip</h1>
-                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
-                                Componente tooltip UBITS con posicionamiento inteligente: se ajusta al viewport y se reposiciona al hacer scroll o al cambiar el tamaño de la ventana.
+                            <h1 class="ubits-display-d2-bold"
+                                style="margin-bottom: 24px; color: var(--ubits-accent-brand);">Tooltip</h1>
+                            <p class="ubits-body-md-regular"
+                                style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                                Componente tooltip UBITS con posicionamiento inteligente: se ajusta al viewport y se
+                                reposiciona al hacer scroll o al cambiar el tamaño de la ventana.
                             </p>
                         </div>
 
                         <!-- Preview -->
-                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                        <div
+                            style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
                             <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
                                 <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                                 Preview del componente
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
-                                Pasa el cursor sobre el botón para ver el tooltip. Se reposiciona solo al hacer scroll o al cambiar el ancho o alto del viewport.
+                                Pasa el cursor sobre el botón para ver el tooltip. Se reposiciona solo al hacer scroll o
+                                al cambiar el ancho o alto del viewport.
                             </p>
-                            <div class="tooltip-preview-area">
-                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" data-tooltip="Texto de ejemplo del tooltip">
-                                    <i class="far fa-info-circle"></i>
-                                    <span>Haz hover sobre mí</span>
-                                </button>
+                            <div class="tooltip-controls"
+                                style="display: flex; flex-wrap: wrap; gap: 24px; margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--ubits-border-1);">
+                                <!-- Posición -->
+                                <div style="flex: 1; min-width: 200px;">
+                                    <div id="tooltip-pos-container"></div>
+                                </div>
+
+                                <!-- Alineación -->
+                                <div style="flex: 1; min-width: 200px;">
+                                    <div id="tooltip-align-container"></div>
+                                </div>
+
+                                <!-- Opciones -->
+                                <div style="flex: 1; min-width: 200px;">
+                                    <label class="ubits-body-sm-bold"
+                                        style="display: block; margin-bottom: 8px;">Opciones</label>
+                                    <div style="display: flex; gap: 16px; align-items: center; height: 32px;">
+                                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                            <input type="checkbox" id="tooltip-opt-normal">
+                                            <span class="ubits-body-sm-regular">Normal (Light)</span>
+                                        </label>
+                                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                            <input type="checkbox" id="tooltip-opt-no-arrow">
+                                            <span class="ubits-body-sm-regular">Sin flecha</span>
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
+
+                            <div class="tooltip-preview-area" style="position: relative; overflow: hidden;">
+                                <div id="preview-target-container"
+                                    style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; padding: 40px;">
+                                    <div id="tooltip-demo-target"
+                                        style="background: white; padding: 24px; border-radius: 8px; border: 1px dashed var(--ubits-border-1); text-align: center; max-width: 300px; cursor: default;"
+                                        data-tooltip="Hola, soy un tooltip de UBITS. Sirvo para mostrar información contextual o ayuda adicional cuando pasas el mouse por encima."
+                                        data-tooltip-position="top" data-tooltip-align="center">
+                                        <p class="ubits-body-sm-bold"
+                                            style="margin-bottom: 8px; color: var(--ubits-accent-brand);">Zona de
+                                            pruebas
+                                        </p>
+                                        <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Usa
+                                            los
+                                            controles de arriba para cambiar la posición del tooltip. Pasa el cursor por
+                                            aquí o cambia una opción para ver el resultado.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <script>
+                                document.addEventListener('DOMContentLoaded', function () {
+                                    const demoBtn = document.getElementById('tooltip-demo-target');
+                                    const normalCheck = document.getElementById('tooltip-opt-normal');
+                                    const noArrowCheck = document.getElementById('tooltip-opt-no-arrow');
+
+                                    // Estado actual
+                                    let currentPos = 'top';
+                                    let currentAlign = 'center';
+
+                                    // Crear inputs si el componente está disponible
+                                    if (typeof createInput === 'function') {
+                                        // Selector de Posición
+                                        createInput({
+                                            containerId: 'tooltip-pos-container',
+                                            type: 'select',
+                                            label: 'Posición',
+                                            value: 'top',
+                                            selectOptions: [
+                                                { value: 'top', text: 'Arriba' },
+                                                { value: 'bottom', text: 'Abajo' },
+                                                { value: 'left', text: 'Izquierda' },
+                                                { value: 'right', text: 'Derecha' }
+                                            ],
+                                            onChange: (val) => {
+                                                currentPos = val;
+                                                updateTooltip();
+                                            }
+                                        });
+
+                                        // Selector de Alineación
+                                        createInput({
+                                            containerId: 'tooltip-align-container',
+                                            type: 'select',
+                                            label: 'Alineación',
+                                            value: 'center',
+                                            selectOptions: [
+                                                { value: 'start', text: 'Inicio' },
+                                                { value: 'center', text: 'Centro' },
+                                                { value: 'end', text: 'Fin' }
+                                            ],
+                                            onChange: (val) => {
+                                                currentAlign = val;
+                                                updateTooltip();
+                                            }
+                                        });
+                                    }
+
+                                    function updateTooltip() {
+                                        // Mapeo de alineación genérica (start/center/end) a específica según posición
+                                        let realAlign = currentAlign;
+                                        if (currentAlign === 'start') {
+                                            realAlign = (currentPos === 'top' || currentPos === 'bottom') ? 'left' : 'top';
+                                        } else if (currentAlign === 'end') {
+                                            realAlign = (currentPos === 'top' || currentPos === 'bottom') ? 'right' : 'bottom';
+                                        }
+
+                                        // Actualizar atributos data
+                                        demoBtn.setAttribute('data-tooltip-position', currentPos);
+                                        demoBtn.setAttribute('data-tooltip-align', realAlign);
+
+                                        if (normalCheck.checked) demoBtn.setAttribute('data-tooltip-normal', '');
+                                        else demoBtn.removeAttribute('data-tooltip-normal');
+
+                                        if (noArrowCheck.checked) demoBtn.setAttribute('data-tooltip-no-arrow', '');
+                                        else demoBtn.removeAttribute('data-tooltip-no-arrow');
+
+                                        // Reinicializar tooltip forzando la visualización inmediata para feedback
+                                        if (typeof hideTooltip === 'function') hideTooltip();
+
+                                        // Pequeño hack para forzar reinicio limpio
+                                        setTimeout(() => {
+                                            if (typeof showTooltip === 'function') {
+                                                // Mostrar tooltip programáticamente para ver el cambio
+                                                showTooltip(demoBtn, 'Hola, soy un tooltip de UBITS. Sirvo para mostrar información contextual o ayuda adicional cuando pasas el mouse por encima.', {
+                                                    position: currentPos,
+                                                    align: realAlign,
+                                                    normal: normalCheck.checked,
+                                                    noArrow: noArrowCheck.checked,
+                                                    delay: 0,
+                                                    duration: 2000,
+                                                    forcePosition: true // Forzar para que el usuario vea lo que seleccionó aunque se salga
+                                                });
+                                            }
+                                        }, 50);
+                                    }
+
+                                    // Listeners
+                                    normalCheck.addEventListener('change', updateTooltip);
+                                    noArrowCheck.addEventListener('change', updateTooltip);
+
+                                    // Init inicial
+                                    updateTooltip();
+                                });
+                            </script>
                         </div>
 
                         <!-- Características -->
-                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                        <div
+                            style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
                             <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
-                                <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                <i class="far fa-info-circle"
+                                    style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                                 Características generales
                             </h2>
-                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
-                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-arrows-up-down-left-right"></i></div>
+                            <div
+                                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                                <div
+                                    style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div
+                                        style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;">
+                                        <i class="far fa-arrows-up-down-left-right"></i>
+                                    </div>
                                     <div class="ubits-body-sm-bold">12 posiciones + sin colita</div>
-                                    <div class="ubits-body-sm-regular">Arriba/abajo/izq/der con alineación left/center/right o top/center/bottom</div>
+                                    <div class="ubits-body-sm-regular">Arriba/abajo/izq/der con alineación
+                                        left/center/right o top/center/bottom</div>
                                 </div>
-                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-compass"></i></div>
+                                <div
+                                    style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div
+                                        style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;">
+                                        <i class="far fa-compass"></i>
+                                    </div>
                                     <div class="ubits-body-sm-bold">Posicionamiento inteligente</div>
-                                    <div class="ubits-body-sm-regular">Se ajusta al viewport si no cabe en la posición preferida</div>
+                                    <div class="ubits-body-sm-regular">Se ajusta al viewport si no cabe en la posición
+                                        preferida</div>
                                 </div>
-                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-palette"></i></div>
+                                <div
+                                    style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div
+                                        style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;">
+                                        <i class="far fa-palette"></i>
+                                    </div>
                                     <div class="ubits-body-sm-bold">Variantes</div>
-                                    <div class="ubits-body-sm-regular">Por defecto (invertido) o normal (bg-1). Opción sin flecha</div>
+                                    <div class="ubits-body-sm-regular">Por defecto (invertido) o normal (bg-1). Opción
+                                        sin flecha</div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Prompts útiles -->
-                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                        <div
+                            style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
                             <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
-                                <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                <i class="far fa-comments"
+                                    style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                                 Prompts útiles
                             </h2>
-                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
-                                Usa estos prompts con Cursor AI para configurar el componente Tooltip. Reemplaza los textos entre [corchetes] antes de enviar.
+                            <p class="ubits-body-md-regular"
+                                style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                Usa estos prompts con Cursor AI para configurar el componente Tooltip. Reemplaza los
+                                textos entre [corchetes] antes de enviar.
                             </p>
                             <div id="tooltip-warning-alert" style="margin-bottom: 24px;"></div>
-                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
-                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <div
+                                style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div
+                                    style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
                                     <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
                                         Añadir tooltip a un elemento
                                     </h3>
-                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('tooltip-prompt-1')">
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm"
+                                        onclick="copyPrompt('tooltip-prompt-1')">
                                         <i class="far fa-copy"></i>
                                         <span>Copiar</span>
                                     </button>
                                 </div>
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tooltip-prompt-1">En [objeto: id, selector o descripción del elemento] quiero que salga un tooltip que diga "[texto del tooltip]".</code></pre>
+                                    <pre
+                                        style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tooltip-prompt-1">En [objeto: id, selector o descripción del elemento] quiero que salga un tooltip que diga "[texto del tooltip]".</code></pre>
                                 </div>
                             </div>
                             <div>
-                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                <div
+                                    style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
                                     <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
                                         Cambiar el texto del tooltip
                                     </h3>
-                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('tooltip-prompt-2')">
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm"
+                                        onclick="copyPrompt('tooltip-prompt-2')">
                                         <i class="far fa-copy"></i>
                                         <span>Copiar</span>
                                     </button>
                                 </div>
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tooltip-prompt-2">Cambia el tooltip de [objeto: id o descripción del elemento] para que diga "[nuevo texto del tooltip]".</code></pre>
+                                    <pre
+                                        style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="tooltip-prompt-2">Cambia el tooltip de [objeto: id o descripción del elemento] para que diga "[nuevo texto del tooltip]".</code></pre>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Documentación técnica -->
-                        <div style="background: var(--ubits-bg-1); border-radius: 16px; margin-bottom: 40px; overflow: hidden;">
-                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                        <div
+                            style="background: var(--ubits-bg-1); border-radius: 16px; margin-bottom: 40px; overflow: hidden;">
+                            <div
+                                style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
                                 <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
-                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    <i class="far fa-code"
+                                        style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                                     Documentación técnica
                                 </h2>
                             </div>
-                            <div id="tooltip-docs-toggle" style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;">
-                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <div id="tooltip-docs-toggle"
+                                style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;">
+                                <span class="ubits-body-md-regular"
+                                    style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
                                     <i class="far fa-chevron-down" id="tooltip-docs-chevron"></i>
                                     <span id="tooltip-docs-toggle-text">Mostrar</span>
                                 </span>
                             </div>
-                            <div id="tooltip-technical-docs" style="display: none; padding: 32px; border-top: 1px solid var(--ubits-border-1);">
+                            <div id="tooltip-technical-docs"
+                                style="display: none; padding: 32px; border-top: 1px solid var(--ubits-border-1);">
                                 <div style="margin-bottom: 24px;">
-                                    <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Uso básico (data-tooltip)</h3>
-                                    <pre style="margin: 0; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px; overflow-x: auto; font-size: var(--font-size-sm); color: var(--ubits-fg-1-medium); text-align: left;"><code>&lt;button data-tooltip="Texto del tooltip"&gt;Hover me&lt;/button&gt;
+                                    <h3 class="ubits-body-md-bold"
+                                        style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Uso básico
+                                        (data-tooltip)</h3>
+                                    <pre
+                                        style="margin: 0; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px; overflow-x: auto; font-size: var(--font-size-sm); color: var(--ubits-fg-1-medium); text-align: left;"><code>&lt;button data-tooltip="Texto del tooltip"&gt;Hover me&lt;/button&gt;
 &lt;script src="components/tooltip.js"&gt;&lt;/script&gt;
 &lt;script&gt;initTooltip('[data-tooltip]');&lt;/script&gt;</code></pre>
                                 </div>
                                 <div style="margin-bottom: 24px;">
-                                    <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Atributos opcionales</h3>
-                                    <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 8px;">data-tooltip-position: top | bottom | left | right</p>
-                                    <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 8px;">data-tooltip-align: left | center | right (para top/bottom) o top | center | bottom (para left/right)</p>
-                                    <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 8px;">data-tooltip-delay: milisegundos (default 200)</p>
-                                    <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">data-tooltip-no-arrow: atributo presente = sin colita</p>
+                                    <h3 class="ubits-body-md-bold"
+                                        style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Atributos opcionales
+                                    </h3>
+                                    <p class="ubits-body-sm-regular"
+                                        style="color: var(--ubits-fg-1-medium); margin-bottom: 8px;">
+                                        data-tooltip-position: top | bottom | left | right</p>
+                                    <p class="ubits-body-sm-regular"
+                                        style="color: var(--ubits-fg-1-medium); margin-bottom: 8px;">data-tooltip-align:
+                                        left | center | right (para top/bottom) o top | center | bottom (para
+                                        left/right)</p>
+                                    <p class="ubits-body-sm-regular"
+                                        style="color: var(--ubits-fg-1-medium); margin-bottom: 8px;">data-tooltip-delay:
+                                        milisegundos (default 200)</p>
+                                    <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                        data-tooltip-no-arrow: atributo presente = sin colita</p>
                                 </div>
                                 <div>
-                                    <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">API: showTooltip(elemento, texto, opciones)</h3>
-                                    <pre style="margin: 0; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px; overflow-x: auto; font-size: var(--font-size-sm); color: var(--ubits-fg-1-medium); text-align: left;"><code>showTooltip(document.getElementById('mi-elem'), 'Texto', {
+                                    <h3 class="ubits-body-md-bold"
+                                        style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">API:
+                                        showTooltip(elemento, texto, opciones)</h3>
+                                    <pre
+                                        style="margin: 0; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px; overflow-x: auto; font-size: var(--font-size-sm); color: var(--ubits-fg-1-medium); text-align: left;"><code>showTooltip(document.getElementById('mi-elem'), 'Texto', {
   position: 'top',   // top | bottom | left | right
   align: 'center',   // left | center | right (top/bottom) o top | center | bottom (left/right)
   delay: 200,
@@ -181,9 +378,10 @@
     <script src="../../docs/docs-sidebar.js"></script>
     <script src="../../components/alert.js"></script>
     <script src="../../components/toast.js"></script>
+    <script src="../../components/input.js"></script>
     <script src="../../components/tooltip.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             if (typeof loadSubNav === 'function') loadSubNav('top-nav-container', 'documentacion');
             if (typeof loadDocsSidebar === 'function') loadDocsSidebar('tooltip');
             if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
@@ -194,12 +392,12 @@
         function copyPrompt(promptId) {
             var el = document.getElementById(promptId);
             if (!el || !navigator.clipboard) return;
-            navigator.clipboard.writeText(el.textContent).then(function() {
+            navigator.clipboard.writeText(el.textContent).then(function () {
                 var btn = document.querySelector('[onclick="copyPrompt(\'' + promptId + '\')"]');
                 if (btn) {
                     var span = btn.querySelector('span');
                     if (span) span.textContent = 'Copiado';
-                    setTimeout(function() { if (span) span.textContent = 'Copiar'; }, 2000);
+                    setTimeout(function () { if (span) span.textContent = 'Copiar'; }, 2000);
                 }
                 if (typeof showToast === 'function') showToast('success', 'Prompt copiado', { containerId: 'ubits-toast-container', duration: 2500 });
             });
@@ -220,4 +418,5 @@
         });
     </script>
 </body>
+
 </html>

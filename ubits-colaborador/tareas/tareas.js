@@ -320,6 +320,7 @@ function renderTareasVencidas() {
     }
 
     container.innerHTML = listaOrdenada.map(tarea => window.renderTaskStrip(tarea, getTaskStripOpts(true))).join('');
+    if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
 }
 
 // Renderizar sección de día
@@ -399,6 +400,7 @@ function loadMoreDays() {
     }
     
     estadoTareas.diasCargados = fin;
+    if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
 }
 
 // Asegurar que el día esté cargado en la lista (solo días >= hoy)
@@ -721,6 +723,7 @@ function initTareasView() {
                             tempDiv.innerHTML = renderDaySection(fecha);
                             const newContent = tempDiv.firstElementChild;
                             dayContainer.innerHTML = newContent.innerHTML;
+                            if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
                         }
                     }
                 }
@@ -739,6 +742,7 @@ function initTareasView() {
                     tempDiv.innerHTML = renderDaySection(fecha);
                     const newContent = tempDiv.firstElementChild;
                     dayContainer.innerHTML = newContent.innerHTML;
+                    if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
                     // Enfocar el input después de renderizar
                     setTimeout(() => {
                         const input = dayContainer.querySelector('.tarea-add-input');
@@ -784,6 +788,7 @@ function initTareasView() {
                                 tempDiv.innerHTML = renderDaySection(fecha);
                                 const newContent = tempDiv.firstElementChild;
                                 dayContainer.innerHTML = newContent.innerHTML;
+                                if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
                             }
                         }
                     }
@@ -822,6 +827,58 @@ function initTareasView() {
                 if (tareaId) {
                     handleTaskClick(tareaId);
                 }
+            }
+            /* Clic en prioridad: abrir dropdown y actualizar prioridad de la tarea */
+            if (e.target.closest('.tarea-priority-badge') && typeof window.getDropdownMenuHtml === 'function' && typeof window.openDropdownMenu === 'function' && typeof window.closeDropdownMenu === 'function') {
+                e.preventDefault();
+                e.stopPropagation();
+                const badge = e.target.closest('.tarea-priority-badge');
+                const tareaId = parseInt(badge.dataset.tareaId || badge.getAttribute('data-tarea-id'), 10);
+                if (isNaN(tareaId)) return;
+                let tarea = tareasEjemplo.vencidas.find(function (t) { return t.id === tareaId; });
+                if (!tarea) {
+                    for (var fk in tareasEjemplo.porDia) {
+                        tarea = tareasEjemplo.porDia[fk].find(function (t) { return t.id === tareaId; });
+                        if (tarea) break;
+                    }
+                }
+                if (!tarea) return;
+                var overlayId = 'tarea-strip-priority-overlay-' + tareaId;
+                var existing = document.getElementById(overlayId);
+                if (existing) existing.remove();
+                var options = [
+                    { text: 'Baja', value: 'baja', leftIcon: 'chevron-down' },
+                    { text: 'Media', value: 'media', leftIcon: 'chevron-up' },
+                    { text: 'Alta', value: 'alta', leftIcon: 'chevrons-up' }
+                ];
+                var html = window.getDropdownMenuHtml({ overlayId: overlayId, options: options });
+                document.body.insertAdjacentHTML('beforeend', html);
+                var overlayEl = document.getElementById(overlayId);
+                if (!overlayEl) return;
+                overlayEl.style.zIndex = '10100';
+                var priorityLabels = { alta: 'Alta', media: 'Media', baja: 'Baja' };
+                overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function (btn) {
+                    btn.addEventListener('click', function (ev) {
+                        ev.stopPropagation();
+                        var val = btn.getAttribute('data-value');
+                        if (val) {
+                            tarea.priority = val;
+                            renderTareasVencidas();
+                            renderAllTasks();
+                            if (typeof showToast === 'function') showToast('success', 'Prioridad actualizada a ' + (priorityLabels[val] || val));
+                        }
+                        window.closeDropdownMenu(overlayId);
+                        if (overlayEl.parentNode) overlayEl.remove();
+                    });
+                });
+                overlayEl.addEventListener('click', function (ev) {
+                    if (ev.target === overlayEl) {
+                        window.closeDropdownMenu(overlayId);
+                        if (overlayEl.parentNode) overlayEl.remove();
+                    }
+                });
+                window.openDropdownMenu(overlayId, badge);
+                return;
             }
             /* Clic en la fila (nombre, etiqueta) abre el detalle; excluir radio y columna de acciones */
             if (e.target.closest('.tarea-item') && !e.target.closest('.tarea-item__radio') && !e.target.closest('.tarea-item__actions')) {
@@ -947,6 +1004,7 @@ function handleCreateTaskInline(fechaKey, nombreTarea) {
             tempDiv.innerHTML = renderDaySection(fecha);
             const newContent = tempDiv.firstElementChild;
             dayContainer.innerHTML = newContent.innerHTML;
+            if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
         }
     }, 300);
 }
@@ -986,6 +1044,7 @@ function handleUpdatePriority(tareaId) {
                 tempDiv.innerHTML = renderDaySection(fecha);
                 const newContent = tempDiv.firstElementChild;
                 dayContainer.innerHTML = newContent.innerHTML;
+                if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
             }
         }
     }
@@ -1013,6 +1072,7 @@ function handleDelete(tareaId) {
                 tempDiv.innerHTML = renderDaySection(fecha);
                 const newContent = tempDiv.firstElementChild;
                 dayContainer.innerHTML = newContent.innerHTML;
+                if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
             }
             return;
         }
@@ -1061,6 +1121,7 @@ function handleUpdateTaskEndDate(tareaId, newYmd) {
                 tempDiv.innerHTML = renderDaySection(fecha);
                 const newContent = tempDiv.firstElementChild;
                 dayContainer.innerHTML = newContent.innerHTML;
+                if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
             }
         });
     }
@@ -1152,6 +1213,7 @@ function renderAllTasks() {
                 tempDiv.innerHTML = renderDaySection(fecha);
                 const newContent = tempDiv.firstElementChild;
                 dayContainer.innerHTML = newContent.innerHTML;
+                if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
             }
         });
     }

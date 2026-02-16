@@ -235,9 +235,11 @@
 
 .tarea-priority-badge {
     flex-shrink: 0;
-    width: 72px;
-    min-width: 72px;
+    width: 80px;
+    min-width: 80px;
     justify-content: center;
+    cursor: pointer;
+    font: inherit;
 }
 
 .tarea-assigned {

@@ -12,6 +12,7 @@ function renderTaskStrip(tarea, opts) {
     const esVencidaSection = !!opts.esVencidaSection;
     const formatDate = typeof opts.formatDate === 'function' ? opts.formatDate : function (d) { return d || ''; };
     const escapeHtml = typeof opts.escapeHtml === 'function' ? opts.escapeHtml : function (s) { return (s == null ? '' : String(s)); };
+    const escapeAttr = function (s) { return (escapeHtml(s) + '').replace(/"/g, '&quot;'); };
     const getAssignee = typeof opts.getAssignee === 'function' ? opts.getAssignee : null;
     const renderAvatar = typeof opts.renderAvatar === 'function' ? opts.renderAvatar : null;
 
@@ -71,35 +72,35 @@ function renderTaskStrip(tarea, opts) {
                     '</label>' +
                 '</span>' +
                 '<div class="tarea-content">' +
-                    '<h3 class="tarea-titulo ubits-body-md-regular" title="' + titleAttr + '">' + nameSafe + '</h3>' +
+                    '<h3 class="tarea-titulo ubits-body-md-regular" data-tooltip="' + escapeAttr(tarea.name || '') + '">' + nameSafe + '</h3>' +
                 '</div>' +
                 etiquetaBlock +
             '</div>' +
             '<div class="tarea-item__actions">' +
                 '<div class="tarea-status">' +
-                    '<span class="ubits-status-tag ubits-status-tag--' + estadoTag + ' ubits-status-tag--sm ubits-status-tag--icon-left" aria-label="Estado: ' + escapeHtml(estadoTexto) + '">' +
+                    '<span class="ubits-status-tag ubits-status-tag--' + estadoTag + ' ubits-status-tag--sm ubits-status-tag--icon-left" data-tooltip="Estado: ' + escapeAttr(estadoTexto) + '" aria-label="Estado: ' + escapeHtml(estadoTexto) + '">' +
                         '<i class="far ' + estadoIcon + '"></i>' +
                         '<span class="ubits-status-tag__text">' + escapeHtml(estadoTexto) + '</span>' +
                     '</span>' +
                 '</div>' +
                 '<div class="tarea-fecha ' + (!fechaDisplay ? 'tarea-fecha--sin-fecha' : '') + (esVencidaReal ? ' tarea-fecha--overdue' : '') + '">' +
-                    '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm tarea-fecha-btn" data-tarea-id="' + idSafe + '" title="Cambiar fecha de vencimiento">' +
+                    '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm tarea-fecha-btn" data-tarea-id="' + idSafe + '" data-tooltip="Fecha de vencimiento">' +
                         (fechaDisplay ? '<span>' + escapeHtml(fechaDisplay) + '</span>' : '<span>Sin fecha</span>') +
                     '</button>' +
                 '</div>' +
                 '<div class="tarea-actions">' +
-                    '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only tarea-action-btn tarea-action-btn--add-plan" title="Agregar a un plan">' +
+                    '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only tarea-action-btn tarea-action-btn--add-plan" data-tooltip="Agregar a un plan">' +
                         '<i class="far fa-layer-group"></i>' +
                     '</button>' +
-                    '<span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--' + (prioridadBadgeVariant[prioridad] || 'warning') + ' ubits-badge-tag--sm ubits-badge-tag--with-icon tarea-priority-badge" aria-label="Prioridad: ' + escapeHtml(prioridadLabel) + '">' +
+                    '<button type="button" class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--' + (prioridadBadgeVariant[prioridad] || 'warning') + ' ubits-badge-tag--sm ubits-badge-tag--with-icon tarea-priority-badge" data-tarea-id="' + idSafe + '" data-tooltip="Prioridad: ' + escapeAttr(prioridadLabel) + '. Clic para cambiar" aria-label="Prioridad: ' + escapeHtml(prioridadLabel) + '. Clic para cambiar">' +
                         '<i class="far ' + (prioridadIcon[prioridad] || 'fa-chevron-up') + '"></i>' +
                         '<span class="ubits-badge-tag__text">' + escapeHtml(prioridadLabel) + '</span>' +
-                    '</span>' +
-                    '<div class="tarea-assigned" title="Asignado a: ' + escapeHtml(assignee.name) + '">' + htmlAssignee() + '</div>' +
-                    '<button type="button" class="ubits-button ubits-button--error-tertiary ubits-button--sm ubits-button--icon-only tarea-action-btn tarea-action-btn--delete" title="Eliminar" data-tarea-id="' + idSafe + '">' +
+                    '</button>' +
+                    '<div class="tarea-assigned" data-tooltip="Asignado a: ' + escapeAttr(assignee.name) + '">' + htmlAssignee() + '</div>' +
+                    '<button type="button" class="ubits-button ubits-button--error-tertiary ubits-button--sm ubits-button--icon-only tarea-action-btn tarea-action-btn--delete" data-tooltip="Eliminar" data-tarea-id="' + idSafe + '">' +
                         '<i class="far fa-trash"></i>' +
                     '</button>' +
-                    '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only tarea-action-btn tarea-action-btn--details" title="Detalles" data-tarea-id="' + idSafe + '">' +
+                    '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only tarea-action-btn tarea-action-btn--details" data-tooltip="Detalles" data-tarea-id="' + idSafe + '">' +
                         '<i class="far fa-chevron-right"></i>' +
                     '</button>' +
                 '</div>' +

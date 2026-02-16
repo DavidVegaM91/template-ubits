@@ -611,7 +611,15 @@ body.page-tareas .dashboard-container {
     color: var(--ubits-fg-1-medium);
 }
 
-/* Responsive para secciones */
+/* Responsive para rango Tablet/Laptop pequeña (donde aparece tab-bar) */
+@media (max-width: 1279px) {
+    .main-content:has(.widget-vista-tareas) {
+        /* Viewport - tab-bar(60px) - gap(16px) */
+        max-height: calc(100vh - 60px - var(--gap-lg, 16px)) !important;
+    }
+}
+
+/* Responsive para Mobile/Tablet Portrait */
 @media (max-width: 1023px) {
     .content-sections {
         padding-bottom: 0;
@@ -625,8 +633,8 @@ body.page-tareas .dashboard-container {
     }
 
     .main-content:has(.widget-vista-tareas) {
-        /* 120px aprox. header + margen inferior token */
-        max-height: calc(100vh - 120px - var(--gap-lg, 16px)) !important;
+        /* Ajuste para mobile: viewport - tab-bar(60px) - gap(16px) */
+        max-height: calc(100vh - 60px - var(--gap-lg, 16px)) !important;
     }
 
     .widget-vista-tareas {
@@ -670,32 +678,32 @@ body.page-tareas .dashboard-container {
         align-items: center;
     }
 
-    .calendar-header__controls > .calendar-month-selector-wrap {
+    .calendar-header__controls>.calendar-month-selector-wrap {
         grid-column: 1;
         grid-row: 1;
     }
 
-    .calendar-header__controls > .calendar-today-nav {
+    .calendar-header__controls>.calendar-today-nav {
         grid-column: 2;
         grid-row: 1;
         justify-self: end;
     }
 
-    .calendar-header__controls > .calendar-horizontal {
+    .calendar-header__controls>.calendar-horizontal {
         grid-column: 1 / -1;
         grid-row: 2;
         min-width: 0 !important;
         overflow: visible !important;
     }
 
-    .calendar-header__controls > .calendar-horizontal .calendar-horizontal__day {
+    .calendar-header__controls>.calendar-horizontal .calendar-horizontal__day {
         flex: 1 1 0% !important;
         min-width: 0 !important;
         max-width: none !important;
         padding: var(--padding-xs, 4px) var(--padding-sm, 8px) !important;
     }
 
-    .calendar-header__controls > .calendar-horizontal .calendar-horizontal__day-number {
+    .calendar-header__controls>.calendar-horizontal .calendar-horizontal__day-number {
         font-size: var(--font-size-sm, 13px) !important;
     }
 }

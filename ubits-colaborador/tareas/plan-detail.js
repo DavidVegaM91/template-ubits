@@ -478,11 +478,12 @@ function renderPlanDetail(planId) {
         const html = tasks.map(t => window.renderTaskStrip(t, { today, formatDate: formatDateForDisplayDDMM, escapeHtml, getAssignee: getAssigneeForPlanDetail, renderAvatar: typeof renderAvatar === 'function' ? renderAvatar : undefined, esVencidaSection: vencidas.some(v => v.id === t.id) })).join('');
         if (tasksListEl) tasksListEl.innerHTML = html;
         attachTaskListeners();
+        if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
     }
 }
 
 function handlePlanDetailListClick(e) {
-    const planId = getPlanIdFromUrl();
+            const planId = getPlanIdFromUrl();
     const tasks = getTasksForPlan(planId);
     if (!planId || !tasks.length) return;
 
@@ -507,14 +508,60 @@ function handlePlanDetailListClick(e) {
     // Eliminar
     if (e.target.closest('.tarea-action-btn--delete')) {
         e.preventDefault();
-        e.stopPropagation();
+            e.stopPropagation();
         const btn = e.target.closest('.tarea-action-btn--delete');
         const id = btn && btn.dataset.tareaId;
         if (id && confirm('¿Eliminar esta tarea?')) {
             const i = tasks.findIndex(t => String(t.id) === String(id));
             if (i >= 0) tasks.splice(i, 1);
-            renderPlanDetail(planId);
-        }
+                renderPlanDetail(planId);
+            }
+        return;
+    }
+
+    // Prioridad: abrir dropdown y actualizar prioridad de la tarea
+    if (e.target.closest('.tarea-priority-badge') && typeof window.getDropdownMenuHtml === 'function' && typeof window.openDropdownMenu === 'function' && typeof window.closeDropdownMenu === 'function') {
+        e.preventDefault();
+        e.stopPropagation();
+        const badge = e.target.closest('.tarea-priority-badge');
+        const id = badge && (badge.dataset.tareaId || badge.getAttribute('data-tarea-id'));
+        if (!id) return;
+        const task = tasks.find(t => String(t.id) === String(id));
+        if (!task) return;
+        const overlayId = 'plan-detail-strip-priority-overlay-' + id;
+        let overlayEl = document.getElementById(overlayId);
+        if (overlayEl) overlayEl.remove();
+        const options = [
+            { text: 'Baja', value: 'baja', leftIcon: 'chevron-down' },
+            { text: 'Media', value: 'media', leftIcon: 'chevron-up' },
+            { text: 'Alta', value: 'alta', leftIcon: 'chevrons-up' }
+        ];
+        const html = window.getDropdownMenuHtml({ overlayId: overlayId, options: options });
+        document.body.insertAdjacentHTML('beforeend', html);
+        overlayEl = document.getElementById(overlayId);
+        if (!overlayEl) return;
+        overlayEl.style.zIndex = '10100';
+        const priorityLabels = { alta: 'Alta', media: 'Media', baja: 'Baja' };
+        overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function (btn) {
+            btn.addEventListener('click', function (ev) {
+                ev.stopPropagation();
+                const val = btn.getAttribute('data-value');
+                if (val) {
+                    task.priority = val;
+                    renderPlanDetail(planId);
+                    if (typeof showToast === 'function') showToast('success', 'Prioridad actualizada a ' + (priorityLabels[val] || val));
+                }
+                window.closeDropdownMenu(overlayId);
+                if (overlayEl.parentNode) overlayEl.remove();
+            });
+        });
+        overlayEl.addEventListener('click', function (ev) {
+            if (ev.target === overlayEl) {
+                window.closeDropdownMenu(overlayId);
+                if (overlayEl.parentNode) overlayEl.remove();
+            }
+        });
+        window.openDropdownMenu(overlayId, badge);
         return;
     }
 
@@ -532,7 +579,7 @@ function handlePlanDetailListClick(e) {
     }
 
     const item = e.target.closest('.tarea-item');
-    if (item && !e.target.closest('.tarea-done-radio') && !e.target.closest('.tarea-action-btn')) {
+    if (item && !e.target.closest('.tarea-done-radio') && !e.target.closest('.tarea-action-btn') && !e.target.closest('.tarea-priority-badge')) {
         e.preventDefault();
         const id = item.dataset.tareaId || item.getAttribute('data-tarea-id');
         if (id) {

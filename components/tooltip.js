@@ -50,7 +50,7 @@
  * - Modo claro y oscuro automático
  */
 
-(function() {
+(function () {
     'use strict';
 
     // Contenedor global para tooltips
@@ -131,7 +131,7 @@
         // Función para verificar si una posición cabe
         function fitsPosition(pos, align) {
             let testTop, testLeft;
-            
+
             if (pos === 'top') {
                 testTop = elementRect.top - tooltipRect.height - arrowSize;
                 if (align === 'left') testLeft = elementRect.left;
@@ -154,10 +154,10 @@
                 else testTop = elementRect.bottom - tooltipRect.height;
             }
 
-            return testTop >= padding && 
-                   testTop + tooltipRect.height <= viewportHeight - padding &&
-                   testLeft >= padding && 
-                   testLeft + tooltipRect.width <= viewportWidth - padding;
+            return testTop >= padding &&
+                testTop + tooltipRect.height <= viewportHeight - padding &&
+                testLeft >= padding &&
+                testLeft + tooltipRect.width <= viewportWidth - padding;
         }
 
         // Intentar posición preferida primero
@@ -234,7 +234,7 @@
      */
     function showTooltip(element, text, options = {}) {
         if (!element) return null;
-        
+
         const el = typeof element === 'string' ? document.querySelector(element) : element;
         if (!el) return null;
 
@@ -275,9 +275,9 @@
         const position = config.forcePosition
             ? calculatePositionOnly(el, tooltip, config.position, config.align, !config.noArrow)
             : calculateBestPosition(el, tooltip, config.position, config.align, !config.noArrow);
-        
+
         // Aplicar clases de posición
-        let tooltipClasses = `ubits-tooltip ubits-tooltip--${position.position} ubits-tooltip--${position.align}`;
+        let tooltipClasses = `ubits-tooltip ubits-tooltip--${position.position} ubits-tooltip--align-${position.align}`;
         if (config.noArrow) {
             tooltipClasses += ' ubits-tooltip--no-arrow';
         }
@@ -285,7 +285,7 @@
             tooltipClasses += ' ubits-tooltip--normal';
         }
         tooltip.className = tooltipClasses;
-        
+
         // Aplicar posición
         tooltip.style.top = position.top + 'px';
         tooltip.style.left = position.left + 'px';
@@ -317,7 +317,7 @@
             const newPosition = config.forcePosition
                 ? calculatePositionOnly(el, tooltip, config.position, config.align, !config.noArrow)
                 : calculateBestPosition(el, tooltip, config.position, config.align, !config.noArrow);
-            let tooltipClasses = `ubits-tooltip ubits-tooltip--${newPosition.position} ubits-tooltip--${newPosition.align} ubits-tooltip--visible`;
+            let tooltipClasses = `ubits-tooltip ubits-tooltip--${newPosition.position} ubits-tooltip--align-${newPosition.align} ubits-tooltip--visible`;
             if (config.noArrow) {
                 tooltipClasses += ' ubits-tooltip--no-arrow';
             }
@@ -361,7 +361,7 @@
      */
     function initTooltip(selector = '[data-tooltip]') {
         const elements = document.querySelectorAll(selector);
-        
+
         elements.forEach(element => {
             // Limpiar listeners anteriores si existen (para evitar duplicados)
             if (element._tooltipInitialized) {
@@ -372,7 +372,7 @@
                     element.removeEventListener('blur', element._tooltipBlurHandler);
                 }
             }
-            
+
             const text = element.getAttribute('data-tooltip');
             const position = element.getAttribute('data-tooltip-position') || 'top';
             const align = element.getAttribute('data-tooltip-align') || 'center';
@@ -385,7 +385,7 @@
             let currentTooltip = null;
 
             // Mostrar en hover
-            const mouseEnterHandler = function() {
+            const mouseEnterHandler = function () {
                 tooltipTimeout = setTimeout(() => {
                     currentTooltip = showTooltip(element, text, {
                         position: position,
@@ -397,16 +397,16 @@
                     });
                 }, delay);
             };
-            
+
             // Ocultar al salir
-            const mouseLeaveHandler = function() {
+            const mouseLeaveHandler = function () {
                 if (tooltipTimeout) clearTimeout(tooltipTimeout);
                 hideTooltip();
                 currentTooltip = null;
             };
 
             // Mostrar en focus (accesibilidad)
-            const focusHandler = function() {
+            const focusHandler = function () {
                 tooltipTimeout = setTimeout(() => {
                     currentTooltip = showTooltip(element, text, {
                         position: position,
@@ -420,18 +420,18 @@
             };
 
             // Ocultar al perder focus
-            const blurHandler = function() {
+            const blurHandler = function () {
                 if (tooltipTimeout) clearTimeout(tooltipTimeout);
                 hideTooltip();
                 currentTooltip = null;
             };
-            
+
             // Agregar listeners
             element.addEventListener('mouseenter', mouseEnterHandler);
             element.addEventListener('mouseleave', mouseLeaveHandler);
             element.addEventListener('focus', focusHandler);
             element.addEventListener('blur', blurHandler);
-            
+
             // Guardar referencias para poder limpiarlas después
             element._tooltipMouseEnterHandler = mouseEnterHandler;
             element._tooltipMouseLeaveHandler = mouseLeaveHandler;
@@ -448,7 +448,7 @@
 
     // Auto-inicializar si hay elementos con data-tooltip al cargar
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             initTooltip();
         });
     } else {

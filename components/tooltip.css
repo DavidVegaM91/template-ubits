@@ -64,15 +64,15 @@
     border-color: var(--ubits-bg-1) transparent transparent transparent;
 }
 
-.ubits-tooltip--top.ubits-tooltip--left .ubits-tooltip__arrow {
+.ubits-tooltip--top.ubits-tooltip--align-left .ubits-tooltip__arrow {
     left: 12px;
 }
 
-.ubits-tooltip--top.ubits-tooltip--center .ubits-tooltip__arrow {
+.ubits-tooltip--top.ubits-tooltip--align-center .ubits-tooltip__arrow {
     left: calc(50% - 9px);
 }
 
-.ubits-tooltip--top.ubits-tooltip--right .ubits-tooltip__arrow {
+.ubits-tooltip--top.ubits-tooltip--align-right .ubits-tooltip__arrow {
     right: 12px;
 }
 
@@ -87,15 +87,15 @@
     border-color: transparent transparent var(--ubits-bg-1) transparent;
 }
 
-.ubits-tooltip--bottom.ubits-tooltip--left .ubits-tooltip__arrow {
+.ubits-tooltip--bottom.ubits-tooltip--align-left .ubits-tooltip__arrow {
     left: 12px;
 }
 
-.ubits-tooltip--bottom.ubits-tooltip--center .ubits-tooltip__arrow {
+.ubits-tooltip--bottom.ubits-tooltip--align-center .ubits-tooltip__arrow {
     left: calc(50% - 9px);
 }
 
-.ubits-tooltip--bottom.ubits-tooltip--right .ubits-tooltip__arrow {
+.ubits-tooltip--bottom.ubits-tooltip--align-right .ubits-tooltip__arrow {
     right: 12px;
 }
 
@@ -110,15 +110,15 @@
     border-color: transparent transparent transparent var(--ubits-bg-1);
 }
 
-.ubits-tooltip--left.ubits-tooltip--top .ubits-tooltip__arrow {
+.ubits-tooltip--left.ubits-tooltip--align-top .ubits-tooltip__arrow {
     top: 12px;
 }
 
-.ubits-tooltip--left.ubits-tooltip--center .ubits-tooltip__arrow {
+.ubits-tooltip--left.ubits-tooltip--align-center .ubits-tooltip__arrow {
     top: calc(50% - 9px);
 }
 
-.ubits-tooltip--left.ubits-tooltip--bottom .ubits-tooltip__arrow {
+.ubits-tooltip--left.ubits-tooltip--align-bottom .ubits-tooltip__arrow {
     bottom: 12px;
 }
 
@@ -133,14 +133,14 @@
     border-color: transparent var(--ubits-bg-1) transparent transparent;
 }
 
-.ubits-tooltip--right.ubits-tooltip--top .ubits-tooltip__arrow {
+.ubits-tooltip--right.ubits-tooltip--align-top .ubits-tooltip__arrow {
     top: 12px;
 }
 
-.ubits-tooltip--right.ubits-tooltip--center .ubits-tooltip__arrow {
+.ubits-tooltip--right.ubits-tooltip--align-center .ubits-tooltip__arrow {
     top: calc(50% - 9px);
 }
 
-.ubits-tooltip--right.ubits-tooltip--bottom .ubits-tooltip__arrow {
+.ubits-tooltip--right.ubits-tooltip--align-bottom .ubits-tooltip__arrow {
     bottom: 12px;
 }
