@@ -85,24 +85,30 @@ Lista de cambios sugeridos en reuniones. Los **realizados** se solicitaron el **
 |`[x]`|  Si el usuario escribe una **variación con palabra clave del recurso** (ej. "quiero hacer un quiz", "quiero un quiz", "dame un quiz", o cualquier frase que contenga "quiz"), debe **generar ese recurso directamente**, no solo cuando escriba exactamente "quiz". Aplicar la misma lógica para **todos los tipos de recurso** (plan, flashcards, quiz, etc.).
 
 ### 7. Competencias UBITS: ofrecer subtemas antes de recursos
-|`[ ]`|  Si el usuario escribe una **competencia de UBITS** (ej. "Liderazgo", "Inglés", "Comunicación"), en vez de sugerir recursos de una vez, **ofrecerle primero** Una definición del concepto y preguntarle si esta interesado en alguna de las habilidades/subtemas de esa competencia en UBITS (consultar estructura en `ubits-colaborador/aprendizaje/catalogo.html`), con un mensaje tipo: "¿Te interesa alguno de estos temas de [competencia]: [lista] o prefieres otra cosa?"
-|`[ ]`|  **Una vez seleccione el tema** (ej. "Fundamentos de liderazgo"), o si dice algo como "no, simplemente quiero aprender sobre fundamentos de liderazgo", **ahí sí** sugerir la generación de recursos.
-|`[ ]`|  Para **competencias que no están en UBITS** (ej. Japonés): no sugerir subtemas basados en habilidades UBITS, pero sí **otras sugerencias** genéricas (ej. "Escritura y alfabeto", "Saludos", "Estructura básica de una oración", "Partículas gramaticales", u otras similares).
+|`[x]`|  Si el usuario escribe una **competencia de UBITS** (ej. "Liderazgo", "Inglés", "Comunicación"), en vez de sugerir recursos de una vez, **ofrecerle primero** Una definición general del concepto y preguntarle si esta interesado en alguna de las habilidades/subtemas de esa competencia en UBITS (consultar estructura en `ubits-colaborador/aprendizaje/catalogo.html`), con un mensaje tipo: "¿Te interesa alguno de estos temas de [competencia]: [lista] o prefieres otra cosa?" - Propuesta David
+|`[x]`|  **Una vez seleccione el tema** o si dice algo como "no, simplemente quiero aprender sobre fundamentos de liderazgo", **ahí sí** sugerir la generación de recursos. - Propuesta David
+|`[x]`|  Para **competencias que no están en UBITS** (ej. Japonés): no sugerir subtemas basados en habilidades UBITS, pero sí **otras sugerencias** genéricas (ej. "Escritura y alfabeto", "Saludos", "Estructura básica de una oración", "Partículas gramaticales", u otras similares). - Propuesta David
 
 ### 8. Sets de recursos por subtema
-|`[ ]`|  **Ampliar los sets**: asegurar **3 sets de cada tipo de recurso** (excepto podcast) para cada uno de los **subtemas sugeridos** para Inglés, Japonés, Liderazgo y Comunicación. Los de Inglés, Liderazgo y Comunicación se consultan en el catálogo (`catalogo.html`).
+|`[x]`|  **Ampliar los sets**: asegurar **3 sets de cada tipo de recurso** (excepto podcast) para cada uno de los **subtemas sugeridos** para Inglés, Japonés, Liderazgo y Comunicación. Los de Inglés, Liderazgo y Comunicación se consultan en el catálogo (`catalogo.html`) - Propuesta David
 
-### 9. Respuesta "Definición" y citas con contenido
-|`[ ]`|  Si el usuario escribe la palabra clave **"definición"** (ej. "definición de liderazgo"), mostrar una **respuesta en el chat** con la definición del tema (ej. liderazgo).
-|`[ ]`|  En la respuesta de definición, **añadir tags "Contenido"** al lado de ciertas frases; al hacer **clic** en un tag, abrir un **canvas a la derecha** con la ficha del contenido, con este orden:
-|`[ ]`|  **Contenido del canvas:** imagen del curso arriba, badge de tipo de contenido, nombre del contenido, nivel / tiempo / idioma, botón primario "Ver contenido", botón secundario "Ver descripción", competencia, **3 habilidades** (solo una de la competencia principal, ej. Liderazgo, y las otras dos de Comunicación o soft skills según la frase citada), **imagen y nombre del proveedor** (según lista de aliados en componente card-content), **imagen y nombre de experto** (avatar + nombre genérico inventado).
-|`[ ]`|  **Citas**: poder **guardar como una tarea** para verlo después (ej. contenido citado en definiciones o en respuestas).
+### 9. Citas con contenido
+|`[x]`|  Cuando se de la definición esta debe ser de al menos un parra y debe tener tags de citas, **añadir tags "Contenido"** al lado de ciertas frases; al hacer **clic** en un tag, abrir un **canvas a la derecha** con la ficha del contenido, con este orden:
+|`[x]`|  **Contenido del canvas:** imagen del curso arriba, badge de tipo de contenido (consultar tipos de contenido en el componente card-content), nombre del contenido, nivel / tiempo / idioma, botón primario "Ver contenido", botón secundario "Ver descripción", competencia, **3 habilidades** (solo una de la competencia principal, ej. Liderazgo, y las otras dos de Comunicación o soft skills según la frase citada), **imagen y nombre del proveedor** (según lista de aliados en componente card-content), **imagen y nombre de experto** (avatar (componente oficial) con alguna imagen de unplash + nombre genérico inventado).
+|`[x]`|  **en este canvas del curso**: poder **guardar como una tarea** para verlo después
 
 ### 10. Razonamiento rápido antes de responder
-|`[ ]`|  Antes de mostrar la respuesta al usuario, mostrar un **"razonamiento rápido"** (indicador o texto breve de que el asistente está pensando/razonando).
+|`[x]`|  Antes de mostrar la respuesta al usuario, mostrar un **"razonamiento rápido"** (indicador o texto breve de que el asistente está pensando/razonando) - Solicitud de Luisa.
 
-### 11. Buscador de contenido (sugerencias de cursos)
-|`[ ]`|  Si el estudiante pide **sugerencias de cursos** sobre un tema con **tipo de contenido específico**, **nivel específico** y **tiempo aproximado**, mostrar los resultados en un **canvas de resultados de búsqueda** a la derecha.
-|`[ ]`|  El canvas debe **arrojar resultados de contenidos** usando el componente oficial **card-content-compact**.
+### 11. Buscador de contenido (sugerencias de contenidos)
+|`[x]`|  Buscador de contenidos implementado
+
+Poder pedirle al asistente sugerencias específicas de contenidos.
+
+Por ejemplo:
+
+"Dame sugerencias de contenidos de liderazgo de nivel básico de 30 minutos"
+"Busca cursos de inglés avanzados"
+"Recomienda cursos de comunicación"
 
 ---

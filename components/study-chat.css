@@ -13,8 +13,10 @@
     border-radius: var(--border-radius-none);
     padding: var(--padding-none);
     box-sizing: border-box;
-    min-height: 0; /* Permitir que flexbox funcione correctamente */
-    flex: 1 1 0; /* Ocupar todo el espacio disponible */
+    min-height: 0;
+    /* Permitir que flexbox funcione correctamente */
+    flex: 1 1 0;
+    /* Ocupar todo el espacio disponible */
 }
 
 /* Encabezado del chat: igual que historial y canvas (texto izquierda, botones derecha) */
@@ -274,7 +276,7 @@
     .study-chat-courses-container {
         flex-direction: column;
     }
-    
+
     .study-chat-courses-container .course-card-compact {
         min-width: 100%;
         max-width: 100%;
@@ -329,17 +331,16 @@
     background: var(--ubits-bg-2);
     color: var(--ubits-fg-1-high);
     border-radius: var(--border-radius-sm);
-    border-bottom-left-radius: 0; /* Sin radius en esquina inferior izquierda */
+    border-bottom-left-radius: 0;
+    /* Sin radius en esquina inferior izquierda */
 }
 
 /* Mensaje de usuario: gradiente azul fijo tipo Messenger (azul botón a más oscuro, texto blanco; las burbujas “revelan” la porción que les toca) */
 .ubits-study-chat__text-globe--user {
-    background: linear-gradient(
-        to bottom,
-        var(--ubits-button-active-bg) 0%,
-        var(--ubits-bg-blue-bold-default) 50%,
-        var(--ubits-logo) 100%
-    );
+    background: linear-gradient(to bottom,
+            var(--ubits-button-active-bg) 0%,
+            var(--ubits-bg-blue-bold-default) 50%,
+            var(--ubits-logo) 100%);
     background-attachment: fixed;
     color: var(--ubits-btn-primary-fg);
     border-radius: var(--border-radius-sm);
@@ -387,20 +388,71 @@
         opacity: 0;
         transform: translateY(6px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
     }
 }
 
-.ubits-study-chat__message--reveal .ubits-study-chat__timestamp {
-    opacity: 0;
-    animation: ubits-study-chat-reveal-down 0.22s ease-out 120ms forwards;
+/* Reveal de arriba a abajo: se activa SOLO cuando termina el typing (--typing-done) */
+@keyframes ubits-study-chat-reveal-down {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-.ubits-study-chat__message--reveal .ubits-study-chat__message-actions {
+/* Estado TYPING: ocultar todo excepto el texto */
+.ubits-study-chat__message--typing .ubits-study-chat__message-actions,
+.ubits-study-chat__message--typing .ubits-study-chat__material-choices,
+.ubits-study-chat__message--typing+.ubits-study-chat__material-choices,
+.ubits-study-chat__message--typing .study-chat-courses-section,
+.ubits-study-chat__message--typing .study-chat-plan-section,
+.ubits-study-chat__message--typing .study-chat-resource-card,
+.ubits-study-chat__message--typing .study-chat-resource-msg,
+.ubits-study-chat__message--typing .ubits-study-chat__timestamp {
+    opacity: 0 !important;
+    transform: translateY(6px);
+    pointer-events: none;
+}
+
+/* Estado DONE: revelar elementos en cascada */
+.ubits-study-chat__message--typing-done .ubits-study-chat__message-actions {
     opacity: 0;
-    animation: ubits-study-chat-reveal-down 0.22s ease-out 220ms forwards;
+    animation: ubits-study-chat-reveal-down 0.3s ease-out 0s forwards;
+}
+
+.ubits-study-chat__message--typing-done .ubits-study-chat__timestamp {
+    opacity: 0;
+    animation: ubits-study-chat-reveal-down 0.3s ease-out 0s forwards;
+}
+
+.ubits-study-chat__message--typing-done .ubits-study-chat__material-choices,
+.ubits-study-chat__message--typing-done+.ubits-study-chat__material-choices {
+    opacity: 0;
+    animation: ubits-study-chat-reveal-down 0.3s ease-out 0.1s forwards;
+}
+
+.ubits-study-chat__message--typing-done .study-chat-courses-section {
+    opacity: 0;
+    animation: ubits-study-chat-reveal-down 0.3s ease-out 0.2s forwards;
+}
+
+.ubits-study-chat__message--typing-done .study-chat-plan-section {
+    opacity: 0;
+    animation: ubits-study-chat-reveal-down 0.3s ease-out 0.2s forwards;
+}
+
+.ubits-study-chat__message--typing-done .study-chat-resource-card,
+.ubits-study-chat__message--typing-done .study-chat-resource-msg {
+    opacity: 0;
+    animation: ubits-study-chat-reveal-down 0.3s ease-out 0.2s forwards;
 }
 
 .ubits-study-chat__message-with-choices--reveal .ubits-study-chat__timestamp {
@@ -424,6 +476,54 @@
     text-decoration: underline;
     cursor: pointer;
     transition: opacity 0.2s ease;
+}
+
+/* Indicador "Pensando..." */
+.ubits-study-chat__thinking {
+    font-size: 14px;
+    font-style: normal;
+    color: var(--ubits-neutral-500);
+    margin-bottom: 4px;
+    display: inline-block;
+    animation: ubits-shimmer 1.5s infinite ease-in-out;
+}
+
+.ubits-study-chat__thinking::after {
+    content: '';
+    display: inline-block;
+    width: 12px;
+    text-align: left;
+    animation: ubits-ellipsis 1.5s infinite steps(4, end);
+}
+
+@keyframes ubits-shimmer {
+
+    0%,
+    100% {
+        opacity: 0.6;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+@keyframes ubits-ellipsis {
+    0% {
+        content: '';
+    }
+
+    25% {
+        content: '.';
+    }
+
+    50% {
+        content: '..';
+    }
+
+    75% {
+        content: '...';
+    }
 }
 
 .ubits-study-chat__message-text a.ubits-study-chat__link:hover {
@@ -567,12 +667,26 @@
     animation: ubits-study-chat-bounce 0.6s ease-in-out infinite;
 }
 
-.ubits-study-chat__typing-dot:nth-child(2) { animation-delay: 0.1s; }
-.ubits-study-chat__typing-dot:nth-child(3) { animation-delay: 0.2s; }
+.ubits-study-chat__typing-dot:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.ubits-study-chat__typing-dot:nth-child(3) {
+    animation-delay: 0.2s;
+}
 
 @keyframes ubits-study-chat-bounce {
-    0%, 100% { opacity: 0.4; transform: translateY(0); }
-    50% { opacity: 1; transform: translateY(-2px); }
+
+    0%,
+    100% {
+        opacity: 0.4;
+        transform: translateY(0);
+    }
+
+    50% {
+        opacity: 1;
+        transform: translateY(-2px);
+    }
 }
 
 .ubits-study-chat__typing-text {
@@ -741,7 +855,7 @@
 
 /* Revelado secuencial del contenido tras el loader: de arriba a abajo, ≤1s total */
 .study-chat-canvas-content--reveal-stagger .study-chat-canvas-header,
-.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body > *,
+.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body>*,
 .study-chat-canvas-content--reveal-stagger .study-chat-canvas-footer {
     opacity: 0;
     animation: study-chat-canvas-stagger-reveal 0.2s ease-out forwards;
@@ -750,21 +864,62 @@
 .study-chat-canvas-content--reveal-stagger .study-chat-canvas-header {
     animation-delay: 0s;
 }
-.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body > *:nth-child(1) { animation-delay: 0.06s; }
-.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body > *:nth-child(2) { animation-delay: 0.12s; }
-.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body > *:nth-child(3) { animation-delay: 0.18s; }
-.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body > *:nth-child(4) { animation-delay: 0.24s; }
-.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body > *:nth-child(5) { animation-delay: 0.30s; }
-.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body > *:nth-child(6) { animation-delay: 0.36s; }
-.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body > *:nth-child(7) { animation-delay: 0.42s; }
-.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body > *:nth-child(8) { animation-delay: 0.48s; }
-.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body > *:nth-child(9) { animation-delay: 0.54s; }
-.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body > *:nth-child(10) { animation-delay: 0.60s; }
-.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body > *:nth-child(11) { animation-delay: 0.66s; }
-.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body > *:nth-child(12) { animation-delay: 0.72s; }
-.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body > *:nth-child(13) { animation-delay: 0.78s; }
+
+.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body>*:nth-child(1) {
+    animation-delay: 0.06s;
+}
+
+.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body>*:nth-child(2) {
+    animation-delay: 0.12s;
+}
+
+.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body>*:nth-child(3) {
+    animation-delay: 0.18s;
+}
+
+.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body>*:nth-child(4) {
+    animation-delay: 0.24s;
+}
+
+.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body>*:nth-child(5) {
+    animation-delay: 0.30s;
+}
+
+.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body>*:nth-child(6) {
+    animation-delay: 0.36s;
+}
+
+.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body>*:nth-child(7) {
+    animation-delay: 0.42s;
+}
+
+.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body>*:nth-child(8) {
+    animation-delay: 0.48s;
+}
+
+.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body>*:nth-child(9) {
+    animation-delay: 0.54s;
+}
+
+.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body>*:nth-child(10) {
+    animation-delay: 0.60s;
+}
+
+.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body>*:nth-child(11) {
+    animation-delay: 0.66s;
+}
+
+.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body>*:nth-child(12) {
+    animation-delay: 0.72s;
+}
+
+.study-chat-canvas-content--reveal-stagger .study-chat-canvas-body>*:nth-child(13) {
+    animation-delay: 0.78s;
+}
+
 .study-chat-canvas-content--reveal-stagger .study-chat-canvas-footer {
-    animation-delay: 0.78s; /* cierra la secuencia en ≤1s (0.78 + 0.2 = 0.98s) */
+    animation-delay: 0.78s;
+    /* cierra la secuencia en ≤1s (0.78 + 0.2 = 0.98s) */
 }
 
 @keyframes study-chat-canvas-stagger-reveal {
@@ -772,6 +927,7 @@
         opacity: 0;
         transform: translateY(6px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -1538,9 +1694,10 @@
     width: 100%;
     background: transparent;
 }
-.study-chat-canvas-study-plan-editable #study-chat-plan-input-title > div,
-.study-chat-canvas-study-plan-editable #study-chat-plan-input-priority > div,
-.study-chat-canvas-study-plan-editable #study-chat-plan-input-date-fin > div {
+
+.study-chat-canvas-study-plan-editable #study-chat-plan-input-title>div,
+.study-chat-canvas-study-plan-editable #study-chat-plan-input-priority>div,
+.study-chat-canvas-study-plan-editable #study-chat-plan-input-date-fin>div {
     background: transparent;
 }
 
@@ -1754,6 +1911,126 @@
     margin: 0;
 }
 
+/* Canvas ficha de contenido (citas en definición - Changelog 9) */
+.study-chat-canvas-body--content-preview {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    overflow-y: auto;
+}
+
+.study-chat-content-preview-image-wrap {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--border-radius-sm);
+    overflow: hidden;
+    background: var(--ubits-bg-2);
+}
+
+.study-chat-content-preview-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.study-chat-content-preview-type {
+    align-self: flex-start;
+}
+
+.study-chat-content-preview-title {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.study-chat-content-preview-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-md);
+    color: var(--ubits-fg-1-medium);
+}
+
+.study-chat-content-preview-meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-xs);
+    font-size: var(--font-size-sm);
+}
+
+.study-chat-content-preview-meta-item i {
+    color: var(--ubits-fg-1-low);
+}
+
+.study-chat-content-preview-actions {
+    display: flex;
+    gap: var(--gap-sm);
+    flex-wrap: wrap;
+}
+
+/* Misma apariencia para Competencia, Habilidades, Aliado y Experto (color y peso) */
+.study-chat-content-preview-label {
+    color: var(--ubits-fg-1-high);
+}
+
+.study-chat-content-preview-comp {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    margin: 0;
+    color: var(--ubits-fg-1-medium);
+}
+
+.study-chat-content-preview-comp .ubits-avatar {
+    flex-shrink: 0;
+}
+
+.study-chat-content-preview-skills {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--gap-xs);
+}
+
+.study-chat-content-preview-skills .study-chat-content-preview-label {
+    margin-right: var(--gap-xs);
+}
+
+/* Aliado y Experto: desktop uno al lado del otro, mobile uno arriba del otro */
+.study-chat-content-preview-aliado-experto {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--gap-lg);
+}
+
+.study-chat-content-preview-provider {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.study-chat-content-preview-provider .ubits-avatar {
+    flex-shrink: 0;
+}
+
+.study-chat-content-preview-expert {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.study-chat-content-preview-expert .ubits-avatar {
+    flex-shrink: 0;
+}
+
+.study-chat-citation-tag {
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+.study-chat-citation-tag:hover {
+    opacity: 0.9;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .ubits-study-chat {
@@ -1764,18 +2041,21 @@
     .study-chat-canvas-body {
         padding: var(--padding-lg);
     }
-    
+
+    .study-chat-content-preview-aliado-experto {
+        flex-direction: column;
+    }
+
     .ubits-study-chat__text-globe {
         max-width: 90%;
     }
-    
+
     .ubits-study-chat__suggestions {
         gap: var(--gap-sm);
     }
-    
+
     .ubits-study-chat__suggestion-btn {
         font-size: var(--font-size-sm);
         padding: var(--padding-md) var(--padding-md);
     }
 }
-

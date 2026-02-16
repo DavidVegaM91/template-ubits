@@ -295,7 +295,7 @@
         width: 85px;
         height: 48px;
     }
-    
+
     .course-card-compact-inner {
         gap: var(--gap-sm);
         padding: var(--padding-sm);

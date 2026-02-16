@@ -1,0 +1,345 @@
+/* ========================================
+   TIRILLA DE TAREA (task-strip) - Componente reutilizable
+   Usado en tareas.html y plan-detail.html.
+   Estilos tokenizados (UBITS).
+   ======================================== */
+
+.tarea-item {
+    display: grid;
+    width: 100%;
+    min-width: 343px;
+    padding: var(--space-2, 8px) var(--space-1, 4px);
+    align-items: center;
+    background: var(--ubits-bg-1);
+    grid-template-columns: minmax(0, 1fr) minmax(200px, auto);
+    transition: background 0.2s;
+    border: none;
+    border-radius: var(--border-radius-sm, 8px);
+    box-shadow: none;
+}
+
+.tarea-item:hover {
+    background: var(--ubits-bg-2);
+    border: none;
+    box-shadow: none;
+}
+
+.tarea-item--overdue {
+    border: none;
+}
+
+.tarea-item__main {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    height: var(--size-5xl, 40px);
+    gap: var(--gap-xs, 4px);
+    overflow: hidden;
+    width: 100%;
+    min-width: 0;
+    padding-left: 0;
+    flex: 1;
+}
+
+.tarea-item__radio {
+    display: flex;
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.tarea-item__radio .ubits-radio {
+    gap: 0;
+}
+
+.tarea-item__radio .ubits-radio__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    margin: -1px;
+    padding: 0;
+}
+
+.tarea-checkbox {
+    position: relative;
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+}
+
+.tarea-checkbox input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    cursor: pointer;
+    appearance: none;
+    border: 2.5px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-full, 1000px);
+    background: var(--ubits-bg-1);
+    transition: background 0.2s, border-color 0.2s;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.tarea-checkbox input[type="checkbox"]:checked {
+    background: var(--ubits-accent-brand);
+    border-color: var(--ubits-accent-brand);
+}
+
+.tarea-checkbox input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: var(--size-sm, 8px);
+    height: var(--size-sm, 8px);
+    background: var(--ubits-fg-1-low);
+    border-radius: var(--border-radius-full, 1000px);
+}
+
+.tarea-item--overdue .tarea-checkbox input[type="checkbox"] {
+    border-color: var(--ubits-feedback-accent-error);
+}
+
+.tarea-item--overdue .tarea-checkbox input[type="checkbox"]:checked {
+    background: var(--ubits-feedback-accent-error);
+    border-color: var(--ubits-feedback-accent-error);
+}
+
+.tarea-content {
+    flex: 1;
+    min-width: 0;
+    max-width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0;
+}
+
+.tarea-titulo {
+    display: block;
+    width: auto;
+    flex: 1 1 auto;
+    min-width: 0;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-size: var(--font-size-sm, 13px);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--line-height-sm, 19.5px);
+    color: var(--ubits-fg-1-medium);
+    background: none;
+    padding: 9.5px var(--padding-sm, 8px) 9.5px 0;
+    border: none;
+}
+
+.tarea-titulo:hover {
+    background: none;
+}
+
+.tarea-item--completed .tarea-titulo {
+    text-decoration: line-through;
+    color: var(--ubits-fg-1-medium);
+}
+
+.tarea-etiqueta {
+    flex-shrink: 0;
+}
+
+.tarea-etiqueta-text {
+    display: inline-flex;
+    align-items: center;
+    height: 21px;
+    padding: 0 var(--padding-sm, 8px);
+    border-radius: var(--border-radius-md, 12px);
+    background: var(--ubits-bg-2);
+    color: var(--ubits-fg-1-medium);
+    border: 1px solid var(--ubits-border-1);
+    font-size: var(--font-size-xs, 11px);
+    font-weight: var(--font-weight-regular);
+    white-space: nowrap;
+}
+
+.tarea-item__actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: var(--gap-md, 12px);
+    height: var(--size-5xl, 40px);
+    padding: 0 var(--padding-xs, 4px);
+    text-align: center;
+    min-width: 0;
+}
+
+.tarea-status {
+    flex-shrink: 0;
+}
+
+.tarea-status .ubits-status-tag {
+    min-width: 80px;
+}
+
+.tarea-status .ubits-status-tag i {
+    display: none;
+}
+
+.tarea-status .ubits-status-tag--info {
+    background: var(--ubits-feedback-bg-info-subtle);
+    color: var(--ubits-accent-brand);
+    border-color: var(--ubits-accent-brand);
+}
+
+.tarea-fecha {
+    width: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1 0 0;
+    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-size: var(--font-size-sm, 13px);
+    font-weight: var(--font-weight-regular);
+    color: var(--ubits-fg-1-medium);
+}
+
+.tarea-fecha--overdue {
+    color: var(--ubits-feedback-accent-error);
+}
+
+.tarea-fecha .tarea-fecha-btn {
+    min-width: 72px;
+}
+
+.tarea-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: var(--gap-sm, 8px);
+    flex-shrink: 0;
+}
+
+.tarea-action-btn--details {
+    display: none !important;
+}
+
+.tarea-priority-badge {
+    flex-shrink: 0;
+    width: 72px;
+    min-width: 72px;
+    justify-content: center;
+}
+
+.tarea-assigned {
+    flex-shrink: 0;
+    width: var(--size-4xl, 32px);
+    height: var(--size-4xl, 32px);
+    position: relative;
+}
+
+.tarea-assigned-avatar-img {
+    width: var(--size-4xl, 32px);
+    height: var(--size-4xl, 32px);
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    flex-shrink: 0;
+}
+
+.tarea-assigned-avatar-initials {
+    width: var(--size-4xl, 32px);
+    height: var(--size-4xl, 32px);
+    border-radius: 50%;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ubits-fg-1-high);
+    font-size: var(--font-size-xs, 11px);
+    font-weight: var(--font-weight-bold);
+    flex-shrink: 0;
+}
+
+.tarea-assigned-placeholder {
+    width: var(--size-4xl, 32px);
+    height: var(--size-4xl, 32px);
+    border-radius: 50%;
+    background: var(--ubits-bg-2);
+    border: 1px solid var(--ubits-border-1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ubits-fg-1-medium);
+    flex-shrink: 0;
+}
+
+.tarea-assigned-placeholder i {
+    font-size: var(--font-size-sm, 13px);
+}
+
+/* Prioridad como botón (variante plan-detail) */
+.tarea-priority-btn {
+    flex-shrink: 0;
+}
+
+.tarea-priority--high { color: var(--ubits-feedback-accent-error); }
+.tarea-priority--medium { color: var(--ubits-feedback-accent-warning); }
+.tarea-priority--low { color: var(--ubits-feedback-accent-info); }
+
+/* Responsive: status tag icon-only en mobile */
+@media (max-width: 1023px) {
+    .tarea-status .ubits-status-tag {
+        width: 28px;
+        min-width: 28px;
+        height: 28px;
+        padding: 0;
+    }
+    .tarea-status .ubits-status-tag i {
+        display: inline-flex;
+    }
+    .tarea-status .ubits-status-tag .ubits-status-tag__text {
+        display: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .tarea-item {
+        grid-template-columns: minmax(0, 1fr) auto;
+        min-width: 0;
+    }
+
+    .tarea-item__main {
+        min-height: var(--size-5xl, 40px);
+        height: auto;
+        min-width: 0;
+    }
+
+    .tarea-item__actions {
+        justify-content: flex-end;
+        flex-wrap: nowrap;
+        gap: var(--gap-sm, 8px);
+        height: auto;
+        min-height: var(--size-5xl, 40px);
+        min-width: 0;
+    }
+
+    .tarea-item .tarea-etiqueta,
+    .tarea-item .tarea-fecha,
+    .tarea-item .tarea-action-btn--add-plan,
+    .tarea-item .tarea-priority-badge,
+    .tarea-item .tarea-assigned,
+    .tarea-item .tarea-action-btn--delete {
+        display: none !important;
+    }
+}

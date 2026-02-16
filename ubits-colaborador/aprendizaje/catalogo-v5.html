@@ -1257,7 +1257,7 @@
                                 <div class="competencias-column">
                                     ${column.map(competencia => {
                                         const imageName = competenciaImageMap[competencia.nombre] || 'Accountability.jpg';
-                                        const imagePath = `images/imagenes competencias/${imageName}`;
+                                        const imagePath = `../../images/imagenes competencias/${imageName}`;
                                         const isAssigned = competenciasAsignadas.includes(competencia.nombre);
                                         return `
                                             <div class="competencia-card-v1-wrapper">

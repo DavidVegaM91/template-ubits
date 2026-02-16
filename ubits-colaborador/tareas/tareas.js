@@ -290,80 +290,16 @@ function getAssigneeDisplay(tarea) {
     return { name: email.split('@')[0], avatar: null };
 }
 
-// Renderizar tarea individual según diseño React
-// esVencidaSection = true cuando se pinta dentro de tareas-overdue-container (solo vencidas)
-function renderTarea(tarea, esVencidaSection = false) {
-    const fechaDisplay = tarea.endDate ? formatDateForDisplayDDMM(tarea.endDate) : null;
-    const esFinalizada = tarea.done === true || tarea.status === 'Finalizado';
-    const esVencidaReal = !esFinalizada && (esVencidaSection || (tarea.endDate && tarea.endDate < today));
-    const estadoTag = esFinalizada
-        ? 'success'
-        : (esVencidaReal ? 'error' : (tarea.status === 'Activo' ? 'info' : 'neutral'));
-    const estadoTexto = esFinalizada
-        ? 'Finalizada'
-        : (esVencidaReal ? 'Vencida' : (tarea.status === 'Activo' ? 'Iniciada' : 'Finalizada'));
-    const estadoIcon = esFinalizada ? 'fa-check-circle' : (esVencidaReal ? 'fa-exclamation-triangle' : (tarea.status === 'Activo' ? 'fa-spinner' : 'fa-check-circle'));
-    const prioridad = (tarea.priority || 'media').toLowerCase();
-    const prioridadLabel = prioridad === 'alta' ? 'Alta' : prioridad === 'baja' ? 'Baja' : 'Media';
-    const prioridadIcon = { alta: 'fa-chevrons-up', media: 'fa-chevron-up', baja: 'fa-chevron-down' };
-    const prioridadBadgeVariant = { alta: 'error', media: 'warning', baja: 'info' };
-    const assignee = getAssigneeDisplay(tarea);
-    const assigneeInitials = assignee.name && assignee.name !== 'Sin asignar' ? assignee.name.split(/\s+/).map(function (p) { return p.charAt(0); }).join('').substring(0, 2).toUpperCase() : (tarea.assignee_email ? tarea.assignee_email.substring(0, 2).toUpperCase() : '?');
-
-    return `
-        <div class="tarea-item ${tarea.done ? 'tarea-item--completed' : ''} ${esVencidaReal ? 'tarea-item--overdue' : ''}" data-tarea-id="${tarea.id}">
-            <div class="tarea-item__main">
-                <span class="tarea-item__radio">
-                    <label class="ubits-radio ubits-radio--sm tarea-done-radio" data-tarea-id="${tarea.id}" role="button" tabindex="0">
-                        <input type="radio" class="ubits-radio__input" name="tarea-done-${tarea.id}" value="1" ${tarea.done ? 'checked' : ''} data-tarea-id="${tarea.id}">
-                        <span class="ubits-radio__circle"></span>
-                        <span class="ubits-radio__label" aria-hidden="true">&nbsp;</span>
-                    </label>
-                </span>
-                <div class="tarea-content">
-                    <h3 class="tarea-titulo ubits-body-md-regular" title="${tarea.name}">
-                        ${tarea.name}
-                    </h3>
-                </div>
-                ${tarea.etiqueta ? `
-                    <div class="tarea-etiqueta">
-                        <span class="tarea-etiqueta-text">${tarea.etiqueta}</span>
-                    </div>
-                ` : ''}
-            </div>
-            <div class="tarea-item__actions">
-                <div class="tarea-status">
-                    <span class="ubits-status-tag ubits-status-tag--${estadoTag} ubits-status-tag--sm ubits-status-tag--icon-left" aria-label="Estado: ${estadoTexto}">
-                        <i class="far ${estadoIcon}"></i>
-                        <span class="ubits-status-tag__text">${estadoTexto}</span>
-                    </span>
-                </div>
-                <div class="tarea-fecha ${!fechaDisplay ? 'tarea-fecha--sin-fecha' : ''} ${esVencidaReal ? 'tarea-fecha--overdue' : ''}">
-                    <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm tarea-fecha-btn" data-tarea-id="${tarea.id}" title="Cambiar fecha de vencimiento">
-                        ${fechaDisplay ? `<span>${fechaDisplay}</span>` : '<span>Sin fecha</span>'}
-                    </button>
-                </div>
-                <div class="tarea-actions">
-                    <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only tarea-action-btn tarea-action-btn--add-plan" title="Agregar a un plan">
-                        <i class="far fa-layer-group"></i>
-                    </button>
-                    <span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--${prioridadBadgeVariant[prioridad] || 'warning'} ubits-badge-tag--sm ubits-badge-tag--with-icon tarea-priority-badge" aria-label="Prioridad: ${prioridadLabel}">
-                        <i class="far ${prioridadIcon[prioridad] || 'fa-chevron-up'}"></i>
-                        <span class="ubits-badge-tag__text">${prioridadLabel}</span>
-                    </span>
-                    <div class="tarea-assigned" title="Asignado a: ${assignee.name}">
-                        ${typeof renderAvatar === 'function' ? renderAvatar({ nombre: assignee.name, avatar: assignee.avatar || null }, { size: 'sm' }) : (assignee.avatar ? `<img src="${escapeTaskHtml(assignee.avatar)}" alt="" class="tarea-assigned-avatar-img" />` : (assignee.name !== 'Sin asignar' ? `<div class="tarea-assigned-avatar-initials">${assigneeInitials}</div>` : `<div class="tarea-assigned-placeholder"><i class="far fa-user"></i></div>`))}
-                    </div>
-                    <button type="button" class="ubits-button ubits-button--error-tertiary ubits-button--sm ubits-button--icon-only tarea-action-btn tarea-action-btn--delete" title="Eliminar" data-tarea-id="${tarea.id}">
-                        <i class="far fa-trash"></i>
-                    </button>
-                    <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only tarea-action-btn tarea-action-btn--details" title="Detalles" data-tarea-id="${tarea.id}">
-                        <i class="far fa-chevron-right"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-    `;
+// Opciones para el componente tirilla (task-strip) - mismo componente en tareas y plan-detail
+function getTaskStripOpts(esVencidaSection) {
+    return {
+        today: today,
+        formatDate: formatDateForDisplayDDMM,
+        escapeHtml: escapeTaskHtml,
+        getAssignee: getAssigneeDisplay,
+        renderAvatar: typeof renderAvatar === 'function' ? renderAvatar : undefined,
+        esVencidaSection: !!esVencidaSection
+    };
 }
 
 // Renderizar sección de tareas vencidas: pendientes ordenadas por fecha (antigua → reciente) y finalizadas al final
@@ -383,7 +319,7 @@ function renderTareasVencidas() {
         return;
     }
 
-    container.innerHTML = listaOrdenada.map(tarea => renderTarea(tarea, true)).join('');
+    container.innerHTML = listaOrdenada.map(tarea => window.renderTaskStrip(tarea, getTaskStripOpts(true))).join('');
 }
 
 // Renderizar sección de día
@@ -410,7 +346,7 @@ function renderDaySection(fecha) {
                 <h2 class="ubits-body-md-bold">${headerText}</h2>
             </div>
             <div class="tareas-day-content">
-                ${tareasDelDia.length > 0 ? tareasDelDia.map(tarea => renderTarea(tarea)).join('') : ''}
+                ${tareasDelDia.length > 0 ? tareasDelDia.map(tarea => window.renderTaskStrip(tarea, getTaskStripOpts(false))).join('') : ''}
                 ${estadoTareas.addingTaskForDate === fechaKey ? `
                     <form class="tarea-add-form" data-date="${fechaKey}" onsubmit="event.preventDefault(); var inp = this.querySelector('.tarea-add-input'); if (inp && inp.value.trim()) handleCreateTaskInline(this.dataset.date, inp.value.trim()); return false;">
                         <div class="tarea-add-input-wrapper">
@@ -1280,8 +1216,11 @@ function renderTaskDetailModal() {
         : (isCurrentUserAssignee && currentUser.avatar) ? currentUser.avatar
         : null;
     const hasAssignee = !!(t.assignee_email || t.assignee_name);
-    const createdBy = (t.created_by && String(t.created_by).trim()) ? String(t.created_by).trim() : 'Sin especificar';
-    const createdByAvatar = t.created_by_avatar_url || null;
+    const creatorResolved = (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getCreatorDisplay === 'function')
+        ? TAREAS_PLANES_DB.getCreatorDisplay(t.created_by || '')
+        : { name: (t.created_by && String(t.created_by).trim()) ? String(t.created_by).trim() : 'Sin especificar', avatar: t.created_by_avatar_url || null };
+    const createdBy = creatorResolved.name || 'Sin especificar';
+    const createdByAvatar = creatorResolved.avatar || t.created_by_avatar_url || null;
     const taskInPlan = !!(t.planId || t.planNombre);
     const plansForAutocomplete = getPlanesParaDropdown();
     const taskPlanDisplayName = t.planNombre || (t.planId && plansForAutocomplete.length ? (plansForAutocomplete.find(p => String(p.id) === String(t.planId)) || {}).name : null) || '';
@@ -1295,126 +1234,28 @@ function renderTaskDetailModal() {
 
     overlay.style.display = 'flex';
 
-    panel.innerHTML = `
-        <div class="task-detail-panel__inner">
-            <div class="task-detail-header">
-                <div>
-                    <div class="task-detail-header__title-row">
-                        <h2 class="ubits-heading-h2 task-detail-header__title">Detalle de la tarea</h2>
-                        <div id="task-detail-save-indicator"></div>
-                    </div>
-                    <p class="ubits-body-md-regular task-detail-header__subtitle">Si haces algún cambio, quedará aplicado inmediatamente.</p>
-                </div>
-                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" id="task-detail-close" aria-label="Cerrar">
-                    <i class="far fa-times"></i>
-                </button>
-            </div>
-
-            <div class="task-detail-body">
-                <div class="task-detail-main">
-                    <div class="task-detail-meta">
-                        <div class="task-detail-meta-row">
-                            <span class="task-detail-meta-cell">
-                                <span id="task-detail-assignee-label" class="ubits-body-sm-semibold task-detail-meta-label">Asignado a</span>
-                                <div class="task-detail-assignee-select" id="task-detail-assignee-trigger" role="button" tabindex="0" aria-labelledby="task-detail-assignee-label" aria-haspopup="listbox" aria-expanded="false">
-                                    ${typeof renderAvatar === 'function' ? renderAvatar({ nombre: assigneeName, avatar: assigneeAvatar || null }, { size: 'sm' }) : `<div class="task-detail-assignee-avatar">${assigneeAvatar ? `<img src="${escapeTaskHtml(assigneeAvatar)}" alt="" class="task-detail-assignee-avatar-img" />` : `<i class="far fa-user"></i>`}</div>`}
-                                    <span class="ubits-body-sm-regular task-detail-assignee-text">${escapeTaskHtml(assigneeName)}</span>
-                                    <i class="far fa-chevron-down task-detail-assignee-chevron"></i>
-                                </div>
-                            </span>
-                            <span class="task-detail-meta-cell">
-                                <span class="ubits-body-sm-semibold task-detail-meta-label">Creada por</span>
-                                <div class="task-detail-created-by-row">
-                                    ${typeof renderAvatar === 'function' ? renderAvatar({ nombre: createdBy, avatar: createdByAvatar || null }, { size: 'sm' }) : `<div class="task-detail-created-by-avatar">${createdByAvatar ? `<img src="${escapeTaskHtml(createdByAvatar)}" alt="" class="task-detail-created-by-avatar-img" />` : `<i class="far fa-user"></i>`}</div>`}
-                                    <span class="ubits-body-sm-regular task-detail-created-by-text">${escapeTaskHtml(createdBy)}</span>
-                                </div>
-                            </span>
-                        </div>
-                        <div class="task-detail-meta-row">
-                            <span class="task-detail-meta-cell task-detail-meta-cell--date">
-                                <span id="task-detail-date-label" class="ubits-body-sm-semibold task-detail-meta-label">Finaliza el</span>
-                                <div id="task-detail-date-container"></div>
-                            </span>
-                            <span class="task-detail-meta-cell">
-                                <span class="ubits-body-sm-semibold task-detail-meta-label">Estado</span>
-                                <span class="ubits-status-tag ubits-status-tag--sm ubits-status-tag--${statusSlug} task-detail-status-tag" aria-label="Estado: ${escapeTaskHtml(statusDisplay)}">
-                                    <span class="ubits-status-tag__text">${escapeTaskHtml(statusDisplay)}</span>
-                                </span>
-                            </span>
-                            <span class="task-detail-meta-cell">
-                                <span id="task-detail-priority-label" class="ubits-body-sm-semibold task-detail-meta-label">Prioridad</span>
-                                <div class="task-detail-priority-trigger" id="task-detail-priority-btn" role="button" tabindex="0" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="task-detail-priority-label" aria-label="Prioridad: ${escapeTaskHtml(priorityShortLabel)}">
-                                    <span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--${prioridadBadgeVariant[priority]} ubits-badge-tag--sm ubits-badge-tag--with-icon">
-                                        <i class="far ${prioridadIcon[priority]}"></i>
-                                        <span class="ubits-badge-tag__text">${escapeTaskHtml(priorityShortLabel)}</span>
-                                    </span>
-                                </div>
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="ubits-input-wrapper task-detail-section">
-                        <label for="task-detail-name" class="ubits-input-label">Nombre <span class="ubits-input-mandatory">*</span></label>
-                        <div class="ubits-input-inner">
-                            <input type="text" id="task-detail-name" class="ubits-input ubits-input--md" placeholder="Nombre de la tarea" value="${escapeTaskHtml(taskName)}" maxlength="250" />
-                        </div>
-                        <div class="ubits-input-helper">
-                            <div class="ubits-input-helper-row">
-                                <span class="ubits-input-counter-label">Máximo de caracteres</span>
-                                <span class="ubits-input-counter"><span id="task-detail-char-count">${(taskName || '').length}</span>/250</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="ubits-input-wrapper task-detail-section">
-                        <label for="task-detail-desc" class="ubits-input-label">Descripción</label>
-                        <textarea id="task-detail-desc" class="ubits-input ubits-input--md ubits-input-textarea task-detail-desc-textarea" rows="3" placeholder="Descripción de la tarea">${escapeTaskHtml(desc)}</textarea>
-                    </div>
-
-                    <div class="task-detail-section" id="task-detail-plan-container"></div>
-
-                    ${!taskInPlan ? `
-                    <div class="ubits-alert ubits-alert--info ubits-alert--no-close task-detail-plan-alert" role="status" aria-live="off">
-                        <div class="ubits-alert__icon"><i class="far fa-info-circle"></i></div>
-                        <div class="ubits-alert__content">
-                            <div class="ubits-alert__text">Asocia la tarea a un plan. Así podrás mantener todo en un solo lugar y hacerle un mejor seguimiento.</div>
-                        </div>
-                    </div>
-                    ` : ''}
-
-                    <div class="task-detail-section task-detail-section--tags">
-                        <div class="task-detail-role-wrap">
-                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="task-detail-role-btn" aria-label="Rol: ${escapeTaskHtml(roleLabel)}" aria-haspopup="listbox" aria-expanded="false">
-                                <i class="far fa-id-card"></i>
-                                <span>${escapeTaskHtml(roleLabel)}</span>
-                                <i class="far fa-chevron-down"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="task-detail-sidebar">
-                    <div class="task-detail-sidebar-header">
-                        <div>
-                            <p class="ubits-body-md-bold task-detail-sidebar__title">Comentarios y evidencias</p>
-                            <p class="ubits-body-sm-regular task-detail-sidebar__subtitle">Mira el historial de esta tarea</p>
-                        </div>
-                        ${hasComments ? '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm task-detail-btn-add"><i class="far fa-plus"></i><span>Agregar comentarios</span></button>' : ''}
-                    </div>
-                    <div class="task-detail-sidebar-content">${sidebarContentHtml}</div>
-                </div>
-            </div>
-
-            <div class="task-detail-footer">
-                <button type="button" class="ubits-button ubits-button--error-tertiary ubits-button--md" id="task-detail-delete" aria-label="Eliminar tarea">
-                    <span>Eliminar</span>
-                </button>
-                <button type="button" class="ubits-button ${finishBtnVariant} ubits-button--md" id="task-detail-finish" aria-label="${escapeTaskHtml(finishBtnLabel)}">
-                    <span>${escapeTaskHtml(finishBtnLabel)}</span>
-                </button>
-            </div>
-        </div>
-    `;
+    var panelData = {
+        taskName: taskName,
+        desc: desc,
+        statusDisplay: statusDisplay,
+        statusSlug: statusSlug,
+        assigneeName: assigneeName,
+        assigneeAvatar: assigneeAvatar || null,
+        createdBy: createdBy,
+        createdByAvatar: createdByAvatar || null,
+        taskInPlan: taskInPlan,
+        hasComments: hasComments,
+        finishBtnLabel: finishBtnLabel,
+        finishBtnVariant: finishBtnVariant,
+        priority: priority,
+        priorityShortLabel: priorityShortLabel,
+        roleLabel: roleLabel,
+        role: role,
+        sidebarContentHtml: sidebarContentHtml,
+        prioridadIcon: prioridadIcon,
+        prioridadBadgeVariant: prioridadBadgeVariant
+    };
+    panel.innerHTML = window.getTaskDetailPanelHTML(panelData, { escapeHtml: escapeTaskHtml, renderAvatar: typeof renderAvatar === 'function' ? renderAvatar : undefined });
 
     if (!hasComments && typeof loadEmptyState === 'function') {
         var emptyContainer = document.getElementById('task-detail-sidebar-empty-container');

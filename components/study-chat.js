@@ -13,18 +13,21 @@ function getStudyPlanForTopic(topicKey, planIndex) {
     return createdStudyPlansByTopic[topicKey] || generateStudyPlan(topicKey, planIndex);
 }
 
-/** Número de variantes de plan por tema (por cortes de 5 cursos/actividades). */
+/** Mínimo de sets de recursos por subtema (Changelog 92-93). */
+var NUM_SETS_PER_SUBTOPIC = 3;
+
+/** Número de variantes de plan por tema (al menos 3 por tema; por cortes de 5 cursos/actividades). */
 function getNumPlanVariants(topicKey) {
     var courses = COURSES_BY_TOPIC[topicKey];
-    if (courses && courses.length) return Math.max(1, Math.ceil(courses.length / 5));
-    if (topicKey === 'japones') return Math.max(1, Math.ceil(ACTIVITY_ALTERNATIVES_JAPANESE.length / 5));
-    return 1;
+    if (courses && courses.length) return Math.max(NUM_SETS_PER_SUBTOPIC, Math.ceil(courses.length / 5));
+    if (topicKey === 'japones') return Math.max(NUM_SETS_PER_SUBTOPIC, Math.ceil(ACTIVITY_ALTERNATIVES_JAPANESE.length / 5));
+    return NUM_SETS_PER_SUBTOPIC;
 }
 
 // Función para obtener la ruta base de imágenes según la ubicación actual
 function getImageBasePath() {
     const currentPath = window.location.pathname;
-    
+
     // Si estamos en ubits-colaborador/aprendizaje/ o ubits-admin/aprendizaje/
     if (currentPath.includes('/ubits-colaborador/') || currentPath.includes('/ubits-admin/')) {
         return '../../images/';
@@ -188,21 +191,31 @@ function generateStudyPlan(topicKey, planIndex) {
     var tasks = [];
     var courses = COURSES_BY_TOPIC[topicKey];
     if (courses && courses.length) {
-        var numVariants = Math.ceil(courses.length / 5);
+        var numVariants = Math.max(NUM_SETS_PER_SUBTOPIC, Math.ceil(courses.length / 5));
         var variant = planIndex % numVariants;
-        var from = variant * 5;
-        var to = Math.min(from + 5, courses.length);
-        tasks = courses.slice(from, to).map(function(c) {
-            return { type: 'course', title: 'Ver contenido: ' + c.title, course: c };
-        });
+        var from, to;
+        if (courses.length <= 5) {
+            from = variant % courses.length;
+            tasks = [];
+            for (var i = 0; i < 5 && i < courses.length; i++) {
+                var c = courses[(from + i) % courses.length];
+                tasks.push({ type: 'course', title: 'Ver contenido: ' + c.title, course: c });
+            }
+        } else {
+            from = variant * 5;
+            to = Math.min(from + 5, courses.length);
+            tasks = courses.slice(from, to).map(function (c) {
+                return { type: 'course', title: 'Ver contenido: ' + c.title, course: c };
+            });
+        }
     } else if (topicKey === 'japones') {
         var alts = ACTIVITY_ALTERNATIVES_JAPANESE.slice();
-        var numVariants = Math.ceil(ACTIVITY_ALTERNATIVES_JAPANESE.length / 5);
+        var numVariants = Math.max(NUM_SETS_PER_SUBTOPIC, Math.ceil(ACTIVITY_ALTERNATIVES_JAPANESE.length / 5));
         var variant = planIndex % numVariants;
         var from = variant * 5;
         var to = Math.min(from + 5, ACTIVITY_ALTERNATIVES_JAPANESE.length);
         var sliceAlts = ACTIVITY_ALTERNATIVES_JAPANESE.slice(from, to);
-        tasks = sliceAlts.map(function(text, i) {
+        tasks = sliceAlts.map(function (text, i) {
             var idx = alts.indexOf(text);
             if (idx < 0) idx = from + i;
             return { type: 'activity', title: text, alternatives: alts, currentIndex: idx };
@@ -668,7 +681,7 @@ const TUTOR_GUIDE = {
  */
 function shuffleQuizOptions(questions) {
     if (!questions || !questions.length) return questions;
-    return questions.map(function(qu) {
+    return questions.map(function (qu) {
         var opts = qu.options.slice();
         var correctIdx = qu.correct;
         var correctValue = opts[correctIdx];
@@ -711,15 +724,19 @@ function renderTutorPanel(type, topic, extraData) {
     hideOpenButtonsInChat();
     const dataTopic = topic || chatState.currentTopic || 'liderazgo';
     const topicKey = dataTopic in TUTOR_QUIZ ? dataTopic : 'liderazgo';
+    var useSubtopicKey = (chatState.currentTopicForSubtopic === topicKey && chatState.currentSubtopicIndex != null);
+    var resourceKeyForSets = useSubtopicKey ? (topicKey + '_' + chatState.currentSubtopicIndex) : topicKey;
+    var numQuizSets = useSubtopicKey ? NUM_SETS_PER_SUBTOPIC : 5;
+    var numFcSets = useSubtopicKey ? NUM_SETS_PER_SUBTOPIC : 5;
     let html = '';
     if (type === 'quiz') {
         var lastResult = chatState.quizLastResultByTopic && chatState.quizLastResultByTopic[topicKey];
         var quizSetIndex;
         if (lastResult && typeof lastResult.setIndex === 'number') {
-            quizSetIndex = lastResult.setIndex % 5;
+            quizSetIndex = lastResult.setIndex % numQuizSets;
         } else {
-            quizSetIndex = (chatState.shownQuizIndex[topicKey] || 0) % 5;
-            chatState.shownQuizIndex[topicKey] = (chatState.shownQuizIndex[topicKey] || 0) + 1;
+            quizSetIndex = (chatState.shownQuizIndex[resourceKeyForSets] || 0) % numQuizSets;
+            chatState.shownQuizIndex[resourceKeyForSets] = (chatState.shownQuizIndex[resourceKeyForSets] || 0) + 1;
         }
         var questionSet = (typeof TUTOR_QUIZ_SETS !== 'undefined' && TUTOR_QUIZ_SETS[quizSetIndex]) ? TUTOR_QUIZ_SETS[quizSetIndex] : { liderazgo: TUTOR_QUIZ.liderazgo, comunicacion: TUTOR_QUIZ.comunicacion, ingles: TUTOR_QUIZ.ingles, japones: TUTOR_QUIZ.japones, hiragana: TUTOR_QUIZ.hiragana.slice(0, 10) };
         var questionList = questionSet[topicKey] || questionSet.liderazgo;
@@ -748,9 +765,9 @@ function renderTutorPanel(type, topic, extraData) {
                     <div class="study-chat-quiz-q" data-index="${i}" data-correct-index="${qu.correct}" data-explanation="${(qu.explanation || '').replace(/"/g, '&quot;')}" ${i > 0 ? 'style="display:none;"' : ''}>
                         <p class="ubits-body-md-regular study-chat-quiz-question-text">${i + 1}. ${qu.q}</p>
                         <div class="study-chat-quiz-options">${qu.options.map((opt, j) => {
-                    const letter = String.fromCharCode(65 + j);
-                    return `<label class="study-chat-quiz-opt" data-option-index="${j}"><div class="study-chat-quiz-opt-row ubits-radio ubits-radio--sm"><input type="radio" name="quiz-${i}" class="ubits-radio__input" value="${j}"><span class="ubits-radio__circle"></span><span class="ubits-radio__label"><span class="study-chat-quiz-opt-letter">${letter}</span> <span class="study-chat-quiz-opt-text">${opt}</span></span></div></label>`;
-                }).join('')}</div>
+            const letter = String.fromCharCode(65 + j);
+            return `<label class="study-chat-quiz-opt" data-option-index="${j}"><div class="study-chat-quiz-opt-row ubits-radio ubits-radio--sm"><input type="radio" name="quiz-${i}" class="ubits-radio__input" value="${j}"><span class="ubits-radio__circle"></span><span class="ubits-radio__label"><span class="study-chat-quiz-opt-letter">${letter}</span> <span class="study-chat-quiz-opt-text">${opt}</span></span></div></label>`;
+        }).join('')}</div>
                         <div class="study-chat-quiz-feedback" style="display:none;" role="status" aria-hidden="true"></div>
                     </div>`).join('')}</div>
                 <div class="study-chat-quiz-result" style="display:none;" role="region" aria-label="Resultados del quiz"></div>
@@ -769,7 +786,7 @@ function renderTutorPanel(type, topic, extraData) {
             panel.innerHTML = getCanvasLoaderHTML();
             panel.classList.add('has-content');
             if (placeholder) placeholder.style.display = 'none';
-            setTimeout(function() {
+            setTimeout(function () {
                 var contentHtml = html.replace(/class="study-chat-canvas-content study-chat-canvas-quiz"/, 'class="study-chat-canvas-content study-chat-canvas-quiz study-chat-canvas-content--reveal-stagger"');
                 panel.innerHTML = contentHtml;
                 panel.classList.add('has-content');
@@ -780,9 +797,72 @@ function renderTutorPanel(type, topic, extraData) {
             }, 2000);
             return;
         }
+    } else if (type === 'searchResults') {
+        // --- PANEL DE RESULTADOS DE BÚSQUEDA ---
+        var filters = extraData && extraData.filters ? extraData.filters : {};
+        var mockResults = generateMockSearchResults(topicKey, filters);
+        var initialResults = mockResults.slice(0, 10);
+        var remainingResults = mockResults.slice(10);
+
+        html = `<div class="study-chat-canvas-content study-chat-canvas-results" data-topic="${topicKey}">
+            <div class="study-chat-canvas-header">
+                <span class="ubits-body-md-bold">Sugerencias de contenido</span>
+                <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only study-chat-canvas-close" title="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>
+            </div>
+            <div class="study-chat-canvas-body">
+                <p class="ubits-body-sm-regular" style="margin-bottom: 16px; color: var(--ubits-fg-2-default);">
+                    Resultados para <strong>${TOPIC_LABELS[topicKey] || topicKey}</strong>
+                    ${filters.type ? ' • ' + filters.type : ''}
+                    ${filters.level ? ' • ' + filters.level : ''}
+                    ${filters.duration ? ' • ' + filters.duration : ''}
+                </p>
+                <div id="study-chat-search-results-list-${topicKey}" class="study-chat-search-results-list" style="display: flex; flex-direction: column; gap: 12px;"></div>
+                ${remainingResults.length > 0 ? `
+                <div class="study-chat-search-more-container" style="text-align: center; margin-top: 16px;">
+                    <button class="ubits-button ubits-button--secondary ubits-button--sm" id="study-chat-search-more-btn">
+                        <span>Ver más resultados</span>
+                    </button>
+                </div>` : ''}
+            </div>
+            <div class="study-chat-canvas-footer"></div>
+        </div>`;
+
+        panel.innerHTML = getCanvasLoaderHTML();
+        panel.classList.add('has-content');
+        if (placeholder) placeholder.style.display = 'none';
+
+        setTimeout(function () {
+            var contentHtml = html.replace(/class="study-chat-canvas-content study-chat-canvas-results"/, 'class="study-chat-canvas-content study-chat-canvas-results study-chat-canvas-content--reveal-stagger"');
+            panel.innerHTML = contentHtml;
+            panel.classList.add('has-content');
+            bindCanvasClose(panel);
+
+            var listId = `study-chat-search-results-list-${topicKey}`;
+            var container = document.getElementById(listId);
+            if (typeof renderCardContentCompact === 'function' && container) {
+                // Render initial 10 cards manually to append
+                initialResults.forEach(function (card) {
+                    container.insertAdjacentHTML('beforeend', renderCardContentCompact(card));
+                });
+            }
+
+            var moreBtn = panel.querySelector('#study-chat-search-more-btn');
+            if (moreBtn) {
+                moreBtn.addEventListener('click', function () {
+                    if (typeof renderCardContentCompact === 'function' && container) {
+                        remainingResults.forEach(function (cardData) {
+                            container.insertAdjacentHTML('beforeend', renderCardContentCompact(cardData));
+                        });
+                    }
+                    this.parentElement.style.display = 'none';
+                });
+            }
+        }, 1500);
+        return;
     } else if (type === 'flashcards') {
-        const fcSetIndex = (extraData && typeof extraData.fcSetIndex === 'number') ? Math.max(0, Math.min(4, extraData.fcSetIndex)) : ((chatState.shownFcSetIndex[topicKey] || 0) % 5);
-        chatState.shownFcSetIndex[topicKey] = (chatState.shownFcSetIndex[topicKey] || 0) + 1;
+        const maxFc = numFcSets - 1;
+        const fcSetIndex = (extraData && typeof extraData.fcSetIndex === 'number') ? Math.max(0, Math.min(maxFc, extraData.fcSetIndex)) : ((chatState.shownFcSetIndex[resourceKeyForSets] || 0) % numFcSets);
+        chatState.shownFcSetIndex[resourceKeyForSets] = (chatState.shownFcSetIndex[resourceKeyForSets] || 0) + 1;
         const sets = [TUTOR_FLASHCARDS, TUTOR_FLASHCARDS_ALT, TUTOR_FLASHCARDS_SET2, TUTOR_FLASHCARDS_SET3, TUTOR_FLASHCARDS_SET4];
         const cards = (sets[fcSetIndex][topicKey] || sets[fcSetIndex].liderazgo).slice();
         const fcSet = String(fcSetIndex);
@@ -825,7 +905,7 @@ function renderTutorPanel(type, topic, extraData) {
             panel.innerHTML = getCanvasLoaderHTML();
             panel.classList.add('has-content');
             if (placeholder) placeholder.style.display = 'none';
-            setTimeout(function() {
+            setTimeout(function () {
                 var contentHtml = html.replace(/class="study-chat-canvas-content study-chat-canvas-flashcards"/, 'class="study-chat-canvas-content study-chat-canvas-flashcards study-chat-canvas-content--reveal-stagger"');
                 panel.innerHTML = contentHtml;
                 panel.classList.add('has-content');
@@ -876,10 +956,11 @@ function renderTutorPanel(type, topic, extraData) {
         bindCanvasClose(panel);
         return;
     } else if (type === 'studyPlan' && topicKey && STUDY_PLAN_TOPICS.indexOf(topicKey) >= 0) {
-        var planIndex = (chatState.shownPlanIndex[topicKey] || 0) % getNumPlanVariants(topicKey);
+        var numPlanVariants = getNumPlanVariants(topicKey);
+        var planIndex = (chatState.shownPlanIndex[resourceKeyForSets] || 0) % numPlanVariants;
         var sp = getStudyPlanForTopic(topicKey, planIndex);
         if (!sp) return;
-        chatState.shownPlanIndex[topicKey] = (chatState.shownPlanIndex[topicKey] || 0) + 1;
+        chatState.shownPlanIndex[resourceKeyForSets] = (chatState.shownPlanIndex[resourceKeyForSets] || 0) + 1;
         const viewMode = !!sp.created;
         currentStudyPlanState = { plan: sp, topicKey: topicKey || '', planUiState: viewMode ? 'readonly' : 'unsaved' };
         var footerPrimaryLabel = viewMode ? 'Editar plan' : 'Crear plan';
@@ -907,7 +988,7 @@ function renderTutorPanel(type, topic, extraData) {
         if (needLoaderSp) {
             panel.innerHTML = getCanvasLoaderHTML();
             panel.classList.add('has-content');
-            setTimeout(function() {
+            setTimeout(function () {
                 var contentHtml = html.replace('study-chat-canvas-content study-chat-canvas-study-plan study-chat-canvas-study-plan-editable', 'study-chat-canvas-content study-chat-canvas-study-plan study-chat-canvas-study-plan-editable study-chat-canvas-content--reveal-stagger');
                 panel.innerHTML = contentHtml;
                 panel.classList.add('has-content');
@@ -975,9 +1056,9 @@ function renderTutorPanel(type, topic, extraData) {
             '<span class="study-chat-quiz-result-option-title">Flashcards</span>' +
             '<span class="study-chat-quiz-result-option-desc">Crea un set de flashcards para repasar y afianzar conceptos.</span></button>' +
             (showPlanPodcast ? '<button type="button" class="study-chat-quiz-result-option study-chat-quiz-result-option-study-plan" data-action="studyPlan">' +
-            '<span class="study-chat-quiz-result-option-icon"><i class="far fa-layer-group"></i></span>' +
-            '<span class="study-chat-quiz-result-option-title">Plan de estudio</span>' +
-            '<span class="study-chat-quiz-result-option-desc">Crea un plan con tareas para ver contenidos UBITS sobre este tema.</span></button>' : '') +
+                '<span class="study-chat-quiz-result-option-icon"><i class="far fa-layer-group"></i></span>' +
+                '<span class="study-chat-quiz-result-option-title">Plan de estudio</span>' +
+                '<span class="study-chat-quiz-result-option-desc">Crea un plan con tareas para ver contenidos UBITS sobre este tema.</span></button>' : '') +
             '</div>' +
             '</div>' +
             '</div>';
@@ -987,7 +1068,7 @@ function renderTutorPanel(type, topic, extraData) {
             panel.innerHTML = getCanvasLoaderHTML();
             panel.classList.add('has-content');
             if (placeholder) placeholder.style.display = 'none';
-            setTimeout(function() {
+            setTimeout(function () {
                 var contentHtml = html.replace('class="study-chat-canvas-content study-chat-canvas-podcast"', 'class="study-chat-canvas-content study-chat-canvas-podcast study-chat-canvas-content--reveal-stagger"');
                 panel.innerHTML = contentHtml;
                 panel.classList.add('has-content');
@@ -1006,6 +1087,66 @@ function renderTutorPanel(type, topic, extraData) {
         bindPodcastTranscriptionToggle(panel);
         bindPodcastSeguirAprendiendo(panel);
         return;
+    } else if (type === 'contentPreview' && extraData && extraData.content) {
+        var c = extraData.content;
+        var basePath = typeof getImageBasePath === 'function' ? getImageBasePath() : 'images/';
+        var imgSrc = basePath + (c.imagePath || 'cards-learn/cambio-en-el-estilo-de-liderazgo.jpeg');
+        var providerLogoSrc = basePath + (c.providerLogo || 'Favicons/UBITS.jpg');
+        var competencyImageName = (typeof COMPETENCY_IMAGE_MAP !== 'undefined' && c.competency && COMPETENCY_IMAGE_MAP[c.competency]) ? COMPETENCY_IMAGE_MAP[c.competency] : 'Liderazgo.jpg';
+        var competencyImageSrc = basePath + 'imagenes competencias/' + competencyImageName;
+        var typeLabel = (c.type || 'Curso').replace(/"/g, '&quot;');
+        var titleEsc = (c.title || 'Contenido').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+        var levelEsc = (c.level || 'Intermedio').replace(/"/g, '&quot;');
+        var durationEsc = (c.duration || '60 min').replace(/"/g, '&quot;');
+        var langEsc = (c.language || 'Español').replace(/"/g, '&quot;');
+        var compEsc = (c.competency || '').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+        var skills = (c.skills && c.skills.length) ? c.skills.slice(0, 3) : [];
+        var skillsHtml = skills.map(function (s) { return '<span class="ubits-status-tag ubits-status-tag--neutral ubits-status-tag--xs"><span class="ubits-status-tag__text">' + String(s).replace(/</g, '&lt;').replace(/"/g, '&quot;') + '</span></span>'; }).join('');
+        var providerName = (c.provider || 'UBITS').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+        var expertNameEsc = (c.expertName || 'Experto').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+        var expertImg = (c.expertImage || '').replace(/"/g, '&quot;');
+        html = '<div class="study-chat-canvas-content study-chat-canvas-content-preview">' +
+            '<div class="study-chat-canvas-header">' +
+            '<span class="ubits-body-md-bold">Contenido</span>' +
+            '<button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only study-chat-canvas-close" title="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>' +
+            '</div>' +
+            '<div class="study-chat-canvas-body study-chat-canvas-body--content-preview">' +
+            '<div class="study-chat-content-preview-image-wrap"><img class="study-chat-content-preview-image" src="' + imgSrc + '" alt=""></div>' +
+            '<span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--info ubits-badge-tag--sm study-chat-content-preview-type"><span class="ubits-badge-tag__indicator"></span><span class="ubits-badge-tag__text">' + typeLabel + '</span></span>' +
+            '<h2 class="study-chat-content-preview-title ubits-body-md-bold">' + titleEsc + '</h2>' +
+            '<div class="study-chat-content-preview-meta">' +
+            '<span class="study-chat-content-preview-meta-item"><i class="far fa-gauge"></i> ' + levelEsc + '</span>' +
+            '<span class="study-chat-content-preview-meta-item"><i class="far fa-clock"></i> ' + durationEsc + '</span>' +
+            '<span class="study-chat-content-preview-meta-item"><i class="far fa-globe"></i> ' + langEsc + '</span>' +
+            '</div>' +
+            '<div class="study-chat-content-preview-actions">' +
+            '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="study-chat-content-preview-ver"><i class="far fa-play"></i><span>Ver contenido</span></button>' +
+            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="study-chat-content-preview-desc"><span>Ver descripción</span></button>' +
+            '</div>' +
+            '<div class="study-chat-content-preview-comp"><span class="ubits-body-sm-bold study-chat-content-preview-label">Competencia:</span> <div class="ubits-avatar ubits-avatar--sm"><img src="' + competencyImageSrc + '" alt="" class="ubits-avatar__img" onerror="this.style.display=\'none\'"></div><span class="ubits-body-sm-regular">' + compEsc + '</span></div>' +
+            (skillsHtml ? '<div class="study-chat-content-preview-skills"><span class="ubits-body-sm-bold study-chat-content-preview-label">Habilidades:</span> ' + skillsHtml + '</div>' : '') +
+            '<div class="study-chat-content-preview-aliado-experto">' +
+            '<div class="study-chat-content-preview-provider">' +
+            '<span class="ubits-body-sm-bold study-chat-content-preview-label">Aliado:</span> ' +
+            '<div class="ubits-avatar ubits-avatar--sm"><img src="' + providerLogoSrc + '" alt="" class="ubits-avatar__img"></div>' +
+            '<span class="ubits-body-sm-regular">' + providerName + '</span>' +
+            '</div>' +
+            '<div class="study-chat-content-preview-expert">' +
+            '<span class="ubits-body-sm-bold study-chat-content-preview-label">Experto:</span> ' +
+            (expertImg ? '<div class="ubits-avatar ubits-avatar--sm"><img src="' + expertImg + '" alt="" class="ubits-avatar__img"></div>' : '<div class="ubits-avatar ubits-avatar--sm"><span class="ubits-avatar__fallback"><i class="far fa-user"></i></span></div>') +
+            '<span class="ubits-body-sm-regular">' + expertNameEsc + '</span>' +
+            '</div></div>' +
+            '</div>' +
+            '<div class="study-chat-canvas-footer">' +
+            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="study-chat-content-preview-save-task"><i class="far fa-bookmark"></i><span>Guardar como tarea</span></button>' +
+            '</div></div>';
+        panel.innerHTML = html;
+        panel.classList.add('has-content');
+        if (placeholder) placeholder.style.display = 'none';
+        bindCanvasClose(panel);
+        var saveTaskBtn = panel.querySelector('#study-chat-content-preview-save-task');
+        if (saveTaskBtn) saveTaskBtn.addEventListener('click', function () { if (typeof showToast === 'function') showToast('info', 'Guardado como tarea (prototipo).'); });
+        return;
     } else {
         return;
     }
@@ -1019,7 +1160,7 @@ function renderTutorPanel(type, topic, extraData) {
 
 function bindCanvasClose(panel) {
     const btn = panel && panel.querySelector('.study-chat-canvas-close');
-    if (btn) btn.addEventListener('click', function() {
+    if (btn) btn.addEventListener('click', function () {
         panel.classList.remove('is-open', 'has-content');
         panel.innerHTML = '';
         currentStudyPlanState = null;
@@ -1032,7 +1173,7 @@ function bindPodcastTranscriptionToggle(panel) {
     const btn = panel && panel.querySelector('#study-chat-podcast-toggle-transcription');
     const region = panel && panel.querySelector('#study-chat-podcast-transcription');
     if (!btn || !region) return;
-    btn.addEventListener('click', function() {
+    btn.addEventListener('click', function () {
         const isOpen = region.classList.toggle('is-open');
         region.hidden = !isOpen;
         btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
@@ -1046,8 +1187,8 @@ function bindPodcastSeguirAprendiendo(panel) {
     const topicKey = content && content.getAttribute('data-topic') ? content.getAttribute('data-topic') : (chatState.currentTopic || 'liderazgo');
     const options = panel && panel.querySelectorAll('.study-chat-podcast-seguir .study-chat-quiz-result-option');
     if (!options || !options.length) return;
-    options.forEach(function(btn) {
-        btn.addEventListener('click', function() {
+    options.forEach(function (btn) {
+        btn.addEventListener('click', function () {
             const action = this.getAttribute('data-action');
             panel.classList.remove('is-open', 'has-content');
             panel.innerHTML = '';
@@ -1083,7 +1224,7 @@ function renderStudyPlanTaskCards(container, plan, topicKey, options) {
         { value: 'Baja', icon: 'far fa-chevron-down', color: 'var(--ubits-feedback-accent-info)' }
     ];
     var basePath = getImageBasePath();
-    plan.tasks.forEach(function(task, idx) {
+    plan.tasks.forEach(function (task, idx) {
         var card = document.createElement('div');
         card.className = 'study-chat-plan-task-card study-chat-plan-task-card--' + (task.type || 'course');
         card.setAttribute('data-task-index', idx);
@@ -1148,50 +1289,32 @@ function bindStudyPlanTaskCardEvents(container, plan, topicKey, options) {
     ];
     // Edición inline del nombre: clic en el título → input; blur/Enter → guardar (solo si no readonly)
     if (!readonly) {
-    tasksContainer.querySelectorAll('.study-chat-plan-task-title-editable').forEach(function(span) {
-        span.addEventListener('click', function() {
-            var idx = parseInt(span.getAttribute('data-task-index'), 10);
-            var task = plan.tasks[idx];
-            if (!task) return;
-            var current = task.title || '';
-            var input = document.createElement('input');
-            input.type = 'text';
-            input.className = 'study-chat-plan-task-title-input ubits-body-sm-regular';
-            input.value = current;
-            input.setAttribute('data-task-index', String(idx));
-            span.parentNode.replaceChild(input, span);
-            input.focus();
-            input.select();
-            function saveAndRevert() {
-                var newTitle = (input.value || '').trim();
-                if (task._isNew) {
-                    if (newTitle === '' || newTitle === 'Nueva tarea') {
-                        plan.tasks.splice(idx, 1);
-                        renderStudyPlanTaskCards(tasksContainer, plan, topicKey, options);
-                        return;
-                    }
-                    task.title = newTitle;
-                    delete task._isNew;
-                } else if (newTitle !== '') {
-                    task.title = newTitle;
-                }
-                var newSpan = document.createElement('span');
-                newSpan.className = 'study-chat-plan-task-card-title ubits-body-sm-regular study-chat-plan-task-title-editable';
-                newSpan.setAttribute('data-task-index', String(idx));
-                newSpan.title = 'Clic para editar';
-                newSpan.textContent = task.title || '';
-                input.parentNode.replaceChild(newSpan, input);
-                bindStudyPlanTaskCardEvents(tasksContainer, plan, topicKey, options);
-            }
-            input.addEventListener('blur', saveAndRevert);
-            input.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
-                if (e.key === 'Escape') {
-                    e.preventDefault();
+        tasksContainer.querySelectorAll('.study-chat-plan-task-title-editable').forEach(function (span) {
+            span.addEventListener('click', function () {
+                var idx = parseInt(span.getAttribute('data-task-index'), 10);
+                var task = plan.tasks[idx];
+                if (!task) return;
+                var current = task.title || '';
+                var input = document.createElement('input');
+                input.type = 'text';
+                input.className = 'study-chat-plan-task-title-input ubits-body-sm-regular';
+                input.value = current;
+                input.setAttribute('data-task-index', String(idx));
+                span.parentNode.replaceChild(input, span);
+                input.focus();
+                input.select();
+                function saveAndRevert() {
+                    var newTitle = (input.value || '').trim();
                     if (task._isNew) {
-                        plan.tasks.splice(idx, 1);
-                        renderStudyPlanTaskCards(tasksContainer, plan, topicKey, options);
-                        return;
+                        if (newTitle === '' || newTitle === 'Nueva tarea') {
+                            plan.tasks.splice(idx, 1);
+                            renderStudyPlanTaskCards(tasksContainer, plan, topicKey, options);
+                            return;
+                        }
+                        task.title = newTitle;
+                        delete task._isNew;
+                    } else if (newTitle !== '') {
+                        task.title = newTitle;
                     }
                     var newSpan = document.createElement('span');
                     newSpan.className = 'study-chat-plan-task-card-title ubits-body-sm-regular study-chat-plan-task-title-editable';
@@ -1201,24 +1324,42 @@ function bindStudyPlanTaskCardEvents(container, plan, topicKey, options) {
                     input.parentNode.replaceChild(newSpan, input);
                     bindStudyPlanTaskCardEvents(tasksContainer, plan, topicKey, options);
                 }
+                input.addEventListener('blur', saveAndRevert);
+                input.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+                    if (e.key === 'Escape') {
+                        e.preventDefault();
+                        if (task._isNew) {
+                            plan.tasks.splice(idx, 1);
+                            renderStudyPlanTaskCards(tasksContainer, plan, topicKey, options);
+                            return;
+                        }
+                        var newSpan = document.createElement('span');
+                        newSpan.className = 'study-chat-plan-task-card-title ubits-body-sm-regular study-chat-plan-task-title-editable';
+                        newSpan.setAttribute('data-task-index', String(idx));
+                        newSpan.title = 'Clic para editar';
+                        newSpan.textContent = task.title || '';
+                        input.parentNode.replaceChild(newSpan, input);
+                        bindStudyPlanTaskCardEvents(tasksContainer, plan, topicKey, options);
+                    }
+                });
             });
         });
-    });
     }
-    tasksContainer.querySelectorAll('.study-chat-plan-task-delete').forEach(function(btn) {
-        btn.addEventListener('click', function() {
+    tasksContainer.querySelectorAll('.study-chat-plan-task-delete').forEach(function (btn) {
+        btn.addEventListener('click', function () {
             var idx = parseInt(btn.getAttribute('data-task-index'), 10);
             plan.tasks.splice(idx, 1);
             renderStudyPlanTaskCards(tasksContainer, plan, topicKey, options);
         });
     });
-    tasksContainer.querySelectorAll('.study-chat-plan-task-rehacer').forEach(function(btn) {
-        btn.addEventListener('click', function() {
+    tasksContainer.querySelectorAll('.study-chat-plan-task-rehacer').forEach(function (btn) {
+        btn.addEventListener('click', function () {
             var idx = parseInt(btn.getAttribute('data-task-index'), 10);
             var task = plan.tasks[idx];
             if (!task || task.type !== 'activity' || !task.alternatives || !task.alternatives.length) return;
             var usedTitles = new Set();
-            plan.tasks.forEach(function(t, i) {
+            plan.tasks.forEach(function (t, i) {
                 if (i !== idx && t.type === 'activity' && t.title) usedTitles.add(t.title);
             });
             var currentIdx = task.currentIndex != null ? task.currentIndex : 0;
@@ -1240,18 +1381,18 @@ function bindStudyPlanTaskCardEvents(container, plan, topicKey, options) {
             if (titleEl) titleEl.textContent = task.title;
         });
     });
-    tasksContainer.querySelectorAll('.study-chat-plan-task-cambiar').forEach(function(btn) {
-        btn.addEventListener('click', function() {
+    tasksContainer.querySelectorAll('.study-chat-plan-task-cambiar').forEach(function (btn) {
+        btn.addEventListener('click', function () {
             var idx = parseInt(btn.getAttribute('data-task-index'), 10);
             var task = plan.tasks[idx];
             if (!task || task.type !== 'course' || !task.course) return;
             var courses = COURSES_BY_TOPIC[topicKey];
             if (!courses || !courses.length) return;
             var usedTitles = new Set();
-            plan.tasks.forEach(function(t, i) {
+            plan.tasks.forEach(function (t, i) {
                 if (i !== idx && t.type === 'course' && t.course && t.course.title) usedTitles.add(t.course.title);
             });
-            var currentIdx = courses.findIndex(function(c) { return c.title === task.course.title; });
+            var currentIdx = courses.findIndex(function (c) { return c.title === task.course.title; });
             if (currentIdx < 0) currentIdx = 0;
             var nextCourse = null;
             for (var off = 1; off <= courses.length; off++) {
@@ -1280,7 +1421,7 @@ function renderStudyPlanUbitsInputs(panel, sp, isReadonly) {
         value: sp.title || '',
         size: 'sm',
         state: inputState,
-        onChange: function(v) { sp.title = v; }
+        onChange: function (v) { sp.title = v; }
     });
     var priorityInput = window.createInput({
         containerId: 'study-chat-plan-input-priority',
@@ -1295,7 +1436,7 @@ function renderStudyPlanUbitsInputs(panel, sp, isReadonly) {
             { value: 'Media', text: 'Media' },
             { value: 'Baja', text: 'Baja' }
         ],
-        onChange: function(v) { sp.priority = v; }
+        onChange: function (v) { sp.priority = v; }
     });
     var dateInput = window.createInput({
         containerId: 'study-chat-plan-input-date-fin',
@@ -1305,7 +1446,7 @@ function renderStudyPlanUbitsInputs(panel, sp, isReadonly) {
         value: studyPlanDateToCalendarValue(sp.endDateValue),
         size: 'sm',
         state: inputState,
-        onChange: function(dateStr) {
+        onChange: function (dateStr) {
             var iso = studyPlanDateFromCalendarValue(dateStr);
             sp.endDateValue = iso;
             if (iso) {
@@ -1326,21 +1467,21 @@ function bindStudyPlanPriorityMenu(panel, sp, priorityOpts) {
         menu.style.display = 'none';
         trigger.setAttribute('aria-expanded', 'false');
     }
-    trigger.addEventListener('click', function(e) {
+    trigger.addEventListener('click', function (e) {
         e.stopPropagation();
         var isOpen = menu.style.display === 'block';
         menu.style.display = isOpen ? 'none' : 'block';
         trigger.setAttribute('aria-expanded', !isOpen ? 'true' : 'false');
     });
-    menu.querySelectorAll('.study-chat-plan-priority-option').forEach(function(btn) {
-        btn.addEventListener('click', function() {
+    menu.querySelectorAll('.study-chat-plan-priority-option').forEach(function (btn) {
+        btn.addEventListener('click', function () {
             var val = btn.getAttribute('data-value');
             sp.priority = val;
             triggerText.textContent = val;
             closeMenu();
         });
     });
-    document.addEventListener('click', function(e) {
+    document.addEventListener('click', function (e) {
         if (!trigger.contains(e.target) && !menu.contains(e.target)) closeMenu();
     });
 }
@@ -1350,11 +1491,11 @@ function bindStudyPlanAddTaskButton(panel, sp, topicKey) {
     var addWrap = panel.querySelector('#study-chat-plan-add-task-wrap');
     var tasksContainer = panel.querySelector('#study-chat-plan-tasks-container');
     if (!addBtn || !tasksContainer || !sp || !sp.tasks) return;
-    addBtn.addEventListener('click', function() {
+    addBtn.addEventListener('click', function () {
         sp.tasks.push({ type: 'custom', title: 'Nueva tarea', _isNew: true });
         renderStudyPlanTaskCards(tasksContainer, sp, topicKey);
         var lastIdx = sp.tasks.length - 1;
-        setTimeout(function() {
+        setTimeout(function () {
             var lastTitle = tasksContainer.querySelector('.study-chat-plan-task-title-editable[data-task-index="' + lastIdx + '"]');
             if (lastTitle) lastTitle.click();
             if (addWrap) addWrap.scrollIntoView({ behavior: 'smooth', block: 'end' });
@@ -1375,7 +1516,7 @@ function applyStudyPlanUiState(panel, sp, topicKey) {
     var planInputs = panel.querySelectorAll(planInputContainers + ' .ubits-input');
 
     function setPlanInputsDisabled(disabled) {
-        planInputs.forEach(function(el) {
+        planInputs.forEach(function (el) {
             if (disabled) {
                 el.classList.add('ubits-input--disabled');
                 el.disabled = true;
@@ -1390,7 +1531,7 @@ function applyStudyPlanUiState(panel, sp, topicKey) {
         if (addWrap) addWrap.style.display = 'none';
         if (primaryLabel) primaryLabel.textContent = 'Editar plan';
         if (inst) {
-            [inst.title, inst.priority, inst.date].forEach(function(inputApi) {
+            [inst.title, inst.priority, inst.date].forEach(function (inputApi) {
                 if (inputApi && (typeof inputApi.disable === 'function')) inputApi.disable();
                 else if (inputApi && (typeof inputApi.setState === 'function')) inputApi.setState('disabled');
             });
@@ -1403,7 +1544,7 @@ function applyStudyPlanUiState(panel, sp, topicKey) {
         if (addWrap) addWrap.style.display = '';
         if (primaryLabel) primaryLabel.textContent = 'Guardar plan';
         if (inst) {
-            [inst.title, inst.priority, inst.date].forEach(function(inputApi) {
+            [inst.title, inst.priority, inst.date].forEach(function (inputApi) {
                 if (inputApi && (typeof inputApi.enable === 'function')) inputApi.enable();
                 else if (inputApi && (typeof inputApi.setState === 'function')) inputApi.setState('default');
             });
@@ -1422,14 +1563,14 @@ function applyStudyPlanUiState(panel, sp, topicKey) {
 function bindStudyPlanFooter(panel, sp, topicKey) {
     var cancelBtn = panel.querySelector('#study-chat-plan-cancel');
     var primaryBtn = panel.querySelector('#study-chat-plan-primary-btn');
-    if (cancelBtn) cancelBtn.addEventListener('click', function() {
+    if (cancelBtn) cancelBtn.addEventListener('click', function () {
         panel.classList.remove('is-open', 'has-content');
         panel.innerHTML = '';
         currentStudyPlanState = null;
         setCanvasPanelOpen(false);
         showOpenButtonsInChat();
     });
-    if (primaryBtn) primaryBtn.addEventListener('click', function() {
+    if (primaryBtn) primaryBtn.addEventListener('click', function () {
         var state = currentStudyPlanState && currentStudyPlanState.planUiState;
         if (state === 'unsaved') {
             sp.created = true;
@@ -1451,7 +1592,7 @@ function renderCoursesInPanel(containerId, courses) {
     const container = document.getElementById(containerId);
     if (!container || !courses.length || typeof loadCardContentCompact !== 'function') return;
     const basePath = getImageBasePath();
-    const cardsData = courses.map(function(c) { return getRecommendedContentCardData(c, basePath); });
+    const cardsData = courses.map(function (c) { return getRecommendedContentCardData(c, basePath); });
     loadCardContentCompact(containerId, cardsData);
 }
 
@@ -1486,7 +1627,7 @@ function bindTutorPanelEvents(panel, type, topicKey) {
         function updateProgressBar() {
             if (!progressText) return;
             if (progressBars.length) {
-                progressBars.forEach(function(bar, i) {
+                progressBars.forEach(function (bar, i) {
                     bar.classList.toggle('study-chat-quiz-progress-bar--filled', i <= currentIdx);
                 });
             } else if (progressSliderFill && progressSliderThumb && total > 0) {
@@ -1501,7 +1642,7 @@ function bindTutorPanelEvents(panel, type, topicKey) {
         function showImmediateFeedback(qEl, selectedValue, correctIdx, explanation) {
             const opts = qEl.querySelectorAll('.study-chat-quiz-opt');
             var explanationEsc = (explanation || '').replace(/</g, '&lt;').replace(/"/g, '&quot;');
-            opts.forEach(function(label, j) {
+            opts.forEach(function (label, j) {
                 var existing = label.querySelector('.study-chat-quiz-opt-inline-feedback');
                 if (existing) existing.remove();
                 label.classList.remove('study-chat-quiz-opt--correct', 'study-chat-quiz-opt--wrong');
@@ -1588,7 +1729,7 @@ function bindTutorPanelEvents(panel, type, topicKey) {
                 '</div></div>';
             actionsDiv.style.display = 'flex';
             resultDiv.style.display = 'block';
-            panel.querySelector('#study-chat-quiz-review').addEventListener('click', function() {
+            panel.querySelector('#study-chat-quiz-review').addEventListener('click', function () {
                 resultDiv.style.display = 'none';
                 if (progressWrap) progressWrap.style.display = 'flex';
                 questionsContainer.style.display = 'block';
@@ -1621,18 +1762,18 @@ function bindTutorPanelEvents(panel, type, topicKey) {
                     }
                 }
                 updateReviewNav();
-                panel.querySelector('#study-chat-quiz-review-prev').addEventListener('click', function() { currentIdx--; updateVisibility(); updateReviewNav(); });
-                panel.querySelector('#study-chat-quiz-review-next').addEventListener('click', function() {
+                panel.querySelector('#study-chat-quiz-review-prev').addEventListener('click', function () { currentIdx--; updateVisibility(); updateReviewNav(); });
+                panel.querySelector('#study-chat-quiz-review-next').addEventListener('click', function () {
                     if (currentIdx < total - 1) { currentIdx++; updateVisibility(); updateReviewNav(); } else { goBackToResults(); }
                 });
             });
             function bindQuizResultButtons() {
-                panel.querySelector('#study-chat-quiz-more').addEventListener('click', function() {
+                panel.querySelector('#study-chat-quiz-more').addEventListener('click', function () {
                     if (chatState.quizLastResultByTopic) delete chatState.quizLastResultByTopic[topicKey];
                     renderTutorPanel('quiz', topicKey);
                     if (typeof addResourceMessage === 'function') addResourceMessage('quiz', topicKey, true);
                 });
-                panel.querySelector('#study-chat-quiz-review').addEventListener('click', function() {
+                panel.querySelector('#study-chat-quiz-review').addEventListener('click', function () {
                     resultDiv.style.display = 'none';
                     if (progressWrap) progressWrap.style.display = 'flex';
                     questionsContainer.style.display = 'block';
@@ -1665,12 +1806,12 @@ function bindTutorPanelEvents(panel, type, topicKey) {
                         }
                     }
                     updateReviewNav();
-                    panel.querySelector('#study-chat-quiz-review-prev').addEventListener('click', function() { currentIdx--; updateVisibility(); updateReviewNav(); });
-                    panel.querySelector('#study-chat-quiz-review-next').addEventListener('click', function() {
+                    panel.querySelector('#study-chat-quiz-review-prev').addEventListener('click', function () { currentIdx--; updateVisibility(); updateReviewNav(); });
+                    panel.querySelector('#study-chat-quiz-review-next').addEventListener('click', function () {
                         if (currentIdx < total - 1) { currentIdx++; updateVisibility(); updateReviewNav(); } else { goBackToResults(); }
                     });
                 });
-                panel.querySelector('#study-chat-quiz-reset').addEventListener('click', function() {
+                panel.querySelector('#study-chat-quiz-reset').addEventListener('click', function () {
                     if (chatState.quizLastResultByTopic) delete chatState.quizLastResultByTopic[topicKey];
                     chatState.shownQuizIndex[topicKey] = 0;
                     if (chatState.canvasResourceGenerated) delete chatState.canvasResourceGenerated['quiz:' + topicKey];
@@ -1678,8 +1819,8 @@ function bindTutorPanelEvents(panel, type, topicKey) {
                 });
             }
             bindQuizResultButtons();
-            panel.querySelectorAll('.study-chat-quiz-result-option').forEach(function(btn) {
-                btn.addEventListener('click', function() {
+            panel.querySelectorAll('.study-chat-quiz-result-option').forEach(function (btn) {
+                btn.addEventListener('click', function () {
                     const action = this.getAttribute('data-action');
                     panel.classList.remove('is-open', 'has-content');
                     panel.innerHTML = '';
@@ -1710,7 +1851,7 @@ function bindTutorPanelEvents(panel, type, topicKey) {
         questions.forEach((qEl, i) => {
             const inputs = qEl.querySelectorAll('input[type="radio"]');
             inputs.forEach((input) => {
-                input.addEventListener('change', function() {
+                input.addEventListener('change', function () {
                     const val = parseInt(this.value, 10);
                     answers[i] = val;
                     answered[i] = true;
@@ -1721,21 +1862,21 @@ function bindTutorPanelEvents(panel, type, topicKey) {
                 });
             });
         });
-        if (backBtn) backBtn.addEventListener('click', function() { currentIdx--; updateVisibility(); });
-        if (nextBtn) nextBtn.addEventListener('click', function() { currentIdx++; updateVisibility(); });
+        if (backBtn) backBtn.addEventListener('click', function () { currentIdx--; updateVisibility(); });
+        if (nextBtn) nextBtn.addEventListener('click', function () { currentIdx++; updateVisibility(); });
         if (submitBtn) submitBtn.addEventListener('click', showResultsScreen);
         updateVisibility();
         var lastResult = chatState.quizLastResultByTopic && chatState.quizLastResultByTopic[topicKey];
         if (lastResult && lastResult.userAnswers && lastResult.userAnswers.length > 0) {
             correctCount = 0;
             wrongCount = 0;
-            lastResult.userAnswers.forEach(function(sel, i) {
+            lastResult.userAnswers.forEach(function (sel, i) {
                 if (sel === undefined) return;
                 var qEl = questions[i];
                 if (!qEl) return;
                 var correctIdx = parseInt(qEl.getAttribute('data-correct-index'), 10);
                 var explanation = (qEl.getAttribute('data-explanation') || '').replace(/&quot;/g, '"');
-                qEl.querySelectorAll('input[type="radio"]').forEach(function(inp) {
+                qEl.querySelectorAll('input[type="radio"]').forEach(function (inp) {
                     inp.checked = parseInt(inp.value, 10) === sel;
                     inp.disabled = true;
                 });
@@ -1779,21 +1920,21 @@ function bindTutorPanelEvents(panel, type, topicKey) {
             cardEl.classList.toggle('study-chat-fc-card--flipped');
         }
         if (cardEl) {
-            cardEl.addEventListener('click', function(e) {
+            cardEl.addEventListener('click', function (e) {
                 if (e.target.closest('button') || e.target.closest('.study-chat-fc-actions')) return;
                 flipCard();
             });
-            cardEl.addEventListener('keydown', function(e) {
+            cardEl.addEventListener('keydown', function (e) {
                 if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flipCard(); }
             });
         }
-        if (prevBtn) prevBtn.addEventListener('click', function(e) { e.stopPropagation(); fcIndex = (fcIndex - 1 + cards.length) % cards.length; showCard(); });
-        if (nextBtn) nextBtn.addEventListener('click', function(e) { e.stopPropagation(); fcIndex = Math.min(fcIndex + 1, cards.length - 1); showCard(); });
+        if (prevBtn) prevBtn.addEventListener('click', function (e) { e.stopPropagation(); fcIndex = (fcIndex - 1 + cards.length) % cards.length; showCard(); });
+        if (nextBtn) nextBtn.addEventListener('click', function (e) { e.stopPropagation(); fcIndex = Math.min(fcIndex + 1, cards.length - 1); showCard(); });
         const fcMain = panel.querySelector('.study-chat-fc-main');
         const resultDiv = panel.querySelector('.study-chat-fc-result');
         const actionsDiv = panel.querySelector('.study-chat-fc-actions');
         const fcFooterOriginalHtml = actionsDiv ? actionsDiv.innerHTML : '';
-        const showFcResultScreen = function() {
+        const showFcResultScreen = function () {
             var content = panel.querySelector('.study-chat-canvas-content');
             var showPlan = STUDY_PLAN_TOPICS.indexOf(topicKey) >= 0;
             resultDiv.innerHTML = '<div class="study-chat-quiz-result-screen">' +
@@ -1804,9 +1945,9 @@ function bindTutorPanelEvents(panel, type, topicKey) {
                 '<span class="study-chat-quiz-result-option-title">Quiz</span>' +
                 '<span class="study-chat-quiz-result-option-desc">Responde preguntas sobre el tema y recibe feedback inmediato para afianzar conceptos.</span></button>' +
                 (showPlan ? '<button type="button" class="study-chat-quiz-result-option study-chat-quiz-result-option-study-plan" data-action="studyPlan">' +
-                '<span class="study-chat-quiz-result-option-icon"><i class="far fa-layer-group"></i></span>' +
-                '<span class="study-chat-quiz-result-option-title">Plan de estudio</span>' +
-                '<span class="study-chat-quiz-result-option-desc">Crea un plan con tareas para ver contenidos UBITS sobre este tema.</span></button>' : '') +
+                    '<span class="study-chat-quiz-result-option-icon"><i class="far fa-layer-group"></i></span>' +
+                    '<span class="study-chat-quiz-result-option-title">Plan de estudio</span>' +
+                    '<span class="study-chat-quiz-result-option-desc">Crea un plan con tareas para ver contenidos UBITS sobre este tema.</span></button>' : '') +
                 '<button type="button" class="study-chat-quiz-result-option" data-action="podcast">' +
                 '<span class="study-chat-quiz-result-option-icon"><i class="far fa-podcast"></i></span>' +
                 '<span class="study-chat-quiz-result-option-title">Podcast</span>' +
@@ -1818,7 +1959,7 @@ function bindTutorPanelEvents(panel, type, topicKey) {
                 actionsDiv.style.display = 'flex';
             }
             resultDiv.style.display = 'block';
-            panel.querySelector('#study-chat-fc-review').addEventListener('click', function() {
+            panel.querySelector('#study-chat-fc-review').addEventListener('click', function () {
                 resultDiv.style.display = 'none';
                 resultDiv.innerHTML = '';
                 if (fcMain) fcMain.style.display = '';
@@ -1829,10 +1970,10 @@ function bindTutorPanelEvents(panel, type, topicKey) {
                     const nextBtnNew = panel.querySelector('#study-chat-fc-next');
                     const doneBtnNew = panel.querySelector('#study-chat-fc-done');
                     const shuffleBtnNew = panel.querySelector('#study-chat-fc-shuffle');
-                    if (prevBtnNew) prevBtnNew.addEventListener('click', function(e) { e.stopPropagation(); fcIndex = (fcIndex - 1 + cards.length) % cards.length; showCard(); });
-                    if (nextBtnNew) nextBtnNew.addEventListener('click', function(e) { e.stopPropagation(); fcIndex = Math.min(fcIndex + 1, cards.length - 1); showCard(); });
-                    if (doneBtnNew) doneBtnNew.addEventListener('click', function(e) { e.stopPropagation(); showFcResultScreen(); });
-                    if (shuffleBtnNew) shuffleBtnNew.addEventListener('click', function(e) {
+                    if (prevBtnNew) prevBtnNew.addEventListener('click', function (e) { e.stopPropagation(); fcIndex = (fcIndex - 1 + cards.length) % cards.length; showCard(); });
+                    if (nextBtnNew) nextBtnNew.addEventListener('click', function (e) { e.stopPropagation(); fcIndex = Math.min(fcIndex + 1, cards.length - 1); showCard(); });
+                    if (doneBtnNew) doneBtnNew.addEventListener('click', function (e) { e.stopPropagation(); showFcResultScreen(); });
+                    if (shuffleBtnNew) shuffleBtnNew.addEventListener('click', function (e) {
                         e.stopPropagation();
                         for (let i = cards.length - 1; i > 0; i--) {
                             const j = Math.floor(Math.random() * (i + 1));
@@ -1846,14 +1987,14 @@ function bindTutorPanelEvents(panel, type, topicKey) {
                 fcIndex = 0;
                 showCard();
             });
-            panel.querySelector('#study-chat-fc-more').addEventListener('click', function() {
+            panel.querySelector('#study-chat-fc-more').addEventListener('click', function () {
                 var currentSet = parseInt(content.getAttribute('data-fc-set') || '0', 10);
                 var nextSet = (currentSet + 1) % 3;
                 renderTutorPanel('flashcards', topicKey, { fcSetIndex: nextSet });
                 if (typeof addResourceMessage === 'function') addResourceMessage('flashcards', topicKey, true);
             });
-            panel.querySelectorAll('.study-chat-fc-result .study-chat-quiz-result-option').forEach(function(btn) {
-                btn.addEventListener('click', function() {
+            panel.querySelectorAll('.study-chat-fc-result .study-chat-quiz-result-option').forEach(function (btn) {
+                btn.addEventListener('click', function () {
                     var action = this.getAttribute('data-action');
                     panel.classList.remove('is-open', 'has-content');
                     panel.innerHTML = '';
@@ -1874,13 +2015,13 @@ function bindTutorPanelEvents(panel, type, topicKey) {
                 });
             });
         };
-        if (doneBtn) doneBtn.addEventListener('click', function(e) {
+        if (doneBtn) doneBtn.addEventListener('click', function (e) {
             e.stopPropagation();
             showFcResultScreen();
         });
-        panel.querySelector('#study-chat-fc-shuffle').addEventListener('click', function(e) {
+        panel.querySelector('#study-chat-fc-shuffle').addEventListener('click', function (e) {
             e.stopPropagation();
-            for (let i = cards.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [cards[i], cards[j]] = [cards[j], cards[i]]; }
+            for (let i = cards.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[cards[i], cards[j]] = [cards[j], cards[i]]; }
             fcIndex = 0; showCard();
         });
         showCard();
@@ -1908,6 +2049,10 @@ let chatState = {
     placeholderId: null,
     podcastDefaults: null, // { title, audioUrl, transcription } para modo-estudio-ia cuando se abre podcast sin audio generado
     waitingForMaterialChoice: false, // true cuando IA ofreció quiz/flashcards/guía
+    waitingForSubtopicChoice: false, // true cuando mostramos definición + subtemas y esperamos que el usuario elija o pida recursos
+    currentCompetencyForSubtopics: null, // 'liderazgo' | 'comunicacion' | 'ingles' | 'japones'
+    currentTopicForSubtopic: null,   // tema cuando el usuario eligió un subtema (para 3 sets por subtema)
+    currentSubtopicIndex: null,       // índice del subtema elegido (0-based) o null si "Ver recursos en general"
     waitingForTopicForResource: null, // 'quiz' | 'flashcards' | 'studyPlan' | 'podcast' cuando el usuario pidió recurso sin tema
     // Índices de recurso mostrado por tema (para no repetir: siguiente quiz, siguiente set de flashcards, siguiente plan)
     shownQuizIndex: {},   // por tema: cuántas veces se ha mostrado quiz (se usa shuffle cada vez)
@@ -1934,7 +2079,7 @@ function pushCurrentChatMessage(typeOrMsg, text) {
     } else {
         msg = { type: typeOrMsg, text: text || '' };
     }
-    var isFirstUserMessage = msg.type === 'user' && !chatState.currentChat.messages.some(function(m) { return m.type === 'user'; });
+    var isFirstUserMessage = msg.type === 'user' && !chatState.currentChat.messages.some(function (m) { return m.type === 'user'; });
     chatState.currentChat.messages.push(msg);
     chatState.currentChat.lastInteractedAt = Date.now();
     if (isFirstUserMessage && msg.text) {
@@ -1971,7 +2116,7 @@ function commitChatHeaderTitle() {
     cur.title = title;
     headerTitle.value = title;
     if (chatState.chats && cur.id) {
-        var idx = chatState.chats.findIndex(function(c) { return c.id === cur.id; });
+        var idx = chatState.chats.findIndex(function (c) { return c.id === cur.id; });
         if (idx >= 0) chatState.chats[idx].title = title;
     }
     renderHistorialList();
@@ -1983,7 +2128,7 @@ function commitChatHeaderTitle() {
  */
 function hasAnyConversations() {
     var cur = chatState.currentChat;
-    var hasCurrent = cur && cur.messages && cur.messages.some(function(m) { return m.type === 'user'; });
+    var hasCurrent = cur && cur.messages && cur.messages.some(function (m) { return m.type === 'user'; });
     var savedCount = (chatState.chats || []).length;
     return hasCurrent || savedCount > 0;
 }
@@ -2011,6 +2156,11 @@ function startNewChat() {
     }
 
     chatState.currentChat = { id: null, title: '', createdAt: 0, messages: [] };
+    chatState.waitingForMaterialChoice = false;
+    chatState.waitingForSubtopicChoice = false;
+    chatState.currentCompetencyForSubtopics = null;
+    chatState.currentTopicForSubtopic = null;
+    chatState.currentSubtopicIndex = null;
 
     var body = document.getElementById('ubits-study-chat-body');
     if (body) {
@@ -2019,7 +2169,7 @@ function startNewChat() {
         for (var i = 0; i < body.children.length; i++) {
             if (body.children[i] !== welcome) toRemove.push(body.children[i]);
         }
-        toRemove.forEach(function(el) { el.remove(); });
+        toRemove.forEach(function (el) { el.remove(); });
     }
     showWelcomeBlock();
     refreshHistorialIfOpen();
@@ -2038,13 +2188,13 @@ function renderChatMessages() {
     for (var i = 0; i < body.children.length; i++) {
         if (body.children[i] !== welcome) toRemove.push(body.children[i]);
     }
-    toRemove.forEach(function(el) { el.remove(); });
+    toRemove.forEach(function (el) { el.remove(); });
 
     var messages = (chatState.currentChat && chatState.currentChat.messages) ? chatState.currentChat.messages : [];
     var panel = chatState.rightPanelId ? document.getElementById(chatState.rightPanelId) : null;
     var panelIsOpen = panel && panel.classList.contains('is-open');
 
-    messages.forEach(function(msg) {
+    messages.forEach(function (msg) {
         if (!msg || !msg.type) return;
         if (msg.resource) {
             var r = msg.resource;
@@ -2053,7 +2203,7 @@ function renderChatMessages() {
                 body.insertAdjacentHTML('beforeend', resHtml);
                 var lastMsg = body.lastElementChild;
                 var btn = lastMsg ? lastMsg.querySelector('.study-chat-resource-open-btn') : null;
-                if (btn) btn.addEventListener('click', function() {
+                if (btn) btn.addEventListener('click', function () {
                     var t = this.getAttribute('data-type');
                     var top = this.getAttribute('data-topic');
                     if (t === 'studyPlan') {
@@ -2085,8 +2235,8 @@ function renderChatMessages() {
             body.insertAdjacentHTML('beforeend', choicesHTML);
             var choicesEl = document.getElementById(choicesId);
             if (choicesEl) {
-                choicesEl.querySelectorAll('.ubits-study-chat__material-choice-btn').forEach(function(btn) {
-                    btn.addEventListener('click', function() {
+                choicesEl.querySelectorAll('.ubits-study-chat__material-choice-btn').forEach(function (btn) {
+                    btn.addEventListener('click', function () {
                         var choice = this.getAttribute('data-choice');
                         if (!choice) return;
                         chatState.waitingForMaterialChoice = false;
@@ -2105,11 +2255,73 @@ function renderChatMessages() {
             }
             return;
         }
+        if (msg.quickReplies === 'subtopics' && msg.topic) {
+            var compKey = msg.topic;
+            var compLabel = TOPIC_LABELS[compKey] || compKey;
+            var def, subs;
+            if (compKey === 'japones') {
+                def = 'Japonés no está en el catálogo UBITS, pero puedo ayudarte con temas básicos del idioma.';
+                subs = JAPONES_GENERIC_SUBTOPICS.slice();
+            } else {
+                var compData = UBITS_COMPETENCY_DATA[compKey];
+                def = compData ? compData.definition : '';
+                subs = compData && compData.habilidades ? compData.habilidades.slice() : [];
+            }
+            var restoreText = (msg.text && msg.text.length > 0) ? msg.text : (def + ' ¿Te interesa alguno de estos temas de ' + compLabel + ': ' + (subs.slice(0, 8).join(', ')) + ', o prefieres ver recursos en general?');
+            var subChoicesId = 'subtopic-choices-restore-' + Date.now();
+            var subContentHTML = null;
+            if (compKey !== 'japones' && def && CITATION_CONTENTS && CITATION_CONTENTS[compKey] && DEFINITION_CITATIONS && DEFINITION_CITATIONS[compKey]) {
+                subContentHTML = buildDefinitionWithCitationTags(compKey, def) +
+                    '<p class="ubits-study-chat__message-text"> ¿Te interesa alguno de estos temas de <strong>' + escapeHTML(compLabel) + '</strong>: ' + escapeHTML(subs.slice(0, 8).join(', ')) + ', o prefieres ver recursos en general?</p>';
+            }
+            var subMsgHTML = createMessageHTML('ai', restoreText, '', false, false, subContentHTML);
+            var subBtns = subs.slice(0, 6).map(function (s, i) {
+                var esc = s.replace(/"/g, '&quot;').replace(/</g, '&lt;');
+                return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-subtopic="' + esc + '" data-subtopic-index="' + i + '"><span>' + s + '</span></button>';
+            }).join('');
+            subBtns += '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-study-chat__material-choice-btn" data-choice="general"><span>Ver recursos en general</span></button>';
+            var subChoicesHTML = '<div class="ubits-study-chat__message-with-choices">' + subMsgHTML + '<div class="ubits-study-chat__material-choices" id="' + subChoicesId + '">' + subBtns + '</div></div>';
+            body.insertAdjacentHTML('beforeend', subChoicesHTML);
+            var subWrapperEl = body.lastElementChild;
+            subWrapperEl.querySelectorAll('.study-chat-citation-tag').forEach(function (tag) {
+                function openContentPreview() {
+                    var comp = tag.getAttribute('data-competency');
+                    var idx = parseInt(tag.getAttribute('data-content-index'), 10);
+                    if (!comp || isNaN(idx)) return;
+                    var contents = CITATION_CONTENTS && CITATION_CONTENTS[comp];
+                    if (!contents || !contents[idx]) return;
+                    renderTutorPanel('contentPreview', comp, { content: contents[idx] });
+                }
+                tag.addEventListener('click', openContentPreview);
+                tag.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openContentPreview(); } });
+            });
+            var subChoicesEl = document.getElementById(subChoicesId);
+            if (subChoicesEl) {
+                subChoicesEl.querySelectorAll('.ubits-study-chat__material-choice-btn').forEach(function (btn) {
+                    btn.addEventListener('click', function () {
+                        var isGeneral = btn.getAttribute('data-choice') === 'general';
+                        if (isGeneral) {
+                            chatState.currentTopicForSubtopic = null;
+                            chatState.currentSubtopicIndex = null;
+                        } else {
+                            var idx = parseInt(btn.getAttribute('data-subtopic-index'), 10);
+                            if (!isNaN(idx)) {
+                                chatState.currentTopicForSubtopic = compKey;
+                                chatState.currentSubtopicIndex = idx;
+                            }
+                        }
+                        subChoicesEl.style.display = 'none';
+                        addMessageWithMaterialChoiceButtons(compLabel, compKey);
+                    });
+                });
+            }
+            return;
+        }
         if (msg.quickReplies === 'topic' && msg.waitingForTopicForResource) {
             var topicText = msg.text || '';
             var topicChoicesId = 'topic-choices-restore-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
             var topicMessageHTML = createMessageHTML('ai', topicText, '', false, false);
-            var topicButtonsHTML = SUGGESTED_TOPIC_BUTTONS.map(function(t) {
+            var topicButtonsHTML = SUGGESTED_TOPIC_BUTTONS.map(function (t) {
                 return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-topic-key="' + (t.key.replace(/"/g, '&quot;')) + '" data-topic-label="' + (t.label.replace(/"/g, '&quot;')) + '"><span>' + t.label + '</span></button>';
             }).join('');
             var topicChoicesHTML = '<div class="ubits-study-chat__message-with-choices">' +
@@ -2120,8 +2332,8 @@ function renderChatMessages() {
             body.insertAdjacentHTML('beforeend', topicChoicesHTML);
             var topicChoicesEl = document.getElementById(topicChoicesId);
             if (topicChoicesEl) {
-                topicChoicesEl.querySelectorAll('.ubits-study-chat__material-choice-btn').forEach(function(btn) {
-                    btn.addEventListener('click', function() {
+                topicChoicesEl.querySelectorAll('.ubits-study-chat__material-choice-btn').forEach(function (btn) {
+                    btn.addEventListener('click', function () {
                         var topicKey = this.getAttribute('data-topic-key');
                         var topicLabel = this.getAttribute('data-topic-label');
                         if (!topicKey) return;
@@ -2165,7 +2377,7 @@ function renderChatMessages() {
 
     if (messages.length > 0) hideWelcomeBlock();
     /* Al restaurar desde historial, mostrar todo el texto de IA sin animación palabra por palabra */
-    body.querySelectorAll('.ubits-study-chat__word').forEach(function(w) {
+    body.querySelectorAll('.ubits-study-chat__word').forEach(function (w) {
         w.classList.add('ubits-study-chat__word--visible');
     });
     body.scrollTop = body.scrollHeight;
@@ -2177,7 +2389,7 @@ function renderChatMessages() {
  */
 function saveCurrentChatIfHasMessages() {
     var cur = chatState.currentChat;
-    if (!cur || !cur.messages || !cur.messages.some(function(m) { return m.type === 'user'; })) return;
+    if (!cur || !cur.messages || !cur.messages.some(function (m) { return m.type === 'user'; })) return;
     var now = Date.now();
     var chatCopy = {
         id: cur.id,
@@ -2188,7 +2400,7 @@ function saveCurrentChatIfHasMessages() {
         messages: cur.messages.slice()
     };
     if (!chatState.chats) chatState.chats = [];
-    var idx = chatState.chats.findIndex(function(c) { return c.id === chatCopy.id; });
+    var idx = chatState.chats.findIndex(function (c) { return c.id === chatCopy.id; });
     if (idx >= 0) chatState.chats[idx] = chatCopy; else chatState.chats.push(chatCopy);
 }
 
@@ -2229,12 +2441,12 @@ function confirmDeleteChat() {
             for (var i = 0; i < body.children.length; i++) {
                 if (body.children[i] !== welcome) toRemove.push(body.children[i]);
             }
-            toRemove.forEach(function(el) { el.remove(); });
+            toRemove.forEach(function (el) { el.remove(); });
         }
         showWelcomeBlock();
     }
     if (chatState.chats) {
-        chatState.chats = chatState.chats.filter(function(c) { return c.id !== idToRemove; });
+        chatState.chats = chatState.chats.filter(function (c) { return c.id !== idToRemove; });
     }
     renderHistorialList();
     if (typeof closeModal === 'function') closeModal('delete-chat-modal-overlay');
@@ -2271,10 +2483,10 @@ function renderHistorialList() {
     var currentId = (cur && cur.id) ? cur.id : null;
     var hasCurrent = cur && cur.messages && cur.messages.length > 0;
     var saved = (chatState.chats || []).slice();
-    if (hasCurrent && currentId) saved = saved.filter(function(c) { return c.id !== currentId; });
+    if (hasCurrent && currentId) saved = saved.filter(function (c) { return c.id !== currentId; });
     var items = hasCurrent ? [cur].concat(saved) : saved;
-    var sortTime = function(c) { return c.lastInteractedAt || c.createdAt || 0; };
-    items.sort(function(a, b) { return sortTime(b) - sortTime(a); });
+    var sortTime = function (c) { return c.lastInteractedAt || c.createdAt || 0; };
+    items.sort(function (a, b) { return sortTime(b) - sortTime(a); });
     if (items.length === 0) {
         if (typeof loadEmptyState === 'function') {
             loadEmptyState('historial-empty-state-container', {
@@ -2291,7 +2503,7 @@ function renderHistorialList() {
     emptyEl.style.display = 'none';
     listEl.style.display = 'flex';
     var html = '';
-    items.forEach(function(chat) {
+    items.forEach(function (chat) {
         var id = chat.id || '';
         var title = (chat.title || 'Sin título').replace(/</g, '&lt;').replace(/"/g, '&quot;');
         var isActive = id && currentId === id;
@@ -2314,8 +2526,8 @@ function renderHistorialList() {
     });
     listEl.innerHTML = html;
 
-    listEl.querySelectorAll('.modo-estudio-ia-historial-item').forEach(function(item) {
-        item.addEventListener('click', function(e) {
+    listEl.querySelectorAll('.modo-estudio-ia-historial-item').forEach(function (item) {
+        item.addEventListener('click', function (e) {
             if (e.target.closest('.modo-estudio-ia-historial-item__delete')) return;
             var chatId = this.getAttribute('data-chat-id');
             if (!chatId) return;
@@ -2325,10 +2537,10 @@ function renderHistorialList() {
                 return;
             }
             saveCurrentChatIfHasMessages();
-            var chat = (chatState.chats || []).find(function(c) { return c.id === chatId; });
+            var chat = (chatState.chats || []).find(function (c) { return c.id === chatId; });
             if (!chat) return;
             var now = Date.now();
-            var chatInList = chatState.chats.findIndex(function(c) { return c.id === chatId; });
+            var chatInList = chatState.chats.findIndex(function (c) { return c.id === chatId; });
             if (chatInList >= 0) chatState.chats[chatInList].lastInteractedAt = now;
             chatState.currentChat = {
                 id: chat.id,
@@ -2344,8 +2556,8 @@ function renderHistorialList() {
             notifyModoEstudioIaActionsVisibility();
         });
     });
-    listEl.querySelectorAll('.modo-estudio-ia-historial-item__delete').forEach(function(btn) {
-        btn.addEventListener('click', function(e) {
+    listEl.querySelectorAll('.modo-estudio-ia-historial-item__delete').forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
             e.preventDefault();
             e.stopPropagation();
             var chatId = this.getAttribute('data-delete-chat-id');
@@ -2442,8 +2654,8 @@ function formatTime() {
  */
 function wrapWordsInSpans(html) {
     if (!html || !html.trim()) return html;
-    var tokens = html.split(/\s+/).filter(function(t) { return t.length > 0; });
-    return tokens.map(function(t) { return '<span class="ubits-study-chat__word">' + t + '</span>'; }).join(' ');
+    var tokens = html.split(/\s+/).filter(function (t) { return t.length > 0; });
+    return tokens.map(function (t) { return '<span class="ubits-study-chat__word">' + t + '</span>'; }).join(' ');
 }
 
 /**
@@ -2453,16 +2665,19 @@ function wrapWordsInSpans(html) {
  * @param {string} timestamp - Timestamp del mensaje
  * @param {boolean} showActions - Si mostrar botones de acción (solo para IA)
  * @param {boolean} isTyping - Si es un mensaje de carga/typing
+ * @param {string} [contentHTML] - Opcional: HTML ya formateado para el globo (p. ej. definición con tags de cita)
  * @returns {string} HTML del mensaje
  */
-function createMessageHTML(type, text, timestamp, showActions = false, isTyping = false) {
+function createMessageHTML(type, text, timestamp, showActions = false, isTyping = false, contentHTML) {
     const messageClass = type === 'ai' ? 'ubits-study-chat__message--ai' : 'ubits-study-chat__message--user';
-    const globeClass = type === 'ai' 
+    const globeClass = type === 'ai'
         ? (isTyping ? 'ubits-study-chat__text-globe--ai ubits-study-chat__text-globe--typing' : 'ubits-study-chat__text-globe--ai')
         : 'ubits-study-chat__text-globe--user';
-    
+
     let textHTML = '';
-    if (isTyping) {
+    if (contentHTML && typeof contentHTML === 'string' && contentHTML.trim()) {
+        textHTML = contentHTML;
+    } else if (isTyping) {
         textHTML = `
             <div class="ubits-study-chat__typing-icon" aria-hidden="true">
                 <span class="ubits-study-chat__typing-dot"></span>
@@ -2473,7 +2688,7 @@ function createMessageHTML(type, text, timestamp, showActions = false, isTyping 
     } else {
         // Detectar si el texto contiene HTML (divs, etc.)
         const hasHTML = /<[^>]+>/.test(text);
-        
+
         if (hasHTML) {
             // Si tiene HTML, dividir el texto en partes (texto plano y HTML)
             // Convertir URLs en links antes de procesar
@@ -2481,7 +2696,7 @@ function createMessageHTML(type, text, timestamp, showActions = false, isTyping 
             // Dividir por saltos de línea primero para separar texto de HTML
             const lines = text.split('\n');
             let processedText = '';
-            
+
             lines.forEach(line => {
                 const trimmedLine = line.trim();
                 if (trimmedLine.startsWith('<div')) {
@@ -2494,21 +2709,21 @@ function createMessageHTML(type, text, timestamp, showActions = false, isTyping 
                     processedText += '<p class="ubits-study-chat__message-text">' + content + '</p>';
                 }
             });
-            
+
             textHTML = processedText;
-    } else {
-        // Convertir URLs en links con estilo
-        const linkRegex = /(https?:\/\/[^\s]+)/g;
-        const textWithLinks = text.replace(linkRegex, '<a href="$1" class="ubits-study-chat__link" target="_blank" rel="noopener noreferrer">$1</a>');
+        } else {
+            // Convertir URLs en links con estilo
+            const linkRegex = /(https?:\/\/[^\s]+)/g;
+            const textWithLinks = text.replace(linkRegex, '<a href="$1" class="ubits-study-chat__link" target="_blank" rel="noopener noreferrer">$1</a>');
             // Dividir por saltos de línea y crear párrafos
-            const lines = textWithLinks.split('\n').filter(function(line) { return line.trim(); });
-            textHTML = lines.map(function(line) {
+            const lines = textWithLinks.split('\n').filter(function (line) { return line.trim(); });
+            textHTML = lines.map(function (line) {
                 var content = type === 'ai' ? wrapWordsInSpans(line) : line;
                 return '<p class="ubits-study-chat__message-text">' + content + '</p>';
             }).join('');
         }
     }
-    
+
     const actionsHTML = (type === 'ai' && showActions && !isTyping) ? `
         <div class="ubits-study-chat__message-actions">
             <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" title="Copiar">
@@ -2519,7 +2734,7 @@ function createMessageHTML(type, text, timestamp, showActions = false, isTyping 
             </button>
         </div>
     ` : '';
-    
+
     return `
         <div class="ubits-study-chat__message ${messageClass}">
             <div class="ubits-study-chat__text-globe ${globeClass}">
@@ -2540,21 +2755,58 @@ function createMessageHTML(type, text, timestamp, showActions = false, isTyping 
 function formatCoursesHTML(courses, isAddingMore = false) {
     // Generar ID único para el contenedor
     const containerId = `courses-container-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    
+
     // Guardar los cursos en el estado para poder renderizarlos después
     chatState.pendingCoursesContainer = {
         containerId: containerId,
         courses: courses
     };
-    
+
     let introText = '';
     if (isAddingMore) {
         introText = 'He agregado otros 3 cursos a tu lista. Aquí está la lista completa:';
     } else {
         introText = '';
     }
-    
+
     return `<div class="study-chat-courses-section"><div id="${containerId}" class="study-chat-courses-container"></div><div class="study-chat-courses-prompt">¿Te gustaría que agregue otros 3 cursos? Solo dime "agrégame otros 3" o "agrega más".</div></div>`;
+}
+
+/**
+ * Genera resultados de búsqueda mockeados para "Sugerencias de contenido".
+ * @param {string} topicKey - liderazgo, comunicacion, ingles...
+ * @param {Object} filters - { type, level, duration } opcionales para forzar en la data mockeada.
+ * @returns {Array} Array de 20 objetos cardData.
+ */
+function generateMockSearchResults(topicKey, filters) {
+    var baseContents = (CITATION_CONTENTS && CITATION_CONTENTS[topicKey]) ? CITATION_CONTENTS[topicKey] : (CITATION_CONTENTS && CITATION_CONTENTS.liderazgo);
+    if (!baseContents || baseContents.length === 0) return [];
+
+    var results = [];
+    // Generar 20 resultados repitiendo/variando los baseContents
+    for (var i = 0; i < 20; i++) {
+        var base = baseContents[i % baseContents.length];
+        // Clonar objeto base
+        var item = JSON.parse(JSON.stringify(base));
+
+        // Aplicar filtros forzados (para simular precisión de búsqueda)
+        if (filters.type) item.type = filters.type; // Forzar tipo
+        if (filters.level) item.level = filters.level; // Forzar nivel
+        if (filters.duration) item.duration = filters.duration; // Forzar duración
+
+        // Variar título si es una copia
+        if (i >= baseContents.length) {
+            item.title += ' ' + (i + 1);
+        }
+
+        // Asegurar campos requeridos por compact card
+        if (!item.provider) item.provider = 'UBITS';
+        if (!item.image) item.image = item.imagePath ? ('../../images/' + item.imagePath) : '../../images/cards-learn/default.jpg';
+        if (item.providerLogo && !item.providerLogo.startsWith('../')) item.providerLogo = '../../images/' + item.providerLogo;
+
+        results.push(item);
+    }
+    return results;
 }
 
 /**
@@ -2565,13 +2817,13 @@ function formatCoursesHTML(courses, isAddingMore = false) {
 function formatPlanHTML(plan) {
     // Generar ID único para el contenedor
     const containerId = `plan-courses-container-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    
+
     // Guardar el plan en el estado para poder renderizar los cards después
     chatState.pendingPlanContainer = {
         containerId: containerId,
         plan: plan
     };
-    
+
     let text = `<div class="study-chat-plan-section">`;
     text += `<div class="study-chat-plan-title">Plan de Formación</div>`;
     text += `<div class="study-chat-plan-details">`;
@@ -2586,7 +2838,7 @@ function formatPlanHTML(plan) {
     text += `</div>`;
     text += `<div class="study-chat-plan-prompt">¿Deseas aceptar este plan o modificar el listado de cursos? Responde "acepto" o "modificar".</div>`;
     text += `</div>`;
-    
+
     return text;
 }
 
@@ -2598,14 +2850,14 @@ function generatePlanDates() {
     const startDate = new Date();
     const endDate = new Date();
     endDate.setMonth(endDate.getMonth() + 1);
-    
+
     const formatDate = (date) => {
         const day = date.getDate();
         const month = date.toLocaleString('es-ES', { month: 'long' });
         const year = date.getFullYear();
         return `${day} de ${month} de ${year}`;
     };
-    
+
     return {
         startDate: formatDate(startDate),
         endDate: formatDate(endDate)
@@ -2620,9 +2872,9 @@ function generateLeadershipPlan() {
     // Seleccionar 5 cursos aleatorios sin repetir
     const availableCourses = [...LEADERSHIP_COURSES].sort(() => 0.5 - Math.random());
     const selectedCourses = availableCourses.slice(0, 5);
-    
+
     const dates = generatePlanDates();
-    
+
     return {
         title: 'Plan de Formación en Liderazgo',
         courses: selectedCourses,
@@ -2638,22 +2890,22 @@ function generateLeadershipPlan() {
  * @returns {Array} Array de cursos seleccionados
  */
 function selectRandomCourses(count = 3) {
-    const availableCourses = LEADERSHIP_COURSES.filter(course => 
+    const availableCourses = LEADERSHIP_COURSES.filter(course =>
         !chatState.suggestedCourses.some(suggested => suggested.title === course.title)
     );
-    
+
     if (availableCourses.length === 0) {
         // Si ya se sugirieron todos, resetear la lista
         chatState.suggestedCourses = [];
         return selectRandomCourses(count);
     }
-    
+
     const shuffled = [...availableCourses].sort(() => 0.5 - Math.random());
     const selected = shuffled.slice(0, Math.min(count, availableCourses.length));
-    
+
     // Agregar a la lista de cursos sugeridos
     chatState.suggestedCourses.push(...selected);
-    
+
     return selected;
 }
 
@@ -2667,7 +2919,7 @@ function generateLeadershipCoursesResponse(count = 3, isAddingMore = false) {
     const courses = selectRandomCourses(count);
     let intro = '';
     let coursesText = '';
-    
+
     if (isAddingMore) {
         // Si estamos agregando más cursos, mantener todos los cursos sugeridos hasta ahora
         const allCourses = chatState.suggestedCourses;
@@ -2678,9 +2930,9 @@ function generateLeadershipCoursesResponse(count = 3, isAddingMore = false) {
         intro = '¡Excelente elección! El liderazgo es fundamental para el desarrollo profesional. Aquí tienes algunos cursos que te pueden interesar:';
         coursesText = formatCoursesHTML(courses, false);
     }
-    
+
     const responseText = intro + '\n\n' + coursesText;
-    
+
     return {
         text: responseText,
         courses: courses
@@ -2708,16 +2960,25 @@ var AI_WORD_REVEAL_DELAY_MS = 35;
  * Anima la aparición palabra por palabra en un mensaje de IA (text-globe--ai).
  * @param {HTMLElement} messageEl - Elemento .ubits-study-chat__message
  */
-function animateWordsInMessage(messageEl) {
-    if (!messageEl) return;
+function animateWordsInMessage(messageEl, onComplete) {
+    if (!messageEl) {
+        if (onComplete) onComplete();
+        return;
+    }
     var words = messageEl.querySelectorAll('.ubits-study-chat__text-globe--ai .ubits-study-chat__word');
-    if (words.length === 0) return;
+    if (words.length === 0) {
+        if (onComplete) onComplete();
+        return;
+    }
     var delay = AI_WORD_REVEAL_DELAY_MS;
-    words.forEach(function(word, i) {
-        setTimeout(function() {
+    words.forEach(function (word, i) {
+        setTimeout(function () {
             word.classList.add('ubits-study-chat__word--visible');
         }, i * delay);
     });
+    if (onComplete) {
+        setTimeout(onComplete, words.length * delay);
+    }
 }
 
 /**
@@ -2745,8 +3006,8 @@ function addMessageAIWithStreaming(text, showActions, regenerateFunction) {
         if (index >= linesHTML.length) {
             messageEl.classList.remove('ubits-study-chat__message--streaming');
             chatState.lastAIMessageElement = messageEl;
-        chatState.lastAIMessageText = text;
-        chatState.lastRegenerateFunction = regenerateFunction;
+            chatState.lastAIMessageText = text;
+            chatState.lastRegenerateFunction = regenerateFunction;
             attachAIMessageActions(messageEl, text, regenerateFunction);
             runPendingCardsRender(messageEl);
             body.scrollTop = body.scrollHeight;
@@ -2766,40 +3027,40 @@ function addMessageAIWithStreaming(text, showActions, regenerateFunction) {
 
 function runPendingCardsRender(messageElement) {
     if (!messageElement) return;
-        setTimeout(() => {
-            if (chatState.pendingCoursesContainer && typeof loadCardContentCompact === 'function') {
-                const { containerId, courses } = chatState.pendingCoursesContainer;
-                const container = messageElement.querySelector(`#${containerId}`);
-                if (container && courses && courses.length > 0) {
-                    const basePath = getImageBasePath();
-                    const cardsData = courses.map(function(course) { return getRecommendedContentCardData(course, basePath); });
-                    loadCardContentCompact(containerId, cardsData);
-                    chatState.pendingCoursesContainer = null;
-                }
+    setTimeout(() => {
+        if (chatState.pendingCoursesContainer && typeof loadCardContentCompact === 'function') {
+            const { containerId, courses } = chatState.pendingCoursesContainer;
+            const container = messageElement.querySelector(`#${containerId}`);
+            if (container && courses && courses.length > 0) {
+                const basePath = getImageBasePath();
+                const cardsData = courses.map(function (course) { return getRecommendedContentCardData(course, basePath); });
+                loadCardContentCompact(containerId, cardsData);
+                chatState.pendingCoursesContainer = null;
             }
-            if (chatState.pendingPlanContainer && typeof loadCardContentCompact === 'function') {
-                const { containerId, plan } = chatState.pendingPlanContainer;
-                const container = messageElement.querySelector(`#${containerId}`);
-                if (container && plan && plan.courses && plan.courses.length > 0) {
-                    const basePath = getImageBasePath();
-                    const cardsData = plan.courses.map(function(course) { return getRecommendedContentCardData(course, basePath); });
-                    loadCardContentCompact(containerId, cardsData);
-                    chatState.pendingPlanContainer = null;
-                }
+        }
+        if (chatState.pendingPlanContainer && typeof loadCardContentCompact === 'function') {
+            const { containerId, plan } = chatState.pendingPlanContainer;
+            const container = messageElement.querySelector(`#${containerId}`);
+            if (container && plan && plan.courses && plan.courses.length > 0) {
+                const basePath = getImageBasePath();
+                const cardsData = plan.courses.map(function (course) { return getRecommendedContentCardData(course, basePath); });
+                loadCardContentCompact(containerId, cardsData);
+                chatState.pendingPlanContainer = null;
             }
+        }
     }, 150);
-    }
-    
+}
+
 function attachAIMessageActions(messageElement, text, regenerateFunction) {
     if (!messageElement) return;
-        const copyBtn = messageElement.querySelector('button[title="Copiar"]');
-        const regenerateBtn = messageElement.querySelector('button[title="Regenerar"]');
+    const copyBtn = messageElement.querySelector('button[title="Copiar"]');
+    const regenerateBtn = messageElement.querySelector('button[title="Regenerar"]');
     const plainText = (() => {
         const div = document.createElement('div');
         div.innerHTML = text;
         return div.textContent || div.innerText || text;
     })();
-        if (copyBtn) {
+    if (copyBtn) {
         copyBtn.addEventListener('click', () => {
             navigator.clipboard.writeText(plainText).then(() => {
                 if (typeof showToast === 'function') showToast('success', '¡Texto copiado exitosamente! 😉', { containerId: 'ubits-toast-container', duration: 3500 });
@@ -2810,7 +3071,7 @@ function attachAIMessageActions(messageElement, text, regenerateFunction) {
                 ta.style.left = '-999999px';
                 document.body.appendChild(ta);
                 ta.select();
-                try { document.execCommand('copy'); } catch (e) {}
+                try { document.execCommand('copy'); } catch (e) { }
                 document.body.removeChild(ta);
             });
         });
@@ -2864,7 +3125,7 @@ function showWelcomeBlock() {
         if (hasAnyConversations()) {
             header.style.display = '';
             if (headerTitle) headerTitle.value = '';
-                    } else {
+        } else {
             header.style.display = 'none';
         }
     }
@@ -2882,13 +3143,115 @@ function commitChatHeaderTitle() {
     headerTitle.value = title;
     cur.title = title;
     if (chatState.chats) {
-        var idx = chatState.chats.findIndex(function(c) { return c.id === cur.id; });
+        var idx = chatState.chats.findIndex(function (c) { return c.id === cur.id; });
         if (idx >= 0) chatState.chats[idx].title = title;
     }
     renderHistorialList();
 }
 
 var TOPIC_LABELS = { liderazgo: 'Liderazgo', comunicacion: 'Comunicación', ingles: 'Inglés', japones: 'Japonés', hiragana: 'Maratón Hiragana' };
+
+/** Imágenes de competencias (carpeta images/imagenes competencias). Mismo mapeo que en catalogo.html. */
+var COMPETENCY_IMAGE_MAP = {
+    'Liderazgo': 'Liderazgo.jpg',
+    'Comunicación': 'Comunicación.jpg',
+    'Inglés': 'Inglés.jpg',
+    'Accountability': 'Accountability.jpg',
+    'Inteligencia emocional': 'Inteligencia emocional.jpg',
+    'Trabajo en equipo': 'Trabajo en equipo.jpg',
+    'Resolución de problemas': 'Resolución de problemas.jpg',
+    'Productividad': 'Productividad.jpg',
+    'Innovación': 'Innovación.jpg'
+};
+
+/** Definición breve y habilidades por competencia UBITS (alineado con catalogo.html). Para Japonés se usan sugerencias genéricas. Definiciones de al menos un párrafo para incluir tags de citas (Changelog 9). */
+var UBITS_COMPETENCY_DATA = {
+    liderazgo: {
+        definition: 'El liderazgo es la capacidad de influir y guiar a otras personas hacia metas comunes, desarrollando su potencial y generando impacto positivo. En UBITS puedes fortalecerlo con cursos sobre estilos de liderazgo, coaching e inteligencia emocional.',
+        habilidades: ['Empoderamiento', 'Motivación', 'Pensamiento estratégico', 'Coaching de equipos']
+    },
+    comunicacion: {
+        definition: 'La comunicación efectiva es la capacidad de transmitir ideas con claridad, escuchar activamente y adaptar el mensaje al contexto para lograr entendimiento mutuo. Mejorar en asertividad, hablar en público y redacción te ayuda en cualquier rol.',
+        habilidades: ['Asertividad', 'Comunicación efectiva', 'Marca personal', 'Redacción y ortografía', 'Protocolo y etiqueta empresarial', 'Hablar en público', 'Gestión de stakeholders']
+    },
+    ingles: {
+        definition: 'El inglés laboral permite comunicarte en entornos profesionales: reuniones, correos, presentaciones y conversaciones con equipos globales. Trabajar grammar, listening y speaking te da ventaja en equipos internacionales.',
+        habilidades: ['Grammar', 'Listening', 'Reading', 'Speaking', 'Writing', 'Vocabulary']
+    }
+};
+
+/** Por competencia: frases tras las cuales se inserta un tag "Contenido" (índice del contenido en CITATION_CONTENTS). */
+var DEFINITION_CITATIONS = {
+    liderazgo: [
+        { phrase: 'impacto positivo.', contentIndex: 0 },
+        { phrase: 'inteligencia emocional.', contentIndex: 1 }
+    ],
+    comunicacion: [
+        { phrase: 'entendimiento mutuo.', contentIndex: 0 },
+        { phrase: 'cualquier rol.', contentIndex: 1 }
+    ],
+    ingles: [
+        { phrase: 'equipos globales.', contentIndex: 0 },
+        { phrase: 'internacionales.', contentIndex: 1 }
+    ]
+};
+
+/** Contenidos para el canvas de ficha al hacer clic en un tag de cita (imagen, tipo, nombre, nivel/tiempo/idioma, competencia, 3 habilidades, proveedor, experto). */
+var CITATION_CONTENTS = {
+    liderazgo: [
+        { title: 'Liderar con inteligencia emocional', imagePath: 'cards-learn/liderar-con-inteligencia-emocional.jpeg', type: 'Curso', duration: '75 min', level: 'Avanzado', language: 'Español', competency: 'Liderazgo', skills: ['Empoderamiento', 'Comunicación efectiva', 'Asertividad'], provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg', expertName: 'María García', expertImage: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=80&h=80&fit=crop' },
+        { title: 'Cambio en el estilo de liderazgo', imagePath: 'cards-learn/cambio-en-el-estilo-de-liderazgo.jpeg', type: 'Curso', duration: '30 min', level: 'Básico', language: 'Español', competency: 'Liderazgo', skills: ['Motivación', 'Comunicación efectiva', 'Inteligencia emocional'], provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg', expertName: 'Carlos Ruiz', expertImage: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop' }
+    ],
+    comunicacion: [
+        { title: 'Cómo hablar y escuchar mejor: competencias de comunicación oral', imagePath: 'cards-learn/como-hablar-y-escuchar-mejor-competencias-de-comunicacion-oral.jpeg', type: 'Curso', duration: '60 min', level: 'Intermedio', language: 'Español', competency: 'Comunicación', skills: ['Hablar en público', 'Asertividad', 'Inteligencia emocional'], provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg', expertName: 'Ana Martínez', expertImage: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=80&h=80&fit=crop' },
+        { title: 'Comunicación y empatía: claves para el éxito en equipo', imagePath: 'cards-learn/comunicacion-y-empatia-claves-para-el-exito-en-equipo.jpeg', type: 'Curso', duration: '45 min', level: 'Básico', language: 'Español', competency: 'Comunicación', skills: ['Comunicación efectiva', 'Trabajo en equipo', 'Asertividad'], provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg', expertName: 'Luis Fernández', expertImage: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop' }
+    ],
+    ingles: [
+        { title: 'Introducción al desarrollo web', imagePath: 'cards-learn/introduccion-al-desarrollo-web.jpeg', type: 'Curso', duration: '60 min', level: 'Básico', language: 'Español', competency: 'Inglés', skills: ['Grammar', 'Reading', 'Writing'], provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg', expertName: 'Patricia López', expertImage: 'https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=80&h=80&fit=crop' },
+        { title: 'Ingeniería de prompts: habla con la IA', imagePath: 'cards-learn/ingenieria-de-prompts-habla-con-la-ia.jpeg', type: 'Curso', duration: '60 min', level: 'Intermedio', language: 'Español', competency: 'Inglés', skills: ['Speaking', 'Vocabulary', 'Digital skills'], provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg', expertName: 'Roberto Díaz', expertImage: 'https://images.unsplash.com/photo-1519085360753-af0619b7fba0?w=80&h=80&fit=crop' }
+    ]
+};
+
+/** Sugerencias genéricas para Japonés (no está en catálogo UBITS). */
+var JAPONES_GENERIC_SUBTOPICS = ['Escritura y alfabeto', 'Saludos y cortesía', 'Estructura básica de oraciones', 'Partículas gramaticales', 'Números y contar', 'Vocabulario cotidiano'];
+
+/**
+ * Construye el HTML de la definición con tags de cita (status-tag neutral XS icono izquierda).
+ * Al hacer clic en un tag se abre el canvas con la ficha del contenido.
+ * @param {string} competencyKey - 'liderazgo' | 'comunicacion' | 'ingles'
+ * @param {string} definition - Texto de la definición
+ * @returns {string} HTML de uno o más párrafos con tags inline
+ */
+function buildDefinitionWithCitationTags(competencyKey, definition) {
+    var citations = DEFINITION_CITATIONS && DEFINITION_CITATIONS[competencyKey];
+    if (!citations || !citations.length) {
+        return '<p class="ubits-study-chat__message-text">' + wrapWordsInSpans(escapeHTML(definition)) + '</p>';
+    }
+    var parts = [];
+    var rest = definition;
+    var i, pos, phrase, contentIndex, tagHtml;
+    for (i = 0; i < citations.length; i++) {
+        phrase = citations[i].phrase;
+        contentIndex = citations[i].contentIndex;
+        pos = rest.indexOf(phrase);
+        if (pos === -1) continue;
+        parts.push(wrapWordsInSpans(escapeHTML(rest.substring(0, pos + phrase.length))));
+        tagHtml = '<span class="ubits-status-tag ubits-status-tag--neutral ubits-status-tag--xs ubits-status-tag--icon-left study-chat-citation-tag" role="button" tabindex="0" data-competency="' + escapeHTML(competencyKey) + '" data-content-index="' + contentIndex + '" title="Ver contenido"><i class="far fa-book-open"></i><span class="ubits-status-tag__text">Contenido</span></span>';
+        parts.push('<span class="ubits-study-chat__word">' + tagHtml + '</span>');
+        rest = rest.substring(pos + phrase.length);
+    }
+    parts.push(wrapWordsInSpans(escapeHTML(rest)));
+    return '<p class="ubits-study-chat__message-text">' + parts.join(' ') + '</p>';
+}
+
+function escapeHTML(s) {
+    if (!s) return '';
+    return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
 
 function getResourceTitle(type, topicKey) {
     var label = TOPIC_LABELS[topicKey] || topicKey;
@@ -2921,11 +3284,11 @@ function getResourceCount(type, topicKey) {
 }
 
 function hideOpenButtonsInChat() {
-    document.querySelectorAll('.study-chat-resource-msg').forEach(function(el) { el.classList.remove('open-btn-visible'); });
+    document.querySelectorAll('.study-chat-resource-msg').forEach(function (el) { el.classList.remove('open-btn-visible'); });
 }
 
 function showOpenButtonsInChat() {
-    document.querySelectorAll('.study-chat-resource-msg').forEach(function(el) { el.classList.add('open-btn-visible'); });
+    document.querySelectorAll('.study-chat-resource-msg').forEach(function (el) { el.classList.add('open-btn-visible'); });
 }
 
 /**
@@ -2994,12 +3357,12 @@ function addResourceMessage(type, topicKey, isNew) {
     var lastMsg = body.lastElementChild;
     if (lastMsg) {
         lastMsg.classList.add('study-chat-resource-msg--reveal');
-        setTimeout(function() { lastMsg.classList.remove('study-chat-resource-msg--reveal'); }, 520);
+        setTimeout(function () { lastMsg.classList.remove('study-chat-resource-msg--reveal'); }, 520);
     }
     body.scrollTop = body.scrollHeight;
     pushCurrentChatMessage({ type: 'ai', resource: { type: type, topicKey: topicKey, isNew: isNew } });
     var btn = lastMsg ? lastMsg.querySelector('.study-chat-resource-open-btn') : null;
-    if (btn) btn.addEventListener('click', function() {
+    if (btn) btn.addEventListener('click', function () {
         var t = this.getAttribute('data-type');
         var top = this.getAttribute('data-topic');
         if (t === 'studyPlan') {
@@ -3046,9 +3409,15 @@ function addMessageWithMaterialChoiceButtons(label, topic) {
     body.insertAdjacentHTML('beforeend', choicesHTML);
     var wrapperEl = body.lastElementChild;
     var messageEl = wrapperEl.querySelector('.ubits-study-chat__message');
-    if (messageEl) animateWordsInMessage(messageEl);
+    if (messageEl) {
+        messageEl.classList.add('ubits-study-chat__message--typing');
+        animateWordsInMessage(messageEl, function () {
+            messageEl.classList.remove('ubits-study-chat__message--typing');
+            messageEl.classList.add('ubits-study-chat__message--typing-done');
+        });
+    }
     wrapperEl.classList.add('ubits-study-chat__message-with-choices--reveal');
-    setTimeout(function() { wrapperEl.classList.remove('ubits-study-chat__message-with-choices--reveal'); }, 520);
+    setTimeout(function () { wrapperEl.classList.remove('ubits-study-chat__message-with-choices--reveal'); }, 520);
     body.scrollTop = body.scrollHeight;
     pushCurrentChatMessage({ type: 'ai', text: text, quickReplies: 'material', topic: topic });
     chatState.lastAIMessageElement = messageEl;
@@ -3057,8 +3426,8 @@ function addMessageWithMaterialChoiceButtons(label, topic) {
 
     const choicesEl = document.getElementById(choicesId);
     if (!choicesEl) return;
-    choicesEl.querySelectorAll('.ubits-study-chat__material-choice-btn').forEach(function(btn) {
-        btn.addEventListener('click', function() {
+    choicesEl.querySelectorAll('.ubits-study-chat__material-choice-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
             const choice = this.getAttribute('data-choice');
             if (!choice) return;
             chatState.waitingForMaterialChoice = false;
@@ -3073,10 +3442,103 @@ function addMessageWithMaterialChoiceButtons(label, topic) {
             }
             choicesEl.style.display = 'none';
             addResourceMessage(choice, topic, false);
-                });
-            });
+        });
+    });
+}
+
+/**
+ * Muestra definición de la competencia + lista de subtemas y pregunta si le interesa alguno o prefiere ver recursos en general.
+ * Al elegir un subtema o "Ver recursos en general", se ofrecen quiz/flashcards/plan/podcast.
+ * @param {string} competencyKey - 'liderazgo' | 'comunicacion' | 'ingles' | 'japones'
+ * @param {string} label - Nombre para mostrar (ej: "Liderazgo")
+ * @param {string} definition - Texto de definición breve
+ * @param {string[]} subtopics - Lista de habilidades o temas (ej: ['Empoderamiento', 'Motivación', ...])
+ */
+function addMessageWithDefinitionAndSubtopics(competencyKey, label, definition, subtopics) {
+    var body = document.getElementById('ubits-study-chat-body');
+    if (!body) return;
+    var listText = subtopics.length > 0 ? subtopics.slice(0, 8).join(', ') + (subtopics.length > 8 ? '…' : '') : '';
+
+    // Construir pregunta animable: envolver partes de texto en spans
+    var qPart1 = wrapWordsInSpans(' ¿Te interesa alguno de estos temas de');
+    var qPartLabel = '<strong>' + wrapWordsInSpans(escapeHTML(label)) + '</strong>';
+    var qPartRest = wrapWordsInSpans(': ' + escapeHTML(listText) + ', o prefieres ver recursos en general?');
+    var questionTextHTML = qPart1 + ' ' + qPartLabel + qPartRest;
+
+    var questionTextPlain = ' ¿Te interesa alguno de estos temas de ' + label + ': ' + listText + ', o prefieres ver recursos en general?';
+    var text = definition + questionTextPlain;
+    var timestamp = formatTime();
+    var contentHTML = null;
+    if (CITATION_CONTENTS && CITATION_CONTENTS[competencyKey] && DEFINITION_CITATIONS && DEFINITION_CITATIONS[competencyKey]) {
+        contentHTML = buildDefinitionWithCitationTags(competencyKey, definition) +
+            '<p class="ubits-study-chat__message-text">' + questionTextHTML + '</p>';
+    }
+    var messageHTML = createMessageHTML('ai', text, timestamp, false, false, contentHTML);
+    var choicesId = 'subtopic-choices-' + Date.now();
+    var buttonsHtml = subtopics.slice(0, 6).map(function (s, i) {
+        var esc = s.replace(/"/g, '&quot;').replace(/</g, '&lt;');
+        return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-subtopic="' + esc + '" data-subtopic-index="' + i + '"><span>' + s + '</span></button>';
+    }).join('');
+    buttonsHtml += '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-study-chat__material-choice-btn" data-choice="general"><span>Ver recursos en general</span></button>';
+    var choicesHTML = '<div class="ubits-study-chat__message-with-choices">' +
+        messageHTML +
+        '<div class="ubits-study-chat__material-choices" id="' + choicesId + '">' + buttonsHtml + '</div></div>';
+    body.insertAdjacentHTML('beforeend', choicesHTML);
+    var wrapperEl = body.lastElementChild;
+    var messageEl = wrapperEl.querySelector('.ubits-study-chat__message');
+    if (messageEl) {
+        messageEl.classList.add('ubits-study-chat__message--typing');
+        animateWordsInMessage(messageEl, function () {
+            messageEl.classList.remove('ubits-study-chat__message--typing');
+            messageEl.classList.add('ubits-study-chat__message--typing-done');
+        });
+    }
+    wrapperEl.classList.add('ubits-study-chat__message-with-choices--reveal');
+    setTimeout(function () { wrapperEl.classList.remove('ubits-study-chat__message-with-choices--reveal'); }, 520);
+    body.scrollTop = body.scrollHeight;
+    pushCurrentChatMessage({ type: 'ai', text: text, quickReplies: 'subtopics', topic: competencyKey });
+    chatState.waitingForSubtopicChoice = true;
+    chatState.currentCompetencyForSubtopics = competencyKey;
+    chatState.lastAIMessageElement = messageEl;
+    chatState.lastRegenerateFunction = null;
+
+    wrapperEl.querySelectorAll('.study-chat-citation-tag').forEach(function (tag) {
+        function openContentPreview() {
+            var comp = tag.getAttribute('data-competency');
+            var idx = parseInt(tag.getAttribute('data-content-index'), 10);
+            if (!comp || isNaN(idx)) return;
+            var contents = CITATION_CONTENTS && CITATION_CONTENTS[comp];
+            if (!contents || !contents[idx]) return;
+            renderTutorPanel('contentPreview', comp, { content: contents[idx] });
         }
-        
+        tag.addEventListener('click', openContentPreview);
+        tag.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openContentPreview(); } });
+    });
+
+    var choicesEl = document.getElementById(choicesId);
+    if (!choicesEl) return;
+    choicesEl.querySelectorAll('.ubits-study-chat__material-choice-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            chatState.waitingForSubtopicChoice = false;
+            var isGeneral = btn.getAttribute('data-choice') === 'general';
+            if (isGeneral) {
+                chatState.currentCompetencyForSubtopics = null;
+                chatState.currentTopicForSubtopic = null;
+                chatState.currentSubtopicIndex = null;
+            } else {
+                var idx = parseInt(btn.getAttribute('data-subtopic-index'), 10);
+                if (!isNaN(idx)) {
+                    chatState.currentTopicForSubtopic = competencyKey;
+                    chatState.currentSubtopicIndex = idx;
+                }
+                chatState.currentCompetencyForSubtopics = null;
+            }
+            choicesEl.style.display = 'none';
+            addMessageWithMaterialChoiceButtons(label, competencyKey);
+        });
+    });
+}
+
 /** Temas sugeridos cuando se pide recurso sin tema (mismo orden que en el mensaje). */
 var SUGGESTED_TOPIC_BUTTONS = [
     { key: 'liderazgo', label: 'Liderazgo' },
@@ -3096,7 +3558,7 @@ function addMessageWithTopicChoiceButtons(resourceType, text) {
     var timestamp = formatTime();
     var messageHTML = createMessageHTML('ai', text, timestamp, false, false);
     var choicesId = 'topic-choices-' + Date.now();
-    var buttonsHTML = SUGGESTED_TOPIC_BUTTONS.map(function(t) {
+    var buttonsHTML = SUGGESTED_TOPIC_BUTTONS.map(function (t) {
         return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-topic-key="' + (t.key.replace(/"/g, '&quot;')) + '" data-topic-label="' + (t.label.replace(/"/g, '&quot;')) + '"><span>' + t.label + '</span></button>';
     }).join('');
     var choicesHTML = '<div class="ubits-study-chat__message-with-choices">' +
@@ -3107,16 +3569,22 @@ function addMessageWithTopicChoiceButtons(resourceType, text) {
     body.insertAdjacentHTML('beforeend', choicesHTML);
     var wrapperEl = body.lastElementChild;
     var messageEl = wrapperEl.querySelector('.ubits-study-chat__message');
-    if (messageEl) animateWordsInMessage(messageEl);
+    if (messageEl) {
+        messageEl.classList.add('ubits-study-chat__message--typing');
+        animateWordsInMessage(messageEl, function () {
+            messageEl.classList.remove('ubits-study-chat__message--typing');
+            messageEl.classList.add('ubits-study-chat__message--typing-done');
+        });
+    }
     wrapperEl.classList.add('ubits-study-chat__message-with-choices--reveal');
-    setTimeout(function() { wrapperEl.classList.remove('ubits-study-chat__message-with-choices--reveal'); }, 520);
+    setTimeout(function () { wrapperEl.classList.remove('ubits-study-chat__message-with-choices--reveal'); }, 520);
     body.scrollTop = body.scrollHeight;
     pushCurrentChatMessage({ type: 'ai', text: text, quickReplies: 'topic', waitingForTopicForResource: resourceType });
 
     var choicesEl = document.getElementById(choicesId);
     if (!choicesEl) return;
-    choicesEl.querySelectorAll('.ubits-study-chat__material-choice-btn').forEach(function(btn) {
-        btn.addEventListener('click', function() {
+    choicesEl.querySelectorAll('.ubits-study-chat__material-choice-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
             var topicKey = this.getAttribute('data-topic-key');
             var topicLabel = this.getAttribute('data-topic-label');
             if (!topicKey) return;
@@ -3153,13 +3621,13 @@ function addMessageWithTopicChoiceButtons(resourceType, text) {
 function addMessage(type, text, showActions = false, regenerateFunction = null) {
     const body = document.getElementById('ubits-study-chat-body');
     if (!body) return;
-    
+
     if (type === 'user') {
         hideWelcomeBlock();
         pushCurrentChatMessage('user', text);
         notifyModoEstudioIaActionsVisibility();
     }
-    
+
     if (type === 'ai') {
         pushCurrentChatMessage('ai', text);
         removeTypingMessage();
@@ -3172,15 +3640,21 @@ function addMessage(type, text, showActions = false, regenerateFunction = null) 
         chatState.lastRegenerateFunction = regenerateFunction;
         if (messageEl) {
             messageEl.classList.add('ubits-study-chat__message--reveal');
-            setTimeout(function() { messageEl.classList.remove('ubits-study-chat__message--reveal'); }, 520);
-            animateWordsInMessage(messageEl);
+            setTimeout(function () { messageEl.classList.remove('ubits-study-chat__message--reveal'); }, 520);
+
+            messageEl.classList.add('ubits-study-chat__message--typing');
+            animateWordsInMessage(messageEl, function () {
+                messageEl.classList.remove('ubits-study-chat__message--typing');
+                messageEl.classList.add('ubits-study-chat__message--typing-done');
+            });
+
             attachAIMessageActions(messageEl, text, regenerateFunction);
         }
         runPendingCardsRender(messageEl);
         body.scrollTop = body.scrollHeight;
         return;
     }
-    
+
     const timestamp = formatTime();
     const messageHTML = createMessageHTML(type, text, timestamp, showActions, false);
     body.insertAdjacentHTML('beforeend', messageHTML);
@@ -3193,26 +3667,52 @@ function addMessage(type, text, showActions = false, regenerateFunction = null) 
 function showTypingMessage() {
     const body = document.getElementById('ubits-study-chat-body');
     if (!body) return;
-    
+
     const timestamp = formatTime();
     const messageHTML = createMessageHTML('ai', '', timestamp, false, true);
     body.insertAdjacentHTML('beforeend', messageHTML);
     body.scrollTop = body.scrollHeight;
-    
+
     return body.lastElementChild;
 }
 
 /**
  * Remueve el mensaje de typing
  */
+/**
+ * Remueve el mensaje de typing
+ */
 function removeTypingMessage() {
     const body = document.getElementById('ubits-study-chat-body');
     if (!body) return;
-    
+
     const typingMessage = body.querySelector('.ubits-study-chat__text-globe--typing');
     if (typingMessage) {
         typingMessage.closest('.ubits-study-chat__message').remove();
     }
+}
+
+/**
+ * Muestra el indicador "Pensando..."
+ */
+function showThinkingIndicator() {
+    const body = document.getElementById('ubits-study-chat-body');
+    if (!body) return null;
+
+    const timestamp = formatTime();
+    // Usamos el globo de texto normal pero le inyectamos la clase y contenido especial
+    const messageHTML = `
+        <div class="ubits-study-chat__message ubits-study-chat__message--ai">
+            <div class="ubits-study-chat__text-globe ubits-study-chat__text-globe--ai">
+                <span class="ubits-study-chat__thinking">Pensando</span>
+            </div>
+            <p class="ubits-study-chat__timestamp">${timestamp}</p>
+        </div>
+    `;
+    body.insertAdjacentHTML('beforeend', messageHTML);
+    body.scrollTop = body.scrollHeight;
+
+    return body.lastElementChild;
 }
 
 /**
@@ -3234,7 +3734,7 @@ function initStudyChat(containerId, options = {}) {
     chatState.podcastDefaults = options.podcastDefaults || null;
     chatState.competencyTopics = {};
     chatState.competencies.forEach(c => { chatState.competencyTopics[c] = COMPETENCY_TO_TOPIC[c] || c.toLowerCase().replace(/\s/g, ''); });
-    
+
     container.innerHTML = createStudyChatHTML(options);
     if (typeof window.initTooltip === 'function') {
         window.initTooltip('#ubits-study-chat [data-tooltip]');
@@ -3251,73 +3751,89 @@ function initStudyChat(containerId, options = {}) {
     var headerTitleInput = document.getElementById('ubits-study-chat-header-title');
     if (headerTitleInput) {
         headerTitleInput.addEventListener('blur', commitChatHeaderTitle);
-        headerTitleInput.addEventListener('keydown', function(e) {
+        headerTitleInput.addEventListener('keydown', function (e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
                 headerTitleInput.blur();
             }
         });
     }
-    
+
     if (chatState.competencies.length === 0) {
-    addMessage('ai', '¡Hola! ¿En qué puedo ayudarte?', true);
+        addMessage('ai', '¡Hola! ¿En qué puedo ayudarte?', true);
     }
-    
+
     const input = document.getElementById('ubits-study-chat-input');
     const sendBtn = document.getElementById('ubits-study-chat-send-btn');
     const attachBtn = document.getElementById('ubits-study-chat-attach-btn');
     const suggestionBtns = document.querySelectorAll('.ubits-study-chat__suggestions .ubits-button');
     const competencyChips = document.querySelectorAll('.ubits-study-chat__competency-chip');
-    
+
     // Auto-resize del textarea
     if (input) {
-        input.addEventListener('input', function() {
+        input.addEventListener('input', function () {
             this.style.height = 'auto';
             this.style.height = this.scrollHeight + 'px';
         });
-        
+
         // Enviar con Enter (sin Shift)
-        input.addEventListener('keydown', function(e) {
+        input.addEventListener('keydown', function (e) {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 sendMessage();
             }
         });
     }
-    
+
     // Botón enviar
     if (sendBtn) {
         sendBtn.addEventListener('click', sendMessage);
     }
-    
+
     // Botón adjuntar (por ahora solo log)
     if (attachBtn) {
-        attachBtn.addEventListener('click', function() {
+        attachBtn.addEventListener('click', function () {
             console.log('Adjuntar archivo');
         });
     }
-    
-    // Chips de competencias (Modo Tutor): al clic = elegir tema y ofrecer quiz/flashcards/guía con botones
+
+    // Chips de competencias (Modo Tutor): al clic = elegir tema, mostrar definición + subtemas, luego recursos
     competencyChips.forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function () {
             hideWelcomeBlock();
             const topic = this.getAttribute('data-competency');
             const label = this.getAttribute('data-label') || topic;
             chatState.currentTopic = topic;
-            chatState.waitingForMaterialChoice = true;
             addMessage('user', label);
-            addMessageWithMaterialChoiceButtons(label, topic);
+
+            // Mostrar "Pensando..." por 1 segundo
+            const thinkingMsg = showThinkingIndicator();
+
+            setTimeout(() => {
+                if (thinkingMsg) thinkingMsg.remove();
+
+                var definition, subtopics;
+                if (topic === 'japones') {
+                    definition = 'Japonés no está en el catálogo UBITS, pero puedo ayudarte con temas básicos del idioma.';
+                    subtopics = JAPONES_GENERIC_SUBTOPICS.slice();
+                } else {
+                    var data = UBITS_COMPETENCY_DATA[topic];
+                    definition = data ? data.definition : '';
+                    subtopics = data && data.habilidades ? data.habilidades.slice() : [];
+                }
+                addMessageWithDefinitionAndSubtopics(topic, label, definition, subtopics);
+            }, 1000);
         });
     });
-    
+
     // Botones de sugerencias (modo clásico cuando no hay competencias)
     suggestionBtns.forEach(btn => {
         if (btn.classList.contains('ubits-study-chat__competency-chip')) return;
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function () {
             const suggestion = this.getAttribute('data-suggestion');
             let message = '';
             let response = '';
-            switch(suggestion) {
+            switch (suggestion) {
                 case 'contenidos':
                     message = 'Sugerencias de contenidos';
                     response = '¡Perfecto! Te puedo ayudar a encontrar contenidos personalizados. ¿Sobre qué tema te gustaría capacitarte?';
@@ -3340,11 +3856,11 @@ function initStudyChat(containerId, options = {}) {
             }
             if (message && response) {
                 addMessage('user', message);
-                    addMessage('ai', response, true);
+                addMessage('ai', response, true);
             }
         });
     });
-    
+
     // Función para generar respuesta predefinida basada en el mensaje del usuario
     function generateResponse(userMessage) {
         const lowerMessage = userMessage.toLowerCase().trim();
@@ -3355,7 +3871,65 @@ function initStudyChat(containerId, options = {}) {
             { key: 'japones', regex: /japon[eé]s|japonesa/ },
             { key: 'hiragana', regex: /hiragana/ }
         ];
-        var hasTopicInMessage = topicPatterns.some(function(p) { return p.regex.test(lowerMessage); });
+        var hasTopicInMessage = topicPatterns.some(function (p) { return p.regex.test(lowerMessage); });
+
+        // ----- Buscador de contenido (sugerencias) -----
+        if (/(sugerencias?|recomienda|busca|encuentra|dame|quiero|lista)\s+(de\s+)?(contenidos?|cursos?|materiales?|videos?)/i.test(lowerMessage)) {
+            var matchedTopic = null;
+            for (var t = 0; t < topicPatterns.length; t++) {
+                if (topicPatterns[t].regex.test(lowerMessage)) { matchedTopic = topicPatterns[t].key; break; }
+            }
+            var topic = matchedTopic || chatState.currentTopic;
+            if (topic) {
+                // Extraer filtros
+                var filters = {};
+
+                // Tipo
+                var typeMatch = lowerMessage.match(/\b(curso|short|charla|art[ií]culo|podcast|libro|caso|documento|ejercicios?|ruta|programa)/i);
+                if (typeMatch) {
+                    var mapType = {
+                        curso: 'Curso', short: 'Short', charla: 'Charla', 'artículo': 'Artículo', articulo: 'Artículo',
+                        podcast: 'Podcast', libro: 'Libro', caso: 'Caso de estudio', documento: 'Documento técnico',
+                        ejercicio: 'Ejercicios de práctica', ruta: 'Ruta de aprendizaje', programa: 'Programa'
+                    };
+                    var k = typeMatch[0].toLowerCase().replace('í', 'i');
+                    if (k.startsWith('ejerc')) filters.type = 'Ejercicios de práctica';
+                    else if (k === 'caso') filters.type = 'Caso de estudio';
+                    else if (k === 'documento') filters.type = 'Documento técnico';
+                    else filters.type = mapType[k] || 'Curso';
+                }
+
+                // Nivel
+                var levelMatch = lowerMessage.match(/\b(b[áa]sico|intermedio|avanzado)\b/i);
+                if (levelMatch) {
+                    var l = levelMatch[0].toLowerCase();
+                    filters.level = l.startsWith('b') ? 'Básico' : l.startsWith('i') ? 'Intermedio' : 'Avanzado';
+                }
+
+                // Duración
+                var durMatch = lowerMessage.match(/(\d+)\s*(min|hora)/i);
+                if (durMatch) {
+                    var val = parseInt(durMatch[1], 10);
+                    if (durMatch[2].startsWith('hora')) val *= 60;
+                    filters.duration = val + ' min';
+                }
+
+                renderTutorPanel('searchResults', topic, { filters: filters });
+                hideWelcomeBlock();
+                return { text: '¡Claro! He buscado contenidos sobre ' + (TOPIC_LABELS[topic] || topic) + ' con esas características. Te muestro los resultados en el panel.', regenerateFunction: null };
+            } else {
+                return { text: 'Puedo sugerirte contenidos, pero necesito saber el tema. ¿Buscas contenidos de Liderazgo, Comunicación o Inglés?', regenerateFunction: null };
+            }
+        }
+
+        // ----- Usuario estaba en pantalla de subtemas: cualquier respuesta → ofrecer recursos (quiz/flashcards/plan) -----
+        if (chatState.waitingForSubtopicChoice && chatState.currentCompetencyForSubtopics) {
+            var compKey = chatState.currentCompetencyForSubtopics;
+            chatState.waitingForSubtopicChoice = false;
+            chatState.currentCompetencyForSubtopics = null;
+            var compLabel = TOPIC_LABELS[compKey] || compKey;
+            return { materialChoice: { label: compLabel, topic: compKey }, regenerateFunction: null };
+        }
 
         // ----- Usuario ya pidió un recurso sin tema: ahora respondió con el tema -----
         if (chatState.waitingForTopicForResource) {
@@ -3413,7 +3987,7 @@ function initStudyChat(containerId, options = {}) {
         );
         if (resourceOnly) {
             var resType = /podcast/.test(lowerMessage) ? 'podcast' : /flashcard/.test(lowerMessage) ? 'flashcards' : /plan/.test(lowerMessage) ? 'studyPlan' : 'quiz';
-            var inferredTopic = chatState.currentTopic && topicPatterns.some(function(p) { return p.key === chatState.currentTopic; }) ? chatState.currentTopic : null;
+            var inferredTopic = chatState.currentTopic && topicPatterns.some(function (p) { return p.key === chatState.currentTopic; }) ? chatState.currentTopic : null;
             if (inferredTopic) {
                 hideWelcomeBlock();
                 chatState.waitingForTopicForResource = null;
@@ -3476,7 +4050,7 @@ function initStudyChat(containerId, options = {}) {
                 return { resourceMessage: { type: 'podcast', topic: topicKey }, regenerateFunction: null };
             }
         }
-        
+
         // ----- Modo Tutor IA: elección de material (quiz / flashcards / guía) -----
         if (chatState.waitingForMaterialChoice && chatState.currentTopic) {
             var topicKey = chatState.currentTopic;
@@ -3506,7 +4080,7 @@ function initStudyChat(containerId, options = {}) {
                 return { resourceMessage: { type: 'podcast', topic: topicKey }, regenerateFunction: null };
             }
         }
-        
+
         // ----- Maratón / muchas preguntas de hiragana: abrir quiz de 50 preguntas -----
         if (/hiragana/.test(lowerMessage) && (/marat[oó]n|preguntas|\b50\b/.test(lowerMessage))) {
             hideWelcomeBlock();
@@ -3515,51 +4089,59 @@ function initStudyChat(containerId, options = {}) {
             renderTutorPanel('quiz', 'hiragana');
             return { resourceMessage: { type: 'quiz', topic: 'hiragana' }, regenerateFunction: null };
         }
-        
-        // ----- Modo Tutor IA: usuario escribe un tema -----
+
+        // ----- Modo Tutor IA: usuario escribe una competencia → mostrar definición + subtemas, luego recursos -----
         const topicMatch = { liderazgo: /liderazgo|lider/, comunicacion: /comunicaci[oó]n/, ingles: /ingl[eé]s/, japones: /japon[eé]s|japonesa/ };
         for (const [topic, regex] of Object.entries(topicMatch)) {
             if (regex.test(lowerMessage)) {
                 chatState.currentTopic = topic;
                 if (chatState.currentChat) chatState.currentChat.topic = topic;
-                chatState.waitingForMaterialChoice = true;
-                const label = topic === 'liderazgo' ? 'Liderazgo' : topic === 'comunicacion' ? 'Comunicación' : topic === 'ingles' ? 'Inglés' : 'Japonés';
-                return { materialChoice: { label: label, topic: topic }, regenerateFunction: null };
+                var label = topic === 'liderazgo' ? 'Liderazgo' : topic === 'comunicacion' ? 'Comunicación' : topic === 'ingles' ? 'Inglés' : 'Japonés';
+                var definition, subtopics;
+                if (topic === 'japones') {
+                    definition = 'Japonés no está en el catálogo UBITS, pero puedo ayudarte con temas básicos del idioma.';
+                    subtopics = JAPONES_GENERIC_SUBTOPICS.slice();
+                } else {
+                    var data = UBITS_COMPETENCY_DATA[topic];
+                    definition = data ? data.definition : '';
+                    subtopics = data && data.habilidades ? data.habilidades.slice() : [];
+                }
+                return { subtopicChoice: { label: label, topic: topic, definition: definition, subtopics: subtopics }, regenerateFunction: null };
             }
         }
-        
+
         // Recordar competencias si escribe algo genérico en modo tutor
         if (chatState.competencies.length > 0 && (lowerMessage.includes('ayuda') || lowerMessage.includes('aprender') && lowerMessage.length < 30)) {
             const names = chatState.competencies.join(', ');
             return { text: 'Tienes asignadas: ' + names + '. ¿Empezamos por alguna? Puedes hacer clic en los botones de arriba o escribir otro tema (por ejemplo "japonés" si quieres aprender algo que no esté en tu catálogo).', regenerateFunction: null };
         }
-        
+
         // Si estamos esperando respuesta sobre el tema del plan
         if (chatState.waitingForPlanTopic) {
             // Detectar si el usuario menciona "liderazgo"
             if (lowerMessage.includes('liderazgo') || lowerMessage.includes('lider')) {
                 chatState.waitingForPlanTopic = false;
                 chatState.waitingForPlanAcceptance = true;
-                
+
                 // Función para regenerar el plan con otros cursos
-                const createPlanRegenerateFunction = function() {
-                    return function() {
+                const createPlanRegenerateFunction = function () {
+                    return function () {
                         if (chatState.lastAIMessageElement) {
                             chatState.lastAIMessageElement.remove();
                         }
-                        
+
                         // Generar nuevo plan de formación
                         const plan = generateLeadershipPlan();
                         chatState.currentPlan = plan;
-                        
+
                         const planText = formatPlanHTML(plan);
                         const responseText = '¡Perfecto! He diseñado un plan de formación en liderazgo para ti. Aquí están los detalles:' + planText;
-                        
+
                         const newRegenerateFunction = createPlanRegenerateFunction();
                         addMessage('ai', responseText, true, newRegenerateFunction);
                     };
                 };
-                
+
                 const plan = generateLeadershipPlan();
                 chatState.currentPlan = plan;
                 const planText = formatPlanHTML(plan);
@@ -3578,16 +4160,16 @@ function initStudyChat(containerId, options = {}) {
                 };
             }
         }
-        
+
         // Si estamos esperando que el usuario acepte o modifique el plan
         if (chatState.waitingForPlanAcceptance && chatState.currentPlan) {
             if (lowerMessage.includes('acepto') || lowerMessage.includes('aceptar') || lowerMessage.includes('sí') || lowerMessage.includes('si') || lowerMessage.includes('ok') || lowerMessage.includes('de acuerdo')) {
                 chatState.waitingForPlanAcceptance = false;
-                
+
                 const plan = chatState.currentPlan;
                 const planId = Math.floor(Math.random() * 10000); // ID aleatorio para el ejemplo
                 const planLink = `https://ubits.com/planes/${planId}`; // Link de ejemplo
-                
+
                 const confirmationText = `¡Excelente! He creado el plan de formación a tu nombre.\n\n` +
                     `Detalles del plan:\n` +
                     `- Título: ${plan.title}\n` +
@@ -3595,10 +4177,10 @@ function initStudyChat(containerId, options = {}) {
                     `- Fecha de inicio: ${plan.startDate}\n` +
                     `- Fecha de fin: ${plan.endDate}\n\n` +
                     `Puedes acceder a tu plan aquí: ${planLink}`;
-                
+
                 // Limpiar el plan actual
                 chatState.currentPlan = null;
-                
+
                 return {
                     text: confirmationText,
                     regenerateFunction: null
@@ -3606,26 +4188,26 @@ function initStudyChat(containerId, options = {}) {
             } else if (lowerMessage.includes('modificar') || lowerMessage.includes('cambiar') || lowerMessage.includes('otro')) {
                 // Regenerar el plan con otros cursos
                 chatState.waitingForPlanAcceptance = true;
-                
+
                 // Función para regenerar el plan con otros cursos
-                const createPlanRegenerateFunction = function() {
-                    return function() {
+                const createPlanRegenerateFunction = function () {
+                    return function () {
                         if (chatState.lastAIMessageElement) {
                             chatState.lastAIMessageElement.remove();
                         }
-                        
+
                         // Generar nuevo plan de formación
                         const plan = generateLeadershipPlan();
                         chatState.currentPlan = plan;
-                        
+
                         const planText = formatPlanHTML(plan);
                         const responseText = '¡Por supuesto! He modificado el plan con otros cursos. Aquí está la nueva propuesta:' + planText;
-                        
+
                         const newRegenerateFunction = createPlanRegenerateFunction();
                         addMessage('ai', responseText, true, newRegenerateFunction);
                     };
                 };
-                
+
                 const plan = generateLeadershipPlan();
                 chatState.currentPlan = plan;
                 const planText = formatPlanHTML(plan);
@@ -3643,30 +4225,30 @@ function initStudyChat(containerId, options = {}) {
                 };
             }
         }
-        
+
         // Si estamos esperando respuesta sobre el tema (para sugerencias de contenidos)
         if (chatState.waitingForTopic) {
             // Detectar si el usuario menciona "liderazgo"
             if (lowerMessage.includes('liderazgo') || lowerMessage.includes('lider')) {
                 chatState.currentTopic = 'liderazgo';
                 chatState.waitingForTopic = false;
-                
+
                 // Función para regenerar esta respuesta con otros cursos
-                const createRegenerateFunction = function() {
-                    return function() {
+                const createRegenerateFunction = function () {
+                    return function () {
                         // Remover los últimos 3 cursos de la lista de sugeridos (para poder sugerirlos de nuevo)
                         chatState.suggestedCourses = chatState.suggestedCourses.slice(0, -3);
-                        
+
                         if (chatState.lastAIMessageElement) {
                             chatState.lastAIMessageElement.remove();
                         }
-                        
+
                         const responseData = generateLeadershipCoursesResponse(3);
                         const newRegenerateFunction = createRegenerateFunction();
                         addMessage('ai', responseData.text, true, newRegenerateFunction);
                     };
                 };
-                
+
                 const regenerateFunction = createRegenerateFunction();
                 const responseData = generateLeadershipCoursesResponse(3);
                 if (chatState.rightPanelId) {
@@ -3679,46 +4261,46 @@ function initStudyChat(containerId, options = {}) {
                 return { text: 'Entiendo. Te puedo ayudar con varios temas. Por ahora, puedo sugerirte cursos sobre liderazgo, tecnología, comunicación, gestión de proyectos y más. ¿Hay algún tema específico que te interese?', regenerateFunction: null };
             }
         }
-        
+
         // Detectar si el usuario pide agregar más cursos
-        if (chatState.currentTopic === 'liderazgo' && 
-            (lowerMessage.includes('agrégame otros 3') || 
-             lowerMessage.includes('agrega más') || 
-             lowerMessage.includes('otros 3') ||
-             lowerMessage.includes('más cursos'))) {
-            
+        if (chatState.currentTopic === 'liderazgo' &&
+            (lowerMessage.includes('agrégame otros 3') ||
+                lowerMessage.includes('agrega más') ||
+                lowerMessage.includes('otros 3') ||
+                lowerMessage.includes('más cursos'))) {
+
             // Función para regenerar esta respuesta con otros cursos (solo los últimos 3)
-            const regenerateFunction = function() {
+            const regenerateFunction = function () {
                 // Remover los últimos 3 cursos de la lista de sugeridos (para poder sugerirlos de nuevo)
                 chatState.suggestedCourses = chatState.suggestedCourses.slice(0, -3);
-                
+
                 if (chatState.lastAIMessageElement) {
                     chatState.lastAIMessageElement.remove();
                 }
-                
+
                 // Crear función recursiva para regenerar
-                const createRegenerateFunction = function() {
-                    return function() {
+                const createRegenerateFunction = function () {
+                    return function () {
                         // Remover los últimos 3 cursos de la lista de sugeridos
                         chatState.suggestedCourses = chatState.suggestedCourses.slice(0, -3);
-                        
+
                         if (chatState.lastAIMessageElement) {
                             chatState.lastAIMessageElement.remove();
                         }
-                        
+
                         // Agregar otros 3 cursos manteniendo los anteriores
                         const responseData = generateLeadershipCoursesResponse(3, true);
                         const newRegenerateFunction = createRegenerateFunction();
                         addMessage('ai', responseData.text, true, newRegenerateFunction);
                     };
                 };
-                
+
                 // Agregar otros 3 cursos manteniendo los anteriores
                 const responseData = generateLeadershipCoursesResponse(3, true);
                 const newRegenerateFunction = createRegenerateFunction();
                 addMessage('ai', responseData.text, true, newRegenerateFunction);
             };
-            
+
             const responseData = generateLeadershipCoursesResponse(3, true);
             if (chatState.rightPanelId) {
                 const allCourses = chatState.suggestedCourses;
@@ -3727,7 +4309,7 @@ function initStudyChat(containerId, options = {}) {
             }
             return { text: responseData.text, regenerateFunction: regenerateFunction };
         }
-        
+
         // Respuestas predefinidas basadas en palabras clave
         if (lowerMessage.includes('hola') || lowerMessage.includes('hi') || lowerMessage.includes('buenos días') || lowerMessage.includes('buenas tardes')) {
             return {
@@ -3735,73 +4317,76 @@ function initStudyChat(containerId, options = {}) {
                 regenerateFunction: null
             };
         }
-        
+
         if (lowerMessage.includes('curso') || lowerMessage.includes('contenido') || lowerMessage.includes('aprender')) {
             return {
                 text: 'Excelente pregunta sobre contenidos de aprendizaje. Te puedo ayudar a encontrar cursos y recursos que se ajusten a tus necesidades. ¿Hay algún tema específico que te interese? Por ejemplo: liderazgo, tecnología, comunicación, gestión de proyectos, entre otros.',
                 regenerateFunction: null
             };
         }
-        
+
         if (lowerMessage.includes('plan') || lowerMessage.includes('programa') || lowerMessage.includes('ruta')) {
             return {
                 text: 'Perfecto, podemos crear un plan de formación personalizado para ti. Para diseñar el mejor plan, me ayudaría conocer: tus objetivos profesionales, las competencias que quieres desarrollar y el tiempo que puedes dedicar al aprendizaje. ¿Podrías compartirme esta información?',
                 regenerateFunction: null
             };
         }
-        
+
         if (lowerMessage.includes('ayuda') || lowerMessage.includes('help') || lowerMessage.includes('cómo')) {
             return {
                 text: '¡Por supuesto! Estoy aquí para ayudarte. Puedo asistirte con: sugerencias de contenidos, creación de planes de formación, explicación de conceptos, resolución de dudas y más. ¿Qué necesitas específicamente?',
                 regenerateFunction: null
             };
         }
-        
+
         if (lowerMessage.includes('gracias') || lowerMessage.includes('thank')) {
             return {
                 text: '¡De nada! Es un placer ayudarte. Si tienes más preguntas o necesitas asistencia adicional, no dudes en preguntarme. ¡Que tengas un excelente día de aprendizaje!',
                 regenerateFunction: null
             };
         }
-        
+
         // Respuesta genérica por defecto
         return {
             text: 'Gracias por tu mensaje. Estoy aquí para ayudarte con tus necesidades de aprendizaje y formación. Puedo asistirte con sugerencias de contenidos, creación de planes de estudio, explicación de conceptos y más. ¿Hay algo específico en lo que pueda ayudarte?',
             regenerateFunction: null
         };
     }
-    
+
     // Función para enviar mensaje
     function sendMessage() {
         if (!input || !input.value.trim()) return;
-        
+
         const message = input.value.trim();
-        
+
         // Agregar mensaje del usuario
         addMessage('user', message);
-        
+
         // Limpiar input
         input.value = '';
         input.style.height = 'auto';
-        
+
         // Generar respuesta predefinida
         const responseData = generateResponse(message);
         const response = typeof responseData === 'object' ? responseData.text : responseData;
         const regenerateFunction = typeof responseData === 'object' ? responseData.regenerateFunction : null;
         const materialChoice = typeof responseData === 'object' ? responseData.materialChoice : null;
+        const subtopicChoice = typeof responseData === 'object' ? responseData.subtopicChoice : null;
         const resourceMessage = typeof responseData === 'object' ? responseData.resourceMessage : null;
         const topicChoice = typeof responseData === 'object' ? responseData.topicChoice : null;
-        
+
         // Mostrar respuesta de IA de inmediato (sin delay artificial)
         if (materialChoice) {
             addMessageWithMaterialChoiceButtons(materialChoice.label, materialChoice.topic);
+        } else if (subtopicChoice) {
+            addMessageWithDefinitionAndSubtopics(subtopicChoice.topic, subtopicChoice.label, subtopicChoice.definition, subtopicChoice.subtopics || []);
         } else if (topicChoice && topicChoice.resourceType) {
             addMessageWithTopicChoiceButtons(topicChoice.resourceType, response);
         } else if (resourceMessage) {
             addResourceMessage(resourceMessage.type, resourceMessage.topic, false);
         } else {
             addMessage('ai', response, true, regenerateFunction);
-    }
+        }
     }
 
     notifyModoEstudioIaActionsVisibility();

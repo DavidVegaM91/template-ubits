@@ -17,62 +17,32 @@ Orden sugerido: primero datos y usuario, luego estructura de páginas, después 
 
 ### 1. Datos y usuario
 
-1. [x] **Base de datos unificada única**  
-   **`tareas-base-unificada.js`** es la única fuente de datos. Se eliminaron `seguimiento-data.js` y `tareas-db-analisis.md`. Las páginas `tareas.html`, `planes.html`, `plan-detail.html`, `seguimiento.html` y `seguimiento-leader.html` solo cargan esta BD; no hay datos de fallback en `tareas.js`, `planes.js` ni `plan-detail.js`.
+1. [x] **Base de datos unificada y empresa de ejemplo**  
+   Todas las páginas de tareas (Tareas, Planes, Detalle de plan, Seguimiento y Seguimiento líder) comparten **una sola base de datos** (`tareas-base-unificada.js`) que simula una empresa real: **Fiqsha Decoraciones S.A.S.**, con 8 áreas, 1 gerente, 7 jefes y 51 empleados. Los datos están en español (nombres, cargos, áreas) y el usuario que abre la plataforma es **María Alejandra Sánchez Pardo** (Jefe de Logística).  
+   - **Tareas:** en promedio ~30 por usuario por mes: ~10 individuales (solo en Mi lista) y ~20 grupales (además en seguimiento). La mayoría vinculadas a un plan; unas pocas sueltas.  
+   - **Planes:** individuales (~3 por mes para María) y grupales por área; misma lógica de estados.  
+   - **Estados (tareas y planes):** reparto tipo real: **Finalizadas 70–85%**, **Iniciadas 10–20%**, **Vencidas 5–15%**.  
+   - **Rango de fechas** de los datos: desde el **1 ene 2025** hasta el **28 feb 2026**.  
+   Las vistas (tareas, planes, detalle, seguimiento) consumen solo esta BD; los filtros de período en seguimiento usan la fecha actual para que los totales sean coherentes.
 
-2. [x] **Estructura de empresa integrada**  
-   La BD incluye la empresa de ejemplo **Fiqsha Decoraciones S.A.S.**: 8 áreas, 1 gerente, 7 jefes, 51 empleados (id, nombre, cargo, área, jefe, avatar, username). Expone `getReportesDirectos(nombreLider)`, `getEmpleadosEjemplo()`, `getJefesEjemplo()`, `getAreasEjemplo()`, `getEmpresaEjemplo()` para uso en seguimiento y filtros.
-
-3. [x] **Usuario actual**  
-   **María Alejandra Sánchez Pardo** (Jefe de Logística, id J005) como usuario que abre la plataforma: correo `masanchez@fiqsha.demo`, avatar alineado con el sidebar. `getUsuarioActual()` y el filtrado por asignado/participación usan este usuario.
-
-4. [x] **Tareas: modelo y distribución**  
-   - 30 tareas por usuario por mes: 10 individuales (no en seguimiento), 20 grupales (sí en seguimiento).  
-   - Campos: id, name, done, status, endDate, priority, assignee_email, etiqueta, created_by, created_by_avatar_url, role, **planId**, **planNombre**, **description** (opcional).  
-   - 95% con plan, 5% sueltas (solo las ve el creador en su lista).  
-   - Estados por seed: Finalizadas 70–85%, Iniciadas 10–20%, Vencidas 5–15% (`repartoEstados`). Rango de fechas: constantes INICIO_RANGO – FIN_RANGO (ej. 1 ene 2025 – 28 feb 2026).
-
-5. [x] **Planes: modelo único y distribución de estado**  
-   - Una sola estructura de plan (lista y detalle usan el mismo objeto): id, name, description, end_date, status, tasksDone, tasksTotal, finished, hasMembers, created_by, fechaCreacion, progress.  
-   - Estado del plan **asignado por distribución** (no derivado del avance de tareas): Finalizados 70–85%, Iniciados 10–20%, Vencidos 5–15% (`repartoEstadoPlan` por seed). El progreso (tasksDone/tasksTotal) sigue siendo el real; el estado refleja que el plan se puede finalizar manualmente y mover tareas pendientes a otro plan.  
-   - Planes individuales (~3 por mes para María) + planes grupales (por área/mes); ambos con la misma distribución de estados.
-
-6. [x] **Vistas conectadas solo a la BD unificada**  
-   - **tareas.html:** `getTareasVistaTareas()` (vencidas + porDia); solo tareas asignadas a María Alejandra; fecha real para vencidas y calendario.  
-   - **planes.html:** `getPlanesVistaPlanes()`; solo planes donde participa María (individuales + grupales).  
-   - **plan-detail.html:** `getPlanDetalle(planId)` y `getTareasPorPlan(planId)`; misma estructura de plan.  
-   - **seguimiento.html / seguimiento-leader.html:** `getActividadesSeguimiento()` y `getActividadesParaLider(nombre)`; solo actividades grupales (tareas y planes de área); sin `seguimiento-data.js`.
-
-7. [x] **Seguimiento: filtro por período con fecha real**  
-   En `seguimiento.js` el filtro "últimos 7 días", "último año", etc. usa la **fecha actual** (`new Date()`) para que los rangos y totales sean coherentes con la BD unificada.
-
-8. [x] **Seguimiento – tab Planes con datos**  
-   En `tareas-base-unificada.js` se agregó la generación de actividades `tipo: 'plan'` para seguimiento: se agrupan las tareas grupales por nombre de plan y se crea una fila de plan por grupo. Incluido en `getActividadesParaLider()` cuando algún asignado es reporte directo del líder.
-
-9. [x] **tareas.html: vencidas alineadas con seguimiento (~6%)**  
-   En `getTareasVistaTareas()` las vencidas se calculan con **`status === 'Vencido'`** (igual que en seguimiento), no por `endDate < hoy && !done`.
-
-10. [x] **Indicadores de seguimiento con formato numérico**  
+2. [x] **Indicadores de seguimiento con formato numérico**  
     En `seguimiento.html` y `seguimiento-leader.html` los indicadores (Total, Finalizadas, Iniciadas, Vencidas) y el contador del header usan `formatIndicatorNumber()` en `seguimiento.js`: **< 10.000** → 1,556; **≥ 10.000** → 10,5 K; **≥ 1.000.000** → 2,7 M.
 
 ### 2. Estructura de páginas
 
 3. [x] **Header product en planes y tareas**  
-   Implementar el componente **header product** oficial en `planes.html` y `tareas.html`.
-
-4. [x] **Plan detail: tres secciones reales**  
-   En `plan-detail` la PM pintó las 3 secciones dentro de una sola. Corregir para que haya **3 secciones independientes** (no todo dentro de una). Al hacerlo, no romper la lógica actual de llenado de datos.
+   Implementar el componente **header product** oficial en `planes.html` con version mobile de boton flotante.
 
 ### 3. Componentes oficiales UBITS
 
 5. [x] **Revisión general de botones e inputs**  
    Revisar que en los archivos de scope se usen **botones e inputs oficiales** de UBITS (componentes del template), y corregir donde no sea así.
 
-6. [ ] **Verificar uso del componente oficial Status Tag**  
-   Revisar que `plan-detail.html`, `planes.html` y `tareas.html` usen el **componente oficial Status Tag** de UBITS (clases y variantes correctas). Corregir cualquier etiqueta de estado que no lo use.
+6. [x] **Verificar uso del componente oficial Status Tag**  
+   Revisar que `plan-detail.html`, `planes.html` y `tareas.html` usen el **componente oficial Status Tag** de UBITS (clases y variantes correctas). Corregir cualquier etiqueta de estado que no lo use. *Verificado: las tres páginas importan `status-tag.css` y usan `ubits-status-tag`, variantes `--success`/`--info`/`--error`/`--neutral`, `--sm`, `--icon-left` y `ubits-status-tag__text`; seguimiento.js también.*
 
-7. [ ] **Componentizar la tirilla de tareas**  
-   La tirilla de tareas que está dentro de `tareas.html` debe convertirse en un **componente reutilizable** (CSS + JS, y opcionalmente HTML de referencia). Una vez componentizada, **implementarla** tanto en `tareas.html` como en `planes.html`.
+7. [x] **Componentizar la tirilla de tareas**  
+   La tirilla de tareas que está dentro de `tareas.html` debe convertirse en un **componente reutilizable** (CSS + JS, y opcionalmente HTML de referencia). Sin documentacion en html, pero si creado para reutilizarlo. Una vez componentizada, **implementarla** tanto en `tareas.html` como en `plan-detail.html`. Primero implementala en plan detail que es mas chiquis, si queda bien ahi si la implementas en tareas.
 
 8. [ ] **Drawers de creación con componente oficial**  
    Asegurar que los drawers de **"Crear un plan"** y **"Crear una plantilla"** usen el **componente drawer oficial** UBITS.

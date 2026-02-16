@@ -155,6 +155,11 @@
 }
 
 /* Chip +N clickeable en tab Planes (dentro de celda assignee del componente tabla) */
+/* Filas clicables: abrir detalle de plan o de tarea */
+#seguimiento-tbody tr {
+    cursor: pointer;
+}
+
 #seguimiento-table .ubits-table__cell-assignee .ubits-profile-list__count {
     cursor: pointer;
 }

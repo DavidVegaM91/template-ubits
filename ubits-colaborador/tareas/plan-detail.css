@@ -345,10 +345,10 @@
     gap: var(--gap-sm, 8px);
 }
 
-/* Tirillas en detalle del plan: mismos estilos que el tab de tareas (tareas.css).
-   Solo añadimos borde suave para separar filas en la lista. */
-.page-plan-detail .plan-detail-tasks-list .tarea-item {
-    border: 1px solid var(--ubits-border-1);
+/* Tirillas en detalle del plan: misma apariencia que tab Tareas (componente task-strip).
+   Sin borde extra para no diferenciar visualmente de tareas.html. */
+.page-plan-detail .plan-detail-tasks-list {
+    min-width: 0;
 }
 
 /* Empty state */

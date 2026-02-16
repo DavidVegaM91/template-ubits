@@ -364,6 +364,7 @@
                             fechaCreacion: formatearFechaSeguimiento(fechaCreacion),
                             fechaFinalizacion: formatearFechaSeguimiento(endDate),
                             creador: emp.nombre,
+                            creador_avatar: (emp.avatar && String(emp.avatar).trim()) ? emp.avatar : null,
                             comentarios: Math.floor(seeder(seed, baseIdx + i + 300) * 5)
                         });
                     }
@@ -587,7 +588,8 @@
                             etiqueta: null,
                             planId: planIdNum,
                             planNombre: nombrePlan,
-                            description: null
+                            description: null,
+                            created_by: t.creador || ''
                         };
                     });
             }
@@ -611,6 +613,26 @@
         });
     }
 
+    function normalizeNameForMatch(str) {
+        if (str == null || typeof str !== 'string') return '';
+        return str.replace(/\s+/g, ' ').trim();
+    }
+
+    /** Resuelve nombre y avatar del creador por nombre (para "Creada por" en panel de detalle). */
+    function getCreatorDisplay(nombre) {
+        var name = normalizeNameForMatch(nombre);
+        if (!name) return { name: 'Sin especificar', avatar: null };
+        var current = getUsuarioActual();
+        if (current && current.nombre && normalizeNameForMatch(current.nombre) === name) return { name: current.nombre, avatar: (current.avatar && String(current.avatar).trim()) ? current.avatar : null };
+        var jefes = getJefesEjemplo();
+        var emp = (jefes || []).find(function(e) { return normalizeNameForMatch(e.nombre) === name; });
+        if (emp) return { name: emp.nombre || name, avatar: (emp.avatar && String(emp.avatar).trim()) ? emp.avatar : null };
+        var empleados = getEmpleadosEjemplo();
+        emp = (empleados || []).find(function(e) { return normalizeNameForMatch(e.nombre) === name; });
+        if (emp) return { name: emp.nombre || name, avatar: (emp.avatar && String(emp.avatar).trim()) ? emp.avatar : null };
+        return { name: name, avatar: null };
+    }
+
     global.TAREAS_PLANES_DB = {
         getUsuarioActual: getUsuarioActual,
         getTareasVistaTareas: getTareasVistaTareas,
@@ -619,6 +641,7 @@
         getTareasPorPlan: getTareasPorPlan,
         getActividadesSeguimiento: getActividadesSeguimiento,
         getActividadesParaLider: getActividadesParaLider,
+        getCreatorDisplay: getCreatorDisplay,
         getTodayString: getTodayString,
         getReportesDirectos: getReportesDirectosEjemplo,
         getEmpresaEjemplo: function() { return Object.assign({}, EMPRESA_EJEMPLO); },

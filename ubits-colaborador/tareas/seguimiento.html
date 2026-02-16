@@ -37,6 +37,8 @@
     <link rel="stylesheet" href="../../components/modal.css">
     <link rel="stylesheet" href="../../components/drawer.css">
     <link rel="stylesheet" href="../../components/table.css">
+    <link rel="stylesheet" href="../../components/save-indicator.css">
+    <link rel="stylesheet" href="../../components/task-detail-panel.css">
 
     <!-- Página + estilos compartidos planes (drawers y menú Crear) -->
     <link rel="stylesheet" href="./seguimiento.css">
@@ -251,6 +253,11 @@
         </div>
     </div>
 
+    <!-- Panel detalle de tarea (desde tabla de seguimiento) -->
+    <div id="task-detail-overlay" class="task-detail-overlay" style="display: none;">
+        <div id="task-detail-panel" class="task-detail-panel"></div>
+    </div>
+
     <!-- Toast container -->
     <div id="ubits-toast-container"></div>
 
@@ -310,6 +317,8 @@
     <script src="../../components/modal.js"></script>
     <script src="../../components/drawer.js"></script>
     <script src="../../components/dropdown-menu.js"></script>
+    <script src="../../components/save-indicator.js"></script>
+    <script src="../../components/task-detail-panel.js"></script>
     <script src="./tareas-base-unificada.js"></script>
     <script src="./planes.js"></script>
     <script src="./seguimiento.js"></script>
