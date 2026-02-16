@@ -616,6 +616,7 @@ body.page-tareas .dashboard-container {
     .main-content:has(.widget-vista-tareas) {
         /* Viewport - tab-bar(60px) - gap(16px) */
         max-height: calc(100vh - 60px - var(--gap-lg, 16px)) !important;
+        overflow: visible !important;
     }
 }
 
@@ -635,6 +636,7 @@ body.page-tareas .dashboard-container {
     .main-content:has(.widget-vista-tareas) {
         /* Ajuste para mobile: viewport - tab-bar(60px) - gap(16px) */
         max-height: calc(100vh - 60px - var(--gap-lg, 16px)) !important;
+        overflow: visible !important;
     }
 
     .widget-vista-tareas {
