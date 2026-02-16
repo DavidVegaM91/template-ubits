@@ -964,7 +964,9 @@ function setupSelectWithDropdownMenu(containerId, container, inputElement, selec
     dropdown.id = overlayId;
     dropdown.className = 'ubits-dropdown-menu__content';
     // Force styles to match Calendar's success: fixed, max z-index, initially hidden
-    dropdown.style.cssText = 'position:fixed;display:none;z-index:2147483647; max-height: 350px; overflow-y: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border-radius: 8px; background: var(--ubits-bg-1);';
+    // Note: removed max-height and overflow-y from here because inner ubits-dropdown-menu__options handles it.
+    // Added overflow: visible !important to override class overflow: hidden which might clip shadows.
+    dropdown.style.cssText = 'position:fixed;display:none;z-index:2147483647; overflow: visible !important; box-shadow: var(--ubits-elevation-overlay) !important; border-radius: var(--border-radius-sm); background: var(--ubits-bg-1);';
 
     // Build internal HTML manually (options)
     var optionsHtml = initialSlice.map(function (opt) {

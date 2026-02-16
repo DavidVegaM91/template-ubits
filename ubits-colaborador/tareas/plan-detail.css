@@ -115,29 +115,11 @@
     gap: 0;
 }
 
-.plan-detail-card__more {
+/* Wrapper para posicionar el botón oficial "Más opciones" */
+.plan-detail-card__more-wrap {
     position: absolute;
     top: var(--gap-lg);
     right: var(--gap-lg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    padding: 0;
-    background: transparent;
-    border: none;
-    border-radius: var(--border-radius-full);
-    cursor: pointer;
-    color: var(--ubits-fg-1-medium);
-}
-
-.plan-detail-card__more:hover {
-    background: var(--ubits-bg-2);
-}
-
-.plan-detail-card__more i {
-    font-size: var(--font-size-h2);
 }
 
 /* Labels: body/md semibold, fg-1-high */
@@ -256,66 +238,16 @@
     color: var(--ubits-fg-1-medium);
 }
 
-.plan-detail-card__date-input {
+/* Input fecha: usa componente oficial .ubits-input; ancho fijo para alineación */
+.plan-detail-card__date-wrap .ubits-input-wrapper {
     width: 112px;
-    padding: var(--padding-xs) var(--padding-sm);
-    border: 1px solid var(--ubits-border-1);
-    border-radius: var(--border-radius-sm);
-    font-family: 'Noto Sans', sans-serif;
-    font-size: var(--font-size-md);
-    font-weight: var(--font-weight-regular);
-    line-height: 24px;
-    color: var(--ubits-fg-1-high);
+}
+.plan-detail-card__date-wrap .ubits-input {
     text-align: center;
-    background: var(--ubits-bg-1);
 }
 
 /* Status tag: body/sm semibold + feedback tokens */
-.plan-detail-card__status {
-    padding: var(--padding-xs) var(--padding-md);
-    border-radius: var(--border-radius-sm);
-    font-family: 'Noto Sans', sans-serif;
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-semibold);
-    line-height: 19.5px;
-}
-
-.plan-detail-card__status--activo {
-    background: var(--ubits-feedback-bg-info-subtle);
-    border: 1px solid var(--ubits-accent-brand);
-    color: var(--ubits-accent-brand);
-}
-
-.plan-detail-card__status--vencido {
-    background: var(--ubits-feedback-bg-error-subtle);
-    border: 1px solid var(--ubits-feedback-border-error);
-    color: var(--ubits-feedback-accent-error);
-}
-
-.plan-detail-card__status--finalizado {
-    background: var(--ubits-feedback-bg-success-subtle);
-    border: 1px solid var(--ubits-feedback-border-success);
-    color: var(--ubits-feedback-accent-success);
-}
-
 /* Botón Finalizar plan = secondary (Figma: bg white, border, fg high) */
-.plan-detail-card__btn-finalizar {
-    padding: var(--padding-sm) var(--padding-md);
-    border: 1px solid var(--ubits-btn-secondary-border);
-    border-radius: var(--border-radius-sm);
-    font-family: 'Noto Sans', sans-serif;
-    font-size: var(--font-size-md);
-    font-weight: var(--font-weight-semibold);
-    line-height: 24px;
-    color: var(--ubits-btn-secondary-fg-default);
-    background: var(--ubits-btn-secondary-bg-default);
-    cursor: pointer;
-}
-
-.plan-detail-card__btn-finalizar:hover {
-    background: var(--ubits-btn-secondary-bg-hover);
-}
-
 /* Card Tareas del plan */
 .plan-detail-tasks-card {
     background: var(--ubits-bg-1);
@@ -345,25 +277,6 @@
     display: flex;
     align-items: center;
     gap: var(--gap-md, 12px);
-}
-
-.plan-detail-tasks-card__search-btn,
-.plan-detail-tasks-card__filter-btn {
-    display: flex;
-    align-items: center;
-    gap: var(--gap-sm, 8px); /* 6px → superior */
-    padding: var(--padding-sm, 8px) var(--padding-md, 12px); /* 6px → superior */
-    background: transparent;
-    border: none;
-    border-radius: var(--border-radius-sm, 8px); /* 6px → superior */
-    cursor: pointer;
-    color: var(--ubits-fg-1-medium);
-    font-size: var(--font-size-md, 16px); /* 14px → superior */
-}
-
-.plan-detail-tasks-card__search-btn:hover,
-.plan-detail-tasks-card__filter-btn:hover {
-    background: var(--ubits-bg-2);
 }
 
 .plan-detail-tasks-card__counters {
@@ -401,26 +314,8 @@
     margin-bottom: var(--gap-lg, 16px);
 }
 
-.plan-detail-tasks-card__add-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--gap-sm, 8px);
+.plan-detail-tasks-card__add .ubits-button {
     width: 100%;
-    padding: var(--padding-md, 12px) var(--padding-lg, 16px);
-    border: 1px solid var(--ubits-accent-brand);
-    border-radius: var(--border-radius-sm, 8px);
-    background: var(--ubits-feedback-bg-info-subtle);
-    color: var(--ubits-fg-1-high);
-    font-size: var(--font-size-md, 16px); /* 14px → superior */
-    font-weight: var(--font-weight-semibold);
-    cursor: pointer;
-    transition: background 0.2s ease;
-}
-
-.plan-detail-tasks-card__add-btn:hover {
-    background: var(--ubits-feedback-bg-info-subtle);
-    opacity: 0.9;
 }
 
 /* Tirilla "Mover tarea" en contexto de plan */

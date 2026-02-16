@@ -51,6 +51,11 @@
  * - Sin icono (por defecto)
  * - ubits-status-tag--icon-left (icono a la izquierda)
  * - ubits-status-tag--icon-right (icono a la derecha)
+ *
+ * VARIANTE ICON-ONLY (cuadrado 1:1):
+ * - ubits-status-tag--icon-only: oculta el texto y muestra solo el icono; proporción 1:1.
+ * - Tamaños: --xs 20px, --sm 28px, --md 36px, --lg 40px (ancho = alto).
+ * - Uso: listas compactas, móvil, o cuando el estado se comunica solo con icono (ej. Finalizada=fa-check-circle, Iniciada=fa-play-circle, Vencida=fa-clock).
  * 
  * ESTRUCTURA HTML CORRECTA:
  * 1. Tag sin icono: <span class="ubits-status-tag__text">Texto</span>

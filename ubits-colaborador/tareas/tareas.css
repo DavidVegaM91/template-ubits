@@ -5,6 +5,11 @@
 ========================================*/
 /* FAB Tareas: sin reglas extra; el menú se crea y destruye dinámicamente en tareas.html */
 
+/* Header-product oculto (desktop y mobile). Para mostrarlo de nuevo, eliminar o comentar esta regla. */
+.page-tareas .section-single:has(#header-product-container) {
+    display: none !important;
+}
+
 /* Contenedor de modales (eliminar tarea, etc.): por encima del panel de detalle */
 #tareas-modals-container {
     position: relative;
@@ -287,49 +292,7 @@ body.page-tareas .dashboard-container {
     width: auto !important;
 }
 
-/* Selector de mes/año - no se encoge */
-.calendar-month-selector {
-    display: flex !important;
-    align-items: center !important;
-    gap: var(--gap-sm, 8px) !important;
-    padding: var(--padding-sm, 8px) var(--padding-md, 12px) !important;
-    background: var(--ubits-bg-1) !important;
-    border: 1px solid var(--ubits-border-1) !important;
-    border-radius: var(--border-radius-sm, 8px) !important;
-    cursor: pointer !important;
-    font-family: var(--font-family, "Noto Sans"), sans-serif !important;
-    font-size: var(--font-size-sm, 13px) !important;
-    font-weight: 600 !important;
-    color: var(--ubits-fg-1-high) !important;
-    transition: all 0.2s ease !important;
-    flex-shrink: 0 !important;
-    flex-grow: 0 !important;
-    white-space: nowrap !important;
-    width: auto !important;
-    max-width: none !important;
-}
-
-.calendar-month-selector:hover {
-    background: var(--ubits-bg-2);
-    border-color: var(--ubits-accent-brand);
-}
-
-.calendar-month-selector__month,
-.calendar-month-selector__year {
-    color: var(--ubits-fg-1-high);
-}
-
-.calendar-month-selector__icon {
-    display: flex;
-    align-items: center;
-    color: var(--ubits-fg-1-medium);
-    font-size: var(--font-size-xs, 11px);
-}
-
-.calendar-month-selector__icon i {
-    font-size: var(--font-size-xs, 11px);
-}
-
+/* Selector de mes/año: botón oficial ubits-button; layout del wrap más abajo */
 /* Calendario horizontal - 7 días - OCUPA TODO EL ESPACIO entre mes y botón Hoy */
 .calendar-horizontal {
     display: flex !important;
@@ -438,6 +401,7 @@ body.page-tareas .dashboard-container {
 /* Controles de navegación (Hoy + flechas) - no se encogen */
 .calendar-today-nav {
     display: flex !important;
+    align-items: center !important;
     gap: var(--gap-sm, 8px) !important;
     align-items: center !important;
     flex-shrink: 0 !important;
@@ -445,55 +409,6 @@ body.page-tareas .dashboard-container {
     white-space: nowrap !important;
     width: auto !important;
     max-width: none !important;
-}
-
-.calendar-today-nav__arrow {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: var(--size-4xl, 32px);
-    /* sin token - tamaño fijo */
-    height: var(--size-4xl, 32px);
-    background: var(--ubits-bg-1);
-    border: 1px solid var(--ubits-border-1);
-    border-radius: var(--border-radius-sm, 8px);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    color: var(--ubits-fg-1-high);
-    padding: 0;
-    font-family: var(--font-family, "Noto Sans"), sans-serif;
-}
-
-.calendar-today-nav__arrow:hover {
-    background: var(--ubits-bg-2);
-    border-color: var(--ubits-accent-brand);
-}
-
-.calendar-today-nav__arrow i {
-    font-size: var(--font-size-sm, 13px);
-}
-
-.calendar-today-nav__today {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 var(--padding-md, 12px);
-    height: var(--size-4xl, 32px);
-    /* sin token */
-    background: var(--ubits-bg-1);
-    border: 1px solid var(--ubits-border-1);
-    border-radius: var(--border-radius-sm, 8px);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-family: var(--font-family, "Noto Sans"), sans-serif;
-    font-size: var(--font-size-sm, 13px);
-    font-weight: var(--font-weight-semibold);
-    color: var(--ubits-fg-1-high);
-}
-
-.calendar-today-nav__today:hover {
-    background: var(--ubits-bg-2);
-    border-color: var(--ubits-accent-brand);
 }
 
 /* Contenedor del selector de mes + popup (para posicionar el popup debajo del botón) */
@@ -531,27 +446,6 @@ body.page-tareas .dashboard-container {
     color: var(--ubits-fg-1-high);
 }
 
-.calendar-month-picker__nav {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: var(--size-4xl, 32px);
-    /* sin token */
-    height: var(--size-4xl, 32px);
-    padding: 0;
-    border: none;
-    border-radius: var(--border-radius-sm, 8px);
-    /* 6px → superior en escala */
-    background: transparent;
-    color: var(--ubits-fg-1-medium);
-    cursor: pointer;
-}
-
-.calendar-month-picker__nav:hover {
-    background: var(--ubits-bg-2);
-    color: var(--ubits-fg-1-high);
-}
-
 .calendar-month-picker__grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -559,24 +453,7 @@ body.page-tareas .dashboard-container {
     /* 6px → superior en escala */
 }
 
-.calendar-month-picker__month {
-    padding: var(--padding-sm, 8px) var(--padding-xs, 4px);
-    border: 1px solid var(--ubits-border-1);
-    border-radius: var(--border-radius-sm, 8px);
-    /* 6px → superior */
-    background: var(--ubits-bg-1);
-    color: var(--ubits-fg-1-high);
-    font-size: var(--font-size-sm, 13px);
-    font-weight: var(--font-weight-semibold);
-    cursor: pointer;
-}
-
-.calendar-month-picker__month:hover {
-    background: var(--ubits-bg-2);
-    border-color: var(--ubits-accent-brand);
-    color: var(--ubits-accent-brand);
-}
-
+/* Estado seleccionado del mes (botón oficial + esta clase) */
 .calendar-month-picker__month--selected {
     background: var(--ubits-feedback-bg-info-subtle);
     border-color: var(--ubits-accent-brand);
@@ -627,23 +504,7 @@ body.page-tareas .dashboard-container {
     margin-bottom: var(--gap-lg, 16px);
 }
 
-.tareas-overdue-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: var(--size-2xl, 24px);
-    /* sin token */
-    height: var(--size-2xl, 24px);
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    color: var(--ubits-fg-1-medium);
-    transition: transform 0.2s ease;
-    padding: 0;
-}
-
-.tareas-overdue-toggle i {
-    font-size: var(--font-size-sm, 13px);
+.tareas-overdue-header .ubits-button--icon-only i {
     transition: transform 0.2s ease;
 }
 
@@ -662,6 +523,7 @@ body.page-tareas .dashboard-container {
 /* Contenedores de días del calendario */
 .tareas-day-container {
     margin-bottom: var(--space-8, 32px);
+    min-width: 0;
 }
 
 .tareas-day-header {
@@ -677,6 +539,7 @@ body.page-tareas .dashboard-container {
     display: flex;
     flex-direction: column;
     gap: var(--gap-sm, 8px);
+    min-width: 0;
 }
 
 /* ========================================
@@ -725,15 +588,29 @@ body.page-tareas .dashboard-container {
     flex: 1;
 }
 
-/* Wrapper del checkbox (task-strip__radio) */
+/* Wrapper del checkbox (task-strip__radio) – 22x22 */
 .tarea-item__radio {
     display: flex;
-    width: 36px;
-    /* sin token - valor del módulo */
-    height: var(--size-4xl, 32px);
-    padding: var(--padding-xs, 4px) var(--padding-sm, 8px);
+    width: 22px;
+    height: 22px;
+    padding: 0;
     align-items: center;
+    justify-content: center;
     flex-shrink: 0;
+}
+
+.tarea-item__radio .ubits-radio {
+    gap: 0;
+}
+
+.tarea-item__radio .ubits-radio__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    margin: -1px;
+    padding: 0;
 }
 
 /* Checkbox circular (custom-check equivalente) */
@@ -799,7 +676,6 @@ body.page-tareas .dashboard-container {
 
 .tarea-titulo {
     display: block;
-    /* Que el texto tenga todo el ancho disponible dentro de la tirilla */
     width: auto;
     flex: 1 1 auto;
     min-width: 0;
@@ -815,14 +691,12 @@ body.page-tareas .dashboard-container {
     line-height: var(--line-height-sm, 19.5px);
     color: var(--ubits-fg-1-medium);
     background: none;
-    padding: 9.5px var(--padding-sm, 8px);
-    /* 9.5px sin token - valor del módulo */
-    border: 1px solid transparent;
+    padding: 9.5px var(--padding-sm, 8px) 9.5px 0;
+    border: none;
 }
 
 .tarea-titulo:hover {
-    border-color: var(--ubits-border-1);
-    background: var(--ubits-bg-2);
+    background: none;
 }
 
 .tarea-item--completed .tarea-titulo {
@@ -867,36 +741,32 @@ body.page-tareas .dashboard-container {
     flex-shrink: 0;
 }
 
+.tarea-status .ubits-status-tag {
+    min-width: 80px;
+}
+
+/* Desktop: solo texto (sin icono) */
+.tarea-status .ubits-status-tag i {
+    display: none;
+}
+
 .tarea-status .ubits-status-tag--info {
     background: var(--ubits-feedback-bg-info-subtle);
     color: var(--ubits-accent-brand);
     border-color: var(--ubits-accent-brand);
 }
 
-/* Fecha (task-strip__date) */
+/* Fecha (botón terciario oficial: al clic se abre calendario) */
 .tarea-fecha {
     width: 100px;
-    /* sin token - valor del módulo */
     display: flex;
     justify-content: center;
     align-items: center;
     flex: 1 0 0;
-    color: var(--ubits-fg-1-medium);
-    font-family: var(--font-family, "Noto Sans"), sans-serif;
-    font-size: var(--font-size-sm, 13px);
-    font-style: normal;
-    font-weight: var(--font-weight-regular);
-    line-height: var(--line-height-sm, 19.5px);
-    padding: var(--padding-xs, 4px) var(--padding-sm, 8px);
-    background: var(--ubits-bg-2);
-    border-radius: var(--border-radius-sm, 8px);
-    white-space: nowrap;
-    text-align: center;
 }
 
-.tarea-fecha--sin-fecha,
-.tarea-fecha--overdue {
-    background: var(--ubits-bg-2);
+.tarea-fecha .tarea-fecha-btn {
+    min-width: 72px;
 }
 
 /* Acciones (task-strip__action-btn) - una sola línea */
@@ -908,76 +778,12 @@ body.page-tareas .dashboard-container {
     flex-shrink: 0;
 }
 
-.tarea-action-btn {
-    display: flex;
-    align-items: center;
+/* Badge de prioridad (componente oficial ubits-badge-tag) – ancho fijo */
+.tarea-priority-badge {
+    flex-shrink: 0;
+    width: 72px;
+    min-width: 72px;
     justify-content: center;
-    width: var(--size-4xl, 32px);
-    height: var(--size-4xl, 32px);
-    padding: 0 var(--padding-xs, 4px);
-    background: var(--ubits-bg-1);
-    border: 1px solid var(--ubits-border-1);
-    border-radius: var(--border-radius-sm, 8px);
-    cursor: pointer;
-    transition: background 0.2s, border-color 0.2s, color 0.2s;
-    color: var(--ubits-fg-1-medium);
-    font-weight: 500;
-}
-
-.tarea-action-btn:hover {
-    background: var(--ubits-bg-2);
-    border-color: var(--ubits-accent-brand);
-    color: var(--ubits-fg-1-high);
-}
-
-.tarea-action-btn i {
-    font-size: var(--font-size-sm, 13px);
-}
-
-.tarea-action-btn--add-plan {
-    background: var(--ubits-bg-2);
-    color: var(--ubits-fg-1-high);
-    font-size: var(--font-size-xs, 11px);
-    font-weight: var(--font-weight-semibold);
-    padding: 0 var(--padding-md, 12px);
-    width: auto;
-    min-width: var(--size-4xl, 32px);
-}
-
-.tarea-action-btn--delete {
-    color: var(--ubits-feedback-accent-error);
-}
-
-.tarea-action-btn--delete:hover {
-    background: var(--ubits-feedback-bg-error-subtle);
-    border-color: var(--ubits-feedback-accent-error);
-}
-
-.tarea-action-btn--details {
-    color: var(--ubits-fg-1-medium);
-}
-
-/* Botón de prioridad */
-.tarea-priority-btn {
-    border-radius: 50%;
-}
-
-.tarea-priority-btn.tarea-priority--high {
-    background: var(--ubits-bg-2);
-    border-color: var(--ubits-border-1);
-    color: var(--ubits-fg-1-high);
-}
-
-.tarea-priority-btn.tarea-priority--medium {
-    background: var(--ubits-bg-2);
-    border-color: var(--ubits-border-1);
-    color: var(--ubits-fg-1-medium);
-}
-
-.tarea-priority-btn.tarea-priority--low {
-    background: var(--ubits-feedback-bg-warning-subtle);
-    border-color: var(--ubits-feedback-border-warning);
-    color: var(--ubits-feedback-fg-warning-subtle);
 }
 
 /* Asignado */
@@ -987,6 +793,16 @@ body.page-tareas .dashboard-container {
     /* sin token */
     height: var(--size-4xl, 32px);
     position: relative;
+}
+
+.tarea-assigned-avatar-img {
+    width: var(--size-4xl, 32px);
+    height: var(--size-4xl, 32px);
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    flex-shrink: 0;
 }
 
 .tarea-assigned-avatar-initials {
@@ -1021,47 +837,33 @@ body.page-tareas .dashboard-container {
     font-size: var(--font-size-sm, 13px);
 }
 
-/* Botón añadir tarea */
 .tarea-add-btn {
-    display: flex;
-    align-items: center;
-    gap: var(--gap-sm, 8px);
-    padding: var(--padding-md, 12px);
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    font-family: var(--font-family, "Noto Sans"), sans-serif;
-    font-size: var(--font-size-sm, 13px);
-    font-weight: var(--font-weight-semibold);
-    color: var(--ubits-accent-brand);
-    transition: all 0.2s ease;
     width: 100%;
     margin-top: var(--gap-lg, 16px);
-}
-
-.tarea-add-btn:hover {
-    color: var(--ubits-accent-brand);
-    opacity: 0.8;
-}
-
-.tarea-add-btn i {
-    font-size: var(--font-size-sm, 13px);
 }
 
 /* Formulario añadir tarea inline */
 .tarea-add-form {
     margin-top: var(--gap-lg, 16px);
     width: 100%;
+    min-width: 0;
+    max-width: 100%;
 }
 
 .tarea-add-input-wrapper {
     display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
     align-items: center;
     gap: var(--gap-md, 12px);
     padding: var(--padding-sm, 8px) var(--padding-md, 12px);
     border: 1px solid var(--ubits-accent-brand);
     border-radius: var(--border-radius-sm, 8px);
     background: var(--ubits-bg-1);
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .tarea-add-icon {
@@ -1080,18 +882,18 @@ body.page-tareas .dashboard-container {
     font-size: var(--font-size-xs, 11px);
 }
 
-.tarea-add-input {
-    flex: 1;
-    border: none;
-    outline: none;
-    background: transparent;
-    font-family: 'Noto Sans', sans-serif;
-    font-size: var(--font-size-sm, 13px);
-    color: var(--ubits-fg-1-high);
-    padding: 0;
+.tarea-add-input-wrapper .tarea-add-input {
+    flex: 1 1 auto;
+    min-width: 0;
+    width: 0;
+    max-width: 100%;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    box-sizing: border-box;
 }
 
-.tarea-add-input::placeholder {
+.tarea-add-input-wrapper .tarea-add-input::placeholder {
     color: var(--ubits-fg-1-medium);
 }
 
@@ -1133,7 +935,7 @@ body.page-tareas .dashboard-container {
         width: 100% !important;
     }
 
-    .calendar-month-selector {
+    [data-role="month-selector"] {
         flex-shrink: 0 !important;
         flex-grow: 0 !important;
     }
@@ -1149,26 +951,92 @@ body.page-tareas .dashboard-container {
         flex-shrink: 0 !important;
         flex-grow: 0 !important;
     }
+
+    /* Status tag en task-item: icon-only (cuadrado 1:1) en mobile */
+    .tarea-status .ubits-status-tag {
+        width: 28px;
+        min-width: 28px;
+        height: 28px;
+        padding: 0;
+    }
+    .tarea-status .ubits-status-tag i {
+        display: inline-flex;
+    }
+    .tarea-status .ubits-status-tag .ubits-status-tag__text {
+        display: none;
+    }
 }
 
-/* Tirilla en una sola línea: mantener grid 2 columnas hasta 600px (como task-strip) */
+/* Calendar header ≤769px: 2 filas, 4 días que ocupan todo el ancho disponible */
+@media (max-width: 769px) {
+    .calendar-header__controls {
+        display: grid !important;
+        grid-template-columns: 1fr auto;
+        grid-template-rows: auto auto;
+        gap: var(--gap-sm, 8px) !important;
+        align-items: center;
+    }
+
+    .calendar-header__controls > .calendar-month-selector-wrap {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .calendar-header__controls > .calendar-today-nav {
+        grid-column: 2;
+        grid-row: 1;
+        justify-self: end;
+    }
+
+    .calendar-header__controls > .calendar-horizontal {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        min-width: 0 !important;
+        overflow: visible !important;
+    }
+
+    .calendar-header__controls > .calendar-horizontal .calendar-horizontal__day {
+        flex: 1 1 0% !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        padding: var(--padding-xs, 4px) var(--padding-sm, 8px) !important;
+    }
+
+    .calendar-header__controls > .calendar-horizontal .calendar-horizontal__day-number {
+        font-size: var(--font-size-sm, 13px) !important;
+    }
+}
+
+/* Mobile (celulares): solo radio, nombre, status tag y botón detalles – sin scroll horizontal */
 @media (max-width: 600px) {
     .tarea-item {
-        grid-template-columns: minmax(0, 1.2fr) minmax(80px, 0.6fr);
+        grid-template-columns: minmax(0, 1fr) auto;
         min-width: 0;
     }
 
     .tarea-item__main {
         min-height: var(--size-5xl, 40px);
         height: auto;
+        min-width: 0;
     }
 
     .tarea-item__actions {
-        justify-content: flex-start;
+        justify-content: flex-end;
         flex-wrap: nowrap;
         gap: var(--gap-sm, 8px);
         height: auto;
         min-height: var(--size-5xl, 40px);
+        min-width: 0;
+    }
+
+    /* Ocultar en mobile: etiqueta, fecha, agregar a plan, prioridad, asignado, eliminar */
+    .tarea-item .tarea-etiqueta,
+    .tarea-item .tarea-fecha,
+    .tarea-item .tarea-action-btn--add-plan,
+    .tarea-item .tarea-priority-badge,
+    .tarea-item .tarea-assigned,
+    .tarea-item .tarea-action-btn--delete {
+        display: none !important;
     }
 }
 
@@ -1396,6 +1264,16 @@ body.page-tareas .dashboard-container {
     color: var(--ubits-fg-1-high);
 }
 
+/* Status tag en detalle de tarea: solo texto, sin icono (desktop y mobile) */
+.task-detail-panel .ubits-status-tag i,
+.task-detail-status-tag i {
+    display: none !important;
+}
+.task-detail-panel .ubits-status-tag .ubits-status-tag__text,
+.task-detail-status-tag .ubits-status-tag__text {
+    display: inline-block !important;
+}
+
 /* Avatares en la franja meta: tamaño SM oficial (28px), sin override */
 .task-detail-meta .task-detail-assignee-select > .ubits-avatar,
 .task-detail-meta .task-detail-created-by-row > .ubits-avatar {
@@ -1568,6 +1446,12 @@ body.page-tareas .dashboard-container {
     border: none;
     background: none;
     padding: 0;
+}
+
+.task-detail-priority-trigger .ubits-badge-tag {
+    width: 72px;
+    min-width: 72px;
+    justify-content: center;
 }
 
 .task-detail-priority-trigger:hover .ubits-badge-tag {

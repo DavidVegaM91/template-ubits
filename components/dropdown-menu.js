@@ -25,8 +25,11 @@
      * @param {Object} config
      * @param {string} config.overlayId - ID del overlay (cierre al clic fuera).
      * @param {string} [config.contentId] - ID del panel contenido (para posicionar).
-     * @param {Array<Object>} config.options - Opciones. Cada item: { text, value?, leftIcon?, rightIcon?, checkbox?, switch?, selected?, avatar? }.
+     * @param {Array<Object>} config.options - Opciones. Cada item: { text, value?, leftIcon?, rightIcon?, checkbox?, switch?, selected?, avatar?, radio? }.
      *   - avatar: URL de imagen (avatar) a mostrar a la izquierda; si se define, tiene prioridad sobre leftIcon para esa opción.
+     *   - radio: si config.radioGroup es true, cada opción se renderiza como radio oficial (ubits-radio--sm) con texto.
+     * @param {boolean} [config.radioGroup=false] - Si true, las opciones se muestran como lista de radios (componente oficial ubits-radio). Requiere radio-button.css.
+     * @param {string} [config.radioName] - name del grupo de radios (por defecto overlayId + '-radio').
      * @param {boolean} [config.hasAutocomplete=false] - Incluir bloque de autocomplete arriba.
      * @param {string} [config.autocompletePlaceholder] - Placeholder del input autocomplete.
      * @param {string} [config.autocompleteContainerId] - ID del contenedor donde crear el autocomplete (si se usa createInput después).
@@ -41,6 +44,8 @@
         var overlayId = config.overlayId || 'ubits-dropdown-menu-overlay';
         var contentId = config.contentId || overlayId + '-content';
         var options = config.options || [];
+        var radioGroup = config.radioGroup === true;
+        var radioName = config.radioName != null ? String(config.radioName) : overlayId + '-radio';
         var hasAutocomplete = config.hasAutocomplete === true;
         var autocompletePlaceholder = config.autocompletePlaceholder != null ? config.autocompletePlaceholder : 'Buscar...';
         var autocompleteContainerId = config.autocompleteContainerId || overlayId + '-autocomplete';
@@ -53,6 +58,14 @@
             var value = opt.value != null ? escapeHtml(String(opt.value)) : '';
             var text = escapeHtml(opt.text != null ? String(opt.text) : '');
             var selectedClass = opt.selected ? ' ubits-dropdown-menu__option--selected' : '';
+            if (radioGroup) {
+                var radioChecked = opt.selected ? ' checked' : '';
+                return '<label class="ubits-dropdown-menu__option ubits-dropdown-menu__option--radio ubits-radio ubits-radio--sm' + selectedClass + '" data-value="' + value + '">' +
+                    '<input type="radio" class="ubits-radio__input" name="' + escapeHtml(radioName) + '" value="' + value + '"' + radioChecked + '>' +
+                    '<span class="ubits-radio__circle"></span>' +
+                    '<span class="ubits-radio__label">' + text + '</span>' +
+                    '</label>';
+            }
             var left = '';
             var checkboxId = '';
             if (opt.avatar !== undefined) {

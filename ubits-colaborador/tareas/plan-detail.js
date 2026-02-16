@@ -68,19 +68,19 @@ function renderTarea(tarea, esVencida = false) {
                     ${fechaDisplay ? escapeHtml(fechaDisplay) : '<span>Sin fecha</span>'}
                 </div>
                 <div class="tarea-actions">
-                    <button class="tarea-action-btn tarea-action-btn--add-plan" title="Mover tarea">
+                    <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only tarea-action-btn tarea-action-btn--add-plan" title="Mover tarea">
                         <i class="far fa-layer-group"></i>
                     </button>
-                    <button class="tarea-action-btn tarea-priority-btn ${prioridadClass}" title="Prioridad">
+                    <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only tarea-priority-btn ${prioridadClass}" title="Prioridad">
                         <i class="far fa-chevron-up"></i>
                     </button>
                     <div class="tarea-assigned">
                         ${typeof renderAvatar === 'function' ? renderAvatar({ nombre: tarea.assignee_name || tarea.assignee_email || '', avatar: tarea.assignee_avatar_url || null }, { size: 'sm' }) : (tarea.assignee_email ? `<div class="tarea-assigned-avatar-initials">${escapeHtml(tarea.assignee_email.substring(0, 2).toUpperCase())}</div>` : `<div class="tarea-assigned-placeholder"><i class="far fa-user"></i></div>`)}
                     </div>
-                    <button class="tarea-action-btn tarea-action-btn--delete" title="Eliminar" data-tarea-id="${tarea.id}">
+                    <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only tarea-action-btn tarea-action-btn--delete" title="Eliminar" data-tarea-id="${tarea.id}">
                         <i class="far fa-trash"></i>
                     </button>
-                    <button class="tarea-action-btn tarea-action-btn--details" title="Detalles" data-tarea-id="${tarea.id}">
+                    <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only tarea-action-btn tarea-action-btn--details" title="Detalles" data-tarea-id="${tarea.id}">
                         <i class="far fa-chevron-right"></i>
                     </button>
                 </div>
@@ -161,10 +161,11 @@ function renderPlanDetail(planId) {
     if (dateEl) dateEl.value = dateDisplay;
 
     const statusText = plan.status || 'Activo';
-    const statusClass = plan.status === 'Activo' ? 'plan-detail-card__status--activo' : plan.status === 'Vencido' ? 'plan-detail-card__status--vencido' : 'plan-detail-card__status--finalizado';
+    const statusVariant = plan.status === 'Activo' ? 'info' : plan.status === 'Vencido' ? 'error' : 'success';
     if (statusEl) {
-        statusEl.textContent = statusText;
-        statusEl.className = 'plan-detail-card__status ' + statusClass;
+        statusEl.className = 'ubits-status-tag ubits-status-tag--sm ubits-status-tag--' + statusVariant;
+        const textEl = statusEl.querySelector('.ubits-status-tag__text');
+        if (textEl) textEl.textContent = statusText;
     }
 
     const finalizarBtn = document.getElementById('plan-detail-finalizar');

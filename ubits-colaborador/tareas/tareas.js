@@ -110,6 +110,23 @@ const formatDateForDisplayDDMM = (dateString) => {
     return `${pad(day)}-${pad(month)}-${year}`;
 };
 
+// Convertir yyyy-mm-dd a dd/mm/yyyy (para calendario oficial)
+function ymdToDmySlash(ymd) {
+    if (!ymd || !String(ymd).trim()) return '';
+    const parts = String(ymd).trim().split('-');
+    if (parts.length !== 3) return '';
+    const [y, m, d] = parts;
+    return (d.length === 1 ? '0' + d : d) + '/' + (m.length === 1 ? '0' + m : m) + '/' + y;
+}
+// Convertir dd/mm/yyyy (del calendario) a yyyy-mm-dd
+function dmySlashToYmd(dmy) {
+    if (!dmy || !String(dmy).trim()) return '';
+    const parts = String(dmy).trim().split('/');
+    if (parts.length !== 3) return '';
+    const [d, m, y] = parts;
+    return y + '-' + (m.length === 1 ? '0' + m : m) + '-' + (d.length === 1 ? '0' + d : d);
+}
+
 // Utilidades de fecha para UI
 const getMonthName = (date) => {
     const months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
@@ -132,7 +149,12 @@ const getRelativeDayName = (dateString) => {
     return null;
 };
 
-// Obtener 7 días del calendario (3 antes, seleccionado, 3 después)
+// Detectar viewport ≤769px: mostrar 4 días que ocupan todo el ancho (desktop ≥770: 7 días)
+function isCalendarMobile() {
+    return typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(max-width: 769px)').matches;
+}
+
+// Obtener días del calendario horizontal (desktop: 7 = 3 antes, seleccionado, 3 después | móvil: 4 = 1 antes, seleccionado, 2 después)
 const getDaysInMonth = () => {
     const days = [];
     const selectedDate = parseDateString(estadoTareas.selectedDay);
@@ -145,12 +167,15 @@ const getDaysInMonth = () => {
     const todayMonth = todayDate.getMonth();
     const todayDayNum = todayDate.getDate();
     
-    // Calcular el día de inicio (3 días antes del seleccionado, pero no antes de hoy)
-    let startDay = selectedDayNum - 3;
+    const mobile = isCalendarMobile();
+    const daysBefore = mobile ? 1 : 3;
+    const maxDays = mobile ? 4 : 7;
+    
+    // Día de inicio (N días antes del seleccionado, pero no antes de hoy)
+    let startDay = selectedDayNum - daysBefore;
     let startMonth = selectedMonth;
     let startYear = selectedYear;
     
-    // Manejar el caso cuando startDay es negativo
     if (startDay < 1) {
         startMonth--;
         if (startMonth < 0) {
@@ -161,7 +186,6 @@ const getDaysInMonth = () => {
         startDay = daysInPrevMonth + startDay;
     }
     
-    // Si el día de inicio es antes de hoy, empezar desde hoy
     const startDate = new Date(startYear, startMonth, startDay);
     const todayDateObj = new Date(todayYear, todayMonth, todayDayNum);
     if (startDate < todayDateObj) {
@@ -170,12 +194,10 @@ const getDaysInMonth = () => {
         startYear = todayYear;
     }
     
-    // Generar los 7 días
     let currentDay = startDay;
     let currentMonth = startMonth;
     let currentYear = startYear;
     let daysAdded = 0;
-    const maxDays = 7;
     
     while (daysAdded < maxDays) {
         const daysInCurrentMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
@@ -250,6 +272,24 @@ function renderCalendarHorizontal() {
     });
 }
 
+// Resolver nombre y avatar del asignado desde la BD (tarea solo trae assignee_email; nombre/avatar se buscan en usuario actual, jefes y empleados).
+function getAssigneeDisplay(tarea) {
+    const email = (tarea.assignee_email && String(tarea.assignee_email).trim()) ? String(tarea.assignee_email).trim() : '';
+    if (tarea.assignee_name && String(tarea.assignee_name).trim() && tarea.assignee_avatar_url && String(tarea.assignee_avatar_url).trim()) {
+        return { name: String(tarea.assignee_name).trim(), avatar: String(tarea.assignee_avatar_url).trim() };
+    }
+    const currentUser = (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getUsuarioActual === 'function') ? TAREAS_PLANES_DB.getUsuarioActual() : null;
+    if (currentUser && email && (currentUser.username === email || (currentUser.email && currentUser.email === email))) {
+        return { name: currentUser.nombre || email.split('@')[0], avatar: currentUser.avatar || null };
+    }
+    if (!email) return { name: 'Sin asignar', avatar: null };
+    const jefes = (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getJefesEjemplo === 'function') ? TAREAS_PLANES_DB.getJefesEjemplo() : [];
+    const empleados = (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getEmpleadosEjemplo === 'function') ? TAREAS_PLANES_DB.getEmpleadosEjemplo() : [];
+    const person = (jefes || []).find(function (e) { return (e.username || '') === email; }) || (empleados || []).find(function (e) { return (e.username || '') === email; });
+    if (person) return { name: person.nombre || email.split('@')[0], avatar: person.avatar || null };
+    return { name: email.split('@')[0], avatar: null };
+}
+
 // Renderizar tarea individual según diseño React
 // esVencidaSection = true cuando se pinta dentro de tareas-overdue-container (solo vencidas)
 function renderTarea(tarea, esVencidaSection = false) {
@@ -262,8 +302,14 @@ function renderTarea(tarea, esVencidaSection = false) {
     const estadoTexto = esFinalizada
         ? 'Finalizada'
         : (esVencidaReal ? 'Vencida' : (tarea.status === 'Activo' ? 'Iniciada' : 'Finalizada'));
-    const prioridadClass = tarea.priority === 'alta' ? 'tarea-priority--high' : (tarea.priority === 'baja' ? 'tarea-priority--low' : 'tarea-priority--medium');
-    
+    const estadoIcon = esFinalizada ? 'fa-check-circle' : (esVencidaReal ? 'fa-exclamation-triangle' : (tarea.status === 'Activo' ? 'fa-spinner' : 'fa-check-circle'));
+    const prioridad = (tarea.priority || 'media').toLowerCase();
+    const prioridadLabel = prioridad === 'alta' ? 'Alta' : prioridad === 'baja' ? 'Baja' : 'Media';
+    const prioridadIcon = { alta: 'fa-chevrons-up', media: 'fa-chevron-up', baja: 'fa-chevron-down' };
+    const prioridadBadgeVariant = { alta: 'error', media: 'warning', baja: 'info' };
+    const assignee = getAssigneeDisplay(tarea);
+    const assigneeInitials = assignee.name && assignee.name !== 'Sin asignar' ? assignee.name.split(/\s+/).map(function (p) { return p.charAt(0); }).join('').substring(0, 2).toUpperCase() : (tarea.assignee_email ? tarea.assignee_email.substring(0, 2).toUpperCase() : '?');
+
     return `
         <div class="tarea-item ${tarea.done ? 'tarea-item--completed' : ''} ${esVencidaReal ? 'tarea-item--overdue' : ''}" data-tarea-id="${tarea.id}">
             <div class="tarea-item__main">
@@ -287,27 +333,31 @@ function renderTarea(tarea, esVencidaSection = false) {
             </div>
             <div class="tarea-item__actions">
                 <div class="tarea-status">
-                    <span class="ubits-status-tag ubits-status-tag--${estadoTag} ubits-status-tag--sm">
+                    <span class="ubits-status-tag ubits-status-tag--${estadoTag} ubits-status-tag--sm ubits-status-tag--icon-left" aria-label="Estado: ${estadoTexto}">
+                        <i class="far ${estadoIcon}"></i>
                         <span class="ubits-status-tag__text">${estadoTexto}</span>
                     </span>
                 </div>
                 <div class="tarea-fecha ${!fechaDisplay ? 'tarea-fecha--sin-fecha' : ''} ${esVencidaReal ? 'tarea-fecha--overdue' : ''}">
-                    ${fechaDisplay ? fechaDisplay : '<span>Sin fecha</span>'}
+                    <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm tarea-fecha-btn" data-tarea-id="${tarea.id}" title="Cambiar fecha de vencimiento">
+                        ${fechaDisplay ? `<span>${fechaDisplay}</span>` : '<span>Sin fecha</span>'}
+                    </button>
                 </div>
                 <div class="tarea-actions">
-                    <button class="tarea-action-btn tarea-action-btn--add-plan" title="Agregar a un plan">
+                    <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only tarea-action-btn tarea-action-btn--add-plan" title="Agregar a un plan">
                         <i class="far fa-layer-group"></i>
                     </button>
-                    <button class="tarea-action-btn tarea-priority-btn ${prioridadClass}" title="Prioridad">
-                        <i class="far fa-chevron-up"></i>
-                    </button>
-                    <div class="tarea-assigned">
-                        ${typeof renderAvatar === 'function' ? renderAvatar({ nombre: tarea.assignee_name || tarea.assignee_email || '', avatar: tarea.assignee_avatar_url || null }, { size: 'sm' }) : (tarea.assignee_email ? `<div class="tarea-assigned-avatar-initials">${tarea.assignee_email.substring(0, 2).toUpperCase()}</div>` : `<div class="tarea-assigned-placeholder"><i class="far fa-user"></i></div>`)}
+                    <span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--${prioridadBadgeVariant[prioridad] || 'warning'} ubits-badge-tag--sm ubits-badge-tag--with-icon tarea-priority-badge" aria-label="Prioridad: ${prioridadLabel}">
+                        <i class="far ${prioridadIcon[prioridad] || 'fa-chevron-up'}"></i>
+                        <span class="ubits-badge-tag__text">${prioridadLabel}</span>
+                    </span>
+                    <div class="tarea-assigned" title="Asignado a: ${assignee.name}">
+                        ${typeof renderAvatar === 'function' ? renderAvatar({ nombre: assignee.name, avatar: assignee.avatar || null }, { size: 'sm' }) : (assignee.avatar ? `<img src="${escapeTaskHtml(assignee.avatar)}" alt="" class="tarea-assigned-avatar-img" />` : (assignee.name !== 'Sin asignar' ? `<div class="tarea-assigned-avatar-initials">${assigneeInitials}</div>` : `<div class="tarea-assigned-placeholder"><i class="far fa-user"></i></div>`))}
                     </div>
-                    <button class="tarea-action-btn tarea-action-btn--delete" title="Eliminar">
+                    <button type="button" class="ubits-button ubits-button--error-tertiary ubits-button--sm ubits-button--icon-only tarea-action-btn tarea-action-btn--delete" title="Eliminar" data-tarea-id="${tarea.id}">
                         <i class="far fa-trash"></i>
                     </button>
-                    <button class="tarea-action-btn tarea-action-btn--details" title="Detalles">
+                    <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only tarea-action-btn tarea-action-btn--details" title="Detalles" data-tarea-id="${tarea.id}">
                         <i class="far fa-chevron-right"></i>
                     </button>
                 </div>
@@ -362,14 +412,14 @@ function renderDaySection(fecha) {
             <div class="tareas-day-content">
                 ${tareasDelDia.length > 0 ? tareasDelDia.map(tarea => renderTarea(tarea)).join('') : ''}
                 ${estadoTareas.addingTaskForDate === fechaKey ? `
-                    <form class="tarea-add-form" data-date="${fechaKey}">
+                    <form class="tarea-add-form" data-date="${fechaKey}" onsubmit="event.preventDefault(); var inp = this.querySelector('.tarea-add-input'); if (inp && inp.value.trim()) handleCreateTaskInline(this.dataset.date, inp.value.trim()); return false;">
                         <div class="tarea-add-input-wrapper">
                             <div class="tarea-add-icon">
                                 <i class="far fa-plus"></i>
                             </div>
                             <input 
                                 type="text" 
-                                class="tarea-add-input" 
+                                class="ubits-input ubits-input--sm tarea-add-input" 
                                 placeholder="Agregar una tarea"
                                 value="${estadoTareas.newTaskNameForDate}"
                                 autofocus
@@ -377,7 +427,7 @@ function renderDaySection(fecha) {
                         </div>
                     </form>
                 ` : `
-                    <button class="tarea-add-btn" data-date="${fechaKey}">
+                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm tarea-add-btn" data-date="${fechaKey}">
                         <i class="far fa-plus"></i>
                         <span>Añadir tarea</span>
                     </button>
@@ -525,7 +575,7 @@ function renderMonthPickerGrid() {
     yearEl.textContent = year;
     gridEl.innerHTML = MONTH_NAMES_SHORT.map((name, index) => {
         const isSelected = index === currentMonth;
-        return `<button type="button" class="calendar-month-picker__month${isSelected ? ' calendar-month-picker__month--selected' : ''}" data-month="${index}" data-year="${year}">${name}</button>`;
+        return `<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm calendar-month-picker__month${isSelected ? ' calendar-month-picker__month--selected' : ''}" data-month="${index}" data-year="${year}"><span>${name}</span></button>`;
     }).join('');
 }
 
@@ -573,7 +623,7 @@ function initTareasView() {
             title: 'Eliminar tarea',
             bodyHtml: deleteBody,
             footerHtml: deleteFooter,
-            size: 'xs',
+            size: 'sm',
             closeButtonId: 'task-detail-delete-modal-close'
         });
         var deleteOverlay = document.getElementById('task-detail-delete-modal-overlay');
@@ -646,8 +696,14 @@ function initTareasView() {
         });
     }
 
-    // Renderizar calendario horizontal con 7 días
+    // Renderizar calendario horizontal (7 días desktop / 4 días móvil ≤600px)
     renderCalendarHorizontal();
+    var calendarMedia = window.matchMedia && window.matchMedia('(max-width: 769px)');
+    if (calendarMedia) {
+        calendarMedia.addEventListener('change', function () {
+            renderCalendarHorizontal();
+        });
+    }
 
     // Renderizar tareas vencidas (PRIMERO)
     renderTareasVencidas();
@@ -807,18 +863,21 @@ function initTareasView() {
                     renderAllTasks();
                 }
             }
-            if (e.target.closest('.tarea-priority-btn')) {
-                const tareaItem = e.target.closest('.tarea-item');
-                const tareaId = parseInt(tareaItem.querySelector('input.ubits-radio__input')?.dataset.tareaId);
-                if (tareaId) {
-                    handleUpdatePriority(tareaId);
-                }
-            }
             if (e.target.closest('.tarea-action-btn--delete')) {
                 const tareaItem = e.target.closest('.tarea-item');
-                const tareaId = parseInt(tareaItem.querySelector('input.ubits-radio__input')?.dataset.tareaId);
-                if (tareaId && confirm('¿Estás seguro de que quieres eliminar esta tarea?')) {
-                    handleDelete(tareaId);
+                const tareaId = parseInt(tareaItem.querySelector('input.ubits-radio__input')?.dataset.tareaId, 10);
+                if (!isNaN(tareaId)) {
+                    estadoTareas.taskIdToDelete = tareaId;
+                    if (typeof showModal === 'function') {
+                        showModal('task-detail-delete-modal-overlay');
+                    } else {
+                        if (confirm('¿Estás seguro de que quieres eliminar esta tarea?')) {
+                            handleDelete(tareaId);
+                            renderTareasVencidas();
+                            renderAllTasks();
+                            if (typeof showToast === 'function') showToast('success', 'Tarea eliminada correctamente');
+                        }
+                    }
                 }
             }
             if (e.target.closest('.tarea-action-btn--details')) {
@@ -827,6 +886,20 @@ function initTareasView() {
                 if (tareaId) {
                     handleTaskClick(tareaId);
                 }
+            }
+            /* Clic en la fila (nombre, etiqueta) abre el detalle; excluir radio y columna de acciones */
+            if (e.target.closest('.tarea-item') && !e.target.closest('.tarea-item__radio') && !e.target.closest('.tarea-item__actions')) {
+                const tareaItem = e.target.closest('.tarea-item');
+                const tareaId = parseInt(tareaItem.dataset.tareaId || tareaItem.getAttribute('data-tarea-id'), 10);
+                if (!isNaN(tareaId)) {
+                    handleTaskClick(tareaId);
+                }
+            }
+            if (e.target.closest('.tarea-fecha-btn')) {
+                e.stopPropagation();
+                const btn = e.target.closest('.tarea-fecha-btn');
+                const tareaId = parseInt(btn.dataset.tareaId, 10);
+                if (!isNaN(tareaId)) openTareaFechaCalendar(btn, tareaId);
             }
         });
     }
@@ -890,6 +963,9 @@ function initTareasView() {
     }
 }
 
+// Usuario por defecto para tareas creadas inline (modo colaborador)
+const TAREA_INLINE_CREATED_BY = 'Maria Alejandra Sanchez Pardo';
+
 // Función para crear tarea inline
 function handleCreateTaskInline(fechaKey, nombreTarea) {
     if (!nombreTarea.trim() || estadoTareas.isCreatingTask) return;
@@ -901,11 +977,18 @@ function handleCreateTaskInline(fechaKey, nombreTarea) {
         const nuevaTarea = {
             id: Date.now(), // ID temporal
             name: nombreTarea.trim(),
+            description: '',
             done: false,
             status: 'Activo',
-            endDate: fechaKey,
+            endDate: null,
             priority: 'media',
+            assignee_name: TAREA_INLINE_CREATED_BY,
             assignee_email: null,
+            assignee_avatar_url: null,
+            created_by: TAREA_INLINE_CREATED_BY,
+            created_by_avatar_url: null,
+            planId: null,
+            planNombre: '',
             etiqueta: null
         };
         
@@ -998,6 +1081,126 @@ function handleDelete(tareaId) {
             return;
         }
     }
+}
+
+// Encontrar tarea por id (en vencidas o en porDia) y devolver { tarea, ubicacion } (ubicacion = 'vencidas' o fechaKey)
+function findTaskById(tareaId) {
+    let tarea = tareasEjemplo.vencidas.find(t => t.id === tareaId);
+    if (tarea) return { tarea, ubicacion: 'vencidas' };
+    for (const fechaKey in tareasEjemplo.porDia) {
+        tarea = tareasEjemplo.porDia[fechaKey].find(t => t.id === tareaId);
+        if (tarea) return { tarea, ubicacion: fechaKey };
+    }
+    return { tarea: null, ubicacion: null };
+}
+
+// Función para actualizar fecha de vencimiento de una tarea
+function handleUpdateTaskEndDate(tareaId, newYmd) {
+    const { tarea, ubicacion } = findTaskById(tareaId);
+    if (!tarea) return;
+    const oldYmd = tarea.endDate || null;
+    tarea.endDate = newYmd || null;
+
+    if (ubicacion === 'vencidas') {
+        tareasEjemplo.vencidas = tareasEjemplo.vencidas.filter(t => t.id !== tareaId);
+    } else if (ubicacion) {
+        tareasEjemplo.porDia[ubicacion] = (tareasEjemplo.porDia[ubicacion] || []).filter(t => t.id !== tareaId);
+    }
+
+    if (newYmd) {
+        if (!tareasEjemplo.porDia[newYmd]) tareasEjemplo.porDia[newYmd] = [];
+        tareasEjemplo.porDia[newYmd].push(tarea);
+    } else {
+        tareasEjemplo.vencidas.push(tarea);
+    }
+
+    renderTareasVencidas();
+    const daysContainer = document.getElementById('days-container');
+    if (daysContainer) {
+        [ubicacion, newYmd].filter(Boolean).forEach(fechaKey => {
+            const dayContainer = daysContainer.querySelector(`.tareas-day-container[data-date="${fechaKey}"]`);
+            if (dayContainer) {
+                const fecha = parseDateString(fechaKey);
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = renderDaySection(fecha);
+                const newContent = tempDiv.firstElementChild;
+                dayContainer.innerHTML = newContent.innerHTML;
+            }
+        });
+    }
+}
+
+// Abrir popover con calendario oficial para cambiar fecha de vencimiento (misma lógica de posicionamiento que input calendar)
+function openTareaFechaCalendar(triggerBtn, tareaId) {
+    const { tarea } = findTaskById(tareaId);
+    if (!tarea || typeof window.createCalendar !== 'function') return;
+
+    let popover = document.getElementById('tarea-fecha-calendar-popover');
+    if (!popover) {
+        popover = document.createElement('div');
+        popover.id = 'tarea-fecha-calendar-popover';
+        popover.className = 'ubits-calendar-dropdown';
+        popover.innerHTML = '<div id="tarea-fecha-calendar-container"></div>';
+        popover.style.cssText = 'position:fixed;display:none;z-index:10100;';
+        document.body.appendChild(popover);
+
+        document.addEventListener('click', function closeOnClickOutside(e) {
+            if (popover.style.display !== 'none' && !popover.contains(e.target) && !e.target.closest('.tarea-fecha-btn')) {
+                popover.style.display = 'none';
+            }
+        });
+    }
+
+    const container = document.getElementById('tarea-fecha-calendar-container');
+    if (!container) return;
+    container.innerHTML = '';
+
+    var rect = triggerBtn.getBoundingClientRect();
+    var pad = 16;
+    var gapDown = 4;
+    var gapUp = 0;
+
+    function positionWrapper() {
+        var w = popover.offsetWidth || 312;
+        var h = popover.offsetHeight || 382;
+        var vw = window.innerWidth;
+        var vh = window.innerHeight;
+        var left = rect.right - w;
+        left = Math.max(pad, Math.min(vw - w - pad, left));
+        var spaceBelow = vh - rect.bottom - pad;
+        var spaceAbove = rect.top - pad;
+        var top;
+        if (spaceBelow >= h) {
+            top = rect.bottom + gapDown;
+        } else if (spaceAbove >= h) {
+            top = rect.top - h - gapUp;
+        } else {
+            top = spaceBelow >= spaceAbove ? rect.bottom + gapDown : rect.top - h - gapUp;
+        }
+        top = Math.max(pad, Math.min(vh - h - pad, top));
+        popover.style.left = left + 'px';
+        popover.style.top = top + 'px';
+    }
+
+    popover.style.display = 'block';
+    positionWrapper();
+
+    const selectedDateDmy = tarea.endDate ? ymdToDmySlash(tarea.endDate) : '';
+    window.createCalendar({
+        containerId: 'tarea-fecha-calendar-container',
+        selectedDate: selectedDateDmy || undefined,
+        initialDate: selectedDateDmy ? undefined : new Date(),
+        onDateSelect: function (dateStr) {
+            const ymd = dmySlashToYmd(dateStr);
+            handleUpdateTaskEndDate(tareaId, ymd);
+            popover.style.display = 'none';
+            if (typeof showToast === 'function') showToast('success', 'Fecha de vencimiento actualizada');
+        }
+    });
+
+    requestAnimationFrame(function () {
+        positionWrapper();
+    });
 }
 
 // Función para re-renderizar todas las tareas
@@ -1134,7 +1337,7 @@ function renderTaskDetailModal() {
                             </span>
                             <span class="task-detail-meta-cell">
                                 <span class="ubits-body-sm-semibold task-detail-meta-label">Estado</span>
-                                <span class="ubits-status-tag ubits-status-tag--sm ubits-status-tag--${statusSlug}" aria-label="Estado: ${escapeTaskHtml(statusDisplay)}">
+                                <span class="ubits-status-tag ubits-status-tag--sm ubits-status-tag--${statusSlug} task-detail-status-tag" aria-label="Estado: ${escapeTaskHtml(statusDisplay)}">
                                     <span class="ubits-status-tag__text">${escapeTaskHtml(statusDisplay)}</span>
                                 </span>
                             </span>

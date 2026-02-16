@@ -316,7 +316,7 @@ textarea.ubits-input:disabled {
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-sm);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--ubits-elevation-overlay);
     z-index: 10000; /* Alto z-index para estar dentro del filter-menu */
     max-height: 200px;
     overflow-y: auto;
@@ -383,7 +383,7 @@ textarea.ubits-input:disabled {
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-sm);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--ubits-elevation-overlay);
     z-index: 1000;
     max-height: 160px;
     overflow-y: auto;

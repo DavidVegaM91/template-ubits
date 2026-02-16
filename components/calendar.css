@@ -16,7 +16,7 @@
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-sm);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--ubits-elevation-overlay);
     overflow: hidden;
     padding: var(--padding-md);
 }

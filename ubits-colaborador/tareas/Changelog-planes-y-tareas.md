@@ -65,7 +65,7 @@ Orden sugerido: primero datos y usuario, luego estructura de páginas, después 
 
 ### 3. Componentes oficiales UBITS
 
-5. [ ] **Revisión general de botones e inputs**  
+5. [x] **Revisión general de botones e inputs**  
    Revisar que en los archivos de scope se usen **botones e inputs oficiales** de UBITS (componentes del template), y corregir donde no sea así.
 
 6. [ ] **Verificar uso del componente oficial Status Tag**  
@@ -113,6 +113,9 @@ Orden sugerido: primero datos y usuario, luego estructura de páginas, después 
 18. [x] **Tareas: empty state en Comentarios y evidencias**  
     En el panel de detalle de tarea, sección **Comentarios y evidencias**: cuando no hay comentarios se muestra el **componente oficial Empty State** (icono, título "Aún no hay comentarios", descripción "Aquí podrás ver el historial de comentarios y evidencias de esta tarea. Agrega el primero para empezar." y botón secundario "Agregar comentarios"). El botón del header "Agregar comentarios" se oculta en ese caso y solo aparece cuando ya hay uno o más comentarios. Acción compartida `taskDetailOnAddComment` para el CTA (placeholder hasta implementar el flujo de agregar comentario).
 
+19. [x] **Tareas: fecha de vencimiento como botón terciario con calendario oficial**  
+    En la tirilla de tarea (`tareas.js`), la **fecha de vencimiento** es un **botón terciario oficial** (`ubits-button--tertiary`, `ubits-button--sm`). Al hacer clic se abre el **calendario oficial** UBITS (`createCalendar`) en un popover con clase `ubits-calendar-dropdown`, pegado al botón. El posicionamiento replica el del input calendar: alineación por la derecha del botón y despliegue **arriba o abajo** según espacio en el viewport (espacio inferior vs superior). Tras elegir fecha se actualiza la tarea, se mueve entre vencidas/porDia y se re-renderiza; toast de éxito.
+
 ---
 
-*Última actualización: 14–18 implementados — 11 pendientes.*
+*Última actualización: 14–19 implementados — 11 pendientes.*

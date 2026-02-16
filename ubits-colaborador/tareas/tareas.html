@@ -68,17 +68,15 @@
                                         <!-- Contenedor selector de mes + popup date picker -->
                                         <div class="calendar-month-selector-wrap">
                                             <button
-                                                class="calendar-month-selector"
                                                 type="button"
+                                                class="ubits-button ubits-button--secondary ubits-button--sm"
                                                 data-role="month-selector"
                                                 aria-haspopup="dialog"
                                                 aria-expanded="false"
                                             >
-                                                <span class="calendar-month-selector__month" id="current-month">enero</span>
-                                                <span class="calendar-month-selector__year" id="current-year">2026</span>
-                                                <span class="calendar-month-selector__icon" aria-hidden="true">
-                                                    <i class="far fa-chevron-down"></i>
-                                                </span>
+                                                <span id="current-month">enero</span>
+                                                <span id="current-year">2026</span>
+                                                <i class="far fa-chevron-down" aria-hidden="true"></i>
                                             </button>
                                             <!-- Popup date picker: navegación entre meses -->
                                             <div
@@ -90,11 +88,11 @@
                                             >
                                                 <div class="calendar-month-picker">
                                                     <div class="calendar-month-picker__year-row">
-                                                        <button type="button" class="calendar-month-picker__nav" data-role="year-prev" aria-label="Año anterior">
+                                                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-role="year-prev" aria-label="Año anterior">
                                                             <i class="far fa-chevron-left"></i>
                                                         </button>
                                                         <span class="calendar-month-picker__year" id="month-picker-year">2026</span>
-                                                        <button type="button" class="calendar-month-picker__nav" data-role="year-next" aria-label="Año siguiente">
+                                                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-role="year-next" aria-label="Año siguiente">
                                                             <i class="far fa-chevron-right"></i>
                                                         </button>
                                                     </div>
@@ -113,8 +111,8 @@
                                         <!-- BOTÓN HOY + FLECHAS DE NAVEGACIÓN -->
                                         <div class="calendar-today-nav">
                                             <button
-                                                class="calendar-today-nav__arrow"
                                                 type="button"
+                                                class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only"
                                                 data-role="horizontal-prev"
                                                 aria-label="Ver días anteriores"
                                             >
@@ -122,16 +120,16 @@
                                             </button>
 
                                             <button
-                                                class="calendar-today-nav__today"
                                                 type="button"
+                                                class="ubits-button ubits-button--secondary ubits-button--sm"
                                                 data-role="go-today"
                                             >
-                                                Hoy
+                                                <span>Hoy</span>
                                             </button>
 
                                             <button
-                                                class="calendar-today-nav__arrow"
                                                 type="button"
+                                                class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only"
                                                 data-role="horizontal-next"
                                                 aria-label="Ver días siguientes"
                                             >
@@ -147,7 +145,7 @@
                                 <!-- Contenedor de tareas vencidas (PRIMERO) -->
                                 <div class="tareas-overdue-container" id="overdue-section">
                                     <div class="tareas-overdue-header" id="overdue-header">
-                                        <button class="tareas-overdue-toggle" id="overdue-toggle">
+                                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="overdue-toggle" aria-label="Expandir o colapsar vencidas">
                                             <i class="far fa-chevron-down"></i>
                                         </button>
                                         <h2 class="ubits-body-md-bold">Vencidas</h2>

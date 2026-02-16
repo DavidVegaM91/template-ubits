@@ -86,8 +86,10 @@ function formatPlanDate(dateStr) {
 function renderPlanCard(plan, isNew) {
     const progress = plan.tasksTotal > 0 ? Math.round((plan.tasksDone / plan.tasksTotal) * 100) : 0;
     const statusLabels = { Activo: 'Iniciado', Vencido: 'Vencido', Finalizado: 'Finalizado' };
-    const statusClass = plan.status === 'Activo' ? 'plan-card-status--iniciada' : plan.status === 'Vencido' ? 'plan-card-status--vencido' : 'plan-card-status--finalizado';
+    const statusIcons = { Activo: 'fa-play-circle', Vencido: 'fa-clock', Finalizado: 'fa-check-circle' };
+    const statusVariant = plan.status === 'Activo' ? 'info' : plan.status === 'Vencido' ? 'error' : 'success';
     const label = statusLabels[plan.status] || plan.status;
+    const statusIcon = statusIcons[plan.status] || 'fa-circle';
     return `
         <div class="plan-card" data-plan-id="${escapePlanHtml(plan.id)}" role="button" tabindex="0">
             <div class="plan-card__header">
@@ -96,10 +98,12 @@ function renderPlanCard(plan, isNew) {
             </div>
             <div class="plan-card__body">
                 <div class="plan-card__date">
-                    <span class="plan-card__date-label">Finalización:</span><br />
-                    <span class="plan-card__date-value">${escapePlanHtml(formatPlanDate(plan.end_date))}</span>
+                    <span class="plan-card__date-label">Finalización:</span> <span class="plan-card__date-value">${escapePlanHtml(formatPlanDate(plan.end_date))}</span>
                 </div>
-                <span class="plan-card__status ${statusClass}">${escapePlanHtml(label)}</span>
+                <span class="ubits-status-tag ubits-status-tag--${statusVariant} ubits-status-tag--sm ubits-status-tag--icon-left" aria-label="Estado: ${escapePlanHtml(label)}">
+                    <i class="far ${statusIcon}"></i>
+                    <span class="ubits-status-tag__text">${escapePlanHtml(label)}</span>
+                </span>
             </div>
             <div class="plan-card__tasks">
                 <div class="plan-card__tasks-info">
@@ -182,19 +186,19 @@ function renderPlansInterface() {
                         <div class="plan-section__top-left">
                             <h2 class="plan-section__title">En curso</h2>
                             <div class="plan-section__filters">
-                                <button type="button" class="plan-filter-chip ${estadoPlanes.filterInProgress === 'individual' ? 'plan-filter-chip--active' : ''}" data-filter="individual">
-                                    <i class="far fa-user plan-filter-chip__icon"></i>
-                                    Individuales
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm plan-filter-chip ${estadoPlanes.filterInProgress === 'individual' ? 'plan-filter-chip--active' : ''}" data-filter="individual">
+                                    <i class="far fa-user"></i>
+                                    <span>Individuales</span>
                                 </button>
-                                <button type="button" class="plan-filter-chip ${estadoPlanes.filterInProgress === 'grupal' ? 'plan-filter-chip--active' : ''}" data-filter="grupal">
-                                    <i class="far fa-users plan-filter-chip__icon"></i>
-                                    Grupales
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm plan-filter-chip ${estadoPlanes.filterInProgress === 'grupal' ? 'plan-filter-chip--active' : ''}" data-filter="grupal">
+                                    <i class="far fa-users"></i>
+                                    <span>Grupales</span>
                                 </button>
                             </div>
                         </div>
-                        <button type="button" class="plan-section__ver-filtros" id="plan-ver-filtros-progress">
+                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="plan-ver-filtros-progress">
                             <i class="far fa-search"></i>
-                            Ver filtros
+                            <span>Ver filtros</span>
                         </button>
                     </div>
                     <div class="plan-section__counters">
@@ -208,10 +212,10 @@ function renderPlansInterface() {
                     </div>
                     <div class="plan-pagination">
                         <span>${estadoPlanes.pageInProgress} de ${totalPagesInProgress} páginas</span>
-                        <button type="button" class="plan-pagination__btn" id="plan-prev-in-progress" ${estadoPlanes.pageInProgress <= 1 ? 'disabled' : ''} aria-label="Anterior">
+                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="plan-prev-in-progress" ${estadoPlanes.pageInProgress <= 1 ? 'disabled' : ''} aria-label="Anterior">
                             <i class="far fa-chevron-left"></i>
                         </button>
-                        <button type="button" class="plan-pagination__btn" id="plan-next-in-progress" ${estadoPlanes.pageInProgress >= totalPagesInProgress ? 'disabled' : ''} aria-label="Siguiente">
+                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="plan-next-in-progress" ${estadoPlanes.pageInProgress >= totalPagesInProgress ? 'disabled' : ''} aria-label="Siguiente">
                             <i class="far fa-chevron-right"></i>
                         </button>
                     </div>
@@ -225,19 +229,19 @@ function renderPlansInterface() {
                         <div class="plan-section__top-left">
                             <h2 class="plan-section__title">Finalizado</h2>
                             <div class="plan-section__filters">
-                                <button type="button" class="plan-filter-chip plan-filter-chip--finished ${estadoPlanes.filterFinished === 'individual' ? 'plan-filter-chip--active' : ''}" data-filter-finished="individual">
-                                    <i class="far fa-user plan-filter-chip__icon"></i>
-                                    Individuales
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm plan-filter-chip plan-filter-chip--finished ${estadoPlanes.filterFinished === 'individual' ? 'plan-filter-chip--active' : ''}" data-filter-finished="individual">
+                                    <i class="far fa-user"></i>
+                                    <span>Individuales</span>
                                 </button>
-                                <button type="button" class="plan-filter-chip plan-filter-chip--finished ${estadoPlanes.filterFinished === 'grupal' ? 'plan-filter-chip--active' : ''}" data-filter-finished="grupal">
-                                    <i class="far fa-users plan-filter-chip__icon"></i>
-                                    Grupales
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm plan-filter-chip plan-filter-chip--finished ${estadoPlanes.filterFinished === 'grupal' ? 'plan-filter-chip--active' : ''}" data-filter-finished="grupal">
+                                    <i class="far fa-users"></i>
+                                    <span>Grupales</span>
                                 </button>
                             </div>
                         </div>
-                        <button type="button" class="plan-section__ver-filtros" id="plan-ver-filtros-finished">
+                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="plan-ver-filtros-finished">
                             <i class="far fa-search"></i>
-                            Ver filtros
+                            <span>Ver filtros</span>
                         </button>
                     </div>
                     <div class="plan-section__counters">
@@ -250,10 +254,10 @@ function renderPlansInterface() {
                     </div>
                     <div class="plan-pagination">
                         <span>${estadoPlanes.pageFinished} de ${totalPagesFinished} páginas</span>
-                        <button type="button" class="plan-pagination__btn" id="plan-prev-finished" ${estadoPlanes.pageFinished <= 1 ? 'disabled' : ''} aria-label="Anterior">
+                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="plan-prev-finished" ${estadoPlanes.pageFinished <= 1 ? 'disabled' : ''} aria-label="Anterior">
                             <i class="far fa-chevron-left"></i>
                         </button>
-                        <button type="button" class="plan-pagination__btn" id="plan-next-finished" ${estadoPlanes.pageFinished >= totalPagesFinished ? 'disabled' : ''} aria-label="Siguiente">
+                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="plan-next-finished" ${estadoPlanes.pageFinished >= totalPagesFinished ? 'disabled' : ''} aria-label="Siguiente">
                             <i class="far fa-chevron-right"></i>
                         </button>
                     </div>
@@ -495,7 +499,7 @@ function renderTemplateDrawer() {
                         <h2 class="ubits-heading-h2">Crear una plantilla para un plan</h2>
                         <p class="ubits-body-sm-regular">Es una base reutilizable para tus planes, úsalo siempre.</p>
                     </div>
-                    <button class="template-drawer-close" id="template-drawer-close">
+                    <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="template-drawer-close" aria-label="Cerrar">
                         <i class="far fa-times"></i>
                     </button>
                 </div>
@@ -733,7 +737,7 @@ function renderUploadArea() {
                 <p class="template-upload-text">Sube todas tus tareas en un solo paso y optimiza tu tiempo.</p>
                 <p class="template-upload-subtext">CSV, hasta 50 MB</p>
             </div>
-            <button type="button" class="template-upload-button">
+            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm">
                 <i class="far fa-file"></i>
                 <span>Cargar excel diligenciado</span>
             </button>
@@ -759,8 +763,9 @@ function renderFileLoaded() {
             </div>
             <button 
                 type="button"
-                class="template-file-loaded__remove"
+                class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only"
                 onclick="handleRemoveFile()"
+                aria-label="Quitar archivo"
             >
                 <i class="far fa-trash"></i>
             </button>
@@ -778,8 +783,9 @@ function renderTaskItem(task, index) {
             </div>
             <button 
                 type="button"
-                class="template-task-item__remove"
+                class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only"
                 onclick="handleRemoveTask(${index})"
+                aria-label="Eliminar tarea"
             >
                 <i class="far fa-trash"></i>
             </button>
@@ -1416,7 +1422,7 @@ function renderPlanTaskSection() {
                                     <p class="ubits-body-sm-regular">${s.csvTasks.length} tarea(s) cargada(s)</p>
                                 </div>
                             </div>
-                            <button type="button" class="template-file-loaded__remove" onclick="handlePlanRemoveFile()">
+                            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" onclick="handlePlanRemoveFile()" aria-label="Quitar archivo">
                                 <i class="far fa-times"></i>
                             </button>
                         </div>
@@ -1453,7 +1459,7 @@ function renderPlanTaskSection() {
                             <span class="template-task-item__title">${escapeHtml(t.title)}</span>
                             ${t.description ? `<span class="template-task-item__description">${escapeHtml(t.description)}</span>` : ''}
                         </div>
-                        <button type="button" class="template-task-item__remove" onclick="handlePlanRemoveTask(${i})">
+                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" onclick="handlePlanRemoveTask(${i})" aria-label="Eliminar tarea">
                             <i class="far fa-trash"></i>
                         </button>
                     </div>
@@ -1464,27 +1470,29 @@ function renderPlanTaskSection() {
             <div class="plan-task-creator">
                 <div class="plan-task-creator__title-row">
                     <div class="plan-task-creator__input-wrap">
-                        <input type="text" id="plan-task-title-input" class="plan-task-creator__input" placeholder="Nueva tarea"
-                            value="${escapeHtml((window.currentPlanTask || {}).title || '')}"
-                            oninput="(window.currentPlanTask=window.currentPlanTask||{}).title=this.value" />
+                        <div class="ubits-input-wrapper">
+                            <input type="text" id="plan-task-title-input" class="ubits-input ubits-input--sm" placeholder="Nueva tarea"
+                                value="${escapeHtml((window.currentPlanTask || {}).title || '')}"
+                                oninput="(window.currentPlanTask=window.currentPlanTask||{}).title=this.value" />
+                        </div>
                     </div>
                     <div class="plan-task-creator__icons">
-                        <button type="button" class="plan-task-creator__icon-btn" title="Editar"><i class="far fa-pen"></i></button>
-                        <button type="button" class="plan-task-creator__icon-btn plan-task-creator__icon-btn--remove" title="Eliminar" onclick="handlePlanCancelTaskCreator()"><i class="far fa-times"></i></button>
+                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" title="Editar" aria-label="Editar"><i class="far fa-pen"></i></button>
+                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" title="Eliminar" aria-label="Eliminar" onclick="handlePlanCancelTaskCreator()"><i class="far fa-times"></i></button>
                     </div>
                 </div>
-                <textarea id="plan-task-desc-input" class="plan-task-creator__textarea" placeholder="Descripción" rows="3"
+                <textarea id="plan-task-desc-input" class="ubits-input plan-task-creator__textarea" placeholder="Descripción" rows="3"
                     oninput="(window.currentPlanTask=window.currentPlanTask||{}).description=this.value">${escapeHtml((window.currentPlanTask || {}).description || '')}</textarea>
                 <div class="plan-task-creator__actions">
-                    <button type="button" class="plan-task-action-btn" onclick="handlePlanTaskPriorityClick()">
+                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="handlePlanTaskPriorityClick()">
                         <i class="far fa-flag"></i>
                         <span>Elegir una prioridad</span>
                     </button>
-                    <button type="button" class="plan-task-action-btn" onclick="handlePlanTaskAssignClick()">
+                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="handlePlanTaskAssignClick()">
                         <i class="far fa-user"></i>
                         <span>Asignar a</span>
                     </button>
-                    <button type="button" class="plan-task-action-btn" onclick="handlePlanTaskDateClick()">
+                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="handlePlanTaskDateClick()">
                         <i class="far fa-calendar"></i>
                         <span>Elegir una fecha</span>
                     </button>
@@ -1517,7 +1525,7 @@ function renderPlanDrawer() {
                     <h2 class="ubits-heading-h2">Crear un plan</h2>
                     <p class="plan-drawer-header__subtitle">Organiza tus pendientes, asigna tareas y lleva el control de tus avances con facilidad.</p>
                 </div>
-                <button type="button" class="template-drawer-close" id="plan-drawer-close">
+                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="plan-drawer-close" aria-label="Cerrar">
                     <i class="far fa-times"></i>
                 </button>
             </div>
@@ -1644,7 +1652,7 @@ function renderPlanDrawer() {
                                     ${planDrawerState.members.map(m => `
                                         <span class="plan-member-chip">
                                             ${escapeHtml((m.email || '').split('@')[0])}
-                                            <button type="button" class="plan-member-chip__remove" onclick="handleRemovePlanMember('${m.id}')"><i class="far fa-times"></i></button>
+                                            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" onclick="handleRemovePlanMember('${m.id}')" aria-label="Quitar"><i class="far fa-times"></i></button>
                                         </span>
                                     `).join('')}
                                 </div>
@@ -1666,7 +1674,7 @@ function renderPlanDrawer() {
                                         <p class="template-upload-text">Sube el archivo de tus usuarios para agilizar la gestión</p>
                                         <p class="template-upload-subtext">CSV, hasta 50 MB</p>
                                     </div>
-                                    <button type="button" class="template-upload-button">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm">
                                         <i class="far fa-file"></i>
                                         <span>Cargar plantilla de usuarios diligenciada</span>
                                     </button>
@@ -1681,7 +1689,7 @@ function renderPlanDrawer() {
                                             <p class="ubits-body-sm-regular">Archivo con ${planDrawerState.csvUsers.length} usuario(s) cargado(s)</p>
                                         </div>
                                     </div>
-                                    <button type="button" class="template-file-loaded__remove" onclick="handlePlanRemoveUserCsvFile()">
+                                    <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" onclick="handlePlanRemoveUserCsvFile()" aria-label="Quitar archivo">
                                         <i class="far fa-times"></i>
                                     </button>
                                 </div>
@@ -1746,7 +1754,7 @@ function renderPlanDrawer() {
             </form>
         </div>
         <div class="template-drawer-footer">
-            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--md" onclick="closePlanDrawer()">Cancelar</button>
+            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--md" onclick="closePlanDrawer()"><span>Cancelar</span></button>
             <button type="button" id="plan-submit-btn" class="ubits-button ubits-button--primary ubits-button--md" ${planDrawerState.loading ? 'disabled' : ''} onclick="document.getElementById('plan-form')?.requestSubmit();">
                 ${planDrawerState.loading ? '<i class="far fa-spinner fa-spin"></i> ' : ''}<span>Crear plan</span>
             </button>

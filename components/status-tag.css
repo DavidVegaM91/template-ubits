@@ -186,3 +186,36 @@
     height: 16px;
 }
 
+/* ========================================
+   STATUS TAG ICON-ONLY (cuadrado 1:1)
+   ======================================== */
+
+.ubits-status-tag--icon-only .ubits-status-tag__text {
+    display: none;
+}
+
+.ubits-status-tag--icon-only {
+    padding: 0;
+    min-width: 0;
+}
+
+.ubits-status-tag--icon-only.ubits-status-tag--xs {
+    width: 20px;
+    height: 20px;
+}
+
+.ubits-status-tag--icon-only.ubits-status-tag--sm {
+    width: 28px;
+    height: 28px;
+}
+
+.ubits-status-tag--icon-only.ubits-status-tag--md {
+    width: 36px;
+    height: 36px;
+}
+
+.ubits-status-tag--icon-only.ubits-status-tag--lg {
+    width: 40px;
+    height: 40px;
+}
+
