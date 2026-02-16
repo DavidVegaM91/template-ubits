@@ -289,11 +289,12 @@ Todos los componentes UBITS requieren imports obligatorios:
 
 ### **🧩 Estructura del proyecto (NUEVA ORGANIZACIÓN):**
 ```
-├── 📁 general-styles/         # Estilos base del sistema
+├── 📁 general-styles/         # Estilos base del sistema (ver abajo qué contiene cada archivo)
 │   ├── ubits-colors.css       # Tokens de color UBITS oficiales
 │   ├── ubits-typography.css   # Clases de tipografía UBITS oficiales
+│   ├── ubits-spacing-tokens.css # Tokens de espaciado, padding, gap, border-radius y size
 │   ├── fontawesome-icons.css  # Iconos FontAwesome
-│   └── styles.css             # Estilos globales compartidos
+│   └── styles.css             # Estilos globales compartidos (importa ubits-spacing-tokens)
 ├── 📁 components/             # Componentes reutilizables UBITS
 │   ├── sub-nav.css + sub-nav.js
 │   ├── sidebar.css + sidebar.js
@@ -361,8 +362,17 @@ Todos los componentes UBITS requieren imports obligatorios:
     └── empty-states/         # Estados vacíos (2 SVG)
 ```
 
+### **📁 Contenido de `general-styles/` (qué encuentra en cada archivo):**
+| Archivo | Contenido |
+|--------|------------|
+| **`ubits-colors.css`** | Tokens de color UBITS: fondos (`--ubits-bg-1`, `--ubits-bg-2`, …), texto (`--ubits-fg-1-high`, `--ubits-fg-1-medium`), bordes, botones, feedback, modo claro/oscuro. **Obligatorio** en todas las páginas. |
+| **`ubits-typography.css`** | Clases de tipografía oficiales: display (d1–d4), headings (h1, h2), body (md/sm, regular/semibold/bold). **Obligatorio** para todo texto. |
+| **`ubits-spacing-tokens.css`** | Tokens de espaciado: `--space-*` (0–96px), `--padding-xs/sm/md/lg/…`, `--gap-*`, `--border-radius-*`, `--size-*`. Usado por `styles.css` y componentes. |
+| **`fontawesome-icons.css`** | Definición de iconos FontAwesome (clases `far`, `fas`, etc.). **Obligatorio** cuando uses componentes con iconos. |
+| **`styles.css`** | Estilos globales: reset, body, scrollbar, layout (dashboard-container, content-area), import de `ubits-spacing-tokens.css`. Cargar en todas las páginas. |
+
 ### **📁 Nueva organización de archivos:**
-- **`general-styles/`** - Estilos base compartidos (tokens, tipografía, estilos globales)
+- **`general-styles/`** - Estilos base compartidos (tokens, tipografía, espaciado, estilos globales)
 - **`components/`** - Todos los componentes UBITS reutilizables
 - **`ubits-admin/`** - Páginas del módulo de administración organizadas por subcarpetas
 - **`ubits-colaborador/`** - Páginas del módulo de colaborador organizadas por subcarpetas

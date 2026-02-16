@@ -334,6 +334,8 @@
                         endDate: endDateStr,
                         priority: prioridad.toLowerCase(),
                         assignee_email: username,
+                        assignee_name: emp.nombre || null,
+                        assignee_avatar_url: (emp.avatar && String(emp.avatar).trim()) ? emp.avatar : null,
                         etiqueta: null,
                         created_by: emp.nombre,
                         created_by_avatar_url: emp.avatar || '',
@@ -577,6 +579,7 @@
                 return actividadesSeguimiento
                     .filter(function(a) { return a.tipo === 'tarea' && a.plan === nombrePlan; })
                     .map(function(t) {
+                        var asignado = t.asignado || {};
                         return {
                             id: t.id,
                             name: t.nombre,
@@ -584,7 +587,9 @@
                             status: t.estado === 'Finalizada' ? 'Finalizado' : (t.estado === 'Vencida' ? 'Vencido' : 'Activo'),
                             endDate: fechaSeguimientoToYYYYMMDD(t.fechaFinalizacion),
                             priority: (t.prioridad || 'Media').toLowerCase(),
-                            assignee_email: t.asignado && t.asignado.username ? t.asignado.username : null,
+                            assignee_email: asignado.username || null,
+                            assignee_name: asignado.nombre || null,
+                            assignee_avatar_url: (asignado.avatar && String(asignado.avatar).trim()) ? asignado.avatar : null,
                             etiqueta: null,
                             planId: planIdNum,
                             planNombre: nombrePlan,

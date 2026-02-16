@@ -36,7 +36,7 @@
 
             var deleteBody = '<p class="ubits-body-md-regular">¿Estás seguro de que deseas eliminar <strong id="delete-count">0</strong> elemento(s) seleccionado(s)?</p><p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Esta acción no se puede deshacer.</p><div class="delete-confirm-group" style="margin-top: var(--gap-lg, 16px);"><label class="ubits-body-sm-regular" for="delete-modal-type-input">Escriba <strong>eliminar</strong> para habilitar el botón:</label><input type="text" id="delete-modal-type-input" class="ubits-input delete-modal-type-input" placeholder="Escriba la palabra de confirmación" autocomplete="off" style="margin-top: var(--gap-sm, 8px); width: 100%; padding: var(--padding-sm, 8px) var(--padding-md, 12px); border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-sm, 8px); font-size: var(--font-size-sm, 13px); color: var(--ubits-fg-1-high); box-sizing: border-box;"></div>';
             var deleteFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="delete-modal-cancel">Cancelar</button><button type="button" class="ubits-button ubits-button--error ubits-button--md" id="delete-modal-confirm" disabled>Eliminar</button>';
-            modalsContainer.innerHTML += getModalHtml({ overlayId: 'delete-modal-overlay', title: 'Confirmar eliminación', bodyHtml: deleteBody, footerHtml: deleteFooter, size: 'xs', closeButtonId: 'delete-modal-close' });
+            modalsContainer.innerHTML += getModalHtml({ overlayId: 'delete-modal-overlay', title: 'Confirmar eliminación', bodyHtml: deleteBody, footerHtml: deleteFooter, size: 'sm', closeButtonId: 'delete-modal-close' });
 
             var reabrirBody = '<p class="ubits-body-md-regular" id="reabrir-plan-message">Al reabrir este(s) plan(es), las tareas en estado Iniciada se marcarán como Finalizadas. ¿Continuar?</p>';
             var reabrirFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="reabrir-plan-cancel">Cancelar</button><button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="reabrir-plan-confirm">Continuar</button>';
@@ -1122,7 +1122,7 @@
             const row = SEGUIMIENTO_DATA.find(r => String(r.id) === String(id));
             if (!row) return;
             if (row.tipo === 'plan') {
-                window.location.href = 'plan-detail.html?planId=' + encodeURIComponent(row.id);
+                window.location.href = 'plan-detail.html?id=' + encodeURIComponent(row.id);
                 return;
             }
             if (row.tipo === 'tarea') {

@@ -29,17 +29,21 @@ function escapeHtml(str) {
 // Resolver nombre y avatar del asignado desde la BD (igual que tareas.js: usuario actual, jefes, empleados).
 function getAssigneeDisplayForPlanDetail(t) {
     var email = (t.assignee_email && String(t.assignee_email).trim()) ? String(t.assignee_email).trim() : '';
-    if (t.assignee_name && String(t.assignee_name).trim() && t.assignee_avatar_url && String(t.assignee_avatar_url).trim()) {
-        return { name: String(t.assignee_name).trim(), avatar: String(t.assignee_avatar_url).trim() };
+    // Usar datos ya presentes en la tarea (p. ej. planes grupales enriquecidos)
+    if (t.assignee_name && String(t.assignee_name).trim()) {
+        var name = String(t.assignee_name).trim();
+        var avatar = (t.assignee_avatar_url && String(t.assignee_avatar_url).trim()) ? String(t.assignee_avatar_url).trim() : null;
+        return { name: name, avatar: avatar };
     }
     var currentUser = (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getUsuarioActual === 'function') ? TAREAS_PLANES_DB.getUsuarioActual() : null;
-    if (currentUser && email && ((currentUser.username || '') === email || (currentUser.email && currentUser.email === email))) {
+    var emailLower = (email || '').toLowerCase();
+    if (currentUser && emailLower && ((currentUser.username || '').toLowerCase() === emailLower || (currentUser.email && currentUser.email.toLowerCase() === emailLower))) {
         return { name: currentUser.nombre || email.split('@')[0], avatar: currentUser.avatar || null };
     }
     if (!email) return { name: 'Sin asignar', avatar: null };
     var jefes = (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getJefesEjemplo === 'function') ? TAREAS_PLANES_DB.getJefesEjemplo() : [];
     var empleados = (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getEmpleadosEjemplo === 'function') ? TAREAS_PLANES_DB.getEmpleadosEjemplo() : [];
-    var person = (jefes || []).find(function (e) { return (e.username || '') === email; }) || (empleados || []).find(function (e) { return (e.username || '') === email; });
+    var person = (jefes || []).find(function (e) { return (e.username || '').toLowerCase() === emailLower; }) || (empleados || []).find(function (e) { return (e.username || '').toLowerCase() === emailLower; });
     if (person) return { name: person.nombre || email.split('@')[0], avatar: person.avatar || null };
     return { name: email.split('@')[0], avatar: null };
 }
@@ -504,8 +508,12 @@ function attachTaskListeners() {
 
     listEl.querySelectorAll('.tarea-action-btn--details').forEach(btn => {
         btn.addEventListener('click', (e) => {
+            e.stopPropagation();
             const id = e.currentTarget.dataset.tareaId;
-            console.log('Ver detalle tarea:', id);
+            const planId = getPlanIdFromUrl();
+            const tasks = getTasksForPlan(planId);
+            const task = tasks ? tasks.find(t => String(t.id) === String(id)) : null;
+            if (task) openTaskDetailPanel(task);
         });
     });
 

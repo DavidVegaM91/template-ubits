@@ -16,6 +16,7 @@
     border: none;
     border-radius: var(--border-radius-sm, 8px);
     box-shadow: none;
+    cursor: pointer;
 }
 
 .tarea-item:hover {

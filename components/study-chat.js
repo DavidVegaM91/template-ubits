@@ -824,7 +824,6 @@ function renderTutorPanel(type, topic, extraData) {
                     </button>
                 </div>` : ''}
             </div>
-            <div class="study-chat-canvas-footer"></div>
         </div>`;
 
         panel.innerHTML = getCanvasLoaderHTML();

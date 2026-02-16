@@ -212,6 +212,12 @@
     width: 100%;
 }
 
+.study-chat-search-results-list {
+    background: var(--ubits-bg-2);
+    padding: var(--padding-md);
+    border-radius: var(--border-radius-sm);
+}
+
 /* Estilos para el plan de formación */
 .study-chat-plan-section {
     margin-top: 12px;
