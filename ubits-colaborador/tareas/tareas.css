@@ -778,6 +778,11 @@ body.page-tareas .dashboard-container {
     flex-shrink: 0;
 }
 
+/* Botón "Detalles" (chevron-right) oculto; avisar si se quiere reactivar */
+.tarea-action-btn--details {
+    display: none !important;
+}
+
 /* Badge de prioridad (componente oficial ubits-badge-tag) – ancho fijo */
 .tarea-priority-badge {
     flex-shrink: 0;

@@ -327,6 +327,11 @@
     display: none;
 }
 
+/* Botón "Detalles" (chevron-right) oculto; avisar si se quiere reactivar */
+.tarea-action-btn--details {
+    display: none !important;
+}
+
 /* Lista de tareas - misma estructura que tab tareas */
 .plan-detail-tasks {
     display: flex;

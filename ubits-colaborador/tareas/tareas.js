@@ -129,7 +129,7 @@ function dmySlashToYmd(dmy) {
 
 // Utilidades de fecha para UI
 const getMonthName = (date) => {
-    const months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+    const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
     return months[date.getMonth()];
 };
 
