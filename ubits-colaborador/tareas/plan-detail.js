@@ -388,7 +388,8 @@ window.planDetailTasksCache = window.planDetailTasksCache || {};
 window.planDetailPlanCache = window.planDetailPlanCache || {};
 
 function getTasksForPlan(planId) {
-    if (window.planDetailTasksCache[planId]) return window.planDetailTasksCache[planId];
+    if (!planId) return [];
+    if (window.planDetailTasksCache && window.planDetailTasksCache[planId]) return window.planDetailTasksCache[planId];
     if (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getTareasPorPlan === 'function')
         return TAREAS_PLANES_DB.getTareasPorPlan(planId) || [];
     return [];
@@ -480,67 +481,73 @@ function renderPlanDetail(planId) {
     }
 }
 
+function handlePlanDetailListClick(e) {
+    const planId = getPlanIdFromUrl();
+    const tasks = getTasksForPlan(planId);
+    if (!planId || !tasks.length) return;
+
+    // Toggle hecho (radio)
+    if (e.target.closest('.tarea-done-radio')) {
+        e.preventDefault();
+        const control = e.target.closest('.tarea-done-radio');
+        const input = control && control.querySelector('input.ubits-radio__input');
+        if (input && input.dataset.tareaId) {
+            const id = input.dataset.tareaId;
+            const t = tasks.find(x => String(x.id) === String(id));
+            if (t) {
+                t.done = !t.done;
+                t.status = t.done ? 'Finalizado' : 'Activo';
+                input.checked = t.done;
+                renderPlanDetail(planId);
+            }
+        }
+        return;
+    }
+
+    // Eliminar
+    if (e.target.closest('.tarea-action-btn--delete')) {
+        e.preventDefault();
+        e.stopPropagation();
+        const btn = e.target.closest('.tarea-action-btn--delete');
+        const id = btn && btn.dataset.tareaId;
+        if (id && confirm('¿Eliminar esta tarea?')) {
+            const i = tasks.findIndex(t => String(t.id) === String(id));
+            if (i >= 0) tasks.splice(i, 1);
+            renderPlanDetail(planId);
+        }
+        return;
+    }
+
+    // Abrir detalle: botón Detalles o clic en la fila (evitando radio y botones)
+    if (e.target.closest('.tarea-action-btn--details')) {
+        e.preventDefault();
+        e.stopPropagation();
+        const btn = e.target.closest('.tarea-action-btn--details');
+        const id = btn && (btn.dataset.tareaId || btn.getAttribute('data-tarea-id'));
+        if (id) {
+            const task = tasks.find(t => String(t.id) === String(id));
+            if (task) openTaskDetailPanel(task);
+        }
+        return;
+    }
+
+    const item = e.target.closest('.tarea-item');
+    if (item && !e.target.closest('.tarea-done-radio') && !e.target.closest('.tarea-action-btn')) {
+        e.preventDefault();
+        const id = item.dataset.tareaId || item.getAttribute('data-tarea-id');
+        if (id) {
+            const task = tasks.find(t => String(t.id) === String(id));
+            if (task) openTaskDetailPanel(task);
+        }
+    }
+}
+
 function attachTaskListeners() {
     const listEl = document.getElementById('plan-detail-tasks-list');
     if (!listEl) return;
-
-    listEl.addEventListener('click', (e) => {
-        if (e.target.closest('.tarea-done-radio')) {
-            e.preventDefault();
-            const control = e.target.closest('.tarea-done-radio');
-            const input = control.querySelector('input.ubits-radio__input');
-            if (input && input.dataset.tareaId) {
-                const id = input.dataset.tareaId;
-                const planId = getPlanIdFromUrl();
-                const tasks = getTasksForPlan(planId);
-                if (!planId || !tasks.length) return;
-                const t = tasks.find(x => String(x.id) === id);
-                if (t) {
-                    t.done = !t.done;
-                    t.status = t.done ? 'Finalizado' : 'Activo';
-                    input.checked = t.done;
-                    renderPlanDetail(planId);
-                }
-            }
-            return;
-        }
-    });
-
-    listEl.querySelectorAll('.tarea-action-btn--details').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const id = e.currentTarget.dataset.tareaId;
-            const planId = getPlanIdFromUrl();
-            const tasks = getTasksForPlan(planId);
-            const task = tasks ? tasks.find(t => String(t.id) === String(id)) : null;
-            if (task) openTaskDetailPanel(task);
-        });
-    });
-
-    listEl.querySelectorAll('.tarea-action-btn--delete').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const id = e.currentTarget.dataset.tareaId;
-            const planId = getPlanIdFromUrl();
-            const tasks = getTasksForPlan(planId);
-            if (planId && tasks.length && confirm('¿Eliminar esta tarea?')) {
-                const i = tasks.findIndex(t => String(t.id) === id);
-                if (i >= 0) tasks.splice(i, 1);
-                renderPlanDetail(planId);
-            }
-        });
-    });
-
-    listEl.querySelectorAll('.tarea-item').forEach(item => {
-        item.addEventListener('click', (e) => {
-            if (e.target.closest('.tarea-done-radio') || e.target.closest('.tarea-action-btn')) return;
-            const id = item.dataset.tareaId;
-            const planId = getPlanIdFromUrl();
-            const tasks = getTasksForPlan(planId);
-            const task = tasks ? tasks.find(t => String(t.id) === String(id)) : null;
-            if (task) openTaskDetailPanel(task);
-        });
-    });
+    if (listEl._planDetailClickBound) return;
+    listEl._planDetailClickBound = true;
+    listEl.addEventListener('click', handlePlanDetailListClick);
 }
 
 function initPlanDetail() {
@@ -549,6 +556,9 @@ function initPlanDetail() {
         window.location.href = 'planes.html';
         return;
     }
+
+    // Enlazar clics de la lista de tareas ANTES de renderizar (así funciona al llegar desde seguimiento)
+    attachTaskListeners();
 
     const finalizarBtn = document.getElementById('plan-detail-finalizar');
     if (finalizarBtn) {
