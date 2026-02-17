@@ -2,7 +2,7 @@
 
 # Backlog – Tareas y Planes
 
-Ajustes pendientes sobre los archivos entregados por la PM para las páginas de **Tareas**, **Planes** y **Detalle de plan**. Los ítems se irán agregando aquí y luego se implementarán en orden.
+Ajustes pendientes sobre los archivos entregados por la PM Mafe para las páginas de **Tareas**, **Planes** y **Detalle de plan**.
 
 **Archivos en scope:**
 - `plan-detail.css`, `plan-detail.html`, `plan-detail.js`
@@ -10,10 +10,6 @@ Ajustes pendientes sobre los archivos entregados por la PM para las páginas de 
 - `tareas.css`, `tareas.html`, `tareas.js`
 
 ---
-
-## Pendientes
-
-Orden sugerido: primero datos y usuario, luego estructura de páginas, después componentes oficiales y por último la lógica del botón del header.
 
 ### 1. Datos y usuario
 
@@ -47,8 +43,8 @@ Orden sugerido: primero datos y usuario, luego estructura de páginas, después 
 8. [ ] **Drawers de creación con componente oficial**  
    Asegurar que los drawers de **"Crear un plan"** y **"Crear una plantilla"** usen el **componente drawer oficial** UBITS.
 
-9. [ ] **Componentizar el detalle del plan como variante del drawer oficial**  
-   El detalle del plan debe ser una **variante del drawer oficial** UBITS en modo **pantalla completa**. Asegurar que comparta estilos importantes con el drawer oficial (encabezado y footer, entre otros) para mantener consistencia.
+9. [x] **Componentizar el detalle de tarea**  
+   Crearlo e implementarlo en tareas, detalle de plan y paginas de seguimiento
 
 ### 4. Lógica e integración
 
