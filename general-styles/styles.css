@@ -380,10 +380,10 @@ body[data-theme="light"] .dashboard-container {
     z-index: 5;
 }
 
-/* Desktop: reservar espacio para SubNav fixed (evitar que el contenido quede bajo el nav) */
+/* Desktop: reservar solo la altura del SubNav fixed (el margin-top ya da el gap superior; evita doble espacio) */
 @media (min-width: 1280px) {
     .main-content {
-        padding-top: calc(40px + var(--gap-lg));
+        padding-top: 40px;
     }
 }
 
