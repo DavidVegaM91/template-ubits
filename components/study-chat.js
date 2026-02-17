@@ -2616,17 +2616,13 @@ function createStudyChatHTML(options = {}) {
             <div class="ubits-study-chat__body" id="ubits-study-chat-body">${welcomeBlock}</div>
             <div class="ubits-study-chat__input-area">
                 <div class="ubits-study-chat__input-container">
+                    <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-study-chat__input-attach" id="ubits-study-chat-attach-btn" title="Adjuntar"><i class="far fa-paperclip"></i></button>
                     <div class="ubits-study-chat__input-wrapper">
                         <textarea class="ubits-study-chat__input" id="ubits-study-chat-input" placeholder="Escribir mensaje..." rows="1"></textarea>
                     </div>
-                    <div class="ubits-study-chat__input-bottom">
-                        <div class="ubits-study-chat__suggestions" id="ubits-study-chat-suggestions">${suggestionButtons}</div>
-                    <div class="ubits-study-chat__input-actions">
-                            <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="ubits-study-chat-attach-btn" title="Adjuntar"><i class="far fa-paperclip"></i></button>
-                            <button class="ubits-button ubits-button--primary ubits-button--sm ubits-button--icon-only" id="ubits-study-chat-send-btn" title="Enviar"><i class="far fa-paper-plane"></i></button>
-                    </div>
+                    <button class="ubits-button ubits-button--primary ubits-button--sm ubits-button--icon-only ubits-study-chat__input-send" id="ubits-study-chat-send-btn" title="Enviar"><i class="far fa-paper-plane"></i></button>
                 </div>
-            </div>
+                <div class="ubits-study-chat__suggestions" id="ubits-study-chat-suggestions">${suggestionButtons}</div>
             </div>
             <p class="ubits-study-chat__disclaimer ubits-body-xs-regular">El chat de modo estudio IA puede cometer errores; verifica sus respuestas.</p>
         </div>

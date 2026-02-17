@@ -69,13 +69,39 @@ Lista de cambios sugeridos en reuniones. Los **realizados** se solicitaron el **
 
 ---
 
+### 12. Vista de resultados de búsqueda e interconexión con el chat
+
+|`[x]`|  **Vista de resultados** (`resultados-busqueda.html`): página que muestra resultados cuando el usuario busca por Liderazgo, Inglés o Comunicación desde el catálogo (por chip o por input). Incluye: (1) **Buscador arriba** igual al del catálogo (600px en desktop, centrado, tamaño lg), rellenado con el término buscado; al limpiar el input (botón X) se redirige a catálogo. (2) **Panel “Resultado generado con IA”** (encabezado cerrable) con definición del tema, etiqueta “Habilidades” y tags de habilidades, y cuatro recursos (Quiz, Plan de estudio, Flashcards, Podcast) como cards enlazables. (3) **Lista de contenidos** en grid de 4 columnas con cards del componente oficial; empty state si no hay tema válido. (4) Mismos breakpoints que el catálogo para el buscador (100% desde 480px). |
+|`[x]`|  **Interconexión con el chat**: al hacer clic en un recurso del panel (Quiz, Plan de estudio, Flashcards o Podcast) en la vista de resultados, se navega a Modo estudio IA (`modo-estudio-ia.html`) con parámetros `tema` y `recurso` en la URL. La página del chat lee esos parámetros al cargar y **envía automáticamente** el mensaje “quiero un [recurso] de [tema]” (ej. “quiero un Quiz de Liderazgo”), de modo que el chat responde generando ese recurso para ese tema (quiz, flashcards, plan de estudio o podcast) sin que el usuario tenga que escribir el mensaje. Tras enviar, la URL se limpia con `replaceState` para no reenviar al recargar. |
+
+---
+
+## Cómo volver a las gradaciones azules
+
+Si en algún momento se cambian los colores del gradiente IA (cyan/azul) y se quiere **restaurar la paleta azul original** en **Modo estudio IA**, **Resultados de búsqueda** y **Catálogo**, seguir estos pasos:
+
+1. **Abrir** el archivo `ubits-colaborador/aprendizaje/aprendizaje-ia-gradientes.css`.
+2. **Localizar** el bloque `:root` (al inicio del archivo) donde se definen las tres variables:
+   - `--modo-ia-gradient-a`
+   - `--modo-ia-gradient-b`
+   - `--modo-ia-gradient-c`
+3. **Sustituir** los valores actuales de esas variables por los de la paleta azul original:
+   - `--modo-ia-gradient-a: rgb(0, 215, 255);`
+   - `--modo-ia-gradient-b: rgb(0, 152, 253);`
+   - `--modo-ia-gradient-c: rgb(0, 89, 250);`
+4. **Guardar** el archivo. No hace falta tocar ningún otro CSS ni HTML: esos tres valores son la única fuente de verdad para todos los elementos con gradiente (bordes animados, botón enviar, "Aprender hoy", botón IA primary/secondary, burbujas de usuario, icono "Resultado generado con IA", etc.).
+
+**Nota:** No modificar los componentes en `components/` (p. ej. `ia-button.css`, `study-chat.css`); las overrides y variables están en `aprendizaje-ia-gradientes.css` y en los CSS de cada página.
+
+---
+
 ## Pendientes (solicitados el 12 de febrero de 2026)
 
 ### 1. Historial
 |`[x]`|  **Historial con filtro** y descripción con **fecha y hora** en cada ítem.
 
 ### 2. UI
-|`[ ]`|  **Ser más atrevidos con el diseño** del Modo estudio IA olvidarnos del design system actual ("Ver exploraciones de Carlos en Figma") - Solicitud Carlos
+|`[ ]`|  **Ser más atrevidos con el diseño** del Modo estudio IA olvidarnos del design system actual ("Ver exploraciones de Carlos en Figma cong radacion naranja") - Solicitud Carlos
 
 ### 5. Encabezado del chat
 |`[ ]`|  En ese encabezado del chat, **botón "Recursos generados"** que abra un canvas a la derecha (similar a los otros canvas) con el listado de recursos/cursos generados - Propuesta David

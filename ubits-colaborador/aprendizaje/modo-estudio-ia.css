@@ -2,6 +2,8 @@
    ESTILOS ESPECÍFICOS PARA MODO-ESTUDIO-IA
    ======================================== */
 
+/* Gradiente: variables en aprendizaje-ia-gradientes.css (compartido con resultados-busqueda y catálogo).
+   Para cambiar la paleta: edita solo ese archivo. */
 /* Fondo de página entera: gradaciones azules detrás del contenido.
    Body tiene color base; body::before (z-index 0) lleva el glow; dashboard/main/content transparentes. */
 @keyframes modo-ia-glow-breathe {
@@ -11,6 +13,11 @@
 
 body.modo-estudio-ia-page {
     background-color: var(--ubits-bg-2);
+}
+
+/* Burbujas de mensaje de usuario: mismo gradiente que el resto (variables en aprendizaje-ia-gradientes.css) */
+.modo-estudio-ia-page .ubits-study-chat__text-globe--user {
+    background: linear-gradient(135deg, var(--modo-ia-gradient-a) 0%, var(--modo-ia-gradient-b) 50%, var(--modo-ia-gradient-c) 100%);
 }
 
 body.modo-estudio-ia-page::before {
@@ -649,7 +656,7 @@ body.modo-estudio-ia-page .modo-tutor-ia-canvas-panel.is-open .study-chat-canvas
 /* "aprender hoy" con la misma gradación que el icono sparkles y peso semibold; animación sutil de la gradiente (solo el color se mueve) */
 .modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__welcome-prompt-accent {
     font-weight: var(--font-weight-semibold);
-    background: linear-gradient(90deg, rgb(0, 215, 255), rgb(0, 152, 253), rgb(0, 89, 250), rgb(0, 215, 255));
+    background: linear-gradient(90deg, var(--modo-ia-gradient-a), var(--modo-ia-gradient-b), var(--modo-ia-gradient-c), var(--modo-ia-gradient-a));
     background-size: 300% 100%;
     background-position: 0% 50%;
     -webkit-background-clip: text;
@@ -687,13 +694,42 @@ body.modo-estudio-ia-page .modo-tutor-ia-canvas-panel.is-open .study-chat-canvas
     display: none;
 }
 
-.modo-estudio-ia-page .ubits-study-chat--welcome #ubits-study-chat-attach-btn {
-    display: none;
+/* Botón enviar en bienvenida: misma gradación que el icono sparkles y las burbujas del usuario */
+/* Botón enviar: gradación animada (igual que "aprender hoy") en bienvenida y con chat iniciado */
+.modo-estudio-ia-page #ubits-study-chat-send-btn {
+    background: linear-gradient(90deg, var(--modo-ia-gradient-a), var(--modo-ia-gradient-b), var(--modo-ia-gradient-c), var(--modo-ia-gradient-a)) !important;
+    background-size: 300% 100% !important;
+    background-position: 0% 50%;
+    border: none !important;
+    color: var(--ubits-btn-primary-fg) !important;
+    animation: modo-estudio-ia-gradient-shift 5s ease-in-out infinite;
 }
 
-/* Pantalla de bienvenida: recomendaciones a la izquierda, botón enviar a la derecha (input-bottom) */
+.modo-estudio-ia-page #ubits-study-chat-send-btn:hover {
+    opacity: 0.95;
+}
+
+/* Pantalla de bienvenida: recomendaciones debajo del input (fuera del cajón), centradas */
 .modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__suggestions {
-    justify-content: flex-start;
+    justify-content: center;
+    margin-top: var(--gap-md);
+}
+
+/* Botones de recomendaciones: borde con gradación animada (mismo estilo que el input pero animado) */
+.modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__suggestions .ubits-button {
+    border: 1px solid transparent;
+    background: linear-gradient(var(--ubits-bg-1), var(--ubits-bg-1)) padding-box,
+        linear-gradient(90deg, var(--modo-ia-gradient-a), var(--modo-ia-gradient-b), var(--modo-ia-gradient-c), var(--modo-ia-gradient-a)) border-box;
+    background-size: 100% 100%, 300% 100%;
+    background-position: 0 0, 0% 50%;
+    background-origin: padding-box, border-box;
+    background-clip: padding-box, border-box;
+    animation: modo-estudio-ia-gradient-shift-border 5s ease-in-out infinite;
+}
+
+@keyframes modo-estudio-ia-gradient-shift-border {
+    0%, 100% { background-position: 0 0, 0% 50%; }
+    50% { background-position: 0 0, 100% 50%; }
 }
 
 /* Móvil: pantalla de bienvenida al 100% de ancho (override posterior a las reglas 70%) */
@@ -708,7 +744,7 @@ body.modo-estudio-ia-page .modo-tutor-ia-canvas-panel.is-open .study-chat-canvas
 .modo-estudio-ia-page .ubits-study-chat__input-container {
     flex-direction: row;
     align-items: center;
-    padding: 8px 12px 8px 16px;
+    padding: var(--padding-sm) var(--padding-md) var(--padding-sm) var(--padding-md);
     gap: var(--gap-sm);
     min-height: 48px;
 }
@@ -732,12 +768,6 @@ body.modo-estudio-ia-page .modo-tutor-ia-canvas-panel.is-open .study-chat-canvas
     overflow: hidden;
 }
 
-.modo-estudio-ia-page .ubits-study-chat:not(.ubits-study-chat--welcome) .ubits-study-chat__input-bottom {
-    width: auto;
-    flex: 0 0 auto;
-    min-width: 0;
-}
-
 .modo-estudio-ia-page .ubits-study-chat:not(.ubits-study-chat--welcome) .ubits-study-chat__input-wrapper {
     min-width: 0;
     flex: 1 1 0;
@@ -750,15 +780,40 @@ body.modo-estudio-ia-page .modo-tutor-ia-canvas-panel.is-open .study-chat-canvas
     box-sizing: border-box;
 }
 
-/* Pantalla de bienvenida: input con borde azul, sin resplandor */
+/* Pantalla de bienvenida: input con borde en gradación animada; input-wrapper arriba, adjuntar y enviar en una fila abajo ocupando todo el ancho (uno a cada extremo) */
 .modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__input-container {
-    flex-direction: column;
-    align-items: stretch;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
     min-height: auto;
     padding: var(--padding-md);
     gap: var(--gap-md);
-    border: 1px solid var(--ubits-border-blue);
+    border: 1px solid transparent;
+    background: linear-gradient(var(--ubits-bg-1), var(--ubits-bg-1)) padding-box,
+        linear-gradient(90deg, var(--modo-ia-gradient-a), var(--modo-ia-gradient-b), var(--modo-ia-gradient-c), var(--modo-ia-gradient-a)) border-box;
+    background-size: 100% 100%, 300% 100%;
+    background-position: 0 0, 0% 50%;
+    background-origin: padding-box, border-box;
+    background-clip: padding-box, border-box;
+    animation: modo-estudio-ia-gradient-shift-border 5s ease-in-out infinite;
     box-shadow: none;
+}
+
+.modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__input-wrapper {
+    grid-row: 1;
+    grid-column: 1;
+}
+
+.modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__input-attach {
+    grid-row: 2;
+    grid-column: 1;
+    justify-self: start;
+}
+
+.modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__input-send {
+    grid-row: 2;
+    grid-column: 1;
+    justify-self: end;
 }
 
 [data-theme="dark"] .modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__input-container {
@@ -778,8 +833,8 @@ body.modo-estudio-ia-page .modo-tutor-ia-canvas-panel.is-open .study-chat-canvas
     font-size: var(--font-size-sm);
 }
 
-.modo-estudio-ia-page .ubits-study-chat__input-actions {
-    width: auto;
+.modo-estudio-ia-page .ubits-study-chat__input-attach,
+.modo-estudio-ia-page .ubits-study-chat__input-send {
     flex-shrink: 0;
 }
 

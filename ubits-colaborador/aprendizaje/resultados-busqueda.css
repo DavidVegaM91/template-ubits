@@ -1,0 +1,378 @@
+/* ========================================
+   ESTILOS ESPECÍFICOS PARA resultados-busqueda
+   Vista de resultados sin encabezado (grid 4 columnas x 5 filas = 20 cards)
+   ======================================== */
+
+.content-sections {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-2xl);
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+}
+
+.section-single > .widget-buscador-filtros,
+.section-single > .widget-grid-resultados {
+    padding: var(--padding-none) !important;
+    background: transparent !important;
+}
+
+/* Buscador arriba (hero) */
+.resultados-hero-buscador {
+    padding: 0 !important;
+    background: transparent !important;
+}
+
+.resultados-hero-buscador-inner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+/* Mismo comportamiento que catálogo: 600px en desktop, 100% desde 480px */
+.resultados-buscador-input-wrap--top {
+    width: 600px;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+}
+
+/* Que el contenedor y el input del componente ocupen todo el ancho del wrap */
+.resultados-buscador-input-wrap--top #resultados-buscador-input-container,
+.resultados-buscador-input-wrap--top #resultados-buscador-input-container .ubits-input-wrapper {
+    width: 100% !important;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+@media (max-width: 480px) {
+    .resultados-buscador-input-wrap--top {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+    }
+}
+
+/* Panel encabezado cerrable: visión IA + recursos */
+.resultados-overview-panel-wrapper {
+    padding: 0 !important;
+    background: transparent !important;
+    align-self: flex-start;
+    width: 100%;
+}
+
+.resultados-overview-panel {
+    background: var(--ubits-bg-1);
+    border-radius: var(--border-radius-sm);
+    box-sizing: border-box;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* Header tipo canvas: título + cerrar (sm) */
+.resultados-overview-panel__header {
+    padding: var(--padding-sm) var(--padding-lg);
+    border-bottom: 1px solid var(--ubits-border-1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.resultados-overview-panel__header-title {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    color: var(--ubits-fg-1-high);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.resultados-overview-panel__header-title i {
+    background: linear-gradient(135deg, var(--modo-ia-gradient-a) 0%, var(--modo-ia-gradient-b) 50%, var(--modo-ia-gradient-c) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* Body: dos columnas 50% */
+.resultados-overview-panel__body {
+    display: flex;
+    gap: var(--gap-2xl);
+    padding: var(--padding-lg);
+    align-items: flex-start;
+}
+
+.resultados-overview-panel__col {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: 50%;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.resultados-overview-panel__col--left {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+}
+
+.resultados-overview-panel__definition {
+    color: var(--ubits-fg-1-medium);
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-md);
+    line-height: 24px;
+}
+
+.resultados-overview-panel__skills-label {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--ubits-fg-1-high);
+    margin: 0;
+}
+
+.resultados-overview-panel__skills-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-xs);
+    align-items: center;
+}
+
+.resultados-subtema-link {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+.resultados-subtema-link:hover {
+    opacity: 0.9;
+}
+
+/* Footer: botón Probar Modo IA sm, alineado a la izquierda */
+.resultados-overview-panel__footer {
+    padding: var(--padding-sm) var(--padding-lg);
+    border-top: 1px solid var(--ubits-border-1);
+    display: flex;
+    justify-content: flex-start;
+}
+
+.resultados-recurso-cards {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--gap-md);
+    min-width: 0;
+}
+
+.resultados-recurso-option {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--gap-md);
+    padding: var(--padding-sm) var(--padding-md);
+    background: var(--ubits-bg-2);
+    border: none;
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.2s;
+    text-decoration: none;
+    color: inherit;
+    box-sizing: border-box;
+    min-width: 0;
+}
+
+.resultados-recurso-option-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    flex: 1;
+}
+
+.resultados-recurso-option-title {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--ubits-fg-1-high);
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.resultados-recurso-option-desc {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-xs);
+    line-height: 16px;
+    color: var(--ubits-fg-1-medium);
+    min-width: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.resultados-recurso-option:hover {
+    background: var(--ubits-bg-3);
+}
+
+.resultados-recurso-option-icon {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    border-radius: var(--border-radius-sm);
+    background: var(--ubits-accent-brand);
+    color: var(--ubits-btn-primary-fg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-sm);
+}
+
+/* Título y contador de resultados */
+.widget-buscador-filtros {
+    width: 100%;
+}
+
+.buscador-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.buscador-title-container {
+    display: flex;
+    gap: var(--gap-sm);
+    align-items: center;
+}
+
+.buscador-title {
+    color: var(--ubits-fg-1-high);
+    margin: 0;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    line-height: 24px;
+}
+
+.buscador-results {
+    display: flex;
+    gap: var(--gap-xs);
+    align-items: center;
+}
+
+.buscador-results-count {
+    color: var(--ubits-fg-1-medium);
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+}
+
+.buscador-results-text {
+    color: var(--ubits-fg-1-medium);
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+}
+
+/* Solo para el wrap dentro del header "Lista de contenidos" (no el hero de arriba) */
+.widget-buscador-filtros .resultados-buscador-input-wrap {
+    flex: 1;
+    min-width: 0;
+    max-width: 360px;
+}
+
+@media (max-width: 1023px) {
+    .widget-buscador-filtros .resultados-buscador-input-wrap {
+        max-width: 100%;
+        width: 100%;
+    }
+}
+
+.buscador-actions {
+    display: flex;
+    gap: var(--gap-sm);
+    align-items: center;
+    flex-shrink: 0;
+}
+
+/* Grid de cards: 4 columnas, 5 filas = 20 cards */
+.widget-grid-resultados {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-2xl);
+    width: 100%;
+}
+
+.resultados-grid-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--gap-2xl);
+}
+
+@media (max-width: 1365px) {
+    .resultados-grid-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 1023px) {
+    .content-sections {
+        gap: var(--gap-lg);
+    }
+    .buscador-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--gap-lg);
+    }
+    .buscador-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+    .resultados-grid-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--gap-lg);
+    }
+    /* Panel: columna única ancho completo */
+    .resultados-overview-panel-wrapper.section-single,
+    .resultados-overview-panel-wrapper {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    .resultados-overview-panel {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    .resultados-overview-panel__body {
+        flex-direction: column;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    .resultados-overview-panel__col {
+        flex: 1 1 auto;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+}
+
+@media (max-width: 480px) {
+    .resultados-recurso-cards {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .resultados-grid-container {
+        grid-template-columns: 1fr;
+    }
+}

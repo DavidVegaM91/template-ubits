@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="../../general-styles/styles.css">
     <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
     <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="./aprendizaje-ia-gradientes.css">
     <link rel="stylesheet" href="../../components/sub-nav.css">
     <link rel="stylesheet" href="../../components/sidebar.css">
     <link rel="stylesheet" href="../../components/tab-bar.css">
@@ -36,7 +37,7 @@
     <link rel="stylesheet" href="./modo-estudio-ia.css">
 </head>
 
-<body class="modo-estudio-ia-page modo-tutor-ia-page" data-theme="light">
+<body class="modo-estudio-ia-page modo-tutor-ia-page aprendizaje-ia-pages" data-theme="light">
     <div class="dashboard-container">
         <div class="tooltip" id="tooltip"></div>
 
@@ -200,6 +201,50 @@
                     }
                 });
             }
+
+            // Si se llegó desde resultados: tema+recurso -> "quiero un [recurso] de [tema]"; tema+subtema -> enviar tema y luego subtema para que pregunte qué recurso quiere
+            (function () {
+                var params = new URLSearchParams(window.location.search);
+                var tema = params.get('tema');
+                var recurso = params.get('recurso');
+                var subtema = params.get('subtema');
+                var input = document.getElementById('ubits-study-chat-input');
+                var sendBtn = document.getElementById('ubits-study-chat-send-btn');
+                if (!input || !sendBtn) return;
+
+                if (tema && recurso) {
+                    var message = 'quiero un ' + recurso + ' de ' + tema;
+                    setTimeout(function () {
+                        input.value = message;
+                        input.dispatchEvent(new Event('input', { bubbles: true }));
+                        sendBtn.click();
+                        window.history.replaceState({}, document.title, window.location.pathname + window.location.hash);
+                    }, 600);
+                    return;
+                }
+                if (tema && subtema) {
+                    setTimeout(function () {
+                        input.value = tema;
+                        input.dispatchEvent(new Event('input', { bubbles: true }));
+                        sendBtn.click();
+                    }, 600);
+                    setTimeout(function () {
+                        input.value = subtema;
+                        input.dispatchEvent(new Event('input', { bubbles: true }));
+                        sendBtn.click();
+                        window.history.replaceState({}, document.title, window.location.pathname + window.location.hash);
+                    }, 2200);
+                    return;
+                }
+                if (tema) {
+                    setTimeout(function () {
+                        input.value = tema;
+                        input.dispatchEvent(new Event('input', { bubbles: true }));
+                        sendBtn.click();
+                        window.history.replaceState({}, document.title, window.location.pathname + window.location.hash);
+                    }, 600);
+                }
+            })();
 
             // Panel historial: abrir (historial, chat y canvas pueden estar abiertos a la vez)
             function openHistorialPanel() {

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Resultados de búsqueda - UBITS</title>
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="./aprendizaje-ia-gradientes.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../components/tab-bar.css">
+    <link rel="stylesheet" href="../../components/floating-menu.css">
+    <link rel="stylesheet" href="../../components/profile-menu.css">
+    <link rel="stylesheet" href="../../components/avatar.css">
+    <link rel="stylesheet" href="../../components/card-content.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/ia-button.css">
+    <link rel="stylesheet" href="../../components/status-tag.css">
+    <link rel="stylesheet" href="../../components/empty-state.css">
+    <link rel="stylesheet" href="./profile.css">
+    <link rel="stylesheet" href="./resultados-busqueda.css">
+</head>
+<body class="aprendizaje-ia-pages" data-theme="light">
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div id="sidebar-container"></div>
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div class="content-area">
+                <div class="content-sections">
+                    <!-- Buscador arriba (como en catálogo) -->
+                    <div class="section-single resultados-hero-buscador">
+                        <div class="resultados-hero-buscador-inner">
+                            <div class="resultados-buscador-input-wrap resultados-buscador-input-wrap--top">
+                                <div id="resultados-buscador-input-container"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Panel encabezado cerrable: visión IA + recursos (solo si hay tema válido) -->
+                    <div class="section-single resultados-overview-panel-wrapper" id="resultados-overview-panel-wrapper" style="display: none;">
+                        <div class="resultados-overview-panel" id="resultados-overview-panel">
+                            <div class="resultados-overview-panel__header">
+                                <span class="resultados-overview-panel__header-title">
+                                    <i class="far fa-sparkles" aria-hidden="true"></i>
+                                    Resultado generado con IA
+                                </span>
+                                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only resultados-overview-panel-close" id="resultados-overview-panel-close" aria-label="Cerrar panel">
+                                    <i class="far fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="resultados-overview-panel__body">
+                                <div class="resultados-overview-panel__col resultados-overview-panel__col--left">
+                                    <div class="resultados-overview-panel__definition" id="resultados-overview-definition"></div>
+                                    <p class="resultados-overview-panel__skills-label ubits-body-md-bold">Habilidades</p>
+                                    <div class="resultados-overview-panel__skills-tags" id="resultados-overview-skills-list"></div>
+                                </div>
+                                <div class="resultados-overview-panel__col resultados-overview-panel__col--right">
+                                    <div class="resultados-recurso-cards" id="resultados-recurso-cards"></div>
+                                </div>
+                            </div>
+                            <div class="resultados-overview-panel__footer">
+                                <a href="modo-estudio-ia.html" id="resultados-probar-modo-ia-btn" class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--sm resultados-overview-panel-cta">
+                                    <i class="far fa-sparkles"></i>
+                                    <span>Probar Modo IA</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Buscador + grid -->
+                    <div class="section-single">
+                        <div class="widget-buscador-filtros">
+                            <div class="buscador-header">
+                                <div class="buscador-title-container">
+                                    <h2 class="buscador-title">Lista de contenidos</h2>
+                                    <div class="buscador-results">
+                                        <span class="buscador-results-count" id="resultados-count">0</span>
+                                        <span class="buscador-results-text">resultados</span>
+                                    </div>
+                                </div>
+                                <div class="buscador-actions">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only" aria-label="Filtros">
+                                        <i class="far fa-filter"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section-single">
+                        <div class="widget-grid-resultados">
+                            <div class="resultados-grid-container" id="resultados-cards-container"></div>
+                        </div>
+                        <div id="empty-state-resultados" style="display: none;"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="tab-bar-container"></div>
+    <div id="floating-menu-container"></div>
+    <div id="profile-menu-container"></div>
+
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/input.js"></script>
+    <script src="../../components/tab-bar.js"></script>
+    <script src="../../components/floating-menu.js"></script>
+    <script src="../../components/profile-menu.js"></script>
+    <script src="../../components/card-content.js"></script>
+    <script src="../../components/empty-state.js"></script>
+    <script src="../../script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSidebar('sidebar-container', 'aprendizaje');
+            loadSubNav('top-nav-container', 'aprendizaje');
+            loadTabBar('tab-bar-container');
+            loadFloatingMenu('floating-menu-container');
+            loadProfileMenu('profile-menu-container');
+
+            var temaValidos = { 'liderazgo': 'Liderazgo', 'inglés': 'Inglés', 'ingles': 'Inglés', 'comunicación': 'Comunicación', 'comunicacion': 'Comunicación' };
+            var params = new URLSearchParams(window.location.search);
+            var q = (params.get('q') || '').trim();
+            var temaNormalizado = temaValidos[q.toLowerCase()] || null;
+
+            var overviewData = {
+                Liderazgo: {
+                    definition: 'El liderazgo es la capacidad de influir y guiar a otras personas hacia metas comunes, desarrollando su potencial y generando impacto positivo. En UBITS puedes fortalecerlo con cursos sobre estilos de liderazgo, coaching e inteligencia emocional.',
+                    habilidades: ['Empoderamiento', 'Motivación', 'Pensamiento estratégico', 'Coaching de equipos']
+                },
+                Comunicación: {
+                    definition: 'La comunicación efectiva es la capacidad de transmitir ideas con claridad, escuchar activamente y adaptar el mensaje al contexto para lograr entendimiento mutuo. Mejorar en asertividad, hablar en público y redacción te ayuda en cualquier rol.',
+                    habilidades: ['Asertividad', 'Comunicación efectiva', 'Marca personal', 'Redacción y ortografía', 'Protocolo y etiqueta empresarial', 'Hablar en público', 'Gestión de stakeholders']
+                },
+                Inglés: {
+                    definition: 'El inglés laboral permite comunicarte en entornos profesionales: reuniones, correos, presentaciones y conversaciones con equipos globales. Trabajar grammar, listening y speaking te da ventaja en equipos internacionales.',
+                    habilidades: ['Grammar', 'Listening', 'Reading', 'Speaking', 'Writing', 'Vocabulary']
+                }
+            };
+
+            var recursoCards = [
+                { action: 'quiz', icon: 'fa-circle-question', title: 'Quiz', desc: 'Responde preguntas sobre el tema y recibe feedback inmediato.' },
+                { action: 'studyPlan', icon: 'fa-layer-group', title: 'Plan de estudio', desc: 'Crea un plan con tareas para ver contenidos UBITS sobre este tema.' },
+                { action: 'flashcards', icon: 'fa-bring-forward', title: 'Flashcards', desc: 'Crea un set de flashcards para repasar y afianzar conceptos.' },
+                { action: 'podcast', icon: 'fa-podcast', title: 'Podcast', desc: 'Escucha un podcast sobre este tema para aprender mientras haces otras cosas.' }
+            ];
+
+            var datosPorTema = {
+                'Liderazgo': [
+                    { type: 'Curso', title: 'Inducción a la cultura y valores corporativos', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/Inducción-a-la-cultura-y-valores-corporativos.jpg', competency: 'Liderazgo', language: 'Español' },
+                    { type: 'Curso', title: 'Prevención del acoso laboral', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/prevencion-acoso-laboral.jpg', competency: 'Liderazgo', language: 'Español' },
+                    { type: 'Curso', title: 'Seguridad y salud en el trabajo 2025', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/seguridad-y-salud-en-el-trabajo.jpg', competency: 'Liderazgo', language: 'Español' },
+                    { type: 'Curso', title: 'Cumplimiento normativo y código de conducta', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/Cumplimiento-normativo-y-código-de-conducta.jpg', competency: 'Liderazgo', language: 'Español' },
+                    { type: 'Curso', title: 'Gestión de equipos remotos e híbridos', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/gestion-equipos-remotos.jpg', competency: 'Liderazgo', language: 'Español' },
+                    { type: 'Curso', title: 'Delegación efectiva', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/delegacion-efectiva.jpg', competency: 'Liderazgo', language: 'Español' },
+                    { type: 'Curso', title: 'Cómo dar y recibir feedback', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/dar-y-recibir-feedback.jpg', competency: 'Liderazgo', language: 'Español' },
+                    { type: 'Curso', title: 'Comunicación asertiva para líderes', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/Comunicación-asertiva-para-líderes.jpg', competency: 'Liderazgo', language: 'Español' },
+                    { type: 'Curso', title: 'Motivación y reconocimiento del talento', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/motivacion-y-reconocimiento-del-talento.jpg', competency: 'Liderazgo', language: 'Español' },
+                    { type: 'Curso', title: 'Inducción a la cultura y valores corporativos', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/Inducción-a-la-cultura-y-valores-corporativos.jpg', competency: 'Liderazgo', language: 'Español' },
+                    { type: 'Curso', title: 'Prevención del acoso laboral', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/prevencion-acoso-laboral.jpg', competency: 'Liderazgo', language: 'Español' },
+                    { type: 'Curso', title: 'Seguridad y salud en el trabajo 2025', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/seguridad-y-salud-en-el-trabajo.jpg', competency: 'Liderazgo', language: 'Español' },
+                    { type: 'Curso', title: 'Cumplimiento normativo y código de conducta', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/Cumplimiento-normativo-y-código-de-conducta.jpg', competency: 'Liderazgo', language: 'Español' },
+                    { type: 'Curso', title: 'Gestión de equipos remotos e híbridos', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/gestion-equipos-remotos.jpg', competency: 'Liderazgo', language: 'Español' },
+                    { type: 'Curso', title: 'Delegación efectiva', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/delegacion-efectiva.jpg', competency: 'Liderazgo', language: 'Español' },
+                    { type: 'Curso', title: 'Cómo dar y recibir feedback', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/dar-y-recibir-feedback.jpg', competency: 'Liderazgo', language: 'Español' },
+                    { type: 'Curso', title: 'Comunicación asertiva para líderes', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/Comunicación-asertiva-para-líderes.jpg', competency: 'Liderazgo', language: 'Español' },
+                    { type: 'Curso', title: 'Motivación y reconocimiento del talento', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/motivacion-y-reconocimiento-del-talento.jpg', competency: 'Liderazgo', language: 'Español' },
+                    { type: 'Curso', title: 'Inducción a la cultura y valores corporativos', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/Inducción-a-la-cultura-y-valores-corporativos.jpg', competency: 'Liderazgo', language: 'Español' },
+                    { type: 'Curso', title: 'Prevención del acoso laboral', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/prevencion-acoso-laboral.jpg', competency: 'Liderazgo', language: 'Español' }
+                ],
+                'Comunicación': [
+                    { type: 'Curso', title: 'Comunicación efectiva en el trabajo', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/Comunicación-efectiva-en-el-trabajo.jpg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Curso', title: 'Gestión del tiempo y productividad', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/gestion-del-tiempo-y-productividad.jpg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Curso', title: 'Resolución efectiva de conflictos en equipos de trabajo', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/resolucion-de-conflictos.jpg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Curso', title: 'Pensamiento crítico y toma de decisiones', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '90 min', level: 'Intermedio', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/Pensamiento-crítico-y-toma-de-decisiones.jpg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Curso', title: 'Creatividad e innovación', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/creatividad-e-innovacion.jpg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Curso', title: 'Presentaciones de alto impacto', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/presentaciones-de-alto-impacto.jpg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Curso', title: 'Manejo del estrés laboral', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '30 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/manejo-del-estres-laboral.jpg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Curso', title: 'Trabajo en equipo y colaboración', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/trabajo-en-equipo.jpg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Curso', title: 'Comunicación efectiva en el trabajo', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/Comunicación-efectiva-en-el-trabajo.jpg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Curso', title: 'Gestión del tiempo y productividad', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/gestion-del-tiempo-y-productividad.jpg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Curso', title: 'Resolución efectiva de conflictos en equipos de trabajo', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/resolucion-de-conflictos.jpg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Curso', title: 'Pensamiento crítico y toma de decisiones', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '90 min', level: 'Intermedio', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/Pensamiento-crítico-y-toma-de-decisiones.jpg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Curso', title: 'Creatividad e innovación', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/creatividad-e-innovacion.jpg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Curso', title: 'Presentaciones de alto impacto', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/presentaciones-de-alto-impacto.jpg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Curso', title: 'Manejo del estrés laboral', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '30 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/manejo-del-estres-laboral.jpg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Curso', title: 'Trabajo en equipo y colaboración', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/trabajo-en-equipo.jpg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Curso', title: 'Comunicación efectiva en el trabajo', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/Comunicación-efectiva-en-el-trabajo.jpg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Curso', title: 'Gestión del tiempo y productividad', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/gestion-del-tiempo-y-productividad.jpg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Curso', title: 'Resolución efectiva de conflictos en equipos de trabajo', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/resolucion-de-conflictos.jpg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Curso', title: 'Pensamiento crítico y toma de decisiones', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '90 min', level: 'Intermedio', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/Pensamiento-crítico-y-toma-de-decisiones.jpg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Curso', title: 'Creatividad e innovación', provider: 'Figsha Smart Consulting', providerLogo: '../../images/Favicons/Figsha Smart Consulting.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/U-Corporativa/creatividad-e-innovacion.jpg', competency: 'Comunicación', language: 'Español' }
+                ],
+                'Inglés': (function() {
+                    var base = { type: 'Curso', provider: 'UBITS', providerLogo: '../../images/Favicons/UBITS.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/academias/academia-ingles.jpg', competency: 'Inglés', language: 'Español' };
+                    var titulos = ['Inglés para negocios', 'Grammar essentials', 'Listening y comprensión', 'Speaking con confianza', 'Writing profesional', 'Vocabulary en contexto', 'Inglés en reuniones', 'Presentaciones en inglés', 'Email y redacción', 'Reading técnico', 'Pronunciación clara', 'Inglés para ventas', 'Negociación en inglés', 'Inglés para equipos', 'Phrasal verbs en uso', 'Inglés para atención al cliente', 'Entrevistas en inglés', 'Inglés para proyectos', 'Small talk y networking', 'Inglés para liderazgo'];
+                    return titulos.map(function(t) { var c = Object.assign({}, base); c.title = t; return c; });
+                })()
+            };
+
+            var container = document.getElementById('resultados-cards-container');
+            var emptyEl = document.getElementById('empty-state-resultados');
+            var countEl = document.getElementById('resultados-count');
+
+            if (temaNormalizado && datosPorTema[temaNormalizado]) {
+                var cards = datosPorTema[temaNormalizado];
+                if (countEl) countEl.textContent = cards.length;
+                container.style.display = 'grid';
+                if (emptyEl) emptyEl.style.display = 'none';
+                if (typeof loadCardContent === 'function') loadCardContent('resultados-cards-container', cards);
+
+                var panelWrapper = document.getElementById('resultados-overview-panel-wrapper');
+                var data = overviewData[temaNormalizado];
+                if (panelWrapper && data) {
+                    panelWrapper.style.display = 'block';
+                    document.getElementById('resultados-overview-definition').textContent = data.definition;
+                    var skillsList = document.getElementById('resultados-overview-skills-list');
+                    skillsList.innerHTML = data.habilidades.map(function(h) {
+                        var url = 'modo-estudio-ia.html?tema=' + encodeURIComponent(temaNormalizado) + '&subtema=' + encodeURIComponent(h);
+                        return '<a href="' + url + '" class="ubits-status-tag ubits-status-tag--neutral ubits-status-tag--sm resultados-subtema-link"><span class="ubits-status-tag__text">' + h.replace(/</g, '&lt;') + '</span></a>';
+                    }).join('');
+                    var recursoContainer = document.getElementById('resultados-recurso-cards');
+                    recursoContainer.innerHTML = recursoCards.map(function(r) {
+                        var url = 'modo-estudio-ia.html?tema=' + encodeURIComponent(temaNormalizado) + '&recurso=' + encodeURIComponent(r.title);
+                        return '<a href="' + url + '" class="resultados-recurso-option">' +
+                            '<span class="resultados-recurso-option-icon"><i class="far ' + r.icon + '"></i></span>' +
+                            '<div class="resultados-recurso-option-text">' +
+                            '<span class="resultados-recurso-option-title">' + r.title + '</span>' +
+                            '<span class="resultados-recurso-option-desc">' + r.desc + '</span></div></a>';
+                    }).join('');
+                    document.getElementById('resultados-overview-panel-close').onclick = function() {
+                        panelWrapper.style.display = 'none';
+                    };
+                    var probarModoBtn = document.getElementById('resultados-probar-modo-ia-btn');
+                    if (probarModoBtn) probarModoBtn.href = 'modo-estudio-ia.html?tema=' + encodeURIComponent(temaNormalizado);
+                }
+            } else {
+                if (countEl) countEl.textContent = '0';
+                container.style.display = 'none';
+                if (emptyEl) {
+                    emptyEl.style.display = 'flex';
+                    emptyEl.className = '';
+                    emptyEl.innerHTML = '';
+                    if (typeof loadEmptyState === 'function') {
+                        loadEmptyState('empty-state-resultados', {
+                            icon: 'fa-search',
+                            iconSize: 'lg',
+                            title: 'Sin resultados',
+                            description: 'Busca por Liderazgo, Inglés o Comunicación en el catálogo para ver contenidos.',
+                            buttons: { primary: { text: 'Ir al catálogo', icon: 'fa-arrow-left', onClick: function() {} } }
+                        });
+                        var btn = emptyEl.querySelector('.ubits-button--primary');
+                        if (btn) btn.onclick = function() { window.location.href = 'catalogo.html'; };
+                    }
+                }
+            }
+
+            if (typeof createInput === 'function') {
+                var searchValue = temaNormalizado || q || '';
+                createInput({
+                    containerId: 'resultados-buscador-input-container',
+                    type: 'search',
+                    placeholder: 'Buscar un tema, competencia o habilidad...',
+                    size: 'lg',
+                    value: searchValue,
+                    onChange: function(value) {
+                        if ((value || '').trim() === '') {
+                            window.location.href = 'catalogo.html';
+                        }
+                    }
+                });
+                var searchInputEl = document.querySelector('#resultados-buscador-input-container input');
+                if (searchInputEl) {
+                    searchInputEl.addEventListener('keydown', function(e) {
+                        if (e.key === 'Enter') {
+                            var val = (this.value || '').trim();
+                            var v = val.toLowerCase();
+                            if (v === 'liderazgo' || v === 'ingles' || v === 'inglés' || v === 'comunicacion' || v === 'comunicación') {
+                                var label = v === 'liderazgo' ? 'Liderazgo' : (v === 'ingles' || v === 'inglés') ? 'Inglés' : 'Comunicación';
+                                window.location.href = 'resultados-busqueda.html?q=' + encodeURIComponent(label);
+                            }
+                        }
+                    });
+                }
+            }
+
+            setTimeout(function() {
+                var aprendizajeBtn = document.querySelector('.nav-button[data-section="aprendizaje"]');
+                if (aprendizajeBtn) {
+                    document.querySelectorAll('.nav-button').forEach(function(b) { b.classList.remove('active'); });
+                    aprendizajeBtn.classList.add('active');
+                }
+                if (typeof setActiveAccordionLink === 'function') setActiveAccordionLink('catalogo');
+            }, 200);
+        });
+    </script>
+</body>
+</html>

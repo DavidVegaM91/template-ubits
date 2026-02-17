@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="../../general-styles/styles.css">
     <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
     <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="./aprendizaje-ia-gradientes.css">
     <link rel="stylesheet" href="../../components/sub-nav.css">
     <link rel="stylesheet" href="../../components/sidebar.css">
     <link rel="stylesheet" href="../../components/tab-bar.css">
@@ -25,7 +26,7 @@
     <link rel="stylesheet" href="./profile.css">
     <link rel="stylesheet" href="./catalogo.css">
 </head>
-<body data-theme="light">
+<body class="aprendizaje-ia-pages" data-theme="light">
     <div class="dashboard-container">
         <div class="tooltip" id="tooltip"></div>
         
@@ -573,26 +574,29 @@
                         searchContainer.appendChild(suggestionsContainer);
                     }
                     
-                    // Listener simple para input
-                    // Listener simple para input - solo mostrar sugerencias, no buscar
+                    // Listener simple para input - solo mostrar sugerencias
                     searchInput.addEventListener('input', function(e) {
                         const value = this.value;
                         console.log('📝 Input cambiado:', value);
-                        
-                        // Si el input está vacío, ocultar sugerencias
                         if (value === '') {
                             const suggestionsContainer = document.getElementById('search-suggestions-container');
-                            if (suggestionsContainer) {
-                                suggestionsContainer.classList.remove('visible');
-                            }
+                            if (suggestionsContainer) suggestionsContainer.classList.remove('visible');
                         } else {
-                            // Solo mostrar sugerencias si hay texto
                             showSuggestions(value);
                         }
-                        // NO llamar handleSearch - la búsqueda está desactivada
                     });
-                    
-                    // El botón X ya está oculto, no necesitamos listener para él
+
+                    // Enter: si el valor es Liderazgo, Inglés o Comunicación, ir a resultados
+                    searchInput.addEventListener('keydown', function(e) {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            var val = (this.value || '').trim();
+                            var v = val.toLowerCase();
+                            if (v === 'liderazgo' || v === 'ingles' || v === 'inglés' || v === 'comunicacion' || v === 'comunicación') {
+                                irAResultados(val);
+                            }
+                        }
+                    });
                     
                     // Ocultar al hacer clic fuera
                     document.addEventListener('click', function(e) {
@@ -799,29 +803,26 @@
 
         // Función para renderizar chips de búsquedas frecuentes
         function renderChips() {
-            const busquedasFrecuentes = [
-                'Liderazgo',
-                'Product Design',
-                'Marketing Digital',
-                'Desarrollo de Software',
-                'Data Skills'
-            ];
-
+            const busquedasFrecuentes = ['Liderazgo', 'Inglés', 'Comunicación'];
             const chipsContainer = document.getElementById('catalog-chips');
             chipsContainer.innerHTML = busquedasFrecuentes.map(busqueda => `
-                <div class="catalog-chip" onclick="handleChipClick('${busqueda}')">
+                <div class="catalog-chip" onclick="handleChipClick('${busqueda.replace(/'/g, "\\'")}')">
                     <span class="ubits-body-sm-regular">${busqueda}</span>
                 </div>
             `).join('');
         }
 
-        // Función para manejar click en chip
+        function irAResultados(tema) {
+            var n = (tema || '').trim();
+            if (!n) return;
+            var normalizado = n.toLowerCase();
+            if (normalizado === 'liderazgo') { window.location.href = 'resultados-busqueda.html?q=' + encodeURIComponent('Liderazgo'); return; }
+            if (normalizado === 'ingles' || normalizado === 'inglés') { window.location.href = 'resultados-busqueda.html?q=' + encodeURIComponent('Inglés'); return; }
+            if (normalizado === 'comunicacion' || normalizado === 'comunicación') { window.location.href = 'resultados-busqueda.html?q=' + encodeURIComponent('Comunicación'); return; }
+        }
+
         function handleChipClick(busqueda) {
-            const searchInput = document.querySelector('#catalog-search-container input');
-            if (searchInput) {
-                searchInput.value = busqueda;
-                searchInput.dispatchEvent(new Event('input', { bubbles: true }));
-            }
+            irAResultados(busqueda);
         }
 
         // Función de búsqueda

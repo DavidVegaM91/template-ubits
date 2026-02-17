@@ -341,13 +341,9 @@
     /* Sin radius en esquina inferior izquierda */
 }
 
-/* Mensaje de usuario: gradiente azul fijo tipo Messenger (azul botón a más oscuro, texto blanco; las burbujas “revelan” la porción que les toca) */
+/* Mensaje de usuario: misma gradación que el icono de bienvenida del chat (sparkles) */
 .ubits-study-chat__text-globe--user {
-    background: linear-gradient(to bottom,
-            var(--ubits-button-active-bg) 0%,
-            var(--ubits-bg-blue-bold-default) 50%,
-            var(--ubits-logo) 100%);
-    background-attachment: fixed;
+    background: linear-gradient(135deg, rgb(0, 215, 255) 0%, rgb(0, 152, 253) 50%, rgb(0, 89, 250) 100%);
     color: var(--ubits-btn-primary-fg);
     border-radius: var(--border-radius-sm);
     border-bottom-right-radius: 0;
@@ -751,16 +747,7 @@
     border-radius: var(--border-radius-md);
     padding: var(--padding-md);
     display: flex;
-    flex-direction: column;
-    gap: var(--gap-md);
-    align-items: stretch;
-    width: 100%;
-}
-
-.ubits-study-chat__input-bottom {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+    flex-direction: row;
     align-items: center;
     gap: var(--gap-sm);
     width: 100%;
@@ -769,7 +756,8 @@
 .ubits-study-chat__input-wrapper {
     display: flex;
     align-items: center;
-    width: 100%;
+    flex: 1;
+    min-width: 0;
     gap: var(--gap-none);
 }
 
@@ -804,12 +792,10 @@
     color: var(--ubits-fg-1-medium);
 }
 
-/* Acciones del input - botones usan componente oficial ubits-button (alineados a la derecha en input-bottom) */
-.ubits-study-chat__input-actions {
-    display: flex;
-    align-items: center;
-    gap: var(--gap-sm);
-    margin-left: auto;
+/* Botones adjuntar y enviar del input (orden: adjuntar | input | enviar cuando el chat está iniciado) */
+.ubits-study-chat__input-attach,
+.ubits-study-chat__input-send {
+    flex-shrink: 0;
 }
 
 /* Chips de competencias (Modo Tutor empty state) */
