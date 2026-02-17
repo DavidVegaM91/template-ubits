@@ -12,14 +12,25 @@
     if (modalsContainer) {
         var filtrosBody = '<div class="filtros-group"><label class="ubits-body-sm-bold filtros-label">Buscar asignados</label><div id="filtros-buscar-personas"></div></div>' +
             '<div class="filtros-group"><label class="ubits-body-sm-bold filtros-label">Buscar áreas</label><div id="filtros-areas"></div></div>' +
-            '<div class="filtros-group filtros-group-row"><div class="filtros-field"><label class="ubits-body-sm-bold filtros-label">Estado</label><div class="filtros-checkbox-list" id="filtros-estado">' +
+            '<div class="filtros-group filtros-group-row" id="filtros-group-row">' +
+            '<div class="filtros-select-wrap" data-filter-type="estado">' +
+            '<label class="ubits-body-sm-bold filtros-label" for="filtros-estado-trigger">Estado</label>' +
+            '<div class="filtros-select-trigger ubits-input ubits-input--md" id="filtros-estado-trigger" role="combobox" aria-expanded="false" aria-haspopup="listbox" aria-controls="filtros-estado-dropdown" tabindex="0">' +
+            '<span class="filtros-select-trigger-text" id="filtros-estado-trigger-text">Seleccionar estado</span><i class="far fa-chevron-down filtros-select-chevron"></i></div>' +
+            '<div class="filtros-select-dropdown" id="filtros-estado-dropdown" role="listbox" aria-hidden="true">' +
+            '<div class="filtros-checkbox-list" id="filtros-estado">' +
             '<label class="filtros-checkbox-option"><input type="checkbox" value="Iniciada"><span class="ubits-body-sm-regular">Iniciada</span></label>' +
             '<label class="filtros-checkbox-option"><input type="checkbox" value="Vencida"><span class="ubits-body-sm-regular">Vencida</span></label>' +
-            '<label class="filtros-checkbox-option"><input type="checkbox" value="Finalizada"><span class="ubits-body-sm-regular">Finalizada</span></label></div></div>' +
-            '<div class="filtros-field"><label class="ubits-body-sm-bold filtros-label">Prioridad</label><div class="filtros-checkbox-list" id="filtros-prioridad">' +
+            '<label class="filtros-checkbox-option"><input type="checkbox" value="Finalizada"><span class="ubits-body-sm-regular">Finalizada</span></label></div></div></div>' +
+            '<div class="filtros-select-wrap" id="filtros-prioridad-wrap" data-filter-type="prioridad">' +
+            '<label class="ubits-body-sm-bold filtros-label" for="filtros-prioridad-trigger">Prioridad</label>' +
+            '<div class="filtros-select-trigger ubits-input ubits-input--md" id="filtros-prioridad-trigger" role="combobox" aria-expanded="false" aria-haspopup="listbox" aria-controls="filtros-prioridad-dropdown" tabindex="0">' +
+            '<span class="filtros-select-trigger-text" id="filtros-prioridad-trigger-text">Seleccionar prioridad</span><i class="far fa-chevron-down filtros-select-chevron"></i></div>' +
+            '<div class="filtros-select-dropdown" id="filtros-prioridad-dropdown" role="listbox" aria-hidden="true">' +
+            '<div class="filtros-checkbox-list" id="filtros-prioridad">' +
             '<label class="filtros-checkbox-option"><input type="checkbox" value="Alta"><span class="ubits-body-sm-regular">Alta</span></label>' +
             '<label class="filtros-checkbox-option"><input type="checkbox" value="Media"><span class="ubits-body-sm-regular">Media</span></label>' +
-            '<label class="filtros-checkbox-option"><input type="checkbox" value="Baja"><span class="ubits-body-sm-regular">Baja</span></label></div></div></div>';
+            '<label class="filtros-checkbox-option"><input type="checkbox" value="Baja"><span class="ubits-body-sm-regular">Baja</span></label></div></div></div></div>';
         var filtrosFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="filtros-limpiar">Limpiar filtros</button>' +
             '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="filtros-aplicar">Aplicar filtros</button>';
         if (typeof getDrawerHtml === 'function') {
@@ -206,6 +217,21 @@
         });
     }
 
+    // Indica si el filtro de una columna está activo (tiene valores seleccionados)
+    function isColumnFilterActive(col, buttonType) {
+        if (buttonType === 'checkbox') {
+            if (col === 'estado') return currentFilters.estado.length > 0;
+            if (col === 'prioridad') return currentFilters.prioridad.length > 0;
+            return false;
+        }
+        if (buttonType === 'filter') {
+            if (col === 'asignado') return currentFilters.persona.length > 0;
+            if (['area', 'creador', 'plan'].indexOf(col) >= 0) return currentFilters[col].length > 0;
+            return false;
+        }
+        return false;
+    }
+
     // Construir cabecera de tabla según tab activo (Tareas o Planes)
     function buildTableHeader() {
         const theadRow = document.getElementById('seguimiento-thead-row');
@@ -241,17 +267,22 @@
             const visible = columnVisibility[col] !== false;
             const style = visible ? '' : ' style="display:none;"';
             if (col === 'estado' && activeTab === 'tareas') {
-                html += `<th class="seguimiento-th-filterable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-checkbox-btn" data-checkbox="estado" aria-label="Filtrar por estado"><i class="far fa-filter"></i></button></th>`;
+                var activeClass = isColumnFilterActive('estado', 'checkbox') ? ' seguimiento-checkbox-btn--active' : '';
+                html += `<th class="seguimiento-th-filterable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-checkbox-btn${activeClass}" data-checkbox="estado" aria-label="Filtrar por estado"><i class="far fa-filter"></i></button></th>`;
             } else if (col === 'prioridad' && activeTab === 'tareas') {
-                html += `<th class="seguimiento-th-filterable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-checkbox-btn" data-checkbox="prioridad" aria-label="Filtrar por prioridad"><i class="far fa-filter"></i></button></th>`;
+                var activeClass = isColumnFilterActive('prioridad', 'checkbox') ? ' seguimiento-checkbox-btn--active' : '';
+                html += `<th class="seguimiento-th-filterable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-checkbox-btn${activeClass}" data-checkbox="prioridad" aria-label="Filtrar por prioridad"><i class="far fa-filter"></i></button></th>`;
             } else if ((col === 'fechaCreacion' || col === 'fechaFinalizacion') && (activeTab === 'tareas' || activeTab === 'planes')) {
                 html += `<th class="seguimiento-th-sortable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-date-sort-btn" data-sort="${col}" aria-label="Ordenar por ${label}"><i class="far fa-arrow-up-arrow-down"></i></button></th>`;
             } else if (activeTab === 'tareas' && ['asignado', 'area', 'creador', 'plan'].indexOf(col) >= 0) {
-                html += `<th class="seguimiento-th-filterable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-filter-btn" data-filter="${col}" aria-label="Filtrar por ${label}"><i class="far fa-filter"></i></button></th>`;
+                var activeClass = isColumnFilterActive(col, 'filter') ? ' seguimiento-filter-btn--active' : '';
+                html += `<th class="seguimiento-th-filterable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-filter-btn${activeClass}" data-filter="${col}" aria-label="Filtrar por ${label}"><i class="far fa-filter"></i></button></th>`;
             } else if (activeTab === 'planes' && col === 'creador') {
-                html += `<th class="seguimiento-th-filterable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-filter-btn" data-filter="${col}" aria-label="Filtrar por ${label}"><i class="far fa-filter"></i></button></th>`;
+                var activeClass = isColumnFilterActive('creador', 'filter') ? ' seguimiento-filter-btn--active' : '';
+                html += `<th class="seguimiento-th-filterable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-filter-btn${activeClass}" data-filter="${col}" aria-label="Filtrar por ${label}"><i class="far fa-filter"></i></button></th>`;
             } else if (activeTab === 'planes' && col === 'estado') {
-                html += `<th class="seguimiento-th-filterable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-checkbox-btn" data-checkbox="estado" aria-label="Filtrar por estado"><i class="far fa-filter"></i></button></th>`;
+                var activeClass = isColumnFilterActive('estado', 'checkbox') ? ' seguimiento-checkbox-btn--active' : '';
+                html += `<th class="seguimiento-th-filterable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-checkbox-btn${activeClass}" data-checkbox="estado" aria-label="Filtrar por estado"><i class="far fa-filter"></i></button></th>`;
             } else if (activeTab === 'planes' && col === 'avance') {
                 html += `<th class="seguimiento-th-sortable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only seguimiento-date-sort-btn" data-sort="${col}" aria-label="Ordenar por ${label}"><i class="far fa-arrow-up-arrow-down"></i></button></th>`;
             } else {
@@ -1195,6 +1226,7 @@
 
     // Renderizar tabla
     function renderTable() {
+        buildTableHeader(); // Actualiza estado activo de los botones de filtro en encabezados
         const tbody = document.getElementById('seguimiento-tbody');
         const tableWrapper = document.querySelector('.widget-tabla-seguimiento');
         const emptyStateContainer = document.getElementById('seguimiento-empty-state');
@@ -1964,12 +1996,13 @@
             document.querySelectorAll('#filtros-prioridad input').forEach(function(cb) {
                 cb.checked = currentFilters.prioridad.indexOf(cb.value) >= 0;
             });
-            // Prioridad solo aplica a Tareas: ocultar bloque en tab Planes
-            var prioridadEl = document.getElementById('filtros-prioridad');
-            if (prioridadEl) {
-                var prioridadField = prioridadEl.closest('.filtros-field');
-                if (prioridadField) prioridadField.style.display = activeTab === 'tareas' ? '' : 'none';
-            }
+            // Prioridad solo aplica a Tareas: ocultar bloque en tab Planes; en Planes el select Estado ocupa todo el ancho
+            var prioridadWrap = document.getElementById('filtros-prioridad-wrap');
+            if (prioridadWrap) prioridadWrap.style.display = activeTab === 'tareas' ? '' : 'none';
+            var groupRow = document.getElementById('filtros-group-row');
+            if (groupRow) groupRow.classList.toggle('filtros-group-row--single', activeTab !== 'tareas');
+            // Inicializar dropdowns de Estado y Prioridad (select con checkboxes)
+            initFilterSelectDropdowns();
         }
     }
 
@@ -1978,6 +2011,77 @@
         if (overlay) {
             overlay.style.display = 'none';
             overlay.setAttribute('aria-hidden', 'true');
+        }
+    }
+
+    function updateFilterSelectTriggerText(triggerTextId, checkboxContainerId, placeholder) {
+        var container = document.getElementById(checkboxContainerId);
+        var textEl = document.getElementById(triggerTextId);
+        if (!container || !textEl) return;
+        var checked = container.querySelectorAll('input:checked');
+        var labels = Array.from(checked).map(function (cb) { return cb.value; });
+        textEl.textContent = labels.length > 0 ? labels.join(', ') : placeholder;
+        var wrap = textEl.closest('.filtros-select-wrap');
+        var trigger = wrap ? wrap.querySelector('.filtros-select-trigger') : null;
+        if (trigger) trigger.classList.toggle('filtros-select-has-value', labels.length > 0);
+    }
+
+    function initFilterSelectDropdowns() {
+        var configs = [
+            { triggerId: 'filtros-estado-trigger', dropdownId: 'filtros-estado-dropdown', listId: 'filtros-estado', triggerTextId: 'filtros-estado-trigger-text', placeholder: 'Seleccionar estado' },
+            { triggerId: 'filtros-prioridad-trigger', dropdownId: 'filtros-prioridad-dropdown', listId: 'filtros-prioridad', triggerTextId: 'filtros-prioridad-trigger-text', placeholder: 'Seleccionar prioridad' }
+        ];
+        configs.forEach(function (cfg) {
+            var trigger = document.getElementById(cfg.triggerId);
+            var dropdown = document.getElementById(cfg.dropdownId);
+            if (!trigger || !dropdown) return;
+            updateFilterSelectTriggerText(cfg.triggerTextId, cfg.listId, cfg.placeholder);
+            trigger.onclick = function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+                var isOpen = dropdown.classList.contains('is-open');
+                configs.forEach(function (c) {
+                    var d = document.getElementById(c.dropdownId);
+                    var t = document.getElementById(c.triggerId);
+                    if (d) { d.setAttribute('aria-hidden', 'true'); d.classList.remove('is-open'); d.removeAttribute('style'); }
+                    if (t) t.setAttribute('aria-expanded', 'false');
+                });
+                if (isOpen) return;
+                var rect = trigger.getBoundingClientRect();
+                dropdown.style.position = 'fixed';
+                dropdown.style.top = (rect.bottom + 4) + 'px';
+                dropdown.style.left = rect.left + 'px';
+                dropdown.style.right = 'auto';
+                dropdown.style.width = rect.width + 'px';
+                dropdown.style.minWidth = rect.width + 'px';
+                dropdown.setAttribute('aria-hidden', 'false');
+                dropdown.classList.add('is-open');
+                trigger.setAttribute('aria-expanded', 'true');
+            };
+            dropdown.querySelectorAll('input[type="checkbox"]').forEach(function (cb) {
+                cb.addEventListener('change', function () {
+                    updateFilterSelectTriggerText(cfg.triggerTextId, cfg.listId, cfg.placeholder);
+                });
+            });
+        });
+        var overlay = document.getElementById('filtros-modal-overlay');
+        function closeAllFilterDropdowns() {
+            configs.forEach(function (c) {
+                var d = document.getElementById(c.dropdownId);
+                var t = document.getElementById(c.triggerId);
+                if (d) { d.setAttribute('aria-hidden', 'true'); d.classList.remove('is-open'); }
+                if (t) t.setAttribute('aria-expanded', 'false');
+            });
+        }
+        if (overlay) {
+            overlay.removeEventListener('click', closeAllFilterDropdowns);
+            overlay.addEventListener('click', function (e) {
+                if (e.target === overlay || e.target.closest('.ubits-drawer-content')) {
+                    var inDropdown = e.target.closest('.filtros-select-dropdown');
+                    var onTrigger = e.target.closest('.filtros-select-trigger');
+                    if (!inDropdown && !onTrigger) closeAllFilterDropdowns();
+                }
+            });
         }
     }
 
@@ -2481,14 +2585,12 @@
 
     // Inicializar modales
     function initModals() {
-        // Modal filtros
-        const filtersBtn = document.getElementById('seguimiento-filters-toggle');
+        // Drawer de filtros ya no se abre desde botón (se eliminó por feedback; se usan filtros de encabezados de tabla)
         const filtersClose = document.getElementById('filtros-modal-close');
         const filtersLimpiar = document.getElementById('filtros-limpiar');
         const filtersAplicar = document.getElementById('filtros-aplicar');
         const filtersOverlay = document.getElementById('filtros-modal-overlay');
 
-        if (filtersBtn) filtersBtn.addEventListener('click', openFiltersModal);
         if (filtersClose) filtersClose.addEventListener('click', closeFiltersModal);
         if (filtersLimpiar) filtersLimpiar.addEventListener('click', function() {
             clearFilters();

@@ -71,9 +71,6 @@
                                         <i class="far fa-magnifying-glass"></i>
                                     </button>
                                     <div id="seguimiento-search-container" class="seguimiento-search-inline" style="display: none;"></div>
-                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only" id="seguimiento-filters-toggle" aria-label="Filtros">
-                                        <i class="far fa-filter"></i>
-                                    </button>
                                     <button type="button" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only" id="seguimiento-columns-toggle" aria-label="Columnas">
                                         <i class="far fa-columns-3"></i>
                                     </button>
@@ -82,16 +79,6 @@
                                         <i class="far fa-chevron-down"></i>
                                     </button>
                                 </div>
-                            </div>
-
-                            <!-- Filtros aplicados (chips) -->
-                            <div class="widget-filtros-aplicados" id="seguimiento-filtros-aplicados" style="display: none;">
-                                <span class="ubits-body-sm-regular">Filtros aplicados:</span>
-                                <div class="filtros-chips-container" id="filtros-chips-container"></div>
-                                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs seguimiento-clear-filters-btn" id="seguimiento-clear-filters-btn" aria-label="Limpiar todos los filtros">
-                                    <i class="far fa-filter-slash"></i>
-                                    <span>Limpiar filtros</span>
-                                </button>
                             </div>
 
                             <!-- Indicadores -->
@@ -150,6 +137,16 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+
+                            <!-- Filtros aplicados (chips) - debajo de indicadores -->
+                            <div class="widget-filtros-aplicados" id="seguimiento-filtros-aplicados" style="display: none;">
+                                <span class="ubits-body-sm-regular">Filtros aplicados:</span>
+                                <div class="filtros-chips-container" id="filtros-chips-container"></div>
+                                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs seguimiento-clear-filters-btn" id="seguimiento-clear-filters-btn" aria-label="Limpiar todos los filtros">
+                                    <i class="far fa-filter-slash"></i>
+                                    <span>Limpiar filtros</span>
+                                </button>
                             </div>
 
                             <!-- Action bar (solo cuando hay selección) -->
