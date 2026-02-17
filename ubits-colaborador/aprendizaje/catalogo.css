@@ -132,10 +132,17 @@
     animation: aprendizaje-ia-gradient-border 5s ease-in-out infinite;
 }
 #catalogo-modo-ia-btn i {
-    background: linear-gradient(135deg, #FFCD69 0%, #FF7B4B 50%, #FF5416 100%);
+    background: linear-gradient(90deg, #FFCD69, #FF7B4B, #FF5416, #FFCD69);
+    background-size: 300% 100%;
+    background-position: 0% 50%;
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    animation: catalogo-modo-ia-icon-gradient 5s ease-in-out infinite;
+}
+@keyframes catalogo-modo-ia-icon-gradient {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
 }
 
 .search-suggestions-container {

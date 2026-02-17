@@ -700,13 +700,19 @@ function setCanvasPanelOpen(open) {
     document.body.classList.toggle('canvas-panel-open', !!open);
 }
 
-function getCanvasLoaderHTML() {
+/**
+ * @param {string} [title] - Título del header del loader (default: 'Recurso').
+ * @param {string} [bodyText] - Texto del cuerpo (default: 'Generando recurso...').
+ */
+function getCanvasLoaderHTML(title, bodyText) {
+    var headerTitle = (title !== undefined && title !== '') ? title : 'Recurso';
+    var text = (bodyText !== undefined && bodyText !== '') ? bodyText : 'Generando recurso...';
     var loaderBody = (typeof getLoaderHTML === 'function')
-        ? getLoaderHTML({ text: 'Generando recurso...', wrap: false })
-        : '<span class="ubits-loader"></span><p class="ubits-loader-text ubits-body-md-regular">Generando recurso...</p>';
+        ? getLoaderHTML({ text: text, wrap: false })
+        : '<span class="ubits-loader"></span><p class="ubits-loader-text ubits-body-md-regular">' + text + '</p>';
     return '<div class="study-chat-canvas-content study-chat-canvas-content--generating">' +
         '<div class="study-chat-canvas-header">' +
-        '<span class="ubits-body-md-bold">Recurso</span>' +
+        '<span class="ubits-body-md-bold">' + headerTitle + '</span>' +
         '<button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only study-chat-canvas-close" title="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>' +
         '</div>' +
         '<div class="study-chat-canvas-body study-chat-canvas-body--generating">' +
@@ -798,7 +804,14 @@ function renderTutorPanel(type, topic, extraData) {
             return;
         }
     } else if (type === 'searchResults') {
-        // --- PANEL DE RESULTADOS DE BÚSQUEDA ---
+        // --- PANEL DE RESULTADOS DE BÚSQUEDA (Sugerencias de contenido) ---
+        // Mostrar de inmediato el loader con el título correcto (no "Recurso")
+        var suggestionsTitle = 'Sugerencias de contenido';
+        var suggestionsBody = 'Cargando sugerencias de contenido...';
+        panel.innerHTML = getCanvasLoaderHTML(suggestionsTitle, suggestionsBody);
+        panel.classList.add('has-content');
+        if (placeholder) placeholder.style.display = 'none';
+
         var filters = extraData && extraData.filters ? extraData.filters : {};
         var mockResults = generateMockSearchResults(topicKey, filters);
         var initialResults = mockResults.slice(0, 10);
@@ -825,10 +838,6 @@ function renderTutorPanel(type, topic, extraData) {
                 </div>` : ''}
             </div>
         </div>`;
-
-        panel.innerHTML = getCanvasLoaderHTML();
-        panel.classList.add('has-content');
-        if (placeholder) placeholder.style.display = 'none';
 
         setTimeout(function () {
             var contentHtml = html.replace(/class="study-chat-canvas-content study-chat-canvas-results"/, 'class="study-chat-canvas-content study-chat-canvas-results study-chat-canvas-content--reveal-stagger"');
@@ -2059,6 +2068,7 @@ let chatState = {
     canvasResourceGenerated: {}, // 'quiz:liderazgo', 'flashcards:liderazgo', etc. Si está generado no se muestra loader al reabrir
     shownFcSetIndex: {},  // por tema: 0, 1, 2 para TUTOR_FLASHCARDS, _ALT, _SET2
     shownPlanIndex: {},   // por tema: variante del plan (diferentes cortes de cursos)
+    hasOpenedWelcomeContentCanvas: false, // true tras abrir "Sugerencias de contenido" desde un chip de primera interacción (Liderazgo/Inglés/Comunicación)
     // Historial y nuevo chat (Bloque 2)
     chats: [],
     currentChat: { id: null, title: '', createdAt: 0, messages: [] }
@@ -2157,6 +2167,7 @@ function startNewChat() {
     chatState.currentChat = { id: null, title: '', createdAt: 0, messages: [] };
     chatState.waitingForMaterialChoice = false;
     chatState.waitingForSubtopicChoice = false;
+    chatState.hasOpenedWelcomeContentCanvas = false;
     chatState.currentCompetencyForSubtopics = null;
     chatState.currentTopicForSubtopic = null;
     chatState.currentSubtopicIndex = null;
@@ -2433,6 +2444,7 @@ function confirmDeleteChat() {
     /* Limpiar currentChat antes de renderHistorialList para que el ítem no vuelva a aparecer en la lista */
     if (wasCurrentChat) {
         chatState.currentChat = { id: null, title: '', createdAt: 0, messages: [] };
+        chatState.hasOpenedWelcomeContentCanvas = false;
         var body = document.getElementById('ubits-study-chat-body');
         if (body) {
             var welcome = document.getElementById('ubits-study-chat-welcome');
@@ -2600,6 +2612,13 @@ function createStudyChatHTML(options = {}) {
                     <p class="ubits-study-chat__welcome-prompt">¿Qué quieres <span class="ubits-study-chat__welcome-prompt-accent">aprender hoy</span>?</p>
                 </div>
             </div>` : '';
+    const welcomeTopBar = isTutorMode ? `
+            <div class="ubits-study-chat__welcome-top" id="ubits-study-chat-welcome-top" style="display: none;">
+                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="btn-historial-welcome" aria-label="Ver historial de chats">
+                    <i class="far fa-clock-rotate-left"></i>
+                    <span>Ver historial</span>
+                </button>
+            </div>` : '';
     return `
         <div class="ubits-study-chat" id="ubits-study-chat">
             <div class="ubits-study-chat__header" id="ubits-study-chat-header" style="display: none;" aria-label="Encabezado del chat">
@@ -2613,6 +2632,7 @@ function createStudyChatHTML(options = {}) {
                     </button>
                 </div>
             </div>
+            ${welcomeTopBar}
             <div class="ubits-study-chat__body" id="ubits-study-chat-body">${welcomeBlock}</div>
             <div class="ubits-study-chat__input-area">
                 <div class="ubits-study-chat__input-container">
@@ -2769,35 +2789,36 @@ function formatCoursesHTML(courses, isAddingMore = false) {
 
 /**
  * Genera resultados de búsqueda mockeados para "Sugerencias de contenido".
+ * Usa SEARCH_SUGGESTIONS_BY_TOPIC: cada ítem tiene título e imagen únicos (sin variaciones 1, 2, 3).
  * @param {string} topicKey - liderazgo, comunicacion, ingles...
  * @param {Object} filters - { type, level, duration } opcionales para forzar en la data mockeada.
- * @returns {Array} Array de 20 objetos cardData.
+ * @returns {Array} Array de hasta 20 objetos cardData con títulos e imágenes distintos.
  */
 function generateMockSearchResults(topicKey, filters) {
-    var baseContents = (CITATION_CONTENTS && CITATION_CONTENTS[topicKey]) ? CITATION_CONTENTS[topicKey] : (CITATION_CONTENTS && CITATION_CONTENTS.liderazgo);
+    var baseContents = (SEARCH_SUGGESTIONS_BY_TOPIC && SEARCH_SUGGESTIONS_BY_TOPIC[topicKey]) ? SEARCH_SUGGESTIONS_BY_TOPIC[topicKey] : (SEARCH_SUGGESTIONS_BY_TOPIC && SEARCH_SUGGESTIONS_BY_TOPIC.liderazgo);
     if (!baseContents || baseContents.length === 0) return [];
 
+    // Si se pide filtro por duración (ej. 30 min), usar solo contenidos que tengan esa duración; si no hay, usar todos
+    if (filters && filters.duration) {
+        var filtered = baseContents.filter(function (c) { return (c.duration || '') === filters.duration; });
+        if (filtered.length > 0) baseContents = filtered;
+    }
+
     var results = [];
-    // Generar 20 resultados repitiendo/variando los baseContents
-    for (var i = 0; i < 20; i++) {
-        var base = baseContents[i % baseContents.length];
-        // Clonar objeto base
+    var maxItems = Math.min(20, baseContents.length);
+    for (var i = 0; i < maxItems; i++) {
+        var base = baseContents[i];
         var item = JSON.parse(JSON.stringify(base));
 
         // Aplicar filtros forzados (para simular precisión de búsqueda)
-        if (filters.type) item.type = filters.type; // Forzar tipo
-        if (filters.level) item.level = filters.level; // Forzar nivel
-        if (filters.duration) item.duration = filters.duration; // Forzar duración
+        if (filters && filters.type) item.type = filters.type;
+        if (filters && filters.level) item.level = filters.level;
+        if (filters && filters.duration) item.duration = filters.duration;
 
-        // Variar título si es una copia
-        if (i >= baseContents.length) {
-            item.title += ' ' + (i + 1);
-        }
-
-        // Asegurar campos requeridos por compact card
+        // Asegurar campos requeridos por compact card (imagen y logo con ruta correcta)
         if (!item.provider) item.provider = 'UBITS';
-        if (!item.image) item.image = item.imagePath ? ('../../images/' + item.imagePath) : '../../images/cards-learn/default.jpg';
-        if (item.providerLogo && !item.providerLogo.startsWith('../')) item.providerLogo = '../../images/' + item.providerLogo;
+        if (!item.image) item.image = item.imagePath ? ('../../images/' + item.imagePath) : '../../images/cards-learn/cambio-en-el-estilo-de-liderazgo.jpeg';
+        if (item.providerLogo && item.providerLogo.indexOf('images/') === -1) item.providerLogo = '../../images/' + item.providerLogo;
 
         results.push(item);
     }
@@ -3081,6 +3102,8 @@ function hideWelcomeBlock() {
     if (welcome) welcome.classList.add('ubits-study-chat__welcome--hidden');
     const suggestions = document.getElementById('ubits-study-chat-suggestions');
     if (suggestions) suggestions.classList.add('ubits-study-chat__suggestions--hidden');
+    var welcomeTop = document.getElementById('ubits-study-chat-welcome-top');
+    if (welcomeTop) welcomeTop.style.display = 'none';
     if (chatState.welcomeLayout) {
         const root = document.getElementById('ubits-study-chat');
         if (root) {
@@ -3116,14 +3139,10 @@ function showWelcomeBlock() {
     }
     var header = document.getElementById('ubits-study-chat-header');
     var headerTitle = document.getElementById('ubits-study-chat-header-title');
-    if (header) {
-        if (hasAnyConversations()) {
-            header.style.display = '';
-            if (headerTitle) headerTitle.value = '';
-        } else {
-            header.style.display = 'none';
-        }
-    }
+    if (header) header.style.display = 'none';
+    if (headerTitle) headerTitle.value = '';
+    var welcomeTop = document.getElementById('ubits-study-chat-welcome-top');
+    if (welcomeTop) welcomeTop.style.display = hasAnyConversations() ? '' : 'none';
 }
 
 /**
@@ -3199,11 +3218,85 @@ var CITATION_CONTENTS = {
     ],
     comunicacion: [
         { title: 'Cómo hablar y escuchar mejor: competencias de comunicación oral', imagePath: 'cards-learn/como-hablar-y-escuchar-mejor-competencias-de-comunicacion-oral.jpeg', type: 'Curso', duration: '60 min', level: 'Intermedio', language: 'Español', competency: 'Comunicación', skills: ['Hablar en público', 'Asertividad', 'Inteligencia emocional'], provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg', expertName: 'Ana Martínez', expertImage: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=80&h=80&fit=crop' },
-        { title: 'Comunicación y empatía: claves para el éxito en equipo', imagePath: 'cards-learn/comunicacion-y-empatia-claves-para-el-exito-en-equipo.jpeg', type: 'Curso', duration: '45 min', level: 'Básico', language: 'Español', competency: 'Comunicación', skills: ['Comunicación efectiva', 'Trabajo en equipo', 'Asertividad'], provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg', expertName: 'Luis Fernández', expertImage: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop' }
+        { title: 'Comunicación y empatía: claves para el éxito en equipo', imagePath: 'cards-learn/comunicacion-y-empatia-claves-para-el-exito-en-equipo.jpeg', type: 'Curso', duration: '45 min', level: 'Básico', language: 'Español', competency: 'Comunicación', skills: ['Comunicación efectiva', 'Trabajo en equipo', 'Asertividad'], provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg', expertName: 'Luis Fernández', expertImage: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop' },
+        { title: 'Agilidad emocional', imagePath: 'cards-learn/agilidad-emocional.jpeg', type: 'Short', duration: '30 min', level: 'Básico', language: 'Español', competency: 'Comunicación', skills: ['Inteligencia emocional', 'Comunicación efectiva'], provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg', expertName: 'María García', expertImage: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=80&h=80&fit=crop' }
     ],
     ingles: [
         { title: 'Introducción al desarrollo web', imagePath: 'cards-learn/introduccion-al-desarrollo-web.jpeg', type: 'Curso', duration: '60 min', level: 'Básico', language: 'Español', competency: 'Inglés', skills: ['Grammar', 'Reading', 'Writing'], provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg', expertName: 'Patricia López', expertImage: 'https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=80&h=80&fit=crop' },
-        { title: 'Ingeniería de prompts: habla con la IA', imagePath: 'cards-learn/ingenieria-de-prompts-habla-con-la-ia.jpeg', type: 'Curso', duration: '60 min', level: 'Intermedio', language: 'Español', competency: 'Inglés', skills: ['Speaking', 'Vocabulary', 'Digital skills'], provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg', expertName: 'Roberto Díaz', expertImage: 'https://images.unsplash.com/photo-1519085360753-af0619b7fba0?w=80&h=80&fit=crop' }
+        { title: 'Ingeniería de prompts: habla con la IA', imagePath: 'cards-learn/ingenieria-de-prompts-habla-con-la-ia.jpeg', type: 'Curso', duration: '60 min', level: 'Intermedio', language: 'Español', competency: 'Inglés', skills: ['Speaking', 'Vocabulary', 'Digital skills'], provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg', expertName: 'Roberto Díaz', expertImage: 'https://images.unsplash.com/photo-1519085360753-af0619b7fba0?w=80&h=80&fit=crop' },
+        { title: 'Administración efectiva del tiempo', imagePath: 'cards-learn/administracion-efectiva-del-tiempo.jpg', type: 'Curso', duration: '30 min', level: 'Básico', language: 'Español', competency: 'Inglés', skills: ['Productividad', 'Organización'], provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg', expertName: 'Carlos Ruiz', expertImage: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop' }
+    ]
+};
+
+/** Catálogo para el canvas "Sugerencias de contenido": cada ítem tiene título e imagen únicos (sin repeticiones 1, 2, 3). */
+var SEARCH_SUGGESTIONS_BY_TOPIC = {
+    liderazgo: [
+        { title: 'Cambio en el estilo de liderazgo', imagePath: 'cards-learn/cambio-en-el-estilo-de-liderazgo.jpeg', type: 'Curso', duration: '30 min', level: 'Básico', language: 'Español', competency: 'Liderazgo', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Cómo ejercer el liderazgo inclusivo', imagePath: 'cards-learn/como-ejercer-el-liderazgo-inclusivo.jpeg', type: 'Curso', duration: '45 min', level: 'Intermedio', language: 'Español', competency: 'Liderazgo', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'El buen coaching inspira liderazgo', imagePath: 'cards-learn/el-buen-coaching-inspira-liderazgo.jpeg', type: 'Curso', duration: '60 min', level: 'Intermedio', language: 'Español', competency: 'Liderazgo', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Emplea los valores del liderazgo femenino', imagePath: 'cards-learn/emplea-los-valores-del-liderazgo-femenino.jpeg', type: 'Curso', duration: '60 min', level: 'Intermedio', language: 'Español', competency: 'Liderazgo', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Implementa el liderazgo colectivo en tu empresa', imagePath: 'cards-learn/implementa-el-liderazgo-coletivo-en-tu-empresa.jpeg', type: 'Curso', duration: '90 min', level: 'Avanzado', language: 'Español', competency: 'Liderazgo', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'La clave del liderazgo inclusivo', imagePath: 'cards-learn/la-clave-del-liderazgo-inclusivo.jpeg', type: 'Curso', duration: '60 min', level: 'Intermedio', language: 'Español', competency: 'Liderazgo', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'La confianza: una clave para el liderazgo', imagePath: 'cards-learn/la-confianza-una-clave-para-el-liderazgo.jpeg', type: 'Curso', duration: '45 min', level: 'Básico', language: 'Español', competency: 'Liderazgo', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Liderar como los grandes directores de orquesta', imagePath: 'cards-learn/liderar-como-los-grandes-directores-de-orquesta.jpeg', type: 'Curso', duration: '60 min', level: 'Intermedio', language: 'Español', competency: 'Liderazgo', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Liderar con inteligencia emocional', imagePath: 'cards-learn/liderar-con-inteligencia-emocional.jpeg', type: 'Curso', duration: '75 min', level: 'Avanzado', language: 'Español', competency: 'Liderazgo', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Liderazgo en tiempos de crisis', imagePath: 'cards-learn/liderazgo-en-tiempos-de-crisi.jpeg', type: 'Curso', duration: '60 min', level: 'Intermedio', language: 'Español', competency: 'Liderazgo', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Liderazgo femenino', imagePath: 'cards-learn/liderazgo-femenino.jpeg', type: 'Curso', duration: '30 min', level: 'Básico', language: 'Español', competency: 'Liderazgo', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Líderes cotidianos', imagePath: 'cards-learn/lideres-cotidianos.jpeg', type: 'Curso', duration: '60 min', level: 'Intermedio', language: 'Español', competency: 'Liderazgo', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Neuroliderazgo: configura tu mente', imagePath: 'cards-learn/neuroliderazgo-configura-tu-mente.jpeg', type: 'Curso', duration: '90 min', level: 'Avanzado', language: 'Español', competency: 'Liderazgo', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Potencia tu liderazgo en entornos VUCA', imagePath: 'cards-learn/potencia-tu-liderazgo-en-entornos-vuca.jpeg', type: 'Curso', duration: '60 min', level: 'Intermedio', language: 'Español', competency: 'Liderazgo', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: '¿Qué hace que algunos equipos tengan alto desempeño?', imagePath: 'cards-learn/que-hace-que-alugnos-equipos-tengan-alto-desempeno.jpeg', type: 'Curso', duration: '45 min', level: 'Intermedio', language: 'Español', competency: 'Liderazgo', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Ruta: Desarrollo de habilidades de liderazgo', imagePath: 'cards-learn/ruta-desarrollo-de-habilidades-de-liderazgo.jpeg', type: 'Ruta de aprendizaje', duration: '120 min', level: 'Avanzado', language: 'Español', competency: 'Liderazgo', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Comunicación efectiva para liderar equipos', imagePath: 'cards-learn/comunicacion-efectiva-para-liderar-equipos.jpeg', type: 'Curso', duration: '45 min', level: 'Intermedio', language: 'Español', competency: 'Liderazgo', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Comunicación efectiva para líderes', imagePath: 'cards-learn/comunicacion-efectiva-para-lideres.jpeg', type: 'Curso', duration: '60 min', level: 'Intermedio', language: 'Español', competency: 'Liderazgo', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Autodirección de equipos de alto desempeño', imagePath: 'cards-learn/autodireccion-de-equipos-de-alto-desmpeno.jpeg', type: 'Curso', duration: '60 min', level: 'Avanzado', language: 'Español', competency: 'Liderazgo', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'La inteligencia social y biología del liderazgo', imagePath: 'cards-learn/la-inteligencia-social-y-biologia-del-liderazgo.jpeg', type: 'Curso', duration: '75 min', level: 'Avanzado', language: 'Español', competency: 'Liderazgo', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Resolver las disfunciones del equipo', imagePath: 'cards-learn/resolver-las-disfunciones-del-equipo.jpeg', type: 'Curso', duration: '45 min', level: 'Intermedio', language: 'Español', competency: 'Liderazgo', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'El liderazgo suficiente', imagePath: 'cards-learn/el-liderazgo-suficiente.jpeg', type: 'Curso', duration: '30 min', level: 'Básico', language: 'Español', competency: 'Liderazgo', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Liderazgo ambición y culpa', imagePath: 'cards-learn/liderazgo-ambicion-y-culpa.jpeg', type: 'Curso', duration: '60 min', level: 'Intermedio', language: 'Español', competency: 'Liderazgo', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'De soldado a CEO', imagePath: 'cards-learn/de-soldado-a-ceo.jpeg', type: 'Charla', duration: '45 min', level: 'Intermedio', language: 'Español', competency: 'Liderazgo', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' }
+    ],
+    comunicacion: [
+        { title: 'Cómo hablar y escuchar mejor: competencias de comunicación oral', imagePath: 'cards-learn/como-hablar-y-escuchar-mejor-competencias-de-comunicacion-oral.jpeg', type: 'Curso', duration: '60 min', level: 'Intermedio', language: 'Español', competency: 'Comunicación', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Comunicación y empatía: claves para el éxito en equipo', imagePath: 'cards-learn/comunicacion-y-empatia-claves-para-el-exito-en-equipo.jpeg', type: 'Curso', duration: '45 min', level: 'Básico', language: 'Español', competency: 'Comunicación', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'De la comunicación a la neurocomunicación', imagePath: 'cards-learn/de-la-comunicacion-a-la-neurocomunicacion.jpeg', type: 'Curso', duration: '90 min', level: 'Avanzado', language: 'Español', competency: 'Comunicación', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Agilidad emocional', imagePath: 'cards-learn/agilidad-emocional.jpeg', type: 'Short', duration: '30 min', level: 'Básico', language: 'Español', competency: 'Comunicación', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Reconéctate contigo y con los demás: tips para el bienestar emocional', imagePath: 'cards-learn/reconectate-contigo-y-con-los-demas-tips-para-el-bienestar-emocional.jpeg', type: 'Curso', duration: '60 min', level: 'Intermedio', language: 'Español', competency: 'Comunicación', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Citas, glosas y reflexiones 360°', imagePath: 'cards-learn/360-grados-Citas-glosas-reflexiones.jpeg', type: 'Curso', duration: '45 min', level: 'Intermedio', language: 'Español', competency: 'Comunicación', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Comienza el camino hacia la gestión emocional', imagePath: 'cards-learn/comienza-el-camino-hacia-la-gestion-emocional.jpeg', type: 'Curso', duration: '60 min', level: 'Básico', language: 'Español', competency: 'Comunicación', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'El manejo de las emociones', imagePath: 'cards-learn/el-manejo-de-las-emociones.jpeg', type: 'Curso', duration: '45 min', level: 'Intermedio', language: 'Español', competency: 'Comunicación', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Comunicación efectiva para liderar equipos', imagePath: 'cards-learn/comunicacion-efectiva-para-liderar-equipos.jpeg', type: 'Curso', duration: '45 min', level: 'Intermedio', language: 'Español', competency: 'Comunicación', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Comunicación efectiva para líderes', imagePath: 'cards-learn/comunicacion-efectiva-para-lideres.jpeg', type: 'Curso', duration: '60 min', level: 'Intermedio', language: 'Español', competency: 'Comunicación', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Creatividad e innovación en equipos', imagePath: 'cards-learn/creatividad-e-innovacion-en-equipos.jpeg', type: 'Curso', duration: '60 min', level: 'Intermedio', language: 'Español', competency: 'Comunicación', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Cómo diseñar una organización para la creatividad', imagePath: 'cards-learn/como-disenar-una-organizacion-para-la-creatividad.jpeg', type: 'Curso', duration: '75 min', level: 'Avanzado', language: 'Español', competency: 'Comunicación', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Descubre las bases del design thinking', imagePath: 'cards-learn/descubre-las-bases-del-design-thinking.jpeg', type: 'Curso', duration: '60 min', level: 'Básico', language: 'Español', competency: 'Comunicación', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Crea historias de usuario más efectivas', imagePath: 'cards-learn/crea-historias-de-usuario-mas-efectivas.jpeg', type: 'Curso', duration: '45 min', level: 'Intermedio', language: 'Español', competency: 'Comunicación', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'UX Research: conoce tu usuario y aumenta el engagement', imagePath: 'cards-learn/ux-research-conoce-tu-usuario-y-aumenta-el-engagement.jpeg', type: 'Curso', duration: '90 min', level: 'Avanzado', language: 'Español', competency: 'Comunicación', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Diseña tu primer contenido con ayuda de UX writing', imagePath: 'cards-learn/disena-tu-primer-contenido-con-ayuda-de-ux-writing.jpeg', type: 'Curso', duration: '60 min', level: 'Intermedio', language: 'Español', competency: 'Comunicación', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Análisis de mercado', imagePath: 'cards-learn/analisis-de-mercado.jpeg', type: 'Curso', duration: '45 min', level: 'Básico', language: 'Español', competency: 'Comunicación', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' }
+    ],
+    ingles: [
+        { title: 'Introducción al desarrollo web', imagePath: 'cards-learn/introduccion-al-desarrollo-web.jpeg', type: 'Curso', duration: '60 min', level: 'Básico', language: 'Español', competency: 'Inglés', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Digital marketing master', imagePath: 'cards-learn/digital-marketing-master.jpeg', type: 'Curso', duration: '120 min', level: 'Avanzado', language: 'Español', competency: 'Inglés', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Introducción al growth marketing', imagePath: 'cards-learn/introduccion-al-growth-marketing.jpeg', type: 'Curso', duration: '45 min', level: 'Intermedio', language: 'Español', competency: 'Inglés', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Ingeniería de prompts: habla con la IA', imagePath: 'cards-learn/ingenieria-de-prompts-habla-con-la-ia.jpeg', type: 'Curso', duration: '60 min', level: 'Intermedio', language: 'Español', competency: 'Inglés', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Administración efectiva del tiempo', imagePath: 'cards-learn/administracion-efectiva-del-tiempo.jpg', type: 'Curso', duration: '30 min', level: 'Básico', language: 'Español', competency: 'Inglés', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Introducción al backend con Node.js', imagePath: 'cards-learn/introduccion-al-backend-node-js.jpeg', type: 'Curso', duration: '90 min', level: 'Intermedio', language: 'Español', competency: 'Inglés', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Introducción al marketing con Google Ads', imagePath: 'cards-learn/introduccion-al-marketing-con-google-ads.jpeg', type: 'Curso', duration: '75 min', level: 'Intermedio', language: 'Español', competency: 'Inglés', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Lean startup: emprendimiento ágil', imagePath: 'cards-learn/lean-startup-emprendimiento-agil.jpeg', type: 'Curso', duration: '60 min', level: 'Básico', language: 'Español', competency: 'Inglés', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Content marketing: crea el plan de tu marca', imagePath: 'cards-learn/content-marketing-crea-el-plan-de-tu-marca.jpeg', type: 'Curso', duration: '45 min', level: 'Intermedio', language: 'Español', competency: 'Inglés', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'SEO: impacto en tu estrategia de content marketing', imagePath: 'cards-learn/seo-impacto-en-tu-estrategia-de-content-marketing.jpeg', type: 'Curso', duration: '60 min', level: 'Intermedio', language: 'Español', competency: 'Inglés', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Experto en diseño y desarrollo web', imagePath: 'cards-learn/experto-en-diseno-y-desarrollo-web.jpeg', type: 'Ruta de aprendizaje', duration: '180 min', level: 'Avanzado', language: 'Español', competency: 'Inglés', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Flexbox y Grid', imagePath: 'cards-learn/flexbox-y-grid.jpeg', type: 'Curso', duration: '45 min', level: 'Básico', language: 'Español', competency: 'Inglés', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Personaliza tu página web con CSS', imagePath: 'cards-learn/personaliza-tu-pagina-web-con-css.jpeg', type: 'Curso', duration: '60 min', level: 'Intermedio', language: 'Español', competency: 'Inglés', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Primeros pasos en React', imagePath: 'cards-learn/primeros-pasos-en-react.jpeg', type: 'Curso', duration: '75 min', level: 'Intermedio', language: 'Español', competency: 'Inglés', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Cómo dirigir un equipo de producto', imagePath: 'cards-learn/como-dirigir-un-equipo-de-producto.jpeg', type: 'Curso', duration: '60 min', level: 'Avanzado', language: 'Español', competency: 'Inglés', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Diseña el modelo de negocio de tu producto', imagePath: 'cards-learn/disena-el-modelo-de-negocio-de-tu-producto.jpeg', type: 'Curso', duration: '90 min', level: 'Intermedio', language: 'Español', competency: 'Inglés', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Diseña la estrategia de lanzamiento de tu producto', imagePath: 'cards-learn/disena-la-estrategia-de-lanzamiento-de-tu-producto.jpeg', type: 'Curso', duration: '60 min', level: 'Intermedio', language: 'Español', competency: 'Inglés', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Apps de inteligencia artificial que todo profesional debe conocer', imagePath: 'cards-learn/apps-de-inteligencia-artificial-que-todo-profe-debe-conocer.jpeg', type: 'Curso', duration: '30 min', level: 'Básico', language: 'Español', competency: 'Inglés', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Apps para acelerar tu productividad con IA', imagePath: 'cards-learn/apps-para-acelerar-tu-productividad-con-ia.jpeg', type: 'Curso', duration: '45 min', level: 'Intermedio', language: 'Español', competency: 'Inglés', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Ética y responsabilidad en la inteligencia artificial', imagePath: 'cards-learn/etica-y-responsabilidad-en-la-inteligencia-artificial.jpeg', type: 'Curso', duration: '60 min', level: 'Intermedio', language: 'Español', competency: 'Inglés', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' },
+        { title: 'Segmenta la experiencia del cliente', imagePath: 'cards-learn/segmenta-la-experiencia-del-cliente.jpg', type: 'Curso', duration: '45 min', level: 'Intermedio', language: 'Español', competency: 'Inglés', provider: 'UBITS', providerLogo: 'Favicons/UBITS.jpg' }
     ]
 };
 
@@ -3792,7 +3885,8 @@ function initStudyChat(containerId, options = {}) {
         });
     }
 
-    // Chips de competencias (Modo Tutor): al clic = elegir tema, mostrar definición + subtemas, luego recursos
+    // Chips de competencias (Modo Tutor): al clic = elegir tema, mostrar definición + subtemas; si es primera interacción y tema UBITS (Liderazgo/Inglés/Comunicación), abrir canvas "Sugerencias de contenido" con contenidos de 30 min
+    var UBITS_WELCOME_TOPICS = { liderazgo: true, ingles: true, comunicacion: true };
     competencyChips.forEach(btn => {
         btn.addEventListener('click', function () {
             hideWelcomeBlock();
@@ -3817,6 +3911,12 @@ function initStudyChat(containerId, options = {}) {
                     subtopics = data && data.habilidades ? data.habilidades.slice() : [];
                 }
                 addMessageWithDefinitionAndSubtopics(topic, label, definition, subtopics);
+
+                // Primera interacción con uno de los 3 temas UBITS: abrir canvas "Sugerencias de contenido" (sin filtro de duración para mostrar hasta 20 sugerencias)
+                if (!chatState.hasOpenedWelcomeContentCanvas && UBITS_WELCOME_TOPICS[topic]) {
+                    chatState.hasOpenedWelcomeContentCanvas = true;
+                    renderTutorPanel('searchResults', topic, { filters: {} });
+                }
             }, 1000);
         });
     });

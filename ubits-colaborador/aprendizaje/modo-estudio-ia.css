@@ -358,8 +358,8 @@ body.modo-estudio-ia-page .modo-tutor-ia-canvas-panel.is-open .study-chat-canvas
     padding: var(--padding-none) !important;
 }
 
-/* Historial abierto + bienvenida: permitir que el resplandor del input se dibuje sin recorte (el chat sigue ocupando el espacio restante; el gap se respeta por .modo-tutor-ia-chat-section gap) */
-.modo-estudio-ia-page .modo-tutor-ia-chat-section:has(.modo-estudio-ia-historial-panel.is-open):has(.study-chat-wrapper--welcome) {
+/* Bienvenida: no recortar botón "Ver historial" (arriba derecha) ni resplandor del input */
+.modo-estudio-ia-page .modo-tutor-ia-chat-section:has(.study-chat-wrapper--welcome) {
     overflow: visible !important;
 }
 
@@ -524,6 +524,11 @@ body.modo-estudio-ia-page .modo-tutor-ia-canvas-panel.is-open .study-chat-canvas
     flex-direction: column !important;
 }
 
+/* Vista de bienvenida: no recortar el botón "Ver historial" (arriba a la derecha) */
+#study-chat-container:has(.ubits-study-chat--welcome) {
+    overflow: visible !important;
+}
+
 .modo-estudio-ia-page .modo-tutor-ia-chat-main .widget-chat {
     min-width: 0 !important;
 }
@@ -659,6 +664,22 @@ body.modo-estudio-ia-page .modo-tutor-ia-canvas-panel.is-open .study-chat-canvas
     50% { transform: translateY(-6px) scale(1.08); opacity: 0.9; }
 }
 
+/* Barra superior en vista de bienvenida: botón "Ver historial" arriba a la derecha (ancho completo para alinear a la derecha) */
+.modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__welcome-top {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-shrink: 0;
+    align-self: stretch;
+    width: 100%;
+    min-height: 40px;
+    box-sizing: border-box;
+}
+
+.modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__welcome-top .ubits-button {
+    min-width: 0;
+}
+
 /* "aprender hoy": gradación azul oficial */
 .modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__welcome-prompt-accent {
     font-weight: var(--font-weight-semibold);
@@ -720,9 +741,16 @@ body.modo-estudio-ia-page .modo-tutor-ia-canvas-panel.is-open .study-chat-canvas
     margin-top: var(--gap-md);
 }
 
-/* Botones de recomendaciones: azul oficial (sin gradación naranja) */
+/* Botones de recomendaciones: borde animado en gradación azul oficial (como el input de bienvenida) */
 .modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__suggestions .ubits-button {
-    /* Usa estilos por defecto ubits-button (azul) */
+    border: 1px solid transparent;
+    background: linear-gradient(var(--ubits-bg-1), var(--ubits-bg-1)) padding-box,
+        linear-gradient(90deg, var(--modo-ia-gradient-a), var(--modo-ia-gradient-b), var(--modo-ia-gradient-c), var(--modo-ia-gradient-a)) border-box;
+    background-size: 100% 100%, 300% 100%;
+    background-position: 0 0, 0% 50%;
+    background-origin: padding-box, border-box;
+    background-clip: padding-box, border-box;
+    animation: modo-estudio-ia-gradient-shift-border 5s ease-in-out infinite;
 }
 
 @keyframes modo-estudio-ia-gradient-shift-border {
@@ -778,7 +806,7 @@ body.modo-estudio-ia-page .modo-tutor-ia-canvas-panel.is-open .study-chat-canvas
     box-sizing: border-box;
 }
 
-/* Pantalla de bienvenida: input con borde en gradación NARANJA (uno de los 4 elementos con naranja) */
+/* Pantalla de bienvenida: input con borde animado en gradación azul oficial */
 .modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__input-container {
     display: grid;
     grid-template-columns: 1fr;
@@ -788,7 +816,7 @@ body.modo-estudio-ia-page .modo-tutor-ia-canvas-panel.is-open .study-chat-canvas
     gap: var(--gap-md);
     border: 1px solid transparent;
     background: linear-gradient(var(--ubits-bg-1), var(--ubits-bg-1)) padding-box,
-        linear-gradient(90deg, #FFCD69, #FF7B4B, #FF5416, #FFCD69) border-box;
+        linear-gradient(90deg, var(--modo-ia-gradient-a), var(--modo-ia-gradient-b), var(--modo-ia-gradient-c), var(--modo-ia-gradient-a)) border-box;
     background-size: 100% 100%, 300% 100%;
     background-position: 0 0, 0% 50%;
     background-origin: padding-box, border-box;

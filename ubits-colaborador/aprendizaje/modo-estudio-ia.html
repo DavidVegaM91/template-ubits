@@ -267,8 +267,10 @@
             }
             var btnHistorial = document.getElementById('btn-historial');
             var btnNuevoChat = document.getElementById('btn-nuevo-chat');
+            var btnHistorialWelcome = document.getElementById('btn-historial-welcome');
             if (btnHistorial) btnHistorial.addEventListener('click', function () { if (typeof openHistorialPanel === 'function') openHistorialPanel(); });
             if (btnNuevoChat) btnNuevoChat.addEventListener('click', function () { if (typeof startNewChat === 'function') startNewChat(); });
+            if (btnHistorialWelcome) btnHistorialWelcome.addEventListener('click', function () { if (typeof openHistorialPanel === 'function') openHistorialPanel(); });
 
             // Listeners modal eliminar chat
             var deleteModalClose = document.getElementById('delete-chat-modal-close');
