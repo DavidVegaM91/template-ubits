@@ -12,48 +12,20 @@
    ======================================== */
 
 :root {
+    /* Gradación azul oficial (solo 4 elementos usan naranja: ver comentario abajo) */
     --modo-ia-gradient-a: rgb(0, 215, 255);
     --modo-ia-gradient-b: rgb(0, 152, 253);
     --modo-ia-gradient-c: rgb(0, 89, 250);
 }
 
-/* Botón oficial de IA (primary): usa las variables en todas las páginas de aprendizaje IA */
-.aprendizaje-ia-pages .ubits-ia-button,
-.aprendizaje-ia-pages .ubits-ia-button--primary {
-    background:
-        radial-gradient(40% 50% at 50% 100%, var(--modo-ia-gradient-a), rgba(0, 0, 0, 0)),
-        radial-gradient(80% 100% at 50% 120%, var(--modo-ia-gradient-b), rgba(0, 0, 0, 0)),
-        radial-gradient(76.58% 94.29% at 47.57% 132.86%, var(--modo-ia-gradient-a) 0%, var(--modo-ia-gradient-c) 100%);
-}
-.aprendizaje-ia-pages .ubits-ia-button--primary:hover:not(:disabled),
-.aprendizaje-ia-pages .ubits-ia-button--primary:active:not(:disabled),
-.aprendizaje-ia-pages .ubits-ia-button--primary:focus-visible {
-    background:
-        radial-gradient(40% 50% at 50% 100%, var(--modo-ia-gradient-a), rgba(0, 0, 0, 0)),
-        radial-gradient(80% 100% at 50% 120%, var(--modo-ia-gradient-b), rgba(0, 0, 0, 0)),
-        radial-gradient(76.58% 94.29% at 47.57% 132.86%, var(--modo-ia-gradient-a) 0%, var(--modo-ia-gradient-c) 100%);
-    border-color: rgb(82, 151, 244);
-}
-
-/* Botón IA secondary (ej. "Modo IA" en catálogo): gradación solo en borde e icono, relleno sólido */
-.aprendizaje-ia-pages .ubits-ia-button--secondary {
-    border: 1px solid transparent;
-    background: linear-gradient(var(--ubits-bg-1), var(--ubits-bg-1)) padding-box,
-        linear-gradient(90deg, var(--modo-ia-gradient-a), var(--modo-ia-gradient-b), var(--modo-ia-gradient-c), var(--modo-ia-gradient-a)) border-box;
-    background-size: 100% 100%, 300% 100%;
-    background-position: 0 0, 0% 50%;
-    background-origin: padding-box, border-box;
-    background-clip: padding-box, border-box;
-    animation: aprendizaje-ia-gradient-border 5s ease-in-out infinite;
-}
-.aprendizaje-ia-pages .ubits-ia-button--secondary i {
-    background: linear-gradient(135deg, var(--modo-ia-gradient-a) 0%, var(--modo-ia-gradient-b) 50%, var(--modo-ia-gradient-c) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-}
+/* Naranja solo en: botón enviar chat, borde input bienvenida, botón Modo IA (catalogo), botón Probar modo IA (resultados).
+   El resto usa azul (variables de :root). No aplicar gradiente global a ia-buttons. */
 
 @keyframes aprendizaje-ia-gradient-border {
     0%, 100% { background-position: 0 0, 0% 50%; }
     50% { background-position: 0 0, 100% 50%; }
+}
+@keyframes aprendizaje-ia-gradient-border-4 {
+    0%, 100% { background-position: 0 0, 0 0, 0 0, 0% 50%; }
+    50% { background-position: 0 0, 0 0, 0 0, 100% 50%; }
 }

@@ -17,6 +17,8 @@
     <link rel="stylesheet" href="../../docs/docstyles.css">
     <link rel="stylesheet" href="../../components/header-product.css">
     <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/dropdown-menu.css">
     <link rel="stylesheet" href="../../components/ia-button.css">
     <link rel="stylesheet" href="../../components/tab.css">
     <link rel="stylesheet" href="../../components/toast.css">
@@ -133,14 +135,6 @@
         .control-group-tabs label {
             font-size: var(--font-size-sm);
             color: var(--ubits-fg-1-medium);
-        }
-        .control-group-tabs select {
-            padding: 6px 10px;
-            border-radius: var(--border-radius-sm);
-            border: 1px solid var(--ubits-border-1);
-            background: var(--ubits-bg-1);
-            color: var(--ubits-fg-1-high);
-            font-size: var(--font-size-sm);
         }
     </style>
 </head>
@@ -260,11 +254,7 @@
                             <div id="controls-tabs" class="control-group" style="display: none;">
                                 <span class="control-group-label">Tabs</span>
                                 <div class="control-group-tabs">
-                                    <label for="select-active-tab">Tab activo:</label>
-                                    <select id="select-active-tab">
-                                        <option value="tareas">Tareas</option>
-                                        <option value="planes">Planes</option>
-                                    </select>
+                                    <div id="header-product-tab-select-container"></div>
                                 </div>
                                 <span class="control-group-label" style="min-width: auto;">Acciones</span>
                                 <div class="control-row control-group-nested">
@@ -506,6 +496,8 @@ loadHeaderProduct('header-product-container', {
     <div id="ubits-toast-container"></div>
 
     <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/dropdown-menu.js"></script>
+    <script src="../../components/input.js"></script>
     <script src="../../components/header-product.js"></script>
     <script src="../../components/alert.js"></script>
     <script src="../../components/toast.js"></script>
@@ -595,11 +587,32 @@ loadHeaderProduct('header-product-container', {
                 return r ? r.value : 'default';
             }
             
+            var headerProductTabSelectApi = null;
+            
+            function ensureTabSelectInput() {
+                if (getVariant() !== 'tabs-with-actions') return;
+                var container = document.getElementById('header-product-tab-select-container');
+                if (!container || headerProductTabSelectApi != null) return;
+                if (typeof createInput !== 'function') return;
+                headerProductTabSelectApi = createInput({
+                    containerId: 'header-product-tab-select-container',
+                    type: 'select',
+                    label: 'Tab activo:',
+                    selectOptions: [ { value: 'tareas', text: 'Tareas' }, { value: 'planes', text: 'Planes' } ],
+                    value: previewState.activeTabId,
+                    onChange: function(v) {
+                        previewState.activeTabId = v;
+                        updatePreview();
+                    }
+                });
+            }
+            
             function updateControlsVisibility() {
                 const isTabs = getVariant() === 'tabs-with-actions';
                 document.getElementById('controls-default').style.display = isTabs ? 'none' : 'flex';
                 document.getElementById('controls-default-secondary').style.display = isTabs ? 'none' : 'flex';
                 document.getElementById('controls-tabs').style.display = isTabs ? 'flex' : 'none';
+                if (isTabs) ensureTabSelectInput();
             }
             
             // Función para actualizar el preview
@@ -609,7 +622,10 @@ loadHeaderProduct('header-product-container', {
                 if (!container || typeof loadHeaderProduct !== 'function') return;
                 
                 if (previewState.variant === 'tabs-with-actions') {
-                    previewState.activeTabId = document.getElementById('select-active-tab').value;
+                    ensureTabSelectInput();
+                    if (headerProductTabSelectApi && typeof headerProductTabSelectApi.getValue === 'function') {
+                        previewState.activeTabId = headerProductTabSelectApi.getValue() || previewState.activeTabId;
+                    }
                     var elPrimary = document.getElementById('switch-tabs-primary');
                     var elSecondary = document.getElementById('switch-tabs-secondary');
                     var elMore = document.getElementById('switch-tabs-more');
@@ -622,7 +638,9 @@ loadHeaderProduct('header-product-container', {
                         activeTabId: previewState.activeTabId,
                         onTabChange: function(tabId) {
                             previewState.activeTabId = tabId;
-                            document.getElementById('select-active-tab').value = tabId;
+                            if (headerProductTabSelectApi && typeof headerProductTabSelectApi.setValue === 'function') {
+                                headerProductTabSelectApi.setValue(tabId);
+                            }
                             console.log('Tab changed to', tabId);
                         },
                         primaryButton: (elPrimary && elPrimary.checked) ? {
@@ -767,11 +785,6 @@ loadHeaderProduct('header-product-container', {
                     updateControlsVisibility();
                     updatePreview();
                 });
-            });
-            
-            document.getElementById('select-active-tab').addEventListener('change', function() {
-                previewState.activeTabId = this.value;
-                updatePreview();
             });
             
             ['switch-tabs-primary', 'switch-tabs-secondary', 'switch-tabs-more'].forEach(function(id) {

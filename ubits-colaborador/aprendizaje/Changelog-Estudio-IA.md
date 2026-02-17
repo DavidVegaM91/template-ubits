@@ -95,6 +95,38 @@ Si en algún momento se cambian los colores del gradiente IA (cyan/azul) y se qu
 
 ---
 
+## Cómo deshacer todo (volver a la paleta azul original)
+
+Si quieres **quitar la paleta naranja** y dejar Modo estudio IA, Resultados de búsqueda y Catálogo **como estaban antes** (azul, sin overrides naranjas):
+
+### Opción 1 – Con Git (la más fácil)
+
+Si hiciste commit de los cambios de la paleta naranja:
+
+1. Ver el historial: `git log --oneline` y localizar el commit **anterior** al que introdujo la paleta naranja.
+2. Revertir solo los archivos afectados a ese commit, por ejemplo:
+   - `git checkout <commit-anterior> -- ubits-colaborador/aprendizaje/aprendizaje-ia-gradientes.css ubits-colaborador/aprendizaje/modo-estudio-ia.css ubits-colaborador/aprendizaje/resultados-busqueda.css ubits-colaborador/aprendizaje/catalogo.css`
+   - (Ajusta la lista de archivos según lo que realmente commiteaste.)
+3. O bien revertir el commit entero: `git revert <commit-de-paleta-naranja>` (crea un nuevo commit que deshace esos cambios).
+
+Así vuelves al estado azul sin tocar el código a mano.
+
+### Opción 2 – Manual
+
+1. **Variables de gradiente:** En `aprendizaje-ia-gradientes.css`, en el `:root`, poner de nuevo:
+   - `--modo-ia-gradient-a: rgb(0, 215, 255);`
+   - `--modo-ia-gradient-b: rgb(0, 152, 253);`
+   - `--modo-ia-gradient-c: rgb(0, 89, 250);`
+2. **Archivos con overrides naranjas:** Quitar o revertir a azul/tokens UBITS todo lo que se añadió para naranja en:
+   - `aprendizaje-ia-gradientes.css` (resplandor naranja en ia-button, bordes animados con variables, etc.)
+   - `modo-estudio-ia.css` (glow naranja, accent, icono bienvenida, botones primary naranja, progress bars, resource-card/quiz-result iconos)
+   - `resultados-busqueda.css` (borde naranja/animado del buscador, icono panel, CTA “Probar Modo IA”)
+   - `catalogo.css` (borde naranja/animado del buscador, academia cards)
+
+La referencia exacta de “cómo estaba antes” la tienes en el historial de Git comparando con el commit anterior a la paleta naranja.
+
+---
+
 ## Pendientes (solicitados el 12 de febrero de 2026)
 
 ### 1. Historial

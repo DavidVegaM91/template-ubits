@@ -101,6 +101,43 @@
     position: relative;
 }
 
+/* Buscador: borde animado en gradiente (como input/sugerencias bienvenida) en hover y focus */
+#catalog-search-container .ubits-input:hover,
+#catalog-search-container .ubits-input.ubits-input--hover,
+#catalog-search-container .ubits-input:focus,
+#catalog-search-container .ubits-input.ubits-input--focus {
+    border: 1px solid transparent;
+    background: linear-gradient(var(--ubits-bg-1), var(--ubits-bg-1)) padding-box,
+        linear-gradient(90deg, var(--modo-ia-gradient-a), var(--modo-ia-gradient-b), var(--modo-ia-gradient-c), var(--modo-ia-gradient-a)) border-box;
+    background-size: 100% 100%, 300% 100%;
+    background-position: 0 0, 0% 50%;
+    background-origin: padding-box, border-box;
+    background-clip: padding-box, border-box;
+    animation: aprendizaje-ia-gradient-border 5s ease-in-out infinite;
+}
+#catalog-search-container .ubits-input:focus,
+#catalog-search-container .ubits-input.ubits-input--focus {
+    box-shadow: 0 0 0 2px rgba(0, 89, 250, 0.2);
+}
+
+/* Botón Modo IA en catálogo: único con gradación naranja en esta página */
+#catalogo-modo-ia-btn {
+    border: 1px solid transparent !important;
+    background: linear-gradient(var(--ubits-bg-1), var(--ubits-bg-1)) padding-box,
+        linear-gradient(90deg, #FFCD69, #FF7B4B, #FF5416, #FFCD69) border-box !important;
+    background-size: 100% 100%, 300% 100% !important;
+    background-position: 0 0, 0% 50% !important;
+    background-origin: padding-box, border-box !important;
+    background-clip: padding-box, border-box !important;
+    animation: aprendizaje-ia-gradient-border 5s ease-in-out infinite;
+}
+#catalogo-modo-ia-btn i {
+    background: linear-gradient(135deg, #FFCD69 0%, #FF7B4B 50%, #FF5416 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
 .search-suggestions-container {
     position: absolute;
     top: calc(100% + 8px);
@@ -186,21 +223,10 @@
     display: none; /* Chrome, Safari, Opera */
 }
 
-.catalog-chip {
-    background: var(--ubits-bg-1);
-    border: 1px solid transparent;
-    border-radius: var(--border-radius-xl);
-    padding: var(--padding-xs) var(--padding-sm);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    color: var(--ubits-fg-1-medium);
-    white-space: nowrap;
+/* "Lo más buscado": botones ubits-button--secondary--xs (estilos del componente button.css) */
+.catalog-chips .ubits-button {
     flex-shrink: 0;
-}
-
-.catalog-chip:hover {
-    background: var(--ubits-bg-gray-subtle-hover);
-    color: var(--ubits-fg-1-high);
+    white-space: nowrap;
 }
 
 /* Wrapper de sección de academias */
@@ -504,7 +530,7 @@
 }
 
 .academia-card-spotify.expanded {
-    border-color: var(--ubits-accent-brand);
+    border-color: var(--modo-ia-gradient-c);
     position: relative;
 }
 
@@ -515,7 +541,7 @@
     left: 0;
     right: 0;
     height: 4px;
-    background: var(--ubits-accent-brand);
+    background: var(--modo-ia-gradient-c);
     border-radius: 0 0 var(--border-radius-md) var(--border-radius-md);
     z-index: 10;
 }
@@ -614,7 +640,14 @@
 }
 
 .academia-card-spotify.variant-image-top.expanded {
-    border: 1px solid var(--ubits-accent-brand) !important;
+    border: 1px solid transparent !important;
+    background: linear-gradient(var(--ubits-bg-1), var(--ubits-bg-1)) padding-box,
+        linear-gradient(90deg, var(--modo-ia-gradient-a), var(--modo-ia-gradient-b), var(--modo-ia-gradient-c), var(--modo-ia-gradient-a)) border-box !important;
+    background-size: 100% 100%, 300% 100% !important;
+    background-position: 0 0, 0% 50% !important;
+    background-origin: padding-box, border-box !important;
+    background-clip: padding-box, border-box !important;
+    animation: aprendizaje-ia-gradient-border 5s ease-in-out infinite;
 }
 
 .academia-card-spotify.variant-image-top.expanded::after {

@@ -905,6 +905,13 @@
                     js: 'components/tooltip.js',
                     type: 'loadTooltip() function',
                     classCheck: null
+                },
+                // Dropdown Menu
+                'getDropdownMenuHtml': {
+                    css: 'components/dropdown-menu.css',
+                    js: 'components/dropdown-menu.js',
+                    type: 'getDropdownMenuHtml() / openDropdownMenu() / closeDropdownMenu()',
+                    classCheck: 'ubits-dropdown-menu__overlay'
                 }
             };
 
@@ -916,11 +923,17 @@
             Object.entries(componentRequirements).forEach(([component, requirements]) => {
                 // Verificar si el componente está en uso
                 let isUsed = false;
-                
+
+                // Dropdown Menu: detectar por funciones o clases del componente
+                if (component === 'getDropdownMenuHtml') {
+                    isUsed = html.includes('getDropdownMenuHtml(') || html.includes('openDropdownMenu(') || html.includes('closeDropdownMenu(') ||
+                        /class="[^"]*\bubits-dropdown-menu__overlay\b/.test(html) ||
+                        /class="[^"]*\bubits-dropdown-menu__content\b/.test(html);
+                }
                 // Para funciones JavaScript, buscar el nombre de la función
-                if (component.startsWith('load') || component.startsWith('show') || component.startsWith('create')) {
+                else if (component.startsWith('load') || component.startsWith('show') || component.startsWith('create') || component.startsWith('get')) {
                     isUsed = html.includes(component + '(') || html.includes(component + ' (');
-                } 
+                }
                 // Para clases CSS, buscar la clase en atributos class
                 else if (requirements.classCheck) {
                     const classRegex = new RegExp(`class="[^"]*\\b${requirements.classCheck}\\b[^"]*"`, 'g');
@@ -997,11 +1010,14 @@
                     const importTag = missing.type === 'CSS' ? 
                         '<link rel="stylesheet" href="' + missing.file + '">' : 
                         '<script src="' + missing.file + '"><\/script>';
-                    
+                    let description = 'El componente ' + missing.component + ' requiere: ' + importTag;
+                    if (missing.component === 'getDropdownMenuHtml') {
+                        description += ' Cuando uses Dropdown Menu (getDropdownMenuHtml, openDropdownMenu, closeDropdownMenu o clases ubits-dropdown-menu__overlay/__content), añade dropdown-menu.css y dropdown-menu.js.';
+                    }
                     results.push({
                         type: 'error',
                         title: fileType + ' faltante para ' + missing.component,
-                        description: 'El componente ' + missing.component + ' requiere: ' + importTag
+                        description: description
                     });
                     errors++;
                 });

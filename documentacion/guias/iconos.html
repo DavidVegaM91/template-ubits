@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
     <link rel="stylesheet" href="../../components/sub-nav.css">
     <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/input.css">
     <link rel="stylesheet" href="../../components/toast.css">
     <link rel="stylesheet" href="../../components/empty-state.css">
     <!-- Estilos de documentación -->
@@ -55,13 +56,7 @@
                             <div class="results-title ubits-body-md-bold">Lista de iconos</div>
                             <div class="results-count ubits-body-sm-regular" id="resultsCount">Cargando...</div>
                         </div>
-                        <div class="search-container">
-                            <i class="far fa-search search-icon"></i>
-                            <input type="text" id="searchInput" placeholder="Buscar iconos" autocomplete="off">
-                            <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="clearSearchBtn" style="display: none;">
-                                <i class="far fa-times"></i>
-                            </button>
-                        </div>
+                        <div class="search-container" id="search-input-container"></div>
                     </div>
                 </div>
 
@@ -79,6 +74,7 @@
     <script src="../../components/sidebar.js"></script>
     <script src="../../components/sub-nav.js"></script>
     <script src="../../components/toast.js"></script>
+    <script src="../../components/input.js"></script>
     <script src="../../components/empty-state.js"></script>
     <script src="../../script.js"></script>
     
@@ -333,6 +329,7 @@
             let filteredIcons = [...allIcons];
 
             let emptyStateInstance = null;
+            let searchInputInstance = null;
 
             function renderIcons() {
                 const container = document.getElementById('iconsContainer');
@@ -430,28 +427,24 @@
             }
 
 
-            function updateClearButton(searchValue) {
-                const clearBtn = document.getElementById('clearSearchBtn');
-                if (searchValue.trim()) {
-                    clearBtn.style.display = 'flex';
-                } else {
-                    clearBtn.style.display = 'none';
-                }
-            }
-
             window.clearSearch = function() {
-                document.getElementById('searchInput').value = '';
+                if (searchInputInstance && typeof searchInputInstance.setValue === 'function') {
+                    searchInputInstance.setValue('');
+                }
                 filterIcons('');
-                updateClearButton('');
             }
 
-            // Event listeners
-            document.getElementById('searchInput').addEventListener('input', (e) => {
-                filterIcons(e.target.value);
-                updateClearButton(e.target.value);
-            });
-
-            document.getElementById('clearSearchBtn').addEventListener('click', clearSearch);
+            // Input de búsqueda oficial UBITS (createInput type: search)
+            if (typeof createInput === 'function') {
+                searchInputInstance = createInput({
+                    containerId: 'search-input-container',
+                    type: 'search',
+                    placeholder: 'Buscar iconos',
+                    onChange: function(value) {
+                        filterIcons(value);
+                    }
+                });
+            }
 
             // Funciones para la navegación alfabética
             function generateAlphabetNav() {
@@ -491,15 +484,18 @@
             }
 
             function updateActiveLetter(letter) {
+                const sidebar = document.getElementById('alphabetNavIcons');
+                if (!sidebar) return;
+
                 // Remover clase active de todas las letras
-                document.querySelectorAll('.alphabet-nav-icons a').forEach(link => {
-                    link.classList.remove('active');
-                });
-                
+                sidebar.querySelectorAll('a').forEach(link => link.classList.remove('active'));
+
                 // Añadir clase active a la letra seleccionada
-                const activeLink = document.querySelector(`[data-letter="${letter}"]`);
+                const activeLink = sidebar.querySelector(`[data-letter="${letter}"]`);
                 if (activeLink) {
                     activeLink.classList.add('active');
+                    // Scroll dinámico del sidebar: que la letra activa quede visible
+                    activeLink.scrollIntoView({ block: 'nearest', behavior: 'auto' });
                 }
             }
 

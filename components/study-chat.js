@@ -1057,7 +1057,7 @@ function renderTutorPanel(type, topic, extraData) {
             (showPlanPodcast ? '<button type="button" class="study-chat-quiz-result-option study-chat-quiz-result-option-study-plan" data-action="studyPlan">' +
                 '<span class="study-chat-quiz-result-option-icon"><i class="far fa-layer-group"></i></span>' +
                 '<span class="study-chat-quiz-result-option-title">Plan de estudio</span>' +
-                '<span class="study-chat-quiz-result-option-desc">Crea un plan con tareas para ver contenidos UBITS sobre este tema.</span></button>' : '') +
+                '<span class="study-chat-quiz-result-option-desc">Organiza tu aprendizaje con un plan de tareas personalizado sobre este tema.</span></button>' : '') +
             '</div>' +
             '</div>' +
             '</div>';
@@ -1709,7 +1709,7 @@ function bindTutorPanelEvents(panel, type, topicKey) {
                         <button type="button" class="study-chat-quiz-result-option study-chat-quiz-result-option-study-plan" data-action="studyPlan" style="display:${STUDY_PLAN_TOPICS.indexOf(topicKey) >= 0 ? 'flex' : 'none'};">
                             <span class="study-chat-quiz-result-option-icon"><i class="far fa-layer-group"></i></span>
                             <span class="study-chat-quiz-result-option-title">Plan de estudio</span>
-                            <span class="study-chat-quiz-result-option-desc">Crea un plan con tareas para ver contenidos UBITS sobre este tema.</span>
+                            <span class="study-chat-quiz-result-option-desc">Organiza tu aprendizaje con un plan de tareas personalizado sobre este tema.</span>
                     </button>
                         <button type="button" class="study-chat-quiz-result-option" data-action="podcast">
                             <span class="study-chat-quiz-result-option-icon"><i class="far fa-podcast"></i></span>
@@ -1946,7 +1946,7 @@ function bindTutorPanelEvents(panel, type, topicKey) {
                 (showPlan ? '<button type="button" class="study-chat-quiz-result-option study-chat-quiz-result-option-study-plan" data-action="studyPlan">' +
                     '<span class="study-chat-quiz-result-option-icon"><i class="far fa-layer-group"></i></span>' +
                     '<span class="study-chat-quiz-result-option-title">Plan de estudio</span>' +
-                    '<span class="study-chat-quiz-result-option-desc">Crea un plan con tareas para ver contenidos UBITS sobre este tema.</span></button>' : '') +
+                    '<span class="study-chat-quiz-result-option-desc">Organiza tu aprendizaje con un plan de tareas personalizado sobre este tema.</span></button>' : '') +
                 '<button type="button" class="study-chat-quiz-result-option" data-action="podcast">' +
                 '<span class="study-chat-quiz-result-option-icon"><i class="far fa-podcast"></i></span>' +
                 '<span class="study-chat-quiz-result-option-title">Podcast</span>' +

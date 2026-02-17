@@ -536,8 +536,9 @@
                                 // Aquí puedes agregar la lógica de filtros
                             });
                             
-                            // Botón de Modo IA (ia-button secundario, sm)
+                            // Botón de Modo IA (ia-button secundario, sm) - único con gradación naranja en catálogo
                             const iaButton = document.createElement('button');
+                            iaButton.id = 'catalogo-modo-ia-btn';
                             iaButton.className = 'ubits-ia-button ubits-ia-button--secondary ubits-ia-button--sm';
                             iaButton.innerHTML = '<i class="far fa-sparkles"></i><span>Modo IA</span>';
                             iaButton.addEventListener('click', function(e) {
@@ -801,14 +802,14 @@
             }, 200);
         });
 
-        // Función para renderizar chips de búsquedas frecuentes
+        // Función para renderizar "Lo más buscado" con botones secundarios oficiales UBITS (xs)
         function renderChips() {
             const busquedasFrecuentes = ['Liderazgo', 'Inglés', 'Comunicación'];
             const chipsContainer = document.getElementById('catalog-chips');
             chipsContainer.innerHTML = busquedasFrecuentes.map(busqueda => `
-                <div class="catalog-chip" onclick="handleChipClick('${busqueda.replace(/'/g, "\\'")}')">
-                    <span class="ubits-body-sm-regular">${busqueda}</span>
-                </div>
+                <button type="button" class="ubits-button ubits-button--secondary ubits-button--xs" onclick="handleChipClick('${busqueda.replace(/'/g, "\\'")}')">
+                    <span>${busqueda}</span>
+                </button>
             `).join('');
         }
 

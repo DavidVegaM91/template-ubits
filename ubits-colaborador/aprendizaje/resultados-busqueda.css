@@ -48,6 +48,25 @@
     box-sizing: border-box;
 }
 
+/* Buscador: borde animado en gradiente (como input/sugerencias bienvenida) en hover y focus */
+.resultados-buscador-input-wrap--top .ubits-input:hover,
+.resultados-buscador-input-wrap--top .ubits-input.ubits-input--hover,
+.resultados-buscador-input-wrap--top .ubits-input:focus,
+.resultados-buscador-input-wrap--top .ubits-input.ubits-input--focus {
+    border: 1px solid transparent;
+    background: linear-gradient(var(--ubits-bg-1), var(--ubits-bg-1)) padding-box,
+        linear-gradient(90deg, var(--modo-ia-gradient-a), var(--modo-ia-gradient-b), var(--modo-ia-gradient-c), var(--modo-ia-gradient-a)) border-box;
+    background-size: 100% 100%, 300% 100%;
+    background-position: 0 0, 0% 50%;
+    background-origin: padding-box, border-box;
+    background-clip: padding-box, border-box;
+    animation: aprendizaje-ia-gradient-border 5s ease-in-out infinite;
+}
+.resultados-buscador-input-wrap--top .ubits-input:focus,
+.resultados-buscador-input-wrap--top .ubits-input.ubits-input--focus {
+    box-shadow: 0 0 0 2px rgba(0, 89, 250, 0.2);
+}
+
 @media (max-width: 480px) {
     .resultados-buscador-input-wrap--top {
         width: 100% !important;
@@ -160,6 +179,43 @@
     justify-content: flex-start;
 }
 
+/* Botón "Probar Modo IA": único con gradación naranja en resultados de búsqueda */
+.resultados-overview-panel-cta.ubits-ia-button--primary,
+#resultados-probar-modo-ia-btn.ubits-ia-button--primary {
+    border: 1px solid transparent;
+    background-image:
+        radial-gradient(40% 50% at 50% 100%, #FFCD69, rgba(0, 0, 0, 0)),
+        radial-gradient(80% 100% at 50% 120%, #FF7B4B, rgba(0, 0, 0, 0)),
+        radial-gradient(76.58% 94.29% at 47.57% 132.86%, #FFCD69 0%, #FF5416 100%),
+        linear-gradient(90deg, #FFCD69, #FF7B4B, #FF5416, #FFCD69);
+    background-size: 100% 100%, 100% 100%, 100% 100%, 300% 100%;
+    background-position: 0 0, 0 0, 0 0, 0% 50%;
+    background-origin: padding-box, padding-box, padding-box, border-box;
+    background-clip: padding-box, padding-box, padding-box, border-box;
+    animation: resultados-ia-cta-border 5s ease-in-out infinite;
+}
+.resultados-overview-panel-cta.ubits-ia-button--primary:hover:not(:disabled),
+.resultados-overview-panel-cta.ubits-ia-button--primary:active:not(:disabled),
+.resultados-overview-panel-cta.ubits-ia-button--primary:focus-visible,
+#resultados-probar-modo-ia-btn.ubits-ia-button--primary:hover:not(:disabled),
+#resultados-probar-modo-ia-btn.ubits-ia-button--primary:active:not(:disabled),
+#resultados-probar-modo-ia-btn.ubits-ia-button--primary:focus-visible {
+    border: 1px solid transparent;
+    background-image:
+        radial-gradient(40% 50% at 50% 100%, #FFCD69, rgba(0, 0, 0, 0)),
+        radial-gradient(80% 100% at 50% 120%, #FF7B4B, rgba(0, 0, 0, 0)),
+        radial-gradient(76.58% 94.29% at 47.57% 132.86%, #FFCD69 0%, #FF5416 100%),
+        linear-gradient(90deg, #FFCD69, #FF7B4B, #FF5416, #FFCD69);
+    background-size: 100% 100%, 100% 100%, 100% 100%, 300% 100%;
+    background-position: 0 0, 0 0, 0 0, 0% 50%;
+    background-origin: padding-box, padding-box, padding-box, border-box;
+    background-clip: padding-box, padding-box, padding-box, border-box;
+}
+@keyframes resultados-ia-cta-border {
+    0%, 100% { background-position: 0 0, 0 0, 0 0, 0% 50%; }
+    50% { background-position: 0 0, 0 0, 0 0, 100% 50%; }
+}
+
 .resultados-recurso-cards {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -226,8 +282,8 @@
     height: 32px;
     flex-shrink: 0;
     border-radius: var(--border-radius-sm);
-    background: var(--ubits-accent-brand);
-    color: var(--ubits-btn-primary-fg);
+    background: var(--ubits-bg-1);
+    color: var(--ubits-accent-brand);
     display: flex;
     align-items: center;
     justify-content: center;

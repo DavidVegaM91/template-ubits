@@ -26,10 +26,10 @@ body.modo-estudio-ia-page::before {
     inset: 0;
     z-index: 0;
     pointer-events: none;
-    /* Azul (izq) + verde (der) - tokens UBITS */
+    /* Azul oficial (gradación de fondo) */
     background:
-        radial-gradient(ellipse 100% 80% at 10% -5%, rgba(12, 91, 239, 0.1) 0%, transparent 50%),
-        radial-gradient(ellipse 95% 75% at 90% -5%, rgba(30, 141, 88, 0.1) 0%, transparent 50%);
+        radial-gradient(ellipse 100% 80% at 10% -5%, rgba(0, 89, 250, 0.12) 0%, transparent 50%),
+        radial-gradient(ellipse 95% 75% at 90% -5%, rgba(0, 152, 253, 0.08) 0%, transparent 50%);
     animation: modo-ia-glow-breathe 10s ease-in-out infinite;
 }
 
@@ -46,10 +46,10 @@ body.modo-estudio-ia-page .dashboard-container {
 }
 
 body[data-theme="dark"] .modo-estudio-ia-page::before {
-    /* Azul (izq) + verde (der) en dark - accent-green y fg-green-subtle-inverted */
+    /* Azul en dark */
     background:
-        radial-gradient(ellipse 100% 80% at 10% -5%, rgba(56, 101, 245, 0.25) 0%, transparent 50%),
-        radial-gradient(ellipse 95% 75% at 90% -5%, rgba(189, 231, 195, 0.25) 0%, transparent 50%);
+        radial-gradient(ellipse 100% 80% at 10% -5%, rgba(0, 89, 250, 0.22) 0%, transparent 50%),
+        radial-gradient(ellipse 95% 75% at 90% -5%, rgba(0, 152, 253, 0.15) 0%, transparent 50%);
 }
 
 /* Dropdown de prioridad (y calendario): SIEMPRE por encima del canvas y de la lista de tareas.
@@ -643,9 +643,15 @@ body.modo-estudio-ia-page .modo-tutor-ia-canvas-panel.is-open .study-chat-canvas
     height: 40px;
     border-radius: 50%;
     background: var(--ubits-bg-2);
-    color: var(--ubits-accent-brand);
     font-size: 1.25rem;
     animation: modo-estudio-ia-sparkles-float 2.5s ease-in-out infinite;
+}
+/* Icono sparkles: gradación azul oficial (variables) */
+.modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__welcome-icon i {
+    background: linear-gradient(135deg, var(--modo-ia-gradient-a) 0%, var(--modo-ia-gradient-b) 50%, var(--modo-ia-gradient-c) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
 }
 
 @keyframes modo-estudio-ia-sparkles-float {
@@ -653,7 +659,7 @@ body.modo-estudio-ia-page .modo-tutor-ia-canvas-panel.is-open .study-chat-canvas
     50% { transform: translateY(-6px) scale(1.08); opacity: 0.9; }
 }
 
-/* "aprender hoy" con la misma gradación que el icono sparkles y peso semibold; animación sutil de la gradiente (solo el color se mueve) */
+/* "aprender hoy": gradación azul oficial */
 .modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__welcome-prompt-accent {
     font-weight: var(--font-weight-semibold);
     background: linear-gradient(90deg, var(--modo-ia-gradient-a), var(--modo-ia-gradient-b), var(--modo-ia-gradient-c), var(--modo-ia-gradient-a));
@@ -694,10 +700,9 @@ body.modo-estudio-ia-page .modo-tutor-ia-canvas-panel.is-open .study-chat-canvas
     display: none;
 }
 
-/* Botón enviar en bienvenida: misma gradación que el icono sparkles y las burbujas del usuario */
-/* Botón enviar: gradación animada (igual que "aprender hoy") en bienvenida y con chat iniciado */
+/* Botón enviar: ÚNICO elemento con gradación naranja en esta página */
 .modo-estudio-ia-page #ubits-study-chat-send-btn {
-    background: linear-gradient(90deg, var(--modo-ia-gradient-a), var(--modo-ia-gradient-b), var(--modo-ia-gradient-c), var(--modo-ia-gradient-a)) !important;
+    background: linear-gradient(90deg, #FFCD69, #FF7B4B, #FF5416, #FFCD69) !important;
     background-size: 300% 100% !important;
     background-position: 0% 50%;
     border: none !important;
@@ -715,16 +720,9 @@ body.modo-estudio-ia-page .modo-tutor-ia-canvas-panel.is-open .study-chat-canvas
     margin-top: var(--gap-md);
 }
 
-/* Botones de recomendaciones: borde con gradación animada (mismo estilo que el input pero animado) */
+/* Botones de recomendaciones: azul oficial (sin gradación naranja) */
 .modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__suggestions .ubits-button {
-    border: 1px solid transparent;
-    background: linear-gradient(var(--ubits-bg-1), var(--ubits-bg-1)) padding-box,
-        linear-gradient(90deg, var(--modo-ia-gradient-a), var(--modo-ia-gradient-b), var(--modo-ia-gradient-c), var(--modo-ia-gradient-a)) border-box;
-    background-size: 100% 100%, 300% 100%;
-    background-position: 0 0, 0% 50%;
-    background-origin: padding-box, border-box;
-    background-clip: padding-box, border-box;
-    animation: modo-estudio-ia-gradient-shift-border 5s ease-in-out infinite;
+    /* Usa estilos por defecto ubits-button (azul) */
 }
 
 @keyframes modo-estudio-ia-gradient-shift-border {
@@ -780,7 +778,7 @@ body.modo-estudio-ia-page .modo-tutor-ia-canvas-panel.is-open .study-chat-canvas
     box-sizing: border-box;
 }
 
-/* Pantalla de bienvenida: input con borde en gradación animada; input-wrapper arriba, adjuntar y enviar en una fila abajo ocupando todo el ancho (uno a cada extremo) */
+/* Pantalla de bienvenida: input con borde en gradación NARANJA (uno de los 4 elementos con naranja) */
 .modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__input-container {
     display: grid;
     grid-template-columns: 1fr;
@@ -790,7 +788,7 @@ body.modo-estudio-ia-page .modo-tutor-ia-canvas-panel.is-open .study-chat-canvas
     gap: var(--gap-md);
     border: 1px solid transparent;
     background: linear-gradient(var(--ubits-bg-1), var(--ubits-bg-1)) padding-box,
-        linear-gradient(90deg, var(--modo-ia-gradient-a), var(--modo-ia-gradient-b), var(--modo-ia-gradient-c), var(--modo-ia-gradient-a)) border-box;
+        linear-gradient(90deg, #FFCD69, #FF7B4B, #FF5416, #FFCD69) border-box;
     background-size: 100% 100%, 300% 100%;
     background-position: 0 0, 0% 50%;
     background-origin: padding-box, border-box;
@@ -885,4 +883,19 @@ body.modo-estudio-ia-page .modo-tutor-ia-canvas-panel.is-open .study-chat-canvas
 .section-single:last-child {
     flex: 1 1 0; /* Ocupar todo el espacio disponible */
     min-height: 0;
+}
+
+/* Resto de elementos: azul oficial (progress bars, iconos de recurso). Botones usan azul por defecto. */
+.modo-estudio-ia-page .study-chat-quiz-progress-bar--filled,
+.modo-estudio-ia-page .study-chat-fc-progress-bar--filled,
+.modo-estudio-ia-page .study-chat-quiz-progress-fill,
+.modo-estudio-ia-page .study-chat-quiz-progress-thumb {
+    background: var(--ubits-accent-brand) !important;
+}
+.modo-estudio-ia-page .study-chat-resource-card__icon {
+    color: var(--ubits-accent-brand) !important;
+}
+.modo-estudio-ia-page .study-chat-quiz-result-option-icon {
+    background: var(--ubits-bg-1) !important;
+    color: var(--ubits-accent-brand) !important;
 }

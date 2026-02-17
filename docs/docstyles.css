@@ -354,11 +354,6 @@
 .search-container {
     display: flex;
     align-items: center;
-    gap: var(--gap-sm);
-    background: var(--ubits-bg-1);
-    border: 1px solid var(--ubits-fg-2-medium);
-    border-radius: var(--border-radius-sm);
-    padding: 0 10px;
     width: 350px;
     min-width: 350px;
     max-width: 350px;
@@ -416,9 +411,6 @@
     border-color: var(--ubits-accent-brand);
 }
 
-.search-container:hover {
-    border-color: var(--ubits-accent-brand);
-}
 
 #searchInput::placeholder {
     color: var(--ubits-fg-1-medium);
@@ -556,11 +548,12 @@
     transform: translateY(-1px);
 }
 
-/* Navegación alfabética lateral para iconos */
-.alphabet-nav-icons {
-    position: sticky;
-    top: 0;
-    height: 100vh;
+/* Navegación alfabética lateral para iconos - fixed, 16px margen arriba (subnav) y abajo (viewport). Solo docstyles, no toca subnav. */
+.iconos-page .alphabet-nav-icons {
+    position: fixed;
+    left: 24px;
+    top: 56px; /* subnav 40px + 16px margen (cuando main margin-top es 0) */
+    bottom: 16px; /* 16px de distancia del borde inferior siempre */
     width: 96px;
     background: var(--ubits-bg-1);
     border-radius: var(--border-radius-xl);
@@ -570,8 +563,18 @@
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: var(--ubits-scroll-bar-color-bg-default) transparent;
-    flex-shrink: 0;
-    margin-right: 24px;
+}
+
+/* Desktop: main-content tiene margin-top 16px, subnav termina en 56px → sidebar a 72px para 16px de margen */
+@media (min-width: 1280px) {
+    .iconos-page .alphabet-nav-icons {
+        top: 72px; /* 16px margin main + 40px subnav + 16px margen */
+    }
+}
+
+/* Espacio para que el contenido no quede debajo del sidebar fijo (no mueve el sidebar) */
+.iconos-page .icons-content {
+    margin-left: 120px; /* 96px ancho sidebar + 24px gap */
 }
 
 .alphabet-nav-icons::-webkit-scrollbar {
@@ -1169,6 +1172,10 @@
 @media (max-width: 768px) {
     .alphabet-nav-icons {
         display: none; /* Ocultar en móvil para no interferir */
+    }
+
+    .iconos-page .icons-content {
+        margin-left: 0;
     }
     
     /* Página de iconos - Responsive */
