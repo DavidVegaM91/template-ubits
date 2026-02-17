@@ -156,9 +156,12 @@
     margin-bottom: var(--gap-md);
 }
 
-/* Tabla: usa componente UBITS (components/table.css). Solo layout del widget. */
+/* Tabla: usa componente UBITS (components/table.css). Contener overflow en resoluciones pequeñas para que el scroll horizontal enmarque la tabla y no se salga del contenedor. */
 .widget-tabla-seguimiento {
-    overflow: visible;
+    width: 100%;
+    min-width: 0; /* permitir que reduzca dentro de flex */
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 /* Chip +N clickeable en tab Planes (dentro de celda assignee del componente tabla) */
