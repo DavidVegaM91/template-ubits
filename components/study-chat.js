@@ -3706,6 +3706,99 @@ function addMessageWithTopicChoiceButtons(resourceType, text) {
     });
 }
 
+/** Temas válidos para usar cuando el chat ya tiene tema y el usuario elige un recurso desde el menú "recursos". */
+var VALID_TOPICS_FOR_RESOURCE = ['liderazgo', 'comunicacion', 'ingles', 'japones'];
+
+/**
+ * Añade mensaje de IA con los 4 tipos de recurso (Quiz, Flashcards, Plan de estudio, Podcast).
+ * Si el chat ya tiene tema (liderazgo, comunicación, inglés, japonés), al hacer clic se usa ese tema.
+ * Si no tiene tema, se muestran los 3 temas sugeridos (Liderazgo, Comunicación, Inglés).
+ * @param {string} text - Texto del mensaje (ej: "Estos son los recursos que tienes disponibles:")
+ */
+function addMessageWithResourceTypeButtons(text) {
+    var body = document.getElementById('ubits-study-chat-body');
+    if (!body) return;
+    var timestamp = formatTime();
+    var messageHTML = createMessageHTML('ai', text, timestamp, false, false);
+    var choicesId = 'resource-type-choices-' + Date.now();
+    var resourceButtons = [
+        { type: 'quiz', label: 'Quiz', icon: 'fa-circle-question' },
+        { type: 'flashcards', label: 'Flashcards', icon: 'fa-bring-forward' },
+        { type: 'studyPlan', label: 'Plan de estudio', icon: 'fa-layer-group' },
+        { type: 'podcast', label: 'Podcast', icon: 'fa-podcast' }
+    ];
+    var buttonsHTML = resourceButtons.map(function (r) {
+        return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-resource-type="' + (r.type.replace(/"/g, '&quot;')) + '"><span>' + r.label + '</span></button>';
+    }).join('');
+    var choicesHTML = '<div class="ubits-study-chat__message-with-choices">' +
+        messageHTML +
+        '<div class="ubits-study-chat__material-choices" id="' + choicesId + '">' +
+        buttonsHTML +
+        '</div></div>';
+    body.insertAdjacentHTML('beforeend', choicesHTML);
+    var wrapperEl = body.lastElementChild;
+    var messageEl = wrapperEl.querySelector('.ubits-study-chat__message');
+    if (messageEl) {
+        messageEl.classList.add('ubits-study-chat__message--typing');
+        animateWordsInMessage(messageEl, function () {
+            messageEl.classList.remove('ubits-study-chat__message--typing');
+            messageEl.classList.add('ubits-study-chat__message--typing-done');
+        });
+    }
+    wrapperEl.classList.add('ubits-study-chat__message-with-choices--reveal');
+    setTimeout(function () { wrapperEl.classList.remove('ubits-study-chat__message-with-choices--reveal'); }, 520);
+    body.scrollTop = body.scrollHeight;
+    pushCurrentChatMessage({ type: 'ai', text: text, quickReplies: 'resourceTypes' });
+
+    var choicesEl = document.getElementById(choicesId);
+    if (!choicesEl) return;
+    choicesEl.querySelectorAll('.ubits-study-chat__material-choice-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var resourceType = this.getAttribute('data-resource-type');
+            if (!resourceType) return;
+            var inferredTopic = (chatState.currentTopic && VALID_TOPICS_FOR_RESOURCE.indexOf(chatState.currentTopic) >= 0) ? chatState.currentTopic : null;
+            if (resourceType === 'studyPlan' && inferredTopic && STUDY_PLAN_TOPICS.indexOf(inferredTopic) < 0) inferredTopic = null;
+            choicesEl.style.display = 'none';
+
+            if (inferredTopic) {
+                hideWelcomeBlock();
+                chatState.waitingForTopicForResource = null;
+                var topicLabel = TOPIC_LABELS[inferredTopic] || inferredTopic;
+                if (resourceType === 'quiz') {
+                    renderTutorPanel('quiz', inferredTopic);
+                    if (typeof addResourceMessage === 'function') addResourceMessage('quiz', inferredTopic, false);
+                } else if (resourceType === 'flashcards') {
+                    renderTutorPanel('flashcards', inferredTopic);
+                    if (typeof addResourceMessage === 'function') addResourceMessage('flashcards', inferredTopic, false);
+                } else if (resourceType === 'studyPlan') {
+                    var plan = getStudyPlanForTopic(inferredTopic);
+                    if (plan) {
+                        renderTutorPanel('studyPlan', inferredTopic, { studyPlan: plan });
+                        if (typeof addResourceMessage === 'function') addResourceMessage('studyPlan', inferredTopic, false);
+                    }
+                } else if (resourceType === 'podcast') {
+                    var podLabel = TOPIC_LABELS[inferredTopic] || inferredTopic;
+                    renderTutorPanel('podcast', inferredTopic, { title: 'Podcast de ' + podLabel, audioUrl: '', transcription: 'La transcripción se mostrará aquí cuando tengas el audio generado.' });
+                    if (typeof addResourceMessage === 'function') addResourceMessage('podcast', inferredTopic, false);
+                }
+                pushCurrentChatMessage('user', this.textContent.trim());
+                var userMsgHtml = createMessageHTML('user', this.textContent.trim(), formatTime(), false, false);
+                body.insertAdjacentHTML('beforeend', userMsgHtml);
+            } else {
+                var clickedLabel = this.textContent.trim();
+                pushCurrentChatMessage('user', clickedLabel);
+                var userMsgHtml = createMessageHTML('user', clickedLabel, formatTime(), false, false);
+                body.insertAdjacentHTML('beforeend', userMsgHtml);
+                body.scrollTop = body.scrollHeight;
+                var resourceLabel = resourceType === 'quiz' ? 'quiz' : resourceType === 'flashcards' ? 'flashcards' : resourceType === 'studyPlan' ? 'plan de estudio' : 'podcast';
+                addMessageWithTopicChoiceButtons(resourceType, '¿Sobre qué tema quieres el ' + resourceLabel + '? Elige Liderazgo, Comunicación o Inglés.');
+            }
+            body.scrollTop = body.scrollHeight;
+            refreshHistorialIfOpen();
+        });
+    });
+}
+
 function addMessage(type, text, showActions = false, regenerateFunction = null) {
     const body = document.getElementById('ubits-study-chat-body');
     if (!body) return;
@@ -4015,6 +4108,15 @@ function initStudyChat(containerId, options = {}) {
             } else {
                 return { text: 'Puedo sugerirte contenidos, pero necesito saber el tema. ¿Buscas contenidos de Liderazgo, Comunicación o Inglés?', regenerateFunction: null };
             }
+        }
+
+        // ----- Usuario pide ver/recordar recursos (recursos, recuérdame los recursos, dime qué recursos tienes, etc.) -----
+        var recursosIntent = /\brecursos?\b/.test(lowerMessage) && (
+            /recuérdame|recuerda|dime|muéstrame|muestra|qué\s+recursos|que\s+recursos|qué\s+tipos|cuáles?\s+son|tienes\s+disponibles|hay\s+disponibles|tienes\s+para|ofreces|disponibles/i.test(lowerMessage) ||
+            lowerMessage.length <= 40
+        );
+        if (recursosIntent) {
+            return { resourcesMenu: true, text: 'Estos son los recursos que tienes disponibles:', regenerateFunction: null };
         }
 
         // ----- Usuario estaba en pantalla de subtemas: cualquier respuesta → ofrecer recursos (quiz/flashcards/plan) -----
@@ -4469,9 +4571,12 @@ function initStudyChat(containerId, options = {}) {
         const subtopicChoice = typeof responseData === 'object' ? responseData.subtopicChoice : null;
         const resourceMessage = typeof responseData === 'object' ? responseData.resourceMessage : null;
         const topicChoice = typeof responseData === 'object' ? responseData.topicChoice : null;
+        const resourcesMenu = typeof responseData === 'object' ? responseData.resourcesMenu : null;
 
         // Mostrar respuesta de IA de inmediato (sin delay artificial)
-        if (materialChoice) {
+        if (resourcesMenu) {
+            addMessageWithResourceTypeButtons(response || 'Estos son los recursos que tienes disponibles:');
+        } else if (materialChoice) {
             addMessageWithMaterialChoiceButtons(materialChoice.label, materialChoice.topic);
         } else if (subtopicChoice) {
             addMessageWithDefinitionAndSubtopics(subtopicChoice.topic, subtopicChoice.label, subtopicChoice.definition, subtopicChoice.subtopics || []);
