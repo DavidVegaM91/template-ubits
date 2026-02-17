@@ -380,6 +380,13 @@ body[data-theme="light"] .dashboard-container {
     z-index: 5;
 }
 
+/* Desktop: reservar espacio para SubNav fixed (evitar que el contenido quede bajo el nav) */
+@media (min-width: 1280px) {
+    .main-content {
+        padding-top: calc(40px + var(--gap-lg));
+    }
+}
+
 /* Centrado para pantallas grandes */
 @media (min-width: 1440px) {
     .dashboard-container {

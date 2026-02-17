@@ -653,3 +653,37 @@
         display: flex !important;
     }
 }
+
+/* Desktop: SubNav fijo al hacer scroll (position: fixed; sticky falla si un ancestro tiene overflow) */
+@media (min-width: 1280px) {
+    .sub-nav {
+        position: fixed;
+        top: var(--gap-lg);
+        left: 143px;
+        right: var(--gap-2xl);
+        width: auto;
+        margin: 0;
+        z-index: 1001;
+    }
+
+    /* Documentación: sin sidebar de productos, ocupa más ancho (márgenes laterales solo) */
+    .sub-nav[data-variant="documentacion"] {
+        left: var(--gap-2xl);
+        right: var(--gap-2xl);
+    }
+}
+
+@media (min-width: 1440px) {
+    .sub-nav {
+        left: calc((100vw - 1607px) / 2 + 143px);
+        right: calc((100vw - 1607px) / 2 + var(--gap-2xl));
+        max-width: 1607px;
+    }
+
+    /* Documentación: ancho completo con márgenes, sin centrado 1607px */
+    .sub-nav[data-variant="documentacion"] {
+        left: var(--gap-2xl);
+        right: var(--gap-2xl);
+        max-width: none;
+    }
+}
