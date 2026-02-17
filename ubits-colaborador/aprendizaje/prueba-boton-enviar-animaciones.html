@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Pruebas botón enviar – gradiente orgánico (fondo en movimiento)</title>
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <style>
+        body { font-family: 'Noto Sans', sans-serif; padding: 24px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); }
+        h1 { font-size: 1.25rem; margin-bottom: 8px; }
+        p { font-size: 0.875rem; color: var(--ubits-fg-2-default); margin-bottom: 24px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+        .card { background: var(--ubits-bg-2); border: 1px solid var(--ubits-border-1); border-radius: 8px; padding: 16px; text-align: center; }
+        .card .label { font-size: 0.75rem; font-weight: 600; margin-bottom: 12px; color: var(--ubits-fg-1-medium); }
+        .card .btn-wrap { display: flex; justify-content: center; }
+        /* Base: gradiente naranja. Capas encima = “luz” que se mueve (radial) para sensación orgánica */
+        .test-btn {
+            width: 40px; height: 40px; border: none; border-radius: var(--border-radius-sm, 6px);
+            color: var(--ubits-btn-primary-fg); cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+            font-size: 1rem;
+        }
+        .test-btn:hover { opacity: 0.95; }
+
+        @keyframes o1 { 0%, 100% { background-position: 0% 0%, 0 0; } 50% { background-position: 100% 100%, 0 0; } }
+
+        @keyframes o3 {
+            0%, 100% { background-position: 50% 0%, 0 0; }
+            25% { background-position: 100% 50%, 0 0; }
+            50% { background-position: 50% 100%, 0 0; }
+            75% { background-position: 0% 50%, 0 0; }
+        }
+
+        /* 5. Luz flotante 3 puntos */
+        .anim-5 {
+            background-image: radial-gradient(circle at center, rgba(255,255,255,0.44) 0%, transparent 54%), linear-gradient(150deg, #FFCD69, #FF7B4B, #FF5416, #FFCD69);
+            background-size: 140% 140%, 100% 100%;
+            background-position: 20% 20%, 0 0;
+            animation: o5 5s ease-in-out infinite;
+        }
+        @keyframes o5 {
+            0%, 100% { background-position: 20% 20%, 0 0; }
+            33% { background-position: 80% 30%, 0 0; }
+            66% { background-position: 60% 80%, 0 0; }
+        }
+
+        /* 7. Luz en ocho */
+        .anim-7 {
+            background-image: radial-gradient(circle at center, rgba(255,255,255,0.44) 0%, transparent 52%), linear-gradient(135deg, #FFCD69, #FF7B4B, #FF5416, #FFCD69);
+            background-size: 120% 120%, 100% 100%;
+            background-position: 20% 80%, 0 0;
+            animation: o7 4s ease-in-out infinite;
+        }
+        @keyframes o7 {
+            0%, 100% { background-position: 20% 80%, 0 0; }
+            25% { background-position: 80% 80%, 0 0; }
+            50% { background-position: 80% 20%, 0 0; }
+            75% { background-position: 20% 20%, 0 0; }
+        }
+
+        /* 8. Dos luces ritmos distintos */
+        .anim-8 {
+            background-image: radial-gradient(circle at center, rgba(255,255,255,0.4) 0%, transparent 54%), radial-gradient(circle at center, rgba(255,230,200,0.42) 0%, transparent 50%), linear-gradient(135deg, #FFCD69, #FF7B4B, #FF5416, #FFCD69);
+            background-size: 120% 120%, 140% 140%, 100% 100%;
+            background-position: 0% 100%, 100% 0%, 0 0;
+            animation: o8 7s ease-in-out infinite;
+        }
+        @keyframes o8 {
+            0%, 100% { background-position: 0% 100%, 100% 0%, 0 0; }
+            33% { background-position: 100% 0%, 0% 100%, 0 0; }
+            66% { background-position: 100% 100%, 0% 0%, 0 0; }
+        }
+
+        /* 10. Elipse respira */
+        .anim-10 {
+            background-image: radial-gradient(ellipse 70% 90% at center, rgba(255,255,255,0.42) 0%, transparent 52%), linear-gradient(135deg, #FFCD69, #FF7B4B, #FF5416, #FFCD69);
+            background-size: 160% 160%, 100% 100%;
+            background-position: 30% 30%, 0 0;
+            animation: o10 5s ease-in-out infinite;
+        }
+        @keyframes o10 {
+            0%, 100% { background-position: 30% 30%, 0 0; }
+            50% { background-position: 70% 70%, 0 0; }
+        }
+
+        @keyframes o11 { 0%, 100% { background-position: 0% 0%, 0 0; } 50% { background-position: 100% 100%, 0 0; } }
+
+        /* 12. Luz triángulo */
+        .anim-12 {
+            background-image: radial-gradient(circle at center, rgba(255,255,255,0.44) 0%, transparent 52%), linear-gradient(135deg, #FFCD69, #FF7B4B, #FF5416, #FFCD69);
+            background-size: 125% 125%, 100% 100%;
+            background-position: 50% 0%, 0 0;
+            animation: o12 4.5s ease-in-out infinite;
+        }
+        @keyframes o12 {
+            0%, 100% { background-position: 50% 0%, 0 0; }
+            33% { background-position: 0% 100%, 0 0; }
+            66% { background-position: 100% 100%, 0 0; }
+        }
+
+        /* 13. Luz esquina a esquina */
+        .anim-13 {
+            background-image: radial-gradient(circle at center, rgba(255,255,255,0.46) 0%, transparent 52%), linear-gradient(135deg, #FFCD69, #FF7B4B, #FF5416, #FFCD69);
+            background-size: 110% 110%, 100% 100%;
+            background-position: 0% 0%, 0 0;
+            animation: o13 3.5s ease-in-out infinite;
+        }
+        @keyframes o13 { 0%, 100% { background-position: 0% 0%, 0 0; } 50% { background-position: 100% 100%, 0 0; } }
+
+        /* 14. Dos capas una lenta */
+        .anim-14 {
+            background-image: radial-gradient(ellipse 60% 70% at center, rgba(255,255,255,0.4) 0%, transparent 52%), radial-gradient(ellipse 50% 50% at center, rgba(255,230,200,0.42) 0%, transparent 54%), linear-gradient(135deg, #FFCD69, #FF7B4B, #FF5416, #FFCD69);
+            background-size: 150% 150%, 120% 120%, 100% 100%;
+            background-position: 0% 0%, 100% 50%, 0 0;
+            animation: o14 8s ease-in-out infinite;
+        }
+        @keyframes o14 {
+            0%, 100% { background-position: 0% 0%, 100% 50%, 0 0; }
+            50% { background-position: 100% 100%, 0% 50%, 0 0; }
+        }
+
+        /* 15. Luz circular */
+        .anim-15 {
+            background-image: radial-gradient(circle at center, rgba(255,255,255,0.44) 0%, transparent 52%), linear-gradient(135deg, #FFCD69, #FF7B4B, #FF5416, #FFCD69);
+            background-size: 140% 140%, 100% 100%;
+            background-position: 50% 0%, 0 0;
+            animation: o15 5s ease-in-out infinite;
+        }
+        @keyframes o15 {
+            0%, 100% { background-position: 50% 0%, 0 0; }
+            25% { background-position: 100% 50%, 0 0; }
+            50% { background-position: 50% 100%, 0 0; }
+            75% { background-position: 0% 50%, 0 0; }
+        }
+
+        /* 16–20: Variaciones velocidad/intensidad */
+        .anim-17 { background-image: radial-gradient(circle at center, rgba(255,255,255,0.44) 0%, transparent 54%), linear-gradient(135deg, #FFCD69, #FF7B4B, #FF5416, #FFCD69); background-size: 120% 120%, 100% 100%; background-position: 0% 0%, 0 0; animation: o1 5s ease-in-out infinite; }
+        .anim-19 { background-image: radial-gradient(circle at center, rgba(255,255,255,0.44) 0%, transparent 52%), linear-gradient(135deg, #FFCD69, #FF7B4B, #FF5416, #FFCD69); background-size: 130% 130%, 100% 100%; background-position: 50% 50%, 0 0; animation: o3 6s ease-in-out infinite; }
+        .anim-20 { background-image: radial-gradient(ellipse 70% 70% at center, rgba(255,255,255,0.44) 0%, transparent 54%), linear-gradient(135deg, #FFCD69, #FF7B4B, #FF5416, #FFCD69); background-size: 140% 140%, 100% 100%; background-position: 20% 20%, 0 0; animation: o5 4s ease-in-out infinite; }
+
+        /* 21–25 */
+        .anim-21 { background-image: radial-gradient(circle at center, rgba(255,255,255,0.44) 0%, transparent 52%), linear-gradient(135deg, #FFCD69, #FF7B4B, #FF5416, #FFCD69); background-size: 120% 120%, 100% 100%; background-position: 20% 80%, 0 0; animation: o7 5s ease-in-out infinite; }
+        .anim-24 { background-image: radial-gradient(circle at center, rgba(255,255,255,0.44) 0%, transparent 52%), linear-gradient(135deg, #FFCD69, #FF7B4B, #FF5416, #FFCD69); background-size: 130% 130%, 100% 100%; background-position: 0% 0%, 0 0; animation: o11 5s ease-in-out infinite; }
+
+        /* 26–30 */
+        .anim-26 { background-image: radial-gradient(circle at center, rgba(255,255,255,0.44) 0%, transparent 54%), linear-gradient(135deg, #FFCD69, #FF7B4B, #FF5416, #FFCD69); background-size: 120% 120%, 100% 100%; background-position: 0% 0%, 0 0; animation: o1 3.5s ease-in-out infinite; }
+        .anim-28 { background-image: radial-gradient(circle at center, rgba(255,255,255,0.44) 0%, transparent 52%), linear-gradient(135deg, #FFCD69, #FF7B4B, #FF5416, #FFCD69); background-size: 140% 140%, 100% 100%; background-position: 50% 0%, 0 0; animation: o15 5.5s ease-in-out infinite; }
+        .anim-29 { background-image: radial-gradient(ellipse 65% 75% at center, rgba(255,255,255,0.42) 0%, transparent 50%), linear-gradient(135deg, #FFCD69, #FF7B4B, #FF5416, #FFCD69); background-size: 160% 160%, 100% 100%; background-position: 30% 30%, 0 0; animation: o10 4.5s ease-in-out infinite; }
+        .anim-30 { background-image: radial-gradient(circle at center, rgba(255,255,255,0.44) 0%, transparent 52%), linear-gradient(135deg, #FFCD69, #FF7B4B, #FF5416, #FFCD69); background-size: 120% 120%, 100% 100%; background-position: 20% 80%, 0 0; animation: o7 3.5s ease-in-out infinite; }
+
+        /* 31–35 */
+        .anim-33 { background-image: radial-gradient(circle at center, rgba(255,255,255,0.44) 0%, transparent 52%), linear-gradient(135deg, #FFCD69, #FF7B4B, #FF5416, #FFCD69); background-size: 125% 125%, 100% 100%; background-position: 50% 0%, 0 0; animation: o12 5s ease-in-out infinite; }
+    </style>
+</head>
+<body>
+    <h1>Botón enviar – fondo en movimiento orgánico</h1>
+    <p>Sin barrido lineal: una “luz” (radial) se mueve sobre el gradiente naranja — diagonal, cuadrado, rombo, dos luces, etc. El color de fondo se siente vivo. Elige el número.</p>
+    <div class="grid">
+        <div class="card"><span class="label">5. Luz flotante 3 puntos</span><div class="btn-wrap"><button type="button" class="test-btn anim-5" aria-label="Enviar"><i class="far fa-paper-plane"></i></button></div></div>
+        <div class="card"><span class="label">7. Luz en ocho</span><div class="btn-wrap"><button type="button" class="test-btn anim-7" aria-label="Enviar"><i class="far fa-paper-plane"></i></button></div></div>
+        <div class="card"><span class="label">8. Dos luces ritmos</span><div class="btn-wrap"><button type="button" class="test-btn anim-8" aria-label="Enviar"><i class="far fa-paper-plane"></i></button></div></div>
+        <div class="card"><span class="label">10. Elipse respira</span><div class="btn-wrap"><button type="button" class="test-btn anim-10" aria-label="Enviar"><i class="far fa-paper-plane"></i></button></div></div>
+        <div class="card"><span class="label">12. Luz triángulo</span><div class="btn-wrap"><button type="button" class="test-btn anim-12" aria-label="Enviar"><i class="far fa-paper-plane"></i></button></div></div>
+        <div class="card"><span class="label">13. Luz esquina-esquina</span><div class="btn-wrap"><button type="button" class="test-btn anim-13" aria-label="Enviar"><i class="far fa-paper-plane"></i></button></div></div>
+        <div class="card"><span class="label">14. Dos capas una lenta</span><div class="btn-wrap"><button type="button" class="test-btn anim-14" aria-label="Enviar"><i class="far fa-paper-plane"></i></button></div></div>
+        <div class="card"><span class="label">15. Luz circular</span><div class="btn-wrap"><button type="button" class="test-btn anim-15" aria-label="Enviar"><i class="far fa-paper-plane"></i></button></div></div>
+        <div class="card"><span class="label">17. Diagonal más lenta</span><div class="btn-wrap"><button type="button" class="test-btn anim-17" aria-label="Enviar"><i class="far fa-paper-plane"></i></button></div></div>
+        <div class="card"><span class="label">19. Rombo 6s</span><div class="btn-wrap"><button type="button" class="test-btn anim-19" aria-label="Enviar"><i class="far fa-paper-plane"></i></button></div></div>
+        <div class="card"><span class="label">20. Flotante 4s</span><div class="btn-wrap"><button type="button" class="test-btn anim-20" aria-label="Enviar"><i class="far fa-paper-plane"></i></button></div></div>
+        <div class="card"><span class="label">21. Ocho 5s</span><div class="btn-wrap"><button type="button" class="test-btn anim-21" aria-label="Enviar"><i class="far fa-paper-plane"></i></button></div></div>
+        <div class="card"><span class="label">24. Diagonal 5s</span><div class="btn-wrap"><button type="button" class="test-btn anim-24" aria-label="Enviar"><i class="far fa-paper-plane"></i></button></div></div>
+        <div class="card"><span class="label">26. Diagonal intensa 3.5s</span><div class="btn-wrap"><button type="button" class="test-btn anim-26" aria-label="Enviar"><i class="far fa-paper-plane"></i></button></div></div>
+        <div class="card"><span class="label">28. Circular 5.5s</span><div class="btn-wrap"><button type="button" class="test-btn anim-28" aria-label="Enviar"><i class="far fa-paper-plane"></i></button></div></div>
+        <div class="card"><span class="label">29. Elipse 4.5s</span><div class="btn-wrap"><button type="button" class="test-btn anim-29" aria-label="Enviar"><i class="far fa-paper-plane"></i></button></div></div>
+        <div class="card"><span class="label">30. Ocho 3.5s</span><div class="btn-wrap"><button type="button" class="test-btn anim-30" aria-label="Enviar"><i class="far fa-paper-plane"></i></button></div></div>
+        <div class="card"><span class="label">33. Triángulo 5s</span><div class="btn-wrap"><button type="button" class="test-btn anim-33" aria-label="Enviar"><i class="far fa-paper-plane"></i></button></div></div>
+    </div>
+</body>
+</html>

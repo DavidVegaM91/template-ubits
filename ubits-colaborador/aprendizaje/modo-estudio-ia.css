@@ -697,6 +697,14 @@ body.modo-estudio-ia-page .modo-tutor-ia-canvas-panel.is-open .study-chat-canvas
     50% { background-position: 100% 50%; }
 }
 
+/* Animación del botón enviar: luz en "ocho" (3.5s), misma lógica que prueba opción 30 */
+@keyframes modo-estudio-ia-send-btn-o8 {
+    0%, 100% { background-position: 20% 80%, 0 0; }
+    25% { background-position: 80% 80%, 0 0; }
+    50% { background-position: 80% 20%, 0 0; }
+    75% { background-position: 20% 20%, 0 0; }
+}
+
 .modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__input-area {
     gap: var(--gap-lg);
 }
@@ -721,14 +729,14 @@ body.modo-estudio-ia-page .modo-tutor-ia-canvas-panel.is-open .study-chat-canvas
     display: none;
 }
 
-/* Botón enviar: ÚNICO elemento con gradación naranja en esta página */
+/* Botón enviar: gradiente naranja + luz en "ocho" (3.5s ease-in-out) */
 .modo-estudio-ia-page #ubits-study-chat-send-btn {
-    background: linear-gradient(90deg, #FFCD69, #FF7B4B, #FF5416, #FFCD69) !important;
-    background-size: 300% 100% !important;
-    background-position: 0% 50%;
+    background-image: radial-gradient(circle at center, rgba(255,255,255,0.44) 0%, transparent 52%), linear-gradient(135deg, #FFCD69, #FF7B4B, #FF5416, #FFCD69) !important;
+    background-size: 120% 120%, 100% 100% !important;
+    background-position: 20% 80%, 0 0;
     border: none !important;
     color: var(--ubits-btn-primary-fg) !important;
-    animation: modo-estudio-ia-gradient-shift 5s ease-in-out infinite;
+    animation: modo-estudio-ia-send-btn-o8 3.5s ease-in-out infinite;
 }
 
 .modo-estudio-ia-page #ubits-study-chat-send-btn:hover {
