@@ -210,7 +210,7 @@ function loadPaginator(containerId, options = {}) {
                 const pageNum = start + i;
                 const isActive = pageNum === currentPage;
                 html += `
-                    <button class="ubits-button ubits-button--${isActive ? 'secondary' : 'tertiary'} ubits-button--sm" onclick="window.ubitsPaginatorGoToPage('${containerId}', ${pageNum})" ${isActive ? 'aria-current="page"' : ''}>
+                    <button class="ubits-button ubits-button--secondary ${isActive ? 'ubits-button--active' : ''} ubits-button--sm" onclick="window.ubitsPaginatorGoToPage('${containerId}', ${pageNum})" ${isActive ? 'aria-current="page"' : ''}>
                         <span>${pageNum}</span>
                     </button>
                 `;
