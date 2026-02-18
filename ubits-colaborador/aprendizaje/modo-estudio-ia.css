@@ -81,7 +81,7 @@ body.modo-estudio-ia-page .modo-tutor-ia-canvas-panel.is-open .study-chat-canvas
 .content-sections {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-lg);
+    gap: var(--gap-xl);
     flex: 1;
     min-width: 0;
     min-height: 0; /* Permitir que flexbox funcione correctamente */
@@ -93,7 +93,7 @@ body.modo-estudio-ia-page .modo-tutor-ia-canvas-panel.is-open .study-chat-canvas
 
 /* Espaciador para alinear elementos - idéntico a left-wrapper */
 .content-sections > *:not(:last-child):not(.section-dual):not(.section-single):not(.section-triple):not(.section-quad) {
-    margin-bottom: var(--gap-lg);
+    margin-bottom: var(--gap-xl);
 }
 
 /* Espaciador final - idéntico a left-wrapper */

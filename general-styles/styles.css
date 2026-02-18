@@ -440,6 +440,13 @@ body[data-theme="light"] .dashboard-container {
     }
 }
 
+/* Content sections - gap por defecto entre secciones (20px = token gap-xl) */
+.content-sections {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xl);
+}
+
 /* Documentación: subnav variante documentacion pegado al borde superior solo en móvil y tablet */
 @media (max-width: 1279px) {
     body.componentes-page .main-content,

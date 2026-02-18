@@ -380,7 +380,7 @@
 
 @media (max-width: 1023px) {
     .content-sections {
-        gap: var(--gap-lg);
+        gap: var(--gap-xl);
     }
     .buscador-header {
         flex-direction: column;

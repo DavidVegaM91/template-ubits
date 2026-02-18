@@ -19,7 +19,7 @@
 .content-sections {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-lg);
+    gap: var(--gap-xl);
     flex: 1;
     min-width: 0;
     width: 100%;
@@ -29,7 +29,7 @@
 
 /* Espaciador para alinear elementos - idéntico a left-wrapper (token) */
 .content-sections > *:not(:last-child):not(.section-dual):not(.section-single):not(.section-triple):not(.section-quad) {
-    margin-bottom: var(--gap-lg, 16px);
+    margin-bottom: var(--gap-xl);
 }
 
 /* Espaciador final - idéntico a left-wrapper */
@@ -150,10 +150,10 @@
     gap: var(--gap-xl);
 }
 .page-planes .content-sections {
-    gap: var(--gap-lg);
+    gap: var(--gap-xl);
 }
 .page-planes .content-sections > *:not(:last-child):not(.section-dual):not(.section-single):not(.section-triple):not(.section-quad) {
-    margin-bottom: var(--gap-lg);
+    margin-bottom: var(--gap-xl);
 }
 /* Contenedores de planes: mismo ancho que el header de tabs (sin padding que restrinja) */
 .page-planes .content-area {
