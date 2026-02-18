@@ -138,7 +138,7 @@
  *     title: 'No hay resultados',
  *     description: 'Descripción',
  *     buttons: {
- *         primary: {
+ *         secondary: {
  *             text: 'Limpiar',
  *             onClick: miFuncion // Pasar referencia directa
  *         }
@@ -164,7 +164,7 @@
  *     title: 'No se encontraron resultados',
  *     description: 'Intenta ajustar tu búsqueda.',
  *     buttons: {
- *         primary: {
+ *         secondary: {
  *             text: 'Limpiar búsqueda',
  *             icon: 'fa-times',
  *             onClick: function() {
@@ -177,7 +177,7 @@
  * // 3. Agregar event listener directo al botón (KISS approach)
  * setTimeout(() => {
  *     const container = document.getElementById('empty-state-container');
- *     const clearBtn = container.querySelector('.ubits-button--primary');
+ *     const clearBtn = container.querySelector('.ubits-button--secondary');
  *     if (clearBtn) {
  *         clearBtn.onclick = function(e) {
  *             e.preventDefault();

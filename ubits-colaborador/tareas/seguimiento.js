@@ -1261,7 +1261,7 @@
                             ? 'Crea tu primera tarea para comenzar el seguimiento.'
                             : 'Crea tu primer plan para organizar las tareas.',
                         buttons: {
-                            primary: {
+                            secondary: {
                                 text: isTareas ? 'Crear tarea' : 'Crear plan',
                                 icon: 'fa-plus',
                                 onClick: function() { /* se delega al botón del header */ }
@@ -1269,7 +1269,7 @@
                         }
                     });
                     setTimeout(() => {
-                        const createBtn = emptyStateContainer.querySelector('.ubits-button--primary');
+                        const createBtn = emptyStateContainer.querySelector('.ubits-button--secondary');
                         if (createBtn) {
                             createBtn.onclick = function(e) {
                                 e.preventDefault();
@@ -1299,7 +1299,7 @@
                         title: isTareas ? 'Nada en este período' : 'Nada en este período',
                         description: 'No hay ' + (isTareas ? 'tareas' : 'planes') + ' en ' + periodoLabel + '. Cambia el período para ver más.',
                         buttons: {
-                            primary: {
+                            secondary: {
                                 text: 'Cambiar período',
                                 icon: 'fa-calendar-days',
                                 onClick: function() { /* abre el menú de período */ }
@@ -1307,7 +1307,7 @@
                         }
                     });
                     setTimeout(() => {
-                        const periodBtn = emptyStateContainer.querySelector('.ubits-button--primary');
+                        const periodBtn = emptyStateContainer.querySelector('.ubits-button--secondary');
                         if (periodBtn) {
                             periodBtn.onclick = function(e) {
                                 e.preventDefault();
@@ -1325,7 +1325,7 @@
                         title: 'No se encontraron resultados',
                         description: 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.',
                         buttons: {
-                            primary: {
+                            secondary: {
                                 text: 'Limpiar búsqueda',
                                 icon: 'fa-times',
                                 onClick: function() { /* se maneja con listener directo */ }
@@ -1333,7 +1333,7 @@
                         }
                     });
                     setTimeout(() => {
-                        const clearBtn = emptyStateContainer.querySelector('.ubits-button--primary');
+                        const clearBtn = emptyStateContainer.querySelector('.ubits-button--secondary');
                         if (clearBtn) {
                             clearBtn.onclick = function(e) {
                                 e.preventDefault();

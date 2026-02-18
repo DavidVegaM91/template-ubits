@@ -502,7 +502,7 @@
                                 title: 'No se encontraron resultados',
                                 description: 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.',
                                 buttons: {
-                                    primary: {
+                                    secondary: {
                                         text: 'Limpiar búsqueda',
                                         icon: 'fa-times',
                                         onClick: function() {
@@ -514,7 +514,7 @@
                             
                             // Agregar event listener directo al botón (KISS approach)
                             setTimeout(() => {
-                                const clearBtn = emptyStateContainer.querySelector('.ubits-button--primary');
+                                const clearBtn = emptyStateContainer.querySelector('.ubits-button--secondary');
                                 if (clearBtn) {
                                     clearBtn.onclick = function(e) {
                                         e.preventDefault();

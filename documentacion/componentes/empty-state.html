@@ -453,7 +453,7 @@ loadEmptyState('mi-container', {
     title: 'No se encontraron resultados',
     description: 'Intenta ajustar tu búsqueda.',
     buttons: {
-        primary: {
+        secondary: {
             text: 'Limpiar búsqueda',
             icon: 'fa-times',
             onClick: function() {
@@ -472,7 +472,7 @@ loadEmptyState('mi-container', {
     title: 'No hay resultados',
     description: 'Descripción',
     buttons: {
-        primary: {
+        secondary: {
             text: 'Acción',
             onClick: miFuncion // Pasar referencia directa
         }
@@ -511,7 +511,7 @@ loadEmptyState('empty-state-container', {
     title: 'No se encontraron resultados',
     description: 'Intenta ajustar tu búsqueda.',
     buttons: {
-        primary: {
+        secondary: {
             text: 'Limpiar búsqueda',
             icon: 'fa-times',
             onClick: function() {
@@ -524,7 +524,7 @@ loadEmptyState('empty-state-container', {
 // 3. Agregar event listener directo al botón (KISS approach)
 setTimeout(() => {
     const container = document.getElementById('empty-state-container');
-    const clearBtn = container.querySelector('.ubits-button--primary');
+    const clearBtn = container.querySelector('.ubits-button--secondary');
     if (clearBtn) {
         clearBtn.onclick = function(e) {
             e.preventDefault();

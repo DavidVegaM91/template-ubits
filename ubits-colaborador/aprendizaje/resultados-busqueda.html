@@ -270,9 +270,9 @@
                             iconSize: 'lg',
                             title: 'Sin resultados',
                             description: 'Busca por Liderazgo, Inglés o Comunicación en el catálogo para ver contenidos.',
-                            buttons: { primary: { text: 'Ir al catálogo', icon: 'fa-arrow-left', onClick: function() {} } }
+                            buttons: { secondary: { text: 'Ir al catálogo', icon: 'fa-arrow-left', onClick: function() {} } }
                         });
-                        var btn = emptyEl.querySelector('.ubits-button--primary');
+                        var btn = emptyEl.querySelector('.ubits-button--secondary');
                         if (btn) btn.onclick = function() { window.location.href = 'catalogo.html'; };
                     }
                 }
