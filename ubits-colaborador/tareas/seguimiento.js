@@ -1254,13 +1254,13 @@
 
         const data = getDisplayData();
         const totalEnTab = getDataForCurrentTab().length;
-
+        
         // Si no hay resultados, mostrar empty state (tres variantes)
         if (data.length === 0) {
             // Ocultar tabla y paginador
             if (tableWrapper) tableWrapper.style.display = 'none';
             if (paginatorContainer) paginatorContainer.style.display = 'none';
-
+            
             const isNothingCreated = totalEnTab === 0;
             const dataWithoutPeriodAndDates = getDataFilteredExcludingPeriodAndDateRange();
             const isEmptyOnlyBecauseOfPeriodOrDates = totalEnTab > 0 && dataWithoutPeriodAndDates.length > 0;
@@ -1337,32 +1337,32 @@
                     }, 50);
                 } else {
                     // 3) No se encontraron resultados por búsqueda/filtros de columna
-                    loadEmptyState('seguimiento-empty-state', {
-                        icon: 'fa-search',
-                        iconSize: 'lg',
-                        title: 'No se encontraron resultados',
-                        description: 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.',
-                        buttons: {
+                loadEmptyState('seguimiento-empty-state', {
+                    icon: 'fa-search',
+                    iconSize: 'lg',
+                    title: 'No se encontraron resultados',
+                    description: 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.',
+                    buttons: {
                             secondary: {
-                                text: 'Limpiar búsqueda',
-                                icon: 'fa-times',
+                            text: 'Limpiar búsqueda',
+                            icon: 'fa-times',
                                 onClick: function() { /* se maneja con listener directo */ }
-                            }
                         }
-                    });
-                    setTimeout(() => {
+                    }
+                });
+                setTimeout(() => {
                         const clearBtn = emptyStateContainer.querySelector('.ubits-button--secondary');
-                        if (clearBtn) {
-                            clearBtn.onclick = function(e) {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                clearAllFilters();
-                            };
-                        }
-                    }, 50);
+                    if (clearBtn) {
+                        clearBtn.onclick = function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            clearAllFilters();
+                        };
+                    }
+                }, 50);
                 }
             }
-
+            
             // Actualizar contador e indicadores
             updateResultsCount();
             updateIndicadores();
@@ -2288,8 +2288,8 @@
 
         // Prioridad (solo tab Tareas; en Planes no se usa)
         if (activeTab === 'tareas') {
-            const prioridadChecks = document.querySelectorAll('#filtros-prioridad input:checked');
-            currentFilters.prioridad = Array.from(prioridadChecks).map(cb => cb.value);
+        const prioridadChecks = document.querySelectorAll('#filtros-prioridad input:checked');
+        currentFilters.prioridad = Array.from(prioridadChecks).map(cb => cb.value);
         } else {
             currentFilters.prioridad = [];
         }
@@ -2770,16 +2770,16 @@
             if (currentFilters.fechaCreacionDesde && currentFilters.fechaCreacionHasta) return 'personalizado';
             return currentFilters.periodo || '7';
         }
-
+        
         var selectedPeriodo = getSelectedPeriodo();
         if (selectedPeriodo !== 'personalizado' && periodoTexts[selectedPeriodo]) {
             periodoText.textContent = periodoTexts[selectedPeriodo];
         }
-
+        
         var overlayId = 'seguimiento-periodo-overlay';
         periodoBtn.addEventListener('click', function(e) {
             e.stopPropagation();
-            selectedPeriodo = getSelectedPeriodo();
+                selectedPeriodo = getSelectedPeriodo();
             var options = [
                 { text: periodoTexts['7'], value: '7', selected: selectedPeriodo === '7' },
                 { text: periodoTexts['15'], value: '15', selected: selectedPeriodo === '15' },
@@ -2799,20 +2799,20 @@
                     opt.addEventListener('click', function() {
                         var value = this.getAttribute('data-value');
                         window.closeDropdownMenu(overlayId);
-                        if (value === 'personalizado') {
-                            openDatePicker();
-                            return;
-                        }
-                        currentFilters.fechaCreacionDesde = null;
-                        currentFilters.fechaCreacionHasta = null;
-                        periodoText.textContent = periodoTexts[value];
-                        currentFilters.periodo = value;
-                        currentPage = 1;
-                        renderTable();
-                        updateResultsCount();
-                        updateIndicadores();
-                        initPaginator();
-                    });
+                if (value === 'personalizado') {
+                    openDatePicker();
+                    return;
+                }
+                currentFilters.fechaCreacionDesde = null;
+                currentFilters.fechaCreacionHasta = null;
+                periodoText.textContent = periodoTexts[value];
+                currentFilters.periodo = value;
+                currentPage = 1;
+                renderTable();
+                updateResultsCount();
+                updateIndicadores();
+                initPaginator();
+            });
                 });
                 overlayEl.addEventListener('click', function(ev) {
                     if (ev.target === overlayEl) window.closeDropdownMenu(overlayId);
@@ -3174,7 +3174,7 @@
         document.addEventListener('click', function(e) {
             var btn = e.target.closest('.seguimiento-date-sort-btn');
             if (!btn) return;
-            e.stopPropagation();
+                e.stopPropagation();
             var col = btn.dataset.sort;
             var isAvance = col === 'avance';
             var descText = isAvance ? 'Más avance primero' : 'Más reciente primero';
@@ -3192,14 +3192,14 @@
             var overlayEl = document.getElementById(overlayId);
             if (overlayEl) {
                 overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function(opt) {
-                    opt.addEventListener('click', function() {
+            opt.addEventListener('click', function() {
                         var dir = this.getAttribute('data-value');
                         currentSort.column = col;
                         currentSort.direction = dir;
-                        renderTable();
+                    renderTable();
                         window.closeDropdownMenu(overlayId);
-                    });
-                });
+            });
+        });
                 overlayEl.addEventListener('click', function(ev) {
                     if (ev.target === overlayEl) window.closeDropdownMenu(overlayId);
                 });
@@ -3229,7 +3229,7 @@
         document.addEventListener('click', function(e) {
             var btn = e.target.closest('.seguimiento-filter-btn');
             if (!btn) return;
-            e.stopPropagation();
+                e.stopPropagation();
             var col = btn.dataset.filter;
             var currentFilterValues = [];
             if (col === 'asignado') currentFilterValues = currentFilters.persona;
@@ -3277,7 +3277,7 @@
                         if (match && shown < FILTER_VISIBLE_MAX) {
                             opt.style.display = '';
                             shown++;
-                        } else {
+                            } else {
                             opt.style.display = 'none';
                         }
                     });
@@ -3311,7 +3311,7 @@
                     });
                     filterVisibleOptions('');
                     setTimeout(function() { inputEl.focus(); }, 100);
-                } else {
+                    } else {
                     filterVisibleOptions('');
                 }
 
@@ -3359,7 +3359,7 @@
         document.addEventListener('click', function(e) {
             var btn = e.target.closest('.seguimiento-checkbox-btn');
             if (!btn) return;
-            e.stopPropagation();
+                e.stopPropagation();
             var col = btn.dataset.checkbox;
             var opts = optionsMap[col] || [];
             var currentSelected = col === 'estado' ? currentFilters.estado : currentFilters.prioridad;
@@ -3379,24 +3379,24 @@
                         selected.push(cb.dataset.value);
                     });
                     if (col === 'estado') {
-                        currentFilters.estado = selected;
+                            currentFilters.estado = selected;
                         document.querySelectorAll('#filtros-estado input').forEach(function(modalCb) {
                             modalCb.checked = selected.indexOf(modalCb.value) >= 0;
-                        });
+                            });
                     } else if (col === 'prioridad') {
-                        currentFilters.prioridad = selected;
+                            currentFilters.prioridad = selected;
                         document.querySelectorAll('#filtros-prioridad input').forEach(function(modalCb) {
                             modalCb.checked = selected.indexOf(modalCb.value) >= 0;
-                        });
-                    }
-                    currentPage = 1;
+                            });
+                        }
+                        currentPage = 1;
                     applyFiltersAndSearch();
-                    applySorting();
-                    renderTable();
-                    updateResultsCount();
-                    updateIndicadores();
-                    initPaginator();
-                    renderFiltrosAplicados();
+                        applySorting();
+                        renderTable();
+                        updateResultsCount();
+                        updateIndicadores();
+                        initPaginator();
+                        renderFiltrosAplicados();
                 }
                 overlayEl.querySelectorAll('.ubits-dropdown-menu__option-left input[type="checkbox"]').forEach(function(cb) {
                     cb.addEventListener('change', applyCheckboxSelection);
@@ -3540,17 +3540,17 @@
                 var overlayEl = document.getElementById(overlayId);
                 if (overlayEl) {
                     overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function(opt) {
-                        opt.addEventListener('click', function() {
+                opt.addEventListener('click', function() {
                             var val = this.getAttribute('data-value');
                             selectedIds.forEach(function(id) {
                                 var row = SEGUIMIENTO_DATA.find(function(r) { return r.id === id; });
-                                if (row) row.prioridad = val;
-                            });
-                            window.closeDropdownMenu(overlayId);
-                            renderTable();
-                            if (typeof showToast === 'function') showToast('success', 'Prioridad cambiada a ' + val + ' para ' + selectedIds.size + ' elemento(s)');
-                        });
+                        if (row) row.prioridad = val;
                     });
+                            window.closeDropdownMenu(overlayId);
+                    renderTable();
+                            if (typeof showToast === 'function') showToast('success', 'Prioridad cambiada a ' + val + ' para ' + selectedIds.size + ' elemento(s)');
+                });
+            });
                     overlayEl.addEventListener('click', function(ev) {
                         if (ev.target === overlayEl) window.closeDropdownMenu(overlayId);
                     });
@@ -3561,42 +3561,42 @@
 
         // Cambiar estado (Dropdown Menu oficial; Planes: modal reabrir/finalizar)
         const cambiarEstado = document.getElementById('seguimiento-cambiar-estado');
-        var reabrirPlanOverlay = document.getElementById('reabrir-plan-overlay');
-        var reabrirPlanTitle = document.getElementById('reabrir-plan-title');
-        var reabrirPlanMessage = document.getElementById('reabrir-plan-message');
-        var reabrirPlanCancel = document.getElementById('reabrir-plan-cancel');
-        var reabrirPlanConfirm = document.getElementById('reabrir-plan-confirm');
-        var reabrirPlanClose = document.getElementById('reabrir-plan-close');
-        var pendingReabrirPlan = null;
+            var reabrirPlanOverlay = document.getElementById('reabrir-plan-overlay');
+            var reabrirPlanTitle = document.getElementById('reabrir-plan-title');
+            var reabrirPlanMessage = document.getElementById('reabrir-plan-message');
+            var reabrirPlanCancel = document.getElementById('reabrir-plan-cancel');
+            var reabrirPlanConfirm = document.getElementById('reabrir-plan-confirm');
+            var reabrirPlanClose = document.getElementById('reabrir-plan-close');
+            var pendingReabrirPlan = null;
 
-        function closeReabrirPlanModal() {
-            if (reabrirPlanOverlay) { reabrirPlanOverlay.style.display = 'none'; reabrirPlanOverlay.setAttribute('aria-hidden', 'true'); }
-            pendingReabrirPlan = null;
-        }
-
-        function applyReabrirPlan() {
-            if (!pendingReabrirPlan) return;
-            var val = pendingReabrirPlan.val;
-            var planNames = pendingReabrirPlan.planNames;
-            selectedIds.forEach(function(id) {
-                var row = SEGUIMIENTO_DATA.find(function(r) { return r.id === id; });
-                if (row) row.estado = val;
-            });
-            if (planNames && planNames.length > 0) {
-                SEGUIMIENTO_DATA.forEach(function(r) {
-                    if (r.tipo === 'tarea' && planNames.indexOf(r.plan) >= 0) r.estado = val;
-                });
+            function closeReabrirPlanModal() {
+                if (reabrirPlanOverlay) { reabrirPlanOverlay.style.display = 'none'; reabrirPlanOverlay.setAttribute('aria-hidden', 'true'); }
+                pendingReabrirPlan = null;
             }
-            closeReabrirPlanModal();
-            renderTable();
-            updateIndicadores();
-            if (typeof showToast === 'function') showToast('success', 'Estado cambiado a ' + val + ' para ' + selectedIds.size + ' plan(es) y sus tareas asociadas');
-        }
+
+            function applyReabrirPlan() {
+                if (!pendingReabrirPlan) return;
+                var val = pendingReabrirPlan.val;
+                var planNames = pendingReabrirPlan.planNames;
+                selectedIds.forEach(function(id) {
+                    var row = SEGUIMIENTO_DATA.find(function(r) { return r.id === id; });
+                    if (row) row.estado = val;
+                });
+                if (planNames && planNames.length > 0) {
+                    SEGUIMIENTO_DATA.forEach(function(r) {
+                        if (r.tipo === 'tarea' && planNames.indexOf(r.plan) >= 0) r.estado = val;
+                    });
+                }
+                closeReabrirPlanModal();
+                renderTable();
+                updateIndicadores();
+                if (typeof showToast === 'function') showToast('success', 'Estado cambiado a ' + val + ' para ' + selectedIds.size + ' plan(es) y sus tareas asociadas');
+            }
 
         if (reabrirPlanOverlay) reabrirPlanOverlay.addEventListener('click', function(e) { if (e.target === reabrirPlanOverlay) closeReabrirPlanModal(); });
         if (reabrirPlanClose) reabrirPlanClose.addEventListener('click', closeReabrirPlanModal);
         if (reabrirPlanCancel) reabrirPlanCancel.addEventListener('click', closeReabrirPlanModal);
-        if (reabrirPlanConfirm) reabrirPlanConfirm.addEventListener('click', applyReabrirPlan);
+            if (reabrirPlanConfirm) reabrirPlanConfirm.addEventListener('click', applyReabrirPlan);
 
         if (cambiarEstado && typeof window.getDropdownMenuHtml === 'function') {
             cambiarEstado.addEventListener('click', function(e) {
@@ -3614,31 +3614,31 @@
                 var overlayEl = document.getElementById(overlayId);
                 if (overlayEl) {
                     overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function(opt) {
-                        opt.addEventListener('click', function() {
+                opt.addEventListener('click', function() {
                             var val = this.getAttribute('data-value');
                             window.closeDropdownMenu(overlayId);
-                            if (activeTab === 'planes' && (val === 'Iniciada' || val === 'Finalizada')) {
-                                var selectedPlans = SEGUIMIENTO_DATA.filter(function(r) { return r.tipo === 'plan' && selectedIds.has(r.id); });
-                                var planNames = selectedPlans.map(function(p) { return p.nombre; });
-                                pendingReabrirPlan = { val: val, planNames: planNames };
-                                if (reabrirPlanTitle) reabrirPlanTitle.textContent = val === 'Iniciada' ? 'Reabrir plan(es)' : 'Finalizar plan(es)';
-                                if (reabrirPlanMessage) {
+                    if (activeTab === 'planes' && (val === 'Iniciada' || val === 'Finalizada')) {
+                        var selectedPlans = SEGUIMIENTO_DATA.filter(function(r) { return r.tipo === 'plan' && selectedIds.has(r.id); });
+                        var planNames = selectedPlans.map(function(p) { return p.nombre; });
+                        pendingReabrirPlan = { val: val, planNames: planNames };
+                        if (reabrirPlanTitle) reabrirPlanTitle.textContent = val === 'Iniciada' ? 'Reabrir plan(es)' : 'Finalizar plan(es)';
+                        if (reabrirPlanMessage) {
                                     reabrirPlanMessage.textContent = val === 'Iniciada'
                                         ? 'Al reabrir este(s) plan(es), las tareas asociadas pasar\u00e1n a estado Iniciada. \u00bfContinuar?'
                                         : 'Al finalizar este(s) plan(es), las tareas asociadas pasar\u00e1n a estado Finalizada. \u00bfContinuar?';
-                                }
-                                if (reabrirPlanOverlay) { reabrirPlanOverlay.style.display = 'flex'; reabrirPlanOverlay.setAttribute('aria-hidden', 'false'); }
-                                return;
-                            }
-                            selectedIds.forEach(function(id) {
-                                var row = SEGUIMIENTO_DATA.find(function(r) { return r.id === id; });
-                                if (row) row.estado = val;
-                            });
-                            renderTable();
-                            updateIndicadores();
-                            if (typeof showToast === 'function') showToast('success', 'Estado cambiado a ' + val + ' para ' + selectedIds.size + ' elemento(s)');
-                        });
+                        }
+                        if (reabrirPlanOverlay) { reabrirPlanOverlay.style.display = 'flex'; reabrirPlanOverlay.setAttribute('aria-hidden', 'false'); }
+                        return;
+                    }
+                    selectedIds.forEach(function(id) {
+                        var row = SEGUIMIENTO_DATA.find(function(r) { return r.id === id; });
+                        if (row) row.estado = val;
                     });
+                    renderTable();
+                    updateIndicadores();
+                    if (typeof showToast === 'function') showToast('success', 'Estado cambiado a ' + val + ' para ' + selectedIds.size + ' elemento(s)');
+                });
+            });
                     overlayEl.addEventListener('click', function(ev) {
                         if (ev.target === overlayEl) window.closeDropdownMenu(overlayId);
                     });
@@ -3678,42 +3678,42 @@
                         if (n && personas.indexOf(n) < 0) personas.push(n);
                     });
                     if (typeof createInput === 'function') {
-                        createInput({
+                    createInput({
                             containerId: autocompleteContainerId,
-                            type: 'autocomplete',
-                            placeholder: 'Buscar persona...',
-                            size: 'md',
+                        type: 'autocomplete',
+                        placeholder: 'Buscar persona...',
+                        size: 'md',
                             autocompleteOptions: personas.map(function(p, i) { return { value: String(i), text: p }; }),
-                            onChange: function(val) {
+                        onChange: function(val) {
                                 reasignarPersona = personas[parseInt(val, 10)] || val || null;
-                            }
-                        });
-                    }
+                        }
+                    });
+                }
                     var cancelBtn = document.getElementById(overlayId + '-cancel');
                     var applyBtn = document.getElementById(overlayId + '-apply');
                     if (cancelBtn) cancelBtn.addEventListener('click', function() { window.closeDropdownMenu(overlayId); });
                     if (applyBtn) applyBtn.addEventListener('click', function() {
-                        if (reasignarPersona) {
+                    if (reasignarPersona) {
                             var personaExistente = SEGUIMIENTO_DATA.find(function(r) { return r.asignado && r.asignado.nombre === reasignarPersona; }) || SEGUIMIENTO_DATA.find(function(r) { return r.asignados && r.asignados.some(function(a) { return a.nombre === reasignarPersona; }); });
                             var avatarPersona = personaExistente && (personaExistente.asignado || (personaExistente.asignados && personaExistente.asignados[0])) ? (personaExistente.asignado || personaExistente.asignados[0]).avatar : null;
                             var usernamePersona = personaExistente && (personaExistente.asignado || (personaExistente.asignados && personaExistente.asignados[0])) ? (personaExistente.asignado || personaExistente.asignados[0]).username || '' : '';
                             var nuevoAsignado = { nombre: reasignarPersona, avatar: avatarPersona, username: usernamePersona };
                             selectedIds.forEach(function(id) {
                                 var row = SEGUIMIENTO_DATA.find(function(r) { return r.id === id; });
-                                if (row) {
-                                    if (row.tipo === 'tarea' && row.plan) {
-                                        var plan = SEGUIMIENTO_DATA.find(function(r) { return r.tipo === 'plan' && r.nombre === row.plan; });
+                            if (row) {
+                                if (row.tipo === 'tarea' && row.plan) {
+                                    var plan = SEGUIMIENTO_DATA.find(function(r) { return r.tipo === 'plan' && r.nombre === row.plan; });
                                         if (plan && plan.asignados && Array.isArray(plan.asignados) && !plan.asignados.some(function(a) { return a.nombre === reasignarPersona; })) {
                                             plan.asignados.push(nuevoAsignado);
-                                        }
                                     }
-                                    row.asignado = { nombre: reasignarPersona, avatar: avatarPersona, username: usernamePersona };
                                 }
-                            });
-                            renderTable();
-                            updateIndicadores();
-                            if (typeof showToast === 'function') showToast('success', selectedIds.size + ' elemento(s) reasignado(s) a ' + reasignarPersona);
-                        }
+                                row.asignado = { nombre: reasignarPersona, avatar: avatarPersona, username: usernamePersona };
+                            }
+                        });
+                        renderTable();
+                        updateIndicadores();
+                        if (typeof showToast === 'function') showToast('success', selectedIds.size + ' elemento(s) reasignado(s) a ' + reasignarPersona);
+                    }
                         window.closeDropdownMenu(overlayId);
                     });
                     overlayEl.addEventListener('click', function(ev) {
@@ -3855,14 +3855,14 @@
                     overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function(opt) {
                         opt.addEventListener('click', function() {
                             var format = this.getAttribute('data-value');
-                            if (format === 'excel' || format === 'csv') doDownloadExport(format);
-                            closeDescargarMenu();
-                        });
-                    });
+                    if (format === 'excel' || format === 'csv') doDownloadExport(format);
+                    closeDescargarMenu();
+                });
+            });
                     overlayEl.addEventListener('click', function(ev) {
                         if (ev.target === overlayEl) closeDescargarMenu();
                     });
-                }
+        }
                 window.openDropdownMenu(overlayId, descargar);
                 descargar.setAttribute('aria-expanded', 'true');
             });

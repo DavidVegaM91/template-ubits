@@ -282,7 +282,7 @@
     .study-chat-courses-container {
         flex-direction: column;
     }
-
+    
     .study-chat-courses-container .course-card-compact {
         min-width: 100%;
         max-width: 100%;
@@ -2037,15 +2037,15 @@
     .study-chat-content-preview-aliado-experto {
         flex-direction: column;
     }
-
+    
     .ubits-study-chat__text-globe {
         max-width: 90%;
     }
-
+    
     .ubits-study-chat__suggestions {
         gap: var(--gap-sm);
     }
-
+    
     .ubits-study-chat__suggestion-btn {
         font-size: var(--font-size-sm);
         padding: var(--padding-md) var(--padding-md);

@@ -28,15 +28,21 @@
       tasksTotal) sigue siendo el real de las tareas; el estado del plan es independiente
       para reflejar que se puede finalizar manualmente y mover tareas a otro plan.
 
-   5. Rango de fechas: INICIO_RANGO – FIN_RANGO (constantes abajo).
+   5. Rango de fechas: INICIO_RANGO fijo; FIN_RANGO = hoy + 7 días (siempre una semana adelante, sin tocar a mano).
    ======================================== */
 
-(function(global) {
+(function (global) {
     'use strict';
 
     const pad = (n) => String(n).padStart(2, '0');
     function getTodayString() {
         const d = new Date();
+        return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    }
+    /** Fecha en YYYY-MM-DD sumando días a hoy (para rango automático hasta una semana adelante). */
+    function getTodayPlusDays(days) {
+        const d = new Date();
+        d.setDate(d.getDate() + days);
         return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
     }
 
@@ -176,11 +182,12 @@
     ];
 
     function getReportesDirectosEjemplo(nombreLider) {
-        return EMPLEADOS_EJEMPLO.filter(function(e) { return e.jefe === nombreLider; }).map(function(e) { return e.nombre; });
+        return EMPLEADOS_EJEMPLO.filter(function (e) { return e.jefe === nombreLider; }).map(function (e) { return e.nombre; });
     }
 
     const INICIO_RANGO = '2025-01-01';
-    const FIN_RANGO = '2026-02-28';
+    /** Siempre hasta una semana adelante: no hace falta ampliar el rango a mano. */
+    const FIN_RANGO = getTodayPlusDays(7);
 
     const TITULOS_TAREAS = [
         'Revisar inventario bodega', 'Orden de compra pendiente', 'Seguimiento a proveedores', 'Cierre de ciclo logístico',
@@ -318,15 +325,21 @@
                 const planNombreGrupo = `Plan ${emp.area || 'General'} ${pad(month)}/${year}`;
                 const lider = obtenerJefe(emp.area, emp.esJefe, jefes);
                 const asignado = { nombre: emp.nombre, avatar: emp.avatar || '', username: username };
-                const esAreaHR = (emp.area || '') === 'Recursos Humanos';
-                const creadorNombre = esAreaHR ? (jefes.find(j => (j.area || '') === 'Recursos Humanos') || {}).nombre || emp.nombre : emp.nombre;
-                const areaCreadorTarea = esAreaHR ? 'Recursos Humanos' : (emp.area || 'General');
+                // Las 20 tareas grupales son creadas por el líder del área (para toda la compañía), asignadas al empleado
+                const creadorNombre = lider || emp.nombre;
+                const liderObj = jefes.find(j => j.nombre === creadorNombre);
+                const creadorAvatar = (liderObj && liderObj.avatar && String(liderObj.avatar).trim()) ? liderObj.avatar : null;
+                const areaCreadorTarea = emp.area || 'General';
 
                 for (let i = 0; i < TAREAS_POR_MES; i++) {
                     const estado = estados[i];
                     const done = estado === 'Finalizada';
-                    const r = seeder(seed, baseIdx + i + 100);
-                    let day = Math.max(1, Math.min(daysInMonth, Math.floor(r * daysInMonth) + 1));
+                    // Individuales: día aleatorio. Grupales: repartidas en todo el mes (días 1..daysInMonth) para que el líder vea tareas del equipo también a fin de mes y en la semana por delante
+                    const esGrupal = i >= TAREAS_INDIVIDUALES_POR_MES;
+                    const idxGrupal = i - TAREAS_INDIVIDUALES_POR_MES; // 0..19
+                    const day = esGrupal
+                        ? (daysInMonth <= 1 ? 1 : 1 + Math.round((idxGrupal / (TAREAS_GRUPALES_POR_MES - 1)) * (daysInMonth - 1)))
+                        : Math.max(1, Math.min(daysInMonth, Math.floor(seeder(seed, baseIdx + i + 100) * daysInMonth) + 1));
                     const endDateStr = `${year}-${pad(month)}-${pad(day)}`;
                     const endDate = new Date(year, month - 1, day);
                     const fechaCreacion = new Date(year, month - 1, Math.max(1, day - 2));
@@ -356,7 +369,11 @@
                     if (i < TAREAS_INDIVIDUALES_POR_MES) {
                         tareasPorEmpleadoParaVistaTareas[empleadoId].individuales.push(Object.assign({}, tareaVista));
                     } else {
-                        const tareaGrupo = Object.assign({}, tareaVista, { planNombre: planNombreGrupo });
+                        const tareaGrupo = Object.assign({}, tareaVista, {
+                            planNombre: planNombreGrupo,
+                            created_by: creadorNombre,
+                            created_by_avatar_url: creadorAvatar || ''
+                        });
                         tareasPorEmpleadoParaVistaTareas[empleadoId].grupales.push(tareaGrupo);
                         actividadesSeguimiento.push({
                             id: idActividad,
@@ -375,7 +392,7 @@
                             fechaCreacion: formatearFechaSeguimiento(fechaCreacion),
                             fechaFinalizacion: formatearFechaSeguimiento(endDate),
                             creador: creadorNombre,
-                            creador_avatar: (emp.avatar && String(emp.avatar).trim()) ? emp.avatar : null,
+                            creador_avatar: creadorAvatar,
                             comentarios: Math.floor(seeder(seed, baseIdx + i + 300) * 5)
                         });
                     }
@@ -427,6 +444,7 @@
         });
 
         // Planes de compañía creados por HR: Objetivos Qx 20xx y Encuestas Qx 20xx. Una tarea por persona y por mes del trimestre (toda la compañía).
+        const jefaRH = empleados.find(e => (e.cargo || '').indexOf('Jefa') >= 0 && (e.area || '') === 'Recursos Humanos');
         const encargadoObjetivos = empleados.find(e => (e.cargo || '').indexOf('Objetivos') >= 0 && (e.area || '') === 'Recursos Humanos');
         const encargadaEncuestas = empleados.find(e => (e.cargo || '').indexOf('Encuestas') >= 0 && (e.area || '') === 'Recursos Humanos');
         const asignadosCompania = empleados.filter(e => (e.area || '') !== 'Recursos Humanos' && (e.area || '') !== 'Gerencia General');
@@ -437,14 +455,15 @@
             { label: 'Q4 2025', year: 2025, monthStart: 10 },
             { label: 'Q1 2026', year: 2026, monthStart: 1 }
         ];
-        const tareasObjetivos = ['Crear objetivos en la interfaz', 'Actualizar avance de objetivos', 'Cargar progreso final de objetivos'];
+        const tareasObjetivos = ['Crear objetivos en la interfaz', 'Evaluación de desempeño', 'Cargar progreso final de objetivos'];
         const tareasEncuestas = ['Contestar encuesta de cultura', 'Contestar encuesta de salud', 'Contestar encuesta 360'];
-        quarters.forEach(function(q, qIdx) {
+        quarters.forEach(function (q, qIdx) {
             const year = q.year;
             const mesInicio = q.monthStart;
-            ['Objetivos', 'Encuestas'].forEach(function(tipo, tipoIdx) {
+            ['Objetivos', 'Encuestas'].forEach(function (tipo, tipoIdx) {
                 const nombrePlan = tipo + ' ' + q.label;
-                const creadorEmp = tipo === 'Objetivos' ? encargadoObjetivos : encargadaEncuestas;
+                // Las tareas de compañía (Objetivos/Encuestas) se muestran como creadas por la Jefa de RH
+                const creadorEmp = jefaRH || (tipo === 'Objetivos' ? encargadoObjetivos : encargadaEncuestas);
                 const creadorNombre = creadorEmp ? creadorEmp.nombre : (tipo === 'Objetivos' ? 'Roberto Carlos Méndez Soto' : 'Adriana Lucía Ríos Calle');
                 const tareasTitulos = tipo === 'Objetivos' ? tareasObjetivos : tareasEncuestas;
                 for (let mes = 0; mes < 3; mes++) {
@@ -453,7 +472,7 @@
                     const endDateStr = year + '-' + pad(m) + '-' + pad(day);
                     const endDate = new Date(year, m - 1, day);
                     const fechaCreacion = new Date(year, m - 1, Math.max(1, day - 2));
-                    asignadosCompania.forEach(function(empAsig, idxCompania) {
+                    asignadosCompania.forEach(function (empAsig, idxCompania) {
                         const asignado = { nombre: empAsig.nombre, avatar: empAsig.avatar || '', username: empAsig.username || generarUsername(empAsig.nombre) };
                         const estado = seeder(8888, idActividad + idxCompania * 10 + mes) < 0.75 ? 'Finalizada' : (seeder(8888, idActividad + idxCompania * 10 + mes + 1) < 0.5 ? 'Iniciada' : 'Vencida');
                         const done = estado === 'Finalizada';
@@ -487,7 +506,7 @@
         const planIdBase = 50000;
         let planIdNext = planIdBase;
         const byPlan = {};
-        actividadesSeguimiento.forEach(function(t) {
+        actividadesSeguimiento.forEach(function (t) {
             if (t.tipo !== 'tarea' || !t.plan) return;
             const key = t.plan;
             if (!byPlan[key]) {
@@ -503,18 +522,18 @@
                 });
             }
         });
-        Object.keys(byPlan).forEach(function(nombrePlan) {
+        Object.keys(byPlan).forEach(function (nombrePlan) {
             const g = byPlan[nombrePlan];
             const tareas = g.tareas;
             if (tareas.length === 0) return;
             const primera = tareas[0];
             const asignados = Array.from(g.asignadosMap.values());
-            const tareasFinalizadas = tareas.filter(function(t) { return t.estado === 'Finalizada'; }).length;
+            const tareasFinalizadas = tareas.filter(function (t) { return t.estado === 'Finalizada'; }).length;
             const avancePlan = tareas.length > 0 ? Math.round((tareasFinalizadas / tareas.length) * 100) : 0;
             const statusPlan = repartoEstadoPlan(PLAN_SEED, planGlobalIndex++);
             const estadoPlan = statusPlan === 'Finalizado' ? 'Finalizada' : (statusPlan === 'Vencido' ? 'Vencida' : 'Iniciada');
-            const fechasCreacion = tareas.map(function(t) { return parseFechaSeguimiento(t.fechaCreacion); }).filter(Boolean);
-            const fechasFinVal = tareas.map(function(t) { return parseFechaSeguimiento(t.fechaFinalizacion); }).filter(Boolean);
+            const fechasCreacion = tareas.map(function (t) { return parseFechaSeguimiento(t.fechaCreacion); }).filter(Boolean);
+            const fechasFinVal = tareas.map(function (t) { return parseFechaSeguimiento(t.fechaFinalizacion); }).filter(Boolean);
             const minCreacion = fechasCreacion.length ? new Date(Math.min.apply(null, fechasCreacion)) : primera.fechaCreacion;
             const maxFin = fechasFinVal.length ? new Date(Math.max.apply(null, fechasFinVal)) : primera.fechaFinalizacion;
             const planId = planIdNext++;
@@ -586,14 +605,97 @@
         return Object.assign({}, USUARIO_ACTUAL);
     }
 
+    // Cumplimiento por hora del día para tareas grupales: a las 8 todas iniciadas, al mediodía ~mitad finalizadas, a las 18 todas finalizadas
+    function estadoGrupalPorHora(taskId, endDateStr) {
+        var today = getTodayString();
+        if (!endDateStr) return { done: false, status: 'Activo' };
+        if (endDateStr < today) return { done: true, status: 'Finalizado' };
+        if (endDateStr > today) return { done: false, status: 'Activo' };
+        var now = new Date();
+        var currentHour = now.getHours() + now.getMinutes() / 60;
+        var completionHour = 8 + (Number(taskId) % 11); // reparto entre 8h y 18h
+        if (currentHour >= completionHour) return { done: true, status: 'Finalizado' };
+        return { done: false, status: 'Activo' };
+    }
+
     function getTareasVistaTareas() {
         const empleadoId = currentUserEmpleadoId != null ? currentUserEmpleadoId : USUARIO_ACTUAL.id;
         const data = tareasPorEmpleadoParaVistaTareas[empleadoId] || { individuales: [], grupales: [] };
+        const nombreUsuarioActual = USUARIO_ACTUAL.nombre;
         const todasTareas = []
-            .concat(data.individuales.map(t => Object.assign({}, t, { created_by: USUARIO_ACTUAL.nombre, created_by_avatar_url: USUARIO_ACTUAL.avatar })))
-            .concat(data.grupales.map(t => Object.assign({}, t, { created_by: USUARIO_ACTUAL.nombre, created_by_avatar_url: USUARIO_ACTUAL.avatar })));
-        todasTareas.forEach(function(t) {
+            .concat(data.individuales.map(t => Object.assign({}, t, { created_by: nombreUsuarioActual, created_by_avatar_url: USUARIO_ACTUAL.avatar })))
+            .concat(data.grupales.map(t => Object.assign({}, t))); // grupales ya tienen created_by = líder
+
+        // Incluir también las tareas que el usuario actual creó para otros (creadas por María, asignadas a otra persona)
+        const tareasCreadasParaOtros = actividadesSeguimiento
+            .filter(function (a) {
+                if (a.tipo !== 'tarea' || !a.creador || a.creador !== nombreUsuarioActual) return false;
+                const asignadoNombre = a.asignado && a.asignado.nombre;
+                return asignadoNombre && asignadoNombre !== nombreUsuarioActual;
+            })
+            .map(function (a) {
+                const asignado = a.asignado || {};
+                const endDate = fechaSeguimientoToYYYYMMDD(a.fechaFinalizacion);
+                var porHora = estadoGrupalPorHora(a.id, endDate);
+                return {
+                    id: a.id,
+                    name: a.nombre,
+                    done: porHora.done,
+                    status: porHora.status,
+                    endDate: endDate,
+                    priority: (a.prioridad || 'Media').toLowerCase(),
+                    assignee_email: asignado.username || null,
+                    assignee_name: asignado.nombre || null,
+                    assignee_avatar_url: (asignado.avatar && String(asignado.avatar).trim()) ? asignado.avatar : null,
+                    etiqueta: null,
+                    planId: (a.plan && planNombreToId[a.plan] != null) ? planNombreToId[a.plan] : null,
+                    planNombre: a.plan || null,
+                    description: null,
+                    created_by: a.creador || nombreUsuarioActual,
+                    created_by_avatar_url: (a.creador_avatar && String(a.creador_avatar).trim()) ? a.creador_avatar : USUARIO_ACTUAL.avatar
+                };
+            });
+        todasTareas.push.apply(todasTareas, tareasCreadasParaOtros);
+
+        // Incluir tareas asignadas a mí por otros (ej. RH: Objetivos/Encuestas creadas por Carmen Rosa)
+        const idsEnLista = new Set(todasTareas.map(function (t) { return t.id; }));
+        const tareasAsignadasAMiPorOtros = actividadesSeguimiento
+            .filter(function (a) {
+                if (a.tipo !== 'tarea' || !a.asignado || a.asignado.nombre !== nombreUsuarioActual) return false;
+                return !idsEnLista.has(a.id);
+            })
+            .map(function (a) {
+                const asignado = a.asignado || {};
+                const endDate = fechaSeguimientoToYYYYMMDD(a.fechaFinalizacion);
+                var porHora = (a.plan && planNombreToId[a.plan] != null) ? estadoGrupalPorHora(a.id, endDate) : { done: a.estado === 'Finalizada', status: a.estado === 'Finalizada' ? 'Finalizado' : (a.estado === 'Vencida' ? 'Vencido' : 'Activo') };
+                return {
+                    id: a.id,
+                    name: a.nombre,
+                    done: porHora.done,
+                    status: porHora.status,
+                    endDate: endDate,
+                    priority: (a.prioridad || 'Media').toLowerCase(),
+                    assignee_email: asignado.username || null,
+                    assignee_name: asignado.nombre || null,
+                    assignee_avatar_url: (asignado.avatar && String(asignado.avatar).trim()) ? asignado.avatar : null,
+                    etiqueta: null,
+                    planId: (a.plan && planNombreToId[a.plan] != null) ? planNombreToId[a.plan] : null,
+                    planNombre: a.plan || null,
+                    description: null,
+                    created_by: a.creador || '',
+                    created_by_avatar_url: (a.creador_avatar && String(a.creador_avatar).trim()) ? a.creador_avatar : null
+                };
+            });
+        todasTareas.push.apply(todasTareas, tareasAsignadasAMiPorOtros);
+
+        // Aplicar cumplimiento por hora a todas las tareas grupales (las que tienen planNombre)
+        todasTareas.forEach(function (t) {
             if (t.planNombre && planNombreToId[t.planNombre] != null) t.planId = planNombreToId[t.planNombre];
+            if (t.planNombre) {
+                var h = estadoGrupalPorHora(t.id, t.endDate);
+                t.done = h.done;
+                t.status = h.status;
+            }
         });
 
         const vencidas = todasTareas.filter(t => t.status === 'Vencido').map(t => Object.assign({}, t));
@@ -620,11 +722,11 @@
 
     // Una sola BD de planes: lista y detalle usan el mismo objeto (cada vista usa los campos que necesita).
     function getPlanesVistaPlanes() {
-        var individuales = planesIndividualesMaria.map(function(p) { return Object.assign({}, p); });
-        var grupales = Object.keys(planDetalleCompleto).filter(function(k) {
+        var individuales = planesIndividualesMaria.map(function (p) { return Object.assign({}, p); });
+        var grupales = Object.keys(planDetalleCompleto).filter(function (k) {
             var n = parseInt(k, 10);
             return !isNaN(n) && n >= 50000;
-        }).map(function(k) { return Object.assign({}, planDetalleCompleto[k]); });
+        }).map(function (k) { return Object.assign({}, planDetalleCompleto[k]); });
         return individuales.concat(grupales);
     }
 
@@ -637,15 +739,15 @@
     function getTareasPorPlan(planId) {
         var id = String(planId);
         var list = tareasPorPlanCompleto[id];
-        if (list) return list.map(function(t) { return Object.assign({}, t); });
+        if (list) return list.map(function (t) { return Object.assign({}, t); });
         var planIdNum = parseInt(planId, 10);
         if (planIdNum >= 50000) {
-            var planGrupal = actividadesSeguimiento.find(function(a) { return a.tipo === 'plan' && a.id === planIdNum; });
+            var planGrupal = actividadesSeguimiento.find(function (a) { return a.tipo === 'plan' && a.id === planIdNum; });
             if (planGrupal) {
                 var nombrePlan = planGrupal.nombre;
                 return actividadesSeguimiento
-                    .filter(function(a) { return a.tipo === 'tarea' && a.plan === nombrePlan; })
-                    .map(function(t) {
+                    .filter(function (a) { return a.tipo === 'tarea' && a.plan === nombrePlan; })
+                    .map(function (t) {
                         var asignado = t.asignado || {};
                         return {
                             id: t.id,
@@ -676,10 +778,10 @@
     function getActividadesParaLider(nombreLider) {
         const reportes = getReportesDirectosEjemplo(nombreLider) || [];
         const setReportes = new Set(reportes);
-        return actividadesSeguimiento.filter(function(act) {
+        return actividadesSeguimiento.filter(function (act) {
             if (act.tipo === 'tarea' && act.asignado) return setReportes.has(act.asignado.nombre);
             if (act.tipo === 'plan' && act.asignados && act.asignados.length) {
-                return act.asignados.some(function(a) { return setReportes.has(a.nombre); });
+                return act.asignados.some(function (a) { return setReportes.has(a.nombre); });
             }
             return false;
         });
@@ -690,17 +792,18 @@
         return str.replace(/\s+/g, ' ').trim();
     }
 
-    /** Resuelve nombre y avatar del creador por nombre (para "Creada por" en panel de detalle). */
+    /** Resuelve nombre y avatar del creador por nombre (para "Creada por" en panel de detalle). Incluye Gerente para que las tareas que la jefa le crea a María muestren "Creada por Patricia". */
     function getCreatorDisplay(nombre) {
         var name = normalizeNameForMatch(nombre);
         if (!name) return { name: 'Sin especificar', avatar: null };
         var current = getUsuarioActual();
         if (current && current.nombre && normalizeNameForMatch(current.nombre) === name) return { name: current.nombre, avatar: (current.avatar && String(current.avatar).trim()) ? current.avatar : null };
-        var jefes = getJefesEjemplo();
-        var emp = (jefes || []).find(function(e) { return normalizeNameForMatch(e.nombre) === name; });
+        // JEFES_EJEMPLO es accesible directamente en este scope (IIFE); getJefesEjemplo() no existe como función local.
+        var jefes = [GERENTE_EJEMPLO].concat(JEFES_EJEMPLO || []);
+        var emp = (jefes || []).find(function (e) { return e && normalizeNameForMatch(e.nombre) === name; });
         if (emp) return { name: emp.nombre || name, avatar: (emp.avatar && String(emp.avatar).trim()) ? emp.avatar : null };
-        var empleados = getEmpleadosEjemplo();
-        emp = (empleados || []).find(function(e) { return normalizeNameForMatch(e.nombre) === name; });
+        var empleados = EMPLEADOS_EJEMPLO || [];
+        emp = (empleados || []).find(function (e) { return normalizeNameForMatch(e.nombre) === name; });
         if (emp) return { name: emp.nombre || name, avatar: (emp.avatar && String(emp.avatar).trim()) ? emp.avatar : null };
         return { name: name, avatar: null };
     }
@@ -716,10 +819,10 @@
         getCreatorDisplay: getCreatorDisplay,
         getTodayString: getTodayString,
         getReportesDirectos: getReportesDirectosEjemplo,
-        getEmpresaEjemplo: function() { return Object.assign({}, EMPRESA_EJEMPLO); },
-        getAreasEjemplo: function() { return AREAS_EJEMPLO.slice(); },
-        getJefesEjemplo: function() { return JEFES_EJEMPLO.slice(); },
-        getEmpleadosEjemplo: function() { return EMPLEADOS_EJEMPLO.slice(); }
+        getEmpresaEjemplo: function () { return Object.assign({}, EMPRESA_EJEMPLO); },
+        getAreasEjemplo: function () { return AREAS_EJEMPLO.slice(); },
+        getJefesEjemplo: function () { return JEFES_EJEMPLO.slice(); },
+        getEmpleadosEjemplo: function () { return EMPLEADOS_EJEMPLO.slice(); }
     };
 
 })(typeof window !== 'undefined' ? window : this);

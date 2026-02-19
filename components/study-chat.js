@@ -27,7 +27,7 @@ function getNumPlanVariants(topicKey) {
 // Función para obtener la ruta base de imágenes según la ubicación actual
 function getImageBasePath() {
     const currentPath = window.location.pathname;
-
+    
     // Si estamos en ubits-colaborador/aprendizaje/ o ubits-admin/aprendizaje/
     if (currentPath.includes('/ubits-colaborador/') || currentPath.includes('/ubits-admin/')) {
         return '../../images/';
@@ -2617,7 +2617,7 @@ function createStudyChatHTML(options = {}) {
                 <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="btn-historial-welcome" aria-label="Ver historial de chats">
                     <i class="far fa-clock-rotate-left"></i>
                     <span>Ver historial</span>
-                </button>
+                        </button>
             </div>` : '';
     return `
         <div class="ubits-study-chat" id="ubits-study-chat">
@@ -2629,9 +2629,9 @@ function createStudyChatHTML(options = {}) {
                     </button>
                     <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="btn-nuevo-chat" data-tooltip="Nuevo chat" data-tooltip-position="bottom" aria-label="Iniciar nuevo chat">
                         <i class="far fa-comment-plus"></i>
-                    </button>
+                        </button>
+                    </div>
                 </div>
-            </div>
             ${welcomeTopBar}
             <div class="ubits-study-chat__body" id="ubits-study-chat-body">${welcomeBlock}</div>
             <div class="ubits-study-chat__input-area">
@@ -2639,7 +2639,7 @@ function createStudyChatHTML(options = {}) {
                     <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-study-chat__input-attach" id="ubits-study-chat-attach-btn" title="Adjuntar"><i class="far fa-paperclip"></i></button>
                     <div class="ubits-study-chat__input-wrapper">
                         <textarea class="ubits-study-chat__input" id="ubits-study-chat-input" placeholder="Escribir mensaje..." rows="1"></textarea>
-                    </div>
+            </div>
                     <button class="ubits-button ubits-button--primary ubits-button--sm ubits-button--icon-only ubits-study-chat__input-send" id="ubits-study-chat-send-btn" title="Enviar"><i class="far fa-paper-plane"></i></button>
                 </div>
                 <div class="ubits-study-chat__suggestions" id="ubits-study-chat-suggestions">${suggestionButtons}</div>
@@ -2685,10 +2685,10 @@ function wrapWordsInSpans(html) {
  */
 function createMessageHTML(type, text, timestamp, showActions = false, isTyping = false, contentHTML) {
     const messageClass = type === 'ai' ? 'ubits-study-chat__message--ai' : 'ubits-study-chat__message--user';
-    const globeClass = type === 'ai'
+    const globeClass = type === 'ai' 
         ? (isTyping ? 'ubits-study-chat__text-globe--ai ubits-study-chat__text-globe--typing' : 'ubits-study-chat__text-globe--ai')
         : 'ubits-study-chat__text-globe--user';
-
+    
     let textHTML = '';
     if (contentHTML && typeof contentHTML === 'string' && contentHTML.trim()) {
         textHTML = contentHTML;
@@ -2703,7 +2703,7 @@ function createMessageHTML(type, text, timestamp, showActions = false, isTyping 
     } else {
         // Detectar si el texto contiene HTML (divs, etc.)
         const hasHTML = /<[^>]+>/.test(text);
-
+        
         if (hasHTML) {
             // Si tiene HTML, dividir el texto en partes (texto plano y HTML)
             // Convertir URLs en links antes de procesar
@@ -2711,7 +2711,7 @@ function createMessageHTML(type, text, timestamp, showActions = false, isTyping 
             // Dividir por saltos de línea primero para separar texto de HTML
             const lines = text.split('\n');
             let processedText = '';
-
+            
             lines.forEach(line => {
                 const trimmedLine = line.trim();
                 if (trimmedLine.startsWith('<div')) {
@@ -2724,12 +2724,12 @@ function createMessageHTML(type, text, timestamp, showActions = false, isTyping 
                     processedText += '<p class="ubits-study-chat__message-text">' + content + '</p>';
                 }
             });
-
+            
             textHTML = processedText;
-        } else {
-            // Convertir URLs en links con estilo
-            const linkRegex = /(https?:\/\/[^\s]+)/g;
-            const textWithLinks = text.replace(linkRegex, '<a href="$1" class="ubits-study-chat__link" target="_blank" rel="noopener noreferrer">$1</a>');
+    } else {
+        // Convertir URLs en links con estilo
+        const linkRegex = /(https?:\/\/[^\s]+)/g;
+        const textWithLinks = text.replace(linkRegex, '<a href="$1" class="ubits-study-chat__link" target="_blank" rel="noopener noreferrer">$1</a>');
             // Dividir por saltos de línea y crear párrafos
             const lines = textWithLinks.split('\n').filter(function (line) { return line.trim(); });
             textHTML = lines.map(function (line) {
@@ -2738,7 +2738,7 @@ function createMessageHTML(type, text, timestamp, showActions = false, isTyping 
             }).join('');
         }
     }
-
+    
     const actionsHTML = (type === 'ai' && showActions && !isTyping) ? `
         <div class="ubits-study-chat__message-actions">
             <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" title="Copiar">
@@ -2749,7 +2749,7 @@ function createMessageHTML(type, text, timestamp, showActions = false, isTyping 
             </button>
         </div>
     ` : '';
-
+    
     return `
         <div class="ubits-study-chat__message ${messageClass}">
             <div class="ubits-study-chat__text-globe ${globeClass}">
@@ -2770,20 +2770,20 @@ function createMessageHTML(type, text, timestamp, showActions = false, isTyping 
 function formatCoursesHTML(courses, isAddingMore = false) {
     // Generar ID único para el contenedor
     const containerId = `courses-container-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-
+    
     // Guardar los cursos en el estado para poder renderizarlos después
     chatState.pendingCoursesContainer = {
         containerId: containerId,
         courses: courses
     };
-
+    
     let introText = '';
     if (isAddingMore) {
         introText = 'He agregado otros 3 cursos a tu lista. Aquí está la lista completa:';
     } else {
         introText = '';
     }
-
+    
     return `<div class="study-chat-courses-section"><div id="${containerId}" class="study-chat-courses-container"></div><div class="study-chat-courses-prompt">¿Te gustaría que agregue otros 3 cursos? Solo dime "agrégame otros 3" o "agrega más".</div></div>`;
 }
 
@@ -2833,13 +2833,13 @@ function generateMockSearchResults(topicKey, filters) {
 function formatPlanHTML(plan) {
     // Generar ID único para el contenedor
     const containerId = `plan-courses-container-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-
+    
     // Guardar el plan en el estado para poder renderizar los cards después
     chatState.pendingPlanContainer = {
         containerId: containerId,
         plan: plan
     };
-
+    
     let text = `<div class="study-chat-plan-section">`;
     text += `<div class="study-chat-plan-title">Plan de Formación</div>`;
     text += `<div class="study-chat-plan-details">`;
@@ -2854,7 +2854,7 @@ function formatPlanHTML(plan) {
     text += `</div>`;
     text += `<div class="study-chat-plan-prompt">¿Deseas aceptar este plan o modificar el listado de cursos? Responde "acepto" o "modificar".</div>`;
     text += `</div>`;
-
+    
     return text;
 }
 
@@ -2866,14 +2866,14 @@ function generatePlanDates() {
     const startDate = new Date();
     const endDate = new Date();
     endDate.setMonth(endDate.getMonth() + 1);
-
+    
     const formatDate = (date) => {
         const day = date.getDate();
         const month = date.toLocaleString('es-ES', { month: 'long' });
         const year = date.getFullYear();
         return `${day} de ${month} de ${year}`;
     };
-
+    
     return {
         startDate: formatDate(startDate),
         endDate: formatDate(endDate)
@@ -2888,9 +2888,9 @@ function generateLeadershipPlan() {
     // Seleccionar 5 cursos aleatorios sin repetir
     const availableCourses = [...LEADERSHIP_COURSES].sort(() => 0.5 - Math.random());
     const selectedCourses = availableCourses.slice(0, 5);
-
+    
     const dates = generatePlanDates();
-
+    
     return {
         title: 'Plan de Formación en Liderazgo',
         courses: selectedCourses,
@@ -2906,22 +2906,22 @@ function generateLeadershipPlan() {
  * @returns {Array} Array de cursos seleccionados
  */
 function selectRandomCourses(count = 3) {
-    const availableCourses = LEADERSHIP_COURSES.filter(course =>
+    const availableCourses = LEADERSHIP_COURSES.filter(course => 
         !chatState.suggestedCourses.some(suggested => suggested.title === course.title)
     );
-
+    
     if (availableCourses.length === 0) {
         // Si ya se sugirieron todos, resetear la lista
         chatState.suggestedCourses = [];
         return selectRandomCourses(count);
     }
-
+    
     const shuffled = [...availableCourses].sort(() => 0.5 - Math.random());
     const selected = shuffled.slice(0, Math.min(count, availableCourses.length));
-
+    
     // Agregar a la lista de cursos sugeridos
     chatState.suggestedCourses.push(...selected);
-
+    
     return selected;
 }
 
@@ -2935,7 +2935,7 @@ function generateLeadershipCoursesResponse(count = 3, isAddingMore = false) {
     const courses = selectRandomCourses(count);
     let intro = '';
     let coursesText = '';
-
+    
     if (isAddingMore) {
         // Si estamos agregando más cursos, mantener todos los cursos sugeridos hasta ahora
         const allCourses = chatState.suggestedCourses;
@@ -2946,9 +2946,9 @@ function generateLeadershipCoursesResponse(count = 3, isAddingMore = false) {
         intro = '¡Excelente elección! El liderazgo es fundamental para el desarrollo profesional. Aquí tienes algunos cursos que te pueden interesar:';
         coursesText = formatCoursesHTML(courses, false);
     }
-
+    
     const responseText = intro + '\n\n' + coursesText;
-
+    
     return {
         text: responseText,
         courses: courses
@@ -3022,8 +3022,8 @@ function addMessageAIWithStreaming(text, showActions, regenerateFunction) {
         if (index >= linesHTML.length) {
             messageEl.classList.remove('ubits-study-chat__message--streaming');
             chatState.lastAIMessageElement = messageEl;
-            chatState.lastAIMessageText = text;
-            chatState.lastRegenerateFunction = regenerateFunction;
+        chatState.lastAIMessageText = text;
+        chatState.lastRegenerateFunction = regenerateFunction;
             attachAIMessageActions(messageEl, text, regenerateFunction);
             runPendingCardsRender(messageEl);
             body.scrollTop = body.scrollHeight;
@@ -3043,40 +3043,40 @@ function addMessageAIWithStreaming(text, showActions, regenerateFunction) {
 
 function runPendingCardsRender(messageElement) {
     if (!messageElement) return;
-    setTimeout(() => {
-        if (chatState.pendingCoursesContainer && typeof loadCardContentCompact === 'function') {
-            const { containerId, courses } = chatState.pendingCoursesContainer;
-            const container = messageElement.querySelector(`#${containerId}`);
-            if (container && courses && courses.length > 0) {
-                const basePath = getImageBasePath();
+        setTimeout(() => {
+            if (chatState.pendingCoursesContainer && typeof loadCardContentCompact === 'function') {
+                const { containerId, courses } = chatState.pendingCoursesContainer;
+                const container = messageElement.querySelector(`#${containerId}`);
+                if (container && courses && courses.length > 0) {
+                    const basePath = getImageBasePath();
                 const cardsData = courses.map(function (course) { return getRecommendedContentCardData(course, basePath); });
-                loadCardContentCompact(containerId, cardsData);
-                chatState.pendingCoursesContainer = null;
+                    loadCardContentCompact(containerId, cardsData);
+                    chatState.pendingCoursesContainer = null;
+                }
             }
-        }
-        if (chatState.pendingPlanContainer && typeof loadCardContentCompact === 'function') {
-            const { containerId, plan } = chatState.pendingPlanContainer;
-            const container = messageElement.querySelector(`#${containerId}`);
-            if (container && plan && plan.courses && plan.courses.length > 0) {
-                const basePath = getImageBasePath();
+            if (chatState.pendingPlanContainer && typeof loadCardContentCompact === 'function') {
+                const { containerId, plan } = chatState.pendingPlanContainer;
+                const container = messageElement.querySelector(`#${containerId}`);
+                if (container && plan && plan.courses && plan.courses.length > 0) {
+                    const basePath = getImageBasePath();
                 const cardsData = plan.courses.map(function (course) { return getRecommendedContentCardData(course, basePath); });
-                loadCardContentCompact(containerId, cardsData);
-                chatState.pendingPlanContainer = null;
+                    loadCardContentCompact(containerId, cardsData);
+                    chatState.pendingPlanContainer = null;
+                }
             }
-        }
     }, 150);
-}
-
+    }
+    
 function attachAIMessageActions(messageElement, text, regenerateFunction) {
     if (!messageElement) return;
-    const copyBtn = messageElement.querySelector('button[title="Copiar"]');
-    const regenerateBtn = messageElement.querySelector('button[title="Regenerar"]');
+        const copyBtn = messageElement.querySelector('button[title="Copiar"]');
+        const regenerateBtn = messageElement.querySelector('button[title="Regenerar"]');
     const plainText = (() => {
         const div = document.createElement('div');
         div.innerHTML = text;
         return div.textContent || div.innerText || text;
     })();
-    if (copyBtn) {
+        if (copyBtn) {
         copyBtn.addEventListener('click', () => {
             navigator.clipboard.writeText(plainText).then(() => {
                 if (typeof showToast === 'function') showToast('success', '¡Texto copiado exitosamente! 😉', { containerId: 'ubits-toast-container', duration: 3500 });
@@ -3479,7 +3479,7 @@ function addMessageWithMaterialChoiceButtons(label, topic) {
         text = 'Perfecto, trabajemos <strong>Japonés</strong>. Puedo hacerte un quiz, crear flashcards, un plan de estudio o un podcast. ¿Qué prefieres?';
     } else if (showPlan) {
         text = 'Perfecto, trabajemos <strong>' + label + '</strong>. Puedo hacerte un quiz, crear flashcards, un plan de estudio o un podcast con contenidos UBITS. ¿Qué prefieres?';
-    } else {
+                    } else {
         text = 'Perfecto, trabajemos <strong>' + label + '</strong>. Puedo hacerte un quiz, crear flashcards o un podcast. ¿Qué prefieres?';
     }
     const timestamp = formatTime();
@@ -3784,7 +3784,7 @@ function addMessageWithResourceTypeButtons(text) {
                 pushCurrentChatMessage('user', this.textContent.trim());
                 var userMsgHtml = createMessageHTML('user', this.textContent.trim(), formatTime(), false, false);
                 body.insertAdjacentHTML('beforeend', userMsgHtml);
-            } else {
+                } else {
                 var clickedLabel = this.textContent.trim();
                 pushCurrentChatMessage('user', clickedLabel);
                 var userMsgHtml = createMessageHTML('user', clickedLabel, formatTime(), false, false);
@@ -3848,12 +3848,12 @@ function addMessage(type, text, showActions = false, regenerateFunction = null) 
 function showTypingMessage() {
     const body = document.getElementById('ubits-study-chat-body');
     if (!body) return;
-
+    
     const timestamp = formatTime();
     const messageHTML = createMessageHTML('ai', '', timestamp, false, true);
     body.insertAdjacentHTML('beforeend', messageHTML);
     body.scrollTop = body.scrollHeight;
-
+    
     return body.lastElementChild;
 }
 
@@ -3866,7 +3866,7 @@ function showTypingMessage() {
 function removeTypingMessage() {
     const body = document.getElementById('ubits-study-chat-body');
     if (!body) return;
-
+    
     const typingMessage = body.querySelector('.ubits-study-chat__text-globe--typing');
     if (typingMessage) {
         typingMessage.closest('.ubits-study-chat__message').remove();
@@ -3941,22 +3941,22 @@ function initStudyChat(containerId, options = {}) {
     }
 
     if (chatState.competencies.length === 0) {
-        addMessage('ai', '¡Hola! ¿En qué puedo ayudarte?', true);
+    addMessage('ai', '¡Hola! ¿En qué puedo ayudarte?', true);
     }
-
+    
     const input = document.getElementById('ubits-study-chat-input');
     const sendBtn = document.getElementById('ubits-study-chat-send-btn');
     const attachBtn = document.getElementById('ubits-study-chat-attach-btn');
     const suggestionBtns = document.querySelectorAll('.ubits-study-chat__suggestions .ubits-button');
     const competencyChips = document.querySelectorAll('.ubits-study-chat__competency-chip');
-
+    
     // Auto-resize del textarea
     if (input) {
         input.addEventListener('input', function () {
             this.style.height = 'auto';
             this.style.height = this.scrollHeight + 'px';
         });
-
+        
         // Enviar con Enter (sin Shift)
         input.addEventListener('keydown', function (e) {
             if (e.key === 'Enter' && !e.shiftKey) {
@@ -3965,19 +3965,19 @@ function initStudyChat(containerId, options = {}) {
             }
         });
     }
-
+    
     // Botón enviar
     if (sendBtn) {
         sendBtn.addEventListener('click', sendMessage);
     }
-
+    
     // Botón adjuntar (por ahora solo log)
     if (attachBtn) {
         attachBtn.addEventListener('click', function () {
             console.log('Adjuntar archivo');
         });
     }
-
+    
     // Chips de competencias (Modo Tutor): al clic = elegir tema, mostrar definición + subtemas; si es primera interacción y tema UBITS (Liderazgo/Inglés/Comunicación), abrir canvas "Sugerencias de contenido" con contenidos de 30 min
     var UBITS_WELCOME_TOPICS = { liderazgo: true, ingles: true, comunicacion: true };
     competencyChips.forEach(btn => {
@@ -4044,11 +4044,11 @@ function initStudyChat(containerId, options = {}) {
             }
             if (message && response) {
                 addMessage('user', message);
-                addMessage('ai', response, true);
+                    addMessage('ai', response, true);
             }
         });
     });
-
+    
     // Función para generar respuesta predefinida basada en el mensaje del usuario
     function generateResponse(userMessage) {
         const lowerMessage = userMessage.toLowerCase().trim();
@@ -4312,33 +4312,33 @@ function initStudyChat(containerId, options = {}) {
             const names = chatState.competencies.join(', ');
             return { text: 'Tienes asignadas: ' + names + '. ¿Empezamos por alguna? Puedes hacer clic en los botones de arriba o escribir otro tema (por ejemplo "japonés" si quieres aprender algo que no esté en tu catálogo).', regenerateFunction: null };
         }
-
+        
         // Si estamos esperando respuesta sobre el tema del plan
         if (chatState.waitingForPlanTopic) {
             // Detectar si el usuario menciona "liderazgo"
             if (lowerMessage.includes('liderazgo') || lowerMessage.includes('lider')) {
                 chatState.waitingForPlanTopic = false;
                 chatState.waitingForPlanAcceptance = true;
-
+                
                 // Función para regenerar el plan con otros cursos
                 const createPlanRegenerateFunction = function () {
                     return function () {
                         if (chatState.lastAIMessageElement) {
                             chatState.lastAIMessageElement.remove();
                         }
-
+                        
                         // Generar nuevo plan de formación
                         const plan = generateLeadershipPlan();
                         chatState.currentPlan = plan;
-
+                        
                         const planText = formatPlanHTML(plan);
                         const responseText = '¡Perfecto! He diseñado un plan de formación en liderazgo para ti. Aquí están los detalles:' + planText;
-
+                        
                         const newRegenerateFunction = createPlanRegenerateFunction();
                         addMessage('ai', responseText, true, newRegenerateFunction);
                     };
                 };
-
+                
                 const plan = generateLeadershipPlan();
                 chatState.currentPlan = plan;
                 const planText = formatPlanHTML(plan);
@@ -4357,16 +4357,16 @@ function initStudyChat(containerId, options = {}) {
                 };
             }
         }
-
+        
         // Si estamos esperando que el usuario acepte o modifique el plan
         if (chatState.waitingForPlanAcceptance && chatState.currentPlan) {
             if (lowerMessage.includes('acepto') || lowerMessage.includes('aceptar') || lowerMessage.includes('sí') || lowerMessage.includes('si') || lowerMessage.includes('ok') || lowerMessage.includes('de acuerdo')) {
                 chatState.waitingForPlanAcceptance = false;
-
+                
                 const plan = chatState.currentPlan;
                 const planId = Math.floor(Math.random() * 10000); // ID aleatorio para el ejemplo
                 const planLink = `https://ubits.com/planes/${planId}`; // Link de ejemplo
-
+                
                 const confirmationText = `¡Excelente! He creado el plan de formación a tu nombre.\n\n` +
                     `Detalles del plan:\n` +
                     `- Título: ${plan.title}\n` +
@@ -4374,10 +4374,10 @@ function initStudyChat(containerId, options = {}) {
                     `- Fecha de inicio: ${plan.startDate}\n` +
                     `- Fecha de fin: ${plan.endDate}\n\n` +
                     `Puedes acceder a tu plan aquí: ${planLink}`;
-
+                
                 // Limpiar el plan actual
                 chatState.currentPlan = null;
-
+                
                 return {
                     text: confirmationText,
                     regenerateFunction: null
@@ -4385,26 +4385,26 @@ function initStudyChat(containerId, options = {}) {
             } else if (lowerMessage.includes('modificar') || lowerMessage.includes('cambiar') || lowerMessage.includes('otro')) {
                 // Regenerar el plan con otros cursos
                 chatState.waitingForPlanAcceptance = true;
-
+                
                 // Función para regenerar el plan con otros cursos
                 const createPlanRegenerateFunction = function () {
                     return function () {
                         if (chatState.lastAIMessageElement) {
                             chatState.lastAIMessageElement.remove();
                         }
-
+                        
                         // Generar nuevo plan de formación
                         const plan = generateLeadershipPlan();
                         chatState.currentPlan = plan;
-
+                        
                         const planText = formatPlanHTML(plan);
                         const responseText = '¡Por supuesto! He modificado el plan con otros cursos. Aquí está la nueva propuesta:' + planText;
-
+                        
                         const newRegenerateFunction = createPlanRegenerateFunction();
                         addMessage('ai', responseText, true, newRegenerateFunction);
                     };
                 };
-
+                
                 const plan = generateLeadershipPlan();
                 chatState.currentPlan = plan;
                 const planText = formatPlanHTML(plan);
@@ -4422,30 +4422,30 @@ function initStudyChat(containerId, options = {}) {
                 };
             }
         }
-
+        
         // Si estamos esperando respuesta sobre el tema (para sugerencias de contenidos)
         if (chatState.waitingForTopic) {
             // Detectar si el usuario menciona "liderazgo"
             if (lowerMessage.includes('liderazgo') || lowerMessage.includes('lider')) {
                 chatState.currentTopic = 'liderazgo';
                 chatState.waitingForTopic = false;
-
+                
                 // Función para regenerar esta respuesta con otros cursos
                 const createRegenerateFunction = function () {
                     return function () {
                         // Remover los últimos 3 cursos de la lista de sugeridos (para poder sugerirlos de nuevo)
                         chatState.suggestedCourses = chatState.suggestedCourses.slice(0, -3);
-
+                        
                         if (chatState.lastAIMessageElement) {
                             chatState.lastAIMessageElement.remove();
                         }
-
+                        
                         const responseData = generateLeadershipCoursesResponse(3);
                         const newRegenerateFunction = createRegenerateFunction();
                         addMessage('ai', responseData.text, true, newRegenerateFunction);
                     };
                 };
-
+                
                 const regenerateFunction = createRegenerateFunction();
                 const responseData = generateLeadershipCoursesResponse(3);
                 if (chatState.rightPanelId) {
@@ -4458,46 +4458,46 @@ function initStudyChat(containerId, options = {}) {
                 return { text: 'Entiendo. Te puedo ayudar con varios temas. Por ahora, puedo sugerirte cursos sobre liderazgo, tecnología, comunicación, gestión de proyectos y más. ¿Hay algún tema específico que te interese?', regenerateFunction: null };
             }
         }
-
+        
         // Detectar si el usuario pide agregar más cursos
-        if (chatState.currentTopic === 'liderazgo' &&
-            (lowerMessage.includes('agrégame otros 3') ||
-                lowerMessage.includes('agrega más') ||
-                lowerMessage.includes('otros 3') ||
-                lowerMessage.includes('más cursos'))) {
-
+        if (chatState.currentTopic === 'liderazgo' && 
+            (lowerMessage.includes('agrégame otros 3') || 
+             lowerMessage.includes('agrega más') || 
+             lowerMessage.includes('otros 3') ||
+             lowerMessage.includes('más cursos'))) {
+            
             // Función para regenerar esta respuesta con otros cursos (solo los últimos 3)
             const regenerateFunction = function () {
                 // Remover los últimos 3 cursos de la lista de sugeridos (para poder sugerirlos de nuevo)
                 chatState.suggestedCourses = chatState.suggestedCourses.slice(0, -3);
-
+                
                 if (chatState.lastAIMessageElement) {
                     chatState.lastAIMessageElement.remove();
                 }
-
+                
                 // Crear función recursiva para regenerar
                 const createRegenerateFunction = function () {
                     return function () {
                         // Remover los últimos 3 cursos de la lista de sugeridos
                         chatState.suggestedCourses = chatState.suggestedCourses.slice(0, -3);
-
+                        
                         if (chatState.lastAIMessageElement) {
                             chatState.lastAIMessageElement.remove();
                         }
-
+                        
                         // Agregar otros 3 cursos manteniendo los anteriores
                         const responseData = generateLeadershipCoursesResponse(3, true);
                         const newRegenerateFunction = createRegenerateFunction();
                         addMessage('ai', responseData.text, true, newRegenerateFunction);
                     };
                 };
-
+                
                 // Agregar otros 3 cursos manteniendo los anteriores
                 const responseData = generateLeadershipCoursesResponse(3, true);
                 const newRegenerateFunction = createRegenerateFunction();
                 addMessage('ai', responseData.text, true, newRegenerateFunction);
             };
-
+            
             const responseData = generateLeadershipCoursesResponse(3, true);
             if (chatState.rightPanelId) {
                 const allCourses = chatState.suggestedCourses;
@@ -4506,7 +4506,7 @@ function initStudyChat(containerId, options = {}) {
             }
             return { text: responseData.text, regenerateFunction: regenerateFunction };
         }
-
+        
         // Respuestas predefinidas basadas en palabras clave
         if (lowerMessage.includes('hola') || lowerMessage.includes('hi') || lowerMessage.includes('buenos días') || lowerMessage.includes('buenas tardes')) {
             return {
@@ -4514,55 +4514,55 @@ function initStudyChat(containerId, options = {}) {
                 regenerateFunction: null
             };
         }
-
+        
         if (lowerMessage.includes('curso') || lowerMessage.includes('contenido') || lowerMessage.includes('aprender')) {
             return {
                 text: 'Excelente pregunta sobre contenidos de aprendizaje. Te puedo ayudar a encontrar cursos y recursos que se ajusten a tus necesidades. ¿Hay algún tema específico que te interese? Por ejemplo: liderazgo, tecnología, comunicación, gestión de proyectos, entre otros.',
                 regenerateFunction: null
             };
         }
-
+        
         if (lowerMessage.includes('plan') || lowerMessage.includes('programa') || lowerMessage.includes('ruta')) {
             return {
                 text: 'Perfecto, podemos crear un plan de formación personalizado para ti. Para diseñar el mejor plan, me ayudaría conocer: tus objetivos profesionales, las competencias que quieres desarrollar y el tiempo que puedes dedicar al aprendizaje. ¿Podrías compartirme esta información?',
                 regenerateFunction: null
             };
         }
-
+        
         if (lowerMessage.includes('ayuda') || lowerMessage.includes('help') || lowerMessage.includes('cómo')) {
             return {
                 text: '¡Por supuesto! Estoy aquí para ayudarte. Puedo asistirte con: sugerencias de contenidos, creación de planes de formación, explicación de conceptos, resolución de dudas y más. ¿Qué necesitas específicamente?',
                 regenerateFunction: null
             };
         }
-
+        
         if (lowerMessage.includes('gracias') || lowerMessage.includes('thank')) {
             return {
                 text: '¡De nada! Es un placer ayudarte. Si tienes más preguntas o necesitas asistencia adicional, no dudes en preguntarme. ¡Que tengas un excelente día de aprendizaje!',
                 regenerateFunction: null
             };
         }
-
+        
         // Respuesta genérica por defecto
         return {
             text: 'Gracias por tu mensaje. Estoy aquí para ayudarte con tus necesidades de aprendizaje y formación. Puedo asistirte con sugerencias de contenidos, creación de planes de estudio, explicación de conceptos y más. ¿Hay algo específico en lo que pueda ayudarte?',
             regenerateFunction: null
         };
     }
-
+    
     // Función para enviar mensaje
     function sendMessage() {
         if (!input || !input.value.trim()) return;
-
+        
         const message = input.value.trim();
-
+        
         // Agregar mensaje del usuario
         addMessage('user', message);
-
+        
         // Limpiar input
         input.value = '';
         input.style.height = 'auto';
-
+        
         // Generar respuesta predefinida
         const responseData = generateResponse(message);
         const response = typeof responseData === 'object' ? responseData.text : responseData;
@@ -4586,7 +4586,7 @@ function initStudyChat(containerId, options = {}) {
             addResourceMessage(resourceMessage.type, resourceMessage.topic, false);
         } else {
             addMessage('ai', response, true, regenerateFunction);
-        }
+    }
     }
 
     notifyModoEstudioIaActionsVisibility();

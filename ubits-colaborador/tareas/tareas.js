@@ -161,21 +161,16 @@ const getDaysInMonth = () => {
     const selectedYear = selectedDate.getFullYear();
     const selectedMonth = selectedDate.getMonth();
     const selectedDayNum = selectedDate.getDate();
-    
-    const todayDate = parseDateString(today);
-    const todayYear = todayDate.getFullYear();
-    const todayMonth = todayDate.getMonth();
-    const todayDayNum = todayDate.getDate();
-    
+
     const mobile = isCalendarMobile();
     const daysBefore = mobile ? 1 : 3;
     const maxDays = mobile ? 4 : 7;
-    
-    // Día de inicio (N días antes del seleccionado, pero no antes de hoy)
+
+    // Día de inicio: N días antes del seleccionado (ahora permite días anteriores a hoy)
     let startDay = selectedDayNum - daysBefore;
     let startMonth = selectedMonth;
     let startYear = selectedYear;
-    
+
     if (startDay < 1) {
         startMonth--;
         if (startMonth < 0) {
@@ -185,23 +180,15 @@ const getDaysInMonth = () => {
         const daysInPrevMonth = new Date(startYear, startMonth + 1, 0).getDate();
         startDay = daysInPrevMonth + startDay;
     }
-    
-    const startDate = new Date(startYear, startMonth, startDay);
-    const todayDateObj = new Date(todayYear, todayMonth, todayDayNum);
-    if (startDate < todayDateObj) {
-        startDay = todayDayNum;
-        startMonth = todayMonth;
-        startYear = todayYear;
-    }
-    
+
     let currentDay = startDay;
     let currentMonth = startMonth;
     let currentYear = startYear;
     let daysAdded = 0;
-    
+
     while (daysAdded < maxDays) {
         const daysInCurrentMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-        
+
         if (currentDay > daysInCurrentMonth) {
             currentDay = 1;
             currentMonth++;
@@ -210,22 +197,22 @@ const getDaysInMonth = () => {
                 currentYear++;
             }
         }
-        
+
         const currentDate = new Date(currentYear, currentMonth, currentDay);
         const dateString = createLocalDate(currentYear, currentMonth, currentDay);
         const dayNames = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
-        
+
         days.push({
             date: currentDate,
             dateString,
             dayName: dayNames[currentDate.getDay()],
             dayNumber: currentDay
         });
-        
+
         currentDay++;
         daysAdded++;
     }
-    
+
     return days;
 };
 
@@ -238,15 +225,15 @@ function renderCalendarHorizontal() {
     }
 
     container.innerHTML = '';
-    
+
     const daysInMonth = getDaysInMonth();
-    
+
     console.log(`Renderizando ${daysInMonth.length} días del calendario`);
-    
+
     daysInMonth.forEach(day => {
         const isSelected = day.dateString === estadoTareas.selectedDay;
         const isToday = day.dateString === today;
-        
+
         const dayButton = document.createElement('button');
         dayButton.className = `calendar-horizontal__day ${isSelected ? 'calendar-horizontal__day--selected' : ''} ${isToday ? 'calendar-horizontal__day--today' : ''}`;
         dayButton.type = 'button';
@@ -254,12 +241,12 @@ function renderCalendarHorizontal() {
         if (isSelected) {
             dayButton.setAttribute('aria-current', 'date');
         }
-        
+
         dayButton.innerHTML = `
             <span class="calendar-horizontal__weekday">${day.dayName}</span>
             <span class="calendar-horizontal__day-number">${day.dayNumber}</span>
         `;
-        
+
         dayButton.addEventListener('click', () => {
             estadoTareas.selectedDay = day.dateString;
             renderCalendarHorizontal();
@@ -267,7 +254,7 @@ function renderCalendarHorizontal() {
             // Espera para que el DOM/layout esté estable tras cargar días, luego ir al día
             setTimeout(() => scrollToDay(parseDateString(day.dateString)), 120);
         });
-        
+
         container.appendChild(dayButton);
     });
 }
@@ -323,24 +310,31 @@ function renderTareasVencidas() {
     if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
 }
 
-// Renderizar sección de día
+// Renderizar sección de día (no finalizadas primero; finalizadas al final, la recién marcada como primera del bloque)
 function renderDaySection(fecha) {
     const fechaKey = formatDate(fecha);
     const fechaFormateada = formatFullDate(fechaKey);
     const relativeName = getRelativeDayName(fechaKey);
-    const tareasDelDia = tareasEjemplo.porDia[fechaKey] || [];
-    
+    const esPasado = fechaKey < today;
+    const tareasDelDia = (tareasEjemplo.porDia[fechaKey] || [])
+        .slice()
+        .sort((a, b) => {
+            if (a.done !== b.done) return (a.done ? 1 : 0) - (b.done ? 1 : 0);
+            if (a.done && b.done) return (a._justFinalized ? 0 : 1) - (b._justFinalized ? 0 : 1);
+            return 0;
+        });
+
     const fullDateParts = fechaFormateada.split(' · ');
     const monthDay = fullDateParts[0];
     const dayName = fullDateParts[1];
-    
+
     let headerText = '';
     if (relativeName) {
         headerText = `${monthDay} · ${relativeName} · ${dayName}`;
     } else {
         headerText = fechaFormateada;
     }
-    
+
     return `
         <div class="tareas-day-container" data-date="${fechaKey}">
             <div class="tareas-day-header">
@@ -348,7 +342,7 @@ function renderDaySection(fecha) {
             </div>
             <div class="tareas-day-content">
                 ${tareasDelDia.length > 0 ? tareasDelDia.map(tarea => window.renderTaskStrip(tarea, getTaskStripOpts(false))).join('') : ''}
-                ${estadoTareas.addingTaskForDate === fechaKey ? `
+                ${!esPasado ? (estadoTareas.addingTaskForDate === fechaKey ? `
                     <form class="tarea-add-form" data-date="${fechaKey}" onsubmit="event.preventDefault(); var inp = this.querySelector('.tarea-add-input'); if (inp && inp.value.trim()) handleCreateTaskInline(this.dataset.date, inp.value.trim()); return false;">
                         <div class="tarea-add-input-wrapper">
                             <div class="tarea-add-icon">
@@ -368,28 +362,28 @@ function renderDaySection(fecha) {
                         <i class="far fa-plus"></i>
                         <span>Añadir tarea</span>
                     </button>
-                `}
+                `) : ''}
             </div>
         </div>
     `;
 }
 
-// Cargar más días (scroll infinito)
+// Cargar más días (scroll infinito hacia adelante, desde hoy)
 function loadMoreDays() {
     const container = document.getElementById('days-container');
     if (!container) return;
 
     const inicio = estadoTareas.diasCargados;
     const fin = inicio + estadoTareas.diasPorCarga;
-    
-    // Empezar desde hoy
+
+    // Empezar desde hoy hacia adelante
     const hoy = parseDateString(today);
-    
+
     for (let i = inicio; i < fin; i++) {
         const fecha = new Date(hoy);
         fecha.setDate(hoy.getDate() + i);
         const fechaKey = formatDate(fecha);
-        
+
         if (!estadoTareas.diasRenderizados.includes(fechaKey)) {
             const tempDiv = document.createElement('div');
             tempDiv.innerHTML = renderDaySection(fecha);
@@ -398,14 +392,50 @@ function loadMoreDays() {
             estadoTareas.diasRenderizados.push(fechaKey);
         }
     }
-    
+
     estadoTareas.diasCargados = fin;
     if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
 }
 
-// Asegurar que el día esté cargado en la lista (solo días >= hoy)
+// Renderizar un día pasado (se inserta al inicio del contenedor, antes de hoy)
+function loadPastDay(fechaKey) {
+    const container = document.getElementById('days-container');
+    if (!container) return;
+    if (estadoTareas.diasRenderizados.includes(fechaKey)) return;
+
+    const fecha = parseDateString(fechaKey);
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = renderDaySection(fecha);
+    const dayElement = tempDiv.firstElementChild;
+
+    // Insertar antes del primer hijo (los días pasados van arriba del todo)
+    // Buscar si ya hay días pasados insertados: insertar en orden cronológico
+    const existingDays = container.querySelectorAll('.tareas-day-container');
+    let insertBefore = null;
+    for (let i = 0; i < existingDays.length; i++) {
+        const existingDate = existingDays[i].dataset.date;
+        if (existingDate && existingDate > fechaKey) {
+            insertBefore = existingDays[i];
+            break;
+        }
+    }
+    if (insertBefore) {
+        container.insertBefore(dayElement, insertBefore);
+    } else {
+        container.appendChild(dayElement);
+    }
+    estadoTareas.diasRenderizados.push(fechaKey);
+    if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
+}
+
+// Asegurar que el día esté cargado en la lista (soporta días pasados y futuros)
 function ensureDayLoaded(fechaKey) {
-    if (!fechaKey || fechaKey < today) return;
+    if (!fechaKey) return;
+    if (fechaKey < today) {
+        // Día pasado: insertar al inicio del contenedor en orden cronológico
+        loadPastDay(fechaKey);
+        return;
+    }
     const maxLoads = 50; // límite para no iterar infinito
     let loads = 0;
     while (!estadoTareas.diasRenderizados.includes(fechaKey) && loads < maxLoads) {
@@ -417,11 +447,8 @@ function ensureDayLoaded(fechaKey) {
 // Llevar la vista al día seleccionado (lista de tareas)
 function scrollToDay(fecha) {
     const fechaKey = formatDate(fecha);
-    let daySection = document.querySelector(`.tareas-day-container[data-date="${fechaKey}"]`);
+    const daySection = document.querySelector(`.tareas-day-container[data-date="${fechaKey}"]`);
 
-    if (!daySection && fechaKey < today) {
-        daySection = document.querySelector(`.tareas-day-container[data-date="${today}"]`);
-    }
     if (!daySection) return;
 
     const scrollContainer = document.getElementById('tareas-scroll-container');
@@ -440,20 +467,15 @@ const handlePreviousDay = () => {
     const [year, month, day] = estadoTareas.selectedDay.split('-').map(Number);
     const prevDate = new Date(year, month - 1, day - 1);
     const newDateString = createLocalDate(prevDate.getFullYear(), prevDate.getMonth(), prevDate.getDate());
-    
-    // No permitir navegar a días pasados
-    if (newDateString < today) {
-        return;
-    }
-    
+
     estadoTareas.selectedDay = newDateString;
-    
+
     // Actualizar el mes mostrado si es necesario
     if (prevDate.getMonth() !== estadoTareas.currentDate.getMonth() || prevDate.getFullYear() !== estadoTareas.currentDate.getFullYear()) {
         estadoTareas.currentDate = new Date(prevDate.getFullYear(), prevDate.getMonth(), 1);
         updateMonthYearDisplay();
     }
-    
+
     renderCalendarHorizontal();
     ensureDayLoaded(estadoTareas.selectedDay);
     setTimeout(() => scrollToDay(prevDate), 80);
@@ -463,15 +485,15 @@ const handleNextDay = () => {
     const [year, month, day] = estadoTareas.selectedDay.split('-').map(Number);
     const nextDate = new Date(year, month - 1, day + 1);
     const newDateString = createLocalDate(nextDate.getFullYear(), nextDate.getMonth(), nextDate.getDate());
-    
+
     estadoTareas.selectedDay = newDateString;
-    
+
     // Actualizar el mes mostrado si es necesario
     if (nextDate.getMonth() !== estadoTareas.currentDate.getMonth() || nextDate.getFullYear() !== estadoTareas.currentDate.getFullYear()) {
         estadoTareas.currentDate = new Date(nextDate.getFullYear(), nextDate.getMonth(), 1);
         updateMonthYearDisplay();
     }
-    
+
     renderCalendarHorizontal();
     ensureDayLoaded(estadoTareas.selectedDay);
     setTimeout(() => scrollToDay(nextDate), 80);
@@ -481,7 +503,7 @@ const handleToday = () => {
     const hoy = parseDateString(today);
     estadoTareas.currentDate = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
     estadoTareas.selectedDay = today;
-    
+
     updateMonthYearDisplay();
     renderCalendarHorizontal();
     ensureDayLoaded(today);
@@ -593,7 +615,7 @@ function initTareasView() {
             if (ev.target === deleteOverlay) closeDeleteModal();
         });
     }
-    
+
     // Actualizar selector de mes/año
     updateMonthYearDisplay();
 
@@ -645,7 +667,7 @@ function initTareasView() {
 
     // Renderizar tareas vencidas (PRIMERO)
     renderTareasVencidas();
-    
+
     // Configurar toggle de sección vencidas
     const overdueToggle = document.getElementById('overdue-toggle');
     if (overdueToggle) {
@@ -674,7 +696,7 @@ function initTareasView() {
                     const overdueContent = document.getElementById('overdue-content');
                     const isInOverdueSection = overdueContent && overdueContent.contains(control);
 
-                    let tarea = tareasEjemplo.vencidas.find(t => t.id === tareaId);
+                    let tarea = tareasEjemplo.vencidas.find(t => taskIdMatches(t, tareaId));
                     if (tarea) {
                         tarea.done = !tarea.done;
                         tarea.status = tarea.done ? 'Finalizado' : 'Vencido';
@@ -713,22 +735,52 @@ function initTareasView() {
                     if (dayContainer) {
                         const fechaKey = dayContainer.dataset.date;
                         const tareasDelDia = tareasEjemplo.porDia[fechaKey] || [];
-                        tarea = tareasDelDia.find(t => t.id === tareaId);
+                        tarea = tareasDelDia.find(t => taskIdMatches(t, tareaId));
                         if (tarea) {
+                            const wasDone = tarea.done;
                             tarea.done = !tarea.done;
                             tarea.status = tarea.done ? 'Finalizado' : 'Activo';
+                            if (tarea.done) tarea._justFinalized = true;
+                            else tarea._justFinalized = false;
                             input.checked = tarea.done;
+                            const row = control.closest('.tarea-item');
+                            const oldRect = (row && tarea.done) ? row.getBoundingClientRect() : null;
                             const fecha = parseDateString(fechaKey);
                             const tempDiv = document.createElement('div');
                             tempDiv.innerHTML = renderDaySection(fecha);
                             const newContent = tempDiv.firstElementChild;
                             dayContainer.innerHTML = newContent.innerHTML;
                             if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
+                            if (tarea.done && oldRect) {
+                                const newRow = dayContainer.querySelector(`.tarea-item[data-tarea-id="${tareaId}"]`);
+                                if (newRow) {
+                                    const newRect = newRow.getBoundingClientRect();
+                                    const deltaY = oldRect.top - newRect.top;
+                                    if (Math.abs(deltaY) > 2) {
+                                        newRow.style.transition = 'none';
+                                        newRow.style.transform = `translateY(${deltaY}px)`;
+                                        newRow.offsetHeight;
+                                        newRow.style.transition = 'transform 0.35s ease-out';
+                                        newRow.style.transform = '';
+                                        newRow.addEventListener('transitionend', function onEnd() {
+                                            newRow.style.transition = '';
+                                            newRow.removeEventListener('transitionend', onEnd);
+                                            if (tarea) tarea._justFinalized = false;
+                                        }, { once: true });
+                                    } else if (tarea) {
+                                        tarea._justFinalized = false;
+                                    }
+                                } else if (tarea) {
+                                    tarea._justFinalized = false;
+                                }
+                            } else if (tarea && !tarea.done) {
+                                tarea._justFinalized = false;
+                            }
                         }
                     }
                 }
             }
-            
+
             // Botón "Añadir tarea"
             if (e.target.closest('.tarea-add-btn')) {
                 const btn = e.target.closest('.tarea-add-btn');
@@ -750,16 +802,16 @@ function initTareasView() {
                     }, 50);
                 }
             }
-            
+
             // Formulario de agregar tarea - submit con Enter
             if (e.target.classList.contains('tarea-add-input')) {
                 const input = e.target;
                 const form = input.closest('.tarea-add-form');
-                
+
                 // Agregar listener para Enter (solo una vez por input)
                 if (!input.dataset.enterListenerAdded) {
                     input.dataset.enterListenerAdded = 'true';
-                    input.addEventListener('keydown', function(event) {
+                    input.addEventListener('keydown', function (event) {
                         if (event.key === 'Enter' && this.value.trim() && !estadoTareas.isCreatingTask) {
                             event.preventDefault();
                             const form = this.closest('.tarea-add-form');
@@ -770,11 +822,11 @@ function initTareasView() {
                     });
                 }
             }
-            
+
             // Cerrar formulario de agregar tarea al hacer blur
             if (e.target.classList.contains('tarea-add-input')) {
                 const input = e.target;
-                input.addEventListener('blur', function() {
+                input.addEventListener('blur', function () {
                     if (!this.value.trim()) {
                         const form = this.closest('.tarea-add-form');
                         if (form) {
@@ -794,7 +846,7 @@ function initTareasView() {
                     }
                 }, { once: true });
             }
-            
+
             // Botones de acción
             if (e.target.closest('.tarea-action-btn--add-plan')) {
                 const tareaItem = e.target.closest('.tarea-item');
@@ -822,9 +874,10 @@ function initTareasView() {
                 }
             }
             if (e.target.closest('.tarea-action-btn--details')) {
-                const tareaItem = e.target.closest('.tarea-item');
-                const tareaId = parseInt(tareaItem.querySelector('input.ubits-radio__input')?.dataset.tareaId);
-                if (tareaId) {
+                const btn = e.target.closest('.tarea-action-btn--details');
+                // Leer tareaId del data-tarea-id del propio botón (más robusto que buscarlo en el radio input)
+                const tareaId = parseInt(btn.dataset.tareaId || btn.getAttribute('data-tarea-id'), 10);
+                if (!isNaN(tareaId)) {
                     handleTaskClick(tareaId);
                 }
             }
@@ -835,10 +888,10 @@ function initTareasView() {
                 const badge = e.target.closest('.tarea-priority-badge');
                 const tareaId = parseInt(badge.dataset.tareaId || badge.getAttribute('data-tarea-id'), 10);
                 if (isNaN(tareaId)) return;
-                let tarea = tareasEjemplo.vencidas.find(function (t) { return t.id === tareaId; });
+                let tarea = tareasEjemplo.vencidas.find(function (t) { return taskIdMatches(t, tareaId); });
                 if (!tarea) {
                     for (var fk in tareasEjemplo.porDia) {
-                        tarea = tareasEjemplo.porDia[fk].find(function (t) { return t.id === tareaId; });
+                        tarea = tareasEjemplo.porDia[fk].find(function (t) { return taskIdMatches(t, tareaId); });
                         if (tarea) break;
                     }
                 }
@@ -908,11 +961,11 @@ function initTareasView() {
         let isLoading = false;
         scrollContainer.addEventListener('scroll', () => {
             if (isLoading) return;
-            
+
             const scrollTop = scrollContainer.scrollTop;
             const scrollHeight = scrollContainer.scrollHeight;
             const clientHeight = scrollContainer.clientHeight;
-            
+
             // Cargar más días cuando esté cerca del final (80% del scroll)
             if (scrollTop + clientHeight >= scrollHeight * 0.8) {
                 isLoading = true;
@@ -920,7 +973,7 @@ function initTareasView() {
                 if (loadingIndicator) {
                     loadingIndicator.style.display = 'block';
                 }
-                
+
                 setTimeout(() => {
                     loadMoreDays();
                     if (loadingIndicator) {
@@ -962,9 +1015,9 @@ const TAREA_INLINE_CREATED_BY = 'Maria Alejandra Sanchez Pardo';
 // Función para crear tarea inline
 function handleCreateTaskInline(fechaKey, nombreTarea) {
     if (!nombreTarea.trim() || estadoTareas.isCreatingTask) return;
-    
+
     estadoTareas.isCreatingTask = true;
-    
+
     // Simular creación de tarea (en producción sería una llamada a API)
     setTimeout(() => {
         const nuevaTarea = {
@@ -984,18 +1037,18 @@ function handleCreateTaskInline(fechaKey, nombreTarea) {
             planNombre: '',
             etiqueta: null
         };
-        
+
         // Agregar tarea a la fecha correspondiente
         if (!tareasEjemplo.porDia[fechaKey]) {
             tareasEjemplo.porDia[fechaKey] = [];
         }
         tareasEjemplo.porDia[fechaKey].push(nuevaTarea);
-        
+
         // Limpiar estado
         estadoTareas.addingTaskForDate = null;
         estadoTareas.newTaskNameForDate = '';
         estadoTareas.isCreatingTask = false;
-        
+
         // Re-renderizar la sección del día
         const dayContainer = document.querySelector(`.tareas-day-container[data-date="${fechaKey}"]`);
         if (dayContainer) {
@@ -1012,27 +1065,27 @@ function handleCreateTaskInline(fechaKey, nombreTarea) {
 // Función para actualizar prioridad de tarea
 function handleUpdatePriority(tareaId) {
     // Buscar tarea en vencidas
-    let tarea = tareasEjemplo.vencidas.find(t => t.id === tareaId);
+    let tarea = tareasEjemplo.vencidas.find(t => taskIdMatches(t, tareaId));
     let ubicacion = 'vencidas';
-    
+
     if (!tarea) {
         // Buscar en tareas por día
         for (const fechaKey in tareasEjemplo.porDia) {
-            tarea = tareasEjemplo.porDia[fechaKey].find(t => t.id === tareaId);
+            tarea = tareasEjemplo.porDia[fechaKey].find(t => taskIdMatches(t, tareaId));
             if (tarea) {
                 ubicacion = fechaKey;
                 break;
             }
         }
     }
-    
+
     if (tarea) {
         // Rotar prioridad: baja -> media -> alta -> baja
         const prioridades = ['baja', 'media', 'alta'];
         const indiceActual = prioridades.indexOf(tarea.priority);
         const nuevoIndice = (indiceActual + 1) % prioridades.length;
         tarea.priority = prioridades[nuevoIndice];
-        
+
         // Re-renderizar
         if (ubicacion === 'vencidas') {
             renderTareasVencidas();
@@ -1053,16 +1106,16 @@ function handleUpdatePriority(tareaId) {
 // Función para eliminar tarea
 function handleDelete(tareaId) {
     // Buscar y eliminar de vencidas
-    const indexVencidas = tareasEjemplo.vencidas.findIndex(t => t.id === tareaId);
+    const indexVencidas = tareasEjemplo.vencidas.findIndex(t => taskIdMatches(t, tareaId));
     if (indexVencidas !== -1) {
         tareasEjemplo.vencidas.splice(indexVencidas, 1);
         renderTareasVencidas();
         return;
     }
-    
+
     // Buscar y eliminar de tareas por día
     for (const fechaKey in tareasEjemplo.porDia) {
-        const index = tareasEjemplo.porDia[fechaKey].findIndex(t => t.id === tareaId);
+        const index = tareasEjemplo.porDia[fechaKey].findIndex(t => taskIdMatches(t, tareaId));
         if (index !== -1) {
             tareasEjemplo.porDia[fechaKey].splice(index, 1);
             const dayContainer = document.querySelector(`.tareas-day-container[data-date="${fechaKey}"]`);
@@ -1079,12 +1132,21 @@ function handleDelete(tareaId) {
     }
 }
 
+// Comparación de id robusta (por si viene number o string de la BD)
+function taskIdMatches(t, id) {
+    if (t == null || id == null) return false;
+    const a = Number(t.id);
+    const b = Number(id);
+    if (!isNaN(a) && !isNaN(b)) return a === b;
+    return String(t.id) === String(id);
+}
+
 // Encontrar tarea por id (en vencidas o en porDia) y devolver { tarea, ubicacion } (ubicacion = 'vencidas' o fechaKey)
 function findTaskById(tareaId) {
-    let tarea = tareasEjemplo.vencidas.find(t => t.id === tareaId);
+    let tarea = tareasEjemplo.vencidas.find(t => taskIdMatches(t, tareaId));
     if (tarea) return { tarea, ubicacion: 'vencidas' };
     for (const fechaKey in tareasEjemplo.porDia) {
-        tarea = tareasEjemplo.porDia[fechaKey].find(t => t.id === tareaId);
+        tarea = tareasEjemplo.porDia[fechaKey].find(t => taskIdMatches(t, tareaId));
         if (tarea) return { tarea, ubicacion: fechaKey };
     }
     return { tarea: null, ubicacion: null };
@@ -1098,9 +1160,9 @@ function handleUpdateTaskEndDate(tareaId, newYmd) {
     tarea.endDate = newYmd || null;
 
     if (ubicacion === 'vencidas') {
-        tareasEjemplo.vencidas = tareasEjemplo.vencidas.filter(t => t.id !== tareaId);
+        tareasEjemplo.vencidas = tareasEjemplo.vencidas.filter(t => !taskIdMatches(t, tareaId));
     } else if (ubicacion) {
-        tareasEjemplo.porDia[ubicacion] = (tareasEjemplo.porDia[ubicacion] || []).filter(t => t.id !== tareaId);
+        tareasEjemplo.porDia[ubicacion] = (tareasEjemplo.porDia[ubicacion] || []).filter(t => !taskIdMatches(t, tareaId));
     }
 
     if (newYmd) {
@@ -1273,10 +1335,10 @@ function renderTaskDetailModal() {
     const isCurrentUserAssignee = currentUser && assigneeEmailNorm && (assigneeEmailNorm === (currentUser.username || currentUser.email || ''));
     const assigneeName = (t.assignee_name && String(t.assignee_name).trim()) ? String(t.assignee_name).trim()
         : (isCurrentUserAssignee && currentUser.nombre) ? currentUser.nombre
-        : (assigneeEmailNorm ? assigneeEmailNorm.split('@')[0] : null) || 'Sin asignar';
+            : (assigneeEmailNorm ? assigneeEmailNorm.split('@')[0] : null) || 'Sin asignar';
     const assigneeAvatar = (t.assignee_avatar_url && String(t.assignee_avatar_url).trim()) ? t.assignee_avatar_url
         : (isCurrentUserAssignee && currentUser.avatar) ? currentUser.avatar
-        : null;
+            : null;
     const hasAssignee = !!(t.assignee_email || t.assignee_name);
     const creatorResolved = (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getCreatorDisplay === 'function')
         ? TAREAS_PLANES_DB.getCreatorDisplay(t.created_by || '')
@@ -1700,10 +1762,14 @@ function renderTaskDetailModal() {
         if (!task) return;
         task.done = !task.done;
         task.status = task.done ? 'Finalizado' : 'Activo';
+        if (task.done) task._justFinalized = true;
+        else task._justFinalized = false;
         var fechaKey = task.endDate;
         if (fechaKey && tareasEjemplo.porDia[fechaKey]) {
             tareasEjemplo.porDia[fechaKey].sort(function (a, b) {
-                return (a.done ? 1 : 0) - (b.done ? 1 : 0);
+                if (a.done !== b.done) return (a.done ? 1 : 0) - (b.done ? 1 : 0);
+                if (a.done && b.done) return (a._justFinalized ? 0 : 1) - (b._justFinalized ? 0 : 1);
+                return 0;
             });
         }
         closeTaskDetail();
@@ -1712,6 +1778,7 @@ function renderTaskDetailModal() {
         if (typeof showToast === 'function') {
             showToast('success', task.done ? 'Tarea finalizada exitosamente' : 'Tarea reabierta');
         }
+        setTimeout(function () { if (task) task._justFinalized = false; }, 400);
     });
 
     window.taskDetailOnAddComment = function () {
@@ -1749,10 +1816,10 @@ function renderTaskDetailModal() {
 
 // Inicializar editingTask cuando se abre el detalle
 function handleTaskClick(tareaId) {
-    let tarea = tareasEjemplo.vencidas.find(t => t.id === tareaId);
+    let tarea = tareasEjemplo.vencidas.find(t => taskIdMatches(t, tareaId));
     if (!tarea) {
         for (const fechaKey in tareasEjemplo.porDia) {
-            tarea = tareasEjemplo.porDia[fechaKey].find(t => t.id === tareaId);
+            tarea = tareasEjemplo.porDia[fechaKey].find(t => taskIdMatches(t, tareaId));
             if (tarea) break;
         }
     }

@@ -453,28 +453,28 @@
 &lt;!-- JavaScript --&gt;
 &lt;script src="../../components/header-product.js"&gt;&lt;/script&gt;
 &lt;script&gt;
-loadHeaderProduct('header-product-container', {
-    productName: 'Name product',
-    breadcrumbItems: [
-        { text: 'Default', active: false },
-        { text: 'Active', active: true }
-    ],
+    loadHeaderProduct('header-product-container', {
+        productName: 'Name product',
+        breadcrumbItems: [
+            { text: 'Default', active: false },
+            { text: 'Active', active: true }
+        ],
     backButton: { onClick: function() { window.history.back(); } },
     infoButton: { onClick: function() { console.log('Info'); } },
     aiButton: { text: 'AI', onClick: function() {} },
     secondaryButtons: [{ text: 'Button', icon: 'fa-th', onClick: function() {} }],
     primaryButton: { text: 'Primary', icon: 'fa-th', onClick: function() {} },
     menuButton: { onClick: function() {} }
-});
+    });
 &lt;/script&gt;</code></pre>
-                                </div>
-                            </div>
+                        </div>
+                    </div>
                             <!-- Alineación de acciones -->
                             <div style="padding: 32px;">
                                 <h2 class="ubits-heading-h2" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">
                                     <i class="far fa-align-right" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                                     Alineación de acciones (header sin título ni flecha atrás)
-                                </h2>
+                        </h2>
                                 <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 12px;">
                                     En muchas páginas el header se usa sin nombre de producto y sin botón atrás (ocultando <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">.ubits-header-product__product-info</code> con CSS). En ese caso las acciones deben seguir siempre a la <strong>derecha</strong>.
                                 </p>

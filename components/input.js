@@ -652,19 +652,19 @@
 // Función para crear toggle de contraseña
 function createPasswordToggle(container, inputElement) {
     console.log('createPasswordToggle called with:', { container, inputElement });
-
+    
     const toggleIcon = container.querySelector('i[class*="fa-eye"]');
     if (toggleIcon) {
         let isPasswordVisible = false;
-
+        
         // Hacer el icono clickeable
         toggleIcon.style.pointerEvents = 'auto';
         toggleIcon.style.cursor = 'pointer';
-
+        
         // Función para toggle de visibilidad
         function togglePasswordVisibility() {
             isPasswordVisible = !isPasswordVisible;
-
+            
             if (isPasswordVisible) {
                 inputElement.type = 'text';
                 toggleIcon.className = 'far fa-eye-slash';
@@ -673,7 +673,7 @@ function createPasswordToggle(container, inputElement) {
                 toggleIcon.className = 'far fa-eye';
             }
         }
-
+        
         // Event listener para el click en el icono
         toggleIcon.addEventListener('click', function (e) {
             e.preventDefault();
@@ -695,39 +695,39 @@ function normalizeTextForSearch(text) {
 // Función para crear dropdown de autocompletado
 function createAutocompleteDropdown(container, inputElement, autocompleteOptions, onChange, multiple = false, showCheckboxes = false) {
     console.log('createAutocompleteDropdown called with:', { container, inputElement, autocompleteOptions, onChange, multiple, showCheckboxes });
-
+    
     const dropdown = document.createElement('div');
     dropdown.className = 'ubits-autocomplete-dropdown';
     dropdown.style.display = 'none';
-
+    
     // Si es múltiple, mantener un Set de valores seleccionados
     const selectedValues = new Set();
-
+    
     // Función para filtrar opciones basado en el texto del input - sin tildes
     function filterOptions(searchText) {
         // Si tiene checkboxes y está vacío, mostrar las primeras 5 opciones por defecto
         if (showCheckboxes && (!searchText || searchText.length < 1)) {
             const defaultOptions = autocompleteOptions.slice(0, 5);
             dropdown.innerHTML = '';
-
+            
             defaultOptions.forEach(option => {
                 const optionElement = document.createElement('div');
                 optionElement.className = 'ubits-autocomplete-option';
                 optionElement.dataset.value = option.value;
-
+                
                 // Agregar checkbox
                 const checkbox = document.createElement('input');
                 checkbox.type = 'checkbox';
                 checkbox.className = 'ubits-autocomplete-checkbox';
                 checkbox.checked = selectedValues.has(option.value);
                 checkbox.dataset.value = option.value;
-
+                
                 optionElement.appendChild(checkbox);
-
+                
                 checkbox.addEventListener('click', function (e) {
                     e.stopPropagation();
                 });
-
+                
                 checkbox.addEventListener('change', function () {
                     if (this.checked) {
                         selectedValues.add(option.value);
@@ -735,38 +735,38 @@ function createAutocompleteDropdown(container, inputElement, autocompleteOptions
                         selectedValues.delete(option.value);
                     }
                 });
-
+                
                 // Contenedor para el texto
                 const textElement = document.createElement('span');
                 textElement.className = 'ubits-autocomplete-option-text';
                 textElement.textContent = option.text;
                 optionElement.appendChild(textElement);
-
+                
                 optionElement.addEventListener('mouseenter', function () {
                     this.style.backgroundColor = 'var(--ubits-bg-2)';
                 });
                 optionElement.addEventListener('mouseleave', function () {
                     this.style.backgroundColor = 'transparent';
                 });
-
+                
                 optionElement.addEventListener('click', function (e) {
                     if (e.target !== checkbox) {
                         checkbox.checked = !checkbox.checked;
                         checkbox.dispatchEvent(new Event('change'));
                     }
                 });
-
+                
                 dropdown.appendChild(optionElement);
             });
-
+            
             dropdown.style.display = 'block';
             return;
         }
-
+        
         // Si no tiene checkboxes y está vacío: mostrar primeras opciones al hacer foco (máx. 10)
         if (!searchText || searchText.length < 1) {
             if (autocompleteOptions.length === 0) {
-                dropdown.style.display = 'none';
+            dropdown.style.display = 'none';
                 return;
             }
             const defaultOptions = autocompleteOptions.slice(0, 10);
@@ -799,27 +799,27 @@ function createAutocompleteDropdown(container, inputElement, autocompleteOptions
             dropdown.style.display = 'block';
             return;
         }
-
-        const filteredOptions = autocompleteOptions.filter(option =>
+        
+        const filteredOptions = autocompleteOptions.filter(option => 
             normalizeTextForSearch(option.text).includes(normalizeTextForSearch(searchText))
         );
-
+        
         // Limpiar dropdown anterior
         dropdown.innerHTML = '';
-
+        
         if (filteredOptions.length === 0) {
             dropdown.style.display = 'none';
             return;
         }
-
+        
         // Mostrar máximo 5 opciones
         const optionsToShow = filteredOptions.slice(0, 5);
-
+        
         optionsToShow.forEach(option => {
             const optionElement = document.createElement('div');
             optionElement.className = 'ubits-autocomplete-option';
             optionElement.dataset.value = option.value;
-
+            
             // Si tiene checkboxes, agregar checkbox
             if (showCheckboxes) {
                 const checkbox = document.createElement('input');
@@ -827,14 +827,14 @@ function createAutocompleteDropdown(container, inputElement, autocompleteOptions
                 checkbox.className = 'ubits-autocomplete-checkbox';
                 checkbox.checked = selectedValues.has(option.value);
                 checkbox.dataset.value = option.value;
-
+                
                 optionElement.appendChild(checkbox);
-
+                
                 // Prevenir que el click en el checkbox propague al optionElement
                 checkbox.addEventListener('click', function (e) {
                     e.stopPropagation();
                 });
-
+                
                 checkbox.addEventListener('change', function () {
                     if (this.checked) {
                         selectedValues.add(option.value);
@@ -843,12 +843,12 @@ function createAutocompleteDropdown(container, inputElement, autocompleteOptions
                     }
                 });
             }
-
+            
             // Contenedor para el texto
             const textElement = document.createElement('span');
             textElement.className = 'ubits-autocomplete-option-text';
             textElement.textContent = option.text;
-
+            
             // Resaltar texto coincidente (usar texto original para resaltar, no normalizado)
             if (searchText) {
                 // Crear regex que busque tanto con tildes como sin tildes
@@ -862,16 +862,16 @@ function createAutocompleteDropdown(container, inputElement, autocompleteOptions
                     textElement.textContent = option.text;
                 }
             }
-
+            
             optionElement.appendChild(textElement);
-
+            
             optionElement.addEventListener('mouseenter', function () {
                 this.style.backgroundColor = 'var(--ubits-bg-2)';
             });
             optionElement.addEventListener('mouseleave', function () {
                 this.style.backgroundColor = 'transparent';
             });
-
+            
             optionElement.addEventListener('click', function (e) {
                 // Si tiene checkboxes, toggle el checkbox
                 if (showCheckboxes) {
@@ -882,7 +882,7 @@ function createAutocompleteDropdown(container, inputElement, autocompleteOptions
                     }
                     return; // No cerrar el dropdown en modo múltiple
                 }
-
+                
                 // Modo simple: seleccionar y cerrar
                 const selectedValue = this.dataset.value;
                 const selectedText = this.textContent.replace(/<[^>]*>/g, ''); // Remover HTML
@@ -894,20 +894,20 @@ function createAutocompleteDropdown(container, inputElement, autocompleteOptions
             });
             dropdown.appendChild(optionElement);
         });
-
+        
         dropdown.style.display = 'block';
     }
-
+    
     // Event listener para el input
     inputElement.addEventListener('input', function () {
         filterOptions(this.value);
     });
-
+    
     // Event listener para focus: mostrar opciones (primeras 10 si vacío, o filtradas si hay texto)
     inputElement.addEventListener('focus', function () {
-        filterOptions(this.value);
+            filterOptions(this.value);
     });
-
+    
     // Event listener para blur (ocultar dropdown)
     // Si tiene checkboxes, no ocultar automáticamente al perder focus
     if (!showCheckboxes) {
@@ -918,16 +918,16 @@ function createAutocompleteDropdown(container, inputElement, autocompleteOptions
             }, 150);
         });
     }
-
+    
     // Cerrar dropdown al hacer click fuera (capture para que funcione dentro de drawer/modal con stopPropagation)
     document.addEventListener('click', function (e) {
         if (!container.contains(e.target)) {
             dropdown.style.display = 'none';
         }
     }, true);
-
+    
     container.appendChild(dropdown);
-
+    
     // Asegurar que el contenedor tenga position: relative
     if (getComputedStyle(container).position === 'static') {
         container.style.position = 'relative';
@@ -1123,18 +1123,18 @@ function setupSelectWithDropdownMenu(containerId, container, inputElement, selec
 // Función para crear dropdown personalizado para SELECT (fallback si dropdown-menu.js no está cargado)
 function createSelectDropdown(container, inputElement, selectOptions, value, placeholder, onChange) {
     console.log('createSelectDropdown called with:', { container, inputElement, selectOptions, value, placeholder, onChange });
-
+    
     // Crear dropdown (vacío inicialmente para lazy loading)
     const dropdown = document.createElement('div');
     dropdown.className = 'ubits-select-dropdown';
     dropdown.style.display = 'none';
-
+    
     // Variables para paginación
     const itemsPerPage = 10;
     let currentPage = 0;
     let loadedOptions = [];
     let isLoading = false;
-
+    
     // Crear y añadir una opción al dropdown (reutilizado por loadOptions y carga inicial)
     function appendOptionElement(option) {
         const optionElement = document.createElement('div');
@@ -1178,9 +1178,9 @@ function createSelectDropdown(container, inputElement, selectOptions, value, pla
     // Función para cargar opciones con scroll infinito
     function loadOptions(page = 0, append = false) {
         if (isLoading) return;
-
+        
         isLoading = true;
-
+        
         // Mostrar loading si es la primera página
         if (page === 0 && !append) {
             dropdown.innerHTML = '<div class="ubits-select-loading"><i class="far fa-spinner fa-spin"></i> Cargando opciones...</div>';
@@ -1191,46 +1191,46 @@ function createSelectDropdown(container, inputElement, selectOptions, value, pla
             loadingEl.innerHTML = '<i class="far fa-spinner fa-spin"></i> Cargando más...';
             dropdown.appendChild(loadingEl);
         }
-
+        
         // Simular delay de carga (más rápido para scroll infinito)
         setTimeout(() => {
             const startIndex = page * itemsPerPage;
             const endIndex = Math.min(startIndex + itemsPerPage, selectOptions.length);
             const pageOptions = selectOptions.slice(startIndex, endIndex);
-
+            
             // Remover loading
             const loadingEl = dropdown.querySelector('.ubits-select-loading');
             if (loadingEl) {
                 loadingEl.remove();
             }
-
+            
             // Limpiar dropdown si es la primera página
             if (page === 0 && !append) {
                 dropdown.innerHTML = '';
                 loadedOptions = [];
             }
-
+            
             // Crear opciones de la página actual
             pageOptions.forEach(option => appendOptionElement(option));
-
+            
             // Verificar si hay más páginas para scroll infinito
             const hasMorePages = endIndex < selectOptions.length;
             if (hasMorePages) {
                 // Agregar observador de scroll para cargar automáticamente
                 setupScrollObserver();
             }
-
+            
             isLoading = false;
         }, 150); // 150ms delay más rápido para scroll infinito
     }
-
+    
     // Función para configurar observador de scroll
     function setupScrollObserver() {
         // Remover observador anterior si existe
         if (dropdown.scrollObserver) {
             dropdown.scrollObserver.disconnect();
         }
-
+        
         // Crear nuevo observador
         dropdown.scrollObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -1245,26 +1245,26 @@ function createSelectDropdown(container, inputElement, selectOptions, value, pla
             rootMargin: '50px', // Cargar cuando esté a 50px del final
             threshold: 0.1
         });
-
+        
         // Crear elemento observador al final del dropdown
         const observerEl = document.createElement('div');
         observerEl.className = 'ubits-select-observer';
         observerEl.style.height = '1px';
         observerEl.style.width = '100%';
         dropdown.appendChild(observerEl);
-
+        
         // Observar el elemento
         dropdown.scrollObserver.observe(observerEl);
     }
-
+    
     // Agregar dropdown al container
     container.appendChild(dropdown);
-
+    
     // Asegurar que el contenedor tenga position: relative
     if (getComputedStyle(container).position === 'static') {
         container.style.position = 'relative';
     }
-
+    
     // Click handler para abrir/cerrar dropdown
     inputElement.addEventListener('click', function (e) {
         e.preventDefault();
@@ -1275,7 +1275,7 @@ function createSelectDropdown(container, inputElement, selectOptions, value, pla
             dropdown.style.display = 'none';
         }
     });
-
+    
     // Cerrar dropdown al hacer click fuera (capture para que funcione dentro de drawer/modal con stopPropagation)
     document.addEventListener('click', function (e) {
         if (!container.contains(e.target)) {
@@ -1286,35 +1286,35 @@ function createSelectDropdown(container, inputElement, selectOptions, value, pla
 
 function createInput(options = {}) {
     console.log('createInput called with:', options);
-
-    const {
-        containerId,
-        label = '',
-        placeholder = '',
-        helperText = '',
-        size = 'md',
-        state = 'default',
-        variant = 'default',
-        type = 'text',
-        showLabel = true,
-        showHelper = false,
-        showCounter = false,
-        maxLength = 50,
-        mandatory = false,
-        mandatoryType = 'obligatorio',
-        leftIcon = '',
-        rightIcon = '',
-        selectOptions = [],
-        autocompleteOptions = [],
-        value = '',
-        onChange = null,
-        onFocus = null,
-        onBlur = null,
-        multiple = false,
-        showCheckboxes = false,
-        calendarMaxDate = undefined,
-        calendarMinDate = undefined
-    } = options;
+    
+        const {
+            containerId,
+            label = '',
+            placeholder = '',
+            helperText = '',
+            size = 'md',
+            state = 'default',
+            variant = 'default',
+            type = 'text',
+            showLabel = true,
+            showHelper = false,
+            showCounter = false,
+            maxLength = 50,
+            mandatory = false,
+            mandatoryType = 'obligatorio',
+            leftIcon = '',
+            rightIcon = '',
+            selectOptions = [],
+            autocompleteOptions = [],
+            value = '',
+            onChange = null,
+            onFocus = null,
+            onBlur = null,
+            multiple = false,
+            showCheckboxes = false,
+            calendarMaxDate = undefined,
+            calendarMinDate = undefined
+        } = options;
 
     // Validar parámetros requeridos
     if (!containerId) {
@@ -1351,18 +1351,18 @@ function createInput(options = {}) {
     // Input wrapper con iconos - IMPLEMENTACIÓN REAL
     const hasLeftIcon = leftIcon && leftIcon.trim() !== '';
     const hasRightIcon = rightIcon && rightIcon.trim() !== '';
-
+    
     // Agregar 'far' automáticamente si no está presente
     const leftIconClass = hasLeftIcon && leftIcon.startsWith('fa-') ? `far ${leftIcon}` : leftIcon;
     const rightIconClass = hasRightIcon && rightIcon.startsWith('fa-') ? `far ${rightIcon}` : rightIcon;
 
     inputHTML += `<div style="position: relative; display: inline-block; width: 100%;">`;
-
+    
     // Icono izquierdo con posicionamiento absoluto
     if (hasLeftIcon) {
         inputHTML += `<i class="${leftIconClass}" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--ubits-fg-1-medium); pointer-events: none;"></i>`;
     }
-
+    
     // Input con padding dinámico
     const inputClasses = ['ubits-input', `ubits-input--${size}`];
     if (state !== 'default') {
@@ -1371,31 +1371,31 @@ function createInput(options = {}) {
     if (variant === 'subtle') {
         inputClasses.push('ubits-input--subtle');
     }
-
+    
     const disabledAttr = state === 'disabled' ? ' disabled' : '';
     const maxLengthAttr = showCounter ? ` maxlength="${maxLength}"` : '';
     const paddingLeft = hasLeftIcon ? 'padding-left: 32px;' : '';
     const paddingRight = hasRightIcon ? 'padding-right: 32px;' : '';
     const inputStyle = `width: 100%; ${paddingLeft} ${paddingRight}`;
-
+    
     // Variables temporales para iconos
     let finalRightIcon = rightIcon;
     let finalHasRightIcon = hasRightIcon;
     let finalLeftIcon = leftIcon;
     let finalHasLeftIcon = hasLeftIcon;
-
+    
     // Renderizar input, select, textarea o search según el tipo
     console.log('Rendering type:', type, 'isSelect:', type === 'select', 'isTextarea:', type === 'textarea', 'isSearch:', type === 'search');
-
+    
     if (type === 'select') {
         console.log('Rendering SELECT with options:', selectOptions);
         // SELECT - usar input normal pero readonly y con rightIcon angle-down (siempre, no chevron-down)
         const selectValue = value ? selectOptions.find(opt => opt.value === value)?.text || placeholder : placeholder;
         inputHTML += `<input type="text" class="${inputClasses.join(' ')}" style="${inputStyle}" value="${escapeAttr(selectValue)}" readonly>`;
-
+        
         // Siempre usar angle-down en selects (icono desplegable)
-        finalRightIcon = 'fa-angle-down';
-        finalHasRightIcon = true;
+            finalRightIcon = 'fa-angle-down';
+            finalHasRightIcon = true;
     } else if (type === 'textarea') {
         console.log('Rendering TEXTAREA');
         // TEXTAREA - campo multilínea con redimensionamiento
@@ -1404,123 +1404,123 @@ function createInput(options = {}) {
             textareaStyle += `; background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important; border-color: var(--ubits-border-2) !important;`;
         }
         inputHTML += `<textarea class="${inputClasses.join(' ')}" style="${textareaStyle}" placeholder="${safePlaceholder}"${disabledAttr}${maxLengthAttr}>${safeValue}</textarea>`;
-    } else if (type === 'search') {
-        console.log('Rendering SEARCH');
-        // SEARCH - input con icono de búsqueda y botón de limpiar
-        // Actualizar padding para iconos
-        let searchPaddingLeft = paddingLeft;
-        let searchPaddingRight = paddingRight;
-
-        // Forzar leftIcon a search si no hay leftIcon personalizado
-        if (!hasLeftIcon) {
-            finalLeftIcon = 'fa-search';
-            finalHasLeftIcon = true;
-            searchPaddingLeft = 'padding-left: 32px;';
-        }
-
-        // Siempre agregar rightIcon de limpiar para search
-        finalRightIcon = 'fa-times';
-        finalHasRightIcon = true;
-        searchPaddingRight = 'padding-right: 32px;';
-
-        let searchStyle = `width: 100%; ${searchPaddingLeft} ${searchPaddingRight}`;
-        if (state === 'disabled') {
-            searchStyle += `; background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important; border-color: var(--ubits-border-2) !important;`;
-        }
+        } else if (type === 'search') {
+            console.log('Rendering SEARCH');
+            // SEARCH - input con icono de búsqueda y botón de limpiar
+            // Actualizar padding para iconos
+            let searchPaddingLeft = paddingLeft;
+            let searchPaddingRight = paddingRight;
+            
+            // Forzar leftIcon a search si no hay leftIcon personalizado
+            if (!hasLeftIcon) {
+                finalLeftIcon = 'fa-search';
+                finalHasLeftIcon = true;
+                searchPaddingLeft = 'padding-left: 32px;';
+            }
+            
+            // Siempre agregar rightIcon de limpiar para search
+            finalRightIcon = 'fa-times';
+            finalHasRightIcon = true;
+            searchPaddingRight = 'padding-right: 32px;';
+            
+            let searchStyle = `width: 100%; ${searchPaddingLeft} ${searchPaddingRight}`;
+            if (state === 'disabled') {
+                searchStyle += `; background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important; border-color: var(--ubits-border-2) !important;`;
+            }
         inputHTML += `<input type="text" class="${inputClasses.join(' ')}" style="${searchStyle}" placeholder="${safePlaceholder}" value="${safeValue}" autocomplete="off"${disabledAttr}${maxLengthAttr}>`;
-    } else if (type === 'autocomplete') {
-        console.log('Rendering AUTOCOMPLETE');
-        // AUTOCOMPLETE - input con dropdown de sugerencias
-        // Actualizar padding para iconos
-        let autocompletePaddingLeft = paddingLeft;
-        let autocompletePaddingRight = paddingRight;
-
-        // Forzar leftIcon de búsqueda para autocomplete
-        if (!hasLeftIcon) {
-            finalLeftIcon = 'fa-search';
-            finalHasLeftIcon = true;
-            autocompletePaddingLeft = 'padding-left: 32px;';
-        }
-
-        // Forzar rightIcon de limpiar para autocomplete
-        finalRightIcon = 'fa-times';
-        finalHasRightIcon = true;
-        autocompletePaddingRight = 'padding-right: 32px;';
-
-        let autocompleteStyle = `width: 100%; ${autocompletePaddingLeft} ${autocompletePaddingRight}`;
-        if (state === 'disabled') {
-            autocompleteStyle += `; background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important; border-color: var(--ubits-border-2) !important;`;
-        }
+        } else if (type === 'autocomplete') {
+            console.log('Rendering AUTOCOMPLETE');
+            // AUTOCOMPLETE - input con dropdown de sugerencias
+            // Actualizar padding para iconos
+            let autocompletePaddingLeft = paddingLeft;
+            let autocompletePaddingRight = paddingRight;
+            
+            // Forzar leftIcon de búsqueda para autocomplete
+            if (!hasLeftIcon) {
+                finalLeftIcon = 'fa-search';
+                finalHasLeftIcon = true;
+                autocompletePaddingLeft = 'padding-left: 32px;';
+            }
+            
+            // Forzar rightIcon de limpiar para autocomplete
+            finalRightIcon = 'fa-times';
+            finalHasRightIcon = true;
+            autocompletePaddingRight = 'padding-right: 32px;';
+            
+            let autocompleteStyle = `width: 100%; ${autocompletePaddingLeft} ${autocompletePaddingRight}`;
+            if (state === 'disabled') {
+                autocompleteStyle += `; background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important; border-color: var(--ubits-border-2) !important;`;
+            }
         inputHTML += `<input type="text" class="${inputClasses.join(' ')}" style="${autocompleteStyle}" placeholder="${safePlaceholder}" value="${safeValue}" autocomplete="off"${disabledAttr}${maxLengthAttr}>`;
-    } else if (type === 'calendar') {
-        console.log('Rendering CALENDAR');
-        // CALENDAR - input con date picker
-        // Actualizar padding para iconos
-        let calendarPaddingLeft = paddingLeft;
-        let calendarPaddingRight = paddingRight;
-
-        // Forzar rightIcon de calendario para calendar
-        finalRightIcon = 'fa-calendar';
-        finalHasRightIcon = true;
-        calendarPaddingRight = 'padding-right: 32px;';
-
-        let calendarStyle = `width: 100%; ${calendarPaddingLeft} ${calendarPaddingRight}`;
-        if (state === 'disabled') {
-            calendarStyle += `; background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important; border-color: var(--ubits-border-2) !important;`;
-        }
+        } else if (type === 'calendar') {
+            console.log('Rendering CALENDAR');
+            // CALENDAR - input con date picker
+            // Actualizar padding para iconos
+            let calendarPaddingLeft = paddingLeft;
+            let calendarPaddingRight = paddingRight;
+            
+            // Forzar rightIcon de calendario para calendar
+            finalRightIcon = 'fa-calendar';
+            finalHasRightIcon = true;
+            calendarPaddingRight = 'padding-right: 32px;';
+            
+            let calendarStyle = `width: 100%; ${calendarPaddingLeft} ${calendarPaddingRight}`;
+            if (state === 'disabled') {
+                calendarStyle += `; background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important; border-color: var(--ubits-border-2) !important;`;
+            }
         inputHTML += `<input type="text" class="${inputClasses.join(' ')}" style="${calendarStyle}" placeholder="${safePlaceholder}" value="${safeValue}" readonly${disabledAttr}>`;
-    } else if (type === 'password') {
-        console.log('Rendering PASSWORD');
-        // PASSWORD - input con toggle de mostrar/ocultar
-        // Actualizar padding para iconos
-        let passwordPaddingLeft = paddingLeft;
-        let passwordPaddingRight = paddingRight;
-
-        // Forzar rightIcon de ojo para password
-        finalRightIcon = 'fa-eye';
-        finalHasRightIcon = true;
-        passwordPaddingRight = 'padding-right: 32px;';
-
-        let passwordStyle = `width: 100%; ${passwordPaddingLeft} ${passwordPaddingRight}`;
-        if (state === 'disabled') {
-            passwordStyle += `; background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important; border-color: var(--ubits-border-2) !important;`;
-        }
+        } else if (type === 'password') {
+            console.log('Rendering PASSWORD');
+            // PASSWORD - input con toggle de mostrar/ocultar
+            // Actualizar padding para iconos
+            let passwordPaddingLeft = paddingLeft;
+            let passwordPaddingRight = paddingRight;
+            
+            // Forzar rightIcon de ojo para password
+            finalRightIcon = 'fa-eye';
+            finalHasRightIcon = true;
+            passwordPaddingRight = 'padding-right: 32px;';
+            
+            let passwordStyle = `width: 100%; ${passwordPaddingLeft} ${passwordPaddingRight}`;
+            if (state === 'disabled') {
+                passwordStyle += `; background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important; border-color: var(--ubits-border-2) !important;`;
+            }
         inputHTML += `<input type="password" class="${inputClasses.join(' ')}" style="${passwordStyle}" placeholder="${safePlaceholder}" value="${safeValue}"${disabledAttr}${maxLengthAttr}>`;
-    } else {
+        } else {
         console.log('Rendering normal INPUT');
         // INPUT normal
         inputHTML += `<input type="${type}" class="${inputClasses.join(' ')}" style="${inputStyle}" placeholder="${safePlaceholder}" value="${safeValue}"${disabledAttr}${maxLengthAttr}>`;
     }
-
+    
     // Icono izquierdo con posicionamiento absoluto
     if (finalHasLeftIcon) {
         const leftIconClass = `far ${finalLeftIcon}`;
         inputHTML += `<i class="${leftIconClass}" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--ubits-fg-1-medium); pointer-events: none;"></i>`;
     }
-
+    
     // Icono derecho con posicionamiento absoluto
     if (finalHasRightIcon) {
         const rightIconClass = `far ${finalRightIcon}`;
         inputHTML += `<i class="${rightIconClass}" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--ubits-fg-1-medium); pointer-events: none;"></i>`;
     }
-
+    
     inputHTML += '</div>';
 
     // Helper text y character counter (independientes)
     if (showHelper || showCounter) {
         inputHTML += '<div class="ubits-input-helper">';
-
+        
         if (showHelper && helperText) {
             inputHTML += `<span class="ubits-input-helper-text">${helperText}</span>`;
         }
-
+        
         if (showCounter) {
             inputHTML += '<div class="ubits-input-helper-row">';
             inputHTML += '<span class="ubits-input-counter-label">Máximo de caracteres</span>';
             inputHTML += `<span class="ubits-input-counter">0/${maxLength}</span>`;
             inputHTML += '</div>';
         }
-
+        
         inputHTML += '</div>';
     }
 
@@ -1530,18 +1530,18 @@ function createInput(options = {}) {
     // Obtener elementos del DOM
     const inputElement = container.querySelector('.ubits-input');
     const counterElement = container.querySelector('.ubits-input-counter');
-
+    
     // Determinar si es input, select o search
     const isSelect = type === 'select';
     const isSearch = type === 'search';
-
+    
     // Si es SELECT, usar la nueva implementación con inyección en body (setupSelectWithDropdownMenu)
     // Ya no depende de dropdown-menu.js porque la función es autónoma.
     if (isSelect) {
         inputElement.style.cursor = 'pointer';
         setupSelectWithDropdownMenu(containerId, container, inputElement, selectOptions, value, placeholder, onChange);
     }
-
+    
     // Si es SEARCH, agregar funcionalidad de limpiar
     if (isSearch) {
         console.log('SEARCH detected, adding clear functionality');
@@ -1551,7 +1551,7 @@ function createInput(options = {}) {
             clearIcon.style.display = 'none';
             clearIcon.style.pointerEvents = 'auto';
             clearIcon.style.cursor = 'pointer';
-
+            
             // Función para mostrar/ocultar el icono de limpiar
             function toggleClearIcon() {
                 if (inputElement.value.length > 0) {
@@ -1560,10 +1560,10 @@ function createInput(options = {}) {
                     clearIcon.style.display = 'none';
                 }
             }
-
+            
             // Mostrar/ocultar icono al escribir
             inputElement.addEventListener('input', toggleClearIcon);
-
+            
             // Click en el icono para limpiar
             clearIcon.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -1574,16 +1574,16 @@ function createInput(options = {}) {
                     onChange('');
                 }
             });
-
+            
             // Mostrar/ocultar al cargar la página
             toggleClearIcon();
         }
     }
-
+    
     // Si es AUTOCOMPLETE, agregar funcionalidad de sugerencias y limpiar
     if (type === 'autocomplete') {
         console.log('AUTOCOMPLETE detected, adding suggestions and clear functionality');
-
+        
         // Funcionalidad de limpiar (similar a SEARCH)
         const clearIcon = container.querySelector('i[class*="fa-times"]');
         if (clearIcon) {
@@ -1591,7 +1591,7 @@ function createInput(options = {}) {
             clearIcon.style.display = 'none';
             clearIcon.style.pointerEvents = 'auto';
             clearIcon.style.cursor = 'pointer';
-
+            
             // Función para mostrar/ocultar el icono de limpiar
             function toggleClearIcon() {
                 if (inputElement.value.length > 0) {
@@ -1600,10 +1600,10 @@ function createInput(options = {}) {
                     clearIcon.style.display = 'none';
                 }
             }
-
+            
             // Mostrar/ocultar icono al escribir
             inputElement.addEventListener('input', toggleClearIcon);
-
+            
             // Click en el icono para limpiar
             clearIcon.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -1619,15 +1619,15 @@ function createInput(options = {}) {
                     onChange('');
                 }
             });
-
+            
             // Mostrar/ocultar al cargar la página
             toggleClearIcon();
         }
-
+        
         // Funcionalidad de sugerencias
         createAutocompleteDropdown(container, inputElement, autocompleteOptions, onChange, multiple, showCheckboxes);
     }
-
+    
     // Si es CALENDAR, popup con el componente Calendar (createCalendar)
     if (type === 'calendar') {
         if (typeof window.createCalendar === 'function') {
@@ -1698,7 +1698,7 @@ function createInput(options = {}) {
             console.warn('UBITS Input type calendar: carga components/calendar.js y components/calendar.css.');
         }
     }
-
+    
     // Si es PASSWORD, agregar funcionalidad de toggle mostrar/ocultar
     if (type === 'password') {
         console.log('PASSWORD detected, adding toggle functionality');
@@ -1730,13 +1730,13 @@ function createInput(options = {}) {
         const updateCounter = () => {
             const currentLength = inputElement.value.length;
             counterElement.textContent = `${currentLength}/${maxLength}`;
-
+            
             // Validación de límite de caracteres
             if (currentLength >= maxLength) {
                 // Cambiar color a rojo cuando se alcanza el límite
                 counterElement.style.color = 'var(--ubits-feedback-accent-error)';
                 counterElement.style.fontWeight = '600';
-
+                
                 // Prevenir escribir más caracteres
                 if (currentLength > maxLength) {
                     inputElement.value = inputElement.value.substring(0, maxLength);
@@ -1779,12 +1779,12 @@ function createInput(options = {}) {
             // Remover estado anterior
             const stateClasses = ['ubits-input--hover', 'ubits-input--focus', 'ubits-input--active', 'ubits-input--invalid', 'ubits-input--disabled'];
             stateClasses.forEach(cls => inputElement.classList.remove(cls));
-
+            
             // Agregar nuevo estado
             if (newState !== 'default') {
                 inputElement.classList.add(`ubits-input--${newState}`);
             }
-
+            
             // Manejar disabled
             if (newState === 'disabled') {
                 inputElement.disabled = true;
