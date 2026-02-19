@@ -109,7 +109,8 @@
         { id: 4, nombre: 'Atención al Cliente', descripcion: 'Soporte y seguimiento postventa' },
         { id: 5, nombre: 'Logística', descripcion: 'Bodega, inventarios y entregas' },
         { id: 6, nombre: 'Administración', descripcion: 'Gestión administrativa y financiera' },
-        { id: 7, nombre: 'Marketing', descripcion: 'Publicidad, diseño y redes sociales' }
+        { id: 7, nombre: 'Marketing', descripcion: 'Publicidad, diseño y redes sociales' },
+        { id: 8, nombre: 'Recursos Humanos', descripcion: 'Gestión de personas, objetivos, encuestas y nómina' }
     ];
 
     const JEFES_EJEMPLO = [
@@ -119,7 +120,8 @@
         { id: 'E005', idColaborador: '1011000005', nombre: 'Andrea Suárez Gómez', cargo: 'Coordinadora de Atención al Cliente', area: 'Atención al Cliente', genero: 'F', avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop', username: 'asuarg@fiqsha.demo', jefe: GERENTE_EJEMPLO.nombre, esJefe: true },
         { id: 'E006', idColaborador: '1011000006', nombre: 'María Alejandra Sánchez Pardo', cargo: 'Jefe de Logística', area: 'Logística', genero: 'F', avatar: '../../images/Profile-image.jpg', username: 'masanchez@fiqsha.demo', jefe: GERENTE_EJEMPLO.nombre, esJefe: true },
         { id: 'E007', idColaborador: '1011000007', nombre: 'Mónica Jiménez Pérez', cargo: 'Gerente Administrativa', area: 'Administración', genero: 'F', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop', username: 'mjimep@fiqsha.demo', jefe: GERENTE_EJEMPLO.nombre, esJefe: true },
-        { id: 'E008', idColaborador: '1011000008', nombre: 'Alejandro Moreno Ruiz', cargo: 'Director de Marketing', area: 'Marketing', genero: 'M', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop', username: 'amorer@fiqsha.demo', jefe: GERENTE_EJEMPLO.nombre, esJefe: true }
+        { id: 'E008', idColaborador: '1011000008', nombre: 'Alejandro Moreno Ruiz', cargo: 'Director de Marketing', area: 'Marketing', genero: 'M', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop', username: 'amorer@fiqsha.demo', jefe: GERENTE_EJEMPLO.nombre, esJefe: true },
+        { id: 'E052', idColaborador: '1011000052', nombre: 'Carmen Rosa Díaz Herrera', cargo: 'Jefa de Recursos Humanos', area: 'Recursos Humanos', genero: 'F', avatar: 'https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=100&h=100&fit=crop', username: 'crdiaz@fiqsha.demo', jefe: GERENTE_EJEMPLO.nombre, esJefe: true }
     ];
 
     const EMPLEADOS_EJEMPLO = [
@@ -167,7 +169,10 @@
         { id: 'E048', idColaborador: '1011000048', nombre: 'David Santiago Gutiérrez Ossa', cargo: 'Community Manager', area: 'Marketing', genero: 'M', avatar: null, jefe: 'Alejandro Moreno Ruiz', esJefe: false },
         { id: 'E049', idColaborador: '1011000049', nombre: 'Sara Valentina Castaño Sierra', cargo: 'Fotógrafa de Producto', area: 'Marketing', genero: 'F', avatar: 'https://images.unsplash.com/photo-1508243771214-6e95d137426b?w=100&h=100&fit=crop', jefe: 'Alejandro Moreno Ruiz', esJefe: false },
         { id: 'E050', idColaborador: '1011000050', nombre: 'Mateo José Gómez Cardona', cargo: 'Especialista en Pauta Digital', area: 'Marketing', genero: 'M', avatar: 'https://images.unsplash.com/photo-1605462863863-10d9e47e15ee?w=100&h=100&fit=crop', jefe: 'Alejandro Moreno Ruiz', esJefe: false },
-        { id: 'E051', idColaborador: '1011000051', nombre: 'María José Aristizábal Correa', cargo: 'Analista de Contenidos', area: 'Marketing', genero: 'F', avatar: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=100&h=100&fit=crop', jefe: 'Alejandro Moreno Ruiz', esJefe: false }
+        { id: 'E051', idColaborador: '1011000051', nombre: 'María José Aristizábal Correa', cargo: 'Analista de Contenidos', area: 'Marketing', genero: 'F', avatar: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=100&h=100&fit=crop', jefe: 'Alejandro Moreno Ruiz', esJefe: false },
+        { id: 'E053', idColaborador: '1011000053', nombre: 'Roberto Carlos Méndez Soto', cargo: 'Encargado de Objetivos y OKRs', area: 'Recursos Humanos', genero: 'M', avatar: 'https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=100&h=100&fit=crop', jefe: 'Carmen Rosa Díaz Herrera', esJefe: false },
+        { id: 'E054', idColaborador: '1011000054', nombre: 'Adriana Lucía Ríos Calle', cargo: 'Encargada de Encuestas (Cultura, Salud, 360)', area: 'Recursos Humanos', genero: 'F', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop', jefe: 'Carmen Rosa Díaz Herrera', esJefe: false },
+        { id: 'E055', idColaborador: '1011000055', nombre: 'Martín Andrés Soto Vega', cargo: 'Encargado de Nómina', area: 'Recursos Humanos', genero: 'M', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop', jefe: 'Carmen Rosa Díaz Herrera', esJefe: false }
     ];
 
     function getReportesDirectosEjemplo(nombreLider) {
@@ -313,6 +318,9 @@
                 const planNombreGrupo = `Plan ${emp.area || 'General'} ${pad(month)}/${year}`;
                 const lider = obtenerJefe(emp.area, emp.esJefe, jefes);
                 const asignado = { nombre: emp.nombre, avatar: emp.avatar || '', username: username };
+                const esAreaHR = (emp.area || '') === 'Recursos Humanos';
+                const creadorNombre = esAreaHR ? (jefes.find(j => (j.area || '') === 'Recursos Humanos') || {}).nombre || emp.nombre : emp.nombre;
+                const areaCreadorTarea = esAreaHR ? 'Recursos Humanos' : (emp.area || 'General');
 
                 for (let i = 0; i < TAREAS_POR_MES; i++) {
                     const estado = estados[i];
@@ -358,6 +366,7 @@
                             asignado: asignado,
                             idColaborador: emp.idColaborador || emp.id,
                             area: emp.area || 'General',
+                            areaCreador: areaCreadorTarea,
                             lider: lider,
                             cargo: emp.cargo || '',
                             estado: estado,
@@ -365,7 +374,7 @@
                             avance: done ? 100 : 0,
                             fechaCreacion: formatearFechaSeguimiento(fechaCreacion),
                             fechaFinalizacion: formatearFechaSeguimiento(endDate),
-                            creador: emp.nombre,
+                            creador: creadorNombre,
                             creador_avatar: (emp.avatar && String(emp.avatar).trim()) ? emp.avatar : null,
                             comentarios: Math.floor(seeder(seed, baseIdx + i + 300) * 5)
                         });
@@ -415,6 +424,63 @@
                     });
                 }
             }
+        });
+
+        // Planes de compañía creados por HR: Objetivos Qx 20xx y Encuestas Qx 20xx. Una tarea por persona y por mes del trimestre (toda la compañía).
+        const encargadoObjetivos = empleados.find(e => (e.cargo || '').indexOf('Objetivos') >= 0 && (e.area || '') === 'Recursos Humanos');
+        const encargadaEncuestas = empleados.find(e => (e.cargo || '').indexOf('Encuestas') >= 0 && (e.area || '') === 'Recursos Humanos');
+        const asignadosCompania = empleados.filter(e => (e.area || '') !== 'Recursos Humanos' && (e.area || '') !== 'Gerencia General');
+        const quarters = [
+            { label: 'Q1 2025', year: 2025, monthStart: 1 },
+            { label: 'Q2 2025', year: 2025, monthStart: 4 },
+            { label: 'Q3 2025', year: 2025, monthStart: 7 },
+            { label: 'Q4 2025', year: 2025, monthStart: 10 },
+            { label: 'Q1 2026', year: 2026, monthStart: 1 }
+        ];
+        const tareasObjetivos = ['Crear objetivos en la interfaz', 'Actualizar avance de objetivos', 'Cargar progreso final de objetivos'];
+        const tareasEncuestas = ['Contestar encuesta de cultura', 'Contestar encuesta de salud', 'Contestar encuesta 360'];
+        quarters.forEach(function(q, qIdx) {
+            const year = q.year;
+            const mesInicio = q.monthStart;
+            ['Objetivos', 'Encuestas'].forEach(function(tipo, tipoIdx) {
+                const nombrePlan = tipo + ' ' + q.label;
+                const creadorEmp = tipo === 'Objetivos' ? encargadoObjetivos : encargadaEncuestas;
+                const creadorNombre = creadorEmp ? creadorEmp.nombre : (tipo === 'Objetivos' ? 'Roberto Carlos Méndez Soto' : 'Adriana Lucía Ríos Calle');
+                const tareasTitulos = tipo === 'Objetivos' ? tareasObjetivos : tareasEncuestas;
+                for (let mes = 0; mes < 3; mes++) {
+                    const m = mesInicio + mes;
+                    const day = 15;
+                    const endDateStr = year + '-' + pad(m) + '-' + pad(day);
+                    const endDate = new Date(year, m - 1, day);
+                    const fechaCreacion = new Date(year, m - 1, Math.max(1, day - 2));
+                    asignadosCompania.forEach(function(empAsig, idxCompania) {
+                        const asignado = { nombre: empAsig.nombre, avatar: empAsig.avatar || '', username: empAsig.username || generarUsername(empAsig.nombre) };
+                        const estado = seeder(8888, idActividad + idxCompania * 10 + mes) < 0.75 ? 'Finalizada' : (seeder(8888, idActividad + idxCompania * 10 + mes + 1) < 0.5 ? 'Iniciada' : 'Vencida');
+                        const done = estado === 'Finalizada';
+                        actividadesSeguimiento.push({
+                            id: idActividad,
+                            tipo: 'tarea',
+                            nombre: tareasTitulos[mes],
+                            plan: nombrePlan,
+                            asignado: asignado,
+                            idColaborador: empAsig.idColaborador || empAsig.id,
+                            area: empAsig.area || 'General',
+                            areaCreador: 'Recursos Humanos',
+                            lider: obtenerJefe(empAsig.area, empAsig.esJefe, jefes),
+                            cargo: empAsig.cargo || '',
+                            estado: estado,
+                            prioridad: 'Media',
+                            avance: done ? 100 : 0,
+                            fechaCreacion: formatearFechaSeguimiento(fechaCreacion),
+                            fechaFinalizacion: formatearFechaSeguimiento(endDate),
+                            creador: creadorNombre,
+                            creador_avatar: creadorEmp && (creadorEmp.avatar && String(creadorEmp.avatar).trim()) ? creadorEmp.avatar : null,
+                            comentarios: 0
+                        });
+                        idActividad++;
+                    });
+                }
+            });
         });
 
         // Construir actividades tipo 'plan' para el tab Planes de seguimiento (agrupando tareas por plan)
@@ -479,6 +545,7 @@
                 asignados: asignados,
                 idColaborador: primera.idColaborador,
                 area: primera.area,
+                areaCreador: primera.areaCreador != null ? primera.areaCreador : primera.area,
                 lider: primera.lider,
                 cargo: primera.cargo || '',
                 estado: estadoPlan,

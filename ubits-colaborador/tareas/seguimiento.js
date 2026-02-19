@@ -11,7 +11,8 @@
     var modalsContainer = document.getElementById('seguimiento-modals-container');
     if (modalsContainer) {
         var filtrosBody = '<div class="filtros-group"><label class="ubits-body-sm-bold filtros-label">Buscar asignados</label><div id="filtros-buscar-personas"></div></div>' +
-            '<div class="filtros-group"><label class="ubits-body-sm-bold filtros-label">Buscar áreas</label><div id="filtros-areas"></div></div>' +
+            '<div class="filtros-group"><label class="ubits-body-sm-bold filtros-label">Área del asignado</label><div id="filtros-area-asignado"></div></div>' +
+            '<div class="filtros-group"><label class="ubits-body-sm-bold filtros-label">Área del creador</label><div id="filtros-area-creador"></div></div>' +
             '<div class="filtros-group filtros-group-row" id="filtros-group-row">' +
             '<div class="filtros-select-wrap" data-filter-type="estado">' +
             '<label class="ubits-body-sm-bold filtros-label" for="filtros-estado-trigger">Estado</label>' +
@@ -61,9 +62,9 @@
 
     // Los datos se cargan desde TAREAS_PLANES_DB (tareas-base-unificada.js)
     // 3.2.2 Columnas disponibles en tab Tareas (selector con checkboxes 3.2.1)
-    const COLUMN_IDS_TAREAS = ['id', 'nombre', 'asignado', 'creador', 'area', 'estado', 'prioridad', 'plan', 'fechaCreacion', 'fechaFinalizacion', 'comentarios'];
-    // 3.2.3 Por defecto mostrar: Nombre, Asignado, Creador, Estado, Prioridad, Fecha de vencimiento
-    const VISIBLE_BY_DEFAULT_TAREAS = ['nombre', 'asignado', 'creador', 'estado', 'prioridad', 'fechaFinalizacion'];
+    const COLUMN_IDS_TAREAS = ['id', 'nombre', 'asignado', 'creador', 'areaAsignado', 'areaCreador', 'estado', 'prioridad', 'plan', 'fechaCreacion', 'fechaFinalizacion', 'comentarios'];
+    // 3.2.3 Por defecto mostrar: Nombre, Asignado, Área asignado, Estado, Prioridad, Fecha de vencimiento. Ocultas por defecto: Creador, Área del creador.
+    const VISIBLE_BY_DEFAULT_TAREAS = ['nombre', 'asignado', 'areaAsignado', 'estado', 'prioridad', 'fechaFinalizacion'];
     const COLUMN_IDS_PLANES = ['id', 'nombre', 'asignados', 'creador', 'estado', 'avance', 'fechaCreacion', 'fechaFinalizacion'];
     const VISIBLE_BY_DEFAULT_PLANES = ['nombre', 'asignados', 'estado', 'avance', 'fechaCreacion', 'fechaFinalizacion'];
 
@@ -110,7 +111,8 @@
             plan: [],
             persona: [],
             username: [],
-            area: [],
+            areaAsignado: [],
+            areaCreador: [],
             lider: [],
             nombre: [],
             creador: [],
@@ -226,7 +228,7 @@
         }
         if (buttonType === 'filter') {
             if (col === 'asignado') return currentFilters.persona.length > 0;
-            if (['area', 'creador', 'plan'].indexOf(col) >= 0) return currentFilters[col].length > 0;
+            if (['areaAsignado', 'areaCreador', 'creador', 'plan'].indexOf(col) >= 0) return currentFilters[col].length > 0;
             return false;
         }
         return false;
@@ -242,7 +244,8 @@
             nombre: 'Nombre de la tarea',
             asignado: 'Asignado',
             creador: 'Creador',
-            area: 'Área',
+            areaAsignado: 'Área del asignado',
+            areaCreador: 'Área del creador',
             estado: 'Estado',
             prioridad: 'Prioridad',
             plan: 'Plan al que pertenece',
@@ -274,7 +277,7 @@
                 html += `<th class="seguimiento-th-filterable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only seguimiento-checkbox-btn${activeClass}" data-checkbox="prioridad" aria-label="Filtrar por prioridad"><i class="far fa-filter"></i></button></th>`;
             } else if ((col === 'fechaCreacion' || col === 'fechaFinalizacion') && (activeTab === 'tareas' || activeTab === 'planes')) {
                 html += `<th class="seguimiento-th-sortable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only seguimiento-date-sort-btn" data-sort="${col}" aria-label="Ordenar por ${label}"><i class="far fa-arrow-up-arrow-down"></i></button></th>`;
-            } else if (activeTab === 'tareas' && ['asignado', 'area', 'creador', 'plan'].indexOf(col) >= 0) {
+            } else if (activeTab === 'tareas' && ['asignado', 'areaAsignado', 'areaCreador', 'creador', 'plan'].indexOf(col) >= 0) {
                 var activeClass = isColumnFilterActive(col, 'filter') ? ' seguimiento-filter-btn--active' : '';
                 html += `<th class="seguimiento-th-filterable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only seguimiento-filter-btn${activeClass}" data-filter="${col}" aria-label="Filtrar por ${label}"><i class="far fa-filter"></i></button></th>`;
             } else if (activeTab === 'planes' && col === 'creador') {
@@ -381,11 +384,19 @@
             );
         }
 
-        // Filtro área - sin tildes
-        if (currentFilters.area.length > 0) {
+        // Filtro área del asignado - sin tildes
+        if (currentFilters.areaAsignado.length > 0) {
             data = data.filter(row => 
-                currentFilters.area.some(area => 
-                    normalizeText(row.area).includes(normalizeText(area))
+                currentFilters.areaAsignado.some(area => 
+                    normalizeText(row.area || '').includes(normalizeText(area))
+                )
+            );
+        }
+        // Filtro área del creador - sin tildes
+        if (currentFilters.areaCreador.length > 0) {
+            data = data.filter(row => 
+                currentFilters.areaCreador.some(area => 
+                    normalizeText((row.areaCreador != null ? row.areaCreador : row.area) || '').includes(normalizeText(area))
                 )
             );
         }
@@ -546,10 +557,17 @@
                 )
             );
         }
-        if (currentFilters.area.length > 0) {
+        if (currentFilters.areaAsignado.length > 0) {
             data = data.filter(row =>
-                currentFilters.area.some(area =>
-                    normalizeText(row.area).includes(normalizeText(area))
+                currentFilters.areaAsignado.some(area =>
+                    normalizeText(row.area || '').includes(normalizeText(area))
+                )
+            );
+        }
+        if (currentFilters.areaCreador.length > 0) {
+            data = data.filter(row =>
+                currentFilters.areaCreador.some(area =>
+                    normalizeText((row.areaCreador != null ? row.areaCreador : row.area) || '').includes(normalizeText(area))
                 )
             );
         }
@@ -1401,7 +1419,8 @@
                 asignados: `<td data-col="asignados"><div class="ubits-table__cell-assignee">${asignadoHtml}</div></td>`,
                 username: `<td data-col="username"><span class="ubits-body-sm-regular">${row.asignado ? (row.asignado.username || '') : ''}</span></td>`,
                 cargo: `<td data-col="cargo"><span class="ubits-body-sm-regular">${row.cargo || ''}</span></td>`,
-                area: `<td data-col="area"><span class="ubits-body-sm-regular">${row.area || ''}</span></td>`,
+                areaAsignado: `<td data-col="areaAsignado"><span class="ubits-body-sm-regular">${row.area || ''}</span></td>`,
+                areaCreador: `<td data-col="areaCreador"><span class="ubits-body-sm-regular">${(row.areaCreador != null ? row.areaCreador : row.area) || ''}</span></td>`,
                 lider: `<td data-col="lider"><span class="ubits-body-sm-regular">${row.lider || ''}</span></td>`,
                 creador: `<td data-col="creador"><span class="ubits-body-sm-regular">${row.creador}</span></td>`,
                 plan: `<td data-col="plan"><span class="ubits-body-sm-regular">${row.plan || ''}</span></td>`,
@@ -1672,22 +1691,40 @@
             });
         }
 
-        // Área - un chip por cada valor
-        if (currentFilters.area.length > 0) {
+        // Área del asignado - un chip por cada valor
+        if (currentFilters.areaAsignado.length > 0) {
             hasFilters = true;
-            currentFilters.area.forEach((areaValue, index) => {
+            currentFilters.areaAsignado.forEach((areaValue, index) => {
                 chips.push({
-                    type: 'area',
-                    label: 'Área',
+                    type: 'areaAsignado',
+                    label: 'Área asignado',
                     value: areaValue,
                     remove: () => {
-                        // Remover solo este valor del array
-                        currentFilters.area = currentFilters.area.filter((_, i) => i !== index);
-                        // Si no quedan valores, limpiar checkboxes de áreas
-                        if (currentFilters.area.length === 0) {
-                            document.querySelectorAll('#filtros-areas input').forEach(cb => {
-                                cb.checked = false;
-                            });
+                        currentFilters.areaAsignado = currentFilters.areaAsignado.filter((_, i) => i !== index);
+                        if (currentFilters.areaAsignado.length === 0) {
+                            document.querySelectorAll('#filtros-area-asignado input').forEach(cb => { cb.checked = false; });
+                        }
+                        currentPage = 1;
+                        renderTable();
+                        updateResultsCount();
+                        updateIndicadores();
+                        initPaginator();
+                    }
+                });
+            });
+        }
+        // Área del creador - un chip por cada valor
+        if (currentFilters.areaCreador.length > 0) {
+            hasFilters = true;
+            currentFilters.areaCreador.forEach((areaValue, index) => {
+                chips.push({
+                    type: 'areaCreador',
+                    label: 'Área creador',
+                    value: areaValue,
+                    remove: () => {
+                        currentFilters.areaCreador = currentFilters.areaCreador.filter((_, i) => i !== index);
+                        if (currentFilters.areaCreador.length === 0) {
+                            document.querySelectorAll('#filtros-area-creador input').forEach(cb => { cb.checked = false; });
                         }
                         currentPage = 1;
                         renderTable();
@@ -1948,7 +1985,8 @@
             nombre: 'Nombre de la tarea',
             asignado: 'Asignado',
             creador: 'Creador',
-            area: 'Área',
+            areaAsignado: 'Área del asignado',
+            areaCreador: 'Área del creador',
             estado: 'Estado',
             prioridad: 'Prioridad',
             plan: 'Plan al que pertenece',
@@ -2096,8 +2134,10 @@
         let currentFilterValues = [];
         if (containerId === 'filtros-buscar-personas') {
             currentFilterValues = currentFilters.persona;
-        } else if (containerId === 'filtros-areas') {
-            currentFilterValues = currentFilters.area;
+        } else if (containerId === 'filtros-area-asignado') {
+            currentFilterValues = currentFilters.areaAsignado;
+        } else if (containerId === 'filtros-area-creador') {
+            currentFilterValues = currentFilters.areaCreador;
         }
         
         // Usar createInput con autocomplete normal pero con checkboxes
@@ -2166,8 +2206,9 @@
     // Inicializar inputs de filtros (autocomplete y calendar). Se re-ejecuta al abrir el modal para reflejar el tab activo.
     function initFilterInputs() {
         // Obtener opciones únicas de los datos
-        const personas = [...new Set(SEGUIMIENTO_DATA.map(r => r.asignado.nombre))];
-        const areas = [...new Set(SEGUIMIENTO_DATA.map(r => r.area))];
+        const personas = [...new Set(SEGUIMIENTO_DATA.map(r => r.asignado && r.asignado.nombre))].filter(Boolean);
+        const areasAsignado = [...new Set(SEGUIMIENTO_DATA.map(r => r.area))].filter(Boolean);
+        const areasCreador = [...new Set(SEGUIMIENTO_DATA.map(r => (r.areaCreador != null ? r.areaCreador : r.area)))].filter(Boolean);
 
         // Buscar asignados (con checkboxes)
         createFilterAutocompleteWithCheckboxes('filtros-buscar-personas', personas, 'Buscar asignados...', (selectedValues) => {
@@ -2182,9 +2223,22 @@
             renderFiltrosAplicados();
         });
 
-        // Buscar área (con checkboxes)
-        createFilterAutocompleteWithCheckboxes('filtros-areas', areas, 'Buscar área...', (selectedValues) => {
-            currentFilters.area = selectedValues;
+        // Área del asignado (con checkboxes)
+        createFilterAutocompleteWithCheckboxes('filtros-area-asignado', areasAsignado, 'Buscar área asignado...', (selectedValues) => {
+            currentFilters.areaAsignado = selectedValues;
+            currentPage = 1;
+            applyFiltersAndSearch();
+            applySorting();
+            renderTable();
+            updateResultsCount();
+            updateIndicadores();
+            initPaginator();
+            renderFiltrosAplicados();
+        });
+
+        // Área del creador (con checkboxes)
+        createFilterAutocompleteWithCheckboxes('filtros-area-creador', areasCreador, 'Buscar área creador...', (selectedValues) => {
+            currentFilters.areaCreador = selectedValues;
             currentPage = 1;
             applyFiltersAndSearch();
             applySorting();
@@ -2259,12 +2313,12 @@
             }
         }
 
-        // Áreas: igual que asignados
-        const areasContainer = document.getElementById('filtros-areas');
-        if (areasContainer) {
-            const dropdown = areasContainer.querySelector('.ubits-autocomplete-dropdown');
+        // Área del asignado
+        const areaAsignadoContainer = document.getElementById('filtros-area-asignado');
+        if (areaAsignadoContainer) {
+            const dropdown = areaAsignadoContainer.querySelector('.ubits-autocomplete-dropdown');
             if (dropdown) {
-                const nextArea = new Set(currentFilters.area || []);
+                const nextArea = new Set(currentFilters.areaAsignado || []);
                 dropdown.querySelectorAll('.ubits-autocomplete-option').forEach(function(opt) {
                     const textEl = opt.querySelector('.ubits-autocomplete-option-text');
                     const cb = opt.querySelector('.ubits-autocomplete-checkbox');
@@ -2274,7 +2328,25 @@
                         else nextArea.delete(text);
                     }
                 });
-                currentFilters.area = Array.from(nextArea);
+                currentFilters.areaAsignado = Array.from(nextArea);
+            }
+        }
+        // Área del creador
+        const areaCreadorContainer = document.getElementById('filtros-area-creador');
+        if (areaCreadorContainer) {
+            const dropdown = areaCreadorContainer.querySelector('.ubits-autocomplete-dropdown');
+            if (dropdown) {
+                const nextArea = new Set(currentFilters.areaCreador || []);
+                dropdown.querySelectorAll('.ubits-autocomplete-option').forEach(function(opt) {
+                    const textEl = opt.querySelector('.ubits-autocomplete-option-text');
+                    const cb = opt.querySelector('.ubits-autocomplete-checkbox');
+                    const text = textEl ? textEl.textContent.trim() : '';
+                    if (text) {
+                        if (cb && cb.checked) nextArea.add(text);
+                        else nextArea.delete(text);
+                    }
+                });
+                currentFilters.areaCreador = Array.from(nextArea);
             }
         }
     }
@@ -2340,7 +2412,7 @@
             window.closeDropdownMenu(overlayId);
             return;
         }
-        var labelsTareas = { id: 'ID de la tarea', nombre: 'Nombre de la tarea', asignado: 'Asignado', creador: 'Creador', area: 'Área', estado: 'Estado', prioridad: 'Prioridad', plan: 'Plan al que pertenece', fechaCreacion: 'Fecha de creación', fechaFinalizacion: 'Fecha de vencimiento', comentarios: 'Número de comentarios' };
+        var labelsTareas = { id: 'ID de la tarea', nombre: 'Nombre de la tarea', asignado: 'Asignado', creador: 'Creador', areaAsignado: 'Área del asignado', areaCreador: 'Área del creador', estado: 'Estado', prioridad: 'Prioridad', plan: 'Plan al que pertenece', fechaCreacion: 'Fecha de creación', fechaFinalizacion: 'Fecha de vencimiento', comentarios: 'Número de comentarios' };
         var labelsPlanes = { id: 'ID del plan', nombre: 'Nombre del plan', asignados: 'Personas asignadas', creador: 'Creador del plan', estado: 'Estado del plan', avance: 'Progreso del plan', fechaCreacion: 'Fecha de creación', fechaFinalizacion: 'Fecha de finalización' };
         var labels = activeTab === 'planes' ? labelsPlanes : labelsTareas;
         var columnIds = getColumnIds();
@@ -3145,7 +3217,8 @@
             nombre: function() { var d = baseData(); return [...new Set(d.map(function(r) { return r.nombre; }).filter(Boolean))].sort(function(a, b) { return a.localeCompare(b, 'es'); }); },
             asignado: function() { var d = baseData(); return [...new Set(d.map(function(r) { return r.asignado && r.asignado.nombre; }).filter(Boolean))].sort(function(a, b) { return a.localeCompare(b, 'es'); }); },
             username: function() { var d = baseData(); return [...new Set(d.map(function(r) { return r.asignado && r.asignado.username; }).filter(Boolean))].sort(function(a, b) { return a.localeCompare(b, 'es'); }); },
-            area: function() { var d = baseData(); return [...new Set(d.map(function(r) { return r.area; }).filter(Boolean))].sort(function(a, b) { return a.localeCompare(b, 'es'); }); },
+            areaAsignado: function() { var d = baseData(); return [...new Set(d.map(function(r) { return r.area; }).filter(Boolean))].sort(function(a, b) { return a.localeCompare(b, 'es'); }); },
+            areaCreador: function() { var d = baseData(); return [...new Set(d.map(function(r) { return (r.areaCreador != null ? r.areaCreador : r.area); }).filter(Boolean))].sort(function(a, b) { return a.localeCompare(b, 'es'); }); },
             lider: function() { var d = baseData(); return [...new Set(d.map(function(r) { return r.lider; }).filter(Boolean))].sort(function(a, b) { return a.localeCompare(b, 'es'); }); },
             plan: function() { var d = baseData(); return [...new Set(d.map(function(r) { return r.plan; }).filter(Boolean))].sort(function(a, b) { return a.localeCompare(b, 'es'); }); },
             creador: function() { var d = baseData(); return [...new Set(d.map(function(r) { return r.creador; }).filter(Boolean))].sort(function(a, b) { return a.localeCompare(b, 'es'); }); }
@@ -3162,7 +3235,8 @@
             if (col === 'asignado') currentFilterValues = currentFilters.persona;
             else if (col === 'username') currentFilterValues = currentFilters.username;
             else if (col === 'plan') currentFilterValues = currentFilters.plan;
-            else if (col === 'area') currentFilterValues = currentFilters.area;
+            else if (col === 'areaAsignado') currentFilterValues = currentFilters.areaAsignado;
+            else if (col === 'areaCreador') currentFilterValues = currentFilters.areaCreador;
             else if (col === 'lider') currentFilterValues = currentFilters.lider;
             else if (col === 'nombre') currentFilterValues = currentFilters.nombre;
             else if (col === 'creador') currentFilterValues = currentFilters.creador;
@@ -3253,7 +3327,8 @@
                     if (col === 'asignado') currentFilters.persona = selectedOptions;
                     else if (col === 'username') currentFilters.username = selectedOptions;
                     else if (col === 'plan') currentFilters.plan = selectedOptions;
-                    else if (col === 'area') currentFilters.area = selectedOptions;
+                    else if (col === 'areaAsignado') currentFilters.areaAsignado = selectedOptions;
+                    else if (col === 'areaCreador') currentFilters.areaCreador = selectedOptions;
                     else if (col === 'lider') currentFilters.lider = selectedOptions;
                     else if (col === 'nombre') currentFilters.nombre = selectedOptions;
                     else if (col === 'creador') currentFilters.creador = selectedOptions;
@@ -3662,7 +3737,7 @@
             var isPlanes = activeTab === 'planes';
             var columnIds = isPlanes ? COLUMN_IDS_PLANES : COLUMN_IDS_TAREAS;
             var labelsPlanesExport = { id: 'ID del plan', nombre: 'Nombre del plan', asignados: 'Personas asignadas', creador: 'Creador del plan', estado: 'Estado del plan', avance: 'Progreso del plan', fechaCreacion: 'Fecha de creación', fechaFinalizacion: 'Fecha de finalización' };
-            var labelsTareasExport = { id: 'ID de la tarea', nombre: 'Nombre de la tarea', asignado: 'Asignado', creador: 'Creador', area: 'Área', estado: 'Estado', prioridad: 'Prioridad', plan: 'Plan al que pertenece', fechaCreacion: 'Fecha de creación', fechaFinalizacion: 'Fecha de vencimiento', comentarios: 'Número de comentarios' };
+            var labelsTareasExport = { id: 'ID de la tarea', nombre: 'Nombre de la tarea', asignado: 'Asignado', creador: 'Creador', areaAsignado: 'Área del asignado', areaCreador: 'Área del creador', estado: 'Estado', prioridad: 'Prioridad', plan: 'Plan al que pertenece', fechaCreacion: 'Fecha de creación', fechaFinalizacion: 'Fecha de vencimiento', comentarios: 'Número de comentarios' };
             var labelsExport = isPlanes ? labelsPlanesExport : labelsTareasExport;
             var selectedRows = SEGUIMIENTO_DATA.filter(function(r) {
                 return selectedIds.has(r.id) && (isPlanes ? r.tipo === 'plan' : r.tipo === 'tarea');
@@ -3687,7 +3762,8 @@
                 if (colId === 'asignado') return (row.asignado && row.asignado.nombre) ? String(row.asignado.nombre) : '';
                 if (colId === 'username') return (row.asignado && row.asignado.username) ? String(row.asignado.username) : '';
                 if (colId === 'cargo') return row.cargo || '';
-                if (colId === 'area') return row.area || '';
+                if (colId === 'areaAsignado') return row.area || '';
+                if (colId === 'areaCreador') return (row.areaCreador != null ? row.areaCreador : row.area) || '';
                 if (colId === 'lider') return row.lider || '';
                 if (colId === 'creador') return row.creador || '';
                 if (colId === 'plan') return row.plan || '';
