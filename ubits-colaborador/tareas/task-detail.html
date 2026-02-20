@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Detalle de tarea - UBITS</title>
+
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/header-product.css">
+    <link rel="stylesheet" href="../../components/tooltip.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/status-tag.css">
+    <link rel="stylesheet" href="../../components/badge-tag.css">
+    <link rel="stylesheet" href="../../components/avatar.css">
+    <link rel="stylesheet" href="../../components/radio-button.css">
+    <link rel="stylesheet" href="../../components/task-strip.css">
+    <link rel="stylesheet" href="../../components/calendar.css">
+    <link rel="stylesheet" href="./task-detail.css">
+</head>
+<body data-theme="light" class="page-task-detail">
+    <div class="task-detail-page">
+        <div class="tooltip" id="tooltip"></div>
+
+        <main class="task-detail-main-wrap">
+            <div class="task-detail-content-area">
+                <div class="content-sections task-detail-sections">
+                    <!-- Header: atrás, título, compartir, opciones (sin sidebar ni subnav) -->
+                    <div class="section-single task-detail-section task-detail-section--header">
+                        <div class="widget-header-product" id="task-detail-header-container"></div>
+                    </div>
+
+                    <!-- Contenido principal: dos columnas (izq: tarea + subtareas, der: comentarios) -->
+                    <div class="section-single task-detail-section task-detail-section--body">
+                        <div class="task-detail-body-card">
+                            <div class="task-detail-two-cols">
+                                <!-- Columna izquierda: info tarea + subtareas -->
+                                <div class="task-detail-col-main">
+                                    <div id="task-detail-info-block" class="task-detail-info-block"></div>
+                                    <div id="task-detail-subtasks-block" class="task-detail-subtasks-block"></div>
+                                </div>
+                                <!-- Columna derecha: comentarios -->
+                                <div class="task-detail-col-comments">
+                                    <div id="task-detail-comments-block" class="task-detail-comments-block"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../../components/tooltip.js"></script>
+    <script src="../../components/header-product.js"></script>
+    <script src="../../components/input.js"></script>
+    <script src="../../components/avatar.js"></script>
+    <script src="../../components/task-strip.js"></script>
+    <script src="./tareas-base-unificada.js"></script>
+    <script src="./task-detail.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof initTaskDetailPage === 'function') {
+                initTaskDetailPage();
+            }
+        });
+    </script>
+</body>
+</html>

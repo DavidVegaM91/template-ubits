@@ -185,15 +185,17 @@ function renderPlansInterface() {
                     <div class="plan-section__top">
                         <div class="plan-section__top-left">
                             <h2 class="plan-section__title">En curso</h2>
-                            <div class="plan-section__filters">
-                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm plan-filter-chip ${estadoPlanes.filterInProgress === 'individual' ? 'plan-filter-chip--active' : ''}" data-filter="individual">
-                                    <i class="far fa-user"></i>
-                                    <span>Individuales</span>
-                                </button>
-                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm plan-filter-chip ${estadoPlanes.filterInProgress === 'grupal' ? 'plan-filter-chip--active' : ''}" data-filter="grupal">
-                                    <i class="far fa-users"></i>
-                                    <span>Grupales</span>
-                                </button>
+                            <div class="plan-section__filters plan-section__tabs-wrap">
+                                <div class="ubits-tabs-on-bg" role="tablist">
+                                    <button type="button" class="ubits-tab ubits-tab--sm ${estadoPlanes.filterInProgress === 'individual' ? 'ubits-tab--active' : ''}" role="tab" data-filter="individual" aria-selected="${estadoPlanes.filterInProgress === 'individual'}">
+                                        <i class="far fa-user"></i>
+                                        <span>Individuales</span>
+                                    </button>
+                                    <button type="button" class="ubits-tab ubits-tab--sm ${estadoPlanes.filterInProgress === 'grupal' ? 'ubits-tab--active' : ''}" role="tab" data-filter="grupal" aria-selected="${estadoPlanes.filterInProgress === 'grupal'}">
+                                        <i class="far fa-users"></i>
+                                        <span>Grupales</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="plan-ver-filtros-progress">
@@ -228,15 +230,17 @@ function renderPlansInterface() {
                     <div class="plan-section__top">
                         <div class="plan-section__top-left">
                             <h2 class="plan-section__title">Finalizado</h2>
-                            <div class="plan-section__filters">
-                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm plan-filter-chip plan-filter-chip--finished ${estadoPlanes.filterFinished === 'individual' ? 'plan-filter-chip--active' : ''}" data-filter-finished="individual">
-                                    <i class="far fa-user"></i>
-                                    <span>Individuales</span>
-                                </button>
-                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm plan-filter-chip plan-filter-chip--finished ${estadoPlanes.filterFinished === 'grupal' ? 'plan-filter-chip--active' : ''}" data-filter-finished="grupal">
-                                    <i class="far fa-users"></i>
-                                    <span>Grupales</span>
-                                </button>
+                            <div class="plan-section__filters plan-section__tabs-wrap">
+                                <div class="ubits-tabs-on-bg" role="tablist">
+                                    <button type="button" class="ubits-tab ubits-tab--sm ${estadoPlanes.filterFinished === 'individual' ? 'ubits-tab--active' : ''}" role="tab" data-filter-finished="individual" aria-selected="${estadoPlanes.filterFinished === 'individual'}">
+                                        <i class="far fa-user"></i>
+                                        <span>Individuales</span>
+                                    </button>
+                                    <button type="button" class="ubits-tab ubits-tab--sm ${estadoPlanes.filterFinished === 'grupal' ? 'ubits-tab--active' : ''}" role="tab" data-filter-finished="grupal" aria-selected="${estadoPlanes.filterFinished === 'grupal'}">
+                                        <i class="far fa-users"></i>
+                                        <span>Grupales</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="plan-ver-filtros-finished">

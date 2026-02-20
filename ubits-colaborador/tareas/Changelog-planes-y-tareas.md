@@ -191,7 +191,7 @@ Ajustes pendientes sobre los archivos entregados por la PM Mafe para las página
 29. [x] **Botón de refrescar datos en seguimiento**  
     En **seguimiento.html** y **seguimiento-leader.html** se añadió un **botón de refrescar** (icono `fa-arrows-rotate`) entre búsqueda y columnas visibles. Al hacer clic se muestra un toast "Datos refrescados".
 
-30. [x] **Tooltips en seguimiento (barra, encabezado y filas)**  
+30. [x] **Tooltips en seguimiento (botones de la barra superior, botones de encabezado y checkboxes)**  
     Se añadieron tooltips con **delay de 1 s** (`data-tooltip`, `data-tooltip-delay="1000"`) a todos los elementos interactivos de la vista de seguimiento:  
     - **Barra:** Buscar, Refrescar, Columnas visibles, Período.  
     - **Encabezado de tabla:** botones de filtro por columna, ordenar y celda **Seleccionar todo**. Tras cada `buildTableHeader()` se llama a `initTooltip('#seguimiento-table thead [data-tooltip]')`. El tooltip de la celda de selección cambia a **"Deseleccionar todo"** cuando hay filas seleccionadas (se actualiza en `updateSelectAll()`).  
@@ -199,4 +199,11 @@ Ajustes pendientes sobre los archivos entregados por la PM Mafe para las página
 
 ---
 
-*Última actualización: ítems 1–20 (11 feb), 21–26 (19 feb), 27 (Cargar más), 28–30 (20 feb) implementados.*
+## Cambios 21 de febrero de 2026
+
+31. [x] **Tabs oficiales en Planes (Individuales / Grupales)**  
+    En **planes.html** (contenido generado en **planes.js**) los botones "Individuales" y "Grupales" dentro de las secciones **En curso** y **Finalizado** se reemplazaron por **tabs oficiales UBITS** (componente tab, variante sobre fondo blanco). Contenedor con clase `ubits-tabs-on-bg` (fondo `var(--ubits-bg-2)`, padding 4px, border-radius 8px); botones con `ubits-tab ubits-tab--sm` y `ubits-tab--active` según el filtro activo. Se mantienen `data-filter` y `data-filter-finished` para que los listeners existentes sigan funcionando. En **planes.html** se añadió el enlace a `components/tab.css`; en **planes.css** se definió la clase del wrapper.
+
+---
+
+*Última actualización: ítems 1–20 (11 feb), 21–26 (19 feb), 27 (Cargar más), 28–30 (20 feb), 31 (21 feb) implementados.*

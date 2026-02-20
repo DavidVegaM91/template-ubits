@@ -1176,6 +1176,7 @@
             const tr = ev.target.closest('tr');
             if (!tr || tr.closest('thead')) return;
             if (ev.target.closest('.seguimiento-row-check')) return;
+            if (ev.target.closest('.ubits-profile-list__count')) return;
             const id = tr.getAttribute('data-id');
             if (id == null) return;
             const row = SEGUIMIENTO_DATA.find(r => String(r.id) === String(id));

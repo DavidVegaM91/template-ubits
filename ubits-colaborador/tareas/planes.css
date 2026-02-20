@@ -1157,7 +1157,16 @@
     gap: var(--gap-md, 12px);
 }
 
-/* Estado activo del chip de filtro (botón oficial ubits-button + esta clase) */
+/* Contenedor de tabs oficiales sobre fondo blanco (Individuales / Grupales) */
+.ubits-tabs-on-bg {
+    background: var(--ubits-bg-2);
+    padding: 4px;
+    border-radius: 8px;
+    display: inline-flex;
+    gap: 4px;
+}
+
+/* Estado activo del chip de filtro (legacy; ya no se usa en planes, reemplazado por ubits-tab) */
 .plan-filter-chip--active {
     background: var(--ubits-feedback-bg-info-subtle);
     border-color: var(--ubits-feedback-border-info);
