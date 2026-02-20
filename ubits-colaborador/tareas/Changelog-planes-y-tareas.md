@@ -44,7 +44,7 @@ Ajustes pendientes sobre los archivos entregados por la PM Mafe para las página
 6. [x] **Componentizar la tirilla de tareas**  
    La tirilla de tareas que está dentro de `tareas.html` debe convertirse en un **componente reutilizable** (CSS + JS, y opcionalmente HTML de referencia). Sin documentacion en html, pero si creado para reutilizarlo. Una vez componentizada, **implementarla** tanto en `tareas.html` como en `plan-detail.html`. Primero implementala en plan detail que es mas chiquis, si queda bien ahi si la implementas en tareas.
 
-7. [ ] **Drawers de creación con componente oficial**  
+7. [x] **Drawers de creación con componente oficial**  
    Asegurar que los drawers de **"Crear un plan"** y **"Crear una plantilla"** usen el **componente drawer oficial** UBITS.
 
 8. [x] **Componentizar el detalle de tarea**  
@@ -167,4 +167,20 @@ Ajustes pendientes sobre los archivos entregados por la PM Mafe para las página
 
 ---
 
-*Última actualización: ítems 1–20 (11 feb), 21–26 (19 feb) implementados. Pendiente: ítem 7 (drawer oficial).*
+### Seguimiento: carga progresiva "Cargar más" (sustituye paginador)
+
+27. [x] **Seguimiento: carga inicial de 50 y botón "Cargar más"**  
+    En **seguimiento.html** y **seguimiento-leader.html** se sustituyó el **paginador** (páginas 1, 2, 3… y selector de 10/20/50/100 por página) por una **carga progresiva**:
+    - **Al entrar:** se muestran los **primeros 50** registros en la tabla.
+    - **Debajo de la tabla** hay un botón **"Cargar más"**. Al hacer clic se cargan **50 registros más** (se muestran 100, luego 150, etc.).
+    - Al cambiar de pestaña (Tareas/Planes), búsqueda o filtros, se **reinicia** a 50 registros visibles.
+    - Implementación en `seguimiento.js`: variable `displayLimit` (inicial 50), constante `SEGUIMIENTO_LOAD_MORE_SIZE = 50`, función `initLoadMore()` que pinta el botón "Cargar más" en el contenedor que antes usaba el paginador (`#seguimiento-paginador`). El botón usa el componente oficial UBITS (secundario).
+
+    **Cómo volver al paginador (por si se revierte):**
+    - En `seguimiento.js`: restaurar variables `currentPage` y `itemsPerPage`; en `renderTable()` usar de nuevo `data.slice((currentPage - 1) * itemsPerPage, (currentPage - 1) * itemsPerPage + itemsPerPage)`; restaurar la función `initPaginator()` que llama a `loadPaginator('seguimiento-paginador', { totalItems, itemsPerPage, itemsPerPageOptions: [10, 20, 50, 100], currentPage, onPageChange, onItemsPerPageChange })`; reemplazar todas las llamadas a `initLoadMore()` y `displayLimit = 50` por `initPaginator()` y `currentPage = 1`.
+    - En `seguimiento.html` y `seguimiento-leader.html`: asegurar que sigan enlazados `components/paginator.css` y `components/paginator.js` (se dejan enlazados aunque no se use el paginador, para facilitar la vuelta atrás).
+    - Referencia: el paginador mostraba "X–Y de Z" y permitía cambiar de página y de tamaño de página (10, 20, 50, 100).
+
+---
+
+*Última actualización: ítems 1–20 (11 feb), 21–26 (19 feb) implementados; ítem 27 (seguimiento Cargar más) implementado.*

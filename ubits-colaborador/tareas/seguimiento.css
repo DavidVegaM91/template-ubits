@@ -394,7 +394,7 @@
     font-size: var(--font-size-xs);
 }
 
-/* Paginador */
+/* Contenedor del botón "Cargar más" (sustituye paginador) */
 .widget-paginador-seguimiento {
     display: flex;
     justify-content: center;
@@ -404,6 +404,16 @@
 #seguimiento-paginador .ubits-paginator {
     padding-top: 0;
     padding-bottom: 0;
+}
+
+/* Ocultar contenedor cuando no hay botón "Cargar más" (todos los registros visibles o sin datos) */
+#seguimiento-paginador:empty {
+    display: none;
+}
+
+.seguimiento-load-more-wrap {
+    margin-top: var(--padding-lg, 16px);
+    margin-bottom: var(--padding-md, 12px);
 }
 
 /* Empty State */

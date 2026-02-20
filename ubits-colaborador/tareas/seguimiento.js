@@ -99,8 +99,8 @@
     let SEGUIMIENTO_DATA = [];
     let filteredData = [];
     let columnVisibility = {};
-    let currentPage = 1;
-    let itemsPerPage = 10;
+    const SEGUIMIENTO_LOAD_MORE_SIZE = 50;
+    let displayLimit = SEGUIMIENTO_LOAD_MORE_SIZE;
     let viewOnlySelected = false;
     let selectedIds = new Set();
     let currentSort = { column: 'fechaCreacion', direction: 'desc' }; // Por defecto: más reciente primero
@@ -298,8 +298,7 @@
         if (selectAll) {
             selectAll.addEventListener('change', function () {
                 const data = getDisplayData();
-                const start = (currentPage - 1) * itemsPerPage;
-                const pageData = data.slice(start, start + itemsPerPage);
+                const pageData = data.slice(0, displayLimit);
                 if (this.checked) {
                     pageData.forEach(r => selectedIds.add(r.id));
                 } else {
@@ -1377,8 +1376,7 @@
         if (tableWrapper) tableWrapper.style.display = 'block';
         if (paginatorContainer) paginatorContainer.style.display = 'flex';
 
-        const start = (currentPage - 1) * itemsPerPage;
-        const slice = data.slice(start, start + itemsPerPage);
+        const slice = data.slice(0, displayLimit);
 
         const statusClass = { 'Por hacer': 'info', Vencida: 'error', Finalizada: 'success' };
         const prioridadIcon = { Alta: 'fa-chevrons-up', Media: 'fa-chevron-up', Baja: 'fa-chevron-down' };
@@ -1477,8 +1475,7 @@
         const all = document.getElementById('seguimiento-select-all');
         if (!all) return;
         const data = getDisplayData();
-        const start = (currentPage - 1) * itemsPerPage;
-        const pageData = data.slice(start, start + itemsPerPage);
+        const pageData = data.slice(0, displayLimit);
         const pageIds = pageData.map(r => r.id);
         const checkedCount = pageIds.filter(id => selectedIds.has(id)).length;
 
@@ -1603,13 +1600,13 @@
                         searchToggle.style.display = 'flex';
                     }
                     isSearchMode = false; // para que la lupa vuelva a abrir el buscador
-                    currentPage = 1;
+                    displayLimit = SEGUIMIENTO_LOAD_MORE_SIZE;
                     applyFiltersAndSearch(); // Asegurar que los filtros se apliquen antes de renderizar
                     applySorting();
                     renderTable();
                     updateResultsCount();
                     updateIndicadores();
-                    initPaginator();
+                    initLoadMore();
                 }
             });
         }
@@ -1629,11 +1626,11 @@
                             const planContainer = document.getElementById('filtros-buscar-plan');
                             if (planContainer) planContainer.innerHTML = '';
                         }
-                        currentPage = 1;
+                        displayLimit = SEGUIMIENTO_LOAD_MORE_SIZE;
                         renderTable();
                         updateResultsCount();
                         updateIndicadores();
-                        initPaginator();
+                        initLoadMore();
                     }
                 });
             });
@@ -1658,11 +1655,11 @@
                                 initFilterInputs();
                             }
                         }
-                        currentPage = 1;
+                        displayLimit = SEGUIMIENTO_LOAD_MORE_SIZE;
                         renderTable();
                         updateResultsCount();
                         updateIndicadores();
-                        initPaginator();
+                        initLoadMore();
                     }
                 });
             });
@@ -1679,13 +1676,13 @@
                     remove: () => {
                         // Remover solo este valor del array
                         currentFilters.username = currentFilters.username.filter((_, i) => i !== index);
-                        currentPage = 1;
+                        displayLimit = SEGUIMIENTO_LOAD_MORE_SIZE;
                         applyFiltersAndSearch();
                         applySorting();
                         renderTable();
                         updateResultsCount();
                         updateIndicadores();
-                        initPaginator();
+                        initLoadMore();
                     }
                 });
             });
@@ -1704,11 +1701,11 @@
                         if (currentFilters.areaAsignado.length === 0) {
                             document.querySelectorAll('#filtros-area-asignado input').forEach(cb => { cb.checked = false; });
                         }
-                        currentPage = 1;
+                        displayLimit = SEGUIMIENTO_LOAD_MORE_SIZE;
                         renderTable();
                         updateResultsCount();
                         updateIndicadores();
-                        initPaginator();
+                        initLoadMore();
                     }
                 });
             });
@@ -1726,11 +1723,11 @@
                         if (currentFilters.areaCreador.length === 0) {
                             document.querySelectorAll('#filtros-area-creador input').forEach(cb => { cb.checked = false; });
                         }
-                        currentPage = 1;
+                        displayLimit = SEGUIMIENTO_LOAD_MORE_SIZE;
                         renderTable();
                         updateResultsCount();
                         updateIndicadores();
-                        initPaginator();
+                        initLoadMore();
                     }
                 });
             });
@@ -1747,13 +1744,13 @@
                     remove: () => {
                         // Remover solo este valor del array
                         currentFilters.lider = currentFilters.lider.filter((_, i) => i !== index);
-                        currentPage = 1;
+                        displayLimit = SEGUIMIENTO_LOAD_MORE_SIZE;
                         applyFiltersAndSearch();
                         applySorting();
                         renderTable();
                         updateResultsCount();
                         updateIndicadores();
-                        initPaginator();
+                        initLoadMore();
                     }
                 });
             });
@@ -1770,13 +1767,13 @@
                     remove: () => {
                         // Remover solo este valor del array
                         currentFilters.nombre = currentFilters.nombre.filter((_, i) => i !== index);
-                        currentPage = 1;
+                        displayLimit = SEGUIMIENTO_LOAD_MORE_SIZE;
                         applyFiltersAndSearch();
                         applySorting();
                         renderTable();
                         updateResultsCount();
                         updateIndicadores();
-                        initPaginator();
+                        initLoadMore();
                     }
                 });
             });
@@ -1793,13 +1790,13 @@
                     remove: () => {
                         // Remover solo este valor del array
                         currentFilters.creador = currentFilters.creador.filter((_, i) => i !== index);
-                        currentPage = 1;
+                        displayLimit = SEGUIMIENTO_LOAD_MORE_SIZE;
                         applyFiltersAndSearch();
                         applySorting();
                         renderTable();
                         updateResultsCount();
                         updateIndicadores();
-                        initPaginator();
+                        initLoadMore();
                     }
                 });
             });
@@ -1832,13 +1829,13 @@
                                 }
                             }
                         }
-                        currentPage = 1;
+                        displayLimit = SEGUIMIENTO_LOAD_MORE_SIZE;
                         applyFiltersAndSearch();
                         applySorting();
                         renderTable();
                         updateResultsCount();
                         updateIndicadores();
-                        initPaginator();
+                        initLoadMore();
                     }
                 });
             });
@@ -1871,13 +1868,13 @@
                                 }
                             }
                         }
-                        currentPage = 1;
+                        displayLimit = SEGUIMIENTO_LOAD_MORE_SIZE;
                         applyFiltersAndSearch();
                         applySorting();
                         renderTable();
                         updateResultsCount();
                         updateIndicadores();
-                        initPaginator();
+                        initLoadMore();
                     }
                 });
             });
@@ -1907,11 +1904,11 @@
                     if (desdeContainer) desdeContainer.innerHTML = '';
                     if (hastaContainer) hastaContainer.innerHTML = '';
                     initFilterInputs();
-                    currentPage = 1;
+                    displayLimit = SEGUIMIENTO_LOAD_MORE_SIZE;
                     renderTable();
                     updateResultsCount();
                     updateIndicadores();
-                    initPaginator();
+                    initLoadMore();
                 }
             });
         }
@@ -1940,11 +1937,11 @@
                     if (desdeContainer) desdeContainer.innerHTML = '';
                     if (hastaContainer) hastaContainer.innerHTML = '';
                     initFilterInputs();
-                    currentPage = 1;
+                    displayLimit = SEGUIMIENTO_LOAD_MORE_SIZE;
                     renderTable();
                     updateResultsCount();
                     updateIndicadores();
-                    initPaginator();
+                    initLoadMore();
                 }
             });
         }
@@ -2213,39 +2210,39 @@
         // Buscar asignados (con checkboxes)
         createFilterAutocompleteWithCheckboxes('filtros-buscar-personas', personas, 'Buscar asignados...', (selectedValues) => {
             currentFilters.persona = selectedValues;
-            currentPage = 1;
+            displayLimit = SEGUIMIENTO_LOAD_MORE_SIZE;
             applyFiltersAndSearch();
             applySorting();
             renderTable();
             updateResultsCount();
             updateIndicadores();
-            initPaginator();
+            initLoadMore();
             renderFiltrosAplicados();
         });
 
         // Área del asignado (con checkboxes)
         createFilterAutocompleteWithCheckboxes('filtros-area-asignado', areasAsignado, 'Buscar área asignado...', (selectedValues) => {
             currentFilters.areaAsignado = selectedValues;
-            currentPage = 1;
+            displayLimit = SEGUIMIENTO_LOAD_MORE_SIZE;
             applyFiltersAndSearch();
             applySorting();
             renderTable();
             updateResultsCount();
             updateIndicadores();
-            initPaginator();
+            initLoadMore();
             renderFiltrosAplicados();
         });
 
         // Área del creador (con checkboxes)
         createFilterAutocompleteWithCheckboxes('filtros-area-creador', areasCreador, 'Buscar área creador...', (selectedValues) => {
             currentFilters.areaCreador = selectedValues;
-            currentPage = 1;
+            displayLimit = SEGUIMIENTO_LOAD_MORE_SIZE;
             applyFiltersAndSearch();
             applySorting();
             renderTable();
             updateResultsCount();
             updateIndicadores();
-            initPaginator();
+            initLoadMore();
             renderFiltrosAplicados();
         });
 
@@ -2386,13 +2383,13 @@
         initFilterInputs();
 
         // Resetear página y renderizar
-        currentPage = 1;
+        displayLimit = SEGUIMIENTO_LOAD_MORE_SIZE;
         applyFiltersAndSearch(); // Asegurar que los filtros se apliquen antes de renderizar
         applySorting();
         renderTable();
         updateResultsCount();
         updateIndicadores();
-        initPaginator();
+        initLoadMore();
         renderFiltrosAplicados();
 
         // Cerrar modal de filtros si está abierto
@@ -2438,32 +2435,36 @@
         }
     }
 
-    // Inicializar paginador
-    function initPaginator() {
+    // Carga progresiva: botón "Cargar más" (sustituye paginador)
+    function initLoadMore() {
+        const container = document.getElementById('seguimiento-paginador');
+        if (!container) return;
         const data = getDisplayData();
         const total = data.length;
-        if (typeof loadPaginator !== 'function') return;
-        loadPaginator('seguimiento-paginador', {
-            totalItems: total || 1,
-            itemsPerPage: itemsPerPage,
-            itemsPerPageOptions: [10, 20, 50, 100],
-            currentPage: currentPage,
-            onPageChange: function (page) {
-                currentPage = page;
-                renderTable();
-                updateSelectAll();
-                updateResultsCount();
-                updateIndicadores();
-            },
-            onItemsPerPageChange: function (ipp) {
-                itemsPerPage = ipp;
-                currentPage = 1;
-                renderTable();
-                updateSelectAll();
-                updateResultsCount();
-                initPaginator();
-            }
+        const showing = Math.min(displayLimit, total);
+        container.innerHTML = '';
+        if (total === 0) return;
+        if (showing >= total) {
+            container.classList.remove('seguimiento-load-more--visible');
+            return;
+        }
+        container.classList.add('seguimiento-load-more--visible');
+        const wrap = document.createElement('div');
+        wrap.className = 'seguimiento-load-more-wrap';
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'ubits-button ubits-button--secondary ubits-button--md';
+        btn.innerHTML = '<span>Cargar más</span>';
+        btn.addEventListener('click', function () {
+            displayLimit += SEGUIMIENTO_LOAD_MORE_SIZE;
+            renderTable();
+            initLoadMore();
+            updateSelectAll();
+            updateResultsCount();
+            updateIndicadores();
         });
+        wrap.appendChild(btn);
+        container.appendChild(wrap);
     }
 
     // Toggle de búsqueda
@@ -2486,13 +2487,13 @@
                         size: 'md',
                         onChange: function (val) {
                             searchQuery = val || '';
-                            currentPage = 1;
+                            displayLimit = SEGUIMIENTO_LOAD_MORE_SIZE;
                             applyFiltersAndSearch(); // Asegurar que los filtros se apliquen antes de renderizar
                             applySorting();
                             renderTable();
                             updateResultsCount();
                             updateIndicadores();
-                            initPaginator();
+                            initLoadMore();
                             renderFiltrosAplicados();
                         }
                     });
@@ -2511,13 +2512,13 @@
                                 container.style.display = 'none';
                                 toggle.style.display = 'flex';
                                 isSearchMode = false;
-                                currentPage = 1;
+                                displayLimit = SEGUIMIENTO_LOAD_MORE_SIZE;
                                 applyFiltersAndSearch(); // Asegurar que los filtros se apliquen antes de renderizar
                                 applySorting();
                                 renderTable();
                                 updateResultsCount();
                                 updateIndicadores();
-                                initPaginator();
+                                initLoadMore();
                             });
                             container.appendChild(closeBtn);
                             const inp = wrap.querySelector('input');
@@ -2601,7 +2602,7 @@
         const headerTitle = document.getElementById('seguimiento-header-title');
         if (headerTitle) headerTitle.textContent = tab === 'planes' ? 'Lista de planes' : 'Lista de tareas';
         selectedIds.clear();
-        currentPage = 1;
+        displayLimit = SEGUIMIENTO_LOAD_MORE_SIZE;
         initColumnVisibility();
         buildTableHeader();
         initSortMenu();
@@ -2613,7 +2614,7 @@
         updateSelectAll();
         updateResultsCount();
         updateIndicadores();
-        initPaginator();
+        initLoadMore();
         buildColumnsMenu();
         toggleActionBar();
         updateActionBarVisibilityForTab();
@@ -2666,24 +2667,24 @@
         if (filtersClose) filtersClose.addEventListener('click', closeFiltersModal);
         if (filtersLimpiar) filtersLimpiar.addEventListener('click', function () {
             clearFilters();
-            currentPage = 1;
+            displayLimit = SEGUIMIENTO_LOAD_MORE_SIZE;
             applyFiltersAndSearch(); // Asegurar que los filtros se apliquen antes de renderizar
             applySorting();
             renderTable();
             updateResultsCount();
             updateIndicadores();
-            initPaginator();
+            initLoadMore();
             renderFiltrosAplicados();
         });
         if (filtersAplicar) filtersAplicar.addEventListener('click', function () {
             readFilterCheckboxes();
-            currentPage = 1;
+            displayLimit = SEGUIMIENTO_LOAD_MORE_SIZE;
             applyFiltersAndSearch(); // Asegurar que los filtros se apliquen antes de renderizar
             applySorting();
             renderTable();
             updateResultsCount();
             updateIndicadores();
-            initPaginator();
+            initLoadMore();
             renderFiltrosAplicados();
             closeFiltersModal();
             if (typeof showToast === 'function') showToast('success', 'Filtros aplicados correctamente');
@@ -2807,11 +2808,11 @@
                         currentFilters.fechaCreacionHasta = null;
                         periodoText.textContent = periodoTexts[value];
                         currentFilters.periodo = value;
-                        currentPage = 1;
+                        displayLimit = SEGUIMIENTO_LOAD_MORE_SIZE;
                         renderTable();
                         updateResultsCount();
                         updateIndicadores();
-                        initPaginator();
+                        initLoadMore();
                     });
                 });
                 overlayEl.addEventListener('click', function (ev) {
@@ -3008,13 +3009,13 @@
                 }
 
                 // Resetear página y renderizar
-                currentPage = 1;
+                displayLimit = SEGUIMIENTO_LOAD_MORE_SIZE;
                 applyFiltersAndSearch();
                 applySorting();
                 renderTable();
                 updateResultsCount();
                 updateIndicadores();
-                initPaginator();
+                initLoadMore();
 
                 closeDatePicker();
             });
@@ -3332,13 +3333,13 @@
                     else if (col === 'lider') currentFilters.lider = selectedOptions;
                     else if (col === 'nombre') currentFilters.nombre = selectedOptions;
                     else if (col === 'creador') currentFilters.creador = selectedOptions;
-                    currentPage = 1;
+                    displayLimit = SEGUIMIENTO_LOAD_MORE_SIZE;
                     applyFiltersAndSearch();
                     applySorting();
                     renderTable();
                     updateResultsCount();
                     updateIndicadores();
-                    initPaginator();
+                    initLoadMore();
                     renderFiltrosAplicados();
                     window.closeDropdownMenu(overlayId);
                 });
@@ -3389,13 +3390,13 @@
                             modalCb.checked = selected.indexOf(modalCb.value) >= 0;
                         });
                     }
-                    currentPage = 1;
+                    displayLimit = SEGUIMIENTO_LOAD_MORE_SIZE;
                     applyFiltersAndSearch();
                     applySorting();
                     renderTable();
                     updateResultsCount();
                     updateIndicadores();
-                    initPaginator();
+                    initLoadMore();
                     renderFiltrosAplicados();
                 }
                 overlayEl.querySelectorAll('.ubits-dropdown-menu__option-left input[type="checkbox"]').forEach(function (cb) {
@@ -3416,8 +3417,7 @@
             selectAll.addEventListener('change', function () {
                 const check = this.checked;
                 const data = getDisplayData();
-                const start = (currentPage - 1) * itemsPerPage;
-                const pageData = data.slice(start, start + itemsPerPage);
+                const pageData = data.slice(0, displayLimit);
 
                 document.querySelectorAll('#seguimiento-tbody .seguimiento-row-check').forEach(cb => {
                     cb.checked = check;
@@ -3437,9 +3437,9 @@
         btn.addEventListener('click', function () {
             if (selectedIds.size === 0) return;
             viewOnlySelected = !viewOnlySelected;
-            currentPage = 1;
+            displayLimit = SEGUIMIENTO_LOAD_MORE_SIZE;
             renderTable();
-            initPaginator();
+            initLoadMore();
             updateResultsCount();
             updateIndicadores();
             toggleActionBar();
@@ -3512,7 +3512,7 @@
                 updateSelectAll();
                 updateResultsCount();
                 updateIndicadores();
-                initPaginator();
+                initLoadMore();
                 toggleActionBar();
                 if (typeof showToast === 'function') showToast('success', idsToRemove.length + ' elemento(s) eliminado(s) correctamente');
             });
@@ -4134,7 +4134,7 @@
         updateSelectAll();
         updateResultsCount();
         updateIndicadores();
-        initPaginator();
+        initLoadMore();
         renderFiltrosAplicados();
         initSearchToggle();
         initModals();
