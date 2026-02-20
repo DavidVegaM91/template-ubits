@@ -56,8 +56,9 @@ This is a UBITS template for creating interfaces quickly with Cursor AI. The val
 3. **🍞 Toasts** → ALWAYS use `showToast()` + import `../../components/toast.css` (desde subcarpetas) - **RENDERIZADO: showToast() function**
 4. **📝 Inputs** → ALWAYS use `createInput()` + import `../../components/input.css` (desde subcarpetas) - **RENDERIZADO: createInput() function**
 5. **🎴 Cards** → ALWAYS use `loadCardContent()` + import `../../components/card-content.css` (desde subcarpetas) - **RENDERIZADO: loadCardContent() function**
-6. **🧭 Navigation** → ALWAYS use SubNav/Sidebar + import their CSS (`../../components/sub-nav.css`, `../../components/sidebar.css`)
-7. **🎨 Colors** → ALWAYS use `var(--ubits-*)` tokens
+6. **🔘 Radio buttons** → ALWAYS use `ubits-radio` + import `../../components/radio-button.css` (desde subcarpetas) - **RENDERIZADO: HTML directo** (label + input.ubits-radio__input + span.ubits-radio__circle + span.ubits-radio__label). **Sin importar radio-button.css en la página, los radios se ven como nativos/rotos.**
+7. **🧭 Navigation** → ALWAYS use SubNav/Sidebar + import their CSS (`../../components/sub-nav.css`, `../../components/sidebar.css`)
+8. **🎨 Colors** → ALWAYS use `var(--ubits-*)` tokens
 
 ### **🔧 COMPONENT RENDERING REQUIREMENTS:**
 **CRITICAL: Each UBITS component has specific rendering requirements:**
@@ -1798,10 +1799,25 @@ Before finishing any task, verify:
 <!-- Desde la raíz: <link rel="stylesheet" href="components/alert.css"> -->
 <!-- Required when using: ubits-alert classes or showAlert() -->
 
+<!-- Radio Button component -->
+<!-- Desde subcarpetas: <link rel="stylesheet" href="../../components/radio-button.css"> -->
+<!-- Desde la raíz: <link rel="stylesheet" href="components/radio-button.css"> -->
+<!-- Required when using: ubits-radio, ubits-radio__input, ubits-radio__circle, ubits-radio__label. Sin este CSS los radios se ven como inputs nativos. -->
+
 <!-- Toast component -->
 <!-- Desde subcarpetas: <link rel="stylesheet" href="../../components/toast.css"> -->
 <!-- Desde la raíz: <link rel="stylesheet" href="components/toast.css"> -->
 <!-- Required when using: showToast() -->
+
+<!-- Input component -->
+<!-- Desde subcarpetas: <link rel="stylesheet" href="../../components/input.css"> -->
+<!-- Desde la raíz: <link rel="stylesheet" href="components/input.css"> -->
+<!-- Required when using: createInput() -->
+
+<!-- Modal component -->
+<!-- Desde subcarpetas: <link rel="stylesheet" href="../../components/modal.css"> -->
+<!-- Desde la raíz: <link rel="stylesheet" href="components/modal.css"> -->
+<!-- Required when using: openModal() or ubits-modal classes -->
 
 <!-- SubNav component -->
 <!-- Desde subcarpetas: <link rel="stylesheet" href="../../components/sub-nav.css"> -->
@@ -1839,6 +1855,7 @@ Before finishing any task, verify:
 
 ### **COMMON CSS IMPORT MISTAKES TO AVOID:**
 - ❌ Using `ubits-button` without `components/button.css` → Deformed buttons
+- ❌ Using `ubits-radio` without `components/radio-button.css` → Radios se ven nativos/rotos (no como UBITS)
 - ❌ Using `loadSidebar()` without `components-sidebar.css` → Broken sidebar styles
 - ❌ Using `showAlert()` without `components/alert.css` → Unstyled alerts
 - ❌ Using `showToast()` without `components/toast.css` → Unstyled toasts
@@ -2152,6 +2169,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 #### **🧩 COMPONENTES CRÍTICOS:**
 - **Buttons**: `ubits-button` + `components/button.css`
+- **Radio buttons**: `ubits-radio` + `components/radio-button.css` (obligatorio en cada página que use radios)
 - **Alerts**: `ubits-alert` + `components/alert.css`
 - **Toasts**: `showToast()` + `components/toast.css`
 - **Navigation**: `loadSidebar()` + `components/sidebar.css` (desde subcarpetas: `../../components/sidebar.css`)

@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
     <title>UBITS - Detalle del plan</title>
-    
+
     <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
     <link rel="stylesheet" href="../../general-styles/styles.css">
     <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
@@ -36,10 +37,11 @@
     <link rel="stylesheet" href="./planes.css">
     <link rel="stylesheet" href="./plan-detail.css">
 </head>
+
 <body data-theme="light" class="page-plan-detail">
     <div class="dashboard-container">
         <div class="tooltip" id="tooltip"></div>
-        
+
         <div id="sidebar-container"></div>
 
         <main class="main-content">
@@ -54,82 +56,97 @@
                     <!-- Sección 2: Card de información del plan -->
                     <div class="section-single plan-detail-section">
                         <div id="plan-detail-card" class="plan-detail-card" style="display: none;">
-                        <div class="plan-detail-card__more-wrap">
-                            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" aria-label="Más opciones">
-                                <i class="far fa-ellipsis-v"></i>
-                            </button>
-                        </div>
-                        <div class="plan-detail-card__label-row">Descripción:</div>
-                        <div class="plan-detail-card__text plan-detail-card__desc-text" id="plan-detail-desc"></div>
-                        <div class="plan-detail-card__creado-row">
-                            <span class="plan-detail-card__creado-label">Creado por:</span>
-                            <span class="plan-detail-card__creado-value" id="plan-detail-created-by"></span>
-                        </div>
-                        <div class="plan-detail-card__progress-row">
-                            <span id="plan-detail-tasks-count">Tareas finalizadas 0/0</span>
-                            <div class="plan-detail-card__bar">
-                                <div class="plan-detail-card__bar-fill" id="plan-detail-bar-fill"></div>
+                            <div class="plan-detail-card__more-wrap">
+                                <button type="button"
+                                    class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only"
+                                    aria-label="Más opciones">
+                                    <i class="far fa-ellipsis-v"></i>
+                                </button>
                             </div>
-                            <div class="plan-detail-card__percent-date-wrap">
-                                <span class="plan-detail-card__percent" id="plan-detail-percent">0%</span>
-                                <div class="plan-detail-card__date-wrap">
-                                    <span class="plan-detail-card__date-label">Finalización:</span>
-                                    <div class="ubits-input-wrapper">
-                                        <input type="text" id="plan-detail-end-date" class="ubits-input ubits-input--sm" readonly placeholder="—" aria-label="Fecha de finalización" />
+                            <div class="plan-detail-card__label-row">Descripción:</div>
+                            <div class="plan-detail-card__text plan-detail-card__desc-text" id="plan-detail-desc"></div>
+                            <div class="plan-detail-card__creado-row">
+                                <span class="plan-detail-card__creado-label">Creado por:</span>
+                                <span class="plan-detail-card__creado-value" id="plan-detail-created-by"></span>
+                            </div>
+                            <div class="plan-detail-card__progress-row">
+                                <span id="plan-detail-tasks-count">Tareas finalizadas 0/0</span>
+                                <div class="plan-detail-card__bar">
+                                    <div class="plan-detail-card__bar-fill" id="plan-detail-bar-fill"></div>
+                                </div>
+                                <div class="plan-detail-card__percent-date-wrap">
+                                    <span class="plan-detail-card__percent" id="plan-detail-percent">0%</span>
+                                    <div class="plan-detail-card__date-wrap">
+                                        <span class="plan-detail-card__date-label">Finalización:</span>
+                                        <div class="ubits-input-wrapper">
+                                            <input type="text" id="plan-detail-end-date"
+                                                class="ubits-input ubits-input--sm" readonly placeholder="—"
+                                                aria-label="Fecha de finalización" />
+                                        </div>
                                     </div>
                                 </div>
+                                <span class="ubits-status-tag ubits-status-tag--sm" id="plan-detail-status"><span
+                                        class="ubits-status-tag__text"></span></span>
+                                <button type="button" class="ubits-button ubits-button--primary ubits-button--sm"
+                                    id="plan-detail-finalizar">
+                                    <i class="far fa-check"></i>
+                                    <span>Finalizar plan</span>
+                                </button>
                             </div>
-                            <span class="ubits-status-tag ubits-status-tag--sm" id="plan-detail-status"><span class="ubits-status-tag__text"></span></span>
-                            <button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="plan-detail-finalizar">
-                                <i class="far fa-check"></i>
-                                <span>Finalizar plan</span>
-                            </button>
-                        </div>
                         </div>
                     </div>
 
                     <!-- Sección 3: Tareas del plan -->
                     <div class="section-single plan-detail-section">
                         <div id="plan-detail-tasks-card" class="plan-detail-tasks-card" style="display: none;">
-                        <div class="plan-detail-tasks-card__header">
-                            <h2 class="plan-detail-tasks-card__title">Tareas del plan</h2>
-                            <div class="plan-detail-tasks-card__filters">
-                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" aria-label="Buscar">
-                                    <i class="far fa-search"></i>
-                                </button>
-                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm">
-                                    <i class="far fa-sliders-h"></i>
-                                    <span>Ver filtros</span>
+                            <div class="plan-detail-tasks-card__header">
+                                <h2 class="plan-detail-tasks-card__title">Tareas del plan</h2>
+                                <div class="plan-detail-tasks-card__filters">
+                                    <button type="button"
+                                        class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only"
+                                        aria-label="Buscar">
+                                        <i class="far fa-search"></i>
+                                    </button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm">
+                                        <i class="far fa-sliders-h"></i>
+                                        <span>Ver filtros</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="plan-detail-tasks-card__counters">
+                                <span
+                                    class="plan-detail-tasks-card__counter plan-detail-tasks-card__counter--iniciadas">
+                                    <i class="far fa-circle"></i> Por hacer: <strong
+                                        id="plan-detail-count-iniciadas">0</strong>
+                                </span>
+                                <span class="plan-detail-tasks-card__counter plan-detail-tasks-card__counter--vencidas">
+                                    <i class="far fa-circle"></i> Vencidas: <strong
+                                        id="plan-detail-count-vencidas">0</strong>
+                                </span>
+                                <span
+                                    class="plan-detail-tasks-card__counter plan-detail-tasks-card__counter--finalizadas">
+                                    <i class="far fa-circle"></i> Finalizadas: <strong
+                                        id="plan-detail-count-finalizadas">0</strong>
+                                </span>
+                            </div>
+                            <div class="plan-detail-tasks-card__add">
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm"
+                                    id="plan-detail-add-task-btn">
+                                    <i class="far fa-plus"></i>
+                                    <span>Agregar tarea</span>
                                 </button>
                             </div>
-                        </div>
-                        <div class="plan-detail-tasks-card__counters">
-                            <span class="plan-detail-tasks-card__counter plan-detail-tasks-card__counter--iniciadas">
-                                <i class="far fa-circle"></i> Iniciadas: <strong id="plan-detail-count-iniciadas">0</strong>
-                            </span>
-                            <span class="plan-detail-tasks-card__counter plan-detail-tasks-card__counter--vencidas">
-                                <i class="far fa-circle"></i> Vencidas: <strong id="plan-detail-count-vencidas">0</strong>
-                            </span>
-                            <span class="plan-detail-tasks-card__counter plan-detail-tasks-card__counter--finalizadas">
-                                <i class="far fa-circle"></i> Finalizadas: <strong id="plan-detail-count-finalizadas">0</strong>
-                            </span>
-                        </div>
-                        <div class="plan-detail-tasks-card__add">
-                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="plan-detail-add-task-btn">
-                                <i class="far fa-plus"></i>
-                                <span>Agregar tarea</span>
-                            </button>
-                        </div>
-                        <div id="plan-detail-tasks" class="plan-detail-tasks">
-                        <div id="plan-detail-tasks-list" class="plan-detail-tasks-list">
-                            <!-- Las tareas se renderizan dinámicamente -->
-                        </div>
-                        <div id="plan-detail-empty" class="plan-detail-empty" style="display: none;">
-                            <i class="far fa-clipboard-list plan-detail-empty__icon"></i>
-                            <h2 class="plan-detail-empty__title">¡Crea tu primera tarea!</h2>
-                            <p class="plan-detail-empty__desc">Empieza a organizar tus actividades creando una tarea.</p>
-                        </div>
-                        </div>
+                            <div id="plan-detail-tasks" class="plan-detail-tasks">
+                                <div id="plan-detail-tasks-list" class="plan-detail-tasks-list">
+                                    <!-- Las tareas se renderizan dinámicamente -->
+                                </div>
+                                <div id="plan-detail-empty" class="plan-detail-empty" style="display: none;">
+                                    <i class="far fa-clipboard-list plan-detail-empty__icon"></i>
+                                    <h2 class="plan-detail-empty__title">¡Crea tu primera tarea!</h2>
+                                    <p class="plan-detail-empty__desc">Empieza a organizar tus actividades creando una
+                                        tarea.</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -167,7 +184,7 @@
     <script src="./planes.js"></script>
     <script src="./plan-detail.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             loadSidebar('sidebar-container', 'tareas');
             loadSubNav('top-nav-container', 'tareas');
             loadTabBar('tab-bar-container');
@@ -177,7 +194,7 @@
             loadHeaderProduct('header-product-container', {
                 productName: 'Plan:',
                 backButton: {
-                    onClick: function() {
+                    onClick: function () {
                         if (window.history.length > 1) {
                             window.history.back();
                         } else {
@@ -214,4 +231,5 @@
         });
     </script>
 </body>
+
 </html>

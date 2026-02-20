@@ -41,6 +41,7 @@
         var bodyHtml = options.bodyHtml != null ? options.bodyHtml : '';
         var footerHtml = options.footerHtml != null ? options.footerHtml : '';
         var size = options.size || 'md';
+        var subtitle = options.subtitle != null ? String(options.subtitle) : '';
         var closeOnOverlayClick = options.closeOnOverlayClick !== false;
         var onClose = options.onClose || null;
 
@@ -61,14 +62,16 @@
         overlay.setAttribute('aria-modal', 'true');
         overlay.setAttribute('aria-labelledby', overlayId + '-title');
 
+        var headerContent = '<div class="ubits-drawer-header__text">' +
+            '    <span id="' + overlayId + '-title" class="ubits-drawer-title ubits-body-md-bold">' + escapeHtml(title) + '</span>' +
+            (subtitle ? ('    <p class="ubits-drawer-subtitle ubits-body-sm-regular">' + escapeHtml(subtitle) + '</p>') : '') +
+            '  </div>' +
+            '  <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-drawer-close" aria-label="Cerrar">' +
+            '    <i class="far fa-times"></i>' +
+            '  </button>';
         overlay.innerHTML =
             '<div class="ubits-drawer-content' + sizeClass + '" onclick="event.stopPropagation();">' +
-            '  <div class="ubits-drawer-header">' +
-            '    <span id="' + overlayId + '-title" class="ubits-drawer-title ubits-body-md-bold">' + escapeHtml(title) + '</span>' +
-            '    <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-drawer-close" aria-label="Cerrar">' +
-            '      <i class="far fa-times"></i>' +
-            '    </button>' +
-            '  </div>' +
+            '  <div class="ubits-drawer-header">' + headerContent + '</div>' +
             '  <div class="ubits-drawer-body">' + bodyHtml + '</div>' +
             (footerHtml ? ('  <div class="ubits-drawer-footer">' + footerHtml + '</div>') : '') +
             '</div>';
@@ -144,6 +147,7 @@
         options = options || {};
         var overlayId = options.overlayId || '';
         var title = options.title != null ? String(options.title) : '';
+        var subtitle = options.subtitle != null ? String(options.subtitle) : '';
         var bodyHtml = options.bodyHtml != null ? options.bodyHtml : '';
         var footerHtml = options.footerHtml != null ? options.footerHtml : '';
         var size = options.size && ['xs', 'sm', 'md', 'lg'].indexOf(options.size) >= 0 ? options.size : 'md';
@@ -155,15 +159,17 @@
         var contentIdAttr = contentId ? (' id="' + contentId + '"') : '';
         var titleIdAttr = titleId ? (' id="' + titleId + '"') : '';
         var closeIdAttr = closeButtonId ? (' id="' + closeButtonId + '"') : '';
+        var headerContent = '<div class="ubits-drawer-header__text">' +
+            '<span class="ubits-drawer-title ubits-body-md-bold"' + titleIdAttr + '>' + escapeHtml(title) + '</span>' +
+            (subtitle ? ('<p class="ubits-drawer-subtitle ubits-body-sm-regular">' + escapeHtml(subtitle) + '</p>') : '') +
+            '</div>' +
+            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only"' + closeIdAttr + ' aria-label="Cerrar">' +
+            '<i class="far fa-times"></i>' +
+            '</button>';
 
         return '<div class="ubits-drawer-overlay" id="' + overlayId + '" style="display: none;" aria-hidden="true">' +
             '<div class="ubits-drawer-content' + sizeClass + '"' + contentIdAttr + ' onclick="event.stopPropagation();">' +
-            '<div class="ubits-drawer-header">' +
-            '<span class="ubits-drawer-title ubits-body-md-bold"' + titleIdAttr + '>' + escapeHtml(title) + '</span>' +
-            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only"' + closeIdAttr + ' aria-label="Cerrar">' +
-            '<i class="far fa-times"></i>' +
-            '</button>' +
-            '</div>' +
+            '<div class="ubits-drawer-header">' + headerContent + '</div>' +
             '<div class="ubits-drawer-body">' + bodyHtml + '</div>' +
             (footerHtml ? ('<div class="ubits-drawer-footer">' + footerHtml + '</div>') : '') +
             '</div>' +

@@ -317,7 +317,7 @@
                 const { nFinalizadas, nIniciadas, nVencidas } = repartoEstados(seed, baseIdx);
                 const estados = [];
                 for (let i = 0; i < nFinalizadas; i++) estados.push('Finalizada');
-                for (let i = 0; i < nIniciadas; i++) estados.push('Iniciada');
+                for (let i = 0; i < nIniciadas; i++) estados.push('Por hacer');
                 for (let i = 0; i < nVencidas; i++) estados.push('Vencida');
                 for (let i = estados.length; i < TAREAS_POR_MES; i++) estados.push('Finalizada');
                 shuffleArray(estados, seed + baseIdx);
@@ -443,6 +443,42 @@
             }
         });
 
+        // María Alejandra: siempre 6 tareas vencidas de la semana anterior (solo para ella, lógica fija no aleatoria).
+        if (currentUserEmpleadoId != null) {
+            const mariaEmp = empleados.find(function (e) { return e.id === currentUserEmpleadoId; });
+            if (mariaEmp) {
+                const usernameMaria = mariaEmp.username || generarUsername(mariaEmp.nombre);
+                const prioridades = ['alta', 'media', 'baja'];
+                const titulosVencidas = [
+                    'Revisar inventario bodega', 'Orden de compra pendiente', 'Seguimiento a proveedores',
+                    'Cierre de ciclo logístico', 'Informe de entregas', 'Coordinación con transporte'
+                ];
+                for (var k = 1; k <= 6; k++) {
+                    var endDateVencida = getTodayPlusDays(-k);
+                    var tareaVencida = {
+                        id: idActividad,
+                        name: titulosVencidas[k - 1],
+                        done: false,
+                        status: 'Vencido',
+                        endDate: endDateVencida,
+                        priority: prioridades[(k - 1) % 3],
+                        assignee_email: usernameMaria,
+                        assignee_name: mariaEmp.nombre || null,
+                        assignee_avatar_url: (mariaEmp.avatar && String(mariaEmp.avatar).trim()) ? mariaEmp.avatar : null,
+                        etiqueta: null,
+                        created_by: mariaEmp.nombre,
+                        created_by_avatar_url: mariaEmp.avatar || '',
+                        role: 'colaborador',
+                        planId: null,
+                        planNombre: null,
+                        description: 'Tarea de la semana anterior.'
+                    };
+                    tareasPorEmpleadoParaVistaTareas[currentUserEmpleadoId].individuales.push(tareaVencida);
+                    idActividad++;
+                }
+            }
+        }
+
         // Planes de compañía creados por HR: Objetivos Qx 20xx y Encuestas Qx 20xx. Una tarea por persona y por mes del trimestre (toda la compañía).
         const jefaRH = empleados.find(e => (e.cargo || '').indexOf('Jefa') >= 0 && (e.area || '') === 'Recursos Humanos');
         const encargadoObjetivos = empleados.find(e => (e.cargo || '').indexOf('Objetivos') >= 0 && (e.area || '') === 'Recursos Humanos');
@@ -474,7 +510,7 @@
                     const fechaCreacion = new Date(year, m - 1, Math.max(1, day - 2));
                     asignadosCompania.forEach(function (empAsig, idxCompania) {
                         const asignado = { nombre: empAsig.nombre, avatar: empAsig.avatar || '', username: empAsig.username || generarUsername(empAsig.nombre) };
-                        const estado = seeder(8888, idActividad + idxCompania * 10 + mes) < 0.75 ? 'Finalizada' : (seeder(8888, idActividad + idxCompania * 10 + mes + 1) < 0.5 ? 'Iniciada' : 'Vencida');
+                        const estado = seeder(8888, idActividad + idxCompania * 10 + mes) < 0.75 ? 'Finalizada' : (seeder(8888, idActividad + idxCompania * 10 + mes + 1) < 0.5 ? 'Por hacer' : 'Vencida');
                         const done = estado === 'Finalizada';
                         actividadesSeguimiento.push({
                             id: idActividad,
@@ -531,7 +567,7 @@
             const tareasFinalizadas = tareas.filter(function (t) { return t.estado === 'Finalizada'; }).length;
             const avancePlan = tareas.length > 0 ? Math.round((tareasFinalizadas / tareas.length) * 100) : 0;
             const statusPlan = repartoEstadoPlan(PLAN_SEED, planGlobalIndex++);
-            const estadoPlan = statusPlan === 'Finalizado' ? 'Finalizada' : (statusPlan === 'Vencido' ? 'Vencida' : 'Iniciada');
+            const estadoPlan = statusPlan === 'Finalizado' ? 'Finalizada' : (statusPlan === 'Vencido' ? 'Vencida' : 'Por hacer');
             const fechasCreacion = tareas.map(function (t) { return parseFechaSeguimiento(t.fechaCreacion); }).filter(Boolean);
             const fechasFinVal = tareas.map(function (t) { return parseFechaSeguimiento(t.fechaFinalizacion); }).filter(Boolean);
             const minCreacion = fechasCreacion.length ? new Date(Math.min.apply(null, fechasCreacion)) : primera.fechaCreacion;

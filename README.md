@@ -57,6 +57,7 @@ Una **plantilla lista para usar** que permite a **Product Managers**, **Diseñad
 - **Alert** - Notificaciones (tipos: success, info, warning, error; con/sin botón cerrar) - **RENDERIZADO: showAlert() o HTML directo**
 - **Toast** - Notificaciones flotantes (tipos: success, info, warning, error; auto-cierre, pausa en hover) - **RENDERIZADO: showToast()**
 - **Input** - Campos de entrada (11 tipos: text, email, password, number, tel, url, select, textarea, search, autocomplete, calendar; tamaños: sm, md, lg; estados: default, hover, focus, invalid, disabled; con iconos, contador, helper text, mandatory/optional, validación manual, scroll infinito automático) - **RENDERIZADO: createInput()**
+- **Radio Button** - Opción circular para elegir una entre varias (tamaños: sm, md; sin JS; agrupar con mismo `name`) - **RENDERIZADO: HTML directo.** Requiere importar `radio-button.css` en la página o los radios se ven como nativos.
 - **Card Content** - Cards para contenidos de aprendizaje (11 tipos, 35 competencias, 18 aliados, estados de progreso) - **RENDERIZADO: loadCardContent()**
 - **Card Content Compact** - Variante horizontal compacta de Card Content (misma funcionalidad, diseño optimizado para espacios reducidos, siempre horizontal) - **RENDERIZADO: loadCardContentCompact()**
 - **Carousel Contents** - Carruseles de contenido (navegación horizontal, flechas, responsive) - **RENDERIZADO: loadCarouselContents()**
@@ -88,6 +89,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 <link rel="stylesheet" href="../../components/alert.css">
 <link rel="stylesheet" href="../../components/toast.css">
 <link rel="stylesheet" href="../../components/input.css">
+<link rel="stylesheet" href="../../components/radio-button.css">
 <link rel="stylesheet" href="../../components/card-content.css">
 <link rel="stylesheet" href="../../components/card-content-compact.css">
 <link rel="stylesheet" href="../../components/carousel-contents.css">
@@ -254,6 +256,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 - **`documentacion/componentes/alert.html`** - Documentación del componente Alert
 - **`documentacion/componentes/toast.html`** - Documentación del componente Toast
 - **`documentacion/componentes/input.html`** - Documentación del componente Input
+- **`documentacion/componentes/radio-button.html`** - Documentación del componente Radio Button
 - **`documentacion/componentes/card-content.html`** - Documentación del componente Card Content
 - **`documentacion/componentes/card-content-compact.html`** - Documentación del componente Card Content Compact
 - **`documentacion/componentes/status-tag.html`** - Documentación del componente Status Tag
@@ -311,6 +314,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 │   ├── card-content-compact.css + card-content-compact.js
 │   ├── carousel-contents.css + carousel-contents.js
 │   ├── status-tag.css
+│   ├── radio-button.css
 │   ├── badge-tag.css
 │   ├── tab.css + tab.js
 │   ├── empty-state.css + empty-state.js
@@ -676,6 +680,7 @@ loadCardContentCompact('mi-contenedor-compact', [
 - **`documentacion/componentes/alert.html`** - Documentación del componente Alert
 - **`documentacion/componentes/toast.html`** - Documentación del componente Toast
 - **`documentacion/componentes/input.html`** - Documentación del componente Input
+- **`documentacion/componentes/radio-button.html`** - Documentación del componente Radio Button
 - **`documentacion/componentes/card-content.html`** - Documentación del componente Card Content
 - **`documentacion/componentes/card-content-compact.html`** - Documentación del componente Card Content Compact
 - **`documentacion/componentes/status-tag.html`** - Documentación del componente Status Tag

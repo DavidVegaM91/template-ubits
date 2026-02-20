@@ -21,7 +21,7 @@ function renderTaskStrip(tarea, opts) {
     const esVencidaReal = !esFinalizada && (esVencidaSection || (tarea.endDate && tarea.endDate < today));
 
     const estadoTag = esFinalizada ? 'success' : (esVencidaReal ? 'error' : (tarea.status === 'Activo' ? 'info' : 'neutral'));
-    const estadoTexto = esFinalizada ? 'Finalizada' : (esVencidaReal ? 'Vencida' : (tarea.status === 'Activo' ? 'Iniciada' : 'Finalizada'));
+    const estadoTexto = esFinalizada ? 'Finalizada' : (esVencidaReal ? 'Vencida' : (tarea.status === 'Activo' ? 'Por hacer' : 'Finalizada'));
     const estadoIcon = esFinalizada ? 'fa-check-circle' : (esVencidaReal ? 'fa-exclamation-triangle' : (tarea.status === 'Activo' ? 'fa-spinner' : 'fa-check-circle'));
 
     const prioridad = (tarea.priority || 'media').toLowerCase();
@@ -63,48 +63,48 @@ function renderTaskStrip(tarea, opts) {
 
     return (
         '<div class="' + classes + '" data-tarea-id="' + idSafe + '">' +
-            '<div class="tarea-item__main">' +
-                '<span class="tarea-item__radio">' +
-                    '<label class="ubits-radio ubits-radio--sm tarea-done-radio" data-tarea-id="' + idSafe + '" role="button" tabindex="0">' +
-                        '<input type="radio" class="ubits-radio__input" name="tarea-done-' + idSafe + '" value="1" ' + (tarea.done ? 'checked' : '') + ' data-tarea-id="' + idSafe + '">' +
-                        '<span class="ubits-radio__circle"></span>' +
-                        '<span class="ubits-radio__label" aria-hidden="true">&nbsp;</span>' +
-                    '</label>' +
-                '</span>' +
-                '<div class="tarea-content">' +
-                    '<h3 class="tarea-titulo ubits-body-md-regular">' + nameSafe + '</h3>' +
-                '</div>' +
-                etiquetaBlock +
-            '</div>' +
-            '<div class="tarea-item__actions">' +
-                '<div class="tarea-status">' +
-                    '<span class="ubits-status-tag ubits-status-tag--' + estadoTag + ' ubits-status-tag--sm ubits-status-tag--icon-left" data-tooltip="Estado: ' + escapeAttr(estadoTexto) + '" aria-label="Estado: ' + escapeHtml(estadoTexto) + '">' +
-                        '<i class="far ' + estadoIcon + '"></i>' +
-                        '<span class="ubits-status-tag__text">' + escapeHtml(estadoTexto) + '</span>' +
-                    '</span>' +
-                '</div>' +
-                '<div class="tarea-fecha ' + (!fechaDisplay ? 'tarea-fecha--sin-fecha' : '') + (esVencidaReal ? ' tarea-fecha--overdue' : '') + '">' +
-                    '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm tarea-fecha-btn" data-tarea-id="' + idSafe + '" data-tooltip="Fecha de vencimiento">' +
-                        (fechaDisplay ? '<span>' + escapeHtml(fechaDisplay) + '</span>' : '<span>Sin fecha</span>') +
-                    '</button>' +
-                '</div>' +
-                '<div class="tarea-actions">' +
-                    '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only tarea-action-btn tarea-action-btn--add-plan" data-tooltip="Agregar a un plan">' +
-                        '<i class="far fa-layer-group"></i>' +
-                    '</button>' +
-                    '<button type="button" class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--' + (prioridadBadgeVariant[prioridad] || 'warning') + ' ubits-badge-tag--sm ubits-badge-tag--with-icon tarea-priority-badge" data-tarea-id="' + idSafe + '" data-tooltip="Prioridad" aria-label="Prioridad">' +
-                        '<i class="far ' + (prioridadIcon[prioridad] || 'fa-chevron-up') + '"></i>' +
-                        '<span class="ubits-badge-tag__text">' + escapeHtml(prioridadLabel) + '</span>' +
-                    '</button>' +
-                    '<div class="tarea-assigned" data-tooltip="Asignado a: ' + escapeAttr(assignee.name) + '">' + htmlAssignee() + '</div>' +
-                    '<button type="button" class="ubits-button ubits-button--error-tertiary ubits-button--sm ubits-button--icon-only tarea-action-btn tarea-action-btn--delete" data-tooltip="Eliminar" data-tarea-id="' + idSafe + '">' +
-                        '<i class="far fa-trash"></i>' +
-                    '</button>' +
-                    '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only tarea-action-btn tarea-action-btn--details" data-tooltip="Detalles" data-tarea-id="' + idSafe + '">' +
-                        '<i class="far fa-chevron-right"></i>' +
-                    '</button>' +
-                '</div>' +
-            '</div>' +
+        '<div class="tarea-item__main">' +
+        '<span class="tarea-item__radio">' +
+        '<label class="ubits-radio ubits-radio--sm tarea-done-radio" data-tarea-id="' + idSafe + '" role="button" tabindex="0">' +
+        '<input type="radio" class="ubits-radio__input" name="tarea-done-' + idSafe + '" value="1" ' + (tarea.done ? 'checked' : '') + ' data-tarea-id="' + idSafe + '">' +
+        '<span class="ubits-radio__circle"></span>' +
+        '<span class="ubits-radio__label" aria-hidden="true">&nbsp;</span>' +
+        '</label>' +
+        '</span>' +
+        '<div class="tarea-content">' +
+        '<h3 class="tarea-titulo ubits-body-md-regular">' + nameSafe + '</h3>' +
+        '</div>' +
+        etiquetaBlock +
+        '</div>' +
+        '<div class="tarea-item__actions">' +
+        '<div class="tarea-status">' +
+        '<span class="ubits-status-tag ubits-status-tag--' + estadoTag + ' ubits-status-tag--sm ubits-status-tag--icon-left" data-tooltip="Estado: ' + escapeAttr(estadoTexto) + '" aria-label="Estado: ' + escapeHtml(estadoTexto) + '">' +
+        '<i class="far ' + estadoIcon + '"></i>' +
+        '<span class="ubits-status-tag__text">' + escapeHtml(estadoTexto) + '</span>' +
+        '</span>' +
+        '</div>' +
+        '<div class="tarea-fecha ' + (!fechaDisplay ? 'tarea-fecha--sin-fecha' : '') + (esVencidaReal ? ' tarea-fecha--overdue' : '') + '">' +
+        '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm tarea-fecha-btn" data-tarea-id="' + idSafe + '" data-tooltip="Fecha de vencimiento">' +
+        (fechaDisplay ? '<span>' + escapeHtml(fechaDisplay) + '</span>' : '<span>Sin fecha</span>') +
+        '</button>' +
+        '</div>' +
+        '<div class="tarea-actions">' +
+        '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only tarea-action-btn tarea-action-btn--add-plan" data-tooltip="Agregar a un plan">' +
+        '<i class="far fa-layer-group"></i>' +
+        '</button>' +
+        '<button type="button" class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--' + (prioridadBadgeVariant[prioridad] || 'warning') + ' ubits-badge-tag--sm ubits-badge-tag--with-icon tarea-priority-badge" data-tarea-id="' + idSafe + '" data-tooltip="Prioridad" aria-label="Prioridad">' +
+        '<i class="far ' + (prioridadIcon[prioridad] || 'fa-chevron-up') + '"></i>' +
+        '<span class="ubits-badge-tag__text">' + escapeHtml(prioridadLabel) + '</span>' +
+        '</button>' +
+        '<div class="tarea-assigned" data-tooltip="Asignado a: ' + escapeAttr(assignee.name) + '">' + htmlAssignee() + '</div>' +
+        '<button type="button" class="ubits-button ubits-button--error-tertiary ubits-button--sm ubits-button--icon-only tarea-action-btn tarea-action-btn--delete" data-tooltip="Eliminar" data-tarea-id="' + idSafe + '">' +
+        '<i class="far fa-trash"></i>' +
+        '</button>' +
+        '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only tarea-action-btn tarea-action-btn--details" data-tooltip="Detalles" data-tarea-id="' + idSafe + '">' +
+        '<i class="far fa-chevron-right"></i>' +
+        '</button>' +
+        '</div>' +
+        '</div>' +
         '</div>'
     );
 }

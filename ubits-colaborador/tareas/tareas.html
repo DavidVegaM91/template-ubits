@@ -36,6 +36,7 @@
     <link rel="stylesheet" href="../../components/modal.css">
     <link rel="stylesheet" href="../../components/empty-state.css">
     <link rel="stylesheet" href="../../components/task-detail-panel.css">
+    <link rel="stylesheet" href="../../components/drawer.css">
 </head>
 <body data-theme="light" class="page-tareas">
     <div class="dashboard-container">
@@ -138,6 +139,19 @@
                                                 <i class="far fa-chevron-right"></i>
                                             </button>
                                         </div>
+
+                                        <!-- Botón filtros: abre drawer -->
+                                        <button
+                                            type="button"
+                                            class="ubits-button ubits-button--secondary ubits-button--sm"
+                                            id="tareas-filtros-btn"
+                                            aria-haspopup="dialog"
+                                            aria-expanded="false"
+                                            aria-label="Abrir filtros"
+                                        >
+                                            <i class="far fa-sliders-h"></i>
+                                            <span>Filtros</span>
+                                        </button>
                                     </div>
                                 </header>
                             </section>
@@ -183,19 +197,8 @@
     <!-- Profile Menu Container -->
     <div id="profile-menu-container"></div>
 
-    <!-- Drawer de crear plantilla -->
-    <div id="create-template-drawer-overlay" class="template-drawer-overlay" style="display: none;">
-        <div class="template-drawer-content" id="create-template-drawer">
-            <!-- El contenido se generará dinámicamente con JavaScript -->
-        </div>
-    </div>
-
-    <!-- Drawer de crear plan -->
-    <div id="create-plan-drawer-overlay" class="template-drawer-overlay plan-drawer-overlay" style="display: none;">
-        <div class="template-drawer-content plan-drawer-content" id="create-plan-drawer">
-            <!-- El contenido se generará dinámicamente con JavaScript -->
-        </div>
-    </div>
+    <!-- Drawers crear plantilla y crear plan: se crean con componente UBITS (planes.js + drawer.js) -->
+    <!-- Drawer de filtros: se crea dinámicamente con openDrawer() (components/drawer.js) -->
 
     <!-- Panel de detalle de tarea (supermodal) -->
     <div id="task-detail-overlay" class="task-detail-overlay" style="display: none;">
@@ -223,6 +226,7 @@
     <script src="../../components/avatar.js"></script>
     <script src="../../components/task-strip.js"></script>
     <script src="../../components/task-detail-panel.js"></script>
+    <script src="../../components/drawer.js"></script>
     <script src="./tareas-base-unificada.js"></script>
     <script src="./tareas.js"></script>
     <script src="./planes.js"></script>

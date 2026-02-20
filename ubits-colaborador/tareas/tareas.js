@@ -52,7 +52,12 @@ let estadoTareas = {
     availablePlans: [], // Planes disponibles para mover tarea
     loadingPlans: false, // Estado de carga de planes
     showAssigneeDropdown: false, // Dropdown para asignar usuario
-    showRoleDropdown: false // Dropdown para elegir rol
+    showRoleDropdown: false, // Dropdown para elegir rol
+    filtros: {
+        estados: [],      // [] = todos; si no vacío: ['Activo','Vencido','Finalizado'] (Activo = 'Por hacer')
+        prioridades: [],   // [] = todas; si no vacío: ['alta','media','baja']
+        asignacion: 'todas' // 'todas' | 'asignadas-por-mi' | 'asignadas-a-mi'
+    }
 };
 
 // Utilidades de fecha (sin problemas de zona horaria)
@@ -87,6 +92,117 @@ if (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getTareas
 }
 if (!estadoTareas.selectedDay) {
     estadoTareas.selectedDay = today;
+}
+
+// Devuelve { vencidas, porDia } aplicando filtros (Estado, Prioridad, Asignación). Fuente: tareasEjemplo.
+function getTareasFiltradas() {
+    const f = estadoTareas.filtros || {};
+    const estados = f.estados || [];
+    const prioridades = f.prioridades || [];
+    const asignacion = f.asignacion || 'todas';
+    const nombreActual = (typeof TAREAS_PLANES_DB !== 'undefined' && TAREAS_PLANES_DB.getUsuarioActual) ? (TAREAS_PLANES_DB.getUsuarioActual().nombre || '') : '';
+
+    function pasaFiltro(t) {
+        if (estados.length > 0 && estados.indexOf(t.status) === -1) return false;
+        const prio = (t.priority || 'media').toLowerCase();
+        if (prioridades.length > 0 && prioridades.indexOf(prio) === -1) return false;
+        if (asignacion === 'asignadas-por-mi') {
+            if (nombreActual && (t.created_by !== nombreActual || t.assignee_name === nombreActual)) return false;
+        } else if (asignacion === 'asignadas-a-mi') {
+            if (nombreActual && t.assignee_name !== nombreActual) return false;
+        }
+        return true;
+    }
+
+    const vencidas = (tareasEjemplo.vencidas || []).filter(pasaFiltro);
+    const porDia = {};
+    const dias = tareasEjemplo.porDia || {};
+    for (const fechaKey in dias) {
+        const list = (dias[fechaKey] || []).filter(pasaFiltro);
+        if (list.length > 0) porDia[fechaKey] = list;
+    }
+    return { vencidas, porDia };
+}
+
+// Drawer de filtros: usa componente UBITS (openDrawer). Tamaño sm (400px).
+var FILTROS_DRAWER_OVERLAY_ID = 'tareas-filtros-drawer-overlay';
+
+function getFiltrosDrawerBodyHtml() {
+    var f = estadoTareas.filtros || {};
+    var estados = f.estados || [];
+    var prioridades = f.prioridades || [];
+    var asignacion = f.asignacion || 'todas';
+    return '<p class="ubits-body-md-regular" style="margin:0 0 16px 0; color: var(--ubits-fg-1-medium);">Estado, prioridad y asignación.</p>' +
+        '<div class="filtros-drawer-body">' +
+        '  <div class="filtros-drawer-group">' +
+        '    <p class="ubits-body-md-bold">Estado</p>' +
+        '    <div class="filtros-drawer-checkboxes">' +
+        '      <label class="filtros-drawer-option"><input type="checkbox" name="estado" value="Activo"' + (estados.indexOf('Activo') !== -1 ? ' checked' : '') + '><span class="ubits-body-sm-regular">Por hacer</span></label>' +
+        '      <label class="filtros-drawer-option"><input type="checkbox" name="estado" value="Vencido"' + (estados.indexOf('Vencido') !== -1 ? ' checked' : '') + '><span class="ubits-body-sm-regular">Vencido</span></label>' +
+        '      <label class="filtros-drawer-option"><input type="checkbox" name="estado" value="Finalizado"' + (estados.indexOf('Finalizado') !== -1 ? ' checked' : '') + '><span class="ubits-body-sm-regular">Finalizado</span></label>' +
+        '    </div>' +
+        '  </div>' +
+        '  <div class="filtros-drawer-group">' +
+        '    <p class="ubits-body-md-bold">Prioridad</p>' +
+        '    <div class="filtros-drawer-checkboxes">' +
+        '      <label class="filtros-drawer-option"><input type="checkbox" name="prioridad" value="alta"' + (prioridades.indexOf('alta') !== -1 ? ' checked' : '') + '><span class="ubits-body-sm-regular">Alta</span></label>' +
+        '      <label class="filtros-drawer-option"><input type="checkbox" name="prioridad" value="media"' + (prioridades.indexOf('media') !== -1 ? ' checked' : '') + '><span class="ubits-body-sm-regular">Media</span></label>' +
+        '      <label class="filtros-drawer-option"><input type="checkbox" name="prioridad" value="baja"' + (prioridades.indexOf('baja') !== -1 ? ' checked' : '') + '><span class="ubits-body-sm-regular">Baja</span></label>' +
+        '    </div>' +
+        '  </div>' +
+        '  <div class="filtros-drawer-group">' +
+        '    <p class="ubits-body-md-bold">Asignación</p>' +
+        '    <div class="filtros-drawer-radios">' +
+        '      <label class="filtros-drawer-radio"><input type="radio" name="asignacion" value="todas"' + (asignacion === 'todas' ? ' checked' : '') + '><span class="ubits-body-sm-regular">Todas</span></label>' +
+        '      <label class="filtros-drawer-radio"><input type="radio" name="asignacion" value="asignadas-por-mi"' + (asignacion === 'asignadas-por-mi' ? ' checked' : '') + '><span class="ubits-body-sm-regular">Solo lo que asigné a otros</span></label>' +
+        '      <label class="filtros-drawer-radio"><input type="radio" name="asignacion" value="asignadas-a-mi"' + (asignacion === 'asignadas-a-mi' ? ' checked' : '') + '><span class="ubits-body-sm-regular">Solo lo asignado a mí</span></label>' +
+        '    </div>' +
+        '  </div>' +
+        '</div>';
+}
+
+function openFiltrosDrawer() {
+    var btn = document.getElementById('tareas-filtros-btn');
+    if (btn) btn.setAttribute('aria-expanded', 'true');
+
+    var bodyHtml = getFiltrosDrawerBodyHtml();
+    var footerHtml = '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm" id="filtros-drawer-limpiar"><span>Limpiar</span></button>' +
+        '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="filtros-drawer-aplicar"><span>Aplicar</span></button>';
+
+    var overlay = typeof openDrawer === 'function' ? openDrawer({
+        overlayId: FILTROS_DRAWER_OVERLAY_ID,
+        title: 'Filtros',
+        bodyHtml: bodyHtml,
+        footerHtml: footerHtml,
+        size: 'sm',
+        closeOnOverlayClick: true,
+        onClose: function () {
+            if (document.getElementById('tareas-filtros-btn')) document.getElementById('tareas-filtros-btn').setAttribute('aria-expanded', 'false');
+        }
+    }) : null;
+
+    if (overlay) {
+        overlay.querySelector('#filtros-drawer-limpiar').addEventListener('click', function () {
+            estadoTareas.filtros = { estados: [], prioridades: [], asignacion: 'todas' };
+            if (typeof closeDrawer === 'function') closeDrawer(FILTROS_DRAWER_OVERLAY_ID);
+            if (btn) btn.setAttribute('aria-expanded', 'false');
+            renderAllTasks();
+        });
+        overlay.querySelector('#filtros-drawer-aplicar').addEventListener('click', function () {
+            var content = overlay.querySelector('.ubits-drawer-body');
+            if (content) {
+                var estadosSel = [].map.call(content.querySelectorAll('input[name="estado"]:checked'), function (el) { return el.value; });
+                var prioridadesSel = [].map.call(content.querySelectorAll('input[name="prioridad"]:checked'), function (el) { return el.value; });
+                var radioAsig = content.querySelector('input[name="asignacion"]:checked');
+                estadoTareas.filtros.estados = estadosSel;
+                estadoTareas.filtros.prioridades = prioridadesSel;
+                estadoTareas.filtros.asignacion = radioAsig ? radioAsig.value : 'todas';
+            }
+            if (typeof closeDrawer === 'function') closeDrawer(FILTROS_DRAWER_OVERLAY_ID);
+            if (btn) btn.setAttribute('aria-expanded', 'false');
+            renderAllTasks();
+        });
+    }
 }
 
 // Formatear fecha para mostrar
@@ -289,21 +405,46 @@ function getTaskStripOpts(esVencidaSection) {
     };
 }
 
-// Renderizar sección de tareas vencidas: pendientes ordenadas por fecha (antigua → reciente) y finalizadas al final
+// Renderizar sección de tareas vencidas: pendientes ordenadas por fecha (antigua → reciente) y finalizadas al final.
+// Acordeón: >5 vencidas → colapsado; ≤5 → desplegado. Badge rojo con número siempre visible.
 function renderTareasVencidas() {
     const container = document.getElementById('overdue-content');
     const section = document.getElementById('overdue-section');
+    const header = document.getElementById('overdue-header');
     if (!container) return;
 
-    const todasVencidas = (tareasEjemplo.vencidas || []).filter(t => t.status === 'Vencido' || t.done === true || t.status === 'Finalizado');
+    const datos = getTareasFiltradas();
+    const todasVencidas = (datos.vencidas || []).filter(t => t.status === 'Vencido' || t.done === true || t.status === 'Finalizado');
     const pendientes = todasVencidas.filter(t => !t.done && t.status !== 'Finalizado').sort((a, b) => (a.endDate || '').localeCompare(b.endDate || ''));
     const finalizadas = todasVencidas.filter(t => t.done === true || t.status === 'Finalizado');
     const listaOrdenada = pendientes.concat(finalizadas);
+    const totalCount = listaOrdenada.length;
 
-    if (section) section.style.display = listaOrdenada.length === 0 ? 'none' : '';
-    if (listaOrdenada.length === 0) {
+    if (section) section.style.display = totalCount === 0 ? 'none' : '';
+    if (totalCount === 0) {
         container.innerHTML = '';
         return;
+    }
+
+    // >5: acordeón colapsado; ≤5: desplegado
+    estadoTareas.showOverdueSection = totalCount <= 5;
+    const content = document.getElementById('overdue-content');
+    const toggleBtn = document.getElementById('overdue-toggle');
+    const icon = toggleBtn ? toggleBtn.querySelector('i') : null;
+    if (content) content.style.display = estadoTareas.showOverdueSection ? 'block' : 'none';
+    if (icon) icon.style.transform = estadoTareas.showOverdueSection ? 'rotate(0deg)' : 'rotate(-90deg)';
+
+    // Badge rojo con número total (circular si un solo dígito, pill si dos o más)
+    if (header) {
+        let badge = header.querySelector('.tareas-overdue-badge');
+        if (!badge) {
+            badge = document.createElement('span');
+            badge.className = 'tareas-overdue-badge';
+            badge.setAttribute('aria-label', 'Cantidad de tareas vencidas');
+            header.appendChild(badge);
+        }
+        badge.textContent = String(totalCount);
+        badge.classList.toggle('tareas-overdue-badge--circle', totalCount >= 1 && totalCount <= 9);
     }
 
     container.innerHTML = listaOrdenada.map(tarea => window.renderTaskStrip(tarea, getTaskStripOpts(true))).join('');
@@ -316,7 +457,8 @@ function renderDaySection(fecha) {
     const fechaFormateada = formatFullDate(fechaKey);
     const relativeName = getRelativeDayName(fechaKey);
     const esPasado = fechaKey < today;
-    const tareasDelDia = (tareasEjemplo.porDia[fechaKey] || [])
+    const datos = getTareasFiltradas();
+    const tareasDelDia = (datos.porDia[fechaKey] || [])
         .slice()
         .sort((a, b) => {
             if (a.done !== b.done) return (a.done ? 1 : 0) - (b.done ? 1 : 0);
@@ -679,6 +821,14 @@ function initTareasView() {
                 content.style.display = estadoTareas.showOverdueSection ? 'block' : 'none';
                 icon.style.transform = estadoTareas.showOverdueSection ? 'rotate(0deg)' : 'rotate(-90deg)';
             }
+        });
+    }
+
+    // Botón filtros: abre drawer
+    const filtrosBtn = document.getElementById('tareas-filtros-btn');
+    if (filtrosBtn) {
+        filtrosBtn.addEventListener('click', function () {
+            if (typeof openFiltrosDrawer === 'function') openFiltrosDrawer();
         });
     }
 
@@ -1324,7 +1474,7 @@ function renderTaskDetailModal() {
     const priorityShortLabel = priority === 'alta' ? 'Alta' : priority === 'baja' ? 'Baja' : 'Media';
     const role = edit.role !== undefined ? edit.role : (t.role || 'colaborador');
     const roleLabel = role === 'administrador' ? 'Administrador' : 'Colaborador';
-    const statusDisplay = t.status === 'Vencido' ? 'Vencida' : t.status === 'Activo' ? 'Iniciada' : 'Finalizada';
+    const statusDisplay = t.status === 'Vencido' ? 'Vencida' : t.status === 'Activo' ? 'Por hacer' : 'Finalizada';
     const statusSlug = t.status === 'Vencido' ? 'error' : t.status === 'Activo' ? 'info' : 'success';
     const isFinalizada = t.status === 'Finalizado';
     const finishBtnLabel = isFinalizada ? 'Reabrir tarea' : 'Finalizar tarea';

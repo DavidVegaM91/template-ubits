@@ -363,8 +363,7 @@
     flex: 1;
     min-height: 0;
     overflow-y: auto;
-    padding: 24px;
-    padding-bottom: 80px;
+    padding: 0;
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -398,15 +397,23 @@
 
 .template-form-label {
     color: var(--ubits-fg-1-high);
-    font-size: 14px;
+    font-size: var(--font-size-md);
     font-weight: var(--font-weight-semibold);
     font-family: 'Noto Sans', sans-serif;
 }
 
 .template-form-helper {
     color: var(--ubits-fg-1-medium);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-family: 'Noto Sans', sans-serif;
+}
+
+.template-form-helper--inline {
+    margin-left: var(--gap-xs, 4px);
+}
+
+.template-radio-group--spaced {
+    margin-top: var(--gap-sm, 8px);
 }
 
 .template-form-helper--close-to-field {
@@ -418,33 +425,11 @@
 }
 
 /* Radio buttons */
+/* Contenedor de opciones: solo layout; los radios son 100% componente UBITS (radio-button.css) */
 .template-radio-group {
     display: flex;
     align-items: center;
-    gap: 24px;
-}
-
-.template-radio-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-}
-
-.template-radio-item input[type="radio"] {
-    width: 16px;
-    height: 16px;
-    margin: 0;
-    cursor: pointer;
-    accent-color: var(--ubits-accent-brand);
-}
-
-.template-radio-item label {
-    color: var(--ubits-fg-1-high);
-    font-size: 14px;
-    font-weight: 500;
-    font-family: 'Noto Sans', sans-serif;
-    cursor: pointer;
+    gap: var(--gap-lg);
 }
 
 /* Área de carga de archivo */
@@ -483,15 +468,15 @@
 
 .template-upload-text {
     color: var(--ubits-fg-1-high);
-    font-size: 14px;
-    font-weight: 500;
-    margin-bottom: 4px;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--gap-xs, 4px);
 }
 
 .template-upload-subtext {
     color: var(--ubits-fg-1-medium);
-    font-size: 12px;
-    margin-bottom: 12px;
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--gap-sm, 8px);
 }
 
 /* Archivo cargado */
@@ -531,14 +516,14 @@
 
 .template-file-loaded__name {
     color: var(--ubits-fg-1-high);
-    font-size: 14px;
-    font-weight: 500;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
     margin-bottom: 4px;
 }
 
 .template-file-loaded__meta {
     color: var(--ubits-fg-1-medium);
-    font-size: 12px;
+    font-size: var(--font-size-sm);
 }
 
 /* Alert info */
@@ -546,12 +531,12 @@
     border: 1px solid var(--ubits-feedback-border-info);
     background: var(--ubits-feedback-bg-info-subtle);
     color: var(--ubits-feedback-fg-info-subtle);
-    border-radius: 8px;
-    padding: 10px 12px;
+    border-radius: var(--border-radius-sm);
+    padding: var(--padding-sm) var(--padding-md);
     display: flex;
     align-items: flex-start;
-    gap: 10px;
-    font-size: 14px;
+    gap: var(--gap-sm);
+    font-size: var(--font-size-sm);
     line-height: 1.35;
 }
 
@@ -665,14 +650,14 @@
 
 .plan-accordion__title {
     font-weight: var(--font-weight-semibold);
-    font-size: 14px;
+    font-size: var(--font-size-md);
     color: var(--ubits-fg-1-high);
 }
 
 .plan-accordion__subtitle {
     margin: 0;
     padding-left: 0;
-    font-size: 13px;
+    font-size: var(--font-size-sm);
     color: var(--ubits-fg-1-medium);
     line-height: 1.4;
 }
@@ -681,7 +666,7 @@
     flex-shrink: 0;
     transition: transform 0.2s ease;
     color: var(--ubits-fg-1-medium);
-    font-size: 14px;
+    font-size: var(--font-size-md);
 }
 
 .plan-accordion.plan-accordion--open .plan-accordion__chevron {
@@ -707,10 +692,48 @@
 }
 
 .plan-accordion__description {
-    font-size: 13px;
+    font-size: var(--font-size-sm);
     color: var(--ubits-fg-1-medium);
-    margin-bottom: 16px;
+    margin-bottom: var(--gap-md);
 }
+
+/* Plan drawer: contenedores sin inline styles (tokens UBITS) */
+.plan-alert-spaced { margin-bottom: var(--gap-md); }
+.plan-search-wrap {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    padding: var(--padding-md);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    background: var(--ubits-bg-1);
+}
+.plan-user-results-list {
+    margin-top: var(--gap-sm);
+    list-style: none;
+    padding: 0;
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    background: var(--ubits-bg-1);
+    max-height: 128px;
+    overflow-y: auto;
+}
+.plan-user-result-item {
+    padding: var(--padding-sm) var(--padding-md);
+    cursor: pointer;
+    border-bottom: 1px solid var(--ubits-border-1);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.plan-user-result-item:hover { background: var(--ubits-bg-2); }
+.plan-user-result-item span:first-child { font-size: var(--font-size-md); color: var(--ubits-fg-1-high); }
+.plan-user-result-item span:last-child { font-size: var(--font-size-sm); color: var(--ubits-fg-1-medium); }
+.plan-member-chips { display: flex; flex-wrap: wrap; gap: var(--gap-sm); margin-top: var(--gap-md); }
+.plan-form-group-divider { margin-top: var(--gap-md); padding-top: var(--gap-md); border-top: 1px solid var(--ubits-border-1); }
+.plan-task-actions-spaced { margin-top: var(--gap-xl); }
+.template-task-creation-inner { display: flex; flex-direction: column; gap: var(--gap-md); margin-top: var(--gap-sm); }
+.plan-download-wrap { display: flex; flex-wrap: wrap; gap: var(--gap-sm); margin-bottom: var(--gap-md); }
 
 .plan-add-task-btn {
     width: 100%;
@@ -856,30 +879,17 @@
 
 .plan-task-creator__input-wrap {
     flex: 1;
-    border: 1px solid var(--ubits-border-1);
-    border-radius: 8px;
-    background: var(--ubits-bg-1);
-    overflow: hidden;
+    min-width: 0;
 }
 
-.plan-task-creator__input-wrap:focus-within {
-    border-color: var(--ubits-accent-brand);
-    box-shadow: 0 0 0 2px var(--ubits-feedback-bg-info-subtle);
-}
-
-.plan-task-creator__input {
-    width: 100%;
-    padding: 12px 16px;
+.plan-task-creator__input-wrap--official {
     border: none;
     background: transparent;
-    font-size: 14px;
-    color: var(--ubits-fg-1-high);
-    outline: none;
-    box-sizing: border-box;
 }
 
-.plan-task-creator__input::placeholder {
-    color: var(--ubits-fg-1-medium);
+.plan-task-creator__input-wrap--official:focus-within {
+    border: none;
+    box-shadow: none;
 }
 
 .plan-task-creator__icons {
@@ -889,26 +899,13 @@
     flex-shrink: 0;
 }
 
-.plan-task-creator__textarea {
-    width: 100%;
-    padding: 12px 16px;
-    border: 1px solid var(--ubits-border-1);
-    border-radius: 8px;
-    font-size: 14px;
-    color: var(--ubits-fg-1-high);
-    resize: vertical;
-    min-height: 80px;
-    outline: none;
-    font-family: inherit;
-    box-sizing: border-box;
+.plan-task-creator #plan-task-desc-input-container {
+    margin-top: var(--gap-sm);
 }
 
-.plan-task-creator__textarea:focus {
-    border-color: var(--ubits-accent-brand);
-}
-
-.plan-task-creator__textarea::placeholder {
-    color: var(--ubits-fg-1-medium);
+.plan-task-creator #plan-task-desc-input-container .ubits-input-helper,
+.plan-task-creator #plan-task-desc-input-container .ubits-input-label {
+    display: none;
 }
 
 .plan-task-creator__actions {

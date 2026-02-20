@@ -154,17 +154,17 @@ Ajustes pendientes sobre los archivos entregados por la PM Mafe para las página
     > if (newDateString < today) { return; }
     > ```
 
-24. [ ] **Tareas: lógica del acordeón "Vencidas"**  
+24. [x] **Tareas: lógica del acordeón "Vencidas"**  
     En `tareas.html`, en el acordeón de **Vencidas**:  
     - Si tiene **más de 5** tareas vencidas: ir **colapsado** y mostrar un **badge rojo con letra blanca** (como el que está dentro del componente de botón) con el **número total** de tareas vencidas.  
     - Si tiene **5 o menos**: ir **desplegado**, pero igual debe tener el **badge** que indica la cantidad.
 
-25. [ ] **Tareas: botón de filtros y drawer**  
+25. [x] **Tareas: botón de filtros y drawer**  
     Añadir un **botón de filtros** en `tareas.html` que abra un **drawer** con estos filtros: **Estado**, **Prioridad**, y un filtro para ver **solo lo que asigné a otros** o **solo lo asignado a mí**.
 
-26. [ ] **Base de datos y vistas: estado "Iniciada" → "Por hacer"**  
-    Cambiar en la base de datos el estado **"Iniciada"** a **"Por hacer"**. Este cambio debe reflejarse en **todos los HTML** que están dentro de la carpeta `tareas` (no solo `tareas.html`): planes, seguimiento, detalle de plan, etc.
+26. [x] **Base de datos y vistas: estado "Iniciada" → "Por hacer"**  
+    Cambiado en todos los HTML y JS de la carpeta `tareas`, más los componentes `task-strip.js` y `task-detail-panel.js`. El valor interno en los objetos JavaScript (`.status = 'Activo'`) **no cambió** — solo los strings de display. Archivos modificados: `task-strip.js` (línea 24 `estadoTexto`), `tareas.js` (label del drawer de filtros + `statusDisplay` del panel de detalle), `plan-detail.js` (`statusDisplay`), `seguimiento.js` (checkbox del drawer, `optionsMap`, `statusClass`, `syncTaskToRow`, `updateIndicadores`, menú "Cambiar estado" y modales), `seguimiento.html` y `seguimiento-leader.html` (label del indicador), `plan-detail.html` (contador de tareas), `tareas-base-unificada.js` (strings de generación de `row.estado` en `actividadesSeguimiento`).
 
 ---
 
-*Última actualización: ítems 1–20 (11 feb) y 21–23 (19 feb) implementados. Pendientes: ítems 7, 24, 25, 26.*
+*Última actualización: ítems 1–20 (11 feb), 21–26 (19 feb) implementados. Pendiente: ítem 7 (drawer oficial).*

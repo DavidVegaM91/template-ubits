@@ -44,36 +44,25 @@
                                 Preview del componente
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
-                                Haz clic en el botón para abrir el drawer de ejemplo. Cierra con el botón X, Cancelar, Aplicar o clic fuera del panel.
+                                Haz clic en un botón para abrir el drawer en el tamaño indicado. Cierra con el botón X, Cancelar, Aplicar o clic fuera del panel.
                             </p>
                             <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; position: relative;">
-                                <div id="drawer-preview">
-                                    <button type="button" class="ubits-button ubits-button--primary ubits-button--md" onclick="document.getElementById('drawer-demo-overlay').style.display='flex'; document.getElementById('drawer-demo-overlay').setAttribute('aria-hidden','false');">
+                                <div id="drawer-preview" style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md drawer-demo-btn" data-size="xs">
                                         <i class="far fa-sliders"></i>
-                                        <span>Abrir drawer de ejemplo</span>
+                                        <span>Abrir drawer XS</span>
                                     </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Drawer de ejemplo (oculto por defecto) -->
-                        <div class="ubits-drawer-overlay" id="drawer-demo-overlay" style="display: none;" aria-hidden="true" onclick="if(event.target===this) { this.style.display='none'; this.setAttribute('aria-hidden','true'); }">
-                            <div class="ubits-drawer-content ubits-drawer-content--md" onclick="event.stopPropagation();">
-                                <div class="ubits-drawer-header">
-                                    <span class="ubits-drawer-title ubits-body-md-bold">Título del drawer</span>
-                                    <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" aria-label="Cerrar" onclick="document.getElementById('drawer-demo-overlay').style.display='none'; document.getElementById('drawer-demo-overlay').setAttribute('aria-hidden','true');">
-                                        <i class="far fa-times"></i>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md drawer-demo-btn" data-size="sm">
+                                        <i class="far fa-sliders"></i>
+                                        <span>Abrir drawer SM</span>
                                     </button>
-                                </div>
-                                <div class="ubits-drawer-body">
-                                    <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium);">Contenido del body. Aquí puedes poner filtros, formularios, listas, etc. El panel ocupa todo el alto de la pantalla y está fijo a la derecha.</p>
-                                </div>
-                                <div class="ubits-drawer-footer">
-                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" onclick="document.getElementById('drawer-demo-overlay').style.display='none'; document.getElementById('drawer-demo-overlay').setAttribute('aria-hidden','true');">
-                                        <span>Cancelar</span>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md drawer-demo-btn" data-size="md">
+                                        <i class="far fa-sliders"></i>
+                                        <span>Abrir drawer MD</span>
                                     </button>
-                                    <button type="button" class="ubits-button ubits-button--primary ubits-button--md">
-                                        <span>Aplicar</span>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md drawer-demo-btn" data-size="lg">
+                                        <i class="far fa-sliders"></i>
+                                        <span>Abrir drawer LG</span>
                                     </button>
                                 </div>
                             </div>
@@ -211,9 +200,9 @@
                                         <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="drawer-classes-code">.ubits-drawer-overlay   /* Overlay pantalla completa, fondo rgba(0,0,0,0.7), flex justify-end, z-index 1000 */
 .ubits-drawer-content   /* Panel: ancho máx. 480px por defecto, alto 100%, borde izquierdo, sombra */
 .ubits-drawer-content--xs  /* Ancho máx. 320px (desktop); 100% en móvil */
-.ubits-drawer-content--sm  /* Ancho máx. 400px */
-.ubits-drawer-content--md  /* Ancho máx. 480px */
-.ubits-drawer-content--lg  /* Ancho máx. 560px */
+.ubits-drawer-content--sm  /* Ancho máx. 440px */
+.ubits-drawer-content--md  /* Ancho máx. 800px */
+.ubits-drawer-content--lg  /* Ancho máx. 1200px */
 .ubits-drawer-header    /* Header: padding, border-bottom, título + botón cerrar */
 .ubits-drawer-title     /* Título: usar con ubits-body-md-bold */
 .ubits-drawer-body      /* Body: padding, overflow-y auto, flex 1 */
@@ -276,6 +265,24 @@
                     noClose: true
                 });
             }
+            var demoOverlayId = 'drawer-demo-overlay';
+            var demoBodyHtml = '<p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium);">Contenido del body. Aquí puedes poner filtros, formularios, listas, etc. El panel ocupa todo el alto de la pantalla y está fijo a la derecha.</p>';
+            var demoFooterHtml = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" onclick="closeDrawer(\'' + demoOverlayId + '\')"><span>Cancelar</span></button><button type="button" class="ubits-button ubits-button--primary ubits-button--md" onclick="closeDrawer(\'' + demoOverlayId + '\')"><span>Aplicar</span></button>';
+            document.querySelectorAll('.drawer-demo-btn').forEach(function(btn) {
+                var size = btn.getAttribute('data-size') || 'md';
+                if (typeof openDrawer === 'function') {
+                    btn.addEventListener('click', function() {
+                        openDrawer({
+                            overlayId: demoOverlayId,
+                            title: 'Drawer ' + size.toUpperCase(),
+                            bodyHtml: demoBodyHtml,
+                            footerHtml: demoFooterHtml,
+                            size: size,
+                            closeOnOverlayClick: true
+                        });
+                    });
+                }
+            });
         });
         function toggleTechnicalDocs() {
             var content = document.getElementById('technical-docs-content');

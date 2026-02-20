@@ -105,7 +105,7 @@ function openTaskDetailPanel(task) {
     var priorityShortLabel = priority === 'alta' ? 'Alta' : priority === 'baja' ? 'Baja' : 'Media';
     var role = edit.role !== undefined ? edit.role : (t.role || 'colaborador');
     var roleLabel = role === 'administrador' ? 'Administrador' : 'Colaborador';
-    var statusDisplay = t.status === 'Vencido' ? 'Vencida' : t.status === 'Activo' ? 'Iniciada' : 'Finalizada';
+    var statusDisplay = t.status === 'Vencido' ? 'Vencida' : t.status === 'Activo' ? 'Por hacer' : 'Finalizada';
     var statusSlug = t.status === 'Vencido' ? 'error' : t.status === 'Activo' ? 'info' : 'success';
     var isFinalizada = t.status === 'Finalizado';
     var finishBtnLabel = isFinalizada ? 'Reabrir tarea' : 'Finalizar tarea';
@@ -450,7 +450,7 @@ function renderPlanDetail(planId) {
     const dateDisplay = endDateStr ? formatDateForDisplayDDMM(endDateStr).replace(/-/g, '/') : '';
     if (dateEl) dateEl.value = dateDisplay;
 
-    const statusText = plan.status || 'Activo';
+    const statusText = plan.status === 'Activo' ? 'Por hacer' : (plan.status || 'Por hacer');
     const statusVariant = plan.status === 'Activo' ? 'info' : plan.status === 'Vencido' ? 'error' : 'success';
     if (statusEl) {
         statusEl.className = 'ubits-status-tag ubits-status-tag--sm ubits-status-tag--' + statusVariant;
@@ -483,7 +483,7 @@ function renderPlanDetail(planId) {
 }
 
 function handlePlanDetailListClick(e) {
-            const planId = getPlanIdFromUrl();
+    const planId = getPlanIdFromUrl();
     const tasks = getTasksForPlan(planId);
     if (!planId || !tasks.length) return;
 
@@ -508,14 +508,14 @@ function handlePlanDetailListClick(e) {
     // Eliminar
     if (e.target.closest('.tarea-action-btn--delete')) {
         e.preventDefault();
-            e.stopPropagation();
+        e.stopPropagation();
         const btn = e.target.closest('.tarea-action-btn--delete');
         const id = btn && btn.dataset.tareaId;
         if (id && confirm('¿Eliminar esta tarea?')) {
             const i = tasks.findIndex(t => String(t.id) === String(id));
             if (i >= 0) tasks.splice(i, 1);
-                renderPlanDetail(planId);
-            }
+            renderPlanDetail(planId);
+        }
         return;
     }
 

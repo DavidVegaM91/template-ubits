@@ -4,7 +4,7 @@
    Base de datos: tareas-base-unificada.js (TAREAS_PLANES_DB) — única fuente
    ======================================== */
 
-(function() {
+(function () {
     'use strict';
 
     // Inyectar drawer de filtros (componente oficial) y modales (modal.js getModalHtml)
@@ -20,7 +20,7 @@
             '<span class="filtros-select-trigger-text" id="filtros-estado-trigger-text">Seleccionar estado</span><i class="far fa-chevron-down filtros-select-chevron"></i></div>' +
             '<div class="filtros-select-dropdown" id="filtros-estado-dropdown" role="listbox" aria-hidden="true">' +
             '<div class="filtros-checkbox-list" id="filtros-estado">' +
-            '<label class="filtros-checkbox-option"><input type="checkbox" value="Iniciada"><span class="ubits-body-sm-regular">Iniciada</span></label>' +
+            '<label class="filtros-checkbox-option"><input type="checkbox" value="Por hacer"><span class="ubits-body-sm-regular">Por hacer</span></label>' +
             '<label class="filtros-checkbox-option"><input type="checkbox" value="Vencida"><span class="ubits-body-sm-regular">Vencida</span></label>' +
             '<label class="filtros-checkbox-option"><input type="checkbox" value="Finalizada"><span class="ubits-body-sm-regular">Finalizada</span></label></div></div></div>' +
             '<div class="filtros-select-wrap" id="filtros-prioridad-wrap" data-filter-type="prioridad">' +
@@ -50,7 +50,7 @@
             var deleteFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="delete-modal-cancel">Cancelar</button><button type="button" class="ubits-button ubits-button--error ubits-button--md" id="delete-modal-confirm" disabled>Eliminar</button>';
             modalsContainer.innerHTML += getModalHtml({ overlayId: 'delete-modal-overlay', title: 'Confirmar eliminación', bodyHtml: deleteBody, footerHtml: deleteFooter, size: 'sm', closeButtonId: 'delete-modal-close' });
 
-            var reabrirBody = '<p class="ubits-body-md-regular" id="reabrir-plan-message">Al reabrir este(s) plan(es), las tareas en estado Iniciada se marcarán como Finalizadas. ¿Continuar?</p>';
+            var reabrirBody = '<p class="ubits-body-md-regular" id="reabrir-plan-message">Al reabrir este(s) plan(es), las tareas en estado Por hacer se marcarán como Finalizadas. ¿Continuar?</p>';
             var reabrirFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="reabrir-plan-cancel">Cancelar</button><button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="reabrir-plan-confirm">Continuar</button>';
             modalsContainer.innerHTML += getModalHtml({ overlayId: 'reabrir-plan-overlay', title: 'Cambiar estado del plan', bodyHtml: reabrirBody, footerHtml: reabrirFooter, size: 'xs', titleId: 'reabrir-plan-title', closeButtonId: 'reabrir-plan-close' });
 
@@ -138,33 +138,33 @@
         const viewportWidth = window.innerWidth;
         const viewportHeight = window.innerHeight;
         const padding = 16; // Padding mínimo desde los bordes
-        
+
         // Calcular posición inicial (debajo del botón)
         let left = buttonRect.left;
         let top = buttonRect.bottom + 4;
-        
+
         // Asegurar que el menú no se salga por la derecha
         if (left + menuWidth > viewportWidth - padding) {
             // Intentar alinear a la derecha del botón
             left = buttonRect.right - menuWidth;
-            
+
             // Si aún se sale, pegarlo al borde derecho con padding
             if (left < padding) {
                 left = viewportWidth - menuWidth - padding;
             }
         }
-        
+
         // Asegurar que el menú no se salga por la izquierda
         if (left < padding) {
             left = padding;
         }
-        
+
         // Asegurar que el menú no se salga por abajo
         if (top + menuHeight > viewportHeight - padding) {
             // Intentar mostrar arriba del botón
             const spaceAbove = buttonRect.top - padding;
             const spaceBelow = viewportHeight - buttonRect.bottom - padding;
-            
+
             if (spaceAbove >= menuHeight || spaceAbove > spaceBelow) {
                 // Mostrar arriba
                 top = buttonRect.top - menuHeight - 4;
@@ -173,12 +173,12 @@
                 top = viewportHeight - menuHeight - padding;
             }
         }
-        
+
         // Asegurar que el menú no se salga por arriba
         if (top < padding) {
             top = padding;
         }
-        
+
         // Aplicar posición
         menu.style.left = Math.max(padding, Math.min(left, viewportWidth - menuWidth - padding)) + 'px';
         menu.style.top = Math.max(padding, Math.min(top, viewportHeight - menuHeight - padding)) + 'px';
@@ -296,7 +296,7 @@
         // Re-attach select-all checkbox
         const selectAll = document.getElementById('seguimiento-select-all');
         if (selectAll) {
-            selectAll.addEventListener('change', function() {
+            selectAll.addEventListener('change', function () {
                 const data = getDisplayData();
                 const start = (currentPage - 1) * itemsPerPage;
                 const pageData = data.slice(start, start + itemsPerPage);
@@ -340,8 +340,8 @@
 
         // Filtro nombre (actividad) - sin tildes
         if (currentFilters.nombre.length > 0) {
-            data = data.filter(row => 
-                currentFilters.nombre.some(nombre => 
+            data = data.filter(row =>
+                currentFilters.nombre.some(nombre =>
                     normalizeText(row.nombre).includes(normalizeText(nombre))
                 )
             );
@@ -349,8 +349,8 @@
 
         // Filtro creador - sin tildes
         if (currentFilters.creador.length > 0) {
-            data = data.filter(row => 
-                currentFilters.creador.some(creador => 
+            data = data.filter(row =>
+                currentFilters.creador.some(creador =>
                     normalizeText(row.creador).includes(normalizeText(creador))
                 )
             );
@@ -358,8 +358,8 @@
 
         // Filtro plan - busca en nombre del plan Y nombre de la actividad - sin tildes
         if (currentFilters.plan.length > 0) {
-            data = data.filter(row => 
-                currentFilters.plan.some(plan => 
+            data = data.filter(row =>
+                currentFilters.plan.some(plan =>
                     normalizeText(row.plan).includes(normalizeText(plan)) ||
                     normalizeText(row.nombre).includes(normalizeText(plan))
                 )
@@ -368,8 +368,8 @@
 
         // Filtro persona - sin tildes
         if (currentFilters.persona.length > 0) {
-            data = data.filter(row => 
-                currentFilters.persona.some(persona => 
+            data = data.filter(row =>
+                currentFilters.persona.some(persona =>
                     normalizeText(row.asignado.nombre).includes(normalizeText(persona))
                 )
             );
@@ -377,8 +377,8 @@
 
         // Filtro username - sin tildes
         if (currentFilters.username.length > 0) {
-            data = data.filter(row => 
-                currentFilters.username.some(username => 
+            data = data.filter(row =>
+                currentFilters.username.some(username =>
                     row.asignado.username && normalizeText(row.asignado.username).includes(normalizeText(username))
                 )
             );
@@ -386,16 +386,16 @@
 
         // Filtro área del asignado - sin tildes
         if (currentFilters.areaAsignado.length > 0) {
-            data = data.filter(row => 
-                currentFilters.areaAsignado.some(area => 
+            data = data.filter(row =>
+                currentFilters.areaAsignado.some(area =>
                     normalizeText(row.area || '').includes(normalizeText(area))
                 )
             );
         }
         // Filtro área del creador - sin tildes
         if (currentFilters.areaCreador.length > 0) {
-            data = data.filter(row => 
-                currentFilters.areaCreador.some(area => 
+            data = data.filter(row =>
+                currentFilters.areaCreador.some(area =>
                     normalizeText((row.areaCreador != null ? row.areaCreador : row.area) || '').includes(normalizeText(area))
                 )
             );
@@ -403,8 +403,8 @@
 
         // Filtro lider - sin tildes
         if (currentFilters.lider.length > 0) {
-            data = data.filter(row => 
-                currentFilters.lider.some(lider => 
+            data = data.filter(row =>
+                currentFilters.lider.some(lider =>
                     row.lider && normalizeText(row.lider).includes(normalizeText(lider))
                 )
             );
@@ -425,7 +425,7 @@
             data = data.filter(row => {
                 const fechaRow = parseFecha(row.fechaCreacion);
                 if (!fechaRow) return false;
-                
+
                 if (currentFilters.fechaCreacionDesde && currentFilters.fechaCreacionHasta) {
                     const fechaDesde = parseFecha(currentFilters.fechaCreacionDesde);
                     const fechaHasta = parseFecha(currentFilters.fechaCreacionHasta);
@@ -449,7 +449,7 @@
             data = data.filter(row => {
                 const fechaRow = parseFecha(row.fechaFinalizacion);
                 if (!fechaRow) return false;
-                
+
                 if (currentFilters.fechaVencimientoDesde && currentFilters.fechaVencimientoHasta) {
                     const fechaDesde = parseFecha(currentFilters.fechaVencimientoDesde);
                     const fechaHasta = parseFecha(currentFilters.fechaVencimientoHasta);
@@ -472,28 +472,28 @@
         if (currentFilters.periodo && !currentFilters.fechaCreacionDesde && !currentFilters.fechaCreacionHasta) {
             const hoy = new Date(); // Fecha real para que los totales coincidan con la BD
             hoy.setHours(23, 59, 59, 999); // Fin del día de hoy
-            
+
             // Calcular fecha límite: "últimos X días" incluyendo hoy = desde (X-1) días atrás
             const periodoDias = parseInt(currentFilters.periodo);
             if (isNaN(periodoDias)) return; // Si no es un número válido, no aplicar filtro
-            
+
             const diasAtras = periodoDias - 1; // Para incluir el día de hoy: restar (periodoDias - 1) días
-            
+
             const hoyInicio = new Date(hoy);
             hoyInicio.setHours(0, 0, 0, 0);
             const milisegundosPorDia = 24 * 60 * 60 * 1000;
             const fechaLimiteTimestamp = hoyInicio.getTime() - (diasAtras * milisegundosPorDia);
             const fechaLimite = new Date(fechaLimiteTimestamp);
-            
+
             data = data.filter(row => {
                 const fechaRow = parseFecha(row.fechaCreacion);
                 if (!fechaRow) return false;
-                
+
                 // Comparar usando getTime() para evitar problemas de comparación
                 const fechaRowTime = fechaRow.getTime();
                 const fechaLimiteTime = fechaLimite.getTime();
                 const hoyTime = hoy.getTime();
-                
+
                 // Incluir actividades desde fechaLimite (inclusive) hasta hoy (inclusive)
                 return fechaRowTime >= fechaLimiteTime && fechaRowTime <= hoyTime;
             });
@@ -671,39 +671,39 @@
     // Toma una fecha en formato "1 ene 2026 08:00" y devuelve "1 ene 2026"
     function formatearFechaParaMostrar(fechaStr) {
         if (!fechaStr) return '';
-        
+
         // Si tiene hora, removerla
         const partes = fechaStr.trim().split(/\s+/);
         if (partes.length >= 3) {
             // Tomar solo día, mes y año
             return `${partes[0]} ${partes[1]} ${partes[2]}`;
         }
-        
+
         return fechaStr;
     }
 
     // Función auxiliar para parsear fechas en formato "1 ene 2026" o "1 ene 2026 08:00"
     function parseFecha(fechaStr) {
         if (!fechaStr) return null;
-        
+
         // Mapeo de meses en español
         const meses = {
             'ene': 0, 'feb': 1, 'mar': 2, 'abr': 3, 'may': 4, 'jun': 5,
             'jul': 6, 'ago': 7, 'sep': 8, 'oct': 9, 'nov': 10, 'dic': 11
         };
-        
+
         // Formato esperado: "1 ene 2026" o "1 ene 2026 08:00" o "01/01/2026" (si viene del date picker)
         const partes = fechaStr.trim().split(/[\s\/\-]+/);
-        
+
         if (partes.length >= 3) {
             let dia, mes, año, hora = 0, minutos = 0;
-            
+
             // Si tiene formato "1 ene 2026" o "1 ene 2026 08:00"
             if (partes[1].toLowerCase() in meses) {
                 dia = parseInt(partes[0], 10);
                 mes = meses[partes[1].toLowerCase()];
                 año = parseInt(partes[2], 10);
-                
+
                 // Si tiene hora (formato "1 ene 2026 08:00")
                 // partes[3] sería "08:00" si existe
                 if (partes.length >= 4 && partes[3] && partes[3].includes(':')) {
@@ -711,20 +711,20 @@
                     hora = parseInt(horaPartes[0], 10) || 0;
                     minutos = parseInt(horaPartes[1], 10) || 0;
                 }
-            } 
+            }
             // Si tiene formato "01/01/2026" (del date picker)
             else {
                 dia = parseInt(partes[0], 10);
                 mes = parseInt(partes[1], 10) - 1; // Los meses en JS son 0-indexed
                 año = parseInt(partes[2], 10);
             }
-            
+
             if (!isNaN(dia) && !isNaN(mes) && !isNaN(año)) {
                 const fecha = new Date(año, mes, dia, hora, minutos);
                 return fecha;
             }
         }
-        
+
         return null;
     }
 
@@ -793,7 +793,7 @@
         row.nombre = task.name || row.nombre;
         row.description = task.description;
         row.prioridad = (task.priority === 'alta' ? 'Alta' : task.priority === 'baja' ? 'Baja' : 'Media');
-        row.estado = task.status === 'Finalizado' ? 'Finalizada' : task.status === 'Vencido' ? 'Vencida' : 'Iniciada';
+        row.estado = task.status === 'Finalizado' ? 'Finalizada' : task.status === 'Vencido' ? 'Vencida' : 'Por hacer';
         if (task.assignee_email === null || task.assignee_email === '') {
             row.asignado = null;
         } else {
@@ -856,7 +856,7 @@
         const priorityShortLabel = priority === 'alta' ? 'Alta' : priority === 'baja' ? 'Baja' : 'Media';
         const role = edit.role !== undefined ? edit.role : (t.role || 'colaborador');
         const roleLabel = role === 'administrador' ? 'Administrador' : 'Colaborador';
-        const statusDisplay = t.status === 'Vencido' ? 'Vencida' : t.status === 'Activo' ? 'Iniciada' : 'Finalizada';
+        const statusDisplay = t.status === 'Vencido' ? 'Vencida' : t.status === 'Activo' ? 'Por hacer' : 'Finalizada';
         const statusSlug = t.status === 'Vencido' ? 'error' : t.status === 'Activo' ? 'info' : 'success';
         const isFinalizada = t.status === 'Finalizado';
         const finishBtnLabel = isFinalizada ? 'Reabrir tarea' : 'Finalizar tarea';
@@ -915,7 +915,7 @@
                     iconSize: 'md',
                     title: 'Aún no hay comentarios',
                     description: 'Aquí podrás ver el historial de comentarios y evidencias de esta tarea. Agrega el primero para empezar.',
-                    buttons: { secondary: { text: 'Agregar comentarios', icon: 'fa-plus', onClick: function() { if (typeof showToast === 'function') showToast('info', 'Próximamente: agregar comentario'); } } }
+                    buttons: { secondary: { text: 'Agregar comentarios', icon: 'fa-plus', onClick: function () { if (typeof showToast === 'function') showToast('info', 'Próximamente: agregar comentario'); } } }
                 });
             }
         }
@@ -941,7 +941,7 @@
                 showLabel: false,
                 placeholder: 'Selecciona una fecha…',
                 value: endDateToDisplay(endDate),
-                onChange: function(dateStr) {
+                onChange: function (dateStr) {
                     const ymd = displayToEndDate(dateStr);
                     seguimientoTaskDetailState.editingTask.endDate = ymd;
                     if (seguimientoTaskDetailState.selectedTask) seguimientoTaskDetailState.selectedTask.endDate = ymd;
@@ -964,7 +964,7 @@
                 placeholder: 'Selecciona un plan existente',
                 autocompleteOptions: plansForAutocomplete.map(p => ({ value: String(p.id), text: p.name })),
                 value: taskPlanDisplayName,
-                onChange: function(selectedValue) {
+                onChange: function (selectedValue) {
                     const task = seguimientoTaskDetailState.selectedTask;
                     const row = seguimientoTaskDetailState.selectedRow;
                     if (!task) return;
@@ -996,10 +996,10 @@
         const finishBtn = document.getElementById('task-detail-finish');
 
         if (closeBtn) closeBtn.addEventListener('click', closeTaskDetailPanelSeguimiento);
-        overlay.onclick = function(ev) { if (ev.target === overlay) closeTaskDetailPanelSeguimiento(); };
+        overlay.onclick = function (ev) { if (ev.target === overlay) closeTaskDetailPanelSeguimiento(); };
 
         if (nameEl) {
-            nameEl.addEventListener('input', function() {
+            nameEl.addEventListener('input', function () {
                 seguimientoTaskDetailState.editingTask.name = nameEl.value;
                 if (seguimientoTaskDetailState.selectedTask) seguimientoTaskDetailState.selectedTask.name = nameEl.value;
                 if (seguimientoTaskDetailState.selectedRow) seguimientoTaskDetailState.selectedRow.nombre = nameEl.value;
@@ -1007,7 +1007,7 @@
             });
         }
         if (descEl) {
-            descEl.addEventListener('input', function() {
+            descEl.addEventListener('input', function () {
                 seguimientoTaskDetailState.editingTask.description = descEl.value;
                 if (seguimientoTaskDetailState.selectedTask) seguimientoTaskDetailState.selectedTask.description = descEl.value;
                 if (seguimientoTaskDetailState.selectedRow) seguimientoTaskDetailState.selectedRow.description = descEl.value;
@@ -1015,7 +1015,7 @@
         }
 
         if (priorityBtn && typeof window.getDropdownMenuHtml === 'function' && typeof window.openDropdownMenu === 'function' && typeof window.closeDropdownMenu === 'function') {
-            priorityBtn.addEventListener('click', function(e) {
+            priorityBtn.addEventListener('click', function (e) {
                 e.stopPropagation();
                 const overlayId = 'task-detail-priority-overlay';
                 let existing = document.getElementById(overlayId);
@@ -1027,7 +1027,7 @@
                 if (!overlayEl) return;
                 overlayEl.style.zIndex = '10100';
                 overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(btn => {
-                    btn.addEventListener('click', function(ev) {
+                    btn.addEventListener('click', function (ev) {
                         ev.stopPropagation();
                         const val = btn.getAttribute('data-value');
                         if (val) {
@@ -1040,13 +1040,13 @@
                         openTaskDetailPanelSeguimiento(seguimientoTaskDetailState.selectedRow);
                     });
                 });
-                overlayEl.addEventListener('click', function(ev) { if (ev.target === overlayEl) { window.closeDropdownMenu(overlayId); if (overlayEl.parentNode) overlayEl.remove(); openTaskDetailPanelSeguimiento(seguimientoTaskDetailState.selectedRow); } });
+                overlayEl.addEventListener('click', function (ev) { if (ev.target === overlayEl) { window.closeDropdownMenu(overlayId); if (overlayEl.parentNode) overlayEl.remove(); openTaskDetailPanelSeguimiento(seguimientoTaskDetailState.selectedRow); } });
                 window.openDropdownMenu(overlayId, priorityBtn);
             });
         }
 
         if (assigneeTrigger && typeof window.getDropdownMenuHtml === 'function' && typeof window.openDropdownMenu === 'function' && typeof window.closeDropdownMenu === 'function') {
-            assigneeTrigger.addEventListener('click', function(e) {
+            assigneeTrigger.addEventListener('click', function (e) {
                 e.stopPropagation();
                 const overlayId = 'task-detail-assignee-overlay';
                 let existing = document.getElementById(overlayId);
@@ -1059,7 +1059,7 @@
                 if (!overlayEl) return;
                 overlayEl.style.zIndex = '10100';
                 overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(btn => {
-                    btn.addEventListener('click', function(ev) {
+                    btn.addEventListener('click', function (ev) {
                         ev.stopPropagation();
                         const val = btn.getAttribute('data-value');
                         const task = seguimientoTaskDetailState.selectedTask;
@@ -1090,13 +1090,13 @@
                         openTaskDetailPanelSeguimiento(seguimientoTaskDetailState.selectedRow);
                     });
                 });
-                overlayEl.addEventListener('click', function(ev) { if (ev.target === overlayEl) { window.closeDropdownMenu(overlayId); if (overlayEl.parentNode) overlayEl.remove(); openTaskDetailPanelSeguimiento(seguimientoTaskDetailState.selectedRow); } });
+                overlayEl.addEventListener('click', function (ev) { if (ev.target === overlayEl) { window.closeDropdownMenu(overlayId); if (overlayEl.parentNode) overlayEl.remove(); openTaskDetailPanelSeguimiento(seguimientoTaskDetailState.selectedRow); } });
                 window.openDropdownMenu(overlayId, assigneeTrigger);
             });
         }
 
         if (roleBtn && typeof window.getDropdownMenuHtml === 'function' && typeof window.openDropdownMenu === 'function' && typeof window.closeDropdownMenu === 'function') {
-            roleBtn.addEventListener('click', function(e) {
+            roleBtn.addEventListener('click', function (e) {
                 e.stopPropagation();
                 const overlayId = 'task-detail-role-overlay';
                 let existing = document.getElementById(overlayId);
@@ -1108,7 +1108,7 @@
                 if (!overlayEl) return;
                 overlayEl.style.zIndex = '10100';
                 overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(btn => {
-                    btn.addEventListener('click', function(ev) {
+                    btn.addEventListener('click', function (ev) {
                         ev.stopPropagation();
                         const r = btn.getAttribute('data-value');
                         if (r) {
@@ -1120,12 +1120,12 @@
                         openTaskDetailPanelSeguimiento(seguimientoTaskDetailState.selectedRow);
                     });
                 });
-                overlayEl.addEventListener('click', function(ev) { if (ev.target === overlayEl) { window.closeDropdownMenu(overlayId); if (overlayEl.parentNode) overlayEl.remove(); openTaskDetailPanelSeguimiento(seguimientoTaskDetailState.selectedRow); } });
+                overlayEl.addEventListener('click', function (ev) { if (ev.target === overlayEl) { window.closeDropdownMenu(overlayId); if (overlayEl.parentNode) overlayEl.remove(); openTaskDetailPanelSeguimiento(seguimientoTaskDetailState.selectedRow); } });
                 window.openDropdownMenu(overlayId, roleBtn);
             });
         }
 
-        if (deleteBtn) deleteBtn.addEventListener('click', function() {
+        if (deleteBtn) deleteBtn.addEventListener('click', function () {
             const row = seguimientoTaskDetailState.selectedRow;
             if (row && confirm('¿Eliminar esta tarea?')) {
                 const idx = SEGUIMIENTO_DATA.findIndex(r => String(r.id) === String(row.id) && r.tipo === 'tarea');
@@ -1134,21 +1134,21 @@
             }
         });
 
-        if (finishBtn) finishBtn.addEventListener('click', function() {
+        if (finishBtn) finishBtn.addEventListener('click', function () {
             const task = seguimientoTaskDetailState.selectedTask;
             const row = seguimientoTaskDetailState.selectedRow;
             if (!task || !row) return;
             task.done = !task.done;
             task.status = task.done ? 'Finalizado' : 'Activo';
-            row.estado = task.done ? 'Finalizada' : 'Iniciada';
+            row.estado = task.done ? 'Finalizada' : 'Por hacer';
             closeTaskDetailPanelSeguimiento();
             if (typeof showToast === 'function') showToast('success', task.done ? 'Tarea finalizada' : 'Tarea reabierta');
         });
 
         const addCommentBtn = panel.querySelector('.task-detail-btn-add');
-        if (addCommentBtn) addCommentBtn.addEventListener('click', function() { if (typeof showToast === 'function') showToast('info', 'Próximamente: agregar comentario'); });
+        if (addCommentBtn) addCommentBtn.addEventListener('click', function () { if (typeof showToast === 'function') showToast('info', 'Próximamente: agregar comentario'); });
 
-        const escHandler = function(ev) {
+        const escHandler = function (ev) {
             if (ev.key === 'Escape' && seguimientoTaskDetailState.selectedTask) {
                 document.removeEventListener('keydown', escHandler);
                 closeTaskDetailPanelSeguimiento();
@@ -1162,7 +1162,7 @@
     function initRowClick() {
         const tbody = document.getElementById('seguimiento-tbody');
         if (!tbody) return;
-        tbody.addEventListener('click', function(ev) {
+        tbody.addEventListener('click', function (ev) {
             const tr = ev.target.closest('tr');
             if (!tr || tr.closest('thead')) return;
             if (ev.target.closest('.seguimiento-row-check')) return;
@@ -1198,7 +1198,7 @@
             if (currentSort.column === 'fechaCreacion' || currentSort.column === 'fechaFinalizacion') {
                 const fechaA = parseFecha(valA);
                 const fechaB = parseFecha(valB);
-                
+
                 if (fechaA && fechaB) {
                     const cmp = fechaA.getTime() - fechaB.getTime();
                     return currentSort.direction === 'asc' ? cmp : -cmp;
@@ -1249,18 +1249,18 @@
         const tableWrapper = document.querySelector('.widget-tabla-seguimiento');
         const emptyStateContainer = document.getElementById('seguimiento-empty-state');
         const paginatorContainer = document.querySelector('.widget-paginador-seguimiento');
-        
+
         if (!tbody) return;
 
         const data = getDisplayData();
         const totalEnTab = getDataForCurrentTab().length;
-        
+
         // Si no hay resultados, mostrar empty state (tres variantes)
         if (data.length === 0) {
             // Ocultar tabla y paginador
             if (tableWrapper) tableWrapper.style.display = 'none';
             if (paginatorContainer) paginatorContainer.style.display = 'none';
-            
+
             const isNothingCreated = totalEnTab === 0;
             const dataWithoutPeriodAndDates = getDataFilteredExcludingPeriodAndDateRange();
             const isEmptyOnlyBecauseOfPeriodOrDates = totalEnTab > 0 && dataWithoutPeriodAndDates.length > 0;
@@ -1282,14 +1282,14 @@
                             secondary: {
                                 text: isTareas ? 'Crear tarea' : 'Crear plan',
                                 icon: 'fa-plus',
-                                onClick: function() { /* se delega al botón del header */ }
+                                onClick: function () { /* se delega al botón del header */ }
                             }
                         }
                     });
                     setTimeout(() => {
                         const createBtn = emptyStateContainer.querySelector('.ubits-button--secondary');
                         if (createBtn) {
-                            createBtn.onclick = function(e) {
+                            createBtn.onclick = function (e) {
                                 e.preventDefault();
                                 e.stopPropagation();
                                 const headerCreate = document.getElementById('seguimiento-crear-btn');
@@ -1320,14 +1320,14 @@
                             secondary: {
                                 text: 'Cambiar período',
                                 icon: 'fa-calendar-days',
-                                onClick: function() { /* abre el menú de período */ }
+                                onClick: function () { /* abre el menú de período */ }
                             }
                         }
                     });
                     setTimeout(() => {
                         const periodBtn = emptyStateContainer.querySelector('.ubits-button--secondary');
                         if (periodBtn) {
-                            periodBtn.onclick = function(e) {
+                            periodBtn.onclick = function (e) {
                                 e.preventDefault();
                                 e.stopPropagation();
                                 const periodoToggle = document.getElementById('seguimiento-periodo-toggle');
@@ -1337,38 +1337,38 @@
                     }, 50);
                 } else {
                     // 3) No se encontraron resultados por búsqueda/filtros de columna
-                loadEmptyState('seguimiento-empty-state', {
-                    icon: 'fa-search',
-                    iconSize: 'lg',
-                    title: 'No se encontraron resultados',
-                    description: 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.',
-                    buttons: {
+                    loadEmptyState('seguimiento-empty-state', {
+                        icon: 'fa-search',
+                        iconSize: 'lg',
+                        title: 'No se encontraron resultados',
+                        description: 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.',
+                        buttons: {
                             secondary: {
-                            text: 'Limpiar búsqueda',
-                            icon: 'fa-times',
-                                onClick: function() { /* se maneja con listener directo */ }
+                                text: 'Limpiar búsqueda',
+                                icon: 'fa-times',
+                                onClick: function () { /* se maneja con listener directo */ }
+                            }
                         }
-                    }
-                });
-                setTimeout(() => {
+                    });
+                    setTimeout(() => {
                         const clearBtn = emptyStateContainer.querySelector('.ubits-button--secondary');
-                    if (clearBtn) {
-                        clearBtn.onclick = function(e) {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            clearAllFilters();
-                        };
-                    }
-                }, 50);
+                        if (clearBtn) {
+                            clearBtn.onclick = function (e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                clearAllFilters();
+                            };
+                        }
+                    }, 50);
                 }
             }
-            
+
             // Actualizar contador e indicadores
             updateResultsCount();
             updateIndicadores();
             return;
         }
-        
+
         // Si hay resultados, ocultar empty state y mostrar tabla
         if (emptyStateContainer) {
             emptyStateContainer.style.display = 'none';
@@ -1376,11 +1376,11 @@
         }
         if (tableWrapper) tableWrapper.style.display = 'block';
         if (paginatorContainer) paginatorContainer.style.display = 'flex';
-        
+
         const start = (currentPage - 1) * itemsPerPage;
         const slice = data.slice(start, start + itemsPerPage);
 
-        const statusClass = { Iniciada: 'info', Vencida: 'error', Finalizada: 'success' };
+        const statusClass = { 'Por hacer': 'info', Vencida: 'error', Finalizada: 'success' };
         const prioridadIcon = { Alta: 'fa-chevrons-up', Media: 'fa-chevron-up', Baja: 'fa-chevron-down' };
         const prioridadBadgeVariant = { Alta: 'error', Media: 'warning', Baja: 'info' };
 
@@ -1457,7 +1457,7 @@
 
         // Re-attach row checkbox listeners
         tbody.querySelectorAll('.seguimiento-row-check').forEach(cb => {
-            cb.addEventListener('change', function() {
+            cb.addEventListener('change', function () {
                 const id = Number(this.dataset.id);
                 if (this.checked) selectedIds.add(id);
                 else selectedIds.delete(id);
@@ -1531,14 +1531,14 @@
         const data = filteredData;
         const totalItems = data.length;
         const finalizadas = data.filter(t => t.estado === 'Finalizada').length;
-        const iniciadas = data.filter(t => t.estado === 'Iniciada').length;
+        const iniciadas = data.filter(t => t.estado === 'Por hacer').length;
         const vencidas = data.filter(t => t.estado === 'Vencida').length;
         const porcentajeFinalizadas = totalItems > 0 ? Math.round((finalizadas / totalItems) * 100) : 0;
         const porcentajeIniciadas = totalItems > 0 ? Math.round((iniciadas / totalItems) * 100) : 0;
         const porcentajeVencidas = totalItems > 0 ? Math.round((vencidas / totalItems) * 100) : 0;
 
         const labelFinalizadas = activeTab === 'planes' ? 'Finalizados' : 'Finalizadas';
-        const labelIniciadas = activeTab === 'planes' ? 'Iniciados' : 'Iniciadas';
+        const labelIniciadas = activeTab === 'planes' ? 'Por hacer' : 'Por hacer';
         const labelVencidas = activeTab === 'planes' ? 'Vencidos' : 'Vencidas';
 
         const cardTotal = document.querySelector('#seguimiento-indicadores .seguimiento-indicador-card:nth-child(1)');
@@ -1964,7 +1964,7 @@
 
             // Agregar event listeners a los botones de remover
             container.querySelectorAll('.filtro-chip-remove').forEach((btn, index) => {
-                btn.addEventListener('click', function() {
+                btn.addEventListener('click', function () {
                     chips[index].remove();
                     renderFiltrosAplicados();
                 });
@@ -2013,7 +2013,7 @@
         }).join('');
 
         list.querySelectorAll('input[data-col]').forEach(cb => {
-            cb.addEventListener('change', function() {
+            cb.addEventListener('change', function () {
                 columnVisibility[this.dataset.col] = this.checked;
                 renderTable();
             });
@@ -2028,10 +2028,10 @@
             overlay.setAttribute('aria-hidden', 'false');
             initFilterInputs();
             // Sincronizar checkboxes estado/prioridad con el tab activo
-            document.querySelectorAll('#filtros-estado input').forEach(function(cb) {
+            document.querySelectorAll('#filtros-estado input').forEach(function (cb) {
                 cb.checked = currentFilters.estado.indexOf(cb.value) >= 0;
             });
-            document.querySelectorAll('#filtros-prioridad input').forEach(function(cb) {
+            document.querySelectorAll('#filtros-prioridad input').forEach(function (cb) {
                 cb.checked = currentFilters.prioridad.indexOf(cb.value) >= 0;
             });
             // Prioridad solo aplica a Tareas: ocultar bloque en tab Planes; en Planes el select Estado ocupa todo el ancho
@@ -2127,9 +2127,9 @@
     function createFilterAutocompleteWithCheckboxes(containerId, options, placeholder, onSelectionChange) {
         const container = document.getElementById(containerId);
         if (!container) return;
-        
+
         container.innerHTML = '';
-        
+
         // Cargar valores ya seleccionados
         let currentFilterValues = [];
         if (containerId === 'filtros-buscar-personas') {
@@ -2139,7 +2139,7 @@
         } else if (containerId === 'filtros-area-creador') {
             currentFilterValues = currentFilters.areaCreador;
         }
-        
+
         // Usar createInput con autocomplete normal pero con checkboxes
         if (typeof createInput === 'function') {
             createInput({
@@ -2150,16 +2150,16 @@
                 autocompleteOptions: options.map((opt, i) => ({ value: opt, text: opt })),
                 multiple: true,
                 showCheckboxes: true,
-                onChange: function(val) {
+                onChange: function (val) {
                     // Este onChange no se ejecuta en modo múltiple con checkboxes
                 }
             });
-            
+
             // Después de crear el input, interceptar cambios en los checkboxes
             setTimeout(() => {
                 const dropdown = container.querySelector('.ubits-autocomplete-dropdown');
                 const inputElement = container.querySelector('input');
-                
+
                 if (dropdown && inputElement) {
                     // Cargar valores seleccionados en los checkboxes
                     function loadSelectedValues() {
@@ -2172,19 +2172,19 @@
                             });
                         }
                     }
-                    
+
                     // Observar cambios en el dropdown para cargar valores cuando se rendericen
-                    const observer = new MutationObserver(function() {
+                    const observer = new MutationObserver(function () {
                         loadSelectedValues();
                     });
-                    
+
                     observer.observe(dropdown, { childList: true, subtree: true });
-                    
+
                     // Cargar valores inicialmente
                     loadSelectedValues();
-                    
+
                     // Interceptar cambios en checkboxes
-                    dropdown.addEventListener('change', function(e) {
+                    dropdown.addEventListener('change', function (e) {
                         if (e.target.classList.contains('ubits-autocomplete-checkbox')) {
                             // Obtener todos los checkboxes marcados
                             const selectedTexts = Array.from(dropdown.querySelectorAll('.ubits-autocomplete-checkbox:checked'))
@@ -2193,7 +2193,7 @@
                                     return optionText;
                                 })
                                 .filter(text => text && text.trim());
-                            
+
                             // Actualizar filtros inmediatamente
                             onSelectionChange(selectedTexts);
                         }
@@ -2258,7 +2258,7 @@
                 placeholder: 'Desde',
                 size: 'md',
                 calendarMaxDate: calendarMax,
-                onChange: function(val) {
+                onChange: function (val) {
                     currentFilters.fechaVencimientoDesde = val || null;
                 }
             });
@@ -2269,7 +2269,7 @@
                 placeholder: 'Hasta',
                 size: 'md',
                 calendarMaxDate: calendarMax,
-                onChange: function(val) {
+                onChange: function (val) {
                     currentFilters.fechaVencimientoHasta = val || null;
                 }
             });
@@ -2288,8 +2288,8 @@
 
         // Prioridad (solo tab Tareas; en Planes no se usa)
         if (activeTab === 'tareas') {
-        const prioridadChecks = document.querySelectorAll('#filtros-prioridad input:checked');
-        currentFilters.prioridad = Array.from(prioridadChecks).map(cb => cb.value);
+            const prioridadChecks = document.querySelectorAll('#filtros-prioridad input:checked');
+            currentFilters.prioridad = Array.from(prioridadChecks).map(cb => cb.value);
         } else {
             currentFilters.prioridad = [];
         }
@@ -2300,7 +2300,7 @@
             const dropdown = personasContainer.querySelector('.ubits-autocomplete-dropdown');
             if (dropdown) {
                 const nextPersona = new Set(currentFilters.persona || []);
-                dropdown.querySelectorAll('.ubits-autocomplete-option').forEach(function(opt) {
+                dropdown.querySelectorAll('.ubits-autocomplete-option').forEach(function (opt) {
                     const textEl = opt.querySelector('.ubits-autocomplete-option-text');
                     const cb = opt.querySelector('.ubits-autocomplete-checkbox');
                     const text = textEl ? textEl.textContent.trim() : '';
@@ -2319,7 +2319,7 @@
             const dropdown = areaAsignadoContainer.querySelector('.ubits-autocomplete-dropdown');
             if (dropdown) {
                 const nextArea = new Set(currentFilters.areaAsignado || []);
-                dropdown.querySelectorAll('.ubits-autocomplete-option').forEach(function(opt) {
+                dropdown.querySelectorAll('.ubits-autocomplete-option').forEach(function (opt) {
                     const textEl = opt.querySelector('.ubits-autocomplete-option-text');
                     const cb = opt.querySelector('.ubits-autocomplete-checkbox');
                     const text = textEl ? textEl.textContent.trim() : '';
@@ -2337,7 +2337,7 @@
             const dropdown = areaCreadorContainer.querySelector('.ubits-autocomplete-dropdown');
             if (dropdown) {
                 const nextArea = new Set(currentFilters.areaCreador || []);
-                dropdown.querySelectorAll('.ubits-autocomplete-option').forEach(function(opt) {
+                dropdown.querySelectorAll('.ubits-autocomplete-option').forEach(function (opt) {
                     const textEl = opt.querySelector('.ubits-autocomplete-option-text');
                     const cb = opt.querySelector('.ubits-autocomplete-checkbox');
                     const text = textEl ? textEl.textContent.trim() : '';
@@ -2355,7 +2355,7 @@
     function clearFilters() {
         filtersByTab[activeTab] = getDefaultFilters();
         currentFilters = filtersByTab[activeTab];
-        
+
         const periodoText = document.getElementById('seguimiento-periodo-text');
         if (periodoText) periodoText.textContent = 'Últimos 7 días';
 
@@ -2416,7 +2416,7 @@
         var labelsPlanes = { id: 'ID del plan', nombre: 'Nombre del plan', asignados: 'Personas asignadas', creador: 'Creador del plan', estado: 'Estado del plan', avance: 'Progreso del plan', fechaCreacion: 'Fecha de creación', fechaFinalizacion: 'Fecha de finalización' };
         var labels = activeTab === 'planes' ? labelsPlanes : labelsTareas;
         var columnIds = getColumnIds();
-        var options = columnIds.map(function(col) {
+        var options = columnIds.map(function (col) {
             return { text: labels[col] || col, value: col, checkbox: true, selected: columnVisibility[col] !== false };
         });
         if (document.getElementById(overlayId)) document.getElementById(overlayId).remove();
@@ -2425,13 +2425,13 @@
         overlayEl = document.getElementById(overlayId);
         var columnsBtn = document.getElementById('seguimiento-columns-toggle');
         if (overlayEl && columnsBtn) {
-            overlayEl.querySelectorAll('.ubits-dropdown-menu__option-left input[type="checkbox"]').forEach(function(cb) {
-                cb.addEventListener('change', function() {
+            overlayEl.querySelectorAll('.ubits-dropdown-menu__option-left input[type="checkbox"]').forEach(function (cb) {
+                cb.addEventListener('change', function () {
                     columnVisibility[this.dataset.value] = this.checked;
                     renderTable();
                 });
             });
-            overlayEl.addEventListener('click', function(ev) {
+            overlayEl.addEventListener('click', function (ev) {
                 if (ev.target === overlayEl) window.closeDropdownMenu(overlayId);
             });
             window.openDropdownMenu(overlayId, columnsBtn);
@@ -2448,14 +2448,14 @@
             itemsPerPage: itemsPerPage,
             itemsPerPageOptions: [10, 20, 50, 100],
             currentPage: currentPage,
-            onPageChange: function(page) {
+            onPageChange: function (page) {
                 currentPage = page;
                 renderTable();
                 updateSelectAll();
                 updateResultsCount();
                 updateIndicadores();
             },
-            onItemsPerPageChange: function(ipp) {
+            onItemsPerPageChange: function (ipp) {
                 itemsPerPage = ipp;
                 currentPage = 1;
                 renderTable();
@@ -2472,7 +2472,7 @@
         const container = document.getElementById('seguimiento-search-container');
         if (!toggle || !container) return;
 
-        toggle.addEventListener('click', function(e) {
+        toggle.addEventListener('click', function (e) {
             e.stopPropagation();
             if (!isSearchMode) {
                 toggle.style.display = 'none';
@@ -2484,7 +2484,7 @@
                         type: 'search',
                         placeholder: activeTab === 'planes' ? 'Buscar plan...' : 'Buscar tareas...',
                         size: 'md',
-                        onChange: function(val) {
+                        onChange: function (val) {
                             searchQuery = val || '';
                             currentPage = 1;
                             applyFiltersAndSearch(); // Asegurar que los filtros se apliquen antes de renderizar
@@ -2529,7 +2529,7 @@
             }
         });
 
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', function (e) {
             if (!isSearchMode) return;
             if (container.contains(e.target) || toggle.contains(e.target)) return;
             if (!searchQuery) {
@@ -2648,7 +2648,7 @@
 
     function initTabSwitcher() {
         document.querySelectorAll('#seguimiento-tabs .ubits-tab[data-tab]').forEach(btn => {
-            btn.addEventListener('click', function() {
+            btn.addEventListener('click', function () {
                 switchToTab(this.dataset.tab);
             });
         });
@@ -2664,7 +2664,7 @@
         const filtersOverlay = document.getElementById('filtros-modal-overlay');
 
         if (filtersClose) filtersClose.addEventListener('click', closeFiltersModal);
-        if (filtersLimpiar) filtersLimpiar.addEventListener('click', function() {
+        if (filtersLimpiar) filtersLimpiar.addEventListener('click', function () {
             clearFilters();
             currentPage = 1;
             applyFiltersAndSearch(); // Asegurar que los filtros se apliquen antes de renderizar
@@ -2675,7 +2675,7 @@
             initPaginator();
             renderFiltrosAplicados();
         });
-        if (filtersAplicar) filtersAplicar.addEventListener('click', function() {
+        if (filtersAplicar) filtersAplicar.addEventListener('click', function () {
             readFilterCheckboxes();
             currentPage = 1;
             applyFiltersAndSearch(); // Asegurar que los filtros se apliquen antes de renderizar
@@ -2689,7 +2689,7 @@
             if (typeof showToast === 'function') showToast('success', 'Filtros aplicados correctamente');
         });
         if (filtersOverlay) {
-            filtersOverlay.addEventListener('click', function(e) {
+            filtersOverlay.addEventListener('click', function (e) {
                 if (e.target === filtersOverlay) closeFiltersModal();
             });
         }
@@ -2697,7 +2697,7 @@
         // Menú columnas
         const columnsBtn = document.getElementById('seguimiento-columns-toggle');
         const columnsOverlay = document.getElementById('columns-menu-overlay');
-        if (columnsBtn) columnsBtn.addEventListener('click', function(e) { e.stopPropagation(); toggleColumnsMenu(); });
+        if (columnsBtn) columnsBtn.addEventListener('click', function (e) { e.stopPropagation(); toggleColumnsMenu(); });
         if (columnsOverlay) columnsOverlay.addEventListener('click', toggleColumnsMenu);
 
         // Popover asignados: al hacer clic en +N del profile list (tab Planes) se muestra lista de personas restantes (solo visualización)
@@ -2709,10 +2709,10 @@
         }
         const asignadosOverlay = document.getElementById('asignados-popover-overlay');
         if (asignadosOverlay) asignadosOverlay.addEventListener('click', closeAsignadosPopover);
-        document.addEventListener('keydown', function(e) {
+        document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape') closeAsignadosPopover();
         });
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', function (e) {
             const chip = e.target.closest('.ubits-profile-list__count');
             if (!chip || activeTab !== 'planes') return;
             e.preventDefault();
@@ -2721,7 +2721,7 @@
             if (!tr) return;
             const rowId = tr.dataset.id;
             const data = getDisplayData();
-            const row = data.find(function(r) { return String(r.id) === String(rowId); });
+            const row = data.find(function (r) { return String(r.id) === String(rowId); });
             if (!row || !row.asignados || row.asignados.length <= 3) return;
             var remaining = row.asignados.slice(3);
             var listEl = document.getElementById('asignados-popover-list');
@@ -2729,7 +2729,7 @@
             var overlay = document.getElementById('asignados-popover-overlay');
             if (!listEl || !popover || !overlay) return;
             listEl.innerHTML = '';
-            remaining.forEach(function(p) {
+            remaining.forEach(function (p) {
                 var nombre = (p && (p.nombre || p.name)) || 'Sin asignar';
                 var div = document.createElement('div');
                 div.className = 'asignados-popover-item';
@@ -2770,16 +2770,16 @@
             if (currentFilters.fechaCreacionDesde && currentFilters.fechaCreacionHasta) return 'personalizado';
             return currentFilters.periodo || '7';
         }
-        
+
         var selectedPeriodo = getSelectedPeriodo();
         if (selectedPeriodo !== 'personalizado' && periodoTexts[selectedPeriodo]) {
             periodoText.textContent = periodoTexts[selectedPeriodo];
         }
-        
+
         var overlayId = 'seguimiento-periodo-overlay';
-        periodoBtn.addEventListener('click', function(e) {
+        periodoBtn.addEventListener('click', function (e) {
             e.stopPropagation();
-                selectedPeriodo = getSelectedPeriodo();
+            selectedPeriodo = getSelectedPeriodo();
             var options = [
                 { text: periodoTexts['7'], value: '7', selected: selectedPeriodo === '7' },
                 { text: periodoTexts['15'], value: '15', selected: selectedPeriodo === '15' },
@@ -2795,26 +2795,26 @@
             document.body.insertAdjacentHTML('beforeend', html);
             var overlayEl = document.getElementById(overlayId);
             if (overlayEl) {
-                overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function(opt) {
-                    opt.addEventListener('click', function() {
+                overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function (opt) {
+                    opt.addEventListener('click', function () {
                         var value = this.getAttribute('data-value');
                         window.closeDropdownMenu(overlayId);
-                if (value === 'personalizado') {
-                    openDatePicker();
-                    return;
-                }
-                currentFilters.fechaCreacionDesde = null;
-                currentFilters.fechaCreacionHasta = null;
-                periodoText.textContent = periodoTexts[value];
-                currentFilters.periodo = value;
-                currentPage = 1;
-                renderTable();
-                updateResultsCount();
-                updateIndicadores();
-                initPaginator();
-            });
+                        if (value === 'personalizado') {
+                            openDatePicker();
+                            return;
+                        }
+                        currentFilters.fechaCreacionDesde = null;
+                        currentFilters.fechaCreacionHasta = null;
+                        periodoText.textContent = periodoTexts[value];
+                        currentFilters.periodo = value;
+                        currentPage = 1;
+                        renderTable();
+                        updateResultsCount();
+                        updateIndicadores();
+                        initPaginator();
+                    });
                 });
-                overlayEl.addEventListener('click', function(ev) {
+                overlayEl.addEventListener('click', function (ev) {
                     if (ev.target === overlayEl) window.closeDropdownMenu(overlayId);
                 });
             }
@@ -2831,14 +2831,14 @@
         const fechaFinInput = document.getElementById('date-picker-fecha-fin');
         const calendarContainer = document.getElementById('date-picker-calendar');
         const datePickerClose = document.getElementById('date-picker-close');
-        
+
         if (!datePickerOverlay) return;
 
         let fechaInicio = null;
         let fechaFin = null;
         let currentMonth = new Date(2026, 2, 1); // Marzo 2026
         let selectingStart = true;
-        
+
         // Guardar estado del filtro antes de abrir
         let savedFilterState = null;
 
@@ -2862,44 +2862,44 @@
         // Función para parsear fecha desde formato DD/MM/YYYY
         function parsearFechaDesdeInput(texto) {
             if (!texto || texto.trim() === '') return null;
-            
+
             // Intentar parsear DD/MM/YYYY
             const regex = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/;
             const match = texto.trim().match(regex);
-            
+
             if (!match) return null;
-            
+
             const dia = parseInt(match[1], 10);
             const mes = parseInt(match[2], 10) - 1; // Meses son 0-indexed
             const anio = parseInt(match[3], 10);
-            
+
             // Validar rango de fechas
             if (dia < 1 || dia > 31 || mes < 0 || mes > 11 || anio < 1900 || anio > 2100) {
                 return null;
             }
-            
+
             const fecha = new Date(anio, mes, dia);
-            
+
             // Validar que la fecha es válida (evita fechas como 31/02/2026)
             if (fecha.getDate() !== dia || fecha.getMonth() !== mes || fecha.getFullYear() !== anio) {
                 return null;
             }
-            
+
             return fecha;
         }
 
         // Función para abrir el selector
-        window.openDatePicker = function() {
+        window.openDatePicker = function () {
             // Guardar el estado actual del filtro antes de abrir
             savedFilterState = {
                 periodo: currentFilters.periodo,
                 fechaCreacionDesde: currentFilters.fechaCreacionDesde,
                 fechaCreacionHasta: currentFilters.fechaCreacionHasta
             };
-            
+
             datePickerOverlay.style.display = 'flex';
             datePickerOverlay.setAttribute('aria-hidden', 'false');
-            
+
             // Si hay fechas guardadas, restaurarlas
             if (currentFilters.fechaCreacionDesde && currentFilters.fechaCreacionHasta) {
                 fechaInicio = parseFecha(currentFilters.fechaCreacionDesde);
@@ -2918,7 +2918,7 @@
                 // Mostrar mes actual (marzo 2026)
                 currentMonth = new Date(2026, 2, 1);
             }
-            
+
             renderCalendar();
         };
 
@@ -2927,7 +2927,7 @@
             datePickerOverlay.style.display = 'none';
             datePickerOverlay.setAttribute('aria-hidden', 'true');
         }
-        
+
         // Función para cancelar y restaurar estado anterior
         function cancelDatePicker() {
             // Restaurar el estado del filtro guardado
@@ -2935,7 +2935,7 @@
                 currentFilters.periodo = savedFilterState.periodo;
                 currentFilters.fechaCreacionDesde = savedFilterState.fechaCreacionDesde;
                 currentFilters.fechaCreacionHasta = savedFilterState.fechaCreacionHasta;
-                
+
                 // Actualizar texto del botón según el estado restaurado
                 const periodoText = document.getElementById('seguimiento-periodo-text');
                 if (periodoText) {
@@ -2956,12 +2956,12 @@
                     }
                 }
             }
-            
+
             closeDatePicker();
         }
 
         // Cerrar con clic en el overlay (no en el contenido)
-        datePickerOverlay.addEventListener('click', function(e) {
+        datePickerOverlay.addEventListener('click', function (e) {
             if (e.target === datePickerOverlay) cancelDatePicker();
         });
 
@@ -2977,7 +2977,7 @@
 
         // Aplicar filtro
         if (datePickerAplicar) {
-            datePickerAplicar.addEventListener('click', function() {
+            datePickerAplicar.addEventListener('click', function () {
                 if (!fechaInicio || !fechaFin) {
                     if (typeof showToast === 'function') {
                         showToast('warning', 'Por favor selecciona ambas fechas');
@@ -3039,14 +3039,14 @@
         // Manejar cambios en inputs de fecha
         function initDateInputs() {
             // Input de fecha de inicio
-            fechaInicioInput.addEventListener('blur', function() {
+            fechaInicioInput.addEventListener('blur', function () {
                 const texto = this.value.trim();
                 if (texto === '') {
                     fechaInicio = null;
                     renderCalendar();
                     return;
                 }
-                
+
                 const fecha = parsearFechaDesdeInput(texto);
                 if (fecha) {
                     fecha.setHours(0, 0, 0, 0);
@@ -3059,14 +3059,14 @@
                     }
                     fechaInicio = fecha;
                     this.value = formatearFechaParaInput(fechaInicio);
-                    
+
                     // Actualizar mes mostrado si es necesario
-                    if (fechaInicio.getMonth() !== currentMonth.getMonth() || 
+                    if (fechaInicio.getMonth() !== currentMonth.getMonth() ||
                         fechaInicio.getFullYear() !== currentMonth.getFullYear()) {
                         currentMonth = new Date(fechaInicio);
                         currentMonth.setDate(1);
                     }
-                    
+
                     renderCalendar();
                 } else if (texto !== '') {
                     // Fecha inválida, restaurar valor anterior si existe
@@ -3079,14 +3079,14 @@
             });
 
             // Input de fecha de fin
-            fechaFinInput.addEventListener('blur', function() {
+            fechaFinInput.addEventListener('blur', function () {
                 const texto = this.value.trim();
                 if (texto === '') {
                     fechaFin = null;
                     renderCalendar();
                     return;
                 }
-                
+
                 const fecha = parsearFechaDesdeInput(texto);
                 if (fecha) {
                     fecha.setHours(23, 59, 59, 999);
@@ -3099,14 +3099,14 @@
                     }
                     fechaFin = fecha;
                     this.value = formatearFechaParaInput(fechaFin);
-                    
+
                     // Actualizar mes mostrado si es necesario
-                    if (fechaFin.getMonth() !== currentMonth.getMonth() || 
+                    if (fechaFin.getMonth() !== currentMonth.getMonth() ||
                         fechaFin.getFullYear() !== currentMonth.getFullYear()) {
                         currentMonth = new Date(fechaFin);
                         currentMonth.setDate(1);
                     }
-                    
+
                     renderCalendar();
                 } else if (texto !== '') {
                     // Fecha inválida, restaurar valor anterior si existe
@@ -3119,13 +3119,13 @@
             });
 
             // Permitir Enter para aplicar
-            fechaInicioInput.addEventListener('keypress', function(e) {
+            fechaInicioInput.addEventListener('keypress', function (e) {
                 if (e.key === 'Enter') {
                     this.blur();
                 }
             });
 
-            fechaFinInput.addEventListener('keypress', function(e) {
+            fechaFinInput.addEventListener('keypress', function (e) {
                 if (e.key === 'Enter') {
                     this.blur();
                 }
@@ -3171,10 +3171,10 @@
         if (typeof window.getDropdownMenuHtml !== 'function') return;
         var overlayId = 'seguimiento-sort-overlay';
 
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', function (e) {
             var btn = e.target.closest('.seguimiento-date-sort-btn');
             if (!btn) return;
-                e.stopPropagation();
+            e.stopPropagation();
             var col = btn.dataset.sort;
             var isAvance = col === 'avance';
             var descText = isAvance ? 'Más avance primero' : 'Más reciente primero';
@@ -3191,16 +3191,16 @@
             document.body.insertAdjacentHTML('beforeend', html);
             var overlayEl = document.getElementById(overlayId);
             if (overlayEl) {
-                overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function(opt) {
-            opt.addEventListener('click', function() {
+                overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function (opt) {
+                    opt.addEventListener('click', function () {
                         var dir = this.getAttribute('data-value');
                         currentSort.column = col;
                         currentSort.direction = dir;
-                    renderTable();
+                        renderTable();
                         window.closeDropdownMenu(overlayId);
-            });
-        });
-                overlayEl.addEventListener('click', function(ev) {
+                    });
+                });
+                overlayEl.addEventListener('click', function (ev) {
                     if (ev.target === overlayEl) window.closeDropdownMenu(overlayId);
                 });
             }
@@ -3211,25 +3211,25 @@
     // Inicializar menú de filtro por columna (Dropdown Menu oficial: autocomplete + hasta 5 ítems visibles que cambian al escribir, datos deduplicados)
     function initFilterMenu() {
         if (typeof window.getDropdownMenuHtml !== 'function') return;
-        var baseData = function() { return getDataFilteredByPeriodAndSearchOnly(); };
+        var baseData = function () { return getDataFilteredByPeriodAndSearchOnly(); };
         // Datos deduplicados con Set (una sola vez cada valor)
         var filterDataMap = {
-            nombre: function() { var d = baseData(); return [...new Set(d.map(function(r) { return r.nombre; }).filter(Boolean))].sort(function(a, b) { return a.localeCompare(b, 'es'); }); },
-            asignado: function() { var d = baseData(); return [...new Set(d.map(function(r) { return r.asignado && r.asignado.nombre; }).filter(Boolean))].sort(function(a, b) { return a.localeCompare(b, 'es'); }); },
-            username: function() { var d = baseData(); return [...new Set(d.map(function(r) { return r.asignado && r.asignado.username; }).filter(Boolean))].sort(function(a, b) { return a.localeCompare(b, 'es'); }); },
-            areaAsignado: function() { var d = baseData(); return [...new Set(d.map(function(r) { return r.area; }).filter(Boolean))].sort(function(a, b) { return a.localeCompare(b, 'es'); }); },
-            areaCreador: function() { var d = baseData(); return [...new Set(d.map(function(r) { return (r.areaCreador != null ? r.areaCreador : r.area); }).filter(Boolean))].sort(function(a, b) { return a.localeCompare(b, 'es'); }); },
-            lider: function() { var d = baseData(); return [...new Set(d.map(function(r) { return r.lider; }).filter(Boolean))].sort(function(a, b) { return a.localeCompare(b, 'es'); }); },
-            plan: function() { var d = baseData(); return [...new Set(d.map(function(r) { return r.plan; }).filter(Boolean))].sort(function(a, b) { return a.localeCompare(b, 'es'); }); },
-            creador: function() { var d = baseData(); return [...new Set(d.map(function(r) { return r.creador; }).filter(Boolean))].sort(function(a, b) { return a.localeCompare(b, 'es'); }); }
+            nombre: function () { var d = baseData(); return [...new Set(d.map(function (r) { return r.nombre; }).filter(Boolean))].sort(function (a, b) { return a.localeCompare(b, 'es'); }); },
+            asignado: function () { var d = baseData(); return [...new Set(d.map(function (r) { return r.asignado && r.asignado.nombre; }).filter(Boolean))].sort(function (a, b) { return a.localeCompare(b, 'es'); }); },
+            username: function () { var d = baseData(); return [...new Set(d.map(function (r) { return r.asignado && r.asignado.username; }).filter(Boolean))].sort(function (a, b) { return a.localeCompare(b, 'es'); }); },
+            areaAsignado: function () { var d = baseData(); return [...new Set(d.map(function (r) { return r.area; }).filter(Boolean))].sort(function (a, b) { return a.localeCompare(b, 'es'); }); },
+            areaCreador: function () { var d = baseData(); return [...new Set(d.map(function (r) { return (r.areaCreador != null ? r.areaCreador : r.area); }).filter(Boolean))].sort(function (a, b) { return a.localeCompare(b, 'es'); }); },
+            lider: function () { var d = baseData(); return [...new Set(d.map(function (r) { return r.lider; }).filter(Boolean))].sort(function (a, b) { return a.localeCompare(b, 'es'); }); },
+            plan: function () { var d = baseData(); return [...new Set(d.map(function (r) { return r.plan; }).filter(Boolean))].sort(function (a, b) { return a.localeCompare(b, 'es'); }); },
+            creador: function () { var d = baseData(); return [...new Set(d.map(function (r) { return r.creador; }).filter(Boolean))].sort(function (a, b) { return a.localeCompare(b, 'es'); }); }
         };
         var overlayId = 'seguimiento-filter-overlay';
         var FILTER_VISIBLE_MAX = 5;
 
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', function (e) {
             var btn = e.target.closest('.seguimiento-filter-btn');
             if (!btn) return;
-                e.stopPropagation();
+            e.stopPropagation();
             var col = btn.dataset.filter;
             var currentFilterValues = [];
             if (col === 'asignado') currentFilterValues = currentFilters.persona;
@@ -3242,8 +3242,8 @@
             else if (col === 'creador') currentFilterValues = currentFilters.creador;
             if (!Array.isArray(currentFilterValues)) currentFilterValues = [];
 
-            var allOptions = (filterDataMap[col] || function() { return []; })();
-            var options = allOptions.map(function(v) {
+            var allOptions = (filterDataMap[col] || function () { return []; })();
+            var options = allOptions.map(function (v) {
                 return { text: v, value: v, checkbox: true, selected: currentFilterValues.indexOf(v) >= 0 };
             });
             var existing = document.getElementById(overlayId);
@@ -3270,14 +3270,14 @@
                 function filterVisibleOptions(searchVal) {
                     var q = normalizeText(searchVal || '');
                     var shown = 0;
-                    optionButtons.forEach(function(opt) {
+                    optionButtons.forEach(function (opt) {
                         var textEl = opt.querySelector('.ubits-dropdown-menu__option-text');
                         var text = textEl ? textEl.textContent : '';
                         var match = !q || normalizeText(text).indexOf(q) >= 0;
                         if (match && shown < FILTER_VISIBLE_MAX) {
                             opt.style.display = '';
                             shown++;
-                            } else {
+                        } else {
                             opt.style.display = 'none';
                         }
                     });
@@ -3294,7 +3294,7 @@
                     function toggleClearIcon() {
                         clearIcon.style.display = inputEl.value.length > 0 ? 'block' : 'none';
                     }
-                    clearIcon.addEventListener('click', function(e) {
+                    clearIcon.addEventListener('click', function (e) {
                         e.preventDefault();
                         e.stopPropagation();
                         inputEl.value = '';
@@ -3302,25 +3302,25 @@
                         filterVisibleOptions('');
                         inputEl.focus();
                     });
-                    inputEl.addEventListener('input', function() {
+                    inputEl.addEventListener('input', function () {
                         toggleClearIcon();
                         filterVisibleOptions(this.value);
                     });
-                    inputEl.addEventListener('focus', function() {
+                    inputEl.addEventListener('focus', function () {
                         filterVisibleOptions(this.value);
                     });
                     filterVisibleOptions('');
-                    setTimeout(function() { inputEl.focus(); }, 100);
-                    } else {
+                    setTimeout(function () { inputEl.focus(); }, 100);
+                } else {
                     filterVisibleOptions('');
                 }
 
                 var cancelBtn = document.getElementById(overlayId + '-cancel');
                 var applyBtn = document.getElementById(overlayId + '-apply');
-                if (cancelBtn) cancelBtn.addEventListener('click', function() { window.closeDropdownMenu(overlayId); });
-                if (applyBtn) applyBtn.addEventListener('click', function() {
+                if (cancelBtn) cancelBtn.addEventListener('click', function () { window.closeDropdownMenu(overlayId); });
+                if (applyBtn) applyBtn.addEventListener('click', function () {
                     var selectedOptions = [];
-                    overlayEl.querySelectorAll('.ubits-dropdown-menu__option-left input[type="checkbox"]:checked').forEach(function(cb) {
+                    overlayEl.querySelectorAll('.ubits-dropdown-menu__option-left input[type="checkbox"]:checked').forEach(function (cb) {
                         var v = cb.dataset.value;
                         if (v && v.trim()) selectedOptions.push(v);
                     });
@@ -3342,7 +3342,7 @@
                     renderFiltrosAplicados();
                     window.closeDropdownMenu(overlayId);
                 });
-                overlayEl.addEventListener('click', function(ev) {
+                overlayEl.addEventListener('click', function (ev) {
                     if (ev.target === overlayEl) window.closeDropdownMenu(overlayId);
                 });
             }
@@ -3353,17 +3353,17 @@
     // Inicializar menú de checkboxes Estado/Prioridad (Dropdown Menu oficial)
     function initCheckboxMenu() {
         if (typeof window.getDropdownMenuHtml !== 'function') return;
-        var optionsMap = { estado: ['Iniciada', 'Vencida', 'Finalizada'], prioridad: ['Alta', 'Media', 'Baja'] };
+        var optionsMap = { estado: ['Por hacer', 'Vencida', 'Finalizada'], prioridad: ['Alta', 'Media', 'Baja'] };
         var overlayId = 'seguimiento-checkbox-overlay';
 
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', function (e) {
             var btn = e.target.closest('.seguimiento-checkbox-btn');
             if (!btn) return;
-                e.stopPropagation();
+            e.stopPropagation();
             var col = btn.dataset.checkbox;
             var opts = optionsMap[col] || [];
             var currentSelected = col === 'estado' ? currentFilters.estado : currentFilters.prioridad;
-            var options = opts.map(function(opt) {
+            var options = opts.map(function (opt) {
                 return { text: opt, value: opt, checkbox: true, selected: currentSelected.indexOf(opt) >= 0 };
             });
             var existing = document.getElementById(overlayId);
@@ -3375,33 +3375,33 @@
             if (overlayEl) {
                 function applyCheckboxSelection() {
                     var selected = [];
-                    overlayEl.querySelectorAll('.ubits-dropdown-menu__option-left input[type="checkbox"]:checked').forEach(function(cb) {
+                    overlayEl.querySelectorAll('.ubits-dropdown-menu__option-left input[type="checkbox"]:checked').forEach(function (cb) {
                         selected.push(cb.dataset.value);
                     });
                     if (col === 'estado') {
-                            currentFilters.estado = selected;
-                        document.querySelectorAll('#filtros-estado input').forEach(function(modalCb) {
+                        currentFilters.estado = selected;
+                        document.querySelectorAll('#filtros-estado input').forEach(function (modalCb) {
                             modalCb.checked = selected.indexOf(modalCb.value) >= 0;
-                            });
+                        });
                     } else if (col === 'prioridad') {
-                            currentFilters.prioridad = selected;
-                        document.querySelectorAll('#filtros-prioridad input').forEach(function(modalCb) {
+                        currentFilters.prioridad = selected;
+                        document.querySelectorAll('#filtros-prioridad input').forEach(function (modalCb) {
                             modalCb.checked = selected.indexOf(modalCb.value) >= 0;
-                            });
-                        }
-                        currentPage = 1;
+                        });
+                    }
+                    currentPage = 1;
                     applyFiltersAndSearch();
-                        applySorting();
-                        renderTable();
-                        updateResultsCount();
-                        updateIndicadores();
-                        initPaginator();
-                        renderFiltrosAplicados();
+                    applySorting();
+                    renderTable();
+                    updateResultsCount();
+                    updateIndicadores();
+                    initPaginator();
+                    renderFiltrosAplicados();
                 }
-                overlayEl.querySelectorAll('.ubits-dropdown-menu__option-left input[type="checkbox"]').forEach(function(cb) {
+                overlayEl.querySelectorAll('.ubits-dropdown-menu__option-left input[type="checkbox"]').forEach(function (cb) {
                     cb.addEventListener('change', applyCheckboxSelection);
                 });
-                overlayEl.addEventListener('click', function(ev) {
+                overlayEl.addEventListener('click', function (ev) {
                     if (ev.target === overlayEl) window.closeDropdownMenu(overlayId);
                 });
             }
@@ -3413,7 +3413,7 @@
     function initCheckboxes() {
         const selectAll = document.getElementById('seguimiento-select-all');
         if (selectAll) {
-            selectAll.addEventListener('change', function() {
+            selectAll.addEventListener('change', function () {
                 const check = this.checked;
                 const data = getDisplayData();
                 const start = (currentPage - 1) * itemsPerPage;
@@ -3434,7 +3434,7 @@
     function initVerSeleccionados() {
         const btn = document.getElementById('seguimiento-ver-seleccionados');
         if (!btn) return;
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function () {
             if (selectedIds.size === 0) return;
             viewOnlySelected = !viewOnlySelected;
             currentPage = 1;
@@ -3459,7 +3459,7 @@
 
         var deleteBodyText = document.querySelector('#delete-modal-overlay .ubits-modal-body p.ubits-body-md-regular');
         if (eliminar) {
-            eliminar.addEventListener('click', function() {
+            eliminar.addEventListener('click', function () {
                 if (selectedIds.size === 0) return;
                 if (deleteCount) deleteCount.textContent = selectedIds.size;
                 if (deleteBodyText) deleteBodyText.innerHTML = activeTab === 'planes'
@@ -3478,7 +3478,7 @@
         }
 
         if (deleteTypeInput && deleteConfirm) {
-            deleteTypeInput.addEventListener('input', function() {
+            deleteTypeInput.addEventListener('input', function () {
                 deleteConfirm.disabled = this.value.trim().toLowerCase() !== 'eliminar';
             });
         }
@@ -3495,16 +3495,16 @@
         if (deleteClose) deleteClose.addEventListener('click', closeDeleteModal);
         if (deleteCancel) deleteCancel.addEventListener('click', closeDeleteModal);
         if (deleteOverlay) {
-            deleteOverlay.addEventListener('click', function(e) {
+            deleteOverlay.addEventListener('click', function (e) {
                 if (e.target === deleteOverlay) closeDeleteModal();
             });
         }
         if (deleteConfirm) {
-            deleteConfirm.addEventListener('click', function() {
+            deleteConfirm.addEventListener('click', function () {
                 var idsToRemove = Array.from(selectedIds);
                 closeDeleteModal();
                 // Simular eliminación: quitar de datos y refrescar (Tareas y Planes)
-                SEGUIMIENTO_DATA = SEGUIMIENTO_DATA.filter(function(r) { return !selectedIds.has(r.id); });
+                SEGUIMIENTO_DATA = SEGUIMIENTO_DATA.filter(function (r) { return !selectedIds.has(r.id); });
                 selectedIds.clear();
                 applyFiltersAndSearch();
                 applySorting();
@@ -3521,7 +3521,7 @@
         // Cambiar prioridad (Dropdown Menu oficial)
         const cambiarPrioridad = document.getElementById('seguimiento-cambiar-prioridad');
         if (cambiarPrioridad && typeof window.getDropdownMenuHtml === 'function') {
-            cambiarPrioridad.addEventListener('click', function(e) {
+            cambiarPrioridad.addEventListener('click', function (e) {
                 e.stopPropagation();
                 if (selectedIds.size === 0) return;
                 var overlayId = 'seguimiento-priority-overlay';
@@ -3539,19 +3539,19 @@
                 document.body.insertAdjacentHTML('beforeend', html);
                 var overlayEl = document.getElementById(overlayId);
                 if (overlayEl) {
-                    overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function(opt) {
-                opt.addEventListener('click', function() {
+                    overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function (opt) {
+                        opt.addEventListener('click', function () {
                             var val = this.getAttribute('data-value');
-                            selectedIds.forEach(function(id) {
-                                var row = SEGUIMIENTO_DATA.find(function(r) { return r.id === id; });
-                        if (row) row.prioridad = val;
-                    });
+                            selectedIds.forEach(function (id) {
+                                var row = SEGUIMIENTO_DATA.find(function (r) { return r.id === id; });
+                                if (row) row.prioridad = val;
+                            });
                             window.closeDropdownMenu(overlayId);
-                    renderTable();
+                            renderTable();
                             if (typeof showToast === 'function') showToast('success', 'Prioridad cambiada a ' + val + ' para ' + selectedIds.size + ' elemento(s)');
-                });
-            });
-                    overlayEl.addEventListener('click', function(ev) {
+                        });
+                    });
+                    overlayEl.addEventListener('click', function (ev) {
                         if (ev.target === overlayEl) window.closeDropdownMenu(overlayId);
                     });
                 }
@@ -3561,85 +3561,85 @@
 
         // Cambiar estado (Dropdown Menu oficial; Planes: modal reabrir/finalizar)
         const cambiarEstado = document.getElementById('seguimiento-cambiar-estado');
-            var reabrirPlanOverlay = document.getElementById('reabrir-plan-overlay');
-            var reabrirPlanTitle = document.getElementById('reabrir-plan-title');
-            var reabrirPlanMessage = document.getElementById('reabrir-plan-message');
-            var reabrirPlanCancel = document.getElementById('reabrir-plan-cancel');
-            var reabrirPlanConfirm = document.getElementById('reabrir-plan-confirm');
-            var reabrirPlanClose = document.getElementById('reabrir-plan-close');
-            var pendingReabrirPlan = null;
+        var reabrirPlanOverlay = document.getElementById('reabrir-plan-overlay');
+        var reabrirPlanTitle = document.getElementById('reabrir-plan-title');
+        var reabrirPlanMessage = document.getElementById('reabrir-plan-message');
+        var reabrirPlanCancel = document.getElementById('reabrir-plan-cancel');
+        var reabrirPlanConfirm = document.getElementById('reabrir-plan-confirm');
+        var reabrirPlanClose = document.getElementById('reabrir-plan-close');
+        var pendingReabrirPlan = null;
 
-            function closeReabrirPlanModal() {
-                if (reabrirPlanOverlay) { reabrirPlanOverlay.style.display = 'none'; reabrirPlanOverlay.setAttribute('aria-hidden', 'true'); }
-                pendingReabrirPlan = null;
-            }
+        function closeReabrirPlanModal() {
+            if (reabrirPlanOverlay) { reabrirPlanOverlay.style.display = 'none'; reabrirPlanOverlay.setAttribute('aria-hidden', 'true'); }
+            pendingReabrirPlan = null;
+        }
 
-            function applyReabrirPlan() {
-                if (!pendingReabrirPlan) return;
-                var val = pendingReabrirPlan.val;
-                var planNames = pendingReabrirPlan.planNames;
-                selectedIds.forEach(function(id) {
-                    var row = SEGUIMIENTO_DATA.find(function(r) { return r.id === id; });
-                    if (row) row.estado = val;
+        function applyReabrirPlan() {
+            if (!pendingReabrirPlan) return;
+            var val = pendingReabrirPlan.val;
+            var planNames = pendingReabrirPlan.planNames;
+            selectedIds.forEach(function (id) {
+                var row = SEGUIMIENTO_DATA.find(function (r) { return r.id === id; });
+                if (row) row.estado = val;
+            });
+            if (planNames && planNames.length > 0) {
+                SEGUIMIENTO_DATA.forEach(function (r) {
+                    if (r.tipo === 'tarea' && planNames.indexOf(r.plan) >= 0) r.estado = val;
                 });
-                if (planNames && planNames.length > 0) {
-                    SEGUIMIENTO_DATA.forEach(function(r) {
-                        if (r.tipo === 'tarea' && planNames.indexOf(r.plan) >= 0) r.estado = val;
-                    });
-                }
-                closeReabrirPlanModal();
-                renderTable();
-                updateIndicadores();
-                if (typeof showToast === 'function') showToast('success', 'Estado cambiado a ' + val + ' para ' + selectedIds.size + ' plan(es) y sus tareas asociadas');
             }
+            closeReabrirPlanModal();
+            renderTable();
+            updateIndicadores();
+            if (typeof showToast === 'function') showToast('success', 'Estado cambiado a ' + val + ' para ' + selectedIds.size + ' plan(es) y sus tareas asociadas');
+        }
 
-        if (reabrirPlanOverlay) reabrirPlanOverlay.addEventListener('click', function(e) { if (e.target === reabrirPlanOverlay) closeReabrirPlanModal(); });
+        if (reabrirPlanOverlay) reabrirPlanOverlay.addEventListener('click', function (e) { if (e.target === reabrirPlanOverlay) closeReabrirPlanModal(); });
         if (reabrirPlanClose) reabrirPlanClose.addEventListener('click', closeReabrirPlanModal);
         if (reabrirPlanCancel) reabrirPlanCancel.addEventListener('click', closeReabrirPlanModal);
-            if (reabrirPlanConfirm) reabrirPlanConfirm.addEventListener('click', applyReabrirPlan);
+        if (reabrirPlanConfirm) reabrirPlanConfirm.addEventListener('click', applyReabrirPlan);
 
         if (cambiarEstado && typeof window.getDropdownMenuHtml === 'function') {
-            cambiarEstado.addEventListener('click', function(e) {
+            cambiarEstado.addEventListener('click', function (e) {
                 e.stopPropagation();
                 if (selectedIds.size === 0) return;
                 var overlayId = 'seguimiento-status-overlay';
                 var existing = document.getElementById(overlayId);
                 if (existing) existing.remove();
                 var statusOptions = activeTab === 'planes'
-                    ? [{ text: 'Iniciada', value: 'Iniciada' }, { text: 'Finalizada', value: 'Finalizada' }]
-                    : [{ text: 'Iniciada', value: 'Iniciada' }, { text: 'Vencida', value: 'Vencida' }, { text: 'Finalizada', value: 'Finalizada' }];
+                    ? [{ text: 'Por hacer', value: 'Por hacer' }, { text: 'Finalizada', value: 'Finalizada' }]
+                    : [{ text: 'Por hacer', value: 'Por hacer' }, { text: 'Vencida', value: 'Vencida' }, { text: 'Finalizada', value: 'Finalizada' }];
                 var config = { overlayId: overlayId, options: statusOptions };
                 var html = window.getDropdownMenuHtml(config);
                 document.body.insertAdjacentHTML('beforeend', html);
                 var overlayEl = document.getElementById(overlayId);
                 if (overlayEl) {
-                    overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function(opt) {
-                opt.addEventListener('click', function() {
+                    overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function (opt) {
+                        opt.addEventListener('click', function () {
                             var val = this.getAttribute('data-value');
                             window.closeDropdownMenu(overlayId);
-                    if (activeTab === 'planes' && (val === 'Iniciada' || val === 'Finalizada')) {
-                        var selectedPlans = SEGUIMIENTO_DATA.filter(function(r) { return r.tipo === 'plan' && selectedIds.has(r.id); });
-                        var planNames = selectedPlans.map(function(p) { return p.nombre; });
-                        pendingReabrirPlan = { val: val, planNames: planNames };
-                        if (reabrirPlanTitle) reabrirPlanTitle.textContent = val === 'Iniciada' ? 'Reabrir plan(es)' : 'Finalizar plan(es)';
-                        if (reabrirPlanMessage) {
-                                    reabrirPlanMessage.textContent = val === 'Iniciada'
-                                        ? 'Al reabrir este(s) plan(es), las tareas asociadas pasar\u00e1n a estado Iniciada. \u00bfContinuar?'
+                            if (activeTab === 'planes' && (val === 'Por hacer' || val === 'Finalizada')) {
+                                var selectedPlans = SEGUIMIENTO_DATA.filter(function (r) { return r.tipo === 'plan' && selectedIds.has(r.id); });
+                                var planNames = selectedPlans.map(function (p) { return p.nombre; });
+                                pendingReabrirPlan = { val: val, planNames: planNames };
+                                if (reabrirPlanTitle) reabrirPlanTitle.textContent = val === 'Por hacer' ? 'Reabrir plan(es)' : 'Finalizar plan(es)';
+                                if (reabrirPlanMessage) {
+                                    reabrirPlanMessage.textContent = val === 'Por hacer'
+                                        ? 'Al reabrir este(s) plan(es), las tareas asociadas pasarán a estado Por hacer. ¿Continuar?'
                                         : 'Al finalizar este(s) plan(es), las tareas asociadas pasar\u00e1n a estado Finalizada. \u00bfContinuar?';
-                        }
-                        if (reabrirPlanOverlay) { reabrirPlanOverlay.style.display = 'flex'; reabrirPlanOverlay.setAttribute('aria-hidden', 'false'); }
-                        return;
-                    }
-                    selectedIds.forEach(function(id) {
-                        var row = SEGUIMIENTO_DATA.find(function(r) { return r.id === id; });
-                        if (row) row.estado = val;
+                                }
+                                if (reabrirPlanOverlay) { reabrirPlanOverlay.style.display = 'flex'; reabrirPlanOverlay.setAttribute('aria-hidden', 'false'); }
+                                return;
+                            }
+                            selectedIds.forEach(function (id) {
+                                var row = SEGUIMIENTO_DATA.find(function (r) { return r.id === id; });
+                                if (row) row.estado = val;
+                            });
+                            renderTable();
+                            updateIndicadores();
+                            if (typeof showToast === 'function') showToast('success', 'Estado cambiado a ' + val + ' para ' + selectedIds.size + ' elemento(s)');
+                        });
                     });
-                    renderTable();
-                    updateIndicadores();
-                    if (typeof showToast === 'function') showToast('success', 'Estado cambiado a ' + val + ' para ' + selectedIds.size + ' elemento(s)');
-                });
-            });
-                    overlayEl.addEventListener('click', function(ev) {
+                    overlayEl.addEventListener('click', function (ev) {
                         if (ev.target === overlayEl) window.closeDropdownMenu(overlayId);
                     });
                 }
@@ -3650,7 +3650,7 @@
         // Reasignar (Dropdown Menu oficial: autocomplete + footer)
         var reasignar = document.getElementById('seguimiento-reasignar');
         if (reasignar && typeof window.getDropdownMenuHtml === 'function') {
-            reasignar.addEventListener('click', function(e) {
+            reasignar.addEventListener('click', function (e) {
                 e.stopPropagation();
                 if (selectedIds.size === 0) return;
                 var overlayId = 'seguimiento-reasignar-overlay';
@@ -3673,50 +3673,50 @@
                 var overlayEl = document.getElementById(overlayId);
                 if (overlayEl) {
                     var personas = [];
-                    SEGUIMIENTO_DATA.forEach(function(r) {
+                    SEGUIMIENTO_DATA.forEach(function (r) {
                         var n = r.asignado && r.asignado.nombre;
                         if (n && personas.indexOf(n) < 0) personas.push(n);
                     });
                     if (typeof createInput === 'function') {
-                    createInput({
+                        createInput({
                             containerId: autocompleteContainerId,
-                        type: 'autocomplete',
-                        placeholder: 'Buscar persona...',
-                        size: 'md',
-                            autocompleteOptions: personas.map(function(p, i) { return { value: String(i), text: p }; }),
-                        onChange: function(val) {
+                            type: 'autocomplete',
+                            placeholder: 'Buscar persona...',
+                            size: 'md',
+                            autocompleteOptions: personas.map(function (p, i) { return { value: String(i), text: p }; }),
+                            onChange: function (val) {
                                 reasignarPersona = personas[parseInt(val, 10)] || val || null;
-                        }
-                    });
-                }
+                            }
+                        });
+                    }
                     var cancelBtn = document.getElementById(overlayId + '-cancel');
                     var applyBtn = document.getElementById(overlayId + '-apply');
-                    if (cancelBtn) cancelBtn.addEventListener('click', function() { window.closeDropdownMenu(overlayId); });
-                    if (applyBtn) applyBtn.addEventListener('click', function() {
-                    if (reasignarPersona) {
-                            var personaExistente = SEGUIMIENTO_DATA.find(function(r) { return r.asignado && r.asignado.nombre === reasignarPersona; }) || SEGUIMIENTO_DATA.find(function(r) { return r.asignados && r.asignados.some(function(a) { return a.nombre === reasignarPersona; }); });
+                    if (cancelBtn) cancelBtn.addEventListener('click', function () { window.closeDropdownMenu(overlayId); });
+                    if (applyBtn) applyBtn.addEventListener('click', function () {
+                        if (reasignarPersona) {
+                            var personaExistente = SEGUIMIENTO_DATA.find(function (r) { return r.asignado && r.asignado.nombre === reasignarPersona; }) || SEGUIMIENTO_DATA.find(function (r) { return r.asignados && r.asignados.some(function (a) { return a.nombre === reasignarPersona; }); });
                             var avatarPersona = personaExistente && (personaExistente.asignado || (personaExistente.asignados && personaExistente.asignados[0])) ? (personaExistente.asignado || personaExistente.asignados[0]).avatar : null;
                             var usernamePersona = personaExistente && (personaExistente.asignado || (personaExistente.asignados && personaExistente.asignados[0])) ? (personaExistente.asignado || personaExistente.asignados[0]).username || '' : '';
                             var nuevoAsignado = { nombre: reasignarPersona, avatar: avatarPersona, username: usernamePersona };
-                            selectedIds.forEach(function(id) {
-                                var row = SEGUIMIENTO_DATA.find(function(r) { return r.id === id; });
-                            if (row) {
-                                if (row.tipo === 'tarea' && row.plan) {
-                                    var plan = SEGUIMIENTO_DATA.find(function(r) { return r.tipo === 'plan' && r.nombre === row.plan; });
-                                        if (plan && plan.asignados && Array.isArray(plan.asignados) && !plan.asignados.some(function(a) { return a.nombre === reasignarPersona; })) {
+                            selectedIds.forEach(function (id) {
+                                var row = SEGUIMIENTO_DATA.find(function (r) { return r.id === id; });
+                                if (row) {
+                                    if (row.tipo === 'tarea' && row.plan) {
+                                        var plan = SEGUIMIENTO_DATA.find(function (r) { return r.tipo === 'plan' && r.nombre === row.plan; });
+                                        if (plan && plan.asignados && Array.isArray(plan.asignados) && !plan.asignados.some(function (a) { return a.nombre === reasignarPersona; })) {
                                             plan.asignados.push(nuevoAsignado);
+                                        }
                                     }
+                                    row.asignado = { nombre: reasignarPersona, avatar: avatarPersona, username: usernamePersona };
                                 }
-                                row.asignado = { nombre: reasignarPersona, avatar: avatarPersona, username: usernamePersona };
-                            }
-                        });
-                        renderTable();
-                        updateIndicadores();
-                        if (typeof showToast === 'function') showToast('success', selectedIds.size + ' elemento(s) reasignado(s) a ' + reasignarPersona);
-                    }
+                            });
+                            renderTable();
+                            updateIndicadores();
+                            if (typeof showToast === 'function') showToast('success', selectedIds.size + ' elemento(s) reasignado(s) a ' + reasignarPersona);
+                        }
                         window.closeDropdownMenu(overlayId);
                     });
-                    overlayEl.addEventListener('click', function(ev) {
+                    overlayEl.addEventListener('click', function (ev) {
                         if (ev.target === overlayEl) window.closeDropdownMenu(overlayId);
                     });
                 }
@@ -3739,7 +3739,7 @@
             var labelsPlanesExport = { id: 'ID del plan', nombre: 'Nombre del plan', asignados: 'Personas asignadas', creador: 'Creador del plan', estado: 'Estado del plan', avance: 'Progreso del plan', fechaCreacion: 'Fecha de creación', fechaFinalizacion: 'Fecha de finalización' };
             var labelsTareasExport = { id: 'ID de la tarea', nombre: 'Nombre de la tarea', asignado: 'Asignado', creador: 'Creador', areaAsignado: 'Área del asignado', areaCreador: 'Área del creador', estado: 'Estado', prioridad: 'Prioridad', plan: 'Plan al que pertenece', fechaCreacion: 'Fecha de creación', fechaFinalizacion: 'Fecha de vencimiento', comentarios: 'Número de comentarios' };
             var labelsExport = isPlanes ? labelsPlanesExport : labelsTareasExport;
-            var selectedRows = SEGUIMIENTO_DATA.filter(function(r) {
+            var selectedRows = SEGUIMIENTO_DATA.filter(function (r) {
                 return selectedIds.has(r.id) && (isPlanes ? r.tipo === 'plan' : r.tipo === 'tarea');
             });
             function getExportVal(row, colId) {
@@ -3748,7 +3748,7 @@
                     if (colId === 'nombre') return row.nombre || '';
                     if (colId === 'asignados') {
                         if (!row.asignados || !row.asignados.length) return (row.asignado && row.asignado.nombre) ? String(row.asignado.nombre) : '';
-                        return row.asignados.map(function(a) { return (a && a.nombre != null) ? String(a.nombre) : ''; }).filter(Boolean).join(', ');
+                        return row.asignados.map(function (a) { return (a && a.nombre != null) ? String(a.nombre) : ''; }).filter(Boolean).join(', ');
                     }
                     if (colId === 'creador') return row.creador || '';
                     if (colId === 'estado') return row.estado || '';
@@ -3778,7 +3778,7 @@
             var baseName = (isPlanes ? 'planes_' : 'tareas_') + new Date().toISOString().split('T')[0];
             if (format === 'excel') {
                 function isNumericColumn(colId) { return colId === 'id' || colId === 'avance' || colId === 'comentarios'; }
-                var escapeXml = function(s) {
+                var escapeXml = function (s) {
                     if (s == null) return '';
                     var t = String(s);
                     t = t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -3786,11 +3786,11 @@
                 };
                 var sheetName = isPlanes ? 'Planes' : 'Tareas';
                 var xml = '<?xml version="1.0" encoding="UTF-8"?>\n<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">\n<Styles><Style ss:ID="Default" ss:Name="Normal"><Alignment ss:Vertical="Bottom"/><Borders/><Font ss:FontName="Calibri" ss:Size="11" ss:Color="#000000"/><Interior/><NumberFormat/><Protection/></Style></Styles>\n<Worksheet ss:Name="' + escapeXml(sheetName) + '">\n<Table>\n<Row>\n';
-                columnIds.forEach(function(colId) { xml += '<Cell><Data ss:Type="String">' + escapeXml(labelsExport[colId] || colId) + '</Data></Cell>\n'; });
+                columnIds.forEach(function (colId) { xml += '<Cell><Data ss:Type="String">' + escapeXml(labelsExport[colId] || colId) + '</Data></Cell>\n'; });
                 xml += '</Row>\n';
-                selectedRows.forEach(function(row) {
+                selectedRows.forEach(function (row) {
                     xml += '<Row>\n';
-                    columnIds.forEach(function(colId) {
+                    columnIds.forEach(function (colId) {
                         var val = getExportVal(row, colId);
                         if (isNumericColumn(colId) && typeof val === 'number') xml += '<Cell><Data ss:Type="Number">' + val + '</Data></Cell>\n';
                         else xml += '<Cell><Data ss:Type="String">' + escapeXml(val == null ? '' : String(val)) + '</Data></Cell>\n';
@@ -3815,10 +3815,10 @@
                     if (/[,\n"]/.test(t)) return '"' + t.replace(/"/g, '""') + '"';
                     return t;
                 }
-                var headers = columnIds.map(function(colId) { return escapeCsv(labelsExport[colId] || colId); });
+                var headers = columnIds.map(function (colId) { return escapeCsv(labelsExport[colId] || colId); });
                 var csvRows = [headers.join(',')];
-                selectedRows.forEach(function(row) {
-                    var values = columnIds.map(function(colId) { return escapeCsv(getExportVal(row, colId)); });
+                selectedRows.forEach(function (row) {
+                    var values = columnIds.map(function (colId) { return escapeCsv(getExportVal(row, colId)); });
                     csvRows.push(values.join(','));
                 });
                 var blob = new Blob(['\ufeff' + csvRows.join('\n')], { type: 'text/csv;charset=utf-8' });
@@ -3835,7 +3835,7 @@
         }
 
         if (descargar && typeof window.getDropdownMenuHtml === 'function' && typeof window.openDropdownMenu === 'function') {
-            descargar.addEventListener('click', function(e) {
+            descargar.addEventListener('click', function (e) {
                 if (selectedIds.size === 0) return;
                 e.stopPropagation();
                 var overlayId = 'seguimiento-descargar-overlay';
@@ -3852,17 +3852,17 @@
                 document.body.insertAdjacentHTML('beforeend', html);
                 var overlayEl = document.getElementById(overlayId);
                 if (overlayEl) {
-                    overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function(opt) {
-                        opt.addEventListener('click', function() {
+                    overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function (opt) {
+                        opt.addEventListener('click', function () {
                             var format = this.getAttribute('data-value');
-                    if (format === 'excel' || format === 'csv') doDownloadExport(format);
-                    closeDescargarMenu();
-                });
-            });
-                    overlayEl.addEventListener('click', function(ev) {
+                            if (format === 'excel' || format === 'csv') doDownloadExport(format);
+                            closeDescargarMenu();
+                        });
+                    });
+                    overlayEl.addEventListener('click', function (ev) {
                         if (ev.target === overlayEl) closeDescargarMenu();
                     });
-        }
+                }
                 window.openDropdownMenu(overlayId, descargar);
                 descargar.setAttribute('aria-expanded', 'true');
             });
@@ -3927,7 +3927,7 @@
 
         var planFechaModalTitle = document.getElementById('plan-fecha-modal-title');
         if (planFechaBtn && planFechaOverlay) {
-            planFechaBtn.addEventListener('click', function() {
+            planFechaBtn.addEventListener('click', function () {
                 if (selectedIds.size === 0) return;
                 if (planFechaModalTitle) planFechaModalTitle.textContent = activeTab === 'tareas' ? 'Cambiar fecha de vencimiento' : 'Cambiar fecha de finalización';
                 planFechaSelected = null;
@@ -3939,9 +3939,9 @@
         }
         if (planFechaClose) planFechaClose.addEventListener('click', closePlanFechaModal);
         if (planFechaCancel) planFechaCancel.addEventListener('click', closePlanFechaModal);
-        if (planFechaOverlay) planFechaOverlay.addEventListener('click', function(e) { if (e.target === planFechaOverlay) closePlanFechaModal(); });
+        if (planFechaOverlay) planFechaOverlay.addEventListener('click', function (e) { if (e.target === planFechaOverlay) closePlanFechaModal(); });
         if (planFechaInput) {
-            planFechaInput.addEventListener('blur', function() {
+            planFechaInput.addEventListener('blur', function () {
                 var texto = this.value.trim();
                 if (texto === '') {
                     planFechaSelected = null;
@@ -3967,7 +3967,7 @@
                     this.value = formatearFechaPlan(planFechaSelected);
                 }
             });
-            planFechaInput.addEventListener('keypress', function(e) { if (e.key === 'Enter') this.blur(); });
+            planFechaInput.addEventListener('keypress', function (e) { if (e.key === 'Enter') this.blur(); });
         }
         function formatearFechaPlanParaTabla(fecha) {
             var d = fecha.getDate();
@@ -3978,7 +3978,7 @@
         }
 
         if (planFechaAplicar) {
-            planFechaAplicar.addEventListener('click', function() {
+            planFechaAplicar.addEventListener('click', function () {
                 if (!planFechaSelected) {
                     if (typeof showToast === 'function') showToast('warning', 'Selecciona una fecha en el calendario o escríbela en el campo (DD/MM/YYYY)');
                     return;
@@ -3993,8 +3993,8 @@
                 var sel = new Date(planFechaSelected);
                 sel.setHours(0, 0, 0, 0);
                 if (activeTab === 'tareas') {
-                    selectedIds.forEach(function(id) {
-                        var row = SEGUIMIENTO_DATA.find(function(r) { return r.id === id; });
+                    selectedIds.forEach(function (id) {
+                        var row = SEGUIMIENTO_DATA.find(function (r) { return r.id === id; });
                         if (row && row.tipo === 'tarea') {
                             row.fechaFinalizacion = fechaStr;
                             if (sel < hoy) row.estado = 'Vencida';
@@ -4005,8 +4005,8 @@
                     updateIndicadores();
                     if (typeof showToast === 'function') showToast('success', 'Fecha de vencimiento actualizada para ' + selectedIds.size + ' tarea(s)');
                 } else {
-                    selectedIds.forEach(function(id) {
-                        var row = SEGUIMIENTO_DATA.find(function(r) { return r.id === id; });
+                    selectedIds.forEach(function (id) {
+                        var row = SEGUIMIENTO_DATA.find(function (r) { return r.id === id; });
                         if (row && row.tipo === 'plan') {
                             row.fechaFinalizacion = fechaStr;
                             if (sel < hoy) row.estado = 'Vencida';
@@ -4035,7 +4035,7 @@
         }
 
         if (anadirColabBtn && anadirColabMenu) {
-            anadirColabBtn.addEventListener('click', function(e) {
+            anadirColabBtn.addEventListener('click', function (e) {
                 e.stopPropagation();
                 if (selectedIds.size === 0 || activeTab !== 'planes') return;
                 var rect = this.getBoundingClientRect();
@@ -4047,17 +4047,17 @@
                 if (container) container.innerHTML = '';
                 if (container && typeof createInput === 'function') {
                     var personas = [];
-                    SEGUIMIENTO_DATA.forEach(function(r) {
+                    SEGUIMIENTO_DATA.forEach(function (r) {
                         if (r.asignado && r.asignado.nombre && personas.indexOf(r.asignado.nombre) < 0) personas.push(r.asignado.nombre);
-                        if (r.asignados) r.asignados.forEach(function(a) { if (a.nombre && personas.indexOf(a.nombre) < 0) personas.push(a.nombre); });
+                        if (r.asignados) r.asignados.forEach(function (a) { if (a.nombre && personas.indexOf(a.nombre) < 0) personas.push(a.nombre); });
                     });
                     createInput({
                         containerId: 'anadir-colaborador-autocomplete',
                         type: 'autocomplete',
                         placeholder: 'Buscar persona...',
                         size: 'md',
-                        autocompleteOptions: personas.map(function(p, i) { return { value: String(i), text: p }; }),
-                        onChange: function(val) {
+                        autocompleteOptions: personas.map(function (p, i) { return { value: String(i), text: p }; }),
+                        onChange: function (val) {
                             var idx = parseInt(val, 10);
                             anadirColaboradorPersona = !isNaN(idx) && personas[idx] ? personas[idx] : (val || null);
                         }
@@ -4068,14 +4068,14 @@
         if (anadirColabCancel) anadirColabCancel.addEventListener('click', closeAnadirColaborador);
         if (anadirColabOverlay) anadirColabOverlay.addEventListener('click', closeAnadirColaborador);
         if (anadirColabApply) {
-            anadirColabApply.addEventListener('click', function() {
+            anadirColabApply.addEventListener('click', function () {
                 if (anadirColaboradorPersona) {
-                    var personaRef = SEGUIMIENTO_DATA.find(function(r) { return r.asignado && r.asignado.nombre === anadirColaboradorPersona; }) || SEGUIMIENTO_DATA.find(function(r) { return r.asignados && r.asignados.some(function(a) { return a.nombre === anadirColaboradorPersona; }); });
+                    var personaRef = SEGUIMIENTO_DATA.find(function (r) { return r.asignado && r.asignado.nombre === anadirColaboradorPersona; }) || SEGUIMIENTO_DATA.find(function (r) { return r.asignados && r.asignados.some(function (a) { return a.nombre === anadirColaboradorPersona; }); });
                     var nuevoColab = personaRef && (personaRef.asignado || (personaRef.asignados && personaRef.asignados[0])) ? { nombre: anadirColaboradorPersona, avatar: (personaRef.asignado || personaRef.asignados[0]).avatar, username: (personaRef.asignado || personaRef.asignados[0]).username || '' } : { nombre: anadirColaboradorPersona, avatar: null, username: '' };
-                    selectedIds.forEach(function(id) {
-                        var row = SEGUIMIENTO_DATA.find(function(r) { return r.id === id; });
+                    selectedIds.forEach(function (id) {
+                        var row = SEGUIMIENTO_DATA.find(function (r) { return r.id === id; });
                         if (row && row.tipo === 'plan' && row.asignados) {
-                            if (!row.asignados.some(function(a) { return a.nombre === anadirColaboradorPersona; })) row.asignados.push(nuevoColab);
+                            if (!row.asignados.some(function (a) { return a.nombre === anadirColaboradorPersona; })) row.asignados.push(nuevoColab);
                         }
                     });
                     renderTable();
@@ -4115,7 +4115,7 @@
     function initClearFiltersButton() {
         const clearFiltersBtn = document.getElementById('seguimiento-clear-filters-btn');
         if (clearFiltersBtn) {
-            clearFiltersBtn.addEventListener('click', function() {
+            clearFiltersBtn.addEventListener('click', function () {
                 clearAllFilters();
             });
         }

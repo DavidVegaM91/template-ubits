@@ -22,10 +22,12 @@
     <link rel="stylesheet" href="../../components/dropdown-menu.css">
     <link rel="stylesheet" href="../../components/tooltip.css">
     <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/radio-button.css">
     <link rel="stylesheet" href="../../components/alert.css">
     <link rel="stylesheet" href="../../components/status-tag.css">
     <link rel="stylesheet" href="./profile.css">
     <link rel="stylesheet" href="./planes.css">
+    <link rel="stylesheet" href="../../components/drawer.css">
 </head>
 <body data-theme="light" class="page-planes">
     <div class="dashboard-container">
@@ -67,19 +69,7 @@
     <!-- Profile Menu Container -->
     <div id="profile-menu-container"></div>
 
-    <!-- Drawer de crear plantilla -->
-    <div id="create-template-drawer-overlay" class="template-drawer-overlay" style="display: none;">
-        <div class="template-drawer-content" id="create-template-drawer">
-            <!-- El contenido se generará dinámicamente con JavaScript -->
-        </div>
-    </div>
-
-    <!-- Drawer de crear plan -->
-    <div id="create-plan-drawer-overlay" class="template-drawer-overlay plan-drawer-overlay" style="display: none;">
-        <div class="template-drawer-content plan-drawer-content" id="create-plan-drawer">
-            <!-- El contenido se generará dinámicamente con JavaScript -->
-        </div>
-    </div>
+    <!-- Drawers crear plantilla y crear plan: se crean con componente UBITS (planes.js + drawer.js) -->
 
         <script src="../../components/tooltip.js"></script>
         <script src="../../components/sidebar.js"></script>
@@ -91,6 +81,7 @@
         <script src="../../components/dropdown-menu.js"></script>
         <script src="../../components/input.js"></script>
         <script src="../../components/alert.js"></script>
+        <script src="../../components/drawer.js"></script>
         <script src="../../script.js"></script>
         <script src="./tareas-base-unificada.js"></script>
         <script src="./planes.js"></script>

@@ -260,10 +260,16 @@
                                             <span>Copiar</span>
                                         </button>
                                     </div>
+                                    <div style="background: var(--ubits-feedback-bg-warning-subtle); border: 1px solid var(--ubits-feedback-accent-warning); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                                        <h3 class="ubits-body-md-bold" style="margin-bottom: 8px; color: var(--ubits-fg-1-high);">⚠️ OBLIGATORIO: Importar el CSS en cada página</h3>
+                                        <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.5; margin: 0;">
+                                            Si la página que usa radios <strong>no</strong> incluye <code>radio-button.css</code>, los radios se verán como inputs nativos o rotos. Siempre añade en el <code>&lt;head&gt;</code> de ese HTML: <code>&lt;link rel="stylesheet" href="../../components/radio-button.css"&gt;</code> (ruta relativa según carpeta: desde <code>ubits-colaborador/*</code> o <code>ubits-admin/*</code> usar <code>../../components/</code>; desde raíz usar <code>components/</code>).
+                                        </p>
+                                    </div>
                                     <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
                                         <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">🔧 REQUISITOS OBLIGATORIOS:</h3>
                                         <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.5;">
-                                            <strong>CSS:</strong> <code>components/radio-button.css</code>, <code>general-styles/ubits-colors.css</code><br>
+                                            <strong>CSS:</strong> <code>components/radio-button.css</code>, <code>general-styles/ubits-colors.css</code> — <strong>sin el CSS del componente los radios no se ven como UBITS.</strong><br>
                                             <strong>JavaScript:</strong> No requerido. Uso con <code>&lt;label&gt;</code> y <code>name</code> igual para agrupar.<br>
                                             <strong>Tamaños:</strong> Solo sm y md (según Figma).
                                         </div>

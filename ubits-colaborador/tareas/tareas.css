@@ -511,7 +511,34 @@ body.page-tareas .dashboard-container {
 .tareas-overdue-header h2 {
     margin: 0;
     color: var(--ubits-fg-1-high);
-    flex: 1;
+}
+
+.tareas-overdue-header .tareas-overdue-badge {
+    margin-left: var(--gap-sm, 8px);
+}
+
+/* Badge de cantidad (rojo, letra blanca, como el del componente botón) */
+.tareas-overdue-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 10px;
+    background: var(--ubits-button-badge);
+    color: var(--ubits-btn-primary-fg);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+}
+
+/* Un solo dígito (1-9): circular */
+.tareas-overdue-badge.tareas-overdue-badge--circle {
+    width: 20px;
+    min-width: 20px;
+    padding: 0;
+    border-radius: 50%;
 }
 
 .tareas-overdue-content {
@@ -726,3 +753,55 @@ body.page-tareas .dashboard-container {
 }
 
 /* Panel de detalle de tarea: estilos en components/task-detail-panel.css */
+
+/* ========================================
+   DRAWER DE FILTROS (Estado, Prioridad, Asignación)
+   Usa componente UBITS (components/drawer.css) con size sm.
+   Estilos solo para el contenido dentro de .ubits-drawer-body.
+   ======================================== */
+.filtros-drawer-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xl);
+}
+
+.filtros-drawer-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+}
+
+.filtros-drawer-group > .ubits-body-md-bold {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.filtros-drawer-checkboxes,
+.filtros-drawer-radios {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+}
+
+.filtros-drawer-option,
+.filtros-drawer-radio {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    cursor: pointer;
+    margin: 0;
+}
+
+.filtros-drawer-option input[type="checkbox"],
+.filtros-drawer-radio input[type="radio"] {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    flex-shrink: 0;
+    accent-color: var(--ubits-accent-brand);
+}
+
+.filtros-drawer-option span,
+.filtros-drawer-radio span {
+    color: var(--ubits-fg-1-medium);
+}

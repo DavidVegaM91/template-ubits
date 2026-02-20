@@ -85,7 +85,7 @@ function formatPlanDate(dateStr) {
 
 function renderPlanCard(plan, isNew) {
     const progress = plan.tasksTotal > 0 ? Math.round((plan.tasksDone / plan.tasksTotal) * 100) : 0;
-    const statusLabels = { Activo: 'Iniciado', Vencido: 'Vencido', Finalizado: 'Finalizado' };
+    const statusLabels = { Activo: 'Por hacer', Vencido: 'Vencido', Finalizado: 'Finalizado' };
     const statusIcons = { Activo: 'fa-play-circle', Vencido: 'fa-clock', Finalizado: 'fa-check-circle' };
     const statusVariant = plan.status === 'Activo' ? 'info' : plan.status === 'Vencido' ? 'error' : 'success';
     const label = statusLabels[plan.status] || plan.status;
@@ -202,7 +202,7 @@ function renderPlansInterface() {
                         </button>
                     </div>
                     <div class="plan-section__counters">
-                        <div class="plan-counter"><span class="plan-counter__dot plan-counter__dot--blue"></span> Iniciados: ${countersInProgress.iniciado}</div>
+                        <div class="plan-counter"><span class="plan-counter__dot plan-counter__dot--blue"></span> Por hacer: ${countersInProgress.iniciado}</div>
                         <div class="plan-counter"><span class="plan-counter__dot plan-counter__dot--red"></span> Vencidos: ${countersInProgress.vencido}</div>
                     </div>
                 </div>
@@ -459,53 +459,47 @@ function closeTemplateDrawer() {
     renderTemplateDrawer();
 }
 
-// Renderizar drawer de plantilla
+// Crear overlay del drawer de plantilla con componente UBITS (una sola vez)
+function ensureTemplateDrawerOverlayExists() {
+    if (document.getElementById('create-template-drawer-overlay')) return;
+    if (typeof getDrawerHtml !== 'function') return;
+    var html = getDrawerHtml({
+        overlayId: 'create-template-drawer-overlay',
+        title: 'Crear una plantilla para un plan',
+        subtitle: 'Es una base reutilizable para tus planes, úsalo siempre.',
+        bodyHtml: '<div id="create-template-drawer"></div>',
+        footerHtml: '<div id="create-template-drawer-footer"></div>',
+        size: 'md',
+        closeButtonId: 'template-drawer-close'
+    });
+    var wrap = document.createElement('div');
+    wrap.innerHTML = html;
+    var overlay = wrap.firstElementChild;
+    document.body.appendChild(overlay);
+    overlay.querySelector('#template-drawer-close').addEventListener('click', closeTemplateDrawer);
+    overlay.addEventListener('click', function (e) {
+        if (e.target === overlay) closeTemplateDrawer();
+    });
+    document.addEventListener('keydown', function templateDrawerEsc(ev) {
+        if (ev.key === 'Escape' && templateDrawerState.isOpen) {
+            closeTemplateDrawer();
+        }
+    });
+}
+
+// Renderizar drawer de plantilla (usa componente UBITS: body + footer en #create-template-drawer y #create-template-drawer-footer)
 function renderTemplateDrawer() {
+    ensureTemplateDrawerOverlayExists();
     const overlay = document.getElementById('create-template-drawer-overlay');
-    const drawer = document.getElementById('create-template-drawer');
-    
-    if (!overlay || !drawer) {
-        // Si no existen los elementos, crearlos
-        if (!overlay) {
-            const newOverlay = document.createElement('div');
-            newOverlay.id = 'create-template-drawer-overlay';
-            newOverlay.className = 'template-drawer-overlay';
-            newOverlay.style.display = 'none';
-            document.body.appendChild(newOverlay);
-        }
-        if (!drawer) {
-            const newDrawer = document.createElement('div');
-            newDrawer.id = 'create-template-drawer';
-            newDrawer.className = 'template-drawer-content';
-            if (overlay) {
-                overlay.appendChild(newDrawer);
-            } else {
-                document.getElementById('create-template-drawer-overlay')?.appendChild(newDrawer);
-            }
-        }
-        // Reintentar después de crear elementos
-        setTimeout(() => renderTemplateDrawer(), 50);
-        return;
-    }
+    const bodyEl = document.getElementById('create-template-drawer');
+    const footerEl = document.getElementById('create-template-drawer-footer');
+    if (!overlay || !bodyEl || !footerEl) return;
 
     if (templateDrawerState.isOpen) {
         overlay.style.display = 'flex';
-        
-        drawer.innerHTML = `
-            <!-- Header -->
-            <div class="template-drawer-header">
-                <div class="template-drawer-header__top">
-                    <div>
-                        <h2 class="ubits-heading-h2">Crear una plantilla para un plan</h2>
-                        <p class="ubits-body-sm-regular">Es una base reutilizable para tus planes, úsalo siempre.</p>
-                    </div>
-                    <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="template-drawer-close" aria-label="Cerrar">
-                        <i class="far fa-times"></i>
-                    </button>
-                </div>
-            </div>
+        overlay.setAttribute('aria-hidden', 'false');
 
-            <!-- Body -->
+        var bodyContent = `
             <div class="template-drawer-body">
                 <form id="template-form" onsubmit="handleTemplateSubmit(event)">
                     <!-- Nombre de la plantilla -->
@@ -531,16 +525,8 @@ function renderTemplateDrawer() {
                     <div class="template-form-group template-form-group--spaced-above-lg">
                         <label class="template-form-label">Configuración de permiso</label>
                         <div class="template-radio-group">
-                            <label class="template-radio-item ubits-radio ubits-radio--sm">
-                                <input type="radio" name="templatePermission" class="ubits-radio__input" value="empresarial" ${templateDrawerState.templatePermission === 'empresarial' ? 'checked' : ''} onchange="templateDrawerState.templatePermission = 'empresarial'" />
-                                <span class="ubits-radio__circle"></span>
-                                <span class="ubits-radio__label">Plantilla empresarial</span>
-                            </label>
-                            <label class="template-radio-item ubits-radio ubits-radio--sm">
-                                <input type="radio" name="templatePermission" class="ubits-radio__input" value="individual" ${templateDrawerState.templatePermission === 'individual' ? 'checked' : ''} onchange="templateDrawerState.templatePermission = 'individual'" />
-                                <span class="ubits-radio__circle"></span>
-                                <span class="ubits-radio__label">Plantilla individual</span>
-                            </label>
+                            ${getUbitsRadioHtml({ name: 'templatePermission', value: 'empresarial', label: 'Plantilla empresarial', checked: templateDrawerState.templatePermission === 'empresarial', onchange: "templateDrawerState.templatePermission = 'empresarial'" })}
+                            ${getUbitsRadioHtml({ name: 'templatePermission', value: 'individual', label: 'Plantilla individual', checked: templateDrawerState.templatePermission === 'individual', onchange: "templateDrawerState.templatePermission = 'individual'" })}
                         </div>
                     </div>
 
@@ -551,19 +537,11 @@ function renderTemplateDrawer() {
                             Para más de 5 tareas, hazlo de forma rápida, sencilla y práctica desde un archivo.
                         </p>
 
-                        <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 12px;">
+                        <div class="template-task-creation-inner">
                             <!-- Radio buttons para modo de creación -->
                             <div class="template-radio-group">
-                                <label class="template-radio-item ubits-radio ubits-radio--sm" id="task-creation-mode-excel">
-                                    <input type="radio" name="taskCreationMode" class="ubits-radio__input" value="excel" ${templateDrawerState.taskCreationMode === 'excel' ? 'checked' : ''} onchange="handleTaskCreationModeChange('excel')" />
-                                    <span class="ubits-radio__circle"></span>
-                                    <span class="ubits-radio__label">Con un excel</span>
-                                </label>
-                                <label class="template-radio-item ubits-radio ubits-radio--sm" id="task-creation-mode-manual">
-                                    <input type="radio" name="taskCreationMode" class="ubits-radio__input" value="manual" ${templateDrawerState.taskCreationMode === 'manual' ? 'checked' : ''} onchange="handleTaskCreationModeChange('manual')" />
-                                    <span class="ubits-radio__circle"></span>
-                                    <span class="ubits-radio__label">Manualmente</span>
-                                </label>
+                                ${getUbitsRadioHtml({ name: 'taskCreationMode', value: 'excel', label: 'Con un excel', checked: templateDrawerState.taskCreationMode === 'excel', onchange: "handleTaskCreationModeChange('excel')", id: 'task-creation-mode-excel' })}
+                                ${getUbitsRadioHtml({ name: 'taskCreationMode', value: 'manual', label: 'Manualmente', checked: templateDrawerState.taskCreationMode === 'manual', onchange: "handleTaskCreationModeChange('manual')", id: 'task-creation-mode-manual' })}
                             </div>
 
                             ${renderTaskCreationSection()}
@@ -581,29 +559,13 @@ function renderTemplateDrawer() {
                         </div>
                     ` : ''}
                 </form>
-            </div>
-
-            <!-- Footer -->
-            <div class="template-drawer-footer">
-                <button 
-                    type="button"
-                    class="ubits-button ubits-button--secondary ubits-button--md"
-                    onclick="closeTemplateDrawer()"
-                >
-                    <span>Cancelar</span>
-                </button>
-                <button 
-                    type="button"
-                    id="create-template-button"
-                    class="ubits-button ubits-button--primary ubits-button--md"
-                    onclick="handleTemplateSubmit()"
-                    ${templateDrawerState.loading ? 'disabled' : ''}
-                >
-                    ${templateDrawerState.loading ? '<i class="far fa-spinner fa-spin"></i>' : ''}
-                    <span>Crear plantilla</span>
-                </button>
-            </div>
-        `;
+            </div>`;
+        bodyEl.innerHTML = bodyContent;
+        footerEl.innerHTML = `
+            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="closeTemplateDrawer()"><span>Cancelar</span></button>
+            <button type="button" id="create-template-button" class="ubits-button ubits-button--primary ubits-button--sm" onclick="handleTemplateSubmit()" ${templateDrawerState.loading ? 'disabled' : ''}>
+                ${templateDrawerState.loading ? '<i class="far fa-spinner fa-spin"></i>' : ''}<span>Crear plantilla</span>
+            </button>`;
 
         // Inicializar inputs
         setTimeout(() => {
@@ -631,28 +593,6 @@ function renderTemplateDrawer() {
             }
         }, 100);
 
-        // Event listener para cerrar
-        const closeBtn = document.getElementById('template-drawer-close');
-        if (closeBtn) {
-            closeBtn.addEventListener('click', closeTemplateDrawer);
-        }
-
-        // Cerrar al hacer clic en overlay
-        overlay.addEventListener('click', (e) => {
-            if (e.target === overlay) {
-                closeTemplateDrawer();
-            }
-        });
-
-        // Cerrar con tecla ESC
-        const escHandler = (e) => {
-            if (e.key === 'Escape' && templateDrawerState.isOpen) {
-                closeTemplateDrawer();
-            }
-        };
-        document.addEventListener('keydown', escHandler);
-        overlay.dataset.escHandler = 'true';
-
         // Configurar drag & drop si está en modo excel
         setTimeout(() => {
             if (templateDrawerState.taskCreationMode === 'excel') {
@@ -661,6 +601,7 @@ function renderTemplateDrawer() {
         }, 100);
     } else {
         overlay.style.display = 'none';
+        overlay.setAttribute('aria-hidden', 'true');
     }
 }
 
@@ -819,7 +760,7 @@ function renderTaskCreator() {
             </div>
         </div>
     `;
-    
+
     // Inicializar inputs después de renderizar
     setTimeout(() => {
         if (typeof createInput === 'function') {
@@ -845,7 +786,7 @@ function renderTaskCreator() {
             });
         }
     }, 50);
-    
+
     return taskCreatorHTML;
 }
 
@@ -887,7 +828,7 @@ function setupDragAndDrop() {
         e.stopPropagation();
         templateDrawerState.isDragOver = false;
         uploadArea.classList.remove('drag-over');
-        
+
         const file = e.dataTransfer.files[0];
         if (file && file.name.endsWith('.csv')) {
             handleFile(file);
@@ -1052,8 +993,8 @@ function handleTemplateSubmit(event) {
     // Simular creación (en producción sería una llamada a API)
     setTimeout(() => {
         const templateName = templateDrawerState.formData.templateName?.trim() || 'Plantilla sin nombre';
-        const tasks = templateDrawerState.csvTasks.length > 0 
-            ? templateDrawerState.csvTasks 
+        const tasks = templateDrawerState.csvTasks.length > 0
+            ? templateDrawerState.csvTasks
             : templateDrawerState.tasks;
 
         console.log('Creando plantilla:', {
@@ -1065,7 +1006,7 @@ function handleTemplateSubmit(event) {
 
         // Simular éxito
         templateDrawerState.loading = false;
-        
+
         // Mostrar toast de éxito
         if (typeof showToast === 'function') {
             showToast('success', 'Plantilla creada correctamente');
@@ -1078,6 +1019,32 @@ function handleTemplateSubmit(event) {
 // ========================================
 //   DRAWER DE CREAR PLAN (PlanForm)
 // ========================================
+
+// Crear overlay del drawer de plan con componente UBITS (una sola vez)
+function ensurePlanDrawerOverlayExists() {
+    if (document.getElementById('create-plan-drawer-overlay')) return;
+    if (typeof getDrawerHtml !== 'function') return;
+    var html = getDrawerHtml({
+        overlayId: 'create-plan-drawer-overlay',
+        title: 'Crear un plan',
+        subtitle: 'Organiza tus pendientes, asigna tareas y lleva el control de tus avances con facilidad.',
+        bodyHtml: '<div id="create-plan-drawer"></div>',
+        footerHtml: '<div id="create-plan-drawer-footer"></div>',
+        size: 'md',
+        closeButtonId: 'plan-drawer-close'
+    });
+    var wrap = document.createElement('div');
+    wrap.innerHTML = html;
+    var overlay = wrap.firstElementChild;
+    document.body.appendChild(overlay);
+    overlay.querySelector('#plan-drawer-close').addEventListener('click', closePlanDrawer);
+    overlay.addEventListener('click', function (e) {
+        if (e.target === overlay) closePlanDrawer();
+    });
+    document.addEventListener('keydown', function planDrawerEsc(ev) {
+        if (ev.key === 'Escape' && planDrawerState.isOpen) closePlanDrawer();
+    });
+}
 
 function openPlanDrawer() {
     planDrawerState.isOpen = true;
@@ -1469,20 +1436,15 @@ function renderPlanTaskSection() {
         ${s.showTaskCreator ? `
             <div class="plan-task-creator">
                 <div class="plan-task-creator__title-row">
-                    <div class="plan-task-creator__input-wrap">
-                        <div class="ubits-input-wrapper">
-                            <input type="text" id="plan-task-title-input" class="ubits-input ubits-input--sm" placeholder="Nueva tarea"
-                                value="${escapeHtml((window.currentPlanTask || {}).title || '')}"
-                                oninput="(window.currentPlanTask=window.currentPlanTask||{}).title=this.value" />
-                        </div>
+                    <div class="plan-task-creator__input-wrap plan-task-creator__input-wrap--official">
+                        <div id="plan-task-title-input-container"></div>
                     </div>
                     <div class="plan-task-creator__icons">
                         <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" title="Editar" aria-label="Editar"><i class="far fa-pen"></i></button>
                         <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" title="Eliminar" aria-label="Eliminar" onclick="handlePlanCancelTaskCreator()"><i class="far fa-times"></i></button>
                     </div>
                 </div>
-                <textarea id="plan-task-desc-input" class="ubits-input plan-task-creator__textarea" placeholder="Descripción" rows="3"
-                    oninput="(window.currentPlanTask=window.currentPlanTask||{}).description=this.value">${escapeHtml((window.currentPlanTask || {}).description || '')}</textarea>
+                <div id="plan-task-desc-input-container"></div>
                 <div class="plan-task-creator__actions">
                     <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="handlePlanTaskPriorityClick()">
                         <i class="far fa-flag"></i>
@@ -1503,37 +1465,30 @@ function renderPlanTaskSection() {
 }
 
 function renderPlanDrawer() {
+    ensurePlanDrawerOverlayExists();
     const overlay = document.getElementById('create-plan-drawer-overlay');
-    const drawer = document.getElementById('create-plan-drawer');
-    if (!overlay || !drawer) return;
+    const bodyEl = document.getElementById('create-plan-drawer');
+    const footerEl = document.getElementById('create-plan-drawer-footer');
+    if (!overlay || !bodyEl || !footerEl) return;
 
     if (!planDrawerState.isOpen) {
         overlay.style.display = 'none';
+        overlay.setAttribute('aria-hidden', 'true');
         return;
     }
 
     overlay.style.display = 'flex';
+    overlay.setAttribute('aria-hidden', 'false');
     const open = planDrawerState.openAccordion;
     const useT = planDrawerState.useTemplate;
     const cfg = planDrawerState.planConfiguration;
     const taskMode = planDrawerState.taskCreationMode;
 
-    drawer.innerHTML = `
-        <div class="template-drawer-header">
-            <div class="template-drawer-header__top">
-                <div>
-                    <h2 class="ubits-heading-h2">Crear un plan</h2>
-                    <p class="plan-drawer-header__subtitle">Organiza tus pendientes, asigna tareas y lleva el control de tus avances con facilidad.</p>
-                </div>
-                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="plan-drawer-close" aria-label="Cerrar">
-                    <i class="far fa-times"></i>
-                </button>
-            </div>
-        </div>
+    var bodyContent = `
         <div class="template-drawer-body">
             <form id="plan-form" onsubmit="handlePlanSubmit(event)">
                 ${planDrawerState.error ? `
-                    <div class="ubits-alert ubits-alert--error" style="margin-bottom: 16px;">
+                    <div class="ubits-alert ubits-alert--error plan-alert-spaced">
                         <div class="ubits-alert__icon"><i class="far fa-exclamation-circle"></i></div>
                         <div class="ubits-alert__content">
                             <div class="ubits-alert__text">${escapeHtml(planDrawerState.error)}</div>
@@ -1556,46 +1511,25 @@ function renderPlanDrawer() {
                         <div class="template-form-group">
                             <span class="template-form-label">¿Quieres usar una plantilla?</span>
                             <div class="template-radio-group">
-                                <label class="template-radio-item ubits-radio ubits-radio--sm">
-                                    <input type="radio" name="planUseTemplate" class="ubits-radio__input" value="yes" ${useT === 'yes' ? 'checked' : ''} onchange="handlePlanUseTemplateChange('yes')" />
-                                    <span class="ubits-radio__circle"></span>
-                                    <span class="ubits-radio__label">Sí</span>
-                                </label>
-                                <label class="template-radio-item ubits-radio ubits-radio--sm">
-                                    <input type="radio" name="planUseTemplate" class="ubits-radio__input" value="no" ${useT === 'no' ? 'checked' : ''} onchange="handlePlanUseTemplateChange('no')" />
-                                    <span class="ubits-radio__circle"></span>
-                                    <span class="ubits-radio__label">No</span>
-                                </label>
+                                ${getUbitsRadioHtml({ name: 'planUseTemplate', value: 'yes', label: 'Sí', checked: useT === 'yes', onchange: "handlePlanUseTemplateChange('yes')" })}
+                                ${getUbitsRadioHtml({ name: 'planUseTemplate', value: 'no', label: 'No', checked: useT === 'no', onchange: "handlePlanUseTemplateChange('no')" })}
                             </div>
                         </div>
                         ${useT === 'yes' ? `
                             <div class="template-form-group">
-                                <label class="template-form-label">Plantilla</label>
-                                <select class="ubits-input" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--ubits-border-1);"
-                                    onchange="var o=this.options[this.selectedIndex]; planDrawerState.selectedTemplateId=o.value; if(o.value){ var t=planDrawerState.templates.find(x=>x.id===o.value); if(t) planDrawerState.formData.title=t.name; } renderPlanDrawer();">
-                                    <option value="">Selecciona una plantilla</option>
-                                    ${planDrawerState.templates.map(t => `
-                                        <option value="${t.id}" ${planDrawerState.selectedTemplateId === t.id ? 'selected' : ''}>${escapeHtml(t.name)}</option>
-                                    `).join('')}
-                                </select>
+                                <div id="plan-template-select-container"></div>
                             </div>
                         ` : ''}
                         <div class="template-form-group">
-                            <label class="template-form-label">Nombre del plan *</label>
-                            <input type="text" class="ubits-input" placeholder="Escribe un título breve" value="${escapeHtml(planDrawerState.formData.title)}"
-                                oninput="planDrawerState.formData.title=this.value" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--ubits-border-1);" />
+                            <div id="plan-title-input-container"></div>
                         </div>
                         ${useT === 'no' ? `
                             <div class="template-form-group">
-                                <label class="template-form-label">Descripción</label>
-                                <textarea class="ubits-input" placeholder="Breve descripción del plan" rows="2" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--ubits-border-1);resize:vertical;"
-                                    oninput="planDrawerState.formData.description=this.value">${escapeHtml(planDrawerState.formData.description)}</textarea>
+                                <div id="plan-description-input-container"></div>
                             </div>
                         ` : ''}
                         <div class="template-form-group">
-                            <label class="template-form-label">Fecha de finalización</label>
-                            <input type="date" class="ubits-input" value="${escapeHtml(planDrawerState.formData.endDate)}"
-                                oninput="planDrawerState.formData.endDate=this.value" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--ubits-border-1);" />
+                            <div id="plan-enddate-input-container"></div>
                         </div>
                     </div>
                 </div>
@@ -1614,41 +1548,28 @@ function renderPlanDrawer() {
                     <div class="plan-accordion__body">
                         <div class="template-form-group">
                             <span class="template-form-label">¿Cómo quieres asignar los usuarios?</span>
-                            <span class="template-form-helper" style="margin-left:4px;">(Obligatorio)</span>
-                            <div class="template-radio-group" style="margin-top:8px;">
-                                <label class="template-radio-item ubits-radio ubits-radio--sm">
-                                    <input type="radio" name="planUserMode" class="ubits-radio__input" value="platform" ${planDrawerState.userAssignmentMode === 'platform' ? 'checked' : ''} onchange="handlePlanUserAssignmentModeChange('platform')" />
-                                    <span class="ubits-radio__circle"></span>
-                                    <span class="ubits-radio__label">Desde la plataforma</span>
-                                </label>
-                                <label class="template-radio-item ubits-radio ubits-radio--sm">
-                                    <input type="radio" name="planUserMode" class="ubits-radio__input" value="excel" ${planDrawerState.userAssignmentMode === 'excel' ? 'checked' : ''} onchange="handlePlanUserAssignmentModeChange('excel')" />
-                                    <span class="ubits-radio__circle"></span>
-                                    <span class="ubits-radio__label">Desde un excel</span>
-                                </label>
+                            <span class="template-form-helper template-form-helper--inline">(Obligatorio)</span>
+                            <div class="template-radio-group template-radio-group--spaced">
+                                ${getUbitsRadioHtml({ name: 'planUserMode', value: 'platform', label: 'Desde la plataforma', checked: planDrawerState.userAssignmentMode === 'platform', onchange: "handlePlanUserAssignmentModeChange('platform')" })}
+                                ${getUbitsRadioHtml({ name: 'planUserMode', value: 'excel', label: 'Desde un excel', checked: planDrawerState.userAssignmentMode === 'excel', onchange: "handlePlanUserAssignmentModeChange('excel')" })}
                             </div>
                         </div>
                         ${planDrawerState.userAssignmentMode === 'platform' && !planDrawerState.userCsvFile ? `
                         <div class="template-form-group">
                             <label class="template-form-label">¿A quién se lo quieres asignar? ⓘ</label>
-                            <div style="display:flex;align-items:center;gap:8px;padding:12px;border:1px solid var(--ubits-border-1);border-radius:8px;background:var(--ubits-bg-1);">
-                                <i class="far fa-search" style="color:var(--ubits-fg-1-medium);"></i>
-                                <input type="text" id="plan-user-search" class="ubits-input" placeholder="Escribe un nombre o correo"
-                                    value="${escapeHtml(planDrawerState.userSearch)}" oninput="planDrawerState.userSearch=this.value; clearTimeout(window._planUserSearchT); window._planUserSearchT=setTimeout(handlePlanUserSearch, 200);"
-                                    style="flex:1;border:none;background:transparent;padding:0;outline:none;" />
-                            </div>
+                            <div id="plan-user-search-input-container"></div>
                             ${planDrawerState.userResults.length > 0 ? `
-                                <ul style="margin-top:8px;list-style:none;padding:0;border:1px solid var(--ubits-border-1);border-radius:8px;background:var(--ubits-bg-1);max-height:128px;overflow-y:auto;">
+                                <ul class="plan-user-results-list">
                                     ${planDrawerState.userResults.map((u, i) => `
-                                        <li style="padding:10px 12px;cursor:pointer;border-bottom:1px solid var(--ubits-border-1);display:flex;flex-direction:column;gap:2px;" onclick="handleAddPlanMemberByIndex(${i})" onmouseover="this.style.background='var(--ubits-bg-2)'" onmouseout="this.style.background='transparent'">
-                                            <span style="font-size:14px;color:var(--ubits-fg-1-high);">${escapeHtml((u.email || '').split('@')[0])}</span>
-                                            <span style="font-size:12px;color:var(--ubits-fg-1-medium);">${escapeHtml(u.email || '')}</span>
+                                        <li class="plan-user-result-item" onclick="handleAddPlanMemberByIndex(${i})">
+                                            <span>${escapeHtml((u.email || '').split('@')[0])}</span>
+                                            <span>${escapeHtml(u.email || '')}</span>
                                         </li>
                                     `).join('')}
                                 </ul>
                             ` : ''}
                             ${planDrawerState.members.length > 0 ? `
-                                <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;">
+                                <div class="plan-member-chips">
                                     ${planDrawerState.members.map(m => `
                                         <span class="plan-member-chip">
                                             ${escapeHtml((m.email || '').split('@')[0])}
@@ -1662,8 +1583,8 @@ function renderPlanDrawer() {
                         ${planDrawerState.userAssignmentMode === 'excel' ? `
                         <div class="template-form-group">
                             ${!planDrawerState.userCsvFile ? `
-                                <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;">
-                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" onclick="handlePlanDownloadUserTemplate()">
+                                <div class="plan-download-wrap">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="handlePlanDownloadUserTemplate()">
                                         <i class="far fa-download"></i>
                                         <span>Descargar plantilla de ejemplo de usuarios</span>
                                     </button>
@@ -1696,20 +1617,12 @@ function renderPlanDrawer() {
                             `}
                         </div>
                         ` : ''}
-                        <div class="template-form-group" style="margin-top:16px;padding-top:16px;border-top:1px solid var(--ubits-border-1);">
+                        <div class="template-form-group plan-form-group-divider">
                             <span class="template-form-label">¿Cómo deseas configurar este plan?</span>
-                            <span class="template-form-helper" style="margin-left:4px;">(Obligatorio)</span>
-                            <div class="template-radio-group" style="margin-top:8px;">
-                                <label class="template-radio-item ubits-radio ubits-radio--sm">
-                                    <input type="radio" name="planConfig" class="ubits-radio__input" value="everyone" ${cfg === 'everyone' ? 'checked' : ''} onchange="handlePlanConfigChange('everyone')" />
-                                    <span class="ubits-radio__circle"></span>
-                                    <span class="ubits-radio__label">Un plan para todos</span>
-                                </label>
-                                <label class="template-radio-item ubits-radio ubits-radio--sm">
-                                    <input type="radio" name="planConfig" class="ubits-radio__input" value="individual" ${cfg === 'individual' ? 'checked' : ''} onchange="handlePlanConfigChange('individual')" />
-                                    <span class="ubits-radio__circle"></span>
-                                    <span class="ubits-radio__label">Un plan para cada uno</span>
-                                </label>
+                            <span class="template-form-helper template-form-helper--inline">(Obligatorio)</span>
+                            <div class="template-radio-group template-radio-group--spaced">
+                                ${getUbitsRadioHtml({ name: 'planConfig', value: 'everyone', label: 'Un plan para todos', checked: cfg === 'everyone', onchange: "handlePlanConfigChange('everyone')" })}
+                                ${getUbitsRadioHtml({ name: 'planConfig', value: 'individual', label: 'Un plan para cada uno', checked: cfg === 'individual', onchange: "handlePlanConfigChange('individual')" })}
                             </div>
                         </div>
                     </div>
@@ -1730,59 +1643,127 @@ function renderPlanDrawer() {
                         ${useT === 'yes' ? '' : `
                             <div class="plan-task-creation-section">
                                 <div class="template-form-group">
-                                    <label class="template-form-label">¿Cómo quieres crear las tareas? <span class="template-form-helper" style="margin-left:2px;">(Obligatorio)</span></label>
-                                    <div class="template-radio-group" style="margin-top:8px;">
-                                        <label class="template-radio-item plan-radio-with-info ubits-radio ubits-radio--sm">
-                                            <input type="radio" name="planTaskMode" class="ubits-radio__input" value="manual" ${taskMode === 'manual' ? 'checked' : ''} onchange="handlePlanTaskModeChange('manual')" />
-                                            <span class="ubits-radio__circle"></span>
-                                            <span class="ubits-radio__label">De forma manual</span>
-                                            <i class="far fa-info-circle plan-radio-info-icon" title="Crear tareas una por una"></i>
-                                        </label>
-                                        <label class="template-radio-item plan-radio-with-info ubits-radio ubits-radio--sm">
-                                            <input type="radio" name="planTaskMode" class="ubits-radio__input" value="excel" ${taskMode === 'excel' ? 'checked' : ''} onchange="handlePlanTaskModeChange('excel')" />
-                                            <span class="ubits-radio__circle"></span>
-                                            <span class="ubits-radio__label">De forma masiva</span>
-                                            <i class="far fa-info-circle plan-radio-info-icon" title="Cargar varias tareas desde un archivo"></i>
-                                        </label>
+                                    <label class="template-form-label">¿Cómo quieres crear las tareas? <span class="template-form-helper template-form-helper--inline">(Obligatorio)</span></label>
+                                    <div class="template-radio-group template-radio-group--spaced">
+                                        ${getUbitsRadioHtml({ name: 'planTaskMode', value: 'manual', label: 'De forma manual', checked: taskMode === 'manual', onchange: "handlePlanTaskModeChange('manual')", extraClass: 'plan-radio-with-info', infoTitle: 'Crear tareas una por una' })}
+                                        ${getUbitsRadioHtml({ name: 'planTaskMode', value: 'excel', label: 'De forma masiva', checked: taskMode === 'excel', onchange: "handlePlanTaskModeChange('excel')", extraClass: 'plan-radio-with-info', infoTitle: 'Cargar varias tareas desde un archivo' })}
                                     </div>
                                 </div>
-                                <div class="plan-task-actions" style="margin-top:20px;">${renderPlanTaskSection()}</div>
+                                <div class="plan-task-actions plan-task-actions-spaced">${renderPlanTaskSection()}</div>
                             </div>
                         `}
                     </div>
                 </div>
             </form>
-        </div>
-        <div class="template-drawer-footer">
-            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--md" onclick="closePlanDrawer()"><span>Cancelar</span></button>
-            <button type="button" id="plan-submit-btn" class="ubits-button ubits-button--primary ubits-button--md" ${planDrawerState.loading ? 'disabled' : ''} onclick="document.getElementById('plan-form')?.requestSubmit();">
-                ${planDrawerState.loading ? '<i class="far fa-spinner fa-spin"></i> ' : ''}<span>Crear plan</span>
-            </button>
-        </div>
-    `;
+        </div>`;
+    bodyEl.innerHTML = bodyContent;
+    footerEl.innerHTML = `
+        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="closePlanDrawer()"><span>Cancelar</span></button>
+        <button type="button" id="plan-submit-btn" class="ubits-button ubits-button--primary ubits-button--sm" ${planDrawerState.loading ? 'disabled' : ''} onclick="document.getElementById('plan-form')?.requestSubmit();">
+            ${planDrawerState.loading ? '<i class="far fa-spinner fa-spin"></i> ' : ''}<span>Crear plan</span>
+        </button>`;
 
-    const closeBtn = document.getElementById('plan-drawer-close');
-    if (closeBtn) closeBtn.addEventListener('click', closePlanDrawer);
-    overlay.onclick = function(ev) {
-        if (ev.target === overlay) closePlanDrawer();
-    };
-    if (window._planDrawerEscHandler) {
-        document.removeEventListener('keydown', window._planDrawerEscHandler);
+    setTimeout(() => {
+        initPlanDrawerInputs();
+        if (planDrawerState.showTaskCreator && window.planTaskTitleInputApi) {
+            window.planTaskTitleInputApi.focus();
+        }
+        if (planDrawerState.taskCreationMode === 'excel') {
+            setupPlanTaskUploadDragDrop();
+        }
+    }, 80);
+}
+
+function initPlanDrawerInputs() {
+    if (typeof createInput !== 'function') return;
+    const s = planDrawerState;
+
+    if (document.getElementById('plan-template-select-container')) {
+        createInput({
+            containerId: 'plan-template-select-container',
+            label: 'Plantilla',
+            type: 'select',
+            placeholder: 'Selecciona una plantilla',
+            selectOptions: [{ value: '', text: 'Selecciona una plantilla' }].concat(s.templates.map(t => ({ value: t.id, text: t.name }))),
+            value: s.selectedTemplateId || '',
+            onChange: (val) => {
+                planDrawerState.selectedTemplateId = val;
+                if (val) {
+                    const t = planDrawerState.templates.find(x => x.id === val);
+                    if (t) planDrawerState.formData.title = t.name;
+                }
+                renderPlanDrawer();
+            }
+        });
     }
-    window._planDrawerEscHandler = function(ev) {
-        if (ev.key === 'Escape' && planDrawerState.isOpen) closePlanDrawer();
-    };
-    document.addEventListener('keydown', window._planDrawerEscHandler);
-
-    if (planDrawerState.showTaskCreator) {
-        setTimeout(() => {
-            const titleInput = document.getElementById('plan-task-title-input');
-            if (titleInput) titleInput.focus();
-        }, 80);
+    if (document.getElementById('plan-title-input-container')) {
+        createInput({
+            containerId: 'plan-title-input-container',
+            label: 'Nombre del plan *',
+            placeholder: 'Escribe un título breve',
+            value: s.formData.title || '',
+            onChange: (v) => { planDrawerState.formData.title = v; }
+        });
     }
-
-    if (planDrawerState.taskCreationMode === 'excel') {
-        setupPlanTaskUploadDragDrop();
+    if (document.getElementById('plan-description-input-container')) {
+        createInput({
+            containerId: 'plan-description-input-container',
+            label: 'Descripción',
+            type: 'textarea',
+            placeholder: 'Breve descripción del plan',
+            value: s.formData.description || '',
+            onChange: (v) => { planDrawerState.formData.description = v; }
+        });
+    }
+    if (document.getElementById('plan-enddate-input-container')) {
+        createInput({
+            containerId: 'plan-enddate-input-container',
+            label: 'Fecha de finalización',
+            type: 'calendar',
+            placeholder: 'Selecciona una fecha',
+            value: s.formData.endDate || '',
+            onChange: (v) => { planDrawerState.formData.endDate = v; }
+        });
+    }
+    if (document.getElementById('plan-user-search-input-container')) {
+        createInput({
+            containerId: 'plan-user-search-input-container',
+            type: 'search',
+            placeholder: 'Escribe un nombre o correo',
+            value: s.userSearch || '',
+            showLabel: false,
+            onChange: (v) => {
+                planDrawerState.userSearch = v;
+                clearTimeout(window._planUserSearchT);
+                window._planUserSearchT = setTimeout(handlePlanUserSearch, 200);
+            }
+        });
+    }
+    if (document.getElementById('plan-task-title-input-container')) {
+        window.planTaskTitleInputApi = createInput({
+            containerId: 'plan-task-title-input-container',
+            placeholder: 'Nueva tarea',
+            size: 'sm',
+            showLabel: false,
+            value: (window.currentPlanTask || {}).title || '',
+            onChange: (v) => {
+                if (!window.currentPlanTask) window.currentPlanTask = {};
+                window.currentPlanTask.title = v;
+            }
+        });
+    }
+    if (document.getElementById('plan-task-desc-input-container')) {
+        createInput({
+            containerId: 'plan-task-desc-input-container',
+            type: 'textarea',
+            placeholder: 'Descripción',
+            showLabel: false,
+            value: (window.currentPlanTask || {}).description || '',
+            onChange: (v) => {
+                if (!window.currentPlanTask) window.currentPlanTask = {};
+                window.currentPlanTask.description = v;
+            }
+        });
     }
 }
 
@@ -1823,6 +1804,15 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
+/** Genera el HTML de un radio oficial UBITS (evita markup hardcodeado). */
+function getUbitsRadioHtml(opts) {
+    const { name, value, label, checked, onchange, id = '', extraClass = '', infoTitle = '' } = opts;
+    const idAttr = id ? ` id="${id}"` : '';
+    const labelClass = ['ubits-radio', 'ubits-radio--sm'].concat(extraClass ? [extraClass] : []).join(' ');
+    const infoIcon = infoTitle ? ` <i class="far fa-info-circle plan-radio-info-icon" title="${escapeHtml(infoTitle)}"></i>` : '';
+    return `<label class="${labelClass}"${idAttr}><input type="radio" name="${escapeHtml(name)}" class="ubits-radio__input" value="${escapeHtml(value)}" ${checked ? 'checked' : ''} onchange="${onchange}" /><span class="ubits-radio__circle"></span><span class="ubits-radio__label">${escapeHtml(label)}</span>${infoIcon}</label>`;
+}
+
 // Inicializar FAB (se puede llamar desde cualquier página)
 function initFabButton() {
     const container = document.getElementById('fab-button-container');
@@ -1830,7 +1820,7 @@ function initFabButton() {
 }
 
 // Inicializar
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Solo inicializar el FAB automáticamente en la página de Planes
     if (document.body && document.body.classList.contains('page-planes')) {
         initFabButton();

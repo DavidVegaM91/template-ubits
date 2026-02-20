@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -42,6 +43,7 @@
     <link rel="stylesheet" href="./seguimiento-leader.css">
     <link rel="stylesheet" href="./planes.css">
 </head>
+
 <body data-theme="light">
     <div class="dashboard-container">
         <div class="tooltip" id="tooltip"></div>
@@ -61,18 +63,25 @@
                         <div class="widget-header-seguimiento">
                             <div class="seguimiento-header-bar">
                                 <div class="seguimiento-header-left">
-                                    <span class="ubits-body-md-bold" id="seguimiento-header-title">Lista de tareas</span>
+                                    <span class="ubits-body-md-bold" id="seguimiento-header-title">Lista de
+                                        tareas</span>
                                     <span class="ubits-body-sm-regular" id="seguimiento-results-count">0/100</span>
                                 </div>
                                 <div class="seguimiento-header-right">
-                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only" id="seguimiento-search-toggle" aria-label="Buscar">
+                                    <button type="button"
+                                        class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only"
+                                        id="seguimiento-search-toggle" aria-label="Buscar">
                                         <i class="far fa-magnifying-glass"></i>
                                     </button>
-                                    <div id="seguimiento-search-container" class="seguimiento-search-inline" style="display: none;"></div>
-                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only" id="seguimiento-columns-toggle" aria-label="Columnas">
+                                    <div id="seguimiento-search-container" class="seguimiento-search-inline"
+                                        style="display: none;"></div>
+                                    <button type="button"
+                                        class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only"
+                                        id="seguimiento-columns-toggle" aria-label="Columnas">
                                         <i class="far fa-columns-3"></i>
                                     </button>
-                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="seguimiento-periodo-toggle" aria-label="Período">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md"
+                                        id="seguimiento-periodo-toggle" aria-label="Período">
                                         <span id="seguimiento-periodo-text">Últimos 7 días</span>
                                         <i class="far fa-chevron-down"></i>
                                     </button>
@@ -83,7 +92,8 @@
                             <div class="widget-indicadores-seguimiento" id="seguimiento-indicadores">
                                 <!-- Total -->
                                 <div class="seguimiento-indicador-card">
-                                    <div class="indicador-icon-badge" style="background: var(--ubits-bg-2); border-color: var(--ubits-border-1);">
+                                    <div class="indicador-icon-badge"
+                                        style="background: var(--ubits-bg-2); border-color: var(--ubits-border-1);">
                                         <i class="far fa-list-check" style="color: var(--ubits-fg-1-medium);"></i>
                                     </div>
                                     <div class="indicador-content">
@@ -96,8 +106,10 @@
 
                                 <!-- Finalizadas -->
                                 <div class="seguimiento-indicador-card">
-                                    <div class="indicador-icon-badge" style="background: var(--ubits-feedback-bg-success-subtle); border-color: var(--ubits-feedback-border-success);">
-                                        <i class="far fa-check-circle" style="color: var(--ubits-feedback-fg-success-subtle);"></i>
+                                    <div class="indicador-icon-badge"
+                                        style="background: var(--ubits-feedback-bg-success-subtle); border-color: var(--ubits-feedback-border-success);">
+                                        <i class="far fa-check-circle"
+                                            style="color: var(--ubits-feedback-fg-success-subtle);"></i>
                                     </div>
                                     <div class="indicador-content">
                                         <div class="indicador-number">45</div>
@@ -110,13 +122,15 @@
 
                                 <!-- Iniciadas -->
                                 <div class="seguimiento-indicador-card">
-                                    <div class="indicador-icon-badge" style="background: var(--ubits-feedback-bg-info-subtle); border-color: var(--ubits-feedback-border-info);">
-                                        <i class="far fa-spinner" style="color: var(--ubits-feedback-fg-info-subtle);"></i>
+                                    <div class="indicador-icon-badge"
+                                        style="background: var(--ubits-feedback-bg-info-subtle); border-color: var(--ubits-feedback-border-info);">
+                                        <i class="far fa-spinner"
+                                            style="color: var(--ubits-feedback-fg-info-subtle);"></i>
                                     </div>
                                     <div class="indicador-content">
                                         <div class="indicador-number">28</div>
                                         <div class="indicador-meta">
-                                            <span class="indicador-label">Iniciadas</span>
+                                            <span class="indicador-label">Por hacer</span>
                                             <span class="indicador-percentage">20%</span>
                                         </div>
                                     </div>
@@ -124,8 +138,10 @@
 
                                 <!-- Vencidas -->
                                 <div class="seguimiento-indicador-card">
-                                    <div class="indicador-icon-badge" style="background: var(--ubits-feedback-bg-error-subtle); border-color: var(--ubits-feedback-border-error);">
-                                        <i class="far fa-exclamation-triangle" style="color: var(--ubits-feedback-fg-error-subtle);"></i>
+                                    <div class="indicador-icon-badge"
+                                        style="background: var(--ubits-feedback-bg-error-subtle); border-color: var(--ubits-feedback-border-error);">
+                                        <i class="far fa-exclamation-triangle"
+                                            style="color: var(--ubits-feedback-fg-error-subtle);"></i>
                                     </div>
                                     <div class="indicador-content">
                                         <div class="indicador-number">12</div>
@@ -138,10 +154,13 @@
                             </div>
 
                             <!-- Filtros aplicados (chips) - debajo de indicadores -->
-                            <div class="widget-filtros-aplicados" id="seguimiento-filtros-aplicados" style="display: none;">
+                            <div class="widget-filtros-aplicados" id="seguimiento-filtros-aplicados"
+                                style="display: none;">
                                 <span class="ubits-body-sm-regular">Filtros aplicados:</span>
                                 <div class="filtros-chips-container" id="filtros-chips-container"></div>
-                                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs seguimiento-clear-filters-btn" id="seguimiento-clear-filters-btn" aria-label="Limpiar todos los filtros">
+                                <button type="button"
+                                    class="ubits-button ubits-button--tertiary ubits-button--xs seguimiento-clear-filters-btn"
+                                    id="seguimiento-clear-filters-btn" aria-label="Limpiar todos los filtros">
                                     <i class="far fa-filter-slash"></i>
                                     <span>Limpiar filtros</span>
                                 </button>
@@ -149,37 +168,49 @@
 
                             <!-- Action bar (solo cuando hay selección) -->
                             <div class="widget-action-bar-seguimiento" id="seguimiento-action-bar">
-                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="seguimiento-ver-seleccionados">
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm"
+                                    id="seguimiento-ver-seleccionados">
                                     <i class="far fa-eye"></i>
                                     <span>Ver seleccionados</span>
                                 </button>
                                 <div class="seguimiento-action-buttons">
-                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="seguimiento-reasignar" title="Reasignar">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm"
+                                        id="seguimiento-reasignar" title="Reasignar">
                                         <i class="far fa-user-plus"></i>
                                         <span>Reasignar</span>
                                     </button>
-                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="seguimiento-cambiar-prioridad" title="Cambiar prioridad">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm"
+                                        id="seguimiento-cambiar-prioridad" title="Cambiar prioridad">
                                         <i class="far fa-sliders"></i>
                                         <span>Cambiar prioridad</span>
                                     </button>
-                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="seguimiento-cambiar-estado" title="Cambiar estado">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm"
+                                        id="seguimiento-cambiar-estado" title="Cambiar estado">
                                         <i class="far fa-rotate"></i>
                                         <span>Cambiar estado</span>
                                     </button>
-                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="seguimiento-cambiar-fecha-plan" title="Cambiar fecha de finalización" style="display: none;">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm"
+                                        id="seguimiento-cambiar-fecha-plan" title="Cambiar fecha de finalización"
+                                        style="display: none;">
                                         <i class="far fa-calendar"></i>
                                         <span>Cambiar fecha</span>
                                     </button>
-                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="seguimiento-anadir-colaborador" title="Añadir colaborador al plan" style="display: none;">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm"
+                                        id="seguimiento-anadir-colaborador" title="Añadir colaborador al plan"
+                                        style="display: none;">
                                         <i class="far fa-user-plus"></i>
                                         <span>Añadir colaborador</span>
                                     </button>
-                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="seguimiento-descargar" title="Descargar" aria-haspopup="true" aria-expanded="false">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm"
+                                        id="seguimiento-descargar" title="Descargar" aria-haspopup="true"
+                                        aria-expanded="false">
                                         <i class="far fa-download"></i>
                                         <span>Descargar</span>
                                         <i class="far fa-chevron-down"></i>
                                     </button>
-                                    <button type="button" class="ubits-button ubits-button--error-secondary ubits-button--sm" id="seguimiento-eliminar" title="Eliminar" aria-label="Eliminar">
+                                    <button type="button"
+                                        class="ubits-button ubits-button--error-secondary ubits-button--sm"
+                                        id="seguimiento-eliminar" title="Eliminar" aria-label="Eliminar">
                                         <i class="far fa-trash"></i>
                                         <span>Eliminar</span>
                                     </button>
@@ -187,29 +218,30 @@
                             </div>
 
                             <!-- Alert experiencia desktop -->
-                            <div class="seguimiento-alert-experiencia" id="seguimiento-alert-mobile" style="display: none;">
+                            <div class="seguimiento-alert-experiencia" id="seguimiento-alert-mobile"
+                                style="display: none;">
                                 <div id="seguimiento-alert-container"></div>
                             </div>
 
                             <!-- Tabla (componente UBITS table) -->
                             <div class="widget-tabla-seguimiento">
                                 <div class="ubits-table-wrapper ubits-table-wrapper--min-width">
-                                <table class="ubits-table" id="seguimiento-table">
-                                    <thead id="seguimiento-thead">
-                                        <tr id="seguimiento-thead-row">
-                                            <!-- Cabeceras generadas por JS según tab activo (Tareas / Planes) -->
-                                        </tr>
-                                    </thead>
-                                    <tbody id="seguimiento-tbody">
-                                        <!-- Filas generadas por JS -->
-                                    </tbody>
-                                </table>
+                                    <table class="ubits-table" id="seguimiento-table">
+                                        <thead id="seguimiento-thead">
+                                            <tr id="seguimiento-thead-row">
+                                                <!-- Cabeceras generadas por JS según tab activo (Tareas / Planes) -->
+                                            </tr>
+                                        </thead>
+                                        <tbody id="seguimiento-tbody">
+                                            <!-- Filas generadas por JS -->
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
-                            
+
                             <!-- Empty State (oculto por defecto) -->
                             <div id="seguimiento-empty-state" style="display: none;"></div>
-                            
+
                             <!-- Paginador -->
                             <div class="widget-paginador-seguimiento">
                                 <div id="seguimiento-paginador"></div>
@@ -229,8 +261,10 @@
     <div id="seguimiento-modals-container"></div>
 
     <!-- Popover asignados -->
-    <div class="asignados-popover-overlay" id="asignados-popover-overlay" style="display: none;" aria-hidden="true"></div>
-    <div class="asignados-popover" id="asignados-popover" style="display: none;" role="dialog" aria-label="Personas asignadas">
+    <div class="asignados-popover-overlay" id="asignados-popover-overlay" style="display: none;" aria-hidden="true">
+    </div>
+    <div class="asignados-popover" id="asignados-popover" style="display: none;" role="dialog"
+        aria-label="Personas asignadas">
         <div class="asignados-popover-list" id="asignados-popover-list"></div>
     </div>
 
@@ -238,25 +272,22 @@
 
     <!-- Menú añadir colaborador -->
     <div class="anadir-colaborador-overlay" id="anadir-colaborador-overlay" style="display: none;"></div>
-    <div class="anadir-colaborador-menu" id="anadir-colaborador-menu" style="display: none;" role="dialog" aria-label="Añadir colaborador al plan">
+    <div class="anadir-colaborador-menu" id="anadir-colaborador-menu" style="display: none;" role="dialog"
+        aria-label="Añadir colaborador al plan">
         <div class="anadir-colaborador-content">
             <div id="anadir-colaborador-autocomplete"></div>
         </div>
         <div class="anadir-colaborador-footer">
-            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="anadir-colaborador-cancel">Cancelar</button>
-            <button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="anadir-colaborador-apply">Aplicar</button>
+            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm"
+                id="anadir-colaborador-cancel">Cancelar</button>
+            <button type="button" class="ubits-button ubits-button--primary ubits-button--sm"
+                id="anadir-colaborador-apply">Aplicar</button>
         </div>
     </div>
 
     <div id="ubits-toast-container"></div>
 
-    <!-- Drawers Crear plan / Crear plantilla (compartidos con planes.js) -->
-    <div id="create-template-drawer-overlay" class="template-drawer-overlay" style="display: none;">
-        <div class="template-drawer-content" id="create-template-drawer"></div>
-    </div>
-    <div id="create-plan-drawer-overlay" class="template-drawer-overlay plan-drawer-overlay" style="display: none;">
-        <div class="template-drawer-content plan-drawer-content" id="create-plan-drawer"></div>
-    </div>
+    <!-- Drawers crear plantilla y crear plan: se crean con componente UBITS (planes.js + drawer.js) -->
 
     <script src="../../components/tooltip.js"></script>
     <script src="../../components/sidebar.js"></script>
@@ -266,7 +297,7 @@
     <script src="../../components/profile-menu.js"></script>
     <script src="../../components/header-product.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             if (typeof loadHeaderProduct !== 'function') return;
             loadHeaderProduct('header-product-seguimiento', {
                 variant: 'tabs-with-actions',
@@ -275,11 +306,11 @@
                     { id: 'planes', label: 'Planes' }
                 ],
                 activeTabId: 'tareas',
-                onTabChange: function() { /* switchToTab vía listener en #seguimiento-tabs */ },
+                onTabChange: function () { /* switchToTab vía listener en #seguimiento-tabs */ },
                 primaryButton: {
                     text: 'Crear',
                     icon: 'fa-plus',
-                    onClick: function(e) {
+                    onClick: function (e) {
                         e.preventDefault();
                         e.stopPropagation();
                         if (typeof window.openCrearMenu === 'function') window.openCrearMenu(e.currentTarget);
@@ -307,12 +338,13 @@
     <script src="../../components/drawer.js"></script>
     <!-- Vista líder: solo actividades de reportes directos del líder (TASK_VIEW_SCOPE_LEADER). Misma base de datos. -->
     <script>
-    window.SEGUIMIENTO_SCOPE = 'leader';
-    window.SEGUIMIENTO_CURRENT_LEADER = 'Fernando Castro Restrepo';
+        window.SEGUIMIENTO_SCOPE = 'leader';
+        window.SEGUIMIENTO_CURRENT_LEADER = 'Fernando Castro Restrepo';
     </script>
     <script src="../../components/dropdown-menu.js"></script>
     <script src="./tareas-base-unificada.js"></script>
     <script src="./planes.js"></script>
     <script src="./seguimiento.js"></script>
 </body>
+
 </html>
