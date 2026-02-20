@@ -34,7 +34,7 @@
                         <div style="text-align: center; margin-bottom: 60px;">
                             <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">Dropdown Menu</h1>
                             <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
-                                Menú desplegable unificado: padding sm, fondo blanco (bg-1), elevation, texto regular alineado a la izquierda. Opcional: autocomplete (p. ej. encabezados de tabla), opciones con icono/checkbox/switch a izquierda o derecha. Footer con botón secundario y primario a la derecha.
+                                Menú desplegable unificado: padding sm, fondo blanco (bg-1), elevation, texto regular alineado a la izquierda. Opcional: autocomplete (p. ej. encabezados de tabla), opciones con icono/checkbox/switch a izquierda o derecha. Footer con botón secundario y primario a la derecha. <strong>Variante con inputs:</strong> con <code>customBodyHtml</code> el cuerpo muestra HTML personalizado (p. ej. inputs oficiales tipo select) en lugar de la lista de opciones.
                             </p>
                         </div>
 
@@ -98,6 +98,11 @@
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-window-minimize"></i></div>
                                     <div class="ubits-body-sm-bold">Footer</div>
                                     <div class="ubits-body-sm-regular">Dos botones a la derecha: secundario y primario</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-filter"></i></div>
+                                    <div class="ubits-body-sm-bold">Variante con inputs</div>
+                                    <div class="ubits-body-sm-regular">Con <code>customBodyHtml</code> el cuerpo del dropdown muestra HTML propio (inputs oficiales, selects, etc.) en lugar de la lista de opciones. Ejemplo: filtros de tareas (tareas.js).</div>
                                 </div>
                             </div>
                         </div>
@@ -169,7 +174,7 @@ Ubicación: [describe dónde debe estar el botón que abre el menú]</code></pre
   .ubits-dropdown-menu__autocomplete-wrap  /* Opcional: input de búsqueda (lupa + X) */
     #overlayId-autocomplete-input   /* Input tipo búsqueda, tamaño sm */
     #overlayId-autocomplete-clear   /* Icono X para limpiar (visible al escribir) */
-  .ubits-dropdown-menu__options
+  .ubits-dropdown-menu__options   /* O bien .ubits-dropdown-menu__custom-body si se pasa customBodyHtml */
     .ubits-dropdown-menu__option   /* Botón o label por ítem: left + text + right */
       /* Variante radioGroup: .ubits-dropdown-menu__option--radio + .ubits-radio .ubits-radio__circle .ubits-radio__label */
       .ubits-dropdown-menu__option-left   /* Icono o checkbox */
@@ -190,6 +195,7 @@ Ubicación: [describe dónde debe estar el botón que abre el menú]</code></pre
   config.autocompletePlaceholder?, config.autocompleteContainerId?
   config.footerSecondaryLabel?, config.footerPrimaryLabel?
   config.footerSecondaryId?, config.footerPrimaryId?
+  config.customBodyHtml?     → cuerpo personalizado (inputs, formularios) en lugar de .ubits-dropdown-menu__options
 
 openDropdownMenu(overlayId, position, options?)
   position = elemento ancla (botón) o { top, left } en px
@@ -225,7 +231,8 @@ closeDropdownMenu(overlayId)</code></pre>
                 { value: 'iconos', text: 'Iconos' },
                 { value: 'checklist', text: 'Checklist (checkbox)' },
                 { value: 'switches', text: 'Switches' },
-                { value: 'radios', text: 'Radios (radioGroup)' }
+                { value: 'radios', text: 'Radios (radioGroup)' },
+                { value: 'inputs', text: 'Inputs' }
             ];
 
             function opcionesTipoTextToValue(text) {
@@ -272,14 +279,26 @@ closeDropdownMenu(overlayId)</code></pre>
                 return [opt1, opt2, opt3];
             }
 
+            function getCustomBodyHtmlForInputs() {
+                return '<div class="dropdown-demo-custom-body" style="display:flex;flex-direction:column;gap:var(--gap-md);">' +
+                    '<div id="dropdown-demo-estado-container"></div>' +
+                    '<div id="dropdown-demo-prioridad-container"></div>' +
+                    '</div>';
+            }
+
             function renderDropdown() {
                 var s = getPreviewState();
                 var config = {
                     overlayId: overlayId,
-                    options: buildOptions(s),
-                    hasAutocomplete: s.autocomplete,
+                    hasAutocomplete: s.opcionesTipo !== 'inputs' && s.autocomplete,
                     autocompletePlaceholder: 'Buscar...'
                 };
+                if (s.opcionesTipo === 'inputs') {
+                    config.customBodyHtml = getCustomBodyHtmlForInputs();
+                    config.options = [];
+                } else {
+                    config.options = buildOptions(s);
+                }
                 if (s.opcionesTipo === 'radios') {
                     config.radioGroup = true;
                     config.radioName = overlayId + '-radio';
@@ -290,7 +309,28 @@ closeDropdownMenu(overlayId)</code></pre>
                 }
                 container.innerHTML = getDropdownMenuHtml(config);
 
-                if (s.autocomplete) {
+                if (s.opcionesTipo === 'inputs' && typeof createInput === 'function') {
+                    createInput({
+                        containerId: 'dropdown-demo-estado-container',
+                        type: 'select',
+                        label: 'Estado',
+                        placeholder: 'Seleccionar...',
+                        selectOptions: [{ value: '', text: 'Todos' }, { value: 'activo', text: 'Activo' }, { value: 'cerrado', text: 'Cerrado' }],
+                        value: '',
+                        size: 'sm'
+                    });
+                    createInput({
+                        containerId: 'dropdown-demo-prioridad-container',
+                        type: 'select',
+                        label: 'Prioridad',
+                        placeholder: 'Seleccionar...',
+                        selectOptions: [{ value: '', text: 'Todas' }, { value: 'alta', text: 'Alta' }, { value: 'media', text: 'Media' }, { value: 'baja', text: 'Baja' }],
+                        value: '',
+                        size: 'sm'
+                    });
+                }
+
+                if (s.autocomplete && s.opcionesTipo !== 'inputs') {
                     var overlay = document.getElementById(overlayId);
                     var searchInput = document.getElementById(overlayId + '-autocomplete-input');
                     var searchClear = document.getElementById(overlayId + '-autocomplete-clear');

@@ -4,8 +4,12 @@
  * Opcional: autocomplete (p. ej. encabezados de tabla), opciones con icono/checkbox/switch a izquierda o derecha.
  * Footer: dos botones a la derecha (secundario + primario).
  *
+ * Variante con inputs: si se pasa customBodyHtml, el cuerpo del dropdown muestra ese HTML en lugar de la lista
+ * de opciones (ideal para formularios con inputs oficiales, p. ej. createInput type: 'select'). Ver uso en
+ * tareas.js (filtros de tareas).
+ *
  * Uso:
- *   getDropdownMenuHtml({ overlayId, contentId, options, hasAutocomplete?, autocompletePlaceholder?, footerSecondaryLabel?, footerPrimaryLabel? })
+ *   getDropdownMenuHtml({ overlayId, contentId, options?, customBodyHtml?, footerSecondaryLabel?, footerPrimaryLabel?, ... })
  *   openDropdownMenu(overlayId, { top, left }) o openDropdownMenu(overlayId, anchorElement)
  *   closeDropdownMenu(overlayId)
  */
