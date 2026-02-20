@@ -29,6 +29,10 @@
       para reflejar que se puede finalizar manualmente y mover tareas a otro plan.
 
    5. Rango de fechas: INICIO_RANGO fijo; FIN_RANGO = hoy + 7 días (siempre una semana adelante, sin tocar a mano).
+
+   6. Días laborables: las tareas solo se asignan a días entre semana (lun–vie).
+      Sábado y domingo no tienen tareas; si una fecha calculada cae en fin de semana,
+      se ajusta al viernes o lunes más cercano dentro del mismo mes (toWeekdayInMonth).
    ======================================== */
 
 (function (global) {
@@ -215,6 +219,22 @@
         return x - Math.floor(x);
     }
 
+    /** Ajusta un día del mes a día laborable (lun–vie). Sáb/dom se mueven al viernes o lunes más cercano dentro del mes. */
+    function toWeekdayInMonth(year, month, day) {
+        const daysInMonth = new Date(year, month, 0).getDate();
+        const d = new Date(year, month - 1, day);
+        const dow = d.getDay(); // 0 = domingo, 6 = sábado
+        if (dow === 0) {
+            // Domingo → lunes siguiente; si se sale del mes, viernes anterior
+            return day + 1 <= daysInMonth ? day + 1 : Math.max(1, day - 2);
+        }
+        if (dow === 6) {
+            // Sábado → viernes anterior; si no hay, lunes siguiente
+            return day - 1 >= 1 ? day - 1 : Math.min(daysInMonth, day + 2);
+        }
+        return day;
+    }
+
     /** Regla 3: reparte TAREAS_POR_MES en Finalizadas (70-85%), Iniciadas (10-20%), Vencidas (5-15%) */
     function repartoEstados(seed, baseIndex) {
         const r = seeder(seed, baseIndex);
@@ -337,9 +357,10 @@
                     // Individuales: día aleatorio. Grupales: repartidas en todo el mes (días 1..daysInMonth) para que el líder vea tareas del equipo también a fin de mes y en la semana por delante
                     const esGrupal = i >= TAREAS_INDIVIDUALES_POR_MES;
                     const idxGrupal = i - TAREAS_INDIVIDUALES_POR_MES; // 0..19
-                    const day = esGrupal
+                    let day = esGrupal
                         ? (daysInMonth <= 1 ? 1 : 1 + Math.round((idxGrupal / (TAREAS_GRUPALES_POR_MES - 1)) * (daysInMonth - 1)))
                         : Math.max(1, Math.min(daysInMonth, Math.floor(seeder(seed, baseIdx + i + 100) * daysInMonth) + 1));
+                    day = toWeekdayInMonth(year, month, day); // Solo días laborables (lun–vie), nunca sáb/dom
                     const endDateStr = `${year}-${pad(month)}-${pad(day)}`;
                     const endDate = new Date(year, month - 1, day);
                     const fechaCreacion = new Date(year, month - 1, Math.max(1, day - 2));
@@ -454,7 +475,10 @@
                     'Cierre de ciclo logístico', 'Informe de entregas', 'Coordinación con transporte'
                 ];
                 for (var k = 1; k <= 6; k++) {
-                    var endDateVencida = getTodayPlusDays(-k);
+                    var rawDate = getTodayPlusDays(-k);
+                    var [y, m, d] = rawDate.split('-').map(Number);
+                    var dayWeekday = toWeekdayInMonth(y, m, d);
+                    var endDateVencida = y + '-' + pad(m) + '-' + pad(dayWeekday);
                     var tareaVencida = {
                         id: idActividad,
                         name: titulosVencidas[k - 1],
@@ -504,7 +528,7 @@
                 const tareasTitulos = tipo === 'Objetivos' ? tareasObjetivos : tareasEncuestas;
                 for (let mes = 0; mes < 3; mes++) {
                     const m = mesInicio + mes;
-                    const day = 15;
+                    const day = toWeekdayInMonth(year, m, 15); // día 15 o el laborable más cercano
                     const endDateStr = year + '-' + pad(m) + '-' + pad(day);
                     const endDate = new Date(year, m - 1, day);
                     const fechaCreacion = new Date(year, m - 1, Math.max(1, day - 2));
