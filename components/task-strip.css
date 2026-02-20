@@ -195,12 +195,6 @@
     display: none;
 }
 
-.tarea-status .ubits-status-tag--info {
-    background: var(--ubits-feedback-bg-info-subtle);
-    color: var(--ubits-accent-brand);
-    border-color: var(--ubits-accent-brand);
-}
-
 .tarea-fecha {
     width: 100px;
     display: flex;

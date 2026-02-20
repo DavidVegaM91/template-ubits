@@ -30,12 +30,18 @@
     margin: 0 auto;
     width: 100%;
     box-sizing: border-box;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 .task-detail-sections {
     display: flex;
     flex-direction: column;
     gap: var(--gap-lg);
+    flex: 1;
+    min-height: 0;
 }
 
 /* Header sin caja (solo título y acciones) */
@@ -45,13 +51,26 @@
     border: none !important;
 }
 
-/* Card principal: una sola caja blanca que contiene las dos columnas */
+/* Cuerpo: grid de dos columnas; cada sección es una tarjeta separada */
 .task-detail-section--body {
     flex: 1;
     min-width: 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
 }
 
-.task-detail-body-card {
+.task-detail-two-cols {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: var(--gap-xl);
+    align-items: stretch;
+    flex: 1;
+    min-height: 0;
+}
+
+/* Tarjeta blanca independiente (info tarea, subtareas o comentarios) */
+.task-detail-card {
     background-color: var(--ubits-bg-1);
     border-radius: var(--border-radius-md);
     padding: var(--padding-xl);
@@ -59,22 +78,18 @@
     box-sizing: border-box;
 }
 
-.task-detail-two-cols {
-    display: grid;
-    grid-template-columns: 1fr 380px;
-    gap: var(--gap-2xl);
-    align-items: start;
-}
-
 .task-detail-col-main {
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: var(--gap-xl);
+    gap: var(--gap-lg);
 }
 
 .task-detail-col-comments {
     min-width: 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 /* ========== Bloque información de la tarea ========== */
@@ -340,8 +355,8 @@
 .task-detail-comments-block {
     display: flex;
     flex-direction: column;
-    height: 100%;
-    min-height: 400px;
+    flex: 1;
+    min-height: 0;
     background: var(--ubits-bg-1);
     border-radius: var(--border-radius-md);
     border: 1px solid var(--ubits-border-1);
@@ -523,7 +538,7 @@
         padding: var(--padding-md);
     }
 
-    .task-detail-body-card {
+    .task-detail-card {
         padding: var(--padding-md);
     }
 

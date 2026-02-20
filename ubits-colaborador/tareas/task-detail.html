@@ -34,19 +34,21 @@
                         <div class="widget-header-product" id="task-detail-header-container"></div>
                     </div>
 
-                    <!-- Contenido principal: dos columnas (izq: tarea + subtareas, der: comentarios) -->
+                    <!-- Contenido principal: dos columnas; izq = dos tarjetas (info + subtareas), der = una tarjeta (comentarios) -->
                     <div class="section-single task-detail-section task-detail-section--body">
-                        <div class="task-detail-body-card">
-                            <div class="task-detail-two-cols">
-                                <!-- Columna izquierda: info tarea + subtareas -->
-                                <div class="task-detail-col-main">
+                        <div class="task-detail-two-cols">
+                            <!-- Columna izquierda: dos tarjetas separadas -->
+                            <div class="task-detail-col-main">
+                                <div class="task-detail-card task-detail-card--info">
                                     <div id="task-detail-info-block" class="task-detail-info-block"></div>
+                                </div>
+                                <div class="task-detail-card task-detail-card--subtasks">
                                     <div id="task-detail-subtasks-block" class="task-detail-subtasks-block"></div>
                                 </div>
-                                <!-- Columna derecha: comentarios -->
-                                <div class="task-detail-col-comments">
-                                    <div id="task-detail-comments-block" class="task-detail-comments-block"></div>
-                                </div>
+                            </div>
+                            <!-- Columna derecha: una tarjeta de comentarios -->
+                            <div class="task-detail-col-comments">
+                                <div id="task-detail-comments-block" class="task-detail-comments-block"></div>
                             </div>
                         </div>
                     </div>
