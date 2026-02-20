@@ -7,11 +7,12 @@
 .ubits-header-product {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-lg);
+    gap: var(--gap-xl);
     width: 100%;
     min-height: auto;
     height: auto;
-    overflow: visible; /* Permitir que las sombras de los botones se vean completas */
+    overflow: visible;
+    /* Permitir que las sombras de los botones se vean completas */
 }
 
 /* Primera fila: Información del producto y acciones */
@@ -21,7 +22,8 @@
     align-items: center;
     width: 100%;
     flex-wrap: wrap;
-    overflow: visible; /* Permitir que las sombras de los botones se vean completas */
+    overflow: visible;
+    /* Permitir que las sombras de los botones se vean completas */
 }
 
 /* Información del producto (izquierda) */
@@ -42,7 +44,8 @@
 
 .ubits-header-product__product-title h2 {
     margin: 0;
-    display: none; /* Ocultar por defecto */
+    display: none;
+    /* Ocultar por defecto */
 }
 
 /* Mostrar product-name solo en modo-estudio-ia.html */
@@ -69,9 +72,12 @@
     gap: var(--gap-sm);
     align-items: center;
     flex-shrink: 0;
-    overflow: visible; /* Permitir que las sombras de los botones se vean completas */
-    padding: var(--padding-lg); /* Espacio suficiente para que las sombras (28px blur) no se corten */
-    margin: -16px -16px -16px auto; /* Compensar padding; left: auto = acciones siempre a la derecha */
+    overflow: visible;
+    /* Permitir que las sombras de los botones se vean completas */
+    padding: var(--padding-lg);
+    /* Espacio suficiente para que las sombras (28px blur) no se corten */
+    margin: -16px -16px -16px auto;
+    /* Compensar padding; left: auto = acciones siempre a la derecha */
 }
 
 /* Segunda fila: Breadcrumb */
@@ -121,33 +127,76 @@
     font-weight: 700;
 }
 
-/* Responsive */
+/* Responsive: en mobile, dejar que flex-wrap: wrap del primary-row quiebre naturalmente
+   solo cuando el contenido no quepa en una línea. NO forzar flex-direction: column. */
 @media (max-width: 768px) {
-    .ubits-header-product__primary-row {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    
     .ubits-header-product__product-info {
-        width: 100%;
+        min-width: 0;
     }
-    
+
     /* En móvil anular margen/padding negativo para evitar espacio extra arriba/abajo del header */
     .ubits-header-product__actions {
-        width: 100%;
         flex-wrap: wrap;
         padding: var(--padding-sm) 0 !important;
-        margin: 0 !important;
+        margin: 0 0 0 auto !important;
+        /* mantener alineación derecha, sin margen negativo */
     }
-    
+
     .ubits-header-product__secondary-row {
         flex-direction: column;
         align-items: flex-start;
     }
-    
+
     .ubits-header-product__breadcrumb {
         width: 100%;
         flex-wrap: wrap;
+    }
+
+    /* Botones del header en celulares: tamaño sm (32px); excluir FAB */
+    .ubits-header-product__actions .ubits-button:not(.ubits-button--icon-only):not(.ubits-header-product__primary-action) {
+        height: 32px !important;
+        min-height: 32px !important;
+        padding: 9.5px 12px !important;
+    }
+
+    .ubits-header-product__actions .ubits-button.ubits-button--icon-only {
+        width: 32px !important;
+        height: 32px !important;
+        min-width: 32px !important;
+        padding: 9.5px 8px !important;
+    }
+
+    .ubits-header-product__product-info .ubits-button.ubits-button--icon-only {
+        width: 32px !important;
+        height: 32px !important;
+        min-width: 32px !important;
+        padding: 9.5px 8px !important;
+    }
+
+    .ubits-header-product__product-title .ubits-button {
+        /* Info button: ya es xs; en celulares mantener compacto */
+        width: 28px !important;
+        height: 28px !important;
+        min-width: 28px !important;
+        padding: 7.5px !important;
+    }
+
+    .ubits-header-product__actions .ubits-ia-button {
+        height: 32px !important;
+        min-height: 32px !important;
+        max-height: 32px !important;
+        padding: 9.5px 12px !important;
+        font-size: var(--font-size-sm) !important;
+    }
+
+    .ubits-header-product__actions .ubits-ia-button i {
+        font-size: var(--font-size-sm) !important;
+        width: 13px !important;
+        height: 13px !important;
+    }
+
+    .ubits-header-product__actions .ubits-ia-button span {
+        font-size: var(--font-size-sm) !important;
     }
 }
 
@@ -177,14 +226,15 @@
     overflow: visible !important;
 }
 
-.section-single > .widget-header-product {
+.section-single>.widget-header-product {
     overflow: visible !important;
 }
 
 /* Tablet (769px–1279px): sin altura mínima extra; mantener gap normal debajo del header */
 @media (min-width: 769px) and (max-width: 1279px) {
+
     .widget-header-product,
-    .section-single > .widget-header-product {
+    .section-single>.widget-header-product {
         min-height: 0 !important;
         padding-top: 0 !important;
         padding-bottom: 0 !important;
@@ -195,18 +245,17 @@
 
 /* Solo móvil (≤768px): quitar banda de gap debajo del header-product (espacio morado abajo) */
 @media (max-width: 768px) {
+
     .widget-header-product,
-    .section-single > .widget-header-product {
+    .section-single>.widget-header-product {
         min-height: 0 !important;
         padding-top: 0 !important;
         padding-bottom: 0 !important;
         margin-top: 0 !important;
         margin-bottom: 0 !important;
     }
-    
-    .content-sections > .section-single:first-child:has(.widget-header-product) {
-        margin-bottom: calc(-1 * var(--gap-lg));
-    }
+
+    /* No aplicar margin-bottom negativo: el gap natural de content-sections (--gap-xl = 20px) se mantiene */
 }
 
 /* Solo celulares (no tablets): botón primario como FAB icon-only (cuadrado, componente oficial), arriba del tab bar */
@@ -217,23 +266,30 @@
         bottom: calc(60px + 32px + env(safe-area-inset-bottom, 0px));
         right: 16px;
         z-index: 1001;
-        /* Icon-only oficial: cuadrado 40px (md) o 48px (lg); usamos 48px para FAB táctil */
+        /* Icon-only oficial: cuadrado 48px para FAB táctil */
         width: 48px !important;
         height: 48px !important;
         min-width: 48px !important;
         min-height: 48px !important;
         max-width: 48px !important;
         max-height: 48px !important;
-        padding: var(--padding-none) !important;
-        border-radius: var(--border-radius-sm) !important; /* mismo que componente botón UBITS, no redondo */
+        padding: 0 !important;
+        border-radius: var(--border-radius-sm) !important;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        /* Forzar cuadrado: centrar icono */
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
     }
+
     .ubits-header-product__primary-action span {
         display: none !important;
     }
+
     .ubits-header-product__primary-action i {
         margin: 0;
     }
+
     /* Evitar hueco debajo de tabs: el primario es FAB (fuera del flujo), __actions no debe reservar espacio */
     .ubits-header-product__actions:has(.ubits-header-product__primary-action) {
         padding: var(--padding-none) !important;
@@ -244,12 +300,13 @@
 
 /* En mobile pequeño (< 480px), todos los botones se transforman a icon-only */
 @media (max-width: 480px) {
+
     /* Botones secundarios sm - ocultar texto y hacer icon-only (32x32px) */
     /* No aplicar icon-only 32px al botón primario: en celulares ya es FAB (ver regla @media max-width 767px) */
     .ubits-header-product__actions .ubits-button--secondary.ubits-button--sm:not(.ubits-button--icon-only) span {
         display: none;
     }
-    
+
     .ubits-header-product__actions .ubits-button--secondary.ubits-button--sm:not(.ubits-button--icon-only) {
         padding: 9.5px 8px !important;
         width: 32px !important;
@@ -260,13 +317,13 @@
         max-height: 32px !important;
         border-radius: var(--border-radius-sm) !important;
     }
-    
-    /* Botón primario sm - ocultar texto y hacer icon-only (32x32px) */
-    .ubits-header-product__actions .ubits-button--primary.ubits-button--sm:not(.ubits-button--icon-only) span {
+
+    /* Botón primario sm - ocultar texto y hacer icon-only (32x32px), excepto el FAB */
+    .ubits-header-product__actions .ubits-button--primary.ubits-button--sm:not(.ubits-button--icon-only):not(.ubits-header-product__primary-action) span {
         display: none;
     }
-    
-    .ubits-header-product__actions .ubits-button--primary.ubits-button--sm:not(.ubits-button--icon-only) {
+
+    .ubits-header-product__actions .ubits-button--primary.ubits-button--sm:not(.ubits-button--icon-only):not(.ubits-header-product__primary-action) {
         padding: 9.5px 8px !important;
         width: 32px !important;
         height: 32px !important;
@@ -276,12 +333,12 @@
         max-height: 32px !important;
         border-radius: var(--border-radius-sm) !important;
     }
-    
+
     /* Botón IA secundario sm - ocultar texto y hacer icon-only (32x32px circular) */
     .ubits-header-product__actions .ubits-ia-button--secondary.ubits-ia-button--sm:not(.ubits-ia-button--icon-only) span {
         display: none;
     }
-    
+
     .ubits-header-product__actions .ubits-ia-button--secondary.ubits-ia-button--sm:not(.ubits-ia-button--icon-only) {
         padding: var(--padding-none) !important;
         width: 32px !important;
@@ -293,4 +350,3 @@
         border-radius: 50% !important;
     }
 }
-

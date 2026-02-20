@@ -21,7 +21,7 @@
     max-height: none;
 }
 
-.content-sections > *:not(:last-child):not(.section-dual):not(.section-single):not(.section-triple):not(.section-quad) {
+.content-sections>*:not(:last-child):not(.section-dual):not(.section-single):not(.section-triple):not(.section-quad) {
     margin-bottom: var(--gap-xl);
 }
 
@@ -31,7 +31,7 @@
     flex-shrink: 0;
 }
 
-.content-sections > *:last-child {
+.content-sections>*:last-child {
     margin-bottom: 0;
 }
 
@@ -44,7 +44,7 @@
 }
 
 /* Fila: tabs a la izquierda, botón Crear a la derecha. Sin caja ni padding. */
-.seguimiento-tabs-wrapper > .seguimiento-tabs-row {
+.seguimiento-tabs-wrapper>.seguimiento-tabs-row {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
@@ -56,7 +56,7 @@
 
 .seguimiento-tabs-wrapper .seguimiento-tabs {
     display: flex;
-    gap: var(--gap-none);
+    gap: var(--gap-xs);
     background: var(--ubits-bg-2);
     border-radius: var(--border-radius-sm);
     width: fit-content;
@@ -67,8 +67,8 @@
     width: 100%;
 }
 
-.section-single > div,
-.section-dual > div {
+.section-single>div,
+.section-dual>div {
     background-color: var(--ubits-bg-1);
     border: none;
     border-radius: var(--border-radius-sm);
@@ -85,12 +85,12 @@
     padding: var(--padding-none) !important;
 }
 
-.section-single > div {
+.section-single>div {
     flex: 1;
 }
 
 /* Header product (tabs + Crear): sin caja, igual que antes */
-.section-single > .widget-header-product {
+.section-single>.widget-header-product {
     background-color: transparent !important;
     padding: var(--padding-none) !important;
 }
@@ -159,7 +159,8 @@
 /* Tabla: usa componente UBITS (components/table.css). Contener overflow en resoluciones pequeñas para que el scroll horizontal enmarque la tabla y no se salga del contenedor. */
 .widget-tabla-seguimiento {
     width: 100%;
-    min-width: 0; /* permitir que reduzca dentro de flex */
+    min-width: 0;
+    /* permitir que reduzca dentro de flex */
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
 }
@@ -315,7 +316,8 @@
 .filtros-chips-container {
     display: flex;
     align-items: center;
-    gap: var(--gap-xs); /* 4px entre chips */
+    gap: var(--gap-xs);
+    /* 4px entre chips */
     flex-wrap: wrap;
 }
 
@@ -326,13 +328,16 @@
     padding: 0 8px;
     min-height: 20px;
     max-width: 120px;
-    background: var(--ubits-bg-2); /* bg-gray/subtle/default #f3f3f4 */
-    border-radius: var(--border-radius-full); /* Full rounded como en Figma */
+    background: var(--ubits-bg-2);
+    /* bg-gray/subtle/default #f3f3f4 */
+    border-radius: var(--border-radius-full);
+    /* Full rounded como en Figma */
     font-size: var(--font-size-xs);
     line-height: 13px;
     font-family: 'Noto Sans', sans-serif;
     font-weight: var(--font-weight-regular);
-    color: var(--ubits-fg-1-medium); /* fg-gray/subtle/default #2b3543 */
+    color: var(--ubits-fg-1-medium);
+    /* fg-gray/subtle/default #2b3543 */
     transition: background-color 0.2s ease, color 0.2s ease;
     overflow: hidden;
 }
@@ -375,7 +380,8 @@
     margin: 0;
     background: transparent;
     border: none;
-    border-radius: var(--border-radius-full); /* Full rounded */
+    border-radius: var(--border-radius-full);
+    /* Full rounded */
     cursor: pointer;
     color: inherit;
     transition: background-color 0.2s ease;
@@ -484,14 +490,16 @@
     box-shadow: 0 4px 16px var(--ubits-bottom-nav-shadow-opacity);
     z-index: 1001;
     padding: var(--padding-md);
-    overflow: visible; /* Permitir que el dropdown se muestre fuera del menú */
+    overflow: visible;
+    /* Permitir que el dropdown se muestre fuera del menú */
 }
 
 .filter-menu-content {
     margin-bottom: 12px;
     position: relative;
     overflow: visible;
-    min-height: 40px; /* Altura mínima para el input */
+    min-height: 40px;
+    /* Altura mínima para el input */
 }
 
 #filter-autocomplete-container {
@@ -507,9 +515,11 @@
 
 .seguimiento-filter-input-wrapper .ubits-input {
     width: 100%;
-    padding-right: 40px; /* Espacio para el icono de búsqueda */
+    padding-right: 40px;
+    /* Espacio para el icono de búsqueda */
     box-sizing: border-box;
-    height: 40px; /* md size */
+    height: 40px;
+    /* md size */
     padding-left: 12px;
     padding-top: 0;
     padding-bottom: 0;
@@ -573,7 +583,8 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    min-width: 0; /* Permite que el flex item se encoja */
+    min-width: 0;
+    /* Permite que el flex item se encoja */
 }
 
 .filter-menu-footer {
@@ -1137,7 +1148,7 @@
 }
 
 @media (max-width: 480px) {
-    .section-single > div {
+    .section-single>div {
         padding: var(--padding-md) !important;
     }
 
@@ -1238,7 +1249,7 @@
     .widget-indicadores-seguimiento {
         grid-template-columns: 1fr;
     }
-    
+
     .seguimiento-indicador-card {
         min-height: 52px;
     }

@@ -18,6 +18,19 @@
         if (p.length !== 3) return ymd;
         return p[2] + '-' + p[1] + '-' + p[0];
     }
+    function ymdToDmySlash(ymd) {
+        if (!ymd) return '';
+        const p = String(ymd).trim().split('-');
+        if (p.length !== 3) return '';
+        return p[2] + '/' + p[1] + '/' + p[0];
+    }
+    function dmySlashToYmd(dmy) {
+        if (!dmy || !String(dmy).trim()) return '';
+        const parts = String(dmy).trim().split('/');
+        if (parts.length !== 3) return '';
+        var d = parts[0].padStart(2, '0'), m = parts[1].padStart(2, '0'), y = parts[2];
+        return y + '-' + m + '-' + d;
+    }
     function escapeHtml(s) {
         if (s == null) return '';
         return String(s)
@@ -86,10 +99,13 @@
         ];
     }
 
+    /* Orden: más antiguo arriba, más reciente abajo. Ejemplo: 1 semana, hace unas horas. */
     function getMockComments() {
+        var oneWeekAgo = new Date(Date.now() - 7 * 24 * 3600000).toISOString();
+        var fewHoursAgo = new Date(Date.now() - 3 * 3600000).toISOString();
         return [
-            { id: 1, author: 'Carlos Ruiz', authorAvatar: null, time: new Date(Date.now() - 2 * 3600000).toISOString(), text: '¿Ya terminaste con la integración de los webhooks? Necesito que esté listo para el deploy de mañana.', images: [] },
-            { id: 2, author: 'María González', authorAvatar: null, time: new Date(Date.now() - 1 * 3600000).toISOString(), text: 'Estoy en ello. Justo acabo de pegar las subtareas pendientes en el sistema para que todos vean el progreso.', images: [] }
+            { id: 1, author: 'Carlos Ruiz', authorAvatar: null, time: oneWeekAgo, text: '¿Ya terminaste con la integración de los webhooks? Necesito que esté listo para el deploy de mañana.', images: [] },
+            { id: 2, author: 'María González', authorAvatar: null, time: fewHoursAgo, text: 'Estoy en ello. Justo acabo de pegar las subtareas pendientes en el sistema para que todos vean el progreso.', images: [] }
         ];
     }
 
@@ -132,8 +148,6 @@
 
         var prioridadIcon = { alta: 'fa-chevrons-up', media: 'fa-chevron-up', baja: 'fa-chevron-down' };
         var prioridadVariant = { alta: 'error', media: 'warning', baja: 'info' };
-        var fechaDisplay = formatDateDDMM(task.endDate) || 'Sin fecha';
-
         var html =
             '<div class="task-detail-meta-row">' +
             '<div class="task-detail-meta-cell">' +
@@ -149,8 +163,8 @@
             creatorBlock +
             '<span class="ubits-body-sm-regular">' + escapeHtml(creatorName) + '</span>' +
             '</div></div></div>' +
-            '<input type="text" class="task-detail-title-editable ubits-body-md-bold" id="task-detail-title" placeholder="Título de la tarea" value="' + escapeHtml(task.name) + '" maxlength="250" />' +
-            '<textarea class="task-detail-desc-editable ubits-body-sm-regular" id="task-detail-desc" placeholder="Descripción de la tarea" rows="3">' + escapeHtml(task.description || '') + '</textarea>' +
+            '<textarea class="task-detail-title-editable ubits-body-md-bold" id="task-detail-title" placeholder="Título de la tarea" rows="1" maxlength="250">' + escapeHtml(task.name) + '</textarea>' +
+            '<textarea class="task-detail-desc-editable ubits-body-sm-regular" id="task-detail-desc" placeholder="Descripción de la tarea" rows="2">' + escapeHtml(task.description || '') + '</textarea>' +
             '<div class="task-detail-attributes-row">' +
             '<span class="task-detail-meta-cell">' +
             '<span class="ubits-body-sm-semibold task-detail-meta-label">Estado</span>' +
@@ -160,11 +174,47 @@
             '<span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--' + (prioridadVariant[prioridad] || 'warning') + ' ubits-badge-tag--sm ubits-badge-tag--with-icon">' +
             '<i class="far ' + (prioridadIcon[prioridad] || 'fa-chevron-up') + '"></i><span class="ubits-badge-tag__text">' + escapeHtml(prioridadLabel) + '</span></span></span>' +
             '<span class="task-detail-meta-cell">' +
-            '<span class="ubits-body-sm-semibold task-detail-meta-label">Vencimiento</span>' +
-            '<span class="ubits-body-sm-regular" style="display:inline-flex;align-items:center;gap:6px;"><i class="far fa-calendar" style="color: var(--ubits-fg-1-medium);"></i>' + escapeHtml(fechaDisplay) + '</span></span>' +
+            '<span id="task-detail-vencimiento-label" class="ubits-body-sm-semibold task-detail-meta-label">Vencimiento</span>' +
+            '<div id="task-detail-vencimiento-wrap"></div></span>' +
             '</div>';
         var el = document.getElementById('task-detail-info-block');
         if (el) el.innerHTML = html;
+        if (typeof createInput === 'function') {
+            createInput({
+                containerId: 'task-detail-vencimiento-wrap',
+                type: 'calendar',
+                size: 'sm',
+                showLabel: false,
+                placeholder: 'Sin fecha',
+                value: ymdToDmySlash(task.endDate),
+                onChange: function (dateStr) {
+                    var ymd = dmySlashToYmd(dateStr);
+                    if (estado.task) estado.task.endDate = ymd;
+                }
+            });
+            var dateInput = document.querySelector('#task-detail-vencimiento-wrap .ubits-input');
+            if (dateInput) dateInput.setAttribute('aria-labelledby', 'task-detail-vencimiento-label');
+        }
+        resizeTaskDetailTitle();
+        resizeTaskDetailDesc();
+        var titleEl = document.getElementById('task-detail-title');
+        if (titleEl) titleEl.addEventListener('input', resizeTaskDetailTitle);
+        var descEl = document.getElementById('task-detail-desc');
+        if (descEl) descEl.addEventListener('input', resizeTaskDetailDesc);
+    }
+
+    function resizeTaskDetailTitle() {
+        var ta = document.getElementById('task-detail-title');
+        if (!ta) return;
+        ta.style.height = 'auto';
+        ta.style.height = Math.max(24, ta.scrollHeight) + 'px';
+    }
+
+    function resizeTaskDetailDesc() {
+        var ta = document.getElementById('task-detail-desc');
+        if (!ta) return;
+        ta.style.height = 'auto';
+        ta.style.height = Math.max(60, ta.scrollHeight) + 'px';
     }
 
     function renderSubtasksBlock() {
@@ -198,13 +248,13 @@
             '<span class="ubits-body-sm-regular task-detail-subtasks-counter">' + completed + '/' + total + ' Completadas</span></div>' +
             '<div class="task-detail-subtasks-list" id="task-detail-subtasks-list">' + listHtml + '</div>' +
             '<div class="task-detail-add-row">' +
-            '<form class="task-detail-add-subtask-form" id="task-detail-add-subtask-form" style="max-width: 320px;">' +
-            '<div class="tarea-add-icon"><i class="far fa-plus"></i></div>' +
-            '<input type="text" class="ubits-input ubits-input--sm" placeholder="Agregar una subtarea" data-subtask-add />' +
-            '</form>' +
+            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="task-detail-add-subtask-btn">' +
+            '<i class="far fa-plus"></i><span>Agregar una subtarea</span></button>' +
             '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="task-detail-mass-btn">' +
             '<i class="far fa-list"></i><span>Creación a partir de lista de texto</span></button>' +
-            '</div>' + massPanel;
+            '</div>' +
+            (estado.addingSubtask ? '<form class="task-detail-add-subtask-form" id="task-detail-add-subtask-form"><div class="task-detail-add-subtask-form-inner"><input type="text" class="ubits-input ubits-input--md" placeholder="Nombre de la subtarea" data-subtask-add /><button type="submit" class="ubits-button ubits-button--primary ubits-button--md"><span>Agregar</span></button></div></form>' : '') +
+            massPanel;
         var el = document.getElementById('task-detail-subtasks-block');
         if (el) el.innerHTML = html;
 
@@ -229,6 +279,18 @@
             });
         }
 
+        var addSubtaskBtn = document.getElementById('task-detail-add-subtask-btn');
+        if (addSubtaskBtn) {
+            addSubtaskBtn.onclick = function () {
+                estado.addingSubtask = true;
+                renderSubtasksBlock();
+                var form = document.getElementById('task-detail-add-subtask-form');
+                if (form) {
+                    var inp = form.querySelector('input[data-subtask-add]');
+                    if (inp) setTimeout(function () { inp.focus(); }, 50);
+                }
+            };
+        }
         var addForm = document.getElementById('task-detail-add-subtask-form');
         if (addForm) {
             addForm.onsubmit = function (e) {
@@ -247,6 +309,7 @@
                         assignee_avatar_url: null
                     });
                     inp.value = '';
+                    estado.addingSubtask = false;
                     renderSubtasksBlock();
                 }
             };
@@ -296,17 +359,22 @@
         el.textContent = lines.length === 0 ? 'Se detectaron 0 subtareas' : (lines.length === 1 ? 'Se detectó 1 subtarea' : 'Se detectaron ' + lines.length + ' subtareas');
     }
 
+    var currentUserName = 'María Alejandra Sánchez Pardo';
+
     function renderCommentsBlock() {
         var comments = estado.comments;
         var activities = estado.activities;
         var total = comments.length;
         var feed = [];
-        comments.forEach(function (c) {
+        var sorted = comments.slice().sort(function (a, b) { return new Date(a.time) - new Date(b.time); });
+        sorted.forEach(function (c) {
+            var isUser = c.author === currentUserName;
+            var itemClass = 'task-detail-comment-item' + (isUser ? ' task-detail-comment-item--user' : '');
             var authorBlock = typeof renderAvatar === 'function'
                 ? renderAvatar({ nombre: c.author, avatar: c.authorAvatar }, { size: 'sm' })
                 : '<span class="ubits-avatar ubits-avatar--sm"><span class="ubits-avatar__fallback"><i class="far fa-user"></i></span></span>';
             feed.push(
-                '<div class="task-detail-comment-item">' +
+                '<div class="' + itemClass + '">' +
                 '<div class="task-detail-comment-avatar">' + authorBlock + '</div>' +
                 '<div class="task-detail-comment-body">' +
                 '<div class="task-detail-comment-meta">' +
@@ -354,7 +422,7 @@
             function doSend() {
                 var text = (inputEl.value || '').trim();
                 if (!text) return;
-                estado.comments.unshift({ id: Date.now(), author: 'María Alejandra Sánchez Pardo', authorAvatar: null, time: new Date().toISOString(), text: text, images: [] });
+                estado.comments.push({ id: Date.now(), author: currentUserName, authorAvatar: null, time: new Date().toISOString(), text: text, images: [] });
                 inputEl.value = '';
                 renderCommentsBlock();
             }
@@ -369,12 +437,9 @@
         estado.comments = getMockComments();
         estado.activities = getMockActivities();
 
-        var task = estado.task;
-        var title = task ? (task.name || 'Detalle de tarea') : 'Detalle de tarea';
-
         if (typeof loadHeaderProduct === 'function') {
             loadHeaderProduct('task-detail-header-container', {
-                productName: title,
+                productName: 'Detalle de la tarea',
                 breadcrumbItems: [],
                 backButton: {
                     onClick: function () { window.history.back(); }

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +11,11 @@
     <link rel="stylesheet" href="../../general-styles/styles.css">
     <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
     <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../components/tab-bar.css">
+    <link rel="stylesheet" href="../../components/floating-menu.css">
+    <link rel="stylesheet" href="../../components/profile-menu.css">
     <link rel="stylesheet" href="../../components/button.css">
     <link rel="stylesheet" href="../../components/header-product.css">
     <link rel="stylesheet" href="../../components/tooltip.css">
@@ -22,23 +28,25 @@
     <link rel="stylesheet" href="../../components/calendar.css">
     <link rel="stylesheet" href="./task-detail.css">
 </head>
+
 <body data-theme="light" class="page-task-detail">
-    <div class="task-detail-page">
+    <div class="dashboard-container">
         <div class="tooltip" id="tooltip"></div>
 
-        <main class="task-detail-main-wrap">
-            <div class="task-detail-content-area">
-                <div class="content-sections task-detail-sections">
-                    <!-- Header: atrás, título, compartir, opciones (sin sidebar ni subnav) -->
-                    <div class="section-single task-detail-section task-detail-section--header">
-                        <div class="widget-header-product" id="task-detail-header-container"></div>
-                    </div>
+        <div id="sidebar-container"></div>
 
-                    <!-- Contenido principal: dos columnas; izq = dos tarjetas (info + subtareas), der = una tarjeta (comentarios) -->
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div class="content-area task-detail-content-area">
+                <div class="content-sections task-detail-sections">
+                    <!-- Contenido principal: dos columnas; izq = header + dos tarjetas (info + subtareas), der = comentarios -->
                     <div class="section-single task-detail-section task-detail-section--body">
                         <div class="task-detail-two-cols">
-                            <!-- Columna izquierda: dos tarjetas separadas -->
                             <div class="task-detail-col-main">
+                                <!-- Header: atrás, título, compartir, opciones -->
+                                <div class="task-detail-section task-detail-section--header">
+                                    <div class="widget-header-product" id="task-detail-header-container"></div>
+                                </div>
                                 <div class="task-detail-card task-detail-card--info">
                                     <div id="task-detail-info-block" class="task-detail-info-block"></div>
                                 </div>
@@ -46,7 +54,6 @@
                                     <div id="task-detail-subtasks-block" class="task-detail-subtasks-block"></div>
                                 </div>
                             </div>
-                            <!-- Columna derecha: una tarjeta de comentarios -->
                             <div class="task-detail-col-comments">
                                 <div id="task-detail-comments-block" class="task-detail-comments-block"></div>
                             </div>
@@ -57,19 +64,76 @@
         </main>
     </div>
 
+    <div id="ubits-toast-container"></div>
+    <div id="tab-bar-container"></div>
+    <div id="floating-menu-container"></div>
+    <div id="profile-menu-container"></div>
+
     <script src="../../components/tooltip.js"></script>
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/tab-bar.js"></script>
+    <script src="../../components/floating-menu.js"></script>
+    <script src="../../components/profile-menu.js"></script>
     <script src="../../components/header-product.js"></script>
-    <script src="../../components/input.js"></script>
+    <script src="../../script.js"></script>
     <script src="../../components/avatar.js"></script>
     <script src="../../components/task-strip.js"></script>
+    <script src="../../components/input.js"></script>
+    <script src="../../components/calendar.js"></script>
     <script src="./tareas-base-unificada.js"></script>
     <script src="./task-detail.js"></script>
     <script>
+        // Mantiene el panel de comentarios alineado con la columna derecha del grid
+        function positionCommentsPanel() {
+            var col = document.querySelector('.task-detail-col-comments');
+            var block = document.querySelector('.task-detail-comments-block');
+            if (!col || !block) return;
+            if (window.innerWidth < 1024) {
+                // En mobile/tablet: limpiar estilos inline para ceder al CSS normal
+                block.style.left = '';
+                block.style.width = '';
+                return;
+            }
+            var rect = col.getBoundingClientRect();
+            block.style.left = rect.left + 'px';
+            block.style.width = rect.width + 'px';
+        }
+        window.addEventListener('load', positionCommentsPanel);
+        window.addEventListener('resize', positionCommentsPanel);
+        // Re-ejecutar tras render inicial del JS de la página
+        setTimeout(positionCommentsPanel, 300);
+        setTimeout(positionCommentsPanel, 800);
+    </script>
+    <script>
         document.addEventListener('DOMContentLoaded', function () {
+            loadSidebar('sidebar-container', 'tareas');
+            loadSubNav('top-nav-container', 'tareas');
+            loadTabBar('tab-bar-container');
+            loadFloatingMenu('floating-menu-container');
+            loadProfileMenu('profile-menu-container');
+
             if (typeof initTaskDetailPage === 'function') {
                 initTaskDetailPage();
             }
+
+            setTimeout(function () {
+                var tareasButton = document.querySelector('.nav-button[data-section="tareas"]');
+                if (tareasButton) {
+                    document.querySelectorAll('.nav-button').forEach(function (btn) { btn.classList.remove('active'); });
+                    tareasButton.classList.add('active');
+                }
+                var modulosTabBar = document.querySelector('.tab-bar-item[data-tab="modulos"]');
+                if (modulosTabBar) {
+                    document.querySelectorAll('.tab-bar-item').forEach(function (item) { item.classList.remove('active'); });
+                    modulosTabBar.classList.add('active');
+                }
+                if (typeof setActiveAccordionLink === 'function') {
+                    setActiveAccordionLink('tareas');
+                }
+            }, 200);
         });
     </script>
 </body>
+
 </html>

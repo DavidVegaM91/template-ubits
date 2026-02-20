@@ -1,39 +1,19 @@
 /* ========================================
-   TASK-DETAIL - Vista inmersiva (sin sidebar ni subnav)
-   Estructura según diseño: header + dos columnas (tarea/subtareas | comentarios)
-   Tokens UBITS: colores, radius, espaciado, tipografía.
+   TASK-DETAIL - Header + dos columnas (tarea/subtareas | comentarios)
+   Con sidebar y subnav como plan-detail. Tokens UBITS.
    ======================================== */
 
-/* Página: fondo consistente con el resto del producto */
 .page-task-detail {
     background-color: var(--ubits-bg-2);
-    min-height: 100vh;
 }
 
-.task-detail-page {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    width: 100%;
-}
-
-.task-detail-main-wrap {
-    flex: 1;
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-}
-
-.task-detail-content-area {
-    padding: var(--padding-lg) var(--padding-xl);
+.content-area.task-detail-content-area {
+    padding: 0;
+    padding-bottom: 16px;
     max-width: 1400px;
     margin: 0 auto;
     width: 100%;
     box-sizing: border-box;
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
 }
 
 .task-detail-sections {
@@ -45,26 +25,33 @@
 }
 
 /* Header sin caja (solo título y acciones) */
+/* Mostrar título del header en esta página (el componente lo oculta por defecto) */
+.page-task-detail .ubits-header-product__product-title h2 {
+    display: block;
+}
+
 .task-detail-section--header .widget-header-product {
     background-color: transparent !important;
     padding: 0 !important;
     border: none !important;
 }
 
-/* Cuerpo: grid de dos columnas; cada sección es una tarjeta separada */
+/* Cuerpo: grid de dos columnas; altura mínima = viewport para que la columna comentarios ocupe el alto disponible */
 .task-detail-section--body {
     flex: 1;
     min-width: 0;
     min-height: 0;
     display: flex;
     flex-direction: column;
+    min-height: calc(100vh - 120px);
 }
 
 .task-detail-two-cols {
     display: grid;
     grid-template-columns: 1fr 380px;
     gap: var(--gap-xl);
-    align-items: stretch;
+    align-items: flex-start;
+    /* columna comentarios no hereda alto de la izquierda */
     flex: 1;
     min-height: 0;
 }
@@ -80,6 +67,7 @@
 
 .task-detail-col-main {
     min-width: 0;
+    min-height: 0;
     display: flex;
     flex-direction: column;
     gap: var(--gap-lg);
@@ -87,9 +75,26 @@
 
 .task-detail-col-comments {
     min-width: 0;
-    min-height: 0;
+    position: relative;
+    /* placeholder en el grid; el bloque interno es fixed */
+}
+
+.task-detail-comments-block {
+    position: fixed;
+    top: 76px;
+    /* justo debajo del subnav fijo */
+    width: 380px;
+    height: calc(100dvh - 96px);
+    /* viewport - subnav - padding-bottom página */
     display: flex;
     flex-direction: column;
+    min-height: 0;
+    background: var(--ubits-bg-1);
+    border-radius: var(--border-radius-md);
+    border: none;
+    overflow: hidden;
+    /* El right se recalcula con JS al cargar y al redimensionar */
+    z-index: 20;
 }
 
 /* ========== Bloque información de la tarea ========== */
@@ -116,8 +121,19 @@
     color: var(--ubits-fg-1-medium);
     font-size: var(--font-size-xs);
     font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.02em;
+}
+
+/* Mismo ancho que en la tirilla de tareas (task-strip): status 80px, prioridad 80px */
+.task-detail-meta-row .ubits-status-tag,
+.task-detail-attributes-row .ubits-status-tag {
+    min-width: 80px;
+}
+
+.task-detail-meta-row .ubits-badge-tag,
+.task-detail-attributes-row .ubits-badge-tag {
+    width: 80px;
+    min-width: 80px;
+    justify-content: center;
 }
 
 .task-detail-assignee-row,
@@ -135,18 +151,32 @@
     opacity: 0.9;
 }
 
+/* Edición inline: misma fórmula que el título del chat en modo-estudio-ia (sin borde; hover/focus = fondo + radius) */
 .task-detail-title-editable {
-    font-family: var(--font-family, 'Noto Sans', sans-serif);
-    font-size: var(--font-size-h2);
-    font-weight: 700;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.4;
     color: var(--ubits-fg-1-high);
     border: none;
     background: transparent;
     width: 100%;
-    padding: var(--padding-xs) 0;
+    min-height: 1.4em;
+    padding: 0;
     margin: 0;
     resize: none;
+    overflow: hidden;
     outline: none;
+    cursor: text;
+    position: relative;
+    z-index: 1;
+    box-sizing: border-box;
+}
+
+.task-detail-title-editable:hover,
+.task-detail-title-editable:focus {
+    background: var(--ubits-bg-2);
+    border-radius: var(--border-radius-xs);
 }
 
 .task-detail-title-editable::placeholder {
@@ -154,7 +184,7 @@
 }
 
 .task-detail-desc-editable {
-    font-family: var(--font-family, 'Noto Sans', sans-serif);
+    font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-sm);
     line-height: 1.5;
     color: var(--ubits-fg-1-medium);
@@ -162,10 +192,21 @@
     background: transparent;
     width: 100%;
     min-height: 60px;
-    padding: var(--padding-xs) 0;
+    padding: 0;
     margin: 0;
     resize: vertical;
     outline: none;
+    cursor: text;
+    position: relative;
+    z-index: 1;
+    box-sizing: border-box;
+    field-sizing: content;
+}
+
+.task-detail-desc-editable:hover,
+.task-detail-desc-editable:focus {
+    background: var(--ubits-bg-2);
+    border-radius: var(--border-radius-xs);
 }
 
 .task-detail-desc-editable::placeholder {
@@ -176,6 +217,7 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+    justify-content: space-between;
     gap: var(--gap-md);
 }
 
@@ -214,46 +256,38 @@
 .task-detail-subtasks-list {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-xs);
+    gap: var(--gap-sm);
 }
 
 .task-detail-add-row {
     display: flex;
-    align-items: center;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: stretch;
     gap: var(--gap-md);
-    flex-wrap: wrap;
+    width: 100%;
+}
+
+.task-detail-add-row>button {
+    flex: 1 1 50%;
+    min-width: 0;
 }
 
 .task-detail-add-subtask-form {
+    margin-top: var(--gap-sm);
+    width: 100%;
+    max-width: 400px;
+}
+
+.task-detail-add-subtask-form-inner {
     display: flex;
     align-items: center;
     gap: var(--gap-sm);
+}
+
+.task-detail-add-subtask-form-inner .ubits-input {
     flex: 1;
-    min-width: 200px;
-    padding: var(--padding-sm) var(--padding-md);
-    background: var(--ubits-bg-2);
-    border: 1px solid var(--ubits-border-1);
-    border-radius: var(--border-radius-sm);
-}
-
-.task-detail-add-subtask-form:focus-within {
-    border-color: var(--ubits-accent-brand);
-    box-shadow: 0 0 0 2px var(--ubits-feedback-bg-info-subtle);
-}
-
-.task-detail-add-subtask-form .tarea-add-icon {
-    color: var(--ubits-accent-brand);
-    flex-shrink: 0;
-}
-
-.task-detail-add-subtask-form .ubits-input {
-    border: none;
-    background: transparent;
-    padding: 0;
-}
-
-.task-detail-add-subtask-form .ubits-input:focus {
-    box-shadow: none;
+    min-width: 0;
 }
 
 /* Panel modo creación masiva */
@@ -334,8 +368,8 @@
     color: var(--ubits-fg-1-medium);
 }
 
-.task-detail-mass-panel-date > div,
-.task-detail-mass-panel-priority > div {
+.task-detail-mass-panel-date>div,
+.task-detail-mass-panel-priority>div {
     min-width: 0;
 }
 
@@ -352,16 +386,7 @@
 }
 
 /* ========== Columna comentarios ========== */
-.task-detail-comments-block {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-height: 0;
-    background: var(--ubits-bg-1);
-    border-radius: var(--border-radius-md);
-    border: 1px solid var(--ubits-border-1);
-    overflow: hidden;
-}
+/* (estilos de .task-detail-comments-block definidos arriba junto con position:fixed) */
 
 .task-detail-comments-header {
     display: flex;
@@ -440,6 +465,20 @@
 .task-detail-comment-text {
     font-size: var(--font-size-sm);
     line-height: 1.5;
+    color: var(--ubits-fg-1-medium);
+    background: var(--ubits-bg-2);
+    padding: var(--padding-sm) var(--padding-md);
+    border-radius: var(--border-radius-xs);
+}
+
+/* Comentarios del usuario actual: fondo azul, texto blanco */
+.task-detail-comment-item--user .task-detail-comment-text {
+    background: var(--ubits-accent-brand);
+    color: var(--ubits-btn-primary-fg);
+}
+
+.task-detail-comment-item--user .task-detail-comment-author,
+.task-detail-comment-item--user .task-detail-comment-time {
     color: var(--ubits-fg-1-medium);
 }
 
@@ -521,23 +560,47 @@
     color: var(--ubits-fg-1-high);
 }
 
-/* Responsive: una columna en móvil */
+/* Responsive 1024–1279px: tab-bar abajo (60px), sin subnav; ajustar el panel fixed */
+@media (min-width: 1024px) and (max-width: 1279px) {
+    .task-detail-comments-block {
+        top: 16px;
+        /* sin subnav; solo margen superior */
+        height: calc(100dvh - 16px - 60px - 16px);
+        /* viewport - top - tab-bar - bottom gap */
+    }
+}
+
+/* Responsive ≤1023px: una columna, comentarios debajo en flujo normal (sin fixed) */
 @media (max-width: 1023px) {
     .task-detail-two-cols {
         grid-template-columns: 1fr;
     }
 
+    .task-detail-section--body {
+        flex: 0 0 auto;
+        min-height: 0;
+    }
+
     .task-detail-col-comments {
-        order: -1;
-        min-height: 320px;
+        order: 2;
+        position: static;
+        margin-bottom: 16px;
+        /* separación con el tab-bar */
+    }
+
+    .task-detail-comments-block {
+        /* cancelar position:fixed — vuelve al flujo normal */
+        position: static !important;
+        top: auto !important;
+        left: auto !important;
+        width: 100% !important;
+        height: auto !important;
+        min-height: 400px;
+        z-index: auto;
     }
 }
 
 @media (max-width: 767px) {
-    .task-detail-content-area {
-        padding: var(--padding-md);
-    }
-
     .task-detail-card {
         padding: var(--padding-md);
     }
@@ -545,5 +608,10 @@
     .task-detail-add-row {
         flex-direction: column;
         align-items: stretch;
+    }
+
+    .task-detail-add-row>button {
+        flex: 1 1 100%;
+        width: 100%;
     }
 }

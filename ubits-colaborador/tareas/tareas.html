@@ -111,47 +111,48 @@
                                             <!-- Los días se generan dinámicamente con JavaScript -->
                                         </div>
 
-                                        <!-- BOTÓN HOY + FLECHAS DE NAVEGACIÓN -->
-                                        <div class="calendar-today-nav">
-                                            <button
-                                                type="button"
-                                                class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only"
-                                                data-role="horizontal-prev"
-                                                aria-label="Ver días anteriores"
-                                            >
-                                                <i class="far fa-chevron-left"></i>
-                                            </button>
+                                        <!-- Contenedor: controles del carrusel + Filtros siempre juntos (desktop y móvil) -->
+                                        <div class="calendar-header__nav-and-filters">
+                                            <div class="calendar-today-nav">
+                                                <button
+                                                    type="button"
+                                                    class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only"
+                                                    data-role="horizontal-prev"
+                                                    aria-label="Ver días anteriores"
+                                                >
+                                                    <i class="far fa-chevron-left"></i>
+                                                </button>
+
+                                                <button
+                                                    type="button"
+                                                    class="ubits-button ubits-button--secondary ubits-button--sm"
+                                                    data-role="go-today"
+                                                >
+                                                    <span>Hoy</span>
+                                                </button>
+
+                                                <button
+                                                    type="button"
+                                                    class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only"
+                                                    data-role="horizontal-next"
+                                                    aria-label="Ver días siguientes"
+                                                >
+                                                    <i class="far fa-chevron-right"></i>
+                                                </button>
+                                            </div>
 
                                             <button
                                                 type="button"
                                                 class="ubits-button ubits-button--secondary ubits-button--sm"
-                                                data-role="go-today"
+                                                id="tareas-filtros-btn"
+                                                aria-haspopup="dialog"
+                                                aria-expanded="false"
+                                                aria-label="Abrir filtros"
                                             >
-                                                <span>Hoy</span>
-                                            </button>
-
-                                            <button
-                                                type="button"
-                                                class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only"
-                                                data-role="horizontal-next"
-                                                aria-label="Ver días siguientes"
-                                            >
-                                                <i class="far fa-chevron-right"></i>
+                                                <i class="far fa-filter"></i>
+                                                <span>Filtros</span>
                                             </button>
                                         </div>
-
-                                        <!-- Botón filtros: abre dropdown (customBodyHtml) -->
-                                        <button
-                                            type="button"
-                                            class="ubits-button ubits-button--secondary ubits-button--sm"
-                                            id="tareas-filtros-btn"
-                                            aria-haspopup="dialog"
-                                            aria-expanded="false"
-                                            aria-label="Abrir filtros"
-                                        >
-                                            <i class="far fa-filter"></i>
-                                            <span>Filtros</span>
-                                        </button>
                                     </div>
                                 </header>
                             </section>

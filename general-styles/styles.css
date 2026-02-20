@@ -427,10 +427,10 @@ body[data-theme="light"] .dashboard-container {
     }
 }
 
-/* Solo móvil (≤768px): subnav pegado al borde superior, sin banda entre subnav y content-area */
+/* Solo móvil (≤768px): espacio entre subnav y content-area (gap visible en celulares) */
 @media (max-width: 768px) {
     .main-content {
-        gap: var(--gap-none);
+        gap: var(--gap-md);
         margin: 0 var(--padding-md) 0 var(--padding-md);
         width: calc(100% - 24px);
     }

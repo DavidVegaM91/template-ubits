@@ -533,6 +533,8 @@
     }
 }
 
+/* El botón selector (Tareas/Planes) siempre muestra texto; no se convierte a icon-only. */
+
 /* Tablet (769px–1279px): más altura y padding vertical para que el logo y el label del selector no se corten */
 @media (min-width: 769px) and (max-width: 1279px) {
     .sub-nav {

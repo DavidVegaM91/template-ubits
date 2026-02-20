@@ -398,12 +398,20 @@ body.page-tareas .dashboard-container {
     color: var(--ubits-fg-1-high);
 }
 
+/* Contenedor: controles del carrusel (Hoy + flechas) + Filtros; siempre juntos como en desktop */
+.calendar-header__nav-and-filters {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    gap: var(--gap-sm, 8px) !important;
+    flex-shrink: 0 !important;
+}
+
 /* Controles de navegación (Hoy + flechas) - no se encogen */
 .calendar-today-nav {
     display: flex !important;
     align-items: center !important;
     gap: var(--gap-sm, 8px) !important;
-    align-items: center !important;
     flex-shrink: 0 !important;
     flex-grow: 0 !important;
     white-space: nowrap !important;
@@ -712,10 +720,11 @@ body.page-tareas .dashboard-container {
         grid-row: 1;
     }
 
-    .calendar-header__controls>.calendar-today-nav {
+    .calendar-header__controls>.calendar-header__nav-and-filters {
         grid-column: 2;
         grid-row: 1;
         justify-self: end;
+        flex-shrink: 0 !important;
     }
 
     .calendar-header__controls>.calendar-horizontal {
@@ -749,6 +758,18 @@ body.page-tareas .dashboard-container {
 
     .widget-vista-tareas {
         padding: var(--padding-md, 12px) !important;
+    }
+
+    /* Botón Filtros: icon-only oficial (sm = 32x32) en celulares */
+    #tareas-filtros-btn {
+        width: 32px !important;
+        height: 32px !important;
+        min-width: 32px !important;
+        padding: 9.5px 8px !important;
+        box-sizing: border-box !important;
+    }
+    #tareas-filtros-btn span {
+        display: none !important;
     }
 }
 
