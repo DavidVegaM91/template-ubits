@@ -264,30 +264,30 @@
             fechaFinalizacion: 'Fecha de finalización'
         };
         const labels = activeTab === 'planes' ? labelsPlanes : labelsTareas;
-        let html = '<th class="ubits-table__th--checkbox" data-col="checkbox"><input type="checkbox" id="seguimiento-select-all" aria-label="Seleccionar todo"></th>';
+        let html = '<th class="ubits-table__th--checkbox" data-col="checkbox" data-tooltip="Seleccionar todo" data-tooltip-delay="1000"><input type="checkbox" id="seguimiento-select-all" aria-label="Seleccionar todo"></th>';
         cols.forEach(col => {
             const label = labels[col] || col;
             const visible = columnVisibility[col] !== false;
             const style = visible ? '' : ' style="display:none;"';
             if (col === 'estado' && activeTab === 'tareas') {
                 var activeClass = isColumnFilterActive('estado', 'checkbox') ? ' seguimiento-checkbox-btn--active' : '';
-                html += `<th class="seguimiento-th-filterable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only seguimiento-checkbox-btn${activeClass}" data-checkbox="estado" aria-label="Filtrar por estado"><i class="far fa-filter"></i></button></th>`;
+                html += `<th class="seguimiento-th-filterable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only seguimiento-checkbox-btn${activeClass}" data-checkbox="estado" aria-label="Filtrar por estado" data-tooltip="Filtrar por estado" data-tooltip-delay="1000"><i class="far fa-filter"></i></button></th>`;
             } else if (col === 'prioridad' && activeTab === 'tareas') {
                 var activeClass = isColumnFilterActive('prioridad', 'checkbox') ? ' seguimiento-checkbox-btn--active' : '';
-                html += `<th class="seguimiento-th-filterable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only seguimiento-checkbox-btn${activeClass}" data-checkbox="prioridad" aria-label="Filtrar por prioridad"><i class="far fa-filter"></i></button></th>`;
+                html += `<th class="seguimiento-th-filterable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only seguimiento-checkbox-btn${activeClass}" data-checkbox="prioridad" aria-label="Filtrar por prioridad" data-tooltip="Filtrar por prioridad" data-tooltip-delay="1000"><i class="far fa-filter"></i></button></th>`;
             } else if ((col === 'fechaCreacion' || col === 'fechaFinalizacion') && (activeTab === 'tareas' || activeTab === 'planes')) {
-                html += `<th class="seguimiento-th-sortable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only seguimiento-date-sort-btn" data-sort="${col}" aria-label="Ordenar por ${label}"><i class="far fa-arrow-up-arrow-down"></i></button></th>`;
+                html += `<th class="seguimiento-th-sortable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only seguimiento-date-sort-btn" data-sort="${col}" aria-label="Ordenar por ${label}" data-tooltip="Ordenar por ${label}" data-tooltip-delay="1000"><i class="far fa-arrow-up-arrow-down"></i></button></th>`;
             } else if (activeTab === 'tareas' && ['asignado', 'areaAsignado', 'areaCreador', 'creador', 'plan'].indexOf(col) >= 0) {
                 var activeClass = isColumnFilterActive(col, 'filter') ? ' seguimiento-filter-btn--active' : '';
-                html += `<th class="seguimiento-th-filterable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only seguimiento-filter-btn${activeClass}" data-filter="${col}" aria-label="Filtrar por ${label}"><i class="far fa-filter"></i></button></th>`;
+                html += `<th class="seguimiento-th-filterable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only seguimiento-filter-btn${activeClass}" data-filter="${col}" aria-label="Filtrar por ${label}" data-tooltip="Filtrar por ${label}" data-tooltip-delay="1000"><i class="far fa-filter"></i></button></th>`;
             } else if (activeTab === 'planes' && col === 'creador') {
                 var activeClass = isColumnFilterActive('creador', 'filter') ? ' seguimiento-filter-btn--active' : '';
-                html += `<th class="seguimiento-th-filterable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only seguimiento-filter-btn${activeClass}" data-filter="${col}" aria-label="Filtrar por ${label}"><i class="far fa-filter"></i></button></th>`;
+                html += `<th class="seguimiento-th-filterable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only seguimiento-filter-btn${activeClass}" data-filter="${col}" aria-label="Filtrar por ${label}" data-tooltip="Filtrar por ${label}" data-tooltip-delay="1000"><i class="far fa-filter"></i></button></th>`;
             } else if (activeTab === 'planes' && col === 'estado') {
                 var activeClass = isColumnFilterActive('estado', 'checkbox') ? ' seguimiento-checkbox-btn--active' : '';
-                html += `<th class="seguimiento-th-filterable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only seguimiento-checkbox-btn${activeClass}" data-checkbox="estado" aria-label="Filtrar por estado"><i class="far fa-filter"></i></button></th>`;
+                html += `<th class="seguimiento-th-filterable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only seguimiento-checkbox-btn${activeClass}" data-checkbox="estado" aria-label="Filtrar por estado" data-tooltip="Filtrar por estado" data-tooltip-delay="1000"><i class="far fa-filter"></i></button></th>`;
             } else if (activeTab === 'planes' && col === 'avance') {
-                html += `<th class="seguimiento-th-sortable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only seguimiento-date-sort-btn" data-sort="${col}" aria-label="Ordenar por ${label}"><i class="far fa-arrow-up-arrow-down"></i></button></th>`;
+                html += `<th class="seguimiento-th-sortable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only seguimiento-date-sort-btn" data-sort="${col}" aria-label="Ordenar por ${label}" data-tooltip="Ordenar por ${label}" data-tooltip-delay="1000"><i class="far fa-arrow-up-arrow-down"></i></button></th>`;
             } else {
                 html += `<th data-col="${col}"${style}>${label}</th>`;
             }
@@ -299,14 +299,25 @@
             selectAll.addEventListener('change', function () {
                 const data = getDisplayData();
                 const pageData = data.slice(0, displayLimit);
-                if (this.checked) {
+                const pageIds = pageData.map(r => r.id);
+                const checkedCount = pageIds.filter(function (id) { return selectedIds.has(id); }).length;
+                // Si había selección parcial (indeterminado), el clic suele llegar como checked=true; en ese caso deseleccionar todo
+                if (this.checked && checkedCount > 0 && checkedCount < pageIds.length) {
+                    selectedIds.clear();
+                    this.checked = false;
+                    this.indeterminate = false;
+                } else if (this.checked) {
                     pageData.forEach(r => selectedIds.add(r.id));
                 } else {
-                    pageData.forEach(r => selectedIds.delete(r.id));
+                    selectedIds.clear();
                 }
                 renderTable();
+                updateSelectAll();
                 toggleActionBar();
             });
+        }
+        if (typeof initTooltip === 'function') {
+            initTooltip('#seguimiento-table thead [data-tooltip]');
         }
     }
 
@@ -1429,7 +1440,8 @@
                 fechaFinalizacion: `<td data-col="fechaFinalizacion"><span class="ubits-body-sm-regular">${formatearFechaParaMostrar(row.fechaFinalizacion)}</span></td>`,
                 comentarios: `<td data-col="comentarios"><span class="ubits-body-sm-regular">${comentariosText}</span></td>`
             };
-            const cells = ['<td class="ubits-table__td--checkbox" data-col="checkbox"><input type="checkbox" class="seguimiento-row-check" data-id="' + row.id + '"' + sel + '></td>'].concat(
+            const rowTooltip = selectedIds.has(row.id) ? 'Deseleccionar' : 'Seleccionar';
+            const cells = ['<td class="ubits-table__td--checkbox" data-col="checkbox" data-tooltip="' + rowTooltip + '" data-tooltip-delay="1000"><input type="checkbox" class="seguimiento-row-check" data-id="' + row.id + '"' + sel + '></td>'].concat(
                 columnIds.map(col => cellByCol[col] || `<td data-col="${col}"></td>`)
             );
             const cols = ['_checkbox'].concat(columnIds);
@@ -1459,11 +1471,17 @@
                 const id = Number(this.dataset.id);
                 if (this.checked) selectedIds.add(id);
                 else selectedIds.delete(id);
+                var td = this.closest('.ubits-table__td--checkbox');
+                if (td) td.setAttribute('data-tooltip', this.checked ? 'Deseleccionar' : 'Seleccionar');
                 updateSelectAll();
                 toggleActionBar();
             });
         });
 
+        // Tooltips en checkboxes de fila (Seleccionar / Deseleccionar)
+        if (typeof initTooltip === 'function') {
+            initTooltip('#seguimiento-table tbody .ubits-table__td--checkbox[data-tooltip]');
+        }
         // Tooltips en avatares solo en tab Planes (nombre al hacer hover 1 s)
         if (activeTab === 'planes' && typeof initTooltip === 'function') {
             initTooltip('#seguimiento-table .ubits-table__cell-assignee [data-tooltip]');
@@ -1481,6 +1499,9 @@
 
         all.checked = pageIds.length > 0 && checkedCount === pageIds.length;
         all.indeterminate = checkedCount > 0 && checkedCount < pageIds.length;
+
+        var th = all.closest('th');
+        if (th) th.setAttribute('data-tooltip', checkedCount > 0 ? 'Deseleccionar todo' : 'Seleccionar todo');
     }
 
     // Mostrar/ocultar barra de acciones

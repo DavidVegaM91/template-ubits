@@ -183,4 +183,20 @@ Ajustes pendientes sobre los archivos entregados por la PM Mafe para las página
 
 ---
 
-*Última actualización: ítems 1–20 (11 feb), 21–26 (19 feb) implementados; ítem 27 (seguimiento Cargar más) implementado.*
+## Cambios 20 de febrero de 2026
+
+28. [x] **Filtros en tareas: de drawer a dropdown**  
+    En **tareas.html** los filtros (Estado, Prioridad, Asignación) dejaron de abrirse en un **drawer** y pasaron a mostrarse en un **dropdown** (componente dropdown-menu con `customBodyHtml`). El cuerpo del dropdown contiene **tres inputs select oficiales** (createInput type: 'select', size: 'sm'). Implementación en `tareas.js`: `openFiltrosDropdown()`, contenedores inyectados y createInput para cada select; botones Limpiar y Aplicar en el footer del dropdown.
+
+29. [x] **Botón de refrescar datos en seguimiento**  
+    En **seguimiento.html** y **seguimiento-leader.html** se añadió un **botón de refrescar** (icono `fa-arrows-rotate`) entre búsqueda y columnas visibles. Al hacer clic se muestra un toast "Datos refrescados".
+
+30. [x] **Tooltips en seguimiento (barra, encabezado y filas)**  
+    Se añadieron tooltips con **delay de 1 s** (`data-tooltip`, `data-tooltip-delay="1000"`) a todos los elementos interactivos de la vista de seguimiento:  
+    - **Barra:** Buscar, Refrescar, Columnas visibles, Período.  
+    - **Encabezado de tabla:** botones de filtro por columna, ordenar y celda **Seleccionar todo**. Tras cada `buildTableHeader()` se llama a `initTooltip('#seguimiento-table thead [data-tooltip]')`. El tooltip de la celda de selección cambia a **"Deseleccionar todo"** cuando hay filas seleccionadas (se actualiza en `updateSelectAll()`).  
+    - **Checkboxes de filas:** cada celda de checkbox muestra **"Seleccionar"** o **"Deseleccionar"** según el estado de la fila; el texto se actualiza al marcar/desmarcar y tras pintar la tabla se llama a `initTooltip('#seguimiento-table tbody .ubits-table__td--checkbox[data-tooltip]')`.
+
+---
+
+*Última actualización: ítems 1–20 (11 feb), 21–26 (19 feb), 27 (Cargar más), 28–30 (20 feb) implementados.*

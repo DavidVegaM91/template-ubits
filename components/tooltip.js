@@ -46,7 +46,8 @@
  * - Posicionamiento inteligente según viewport
  * - 12 posiciones posibles para la colita
  * - Auto-detección de mejor posición si no cabe
- * - Soporte para hover, click, focus
+ * - Soporte para hover, focus
+ * - Ocultar al mousedown/clic (por defecto): el tooltip se cierra al hacer clic en el elemento para no quedar visible al abrir menús o activar acciones. Desactivar con data-tooltip-hide-on-click="false".
  * - Modo claro y oscuro automático
  */
 
@@ -356,8 +357,14 @@
     }
 
     /**
-     * Inicializa tooltips automáticamente para elementos con data-tooltip
+     * Inicializa tooltips automáticamente para elementos con data-tooltip.
      * @param {string} selector - Selector CSS (default: '[data-tooltip]')
+     *
+     * Atributos data opcionales:
+     * - data-tooltip: texto del tooltip (puede cambiarse en DOM para texto dinámico)
+     * - data-tooltip-delay: ms antes de mostrar (default 200)
+     * - data-tooltip-position, data-tooltip-align: posición y alineación
+     * - data-tooltip-hide-on-click: "true" (default) oculta el tooltip al hacer mousedown en el elemento; "false" no lo oculta (útil si el clic no abre menús/acciones)
      */
     function initTooltip(selector = '[data-tooltip]') {
         const elements = document.querySelectorAll(selector);
@@ -368,33 +375,39 @@
                 if (element._tooltipMouseEnterHandler) {
                     element.removeEventListener('mouseenter', element._tooltipMouseEnterHandler);
                     element.removeEventListener('mouseleave', element._tooltipMouseLeaveHandler);
+                    if (element._tooltipMouseDownHandler) element.removeEventListener('mousedown', element._tooltipMouseDownHandler);
                     element.removeEventListener('focus', element._tooltipFocusHandler);
                     element.removeEventListener('blur', element._tooltipBlurHandler);
                 }
             }
 
-            const text = element.getAttribute('data-tooltip');
             const position = element.getAttribute('data-tooltip-position') || 'top';
             const align = element.getAttribute('data-tooltip-align') || 'center';
             const delay = parseInt(element.getAttribute('data-tooltip-delay')) || 200;
             const duration = parseInt(element.getAttribute('data-tooltip-duration')) || 0;
             const noArrow = element.hasAttribute('data-tooltip-no-arrow');
             const normal = element.hasAttribute('data-tooltip-normal');
+            const hideOnClick = element.getAttribute('data-tooltip-hide-on-click') !== 'false';
 
             let tooltipTimeout;
             let currentTooltip = null;
 
-            // Mostrar en hover
+            function getOptions() {
+                return {
+                    position: element.getAttribute('data-tooltip-position') || 'top',
+                    align: element.getAttribute('data-tooltip-align') || 'center',
+                    delay: 0,
+                    duration: duration,
+                    noArrow: noArrow,
+                    normal: normal
+                };
+            }
+
+            // Mostrar en hover (texto actual por si data-tooltip cambia dinámicamente)
             const mouseEnterHandler = function () {
                 tooltipTimeout = setTimeout(() => {
-                    currentTooltip = showTooltip(element, text, {
-                        position: position,
-                        align: align,
-                        delay: 0,
-                        duration: duration,
-                        noArrow: noArrow,
-                        normal: normal
-                    });
+                    var text = element.getAttribute('data-tooltip');
+                    if (text) currentTooltip = showTooltip(element, text, getOptions());
                 }, delay);
             };
 
@@ -405,17 +418,20 @@
                 currentTooltip = null;
             };
 
+            // Ocultar al mousedown (propiedad hideOnClick; por defecto true)
+            const mouseDownHandler = function () {
+                if (!hideOnClick) return;
+                if (tooltipTimeout) clearTimeout(tooltipTimeout);
+                hideTooltip();
+                currentTooltip = null;
+            };
+
             // Mostrar en focus (accesibilidad)
             const focusHandler = function () {
+                var text = element.getAttribute('data-tooltip');
+                if (!text) return;
                 tooltipTimeout = setTimeout(() => {
-                    currentTooltip = showTooltip(element, text, {
-                        position: position,
-                        align: align,
-                        delay: 0,
-                        duration: duration,
-                        noArrow: noArrow,
-                        normal: normal
-                    });
+                    currentTooltip = showTooltip(element, text, getOptions());
                 }, delay);
             };
 
@@ -429,12 +445,14 @@
             // Agregar listeners
             element.addEventListener('mouseenter', mouseEnterHandler);
             element.addEventListener('mouseleave', mouseLeaveHandler);
+            if (hideOnClick) element.addEventListener('mousedown', mouseDownHandler);
             element.addEventListener('focus', focusHandler);
             element.addEventListener('blur', blurHandler);
 
             // Guardar referencias para poder limpiarlas después
             element._tooltipMouseEnterHandler = mouseEnterHandler;
             element._tooltipMouseLeaveHandler = mouseLeaveHandler;
+            element._tooltipMouseDownHandler = hideOnClick ? mouseDownHandler : null;
             element._tooltipFocusHandler = focusHandler;
             element._tooltipBlurHandler = blurHandler;
             element._tooltipInitialized = true;
