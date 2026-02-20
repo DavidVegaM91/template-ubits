@@ -124,85 +124,131 @@ function getTareasFiltradas() {
     return { vencidas, porDia };
 }
 
-// Drawer de filtros: usa componente UBITS (openDrawer). Tamaño sm (400px).
-var FILTROS_DRAWER_OVERLAY_ID = 'tareas-filtros-drawer-overlay';
+// Filtros de tareas: dropdown con contenido personalizado (customBodyHtml), como encabezados de seguimiento.
+var TAREAS_FILTROS_OVERLAY_ID = 'tareas-filtros-dropdown';
 
-function getFiltrosDrawerBodyHtml() {
-    var f = estadoTareas.filtros || {};
-    var estados = f.estados || [];
-    var prioridades = f.prioridades || [];
-    var asignacion = f.asignacion || 'todas';
-    return '<p class="ubits-body-md-regular" style="margin:0 0 16px 0; color: var(--ubits-fg-1-medium);">Estado, prioridad y asignación.</p>' +
-        '<div class="filtros-drawer-body">' +
-        '  <div class="filtros-drawer-group">' +
-        '    <p class="ubits-body-md-bold">Estado</p>' +
-        '    <div class="filtros-drawer-checkboxes">' +
-        '      <label class="filtros-drawer-option"><input type="checkbox" name="estado" value="Activo"' + (estados.indexOf('Activo') !== -1 ? ' checked' : '') + '><span class="ubits-body-sm-regular">Por hacer</span></label>' +
-        '      <label class="filtros-drawer-option"><input type="checkbox" name="estado" value="Vencido"' + (estados.indexOf('Vencido') !== -1 ? ' checked' : '') + '><span class="ubits-body-sm-regular">Vencido</span></label>' +
-        '      <label class="filtros-drawer-option"><input type="checkbox" name="estado" value="Finalizado"' + (estados.indexOf('Finalizado') !== -1 ? ' checked' : '') + '><span class="ubits-body-sm-regular">Finalizado</span></label>' +
-        '    </div>' +
-        '  </div>' +
-        '  <div class="filtros-drawer-group">' +
-        '    <p class="ubits-body-md-bold">Prioridad</p>' +
-        '    <div class="filtros-drawer-checkboxes">' +
-        '      <label class="filtros-drawer-option"><input type="checkbox" name="prioridad" value="alta"' + (prioridades.indexOf('alta') !== -1 ? ' checked' : '') + '><span class="ubits-body-sm-regular">Alta</span></label>' +
-        '      <label class="filtros-drawer-option"><input type="checkbox" name="prioridad" value="media"' + (prioridades.indexOf('media') !== -1 ? ' checked' : '') + '><span class="ubits-body-sm-regular">Media</span></label>' +
-        '      <label class="filtros-drawer-option"><input type="checkbox" name="prioridad" value="baja"' + (prioridades.indexOf('baja') !== -1 ? ' checked' : '') + '><span class="ubits-body-sm-regular">Baja</span></label>' +
-        '    </div>' +
-        '  </div>' +
-        '  <div class="filtros-drawer-group">' +
-        '    <p class="ubits-body-md-bold">Asignación</p>' +
-        '    <div class="filtros-drawer-radios">' +
-        '      <label class="filtros-drawer-radio"><input type="radio" name="asignacion" value="todas"' + (asignacion === 'todas' ? ' checked' : '') + '><span class="ubits-body-sm-regular">Todas</span></label>' +
-        '      <label class="filtros-drawer-radio"><input type="radio" name="asignacion" value="asignadas-por-mi"' + (asignacion === 'asignadas-por-mi' ? ' checked' : '') + '><span class="ubits-body-sm-regular">Solo lo que asigné a otros</span></label>' +
-        '      <label class="filtros-drawer-radio"><input type="radio" name="asignacion" value="asignadas-a-mi"' + (asignacion === 'asignadas-a-mi' ? ' checked' : '') + '><span class="ubits-body-sm-regular">Solo lo asignado a mí</span></label>' +
-        '    </div>' +
-        '  </div>' +
+var TAREAS_FILTROS_ESTADO_OPTIONS = [
+    { value: '', text: 'Todos' },
+    { value: 'Activo', text: 'Por hacer' },
+    { value: 'Vencido', text: 'Vencido' },
+    { value: 'Finalizado', text: 'Finalizado' }
+];
+var TAREAS_FILTROS_PRIORIDAD_OPTIONS = [
+    { value: '', text: 'Todos' },
+    { value: 'alta', text: 'Alta' },
+    { value: 'media', text: 'Media' },
+    { value: 'baja', text: 'Baja' }
+];
+var TAREAS_FILTROS_ASIGNACION_OPTIONS = [
+    { value: 'todas', text: 'Todas' },
+    { value: 'asignadas-por-mi', text: 'Solo lo que asigné a otros' },
+    { value: 'asignadas-a-mi', text: 'Solo lo asignado a mí' }
+];
+
+function getFiltrosDropdownBodyHtml() {
+    return '<div class="tareas-filtros-dropdown-body">' +
+        '<div id="tareas-filtros-estado-container"></div>' +
+        '<div id="tareas-filtros-prioridad-container"></div>' +
+        '<div id="tareas-filtros-asignacion-container"></div>' +
         '</div>';
 }
 
-function openFiltrosDrawer() {
+function openFiltrosDropdown() {
     var btn = document.getElementById('tareas-filtros-btn');
-    if (btn) btn.setAttribute('aria-expanded', 'true');
+    if (!btn || typeof window.getDropdownMenuHtml !== 'function' || typeof window.openDropdownMenu !== 'function' || typeof window.closeDropdownMenu !== 'function') return;
+    if (typeof createInput !== 'function') return;
 
-    var bodyHtml = getFiltrosDrawerBodyHtml();
-    var footerHtml = '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm" id="filtros-drawer-limpiar"><span>Limpiar</span></button>' +
-        '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="filtros-drawer-aplicar"><span>Aplicar</span></button>';
+    var existing = document.getElementById(TAREAS_FILTROS_OVERLAY_ID);
+    if (existing) existing.remove();
 
-    var overlay = typeof openDrawer === 'function' ? openDrawer({
-        overlayId: FILTROS_DRAWER_OVERLAY_ID,
-        title: 'Filtros',
-        bodyHtml: bodyHtml,
-        footerHtml: footerHtml,
-        size: 'sm',
-        closeOnOverlayClick: true,
-        onClose: function () {
-            if (document.getElementById('tareas-filtros-btn')) document.getElementById('tareas-filtros-btn').setAttribute('aria-expanded', 'false');
-        }
-    }) : null;
+    var f = estadoTareas.filtros || {};
+    var estadoVal = (f.estados && f.estados.length > 0) ? f.estados[0] : '';
+    var prioridadVal = (f.prioridades && f.prioridades.length > 0) ? f.prioridades[0] : '';
+    var asignacionVal = f.asignacion || 'todas';
 
-    if (overlay) {
-        overlay.querySelector('#filtros-drawer-limpiar').addEventListener('click', function () {
-            estadoTareas.filtros = { estados: [], prioridades: [], asignacion: 'todas' };
-            if (typeof closeDrawer === 'function') closeDrawer(FILTROS_DRAWER_OVERLAY_ID);
+    var bodyHtml = getFiltrosDropdownBodyHtml();
+    var html = window.getDropdownMenuHtml({
+        overlayId: TAREAS_FILTROS_OVERLAY_ID,
+        customBodyHtml: bodyHtml,
+        footerSecondaryLabel: 'Limpiar',
+        footerPrimaryLabel: 'Aplicar',
+        footerSecondaryId: 'tareas-filtros-limpiar',
+        footerPrimaryId: 'tareas-filtros-aplicar'
+    });
+    document.body.insertAdjacentHTML('beforeend', html);
+    var overlayEl = document.getElementById(TAREAS_FILTROS_OVERLAY_ID);
+    if (!overlayEl) return;
+
+    btn.setAttribute('aria-expanded', 'true');
+    var contentEl = overlayEl.querySelector('.ubits-dropdown-menu__content');
+    if (contentEl) contentEl.classList.add('tareas-filtros-dropdown-content');
+
+    var estadoInput = createInput({
+        containerId: 'tareas-filtros-estado-container',
+        type: 'select',
+        label: 'Estado',
+        placeholder: 'Todos',
+        selectOptions: TAREAS_FILTROS_ESTADO_OPTIONS,
+        value: estadoVal,
+        size: 'sm'
+    });
+    var prioridadInput = createInput({
+        containerId: 'tareas-filtros-prioridad-container',
+        type: 'select',
+        label: 'Prioridad',
+        placeholder: 'Todos',
+        selectOptions: TAREAS_FILTROS_PRIORIDAD_OPTIONS,
+        value: prioridadVal,
+        size: 'sm'
+    });
+    var asignacionInput = createInput({
+        containerId: 'tareas-filtros-asignacion-container',
+        type: 'select',
+        label: 'Asignación',
+        placeholder: 'Todas',
+        selectOptions: TAREAS_FILTROS_ASIGNACION_OPTIONS,
+        value: asignacionVal,
+        size: 'sm'
+    });
+
+    overlayEl.addEventListener('click', function (ev) {
+        if (ev.target === overlayEl) {
+            window.closeDropdownMenu(TAREAS_FILTROS_OVERLAY_ID);
+            if (overlayEl.parentNode) overlayEl.remove();
             if (btn) btn.setAttribute('aria-expanded', 'false');
-            renderAllTasks();
-        });
-        overlay.querySelector('#filtros-drawer-aplicar').addEventListener('click', function () {
-            var content = overlay.querySelector('.ubits-drawer-body');
-            if (content) {
-                var estadosSel = [].map.call(content.querySelectorAll('input[name="estado"]:checked'), function (el) { return el.value; });
-                var prioridadesSel = [].map.call(content.querySelectorAll('input[name="prioridad"]:checked'), function (el) { return el.value; });
-                var radioAsig = content.querySelector('input[name="asignacion"]:checked');
-                estadoTareas.filtros.estados = estadosSel;
-                estadoTareas.filtros.prioridades = prioridadesSel;
-                estadoTareas.filtros.asignacion = radioAsig ? radioAsig.value : 'todas';
-            }
-            if (typeof closeDrawer === 'function') closeDrawer(FILTROS_DRAWER_OVERLAY_ID);
+        }
+    });
+
+    var limpiarBtn = document.getElementById('tareas-filtros-limpiar');
+    var aplicarBtn = document.getElementById('tareas-filtros-aplicar');
+    if (limpiarBtn) {
+        limpiarBtn.addEventListener('click', function () {
+            estadoTareas.filtros = { estados: [], prioridades: [], asignacion: 'todas' };
+            window.closeDropdownMenu(TAREAS_FILTROS_OVERLAY_ID);
+            if (overlayEl.parentNode) overlayEl.remove();
             if (btn) btn.setAttribute('aria-expanded', 'false');
             renderAllTasks();
         });
     }
+    if (aplicarBtn) {
+        aplicarBtn.addEventListener('click', function () {
+            var textoEstado = estadoInput && estadoInput.getValue ? estadoInput.getValue() : '';
+            var textoPrioridad = prioridadInput && prioridadInput.getValue ? prioridadInput.getValue() : '';
+            var textoAsignacion = asignacionInput && asignacionInput.getValue ? asignacionInput.getValue() : '';
+            var optEstado = TAREAS_FILTROS_ESTADO_OPTIONS.find(function (o) { return o.text === textoEstado; });
+            var optPrioridad = TAREAS_FILTROS_PRIORIDAD_OPTIONS.find(function (o) { return o.text === textoPrioridad; });
+            var optAsignacion = TAREAS_FILTROS_ASIGNACION_OPTIONS.find(function (o) { return o.text === textoAsignacion; });
+            estadoTareas.filtros.estados = optEstado && optEstado.value ? [optEstado.value] : [];
+            estadoTareas.filtros.prioridades = optPrioridad && optPrioridad.value ? [optPrioridad.value] : [];
+            estadoTareas.filtros.asignacion = optAsignacion ? optAsignacion.value : 'todas';
+            window.closeDropdownMenu(TAREAS_FILTROS_OVERLAY_ID);
+            if (overlayEl.parentNode) overlayEl.remove();
+            if (btn) btn.setAttribute('aria-expanded', 'false');
+            renderAllTasks();
+        });
+    }
+
+    window.openDropdownMenu(TAREAS_FILTROS_OVERLAY_ID, btn);
 }
 
 // Formatear fecha para mostrar
@@ -824,11 +870,11 @@ function initTareasView() {
         });
     }
 
-    // Botón filtros: abre drawer
+    // Botón filtros: abre dropdown (como encabezados de seguimiento)
     const filtrosBtn = document.getElementById('tareas-filtros-btn');
     if (filtrosBtn) {
         filtrosBtn.addEventListener('click', function () {
-            if (typeof openFiltrosDrawer === 'function') openFiltrosDrawer();
+            if (typeof openFiltrosDropdown === 'function') openFiltrosDropdown();
         });
     }
 

@@ -37,6 +37,7 @@
      * @param {string} [config.footerPrimaryLabel] - Texto del botón primario del footer (ej. "Aplicar").
      * @param {string} [config.footerSecondaryId] - ID del botón secundario.
      * @param {string} [config.footerPrimaryId] - ID del botón primario.
+     * @param {string} [config.customBodyHtml] - HTML personalizado para el cuerpo (inputs, formularios). Si se define, se muestra en lugar de la lista de opciones.
      * @returns {string} HTML del overlay + content.
      */
     function getDropdownMenuHtml(config) {
@@ -44,6 +45,7 @@
         var overlayId = config.overlayId || 'ubits-dropdown-menu-overlay';
         var contentId = config.contentId || overlayId + '-content';
         var options = config.options || [];
+        var customBodyHtml = config.customBodyHtml != null ? config.customBodyHtml : '';
         var radioGroup = config.radioGroup === true;
         var radioName = config.radioName != null ? String(config.radioName) : overlayId + '-radio';
         var hasAutocomplete = config.hasAutocomplete === true;
@@ -115,10 +117,13 @@
             '</div>'
             : '';
 
+        var bodyBlock = customBodyHtml
+            ? '<div class="ubits-dropdown-menu__custom-body">' + customBodyHtml + '</div>'
+            : '<div class="ubits-dropdown-menu__options">' + optionsHtml + '</div>';
         return '<div class="ubits-dropdown-menu__overlay" id="' + escapeHtml(overlayId) + '" style="display: none;" aria-hidden="true">' +
             '<div class="ubits-dropdown-menu__content" id="' + escapeHtml(contentId) + '" onclick="event.stopPropagation();">' +
             autocompleteBlock +
-            '<div class="ubits-dropdown-menu__options">' + optionsHtml + '</div>' +
+            bodyBlock +
             footerBlock +
             '</div>' +
             '</div>';

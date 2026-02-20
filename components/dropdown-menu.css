@@ -49,6 +49,15 @@
     box-sizing: border-box;
 }
 
+/* Cuerpo personalizado (formularios, inputs de selección): padding y scroll si hace falta */
+.ubits-dropdown-menu__custom-body {
+    padding: var(--padding-md);
+    max-height: 360px;
+    overflow-y: auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
 /* Lista de opciones: ancho completo; alto máximo 350px con scroll si hay muchos ítems */
 .ubits-dropdown-menu__options {
     display: flex;

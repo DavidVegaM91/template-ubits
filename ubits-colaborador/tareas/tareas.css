@@ -755,10 +755,26 @@ body.page-tareas .dashboard-container {
 /* Panel de detalle de tarea: estilos en components/task-detail-panel.css */
 
 /* ========================================
-   DRAWER DE FILTROS (Estado, Prioridad, Asignación)
-   Usa componente UBITS (components/drawer.css) con size sm.
-   Estilos solo para el contenido dentro de .ubits-drawer-body.
+   FILTROS (Estado, Prioridad, Asignación)
+   Dentro de dropdown (customBodyHtml). Las clases filtros-drawer-* se reutilizan en el panel.
    ======================================== */
+/* Panel de filtros dentro del dropdown: 3 selectores */
+.tareas-filtros-dropdown-content.ubits-dropdown-menu__content {
+    min-width: 260px;
+}
+
+.tareas-filtros-dropdown-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+}
+
+/* Input select oficial: ancho completo dentro del dropdown */
+.tareas-filtros-dropdown-body .ubits-input-wrapper,
+.tareas-filtros-dropdown-body [style*="position: relative"] {
+    width: 100%;
+}
+
 .filtros-drawer-body {
     display: flex;
     flex-direction: column;

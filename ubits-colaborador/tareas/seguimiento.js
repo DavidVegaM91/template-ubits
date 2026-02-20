@@ -2467,6 +2467,15 @@
         container.appendChild(wrap);
     }
 
+    // Botón refrescar: toast "Datos refrescados"
+    function initRefreshButton() {
+        const btn = document.getElementById('seguimiento-refresh-btn');
+        if (!btn) return;
+        btn.addEventListener('click', function () {
+            if (typeof showToast === 'function') showToast('success', 'Datos refrescados');
+        });
+    }
+
     // Toggle de búsqueda
     function initSearchToggle() {
         const toggle = document.getElementById('seguimiento-search-toggle');
@@ -4136,6 +4145,7 @@
         updateIndicadores();
         initLoadMore();
         renderFiltrosAplicados();
+        initRefreshButton();
         initSearchToggle();
         initModals();
         initSortMenu();
