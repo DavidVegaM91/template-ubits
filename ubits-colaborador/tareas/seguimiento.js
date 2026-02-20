@@ -3212,8 +3212,8 @@
             var ascText = isAvance ? 'Menos avance primero' : 'Más reciente al final';
             var currentDir = currentSort.column === col ? currentSort.direction : null;
             var options = [
-                { text: descText, value: 'desc', leftIcon: 'arrow-down', selected: currentDir === 'desc' },
-                { text: ascText, value: 'asc', leftIcon: 'arrow-up', selected: currentDir === 'asc' }
+                { text: descText, value: 'desc', leftIcon: 'arrow-up', selected: currentDir === 'desc' },
+                { text: ascText, value: 'asc', leftIcon: 'arrow-down', selected: currentDir === 'asc' }
             ];
             var existing = document.getElementById(overlayId);
             if (existing) existing.remove();
