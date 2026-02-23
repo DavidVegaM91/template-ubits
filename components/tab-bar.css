@@ -47,7 +47,7 @@
 
 .tab-bar-item.active .tab-bar-text {
     color: var(--ubits-sidebar-button-bg-active);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
 }
 
 .tab-bar-icon {
@@ -91,7 +91,7 @@
     transition: color 0.2s ease;
     font-family: 'Noto Sans', sans-serif !important;
     font-size: var(--font-size-sm);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
 }
 
 .tab-bar-item:hover .tab-bar-text {

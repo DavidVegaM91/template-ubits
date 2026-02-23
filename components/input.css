@@ -226,7 +226,7 @@ textarea.ubits-input:disabled {
     margin-bottom: 8px;
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-sm);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     line-height: 19.5px;
 }
 
@@ -234,7 +234,7 @@ textarea.ubits-input:disabled {
     color: var(--ubits-fg-1-medium);
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-xs);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     line-height: 16.5px;
 }
 
@@ -251,7 +251,7 @@ textarea.ubits-input:disabled {
     gap: var(--gap-xs, 4px);
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-sm);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     line-height: 19.5px;
 }
 
@@ -268,7 +268,7 @@ textarea.ubits-input:disabled {
 .ubits-input-counter {
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-sm);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     line-height: 19.5px;
 }
 
@@ -352,7 +352,7 @@ textarea.ubits-input:disabled {
 }
 
 .ubits-autocomplete-option strong {
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     color: var(--ubits-accent-brand);
 }
 

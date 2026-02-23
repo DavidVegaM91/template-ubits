@@ -472,7 +472,7 @@
     display: block;
     margin: 0 0 var(--gap-sm, 8px) 0;
     font-size: var(--font-size-sm, 13px);
-    font-weight: 500;
+    font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-high);
 }
 
@@ -610,7 +610,7 @@
     padding: 4px 12px;
     border-radius: 5px;
     font-size: var(--font-size-xs, 11px);
-    font-weight: 500;
+    font-weight: var(--font-weight-semibold);
 }
 
 .task-detail-status-badge.task-detail-status--iniciada {
@@ -720,7 +720,7 @@
     height: 40px;
     border-radius: var(--border-radius-sm, 8px);
     font-size: var(--font-size-md, 16px);
-    font-weight: 500;
+    font-weight: var(--font-weight-semibold);
     cursor: pointer;
     transition: all 0.2s ease;
 }

@@ -17,7 +17,7 @@
     border: none;
     border-radius: var(--border-radius-sm);
     font-family: 'Noto Sans', sans-serif;
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     line-height: 1;
     text-decoration: none;
     cursor: pointer;
@@ -40,7 +40,7 @@
 .ubits-tab--active {
     background: var(--ubits-bg-1);
     color: var(--ubits-fg-1-high);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
 }
 
 .ubits-tab--active i {
@@ -49,7 +49,7 @@
 
 .ubits-tab--active span {
     color: var(--ubits-fg-1-high);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
 }
 
 /* Hover State */
@@ -78,7 +78,7 @@
 
 .ubits-tab--active:hover span {
     color: var(--ubits-fg-1-high);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
 }
 
 /* Focus State */
@@ -126,7 +126,7 @@
 .ubits-tab span {
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-sm);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     line-height: 13px;
     color: var(--ubits-fg-1-medium);
     transition: color 0.2s ease, font-weight 0.2s ease;
@@ -134,7 +134,7 @@
 
 .ubits-tab--active span {
     color: var(--ubits-fg-1-high);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
 }
 
 /* ========================================
@@ -152,7 +152,7 @@
 .ubits-tab span {
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-sm);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     line-height: 13px;
 }
 
@@ -182,7 +182,7 @@
 .ubits-tab--xs span {
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-xs);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     line-height: 11px;
 }
 
@@ -211,7 +211,7 @@
 .ubits-tab--sm span {
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-sm);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     line-height: 13px;
 }
 
@@ -240,7 +240,7 @@
 .ubits-tab--lg span {
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-h2);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     line-height: 20px;
 }
 

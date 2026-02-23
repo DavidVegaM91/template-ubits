@@ -63,7 +63,7 @@
 .ubits-toast__text {
     font-size: var(--font-size-sm); /* match alert */
     line-height: 19.5px; /* match alert */
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     color: inherit;
     display: flex;
     align-items: center;

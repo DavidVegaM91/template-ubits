@@ -38,7 +38,7 @@
 .floating-menu-title {
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-h2);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     color: var(--ubits-sidebar-button-fg-default);
 }
 
@@ -87,7 +87,7 @@
     align-items: center;
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-sm);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     color: var(--ubits-sidebar-button-fg-default);
 }
 
@@ -97,7 +97,7 @@
 
 .accordion-title.active span {
     color: var(--ubits-sidebar-button-bg-active) !important;
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
 }
 
 .accordion-title i {
@@ -149,13 +149,13 @@
 
 .accordion-link.active span {
     color: var(--ubits-sidebar-button-bg-active) !important;
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
 }
 
 /* Estados activos para DIRECT LINKS */
 .accordion-link.direct-link.active span {
     color: var(--ubits-sidebar-button-bg-active) !important;
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
 }
 
 .accordion-link.direct-link.active .accordion-chevron {
@@ -243,7 +243,7 @@
 .floating-menu-item.active .floating-menu-text,
 .floating-menu-item.active .floating-menu-text span {
     color: var(--ubits-sidebar-button-bg-active) !important;
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
 }
 
 .floating-menu-icon {
@@ -318,7 +318,7 @@
 .floating-menu-subitem.active .floating-menu-subtext,
 .floating-menu-subitem.active .floating-menu-subtext span {
     color: var(--ubits-sidebar-button-bg-active) !important;
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
 }
 
 /* Estados activos movidos al final del archivo */

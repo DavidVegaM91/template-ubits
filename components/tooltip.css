@@ -28,7 +28,7 @@
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-sm);
     line-height: 19.5px;
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     word-wrap: break-word;
     position: relative;
     overflow: visible;

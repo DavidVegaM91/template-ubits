@@ -120,7 +120,7 @@
 .task-detail-meta-label {
     color: var(--ubits-fg-1-medium);
     font-size: var(--font-size-xs);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
 }
 
 /* Mismo ancho que en la tirilla de tareas (task-strip): status 80px, prioridad 80px */
@@ -320,7 +320,7 @@
     gap: var(--gap-sm);
     margin: 0;
     font-size: var(--font-size-md);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-high);
 }
 
@@ -403,7 +403,7 @@
     gap: var(--gap-sm);
     margin: 0;
     font-size: var(--font-size-md);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     color: var(--ubits-fg-1-high);
 }
 
@@ -415,7 +415,7 @@
     height: 20px;
     padding: 0 6px;
     font-size: var(--font-size-xs);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     color: var(--ubits-feedback-fg-info);
     background: var(--ubits-feedback-bg-info-subtle);
     border-radius: 10px;
@@ -453,7 +453,7 @@
 
 .task-detail-comment-author {
     font-size: var(--font-size-sm);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-high);
 }
 
@@ -523,7 +523,7 @@
 
 .task-detail-comments-separator span {
     font-size: var(--font-size-xs);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-medium);
     text-transform: uppercase;
 }

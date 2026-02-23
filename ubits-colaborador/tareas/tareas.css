@@ -537,7 +537,7 @@ body.page-tareas .dashboard-container {
     background: var(--ubits-button-badge);
     color: var(--ubits-btn-primary-fg);
     font-size: 12px;
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     line-height: 1;
 }
 

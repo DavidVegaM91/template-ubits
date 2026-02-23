@@ -108,7 +108,7 @@
 
 .course-status {
     font-size: var(--font-size-sm);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
 }
 
 .course-status--progress {

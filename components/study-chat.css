@@ -144,7 +144,7 @@
 .ubits-study-chat__welcome-greeting {
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-md);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     line-height: 24px;
     color: var(--ubits-fg-1-high);
     margin: 0;
@@ -153,7 +153,7 @@
 .ubits-study-chat__welcome-prompt {
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-h1);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     line-height: 28px;
     color: var(--ubits-fg-1-high);
     margin: 0;
@@ -205,7 +205,7 @@
 .study-chat-courses-prompt {
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-sm);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     line-height: 20px;
     color: var(--ubits-fg-1-medium);
     margin-top: 0;
@@ -227,7 +227,7 @@
 .study-chat-plan-title {
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-md);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     line-height: 24px;
     color: var(--ubits-fg-1-high);
     margin-bottom: 12px;
@@ -243,20 +243,20 @@
 .study-chat-plan-detail-item {
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-sm);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     line-height: 20px;
     color: var(--ubits-fg-1-medium);
 }
 
 .study-chat-plan-detail-item strong {
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     color: var(--ubits-fg-1-high);
 }
 
 .study-chat-plan-courses-title {
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-sm);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     line-height: 20px;
     color: var(--ubits-fg-1-high);
     margin-bottom: 12px;
@@ -266,7 +266,7 @@
 .study-chat-plan-prompt {
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-sm);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     line-height: 20px;
     color: var(--ubits-fg-1-medium);
     margin-top: 12px;
@@ -537,12 +537,12 @@
 }
 
 .ubits-study-chat__text-globe--ai .ubits-study-chat__message-text {
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     color: var(--ubits-fg-1-high);
 }
 
 .ubits-study-chat__text-globe--user .ubits-study-chat__message-text {
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     color: var(--ubits-btn-primary-fg);
 }
 
@@ -550,7 +550,7 @@
 .ubits-study-chat__timestamp {
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-xs);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     line-height: 19.5px;
     color: var(--ubits-btn-tertiary-fg);
     margin: 0;
@@ -765,7 +765,7 @@
     flex: 1;
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-md);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     line-height: 28.8px;
     color: var(--ubits-fg-1-medium);
     cursor: text;
@@ -778,7 +778,7 @@
     background: transparent;
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-md);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     line-height: 28.8px;
     color: var(--ubits-fg-1-high);
     width: 100%;
@@ -1081,7 +1081,7 @@
     align-items: center;
     gap: var(--gap-xs);
     font-size: var(--font-size-sm);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
 }
 
 .study-chat-quiz-opt-inline-feedback--correct .study-chat-quiz-opt-inline-feedback-status {
@@ -1103,14 +1103,14 @@
 .study-chat-quiz-opt-inline-feedback-explanation {
     margin: 0;
     font-size: var(--font-size-sm);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     line-height: 20px;
     color: var(--ubits-fg-1-high);
 }
 
 .study-chat-quiz-opt-letter {
     flex-shrink: 0;
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-high);
     min-width: 1.25em;
 }
@@ -1122,7 +1122,7 @@
 
 .study-chat-quiz-opt--correct .study-chat-quiz-opt-text,
 .study-chat-quiz-opt--wrong .study-chat-quiz-opt-text {
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
 }
 
 .study-chat-quiz-feedback {
@@ -1138,7 +1138,7 @@
 }
 
 .study-chat-quiz-feedback strong {
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     color: var(--ubits-fg-1-high);
 }
 
@@ -1231,7 +1231,7 @@
     flex-shrink: 0;
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-sm);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     color: var(--ubits-fg-1-high);
 }
 
@@ -1249,7 +1249,7 @@
     border-radius: var(--border-radius-sm);
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-sm);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
 }
 
 .study-chat-quiz-progress-stat-pill i {
@@ -1301,7 +1301,7 @@
 .study-chat-quiz-result-title {
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-h2);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     line-height: 28px;
     color: var(--ubits-fg-1-high);
     margin: 0;
@@ -1332,14 +1332,14 @@
 .study-chat-quiz-result-card-label {
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-sm);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     color: var(--ubits-fg-1-medium);
 }
 
 .study-chat-quiz-result-card-value {
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-h1);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     color: var(--ubits-fg-1-high);
 }
 
@@ -1360,14 +1360,14 @@
 }
 
 .study-chat-quiz-result-row span:last-child {
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     color: var(--ubits-fg-1-high);
 }
 
 .study-chat-quiz-result-section-title {
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-md);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     color: var(--ubits-fg-1-high);
     margin: 0;
 }
@@ -1412,7 +1412,7 @@
 .study-chat-quiz-result-option-title {
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-sm);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     color: var(--ubits-fg-1-high);
 }
 
@@ -1491,7 +1491,7 @@
     flex-shrink: 0;
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-sm);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     color: var(--ubits-fg-1-high);
 }
 
@@ -1610,7 +1610,7 @@
 .study-chat-canvas-study-plan .study-chat-study-plan-title {
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-md);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-high);
     margin: 0;
 }

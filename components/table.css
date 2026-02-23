@@ -35,7 +35,7 @@
     border-bottom: 1px solid var(--ubits-border-1);
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-sm);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     line-height: 20px;
     white-space: nowrap;
     vertical-align: middle;
@@ -54,7 +54,7 @@
     text-overflow: ellipsis;
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-sm);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     line-height: 16px;
 }
 
@@ -91,7 +91,7 @@
 .ubits-table__cell-text {
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-sm);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     line-height: 16px;
     color: var(--ubits-fg-1-medium);
 }

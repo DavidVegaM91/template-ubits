@@ -14,7 +14,7 @@
     min-height: var(--space-10);
     border-radius: var(--border-radius-sm);
     font-family: 'Noto Sans', sans-serif;
-    font-weight: 500;
+    font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-high);
     box-sizing: border-box;
     transition: background-color 0.2s ease;

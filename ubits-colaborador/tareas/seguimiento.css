@@ -1223,7 +1223,7 @@
 .seguimiento-indicador-card .indicador-label {
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-xs);
-    font-weight: 500;
+    font-weight: var(--font-weight-semibold);
     line-height: 14px;
     color: var(--ubits-fg-1-medium);
     text-transform: uppercase;
@@ -1233,7 +1233,7 @@
 .seguimiento-indicador-card .indicador-percentage {
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-xs);
-    font-weight: 500;
+    font-weight: var(--font-weight-semibold);
     line-height: 14px;
     color: var(--ubits-fg-1-medium);
 }
@@ -1353,7 +1353,7 @@
 
 .date-picker-separator {
     color: var(--ubits-fg-1-medium);
-    font-weight: 500;
+    font-weight: var(--font-weight-semibold);
     margin-top: 24px;
 }
 

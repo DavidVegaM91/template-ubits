@@ -116,7 +116,7 @@
     border: 1px solid var(--ubits-border-1);
     border-radius: 50%;
     font-family: 'Noto Sans', sans-serif;
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-high);
     text-align: center;
     white-space: nowrap;

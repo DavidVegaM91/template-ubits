@@ -236,7 +236,7 @@
     cursor: pointer;
     font-size: 13px;
     font-family: 'Noto Sans', sans-serif;
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
 }
 .tarea-priority-badge .ubits-badge-tag__text {
     font-size: inherit;

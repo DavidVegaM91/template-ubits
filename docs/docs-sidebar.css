@@ -51,7 +51,7 @@
 .docs-sidebar-subtitle {
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-sm);
-    font-weight: 500;
+    font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-medium);
     margin-bottom: 12px;
     text-transform: uppercase;
@@ -212,7 +212,7 @@
 .docs-dropdown-subgroup-title {
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-xs);
-    font-weight: 500;
+    font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-medium);
     margin-bottom: 8px;
     text-transform: uppercase;

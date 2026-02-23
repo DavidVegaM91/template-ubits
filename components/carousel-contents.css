@@ -192,7 +192,7 @@
 .carousel-contents--hero__provider-count-text {
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-sm);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     line-height: 19.5px;
     color: var(--ubits-fg-1-high-static-inverted) !important;
     text-align: center;
@@ -398,7 +398,7 @@
     .carousel-contents--hero__title {
         font-family: 'Noto Sans', sans-serif !important;
         font-size: var(--font-size-sm) !important;
-        font-weight: 700 !important;
+        font-weight: var(--font-weight-bold) !important;
         line-height: 19.5px !important;
     }
 }
@@ -430,7 +430,7 @@
     flex: 1;
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-h2);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     line-height: 1;
     color: var(--ubits-fg-1-high);
     margin: 0;
@@ -593,7 +593,7 @@
     margin: 0;
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-h2);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     line-height: 1;
 }
 
@@ -699,7 +699,7 @@
     transition: opacity 0.2s ease;
     z-index: 99999;
     font-family: 'Noto Sans', sans-serif;
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     visibility: hidden;
     display: block;
 }
@@ -841,7 +841,7 @@
     flex: 1;
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-h2);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     line-height: 1;
     color: var(--ubits-fg-1-high);
     margin: 0;
@@ -1032,7 +1032,7 @@
     /* Usa ubits-body-sm-regular: 13px, 400, 19.5px */
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-sm);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     line-height: 19.5px;
 }
 
@@ -1050,7 +1050,7 @@
     line-height: 42px;
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-d4);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     display: -webkit-box;
     -webkit-line-clamp: 2;
     line-clamp: 2;
@@ -1135,7 +1135,7 @@
 .carousel-contents--outstanding__provider-count-text {
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-sm);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     line-height: 19.5px;
     color: var(--ubits-fg-1-high);
     text-align: center;
@@ -1168,7 +1168,7 @@
     /* Usa ubits-body-sm-regular: 13px, 400, 19.5px */
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-sm);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     line-height: 19.5px;
 }
 
@@ -1359,7 +1359,7 @@
         /* Usar estilos de ubits-body-sm-bold */
         font-family: 'Noto Sans', sans-serif;
         font-size: var(--font-size-sm);
-        font-weight: 700;
+        font-weight: var(--font-weight-bold);
         line-height: 19.5px;
         color: var(--ubits-fg-1-high);
         /* Limitar a 2 líneas con puntos suspensivos */

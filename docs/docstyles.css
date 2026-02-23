@@ -537,7 +537,7 @@
     padding: var(--padding-md) var(--padding-2xl);
     border-radius: var(--border-radius-sm);
     font-size: var(--font-size-sm);
-    font-weight: 500;
+    font-weight: var(--font-weight-semibold);
     cursor: pointer;
     transition: all 0.2s ease;
     font-family: 'Noto Sans', sans-serif;
@@ -1002,7 +1002,7 @@
 .icon-category-item span {
     font-size: var(--font-size-sm);
     color: var(--ubits-fg-1-medium);
-    font-weight: 500;
+    font-weight: var(--font-weight-semibold);
 }
 
 /* Typography Examples */
@@ -1058,7 +1058,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: bold;
+    font-weight: var(--font-weight-bold);
     font-size: var(--font-size-h2);
     flex-shrink: 0;
 }

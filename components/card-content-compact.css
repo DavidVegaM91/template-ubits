@@ -151,7 +151,7 @@
 
 .course-status-compact {
     font-size: var(--font-size-xs);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
 }
 
 .course-status-compact--progress {
@@ -237,7 +237,7 @@
 .provider-count-text-compact {
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-sm);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     line-height: 19.5px;
     color: var(--ubits-fg-1-high);
     text-align: center;
