@@ -99,6 +99,8 @@
     let SEGUIMIENTO_DATA = [];
     let filteredData = [];
     let columnVisibility = {};
+    // Guardar visibilidad de columnas por tab para no perderla al cambiar Tareas <-> Planes
+    let columnVisibilityByTab = { tareas: null, planes: null };
     const SEGUIMIENTO_LOAD_MORE_SIZE = 50;
     let displayLimit = SEGUIMIENTO_LOAD_MORE_SIZE;
     let viewOnlySelected = false;
@@ -209,14 +211,24 @@
         return SEGUIMIENTO_DATA.filter(r => r.tipo === tipo);
     }
 
-    // Inicializar visibilidad de columnas (según tab activo)
+    // Inicializar o restaurar visibilidad de columnas (según tab activo). Respeta lo que el usuario eligió en cada tab.
     function initColumnVisibility() {
         const ids = getColumnIds();
-        const visible = getVisibleByDefault();
-        columnVisibility = {};
-        ids.forEach(col => {
-            columnVisibility[col] = visible.includes(col);
-        });
+        const visibleDefault = getVisibleByDefault();
+        if (columnVisibilityByTab[activeTab] != null) {
+            columnVisibility = {};
+            ids.forEach(col => {
+                columnVisibility[col] = columnVisibilityByTab[activeTab].hasOwnProperty(col)
+                    ? columnVisibilityByTab[activeTab][col]
+                    : visibleDefault.includes(col);
+            });
+        } else {
+            columnVisibility = {};
+            ids.forEach(col => {
+                columnVisibility[col] = visibleDefault.includes(col);
+            });
+            columnVisibilityByTab[activeTab] = Object.assign({}, columnVisibility);
+        }
     }
 
     // Indica si el filtro de una columna está activo (tiene valores seleccionados)
@@ -283,6 +295,9 @@
                 html += `<th class="seguimiento-th-filterable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only seguimiento-filter-btn${activeClass}" data-filter="${col}" aria-label="Filtrar por ${label}" data-tooltip="Filtrar por ${label}" data-tooltip-delay="1000"><i class="far fa-filter"></i></button></th>`;
             } else if (activeTab === 'planes' && col === 'creador') {
                 var activeClass = isColumnFilterActive('creador', 'filter') ? ' seguimiento-filter-btn--active' : '';
+                html += `<th class="seguimiento-th-filterable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only seguimiento-filter-btn${activeClass}" data-filter="${col}" aria-label="Filtrar por ${label}" data-tooltip="Filtrar por ${label}" data-tooltip-delay="1000"><i class="far fa-filter"></i></button></th>`;
+            } else if (activeTab === 'planes' && col === 'areaCreador') {
+                var activeClass = isColumnFilterActive('areaCreador', 'filter') ? ' seguimiento-filter-btn--active' : '';
                 html += `<th class="seguimiento-th-filterable" data-col="${col}"${style}>${label} <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only seguimiento-filter-btn${activeClass}" data-filter="${col}" aria-label="Filtrar por ${label}" data-tooltip="Filtrar por ${label}" data-tooltip-delay="1000"><i class="far fa-filter"></i></button></th>`;
             } else if (activeTab === 'planes' && col === 'estado') {
                 var activeClass = isColumnFilterActive('estado', 'checkbox') ? ' seguimiento-checkbox-btn--active' : '';
@@ -1417,6 +1432,25 @@
             } else {
                 asignadoHtml = '';
             }
+            // Creador con avatar (mismo estilo que asignado): resolver avatar por row.creador_avatar o getCreatorDisplay
+            let creadorHtml = '';
+            if (row.creador) {
+                const creatorAvatar = (row.creador_avatar && String(row.creador_avatar).trim()) ? row.creador_avatar : null;
+                let creatorName = row.creador;
+                let creatorImg = creatorAvatar;
+                if (!creatorImg && typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getCreatorDisplay === 'function') {
+                    const resolved = TAREAS_PLANES_DB.getCreatorDisplay(row.creador);
+                    creatorName = resolved.name || row.creador;
+                    creatorImg = (resolved.avatar && String(resolved.avatar).trim()) ? resolved.avatar : null;
+                }
+                if (typeof renderAvatar === 'function') {
+                    creadorHtml = renderAvatar({ nombre: creatorName, avatar: creatorImg || '' }, { size: 'sm', ...tooltipOpts }) + '<span class="ubits-body-sm-regular">' + (creatorName || row.creador) + '</span>';
+                } else if (creatorImg) {
+                    creadorHtml = '<div class="ubits-table__avatar"><img src="' + creatorImg + '" alt="" width="28" height="28"></div><span class="ubits-body-sm-regular">' + (creatorName || row.creador) + '</span>';
+                } else {
+                    creadorHtml = '<div class="ubits-table__avatar ubits-table__avatar-icon"><i class="far fa-user"></i></div><span class="ubits-body-sm-regular">' + (creatorName || row.creador) + '</span>';
+                }
+            }
             const estadoTag = `<span class="ubits-status-tag ubits-status-tag--${statusClass[row.estado]} ubits-status-tag--sm"><span class="ubits-status-tag__text">${row.estado}</span></span>`;
             const prioridadHtml = row.prioridad && prioridadBadgeVariant[row.prioridad] ? `<span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--${prioridadBadgeVariant[row.prioridad]} ubits-badge-tag--sm ubits-badge-tag--with-icon"><i class="far ${prioridadIcon[row.prioridad]}"></i><span class="ubits-badge-tag__text">${row.prioridad}</span></span>` : '';
             const comentariosText = row.comentarios === 0 ? '0 comentarios' : `${row.comentarios} comentario${row.comentarios > 1 ? 's' : ''}`;
@@ -1433,7 +1467,7 @@
                 areaAsignado: `<td data-col="areaAsignado"><span class="ubits-body-sm-regular">${row.area || ''}</span></td>`,
                 areaCreador: `<td data-col="areaCreador"><span class="ubits-body-sm-regular">${(row.areaCreador != null ? row.areaCreador : row.area) || ''}</span></td>`,
                 lider: `<td data-col="lider"><span class="ubits-body-sm-regular">${row.lider || ''}</span></td>`,
-                creador: `<td data-col="creador"><span class="ubits-body-sm-regular">${row.creador}</span></td>`,
+                creador: `<td data-col="creador"><div class="ubits-table__cell-assignee">${creadorHtml}</div></td>`,
                 plan: `<td data-col="plan"><span class="ubits-body-sm-regular">${row.plan || ''}</span></td>`,
                 estado: `<td data-col="estado">${estadoTag}</td>`,
                 prioridad: `<td data-col="prioridad">${prioridadHtml}</td>`,
@@ -2449,6 +2483,7 @@
             overlayEl.querySelectorAll('.ubits-dropdown-menu__option-left input[type="checkbox"]').forEach(function (cb) {
                 cb.addEventListener('change', function () {
                     columnVisibility[this.dataset.value] = this.checked;
+                    columnVisibilityByTab[activeTab] = Object.assign({}, columnVisibility);
                     renderTable();
                 });
             });
@@ -2623,6 +2658,8 @@
     // Cambiar tab Tareas | Planes (cada tab tiene sus propios filtros)
     function switchToTab(tab) {
         if (tab !== 'tareas' && tab !== 'planes') return;
+        // Guardar visibilidad de columnas del tab actual para restaurarla al volver
+        columnVisibilityByTab[activeTab] = Object.assign({}, columnVisibility);
         activeTab = tab;
         currentFilters = filtersByTab[tab];
         syncPeriodButtonFromCurrentFilters();
