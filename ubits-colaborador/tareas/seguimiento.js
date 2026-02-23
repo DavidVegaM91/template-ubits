@@ -65,7 +65,7 @@
     const COLUMN_IDS_TAREAS = ['id', 'nombre', 'asignado', 'creador', 'areaAsignado', 'areaCreador', 'estado', 'prioridad', 'plan', 'fechaCreacion', 'fechaFinalizacion', 'comentarios'];
     // 3.2.3 Por defecto mostrar: Nombre, Asignado, Área asignado, Estado, Prioridad, Fecha de vencimiento. Ocultas por defecto: Creador, Área del creador.
     const VISIBLE_BY_DEFAULT_TAREAS = ['nombre', 'asignado', 'areaAsignado', 'estado', 'prioridad', 'fechaFinalizacion'];
-    const COLUMN_IDS_PLANES = ['id', 'nombre', 'asignados', 'creador', 'estado', 'avance', 'fechaCreacion', 'fechaFinalizacion'];
+    const COLUMN_IDS_PLANES = ['id', 'nombre', 'asignados', 'creador', 'areaCreador', 'estado', 'avance', 'fechaCreacion', 'fechaFinalizacion'];
     const VISIBLE_BY_DEFAULT_PLANES = ['nombre', 'asignados', 'estado', 'avance', 'fechaCreacion', 'fechaFinalizacion'];
 
     // Permisos (demo: todos habilitados; en producción vendrían del backend)
@@ -258,6 +258,7 @@
             nombre: 'Nombre del plan',
             asignados: 'Personas asignadas',
             creador: 'Creador del plan',
+            areaCreador: 'Área del creador',
             estado: 'Estado del plan',
             avance: 'Progreso del plan',
             fechaCreacion: 'Fecha de creación',
@@ -2018,6 +2019,7 @@
             nombre: 'Nombre del plan',
             asignados: 'Personas asignadas',
             creador: 'Creador del plan',
+            areaCreador: 'Área del creador',
             estado: 'Estado del plan',
             avance: 'Progreso del plan',
             fechaCreacion: 'Fecha de creación',
@@ -2432,7 +2434,7 @@
             return;
         }
         var labelsTareas = { id: 'ID de la tarea', nombre: 'Nombre de la tarea', asignado: 'Asignado', creador: 'Creador', areaAsignado: 'Área del asignado', areaCreador: 'Área del creador', estado: 'Estado', prioridad: 'Prioridad', plan: 'Plan al que pertenece', fechaCreacion: 'Fecha de creación', fechaFinalizacion: 'Fecha de vencimiento', comentarios: 'Número de comentarios' };
-        var labelsPlanes = { id: 'ID del plan', nombre: 'Nombre del plan', asignados: 'Personas asignadas', creador: 'Creador del plan', estado: 'Estado del plan', avance: 'Progreso del plan', fechaCreacion: 'Fecha de creación', fechaFinalizacion: 'Fecha de finalización' };
+        var labelsPlanes = { id: 'ID del plan', nombre: 'Nombre del plan', asignados: 'Personas asignadas', creador: 'Creador del plan', areaCreador: 'Área del creador', estado: 'Estado del plan', avance: 'Progreso del plan', fechaCreacion: 'Fecha de creación', fechaFinalizacion: 'Fecha de finalización' };
         var labels = activeTab === 'planes' ? labelsPlanes : labelsTareas;
         var columnIds = getColumnIds();
         var options = columnIds.map(function (col) {
@@ -3767,7 +3769,7 @@
             if (selectedIds.size === 0) return;
             var isPlanes = activeTab === 'planes';
             var columnIds = isPlanes ? COLUMN_IDS_PLANES : COLUMN_IDS_TAREAS;
-            var labelsPlanesExport = { id: 'ID del plan', nombre: 'Nombre del plan', asignados: 'Personas asignadas', creador: 'Creador del plan', estado: 'Estado del plan', avance: 'Progreso del plan', fechaCreacion: 'Fecha de creación', fechaFinalizacion: 'Fecha de finalización' };
+            var labelsPlanesExport = { id: 'ID del plan', nombre: 'Nombre del plan', asignados: 'Personas asignadas', creador: 'Creador del plan', areaCreador: 'Área del creador', estado: 'Estado del plan', avance: 'Progreso del plan', fechaCreacion: 'Fecha de creación', fechaFinalizacion: 'Fecha de finalización' };
             var labelsTareasExport = { id: 'ID de la tarea', nombre: 'Nombre de la tarea', asignado: 'Asignado', creador: 'Creador', areaAsignado: 'Área del asignado', areaCreador: 'Área del creador', estado: 'Estado', prioridad: 'Prioridad', plan: 'Plan al que pertenece', fechaCreacion: 'Fecha de creación', fechaFinalizacion: 'Fecha de vencimiento', comentarios: 'Número de comentarios' };
             var labelsExport = isPlanes ? labelsPlanesExport : labelsTareasExport;
             var selectedRows = SEGUIMIENTO_DATA.filter(function (r) {
@@ -3782,6 +3784,7 @@
                         return row.asignados.map(function (a) { return (a && a.nombre != null) ? String(a.nombre) : ''; }).filter(Boolean).join(', ');
                     }
                     if (colId === 'creador') return row.creador || '';
+                    if (colId === 'areaCreador') return (row.areaCreador != null ? row.areaCreador : row.area) || '';
                     if (colId === 'estado') return row.estado || '';
                     if (colId === 'avance') return typeof row.avance === 'number' ? row.avance : (parseInt(row.avance, 10) || 0);
                     if (colId === 'fechaCreacion') return row.fechaCreacion || '';
