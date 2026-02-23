@@ -57,8 +57,8 @@ let planDrawerState = {
 let estadoPlanes = {
     plans: [],
     loading: false,
-    filterInProgress: 'individual', // por defecto individual (planes dinámicos de María)
-    filterFinished: 'individual',
+    filterInProgress: 'grupal',
+    filterFinished: 'grupal',
     pageInProgress: 1,
     pageFinished: 1,
     plansPerPage: 6
@@ -83,7 +83,7 @@ function formatPlanDate(dateStr) {
     return d.toLocaleDateString('es-ES', { day: '2-digit', month: 'numeric', year: 'numeric' });
 }
 
-function renderPlanCard(plan, isNew) {
+function renderPlanCard(plan) {
     const progress = plan.tasksTotal > 0 ? Math.round((plan.tasksDone / plan.tasksTotal) * 100) : 0;
     const statusLabels = { Activo: 'Por hacer', Vencido: 'Vencido', Finalizado: 'Finalizado' };
     const statusIcons = { Activo: 'fa-play-circle', Vencido: 'fa-clock', Finalizado: 'fa-check-circle' };
@@ -93,7 +93,6 @@ function renderPlanCard(plan, isNew) {
     return `
         <div class="plan-card" data-plan-id="${escapePlanHtml(plan.id)}" role="button" tabindex="0">
             <div class="plan-card__header">
-                ${isNew ? '<div class="plan-card__new-dot" aria-hidden="true"></div>' : ''}
                 <h3 class="plan-card__title" title="${escapePlanHtml(plan.name)}">${escapePlanHtml(plan.name)}</h3>
             </div>
             <div class="plan-card__body">
@@ -184,16 +183,16 @@ function renderPlansInterface() {
                 <div class="plan-section__header">
                     <div class="plan-section__top">
                         <div class="plan-section__top-left">
-                            <h2 class="plan-section__title">En curso</h2>
+                            <span class="plan-section__title">En curso</span>
                             <div class="plan-section__filters plan-section__tabs-wrap">
                                 <div class="ubits-tabs-on-bg" role="tablist">
-                                    <button type="button" class="ubits-tab ubits-tab--sm ${estadoPlanes.filterInProgress === 'individual' ? 'ubits-tab--active' : ''}" role="tab" data-filter="individual" aria-selected="${estadoPlanes.filterInProgress === 'individual'}">
-                                        <i class="far fa-user"></i>
-                                        <span>Individuales</span>
-                                    </button>
                                     <button type="button" class="ubits-tab ubits-tab--sm ${estadoPlanes.filterInProgress === 'grupal' ? 'ubits-tab--active' : ''}" role="tab" data-filter="grupal" aria-selected="${estadoPlanes.filterInProgress === 'grupal'}">
                                         <i class="far fa-users"></i>
                                         <span>Grupales</span>
+                                    </button>
+                                    <button type="button" class="ubits-tab ubits-tab--sm ${estadoPlanes.filterInProgress === 'individual' ? 'ubits-tab--active' : ''}" role="tab" data-filter="individual" aria-selected="${estadoPlanes.filterInProgress === 'individual'}">
+                                        <i class="far fa-user"></i>
+                                        <span>Individuales</span>
                                     </button>
                                 </div>
                             </div>
@@ -204,13 +203,13 @@ function renderPlansInterface() {
                         </button>
                     </div>
                     <div class="plan-section__counters">
-                        <div class="plan-counter"><span class="plan-counter__dot plan-counter__dot--blue"></span> Por hacer: ${countersInProgress.iniciado}</div>
-                        <div class="plan-counter"><span class="plan-counter__dot plan-counter__dot--red"></span> Vencidos: ${countersInProgress.vencido}</div>
+                        <div class="plan-counter"><span class="plan-counter__dot plan-counter__dot--blue"></span> Por hacer: <span class="plan-counter__value">${countersInProgress.iniciado}</span></div>
+                        <div class="plan-counter"><span class="plan-counter__dot plan-counter__dot--red"></span> Vencidos: <span class="plan-counter__value">${countersInProgress.vencido}</span></div>
                     </div>
                 </div>
                 ${inProgress.length === 0 ? '<div class="plan-section__empty">No hay planes en curso.</div>' : `
                     <div class="plan-grid" id="plan-grid-in-progress">
-                        ${pageInProgressData.map((p, i) => renderPlanCard(p, i === 0 && estadoPlanes.pageInProgress === 1)).join('')}
+                        ${pageInProgressData.map(p => renderPlanCard(p)).join('')}
                     </div>
                     <div class="plan-pagination">
                         <span>${estadoPlanes.pageInProgress} de ${totalPagesInProgress} páginas</span>
@@ -229,16 +228,16 @@ function renderPlansInterface() {
                 <div class="plan-section__header">
                     <div class="plan-section__top">
                         <div class="plan-section__top-left">
-                            <h2 class="plan-section__title">Finalizado</h2>
+                            <span class="plan-section__title">Finalizado</span>
                             <div class="plan-section__filters plan-section__tabs-wrap">
                                 <div class="ubits-tabs-on-bg" role="tablist">
-                                    <button type="button" class="ubits-tab ubits-tab--sm ${estadoPlanes.filterFinished === 'individual' ? 'ubits-tab--active' : ''}" role="tab" data-filter-finished="individual" aria-selected="${estadoPlanes.filterFinished === 'individual'}">
-                                        <i class="far fa-user"></i>
-                                        <span>Individuales</span>
-                                    </button>
                                     <button type="button" class="ubits-tab ubits-tab--sm ${estadoPlanes.filterFinished === 'grupal' ? 'ubits-tab--active' : ''}" role="tab" data-filter-finished="grupal" aria-selected="${estadoPlanes.filterFinished === 'grupal'}">
                                         <i class="far fa-users"></i>
                                         <span>Grupales</span>
+                                    </button>
+                                    <button type="button" class="ubits-tab ubits-tab--sm ${estadoPlanes.filterFinished === 'individual' ? 'ubits-tab--active' : ''}" role="tab" data-filter-finished="individual" aria-selected="${estadoPlanes.filterFinished === 'individual'}">
+                                        <i class="far fa-user"></i>
+                                        <span>Individuales</span>
                                     </button>
                                 </div>
                             </div>
@@ -249,12 +248,12 @@ function renderPlansInterface() {
                         </button>
                     </div>
                     <div class="plan-section__counters">
-                        <div class="plan-counter"><span class="plan-counter__dot plan-counter__dot--green"></span> Finalizados: ${finished.length}</div>
+                        <div class="plan-counter"><span class="plan-counter__dot plan-counter__dot--green"></span> Finalizados: <span class="plan-counter__value">${finished.length}</span></div>
                     </div>
                 </div>
                 ${finished.length === 0 ? '<div class="plan-section__empty">Aquí podrás ver los planes que han sido finalizados, completados o vencidos.</div>' : `
                     <div class="plan-grid" id="plan-grid-finished">
-                        ${pageFinishedData.map(p => renderPlanCard(p, false)).join('')}
+                        ${pageFinishedData.map(p => renderPlanCard(p)).join('')}
                     </div>
                     <div class="plan-pagination">
                         <span>${estadoPlanes.pageFinished} de ${totalPagesFinished} páginas</span>

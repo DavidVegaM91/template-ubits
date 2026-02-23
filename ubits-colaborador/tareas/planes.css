@@ -1083,10 +1083,10 @@
 /* Título de sección - alineado con .task-group-card-list__title (font-size-h2 24px, color-fg-1-medium) */
 .plan-section__title {
     font-family: var(--font-family, "Noto Sans"), sans-serif;
-    font-size: var(--font-size-h1, 24px);
+    font-size: var(--font-size-h2);
     font-style: normal;
     font-weight: var(--font-weight-bold);
-    color: var(--ubits-fg-1-medium);
+    color: var(--ubits-fg-1-high);
     margin: 0;
 }
 
@@ -1183,8 +1183,14 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 14px;
-    color: var(--ubits-fg-1-high);
+    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    color: var(--ubits-fg-2-medium);
+}
+
+.plan-counter__value {
+    font-weight: var(--font-weight-semibold);
 }
 
 .plan-counter__dot {
@@ -1227,7 +1233,7 @@
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
     border-radius: 8px;
-    padding: 12px;
+    padding: 12px 12px 0 12px;
     min-height: 130px;
     min-width: 0;
     display: flex;
@@ -1247,15 +1253,6 @@
     display: flex;
     align-items: flex-start;
     gap: 8px;
-}
-
-.plan-card__new-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--ubits-feedback-accent-success);
-    flex-shrink: 0;
-    margin-top: 4px;
 }
 
 /* Mismo tamaño que título del componente oficial card-content (.course-title .ubits-body-sm-bold) */
@@ -1282,8 +1279,10 @@
 }
 
 .plan-card__date {
-    font-size: 14px;
-    color: var(--ubits-fg-1-medium);
+    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    color: var(--ubits-fg-2-medium);
     min-width: 0;
 }
 
@@ -1292,8 +1291,8 @@
 }
 
 .plan-card__date-value {
-    font-weight: var(--font-weight-bold);
-    color: var(--ubits-fg-1-high);
+    font-weight: var(--font-weight-semibold);
+    color: var(--ubits-fg-2-medium);
     display: inline-block;
 }
 
@@ -1316,20 +1315,23 @@
 }
 
 .plan-card__tasks-info {
-    font-size: 14px;
-    color: var(--ubits-fg-1-medium);
+    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    color: var(--ubits-fg-2-medium);
 }
 
 .plan-card__tasks-value {
-    font-weight: var(--font-weight-bold);
-    color: var(--ubits-fg-1-high);
+    font-weight: var(--font-weight-semibold);
+    color: var(--ubits-fg-2-medium);
     margin-left: 4px;
 }
 
 .plan-card__progress-val {
-    font-size: 16px;
-    font-weight: var(--font-weight-bold);
-    color: var(--ubits-fg-1-high);
+    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--ubits-fg-2-medium);
 }
 
 .plan-card__progress-bar {
@@ -1355,8 +1357,10 @@
     justify-content: flex-end;
     gap: 12px;
     margin-top: 16px;
-    font-size: 14px;
-    color: var(--ubits-fg-1-medium);
+    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    color: var(--ubits-fg-2-medium);
 }
 
 @media (max-width: 1024px) {
