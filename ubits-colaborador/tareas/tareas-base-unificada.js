@@ -28,11 +28,15 @@
       tasksTotal) sigue siendo el real de las tareas; el estado del plan es independiente
       para reflejar que se puede finalizar manualmente y mover tareas a otro plan.
 
-   5. Rango de fechas: INICIO_RANGO fijo; FIN_RANGO = hoy + 7 días (siempre una semana adelante, sin tocar a mano).
+   5. Rango de fechas: INICIO_RANGO fijo; FIN_RANGO = hoy + 5 días laborables (una semana por delante, sin sáb/dom). No se generan tareas con fecha posterior a FIN_RANGO.
 
    6. Días laborables: las tareas solo se asignan a días entre semana (lun–vie).
       Sábado y domingo no tienen tareas; si una fecha calculada cae en fin de semana,
       se ajusta al viernes o lunes más cercano dentro del mismo mes (toWeekdayInMonth).
+
+   7. Vista tareas (tareas.html) para líder con reportes: por cada día laborable desde
+      hoy hasta FIN_RANGO solo se muestran (1 tarea por reporte directo + 1 propia + 1 de la jefa).
+      Ej.: María ve 6 tareas para su equipo + 1 suya + 1 de Patricia = 8 tareas/día.
    ======================================== */
 
 (function (global) {
@@ -43,10 +47,22 @@
         const d = new Date();
         return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
     }
-    /** Fecha en YYYY-MM-DD sumando días a hoy (para rango automático hasta una semana adelante). */
+    /** Fecha en YYYY-MM-DD sumando días a hoy. */
     function getTodayPlusDays(days) {
         const d = new Date();
         d.setDate(d.getDate() + days);
+        return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    }
+
+    /** Fecha en YYYY-MM-DD sumando n días laborables (lun–vie) desde hoy. */
+    function getTodayPlusWeekdays(n) {
+        const d = new Date();
+        let added = 0;
+        while (added < n) {
+            d.setDate(d.getDate() + 1);
+            const dow = d.getDay();
+            if (dow !== 0 && dow !== 6) added++;
+        }
         return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
     }
 
@@ -190,8 +206,8 @@
     }
 
     const INICIO_RANGO = '2025-01-01';
-    /** Siempre hasta una semana adelante: no hace falta ampliar el rango a mano. */
-    const FIN_RANGO = getTodayPlusDays(7);
+    /** Siempre hasta una semana laboral por delante (5 días hábiles, sin sáb/dom). */
+    const FIN_RANGO = getTodayPlusWeekdays(5);
 
     const TITULOS_TAREAS = [
         'Revisar inventario bodega', 'Orden de compra pendiente', 'Seguimiento a proveedores', 'Cierre de ciclo logístico',
@@ -307,8 +323,10 @@
         currentUserEmpleadoId = null;
 
         const todayStr = getTodayString();
-        const [y0, m0] = INICIO_RANGO.split('-').map(Number);
-        const [y1, m1] = FIN_RANGO.split('-').map(Number);
+        const partsInicio = INICIO_RANGO.split('-').map(Number);
+        const partsFin = FIN_RANGO.split('-').map(Number);
+        const y0 = partsInicio[0], m0 = partsInicio[1];
+        const y1 = partsFin[0], m1 = partsFin[1], d1 = partsFin[2] || 31; // día tope del rango (no generar tareas después)
         const monthsTotal = (y1 - y0) * 12 + (m1 - m0) + 1;
 
         let idActividad = 10001;
@@ -333,6 +351,8 @@
                 const year = y0 + Math.floor(mi / 12);
                 const month = (mi % 12) + 1;
                 const daysInMonth = new Date(year, month, 0).getDate();
+                const isLastMonth = (year === y1 && month === m1);
+                const maxDay = isLastMonth ? Math.min(daysInMonth, d1) : daysInMonth;
                 const baseIdx = empIndex * 1000 + mi * TAREAS_POR_MES;
                 const { nFinalizadas, nIniciadas, nVencidas } = repartoEstados(seed, baseIdx);
                 const estados = [];
@@ -358,12 +378,15 @@
                     const esGrupal = i >= TAREAS_INDIVIDUALES_POR_MES;
                     const idxGrupal = i - TAREAS_INDIVIDUALES_POR_MES; // 0..19
                     let day = esGrupal
-                        ? (daysInMonth <= 1 ? 1 : 1 + Math.round((idxGrupal / (TAREAS_GRUPALES_POR_MES - 1)) * (daysInMonth - 1)))
-                        : Math.max(1, Math.min(daysInMonth, Math.floor(seeder(seed, baseIdx + i + 100) * daysInMonth) + 1));
+                        ? (maxDay <= 1 ? 1 : 1 + Math.round((idxGrupal / (TAREAS_GRUPALES_POR_MES - 1)) * (maxDay - 1)))
+                        : Math.max(1, Math.min(maxDay, Math.floor(seeder(seed, baseIdx + i + 100) * maxDay) + 1));
                     day = toWeekdayInMonth(year, month, day); // Solo días laborables (lun–vie), nunca sáb/dom
-                    const endDateStr = `${year}-${pad(month)}-${pad(day)}`;
-                    const endDate = new Date(year, month - 1, day);
-                    const fechaCreacion = new Date(year, month - 1, Math.max(1, day - 2));
+                    if (day > maxDay) day = maxDay; // por si toWeekdayInMonth devolvió un día mayor en el mes
+                    let endDateStr = `${year}-${pad(month)}-${pad(day)}`;
+                    if (endDateStr > FIN_RANGO) { endDateStr = FIN_RANGO; }
+                    const [ey, em, ed] = endDateStr.split('-').map(Number);
+                    const endDate = new Date(ey, em - 1, ed);
+                    const fechaCreacion = new Date(ey, em - 1, Math.max(1, ed - 2));
                     const prioridades = ['Alta', 'Media', 'Baja'];
                     const prioridad = prioridades[Math.floor(seeder(seed, baseIdx + i + 200) * 3)];
                     const nombreTarea = TITULOS_TAREAS[(baseIdx + i) % TITULOS_TAREAS.length];
@@ -682,10 +705,105 @@
         return { done: false, status: 'Activo' };
     }
 
+    /** Devuelve array de fechas YYYY-MM-DD de días laborables entre hoy y finRango (inclusive). */
+    function getWeekdaysFromTodayTo(finRango) {
+        const today = getTodayString();
+        if (today > finRango) return [];
+        const out = [];
+        const [y1, m1, d1] = finRango.split('-').map(Number);
+        const end = new Date(y1, m1 - 1, d1);
+        let d = new Date();
+        d.setHours(0, 0, 0, 0);
+        end.setHours(0, 0, 0, 0);
+        while (d <= end) {
+            const dow = d.getDay();
+            if (dow !== 0 && dow !== 6) {
+                out.push(d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()));
+            }
+            d.setDate(d.getDate() + 1);
+        }
+        return out;
+    }
+
     function getTareasVistaTareas() {
         const empleadoId = currentUserEmpleadoId != null ? currentUserEmpleadoId : USUARIO_ACTUAL.id;
         const data = tareasPorEmpleadoParaVistaTareas[empleadoId] || { individuales: [], grupales: [] };
         const nombreUsuarioActual = USUARIO_ACTUAL.nombre;
+
+        // Regla especial para María (y cualquier líder): en tareas.html solo (1 tarea por reporte directo + 1 propia + 1 de la jefa) por día laborable.
+        const reportesDirectos = (EMPLEADOS_EJEMPLO || []).filter(function (e) { return e.jefe === nombreUsuarioActual; });
+        const esVistaLiderPorDia = reportesDirectos.length > 0;
+        const jefa = (GERENTE_EJEMPLO && nombreUsuarioActual !== GERENTE_EJEMPLO.nombre) ? GERENTE_EJEMPLO : null;
+
+        if (esVistaLiderPorDia) {
+            const vencidas = (data.individuales || []).filter(function (t) { return t.status === 'Vencido'; }).map(function (t) { return Object.assign({}, t); });
+            const weekdays = getWeekdaysFromTodayTo(FIN_RANGO);
+            const porDia = {};
+            const titulos = TITULOS_TAREAS;
+            const tasksPerDay = reportesDirectos.length + 1 + (jefa ? 1 : 0);
+            weekdays.forEach(function (dateStr, dayIdx) {
+                const list = [];
+                const dayIdBase = 90000 + dayIdx * (tasksPerDay + 5);
+                reportesDirectos.forEach(function (emp, idx) {
+                    const username = emp.username || generarUsername(emp.nombre);
+                    const titulo = titulos[(dayIdBase + idx) % titulos.length];
+                    list.push({
+                        id: dayIdBase + idx,
+                        name: titulo,
+                        done: false,
+                        status: 'Activo',
+                        endDate: dateStr,
+                        priority: 'media',
+                        assignee_email: username,
+                        assignee_name: emp.nombre || null,
+                        assignee_avatar_url: (emp.avatar && String(emp.avatar).trim()) ? emp.avatar : null,
+                        etiqueta: null,
+                        planId: null,
+                        planNombre: null,
+                        created_by: nombreUsuarioActual,
+                        created_by_avatar_url: (USUARIO_ACTUAL.avatar && String(USUARIO_ACTUAL.avatar).trim()) ? USUARIO_ACTUAL.avatar : null
+                    });
+                });
+                const idSelf = dayIdBase + reportesDirectos.length;
+                list.push({
+                    id: idSelf,
+                    name: titulos[idSelf % titulos.length],
+                    done: false,
+                    status: 'Activo',
+                    endDate: dateStr,
+                    priority: 'media',
+                    assignee_email: USUARIO_ACTUAL.username || null,
+                    assignee_name: nombreUsuarioActual,
+                    assignee_avatar_url: (USUARIO_ACTUAL.avatar && String(USUARIO_ACTUAL.avatar).trim()) ? USUARIO_ACTUAL.avatar : null,
+                    etiqueta: null,
+                    planId: null,
+                    planNombre: null,
+                    created_by: nombreUsuarioActual,
+                    created_by_avatar_url: (USUARIO_ACTUAL.avatar && String(USUARIO_ACTUAL.avatar).trim()) ? USUARIO_ACTUAL.avatar : null
+                });
+                if (jefa) {
+                    list.push({
+                        id: dayIdBase + reportesDirectos.length + 1,
+                        name: titulos[(dayIdBase + 2) % titulos.length],
+                        done: false,
+                        status: 'Activo',
+                        endDate: dateStr,
+                        priority: 'media',
+                        assignee_email: USUARIO_ACTUAL.username || null,
+                        assignee_name: nombreUsuarioActual,
+                        assignee_avatar_url: (USUARIO_ACTUAL.avatar && String(USUARIO_ACTUAL.avatar).trim()) ? USUARIO_ACTUAL.avatar : null,
+                        etiqueta: null,
+                        planId: null,
+                        planNombre: null,
+                        created_by: jefa.nombre,
+                        created_by_avatar_url: (jefa.avatar && String(jefa.avatar).trim()) ? jefa.avatar : null
+                    });
+                }
+                porDia[dateStr] = list;
+            });
+            return { vencidas: vencidas, porDia: porDia };
+        }
+
         const todasTareas = []
             .concat(data.individuales.map(t => Object.assign({}, t, { created_by: nombreUsuarioActual, created_by_avatar_url: USUARIO_ACTUAL.avatar })))
             .concat(data.grupales.map(t => Object.assign({}, t))); // grupales ya tienen created_by = líder
