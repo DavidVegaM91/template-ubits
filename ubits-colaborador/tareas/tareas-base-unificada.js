@@ -587,6 +587,10 @@
             const tareas = g.tareas;
             if (tareas.length === 0) return;
             const primera = tareas[0];
+            // Creador del plan: "Plan {área} MM/YYYY" → jefe del área; Objetivos/Encuestas → primera.creador (RH)
+            const esPlanGrupalPorArea = nombrePlan.indexOf('Plan ') === 0;
+            const areaLider = esPlanGrupalPorArea ? jefes.find(function (j) { return j.area === primera.area; }) : null;
+            const planCreador = (esPlanGrupalPorArea && areaLider && areaLider.nombre) ? areaLider.nombre : primera.creador;
             const asignados = Array.from(g.asignadosMap.values());
             const tareasFinalizadas = tareas.filter(function (t) { return t.estado === 'Finalizada'; }).length;
             const avancePlan = tareas.length > 0 ? Math.round((tareasFinalizadas / tareas.length) * 100) : 0;
@@ -609,7 +613,7 @@
                 tasksTotal: tareas.length,
                 finished: estadoPlan === 'Finalizada',
                 hasMembers: true,
-                created_by: primera.creador,
+                created_by: planCreador,
                 fechaCreacion: planFechaCreacionStr,
                 progress: avancePlan
             };
@@ -620,7 +624,7 @@
                 tipo: 'plan',
                 nombre: nombrePlan,
                 plan: nombrePlan,
-                asignado: asignados[0] || { nombre: primera.creador, avatar: '', username: '' },
+                asignado: asignados[0] || { nombre: planCreador, avatar: '', username: '' },
                 asignados: asignados,
                 idColaborador: primera.idColaborador,
                 area: primera.area,
@@ -633,7 +637,7 @@
                 totalTareas: tareas.length,
                 fechaCreacion: typeof minCreacion === 'object' && minCreacion instanceof Date ? formatearFechaSeguimiento(minCreacion) : primera.fechaCreacion,
                 fechaFinalizacion: typeof maxFin === 'object' && maxFin instanceof Date ? formatearFechaSeguimiento(maxFin) : primera.fechaFinalizacion,
-                creador: primera.creador,
+                creador: planCreador,
                 comentarios: 0
             });
         });
