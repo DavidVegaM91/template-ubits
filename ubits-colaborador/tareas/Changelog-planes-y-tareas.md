@@ -232,10 +232,6 @@ Ajustes pendientes sobre los archivos entregados por la PM Mafe para las página
     | Reabrir subtarea | `fa-circle-xmark` | `María reabrió la subtarea "Revisar contratos".` |
     | Cambiar fecha límite *(mock)* | `fa-calendar-pen` | `María cambió la fecha límite al 20 feb 2026.` |
 
-    **Mock data inicial (`getMockActivities`):** 8 eventos cronológicos desde hace 10 días (13 feb) hasta ayer (22 feb), representando el historial realista de la tarea desde su creación.
-
-    **CSS añadido:** `.task-detail-activity-time` — timestamp relativo a la derecha de cada evento (color `--ubits-fg-1-low`, `xs`), y ajuste de `.task-detail-activity-item` a `align-items: baseline` para alinear icono, texto y tiempo correctamente.
-
     **Pendiente para producción:** disparar `pushActivity()` también en cambios de estado, prioridad, asignado y fecha cuando esas acciones estén conectadas a la BD.
 
 ---
