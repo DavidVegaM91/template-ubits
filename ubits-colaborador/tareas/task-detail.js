@@ -618,6 +618,9 @@
                     });
                 });
             });
+
+            /* Scroll automático al elemento más reciente (parte inferior del feed) */
+            feedEl.scrollTop = feedEl.scrollHeight;
         }
     }
 
