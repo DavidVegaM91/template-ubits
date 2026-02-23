@@ -109,10 +109,45 @@
         ];
     }
 
+    /**
+     * Actividades de ejemplo: cronológicas y realistas.
+     * Incluye todos los tipos de evento que puede registrar el sistema.
+     * En producción estos registros vendrían del backend.
+     */
     function getMockActivities() {
+        var tenDaysAgo = new Date(Date.now() - 10 * 24 * 3600000).toISOString();
+        var nineDaysAgo = new Date(Date.now() - 9 * 24 * 3600000).toISOString();
+        var eightDays = new Date(Date.now() - 8 * 24 * 3600000).toISOString();
+        var sixDays = new Date(Date.now() - 6 * 24 * 3600000).toISOString();
+        var fiveDays = new Date(Date.now() - 5 * 24 * 3600000).toISOString();
+        var threeDays = new Date(Date.now() - 3 * 24 * 3600000).toISOString();
+        var yesterday = new Date(Date.now() - 1 * 24 * 3600000).toISOString();
         return [
-            { id: 1, time: new Date().toISOString(), text: 'Sistema añadió 5 nuevas subtareas al listado.', icon: 'fa-arrows-rotate' }
+            { id: 'act-0', time: tenDaysAgo, icon: 'fa-circle-plus', author: 'Carlos Ruiz', text: 'creó la tarea.' },
+            { id: 'act-1', time: nineDaysAgo, icon: 'fa-user-pen', author: 'Carlos Ruiz', text: 'asignó la tarea a María González.' },
+            { id: 'act-2', time: eightDays, icon: 'fa-chevrons-up', author: 'Carlos Ruiz', text: 'cambió la prioridad a Alta.' },
+            { id: 'act-3', time: sixDays, icon: 'fa-circle-dot', author: 'María González', text: 'cambió el estado a Por hacer.' },
+            { id: 'act-4', time: fiveDays, icon: 'fa-plus-circle', author: 'María González', text: 'añadió la subtarea \u201cCrear cuenta de desarrollador en Stripe\u201d.' },
+            { id: 'act-5', time: fiveDays, icon: 'fa-plus-circle', author: 'María González', text: 'añadió la subtarea \u201cImplementar API de suscripciones\u201d.' },
+            { id: 'act-6', time: threeDays, icon: 'fa-circle-check', author: 'Carlos Ruiz', text: 'marcó \u201cRevisar contratos vigentes\u201d como completada.' },
+            { id: 'act-7', time: yesterday, icon: 'fa-calendar-pen', author: 'María González', text: 'cambió la fecha límite al 20 feb 2026.' }
         ];
+    }
+
+    /**
+     * Registra una nueva actividad en el feed de la tarea.
+     * @param {string} icon    - Clase Font Awesome sin 'far ' (e.g. 'fa-circle-check')
+     * @param {string} author  - Nombre del usuario que realizó la acción
+     * @param {string} text    - Resto de la descripción (sin el nombre), e.g. 'añadió la subtarea “X”.'
+     */
+    function pushActivity(icon, author, text) {
+        estado.activities.push({
+            id: 'act-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5),
+            time: new Date().toISOString(),
+            icon: icon,
+            author: author,
+            text: text
+        });
     }
 
     function getTaskStripOpts() {
@@ -228,17 +263,18 @@
         var massPanel = estado.massPanelOpen
             ? '<div class="task-detail-mass-panel is-open" id="task-detail-mass-panel">' +
             '<div class="task-detail-mass-panel-header">' +
-            '<h3 class="task-detail-mass-panel-title"><i class="far fa-folder"></i> Modo creación masiva</h3>' +
+            '<h3 class="task-detail-mass-panel-title"><i class="far fa-folder"></i> Creación a partir de lista</h3>' +
             '<span class="task-detail-mass-panel-detected" id="task-detail-mass-detected">Se detectaron 0 subtareas</span></div>' +
             '<textarea class="task-detail-mass-panel-textarea" id="task-detail-mass-textarea" placeholder="Escribe una subtarea por línea&#10;Línea 1&#10;Línea 2&#10;..."></textarea>' +
             '<div class="task-detail-mass-panel-options">' +
-            '<div class="task-detail-mass-panel-date"><span class="ubits-body-sm-regular">Fecha</span><div id="task-detail-mass-date-wrap"></div></div>' +
+            '<div class="task-detail-mass-panel-date"><span class="ubits-body-sm-regular">Vencimiento</span><div id="task-detail-mass-date-wrap"></div></div>' +
             '<div class="task-detail-mass-panel-priority"><span class="ubits-body-sm-regular">Prioridad</span><div id="task-detail-mass-priority-wrap"></div></div>' +
             '<div class="task-detail-mass-panel-actions">' +
+            '<p class="task-detail-mass-panel-tip">Escribe varias líneas de texto para crear múltiples subtareas a la vez.</p>' +
+            '<div class="task-detail-mass-panel-actions__btns">' +
             '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="task-detail-mass-cancel"><span>Cancelar</span></button>' +
             '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="task-detail-mass-create"><span>Crear subtareas</span></button>' +
-            '</div></div>' +
-            '<p class="task-detail-mass-panel-tip">Tip: Pega varias líneas de texto para crear múltiples subtareas a la vez.</p>' +
+            '</div></div></div>' +
             '</div>'
             : '<div class="task-detail-mass-panel" id="task-detail-mass-panel"></div>';
 
@@ -270,9 +306,17 @@
                     input.addEventListener('change', function () {
                         var t = estado.subtasks.find(function (s) { return String(s.id) === String(id); });
                         if (t) {
+                            var wasDone = t.done;
                             t.done = !!this.checked;
                             t.status = t.done ? 'Finalizado' : 'Activo';
+                            /* ── Actividad: completar o reabrir subtarea ── */
+                            if (t.done && !wasDone) {
+                                pushActivity('fa-circle-check', currentUserName, 'marcó “' + t.name + '” como completada.');
+                            } else if (!t.done && wasDone) {
+                                pushActivity('fa-circle-xmark', currentUserName, 'reabrió la subtarea “' + t.name + '”.');
+                            }
                             renderSubtasksBlock();
+                            renderCommentsBlock();
                         }
                     });
                 }
@@ -297,9 +341,10 @@
                 e.preventDefault();
                 var inp = addForm.querySelector('input[data-subtask-add]');
                 if (inp && inp.value.trim()) {
+                    var nombre = inp.value.trim();
                     estado.subtasks.push({
                         id: Date.now(),
-                        name: inp.value.trim(),
+                        name: nombre,
                         done: false,
                         status: 'Activo',
                         endDate: estado.task ? estado.task.endDate : today,
@@ -308,9 +353,12 @@
                         assignee_email: null,
                         assignee_avatar_url: null
                     });
+                    /* ── Actividad: nueva subtarea individual ── */
+                    pushActivity('fa-plus-circle', currentUserName, 'añadió la subtarea “' + nombre + '”.');
                     inp.value = '';
                     estado.addingSubtask = false;
                     renderSubtasksBlock();
+                    renderCommentsBlock();
                 }
             };
         }
@@ -344,8 +392,15 @@
                     lines.forEach(function (name) {
                         estado.subtasks.push({ id: Date.now() + Math.random(), name: name, done: false, status: 'Activo', endDate: endDate, priority: priority, assignee_name: null, assignee_email: null, assignee_avatar_url: null });
                     });
+                    /* ── Actividad: creación masiva de subtareas ── */
+                    if (lines.length === 1) {
+                        pushActivity('fa-plus-circle', currentUserName, 'añadió la subtarea “' + lines[0] + '”.');
+                    } else if (lines.length > 1) {
+                        pushActivity('fa-list-plus', currentUserName, 'añadió ' + lines.length + ' subtareas en lote.');
+                    }
                     estado.massPanelOpen = false;
                     renderSubtasksBlock();
+                    renderCommentsBlock();
                 };
             }
         }
@@ -361,73 +416,208 @@
 
     var currentUserName = 'María Alejandra Sánchez Pardo';
 
+    // Imágenes pendientes de envío (persisten entre re-renders del bloque de comentarios)
+    var pendingImages = [];
+
+    function renderPendingImagesPreview() {
+        var strip = document.getElementById('task-detail-pending-images-strip');
+        if (!strip) return;
+        if (pendingImages.length === 0) {
+            strip.innerHTML = '';
+            strip.style.display = 'none';
+            return;
+        }
+        strip.style.display = 'flex';
+        strip.innerHTML = pendingImages.map(function (src, idx) {
+            return '<div class="task-detail-pending-img-wrap" data-idx="' + idx + '">' +
+                '<img src="' + src + '" alt="Imagen adjunta" class="task-detail-pending-img" />' +
+                '<button type="button" class="task-detail-pending-img-remove" aria-label="Eliminar imagen" data-idx="' + idx + '"><i class="far fa-times"></i></button>' +
+                '</div>';
+        }).join('');
+        strip.querySelectorAll('.task-detail-pending-img-remove').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var i = parseInt(this.dataset.idx, 10);
+                pendingImages.splice(i, 1);
+                renderPendingImagesPreview();
+            });
+        });
+    }
+
+    /**
+     * Convierte ISO string a clave de día YYYY-MM-DD (para agrupar por fecha).
+     */
+    function toDateKey(isoStr) {
+        return isoStr ? isoStr.slice(0, 10) : '';
+    }
+
+    /**
+     * Etiqueta legible del separador: 'Hoy', 'Ayer', o '13 feb 2026'.
+     */
+    function dateKeyLabel(dateKey) {
+        var yesterdayObj = new Date(Date.now() - 86400000);
+        var yesterdayKey = yesterdayObj.getFullYear() + '-' +
+            pad(yesterdayObj.getMonth() + 1) + '-' +
+            pad(yesterdayObj.getDate());
+        if (dateKey === today) return 'Hoy';
+        if (dateKey === yesterdayKey) return 'Ayer';
+        var meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+        var parts = dateKey.split('-');
+        return parseInt(parts[2], 10) + ' ' + meses[parseInt(parts[1], 10) - 1] + ' ' + parts[0];
+    }
+
     function renderCommentsBlock() {
         var comments = estado.comments;
         var activities = estado.activities;
         var total = comments.length;
-        var feed = [];
-        var sorted = comments.slice().sort(function (a, b) { return new Date(a.time) - new Date(b.time); });
-        sorted.forEach(function (c) {
-            var isUser = c.author === currentUserName;
-            var itemClass = 'task-detail-comment-item' + (isUser ? ' task-detail-comment-item--user' : '');
-            var authorBlock = typeof renderAvatar === 'function'
-                ? renderAvatar({ nombre: c.author, avatar: c.authorAvatar }, { size: 'sm' })
-                : '<span class="ubits-avatar ubits-avatar--sm"><span class="ubits-avatar__fallback"><i class="far fa-user"></i></span></span>';
-            feed.push(
-                '<div class="' + itemClass + '">' +
-                '<div class="task-detail-comment-avatar">' + authorBlock + '</div>' +
-                '<div class="task-detail-comment-body">' +
-                '<div class="task-detail-comment-meta">' +
-                '<span class="task-detail-comment-author">' + escapeHtml(c.author) + '</span>' +
-                '<span class="task-detail-comment-time">' + formatCommentTime(c.time) + '</span></div>' +
-                '<p class="task-detail-comment-text">' + escapeHtml(c.text) + '</p>' +
-                (c.images && c.images.length ? '<div class="task-detail-comment-images">' + c.images.map(function (img) { return '<img src="' + escapeHtml(img) + '" alt="" style="max-width:120px;height:auto;border-radius:8px;">'; }).join('') + '</div>' : '') +
-                '</div></div>'
-            );
+
+        /* ── Mezclar comentarios y actividades en timeline cronológico único ── */
+        var allItems = [];
+        comments.forEach(function (c) {
+            allItems.push({ type: 'comment', time: c.time, data: c });
         });
-        if (activities.length) {
-            feed.push('<div class="task-detail-comments-separator"><span>Hoy</span></div>');
-            activities.forEach(function (a) {
+        activities.forEach(function (a) {
+            allItems.push({ type: 'activity', time: a.time, data: a });
+        });
+        allItems.sort(function (a, b) { return new Date(a.time) - new Date(b.time); });
+
+        /* ── Renderizar items con separadores de fecha al cambiar de día ── */
+        var feed = [];
+        var lastDateKey = null;
+        allItems.forEach(function (item) {
+            var dateKey = toDateKey(item.time);
+            if (dateKey !== lastDateKey) {
+                feed.push('<div class="task-detail-comments-separator"><span>' + dateKeyLabel(dateKey) + '</span></div>');
+                lastDateKey = dateKey;
+            }
+            if (item.type === 'comment') {
+                var c = item.data;
+                var isUser = c.author === currentUserName;
+                var itemClass = 'task-detail-comment-item' + (isUser ? ' task-detail-comment-item--user' : '');
+                var authorBlock = typeof renderAvatar === 'function'
+                    ? renderAvatar({ nombre: c.author, avatar: c.authorAvatar }, { size: 'sm' })
+                    : '<span class="ubits-avatar ubits-avatar--sm"><span class="ubits-avatar__fallback"><i class="far fa-user"></i></span></span>';
+                feed.push(
+                    '<div class="' + itemClass + '">' +
+                    '<div class="task-detail-comment-avatar">' + authorBlock + '</div>' +
+                    '<div class="task-detail-comment-body">' +
+                    '<div class="task-detail-comment-meta">' +
+                    '<span class="task-detail-comment-author">' + escapeHtml(c.author) + '</span>' +
+                    '<span class="task-detail-comment-time">' + formatCommentTime(c.time) + '</span></div>' +
+                    '<div class="task-detail-comment-bubble">' +
+                    (c.text ? '<p class="task-detail-comment-text">' + escapeHtml(c.text) + '</p>' : '') +
+                    (c.images && c.images.length ? '<div class="task-detail-comment-images">' + c.images.map(function (img) { return '<img src="' + escapeHtml(img) + '" alt="">'; }).join('') + '</div>' : '') +
+                    '</div></div></div>'
+                );
+            } else {
+                var a = item.data;
+                /* Nombre en span semibold/high para igualar el autor de comentarios */
+                var authorHtml = a.author
+                    ? '<span class="task-detail-activity-author">' + escapeHtml(a.author) + '</span> '
+                    : '';
                 feed.push(
                     '<div class="task-detail-activity-item">' +
                     '<i class="far ' + (a.icon || 'fa-circle-info') + '"></i>' +
-                    '<span class="task-detail-activity-text">' + escapeHtml(a.text) + '</span></div>'
+                    '<span class="task-detail-activity-text">' + authorHtml + escapeHtml(a.text) + '</span>' +
+                    '<span class="task-detail-activity-time">' + formatCommentTime(a.time) + '</span>' +
+                    '</div>'
                 );
-            });
-        }
+            }
+        });
+
         var html =
             '<div class="task-detail-comments-header">' +
             '<h2 class="task-detail-comments-header-title"><i class="far fa-comments"></i> Comentarios</h2>' +
             '<span class="task-detail-comments-badge">' + total + '</span></div>' +
             '<div class="task-detail-comments-feed" id="task-detail-comments-feed">' + feed.join('') + '</div>' +
+            '<input type="file" class="task-detail-comments-file-input" id="task-detail-comment-files" accept="image/*" multiple hidden />' +
             '<div class="task-detail-comments-input-wrap">' +
-            '<div class="task-detail-comments-input-row">' +
-            '<div class="ubits-input-wrapper" style="flex:1;min-width:0;">' +
-            '<div class="ubits-input-inner">' +
-            '<input type="text" class="ubits-input ubits-input--md" id="task-detail-comment-input" placeholder="Escribe un comentario..." />' +
-            '</div></div>' +
-            '<button type="button" class="ubits-button ubits-button--primary ubits-button--md ubits-button--icon-only" id="task-detail-comment-send" aria-label="Enviar"><i class="far fa-paper-plane"></i></button>' +
+            '<div class="task-detail-pending-images-strip" id="task-detail-pending-images-strip"></div>' +
+            '<div class="task-detail-comments-input-container">' +
+            '<div class="task-detail-comments-input-inner">' +
+            '<textarea class="task-detail-comments-input" id="task-detail-comment-input" placeholder="Escribe un comentario..." rows="1"></textarea>' +
             '</div>' +
             '<div class="task-detail-comments-input-actions">' +
-            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" aria-label="Adjuntar"><i class="far fa-paperclip"></i></button>' +
-            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" aria-label="Emoji"><i class="far fa-face-smile"></i></button>' +
-            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" aria-label="Mencionar"><i class="far fa-at"></i></button>' +
-            '</div></div>';
+            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only task-detail-comments-attach" id="task-detail-comment-attach-btn" aria-label="Adjuntar imagen"><i class="far fa-paperclip"></i></button>' +
+            '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm ubits-button--icon-only" id="task-detail-comment-send" aria-label="Enviar"><i class="far fa-paper-plane"></i></button>' +
+            '</div></div></div>';
         var el = document.getElementById('task-detail-comments-block');
         if (el) el.innerHTML = html;
 
+
         var sendBtn = document.getElementById('task-detail-comment-send');
         var inputEl = document.getElementById('task-detail-comment-input');
+        var fileInput = document.getElementById('task-detail-comment-files');
+        var attachBtn = document.getElementById('task-detail-comment-attach-btn');
+
+        // Restaurar el strip de previews si había imágenes pendientes
+        renderPendingImagesPreview();
+
+        if (attachBtn && fileInput) {
+            attachBtn.addEventListener('click', function () { fileInput.click(); });
+            fileInput.addEventListener('change', function () {
+                var files = this.files;
+                if (!files || !files.length) return;
+                var toLoad = files.length;
+                var loaded = 0;
+                for (var i = 0; i < files.length; i++) {
+                    if (!files[i].type.startsWith('image/')) { loaded++; continue; }
+                    (function (file) {
+                        var reader = new FileReader();
+                        reader.onload = function () {
+                            if (reader.result) pendingImages.push(reader.result);
+                            loaded++;
+                            if (loaded >= toLoad) renderPendingImagesPreview();
+                        };
+                        reader.readAsDataURL(file);
+                    })(files[i]);
+                }
+                this.value = '';
+            });
+        }
+
         if (sendBtn && inputEl) {
+            // Auto-resize: crece hasta 5 líneas (~120px) y luego scroll interno
+            var MAX_COMMENT_HEIGHT = 120;
+            inputEl.addEventListener('input', function () {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, MAX_COMMENT_HEIGHT) + 'px';
+            });
+
             function doSend() {
                 var text = (inputEl.value || '').trim();
-                if (!text) return;
-                estado.comments.push({ id: Date.now(), author: currentUserName, authorAvatar: null, time: new Date().toISOString(), text: text, images: [] });
+                if (!text && pendingImages.length === 0) return;
+                estado.comments.push({
+                    id: Date.now(),
+                    author: currentUserName,
+                    authorAvatar: null,
+                    time: new Date().toISOString(),
+                    text: text || '',
+                    images: pendingImages.slice()
+                });
+                pendingImages.length = 0;
                 inputEl.value = '';
                 renderCommentsBlock();
             }
             sendBtn.onclick = doSend;
             inputEl.onkeydown = function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); doSend(); } };
+        }
+
+        // Imágenes en el feed: click para ver en modal md
+        var feedEl = document.getElementById('task-detail-comments-feed');
+        if (feedEl) {
+            feedEl.querySelectorAll('.task-detail-comment-images img').forEach(function (img) {
+                img.style.cursor = 'pointer';
+                img.addEventListener('click', function () {
+                    if (typeof openModal !== 'function') return;
+                    openModal({
+                        overlayId: 'task-detail-img-modal',
+                        title: 'Imagen adjunta',
+                        bodyHtml: '<div class="task-detail-img-modal-body"><img src="' + img.src + '" alt="Imagen" class="task-detail-img-modal-img" /></div>',
+                        size: 'md',
+                        closeOnOverlayClick: true
+                    });
+                });
+            });
         }
     }
 
@@ -444,9 +634,7 @@
                 backButton: {
                     onClick: function () { window.history.back(); }
                 },
-                secondaryButtons: [
-                    { text: 'Compartir', icon: 'fa-share-nodes', onClick: function () { /* compartir */ } }
-                ],
+                secondaryButtons: [], // Sin botón Compartir; solo opciones (menú)
                 menuButton: {
                     onClick: function () { /* opciones */ }
                 }

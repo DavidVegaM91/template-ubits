@@ -282,7 +282,7 @@
     .study-chat-courses-container {
         flex-direction: column;
     }
-    
+
     .study-chat-courses-container .course-card-compact {
         min-width: 100%;
         max-width: 100%;
@@ -709,6 +709,14 @@
     padding: 0 var(--padding-xl) 0;
 }
 
+/* Chat ya iniciado: sin padding lateral en móvil */
+@media (max-width: 768px) {
+    .ubits-study-chat:not(.ubits-study-chat--welcome) .ubits-study-chat__input-area {
+        padding-left: 0;
+        padding-right: 0;
+    }
+}
+
 .ubits-study-chat__disclaimer {
     margin: 0;
     /* Espacio entre input y advertencia = 8px (token --gap-sm) */
@@ -735,10 +743,7 @@
     margin-right: 4px;
 }
 
-/* Los botones de sugerencias ahora usan el componente UBITS button oficial */
-.ubits-study-chat__suggestions .ubits-button {
-    /* No se necesitan estilos adicionales, el componente button.css ya los tiene */
-}
+/* Los botones de sugerencias usan el componente UBITS button oficial */
 
 /* Input de chat */
 .ubits-study-chat__input-container {
@@ -747,18 +752,31 @@
     border-radius: var(--border-radius-md);
     padding: var(--padding-md);
     display: flex;
-    flex-direction: row;
-    align-items: center;
+    flex-direction: column;
     gap: var(--gap-sm);
     width: 100%;
 }
 
+/* Chat iniciado: sin cambios extra, la columna ya ubica bien los elementos */
+.ubits-study-chat:not(.ubits-study-chat--welcome) .ubits-study-chat__input-container {
+    flex-direction: column;
+}
+
 .ubits-study-chat__input-wrapper {
     display: flex;
-    align-items: center;
-    flex: 1;
+    align-items: flex-start;
+    width: 100%;
     min-width: 0;
+    min-height: 28px;
     gap: var(--gap-none);
+}
+
+/* Fila de botones: adjuntar izquierda, enviar derecha */
+.ubits-study-chat__input-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
 }
 
 .ubits-study-chat__input-placeholder {
@@ -783,9 +801,10 @@
     color: var(--ubits-fg-1-high);
     width: 100%;
     resize: none;
-    overflow: hidden;
+    overflow-y: auto;
     min-height: 28.8px;
-    max-height: 200px;
+    max-height: 144px;
+    /* 5 líneas × 28.8px */
 }
 
 .ubits-study-chat__input::placeholder {
@@ -1886,6 +1905,7 @@
 .study-chat-plan-task-card .study-chat-plan-task-card-title {
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -2037,15 +2057,15 @@
     .study-chat-content-preview-aliado-experto {
         flex-direction: column;
     }
-    
+
     .ubits-study-chat__text-globe {
         max-width: 90%;
     }
-    
+
     .ubits-study-chat__suggestions {
         gap: var(--gap-sm);
     }
-    
+
     .ubits-study-chat__suggestion-btn {
         font-size: var(--font-size-sm);
         padding: var(--padding-md) var(--padding-md);

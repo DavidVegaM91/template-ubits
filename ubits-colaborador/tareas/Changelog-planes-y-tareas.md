@@ -199,11 +199,45 @@ Ajustes pendientes sobre los archivos entregados por la PM Mafe para las página
 
 ---
 
-## Cambios 21 de febrero de 2026
+## Cambios 23 de febrero de 2026
 
 31. [x] **Tabs oficiales en Planes (Individuales / Grupales)**  
     En **planes.html** (contenido generado en **planes.js**) los botones "Individuales" y "Grupales" dentro de las secciones **En curso** y **Finalizado** se reemplazaron por **tabs oficiales UBITS** (componente tab, variante sobre fondo blanco). Contenedor con clase `ubits-tabs-on-bg` (fondo `var(--ubits-bg-2)`, padding 4px, border-radius 8px); botones con `ubits-tab ubits-tab--sm` y `ubits-tab--active` según el filtro activo. Se mantienen `data-filter` y `data-filter-finished` para que los listeners existentes sigan funcionando. En **planes.html** se añadió el enlace a `components/tab.css`; en **planes.css** se definió la clase del wrapper.
 
 ---
 
-*Última actualización: ítems 1–20 (11 feb), 21–26 (19 feb), 27 (Cargar más), 28–30 (20 feb), 31 (21 feb) implementados.*
+## Cambios 23 de febrero de 2026
+
+32. [x] **Detalle de tarea: feed cronológico de actividad y trazabilidad completa**
+
+    En **task-detail** (`task-detail.js`, `task-detail.css`) se implementó un sistema de **registro de actividad automático** que mezcla comentarios y eventos del sistema en un único timeline cronológico con separadores de fecha inteligentes.
+
+    **Arquitectura del sistema:**
+    - `pushActivity(icon, text)` — helper global que añade un evento a `estado.activities` con timestamp, icono FA y texto en español.
+    - `toDateKey(isoStr)` — extrae `YYYY-MM-DD` de un ISO string para agrupar por día.
+    - `dateKeyLabel(dateKey)` — retorna `'Hoy'`, `'Ayer'` o `'13 feb 2026'` según la diferencia con hoy (23 feb 2026).
+    - `renderCommentsBlock()` — mezcla `estado.comments` y `estado.activities` en `allItems[]`, los ordena cronológicamente y renderiza con separadores de fecha automáticos al cambiar de día.
+
+    **Eventos registrados automáticamente:**
+
+    | Acción | Icono | Ejemplo de texto |
+    |---|---|---|
+    | Crear tarea *(mock inicial)* | `fa-circle-plus` | `Carlos Ruiz creó la tarea.` |
+    | Asignar tarea *(mock)* | `fa-user-pen` | `Carlos Ruiz asignó la tarea a María González.` |
+    | Cambiar prioridad *(mock)* | `fa-chevrons-up` | `Carlos Ruiz cambió la prioridad a Alta.` |
+    | Cambiar estado *(mock)* | `fa-circle-dot` | `María González cambió el estado a Por hacer.` |
+    | Añadir subtarea individual | `fa-plus-circle` | `María añadió la subtarea "Revisar contratos".` |
+    | Añadir subtareas en lote | `fa-list-plus` | `María añadió 4 subtareas en lote.` |
+    | Completar subtarea | `fa-circle-check` | `María marcó "Revisar contratos" como completada.` |
+    | Reabrir subtarea | `fa-circle-xmark` | `María reabrió la subtarea "Revisar contratos".` |
+    | Cambiar fecha límite *(mock)* | `fa-calendar-pen` | `María cambió la fecha límite al 20 feb 2026.` |
+
+    **Mock data inicial (`getMockActivities`):** 8 eventos cronológicos desde hace 10 días (13 feb) hasta ayer (22 feb), representando el historial realista de la tarea desde su creación.
+
+    **CSS añadido:** `.task-detail-activity-time` — timestamp relativo a la derecha de cada evento (color `--ubits-fg-1-low`, `xs`), y ajuste de `.task-detail-activity-item` a `align-items: baseline` para alinear icono, texto y tiempo correctamente.
+
+    **Pendiente para producción:** disparar `pushActivity()` también en cambios de estado, prioridad, asignado y fecha cuando esas acciones estén conectadas a la BD.
+
+---
+
+*Última actualización: ítems 1–20 (11 feb), 21–26 (19 feb), 27 (Cargar más), 28–30 (20 feb), 31 (21 feb), 32 (23 feb) implementados.*

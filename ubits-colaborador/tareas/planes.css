@@ -1228,21 +1228,31 @@
     box-sizing: border-box;
 }
 
-/* PlanCard - min-width:0 permite que se encoja dentro del grid */
+/* PlanCard - min-width:0 permite que se encoja dentro del grid. Sin gap ni min-height para evitar espacio bajo la barra de progreso. */
 .plan-card {
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
     border-radius: 8px;
-    padding: 12px 12px 0 12px;
-    min-height: 130px;
+    padding: 12px;
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 6px;
     cursor: pointer;
     transition: all 0.2s ease;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
     box-sizing: border-box;
+}
+
+.plan-card__body {
+    margin-top: 6px;
+}
+
+.plan-card__tasks {
+    margin-top: 6px;
+}
+
+.plan-card__progress-bar {
+    margin-top: 6px;
 }
 
 .plan-card:hover {
@@ -1253,12 +1263,14 @@
     display: flex;
     align-items: flex-start;
     gap: 8px;
+    min-width: 0;
 }
 
-/* Mismo tamaño que título del componente oficial card-content (.course-title .ubits-body-sm-bold) */
+/* Título: siempre 1 línea, ellipsis si no cabe (nunca pasar a dos líneas) */
 .plan-card__title {
     flex: 1;
     min-width: 0;
+    max-width: 100%;
     font-family: var(--font-family, "Noto Sans"), sans-serif;
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-bold);
@@ -1268,6 +1280,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    display: block;
 }
 
 .plan-card__body {
@@ -1340,7 +1353,6 @@
     background: var(--ubits-bg-2);
     border-radius: 9999px;
     overflow: hidden;
-    margin-top: 4px;
 }
 
 .plan-card__progress-fill {

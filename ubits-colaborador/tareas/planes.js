@@ -127,12 +127,21 @@ function renderPlansInterface() {
     estadoPlanes.plans = (db && typeof db.getPlanesVistaPlanes === 'function') ? db.getPlanesVistaPlanes() : [];
     const allInProgress = estadoPlanes.plans.filter(p => !p.finished);
     const allFinished = estadoPlanes.plans.filter(p => p.finished);
-    const inProgress = allInProgress.filter(p =>
-        estadoPlanes.filterInProgress === 'individual' ? !p.hasMembers : p.hasMembers
-    );
-    const finished = allFinished.filter(p =>
-        estadoPlanes.filterFinished === 'individual' ? !p.hasMembers : p.hasMembers
-    );
+    const sortByEndDateDesc = (a, b) => {
+        const dateA = (a.end_date || '').split('T')[0] || '';
+        const dateB = (b.end_date || '').split('T')[0] || '';
+        return dateB.localeCompare(dateA);
+    };
+    const inProgress = allInProgress
+        .filter(p =>
+            estadoPlanes.filterInProgress === 'individual' ? !p.hasMembers : p.hasMembers
+        )
+        .sort(sortByEndDateDesc);
+    const finished = allFinished
+        .filter(p =>
+            estadoPlanes.filterFinished === 'individual' ? !p.hasMembers : p.hasMembers
+        )
+        .sort(sortByEndDateDesc);
 
     const countersInProgress = {
         iniciado: allInProgress.filter(p => p.status === 'Activo').length,

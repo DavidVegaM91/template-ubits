@@ -3,12 +3,16 @@
  * Crea modales con estructura oficial: overlay, header (título + cerrar), body, footer.
  * Una sola fuente de verdad para el markup; evita desincronización entre páginas.
  *
+ * Footer: por defecto solo zona derecha (primary + secondary). Opcionalmente footerTertiary
+ * para un botón terciario a la izquierda.
+ *
  * Uso:
  *   openModal({
  *     overlayId: 'mi-modal',
  *     title: 'Título',
  *     bodyHtml: '<p>Contenido</p>',
- *     footerHtml: '<button class="ubits-button ubits-button--primary ubits-button--md"><span>Aceptar</span></button>',
+ *     footerHtml: '<button class="ubits-button ubits-button--secondary ubits-button--md">Cancelar</button><button class="ubits-button ubits-button--primary ubits-button--md">Aceptar</button>',
+ *     footerTertiary: { text: 'Eliminar', onClick: function() { } },  // opcional: botón a la izquierda
  *     size: 'sm',  // 'xs' | 'sm' | 'md' | 'lg' | null (default 560px)
  *     closeOnOverlayClick: true,
  *     onClose: function() { }
@@ -34,7 +38,8 @@
      * @param {string} [options.overlayId] - ID del overlay. Si no se pasa, se genera uno.
      * @param {string} options.title - Título del header (se escapa HTML).
      * @param {string} options.bodyHtml - HTML del cuerpo del modal.
-     * @param {string} [options.footerHtml] - HTML del pie (botones). Opcional.
+     * @param {string} [options.footerHtml] - HTML del pie (botones a la derecha: secundario + primario). Opcional.
+     * @param {Object} [options.footerTertiary] - Botón terciario a la izquierda. { text: string, onClick: function }. Opcional.
      * @param {string} [options.size] - 'xs' | 'sm' | 'md' | 'lg'. Ancho del contenido.
      * @param {boolean} [options.closeOnOverlayClick=true] - Cerrar al clic fuera del contenido.
      * @param {function} [options.onClose] - Callback al cerrar el modal.
@@ -45,6 +50,7 @@
         var title = options.title != null ? String(options.title) : '';
         var bodyHtml = options.bodyHtml != null ? options.bodyHtml : '';
         var footerHtml = options.footerHtml != null ? options.footerHtml : '';
+        var footerTertiary = options.footerTertiary || null;
         var size = options.size || '';
         var closeOnOverlayClick = options.closeOnOverlayClick !== false;
         var onClose = options.onClose || null;
@@ -75,7 +81,12 @@
             '    </button>' +
             '  </div>' +
             '  <div class="ubits-modal-body">' + bodyHtml + '</div>' +
-            (footerHtml ? ('  <div class="ubits-modal-footer">' + footerHtml + '</div>') : '') +
+            (footerHtml ? ('  <div class="ubits-modal-footer">' +
+                '<div class="ubits-modal-footer__left">' +
+                (footerTertiary ? ('<button type="button" class="ubits-button ubits-button--tertiary ubits-button--md" id="' + overlayId + '-footer-tertiary"><span>' + escapeHtml(footerTertiary.text || '') + '</span></button>') : '') +
+                '</div>' +
+                '<div class="ubits-modal-footer__right">' + footerHtml + '</div>' +
+                '</div>') : '') +
             '</div>';
 
         function close() {
@@ -85,6 +96,11 @@
         }
 
         overlay.querySelector('.ubits-modal-close').addEventListener('click', close);
+
+        if (footerTertiary && footerTertiary.onClick && typeof footerTertiary.onClick === 'function') {
+            var tertiaryBtn = overlay.querySelector('#' + overlayId + '-footer-tertiary');
+            if (tertiaryBtn) tertiaryBtn.addEventListener('click', footerTertiary.onClick);
+        }
 
         if (closeOnOverlayClick) {
             overlay.addEventListener('click', function (e) {
@@ -139,7 +155,8 @@
      * @param {string} options.overlayId - ID del overlay.
      * @param {string} options.title - Título del header (se escapa HTML).
      * @param {string} options.bodyHtml - HTML del cuerpo.
-     * @param {string} [options.footerHtml] - HTML del pie. Opcional.
+     * @param {string} [options.footerHtml] - HTML del pie (botones derecha). Opcional.
+     * @param {Object} [options.footerTertiary] - Botón terciario izquierda. { text: string }. Opcional (onClick se asocia por id en la página).
      * @param {string} [options.size] - 'xs' | 'sm' | 'md' | 'lg'.
      * @param {string} [options.contentId] - ID opcional del div .ubits-modal-content (para date-picker-modal, etc.).
      * @param {string} [options.titleId] - ID opcional del span del título (ej. reabrir-plan-title).
@@ -157,6 +174,7 @@
         var title = options.title != null ? String(options.title) : '';
         var bodyHtml = options.bodyHtml != null ? options.bodyHtml : '';
         var footerHtml = options.footerHtml != null ? options.footerHtml : '';
+        var footerTertiary = options.footerTertiary || null;
         var size = options.size || '';
         var contentId = options.contentId || '';
         var titleId = options.titleId || '';
@@ -189,7 +207,12 @@
             '</button>' +
             '</div>' +
             '<div class="ubits-modal-body' + bodyClassAttr + '">' + bodyHtml + '</div>' +
-            (footerHtml ? ('<div class="ubits-modal-footer' + footerClassAttr + '">' + footerHtml + '</div>') : '') +
+            (footerHtml ? ('<div class="ubits-modal-footer' + footerClassAttr + '">' +
+            '<div class="ubits-modal-footer__left">' +
+            (footerTertiary ? ('<button type="button" class="ubits-button ubits-button--tertiary ubits-button--md" id="' + overlayId + '-footer-tertiary"><span>' + escapeHtml(footerTertiary.text || '') + '</span></button>') : '') +
+            '</div>' +
+            '<div class="ubits-modal-footer__right">' + footerHtml + '</div>' +
+            '</div>') : '') +
             '</div>' +
             '</div>';
     }
