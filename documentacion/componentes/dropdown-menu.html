@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="../../components/button.css">
     <link rel="stylesheet" href="../../components/input.css">
     <link rel="stylesheet" href="../../components/radio-button.css">
+    <link rel="stylesheet" href="../../components/checkbox.css">
     <link rel="stylesheet" href="../../components/dropdown-menu.css">
     <script src="../../components/input.js"></script>
     <script src="../../components/dropdown-menu.js"></script>
@@ -59,13 +60,15 @@
                             <div style="display: flex; flex-wrap: wrap; gap: 24px; margin-top: 24px; align-items: flex-end;">
                                 <div style="display: flex; flex-direction: column; gap: 8px;">
                                     <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-high);">Mostrar bloques</span>
-                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                                        <input type="checkbox" id="preview-autocomplete" style="accent-color: var(--ubits-accent-brand);">
-                                        <span class="ubits-body-sm-regular">Input de búsqueda</span>
+                                    <label class="ubits-checkbox ubits-checkbox--sm ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                        <input type="checkbox" class="ubits-checkbox__input" id="preview-autocomplete">
+                                        <span class="ubits-checkbox__box"><i class="fas fa-check"></i></span>
+                                        <span class="ubits-checkbox__label">Input de búsqueda</span>
                                     </label>
-                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                                        <input type="checkbox" id="preview-footer" checked style="accent-color: var(--ubits-accent-brand);">
-                                        <span class="ubits-body-sm-regular">Footer (Cancelar / Aplicar)</span>
+                                    <label class="ubits-checkbox ubits-checkbox--sm ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                        <input type="checkbox" class="ubits-checkbox__input" id="preview-footer" checked>
+                                        <span class="ubits-checkbox__box"><i class="fas fa-check"></i></span>
+                                        <span class="ubits-checkbox__label">Footer (Cancelar / Aplicar)</span>
                                     </label>
                                 </div>
                                 <div id="preview-opciones-tipo-container" style="min-width: 200px;"></div>
@@ -340,7 +343,7 @@ closeDropdownMenu(overlayId)</code></pre>
                             var opts = overlay.querySelectorAll('.ubits-dropdown-menu__option');
                             var qn = (q || '').toLowerCase().trim();
                             opts.forEach(function(opt) {
-                                var textEl = opt.querySelector('.ubits-dropdown-menu__option-text') || opt.querySelector('.ubits-radio__label');
+                                var textEl = opt.querySelector('.ubits-dropdown-menu__option-text') || opt.querySelector('.ubits-radio__label') || opt.querySelector('.ubits-checkbox__label');
                                 var text = textEl ? textEl.textContent : '';
                                 opt.style.display = !qn || text.toLowerCase().indexOf(qn) >= 0 ? '' : 'none';
                             });

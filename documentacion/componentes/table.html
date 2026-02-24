@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="../../components/status-tag.css">
     <link rel="stylesheet" href="../../components/avatar.css">
     <link rel="stylesheet" href="../../components/table.css">
+    <link rel="stylesheet" href="../../components/checkbox.css">
     <style>
         /* Preview: ocultar columnas según controles (solo en esta página) */
         #table-demo th.table-preview-hide,
@@ -55,33 +56,40 @@
                             <div style="margin-bottom: 24px; padding: 16px; background: var(--ubits-bg-2); border-radius: 12px; border: 1px solid var(--ubits-border-1);">
                                 <p class="ubits-body-sm-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Columnas visibles</p>
                                 <div style="display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: center;">
-                                    <label class="ubits-body-sm-regular" style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--ubits-fg-1-medium);">
-                                        <input type="checkbox" id="table-preview-col-checkbox" checked aria-label="Mostrar columna checkbox">
-                                        <span>Checkbox</span>
+                                    <label class="ubits-checkbox ubits-checkbox--sm ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                        <input type="checkbox" class="ubits-checkbox__input" id="table-preview-col-checkbox" checked aria-label="Mostrar columna checkbox">
+                                        <span class="ubits-checkbox__box"><i class="fas fa-check"></i></span>
+                                        <span class="ubits-checkbox__label">Checkbox</span>
                                     </label>
-                                    <label class="ubits-body-sm-regular" style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--ubits-fg-1-medium);">
-                                        <input type="checkbox" id="table-preview-col-nombre" checked aria-label="Mostrar columna texto">
-                                        <span>Texto</span>
+                                    <label class="ubits-checkbox ubits-checkbox--sm ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                        <input type="checkbox" class="ubits-checkbox__input" id="table-preview-col-nombre" checked aria-label="Mostrar columna texto">
+                                        <span class="ubits-checkbox__box"><i class="fas fa-check"></i></span>
+                                        <span class="ubits-checkbox__label">Texto</span>
                                     </label>
-                                    <label class="ubits-body-sm-regular" style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--ubits-fg-1-medium);">
-                                        <input type="checkbox" id="table-preview-col-asignado" checked aria-label="Mostrar columna avatar">
-                                        <span>Avatar</span>
+                                    <label class="ubits-checkbox ubits-checkbox--sm ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                        <input type="checkbox" class="ubits-checkbox__input" id="table-preview-col-asignado" checked aria-label="Mostrar columna avatar">
+                                        <span class="ubits-checkbox__box"><i class="fas fa-check"></i></span>
+                                        <span class="ubits-checkbox__label">Avatar</span>
                                     </label>
-                                    <label class="ubits-body-sm-regular" style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--ubits-fg-1-medium);">
-                                        <input type="checkbox" id="table-preview-col-profilelist" aria-label="Mostrar columna profile list">
-                                        <span>Profile list</span>
+                                    <label class="ubits-checkbox ubits-checkbox--sm ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                        <input type="checkbox" class="ubits-checkbox__input" id="table-preview-col-profilelist" aria-label="Mostrar columna profile list">
+                                        <span class="ubits-checkbox__box"><i class="fas fa-check"></i></span>
+                                        <span class="ubits-checkbox__label">Profile list</span>
                                     </label>
-                                    <label class="ubits-body-sm-regular" style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--ubits-fg-1-medium);">
-                                        <input type="checkbox" id="table-preview-col-avance" aria-label="Mostrar columna avance">
-                                        <span>Progress bar</span>
+                                    <label class="ubits-checkbox ubits-checkbox--sm ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                        <input type="checkbox" class="ubits-checkbox__input" id="table-preview-col-avance" aria-label="Mostrar columna avance">
+                                        <span class="ubits-checkbox__box"><i class="fas fa-check"></i></span>
+                                        <span class="ubits-checkbox__label">Progress bar</span>
                                     </label>
-                                    <label class="ubits-body-sm-regular" style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--ubits-fg-1-medium);">
-                                        <input type="checkbox" id="table-preview-col-estado" aria-label="Mostrar columna estado">
-                                        <span>Status tag</span>
+                                    <label class="ubits-checkbox ubits-checkbox--sm ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                        <input type="checkbox" class="ubits-checkbox__input" id="table-preview-col-estado" aria-label="Mostrar columna estado">
+                                        <span class="ubits-checkbox__box"><i class="fas fa-check"></i></span>
+                                        <span class="ubits-checkbox__label">Status tag</span>
                                     </label>
-                                    <label class="ubits-body-sm-regular" style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--ubits-fg-1-medium);">
-                                        <input type="checkbox" id="table-preview-col-prioridad" aria-label="Mostrar columna prioridad">
-                                        <span>Prioridad</span>
+                                    <label class="ubits-checkbox ubits-checkbox--sm ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                        <input type="checkbox" class="ubits-checkbox__input" id="table-preview-col-prioridad" aria-label="Mostrar columna prioridad">
+                                        <span class="ubits-checkbox__box"><i class="fas fa-check"></i></span>
+                                        <span class="ubits-checkbox__label">Prioridad</span>
                                     </label>
                                 </div>
                             </div>
@@ -90,7 +98,7 @@
                                     <table class="ubits-table" id="table-demo">
                                         <thead>
                                             <tr>
-                                                <th class="ubits-table__th--checkbox" data-col="checkbox"><input type="checkbox" id="table-demo-select-all" aria-label="Seleccionar todo"></th>
+                                                <th class="ubits-table__th--checkbox" data-col="checkbox"><label class="ubits-checkbox ubits-checkbox--sm"><input type="checkbox" class="ubits-checkbox__input" id="table-demo-select-all" aria-label="Seleccionar todo"><span class="ubits-checkbox__box"><i class="fas fa-check"></i><i class="fas fa-minus"></i></span><span class="ubits-checkbox__label sr-only">Seleccionar todo</span></label></th>
                                                 <th data-col="nombre">Nombre</th>
                                                 <th data-col="asignado">Asignado</th>
                                                 <th data-col="profilelist">Asignados</th>
@@ -101,7 +109,7 @@
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td class="ubits-table__td--checkbox" data-col="checkbox"><input type="checkbox" class="table-demo-row-check" data-id="1"></td>
+                                                <td class="ubits-table__td--checkbox" data-col="checkbox"><label class="ubits-checkbox ubits-checkbox--sm"><input type="checkbox" class="ubits-checkbox__input table-demo-row-check" data-id="1"><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label sr-only">Seleccionar fila</span></label></td>
                                                 <td data-col="nombre"><span class="ubits-body-sm-regular">Tarea de ejemplo A</span></td>
                                                 <td data-col="asignado">
                                                     <div class="ubits-table__cell-assignee">
@@ -128,7 +136,7 @@
                                                 <td data-col="prioridad"><span class="ubits-table__cell-priority" style="color: var(--ubits-feedback-accent-error);"><i class="far fa-chevrons-up"></i> Alta</span></td>
                                             </tr>
                                             <tr>
-                                                <td class="ubits-table__td--checkbox" data-col="checkbox"><input type="checkbox" class="table-demo-row-check" data-id="2"></td>
+                                                <td class="ubits-table__td--checkbox" data-col="checkbox"><label class="ubits-checkbox ubits-checkbox--sm"><input type="checkbox" class="ubits-checkbox__input table-demo-row-check" data-id="2"><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label sr-only">Seleccionar fila</span></label></td>
                                                 <td data-col="nombre"><span class="ubits-body-sm-regular">Tarea de ejemplo B</span></td>
                                                 <td data-col="asignado">
                                                     <div class="ubits-table__cell-assignee">
@@ -155,7 +163,7 @@
                                                 <td data-col="prioridad"><span class="ubits-table__cell-priority" style="color: var(--ubits-fg-1-medium);"><i class="far fa-chevron-up"></i> Media</span></td>
                                             </tr>
                                             <tr>
-                                                <td class="ubits-table__td--checkbox" data-col="checkbox"><input type="checkbox" class="table-demo-row-check" data-id="3"></td>
+                                                <td class="ubits-table__td--checkbox" data-col="checkbox"><label class="ubits-checkbox ubits-checkbox--sm"><input type="checkbox" class="ubits-checkbox__input table-demo-row-check" data-id="3"><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label sr-only">Seleccionar fila</span></label></td>
                                                 <td data-col="nombre"><span class="ubits-body-sm-regular">Tarea de ejemplo C</span></td>
                                                 <td data-col="asignado">
                                                     <div class="ubits-table__cell-assignee">
@@ -451,9 +459,30 @@ Un mismo th puede tener hasta 2 botones (ej. filtro + orden).</code></pre>
             }
             var selectAll = document.getElementById('table-demo-select-all');
             var rowChecks = document.querySelectorAll('.table-demo-row-check');
+            function updateTableSelectAll() {
+                if (!selectAll || !rowChecks.length) return;
+                var n = rowChecks.length;
+                var checked = 0;
+                rowChecks.forEach(function(cb) { if (cb.checked) checked++; });
+                selectAll.checked = n > 0 && checked === n;
+                selectAll.indeterminate = checked > 0 && checked < n;
+            }
             if (selectAll && rowChecks.length) {
+                selectAll.addEventListener('click', function() {
+                    if (this.indeterminate) this.dataset.clickFromIndeterminate = '1';
+                    else delete this.dataset.clickFromIndeterminate;
+                });
                 selectAll.addEventListener('change', function() {
+                    if (this.dataset.clickFromIndeterminate) {
+                        this.checked = false;
+                        delete this.dataset.clickFromIndeterminate;
+                        rowChecks.forEach(function(cb) { cb.checked = false; });
+                        return;
+                    }
                     rowChecks.forEach(function(cb) { cb.checked = selectAll.checked; });
+                });
+                rowChecks.forEach(function(cb) {
+                    cb.addEventListener('change', updateTableSelectAll);
                 });
             }
             /* Controles de columnas del preview */

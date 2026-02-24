@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="../../components/toast.css">
     <link rel="stylesheet" href="../../components/input.css">
     <link rel="stylesheet" href="../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../components/checkbox.css">
     <link rel="stylesheet" href="../../components/tooltip.css">
     <style>
         .tooltip-preview-area {
@@ -82,13 +83,15 @@
                                     <label class="ubits-body-sm-bold"
                                         style="display: block; margin-bottom: 8px;">Opciones</label>
                                     <div style="display: flex; gap: 16px; align-items: center; height: 32px;">
-                                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                                            <input type="checkbox" id="tooltip-opt-normal">
-                                            <span class="ubits-body-sm-regular">Normal (Light)</span>
+                                        <label class="ubits-checkbox ubits-checkbox--sm ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                            <input type="checkbox" class="ubits-checkbox__input" id="tooltip-opt-normal">
+                                            <span class="ubits-checkbox__box"><i class="fas fa-check"></i></span>
+                                            <span class="ubits-checkbox__label">Normal (Light)</span>
                                         </label>
-                                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                                            <input type="checkbox" id="tooltip-opt-no-arrow">
-                                            <span class="ubits-body-sm-regular">Sin flecha</span>
+                                        <label class="ubits-checkbox ubits-checkbox--sm ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                            <input type="checkbox" class="ubits-checkbox__input" id="tooltip-opt-no-arrow">
+                                            <span class="ubits-checkbox__box"><i class="fas fa-check"></i></span>
+                                            <span class="ubits-checkbox__label">Sin flecha</span>
                                         </label>
                                     </div>
                                 </div>

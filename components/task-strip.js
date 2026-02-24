@@ -65,10 +65,10 @@ function renderTaskStrip(tarea, opts) {
         '<div class="' + classes + '" data-tarea-id="' + idSafe + '">' +
         '<div class="tarea-item__main">' +
         '<span class="tarea-item__radio">' +
-        '<label class="ubits-radio ubits-radio--sm tarea-done-radio" data-tarea-id="' + idSafe + '" role="button" tabindex="0">' +
-        '<input type="checkbox" class="ubits-radio__input" name="tarea-done-' + idSafe + '" value="1" ' + (esFinalizada ? 'checked' : '') + ' data-tarea-id="' + idSafe + '">' +
-        '<span class="ubits-radio__circle"></span>' +
-        '<span class="ubits-radio__label" aria-hidden="true">&nbsp;</span>' +
+        '<label class="ubits-checkbox ubits-checkbox--sm ubits-checkbox--round tarea-done-radio" data-tarea-id="' + idSafe + '" role="button" tabindex="0">' +
+        '<input type="checkbox" class="ubits-checkbox__input" name="tarea-done-' + idSafe + '" value="1" ' + (esFinalizada ? 'checked' : '') + ' data-tarea-id="' + idSafe + '">' +
+        '<span class="ubits-checkbox__box"><i class="fas fa-check"></i></span>' +
+        '<span class="ubits-checkbox__label" aria-hidden="true">&nbsp;</span>' +
         '</label>' +
         '</span>' +
         '<div class="tarea-content">' +

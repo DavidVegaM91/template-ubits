@@ -19,6 +19,8 @@
     <link rel="stylesheet" href="../../components/button.css">
     <link rel="stylesheet" href="../../components/avatar.css">
     <link rel="stylesheet" href="../../components/card-content.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/dropdown-menu.css">
     <link rel="stylesheet" href="../../components/toast.css">
     <style>
         /* Preview Styles */
@@ -199,124 +201,15 @@
                         </div>
                     </div>
                     
-                    <!-- Preview Controls -->
+                    <!-- Preview Controls (selects oficiales createInput) -->
                     <div class="preview-controls">
-                        <div class="control-group">
-                            <label class="control-label ubits-body-sm-bold">Estado</label>
-                            <select class="control-select" id="estado-select">
-                                <option value="default">Default</option>
-                                <option value="hover">Hover</option>
-                            </select>
-                        </div>
-                        
-                        <div class="control-group">
-                            <label class="control-label ubits-body-sm-bold">Progreso</label>
-                            <select class="control-select" id="progreso-select">
-                                <option value="default">Default (0%)</option>
-                                <option value="progress" selected>En progreso (75%)</option>
-                                <option value="completed">Completado (100%)</option>
-                            </select>
-                        </div>
-                        
-                        <div class="control-group">
-                            <label class="control-label ubits-body-sm-bold">Tipo de contenido</label>
-                            <select class="control-select" id="tipo-select">
-                                <option value="Curso" selected>Curso</option>
-                                <option value="Short">Short</option>
-                                <option value="Charla">Charla</option>
-                                <option value="Artículo">Artículo</option>
-                                <option value="Podcast">Podcast</option>
-                                <option value="Libro">Libro</option>
-                                <option value="Ideas de libro">Ideas de libro</option>
-                                <option value="Caso de estudio">Caso de estudio</option>
-                                <option value="Documento técnico">Documento técnico</option>
-                                <option value="Ejercicios de práctica">Ejercicios de práctica</option>
-                                <option value="Ruta de aprendizaje">Ruta de aprendizaje</option>
-                                <option value="Programa">Programa</option>
-                            </select>
-                        </div>
-                        
-                        <div class="control-group">
-                            <label class="control-label ubits-body-sm-bold">Aliado</label>
-                            <select class="control-select" id="aliado-select">
-                                <option value="UBITS">UBITS</option>
-                                <option value="Microsoft">Microsoft</option>
-                                <option value="TED">TED</option>
-                                <option value="AWS">AWS</option>
-                                <option value="Hubspot">Hubspot</option>
-                                <option value="Harvard Business Publishing" selected>Harvard Business Publishing</option>
-                                <option value="Universidad de Los Andes">Universidad de Los Andes</option>
-                                <option value="Advanced English">Advanced English</option>
-                                <option value="IE University">IE University</option>
-                                <option value="Código Facilito">Código Facilito</option>
-                                <option value="Hackers del Talento">Hackers del Talento</option>
-                                <option value="All Ears English">All Ears English</option>
-                                <option value="American & British Academy">American & British Academy</option>
-                                <option value="Bureau Veritas">Bureau Veritas</option>
-                                <option value="Welu">Welu</option>
-                                <option value="Figsha Smart Consulting">Figsha Smart Consulting</option>
-                                <option value="Instafit">Instafit</option>
-                                <option value="WOBI">WOBI</option>
-                            </select>
-                        </div>
-                        
-                        <div class="control-group">
-                            <label class="control-label ubits-body-sm-bold">Competencia</label>
-                            <select class="control-select" id="competencia-select">
-                                <option value="Product design">Product design</option>
-                                <option value="Desarrollo de software">Desarrollo de software</option>
-                                <option value="Liderazgo">Liderazgo</option>
-                                <option value="Marketing digital">Marketing digital</option>
-                                <option value="Inteligencia emocional" selected>Inteligencia emocional</option>
-                                <option value="Accountability">Accountability</option>
-                                <option value="Administración de negocios">Administración de negocios</option>
-                                <option value="Agilidad">Agilidad</option>
-                                <option value="Comunicación">Comunicación</option>
-                                <option value="Cumplimiento (Compliance)">Cumplimiento (Compliance)</option>
-                                <option value="Data skills">Data skills</option>
-                                <option value="Desarrollo web">Desarrollo web</option>
-                                <option value="Digital skills">Digital skills</option>
-                                <option value="e-Commerce">e-Commerce</option>
-                                <option value="Emprendimiento">Emprendimiento</option>
-                                <option value="Experiencia del cliente">Experiencia del cliente</option>
-                                <option value="Gestión de procesos y operaciones">Gestión de procesos y operaciones</option>
-                                <option value="Gestión de proyectos">Gestión de proyectos</option>
-                                <option value="Gestión de recursos tecnológicos">Gestión de recursos tecnológicos</option>
-                                <option value="Gestión del cambio">Gestión del cambio</option>
-                                <option value="Gestión del riesgo">Gestión del riesgo</option>
-                                <option value="Gestión financiera">Gestión financiera</option>
-                                <option value="Herramientas tecnológicas">Herramientas tecnológicas</option>
-                                <option value="Inglés">Inglés</option>
-                                <option value="Innovación">Innovación</option>
-                                <option value="Lenguajes de Programación">Lenguajes de Programación</option>
-                                <option value="Marketing">Marketing</option>
-                                <option value="Negociación">Negociación</option>
-                                <option value="People management">People management</option>
-                                <option value="Productividad">Productividad</option>
-                                <option value="Resolución de problemas">Resolución de problemas</option>
-                                <option value="Trabajo en equipo">Trabajo en equipo</option>
-                                <option value="Ventas">Ventas</option>
-                                <option value="Wellness">Wellness</option>
-                            </select>
-                        </div>
-                        
-                        <div class="control-group">
-                            <label class="control-label ubits-body-sm-bold">Nivel</label>
-                            <select class="control-select" id="nivel-select">
-                                <option value="Básico">Básico</option>
-                                <option value="Intermedio" selected>Intermedio</option>
-                                <option value="Avanzado">Avanzado</option>
-                            </select>
-                        </div>
-                        
-                        <div class="control-group">
-                            <label class="control-label ubits-body-sm-bold">Idioma</label>
-                            <select class="control-select" id="idioma-select">
-                                <option value="Español">Español</option>
-                                <option value="Inglés">Inglés</option>
-                                <option value="Portugués">Portugués</option>
-                            </select>
-                        </div>
+                        <div class="control-group"><div id="estado-select-container"></div></div>
+                        <div class="control-group"><div id="progreso-select-container"></div></div>
+                        <div class="control-group"><div id="tipo-select-container"></div></div>
+                        <div class="control-group"><div id="aliado-select-container"></div></div>
+                        <div class="control-group"><div id="competencia-select-container"></div></div>
+                        <div class="control-group"><div id="nivel-select-container"></div></div>
+                        <div class="control-group"><div id="idioma-select-container"></div></div>
                     </div>
                 </div>
 
@@ -967,6 +860,7 @@ const logoMap = {
     <script src="../../docs/docs-sidebar.js"></script>
     <script src="../../components/avatar.js"></script>
     <script src="../../components/card-content.js"></script>
+    <script src="../../components/input.js"></script>
     <script src="../../script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -1015,93 +909,153 @@ const logoMap = {
             language: 'Español'
         };
         
-        // Inicializar preview del card
+        // Mapeo aliado -> logo (para preview)
+        var cardPreviewLogoMap = {
+            'UBITS': 'UBITS.jpg', 'Microsoft': 'Microsoft.jpg', 'TED': 'TED.jpg', 'AWS': 'AWS.jpg', 'Hubspot': 'Hubspot.jpg',
+            'Harvard Business Publishing': 'Harvard-Business-Publishing.jpg', 'Universidad de Los Andes': 'Universidad-de-Los Andes.jpg',
+            'Advanced English': 'Advanced-English.jpg', 'IE University': 'IE-University-Publishing.jpg', 'Código Facilito': 'Código-Facilito.jpg',
+            'Hackers del Talento': 'Hackers-del-Talento.jpg', 'All Ears English': 'All Ears English.jpg', 'American & British Academy': 'American & British Academy.jpg',
+            'Bureau Veritas': 'Bureau-Veritas.jpg', 'Welu': 'Welu.jpg', 'Figsha Smart Consulting': 'Figsha Smart Consulting.jpg', 'Instafit': 'Instafit.jpg', 'WOBI': 'WOBI.jpg'
+        };
+
+        // Inicializar preview del card (selects oficiales createInput)
         function initCardPreview() {
-            // Renderizar card inicial
             updateCardPreview();
-            
-            // Event listeners para los selectores
-            document.getElementById('estado-select').addEventListener('change', function() {
-                const card = document.querySelector('.course-card');
-                if (this.value === 'hover') {
-                    card.classList.add('hover-state');
-                } else {
-                    card.classList.remove('hover-state');
+
+            if (typeof createInput !== 'function') return;
+
+            createInput({
+                containerId: 'estado-select-container',
+                type: 'select',
+                label: 'Estado',
+                placeholder: 'Seleccionar...',
+                selectOptions: [{ value: 'default', text: 'Default' }, { value: 'hover', text: 'Hover' }],
+                value: 'default',
+                size: 'sm',
+                onChange: function(val) {
+                    var card = document.querySelector('.course-card');
+                    if (card) {
+                        if (val === 'hover') card.classList.add('hover-state');
+                        else card.classList.remove('hover-state');
+                    }
                 }
             });
-            
-            document.getElementById('progreso-select').addEventListener('change', function() {
-                const value = this.value;
-                if (value === 'default') {
-                    currentCardData.progress = 0;
-                    currentCardData.status = 'default';
-                } else if (value === 'progress') {
-                    currentCardData.progress = 75;
-                    currentCardData.status = 'progress';
-                } else if (value === 'completed') {
-                    currentCardData.progress = 100;
-                    currentCardData.status = 'completed';
+
+            createInput({
+                containerId: 'progreso-select-container',
+                type: 'select',
+                label: 'Progreso',
+                placeholder: 'Seleccionar...',
+                selectOptions: [
+                    { value: 'default', text: 'Default (0%)' },
+                    { value: 'progress', text: 'En progreso (75%)' },
+                    { value: 'completed', text: 'Completado (100%)' }
+                ],
+                value: 'progress',
+                size: 'sm',
+                onChange: function(val) {
+                    if (val === 'default') { currentCardData.progress = 0; currentCardData.status = 'default'; }
+                    else if (val === 'progress') { currentCardData.progress = 75; currentCardData.status = 'progress'; }
+                    else if (val === 'completed') { currentCardData.progress = 100; currentCardData.status = 'completed'; }
+                    updateCardPreview();
                 }
-                updateCardPreview();
             });
-            
-            document.getElementById('tipo-select').addEventListener('change', function() {
-                currentCardData.type = this.value;
-                // Ajustar duración recomendada
-                if (this.value === 'Short') {
-                    currentCardData.duration = '15 min';
-                } else if (this.value === 'Ruta de aprendizaje') {
-                    currentCardData.duration = '240 min';
-                } else if (this.value === 'Programa') {
-                    currentCardData.duration = '240 min';
-                } else {
-                    currentCardData.duration = '60 min';
+
+            createInput({
+                containerId: 'tipo-select-container',
+                type: 'select',
+                label: 'Tipo de contenido',
+                placeholder: 'Seleccionar...',
+                selectOptions: [
+                    { value: 'Curso', text: 'Curso' }, { value: 'Short', text: 'Short' }, { value: 'Charla', text: 'Charla' },
+                    { value: 'Artículo', text: 'Artículo' }, { value: 'Podcast', text: 'Podcast' }, { value: 'Libro', text: 'Libro' },
+                    { value: 'Ideas de libro', text: 'Ideas de libro' }, { value: 'Caso de estudio', text: 'Caso de estudio' },
+                    { value: 'Documento técnico', text: 'Documento técnico' }, { value: 'Ejercicios de práctica', text: 'Ejercicios de práctica' },
+                    { value: 'Ruta de aprendizaje', text: 'Ruta de aprendizaje' }, { value: 'Programa', text: 'Programa' }
+                ],
+                value: 'Curso',
+                size: 'sm',
+                onChange: function(val) {
+                    currentCardData.type = val;
+                    if (val === 'Short') currentCardData.duration = '15 min';
+                    else if (val === 'Ruta de aprendizaje' || val === 'Programa') currentCardData.duration = '240 min';
+                    else currentCardData.duration = '60 min';
+                    updateCardPreview();
                 }
-                updateCardPreview();
             });
-            
-            document.getElementById('aliado-select').addEventListener('change', function() {
-                currentCardData.provider = this.value;
-                
-                // Mapeo correcto de nombres a archivos
-                const logoMap = {
-                    'UBITS': 'UBITS.jpg',
-                    'Microsoft': 'Microsoft.jpg',
-                    'TED': 'TED.jpg',
-                    'AWS': 'AWS.jpg',
-                    'Hubspot': 'Hubspot.jpg',
-                    'Harvard Business Publishing': 'Harvard-Business-Publishing.jpg',
-                    'Universidad de Los Andes': 'Universidad-de-Los Andes.jpg',
-                    'Advanced English': 'Advanced-English.jpg',
-                    'IE University': 'IE-University-Publishing.jpg',
-                    'Código Facilito': 'Código-Facilito.jpg',
-                    'Hackers del Talento': 'Hackers-del-Talento.jpg',
-                    'All Ears English': 'All Ears English.jpg',
-                    'American & British Academy': 'American & British Academy.jpg',
-                    'Bureau Veritas': 'Bureau-Veritas.jpg',
-                    'Welu': 'Welu.jpg',
-                    'Figsha Smart Consulting': 'Figsha Smart Consulting.jpg',
-                    'Instafit': 'Instafit.jpg',
-                    'WOBI': 'WOBI.jpg'
-                };
-                
-                currentCardData.providerLogo = `../../images/Favicons/${logoMap[this.value] || 'UBITS.jpg'}`;
-                updateCardPreview();
+
+            var aliadoOptions = [
+                { value: 'UBITS', text: 'UBITS' }, { value: 'Microsoft', text: 'Microsoft' }, { value: 'TED', text: 'TED' }, { value: 'AWS', text: 'AWS' },
+                { value: 'Hubspot', text: 'Hubspot' }, { value: 'Harvard Business Publishing', text: 'Harvard Business Publishing' },
+                { value: 'Universidad de Los Andes', text: 'Universidad de Los Andes' }, { value: 'Advanced English', text: 'Advanced English' },
+                { value: 'IE University', text: 'IE University' }, { value: 'Código Facilito', text: 'Código Facilito' },
+                { value: 'Hackers del Talento', text: 'Hackers del Talento' }, { value: 'All Ears English', text: 'All Ears English' },
+                { value: 'American & British Academy', text: 'American & British Academy' }, { value: 'Bureau Veritas', text: 'Bureau Veritas' },
+                { value: 'Welu', text: 'Welu' }, { value: 'Figsha Smart Consulting', text: 'Figsha Smart Consulting' }, { value: 'Instafit', text: 'Instafit' }, { value: 'WOBI', text: 'WOBI' }
+            ];
+            createInput({
+                containerId: 'aliado-select-container',
+                type: 'select',
+                label: 'Aliado',
+                placeholder: 'Seleccionar...',
+                selectOptions: aliadoOptions,
+                value: 'Harvard Business Publishing',
+                size: 'sm',
+                onChange: function(val) {
+                    currentCardData.provider = val;
+                    currentCardData.providerLogo = '../../images/Favicons/' + (cardPreviewLogoMap[val] || 'UBITS.jpg');
+                    updateCardPreview();
+                }
             });
-            
-            document.getElementById('competencia-select').addEventListener('change', function() {
-                currentCardData.competency = this.value;
-                updateCardPreview();
+
+            var competenciaOptions = [
+                'Product design', 'Desarrollo de software', 'Liderazgo', 'Marketing digital', 'Inteligencia emocional', 'Accountability',
+                'Administración de negocios', 'Agilidad', 'Comunicación', 'Cumplimiento (Compliance)', 'Data skills', 'Desarrollo web',
+                'Digital skills', 'e-Commerce', 'Emprendimiento', 'Experiencia del cliente', 'Gestión de procesos y operaciones', 'Gestión de proyectos',
+                'Gestión de recursos tecnológicos', 'Gestión del cambio', 'Gestión del riesgo', 'Gestión financiera', 'Herramientas tecnológicas',
+                'Inglés', 'Innovación', 'Lenguajes de Programación', 'Marketing', 'Negociación', 'People management', 'Productividad',
+                'Resolución de problemas', 'Trabajo en equipo', 'Ventas', 'Wellness'
+            ].map(function(c) { return { value: c, text: c }; });
+            createInput({
+                containerId: 'competencia-select-container',
+                type: 'select',
+                label: 'Competencia',
+                placeholder: 'Seleccionar...',
+                selectOptions: competenciaOptions,
+                value: 'Inteligencia emocional',
+                size: 'sm',
+                onChange: function(val) {
+                    currentCardData.competency = val;
+                    updateCardPreview();
+                }
             });
-            
-            document.getElementById('nivel-select').addEventListener('change', function() {
-                currentCardData.level = this.value;
-                updateCardPreview();
+
+            createInput({
+                containerId: 'nivel-select-container',
+                type: 'select',
+                label: 'Nivel',
+                placeholder: 'Seleccionar...',
+                selectOptions: [{ value: 'Básico', text: 'Básico' }, { value: 'Intermedio', text: 'Intermedio' }, { value: 'Avanzado', text: 'Avanzado' }],
+                value: 'Intermedio',
+                size: 'sm',
+                onChange: function(val) {
+                    currentCardData.level = val;
+                    updateCardPreview();
+                }
             });
-            
-            document.getElementById('idioma-select').addEventListener('change', function() {
-                currentCardData.language = this.value;
-                updateCardPreview();
+
+            createInput({
+                containerId: 'idioma-select-container',
+                type: 'select',
+                label: 'Idioma',
+                placeholder: 'Seleccionar...',
+                selectOptions: [{ value: 'Español', text: 'Español' }, { value: 'Inglés', text: 'Inglés' }, { value: 'Portugués', text: 'Portugués' }],
+                value: 'Español',
+                size: 'sm',
+                onChange: function(val) {
+                    currentCardData.language = val;
+                    updateCardPreview();
+                }
             });
         }
         

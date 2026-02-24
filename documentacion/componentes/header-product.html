@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="../../components/dropdown-menu.css">
     <link rel="stylesheet" href="../../components/ia-button.css">
     <link rel="stylesheet" href="../../components/tab.css">
+    <link rel="stylesheet" href="../../components/radio-button.css">
     <link rel="stylesheet" href="../../components/toast.css">
     <style>
         /* Switch compacto */
@@ -191,8 +192,16 @@
                             <div class="control-group">
                                 <span class="control-group-label">Variante</span>
                                 <div class="variant-radios">
-                                    <label><input type="radio" name="header-variant" value="default" checked> Default (título + back + info + acciones + breadcrumb)</label>
-                                    <label><input type="radio" name="header-variant" value="tabs-with-actions"> Tabs + acciones (sin breadcrumb)</label>
+                                    <label class="ubits-radio ubits-radio--sm">
+                                        <input type="radio" class="ubits-radio__input" name="header-variant" value="default" checked>
+                                        <span class="ubits-radio__circle"></span>
+                                        <span class="ubits-radio__label">Default (título + back + info + acciones + breadcrumb)</span>
+                                    </label>
+                                    <label class="ubits-radio ubits-radio--sm">
+                                        <input type="radio" class="ubits-radio__input" name="header-variant" value="tabs-with-actions">
+                                        <span class="ubits-radio__circle"></span>
+                                        <span class="ubits-radio__label">Tabs + acciones (sin breadcrumb)</span>
+                                    </label>
                                 </div>
                             </div>
                             

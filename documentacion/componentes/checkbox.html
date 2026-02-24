@@ -89,7 +89,7 @@
                                 <div id="checkbox-preview-container">
                                     <label id="checkbox-preview" class="ubits-checkbox ubits-checkbox--md">
                                         <input type="checkbox" class="ubits-checkbox__input" id="checkbox-preview-input">
-                                        <span class="ubits-checkbox__box"><i class="fas fa-check"></i></span>
+                                        <span class="ubits-checkbox__box"><i class="fas fa-check"></i><i class="fas fa-minus"></i></span>
                                         <span class="ubits-checkbox__label">Opción de ejemplo</span>
                                     </label>
                                 </div>
@@ -106,7 +106,7 @@
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-check-square"></i></div>
                                     <div class="ubits-body-sm-bold">Estados</div>
-                                    <div class="ubits-body-sm-regular">Sin marcar, marcado y deshabilitado</div>
+                                    <div class="ubits-body-sm-regular">Sin marcar, marcado, parcial (tabla) y deshabilitado</div>
                                 </div>
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-expand-arrows-alt"></i></div>
@@ -318,6 +318,7 @@
             if (checkboxPreviewState.shape === 'round') el.classList.add('ubits-checkbox--round');
             else el.classList.remove('ubits-checkbox--round');
             input.checked = (checkboxPreviewState.state === 'checked' || checkboxPreviewState.state === 'checked-disabled');
+            input.indeterminate = (checkboxPreviewState.state === 'indeterminate');
             input.disabled = (checkboxPreviewState.state === 'disabled' || checkboxPreviewState.state === 'checked-disabled');
         }
 
@@ -344,6 +345,7 @@
                     selectOptions: [
                         { value: 'unchecked', text: 'Sin marcar' },
                         { value: 'checked', text: 'Marcado' },
+                        { value: 'indeterminate', text: 'Parcial (tabla)' },
                         { value: 'disabled', text: 'Deshabilitado' },
                         { value: 'checked-disabled', text: 'Marcado + disabled' }
                     ],

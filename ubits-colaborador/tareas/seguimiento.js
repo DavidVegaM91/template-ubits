@@ -20,18 +20,18 @@
             '<span class="filtros-select-trigger-text" id="filtros-estado-trigger-text">Seleccionar estado</span><i class="far fa-chevron-down filtros-select-chevron"></i></div>' +
             '<div class="filtros-select-dropdown" id="filtros-estado-dropdown" role="listbox" aria-hidden="true">' +
             '<div class="filtros-checkbox-list" id="filtros-estado">' +
-            '<label class="filtros-checkbox-option"><input type="checkbox" value="Por hacer"><span class="ubits-body-sm-regular">Por hacer</span></label>' +
-            '<label class="filtros-checkbox-option"><input type="checkbox" value="Vencida"><span class="ubits-body-sm-regular">Vencida</span></label>' +
-            '<label class="filtros-checkbox-option"><input type="checkbox" value="Finalizada"><span class="ubits-body-sm-regular">Finalizada</span></label></div></div></div>' +
+            '<label class="ubits-checkbox ubits-checkbox--sm filtros-checkbox-option"><input type="checkbox" class="ubits-checkbox__input" value="Por hacer"><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label">Por hacer</span></label>' +
+            '<label class="ubits-checkbox ubits-checkbox--sm filtros-checkbox-option"><input type="checkbox" class="ubits-checkbox__input" value="Vencida"><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label">Vencida</span></label>' +
+            '<label class="ubits-checkbox ubits-checkbox--sm filtros-checkbox-option"><input type="checkbox" class="ubits-checkbox__input" value="Finalizada"><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label">Finalizada</span></label></div></div></div>' +
             '<div class="filtros-select-wrap" id="filtros-prioridad-wrap" data-filter-type="prioridad">' +
             '<label class="ubits-body-sm-bold filtros-label" for="filtros-prioridad-trigger">Prioridad</label>' +
             '<div class="filtros-select-trigger ubits-input ubits-input--md" id="filtros-prioridad-trigger" role="combobox" aria-expanded="false" aria-haspopup="listbox" aria-controls="filtros-prioridad-dropdown" tabindex="0">' +
             '<span class="filtros-select-trigger-text" id="filtros-prioridad-trigger-text">Seleccionar prioridad</span><i class="far fa-chevron-down filtros-select-chevron"></i></div>' +
             '<div class="filtros-select-dropdown" id="filtros-prioridad-dropdown" role="listbox" aria-hidden="true">' +
             '<div class="filtros-checkbox-list" id="filtros-prioridad">' +
-            '<label class="filtros-checkbox-option"><input type="checkbox" value="Alta"><span class="ubits-body-sm-regular">Alta</span></label>' +
-            '<label class="filtros-checkbox-option"><input type="checkbox" value="Media"><span class="ubits-body-sm-regular">Media</span></label>' +
-            '<label class="filtros-checkbox-option"><input type="checkbox" value="Baja"><span class="ubits-body-sm-regular">Baja</span></label></div></div></div></div>';
+            '<label class="ubits-checkbox ubits-checkbox--sm filtros-checkbox-option"><input type="checkbox" class="ubits-checkbox__input" value="Alta"><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label">Alta</span></label>' +
+            '<label class="ubits-checkbox ubits-checkbox--sm filtros-checkbox-option"><input type="checkbox" class="ubits-checkbox__input" value="Media"><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label">Media</span></label>' +
+            '<label class="ubits-checkbox ubits-checkbox--sm filtros-checkbox-option"><input type="checkbox" class="ubits-checkbox__input" value="Baja"><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label">Baja</span></label></div></div></div></div>';
         var filtrosFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="filtros-limpiar">Limpiar filtros</button>' +
             '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="filtros-aplicar">Aplicar filtros</button>';
         if (typeof getDrawerHtml === 'function') {
@@ -277,7 +277,7 @@
             fechaFinalizacion: 'Fecha de finalización'
         };
         const labels = activeTab === 'planes' ? labelsPlanes : labelsTareas;
-        let html = '<th class="ubits-table__th--checkbox" data-col="checkbox" data-tooltip="Seleccionar todo" data-tooltip-delay="1000"><input type="checkbox" id="seguimiento-select-all" aria-label="Seleccionar todo"></th>';
+        let html = '<th class="ubits-table__th--checkbox" data-col="checkbox" data-tooltip="Seleccionar todo" data-tooltip-delay="1000"><label class="ubits-checkbox ubits-checkbox--sm" style="display:inline-flex;"><input type="checkbox" class="ubits-checkbox__input" id="seguimiento-select-all" aria-label="Seleccionar todo"><span class="ubits-checkbox__box"><i class="fas fa-check"></i><i class="fas fa-minus"></i></span><span class="ubits-checkbox__label" aria-hidden="true">&nbsp;</span></label></th>';
         cols.forEach(col => {
             const label = labels[col] || col;
             const visible = columnVisibility[col] !== false;
@@ -868,7 +868,7 @@
         tbody.addEventListener('click', function (ev) {
             const tr = ev.target.closest('tr');
             if (!tr || tr.closest('thead')) return;
-            if (ev.target.closest('.seguimiento-row-check')) return;
+            if (ev.target.closest('td.ubits-table__td--checkbox')) return;
             if (ev.target.closest('.ubits-profile-list__count')) return;
             const id = tr.getAttribute('data-id');
             if (id == null) return;
@@ -1154,7 +1154,7 @@
                 comentarios: `<td data-col="comentarios"><span class="ubits-body-sm-regular">${comentariosText}</span></td>`
             };
             const rowTooltip = selectedIds.has(row.id) ? 'Deseleccionar' : 'Seleccionar';
-            const cells = ['<td class="ubits-table__td--checkbox" data-col="checkbox" data-tooltip="' + rowTooltip + '" data-tooltip-delay="1000"><input type="checkbox" class="seguimiento-row-check" data-id="' + row.id + '"' + sel + '></td>'].concat(
+            const cells = ['<td class="ubits-table__td--checkbox" data-col="checkbox" data-tooltip="' + rowTooltip + '" data-tooltip-delay="1000"><label class="ubits-checkbox ubits-checkbox--sm" style="display:inline-flex;"><input type="checkbox" class="ubits-checkbox__input seguimiento-row-check" data-id="' + row.id + '"' + sel + '><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label" aria-hidden="true">&nbsp;</span></label></td>'].concat(
                 columnIds.map(col => cellByCol[col] || `<td data-col="${col}"></td>`)
             );
             const cols = ['_checkbox'].concat(columnIds);
@@ -1741,7 +1741,7 @@
 
         list.innerHTML = columnIds.map(col => {
             const checked = columnVisibility[col] !== false ? ' checked' : '';
-            return `<label class="columns-menu-option"><input type="checkbox" data-col="${col}"${checked}><span class="ubits-body-sm-regular">${labels[col] || col}</span></label>`;
+            return `<label class="ubits-checkbox ubits-checkbox--sm columns-menu-option"><input type="checkbox" class="ubits-checkbox__input" data-col="${col}"${checked}><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label">${labels[col] || col}</span></label>`;
         }).join('');
 
         list.querySelectorAll('input[data-col]').forEach(cb => {
@@ -3161,7 +3161,22 @@
     function initCheckboxes() {
         const selectAll = document.getElementById('seguimiento-select-all');
         if (selectAll) {
+            selectAll.addEventListener('click', function () {
+                if (this.indeterminate) this.dataset.clickFromIndeterminate = '1';
+                else delete this.dataset.clickFromIndeterminate;
+            });
             selectAll.addEventListener('change', function () {
+                if (this.dataset.clickFromIndeterminate) {
+                    this.checked = false;
+                    delete this.dataset.clickFromIndeterminate;
+                    document.querySelectorAll('#seguimiento-tbody .seguimiento-row-check').forEach(cb => {
+                        cb.checked = false;
+                        selectedIds.delete(Number(cb.dataset.id));
+                    });
+                    toggleActionBar();
+                    updateSelectAll();
+                    return;
+                }
                 const check = this.checked;
                 const data = getDisplayData();
                 const pageData = data.slice(0, displayLimit);

@@ -159,13 +159,7 @@
     text-align: center;
 }
 
-.ubits-dropdown-menu__option-left input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-    margin: 0;
-    cursor: pointer;
-    accent-color: var(--ubits-accent-brand);
-}
+/* Checkbox en opciones: se usa componente ubits-checkbox (checkbox.css). No estilizar input nativo aquí. */
 
 /* Elementos a la derecha (icono, switch/toggle, etc.) */
 .ubits-dropdown-menu__option-right {

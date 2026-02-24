@@ -85,9 +85,8 @@
             } else if (opt.leftIcon) {
                 left = '<span class="ubits-dropdown-menu__option-left"><i class="far fa-' + escapeHtml(opt.leftIcon) + '"></i></span>';
             } else if (opt.checkbox) {
-                checkboxId = overlayId + '-opt-' + index;
                 var checked = opt.selected ? ' checked' : '';
-                left = '<span class="ubits-dropdown-menu__option-left"><input type="checkbox" id="' + escapeHtml(checkboxId) + '" data-value="' + value + '"' + checked + '></span>';
+                left = '<span class="ubits-dropdown-menu__option-left"><label class="ubits-checkbox ubits-checkbox--sm"><input type="checkbox" class="ubits-checkbox__input" data-value="' + value + '"' + checked + '><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label">' + text + '</span></label></span>';
             }
             var right = '';
             if (opt.rightIcon) {
@@ -96,9 +95,9 @@
                 var checkedSwitch = opt.selected ? ' checked' : '';
                 right = '<span class="ubits-dropdown-menu__option-right"><input type="checkbox" role="switch" data-value="' + value + '"' + checkedSwitch + '></span>';
             }
-            var inner = left + '<span class="ubits-dropdown-menu__option-text">' + text + '</span>' + right;
-            if (opt.checkbox && checkboxId) {
-                return '<label class="ubits-dropdown-menu__option' + selectedClass + '" for="' + escapeHtml(checkboxId) + '" data-value="' + value + '">' + inner + '</label>';
+            var inner = left + (opt.checkbox ? '' : '<span class="ubits-dropdown-menu__option-text">' + text + '</span>') + right;
+            if (opt.checkbox) {
+                return '<div class="ubits-dropdown-menu__option' + selectedClass + '" data-value="' + value + '">' + left + '</div>';
             }
             return '<button type="button" class="ubits-dropdown-menu__option' + selectedClass + '" data-value="' + value + '">' + inner + '</button>';
         }).join('');

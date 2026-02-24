@@ -882,7 +882,7 @@ function initTareasView() {
             if (e.target.closest('.tarea-done-radio')) {
                 e.preventDefault();
                 const control = e.target.closest('.tarea-done-radio');
-                const input = control.querySelector('input.ubits-radio__input');
+                const input = control.querySelector('input.ubits-checkbox__input');
                 if (input && input.dataset.tareaId) {
                     const tareaId = parseInt(input.dataset.tareaId);
                     const overdueContent = document.getElementById('overdue-content');
@@ -1042,7 +1042,7 @@ function initTareasView() {
             // Botones de acción
             if (e.target.closest('.tarea-action-btn--add-plan')) {
                 const tareaItem = e.target.closest('.tarea-item');
-                const tareaId = parseInt(tareaItem.querySelector('input.ubits-radio__input')?.dataset.tareaId);
+                const tareaId = parseInt(tareaItem.querySelector('input.ubits-checkbox__input')?.dataset.tareaId);
                 if (tareaId) {
                     estadoTareas.moveTaskId = estadoTareas.moveTaskId === tareaId ? null : tareaId;
                     renderAllTasks();
@@ -1050,7 +1050,7 @@ function initTareasView() {
             }
             if (e.target.closest('.tarea-action-btn--delete')) {
                 const tareaItem = e.target.closest('.tarea-item');
-                const tareaId = parseInt(tareaItem.querySelector('input.ubits-radio__input')?.dataset.tareaId, 10);
+                const tareaId = parseInt(tareaItem.querySelector('input.ubits-checkbox__input')?.dataset.tareaId, 10);
                 if (!isNaN(tareaId)) {
                     estadoTareas.taskIdToDelete = tareaId;
                     if (typeof showModal === 'function') {

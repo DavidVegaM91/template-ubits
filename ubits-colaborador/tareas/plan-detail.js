@@ -202,7 +202,7 @@ function handlePlanDetailListClick(e) {
     if (e.target.closest('.tarea-done-radio')) {
         e.preventDefault();
         const control = e.target.closest('.tarea-done-radio');
-        const input = control && control.querySelector('input.ubits-radio__input');
+        const input = control && control.querySelector('input.ubits-checkbox__input');
         if (input && input.dataset.tareaId) {
             const id = input.dataset.tareaId;
             const t = tasks.find(x => String(x.id) === String(id));

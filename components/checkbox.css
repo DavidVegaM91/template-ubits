@@ -37,6 +37,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    position: relative;
     background: var(--ubits-bg-1);
     border: 2px solid var(--ubits-border-1);
     border-radius: var(--border-radius-xs, 4px);
@@ -46,13 +47,28 @@
 /* Icono check: NUNCA poner clase propia en el <i>; solo clases FontAwesome (fas fa-check = solid/bold).
    Estilo por selector .ubits-checkbox__box i para no romper el render de FontAwesome. */
 .ubits-checkbox__box i {
-    color: var(--ubits-btn-primary-fg);
+    color: var(--ubits-fg-bold);
     opacity: 0;
     transition: opacity 0.2s ease;
     pointer-events: none;
 }
 
-.ubits-checkbox__input:checked + .ubits-checkbox__box i {
+.ubits-checkbox__input:checked + .ubits-checkbox__box i.fa-check {
+    opacity: 1;
+}
+
+/* Icono minus: superpuesto al check para estado indeterminado (cabeceras de tabla) */
+.ubits-checkbox__box i.fa-minus {
+    opacity: 0;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+.ubits-checkbox__input:indeterminate + .ubits-checkbox__box i.fa-check {
+    opacity: 0;
+}
+.ubits-checkbox__input:indeterminate + .ubits-checkbox__box i.fa-minus {
     opacity: 1;
 }
 
@@ -103,19 +119,31 @@
 }
 
 /* ========================================
-   ESTADO: CHECKED
+   ESTADO: CHECKED E INDETERMINATE
    ======================================== */
 
-.ubits-checkbox__input:checked + .ubits-checkbox__box {
-    background: var(--ubits-accent-brand);
-    border-color: var(--ubits-accent-brand);
+.ubits-checkbox__input:checked + .ubits-checkbox__box,
+.ubits-checkbox__input:indeterminate + .ubits-checkbox__box {
+    background: var(--ubits-bg-blue-bold-default);
+    border-color: var(--ubits-bg-blue-bold-default);
+}
+
+.ubits-checkbox__input:checked + .ubits-checkbox__box i,
+.ubits-checkbox__input:indeterminate + .ubits-checkbox__box i {
+    color: var(--ubits-fg-bold);
+}
+
+/* Dentro de dropdown (y otros contextos con color heredado): forzar icono blanco cuando está activo */
+.ubits-dropdown-menu__option-left .ubits-checkbox__input:checked + .ubits-checkbox__box i,
+.ubits-dropdown-menu__option-left .ubits-checkbox__input:indeterminate + .ubits-checkbox__box i {
+    color: var(--ubits-fg-bold);
 }
 
 /* ========================================
    ESTADO: HOVER (unchecked)
    ======================================== */
 
-.ubits-checkbox:hover .ubits-checkbox__input:not(:checked) + .ubits-checkbox__box {
+.ubits-checkbox:hover .ubits-checkbox__input:not(:checked):not(:indeterminate) + .ubits-checkbox__box {
     border-color: var(--ubits-accent-brand);
     box-shadow: 0 0 0 2px var(--ubits-button-focus-ring);
 }
@@ -134,7 +162,9 @@
 }
 
 .ubits-checkbox:hover .ubits-checkbox__input:checked + .ubits-checkbox__box,
-.ubits-checkbox__input:focus-visible:checked + .ubits-checkbox__box {
+.ubits-checkbox:hover .ubits-checkbox__input:indeterminate + .ubits-checkbox__box,
+.ubits-checkbox__input:focus-visible:checked + .ubits-checkbox__box,
+.ubits-checkbox__input:focus-visible:indeterminate + .ubits-checkbox__box {
     box-shadow: 0 0 0 2px var(--ubits-button-focus-ring);
 }
 
@@ -153,13 +183,15 @@
     box-shadow: none;
 }
 
-.ubits-checkbox .ubits-checkbox__input:disabled:checked + .ubits-checkbox__box {
-    background: var(--ubits-fg-1-medium);
-    border-color: var(--ubits-fg-1-medium);
+.ubits-checkbox .ubits-checkbox__input:disabled:checked + .ubits-checkbox__box,
+.ubits-checkbox .ubits-checkbox__input:disabled:indeterminate + .ubits-checkbox__box {
+    background: var(--ubits-bg-disabled);
+    border-color: var(--ubits-border-disabled);
 }
 
-.ubits-checkbox .ubits-checkbox__input:disabled:checked + .ubits-checkbox__box i {
-    color: var(--ubits-bg-1);
+.ubits-checkbox .ubits-checkbox__input:disabled:checked + .ubits-checkbox__box i,
+.ubits-checkbox .ubits-checkbox__input:disabled:indeterminate + .ubits-checkbox__box i {
+    color: var(--ubits-fg-on-disabled);
 }
 
 .ubits-checkbox .ubits-checkbox__input:disabled:hover + .ubits-checkbox__box {
