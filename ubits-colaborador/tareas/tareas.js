@@ -2010,28 +2010,32 @@ function renderTaskDetailModal() {
     }
 }
 
-// Inicializar editingTask cuando se abre el detalle
+// Abrir detalle de tarea en la página task-detail.html (nuevo flujo; antes abría el panel)
 function handleTaskClick(tareaId) {
-    let tarea = tareasEjemplo.vencidas.find(t => taskIdMatches(t, tareaId));
-    if (!tarea) {
-        for (const fechaKey in tareasEjemplo.porDia) {
-            tarea = tareasEjemplo.porDia[fechaKey].find(t => taskIdMatches(t, tareaId));
-            if (tarea) break;
+    if (tareaId == null || tareaId === '') return;
+    // Guardar datos básicos de la tarea en sessionStorage para que task-detail pueda
+    // mostrar datos reales incluso si el ID es sintético (vista líder: rango 90000+).
+    try {
+        const { tarea } = findTaskById(tareaId);
+        if (tarea) {
+            sessionStorage.setItem('task_detail_fallback', JSON.stringify({
+                id: tarea.id,
+                name: tarea.name,
+                description: tarea.description || null,
+                status: tarea.status,
+                priority: tarea.priority,
+                endDate: tarea.endDate,
+                assignee_name: tarea.assignee_name || null,
+                assignee_avatar_url: tarea.assignee_avatar_url || null,
+                assignee_email: tarea.assignee_email || null,
+                created_by: tarea.created_by || null,
+                created_by_avatar_url: tarea.created_by_avatar_url || null,
+                planId: tarea.planId || null,
+                planNombre: tarea.planNombre || null
+            }));
         }
-    }
-
-    if (tarea) {
-        estadoTareas.selectedTask = tarea;
-        estadoTareas.showTaskDetail = true;
-        estadoTareas.editingTask = {
-            name: tarea.name || '',
-            description: tarea.description || '',
-            endDate: tarea.endDate || '',
-            priority: tarea.priority || 'media',
-            role: tarea.role || 'colaborador'
-        };
-        renderTaskDetailModal();
-    }
+    } catch (e) { /* sessionStorage no disponible (ej. file://) */ }
+    window.location.href = 'task-detail.html?id=' + encodeURIComponent(tareaId);
 }
 
 // Exportar función de inicialización

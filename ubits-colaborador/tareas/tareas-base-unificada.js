@@ -971,71 +971,94 @@
         const jefa = (GERENTE_EJEMPLO && nombreUsuarioActual !== GERENTE_EJEMPLO.nombre) ? GERENTE_EJEMPLO : null;
 
         if (esVistaLiderPorDia) {
-            const vencidas = (data.individuales || []).filter(function (t) { return t.status === 'Vencido'; }).map(function (t) { return Object.assign({}, t); });
+            // Vencidas: las propias de María (individuales vencidas)
+            const vencidas = (data.individuales || [])
+                .filter(function (t) { return t.status === 'Vencido'; })
+                .map(function (t) { return Object.assign({}, t); });
+
             const weekdays = getWeekdaysFromTodayTo(FIN_RANGO);
             const porDia = {};
-            const titulos = TITULOS_TAREAS;
-            const tasksPerDay = reportesDirectos.length + 1 + (jefa ? 1 : 0);
-            weekdays.forEach(function (dateStr, dayIdx) {
-                const list = [];
-                const dayIdBase = 90000 + dayIdx * (tasksPerDay + 5);
-                reportesDirectos.forEach(function (emp, idx) {
-                    const username = emp.username || generarUsername(emp.nombre);
-                    const titulo = titulos[(dayIdBase + idx) % titulos.length];
-                    list.push({
-                        id: dayIdBase + idx,
-                        name: titulo,
-                        done: false,
-                        status: 'Activo',
-                        endDate: dateStr,
-                        priority: 'media',
-                        assignee_email: username,
-                        assignee_name: emp.nombre || null,
-                        assignee_avatar_url: (emp.avatar && String(emp.avatar).trim()) ? emp.avatar : null,
-                        etiqueta: null,
-                        planId: null,
-                        planNombre: null,
-                        created_by: nombreUsuarioActual,
-                        created_by_avatar_url: (USUARIO_ACTUAL.avatar && String(USUARIO_ACTUAL.avatar).trim()) ? USUARIO_ACTUAL.avatar : null
-                    });
-                });
-                const idSelf = dayIdBase + reportesDirectos.length;
-                list.push({
-                    id: idSelf,
-                    name: titulos[idSelf % titulos.length],
-                    done: false,
-                    status: 'Activo',
-                    endDate: dateStr,
-                    priority: 'media',
-                    assignee_email: USUARIO_ACTUAL.username || null,
-                    assignee_name: nombreUsuarioActual,
-                    assignee_avatar_url: (USUARIO_ACTUAL.avatar && String(USUARIO_ACTUAL.avatar).trim()) ? USUARIO_ACTUAL.avatar : null,
-                    etiqueta: null,
-                    planId: null,
-                    planNombre: null,
-                    created_by: nombreUsuarioActual,
-                    created_by_avatar_url: (USUARIO_ACTUAL.avatar && String(USUARIO_ACTUAL.avatar).trim()) ? USUARIO_ACTUAL.avatar : null
-                });
-                if (jefa) {
-                    list.push({
-                        id: dayIdBase + reportesDirectos.length + 1,
-                        name: titulos[(dayIdBase + 2) % titulos.length],
-                        done: false,
-                        status: 'Activo',
-                        endDate: dateStr,
-                        priority: 'media',
-                        assignee_email: USUARIO_ACTUAL.username || null,
-                        assignee_name: nombreUsuarioActual,
-                        assignee_avatar_url: (USUARIO_ACTUAL.avatar && String(USUARIO_ACTUAL.avatar).trim()) ? USUARIO_ACTUAL.avatar : null,
-                        etiqueta: null,
-                        planId: null,
-                        planNombre: null,
-                        created_by: jefa.nombre,
-                        created_by_avatar_url: (jefa.avatar && String(jefa.avatar).trim()) ? jefa.avatar : null
-                    });
-                }
-                porDia[dateStr] = list;
+
+            // Índice por empleadoId → array de todas sus tareas (individuales + grupales)
+            // para poder buscar tareas reales por fecha.
+            const tareasPorEmpleado = {};
+            reportesDirectos.forEach(function (emp) {
+                const empId = emp.id || emp.idColaborador;
+                const empData = tareasPorEmpleadoParaVistaTareas[empId] || { individuales: [], grupales: [] };
+                tareasPorEmpleado[empId] = (empData.grupales || []).concat(empData.individuales || []);
             });
+            // Auto: tareas propias de María
+            tareasPorEmpleado['__self__'] = (data.grupales || []).concat(data.individuales || []);
+
+            /**
+             * Busca la tarea de un empleado para un día dado.
+             * Orden de preferencia: exacta en endDate → más cercana por fecha.
+             */
+            function pickTaskForDay(empId, dateStr) {
+                const lista = tareasPorEmpleado[empId] || [];
+                /**
+                 * Normaliza done para que sea siempre booleano coherente con status.
+                 * Si esReutilizada=true (tarea de otro día), la mostramos como Activo
+                 * para que no aparezca "Finalizada" en un día diferente al original.
+                 */
+                function normalizar(t, overrides) {
+                    var esReutilizada = overrides && overrides.endDate && overrides.endDate !== t.endDate;
+                    var copia = Object.assign({}, t, overrides);
+                    if (esReutilizada) {
+                        // Al reutilizar en otro día, no tiene sentido mostrarla finalizada
+                        copia.done = false;
+                        copia.status = 'Activo';
+                    } else {
+                        copia.done = (copia.status === 'Finalizado') ? true : !!copia.done;
+                    }
+                    return copia;
+                }
+                // 1. Exacta
+                const exacta = lista.find(function (t) { return t.endDate === dateStr; });
+                if (exacta) return normalizar(exacta);
+                // 2. Más cercana (por diferencia absoluta de días)
+                if (!lista.length) return null;
+                var best = null, bestDiff = Infinity;
+                const ts = new Date(dateStr).getTime();
+                lista.forEach(function (t) {
+                    if (!t.endDate) return;
+                    var diff = Math.abs(new Date(t.endDate).getTime() - ts);
+                    if (diff < bestDiff) { bestDiff = diff; best = t; }
+                });
+                return best ? normalizar(best, { endDate: dateStr }) : null;
+            }
+
+            weekdays.forEach(function (dateStr) {
+                const list = [];
+
+                // 1. Una tarea real por cada reporte directo
+                reportesDirectos.forEach(function (emp) {
+                    const empId = emp.id || emp.idColaborador;
+                    const tarea = pickTaskForDay(empId, dateStr);
+                    if (tarea) {
+                        list.push(tarea);
+                    }
+                });
+
+                // 2. Una tarea propia de María para ese día
+                const tareaPropia = pickTaskForDay('__self__', dateStr);
+                if (tareaPropia) {
+                    list.push(tareaPropia);
+                }
+
+                // 3. Tarea de la jefa (Patricia): buscamos grupales donde created_by = jefa.nombre
+                if (jefa) {
+                    const tareasJefa = (data.grupales || []).filter(function (t) {
+                        return t.created_by && t.created_by === jefa.nombre;
+                    });
+                    const exactaJefa = tareasJefa.find(function (t) { return t.endDate === dateStr; });
+                    const tareaJefa = exactaJefa || (tareasJefa.length ? Object.assign({}, tareasJefa[0], { endDate: dateStr }) : null);
+                    if (tareaJefa) list.push(Object.assign({}, tareaJefa));
+                }
+
+                if (list.length) porDia[dateStr] = list;
+            });
+
             return { vencidas: vencidas, porDia: porDia };
         }
 

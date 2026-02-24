@@ -56,7 +56,7 @@ function renderTaskStrip(tarea, opts) {
     }
 
     const idSafe = escapeHtml(String(tarea.id));
-    const classes = 'tarea-item' + (tarea.done ? ' tarea-item--completed' : '') + (esVencidaReal ? ' tarea-item--overdue' : '');
+    const classes = 'tarea-item' + (esFinalizada ? ' tarea-item--completed' : '') + (esVencidaReal ? ' tarea-item--overdue' : '');
     const etiquetaBlock = tarea.etiqueta
         ? '<div class="tarea-etiqueta"><span class="tarea-etiqueta-text">' + escapeHtml(tarea.etiqueta) + '</span></div>'
         : '';
@@ -66,7 +66,7 @@ function renderTaskStrip(tarea, opts) {
         '<div class="tarea-item__main">' +
         '<span class="tarea-item__radio">' +
         '<label class="ubits-radio ubits-radio--sm tarea-done-radio" data-tarea-id="' + idSafe + '" role="button" tabindex="0">' +
-        '<input type="radio" class="ubits-radio__input" name="tarea-done-' + idSafe + '" value="1" ' + (tarea.done ? 'checked' : '') + ' data-tarea-id="' + idSafe + '">' +
+        '<input type="checkbox" class="ubits-radio__input" name="tarea-done-' + idSafe + '" value="1" ' + (esFinalizada ? 'checked' : '') + ' data-tarea-id="' + idSafe + '">' +
         '<span class="ubits-radio__circle"></span>' +
         '<span class="ubits-radio__label" aria-hidden="true">&nbsp;</span>' +
         '</label>' +

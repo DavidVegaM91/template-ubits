@@ -624,11 +624,73 @@
         }
     }
 
+    function getTaskIdFromUrl() {
+        var params = new URLSearchParams(window.location.search || '');
+        var id = params.get('id');
+        if (id == null || id === '') return null;
+        var num = Number(id);
+        return isNaN(num) ? id : num;
+    }
+
     function initTaskDetailPage() {
-        estado.task = getMockTask();
-        estado.subtasks = getMockSubtasks();
-        estado.comments = getMockComments();
-        estado.activities = getMockActivities();
+        var taskId = getTaskIdFromUrl();
+        var detail = null;
+
+        /* ── Nivel 1: BD unificada (IDs reales generados por generarDatos) ── */
+        if (taskId != null && typeof window.TAREAS_PLANES_DB !== 'undefined' && typeof window.TAREAS_PLANES_DB.getTaskDetail === 'function') {
+            detail = window.TAREAS_PLANES_DB.getTaskDetail(taskId);
+        }
+
+        /* ── Nivel 2: sessionStorage fallback (IDs sintéticos: vista líder 90000+) ── */
+        if (!detail && taskId != null) {
+            try {
+                var raw = sessionStorage.getItem('task_detail_fallback');
+                if (raw) {
+                    var fb = JSON.parse(raw);
+                    /* Solo usar el fallback si coincide con el id de la URL */
+                    if (fb && String(fb.id) === String(taskId)) {
+                        /* Limpiar para que no se reutilice en otra navegación */
+                        sessionStorage.removeItem('task_detail_fallback');
+                        /* Construir un detalle mínimo con los datos de la tirilla */
+                        detail = {
+                            task: {
+                                id: fb.id,
+                                name: fb.name || 'Tarea sin título',
+                                description: fb.description || null,
+                                status: fb.status || 'Activo',
+                                done: fb.status === 'Finalizado',
+                                priority: fb.priority || 'media',
+                                endDate: fb.endDate || null,
+                                assignee_name: fb.assignee_name || null,
+                                assignee_avatar_url: fb.assignee_avatar_url || null,
+                                assignee_email: fb.assignee_email || null,
+                                created_by: fb.created_by || null,
+                                created_by_avatar_url: fb.created_by_avatar_url || null,
+                                planId: fb.planId || null,
+                                planNombre: fb.planNombre || null,
+                                created_at: new Date().toISOString()
+                            },
+                            subtasks: [],
+                            comments: [],
+                            activities: []
+                        };
+                    }
+                }
+            } catch (e) { /* sessionStorage no disponible o JSON inválido */ }
+        }
+
+        /* ── Nivel 3: mocks (cuando no hay id en la URL o no hay datos) ── */
+        if (detail && detail.task) {
+            estado.task = detail.task;
+            estado.subtasks = detail.subtasks || [];
+            estado.comments = detail.comments || [];
+            estado.activities = detail.activities || [];
+        } else {
+            estado.task = getMockTask();
+            estado.subtasks = getMockSubtasks();
+            estado.comments = getMockComments();
+            estado.activities = getMockActivities();
+        }
 
         if (typeof loadHeaderProduct === 'function') {
             loadHeaderProduct('task-detail-header-container', {
