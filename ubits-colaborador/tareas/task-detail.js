@@ -234,9 +234,11 @@
                         estado.task.endDate = ymd;
                         if (ymd && ymd < today && estado.task.status === 'Activo') {
                             estado.task.status = 'Vencido';
+                            pushActivity('fa-circle-dot', currentUserName, 'cambió el estado a Vencida.');
                         }
                         if (ymd && ymd >= today && estado.task.status === 'Vencido') {
                             estado.task.status = 'Activo';
+                            pushActivity('fa-circle-dot', currentUserName, 'cambió el estado a Por hacer.');
                         }
                     }
                     pushActivity('fa-calendar-pen', currentUserName, 'cambió la fecha límite al ' + dateKeyLabel(ymd) + '.');
