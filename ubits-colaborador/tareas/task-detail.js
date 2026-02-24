@@ -468,11 +468,22 @@
     function renderCommentsBlock() {
         var comments = estado.comments;
         var activities = estado.activities;
-        var total = comments.length;
+        var task = estado.task;
+        /* Cuando creador y asignado son la misma persona, no mostrar sus comentarios (evitar "hablarse a sí mismo") */
+        var isCreatorSameAsAssignee = task && task.created_by && task.assignee_name &&
+            String(task.created_by).trim() === String(task.assignee_name).trim();
+        var commentsToShow = isCreatorSameAsAssignee
+            ? comments.filter(function (c) {
+                var author = String(c.author || '').trim();
+                var creator = String(task.created_by || '').trim();
+                return author !== creator;
+            })
+            : comments;
+        var total = commentsToShow.length;
 
         /* ── Mezclar comentarios y actividades en timeline cronológico único ── */
         var allItems = [];
-        comments.forEach(function (c) {
+        commentsToShow.forEach(function (c) {
             allItems.push({ type: 'comment', time: c.time, data: c });
         });
         activities.forEach(function (a) {

@@ -18,7 +18,8 @@
       - Finalizadas: 70–85%
       - Iniciadas: 10–20%
       - Vencidas: 5–15%
-      (función repartoEstados, determinista por seed)
+      (función repartoEstados, determinista por seed).
+      Excepción: si la fecha de la tarea (endDate) es posterior a hoy, solo ~5% Finalizadas y el resto Por hacer (realista para días futuros; el día actual puede usar lógica dinámica por hora en tareas.html).
 
    4. Distribución de estados en PLANES (asignada por seed, no derivada de tareas):
       - Finalizados: 70–85%
@@ -525,6 +526,13 @@
                     if (day > maxDay) day = maxDay; // por si toWeekdayInMonth devolvió un día mayor en el mes
                     let endDateStr = `${year}-${pad(month)}-${pad(day)}`;
                     if (endDateStr > FIN_RANGO) { endDateStr = FIN_RANGO; }
+                    /* Días futuros: solo ~5% finalizadas (realista); pasado/hoy mantienen la distribución normal */
+                    let estadoFinal = estado;
+                    let doneFinal = done;
+                    if (endDateStr > todayStr) {
+                        estadoFinal = seeder(seed, baseIdx + i + 777) < 0.05 ? 'Finalizada' : 'Por hacer';
+                        doneFinal = estadoFinal === 'Finalizada';
+                    }
                     const [ey, em, ed] = endDateStr.split('-').map(Number);
                     const endDate = new Date(ey, em - 1, ed);
                     const fechaCreacion = new Date(ey, em - 1, Math.max(1, ed - 2));
@@ -535,8 +543,8 @@
                     const tareaVista = {
                         id: idActividad,
                         name: nombreTarea,
-                        done: done,
-                        status: estado === 'Finalizada' ? 'Finalizado' : (estado === 'Vencida' ? 'Vencido' : 'Activo'),
+                        done: doneFinal,
+                        status: estadoFinal === 'Finalizada' ? 'Finalizado' : (estadoFinal === 'Vencida' ? 'Vencido' : 'Activo'),
                         endDate: endDateStr,
                         priority: prioridad.toLowerCase(),
                         assignee_email: username,
@@ -575,9 +583,9 @@
                             areaCreador: areaCreadorTarea,
                             lider: lider,
                             cargo: emp.cargo || '',
-                            estado: estado,
+                            estado: estadoFinal,
                             prioridad: prioridad,
-                            avance: done ? 100 : 0,
+                            avance: doneFinal ? 100 : 0,
                             fechaCreacion: formatearFechaSeguimiento(fechaCreacion),
                             fechaFinalizacion: formatearFechaSeguimiento(endDate),
                             creador: creadorNombre,
@@ -602,7 +610,7 @@
                         fechaCreacion: fechaCreacion,
                         endDateStr: endDateStr,
                         prioridad: prioridad.toLowerCase(),
-                        done: done,
+                        done: doneFinal,
                         estado: tareaVista.status,
                         tieneSubtareas: tieneSubtareas
                     }, seed, baseIdx + i);
@@ -750,9 +758,13 @@
                     const endDateStr = year + '-' + pad(m) + '-' + pad(day);
                     const endDate = new Date(year, m - 1, day);
                     const fechaCreacion = new Date(year, m - 1, Math.max(1, day - 2));
+                    const esFechaFutura = endDateStr > todayStr;
                     asignadosCompania.forEach(function (empAsig, idxCompania) {
                         const asignado = { nombre: empAsig.nombre, avatar: empAsig.avatar || '', username: empAsig.username || generarUsername(empAsig.nombre) };
-                        const estado = seeder(8888, idActividad + idxCompania * 10 + mes) < 0.75 ? 'Finalizada' : (seeder(8888, idActividad + idxCompania * 10 + mes + 1) < 0.5 ? 'Por hacer' : 'Vencida');
+                        let estado = seeder(8888, idActividad + idxCompania * 10 + mes) < 0.75 ? 'Finalizada' : (seeder(8888, idActividad + idxCompania * 10 + mes + 1) < 0.5 ? 'Por hacer' : 'Vencida');
+                        if (esFechaFutura) {
+                            estado = seeder(8888, idActividad + idxCompania * 10 + mes + 555) < 0.05 ? 'Finalizada' : 'Por hacer';
+                        }
                         const done = estado === 'Finalizada';
                         const statusVista = estado === 'Finalizada' ? 'Finalizado' : (estado === 'Vencida' ? 'Vencido' : 'Activo');
                         actividadesSeguimiento.push({
