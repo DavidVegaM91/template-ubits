@@ -199,42 +199,53 @@ Ajustes pendientes sobre los archivos entregados por la PM Mafe para las página
 
 ---
 
-## Cambios 23 de febrero de 2026
+## Cambios 23 - 25 de febrero de 2026
 
 31. [x] **Tabs oficiales en Planes (Individuales / Grupales)**  
     En **planes.html** (contenido generado en **planes.js**) los botones "Individuales" y "Grupales" dentro de las secciones **En curso** y **Finalizado** se reemplazaron por **tabs oficiales UBITS** (componente tab, variante sobre fondo blanco). Contenedor con clase `ubits-tabs-on-bg` (fondo `var(--ubits-bg-2)`, padding 4px, border-radius 8px); botones con `ubits-tab ubits-tab--sm` y `ubits-tab--active` según el filtro activo. Se mantienen `data-filter` y `data-filter-finished` para que los listeners existentes sigan funcionando. En **planes.html** se añadió el enlace a `components/tab.css`; en **planes.css** se definió la clase del wrapper.
-
----
-
-## Cambios 23 de febrero de 2026
 
 32. [x] **Detalle de tarea: feed cronológico de actividad y trazabilidad completa**
 
     En **task-detail** (`task-detail.js`, `task-detail.css`) se implementó un sistema de **registro de actividad automático** que mezcla comentarios y eventos del sistema en un único timeline cronológico con separadores de fecha inteligentes.
 
     **Arquitectura del sistema:**
-    - `pushActivity(icon, text)` — helper global que añade un evento a `estado.activities` con timestamp, icono FA y texto en español.
+    - `pushActivity(icon, author, text)` — helper que añade un evento a `estado.activities` con timestamp, icono FA y texto en español.
     - `toDateKey(isoStr)` — extrae `YYYY-MM-DD` de un ISO string para agrupar por día.
-    - `dateKeyLabel(dateKey)` — retorna `'Hoy'`, `'Ayer'` o `'13 feb 2026'` según la diferencia con hoy (23 feb 2026).
+    - `dateKeyLabel(dateKey)` — retorna `'Hoy'`, `'Ayer'` o `'13 feb 2026'` según la diferencia con hoy.
     - `renderCommentsBlock()` — mezcla `estado.comments` y `estado.activities` en `allItems[]`, los ordena cronológicamente y renderiza con separadores de fecha automáticos al cambiar de día.
 
-    **Eventos registrados automáticamente:**
+    **Eventos que se registran en la columna Comentarios (task-detail.js):**
 
-    | Acción | Icono | Ejemplo de texto |
-    |---|---|---|
-    | Crear tarea *(mock inicial)* | `fa-circle-plus` | `Carlos Ruiz creó la tarea.` |
-    | Asignar tarea *(mock)* | `fa-user-pen` | `Carlos Ruiz asignó la tarea a María González.` |
-    | Cambiar prioridad *(mock)* | `fa-chevrons-up` | `Carlos Ruiz cambió la prioridad a Alta.` |
-    | Cambiar estado *(mock)* | `fa-circle-dot` | `María González cambió el estado a Por hacer.` |
-    | Añadir subtarea individual | `fa-plus-circle` | `María añadió la subtarea "Revisar contratos".` |
-    | Añadir subtareas en lote | `fa-list-plus` | `María añadió 4 subtareas en lote.` |
-    | Completar subtarea | `fa-circle-check` | `María marcó "Revisar contratos" como completada.` |
-    | Reabrir subtarea | `fa-circle-xmark` | `María reabrió la subtarea "Revisar contratos".` |
-    | Cambiar fecha límite *(mock)* | `fa-calendar-pen` | `María cambió la fecha límite al 20 feb 2026.` |
+    | Acción | Icono | Ejemplo de texto | Origen |
+    |--------|-------|------------------|--------|
+    | Cambiar asignado (asignar a persona) | `fa-user-pen` | `[Usuario] asignó la tarea a [nombre].` | Código: clic en “Asignado a” y elegir persona |
+    | Cambiar asignado (quitar asignación) | `fa-user-pen` | `[Usuario] dejó la tarea sin asignar.` | Código: clic en “Asignado a” y elegir “Sin asignar” |
+    | Añadir subtarea individual | `fa-plus-circle` | `[Usuario] añadió la subtarea “[nombre]”.` | Código: botón “Agregar una subtarea” |
+    | Añadir subtareas en lote (varias líneas) | `fa-list-plus` | `[Usuario] añadió N subtareas en lote.` | Código: creación a partir de lista |
+    | Añadir una subtarea desde lista (1 línea) | `fa-plus-circle` | `[Usuario] añadió la subtarea “[texto]”.` | Código: creación a partir de lista con una línea |
+    | Completar subtarea | `fa-circle-check` | `[Usuario] marcó “[nombre]” como completada.` | Código: marcar checkbox en tirilla |
+    | Reabrir subtarea | `fa-circle-xmark` | `[Usuario] reabrió la subtarea “[nombre]”.` | Código: desmarcar checkbox en tirilla |
+    | Eliminar subtarea | `fa-trash` | `[Usuario] eliminó la subtarea “[nombre]”.` | Código: botón Eliminar en tirilla → modal confirmación |
+    | Cambiar fecha límite | `fa-calendar-pen` | `[Usuario] cambió la fecha límite al [fecha].` | Código: calendario en bloque de info |
+    | Cambiar prioridad | `fa-chevrons-up` | `[Usuario] cambió la prioridad a [Alta|Media|Baja].` | Código: clic en Prioridad y elegir opción |
+    | Marcar tarea como finalizada | `fa-circle-check` | `[Usuario] marcó la tarea como finalizada.` | Código: clic en Estado y elegir “Finalizada” |
+    | Reabrir tarea | `fa-circle-xmark` | `[Usuario] reabrió la tarea.` | Código: clic en Estado y elegir “Reabrir tarea” |
 
-    **Pendiente para producción:** disparar `pushActivity()` también en cambios de estado, prioridad, asignado y fecha cuando esas acciones estén conectadas a la BD.
+    **Solo en mocks (getMockActivities):** crear tarea (`fa-circle-plus`).
 
----
+34. [x] **Detalle de tarea: dropdowns de Estado y Prioridad (como filtros de seguimiento)**
+
+    En el panel de detalle de tarea (**task-detail**), al hacer clic en **Estado** o **Prioridad** se abre un **dropdown** similar a los de los encabezados de la tabla en seguimiento (lista de opciones con texto, sin checkboxes), que permite **cambiar** el estado o la prioridad de la tarea. Los cambios se registran en la sección Comentarios (ver ítem 32).
+
+    **Estado:**
+    - Si la tarea está **Finalizada**: el dropdown ofrece **“Reabrir tarea”**. Al elegirla, la tarea pasa a Por hacer y se registra “reabrió la tarea.”.
+    - Si la tarea está **Por hacer**: el dropdown ofrece **“Finalizar tarea”**. Al elegirla, la tarea se marca como finalizada y se registra “marcó la tarea como finalizada.”.
+    - Si la tarea está **Vencida**: no se abre dropdown (el estado depende de la fecha). Se muestra el **tooltip oficial UBITS** (`data-tooltip`, `initTooltip`) con el texto: *“Para reabrir la tarea cambia la fecha de vencimiento.”* El trigger no muestra chevron y tiene cursor por defecto. Si el usuario cambia la fecha de vencimiento a una fecha **posterior a hoy**, la tarea pasa automáticamente a **Por hacer**.
+
+    **Prioridad:**
+    - El dropdown ofrece **Alta**, **Media** y **Baja**. Al elegir una, se actualiza la prioridad de la tarea y se registra “cambió la prioridad a [Alta|Media|Baja].”.
+
+    Implementación en `task-detail.js` (triggers con id `task-detail-estado-trigger` y `task-detail-prioridad-trigger`, componente dropdown-menu) y estilos en `task-detail.css` (`.task-detail-estado-trigger`, `.task-detail-prioridad-trigger`, `.task-detail-trigger-chevron`, `.task-detail-estado-trigger--vencida`).
 
 ## Implementación de la nueva versión de task-detail
 
@@ -243,4 +254,4 @@ Ajustes pendientes sobre los archivos entregados por la PM Mafe para las página
 
 ---
 
-*Última actualización: ítems 1–20 (11 feb), 21–26 (19 feb), 27 (Cargar más), 28–30 (20 feb), 31 (21 feb), 32 (23 feb), 33 (nueva versión task-detail) implementados.*
+*Última actualización: ítems 1–20 (11 feb), 21–26 (19 feb), 27 (Cargar más), 28–30 (20 feb), 31 (21 feb), 32 (23 feb), 33 (nueva versión task-detail), 34 (dropdowns Estado y Prioridad en task-detail) implementados.*

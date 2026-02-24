@@ -151,6 +151,32 @@
     opacity: 0.9;
 }
 
+/* Triggers Estado y Prioridad (dropdown similar a filtros de seguimiento) */
+.task-detail-estado-trigger,
+.task-detail-prioridad-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-xs);
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+}
+
+.task-detail-estado-trigger:hover,
+.task-detail-prioridad-trigger:hover {
+    opacity: 0.9;
+}
+
+.task-detail-estado-trigger--vencida {
+    cursor: default;
+}
+
+.task-detail-estado-trigger--vencida:hover {
+    opacity: 1;
+}
+
 /* Edición inline: misma fórmula que el título del chat en modo-estudio-ia (sin borde; hover/focus = fondo + radius) */
 .task-detail-title-editable {
     font-family: 'Noto Sans', sans-serif;
@@ -191,16 +217,16 @@
     border: none;
     background: transparent;
     width: 100%;
-    min-height: 60px;
+    min-height: 0;
     padding: 0;
     margin: 0;
-    resize: vertical;
+    resize: none;
     outline: none;
     cursor: text;
     position: relative;
     z-index: 1;
     box-sizing: border-box;
-    field-sizing: content;
+    overflow-y: hidden;
 }
 
 .task-detail-desc-editable:hover,

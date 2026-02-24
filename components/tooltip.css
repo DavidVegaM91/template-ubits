@@ -2,6 +2,7 @@
    UBITS TOOLTIP COMPONENT
    ======================================== */
 
+/* Elevación aplicada al contenedor para que contenido + colita sean una sola forma (benchmark: Material, Radix, Fluent) */
 .ubits-tooltip {
     position: fixed;
     z-index: 10000;
@@ -12,6 +13,7 @@
     opacity: 0;
     transition: opacity 0.2s ease;
     overflow: visible;
+    filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.14)) drop-shadow(0px 0px 2px rgba(0, 0, 0, 0.12));
 }
 
 .ubits-tooltip.ubits-tooltip--visible {
@@ -19,12 +21,11 @@
 }
 
 .ubits-tooltip__content {
-    /* Por defecto: bg-1 con modifier inverted y fg-1-high con modifier inverted */
+    /* Por defecto: bg-1 con modifier inverted y fg-1-high con modifier inverted. Sin box-shadow aquí: la elevación va en .ubits-tooltip para que contenido + colita tengan una sola sombra. */
     background: var(--ubits-bg-1-inverted);
     color: var(--ubits-fg-1-high-inverted);
     padding: var(--padding-sm) var(--padding-md);
     border-radius: var(--border-radius-sm);
-    box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.14), 0px 0px 2px 0px rgba(0, 0, 0, 0.12);
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-sm);
     line-height: 19.5px;
@@ -40,7 +41,7 @@
     color: var(--ubits-fg-1-high);
 }
 
-/* Tooltip arrow/tail */
+/* Tooltip arrow/tail: sin sombra propia; la elevación la aporta el contenedor .ubits-tooltip (filter: drop-shadow) para que se vea una sola pieza. */
 .ubits-tooltip__arrow {
     position: absolute;
     width: 0;

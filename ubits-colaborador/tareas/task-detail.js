@@ -73,6 +73,7 @@
         massPanelOpen: false,
         addingSubtask: false
     };
+    var subtaskIdToDelete = null;
 
     function getMockTask() {
         return {
@@ -199,15 +200,20 @@
             '<span class="ubits-body-sm-regular">' + escapeHtml(creatorName) + '</span>' +
             '</div></div></div>' +
             '<textarea class="task-detail-title-editable ubits-body-md-bold" id="task-detail-title" placeholder="Título de la tarea" rows="1" maxlength="250">' + escapeHtml(task.name) + '</textarea>' +
-            '<textarea class="task-detail-desc-editable ubits-body-sm-regular" id="task-detail-desc" placeholder="Descripción de la tarea" rows="2">' + escapeHtml(task.description || '') + '</textarea>' +
+            '<textarea class="task-detail-desc-editable ubits-body-sm-regular" id="task-detail-desc" placeholder="Descripción de la tarea" rows="1">' + escapeHtml(task.description || '') + '</textarea>' +
             '<div class="task-detail-attributes-row">' +
             '<span class="task-detail-meta-cell">' +
             '<span class="ubits-body-sm-semibold task-detail-meta-label">Estado</span>' +
-            '<span class="ubits-status-tag ubits-status-tag--sm ubits-status-tag--' + statusSlug + '"><span class="ubits-status-tag__text">' + escapeHtml(statusDisplay) + '</span></span></span>' +
+            '<div class="task-detail-estado-trigger' + (task.status === 'Vencido' ? ' task-detail-estado-trigger--vencida' : '') + '" id="task-detail-estado-trigger" role="button" tabindex="0" aria-haspopup="listbox" aria-expanded="false"' +
+            (task.status === 'Vencido' ? ' data-tooltip="Para reabrir la tarea cambia la fecha de vencimiento." data-tooltip-delay="300" data-tooltip-normal' : '') + '>' +
+            '<span class="ubits-status-tag ubits-status-tag--sm ubits-status-tag--' + statusSlug + '"><span class="ubits-status-tag__text">' + escapeHtml(statusDisplay) + '</span></span>' +
+            '</div></span>' +
             '<span class="task-detail-meta-cell">' +
             '<span class="ubits-body-sm-semibold task-detail-meta-label">Prioridad</span>' +
+            '<div class="task-detail-prioridad-trigger" id="task-detail-prioridad-trigger" role="button" tabindex="0" aria-haspopup="listbox" aria-expanded="false">' +
             '<span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--' + (prioridadVariant[prioridad] || 'warning') + ' ubits-badge-tag--sm ubits-badge-tag--with-icon">' +
-            '<i class="far ' + (prioridadIcon[prioridad] || 'fa-chevron-up') + '"></i><span class="ubits-badge-tag__text">' + escapeHtml(prioridadLabel) + '</span></span></span>' +
+            '<i class="far ' + (prioridadIcon[prioridad] || 'fa-chevron-up') + '"></i><span class="ubits-badge-tag__text">' + escapeHtml(prioridadLabel) + '</span></span>' +
+            '</div></span>' +
             '<span class="task-detail-meta-cell">' +
             '<span id="task-detail-vencimiento-label" class="ubits-body-sm-semibold task-detail-meta-label">Vencimiento</span>' +
             '<div id="task-detail-vencimiento-wrap"></div></span>' +
@@ -224,18 +230,244 @@
                 value: ymdToDmySlash(task.endDate),
                 onChange: function (dateStr) {
                     var ymd = dmySlashToYmd(dateStr);
-                    if (estado.task) estado.task.endDate = ymd;
+                    if (estado.task) {
+                        estado.task.endDate = ymd;
+                        if (ymd && ymd < today && estado.task.status === 'Activo') {
+                            estado.task.status = 'Vencido';
+                        }
+                        if (ymd && ymd >= today && estado.task.status === 'Vencido') {
+                            estado.task.status = 'Activo';
+                        }
+                    }
+                    pushActivity('fa-calendar-pen', currentUserName, 'cambió la fecha límite al ' + dateKeyLabel(ymd) + '.');
+                    renderCommentsBlock();
+                    setTimeout(function () { renderInfoBlock(); }, 0);
                 }
             });
             var dateInput = document.querySelector('#task-detail-vencimiento-wrap .ubits-input');
             if (dateInput) dateInput.setAttribute('aria-labelledby', 'task-detail-vencimiento-label');
         }
+        if (typeof initTooltip === 'function') initTooltip('#task-detail-info-block [data-tooltip]');
         resizeTaskDetailTitle();
         resizeTaskDetailDesc();
+        requestAnimationFrame(function () { resizeTaskDetailDesc(); });
         var titleEl = document.getElementById('task-detail-title');
         if (titleEl) titleEl.addEventListener('input', resizeTaskDetailTitle);
         var descEl = document.getElementById('task-detail-desc');
         if (descEl) descEl.addEventListener('input', resizeTaskDetailDesc);
+
+        /* Clic en asignado: abrir dropdown con autocomplete para cambiar asignado (como en seguimiento) */
+        var assigneeRow = document.getElementById('task-detail-assignee-row');
+        if (assigneeRow && typeof window.getDropdownMenuHtml === 'function' && typeof window.openDropdownMenu === 'function' && typeof window.closeDropdownMenu === 'function') {
+            assigneeRow.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var overlayId = 'task-detail-assignee-overlay';
+                var existing = document.getElementById(overlayId);
+                if (existing) existing.remove();
+                function getUsuariosParaTaskDetail() {
+                    if (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getEmpleadosEjemplo === 'function') {
+                        var emp = TAREAS_PLANES_DB.getEmpleadosEjemplo();
+                        return emp.map(function (e, i) {
+                            return {
+                                id: String(e.id != null ? e.id : i),
+                                email: e.username || '',
+                                full_name: e.nombre || '',
+                                avatar_url: (e.avatar && String(e.avatar).trim()) ? e.avatar : null
+                            };
+                        });
+                    }
+                    return [];
+                }
+                var users = getUsuariosParaTaskDetail();
+                var options = [{ text: 'Sin asignar', value: 'none', avatar: null }].concat(
+                    users.map(function (u) {
+                        return {
+                            value: u.id,
+                            text: u.full_name || u.email || '',
+                            avatar: u.avatar_url
+                        };
+                    })
+                );
+                var config = {
+                    overlayId: overlayId,
+                    hasAutocomplete: true,
+                    autocompletePlaceholder: 'Buscar...',
+                    options: options
+                };
+                var html = window.getDropdownMenuHtml(config);
+                document.body.insertAdjacentHTML('beforeend', html);
+                var overlayEl = document.getElementById(overlayId);
+                if (!overlayEl) return;
+                overlayEl.style.zIndex = '10100';
+                var contentEl = overlayEl.querySelector('.ubits-dropdown-menu__content');
+                if (contentEl) contentEl.style.zIndex = '10100';
+                var optionButtons = overlayEl.querySelectorAll('.ubits-dropdown-menu__option');
+                function normalizeText(str) {
+                    if (str == null) return '';
+                    return String(str).toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                }
+                function filterVisibleOptions(searchVal) {
+                    var q = normalizeText(searchVal || '');
+                    optionButtons.forEach(function (opt) {
+                        var textEl = opt.querySelector('.ubits-dropdown-menu__option-text');
+                        var text = textEl ? textEl.textContent : '';
+                        opt.style.display = (!q || normalizeText(text).indexOf(q) >= 0) ? '' : 'none';
+                    });
+                }
+                var inputEl = document.getElementById(overlayId + '-autocomplete-input');
+                var clearIcon = document.getElementById(overlayId + '-autocomplete-clear');
+                if (inputEl && clearIcon) {
+                    clearIcon.style.pointerEvents = 'auto';
+                    clearIcon.style.display = 'none';
+                    clearIcon.addEventListener('click', function (ev) {
+                        ev.preventDefault();
+                        ev.stopPropagation();
+                        inputEl.value = '';
+                        filterVisibleOptions('');
+                        inputEl.focus();
+                    });
+                    inputEl.addEventListener('input', function () {
+                        clearIcon.style.display = inputEl.value.length > 0 ? 'block' : 'none';
+                        filterVisibleOptions(inputEl.value);
+                    });
+                    filterVisibleOptions('');
+                }
+                optionButtons.forEach(function (btn) {
+                    btn.addEventListener('click', function (ev) {
+                        ev.stopPropagation();
+                        var val = btn.getAttribute('data-value');
+                        var t = estado.task;
+                        if (t) {
+                            if (val === 'none') {
+                                t.assignee_email = null;
+                                t.assignee_name = null;
+                                t.assignee_avatar_url = null;
+                                pushActivity('fa-user-pen', currentUserName, 'dejó la tarea sin asignar.');
+                            } else {
+                                var user = users.find(function (u) { return String(u.id) === val; });
+                                if (user) {
+                                    var nuevoNombre = user.full_name || user.email || '';
+                                    t.assignee_email = user.email;
+                                    t.assignee_name = user.full_name || user.email;
+                                    t.assignee_avatar_url = user.avatar_url;
+                                    pushActivity('fa-user-pen', currentUserName, 'asignó la tarea a ' + nuevoNombre + '.');
+                                }
+                            }
+                        }
+                        if (typeof window.closeDropdownMenu === 'function') window.closeDropdownMenu(overlayId);
+                        if (overlayEl.parentNode) overlayEl.remove();
+                        renderInfoBlock();
+                        renderCommentsBlock();
+                    });
+                });
+                overlayEl.addEventListener('click', function (ev) {
+                    if (ev.target === overlayEl) {
+                        if (typeof window.closeDropdownMenu === 'function') window.closeDropdownMenu(overlayId);
+                        if (overlayEl.parentNode) overlayEl.remove();
+                    }
+                });
+                window.openDropdownMenu(overlayId, assigneeRow);
+            });
+            assigneeRow.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    assigneeRow.click();
+                }
+            });
+        }
+
+        /* Clic en Estado: dropdown Reabrir tarea (si Finalizada) o Finalizada (si Por hacer); Vencida = solo tooltip (title) */
+        var estadoTrigger = document.getElementById('task-detail-estado-trigger');
+        if (estadoTrigger && task.status !== 'Vencido' && typeof window.getDropdownMenuHtml === 'function' && typeof window.openDropdownMenu === 'function' && typeof window.closeDropdownMenu === 'function') {
+            estadoTrigger.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var overlayId = 'task-detail-estado-overlay';
+                var existing = document.getElementById(overlayId);
+                if (existing) existing.remove();
+                var options = task.status === 'Finalizado'
+                    ? [{ text: 'Reabrir tarea', value: 'reabrir' }]
+                    : [{ text: 'Finalizar tarea', value: 'finalizada' }];
+                var html = window.getDropdownMenuHtml({ overlayId: overlayId, options: options });
+                document.body.insertAdjacentHTML('beforeend', html);
+                var overlayEl = document.getElementById(overlayId);
+                if (overlayEl) {
+                    overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function (opt) {
+                        opt.addEventListener('click', function () {
+                            var val = this.getAttribute('data-value');
+                            var t = estado.task;
+                            if (t) {
+                                if (val === 'reabrir') {
+                                    t.status = 'Activo';
+                                    t.done = false;
+                                    pushActivity('fa-circle-xmark', currentUserName, 'reabrió la tarea.');
+                                } else if (val === 'finalizada') {
+                                    t.status = 'Finalizado';
+                                    t.done = true;
+                                    pushActivity('fa-circle-check', currentUserName, 'marcó la tarea como finalizada.');
+                                }
+                            }
+                            window.closeDropdownMenu(overlayId);
+                            if (overlayEl.parentNode) overlayEl.remove();
+                            renderInfoBlock();
+                            renderCommentsBlock();
+                        });
+                    });
+                    overlayEl.addEventListener('click', function (ev) {
+                        if (ev.target === overlayEl) { window.closeDropdownMenu(overlayId); if (overlayEl.parentNode) overlayEl.remove(); }
+                    });
+                }
+                window.openDropdownMenu(overlayId, estadoTrigger);
+            });
+            estadoTrigger.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); estadoTrigger.click(); }
+            });
+        }
+
+        /* Clic en Prioridad: dropdown Alta, Media, Baja */
+        var prioridadTrigger = document.getElementById('task-detail-prioridad-trigger');
+        if (prioridadTrigger && typeof window.getDropdownMenuHtml === 'function' && typeof window.openDropdownMenu === 'function' && typeof window.closeDropdownMenu === 'function') {
+            prioridadTrigger.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var overlayId = 'task-detail-prioridad-overlay';
+                var existing = document.getElementById(overlayId);
+                if (existing) existing.remove();
+                var options = [
+                    { text: 'Alta', value: 'alta' },
+                    { text: 'Media', value: 'media' },
+                    { text: 'Baja', value: 'baja' }
+                ];
+                var html = window.getDropdownMenuHtml({ overlayId: overlayId, options: options });
+                document.body.insertAdjacentHTML('beforeend', html);
+                var overlayEl = document.getElementById(overlayId);
+                if (overlayEl) {
+                    overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function (opt) {
+                        opt.addEventListener('click', function () {
+                            var val = this.getAttribute('data-value');
+                            var label = val === 'alta' ? 'Alta' : val === 'baja' ? 'Baja' : 'Media';
+                            var t = estado.task;
+                            if (t) {
+                                t.priority = val;
+                                pushActivity('fa-chevrons-up', currentUserName, 'cambió la prioridad a ' + label + '.');
+                            }
+                            window.closeDropdownMenu(overlayId);
+                            if (overlayEl.parentNode) overlayEl.remove();
+                            renderInfoBlock();
+                            renderCommentsBlock();
+                        });
+                    });
+                    overlayEl.addEventListener('click', function (ev) {
+                        if (ev.target === overlayEl) { window.closeDropdownMenu(overlayId); if (overlayEl.parentNode) overlayEl.remove(); }
+                    });
+                }
+                window.openDropdownMenu(overlayId, prioridadTrigger);
+            });
+            prioridadTrigger.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); prioridadTrigger.click(); }
+            });
+        }
     }
 
     function resizeTaskDetailTitle() {
@@ -248,8 +480,8 @@
     function resizeTaskDetailDesc() {
         var ta = document.getElementById('task-detail-desc');
         if (!ta) return;
-        ta.style.height = 'auto';
-        ta.style.height = Math.max(60, ta.scrollHeight) + 'px';
+        ta.style.height = '0';
+        ta.style.height = ta.scrollHeight + 'px';
     }
 
     function renderSubtasksBlock() {
@@ -301,7 +533,7 @@
             listEl.querySelectorAll('.tarea-done-radio').forEach(function (radioWrap) {
                 var id = radioWrap.dataset.tareaId;
                 if (!id) return;
-                var input = radioWrap.querySelector('input[type="radio"]');
+                var input = radioWrap.querySelector('input[type="checkbox"]');
                 if (input) {
                     input.addEventListener('change', function () {
                         var t = estado.subtasks.find(function (s) { return String(s.id) === String(id); });
@@ -479,16 +711,24 @@
                 return author !== creator;
             })
             : comments;
-        var total = commentsToShow.length;
+
+        /* No mostrar comentarios ni actividades con fecha futura (datos de BD o mocks mal fechados) */
+        var now = new Date();
+        function isNotFuture(isoStr) {
+            if (!isoStr) return false;
+            var d = new Date(isoStr);
+            return !isNaN(d.getTime()) && d.getTime() <= now.getTime();
+        }
 
         /* ── Mezclar comentarios y actividades en timeline cronológico único ── */
         var allItems = [];
         commentsToShow.forEach(function (c) {
-            allItems.push({ type: 'comment', time: c.time, data: c });
+            if (isNotFuture(c.time)) allItems.push({ type: 'comment', time: c.time, data: c });
         });
         activities.forEach(function (a) {
-            allItems.push({ type: 'activity', time: a.time, data: a });
+            if (isNotFuture(a.time)) allItems.push({ type: 'activity', time: a.time, data: a });
         });
+        var total = allItems.filter(function (i) { return i.type === 'comment'; }).length;
         allItems.sort(function (a, b) { return new Date(a.time) - new Date(b.time); });
 
         /* ── Renderizar items con separadores de fecha al cambiar de día ── */
@@ -702,6 +942,64 @@
             estado.comments = getMockComments();
             estado.activities = getMockActivities();
         }
+
+        /* Modal eliminar subtarea (igual que tareas.html: confirmación antes de eliminar) */
+        var modalsContainer = document.getElementById('task-detail-modals-container');
+        if (modalsContainer && typeof getModalHtml === 'function' && !document.getElementById('task-detail-delete-subtask-modal-overlay')) {
+            var deleteSubtaskBody = '<p class="ubits-body-md-regular">¿Estás seguro? Esta acción no se puede deshacer y se perderán los datos de la subtarea.</p>';
+            var deleteSubtaskFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="task-detail-delete-subtask-cancel"><span>Cancelar</span></button><button type="button" class="ubits-button ubits-button--error ubits-button--md" id="task-detail-delete-subtask-confirm"><span>Eliminar</span></button>';
+            modalsContainer.innerHTML = getModalHtml({
+                overlayId: 'task-detail-delete-subtask-modal-overlay',
+                title: 'Eliminar subtarea',
+                bodyHtml: deleteSubtaskBody,
+                footerHtml: deleteSubtaskFooter,
+                size: 'sm',
+                closeButtonId: 'task-detail-delete-subtask-close'
+            });
+            var overlayDel = document.getElementById('task-detail-delete-subtask-modal-overlay');
+            var closeBtn = document.getElementById('task-detail-delete-subtask-close');
+            var cancelBtn = document.getElementById('task-detail-delete-subtask-cancel');
+            var confirmBtn = document.getElementById('task-detail-delete-subtask-confirm');
+            function closeDeleteSubtaskModal() {
+                if (typeof closeModal === 'function') closeModal('task-detail-delete-subtask-modal-overlay');
+                subtaskIdToDelete = null;
+            }
+            if (closeBtn) closeBtn.addEventListener('click', closeDeleteSubtaskModal);
+            if (cancelBtn) cancelBtn.addEventListener('click', closeDeleteSubtaskModal);
+            if (overlayDel) overlayDel.addEventListener('click', function (ev) { if (ev.target === overlayDel) closeDeleteSubtaskModal(); });
+            if (confirmBtn) {
+                confirmBtn.addEventListener('click', function () {
+                    var id = subtaskIdToDelete;
+                    if (id != null) {
+                        var idx = estado.subtasks.findIndex(function (s) { return String(s.id) === String(id); });
+                        if (idx >= 0) {
+                            var name = estado.subtasks[idx].name || '';
+                            estado.subtasks.splice(idx, 1);
+                            pushActivity('fa-trash', currentUserName, 'eliminó la subtarea \u201C' + name + '\u201D.');
+                            renderSubtasksBlock();
+                            renderCommentsBlock();
+                            if (typeof showToast === 'function') showToast('success', 'Subtarea eliminada');
+                        }
+                    }
+                    closeDeleteSubtaskModal();
+                });
+            }
+        }
+
+        /* Delegación: clic en Eliminar de una subtarea (tirilla) abre el modal */
+        document.body.addEventListener('click', function (e) {
+            var list = document.getElementById('task-detail-subtasks-list');
+            if (!list || !list.contains(e.target)) return;
+            var btn = e.target.closest('.tarea-action-btn--delete');
+            if (!btn) return;
+            e.preventDefault();
+            e.stopPropagation();
+            var id = btn.getAttribute('data-tarea-id');
+            if (id != null && id !== '') {
+                subtaskIdToDelete = id;
+                if (typeof showModal === 'function') showModal('task-detail-delete-subtask-modal-overlay');
+            }
+        });
 
         if (typeof loadHeaderProduct === 'function') {
             loadHeaderProduct('task-detail-header-container', {
