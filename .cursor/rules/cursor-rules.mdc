@@ -944,10 +944,11 @@ border: 1px solid var(--ubits-border-1);
 ```
 **Why this matters:**
 - FontAwesome processes icons when the page loads
-- When using `innerHTML` dynamically, FontAwesome may not process icons with additional wrapper classes
-- **Solution:** Use only FontAwesome classes (`far fa-icon-name`) directly on `<i>` tags
-- Apply styling via CSS selectors like `.ubits-status-tag i` instead of wrapper classes
-- **Reference:** See `button.html` line 619 for working example: `<i class="far fa-${icon}"></i>`
+- Adding **any** custom/BEM class on the same `<i>` as the FontAwesome classes (e.g. `ubits-checkbox__check`, `ubits-status-tag__icon`) can **break icon rendering** (icon no se carga). Aplica tanto a HTML estático como a `innerHTML`.
+- **Solution:** Use **only** FontAwesome classes on the `<i>` tag: `far fa-check` or `fas fa-*`. **No** añadir clases propias del componente en el `<i>`.
+- **Styling:** Apply size/color via CSS **parent selector** (e.g. `.ubits-checkbox__box i`, `.ubits-status-tag i`), never via a class on the `<i>`.
+- **Checkbox:** El check debe ser `<i class="far fa-check"></i>` dentro de `.ubits-checkbox__box`, sin clase `ubits-checkbox__check`; estilos en `.ubits-checkbox__box i`.
+- **Reference:** See `button.html` line 619 for dynamic: `<i class="far fa-${icon}"></i>`; see `checkbox.css` and `badge-tag.css` for parent-selector styling.
 
 **Common icon classes:**
 - `far fa-check` - Check mark
