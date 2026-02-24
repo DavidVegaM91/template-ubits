@@ -37,6 +37,38 @@
    7. Vista tareas (tareas.html) para líder con reportes: por cada día laborable desde
       hoy hasta FIN_RANGO solo se muestran (1 tarea por reporte directo + 1 propia + 1 de la jefa).
       Ej.: María ve 6 tareas para su equipo + 1 suya + 1 de Patricia = 8 tareas/día.
+
+   --- SUBTAREAS, COMENTARIOS E HISTORIAL (para task-detail.html) ---
+
+   8. Subtareas:
+      - Las subtareas solo viven dentro de una tarea. No se confunden con tareas ni con planes.
+      - Un 80% de las tareas tienen subtareas. Las tareas que la usuaria (Mariana) asigna a su equipo
+        tienen siempre subtareas (100%).
+      - Cada tarea con subtareas tiene 3 o 4 subtareas. Mismo creador y asignado que la tarea madre.
+      - Campos por subtarea: id, name, done, status, endDate, priority, assignee_name, assignee_avatar_url,
+        assignee_email, created_at (ISO). El estado es coherente con done (Activo / Finalizado).
+
+   9. Comentarios:
+      - Cada tarea tiene 3 o 4 comentarios realistas. Orden cronológico (más antiguo primero).
+      - Ejemplo: creador escribe "Hola [nombre], te creé estas tareas, si tienes dudas citame a una reu";
+        al día siguiente el asignado responde; luego comentarios de avance ("todo entregado para revisión", etc.).
+      - Campos: id, author, authorAvatar, time (ISO), text, images (array, normalmente vacío).
+
+   10. Historial (actividades):
+       - Desde que se crea la tarea se guardan eventos en orden cronológico.
+       - Tipos: crear tarea, asignar tarea, cambiar prioridad, cambiar estado, añadir subtarea(s),
+         completar subtarea, reabrir subtarea, cambiar fecha límite (y opc. eliminar/cambiar estado/prioridad de subtarea).
+       - Campos por actividad: id, time (ISO), icon (clase FA sin "far "), author, text.
+       - La vista task-detail mezcla comentarios y actividades en un solo timeline.
+
+   11. Planes (recordatorio): son agrupaciones de tareas. Individuales = mismo creador y asignado;
+       grupales = un creador y varios asignados (por área, pares o toda la empresa). Las tareas pueden
+       o no tener subtareas; las subtareas no son tareas ni planes.
+
+   12. API para task-detail: getTaskDetail(taskId) devuelve { task, subtasks, comments, activities }.
+       Si la tarea tiene detalle en taskDetallePorId se usa ese; si no, se intenta construir desde
+       actividadesSeguimiento (sin subtareas/comentarios/actividades). task-detail.html puede abrirse
+       con ?id=X y llamar getTaskDetail(X) para rellenar la vista.
    ======================================== */
 
 (function (global) {
@@ -297,6 +329,111 @@
         return 'Vencido';
     }
 
+    /** Nombres genéricos para subtareas (se eligen por seed). */
+    const NOMBRES_SUBTAREAS = [
+        'Revisar alcance y requisitos', 'Preparar materiales', 'Ejecutar y validar', 'Documentar y reportar',
+        'Verificar datos', 'Actualizar registro', 'Cerrar y notificar', 'Seguimiento y cierre',
+        'Validar con responsable', 'Enviar para aprobación', 'Completar checklist', 'Archivar evidencia'
+    ];
+
+    /**
+     * Genera subtareas, comentarios y actividades para una tarea (detalle usado por task-detail).
+     * Lógica: 80% de tareas tienen subtareas; si la creadora es la usuaria y el asignado es de su equipo, 100%.
+     * @param {number} taskId - Id de la tarea
+     * @param {Object} opts - { nombreTarea, creador, creadorAvatar, asignado: { nombre, avatar, username }, fechaCreacion (Date), endDateStr, prioridad, done, estado, tieneSubtareas }
+     * @param {number} seed - Semilla para aleatoriedad
+     * @param {number} baseIdx - Índice base para seeder
+     * @returns {{ subtasks: Array, comments: Array, activities: Array }}
+     */
+    function generarDetalleTarea(taskId, opts, seed, baseIdx) {
+        const creador = opts.creador || 'Sin especificar';
+        const creadorAvatar = opts.creadorAvatar || null;
+        const asignado = opts.asignado || { nombre: 'Sin asignar', avatar: null, username: null };
+        const asignadoNombre = asignado.nombre || 'Sin asignar';
+        const fechaCreacion = opts.fechaCreacion || new Date();
+        const endDateStr = opts.endDateStr || '';
+        const prioridad = (opts.prioridad || 'media').toLowerCase();
+        const prioridadLabel = prioridad === 'alta' ? 'Alta' : prioridad === 'baja' ? 'Baja' : 'Media';
+        const done = !!opts.done;
+        const estado = opts.estado || (done ? 'Finalizado' : 'Activo');
+        const tieneSubtareas = !!opts.tieneSubtareas;
+        const nombreTarea = opts.nombreTarea || 'Tarea';
+
+        const toISO = (d) => (d && d.toISOString) ? d.toISOString() : (typeof d === 'string' ? d : '');
+        const addHours = (d, h) => { const x = new Date(d); x.setHours(x.getHours() + h); return x; };
+        const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
+
+        const subtasks = [];
+        const numSubtareas = tieneSubtareas ? (seeder(seed, baseIdx + 600) < 0.5 ? 3 : 4) : 0;
+        for (let s = 0; s < numSubtareas; s++) {
+            const subId = taskId * 1000 + s;
+            const subName = NOMBRES_SUBTAREAS[(baseIdx + s * 7) % NOMBRES_SUBTAREAS.length];
+            const subDone = done ? (seeder(seed, baseIdx + 601 + s) < 0.9) : (seeder(seed, baseIdx + 602 + s) < 0.3);
+            const subStatus = subDone ? 'Finalizado' : 'Activo';
+            const subCreated = addHours(fechaCreacion, s + 1);
+            subtasks.push({
+                id: subId,
+                name: subName,
+                done: subDone,
+                status: subStatus,
+                endDate: endDateStr,
+                priority: prioridad,
+                assignee_name: asignadoNombre,
+                assignee_avatar_url: (asignado.avatar && String(asignado.avatar).trim()) ? asignado.avatar : null,
+                assignee_email: asignado.username || null,
+                created_at: toISO(subCreated)
+            });
+        }
+
+        const comments = [];
+        const t0 = toISO(fechaCreacion);
+        const t1 = toISO(addDays(fechaCreacion, 1));
+        const t2 = toISO(addDays(fechaCreacion, 2));
+        const t3 = toISO(addDays(fechaCreacion, 3));
+        comments.push({ id: taskId * 2000 + 1, author: creador, authorAvatar: creadorAvatar, time: t0, text: 'Hola ' + (asignadoNombre.split(' ')[0] || asignadoNombre) + ', te asigné esta tarea. Si tienes dudas citame a una reunión o escríbeme por aquí.', images: [] });
+        comments.push({ id: taskId * 2000 + 2, author: asignadoNombre, authorAvatar: (asignado.avatar && String(asignado.avatar).trim()) ? asignado.avatar : null, time: t1, text: 'Listo, ya la tengo en mi lista. Voy a revisar el alcance y te aviso si necesito algo.', images: [] });
+        if (numSubtareas > 0) {
+            comments.push({ id: taskId * 2000 + 3, author: asignadoNombre, authorAvatar: (asignado.avatar && String(asignado.avatar).trim()) ? asignado.avatar : null, time: t2, text: done ? 'Todo entregado para revisión. Avísame si hay que ajustar algo.' : 'Voy avanzando con las subtareas, hoy termino al menos dos.', images: [] });
+        }
+        if (done || seeder(seed, baseIdx + 603) < 0.6) {
+            comments.push({ id: taskId * 2000 + 4, author: creador, authorAvatar: creadorAvatar, time: t3, text: done ? 'Revisado, todo correcto. Gracias.' : 'Perfecto, cualquier cosa me comentas.', images: [] });
+        }
+
+        const activities = [];
+        let actId = 0;
+        const pushAct = (icon, author, text, time) => {
+            actId++;
+            activities.push({ id: 'act-' + taskId + '-' + actId, time: toISO(time), icon: icon, author: author, text: text });
+        };
+        pushAct('fa-circle-plus', creador, 'creó la tarea.', fechaCreacion);
+        pushAct('fa-user-pen', creador, 'asignó la tarea a ' + asignadoNombre + '.', addHours(fechaCreacion, 1));
+        if (seeder(seed, baseIdx + 604) < 0.4) {
+            pushAct('fa-chevrons-up', creador, 'cambió la prioridad a ' + prioridadLabel + '.', addHours(fechaCreacion, 2));
+        }
+        if (seeder(seed, baseIdx + 605) < 0.3) {
+            pushAct('fa-circle-dot', asignadoNombre, 'cambió el estado a Por hacer.', addHours(fechaCreacion, 3));
+        }
+        if (numSubtareas > 0) {
+            if (numSubtareas === 1) {
+                pushAct('fa-plus-circle', asignadoNombre, 'añadió la subtarea "' + (subtasks[0].name) + '".', addHours(fechaCreacion, 4));
+            } else {
+                subtasks.slice(0, 2).forEach((st, i) => pushAct('fa-plus-circle', asignadoNombre, 'añadió la subtarea "' + st.name + '".', addHours(fechaCreacion, 4 + i)));
+                pushAct('fa-list-plus', asignadoNombre, 'añadió ' + numSubtareas + ' subtareas en lote.', addHours(fechaCreacion, 5));
+            }
+            const completadas = subtasks.filter(st => st.done);
+            if (completadas.length > 0) {
+                pushAct('fa-circle-check', asignadoNombre, 'marcó "' + completadas[0].name + '" como completada.', addHours(fechaCreacion, 6));
+            }
+            if (endDateStr && seeder(seed, baseIdx + 606) < 0.35) {
+                const [y, m, d] = endDateStr.split('-').map(Number);
+                const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+                pushAct('fa-calendar-pen', asignadoNombre, 'cambió la fecha límite al ' + d + ' ' + (meses[(m || 1) - 1]) + ' ' + (y || new Date().getFullYear()) + '.', addHours(fechaCreacion, 7));
+            }
+        }
+
+        return { subtasks, comments, activities };
+    }
+
     let actividadesSeguimiento = [];
     let tareasPorEmpleadoParaVistaTareas = {};
     let currentUserEmpleadoId = null;
@@ -304,6 +441,8 @@
     let planDetalleCompleto = {};
     let tareasPorPlanCompleto = {};
     let planNombreToId = {};
+    /** Detalle por tarea (subtasks, comments, activities) para task-detail. Clave = id de tarea. */
+    let taskDetallePorId = {};
 
     function generarDatos() {
         const empleados = (EMPLEADOS_EJEMPLO && EMPLEADOS_EJEMPLO.length)
@@ -336,8 +475,10 @@
         planDetalleCompleto = {};
         tareasPorPlanCompleto = {};
         planNombreToId = {};
+        taskDetallePorId = {};
         let planGlobalIndex = 0;
         const PLAN_SEED = 7777;
+        const reportesDirectosMaria = getReportesDirectosEjemplo(USUARIO_ACTUAL.nombre) || [];
 
         empleados.forEach((emp, empIndex) => {
             const username = emp.username || generarUsername(emp.nombre);
@@ -410,6 +551,10 @@
                         description: seeder(seed, baseIdx + i + 400) > 0.7 ? 'Seguimiento y cierre.' : null
                     };
 
+                    const creadorParaDetalle = esGrupal ? creadorNombre : emp.nombre;
+                    const tieneSubtareas = (seeder(seed, baseIdx + i + 500) < 0.8) ||
+                        (creadorParaDetalle === USUARIO_ACTUAL.nombre && reportesDirectosMaria.indexOf(emp.nombre) >= 0);
+
                     if (i < TAREAS_INDIVIDUALES_POR_MES) {
                         tareasPorEmpleadoParaVistaTareas[empleadoId].individuales.push(Object.assign({}, tareaVista));
                     } else {
@@ -440,6 +585,34 @@
                             comentarios: Math.floor(seeder(seed, baseIdx + i + 300) * 5)
                         });
                     }
+
+                    const taskParaDetalle = i < TAREAS_INDIVIDUALES_POR_MES
+                        ? Object.assign({}, tareaVista, { created_at: fechaCreacion.toISOString() })
+                        : Object.assign({}, tareaVista, {
+                            planNombre: planNombreGrupo,
+                            created_by: creadorNombre,
+                            created_by_avatar_url: creadorAvatar || '',
+                            created_at: fechaCreacion.toISOString()
+                        });
+                    const detalle = generarDetalleTarea(idActividad, {
+                        nombreTarea: nombreTarea,
+                        creador: creadorParaDetalle,
+                        creadorAvatar: i < TAREAS_INDIVIDUALES_POR_MES ? (emp.avatar || null) : creadorAvatar,
+                        asignado: { nombre: emp.nombre, avatar: emp.avatar || null, username: username },
+                        fechaCreacion: fechaCreacion,
+                        endDateStr: endDateStr,
+                        prioridad: prioridad.toLowerCase(),
+                        done: done,
+                        estado: tareaVista.status,
+                        tieneSubtareas: tieneSubtareas
+                    }, seed, baseIdx + i);
+                    taskDetallePorId[idActividad] = {
+                        task: taskParaDetalle,
+                        subtasks: detalle.subtasks,
+                        comments: detalle.comments,
+                        activities: detalle.activities
+                    };
+
                     idActividad++;
                 }
 
@@ -502,6 +675,7 @@
                     var [y, m, d] = rawDate.split('-').map(Number);
                     var dayWeekday = toWeekdayInMonth(y, m, d);
                     var endDateVencida = y + '-' + pad(m) + '-' + pad(dayWeekday);
+                    var fechaCreacionVencida = new Date(y, m - 1, Math.max(1, dayWeekday - 2));
                     var tareaVencida = {
                         id: idActividad,
                         name: titulosVencidas[k - 1],
@@ -521,6 +695,27 @@
                         description: 'Tarea de la semana anterior.'
                     };
                     tareasPorEmpleadoParaVistaTareas[currentUserEmpleadoId].individuales.push(tareaVencida);
+
+                    var tieneSubtareasVencida = (idActividad % 5) !== 0;
+                    var detalleVencida = generarDetalleTarea(idActividad, {
+                        nombreTarea: titulosVencidas[k - 1],
+                        creador: mariaEmp.nombre,
+                        creadorAvatar: mariaEmp.avatar || null,
+                        asignado: { nombre: mariaEmp.nombre, avatar: mariaEmp.avatar || null, username: usernameMaria },
+                        fechaCreacion: fechaCreacionVencida,
+                        endDateStr: endDateVencida,
+                        prioridad: prioridades[(k - 1) % 3],
+                        done: false,
+                        estado: 'Vencido',
+                        tieneSubtareas: tieneSubtareasVencida
+                    }, 9999, idActividad + k * 100);
+                    taskDetallePorId[idActividad] = {
+                        task: Object.assign({}, tareaVencida, { created_at: fechaCreacionVencida.toISOString() }),
+                        subtasks: detalleVencida.subtasks,
+                        comments: detalleVencida.comments,
+                        activities: detalleVencida.activities
+                    };
+
                     idActividad++;
                 }
             }
@@ -559,6 +754,7 @@
                         const asignado = { nombre: empAsig.nombre, avatar: empAsig.avatar || '', username: empAsig.username || generarUsername(empAsig.nombre) };
                         const estado = seeder(8888, idActividad + idxCompania * 10 + mes) < 0.75 ? 'Finalizada' : (seeder(8888, idActividad + idxCompania * 10 + mes + 1) < 0.5 ? 'Por hacer' : 'Vencida');
                         const done = estado === 'Finalizada';
+                        const statusVista = estado === 'Finalizada' ? 'Finalizado' : (estado === 'Vencida' ? 'Vencido' : 'Activo');
                         actividadesSeguimiento.push({
                             id: idActividad,
                             tipo: 'tarea',
@@ -579,6 +775,45 @@
                             creador_avatar: creadorEmp && (creadorEmp.avatar && String(creadorEmp.avatar).trim()) ? creadorEmp.avatar : null,
                             comentarios: 0
                         });
+
+                        const taskCompania = {
+                            id: idActividad,
+                            name: tareasTitulos[mes],
+                            done: done,
+                            status: statusVista,
+                            endDate: endDateStr,
+                            priority: 'media',
+                            assignee_email: asignado.username || null,
+                            assignee_name: asignado.nombre || null,
+                            assignee_avatar_url: (asignado.avatar && String(asignado.avatar).trim()) ? asignado.avatar : null,
+                            etiqueta: null,
+                            created_by: creadorNombre,
+                            created_by_avatar_url: creadorEmp && (creadorEmp.avatar && String(creadorEmp.avatar).trim()) ? creadorEmp.avatar : null,
+                            planId: null,
+                            planNombre: nombrePlan,
+                            description: tipo === 'Objetivos' ? 'Tarea de objetivos trimestrales.' : 'Tarea de encuesta de compañía.',
+                            created_at: fechaCreacion.toISOString()
+                        };
+                        const tieneSubtareasCompania = seeder(8888, idActividad + 700) < 0.2;
+                        const detalleCompania = generarDetalleTarea(idActividad, {
+                            nombreTarea: tareasTitulos[mes],
+                            creador: creadorNombre,
+                            creadorAvatar: creadorEmp && (creadorEmp.avatar && String(creadorEmp.avatar).trim()) ? creadorEmp.avatar : null,
+                            asignado: { nombre: asignado.nombre, avatar: asignado.avatar || null, username: asignado.username },
+                            fechaCreacion: fechaCreacion,
+                            endDateStr: endDateStr,
+                            prioridad: 'media',
+                            done: done,
+                            estado: statusVista,
+                            tieneSubtareas: tieneSubtareasCompania
+                        }, 8888, idActividad + idxCompania * 10 + mes);
+                        taskDetallePorId[idActividad] = {
+                            task: taskCompania,
+                            subtasks: detalleCompania.subtasks,
+                            comments: detalleCompania.comments,
+                            activities: detalleCompania.activities
+                        };
+
                         idActividad++;
                     });
                 }
@@ -990,6 +1225,54 @@
         return { name: name, avatar: null };
     }
 
+    /**
+     * Devuelve el detalle completo de una tarea para task-detail.html: tarea (con created_at),
+     * subtareas, comentarios y actividades (historial). Si la tarea no está en taskDetallePorId
+     * (ej. tarea sintética de la vista líder), se intenta construir desde actividadesSeguimiento.
+     * @param {string|number} taskId - Id de la tarea
+     * @returns {{ task: Object, subtasks: Array, comments: Array, activities: Array } | null}
+     */
+    function getTaskDetail(taskId) {
+        const id = Number(taskId);
+        if (taskDetallePorId[id]) {
+            const d = taskDetallePorId[id];
+            return {
+                task: Object.assign({}, d.task),
+                subtasks: (d.subtasks || []).map(s => Object.assign({}, s)),
+                comments: (d.comments || []).map(c => Object.assign({}, c)),
+                activities: (d.activities || []).map(a => Object.assign({}, a))
+            };
+        }
+        const act = actividadesSeguimiento.find(function (a) { return a.tipo === 'tarea' && a.id === id; });
+        if (act) {
+            const asignado = act.asignado || {};
+            const endDate = fechaSeguimientoToYYYYMMDD(act.fechaFinalizacion);
+            return {
+                task: {
+                    id: act.id,
+                    name: act.nombre,
+                    done: act.estado === 'Finalizada',
+                    status: act.estado === 'Finalizada' ? 'Finalizado' : (act.estado === 'Vencida' ? 'Vencido' : 'Activo'),
+                    endDate: endDate,
+                    priority: (act.prioridad || 'Media').toLowerCase(),
+                    assignee_email: asignado.username || null,
+                    assignee_name: asignado.nombre || null,
+                    assignee_avatar_url: (asignado.avatar && String(asignado.avatar).trim()) ? asignado.avatar : null,
+                    created_by: act.creador || null,
+                    created_by_avatar_url: (act.creador_avatar && String(act.creador_avatar).trim()) ? act.creador_avatar : null,
+                    planId: (act.plan && planNombreToId[act.plan] != null) ? planNombreToId[act.plan] : null,
+                    planNombre: act.plan || null,
+                    description: null,
+                    created_at: act.fechaCreacion ? (parseFechaSeguimiento(act.fechaCreacion) || new Date()).toISOString() : new Date().toISOString()
+                },
+                subtasks: [],
+                comments: [],
+                activities: []
+            };
+        }
+        return null;
+    }
+
     global.TAREAS_PLANES_DB = {
         getUsuarioActual: getUsuarioActual,
         getTareasVistaTareas: getTareasVistaTareas,
@@ -1001,6 +1284,7 @@
         getCreatorDisplay: getCreatorDisplay,
         getTodayString: getTodayString,
         getReportesDirectos: getReportesDirectosEjemplo,
+        getTaskDetail: getTaskDetail,
         getEmpresaEjemplo: function () { return Object.assign({}, EMPRESA_EJEMPLO); },
         getAreasEjemplo: function () { return AREAS_EJEMPLO.slice(); },
         getJefesEjemplo: function () { return JEFES_EJEMPLO.slice(); },
