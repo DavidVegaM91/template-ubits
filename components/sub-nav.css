@@ -675,12 +675,13 @@
     }
 }
 
-/* Centrado del SubNav solo cuando el viewport es >= 1607px; entre 1440 y 1606 se mantiene alineado al cuerpo como en 1280–1439 */
+/* Centrado del SubNav solo cuando el viewport es >= 1607px; ancho fijo 1440px para coincidir con el cuerpo */
 @media (min-width: 1607px) {
     .sub-nav {
         left: calc((100vw - 1607px) / 2 + 143px);
-        right: calc((100vw - 1607px) / 2 + var(--gap-2xl));
-        max-width: 1607px;
+        right: calc(100vw - ((100vw - 1607px) / 2 + 143px) - 1440px);
+        width: 1440px;
+        max-width: 1440px;
     }
 
     /* Documentación: ancho completo con márgenes, sin centrado 1607px */
