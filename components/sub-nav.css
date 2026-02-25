@@ -675,7 +675,8 @@
     }
 }
 
-@media (min-width: 1440px) {
+/* Centrado del SubNav solo cuando el viewport es >= 1607px; entre 1440 y 1606 se mantiene alineado al cuerpo como en 1280–1439 */
+@media (min-width: 1607px) {
     .sub-nav {
         left: calc((100vw - 1607px) / 2 + 143px);
         right: calc((100vw - 1607px) / 2 + var(--gap-2xl));
