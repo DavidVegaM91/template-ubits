@@ -60,6 +60,13 @@
     color: var(--ubits-sidebar-button-fg-hover);
 }
 
+/* Divisor (igual que sidebar-profile-menu) */
+.profile-menu .profile-menu-divider {
+    height: 1px;
+    background: var(--ubits-border-1);
+    margin: var(--gap-xs) 0;
+}
+
 /* Dark mode */
 [data-theme="dark"] .profile-menu {
     background: var(--ubits-sidebar-bg);
