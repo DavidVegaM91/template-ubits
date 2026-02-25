@@ -58,6 +58,8 @@ Una **plantilla lista para usar** que permite a **Product Managers**, **Diseñad
 - **Toast** - Notificaciones flotantes (tipos: success, info, warning, error; auto-cierre, pausa en hover) - **RENDERIZADO: showToast()**
 - **Input** - Campos de entrada (11 tipos: text, email, password, number, tel, url, select, textarea, search, autocomplete, calendar; tamaños: sm, md, lg; estados: default, hover, focus, invalid, disabled; con iconos, contador, helper text, mandatory/optional, validación manual, scroll infinito automático) - **RENDERIZADO: createInput()**
 - **Radio Button** - Opción circular para elegir una entre varias (tamaños: sm, md; sin JS; agrupar con mismo `name`) - **RENDERIZADO: HTML directo.** Requiere importar `radio-button.css` en la página o los radios se ven como nativos.
+- **Checkbox** - Casilla de verificación (tamaños: sm, md, lg; variantes: round/cuadrado; sin JS; agrupar con mismo `name` para múltiple selección) - **RENDERIZADO: HTML directo.** Requiere importar `checkbox.css` en la página.
+- **Switch** - Interruptor on/off (pista ovalada + thumb; tamaños: sm, md; estados: off, on, disabled) - **RENDERIZADO: HTML directo.** Requiere importar `switch.css` y `ubits-colors.css`.
 - **Card Content** - Cards para contenidos de aprendizaje (11 tipos, 35 competencias, 18 aliados, estados de progreso) - **RENDERIZADO: loadCardContent()**
 - **Card Content Compact** - Variante horizontal compacta de Card Content (misma funcionalidad, diseño optimizado para espacios reducidos, siempre horizontal) - **RENDERIZADO: loadCardContentCompact()**
 - **Carousel Contents** - Carruseles de contenido (navegación horizontal, flechas, responsive) - **RENDERIZADO: loadCarouselContents()**
@@ -90,6 +92,8 @@ Todos los componentes UBITS requieren imports obligatorios:
 <link rel="stylesheet" href="../../components/toast.css">
 <link rel="stylesheet" href="../../components/input.css">
 <link rel="stylesheet" href="../../components/radio-button.css">
+<link rel="stylesheet" href="../../components/checkbox.css">
+<link rel="stylesheet" href="../../components/switch.css">
 <link rel="stylesheet" href="../../components/card-content.css">
 <link rel="stylesheet" href="../../components/card-content-compact.css">
 <link rel="stylesheet" href="../../components/carousel-contents.css">
@@ -257,9 +261,12 @@ Todos los componentes UBITS requieren imports obligatorios:
 - **`documentacion/componentes/toast.html`** - Documentación del componente Toast
 - **`documentacion/componentes/input.html`** - Documentación del componente Input
 - **`documentacion/componentes/radio-button.html`** - Documentación del componente Radio Button
+- **`documentacion/componentes/checkbox.html`** - Documentación del componente Checkbox
+- **`documentacion/componentes/switch.html`** - Documentación del componente Switch
 - **`documentacion/componentes/card-content.html`** - Documentación del componente Card Content
 - **`documentacion/componentes/card-content-compact.html`** - Documentación del componente Card Content Compact
 - **`documentacion/componentes/status-tag.html`** - Documentación del componente Status Tag
+- **`documentacion/componentes/switch.html`** - Documentación del componente Switch
 - **`documentacion/componentes/badge-tag.html`** - Documentación del componente Badge Tag
 - **`documentacion/componentes/tab.html`** - Documentación del componente Tab
 - **`documentacion/componentes/empty-state.html`** - Documentación del componente Empty State
@@ -315,6 +322,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 │   ├── carousel-contents.css + carousel-contents.js
 │   ├── status-tag.css
 │   ├── radio-button.css
+│   ├── checkbox.css
 │   ├── badge-tag.css
 │   ├── tab.css + tab.js
 │   ├── empty-state.css + empty-state.js
@@ -681,9 +689,12 @@ loadCardContentCompact('mi-contenedor-compact', [
 - **`documentacion/componentes/toast.html`** - Documentación del componente Toast
 - **`documentacion/componentes/input.html`** - Documentación del componente Input
 - **`documentacion/componentes/radio-button.html`** - Documentación del componente Radio Button
+- **`documentacion/componentes/checkbox.html`** - Documentación del componente Checkbox
+- **`documentacion/componentes/switch.html`** - Documentación del componente Switch
 - **`documentacion/componentes/card-content.html`** - Documentación del componente Card Content
 - **`documentacion/componentes/card-content-compact.html`** - Documentación del componente Card Content Compact
 - **`documentacion/componentes/status-tag.html`** - Documentación del componente Status Tag
+- **`documentacion/componentes/switch.html`** - Documentación del componente Switch
 - **`documentacion/componentes/badge-tag.html`** - Documentación del componente Badge Tag
 - **`documentacion/componentes/tab.html`** - Documentación del componente Tab
 - **`documentacion/componentes/empty-state.html`** - Documentación del componente Empty State

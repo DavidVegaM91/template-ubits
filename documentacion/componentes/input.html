@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="../../components/input.css">
     <link rel="stylesheet" href="../../components/dropdown-menu.css">
     <link rel="stylesheet" href="../../components/calendar.css">
+    <link rel="stylesheet" href="../../components/switch.css">
     <style>
         /* Preview Styles */
         .preview-control-btn.active {
@@ -73,52 +74,6 @@
                 grid-template-columns: 1fr;
                 gap: 16px;
             }
-        }
-
-        /* Switch Styles */
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 44px;
-            height: 24px;
-        }
-
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: var(--ubits-bg-3);
-            transition: .4s;
-            border-radius: 24px;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 18px;
-            width: 18px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-
-        input:checked + .slider {
-            background-color: var(--ubits-accent-brand);
-        }
-
-        input:checked + .slider:before {
-            transform: translateX(20px);
         }
 
         /* Input Styles for Controls */
@@ -214,9 +169,9 @@
                                 <div style="margin-bottom: 16px;">
                                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
                                         <label class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-high);">Label</label>
-                                        <label class="switch">
-                                            <input type="checkbox" id="label-toggle" checked onchange="updateInput()">
-                                            <span class="slider"></span>
+                                        <label class="ubits-switch ubits-switch--md">
+                                            <input type="checkbox" class="ubits-switch__input" id="label-toggle" role="switch" checked onchange="updateInput()">
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
                                         </label>
                                     </div>
                                     <div id="label-content-control"></div>
@@ -226,9 +181,9 @@
                                 <div style="margin-bottom: 16px;">
                                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
                                         <label class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-high);">Mandatory/Optional</label>
-                                        <label class="switch">
-                                            <input type="checkbox" id="mandatory-toggle" onchange="updateInput()">
-                                            <span class="slider"></span>
+                                        <label class="ubits-switch ubits-switch--md">
+                                            <input type="checkbox" class="ubits-switch__input" id="mandatory-toggle" role="switch" onchange="updateInput()">
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
                                         </label>
                                     </div>
                                     <div id="mandatory-type-control"></div>
@@ -238,9 +193,9 @@
                                 <div style="margin-bottom: 16px;">
                                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
                                         <label class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-high);">Helper text</label>
-                                        <label class="switch">
-                                            <input type="checkbox" id="helper-toggle" onchange="updateInput()">
-                                            <span class="slider"></span>
+                                        <label class="ubits-switch ubits-switch--md">
+                                            <input type="checkbox" class="ubits-switch__input" id="helper-toggle" role="switch" onchange="updateInput()">
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
                                         </label>
                                     </div>
                                     <div id="helper-content-control"></div>
@@ -253,9 +208,9 @@
                                 <div style="margin-bottom: 16px;">
                                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
                                         <label class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-high);">Character counter</label>
-                                        <label class="switch">
-                                            <input type="checkbox" id="counter-toggle" onchange="updateInput()">
-                                            <span class="slider"></span>
+                                        <label class="ubits-switch ubits-switch--md">
+                                            <input type="checkbox" class="ubits-switch__input" id="counter-toggle" role="switch" onchange="updateInput()">
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
                                         </label>
                                     </div>
                                     <div id="max-length-control"></div>
@@ -265,9 +220,9 @@
                                 <div style="margin-bottom: 16px;">
                                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
                                         <label class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-high);">Left icon</label>
-                                        <label class="switch">
-                                            <input type="checkbox" id="left-icon-toggle" onchange="updateInput()">
-                                            <span class="slider"></span>
+                                        <label class="ubits-switch ubits-switch--md">
+                                            <input type="checkbox" class="ubits-switch__input" id="left-icon-toggle" role="switch" onchange="updateInput()">
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
                                         </label>
                                     </div>
                                     <div id="left-icon-content-control"></div>
@@ -277,9 +232,9 @@
                                 <div style="margin-bottom: 16px;">
                                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
                                         <label class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-high);">Right icon</label>
-                                        <label class="switch">
-                                            <input type="checkbox" id="right-icon-toggle" onchange="updateInput()">
-                                            <span class="slider"></span>
+                                        <label class="ubits-switch ubits-switch--md">
+                                            <input type="checkbox" class="ubits-switch__input" id="right-icon-toggle" role="switch" onchange="updateInput()">
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
                                         </label>
                                     </div>
                                     <div id="right-icon-content-control"></div>

@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="../../docs/docs-sidebar.css">
     <link rel="stylesheet" href="../../docs/docstyles.css">
     <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/switch.css">
     <link rel="stylesheet" href="../../components/toast.css">
     <style>
         /* Preview control buttons - override UBITS button styles for active state */
@@ -29,52 +30,6 @@
         
         .preview-control-btn.active span {
             color: white !important;
-        }
-        
-        /* Switch styles */
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 44px;
-            height: 24px;
-        }
-        
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: var(--ubits-border-1);
-            transition: .4s;
-            border-radius: 24px;
-        }
-        
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 18px;
-            width: 18px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-        
-        input:checked + .slider {
-            background-color: var(--ubits-accent-brand);
-        }
-        
-        input:checked + .slider:before {
-            transform: translateX(20px);
         }
         
         /* Badge: posición igual que components/button.css (salido para no tapar texto) */
@@ -232,27 +187,27 @@
                             <!-- Switch para Iconos -->
                             <div style="display: flex; align-items: center; gap: 8px; margin-left: 16px;">
                                 <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Iconos:</span>
-                                <label class="switch">
-                                    <input type="checkbox" id="icon-toggle" onchange="toggleIcons()" checked>
-                                    <span class="slider"></span>
+                                <label class="ubits-switch ubits-switch--md">
+                                    <input type="checkbox" class="ubits-switch__input" id="icon-toggle" role="switch" onchange="toggleIcons()" checked>
+                                    <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
                                 </label>
                             </div>
                             
                             <!-- Switch para Icon-only -->
                             <div style="display: flex; align-items: center; gap: 8px; margin-left: 16px;">
                                 <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Icon-only:</span>
-                                <label class="switch">
-                                    <input type="checkbox" id="icon-only-toggle" onchange="toggleIconOnly()">
-                                    <span class="slider"></span>
+                                <label class="ubits-switch ubits-switch--md">
+                                    <input type="checkbox" class="ubits-switch__input" id="icon-only-toggle" role="switch" onchange="toggleIconOnly()">
+                                    <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
                                 </label>
                             </div>
                             
                             <!-- Switch para Badge + selector puntito / número -->
                             <div style="display: flex; align-items: center; gap: 8px; margin-left: 16px;">
                                 <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Badge:</span>
-                                <label class="switch">
-                                    <input type="checkbox" id="badge-toggle" onchange="toggleBadge()">
-                                    <span class="slider"></span>
+                                <label class="ubits-switch ubits-switch--md">
+                                    <input type="checkbox" class="ubits-switch__input" id="badge-toggle" role="switch" onchange="toggleBadge()">
+                                    <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
                                 </label>
                                 <div id="badge-type-wrapper" style="display: none; align-items: center; gap: 8px; margin-left: 8px; padding-left: 8px; border-left: 1px solid var(--ubits-border-1);">
                                     <label style="display: flex; align-items: center; gap: 4px; cursor: pointer;" class="ubits-body-sm-regular">

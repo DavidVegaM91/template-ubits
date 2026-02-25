@@ -18,54 +18,8 @@
     <link rel="stylesheet" href="../../docs/docstyles.css">
     <link rel="stylesheet" href="../../components/button.css">
     <link rel="stylesheet" href="../../components/empty-state.css">
+    <link rel="stylesheet" href="../../components/switch.css">
     <link rel="stylesheet" href="../../components/toast.css">
-    <style>
-        /* Switch styles */
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 44px;
-            height: 24px;
-        }
-        
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: var(--ubits-border-1);
-            transition: .4s;
-            border-radius: var(--border-radius-xl);
-        }
-        
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 18px;
-            width: 18px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-        
-        input:checked + .slider {
-            background-color: var(--ubits-accent-brand);
-        }
-        
-        input:checked + .slider:before {
-            transform: translateX(20px);
-        }
-    </style>
 </head>
 <body class="componentes-page" data-theme="light">
     <div class="dashboard-container">
@@ -123,63 +77,63 @@
                                 <!-- Switch Header -->
                                 <div style="display: flex; align-items: center; gap: var(--gap-sm);">
                                     <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Header:</span>
-                                    <label class="switch">
-                                        <input type="checkbox" id="preview-header-toggle" onchange="updatePreview()" checked>
-                                        <span class="slider"></span>
+                                    <label class="ubits-switch ubits-switch--md">
+                                        <input type="checkbox" class="ubits-switch__input" id="preview-header-toggle" role="switch" onchange="updatePreview()" checked>
+                                        <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
                                     </label>
                                 </div>
                                 
                                 <!-- Switch Title -->
                                 <div style="display: flex; align-items: center; gap: var(--gap-sm);">
                                     <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Title:</span>
-                                    <label class="switch">
-                                        <input type="checkbox" id="preview-title-toggle" onchange="updatePreview()" checked>
-                                        <span class="slider"></span>
+                                    <label class="ubits-switch ubits-switch--md">
+                                        <input type="checkbox" class="ubits-switch__input" id="preview-title-toggle" role="switch" onchange="updatePreview()" checked>
+                                        <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
                                     </label>
                                 </div>
                                 
                                 <!-- Switch Media Content (Icono) -->
                                 <div style="display: flex; align-items: center; gap: var(--gap-sm);">
                                     <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Media content:</span>
-                                    <label class="switch">
-                                        <input type="checkbox" id="preview-icon-toggle" onchange="updatePreview()" checked>
-                                        <span class="slider"></span>
+                                    <label class="ubits-switch ubits-switch--md">
+                                        <input type="checkbox" class="ubits-switch__input" id="preview-icon-toggle" role="switch" onchange="updatePreview()" checked>
+                                        <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
                                     </label>
                                 </div>
                                 
                                 <!-- Switch Body -->
                                 <div style="display: flex; align-items: center; gap: var(--gap-sm);">
                                     <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Body:</span>
-                                    <label class="switch">
-                                        <input type="checkbox" id="preview-body-toggle" onchange="updatePreview()" checked>
-                                        <span class="slider"></span>
+                                    <label class="ubits-switch ubits-switch--md">
+                                        <input type="checkbox" class="ubits-switch__input" id="preview-body-toggle" role="switch" onchange="updatePreview()" checked>
+                                        <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
                                     </label>
                                 </div>
                                 
                                 <!-- Switch Footer -->
                                 <div style="display: flex; align-items: center; gap: var(--gap-sm);">
                                     <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Footer:</span>
-                                    <label class="switch">
-                                        <input type="checkbox" id="preview-footer-toggle" onchange="updatePreview()" checked>
-                                        <span class="slider"></span>
+                                    <label class="ubits-switch ubits-switch--md">
+                                        <input type="checkbox" class="ubits-switch__input" id="preview-footer-toggle" role="switch" onchange="updatePreview()" checked>
+                                        <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
                                     </label>
                                 </div>
                                 
                                 <!-- Switch Secondary Action -->
                                 <div style="display: flex; align-items: center; gap: var(--gap-sm);">
                                     <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Secondary action:</span>
-                                    <label class="switch">
-                                        <input type="checkbox" id="preview-secondary-toggle" onchange="updatePreview()" checked>
-                                        <span class="slider"></span>
+                                    <label class="ubits-switch ubits-switch--md">
+                                        <input type="checkbox" class="ubits-switch__input" id="preview-secondary-toggle" role="switch" onchange="updatePreview()" checked>
+                                        <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
                                     </label>
                                 </div>
                                 
                                 <!-- Switch Primary Action -->
                                 <div style="display: flex; align-items: center; gap: var(--gap-sm);">
                                     <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Primary action:</span>
-                                    <label class="switch">
-                                        <input type="checkbox" id="preview-primary-toggle" onchange="updatePreview()" checked>
-                                        <span class="slider"></span>
+                                    <label class="ubits-switch ubits-switch--md">
+                                        <input type="checkbox" class="ubits-switch__input" id="preview-primary-toggle" role="switch" onchange="updatePreview()" checked>
+                                        <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
                                     </label>
                                 </div>
                                 

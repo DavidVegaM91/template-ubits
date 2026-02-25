@@ -22,39 +22,9 @@
     <link rel="stylesheet" href="../../components/ia-button.css">
     <link rel="stylesheet" href="../../components/tab.css">
     <link rel="stylesheet" href="../../components/radio-button.css">
+    <link rel="stylesheet" href="../../components/switch.css">
     <link rel="stylesheet" href="../../components/toast.css">
     <style>
-        /* Switch compacto */
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 36px;
-            height: 20px;
-            flex-shrink: 0;
-        }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: var(--ubits-border-1);
-            transition: .4s;
-            border-radius: var(--border-radius-xl);
-        }
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 14px;
-            width: 14px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-        input:checked + .slider { background-color: var(--ubits-accent-brand); }
-        input:checked + .slider:before { transform: translateX(16px); }
-        
         .preview-container {
             background: var(--ubits-bg-2);
             padding: 24px;
@@ -103,11 +73,6 @@
             display: inline-flex;
             align-items: center;
             gap: var(--gap-sm);
-        }
-        .control-item .switch-label {
-            font-family: 'Noto Sans', sans-serif;
-            font-size: var(--font-size-sm);
-            color: var(--ubits-fg-1-medium);
         }
         .control-group-nested {
             margin-left: 12px;
@@ -210,38 +175,62 @@
                                 <span class="control-group-label">Fila principal</span>
                                 <div class="control-row">
                                     <div class="control-item">
-                                        <label class="switch"><input type="checkbox" id="switch-back-button" checked><span class="slider"></span></label>
-                                        <span class="switch-label">Back</span>
+                                        <label class="ubits-switch ubits-switch--md">
+                                            <input type="checkbox" class="ubits-switch__input" id="switch-back-button" role="switch" checked>
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            <span class="ubits-switch__label">Back</span>
+                                        </label>
                                     </div>
                                     <div class="control-item">
-                                        <label class="switch"><input type="checkbox" id="switch-product-title" checked><span class="slider"></span></label>
-                                        <span class="switch-label">Título</span>
+                                        <label class="ubits-switch ubits-switch--md">
+                                            <input type="checkbox" class="ubits-switch__input" id="switch-product-title" role="switch" checked>
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            <span class="ubits-switch__label">Título</span>
+                                        </label>
                                     </div>
                                     <div class="control-item">
-                                        <label class="switch"><input type="checkbox" id="switch-info-button" checked><span class="slider"></span></label>
-                                        <span class="switch-label">Info</span>
+                                        <label class="ubits-switch ubits-switch--md">
+                                            <input type="checkbox" class="ubits-switch__input" id="switch-info-button" role="switch" checked>
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            <span class="ubits-switch__label">Info</span>
+                                        </label>
                                     </div>
                                     <div class="control-item">
-                                        <label class="switch"><input type="checkbox" id="switch-actions" checked><span class="slider"></span></label>
-                                        <span class="switch-label">Actions</span>
+                                        <label class="ubits-switch ubits-switch--md">
+                                            <input type="checkbox" class="ubits-switch__input" id="switch-actions" role="switch" checked>
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            <span class="ubits-switch__label">Actions</span>
+                                        </label>
                                     </div>
                                 </div>
                                 <div class="control-row control-group-nested">
                                     <div class="control-item">
-                                        <label class="switch"><input type="checkbox" id="switch-primary-action" checked><span class="slider"></span></label>
-                                        <span class="switch-label">Primary</span>
+                                        <label class="ubits-switch ubits-switch--md">
+                                            <input type="checkbox" class="ubits-switch__input" id="switch-primary-action" role="switch" checked>
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            <span class="ubits-switch__label">Primary</span>
+                                        </label>
                                     </div>
                                     <div class="control-item">
-                                        <label class="switch"><input type="checkbox" id="switch-ai-button" checked><span class="slider"></span></label>
-                                        <span class="switch-label">AI</span>
+                                        <label class="ubits-switch ubits-switch--md">
+                                            <input type="checkbox" class="ubits-switch__input" id="switch-ai-button" role="switch" checked>
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            <span class="ubits-switch__label">AI</span>
+                                        </label>
                                     </div>
                                     <div class="control-item">
-                                        <label class="switch"><input type="checkbox" id="switch-secondary-actions" checked><span class="slider"></span></label>
-                                        <span class="switch-label">Secondary</span>
+                                        <label class="ubits-switch ubits-switch--md">
+                                            <input type="checkbox" class="ubits-switch__input" id="switch-secondary-actions" role="switch" checked>
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            <span class="ubits-switch__label">Secondary</span>
+                                        </label>
                                     </div>
                                     <div class="control-item">
-                                        <label class="switch"><input type="checkbox" id="switch-more-actions" checked><span class="slider"></span></label>
-                                        <span class="switch-label">More</span>
+                                        <label class="ubits-switch ubits-switch--md">
+                                            <input type="checkbox" class="ubits-switch__input" id="switch-more-actions" role="switch" checked>
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            <span class="ubits-switch__label">More</span>
+                                        </label>
                                     </div>
                                 </div>
                             </div>
@@ -249,12 +238,18 @@
                                 <span class="control-group-label">Fila secundaria</span>
                                 <div class="control-row">
                                     <div class="control-item">
-                                        <label class="switch"><input type="checkbox" id="switch-secondary-row" checked><span class="slider"></span></label>
-                                        <span class="switch-label">Fila</span>
+                                        <label class="ubits-switch ubits-switch--md">
+                                            <input type="checkbox" class="ubits-switch__input" id="switch-secondary-row" role="switch" checked>
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            <span class="ubits-switch__label">Fila</span>
+                                        </label>
                                     </div>
                                     <div class="control-item">
-                                        <label class="switch"><input type="checkbox" id="switch-breadcrumb" checked><span class="slider"></span></label>
-                                        <span class="switch-label">Breadcrumb</span>
+                                        <label class="ubits-switch ubits-switch--md">
+                                            <input type="checkbox" class="ubits-switch__input" id="switch-breadcrumb" role="switch" checked>
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            <span class="ubits-switch__label">Breadcrumb</span>
+                                        </label>
                                     </div>
                                 </div>
                             </div>
@@ -268,16 +263,25 @@
                                 <span class="control-group-label" style="min-width: auto;">Acciones</span>
                                 <div class="control-row control-group-nested">
                                     <div class="control-item">
-                                        <label class="switch"><input type="checkbox" id="switch-tabs-primary" checked><span class="slider"></span></label>
-                                        <span class="switch-label">Primary</span>
+                                        <label class="ubits-switch ubits-switch--md">
+                                            <input type="checkbox" class="ubits-switch__input" id="switch-tabs-primary" role="switch" checked>
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            <span class="ubits-switch__label">Primary</span>
+                                        </label>
                                     </div>
                                     <div class="control-item">
-                                        <label class="switch"><input type="checkbox" id="switch-tabs-secondary" checked><span class="slider"></span></label>
-                                        <span class="switch-label">Secondary</span>
+                                        <label class="ubits-switch ubits-switch--md">
+                                            <input type="checkbox" class="ubits-switch__input" id="switch-tabs-secondary" role="switch" checked>
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            <span class="ubits-switch__label">Secondary</span>
+                                        </label>
                                     </div>
                                     <div class="control-item">
-                                        <label class="switch"><input type="checkbox" id="switch-tabs-more" checked><span class="slider"></span></label>
-                                        <span class="switch-label">More</span>
+                                        <label class="ubits-switch ubits-switch--md">
+                                            <input type="checkbox" class="ubits-switch__input" id="switch-tabs-more" role="switch" checked>
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            <span class="ubits-switch__label">More</span>
+                                        </label>
                                     </div>
                                 </div>
                             </div>

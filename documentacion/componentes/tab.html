@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="../../components/button.css">
     <link rel="stylesheet" href="../../components/toast.css">
     <link rel="stylesheet" href="../../components/tab.css">
+    <link rel="stylesheet" href="../../components/switch.css">
     <style>
         /* Preview control buttons - override UBITS button styles for active state */
         .preview-control-btn.active {
@@ -30,52 +31,6 @@
         
         .preview-control-btn.active span {
             color: white !important;
-        }
-        
-        /* Switch styles */
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 44px;
-            height: 24px;
-        }
-        
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: var(--ubits-border-1);
-            transition: .4s;
-            border-radius: 24px;
-        }
-        
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 18px;
-            width: 18px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-        
-        input:checked + .slider {
-            background-color: var(--ubits-accent-brand);
-        }
-        
-        input:checked + .slider:before {
-            transform: translateX(20px);
         }
     </style>
 </head>
@@ -186,9 +141,9 @@
                             <!-- Switch para Iconos -->
                             <div style="display: flex; align-items: center; gap: 8px;">
                                 <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Iconos:</span>
-                                <label class="switch">
-                                    <input type="checkbox" id="icon-toggle" onchange="toggleIcons()">
-                                    <span class="slider"></span>
+                                <label class="ubits-switch ubits-switch--md">
+                                    <input type="checkbox" class="ubits-switch__input" id="icon-toggle" role="switch" onchange="toggleIcons()">
+                                    <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
                                 </label>
                             </div>
                         </div>
@@ -218,9 +173,9 @@
                             <!-- Switch para Fondo Blanco -->
                             <div style="display: flex; align-items: center; gap: 8px;">
                                 <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Fondo blanco:</span>
-                                <label class="switch">
-                                    <input type="checkbox" id="white-bg-toggle" onchange="toggleWhiteBackground()">
-                                    <span class="slider"></span>
+                                <label class="ubits-switch ubits-switch--md">
+                                    <input type="checkbox" class="ubits-switch__input" id="white-bg-toggle" role="switch" onchange="toggleWhiteBackground()">
+                                    <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
                                 </label>
                                 <span class="ubits-body-xs-regular" style="color: var(--ubits-fg-1-medium); margin-left: 8px;">
                                     <i class="far fa-info-circle" style="margin-right: 4px;"></i>
