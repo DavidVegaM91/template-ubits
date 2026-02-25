@@ -3,7 +3,7 @@
  * Modelo único: el de tareas.html. Se reutiliza tal cual en tareas y en plan-detail.
  *
  * @param {Object} tarea - { id, name, done, status, endDate, priority, etiqueta, assignee_email?, assignee_name?, assignee_avatar_url? }
- * @param {Object} opts - { today, esVencidaSection?, formatDate, escapeHtml, getAssignee?, renderAvatar? }
+ * @param {Object} opts - { today, esVencidaSection?, formatDate, escapeHtml, getAssignee?, renderAvatar?, hideAddToPlan? }
  * @returns {string} HTML de una tarea-item
  */
 function renderTaskStrip(tarea, opts) {
@@ -15,6 +15,7 @@ function renderTaskStrip(tarea, opts) {
     const escapeAttr = function (s) { return (escapeHtml(s) + '').replace(/"/g, '&quot;'); };
     const getAssignee = typeof opts.getAssignee === 'function' ? opts.getAssignee : null;
     const renderAvatar = typeof opts.renderAvatar === 'function' ? opts.renderAvatar : null;
+    const hideAddToPlan = !!opts.hideAddToPlan;
 
     const fechaDisplay = tarea.endDate ? formatDate(tarea.endDate) : null;
     const esFinalizada = tarea.done === true || tarea.status === 'Finalizado';
@@ -89,9 +90,9 @@ function renderTaskStrip(tarea, opts) {
         '</button>' +
         '</div>' +
         '<div class="tarea-actions">' +
-        '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only tarea-action-btn tarea-action-btn--add-plan" data-tooltip="Agregar a un plan">' +
+        (hideAddToPlan ? '' : '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only tarea-action-btn tarea-action-btn--add-plan" data-tooltip="Agregar a un plan">' +
         '<i class="far fa-layer-group"></i>' +
-        '</button>' +
+        '</button>') +
         '<button type="button" class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--' + (prioridadBadgeVariant[prioridad] || 'warning') + ' ubits-badge-tag--sm ubits-badge-tag--with-icon tarea-priority-badge" data-tarea-id="' + idSafe + '" data-tooltip="Prioridad" aria-label="Prioridad">' +
         '<i class="far ' + (prioridadIcon[prioridad] || 'fa-chevron-up') + '"></i>' +
         '<span class="ubits-badge-tag__text">' + escapeHtml(prioridadLabel) + '</span>' +

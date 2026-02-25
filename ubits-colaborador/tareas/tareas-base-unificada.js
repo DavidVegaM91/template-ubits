@@ -1043,11 +1043,11 @@
             weekdays.forEach(function (dateStr) {
                 const list = [];
 
-                // 1. Una tarea real por cada reporte directo
+                // 1. Una tarea real por cada reporte directo (solo si la tarea fue creada por o asignada a la usuaria actual)
                 reportesDirectos.forEach(function (emp) {
                     const empId = emp.id || emp.idColaborador;
                     const tarea = pickTaskForDay(empId, dateStr);
-                    if (tarea) {
+                    if (tarea && (tarea.created_by === nombreUsuarioActual || (tarea.assignee_name && String(tarea.assignee_name).trim() === nombreUsuarioActual))) {
                         list.push(tarea);
                     }
                 });

@@ -68,6 +68,11 @@
     overflow-y: auto;
 }
 
+/* Modificador: alto máximo 255px (ej. dropdown asignado en tareas/task-detail) */
+.ubits-dropdown-menu__options--max-h-255 {
+    max-height: 255px;
+}
+
 /* Fila de carga (scroll infinito): mismo padding que una opción */
 .ubits-dropdown-menu__loading {
     display: flex;

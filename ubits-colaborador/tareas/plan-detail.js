@@ -186,7 +186,12 @@ function renderPlanDetail(planId) {
         if (emptyEl) emptyEl.style.display = 'flex';
     } else {
         if (emptyEl) emptyEl.style.display = 'none';
-        const html = tasks.map(t => window.renderTaskStrip(t, { today, formatDate: formatDateForDisplayDDMM, escapeHtml, getAssignee: getAssigneeForPlanDetail, renderAvatar: typeof renderAvatar === 'function' ? renderAvatar : undefined, esVencidaSection: vencidas.some(v => v.id === t.id) })).join('');
+        var ordered = tasks.slice().sort(function (a, b) {
+            if (a.done !== b.done) return (a.done ? 1 : 0) - (b.done ? 1 : 0);
+            if (a.done && b.done) return (a._justFinalized ? 0 : 1) - (b._justFinalized ? 0 : 1);
+            return 0;
+        });
+        const html = ordered.map(t => window.renderTaskStrip(t, { today, formatDate: formatDateForDisplayDDMM, escapeHtml, getAssignee: getAssigneeForPlanDetail, renderAvatar: typeof renderAvatar === 'function' ? renderAvatar : undefined, esVencidaSection: vencidas.some(v => v.id === t.id) })).join('');
         if (tasksListEl) tasksListEl.innerHTML = html;
         attachTaskListeners();
         if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
@@ -198,7 +203,7 @@ function handlePlanDetailListClick(e) {
     const tasks = getTasksForPlan(planId);
     if (!planId || !tasks.length) return;
 
-    // Toggle hecho (radio)
+    // Toggle hecho (checkbox): misma regla que tareas.html — orden (pendientes primero, finalizadas al final) y animación al mover
     if (e.target.closest('.tarea-done-radio')) {
         e.preventDefault();
         const control = e.target.closest('.tarea-done-radio');
@@ -207,10 +212,41 @@ function handlePlanDetailListClick(e) {
             const id = input.dataset.tareaId;
             const t = tasks.find(x => String(x.id) === String(id));
             if (t) {
+                var wasDone = t.done;
                 t.done = !t.done;
                 t.status = t.done ? 'Finalizado' : 'Activo';
+                if (t.done) t._justFinalized = true;
+                else t._justFinalized = false;
                 input.checked = t.done;
+                var listEl = document.getElementById('plan-detail-tasks-list');
+                var row = control.closest('.tarea-item');
+                var oldRect = (row && t.done) ? row.getBoundingClientRect() : null;
                 renderPlanDetail(planId);
+                if (t.done && oldRect && listEl) {
+                    var newRow = listEl.querySelector('.tarea-item[data-tarea-id="' + id + '"]');
+                    if (newRow) {
+                        var newRect = newRow.getBoundingClientRect();
+                        var deltaY = oldRect.top - newRect.top;
+                        if (Math.abs(deltaY) > 2) {
+                            newRow.style.transition = 'none';
+                            newRow.style.transform = 'translateY(' + deltaY + 'px)';
+                            newRow.offsetHeight;
+                            newRow.style.transition = 'transform 1s ease-out';
+                            newRow.style.transform = '';
+                            newRow.addEventListener('transitionend', function onEnd() {
+                                newRow.style.transition = '';
+                                newRow.removeEventListener('transitionend', onEnd);
+                                if (t) t._justFinalized = false;
+                            }, { once: true });
+                        } else {
+                            if (t) t._justFinalized = false;
+                        }
+                    } else {
+                        if (t) t._justFinalized = false;
+                    }
+                } else if (!t.done && t) {
+                    t._justFinalized = false;
+                }
             }
         }
         return;

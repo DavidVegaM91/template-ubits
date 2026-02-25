@@ -214,6 +214,7 @@
     width: var(--size-4xl, 32px);
     height: var(--size-4xl, 32px);
     position: relative;
+    cursor: pointer;
 }
 
 .tarea-assigned-avatar-img {

@@ -906,7 +906,7 @@ function initTareasView() {
                                         newRow.style.transition = 'none';
                                         newRow.style.transform = `translateY(${deltaY}px)`;
                                         newRow.offsetHeight; // reflow
-                                        newRow.style.transition = 'transform 0.35s ease-out';
+                                        newRow.style.transition = 'transform 1s ease-out';
                                         newRow.style.transform = '';
                                         requestAnimationFrame(() => {
                                             newRow.addEventListener('transitionend', function onEnd() {
@@ -952,7 +952,7 @@ function initTareasView() {
                                         newRow.style.transition = 'none';
                                         newRow.style.transform = `translateY(${deltaY}px)`;
                                         newRow.offsetHeight;
-                                        newRow.style.transition = 'transform 0.35s ease-out';
+                                        newRow.style.transition = 'transform 1s ease-out';
                                         newRow.style.transform = '';
                                         newRow.addEventListener('transitionend', function onEnd() {
                                             newRow.style.transition = '';
@@ -1138,6 +1138,115 @@ function initTareasView() {
                 const btn = e.target.closest('.tarea-fecha-btn');
                 const tareaId = parseInt(btn.dataset.tareaId, 10);
                 if (!isNaN(tareaId)) openTareaFechaCalendar(btn, tareaId);
+            }
+            /* Clic en asignado (avatar): mismo dropdown con autocomplete que en task-detail */
+            if (e.target.closest('.tarea-assigned') && typeof window.getDropdownMenuHtml === 'function' && typeof window.openDropdownMenu === 'function' && typeof window.closeDropdownMenu === 'function') {
+                e.preventDefault();
+                e.stopPropagation();
+                const assignedEl = e.target.closest('.tarea-assigned');
+                const tareaItem = e.target.closest('.tarea-item');
+                const tareaId = parseInt(tareaItem.dataset.tareaId || tareaItem.getAttribute('data-tarea-id'), 10);
+                if (isNaN(tareaId)) return;
+                const { tarea } = findTaskById(tareaId);
+                if (!tarea) return;
+                function getUsuariosTareas() {
+                    if (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getEmpleadosEjemplo === 'function') {
+                        const emp = TAREAS_PLANES_DB.getEmpleadosEjemplo();
+                        return emp.map(function (e, i) {
+                            return {
+                                id: String(e.id != null ? e.id : i),
+                                email: e.username || '',
+                                full_name: e.nombre || '',
+                                avatar_url: (e.avatar && String(e.avatar).trim()) ? e.avatar : null
+                            };
+                        });
+                    }
+                    return [];
+                }
+                const users = getUsuariosTareas();
+                const options = [{ text: 'Sin asignar', value: 'none', avatar: null }].concat(
+                    users.map(function (u) {
+                        return { value: u.id, text: u.full_name || u.email || '', avatar: u.avatar_url };
+                    })
+                );
+                const overlayId = 'tareas-strip-assignee-overlay-' + tareaId;
+                let existing = document.getElementById(overlayId);
+                if (existing) existing.remove();
+                const html = window.getDropdownMenuHtml({
+                    overlayId: overlayId,
+                    hasAutocomplete: true,
+                    autocompletePlaceholder: 'Buscar...',
+                    options: options
+                });
+                document.body.insertAdjacentHTML('beforeend', html);
+                const overlayEl = document.getElementById(overlayId);
+                if (!overlayEl) return;
+                overlayEl.style.zIndex = '10100';
+                const optionsContainer = overlayEl.querySelector('.ubits-dropdown-menu__options');
+                if (optionsContainer) optionsContainer.classList.add('ubits-dropdown-menu__options--max-h-255');
+                const contentEl = overlayEl.querySelector('.ubits-dropdown-menu__content');
+                if (contentEl) contentEl.style.zIndex = '10100';
+                const optionButtons = overlayEl.querySelectorAll('.ubits-dropdown-menu__option');
+                function normalizeText(str) {
+                    if (str == null) return '';
+                    return String(str).toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                }
+                function filterVisibleOptions(searchVal) {
+                    const q = normalizeText(searchVal || '');
+                    optionButtons.forEach(function (opt) {
+                        const textEl = opt.querySelector('.ubits-dropdown-menu__option-text');
+                        const text = textEl ? textEl.textContent : '';
+                        opt.style.display = (!q || normalizeText(text).indexOf(q) >= 0) ? '' : 'none';
+                    });
+                }
+                const inputEl = document.getElementById(overlayId + '-autocomplete-input');
+                const clearIcon = document.getElementById(overlayId + '-autocomplete-clear');
+                if (inputEl && clearIcon) {
+                    clearIcon.style.pointerEvents = 'auto';
+                    clearIcon.style.display = 'none';
+                    clearIcon.addEventListener('click', function (ev) {
+                        ev.preventDefault();
+                        ev.stopPropagation();
+                        inputEl.value = '';
+                        filterVisibleOptions('');
+                        inputEl.focus();
+                    });
+                    inputEl.addEventListener('input', function () {
+                        clearIcon.style.display = inputEl.value.length > 0 ? 'block' : 'none';
+                        filterVisibleOptions(inputEl.value);
+                    });
+                    filterVisibleOptions('');
+                }
+                optionButtons.forEach(function (btn) {
+                    btn.addEventListener('click', function (ev) {
+                        ev.stopPropagation();
+                        const val = btn.getAttribute('data-value');
+                        if (val === 'none') {
+                            tarea.assignee_email = null;
+                            tarea.assignee_name = null;
+                            tarea.assignee_avatar_url = null;
+                        } else {
+                            const user = users.find(function (u) { return String(u.id) === val; });
+                            if (user) {
+                                tarea.assignee_email = user.email;
+                                tarea.assignee_name = user.full_name || user.email;
+                                tarea.assignee_avatar_url = user.avatar_url;
+                            }
+                        }
+                        if (typeof window.closeDropdownMenu === 'function') window.closeDropdownMenu(overlayId);
+                        if (overlayEl.parentNode) overlayEl.remove();
+                        renderTareasVencidas();
+                        renderAllTasks();
+                        if (typeof showToast === 'function') showToast('success', 'Asignado actualizado');
+                    });
+                });
+                overlayEl.addEventListener('click', function (ev) {
+                    if (ev.target === overlayEl) {
+                        if (typeof window.closeDropdownMenu === 'function') window.closeDropdownMenu(overlayId);
+                        if (overlayEl.parentNode) overlayEl.remove();
+                    }
+                });
+                window.openDropdownMenu(overlayId, assignedEl);
             }
         });
     }
