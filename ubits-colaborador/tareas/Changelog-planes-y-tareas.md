@@ -233,6 +233,11 @@ Ajustes pendientes sobre los archivos entregados por la PM Mafe para las página
 
     **Solo en mocks (getMockActivities):** crear tarea (`fa-circle-plus`).
 
+## Implementación de la nueva versión de task-detail
+
+33. [x] **Implementación de la nueva versión de task-detail**  
+    Sustitución del panel lateral/modal viejo (overlay + `task-detail-panel`) por la **página dedicada** **task-detail.html** (vista inmersiva con subtareas, comentarios e historial). Desde **tareas.html**, **plan-detail.html**, **seguimiento.html** y **seguimiento-leader.html**, al hacer clic en una tarea se navega a `task-detail.html?id=<id>`. La página carga datos con `TAREAS_PLANES_DB.getTaskDetail(id)`, con fallback en `sessionStorage` para IDs sintéticos (vista líder) y mocks si no hay datos. Eliminados el markup del overlay/panel, las referencias a `task-detail-panel.css`/`.js` y el código asociado en `tareas.js`, `plan-detail.js` y `seguimiento.js`. Eliminados los componentes `components/task-detail-panel.js` y `components/task-detail-panel.css`.
+
 34. [x] **Detalle de tarea: dropdowns de Estado y Prioridad (como filtros de seguimiento)**
 
     En el panel de detalle de tarea (**task-detail**), al hacer clic en **Estado** o **Prioridad** se abre un **dropdown** similar a los de los encabezados de la tabla en seguimiento (lista de opciones con texto, sin checkboxes), que permite **cambiar** el estado o la prioridad de la tarea. Los cambios se registran en la sección Comentarios (ver ítem 32).
@@ -247,11 +252,10 @@ Ajustes pendientes sobre los archivos entregados por la PM Mafe para las página
 
     Implementación en `task-detail.js` (triggers con id `task-detail-estado-trigger` y `task-detail-prioridad-trigger`, componente dropdown-menu) y estilos en `task-detail.css` (`.task-detail-estado-trigger`, `.task-detail-prioridad-trigger`, `.task-detail-trigger-chevron`, `.task-detail-estado-trigger--vencida`).
 
-## Implementación de la nueva versión de task-detail
+35. [x] **Panel de comentarios: adjuntar imágenes y archivos**
 
-33. [x] **Implementación de la nueva versión de task-detail**  
-    Sustitución del panel lateral/modal viejo (overlay + `task-detail-panel`) por la **página dedicada** **task-detail.html** (vista inmersiva con subtareas, comentarios e historial). Desde **tareas.html**, **plan-detail.html**, **seguimiento.html** y **seguimiento-leader.html**, al hacer clic en una tarea se navega a `task-detail.html?id=<id>`. La página carga datos con `TAREAS_PLANES_DB.getTaskDetail(id)`, con fallback en `sessionStorage` para IDs sintéticos (vista líder) y mocks si no hay datos. Eliminados el markup del overlay/panel, las referencias a `task-detail-panel.css`/`.js` y el código asociado en `tareas.js`, `plan-detail.js` y `seguimiento.js`. Eliminados los componentes `components/task-detail-panel.js` y `components/task-detail-panel.css`.
+    En el **panel de comentarios** de la página de detalle de tarea (**task-detail**), el usuario puede **adjuntar imágenes y documentos** antes de enviar el comentario. Tras enviar, las imágenes se muestran en el feed y son clicables (se abren en un overlay a pantalla completa con botón cerrar). Los documentos se muestran como **chips** (componente Chip oficial, tamaño SM); al hacer hover aparece el tooltip *"Descargar archivo"* y al hacer clic se descarga el archivo cuando hay URL disponible. Los archivos seleccionados desde el equipo se guardan con blob URL (`URL.createObjectURL`) para permitir la descarga en la misma sesión.     Implementación en `task-detail.js` (strip de pendientes, feed de comentarios, overlay de imagen, chips con tooltip y descarga) y estilos en `task-detail.css`; import de `status-tag.css` para el estado de la tarea.
 
 ---
 
-*Última actualización: ítems 1–20 (11 feb), 21–26 (19 feb), 27 (Cargar más), 28–30 (20 feb), 31 (21 feb), 32 (23 feb), 33 (nueva versión task-detail), 34 (dropdowns Estado y Prioridad en task-detail) implementados.*
+*Última actualización: ítems 1–20 (11 feb), 21–26 (19 feb), 27 (Cargar más), 28–30 (20 feb), 31 (21 feb), 32 (23 feb), 33 (nueva versión task-detail), 34 (dropdowns Estado y Prioridad en task-detail), 35 (panel de comentarios: adjuntar imágenes y archivos) implementados.*

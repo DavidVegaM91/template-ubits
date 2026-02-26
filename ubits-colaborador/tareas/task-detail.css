@@ -107,6 +107,7 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+    justify-content: space-between;
     gap: var(--gap-xl);
 }
 
@@ -114,6 +115,20 @@
     display: flex;
     flex-direction: column;
     gap: var(--gap-xs);
+}
+
+/* Estado, Prioridad y Vencimiento: label a la izquierda del valor, gap 8px */
+.task-detail-attributes-row .task-detail-meta-cell {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+/* Asignado a y Creada por: label a la izquierda del elemento, gap 8px */
+.task-detail-meta-row .task-detail-meta-cell {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--gap-sm);
 }
 
 .task-detail-meta-label {
@@ -133,6 +148,19 @@
     width: 80px;
     min-width: 80px;
     justify-content: center;
+}
+
+/* Input de fecha (vencimiento) de la tarea padre y del panel Creación a partir de lista: ancho fijo 125px */
+#task-detail-vencimiento-wrap,
+#task-detail-mass-date-wrap {
+    width: 125px;
+    min-width: 125px;
+}
+
+#task-detail-vencimiento-wrap .ubits-input,
+#task-detail-mass-date-wrap .ubits-input {
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .task-detail-assignee-row,
@@ -440,6 +468,13 @@
 .task-detail-mass-panel-date>div,
 .task-detail-mass-panel-priority>div {
     min-width: 0;
+}
+
+/* Badge de prioridad en Creación a partir de lista: mismo ancho fijo que en la tarea padre (80px) */
+.task-detail-mass-panel-priority .ubits-badge-tag {
+    width: 80px;
+    min-width: 80px;
+    justify-content: center;
 }
 
 .task-detail-mass-panel-actions {
