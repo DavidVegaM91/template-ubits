@@ -338,7 +338,7 @@ openModal({
 
 **1. Descripción (Hero) – Sencilla, nada técnico.** Título + descripción en lenguaje de negocio (para qué sirve, dónde se usa). Sin clases, API ni archivos en la descripción principal.
 
-**2. Preview funcional – Todas las variaciones.** Controles con botones que cambien tipo/tamaño/estado. Usar clase `preview-control-btn` y `active` en el seleccionado; en `<style>`: `.preview-control-btn.active { background: var(--ubits-accent-brand) !important; color: white !important; }` y `.preview-control-btn.active span { color: white !important; }`. Contenedor con fondo `var(--ubits-bg-2)`. Si tiene tamaños o estados, selector para cada uno.
+**2. Preview funcional – Todas las variaciones.** Controles con botones que cambien tipo/tamaño/estado. Usar clase `preview-control-btn` y `active` en el seleccionado; en `<style>`: `.preview-control-btn.active { background: var(--ubits-accent-brand) !important; color: white !important; }` y `.preview-control-btn.active span { color: white !important; }`. Contenedor con fondo `var(--ubits-bg-2)`. Si tiene tamaños o estados, selector para cada uno. **Si un controlador del preview solo tiene dos opciones (sí/no, on/off, con/sin X), usar el componente oficial Switch (`ubits-switch`, `ubits-switch--md`, `ubits-switch__input`, `ubits-switch__track`, `ubits-switch__thumb`) e importar `components/switch.css`; no usar dos botones.**
 
 **3. Características generales – Simples, nada técnico.** Grid de tarjetas (icono + título + texto) en lenguaje de producto. Sin clases CSS ni nombres de funciones.
 
@@ -366,6 +366,7 @@ Si se incluyen, su HTML se inyecta en la página y se ve como “código basura�
 2. **Preview del componente**
    - Bloque con título “Preview del componente” (`ubits-heading-h2`), descripción y un **preview interactivo** del componente (variantes, tamaños, estados según aplique).
    - Controles opcionales (botones, switches) para cambiar variante/tamaño/estado en la misma página.
+   - **Control con solo dos opciones:** usar Switch oficial (`ubits-switch` + `switch.css`), no dos botones.
 
 3. **Características generales**
    - Sección “Características generales” con **tarjetas visuales** (grid de ítems: icono, título, descripción corta). Ej.: variantes, tamaños, estados, opciones (badge, icon-only, etc.).

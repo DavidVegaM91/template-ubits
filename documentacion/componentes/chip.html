@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="../../components/button.css">
     <link rel="stylesheet" href="../../components/toast.css">
     <link rel="stylesheet" href="../../components/chip.css">
+    <link rel="stylesheet" href="../../components/switch.css">
     <style>
         .preview-control-btn.active {
             background: var(--ubits-accent-brand) !important;
@@ -82,8 +83,10 @@
                                 <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-chip-size="sm" onclick="setChipPreviewSize('sm')"><span>SM (28px)</span></button>
                                 <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-chip-size="md" onclick="setChipPreviewSize('md')"><span>MD (36px)</span></button>
                                 <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin-left: 8px;">Icono izquierda:</span>
-                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-chip-icon="on" onclick="setChipPreviewIcon(true)"><span>Con icono</span></button>
-                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-chip-icon="off" onclick="setChipPreviewIcon(false)"><span>Sin icono</span></button>
+                                <label class="ubits-switch ubits-switch--md">
+                                    <input type="checkbox" class="ubits-switch__input" id="chip-preview-icon-switch" role="switch" checked onchange="setChipPreviewIcon(this.checked)">
+                                    <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                </label>
                             </div>
                             <div style="background: var(--ubits-bg-1); padding: 24px; border-radius: 12px;">
                                 <div id="chip-preview" class="chip-preview-row" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 24px 20px; align-items: start;">
@@ -389,9 +392,6 @@
         function setChipPreviewIcon(showIcon) {
             var container = document.getElementById('chip-preview');
             if (!container) return;
-            document.querySelectorAll('.preview-control-btn[data-chip-icon]').forEach(function(btn) {
-                btn.classList.toggle('active', (btn.getAttribute('data-chip-icon') === 'on') === showIcon);
-            });
             container.classList.toggle('chip-icon-off', !showIcon);
             document.querySelectorAll('[data-preview-chip]').forEach(function(chip) {
                 if (showIcon) chip.classList.add('ubits-chip--icon-left');
