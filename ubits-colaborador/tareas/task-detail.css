@@ -298,21 +298,65 @@
     min-width: 0;
 }
 
+/* Formulario añadir subtarea: misma visual que tareas (icono + input + Añadir dentro del borde azul) */
 .task-detail-add-subtask-form {
-    margin-top: var(--gap-sm);
+    margin-bottom: var(--gap-md);
     width: 100%;
-    max-width: 400px;
+    min-width: 0;
+    max-width: 100%;
 }
 
-.task-detail-add-subtask-form-inner {
+.task-detail-add-subtask-wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: var(--gap-md);
+    padding: var(--padding-sm) var(--padding-md);
+    border: 1px solid var(--ubits-accent-brand);
+    border-radius: var(--border-radius-sm);
+    background: var(--ubits-bg-1);
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.task-detail-add-subtask-icon {
     display: flex;
     align-items: center;
-    gap: var(--gap-sm);
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--ubits-accent-brand);
+    color: var(--ubits-bg-1);
+    flex-shrink: 0;
 }
 
-.task-detail-add-subtask-form-inner .ubits-input {
-    flex: 1;
+.task-detail-add-subtask-icon i {
+    font-size: var(--font-size-xs);
+}
+
+.task-detail-add-subtask-wrapper .task-detail-add-subtask-input,
+.task-detail-add-subtask-wrapper .ubits-input {
+    flex: 1 1 auto;
     min-width: 0;
+    width: 0;
+    max-width: 100%;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    box-sizing: border-box;
+}
+
+.task-detail-add-subtask-wrapper .task-detail-add-subtask-input::placeholder,
+.task-detail-add-subtask-wrapper .ubits-input::placeholder {
+    color: var(--ubits-fg-1-medium);
+}
+
+.task-detail-add-subtask-wrapper .task-detail-add-subtask-btn {
+    flex-shrink: 0;
 }
 
 /* Panel modo creación masiva */

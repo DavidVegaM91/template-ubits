@@ -639,6 +639,11 @@ body.page-tareas .dashboard-container {
     color: var(--ubits-fg-1-medium);
 }
 
+/* Botón "Añadir" dentro del wrapper (primario sm, a la derecha del input) */
+.tarea-add-input-wrapper .tarea-add-form-btn {
+    flex-shrink: 0;
+}
+
 /* Indicador de carga */
 .loading-indicator {
     text-align: center;

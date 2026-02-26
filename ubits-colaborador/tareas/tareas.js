@@ -540,6 +540,9 @@ function renderDaySection(fecha) {
                                 value="${estadoTareas.newTaskNameForDate}"
                                 autofocus
                             />
+                            <button type="button" class="ubits-button ubits-button--primary ubits-button--sm tarea-add-form-btn" data-date="${fechaKey}">
+                                <span>Añadir</span>
+                            </button>
                         </div>
                     </form>
                 ` : `
@@ -992,6 +995,43 @@ function initTareasView() {
                         const input = dayContainer.querySelector('.tarea-add-input');
                         if (input) input.focus();
                     }, 50);
+                    // Cerrar al hacer clic fuera si el input está vacío (capture para ejecutar antes)
+                    setTimeout(() => {
+                        const form = dayContainer.querySelector('.tarea-add-form');
+                        const wrapper = form && form.querySelector('.tarea-add-input-wrapper');
+                        const inputEl = form && form.querySelector('.tarea-add-input');
+                        if (!form || !wrapper || !inputEl) return;
+                        function closeIfEmptyAndOutside(ev) {
+                            if (!form.isConnected) {
+                                document.removeEventListener('click', closeIfEmptyAndOutside, true);
+                                return;
+                            }
+                            if (wrapper.contains(ev.target)) return;
+                            if (!inputEl.value.trim()) {
+                                estadoTareas.addingTaskForDate = null;
+                                estadoTareas.newTaskNameForDate = '';
+                                const cont = form.closest('.tareas-day-container');
+                                if (cont) {
+                                    const tempDiv2 = document.createElement('div');
+                                    tempDiv2.innerHTML = renderDaySection(parseDateString(fechaKey));
+                                    cont.innerHTML = tempDiv2.firstElementChild.innerHTML;
+                                    if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
+                                }
+                                document.removeEventListener('click', closeIfEmptyAndOutside, true);
+                            }
+                        }
+                        document.addEventListener('click', closeIfEmptyAndOutside, true);
+                    }, 0);
+                }
+            }
+
+            // Botón "Añadir" dentro del formulario inline (confirmar con clic)
+            if (e.target.closest('.tarea-add-form-btn')) {
+                const btn = e.target.closest('.tarea-add-form-btn');
+                const form = btn.closest('.tarea-add-form');
+                const input = form && form.querySelector('.tarea-add-input');
+                if (form && input && input.value.trim() && !estadoTareas.isCreatingTask) {
+                    handleCreateTaskInline(form.dataset.date, input.value.trim());
                 }
             }
 

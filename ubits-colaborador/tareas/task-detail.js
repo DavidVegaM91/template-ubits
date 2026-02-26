@@ -139,7 +139,7 @@
      * Registra una nueva actividad en el feed de la tarea.
      * @param {string} icon    - Clase Font Awesome sin 'far ' (e.g. 'fa-circle-check')
      * @param {string} author  - Nombre del usuario que realizó la acción
-     * @param {string} text    - Resto de la descripción (sin el nombre), e.g. 'añadió la subtarea “X”.'
+     * @param {string} text    - Resto de la descripción (sin el nombre), e.g. 'añadió la subtarea "X".'
      */
     function pushActivity(icon, author, text) {
         estado.activities.push({
@@ -519,19 +519,27 @@
             '</div>'
             : '<div class="task-detail-mass-panel" id="task-detail-mass-panel"></div>';
 
+        var addFormHtml = estado.addingSubtask
+            ? '<form class="task-detail-add-subtask-form" id="task-detail-add-subtask-form">' +
+            '<div class="task-detail-add-subtask-wrapper">' +
+            '<div class="task-detail-add-subtask-icon"><i class="far fa-plus"></i></div>' +
+            '<input type="text" class="ubits-input ubits-input--sm task-detail-add-subtask-input" placeholder="Nombre de la subtarea" data-subtask-add autofocus />' +
+            '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm task-detail-add-subtask-btn"><span>Añadir</span></button>' +
+            '</div></form>'
+            : '';
         var html =
             '<div class="task-detail-subtasks-header">' +
             '<h2 class="ubits-body-md-bold task-detail-subtasks-title"><i class="far fa-list-check"></i> Subtareas</h2>' +
             '<span class="ubits-body-sm-regular task-detail-subtasks-counter">' + completed + '/' + total + ' Completadas</span></div>' +
             '<div class="task-detail-subtasks-list" id="task-detail-subtasks-list">' + listHtml + '</div>' +
+            addFormHtml +
+            massPanel +
             '<div class="task-detail-add-row">' +
             '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="task-detail-add-subtask-btn">' +
             '<i class="far fa-plus"></i><span>Agregar una subtarea</span></button>' +
             '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="task-detail-mass-btn">' +
             '<i class="far fa-list"></i><span>Creación a partir de lista de texto</span></button>' +
-            '</div>' +
-            (estado.addingSubtask ? '<form class="task-detail-add-subtask-form" id="task-detail-add-subtask-form"><div class="task-detail-add-subtask-form-inner"><input type="text" class="ubits-input ubits-input--md" placeholder="Nombre de la subtarea" data-subtask-add /><button type="submit" class="ubits-button ubits-button--primary ubits-button--md"><span>Agregar</span></button></div></form>' : '') +
-            massPanel;
+            '</div>';
         var el = document.getElementById('task-detail-subtasks-block');
         if (el) el.innerHTML = html;
 
@@ -554,9 +562,9 @@
                             else t._justFinalized = false;
                             /* ── Actividad: completar o reabrir subtarea ── */
                             if (t.done && !wasDone) {
-                                pushActivity('fa-circle-check', currentUserName, 'marcó “' + t.name + '” como completada.');
+                                pushActivity('fa-circle-check', currentUserName, 'marcó "' + t.name + '" como completada.');
                             } else if (!t.done && wasDone) {
-                                pushActivity('fa-circle-xmark', currentUserName, 'reabrió la subtarea “' + t.name + '”.');
+                                pushActivity('fa-circle-xmark', currentUserName, 'reabrió la subtarea "' + t.name + '".');
                             }
                             var row = radioWrap.closest('.tarea-item');
                             var oldRect = (row && t.done) ? row.getBoundingClientRect() : null;
@@ -595,15 +603,60 @@
             /* Clic en asignado (avatar) en cada subtarea: ahora manejado por delegación al final para ser más robusto */
         }
 
+        function submitSubtaskForm(form) {
+            var inp = form.querySelector('input[data-subtask-add]');
+            if (!inp || !inp.value.trim()) return;
+            var nombre = inp.value.trim();
+            estado.subtasks.push({
+                id: Date.now(),
+                name: nombre,
+                done: false,
+                status: 'Activo',
+                endDate: estado.task ? estado.task.endDate : today,
+                priority: estado.task ? estado.task.priority : 'media',
+                assignee_name: estado.task ? estado.task.assignee_name : null,
+                assignee_email: estado.task ? estado.task.assignee_email : null,
+                assignee_avatar_url: estado.task ? estado.task.assignee_avatar_url : null
+            });
+            pushActivity('fa-plus-circle', currentUserName, 'añadió la subtarea "' + nombre + '".');
+            estado.addingSubtask = false;
+            renderSubtasksBlock();
+            renderCommentsBlock();
+        }
+
+        function closeSubtaskFormIfEmpty() {
+            var form = document.getElementById('task-detail-add-subtask-form');
+            var inp = form && form.querySelector('input[data-subtask-add]');
+            if (form && inp && !inp.value.trim()) {
+                estado.addingSubtask = false;
+                renderSubtasksBlock();
+            }
+        }
+
         var addSubtaskBtn = document.getElementById('task-detail-add-subtask-btn');
         if (addSubtaskBtn) {
             addSubtaskBtn.onclick = function () {
                 estado.addingSubtask = true;
                 renderSubtasksBlock();
                 var form = document.getElementById('task-detail-add-subtask-form');
+                var inp = form && form.querySelector('input[data-subtask-add]');
+                if (inp) setTimeout(function () { inp.focus(); }, 50);
                 if (form) {
-                    var inp = form.querySelector('input[data-subtask-add]');
-                    if (inp) setTimeout(function () { inp.focus(); }, 50);
+                    var wrapper = form.querySelector('.task-detail-add-subtask-wrapper');
+                    if (wrapper) {
+                        setTimeout(function () {
+                            function closeIfEmptyAndOutside(ev) {
+                                if (!form.isConnected) {
+                                    document.removeEventListener('click', closeIfEmptyAndOutside, true);
+                                    return;
+                                }
+                                if (wrapper.contains(ev.target)) return;
+                                closeSubtaskFormIfEmpty();
+                                document.removeEventListener('click', closeIfEmptyAndOutside, true);
+                            }
+                            document.addEventListener('click', closeIfEmptyAndOutside, true);
+                        }, 0);
+                    }
                 }
             };
         }
@@ -611,28 +664,20 @@
         if (addForm) {
             addForm.onsubmit = function (e) {
                 e.preventDefault();
-                var inp = addForm.querySelector('input[data-subtask-add]');
-                if (inp && inp.value.trim()) {
-                    var nombre = inp.value.trim();
-                    estado.subtasks.push({
-                        id: Date.now(),
-                        name: nombre,
-                        done: false,
-                        status: 'Activo',
-                        endDate: estado.task ? estado.task.endDate : today,
-                        priority: estado.task ? estado.task.priority : 'media',
-                        assignee_name: estado.task ? estado.task.assignee_name : null,
-                        assignee_email: null,
-                        assignee_avatar_url: null
-                    });
-                    /* ── Actividad: nueva subtarea individual ── */
-                    pushActivity('fa-plus-circle', currentUserName, 'añadió la subtarea “' + nombre + '”.');
-                    inp.value = '';
-                    estado.addingSubtask = false;
-                    renderSubtasksBlock();
-                    renderCommentsBlock();
-                }
+                submitSubtaskForm(addForm);
             };
+            var inp = addForm.querySelector('input[data-subtask-add]');
+            if (inp) {
+                inp.addEventListener('blur', function () {
+                    closeSubtaskFormIfEmpty();
+                }, { once: true });
+            }
+            var addSubtaskBtnEl = addForm.querySelector('.task-detail-add-subtask-btn');
+            if (addSubtaskBtnEl) {
+                addSubtaskBtnEl.onclick = function () {
+                    submitSubtaskForm(addForm);
+                };
+            }
         }
         var massBtn = document.getElementById('task-detail-mass-btn');
         if (massBtn) {
@@ -662,11 +707,21 @@
                     var priority = 'media';
                     var endDate = estado.task ? estado.task.endDate : today;
                     lines.forEach(function (name) {
-                        estado.subtasks.push({ id: Date.now() + Math.random(), name: name, done: false, status: 'Activo', endDate: endDate, priority: priority, assignee_name: null, assignee_email: null, assignee_avatar_url: null });
+                        estado.subtasks.push({
+                            id: Date.now() + Math.random(),
+                            name: name,
+                            done: false,
+                            status: 'Activo',
+                            endDate: endDate,
+                            priority: priority,
+                            assignee_name: estado.task ? estado.task.assignee_name : null,
+                            assignee_email: estado.task ? estado.task.assignee_email : null,
+                            assignee_avatar_url: estado.task ? estado.task.assignee_avatar_url : null
+                        });
                     });
                     /* ── Actividad: creación masiva de subtareas ── */
                     if (lines.length === 1) {
-                        pushActivity('fa-plus-circle', currentUserName, 'añadió la subtarea “' + lines[0] + '”.');
+                        pushActivity('fa-plus-circle', currentUserName, 'añadió la subtarea "' + lines[0] + '".');
                     } else if (lines.length > 1) {
                         pushActivity('fa-list-plus', currentUserName, 'añadió ' + lines.length + ' subtareas en lote.');
                     }
