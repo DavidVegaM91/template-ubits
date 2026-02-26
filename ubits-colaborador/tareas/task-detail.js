@@ -304,7 +304,7 @@
         var prioridadIcon = { alta: 'fa-chevrons-up', media: 'fa-chevron-up', baja: 'fa-chevron-down' };
         var prioridadVariant = { alta: 'error', media: 'warning', baja: 'info' };
         var html =
-            '<textarea class="task-detail-title-editable ubits-body-md-bold" id="task-detail-title" placeholder="Título de la tarea" rows="1" maxlength="250">' + escapeHtml(task.name) + '</textarea>' +
+            '<textarea class="task-detail-title-editable ubits-heading-h1" id="task-detail-title" placeholder="Título de la tarea" rows="1" maxlength="250">' + escapeHtml(task.name) + '</textarea>' +
             '<textarea class="task-detail-desc-editable ubits-body-sm-regular" id="task-detail-desc" placeholder="Descripción de la tarea" rows="1">' + escapeHtml(task.description || '') + '</textarea>' +
             '<div class="task-detail-meta-row">' +
             '<div class="task-detail-meta-cell">' +

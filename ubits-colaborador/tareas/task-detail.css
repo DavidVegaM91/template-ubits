@@ -207,14 +207,13 @@
 /* Edición inline: misma fórmula que el título del chat en modo-estudio-ia (sin borde; hover/focus = fondo + radius) */
 .task-detail-title-editable {
     font-family: 'Noto Sans', sans-serif;
-    font-size: var(--font-size-md);
-    font-weight: var(--font-weight-semibold);
-    line-height: 1.4;
+    /* font-size y font-weight heredados de ubits-heading-h1 */
+    line-height: 1.25;
     color: var(--ubits-fg-1-high);
     border: none;
     background: transparent;
     width: 100%;
-    min-height: 1.4em;
+    min-height: 1.25em;
     padding: 0;
     margin: 0;
     resize: none;
