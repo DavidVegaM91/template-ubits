@@ -156,15 +156,15 @@
     padding: 0;
 }
 
-/* Saved (Figma): mismo cuadro y padding que Hover, solo cambia el fondo al hacer hover */
+/* Idle (default): sin fondo; al hover fondo tertiary para coherencia con botones */
 .ubits-save-indicator--idle-plain {
-    background-color: var(--ubits-bg-1);
+    background-color: transparent;
 }
 .ubits-save-indicator--idle-plain .ubits-save-indicator__icon {
     color: var(--ubits-fg-1-low);
 }
 .ubits-save-indicator--idle-plain:hover {
-    background-color: var(--ubits-bg-2);
+    background-color: var(--ubits-btn-tertiary-bg-hover);
 }
 
 /* Hover (Figma): fondo sutil por defecto */

@@ -490,8 +490,10 @@ function createHeaderProductHTML(options = {}) {
         menuButton = null,
         variant = 'default', // 'default' | 'tabs-with-actions'
         tabs = [], // Para variant tabs-with-actions: [{ id: string, label: string }, ...]
-        activeTabId = null // Para variant tabs-with-actions: id del tab activo
+        activeTabId = null, // Para variant tabs-with-actions: id del tab activo
+        _containerId = '' // Uso interno: ID del contenedor para generar ID del save-indicator
     } = options;
+    const saveIndicatorId = _containerId ? _containerId + '-save-indicator' : 'header-product-save-indicator';
     
     // Si breadcrumbItems no se pasó o es undefined, usar array vacío
     const finalBreadcrumbItems = breadcrumbItems !== undefined ? breadcrumbItems : [];
@@ -506,6 +508,7 @@ function createHeaderProductHTML(options = {}) {
             </button>`;
         }).join('');
 
+        const saveIndicatorHTML = `<div class="ubits-header-product__save-indicator-wrap" id="${saveIndicatorId}"></div>`;
         const aiButtonHTML = aiButton ? `
             <button class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--md" ${aiButton.onClick ? `onclick="${aiButton.onClick}"` : ''}>
                 <i class="far fa-sparkles"></i>
@@ -529,8 +532,9 @@ function createHeaderProductHTML(options = {}) {
                 <i class="far fa-ellipsis-v"></i>
             </button>
         ` : '';
-        const actionsHTML = (aiButtonHTML || secondaryButtonsHTML || primaryButtonHTML || menuButtonHTML) ? `
+        const actionsHTML = (saveIndicatorHTML || aiButtonHTML || secondaryButtonsHTML || primaryButtonHTML || menuButtonHTML) ? `
             <div class="ubits-header-product__actions">
+                ${saveIndicatorHTML}
                 ${aiButtonHTML}
                 ${secondaryButtonsHTML}
                 ${primaryButtonHTML}
@@ -565,6 +569,9 @@ function createHeaderProductHTML(options = {}) {
             <i class="far fa-info-circle"></i>
         </button>
     ` : '';
+
+    // Contenedor save-indicator (a la izquierda del botón IA). Por defecto vacío (apagado); la página puede llamar renderSaveIndicator(containerId + '-save-indicator', options).
+    const saveIndicatorHTML = `<div class="ubits-header-product__save-indicator-wrap" id="${saveIndicatorId}"></div>`;
 
     // Botón IA
     const aiButtonHTML = aiButton ? `
@@ -624,10 +631,11 @@ function createHeaderProductHTML(options = {}) {
         </div>
     ` : '';
 
-    // Renderizar acciones solo si hay botones
-    const actionsHTML = (aiButtonHTML || secondaryButtonsHTML || primaryButtonHTML || menuButtonHTML) ? `
+    // Renderizar acciones solo si hay botones o save-indicator
+    const actionsHTML = (saveIndicatorHTML || aiButtonHTML || secondaryButtonsHTML || primaryButtonHTML || menuButtonHTML) ? `
         <!-- Acciones (derecha) -->
         <div class="ubits-header-product__actions">
+            ${saveIndicatorHTML}
             ${aiButtonHTML}
             ${secondaryButtonsHTML}
             ${primaryButtonHTML}
@@ -738,7 +746,7 @@ function loadHeaderProduct(containerId, options = {}) {
         return;
     }
 
-    const html = createHeaderProductHTML(options);
+    const html = createHeaderProductHTML({ ...options, _containerId: containerId });
     container.innerHTML = html;
 
     // Agregar event listeners si se proporcionaron funciones

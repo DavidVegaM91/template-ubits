@@ -115,8 +115,9 @@
   /* Use it for foreground elements (such as text or icons) on default-state gray subtle surfaces, when the color has no specific meaning. */
   /* Gray */
   --ubits-fg-gray-subtle: #2b3543;
+  --ubits-fg-gray-subtle-default: #2B3543;
   --ubits-fg-gray-subtle-inverted: #2b3543;
-  --ubits-fg-gray-subtle-hover: #DBDDE0;
+  --ubits-fg-gray-subtle-hover: #16202F;
   --ubits-fg-gray-subtle-inverted-hover: #16202f;
   --ubits-fg-gray-subtle-static: #2b3543;
   --ubits-fg-gray-subtle-static-inverted: #dbdde0;
@@ -308,18 +309,25 @@
      BACKGROUND COLORS
      ======================================== */
   
-  /* Use it for active/selected state backgrounds (e.g. selected list item). */
-  --ubits-bg-active: rgba(12, 91, 239, 0.2);
+  /* Use it for active/selected state backgrounds (e.g. selected list item). Light: #0C5BEF @ 15% opacity */
+  --ubits-bg-active: rgba(12, 91, 239, 0.15);
   --ubits-bg-level-1: var(--ubits-bg-1);
   /* Use it for primary surfaces (those with the highest z-index). */
   --ubits-bg-1: #ffffff;
   /* Use it for secondary surfaces. This is the base background color for screens. */
   --ubits-bg-2: #F3F3F4;
+  /* Gray subtle surfaces (e.g. Chip default, focus) */
+  --ubits-bg-gray-subtle-default: #F3F3F4;
+  --ubits-bg-gray-subtle-hover: #DBDDE0;
   /* Use it for tertiary surfaces. */
   --ubits-bg-3: #e7e8ea;
   /* Use it for quaternary surfaces. */
   --ubits-bg-4: #dbdde0;
   --ubits-bg-4-static: #DBDDE0;
+  /* Use it for gray subtle pressed state (e.g. Chip pressed). Figma: color/bg/gray/subtle/pressed */
+  --ubits-bg-gray-subtle-pressed: #c5c6cb;
+  /* Active state (e.g. Chip active). Light: #0C5BEF @ 15% opacity; dark: solid #0C5BEF */
+  --ubits-bg-active-solid: rgba(12, 91, 239, 0.15);
   --ubits-bg-5: #ced0d5;
   --ubits-bg-dim: #00000080;
   /* Use it for disabled-state surfaces, such as disabled buttons, cards or containers. */
@@ -677,8 +685,9 @@
   --ubits-fg-blue-subtle-static-inverted-hover: #141e3f;
   
   --ubits-fg-gray-subtle: #dbdde0;
+  --ubits-fg-gray-subtle-default: #DBDDE0;
   --ubits-fg-gray-subtle-inverted: #dbdde0;
-  --ubits-fg-gray-subtle-hover: #2A303F;
+  --ubits-fg-gray-subtle-hover: #C5C6CB;
   --ubits-fg-gray-subtle-inverted-hover: #16202f;
   --ubits-fg-gray-subtle-static: #2b3543;
   --ubits-fg-gray-subtle-static-inverted: #dbdde0;
@@ -855,9 +864,13 @@
   --ubits-bg-level-1: var(--ubits-bg-1);
   --ubits-bg-1: #202837;
   --ubits-bg-2: #0E1825;
+  --ubits-bg-gray-subtle-default: #3B4350;
+  --ubits-bg-gray-subtle-hover: #2A303F;
   --ubits-bg-3: #0c121c;
   --ubits-bg-4: #050b15;
   --ubits-bg-4-static: #DBDDE0;
+  --ubits-bg-gray-subtle-pressed: #16202F;
+  --ubits-bg-active-solid: #0C5BEF;
   --ubits-bg-5: #000000;
   --ubits-bg-dim: #000000b2;
   --ubits-bg-disabled: #3b4350;

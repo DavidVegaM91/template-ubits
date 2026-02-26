@@ -75,11 +75,16 @@ function renderSaveIndicator(containerId, options) {
     }
 
     var sizeClass = 'ubits-save-indicator--' + size;
+    var tooltipAttr = (state === 'idle' || state === 'saved') ? ' data-tooltip="Cambios guardados"' : '';
     container.innerHTML =
-        '<div class="ubits-save-indicator ' + sizeClass + ' ' + variantClass + '" role="status" aria-live="polite" aria-label="' + getSaveIndicatorAriaLabel(state, savingText, savedText, errorText) + '">' +
+        '<div class="ubits-save-indicator ' + sizeClass + ' ' + variantClass + '" role="status" aria-live="polite" aria-label="' + getSaveIndicatorAriaLabel(state, savingText, savedText, errorText) + '"' + tooltipAttr + '>' +
         '<span class="' + iconClass + '">' + iconContent + '</span>' +
         textContent +
         '</div>';
+    if (tooltipAttr && typeof initTooltip === 'function') {
+        var selector = '#' + containerId + ' .ubits-save-indicator';
+        initTooltip(selector);
+    }
 }
 
 function escapeSaveIndicatorHtml(text) {

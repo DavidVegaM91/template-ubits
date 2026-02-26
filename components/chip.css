@@ -1,0 +1,207 @@
+/* ========================================
+   UBITS CHIP COMPONENT
+   Compact, interactive element for filters, selections or removable items.
+   Tokens:
+   - Default:  bg = bg-gray-subtle-default (light F3F3F4, dark 3B4350)
+   - Default:  fg = fg-gray-subtle-default (light 2B3543, dark DBDDE0)
+   - Hover:    bg = bg-gray-subtle-hover (light DBDDE0, dark 2A303F)
+   - Pressed:  bg = bg-gray-subtle-pressed, fg = fg-gray-subtle-hover
+   - Active:   bg = bg-active-solid (#0C5BEF), fg = accent-brand
+   - Focus:    bg = bg-gray-subtle-default, fg = fg-gray-subtle-default + ring
+   - Disabled: bg = bg-disabled, fg = fg-on-disabled
+   Tamaños: XS 20px / 11px, SM 28px / 13px, MD 36px / 16px (alto / font-size)
+   ======================================== */
+
+/* Base chip: pill shape, flex, tokens. Por defecto XS. */
+.ubits-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-xs);
+    min-height: 20px;
+    padding: 4px var(--padding-sm);
+    border-radius: var(--border-radius-full);
+    border: none;
+    background: var(--ubits-bg-gray-subtle-default);
+    color: var(--ubits-fg-gray-subtle-default);
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-xs);
+    font-weight: 400;
+    line-height: 13px;
+    white-space: nowrap;
+    box-sizing: border-box;
+    cursor: default;
+    transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* ========== Tamaños ========== */
+.ubits-chip--xs {
+    min-height: 20px;
+    padding: 4px var(--padding-sm);
+    font-size: var(--font-size-xs);
+    line-height: 13px;
+}
+
+.ubits-chip--sm {
+    min-height: 28px;
+    padding: 6px var(--padding-md);
+    font-size: var(--font-size-sm);
+    line-height: 16px;
+}
+
+.ubits-chip--md {
+    min-height: 36px;
+    padding: 8px var(--padding-lg);
+    font-size: var(--font-size-md);
+    line-height: 20px;
+}
+
+/* Iconos dentro del chip usan FontAwesome */
+.ubits-chip i {
+    font-family: "Font Awesome 6 Pro", "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
+}
+
+.ubits-chip__text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Icono izquierda: orden visual */
+.ubits-chip--icon-left {
+    flex-direction: row;
+}
+
+/* Icono izquierda: tamaño según chip (xs/sm/md) */
+.ubits-chip--icon-left i:first-of-type {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+}
+
+.ubits-chip--sm.ubits-chip--icon-left i:first-of-type {
+    width: 20px;
+    height: 20px;
+    font-size: 13px;
+}
+
+.ubits-chip--md.ubits-chip--icon-left i:first-of-type {
+    width: 24px;
+    height: 24px;
+    font-size: 16px;
+}
+
+/* Botón de cierre: tamaño según chip */
+.ubits-chip__close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    padding: var(--padding-xs);
+    margin: -4px -4px -4px 0;
+    border: none;
+    border-radius: var(--border-radius-full);
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.15s ease;
+}
+
+.ubits-chip__close i {
+    font-size: 10px;
+}
+
+.ubits-chip--sm .ubits-chip__close {
+    width: 24px;
+    height: 24px;
+    margin: -6px -6px -6px 0;
+}
+
+.ubits-chip--sm .ubits-chip__close i {
+    font-size: 12px;
+}
+
+.ubits-chip--md .ubits-chip__close {
+    width: 28px;
+    height: 28px;
+    margin: -8px -8px -8px 0;
+}
+
+.ubits-chip--md .ubits-chip__close i {
+    font-size: 14px;
+}
+
+.ubits-chip__close:hover {
+    background: var(--ubits-bg-gray-subtle-hover);
+}
+
+.ubits-chip__close:focus {
+    outline: none;
+}
+
+/* ========== Estado por defecto (ya definido arriba) ========== */
+
+/* ========== Hover ========== */
+.ubits-chip:not(.ubits-chip--disabled):hover {
+    background: var(--ubits-bg-gray-subtle-hover);
+    color: var(--ubits-fg-gray-subtle-hover);
+}
+
+.ubits-chip:not(.ubits-chip--disabled):hover .ubits-chip__close {
+    background: transparent;
+}
+
+.ubits-chip:not(.ubits-chip--disabled):hover .ubits-chip__close:hover {
+    background: var(--ubits-bg-gray-subtle-pressed);
+}
+
+/* ========== Pressed (Figma: bg gray/subtle/pressed, fg gray/subtle/hover) ========== */
+.ubits-chip:not(.ubits-chip--disabled):active {
+    background: var(--ubits-bg-gray-subtle-pressed);
+    color: var(--ubits-fg-gray-subtle-hover);
+}
+
+/* ========== Active (seleccionado) ========== */
+.ubits-chip.ubits-chip--active {
+    background: var(--ubits-bg-active-solid);
+    color: var(--ubits-accent-brand);
+}
+
+.ubits-chip.ubits-chip--active .ubits-chip__close:hover {
+    background: rgba(12, 91, 239, 0.25);
+}
+
+/* ========== Focus (teclado): mismo fondo y texto que default + ring ========== */
+.ubits-chip:focus-visible {
+    background: var(--ubits-bg-gray-subtle-default);
+    color: var(--ubits-fg-gray-subtle-default);
+    outline: 2px solid var(--ubits-button-focus-ring);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px var(--ubits-button-focus-ring);
+}
+
+.ubits-chip__close:focus-visible {
+    outline: 2px solid var(--ubits-button-focus-ring);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px var(--ubits-button-focus-ring);
+}
+
+/* ========== Disabled ========== */
+.ubits-chip.ubits-chip--disabled {
+    background: var(--ubits-bg-disabled);
+    color: var(--ubits-fg-on-disabled);
+    cursor: not-allowed;
+}
+
+.ubits-chip.ubits-chip--disabled .ubits-chip__close {
+    cursor: not-allowed;
+    background: var(--ubits-bg-disabled);
+}
+
+.ubits-chip.ubits-chip--disabled .ubits-chip__close:hover {
+    background: var(--ubits-bg-disabled);
+}

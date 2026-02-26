@@ -1376,7 +1376,7 @@
             currentFilters.persona.forEach((personaValue, index) => {
                 chips.push({
                     type: 'persona',
-                    label: 'Persona',
+                    label: 'Asignado',
                     value: personaValue,
                     remove: () => {
                         // Remover solo este valor del array
@@ -1683,21 +1683,26 @@
         // Mostrar/ocultar widget
         if (hasFilters) {
             widget.style.display = 'flex';
-            container.innerHTML = chips.map(chip => `
-                <div class="filtro-chip">
-                    <span class="filtro-chip-label">${chip.label}:</span>
-                    <span class="filtro-chip-value">${chip.value}</span>
-                    <button type="button" class="filtro-chip-remove" data-chip-type="${chip.type}" aria-label="Remover filtro ${chip.label}">
-                        <i class="far fa-xmark"></i>
-                    </button>
-                </div>
-            `).join('');
+            var fullText = function (c) { return c.label + ': ' + c.value; };
+            var escapeTooltipAttr = function (s) { return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); };
+            container.innerHTML = chips.map((chip, index) =>
+                '<span class="ubits-chip ubits-chip--xs ubits-chip--close seguimiento-filtro-chip" data-chip-index="' + index + '" data-tooltip="' + escapeTooltipAttr(fullText(chip)) + '" data-tooltip-position="top">' +
+                '<span class="ubits-chip__text">' + escapeHtml(chip.label) + ': ' + escapeHtml(chip.value) + '</span>' +
+                '<button type="button" class="ubits-chip__close" data-chip-index="' + index + '" aria-label="Quitar filtro"><i class="far fa-times"></i></button>' +
+                '</span>'
+            ).join('');
 
-            // Agregar event listeners a los botones de remover
-            container.querySelectorAll('.filtro-chip-remove').forEach((btn, index) => {
+            if (typeof initTooltip === 'function') {
+                initTooltip('.filtros-chips-container .ubits-chip[data-tooltip]');
+            }
+
+            container.querySelectorAll('.ubits-chip__close').forEach((btn) => {
                 btn.addEventListener('click', function () {
-                    chips[index].remove();
-                    renderFiltrosAplicados();
+                    const idx = parseInt(this.getAttribute('data-chip-index'), 10);
+                    if (!isNaN(idx) && chips[idx] && typeof chips[idx].remove === 'function') {
+                        chips[idx].remove();
+                        renderFiltrosAplicados();
+                    }
                 });
             });
         } else {

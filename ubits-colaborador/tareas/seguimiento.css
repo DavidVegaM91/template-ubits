@@ -316,88 +316,20 @@
 .filtros-chips-container {
     display: flex;
     align-items: center;
-    gap: var(--gap-xs);
-    /* 4px entre chips */
+    gap: var(--gap-sm);
     flex-wrap: wrap;
 }
 
-.filtro-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--gap-none);
-    padding: 0 8px;
-    min-height: 20px;
-    max-width: 120px;
-    background: var(--ubits-bg-2);
-    /* bg-gray/subtle/default #f3f3f4 */
-    border-radius: var(--border-radius-full);
-    /* Full rounded como en Figma */
-    font-size: var(--font-size-xs);
-    line-height: 13px;
-    font-family: 'Noto Sans', sans-serif;
-    font-weight: var(--font-weight-regular);
-    color: var(--ubits-fg-1-medium);
-    /* fg-gray/subtle/default #2b3543 */
-    transition: background-color 0.2s ease, color 0.2s ease;
-    overflow: hidden;
+/* Chip oficial UBITS (xs): conservar ancho máximo en seguimiento */
+.filtros-chips-container .ubits-chip {
+    max-width: 150px;
 }
 
-.filtro-chip:hover {
-    background: var(--ubits-bg-4);
-    color: var(--ubits-fg-gray-subtle-inverted-hover);
-}
-
-.filtro-chip:active {
-    background: var(--ubits-bg-5);
-    color: var(--ubits-fg-gray-subtle-inverted-hover);
-}
-
-.filtro-chip-label {
-    color: inherit;
-    font-weight: var(--font-weight-regular);
-    flex-shrink: 0;
-}
-
-.filtro-chip-value {
-    color: inherit;
-    font-weight: var(--font-weight-regular);
-    white-space: nowrap;
+.filtros-chips-container .ubits-chip__text {
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
     min-width: 0;
-    flex: 1;
-}
-
-.filtro-chip-remove {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 20px;
-    height: 20px;
-    min-width: 20px;
-    min-height: 20px;
-    padding: var(--padding-xs);
-    margin: 0;
-    background: transparent;
-    border: none;
-    border-radius: var(--border-radius-full);
-    /* Full rounded */
-    cursor: pointer;
-    color: inherit;
-    transition: background-color 0.2s ease;
-    flex-shrink: 0;
-}
-
-.filtro-chip-remove:hover {
-    background: var(--ubits-bg-sub-surface-hover);
-}
-
-.filtro-chip-remove:active {
-    background: var(--ubits-bg-sub-surface-pressed);
-}
-
-.filtro-chip-remove i {
-    font-size: var(--font-size-xs);
 }
 
 /* Contenedor del botón "Cargar más" (sustituye paginador) */

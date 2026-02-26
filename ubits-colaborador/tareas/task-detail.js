@@ -64,6 +64,18 @@
     }
 
     const today = getTodayString();
+    var SAVE_INDICATOR_ID = 'task-detail-header-container-save-indicator';
+
+    function triggerFakeSave() {
+        if (typeof renderSaveIndicator !== 'function') return;
+        renderSaveIndicator(SAVE_INDICATOR_ID, { state: 'saving', size: 'sm' });
+        setTimeout(function () {
+            renderSaveIndicator(SAVE_INDICATOR_ID, { state: 'saved', size: 'sm' });
+            setTimeout(function () {
+                renderSaveIndicator(SAVE_INDICATOR_ID, { state: 'idle', size: 'sm' });
+            }, 2500);
+        }, 800);
+    }
 
     var estado = {
         task: null,
@@ -351,6 +363,7 @@
                     pushActivity('fa-calendar-pen', currentUserName, 'cambió la fecha límite al ' + dateKeyLabel(ymd) + '.');
                     renderCommentsBlock();
                     setTimeout(function () { renderInfoBlock(); }, 0);
+                    triggerFakeSave();
                 }
             });
             var dateInput = document.querySelector('#task-detail-vencimiento-wrap .ubits-input');
@@ -361,9 +374,25 @@
         resizeTaskDetailDesc();
         requestAnimationFrame(function () { resizeTaskDetailDesc(); });
         var titleEl = document.getElementById('task-detail-title');
-        if (titleEl) titleEl.addEventListener('input', resizeTaskDetailTitle);
+        if (titleEl) {
+            titleEl.addEventListener('input', resizeTaskDetailTitle);
+            titleEl.addEventListener('blur', function () {
+                if (estado.task) {
+                    estado.task.name = this.value.trim() || estado.task.name;
+                    triggerFakeSave();
+                }
+            });
+        }
         var descEl = document.getElementById('task-detail-desc');
-        if (descEl) descEl.addEventListener('input', resizeTaskDetailDesc);
+        if (descEl) {
+            descEl.addEventListener('input', resizeTaskDetailDesc);
+            descEl.addEventListener('blur', function () {
+                if (estado.task) {
+                    estado.task.description = this.value.trim() || '';
+                    triggerFakeSave();
+                }
+            });
+        }
 
         /* Clic en asignado: abrir dropdown con autocomplete para cambiar asignado (tarea principal) */
         var assigneeRow = document.getElementById('task-detail-assignee-row');
@@ -371,7 +400,7 @@
             assigneeRow.addEventListener('click', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
-                if (estado.task) openAssigneeDropdown(assigneeRow, estado.task, function () { renderInfoBlock(); renderCommentsBlock(); });
+                if (estado.task) openAssigneeDropdown(assigneeRow, estado.task, function () { renderInfoBlock(); renderCommentsBlock(); triggerFakeSave(); });
             });
             assigneeRow.addEventListener('keydown', function (e) {
                 if (e.key === 'Enter' || e.key === ' ') {
@@ -416,6 +445,7 @@
                             if (overlayEl.parentNode) overlayEl.remove();
                             renderInfoBlock();
                             renderCommentsBlock();
+                            triggerFakeSave();
                         });
                     });
                     overlayEl.addEventListener('click', function (ev) {
@@ -460,6 +490,7 @@
                             if (overlayEl.parentNode) overlayEl.remove();
                             renderInfoBlock();
                             renderCommentsBlock();
+                            triggerFakeSave();
                         });
                     });
                     overlayEl.addEventListener('click', function (ev) {
@@ -569,6 +600,7 @@
                             var row = radioWrap.closest('.tarea-item');
                             var oldRect = (row && t.done) ? row.getBoundingClientRect() : null;
                             renderSubtasksBlock();
+                            triggerFakeSave();
                             if (t.done && oldRect) {
                                 var listElAfter = document.getElementById('task-detail-subtasks-list');
                                 var newRow = listElAfter ? listElAfter.querySelector('.tarea-item[data-tarea-id="' + id + '"]') : null;
@@ -622,6 +654,7 @@
             estado.addingSubtask = false;
             renderSubtasksBlock();
             renderCommentsBlock();
+            triggerFakeSave();
         }
 
         function closeSubtaskFormIfEmpty() {
@@ -728,6 +761,7 @@
                     estado.massPanelOpen = false;
                     renderSubtasksBlock();
                     renderCommentsBlock();
+                    triggerFakeSave();
                 };
             }
         }
@@ -743,8 +777,34 @@
 
     var currentUserName = 'María Alejandra Sánchez Pardo';
 
-    // Imágenes pendientes de envío (persisten entre re-renders del bloque de comentarios)
+    // Imágenes y documentos pendientes de envío (persisten entre re-renders del bloque de comentarios)
     var pendingImages = [];
+    var pendingFiles = []; // documentos: { name, type, size }
+
+    function renderPendingFilesPreview() {
+        var strip = document.getElementById('task-detail-pending-files-strip');
+        if (!strip) return;
+        if (pendingFiles.length === 0) {
+            strip.innerHTML = '';
+            strip.style.display = 'none';
+            return;
+        }
+        strip.style.display = 'flex';
+        strip.innerHTML = pendingFiles.map(function (f, idx) {
+            return '<span class="ubits-chip ubits-chip--xs ubits-chip--icon-left ubits-chip--close task-detail-pending-file-chip" data-idx="' + idx + '">' +
+                '<i class="far fa-file-lines"></i>' +
+                '<span class="ubits-chip__text">' + escapeHtml(f.name) + '</span>' +
+                '<button type="button" class="ubits-chip__close task-detail-pending-file-remove" aria-label="Quitar documento" data-idx="' + idx + '"><i class="far fa-times"></i></button>' +
+                '</span>';
+        }).join('');
+        strip.querySelectorAll('.task-detail-pending-file-remove').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var i = parseInt(this.dataset.idx, 10);
+                pendingFiles.splice(i, 1);
+                renderPendingFilesPreview();
+            });
+        });
+    }
 
     function renderPendingImagesPreview() {
         var strip = document.getElementById('task-detail-pending-images-strip');
@@ -852,6 +912,7 @@
                     '<div class="task-detail-comment-bubble">' +
                     (c.text ? '<p class="task-detail-comment-text">' + escapeHtml(c.text) + '</p>' : '') +
                     (c.images && c.images.length ? '<div class="task-detail-comment-images">' + c.images.map(function (img) { return '<img src="' + escapeHtml(img) + '" alt="">'; }).join('') + '</div>' : '') +
+                    (c.files && c.files.length ? '<div class="task-detail-comment-files">' + c.files.map(function (f) { return '<span class="ubits-chip ubits-chip--xs ubits-chip--icon-left"><i class="far fa-file-lines"></i><span class="ubits-chip__text">' + escapeHtml(f.name) + '</span></span>'; }).join('') + '</div>' : '') +
                     '</div></div></div>'
                 );
             } else {
@@ -875,15 +936,16 @@
             '<h2 class="task-detail-comments-header-title"><i class="far fa-comments"></i> Comentarios</h2>' +
             '<span class="task-detail-comments-badge">' + total + '</span></div>' +
             '<div class="task-detail-comments-feed" id="task-detail-comments-feed">' + feed.join('') + '</div>' +
-            '<input type="file" class="task-detail-comments-file-input" id="task-detail-comment-files" accept="image/*" multiple hidden />' +
+            '<input type="file" class="task-detail-comments-file-input" id="task-detail-comment-files" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.csv,.ppt,.pptx" multiple hidden />' +
             '<div class="task-detail-comments-input-wrap">' +
             '<div class="task-detail-pending-images-strip" id="task-detail-pending-images-strip"></div>' +
+            '<div class="task-detail-pending-files-strip" id="task-detail-pending-files-strip"></div>' +
             '<div class="task-detail-comments-input-container">' +
             '<div class="task-detail-comments-input-inner">' +
             '<textarea class="task-detail-comments-input" id="task-detail-comment-input" placeholder="Escribe un comentario..." rows="1"></textarea>' +
             '</div>' +
             '<div class="task-detail-comments-input-actions">' +
-            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only task-detail-comments-attach" id="task-detail-comment-attach-btn" aria-label="Adjuntar imagen"><i class="far fa-paperclip"></i></button>' +
+            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only task-detail-comments-attach" id="task-detail-comment-attach-btn" aria-label="Adjuntar imagen o documento"><i class="far fa-paperclip"></i></button>' +
             '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm ubits-button--icon-only" id="task-detail-comment-send" aria-label="Enviar"><i class="far fa-paper-plane"></i></button>' +
             '</div></div></div>';
         var el = document.getElementById('task-detail-comments-block');
@@ -895,27 +957,36 @@
         var fileInput = document.getElementById('task-detail-comment-files');
         var attachBtn = document.getElementById('task-detail-comment-attach-btn');
 
-        // Restaurar el strip de previews si había imágenes pendientes
+        // Restaurar el strip de previews si había imágenes o documentos pendientes
         renderPendingImagesPreview();
+        renderPendingFilesPreview();
 
         if (attachBtn && fileInput) {
             attachBtn.addEventListener('click', function () { fileInput.click(); });
             fileInput.addEventListener('change', function () {
                 var files = this.files;
                 if (!files || !files.length) return;
-                var toLoad = files.length;
-                var loaded = 0;
+                var toLoad = 0;
                 for (var i = 0; i < files.length; i++) {
-                    if (!files[i].type.startsWith('image/')) { loaded++; continue; }
-                    (function (file) {
-                        var reader = new FileReader();
-                        reader.onload = function () {
-                            if (reader.result) pendingImages.push(reader.result);
-                            loaded++;
-                            if (loaded >= toLoad) renderPendingImagesPreview();
-                        };
-                        reader.readAsDataURL(file);
-                    })(files[i]);
+                    if (files[i].type.startsWith('image/')) toLoad++;
+                }
+                var loaded = 0;
+                for (var j = 0; j < files.length; j++) {
+                    var file = files[j];
+                    if (file.type.startsWith('image/')) {
+                        (function (f) {
+                            var reader = new FileReader();
+                            reader.onload = function () {
+                                if (reader.result) pendingImages.push(reader.result);
+                                loaded++;
+                                if (loaded >= toLoad) renderPendingImagesPreview();
+                            };
+                            reader.readAsDataURL(f);
+                        })(file);
+                    } else {
+                        pendingFiles.push({ name: file.name, type: file.type, size: file.size });
+                        renderPendingFilesPreview();
+                    }
                 }
                 this.value = '';
             });
@@ -931,17 +1002,20 @@
 
             function doSend() {
                 var text = (inputEl.value || '').trim();
-                if (!text && pendingImages.length === 0) return;
+                if (!text && pendingImages.length === 0 && pendingFiles.length === 0) return;
                 estado.comments.push({
                     id: Date.now(),
                     author: currentUserName,
                     authorAvatar: null,
                     time: new Date().toISOString(),
                     text: text || '',
-                    images: pendingImages.slice()
+                    images: pendingImages.slice(),
+                    files: pendingFiles.slice()
                 });
                 pendingImages.length = 0;
+                pendingFiles.length = 0;
                 inputEl.value = '';
+                renderPendingFilesPreview();
                 renderCommentsBlock();
             }
             sendBtn.onclick = doSend;
@@ -1073,6 +1147,7 @@
                             pushActivity('fa-trash', currentUserName, 'eliminó la subtarea \u201C' + name + '\u201D.');
                             renderSubtasksBlock();
                             renderCommentsBlock();
+                            triggerFakeSave();
                             if (typeof showToast === 'function') showToast('success', 'Subtarea eliminada');
                         }
                     }
@@ -1142,6 +1217,7 @@
                     subtask.endDate = ymd || null;
                     renderSubtasksBlock();
                     renderCommentsBlock();
+                    triggerFakeSave();
                     popover.style.display = 'none';
                     if (typeof showToast === 'function') showToast('success', 'Fecha de vencimiento actualizada');
                 }
@@ -1187,6 +1263,7 @@
                             subtask.priority = val;
                             renderSubtasksBlock();
                             renderCommentsBlock();
+                            triggerFakeSave();
                             if (typeof showToast === 'function') showToast('success', 'Prioridad actualizada a ' + (priorityLabels[val] || val));
                         }
                         window.closeDropdownMenu(overlayId);
@@ -1211,6 +1288,7 @@
                 openAssigneeDropdown(assignedEl, subtask, function () {
                     renderSubtasksBlock();
                     renderCommentsBlock();
+                    triggerFakeSave();
                 });
                 return;
             }
@@ -1236,6 +1314,9 @@
                     onClick: function () { /* opciones */ }
                 }
             });
+            if (typeof renderSaveIndicator === 'function') {
+                renderSaveIndicator('task-detail-header-container-save-indicator', { state: 'idle', size: 'sm' });
+            }
         }
 
         renderInfoBlock();

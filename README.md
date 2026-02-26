@@ -59,6 +59,7 @@ Una **plantilla lista para usar** que permite a **Product Managers**, **Diseñad
 - **Input** - Campos de entrada (11 tipos: text, email, password, number, tel, url, select, textarea, search, autocomplete, calendar; tamaños: sm, md, lg; estados: default, hover, focus, invalid, disabled; con iconos, contador, helper text, mandatory/optional, validación manual, scroll infinito automático) - **RENDERIZADO: createInput()**
 - **Radio Button** - Opción circular para elegir una entre varias (tamaños: sm, md; sin JS; agrupar con mismo `name`) - **RENDERIZADO: HTML directo.** Requiere importar `radio-button.css` en la página o los radios se ven como nativos.
 - **Checkbox** - Casilla de verificación (tamaños: sm, md, lg; variantes: round/cuadrado; sin JS; agrupar con mismo `name` para múltiple selección) - **RENDERIZADO: HTML directo.** Requiere importar `checkbox.css` en la página.
+- **Chip** - Elemento compacto para filtros, selecciones o ítems removibles (tamaño xs; icono opcional; botón quitar opcional; estados: default, hover, pressed, active, focus, disabled) - **RENDERIZADO: HTML directo.** Requiere importar `chip.css`.
 - **Switch** - Interruptor on/off (pista ovalada + thumb; tamaños: sm, md; estados: off, on, disabled) - **RENDERIZADO: HTML directo.** Requiere importar `switch.css` y `ubits-colors.css`.
 - **Card Content** - Cards para contenidos de aprendizaje (11 tipos, 35 competencias, 18 aliados, estados de progreso) - **RENDERIZADO: loadCardContent()**
 - **Card Content Compact** - Variante horizontal compacta de Card Content (misma funcionalidad, diseño optimizado para espacios reducidos, siempre horizontal) - **RENDERIZADO: loadCardContentCompact()**
@@ -93,6 +94,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 <link rel="stylesheet" href="../../components/input.css">
 <link rel="stylesheet" href="../../components/radio-button.css">
 <link rel="stylesheet" href="../../components/checkbox.css">
+<link rel="stylesheet" href="../../components/chip.css">
 <link rel="stylesheet" href="../../components/switch.css">
 <link rel="stylesheet" href="../../components/card-content.css">
 <link rel="stylesheet" href="../../components/card-content-compact.css">
@@ -323,6 +325,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 │   ├── status-tag.css
 │   ├── radio-button.css
 │   ├── checkbox.css
+│   ├── chip.css
 │   ├── badge-tag.css
 │   ├── tab.css + tab.js
 │   ├── empty-state.css + empty-state.js

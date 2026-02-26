@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="../../components/input.css">
     <link rel="stylesheet" href="../../components/dropdown-menu.css">
     <link rel="stylesheet" href="../../components/ia-button.css">
+    <link rel="stylesheet" href="../../components/save-indicator.css">
     <link rel="stylesheet" href="../../components/tab.css">
     <link rel="stylesheet" href="../../components/radio-button.css">
     <link rel="stylesheet" href="../../components/switch.css">
@@ -176,7 +177,7 @@
                                 <div class="control-row">
                                     <div class="control-item">
                                         <label class="ubits-switch ubits-switch--md">
-                                            <input type="checkbox" class="ubits-switch__input" id="switch-back-button" role="switch" checked>
+                                            <input type="checkbox" class="ubits-switch__input" id="switch-back-button" role="switch">
                                             <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
                                             <span class="ubits-switch__label">Back</span>
                                         </label>
@@ -190,7 +191,7 @@
                                     </div>
                                     <div class="control-item">
                                         <label class="ubits-switch ubits-switch--md">
-                                            <input type="checkbox" class="ubits-switch__input" id="switch-info-button" role="switch" checked>
+                                            <input type="checkbox" class="ubits-switch__input" id="switch-info-button" role="switch">
                                             <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
                                             <span class="ubits-switch__label">Info</span>
                                         </label>
@@ -213,7 +214,14 @@
                                     </div>
                                     <div class="control-item">
                                         <label class="ubits-switch ubits-switch--md">
-                                            <input type="checkbox" class="ubits-switch__input" id="switch-ai-button" role="switch" checked>
+                                            <input type="checkbox" class="ubits-switch__input" id="switch-save-indicator" role="switch">
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            <span class="ubits-switch__label">Save indicator</span>
+                                        </label>
+                                    </div>
+                                    <div class="control-item">
+                                        <label class="ubits-switch ubits-switch--md">
+                                            <input type="checkbox" class="ubits-switch__input" id="switch-ai-button" role="switch">
                                             <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
                                             <span class="ubits-switch__label">AI</span>
                                         </label>
@@ -227,7 +235,7 @@
                                     </div>
                                     <div class="control-item">
                                         <label class="ubits-switch ubits-switch--md">
-                                            <input type="checkbox" class="ubits-switch__input" id="switch-more-actions" role="switch" checked>
+                                            <input type="checkbox" class="ubits-switch__input" id="switch-more-actions" role="switch">
                                             <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
                                             <span class="ubits-switch__label">More</span>
                                         </label>
@@ -239,14 +247,14 @@
                                 <div class="control-row">
                                     <div class="control-item">
                                         <label class="ubits-switch ubits-switch--md">
-                                            <input type="checkbox" class="ubits-switch__input" id="switch-secondary-row" role="switch" checked>
+                                            <input type="checkbox" class="ubits-switch__input" id="switch-secondary-row" role="switch">
                                             <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
                                             <span class="ubits-switch__label">Fila</span>
                                         </label>
                                     </div>
                                     <div class="control-item">
                                         <label class="ubits-switch ubits-switch--md">
-                                            <input type="checkbox" class="ubits-switch__input" id="switch-breadcrumb" role="switch" checked>
+                                            <input type="checkbox" class="ubits-switch__input" id="switch-breadcrumb" role="switch">
                                             <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
                                             <span class="ubits-switch__label">Breadcrumb</span>
                                         </label>
@@ -511,6 +519,7 @@
     <script src="../../components/sub-nav.js"></script>
     <script src="../../components/dropdown-menu.js"></script>
     <script src="../../components/input.js"></script>
+    <script src="../../components/save-indicator.js"></script>
     <script src="../../components/header-product.js"></script>
     <script src="../../components/alert.js"></script>
     <script src="../../components/toast.js"></script>
@@ -583,16 +592,17 @@
             let previewState = {
                 variant: 'default',
                 activeTabId: 'tareas',
-                backButton: true,
+                backButton: false,
                 productTitle: true,
-                infoButton: true,
+                infoButton: false,
                 actions: true,
+                saveIndicator: false,
                 primaryAction: true,
-                aiButton: true,
+                aiButton: false,
                 secondaryActions: true,
-                moreActions: true,
-                secondaryRow: true,
-                breadcrumb: true
+                moreActions: false,
+                secondaryRow: false,
+                breadcrumb: false
             };
             
             function getVariant() {
@@ -667,6 +677,14 @@
                         aiButton: null,
                         menuButton: (elMore && elMore.checked) ? { onClick: function() { console.log('Menu clicked'); } } : null
                     });
+                    var saveIndicatorEl = document.getElementById('header-product-preview-save-indicator');
+                    if (saveIndicatorEl) {
+                        if (previewState.saveIndicator && typeof renderSaveIndicator === 'function') {
+                            renderSaveIndicator('header-product-preview-save-indicator', { state: 'idle', size: 'sm' });
+                        } else {
+                            saveIndicatorEl.innerHTML = '';
+                        }
+                    }
                     return;
                 }
                 
@@ -700,6 +718,14 @@
                     } : null
                 };
                 loadHeaderProduct('header-product-preview', options);
+                var saveIndicatorEl = document.getElementById('header-product-preview-save-indicator');
+                if (saveIndicatorEl) {
+                    if (previewState.saveIndicator && typeof renderSaveIndicator === 'function') {
+                        renderSaveIndicator('header-product-preview-save-indicator', { state: 'idle', size: 'sm' });
+                    } else {
+                        saveIndicatorEl.innerHTML = '';
+                    }
+                }
             }
             
             // Event listeners para los switches
@@ -741,6 +767,11 @@
                     previewState.actions = true;
                     document.getElementById('switch-actions').checked = true;
                 }
+                updatePreview();
+            });
+            
+            document.getElementById('switch-save-indicator').addEventListener('change', function() {
+                previewState.saveIndicator = this.checked;
                 updatePreview();
             });
             

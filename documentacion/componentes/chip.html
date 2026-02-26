@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Chip | UBITS Playground</title>
+    
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/chip.css">
+    <style>
+        .preview-control-btn.active {
+            background: var(--ubits-accent-brand) !important;
+            color: white !important;
+            border-color: var(--ubits-accent-brand) !important;
+        }
+        .preview-control-btn.active span { color: white !important; }
+        /* Preview estático: forzar estilos de cada estado para verlos sin hover/click */
+        .chip-preview-row .chip-preview-hover.ubits-chip {
+            background: var(--ubits-bg-gray-subtle-hover);
+            color: var(--ubits-fg-gray-subtle-hover);
+        }
+        .chip-preview-row .chip-preview-pressed.ubits-chip {
+            background: var(--ubits-bg-gray-subtle-pressed);
+            color: var(--ubits-fg-gray-subtle-hover);
+        }
+        .chip-preview-row .chip-preview-focus.ubits-chip {
+            background: var(--ubits-bg-gray-subtle-default);
+            color: var(--ubits-fg-gray-subtle-default);
+            outline: 2px solid var(--ubits-button-focus-ring);
+            outline-offset: 2px;
+            box-shadow: 0 0 0 4px var(--ubits-button-focus-ring);
+        }
+        .chip-preview-row .ubits-chip {
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div style="display: flex;">
+                <div id="docs-dropdown-container"></div>
+                <div id="docs-sidebar-container"></div>
+                <div class="components-content">
+                    <div class="content-area" style="display: block; width: 100%;">
+                        <!-- Hero -->
+                        <div style="text-align: center; margin-bottom: 60px;">
+                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">Chip</h1>
+                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                                Elemento compacto e interactivo para representar un filtro, selección o ítem removible. Suele usarse con icono, texto y opcionalmente botón de cierre.
+                            </p>
+                        </div>
+
+                        <!-- Preview -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Preview del componente
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 16px; line-height: 1.6;">
+                                Los seis estados del Chip previsualizados a la vez. Elige el tamaño para ver cómo se aplica a todos.
+                            </p>
+                            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 20px;">
+                                <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Tamaño:</span>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-chip-size="xs" onclick="setChipPreviewSize('xs')"><span>XS (20px)</span></button>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-chip-size="sm" onclick="setChipPreviewSize('sm')"><span>SM (28px)</span></button>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-chip-size="md" onclick="setChipPreviewSize('md')"><span>MD (36px)</span></button>
+                            </div>
+                            <div style="background: var(--ubits-bg-1); padding: 24px; border-radius: 12px;">
+                                <div id="chip-preview" class="chip-preview-row" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 24px 20px; align-items: start;">
+                                    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                                        <span class="ubits-chip ubits-chip--xs ubits-chip--icon-left ubits-chip--close" data-preview-chip>
+                                            <i class="far fa-file-lines"></i>
+                                            <span class="ubits-chip__text">Default</span>
+                                            <button type="button" class="ubits-chip__close" aria-label="Quitar"><i class="far fa-times"></i></button>
+                                        </span>
+                                        <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Default</span>
+                                    </div>
+                                    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                                        <span class="ubits-chip ubits-chip--xs ubits-chip--icon-left ubits-chip--close chip-preview-hover" data-preview-chip>
+                                            <i class="far fa-file-lines"></i>
+                                            <span class="ubits-chip__text">Hover</span>
+                                            <button type="button" class="ubits-chip__close" aria-label="Quitar"><i class="far fa-times"></i></button>
+                                        </span>
+                                        <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Hover</span>
+                                    </div>
+                                    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                                        <span class="ubits-chip ubits-chip--xs ubits-chip--icon-left ubits-chip--close chip-preview-pressed" data-preview-chip>
+                                            <i class="far fa-file-lines"></i>
+                                            <span class="ubits-chip__text">Pressed</span>
+                                            <button type="button" class="ubits-chip__close" aria-label="Quitar"><i class="far fa-times"></i></button>
+                                        </span>
+                                        <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Pressed</span>
+                                    </div>
+                                    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                                        <span class="ubits-chip ubits-chip--xs ubits-chip--active ubits-chip--icon-left ubits-chip--close" data-preview-chip>
+                                            <i class="far fa-file-lines"></i>
+                                            <span class="ubits-chip__text">Active</span>
+                                            <button type="button" class="ubits-chip__close" aria-label="Quitar"><i class="far fa-times"></i></button>
+                                        </span>
+                                        <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Active</span>
+                                    </div>
+                                    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                                        <span class="ubits-chip ubits-chip--xs ubits-chip--icon-left ubits-chip--close chip-preview-focus" data-preview-chip>
+                                            <i class="far fa-file-lines"></i>
+                                            <span class="ubits-chip__text">Focus</span>
+                                            <button type="button" class="ubits-chip__close" aria-label="Quitar"><i class="far fa-times"></i></button>
+                                        </span>
+                                        <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Focus</span>
+                                    </div>
+                                    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                                        <span class="ubits-chip ubits-chip--xs ubits-chip--disabled ubits-chip--icon-left ubits-chip--close" data-preview-chip>
+                                            <i class="far fa-file-lines"></i>
+                                            <span class="ubits-chip__text">Disabled</span>
+                                            <button type="button" class="ubits-chip__close" aria-label="Quitar" disabled><i class="far fa-times"></i></button>
+                                        </span>
+                                        <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Disabled</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Características -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Características generales
+                            </h2>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-mouse-pointer"></i></div>
+                                    <div class="ubits-body-sm-bold">Estados</div>
+                                    <div class="ubits-body-sm-regular">Default, Hover, Pressed, Active, Focus, Disabled</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-icons"></i></div>
+                                    <div class="ubits-body-sm-bold">Icono</div>
+                                    <div class="ubits-body-sm-regular">Opcional a la izquierda (FontAwesome)</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-times-circle"></i></div>
+                                    <div class="ubits-body-sm-bold">Cierre</div>
+                                    <div class="ubits-body-sm-regular">Botón opcional para quitar el chip</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-expand-arrows-alt"></i></div>
+                                    <div class="ubits-body-sm-bold">Tamaños</div>
+                                    <div class="ubits-body-sm-regular">XS (20px / 11px), SM (28px / 13px), MD (36px / 16px)</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Prompts útiles -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Prompts útiles
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                Copia el prompt, reemplaza lo que va entre [corchetes] y pide a Cursor que lo aplique.
+                            </p>
+                            <div id="chip-warning-alert" style="margin-bottom: 32px;"></div>
+
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Insertar Chip</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('chip-prompt-1')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="chip-prompt-1">Inserta un Chip en [ubicación] con texto "[texto]".</code></pre>
+                                </div>
+                            </div>
+
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Chip con icono y botón quitar</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('chip-prompt-2')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="chip-prompt-2">Inserta un Chip en [ubicación] con icono [nombre del icono FontAwesome] a la izquierda, texto "[texto]" y botón para quitar. Usa clases ubits-chip ubits-chip--icon-left ubits-chip--close.</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Documentación técnica -->
+                        <div style="background: var(--ubits-bg-1); border-radius: 16px; margin-bottom: 40px; overflow: hidden;">
+                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Documentación técnica
+                                </h2>
+                                <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
+                                    Información técnica para implementar el componente Chip.
+                                </p>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                    <i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>
+                                    Mostrar
+                                </span>
+                            </div>
+                            <div id="technical-docs-content" style="display: none; padding: 0;">
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                            <i class="far fa-sitemap" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                            Estructura del componente
+                                        </h2>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('structure-code')">
+                                            <i class="far fa-copy"></i>
+                                            <span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="structure-code">&lt;!-- Chip solo texto --&gt;
+&lt;span class="ubits-chip"&gt;&lt;span class="ubits-chip__text"&gt;Chip&lt;/span&gt;&lt;/span&gt;
+
+&lt;!-- Chip con icono izquierda y botón quitar --&gt;
+&lt;span class="ubits-chip ubits-chip--icon-left ubits-chip--close"&gt;
+  &lt;i class="far fa-file-lines"&gt;&lt;/i&gt;
+  &lt;span class="ubits-chip__text"&gt;nombre.pdf&lt;/span&gt;
+  &lt;button type="button" class="ubits-chip__close" aria-label="Quitar"&gt;&lt;i class="far fa-times"&gt;&lt;/i&gt;&lt;/button&gt;
+&lt;/span&gt;
+
+&lt;!-- Chip activo (seleccionado) --&gt;
+&lt;span class="ubits-chip ubits-chip--active ubits-chip--icon-left"&gt;
+  &lt;i class="far fa-file-lines"&gt;&lt;/i&gt;
+  &lt;span class="ubits-chip__text"&gt;Activo&lt;/span&gt;
+&lt;/span&gt;
+
+&lt;!-- Chip deshabilitado --&gt;
+&lt;span class="ubits-chip ubits-chip--disabled ubits-chip--icon-left ubits-chip--close"&gt;
+  &lt;i class="far fa-file-lines"&gt;&lt;/i&gt;
+  &lt;span class="ubits-chip__text"&gt;Disabled&lt;/span&gt;
+  &lt;button type="button" class="ubits-chip__close" aria-label="Quitar" disabled&gt;&lt;i class="far fa-times"&gt;&lt;/i&gt;&lt;/button&gt;
+&lt;/span&gt;</code></pre>
+                                    </div>
+                                </div>
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                            <i class="far fa-tags" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                            Clases disponibles
+                                        </h2>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('classes-code')">
+                                            <i class="far fa-copy"></i>
+                                            <span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="classes-code">.ubits-chip                    /* Base (xs por defecto) */
+.ubits-chip--xs                /* XS: 20px alto, 11px texto/iconos */
+.ubits-chip--sm                /* SM: 28px alto, 13px texto/iconos */
+.ubits-chip--md                /* MD: 36px alto, 16px texto/iconos */
+.ubits-chip__text              /* Texto del chip */
+.ubits-chip__close             /* Botón quitar (dentro del chip) */
+.ubits-chip--icon-left         /* Icono a la izquierda */
+.ubits-chip--close             /* Incluye botón de cierre */
+.ubits-chip--active            /* Estado seleccionado */
+.ubits-chip--disabled          /* Estado deshabilitado */</code></pre>
+                                    </div>
+                                </div>
+                                <div style="padding: 32px;">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                            <i class="far fa-code-branch" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                            Cómo implementar
+                                        </h2>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('implementation-code')">
+                                            <i class="far fa-copy"></i>
+                                            <span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                                        <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.5;">
+                                            <strong>CSS:</strong> <code>components/chip.css</code><br>
+                                            <strong>Requisitos:</strong> <code>ubits-colors.css</code>, <code>fontawesome-icons.css</code> (si usas iconos)<br>
+                                            <strong>JavaScript:</strong> No requerido. Para quitar chips, escucha clic en <code>.ubits-chip__close</code>.
+                                        </div>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="implementation-code">&lt;link rel="stylesheet" href="components/chip.css"&gt;
+&lt;link rel="stylesheet" href="general-styles/fontawesome-icons.css"&gt;
+
+&lt;span class="ubits-chip ubits-chip--icon-left ubits-chip--close"&gt;
+  &lt;i class="far fa-file-lines"&gt;&lt;/i&gt;
+  &lt;span class="ubits-chip__text"&gt;documento.pdf&lt;/span&gt;
+  &lt;button type="button" class="ubits-chip__close" aria-label="Quitar"&gt;&lt;i class="far fa-times"&gt;&lt;/i&gt;&lt;/button&gt;
+&lt;/span&gt;</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="ubits-toast-container"></div>
+
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSubNav('top-nav-container', 'documentacion');
+            setTimeout(function() {
+                document.querySelectorAll('.nav-tab.active, .hamburger-item.active').forEach(function(item) { item.classList.remove('active'); });
+                var navTab = document.querySelector('.nav-tab[data-tab="section3"]');
+                var hamburgerItem = document.querySelector('.hamburger-item[data-tab="section3"]');
+                if (navTab) navTab.classList.add('active');
+                if (hamburgerItem) hamburgerItem.classList.add('active');
+            }, 200);
+            loadDocsSidebar('chip');
+            showAlert('warning', 'Reemplaza los textos entre [corchetes] con la información de tu proyecto antes de enviar el prompt a Cursor.', {
+                containerId: 'chip-warning-alert',
+                noClose: true
+            });
+        });
+
+        function toggleTechnicalDocs() {
+            var content = document.getElementById('technical-docs-content');
+            var chevron = document.getElementById('tech-docs-chevron');
+            var toggleText = chevron.parentElement;
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                chevron.style.transform = 'rotate(180deg)';
+                toggleText.innerHTML = '<i class="far fa-chevron-up" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Ocultar';
+            } else {
+                content.style.display = 'none';
+                chevron.style.transform = 'rotate(0deg)';
+                toggleText.innerHTML = '<i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Mostrar';
+            }
+        }
+
+        function copyPrompt(promptId) {
+            var text = document.getElementById(promptId).textContent;
+            navigator.clipboard.writeText(text).then(function() {
+                showToast('success', 'Prompt copiado', { containerId: 'ubits-toast-container', duration: 3500 });
+            });
+        }
+
+        function copyCode(elementId) {
+            var text = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(text).then(function() {
+                showToast('success', 'Código copiado', { containerId: 'ubits-toast-container', duration: 3500 });
+            });
+        }
+
+        function setChipPreviewSize(size) {
+            document.querySelectorAll('.preview-control-btn[data-chip-size]').forEach(function(btn) {
+                btn.classList.toggle('active', btn.getAttribute('data-chip-size') === size);
+            });
+            document.querySelectorAll('[data-preview-chip]').forEach(function(chip) {
+                chip.classList.remove('ubits-chip--xs', 'ubits-chip--sm', 'ubits-chip--md');
+                chip.classList.add('ubits-chip--' + size);
+            });
+        }
+    </script>
+</body>
+</html>

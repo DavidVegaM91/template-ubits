@@ -320,6 +320,7 @@ const PAGE_TO_TAB = {
     'card-content.html': 'section3',
     'card-content-compact.html': 'section3',
     'checkbox.html': 'section3',
+    'chip.html': 'section3',
     'dropdown-menu.html': 'section3',
     'drawer.html': 'section3',
     'empty-state.html': 'section3',

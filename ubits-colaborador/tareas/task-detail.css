@@ -737,6 +737,27 @@
     background: var(--ubits-feedback-fg-error);
 }
 
+/* ====== Strip de documentos pendientes (Chip oficial) ====== */
+.task-detail-pending-files-strip {
+    display: none;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--gap-xs);
+    padding: 4px 0;
+}
+
+.task-detail-pending-file-chip.ubits-chip {
+    max-width: 200px;
+}
+
+.task-detail-pending-file-chip .ubits-chip__text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* El botón quitar usa .ubits-chip__close del componente Chip; .task-detail-pending-file-remove solo para el selector JS */
+
 /* ====== Modal de imagen adjunta ====== */
 .task-detail-img-modal-body {
     display: flex;
@@ -763,6 +784,28 @@
 
 .task-detail-comment-bubble .task-detail-comment-images img:hover {
     opacity: 0.85;
+}
+
+/* Documentos adjuntos en el comentario (Chip oficial) */
+.task-detail-comment-files {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-xs);
+    margin-top: var(--gap-sm);
+}
+
+.task-detail-comment-bubble .task-detail-comment-files {
+    margin-top: var(--gap-xs);
+}
+
+.task-detail-comment-files .ubits-chip {
+    max-width: 220px;
+}
+
+.task-detail-comment-files .ubits-chip__text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 /* Contenedor tipo ChatGPT: columna, textarea arriba, botones abajo */

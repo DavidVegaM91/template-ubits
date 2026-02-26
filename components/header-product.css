@@ -64,6 +64,16 @@
     }
 }
 
+/* Contenedor del save-indicator (a la izquierda del botón IA). Vacío por defecto = apagado, no ocupa espacio. */
+.ubits-header-product__save-indicator-wrap:empty {
+    display: none;
+}
+
+.ubits-header-product__save-indicator-wrap {
+    display: inline-flex;
+    align-items: center;
+}
+
 /* Acciones (derecha). margin-left: auto garantiza que siempre queden alineadas a la derecha
    aunque la página oculte .ubits-header-product__product-info (título/flecha atrás).
    Ver documentación en header-product.js y header-product.html. */
