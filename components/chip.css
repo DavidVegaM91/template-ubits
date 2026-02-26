@@ -12,13 +12,15 @@
    Tamaños: XS 20px / 11px, SM 28px / 13px, MD 36px / 16px (alto / font-size)
    ======================================== */
 
-/* Base chip: pill shape, flex, tokens. Por defecto XS. */
+/* Base chip: pill shape, flex, tokens. Por defecto XS. Altos fijos (line-height = height evita caja de línea mayor). */
 .ubits-chip {
     display: inline-flex;
     align-items: center;
     gap: var(--gap-xs);
-    min-height: 20px;
-    padding: 4px var(--padding-sm);
+    height: 20px !important;
+    min-height: 20px !important;
+    max-height: 20px !important;
+    padding: 0 var(--padding-sm);
     border-radius: var(--border-radius-full);
     border: none;
     background: var(--ubits-bg-gray-subtle-default);
@@ -26,32 +28,51 @@
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-xs);
     font-weight: 400;
-    line-height: 13px;
+    line-height: 20px;
     white-space: nowrap;
     box-sizing: border-box;
     cursor: default;
+    overflow: hidden;
     transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
 }
 
-/* ========== Tamaños ========== */
+/* ========== Tamaños (altos fijos: 20px, 28px, 36px) ========== */
 .ubits-chip--xs {
-    min-height: 20px;
-    padding: 4px var(--padding-sm);
+    height: 20px !important;
+    min-height: 20px !important;
+    max-height: 20px !important;
+    padding: 0 var(--padding-sm);
     font-size: var(--font-size-xs);
+    line-height: 20px;
+}
+
+.ubits-chip--xs .ubits-chip__text {
     line-height: 13px;
 }
 
 .ubits-chip--sm {
-    min-height: 28px;
-    padding: 6px var(--padding-md);
+    height: 28px !important;
+    min-height: 28px !important;
+    max-height: 28px !important;
+    padding: 0 var(--padding-md);
     font-size: var(--font-size-sm);
+    line-height: 28px;
+}
+
+.ubits-chip--sm .ubits-chip__text {
     line-height: 16px;
 }
 
 .ubits-chip--md {
-    min-height: 36px;
-    padding: 8px var(--padding-lg);
+    height: 36px !important;
+    min-height: 36px !important;
+    max-height: 36px !important;
+    padding: 0 var(--padding-lg);
     font-size: var(--font-size-md);
+    line-height: 36px;
+}
+
+.ubits-chip--md .ubits-chip__text {
     line-height: 20px;
 }
 
@@ -70,15 +91,19 @@
     flex-direction: row;
 }
 
-/* Icono izquierda: tamaño según chip (xs/sm/md) */
+/* Icono izquierda: tamaño fijo, sin aportar altura extra (line-height: 0 en icono) */
 .ubits-chip--icon-left i:first-of-type {
     flex-shrink: 0;
     width: 16px;
     height: 16px;
+    min-height: 0;
+    max-height: 16px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     font-size: 11px;
+    line-height: 0;
+    box-sizing: border-box;
 }
 
 .ubits-chip--sm.ubits-chip--icon-left i:first-of-type {
@@ -93,15 +118,19 @@
     font-size: 16px;
 }
 
-/* Botón de cierre: tamaño según chip */
+/* Botón de cierre: tamaño fijo, sin aportar altura extra */
 .ubits-chip__close {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     width: 20px;
     height: 20px;
-    padding: var(--padding-xs);
-    margin: -4px -4px -4px 0;
+    min-height: 0;
+    max-height: 20px;
+    padding: 0;
+    margin: 0;
+    line-height: 0;
+    box-sizing: border-box;
     border: none;
     border-radius: var(--border-radius-full);
     background: transparent;
@@ -118,7 +147,7 @@
 .ubits-chip--sm .ubits-chip__close {
     width: 24px;
     height: 24px;
-    margin: -6px -6px -6px 0;
+    margin: 0;
 }
 
 .ubits-chip--sm .ubits-chip__close i {
@@ -128,7 +157,7 @@
 .ubits-chip--md .ubits-chip__close {
     width: 28px;
     height: 28px;
-    margin: -8px -8px -8px 0;
+    margin: 0;
 }
 
 .ubits-chip--md .ubits-chip__close i {
