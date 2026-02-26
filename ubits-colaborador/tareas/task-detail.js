@@ -791,7 +791,7 @@
         }
         strip.style.display = 'flex';
         strip.innerHTML = pendingFiles.map(function (f, idx) {
-            return '<span class="ubits-chip ubits-chip--xs ubits-chip--icon-left ubits-chip--close task-detail-pending-file-chip" data-idx="' + idx + '">' +
+            return '<span class="ubits-chip ubits-chip--sm ubits-chip--icon-left ubits-chip--close task-detail-pending-file-chip" data-idx="' + idx + '">' +
                 '<i class="far fa-file-lines"></i>' +
                 '<span class="ubits-chip__text">' + escapeHtml(f.name) + '</span>' +
                 '<button type="button" class="ubits-chip__close task-detail-pending-file-remove" aria-label="Quitar documento" data-idx="' + idx + '"><i class="far fa-times"></i></button>' +
@@ -912,7 +912,12 @@
                     '<div class="task-detail-comment-bubble">' +
                     (c.text ? '<p class="task-detail-comment-text">' + escapeHtml(c.text) + '</p>' : '') +
                     (c.images && c.images.length ? '<div class="task-detail-comment-images">' + c.images.map(function (img) { return '<img src="' + escapeHtml(img) + '" alt="">'; }).join('') + '</div>' : '') +
-                    (c.files && c.files.length ? '<div class="task-detail-comment-files">' + c.files.map(function (f) { return '<span class="ubits-chip ubits-chip--xs ubits-chip--icon-left"><i class="far fa-file-lines"></i><span class="ubits-chip__text">' + escapeHtml(f.name) + '</span></span>'; }).join('') + '</div>' : '') +
+                    (c.files && c.files.length ? '<div class="task-detail-comment-files">' + c.files.map(function (f) {
+                        var url = (f && f.url) ? String(f.url).replace(/"/g, '&quot;') : '';
+                        var name = (f && f.name) ? escapeHtml(f.name) : '';
+                        var nameAttr = (f && f.name) ? String(f.name).replace(/"/g, '&quot;') : '';
+                        return '<span class="ubits-chip ubits-chip--sm ubits-chip--icon-left task-detail-comment-file-chip" data-tooltip="Descargar archivo" data-file-url="' + url + '" data-file-name="' + nameAttr + '" role="' + (url ? 'button' : '') + '" tabindex="' + (url ? '0' : '-1') + '"><i class="far fa-file-lines"></i><span class="ubits-chip__text">' + name + '</span></span>';
+                    }).join('') + '</div>' : '') +
                     '</div></div></div>'
                 );
             } else {
@@ -984,7 +989,8 @@
                             reader.readAsDataURL(f);
                         })(file);
                     } else {
-                        pendingFiles.push({ name: file.name, type: file.type, size: file.size });
+                        var blobUrl = URL.createObjectURL(file);
+                        pendingFiles.push({ name: file.name, type: file.type, size: file.size, url: blobUrl });
                         renderPendingFilesPreview();
                     }
                 }
@@ -1022,22 +1028,71 @@
             inputEl.onkeydown = function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); doSend(); } };
         }
 
-        // Imágenes en el feed: click para ver en modal md
+        function openImageOverlay(src) {
+            var existing = document.getElementById('task-detail-image-overlay');
+            if (existing) existing.remove();
+            var overlay = document.createElement('div');
+            overlay.id = 'task-detail-image-overlay';
+            overlay.className = 'task-detail-image-overlay';
+            overlay.setAttribute('role', 'dialog');
+            overlay.setAttribute('aria-label', 'Ver imagen');
+            overlay.innerHTML =
+                '<div class="task-detail-image-overlay__img-wrap">' +
+                '<img src="' + String(src).replace(/"/g, '&quot;') + '" alt="Imagen adjunta" class="task-detail-image-overlay__img" />' +
+                '</div>' +
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only task-detail-image-overlay__close" data-tooltip="Cerrar" data-tooltip-position="bottom" aria-label="Cerrar">' +
+                '<i class="far fa-times"></i></button>';
+            document.body.appendChild(overlay);
+            var tooltipContainer = document.getElementById('ubits-tooltip-container');
+            if (tooltipContainer) tooltipContainer.style.zIndex = '10002';
+            overlay.addEventListener('click', function (ev) {
+                if (ev.target === overlay) closeImageOverlay();
+            });
+            overlay.querySelector('.task-detail-image-overlay__img-wrap').addEventListener('click', function (ev) { ev.stopPropagation(); });
+            overlay.querySelector('.task-detail-image-overlay__close').addEventListener('click', function () { closeImageOverlay(); });
+            if (typeof initTooltip === 'function') initTooltip('.task-detail-image-overlay__close');
+        }
+        function closeImageOverlay() {
+            var el = document.getElementById('task-detail-image-overlay');
+            if (el && el.parentNode) el.remove();
+            var tooltipContainer = document.getElementById('ubits-tooltip-container');
+            if (tooltipContainer) tooltipContainer.style.zIndex = '10000';
+        }
+
+        // Imágenes en el feed: click para ver en overlay (no modal); cerrar con botón o clic fuera
         var feedEl = document.getElementById('task-detail-comments-feed');
         if (feedEl) {
             feedEl.querySelectorAll('.task-detail-comment-images img').forEach(function (img) {
                 img.style.cursor = 'pointer';
                 img.addEventListener('click', function () {
-                    if (typeof openModal !== 'function') return;
-                    openModal({
-                        overlayId: 'task-detail-img-modal',
-                        title: 'Imagen adjunta',
-                        bodyHtml: '<div class="task-detail-img-modal-body"><img src="' + img.src + '" alt="Imagen" class="task-detail-img-modal-img" /></div>',
-                        size: 'md',
-                        closeOnOverlayClick: true
-                    });
+                    openImageOverlay(img.src);
                 });
             });
+
+            // Documentos en el feed: tooltip "Descargar archivo" y clic para descargar (si hay URL)
+            feedEl.querySelectorAll('.task-detail-comment-file-chip').forEach(function (chip) {
+                var url = chip.getAttribute('data-file-url');
+                if (url) chip.style.cursor = 'pointer';
+                chip.addEventListener('click', function () {
+                    var u = chip.getAttribute('data-file-url');
+                    if (!u) return;
+                    var a = document.createElement('a');
+                    a.href = u;
+                    a.download = chip.getAttribute('data-file-name') || '';
+                    a.target = '_blank';
+                    a.rel = 'noopener noreferrer';
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                });
+                chip.addEventListener('keydown', function (e) {
+                    if ((e.key === 'Enter' || e.key === ' ') && chip.getAttribute('data-file-url')) {
+                        e.preventDefault();
+                        chip.click();
+                    }
+                });
+            });
+            if (typeof initTooltip === 'function') initTooltip('.task-detail-comment-file-chip[data-tooltip]');
 
             /* Scroll automático al elemento más reciente (parte inferior del feed) */
             feedEl.scrollTop = feedEl.scrollHeight;

@@ -758,22 +758,47 @@
 
 /* El botón quitar usa .ubits-chip__close del componente Chip; .task-detail-pending-file-remove solo para el selector JS */
 
-/* ====== Modal de imagen adjunta ====== */
-.task-detail-img-modal-body {
+/* ====== Overlay de imagen adjunta (no modal): overlay + imagen + botón cerrar ====== */
+.task-detail-image-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10001;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0;
+    background: var(--ubits-bg-dim);
+    padding: var(--padding-lg);
+    box-sizing: border-box;
 }
 
-.task-detail-img-modal-img {
+.task-detail-image-overlay__img-wrap {
     max-width: 100%;
-    max-height: 70vh;
+    max-height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.task-detail-image-overlay__img-wrap img {
+    pointer-events: auto;
+}
+
+.task-detail-image-overlay__img {
+    max-width: 90vw;
+    max-height: 90vh;
     width: auto;
     height: auto;
-    border-radius: var(--border-radius-xs);
+    object-fit: contain;
+    border-radius: var(--border-radius-sm);
     display: block;
-    margin: 0 auto;
+}
+
+.task-detail-image-overlay__close {
+    position: absolute;
+    top: var(--gap-md);
+    right: var(--gap-md);
+    z-index: 10002;
 }
 
 /* Imágenes en el feed: cursor pointer para indicar que son clickables */
@@ -800,6 +825,10 @@
 
 .task-detail-comment-files .ubits-chip {
     max-width: 220px;
+}
+
+.task-detail-comment-file-chip[data-file-url]:not([data-file-url=""]) {
+    cursor: pointer;
 }
 
 .task-detail-comment-files .ubits-chip__text {
