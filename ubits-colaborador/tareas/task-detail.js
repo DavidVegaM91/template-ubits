@@ -304,7 +304,10 @@
         var prioridadIcon = { alta: 'fa-chevrons-up', media: 'fa-chevron-up', baja: 'fa-chevron-down' };
         var prioridadVariant = { alta: 'error', media: 'warning', baja: 'info' };
         var html =
+            '<div class="task-detail-title-row">' +
             '<textarea class="task-detail-title-editable ubits-heading-h1" id="task-detail-title" placeholder="Título de la tarea" rows="1" maxlength="250">' + escapeHtml(task.name) + '</textarea>' +
+            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="task-detail-title-options-btn" aria-label="Opciones" data-tooltip="Opciones"><i class="far fa-ellipsis-vertical"></i></button>' +
+            '</div>' +
             '<textarea class="task-detail-desc-editable ubits-body-sm-regular" id="task-detail-desc" placeholder="Descripción de la tarea" rows="1">' + escapeHtml(task.description || '') + '</textarea>' +
             '<div class="task-detail-meta-row">' +
             '<div class="task-detail-meta-cell">' +
@@ -501,6 +504,43 @@
             });
             prioridadTrigger.addEventListener('keydown', function (e) {
                 if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); prioridadTrigger.click(); }
+            });
+        }
+
+        /* Clic en botón Opciones (al lado del título): dropdown Enviar recordatorio / Eliminar */
+        var titleOptionsBtn = document.getElementById('task-detail-title-options-btn');
+        if (titleOptionsBtn && typeof window.getDropdownMenuHtml === 'function' && typeof window.openDropdownMenu === 'function' && typeof window.closeDropdownMenu === 'function') {
+            titleOptionsBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var overlayId = 'task-detail-title-options-overlay';
+                var existing = document.getElementById(overlayId);
+                if (existing) existing.remove();
+                var options = [
+                    { text: 'Enviar recordatorio', value: 'recordatorio' },
+                    { text: 'Eliminar', value: 'eliminar' }
+                ];
+                var html = window.getDropdownMenuHtml({ overlayId: overlayId, options: options });
+                document.body.insertAdjacentHTML('beforeend', html);
+                var overlayEl = document.getElementById(overlayId);
+                if (overlayEl) {
+                    overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function (opt) {
+                        opt.addEventListener('click', function () {
+                            var val = this.getAttribute('data-value');
+                            window.closeDropdownMenu(overlayId);
+                            if (overlayEl.parentNode) overlayEl.remove();
+                            if (val === 'recordatorio') {
+                                if (typeof showToast === 'function') showToast('success', 'Recordatorio enviado');
+                            } else if (val === 'eliminar') {
+                                if (typeof showModal === 'function') showModal('task-detail-delete-task-modal-overlay');
+                            }
+                        });
+                    });
+                    overlayEl.addEventListener('click', function (ev) {
+                        if (ev.target === overlayEl) { window.closeDropdownMenu(overlayId); if (overlayEl.parentNode) overlayEl.remove(); }
+                    });
+                }
+                window.openDropdownMenu(overlayId, titleOptionsBtn, { alignRight: true });
             });
         }
     }
@@ -1161,6 +1201,16 @@
     }
 
     function initTaskDetailPage() {
+        /* Toast pendiente (ej. tras eliminar subtarea y volver aquí) */
+        try {
+            var pending = sessionStorage.getItem('ubits-toast-pending');
+            if (pending) {
+                sessionStorage.removeItem('ubits-toast-pending');
+                var data = JSON.parse(pending);
+                if (data && data.message && typeof showToast === 'function') showToast(data.type || 'success', data.message);
+            }
+        } catch (e) {}
+
         var taskId = getTaskIdFromUrl();
         var detail = null;
 
@@ -1220,11 +1270,13 @@
             estado.activities = getMockActivities();
         }
 
-        /* Modal eliminar subtarea (igual que tareas.html: confirmación antes de eliminar) */
+        /* Modales: eliminar subtarea y eliminar tarea (opciones del título) */
         var modalsContainer = document.getElementById('task-detail-modals-container');
         if (modalsContainer && typeof getModalHtml === 'function' && !document.getElementById('task-detail-delete-subtask-modal-overlay')) {
             var deleteSubtaskBody = '<p class="ubits-body-md-regular">¿Estás seguro? Esta acción no se puede deshacer y se perderán los datos de la subtarea.</p>';
             var deleteSubtaskFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="task-detail-delete-subtask-cancel"><span>Cancelar</span></button><button type="button" class="ubits-button ubits-button--error ubits-button--md" id="task-detail-delete-subtask-confirm"><span>Eliminar</span></button>';
+            var deleteTaskBody = '<p class="ubits-body-md-regular">¿Estás seguro? Esta acción no se puede deshacer y se perderán los datos de la tarea.</p>';
+            var deleteTaskFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="task-detail-delete-task-cancel"><span>Cancelar</span></button><button type="button" class="ubits-button ubits-button--error ubits-button--md" id="task-detail-delete-task-confirm"><span>Eliminar</span></button>';
             modalsContainer.innerHTML = getModalHtml({
                 overlayId: 'task-detail-delete-subtask-modal-overlay',
                 title: 'Eliminar subtarea',
@@ -1232,6 +1284,13 @@
                 footerHtml: deleteSubtaskFooter,
                 size: 'sm',
                 closeButtonId: 'task-detail-delete-subtask-close'
+            }) + getModalHtml({
+                overlayId: 'task-detail-delete-task-modal-overlay',
+                title: 'Eliminar tarea',
+                bodyHtml: deleteTaskBody,
+                footerHtml: deleteTaskFooter,
+                size: 'sm',
+                closeButtonId: 'task-detail-delete-task-close'
             });
             var overlayDel = document.getElementById('task-detail-delete-subtask-modal-overlay');
             var closeBtn = document.getElementById('task-detail-delete-subtask-close');
@@ -1256,7 +1315,7 @@
                             renderSubtasksBlock();
                             renderCommentsBlock();
                             triggerFakeSave();
-                            if (typeof showToast === 'function') showToast('success', 'Subtarea eliminada');
+                            if (typeof showToast === 'function') showToast('success', 'Subtarea eliminada exitosamente');
                         }
                     }
                     closeDeleteSubtaskModal();
@@ -1264,19 +1323,72 @@
             }
         }
 
-        /* Delegación: clic en Eliminar de una subtarea (tirilla) abre el modal */
+        /* Modal eliminar tarea (desde botón Opciones del título): al confirmar, volver atrás y toast */
+        var overlayTask = document.getElementById('task-detail-delete-task-modal-overlay');
+        if (modalsContainer && overlayTask) {
+            var closeTaskBtn = document.getElementById('task-detail-delete-task-close');
+            var cancelTaskBtn = document.getElementById('task-detail-delete-task-cancel');
+            var confirmTaskBtn = document.getElementById('task-detail-delete-task-confirm');
+            function closeDeleteTaskModal() {
+                if (typeof closeModal === 'function') closeModal('task-detail-delete-task-modal-overlay');
+            }
+            if (overlayTask) {
+                if (closeTaskBtn) closeTaskBtn.addEventListener('click', closeDeleteTaskModal);
+                if (cancelTaskBtn) cancelTaskBtn.addEventListener('click', closeDeleteTaskModal);
+                overlayTask.addEventListener('click', function (ev) { if (ev.target === overlayTask) closeDeleteTaskModal(); });
+            }
+            if (confirmTaskBtn) {
+                confirmTaskBtn.addEventListener('click', function () {
+                    closeDeleteTaskModal();
+                    try {
+                        sessionStorage.setItem('ubits-toast-pending', JSON.stringify({ type: 'success', message: 'Tarea eliminada exitosamente' }));
+                    } catch (e) {}
+                    window.history.back();
+                });
+            }
+        }
+
+        /* Delegación: clic en Opciones de una subtarea (tirilla) abre dropdown Enviar recordatorio / Eliminar */
         document.body.addEventListener('click', function (e) {
             var list = document.getElementById('task-detail-subtasks-list');
             if (!list || !list.contains(e.target)) return;
-            var btn = e.target.closest('.tarea-action-btn--delete');
+            var btn = e.target.closest('.tarea-action-btn--options');
             if (!btn) return;
             e.preventDefault();
             e.stopPropagation();
             var id = btn.getAttribute('data-tarea-id');
-            if (id != null && id !== '') {
-                subtaskIdToDelete = id;
-                if (typeof showModal === 'function') showModal('task-detail-delete-subtask-modal-overlay');
+            if (id == null || id === '') return;
+            if (typeof window.getDropdownMenuHtml !== 'function' || typeof window.openDropdownMenu !== 'function' || typeof window.closeDropdownMenu !== 'function') return;
+            var overlayId = 'task-detail-subtask-options-overlay-' + id;
+            var existing = document.getElementById(overlayId);
+            if (existing) existing.remove();
+            var options = [
+                { text: 'Enviar recordatorio', value: 'recordatorio' },
+                { text: 'Eliminar', value: 'eliminar' }
+            ];
+            var html = window.getDropdownMenuHtml({ overlayId: overlayId, options: options });
+            document.body.insertAdjacentHTML('beforeend', html);
+            var overlayEl = document.getElementById(overlayId);
+            if (overlayEl) {
+                overlayEl.style.zIndex = '10100';
+                overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function (opt) {
+                    opt.addEventListener('click', function () {
+                        var val = this.getAttribute('data-value');
+                        window.closeDropdownMenu(overlayId);
+                        if (overlayEl.parentNode) overlayEl.remove();
+                        if (val === 'recordatorio') {
+                            if (typeof showToast === 'function') showToast('success', 'Recordatorio enviado');
+                        } else if (val === 'eliminar') {
+                            subtaskIdToDelete = id;
+                            if (typeof showModal === 'function') showModal('task-detail-delete-subtask-modal-overlay');
+                        }
+                    });
+                });
+                overlayEl.addEventListener('click', function (ev) {
+                    if (ev.target === overlayEl) { window.closeDropdownMenu(overlayId); if (overlayEl.parentNode) overlayEl.remove(); }
+                });
             }
+            window.openDropdownMenu(overlayId, btn, { alignRight: true });
         });
 
         /* Abrir calendario para cambiar fecha de una subtarea */
@@ -1408,6 +1520,13 @@
                 openSubtaskFechaCalendar(e.target.closest('.tarea-fecha-btn'), subtaskId);
                 return;
             }
+
+            /* Clic en la fila (nombre/área no interactiva): abrir detalle de la subtarea */
+            if (!e.target.closest('.tarea-action-btn--options') && !e.target.closest('.tarea-priority-badge') && !e.target.closest('.tarea-assigned') && !e.target.closest('.tarea-fecha-btn') && !e.target.closest('.tarea-done-radio') && !e.target.closest('input[type="checkbox"]')) {
+                e.preventDefault();
+                var taskId = estado.task && estado.task.id != null ? estado.task.id : '';
+                window.location.href = 'subtask-detail.html?taskId=' + encodeURIComponent(taskId) + '&id=' + encodeURIComponent(subtaskId);
+            }
         });
 
         if (typeof loadHeaderProduct === 'function') {
@@ -1417,10 +1536,7 @@
                 backButton: {
                     onClick: function () { window.history.back(); }
                 },
-                secondaryButtons: [], // Sin botón Compartir; solo opciones (menú)
-                menuButton: {
-                    onClick: function () { /* opciones */ }
-                }
+                secondaryButtons: []
             });
             if (typeof renderSaveIndicator === 'function') {
                 renderSaveIndicator('task-detail-header-container-save-indicator', { state: 'idle', size: 'sm' });

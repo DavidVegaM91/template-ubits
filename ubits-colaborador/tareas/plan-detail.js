@@ -19,6 +19,22 @@ function formatDateForDisplayDDMM(dateString) {
     return `${pad(day)}-${pad(month)}-${year}`;
 }
 
+function ymdToDmySlash(ymd) {
+    if (!ymd || !String(ymd).trim()) return '';
+    const parts = String(ymd).trim().split('T')[0].split('-');
+    if (parts.length !== 3) return '';
+    const [y, m, d] = parts;
+    return (d.length === 1 ? '0' + d : d) + '/' + (m.length === 1 ? '0' + m : m) + '/' + y;
+}
+
+function dmySlashToYmd(dmy) {
+    if (!dmy || !String(dmy).trim()) return '';
+    const parts = String(dmy).trim().split('/');
+    if (parts.length !== 3) return '';
+    const [d, m, y] = parts;
+    return y + '-' + (m.length === 1 ? '0' + m : m) + '-' + (d.length === 1 ? '0' + d : d);
+}
+
 function escapeHtml(str) {
     if (str == null || str === '') return '';
     const div = document.createElement('div');
@@ -97,6 +113,8 @@ function getPlanIdFromUrl() {
 // Cache local por plan (para mutaciones cuando se usa BD unificada)
 window.planDetailTasksCache = window.planDetailTasksCache || {};
 window.planDetailPlanCache = window.planDetailPlanCache || {};
+// ID de tarea a eliminar desde el modal (opciones de la tirilla)
+let planDetailTaskIdToDelete = null;
 
 function getTasksForPlan(planId) {
     if (!planId) return [];
@@ -126,17 +144,31 @@ function loadPlanAndTasks(planId) {
     return { plan, tasks };
 }
 
+function resizePlanTitle() {
+    const ta = document.getElementById('plan-detail-title');
+    if (!ta) return;
+    ta.style.height = 'auto';
+    ta.style.height = Math.max(24, ta.scrollHeight) + 'px';
+}
+
+function resizePlanDesc() {
+    const ta = document.getElementById('plan-detail-desc');
+    if (!ta) return;
+    ta.style.height = '0';
+    ta.style.height = ta.scrollHeight + 'px';
+}
+
 function renderPlanDetail(planId) {
     const { plan, tasks } = loadPlanAndTasks(planId);
 
-    const headerTitleEl = document.querySelector('#header-product-container .ubits-header-product__product-title h2');
     const cardEl = document.getElementById('plan-detail-card');
     const tasksCardEl = document.getElementById('plan-detail-tasks-card');
+    const titleEl = document.getElementById('plan-detail-title');
     const descEl = document.getElementById('plan-detail-desc');
+    const createdByEl = document.getElementById('plan-detail-created-by');
     const countEl = document.getElementById('plan-detail-tasks-count');
     const barEl = document.getElementById('plan-detail-bar-fill');
     const percentEl = document.getElementById('plan-detail-percent');
-    const dateEl = document.getElementById('plan-detail-end-date');
     const statusEl = document.getElementById('plan-detail-status');
     const tasksListEl = document.getElementById('plan-detail-tasks-list');
     const emptyEl = document.getElementById('plan-detail-empty');
@@ -144,22 +176,64 @@ function renderPlanDetail(planId) {
     const countVencidasEl = document.getElementById('plan-detail-count-vencidas');
     const countFinalizadasEl = document.getElementById('plan-detail-count-finalizadas');
 
-    if (headerTitleEl) headerTitleEl.textContent = (plan.name || 'Plan') + ':';
     if (cardEl) cardEl.style.display = 'block';
     if (tasksCardEl) tasksCardEl.style.display = 'block';
 
-    if (descEl) descEl.textContent = plan.description || 'Sin descripción';
-    const createdByEl = document.getElementById('plan-detail-created-by');
-    if (createdByEl) createdByEl.textContent = plan.created_by || 'Sin especificar';
-    if (countEl) countEl.textContent = `Tareas finalizadas ${tasks.filter(t => t.done).length}/${tasks.length}`;
+    if (titleEl) {
+        titleEl.value = plan.name || '';
+        resizePlanTitle();
+    }
+    if (descEl) {
+        descEl.value = plan.description || '';
+        resizePlanDesc();
+        requestAnimationFrame(resizePlanDesc);
+    }
+    if (createdByEl) {
+        let creatorName = plan.created_by || 'Sin especificar';
+        let creatorAvatar = (plan.created_by_avatar_url && String(plan.created_by_avatar_url).trim()) ? plan.created_by_avatar_url : null;
+        if (!creatorAvatar && typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getCreatorDisplay === 'function') {
+            const resolved = TAREAS_PLANES_DB.getCreatorDisplay(plan.created_by);
+            if (resolved) {
+                creatorName = resolved.name || creatorName;
+                creatorAvatar = (resolved.avatar && String(resolved.avatar).trim()) ? resolved.avatar : null;
+            }
+        }
+        if (typeof renderAvatar === 'function') {
+            createdByEl.innerHTML = renderAvatar({ nombre: creatorName, avatar: creatorAvatar }, { size: 'sm' }) + '<span class="plan-detail-card__creado-name ubits-body-sm-regular">' + escapeHtml(creatorName) + '</span>';
+        } else {
+            createdByEl.textContent = creatorName;
+        }
+    }
+    const doneCount = tasks.filter(t => t.done).length;
+    if (countEl) countEl.textContent = `${doneCount}/${tasks.length}`;
 
-    const progress = tasks.length > 0 ? Math.round((tasks.filter(t => t.done).length / tasks.length) * 100) : 0;
+    const progress = tasks.length > 0 ? Math.round((doneCount / tasks.length) * 100) : 0;
     if (barEl) barEl.style.width = progress + '%';
     if (percentEl) percentEl.textContent = progress + '%';
 
-    const endDateStr = plan.end_date ? plan.end_date.split('T')[0] : null;
-    const dateDisplay = endDateStr ? formatDateForDisplayDDMM(endDateStr).replace(/-/g, '/') : '';
-    if (dateEl) dateEl.value = dateDisplay;
+    /* Selector de fecha de vencimiento (mismo componente que task-detail) */
+    const vencimientoWrap = document.getElementById('plan-detail-vencimiento-wrap');
+    if (vencimientoWrap && typeof createInput === 'function') {
+        const endDateYmd = plan.end_date ? plan.end_date.split('T')[0] : null;
+        createInput({
+            containerId: 'plan-detail-vencimiento-wrap',
+            type: 'calendar',
+            size: 'sm',
+            showLabel: false,
+            placeholder: 'Sin fecha',
+            value: ymdToDmySlash(endDateYmd),
+            onChange: function (dateStr) {
+                const ymd = dmySlashToYmd(dateStr);
+                if (window.planDetailPlanCache && window.planDetailPlanCache[planId]) {
+                    window.planDetailPlanCache[planId].end_date = ymd || null;
+                }
+                renderPlanDetail(planId);
+                if (typeof showToast === 'function') showToast('success', 'Fecha de vencimiento actualizada');
+            }
+        });
+        const dateInput = document.querySelector('#plan-detail-vencimiento-wrap .ubits-input');
+        if (dateInput) dateInput.setAttribute('aria-labelledby', 'plan-detail-vencimiento-label');
+    }
 
     const statusText = plan.status === 'Activo' ? 'Por hacer' : (plan.status || 'Por hacer');
     const statusVariant = plan.status === 'Activo' ? 'info' : plan.status === 'Vencido' ? 'error' : 'success';
@@ -252,17 +326,42 @@ function handlePlanDetailListClick(e) {
         return;
     }
 
-    // Eliminar
-    if (e.target.closest('.tarea-action-btn--delete')) {
+    // Opciones de la tirilla: dropdown Enviar recordatorio / Eliminar
+    if (e.target.closest('.tarea-action-btn--options') && typeof window.getDropdownMenuHtml === 'function' && typeof window.openDropdownMenu === 'function' && typeof window.closeDropdownMenu === 'function') {
         e.preventDefault();
         e.stopPropagation();
-        const btn = e.target.closest('.tarea-action-btn--delete');
-        const id = btn && btn.dataset.tareaId;
-        if (id && confirm('¿Eliminar esta tarea?')) {
-            const i = tasks.findIndex(t => String(t.id) === String(id));
-            if (i >= 0) tasks.splice(i, 1);
-            renderPlanDetail(planId);
-        }
+        const btn = e.target.closest('.tarea-action-btn--options');
+        const id = btn && (btn.dataset.tareaId || btn.getAttribute('data-tarea-id'));
+        if (!id) return;
+        const overlayId = 'plan-detail-strip-options-overlay-' + id;
+        let overlayEl = document.getElementById(overlayId);
+        if (overlayEl) overlayEl.remove();
+        const options = [
+            { text: 'Enviar recordatorio', value: 'recordatorio' },
+            { text: 'Eliminar', value: 'eliminar' }
+        ];
+        const html = window.getDropdownMenuHtml({ overlayId: overlayId, options: options });
+        document.body.insertAdjacentHTML('beforeend', html);
+        overlayEl = document.getElementById(overlayId);
+        if (!overlayEl) return;
+        overlayEl.style.zIndex = '10100';
+        overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function (opt) {
+            opt.addEventListener('click', function () {
+                const val = this.getAttribute('data-value');
+                window.closeDropdownMenu(overlayId);
+                if (overlayEl.parentNode) overlayEl.remove();
+                if (val === 'recordatorio') {
+                    if (typeof showToast === 'function') showToast('success', 'Recordatorio enviado');
+                } else if (val === 'eliminar') {
+                    planDetailTaskIdToDelete = id;
+                    if (typeof showModal === 'function') showModal('plan-detail-delete-task-modal-overlay');
+                }
+            });
+        });
+        overlayEl.addEventListener('click', function (ev) {
+            if (ev.target === overlayEl) { window.closeDropdownMenu(overlayId); if (overlayEl.parentNode) overlayEl.remove(); }
+        });
+        window.openDropdownMenu(overlayId, btn, { alignRight: true });
         return;
     }
 
@@ -353,6 +452,128 @@ function initPlanDetail() {
 
     // Enlazar clics de la lista de tareas ANTES de renderizar (así funciona al llegar desde seguimiento)
     attachTaskListeners();
+
+    // Modal eliminar tarea (desde opciones de la tirilla): mismo flujo que tareas.html
+    const modalsContainer = document.getElementById('plan-detail-modals-container');
+    if (modalsContainer && typeof getModalHtml === 'function' && !document.getElementById('plan-detail-delete-task-modal-overlay')) {
+        const deleteBody = '<p class="ubits-body-md-regular">¿Estás seguro? Esta acción no se puede deshacer y todos los datos de la tarea se perderán.</p>';
+        const deleteFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="plan-detail-delete-task-cancel"><span>Cancelar</span></button><button type="button" class="ubits-button ubits-button--error ubits-button--md" id="plan-detail-delete-task-confirm"><span>Eliminar</span></button>';
+        modalsContainer.innerHTML = getModalHtml({
+            overlayId: 'plan-detail-delete-task-modal-overlay',
+            title: 'Eliminar tarea',
+            bodyHtml: deleteBody,
+            footerHtml: deleteFooter,
+            size: 'sm',
+            closeButtonId: 'plan-detail-delete-task-close'
+        });
+        const overlayEl = document.getElementById('plan-detail-delete-task-modal-overlay');
+        const closeBtn = document.getElementById('plan-detail-delete-task-close');
+        const cancelBtn = document.getElementById('plan-detail-delete-task-cancel');
+        const confirmBtn = document.getElementById('plan-detail-delete-task-confirm');
+        function closeDeleteTaskModal() {
+            if (typeof closeModal === 'function') closeModal('plan-detail-delete-task-modal-overlay');
+        }
+        if (closeBtn) closeBtn.addEventListener('click', closeDeleteTaskModal);
+        if (cancelBtn) cancelBtn.addEventListener('click', closeDeleteTaskModal);
+        if (overlayEl) overlayEl.addEventListener('click', function (ev) { if (ev.target === overlayEl) closeDeleteTaskModal(); });
+        if (confirmBtn) {
+            confirmBtn.addEventListener('click', function () {
+                const taskId = planDetailTaskIdToDelete;
+                planDetailTaskIdToDelete = null;
+                closeDeleteTaskModal();
+                if (taskId != null) {
+                    const tasks = getTasksForPlan(planId);
+                    const i = tasks.findIndex(t => String(t.id) === String(taskId));
+                    if (i >= 0) {
+                        tasks.splice(i, 1);
+                        renderPlanDetail(planId);
+                        if (typeof showToast === 'function') showToast('success', 'Tarea eliminada exitosamente');
+                    }
+                }
+            });
+        }
+    }
+
+    // Botón Opciones del plan (título): dropdown Enviar recordatorio / Eliminar (derecha alineada)
+    const optionsBtn = document.getElementById('plan-detail-options-btn');
+    if (optionsBtn && typeof window.getDropdownMenuHtml === 'function' && typeof window.openDropdownMenu === 'function' && typeof window.closeDropdownMenu === 'function') {
+        optionsBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const overlayId = 'plan-detail-options-overlay';
+            let overlayEl = document.getElementById(overlayId);
+            if (overlayEl) overlayEl.remove();
+            const options = [
+                { text: 'Enviar recordatorio', value: 'recordatorio' },
+                { text: 'Eliminar', value: 'eliminar' }
+            ];
+            const html = window.getDropdownMenuHtml({ overlayId: overlayId, options: options });
+            document.body.insertAdjacentHTML('beforeend', html);
+            overlayEl = document.getElementById(overlayId);
+            if (!overlayEl) return;
+            overlayEl.style.zIndex = '10100';
+            overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function (opt) {
+                opt.addEventListener('click', function () {
+                    const val = this.getAttribute('data-value');
+                    window.closeDropdownMenu(overlayId);
+                    if (overlayEl.parentNode) overlayEl.remove();
+                    if (val === 'recordatorio') {
+                        if (typeof showToast === 'function') showToast('success', 'Recordatorio enviado');
+                    } else if (val === 'eliminar') {
+                        if (confirm('¿Eliminar este plan? Esta acción no se puede deshacer.')) {
+                            try {
+                                if (window.planDetailPlanCache && planId) delete window.planDetailPlanCache[planId];
+                                if (window.planDetailTasksCache && planId) delete window.planDetailTasksCache[planId];
+                            } catch (err) {}
+                            try {
+                                sessionStorage.setItem('ubits-toast-pending', JSON.stringify({ type: 'success', message: 'Plan eliminado' }));
+                            } catch (err) {}
+                            window.location.href = 'planes.html';
+                        }
+                    }
+                });
+            });
+            overlayEl.addEventListener('click', function (ev) {
+                if (ev.target === overlayEl) { window.closeDropdownMenu(overlayId); if (overlayEl.parentNode) overlayEl.remove(); }
+            });
+            window.openDropdownMenu(overlayId, optionsBtn, { alignRight: true });
+        });
+    }
+    if (typeof initTooltip === 'function') initTooltip('#plan-detail-options-btn');
+
+    /* Título y descripción editables inline (como task-detail): resize y guardar en caché al blur */
+    const titleInput = document.getElementById('plan-detail-title');
+    const descInput = document.getElementById('plan-detail-desc');
+    if (titleInput) {
+        titleInput.addEventListener('input', resizePlanTitle);
+        titleInput.addEventListener('blur', function () {
+            const plan = window.planDetailPlanCache && window.planDetailPlanCache[planId];
+            if (plan) {
+                plan.name = this.value.trim() || plan.name || 'Plan';
+                if (typeof renderSaveIndicator === 'function') {
+                    renderSaveIndicator('header-product-container-save-indicator', { state: 'saving', size: 'sm' });
+                    setTimeout(function () {
+                        renderSaveIndicator('header-product-container-save-indicator', { state: 'idle', size: 'sm' });
+                    }, 600);
+                }
+            }
+        });
+    }
+    if (descInput) {
+        descInput.addEventListener('input', resizePlanDesc);
+        descInput.addEventListener('blur', function () {
+            const plan = window.planDetailPlanCache && window.planDetailPlanCache[planId];
+            if (plan) {
+                plan.description = this.value.trim() || '';
+                if (typeof renderSaveIndicator === 'function') {
+                    renderSaveIndicator('header-product-container-save-indicator', { state: 'saving', size: 'sm' });
+                    setTimeout(function () {
+                        renderSaveIndicator('header-product-container-save-indicator', { state: 'idle', size: 'sm' });
+                    }, 600);
+                }
+            }
+        });
+    }
 
     const finalizarBtn = document.getElementById('plan-detail-finalizar');
     if (finalizarBtn) {

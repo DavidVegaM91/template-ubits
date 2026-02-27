@@ -115,21 +115,122 @@
     gap: 0;
 }
 
-/* Wrapper para posicionar el botón oficial "Más opciones" */
-.plan-detail-card__more-wrap {
-    position: absolute;
-    top: var(--gap-lg);
-    right: var(--gap-lg);
+/* Fila título + botón opciones (como task-detail-title-row) */
+.plan-detail-card__title-row {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--gap-sm);
+    min-width: 0;
+    margin: 0 0 var(--gap-sm) 0;
 }
 
-/* Labels: body/md semibold, fg-1-high */
-.plan-detail-card__label-row {
+.plan-detail-card__title-row .task-detail-title-editable {
+    flex: 1;
+    min-width: 0;
+}
+
+.plan-detail-card__title-row .ubits-button--icon-only {
+    flex-shrink: 0;
+}
+
+/* Título editable inline: mismos estilos que task-detail */
+.plan-detail-card .task-detail-title-editable {
     font-family: 'Noto Sans', sans-serif;
-    font-size: var(--font-size-md);
-    font-weight: var(--font-weight-semibold);
-    line-height: 24px;
+    line-height: 1.25;
     color: var(--ubits-fg-1-high);
-    margin: 0 0 var(--gap-sm) 0;
+    border: none;
+    background: transparent;
+    width: 100%;
+    min-height: 1.25em;
+    padding: 0;
+    margin: 0;
+    resize: none;
+    overflow: hidden;
+    outline: none;
+    cursor: text;
+    position: relative;
+    z-index: 1;
+    box-sizing: border-box;
+}
+
+.plan-detail-card .task-detail-title-editable:hover,
+.plan-detail-card .task-detail-title-editable:focus {
+    background: var(--ubits-bg-2);
+    border-radius: var(--border-radius-xs);
+}
+
+.plan-detail-card .task-detail-title-editable::placeholder {
+    color: var(--ubits-fg-1-low);
+}
+
+/* Descripción editable inline: mismos estilos que task-detail */
+.plan-detail-card .task-detail-desc-editable {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    line-height: 1.5;
+    color: var(--ubits-fg-1-medium);
+    border: none;
+    background: transparent;
+    width: 100%;
+    min-height: 0;
+    padding: 0;
+    margin: 0;
+    resize: none;
+    outline: none;
+    cursor: text;
+    position: relative;
+    z-index: 1;
+    box-sizing: border-box;
+    overflow-y: hidden;
+}
+
+.plan-detail-card .task-detail-desc-editable:hover,
+.plan-detail-card .task-detail-desc-editable:focus {
+    background: var(--ubits-bg-2);
+    border-radius: var(--border-radius-xs);
+}
+
+.plan-detail-card .task-detail-desc-editable::placeholder {
+    color: var(--ubits-fg-1-low);
+}
+
+/* Descripción */
+.plan-detail-card__desc-wrap {
+    margin: 0 0 var(--gap-lg) 0;
+}
+
+/* Línea divisora después de descripción */
+.plan-detail-card__divider {
+    height: 0;
+    border: none;
+    border-top: 1px solid var(--ubits-border-1);
+    margin: 0 0 var(--gap-lg) 0;
+}
+
+/* Label "Creado por": mismos estilos que task-detail-meta-label (tamaño, color, peso) */
+.plan-detail-card__meta-label {
+    color: var(--ubits-fg-1-medium);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+}
+
+/* Creado por: fila con avatar + nombre */
+.plan-detail-card__creado-row {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+    margin: 0 0 var(--gap-lg) 0;
+}
+
+.plan-detail-card__creado-value {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    min-width: 0;
+}
+
+.plan-detail-card__creado-name {
+    color: var(--ubits-fg-1-medium);
 }
 
 /* Descripción body: body/md regular, fg-1-medium */
@@ -142,28 +243,6 @@
     margin: 0 0 var(--gap-lg) 0;
 }
 
-.plan-detail-card__creado-row {
-    display: flex;
-    align-items: baseline;
-    gap: var(--gap-xs);
-    margin: 0 0 var(--gap-lg) 0;
-}
-
-.plan-detail-card__creado-label {
-    font-family: 'Noto Sans', sans-serif;
-    font-size: var(--font-size-md);
-    font-weight: var(--font-weight-semibold);
-    line-height: 24px;
-    color: var(--ubits-fg-1-high);
-}
-
-.plan-detail-card__creado-value {
-    font-family: 'Noto Sans', sans-serif;
-    font-size: var(--font-size-md);
-    font-weight: var(--font-weight-regular);
-    line-height: 24px;
-    color: var(--ubits-fg-1-medium);
-}
 
 .plan-detail-card__text {
     font-family: 'Noto Sans', sans-serif;
@@ -192,13 +271,19 @@
     min-width: 100px;
 }
 
-/* Contador tareas: body/md regular, fg-1-high (legible en barra) */
-.plan-detail-card__progress-row > span:first-child {
+/* Label "Tareas finalizadas": mismo estilo que meta-label (Creado por) */
+.plan-detail-card__progress-row .plan-detail-card__meta-label {
+    color: var(--ubits-fg-1-medium);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+}
+
+/* Número XXX/XXX: peso regular */
+.plan-detail-card__count-regular {
     font-family: 'Noto Sans', sans-serif;
-    font-size: var(--font-size-md);
+    font-size: var(--font-size-xs);
     font-weight: var(--font-weight-regular);
-    line-height: 24px;
-    color: var(--ubits-fg-1-high);
+    color: var(--ubits-fg-1-medium);
 }
 
 .plan-detail-card__bar {
@@ -219,7 +304,7 @@
 .plan-detail-card__percent {
     font-family: 'Noto Sans', sans-serif;
     font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-semibold);
+    font-weight: var(--font-weight-regular);
     line-height: 19.5px;
     color: var(--ubits-fg-1-medium);
 }
@@ -230,17 +315,22 @@
     gap: var(--gap-sm);
 }
 
-.plan-detail-card__date-label {
-    font-family: 'Noto Sans', sans-serif;
-    font-size: var(--font-size-md);
-    font-weight: var(--font-weight-regular);
-    line-height: 24px;
+/* Contenedor Vencimiento: label + calendario (mismo selector que task-detail) */
+.plan-detail-card__date-wrap .plan-detail-card__meta-label {
     color: var(--ubits-fg-1-medium);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
 }
 
 /* Input fecha: usa componente oficial .ubits-input; ancho fijo para alineación */
-.plan-detail-card__date-wrap .ubits-input-wrapper {
-    width: 112px;
+/* Mismo ancho que task-detail (vencimiento-wrap: 125px) */
+#plan-detail-vencimiento-wrap {
+    width: 125px;
+    min-width: 125px;
+}
+#plan-detail-vencimiento-wrap .ubits-input {
+    width: 100%;
+    box-sizing: border-box;
 }
 .plan-detail-card__date-wrap .ubits-input {
     text-align: center;

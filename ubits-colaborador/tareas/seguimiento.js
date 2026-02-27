@@ -3890,6 +3890,16 @@
     }
 
     function init() {
+        /* Toast pendiente (ej. tras eliminar tarea desde task-detail y volver aquí) */
+        try {
+            var pending = sessionStorage.getItem('ubits-toast-pending');
+            if (pending) {
+                sessionStorage.removeItem('ubits-toast-pending');
+                var data = JSON.parse(pending);
+                if (data && data.message && typeof showToast === 'function') showToast(data.type || 'success', data.message);
+            }
+        } catch (e) {}
+
         SEGUIMIENTO_DATA = generateData();
         initColumnVisibility();
         buildTableHeader();

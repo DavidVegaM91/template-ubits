@@ -657,6 +657,7 @@
                             finished: finished,
                             hasMembers: false,
                             created_by: emp.nombre,
+                            created_by_avatar_url: (emp.avatar && String(emp.avatar).trim()) ? emp.avatar : null,
                             fechaCreacion: planFechaCreacion,
                             progress: progress
                         };
@@ -873,6 +874,7 @@
             const planId = planIdNext++;
             const planEndDateStr = typeof maxFin === 'object' && maxFin instanceof Date ? (maxFin.getFullYear() + '-' + pad(maxFin.getMonth() + 1) + '-' + pad(maxFin.getDate())) : null;
             const planFechaCreacionStr = typeof minCreacion === 'object' && minCreacion instanceof Date ? (minCreacion.getFullYear() + '-' + pad(minCreacion.getMonth() + 1) + '-' + pad(minCreacion.getDate())) : null;
+            const planCreadorAvatar = (esPlanGrupalPorArea && areaLider && areaLider.avatar && String(areaLider.avatar).trim()) ? areaLider.avatar : null;
             const planObj = {
                 id: planId,
                 name: nombrePlan,
@@ -884,6 +886,7 @@
                 finished: estadoPlan === 'Finalizada',
                 hasMembers: true,
                 created_by: planCreador,
+                created_by_avatar_url: planCreadorAvatar,
                 fechaCreacion: planFechaCreacionStr,
                 progress: avancePlan
             };

@@ -1,0 +1,122 @@
+/* ========================================
+   SUBTASK-DETAIL - Vista de detalle de subtarea
+   Sin módulo de comentarios ni de subtareas. Una sola columna.
+   Reutiliza estilos de task-detail (info block, meta row, etc.).
+   ======================================== */
+
+.page-subtask-detail {
+    background-color: var(--ubits-bg-2);
+}
+
+.subtask-detail-content-area {
+    padding: 0;
+    padding-bottom: 16px;
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.subtask-detail-sections {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+    flex: 1;
+    min-width: 0;
+}
+
+.subtask-detail-section--header .widget-header-product {
+    background: transparent !important;
+    padding: 0 !important;
+    border: none !important;
+}
+
+.page-subtask-detail .ubits-header-product__product-title h2 {
+    display: block;
+}
+
+.subtask-detail-section--body {
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+}
+
+.subtask-detail-single-col {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+    min-width: 0;
+    max-width: 100%;
+}
+
+/* Línea divisora entre descripción y los 5 ítems */
+.subtask-detail-info-row {
+    border-top: 1px solid var(--ubits-border-1);
+    padding-top: var(--gap-lg);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--gap-xl);
+    align-items: flex-start;
+}
+
+.subtask-detail-info-group {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    gap: var(--gap-xl);
+    align-items: flex-start;
+}
+
+.subtask-detail-info-group--meta {
+    min-width: 280px;
+}
+
+.subtask-detail-info-group--attrs {
+    min-width: 320px;
+}
+
+/* Nombres en una sola línea */
+.subtask-detail-name-text {
+    white-space: nowrap;
+}
+
+.subtask-detail-info-cell {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    min-width: 0;
+}
+
+/* Badge de prioridad: ancho fijo 80px (igual que en task-detail) */
+#subtask-detail-info-block .ubits-badge-tag {
+    width: 80px;
+    min-width: 80px;
+    justify-content: center;
+}
+
+/* Resoluciones < 480px: todo a una columna */
+@media (max-width: 479px) {
+    .subtask-detail-info-row {
+        flex-direction: column;
+    }
+
+    .subtask-detail-info-group {
+        flex-direction: column;
+        min-width: 0;
+    }
+
+    .subtask-detail-info-cell {
+        width: 100%;
+    }
+}
+
+/* Input fecha: mismo ancho fijo que en task-detail */
+#subtask-detail-vencimiento-wrap {
+    width: 125px;
+    min-width: 125px;
+}
+
+#subtask-detail-vencimiento-wrap .ubits-input {
+    width: 100%;
+    box-sizing: border-box;
+}

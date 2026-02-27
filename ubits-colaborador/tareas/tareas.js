@@ -761,6 +761,16 @@ function setupMonthPickerCloseOnClickOutside() {
 function initTareasView() {
     console.log('Inicializando vista de tareas...');
 
+    /* Toast pendiente (ej. tras eliminar tarea desde task-detail y volver aquí) */
+    try {
+        var pending = sessionStorage.getItem('ubits-toast-pending');
+        if (pending) {
+            sessionStorage.removeItem('ubits-toast-pending');
+            var data = JSON.parse(pending);
+            if (data && data.message && typeof showToast === 'function') showToast(data.type || 'success', data.message);
+        }
+    } catch (e) {}
+
     // Modal de confirmación eliminar tarea (componente UBITS)
     var modalsContainer = document.getElementById('tareas-modals-container');
     if (modalsContainer && typeof getModalHtml === 'function') {
@@ -792,7 +802,7 @@ function initTareasView() {
                     renderAllTasks();
                     estadoTareas.taskIdToDelete = null;
                     if (typeof showToast === 'function') {
-                        showToast('success', 'Tarea eliminada correctamente');
+                        showToast('success', 'Tarea eliminada exitosamente');
                     }
                 }
                 closeDeleteModal();
@@ -1088,22 +1098,51 @@ function initTareasView() {
                     renderAllTasks();
                 }
             }
-            if (e.target.closest('.tarea-action-btn--delete')) {
-                const tareaItem = e.target.closest('.tarea-item');
-                const tareaId = parseInt(tareaItem.querySelector('input.ubits-checkbox__input')?.dataset.tareaId, 10);
-                if (!isNaN(tareaId)) {
-                    estadoTareas.taskIdToDelete = tareaId;
-                    if (typeof showModal === 'function') {
-                        showModal('task-detail-delete-modal-overlay');
-                    } else {
-                        if (confirm('¿Estás seguro de que quieres eliminar esta tarea?')) {
-                            handleDelete(tareaId);
-                            renderTareasVencidas();
-                            renderAllTasks();
-                            if (typeof showToast === 'function') showToast('success', 'Tarea eliminada correctamente');
+            /* Opciones de la tirilla: dropdown Enviar recordatorio / Eliminar (derecha alineada al botón) */
+            if (e.target.closest('.tarea-action-btn--options') && typeof window.getDropdownMenuHtml === 'function' && typeof window.openDropdownMenu === 'function' && typeof window.closeDropdownMenu === 'function') {
+                e.preventDefault();
+                e.stopPropagation();
+                const btn = e.target.closest('.tarea-action-btn--options');
+                const tareaIdRaw = btn.dataset.tareaId || btn.getAttribute('data-tarea-id');
+                const tareaId = tareaIdRaw != null ? parseInt(String(tareaIdRaw), 10) : NaN;
+                if (isNaN(tareaId)) return;
+                const overlayId = 'tareas-strip-options-overlay';
+                let overlayEl = document.getElementById(overlayId);
+                if (overlayEl) overlayEl.remove();
+                const options = [
+                    { text: 'Enviar recordatorio', value: 'recordatorio' },
+                    { text: 'Eliminar', value: 'eliminar' }
+                ];
+                const html = window.getDropdownMenuHtml({ overlayId: overlayId, options: options });
+                document.body.insertAdjacentHTML('beforeend', html);
+                overlayEl = document.getElementById(overlayId);
+                if (!overlayEl) return;
+                overlayEl.style.zIndex = '10100';
+                overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function (opt) {
+                    opt.addEventListener('click', function () {
+                        const val = this.getAttribute('data-value');
+                        window.closeDropdownMenu(overlayId);
+                        if (overlayEl.parentNode) overlayEl.remove();
+                        if (val === 'recordatorio') {
+                            if (typeof showToast === 'function') showToast('success', 'Recordatorio enviado');
+                        } else if (val === 'eliminar') {
+                            estadoTareas.taskIdToDelete = tareaId;
+                            if (typeof showModal === 'function') showModal('task-detail-delete-modal-overlay');
+                            else {
+                                if (confirm('¿Estás seguro de que quieres eliminar esta tarea?')) {
+                                    handleDelete(tareaId);
+                                    renderTareasVencidas();
+                                    renderAllTasks();
+                                    if (typeof showToast === 'function') showToast('success', 'Tarea eliminada exitosamente');
+                                }
+                            }
                         }
-                    }
-                }
+                    });
+                });
+                overlayEl.addEventListener('click', function (ev) {
+                    if (ev.target === overlayEl) { window.closeDropdownMenu(overlayId); if (overlayEl.parentNode) overlayEl.remove(); }
+                });
+                window.openDropdownMenu(overlayId, btn, { alignRight: true });
             }
             if (e.target.closest('.tarea-action-btn--details')) {
                 const btn = e.target.closest('.tarea-action-btn--details');

@@ -98,8 +98,8 @@ function renderTaskStrip(tarea, opts) {
         '<span class="ubits-badge-tag__text">' + escapeHtml(prioridadLabel) + '</span>' +
         '</button>' +
         '<div class="tarea-assigned" data-tooltip="Asignado a: ' + escapeAttr(assignee.name) + '">' + htmlAssignee() + '</div>' +
-        '<button type="button" class="ubits-button ubits-button--error-tertiary ubits-button--sm ubits-button--icon-only tarea-action-btn tarea-action-btn--delete" data-tooltip="Eliminar" data-tarea-id="' + idSafe + '">' +
-        '<i class="far fa-trash"></i>' +
+        '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only tarea-action-btn tarea-action-btn--options" data-tooltip="Opciones" data-tarea-id="' + idSafe + '" aria-label="Opciones">' +
+        '<i class="far fa-ellipsis-vertical"></i>' +
         '</button>' +
         '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only tarea-action-btn tarea-action-btn--details" data-tooltip="Detalles" data-tarea-id="' + idSafe + '">' +
         '<i class="far fa-chevron-right"></i>' +
