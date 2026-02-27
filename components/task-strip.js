@@ -73,7 +73,7 @@ function renderTaskStrip(tarea, opts) {
         '</label>' +
         '</span>' +
         '<div class="tarea-content">' +
-        '<h3 class="tarea-titulo ubits-body-md-regular">' + nameSafe + '</h3>' +
+        '<div class="tarea-titulo-wrap"><h3 class="tarea-titulo ubits-body-md-regular">' + nameSafe + '</h3></div>' +
         '</div>' +
         etiquetaBlock +
         '</div>' +
@@ -110,6 +110,54 @@ function renderTaskStrip(tarea, opts) {
     );
 }
 
+/**
+ * Activa edición inline del nombre en una tirilla (.tarea-item).
+ * Reemplaza el h3 por un input; al blur o Enter guarda y llama onSave(nuevoNombre); clics en el input no abren el detalle.
+ * @param {Element} tareaItem - .tarea-item
+ * @param {string|number} taskId - id de la tarea (para referencia)
+ * @param {function(string)} onSave - callback con el nuevo nombre (ya recortado)
+ */
+function startInlineEditTaskName(tareaItem, taskId, onSave) {
+    var wrap = tareaItem && tareaItem.querySelector('.tarea-titulo-wrap');
+    var h3 = wrap && wrap.querySelector('.tarea-titulo');
+    if (!wrap || !h3) return;
+    var currentName = (h3.textContent || '').trim();
+    var input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'tarea-titulo-edit-input';
+    input.value = currentName;
+    input.setAttribute('data-tarea-id', String(taskId));
+    var finished = false;
+
+    function finishEdit(save) {
+        if (finished) return;
+        finished = true;
+        wrap.classList.remove('tarea-titulo-edit-wrap');
+        var newName = input.value != null ? String(input.value) : '';
+        var newH3 = document.createElement('h3');
+        newH3.className = 'tarea-titulo ubits-body-md-regular';
+        newH3.textContent = save ? newName : currentName;
+        wrap.innerHTML = '';
+        wrap.appendChild(newH3);
+        if (save && typeof onSave === 'function') onSave(newName);
+    }
+
+    input.addEventListener('click', function (e) { e.stopPropagation(); });
+    input.addEventListener('mousedown', function (e) { e.stopPropagation(); });
+    input.addEventListener('blur', function () { finishEdit(true); });
+    input.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') { e.preventDefault(); finishEdit(true); }
+        if (e.key === 'Escape') { e.preventDefault(); finishEdit(false); }
+    });
+
+    wrap.classList.add('tarea-titulo-edit-wrap');
+    wrap.innerHTML = '';
+    wrap.appendChild(input);
+    input.focus();
+    input.select();
+}
+
 if (typeof window !== 'undefined') {
     window.renderTaskStrip = renderTaskStrip;
+    window.startInlineEditTaskName = startInlineEditTaskName;
 }

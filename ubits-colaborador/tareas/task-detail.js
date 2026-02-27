@@ -1363,8 +1363,9 @@
             var existing = document.getElementById(overlayId);
             if (existing) existing.remove();
             var options = [
-                { text: 'Enviar recordatorio', value: 'recordatorio' },
-                { text: 'Eliminar', value: 'eliminar' }
+                { text: 'Cambiar nombre', value: 'cambiar-nombre', leftIcon: 'pen' },
+                { text: 'Enviar recordatorio', value: 'recordatorio', leftIcon: 'bell' },
+                { text: 'Eliminar', value: 'eliminar', leftIcon: 'trash' }
             ];
             var html = window.getDropdownMenuHtml({ overlayId: overlayId, options: options });
             document.body.insertAdjacentHTML('beforeend', html);
@@ -1376,7 +1377,18 @@
                         var val = this.getAttribute('data-value');
                         window.closeDropdownMenu(overlayId);
                         if (overlayEl.parentNode) overlayEl.remove();
-                        if (val === 'recordatorio') {
+                        if (val === 'cambiar-nombre') {
+                            var tareaItem = btn.closest('.tarea-item');
+                            var subtask = estado.subtasks && estado.subtasks.find(function (s) { return String(s.id) === String(id); });
+                            if (tareaItem && subtask && typeof window.startInlineEditTaskName === 'function') {
+                                window.startInlineEditTaskName(tareaItem, id, function (newName) {
+                                    subtask.name = newName;
+                                    renderSubtasksBlock();
+                                    triggerFakeSave();
+                                    if (typeof showToast === 'function') showToast('success', 'Nombre actualizado');
+                                });
+                            }
+                        } else if (val === 'recordatorio') {
                             if (typeof showToast === 'function') showToast('success', 'Recordatorio enviado');
                         } else if (val === 'eliminar') {
                             subtaskIdToDelete = id;
@@ -1521,8 +1533,8 @@
                 return;
             }
 
-            /* Clic en la fila (nombre/área no interactiva): abrir detalle de la subtarea */
-            if (!e.target.closest('.tarea-action-btn--options') && !e.target.closest('.tarea-priority-badge') && !e.target.closest('.tarea-assigned') && !e.target.closest('.tarea-fecha-btn') && !e.target.closest('.tarea-done-radio') && !e.target.closest('input[type="checkbox"]')) {
+            /* Clic en la fila (nombre/área no interactiva): abrir detalle de la subtarea; excluir edición inline del nombre */
+            if (!e.target.closest('.tarea-action-btn--options') && !e.target.closest('.tarea-priority-badge') && !e.target.closest('.tarea-assigned') && !e.target.closest('.tarea-fecha-btn') && !e.target.closest('.tarea-done-radio') && !e.target.closest('input[type="checkbox"]') && !e.target.closest('.tarea-titulo-edit-wrap')) {
                 e.preventDefault();
                 var taskId = estado.task && estado.task.id != null ? estado.task.id : '';
                 window.location.href = 'subtask-detail.html?taskId=' + encodeURIComponent(taskId) + '&id=' + encodeURIComponent(subtaskId);

@@ -4,14 +4,14 @@
    Figma: Planes y Tareas R4 – siempre con padding, focus cuadrado. Solo icono 1:1: xs 28px, sm 32px, md 40px, lg 48px
    ======================================== */
 
-/* Contenedor base: siempre con padding, nunca sin espacio */
+/* Contenedor base: sin padding; el "padding" lo da el contenedor cuadrado del icono (como en Figma) */
 .ubits-save-indicator {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: var(--gap-sm);
-    padding: var(--padding-sm) var(--padding-md);
-    min-height: var(--space-10);
+    padding: 0;
+    min-height: 0;
     border-radius: var(--border-radius-sm);
     font-family: 'Noto Sans', sans-serif;
     font-weight: var(--font-weight-semibold);
@@ -26,134 +26,113 @@
     box-shadow: 0 0 0 4px var(--ubits-button-focus-ring);
 }
 
-/* ---- TAMAÑOS (Figma) ---- */
+/* ---- TAMAÑOS (Figma: Learn-Components 280:6179) ---- */
+/* Contenedor cuadrado del icono = alto y ancho por tamaño. Icono centrado. Padding arriba/abajo = (tamaño - icono)/2. */
 
-/* Extra small: 28px */
+/* xs: contenedor 28×28, icono 14px → padding 7px arriba/abajo */
 .ubits-save-indicator--xs {
-    min-height: var(--space-7);
-    padding: var(--padding-xs) var(--padding-sm);
     gap: var(--gap-xs);
 }
 .ubits-save-indicator--xs .ubits-save-indicator__icon {
-    width: 14px;
-    height: 14px;
+    width: var(--space-7);
+    height: var(--space-7);
+    min-width: var(--space-7);
+    min-height: var(--space-7);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: var(--border-radius-sm);
 }
 .ubits-save-indicator--xs .ubits-save-indicator__icon i {
-    font-size: 12px;
+    font-size: 14px;
 }
 .ubits-save-indicator--xs .ubits-save-indicator__text {
     font-size: 12px;
 }
 
-/* Small: 32px */
+/* sm: contenedor 32×32, icono 16px → padding 8px arriba/abajo */
 .ubits-save-indicator--sm {
-    min-height: var(--space-8);
-    padding: var(--padding-sm) var(--padding-md);
     gap: var(--gap-xs);
 }
 
 .ubits-save-indicator--sm .ubits-save-indicator__icon {
-    width: 16px;
-    height: 16px;
+    width: var(--space-8);
+    height: var(--space-8);
+    min-width: var(--space-8);
+    min-height: var(--space-8);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: var(--border-radius-sm);
 }
 
 .ubits-save-indicator--sm .ubits-save-indicator__icon i {
-    font-size: 12px;
+    font-size: 16px;
 }
 
 .ubits-save-indicator--sm .ubits-save-indicator__text {
     font-size: 13px;
 }
 
-/* Medium (default): 40px */
+/* md: contenedor 40×40, icono 20px → padding 10px arriba/abajo */
 .ubits-save-indicator--md {
-    min-height: var(--space-10);
-    padding: var(--padding-sm) var(--padding-md);
+    gap: var(--gap-sm);
 }
 
 .ubits-save-indicator--md .ubits-save-indicator__icon {
-    width: 20px;
-    height: 20px;
+    width: var(--space-10);
+    height: var(--space-10);
+    min-width: var(--space-10);
+    min-height: var(--space-10);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: var(--border-radius-sm);
 }
 
 .ubits-save-indicator--md .ubits-save-indicator__icon i {
-    font-size: var(--font-size-md, 16px);
+    font-size: 20px;
 }
 
 .ubits-save-indicator--md .ubits-save-indicator__text {
     font-size: var(--font-size-md, 16px);
 }
 
-/* Large: 48px */
+/* lg: contenedor 48×48, icono 24px → padding 12px arriba/abajo */
 .ubits-save-indicator--lg {
-    min-height: var(--space-12);
-    padding: var(--padding-md) var(--padding-lg);
     gap: var(--gap-md);
 }
 
 .ubits-save-indicator--lg .ubits-save-indicator__icon {
-    width: 24px;
-    height: 24px;
+    width: var(--space-12);
+    height: var(--space-12);
+    min-width: var(--space-12);
+    min-height: var(--space-12);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: var(--border-radius-sm);
 }
 
 .ubits-save-indicator--lg .ubits-save-indicator__icon i {
-    font-size: 20px;
+    font-size: 24px;
 }
 
 .ubits-save-indicator--lg .ubits-save-indicator__text {
     font-size: 18px;
 }
 
-/* ---- ESTADOS SOLO ICONO (Saved, Hover, Focus): cuadro exacto 1:1 Figma ---- */
+/* ---- ESTADOS SOLO ICONO (idle): ocultar texto ---- */
+/* El icono va siempre dentro del contenedor cuadrado .ubits-save-indicator__icon (mismo tamaño en todos los estados, icono centrado = 12px padding visual). En icon-only se ve el cuadradito; al pasar a saving/saved el cuadrado sigue igual y el icono no se mueve. */
 
 .ubits-save-indicator--idle-plain .ubits-save-indicator__text,
 .ubits-save-indicator--idle-subtle .ubits-save-indicator__text,
 .ubits-save-indicator--idle-highlighted .ubits-save-indicator__text {
     display: none;
-}
-
-/* xs 28x28 */
-.ubits-save-indicator--xs.ubits-save-indicator--idle-plain,
-.ubits-save-indicator--xs.ubits-save-indicator--idle-subtle,
-.ubits-save-indicator--xs.ubits-save-indicator--idle-highlighted {
-    width: var(--space-7);
-    height: var(--space-7);
-    min-width: var(--space-7);
-    min-height: var(--space-7);
-    padding: 0;
-}
-
-/* sm 32x32 */
-.ubits-save-indicator--sm.ubits-save-indicator--idle-plain,
-.ubits-save-indicator--sm.ubits-save-indicator--idle-subtle,
-.ubits-save-indicator--sm.ubits-save-indicator--idle-highlighted {
-    width: var(--space-8);
-    height: var(--space-8);
-    min-width: var(--space-8);
-    min-height: var(--space-8);
-    padding: 0;
-}
-
-/* md 40x40 */
-.ubits-save-indicator--md.ubits-save-indicator--idle-plain,
-.ubits-save-indicator--md.ubits-save-indicator--idle-subtle,
-.ubits-save-indicator--md.ubits-save-indicator--idle-highlighted {
-    width: var(--space-10);
-    height: var(--space-10);
-    min-width: var(--space-10);
-    min-height: var(--space-10);
-    padding: 0;
-}
-
-/* lg 48x48 */
-.ubits-save-indicator--lg.ubits-save-indicator--idle-plain,
-.ubits-save-indicator--lg.ubits-save-indicator--idle-subtle,
-.ubits-save-indicator--lg.ubits-save-indicator--idle-highlighted {
-    width: var(--space-12);
-    height: var(--space-12);
-    min-width: var(--space-12);
-    min-height: var(--space-12);
-    padding: 0;
 }
 
 /* Idle (default): sin fondo; al hover fondo tertiary para coherencia con botones */
@@ -162,18 +141,20 @@
 }
 .ubits-save-indicator--idle-plain .ubits-save-indicator__icon {
     color: var(--ubits-fg-1-low);
+    transition: background-color 0.2s ease;
 }
-.ubits-save-indicator--idle-plain:hover {
+.ubits-save-indicator--idle-plain:hover .ubits-save-indicator__icon {
     background-color: var(--ubits-btn-tertiary-bg-hover);
 }
 
-/* Hover (Figma): fondo sutil por defecto */
-.ubits-save-indicator--idle-subtle {
-    background-color: var(--ubits-bg-2);
-}
-
+/* Hover (Figma): fondo sutil en el cuadradito; al hover tertiary */
 .ubits-save-indicator--idle-subtle .ubits-save-indicator__icon {
     color: var(--ubits-fg-1-low);
+    background-color: var(--ubits-bg-2);
+    transition: background-color 0.2s ease;
+}
+.ubits-save-indicator--idle-subtle:hover .ubits-save-indicator__icon {
+    background-color: var(--ubits-btn-tertiary-bg-hover);
 }
 
 /* Focus (Figma): solo box-shadow (ring 4px), sin borde */
@@ -186,12 +167,15 @@
     color: var(--ubits-fg-1-low);
 }
 
-/* Icono base */
+/* Estados con texto: padding derecho para que el texto no quede pegado al borde (Figma: pr 16px) */
+.ubits-save-indicator--saving,
+.ubits-save-indicator--saved,
+.ubits-save-indicator--error {
+    padding-right: var(--padding-md);
+}
+
+/* Contenedor cuadrado del icono (como en Figma): icono centrado dentro; mismo tamaño en todos los estados */
 .ubits-save-indicator__icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
     color: var(--ubits-fg-1-high);
 }
 

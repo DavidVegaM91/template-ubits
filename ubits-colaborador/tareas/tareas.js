@@ -1110,8 +1110,9 @@ function initTareasView() {
                 let overlayEl = document.getElementById(overlayId);
                 if (overlayEl) overlayEl.remove();
                 const options = [
-                    { text: 'Enviar recordatorio', value: 'recordatorio' },
-                    { text: 'Eliminar', value: 'eliminar' }
+                    { text: 'Cambiar nombre', value: 'cambiar-nombre', leftIcon: 'pen' },
+                    { text: 'Enviar recordatorio', value: 'recordatorio', leftIcon: 'bell' },
+                    { text: 'Eliminar', value: 'eliminar', leftIcon: 'trash' }
                 ];
                 const html = window.getDropdownMenuHtml({ overlayId: overlayId, options: options });
                 document.body.insertAdjacentHTML('beforeend', html);
@@ -1123,7 +1124,14 @@ function initTareasView() {
                         const val = this.getAttribute('data-value');
                         window.closeDropdownMenu(overlayId);
                         if (overlayEl.parentNode) overlayEl.remove();
-                        if (val === 'recordatorio') {
+                        if (val === 'cambiar-nombre') {
+                            const tareaItem = btn.closest('.tarea-item');
+                            if (tareaItem && typeof window.startInlineEditTaskName === 'function') window.startInlineEditTaskName(tareaItem, tareaId, function (newName) {
+                                const { tarea } = findTaskById(tareaId);
+                                if (tarea) { tarea.name = newName; renderAllTasks(); }
+                                if (typeof showToast === 'function') showToast('success', 'Nombre actualizado');
+                            });
+                        } else if (val === 'recordatorio') {
                             if (typeof showToast === 'function') showToast('success', 'Recordatorio enviado');
                         } else if (val === 'eliminar') {
                             estadoTareas.taskIdToDelete = tareaId;
@@ -1204,8 +1212,8 @@ function initTareasView() {
                 window.openDropdownMenu(overlayId, badge);
                 return;
             }
-            /* Clic en la fila (nombre, etiqueta) abre el detalle; excluir radio y columna de acciones */
-            if (e.target.closest('.tarea-item') && !e.target.closest('.tarea-item__radio') && !e.target.closest('.tarea-item__actions')) {
+            /* Clic en la fila (nombre, etiqueta) abre el detalle; excluir radio, columna de acciones y edición inline del nombre */
+            if (e.target.closest('.tarea-item') && !e.target.closest('.tarea-item__radio') && !e.target.closest('.tarea-item__actions') && !e.target.closest('.tarea-titulo-edit-wrap')) {
                 const tareaItem = e.target.closest('.tarea-item');
                 const tareaId = parseInt(tareaItem.dataset.tareaId || tareaItem.getAttribute('data-tarea-id'), 10);
                 if (!isNaN(tareaId)) {
