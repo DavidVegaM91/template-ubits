@@ -631,11 +631,10 @@ function createHeaderProductHTML(options = {}) {
         </div>
     ` : '';
 
-    // Renderizar acciones solo si hay botones o save-indicator
-    const actionsHTML = (saveIndicatorHTML || aiButtonHTML || secondaryButtonsHTML || primaryButtonHTML || menuButtonHTML) ? `
+    // Renderizar acciones solo si hay botones (save-indicator está en product-title, a la derecha del info)
+    const actionsHTML = (aiButtonHTML || secondaryButtonsHTML || primaryButtonHTML || menuButtonHTML) ? `
         <!-- Acciones (derecha) -->
         <div class="ubits-header-product__actions">
-            ${saveIndicatorHTML}
             ${aiButtonHTML}
             ${secondaryButtonsHTML}
             ${primaryButtonHTML}
@@ -651,10 +650,11 @@ function createHeaderProductHTML(options = {}) {
                 <div class="ubits-header-product__product-info">
                     ${backButtonHTML}
                     
-                    <!-- Título del producto con icono de información -->
+                    <!-- Título del producto, botón info y save indicator (save indicator a la derecha del info) -->
                     <div class="ubits-header-product__product-title">
                         <h2 class="ubits-heading-h2">${productName}</h2>
                         ${infoButtonHTML}
+                        <div class="ubits-header-product__save-indicator-wrap" id="${saveIndicatorId}"></div>
                     </div>
                 </div>
                 
