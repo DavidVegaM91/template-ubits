@@ -337,7 +337,6 @@ function handlePlanDetailListClick(e) {
         let overlayEl = document.getElementById(overlayId);
         if (overlayEl) overlayEl.remove();
         const options = [
-            { text: 'Cambiar nombre', value: 'cambiar-nombre', leftIcon: 'pen' },
             { text: 'Enviar recordatorio', value: 'recordatorio', leftIcon: 'bell' },
             { text: 'Eliminar', value: 'eliminar', leftIcon: 'trash' }
         ];
@@ -351,17 +350,7 @@ function handlePlanDetailListClick(e) {
                 const val = this.getAttribute('data-value');
                 window.closeDropdownMenu(overlayId);
                 if (overlayEl.parentNode) overlayEl.remove();
-                if (val === 'cambiar-nombre') {
-                    const tareaItem = btn.closest('.tarea-item');
-                    if (tareaItem && typeof window.startInlineEditTaskName === 'function') {
-                        const task = tasks.find(function (t) { return String(t.id) === String(id); });
-                        if (task) window.startInlineEditTaskName(tareaItem, id, function (newName) {
-                            task.name = newName;
-                            renderPlanDetail(planId);
-                            if (typeof showToast === 'function') showToast('success', 'Nombre actualizado');
-                        });
-                    }
-                } else if (val === 'recordatorio') {
+                if (val === 'recordatorio') {
                     if (typeof showToast === 'function') showToast('success', 'Recordatorio enviado');
                 } else if (val === 'eliminar') {
                     planDetailTaskIdToDelete = id;
@@ -515,8 +504,8 @@ function initPlanDetail() {
             let overlayEl = document.getElementById(overlayId);
             if (overlayEl) overlayEl.remove();
             const options = [
-                { text: 'Enviar recordatorio', value: 'recordatorio' },
-                { text: 'Eliminar', value: 'eliminar' }
+                { text: 'Enviar recordatorio', value: 'recordatorio', leftIcon: 'bell' },
+                { text: 'Eliminar', value: 'eliminar', leftIcon: 'trash' }
             ];
             const html = window.getDropdownMenuHtml({ overlayId: overlayId, options: options });
             document.body.insertAdjacentHTML('beforeend', html);
