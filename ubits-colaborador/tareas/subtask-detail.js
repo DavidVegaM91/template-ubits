@@ -51,11 +51,11 @@
 
     function triggerFakeSave() {
         if (typeof renderSaveIndicator !== 'function') return;
-        renderSaveIndicator(SAVE_INDICATOR_ID, { state: 'saving', size: 'sm' });
+        renderSaveIndicator(SAVE_INDICATOR_ID, { state: 'saving', size: 'xs' });
         setTimeout(function () {
-            renderSaveIndicator(SAVE_INDICATOR_ID, { state: 'saved', size: 'sm' });
+            renderSaveIndicator(SAVE_INDICATOR_ID, { state: 'saved', size: 'xs' });
             setTimeout(function () {
-                renderSaveIndicator(SAVE_INDICATOR_ID, { state: 'idle', size: 'sm' });
+                renderSaveIndicator(SAVE_INDICATOR_ID, { state: 'idle', size: 'xs' });
             }, 2500);
         }, 800);
     }
@@ -206,10 +206,10 @@
         var assigneeName = sub.assignee_name || (sub.assignee_email ? sub.assignee_email.split('@')[0] : 'Sin asignar');
         var creatorName = (task && task.created_by) ? task.created_by : '—';
         var assigneeBlock = typeof renderAvatar === 'function'
-            ? renderAvatar({ nombre: assigneeName, avatar: sub.assignee_avatar_url }, { size: 'sm' })
+            ? renderAvatar({ nombre: assigneeName, avatar: sub.assignee_avatar_url }, { size: 'xs' })
             : '<span class="ubits-avatar ubits-avatar--sm"><span class="ubits-avatar__fallback"><i class="far fa-user"></i></span></span>';
         var creatorBlock = typeof renderAvatar === 'function'
-            ? renderAvatar({ nombre: creatorName, avatar: task && task.created_by_avatar_url }, { size: 'sm' })
+            ? renderAvatar({ nombre: creatorName, avatar: task && task.created_by_avatar_url }, { size: 'xs' })
             : '<span class="ubits-avatar ubits-avatar--sm"><span class="ubits-avatar__fallback"><i class="far fa-user"></i></span></span>';
 
         var prioridadIcon = { alta: 'fa-chevrons-up', media: 'fa-chevron-up', baja: 'fa-chevron-down' };
@@ -262,7 +262,7 @@
             createInput({
                 containerId: 'subtask-detail-vencimiento-wrap',
                 type: 'calendar',
-                size: 'sm',
+                size: 'xs',
                 showLabel: false,
                 placeholder: 'Sin fecha',
                 value: ymdToDmySlash(sub.endDate),
@@ -474,7 +474,7 @@
             });
         }
         if (typeof renderSaveIndicator === 'function') {
-            renderSaveIndicator('subtask-detail-header-container-save-indicator', { state: 'idle', size: 'sm' });
+            renderSaveIndicator('subtask-detail-header-container-save-indicator', { state: 'idle', size: 'xs' });
         }
 
         /* Modal eliminar subtarea (desde botón Opciones): al confirmar, ir a task-detail y toast */
@@ -487,7 +487,7 @@
                 title: 'Eliminar subtarea',
                 bodyHtml: deleteBody,
                 footerHtml: deleteFooter,
-                size: 'sm',
+                size: 'xs',
                 closeButtonId: 'subtask-detail-delete-subtask-close'
             });
             var overlayEl = document.getElementById('subtask-detail-delete-subtask-modal-overlay');

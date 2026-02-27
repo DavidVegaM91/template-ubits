@@ -680,7 +680,7 @@
                     var saveIndicatorEl = document.getElementById('header-product-preview-save-indicator');
                     if (saveIndicatorEl) {
                         if (previewState.saveIndicator && typeof renderSaveIndicator === 'function') {
-                            renderSaveIndicator('header-product-preview-save-indicator', { state: 'idle', size: 'sm' });
+                            renderSaveIndicator('header-product-preview-save-indicator', { state: 'idle', size: 'xs' });
                         } else {
                             saveIndicatorEl.innerHTML = '';
                         }
@@ -721,7 +721,7 @@
                 var saveIndicatorEl = document.getElementById('header-product-preview-save-indicator');
                 if (saveIndicatorEl) {
                     if (previewState.saveIndicator && typeof renderSaveIndicator === 'function') {
-                        renderSaveIndicator('header-product-preview-save-indicator', { state: 'idle', size: 'sm' });
+                        renderSaveIndicator('header-product-preview-save-indicator', { state: 'idle', size: 'xs' });
                     } else {
                         saveIndicatorEl.innerHTML = '';
                     }

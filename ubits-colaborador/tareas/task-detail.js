@@ -68,11 +68,11 @@
 
     function triggerFakeSave() {
         if (typeof renderSaveIndicator !== 'function') return;
-        renderSaveIndicator(SAVE_INDICATOR_ID, { state: 'saving', size: 'sm' });
+        renderSaveIndicator(SAVE_INDICATOR_ID, { state: 'saving', size: 'xs' });
         setTimeout(function () {
-            renderSaveIndicator(SAVE_INDICATOR_ID, { state: 'saved', size: 'sm' });
+            renderSaveIndicator(SAVE_INDICATOR_ID, { state: 'saved', size: 'xs' });
             setTimeout(function () {
-                renderSaveIndicator(SAVE_INDICATOR_ID, { state: 'idle', size: 'sm' });
+                renderSaveIndicator(SAVE_INDICATOR_ID, { state: 'idle', size: 'xs' });
             }, 2500);
         }, 800);
     }
@@ -295,10 +295,10 @@
         var assigneeName = task.assignee_name || (task.assignee_email ? task.assignee_email.split('@')[0] : 'Sin asignar');
         var creatorName = task.created_by || 'Sin especificar';
         var assigneeBlock = typeof renderAvatar === 'function'
-            ? renderAvatar({ nombre: assigneeName, avatar: task.assignee_avatar_url }, { size: 'sm' })
+            ? renderAvatar({ nombre: assigneeName, avatar: task.assignee_avatar_url }, { size: 'xs' })
             : '<span class="ubits-avatar ubits-avatar--sm"><span class="ubits-avatar__fallback"><i class="far fa-user"></i></span></span>';
         var creatorBlock = typeof renderAvatar === 'function'
-            ? renderAvatar({ nombre: creatorName, avatar: task.created_by_avatar_url }, { size: 'sm' })
+            ? renderAvatar({ nombre: creatorName, avatar: task.created_by_avatar_url }, { size: 'xs' })
             : '<span class="ubits-avatar ubits-avatar--sm"><span class="ubits-avatar__fallback"><i class="far fa-user"></i></span></span>';
 
         var prioridadIcon = { alta: 'fa-chevrons-up', media: 'fa-chevron-up', baja: 'fa-chevron-down' };
@@ -346,7 +346,7 @@
             createInput({
                 containerId: 'task-detail-vencimiento-wrap',
                 type: 'calendar',
-                size: 'sm',
+                size: 'xs',
                 showLabel: false,
                 placeholder: 'Sin fecha',
                 value: ymdToDmySlash(task.endDate),
@@ -772,7 +772,7 @@
                 if (ta) ta.addEventListener('input', updateMassPanelDetected);
                 if (typeof createInput === 'function') {
                     var parentEndDateYmd = (estado.task && estado.task.endDate) ? estado.task.endDate : getTodayString();
-                    createInput({ containerId: 'task-detail-mass-date-wrap', type: 'calendar', size: 'sm', showLabel: false, placeholder: 'Fecha', value: ymdToDmySlash(parentEndDateYmd) });
+                    createInput({ containerId: 'task-detail-mass-date-wrap', type: 'calendar', size: 'xs', showLabel: false, placeholder: 'Fecha', value: ymdToDmySlash(parentEndDateYmd) });
                 }
                 var massPrioridadTrigger = document.getElementById('task-detail-mass-prioridad-trigger');
                 if (massPrioridadTrigger && typeof window.getDropdownMenuHtml === 'function' && typeof window.openDropdownMenu === 'function' && typeof window.closeDropdownMenu === 'function') {
@@ -993,7 +993,7 @@
                 var isUser = c.author === currentUserName;
                 var itemClass = 'task-detail-comment-item' + (isUser ? ' task-detail-comment-item--user' : '');
                 var authorBlock = typeof renderAvatar === 'function'
-                    ? renderAvatar({ nombre: c.author, avatar: c.authorAvatar }, { size: 'sm' })
+                    ? renderAvatar({ nombre: c.author, avatar: c.authorAvatar }, { size: 'xs' })
                     : '<span class="ubits-avatar ubits-avatar--sm"><span class="ubits-avatar__fallback"><i class="far fa-user"></i></span></span>';
                 feed.push(
                     '<div class="' + itemClass + '">' +
@@ -1282,14 +1282,14 @@
                 title: 'Eliminar subtarea',
                 bodyHtml: deleteSubtaskBody,
                 footerHtml: deleteSubtaskFooter,
-                size: 'sm',
+                size: 'xs',
                 closeButtonId: 'task-detail-delete-subtask-close'
             }) + getModalHtml({
                 overlayId: 'task-detail-delete-task-modal-overlay',
                 title: 'Eliminar tarea',
                 bodyHtml: deleteTaskBody,
                 footerHtml: deleteTaskFooter,
-                size: 'sm',
+                size: 'xs',
                 closeButtonId: 'task-detail-delete-task-close'
             });
             var overlayDel = document.getElementById('task-detail-delete-subtask-modal-overlay');
@@ -1539,7 +1539,7 @@
                 secondaryButtons: []
             });
             if (typeof renderSaveIndicator === 'function') {
-                renderSaveIndicator('task-detail-header-container-save-indicator', { state: 'idle', size: 'sm' });
+                renderSaveIndicator('task-detail-header-container-save-indicator', { state: 'idle', size: 'xs' });
             }
         }
 

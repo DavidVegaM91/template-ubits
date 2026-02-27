@@ -199,7 +199,7 @@ function renderPlanDetail(planId) {
             }
         }
         if (typeof renderAvatar === 'function') {
-            createdByEl.innerHTML = renderAvatar({ nombre: creatorName, avatar: creatorAvatar }, { size: 'sm' }) + '<span class="plan-detail-card__creado-name ubits-body-sm-regular">' + escapeHtml(creatorName) + '</span>';
+            createdByEl.innerHTML = renderAvatar({ nombre: creatorName, avatar: creatorAvatar }, { size: 'xs' }) + '<span class="plan-detail-card__creado-name ubits-body-sm-regular">' + escapeHtml(creatorName) + '</span>';
         } else {
             createdByEl.textContent = creatorName;
         }
@@ -218,7 +218,7 @@ function renderPlanDetail(planId) {
         createInput({
             containerId: 'plan-detail-vencimiento-wrap',
             type: 'calendar',
-            size: 'sm',
+            size: 'xs',
             showLabel: false,
             placeholder: 'Sin fecha',
             value: ymdToDmySlash(endDateYmd),
@@ -463,7 +463,7 @@ function initPlanDetail() {
             title: 'Eliminar tarea',
             bodyHtml: deleteBody,
             footerHtml: deleteFooter,
-            size: 'sm',
+            size: 'xs',
             closeButtonId: 'plan-detail-delete-task-close'
         });
         const overlayEl = document.getElementById('plan-detail-delete-task-modal-overlay');
@@ -551,9 +551,9 @@ function initPlanDetail() {
             if (plan) {
                 plan.name = this.value.trim() || plan.name || 'Plan';
                 if (typeof renderSaveIndicator === 'function') {
-                    renderSaveIndicator('header-product-container-save-indicator', { state: 'saving', size: 'sm' });
+                    renderSaveIndicator('header-product-container-save-indicator', { state: 'saving', size: 'xs' });
                     setTimeout(function () {
-                        renderSaveIndicator('header-product-container-save-indicator', { state: 'idle', size: 'sm' });
+                        renderSaveIndicator('header-product-container-save-indicator', { state: 'idle', size: 'xs' });
                     }, 600);
                 }
             }
@@ -566,9 +566,9 @@ function initPlanDetail() {
             if (plan) {
                 plan.description = this.value.trim() || '';
                 if (typeof renderSaveIndicator === 'function') {
-                    renderSaveIndicator('header-product-container-save-indicator', { state: 'saving', size: 'sm' });
+                    renderSaveIndicator('header-product-container-save-indicator', { state: 'saving', size: 'xs' });
                     setTimeout(function () {
-                        renderSaveIndicator('header-product-container-save-indicator', { state: 'idle', size: 'sm' });
+                        renderSaveIndicator('header-product-container-save-indicator', { state: 'idle', size: 'xs' });
                     }, 600);
                 }
             }
