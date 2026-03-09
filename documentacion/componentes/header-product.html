@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Header Product | UBITS Playground</title>
+    
+    <!-- Estilos locales -->
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/header-product.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../components/ia-button.css">
+    <link rel="stylesheet" href="../../components/save-indicator.css">
+    <link rel="stylesheet" href="../../components/tab.css">
+    <link rel="stylesheet" href="../../components/radio-button.css">
+    <link rel="stylesheet" href="../../components/switch.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <style>
+        .preview-container {
+            background: var(--ubits-bg-2);
+            padding: 24px;
+            border-radius: var(--border-radius-md);
+            min-height: 200px;
+        }
+        /* Mostrar título en el preview (el componente lo oculta por defecto salvo en .modo-estudio-ia-page) */
+        .preview-container .ubits-header-product__product-title h2 {
+            display: block;
+        }
+        .preview-container .ubits-header-product__product-title h2:empty {
+            display: none;
+        }
+        
+        /* Controladores compactos: grupos en fila con jerarquía visual */
+        .preview-controls {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: var(--gap-md);
+        }
+        .control-group {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: var(--gap-sm) 20px;
+            padding: 10px 12px;
+            background: var(--ubits-bg-2);
+            border-radius: var(--border-radius-sm);
+            border: 1px solid var(--ubits-border-1);
+        }
+        .control-group-label {
+            font-family: 'Noto Sans', sans-serif;
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            color: var(--ubits-fg-1-high);
+            min-width: 88px;
+        }
+        .control-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: var(--gap-sm) 16px;
+        }
+        .control-item {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--gap-sm);
+        }
+        .control-group-nested {
+            margin-left: 12px;
+            padding-left: 12px;
+            border-left: 2px solid var(--ubits-border-1);
+        }
+        .variant-radios {
+            display: flex;
+            align-items: center;
+            gap: var(--gap-lg);
+        }
+        .variant-radios label {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--gap-sm);
+            font-size: var(--font-size-sm);
+            color: var(--ubits-fg-1-medium);
+            cursor: pointer;
+        }
+        .control-group-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: var(--gap-sm) 16px;
+        }
+        .control-group-tabs label {
+            font-size: var(--font-size-sm);
+            color: var(--ubits-fg-1-medium);
+        }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navigation -->
+            <div id="top-nav-container"></div>
+            
+            <!-- Content with Sidebar -->
+            <div style="display: flex;">
+            
+            <!-- Dropdown Móvil para Documentación -->
+            <div id="docs-dropdown-container"></div>
+            
+            <!-- Sidebar de Documentación -->
+            <div id="docs-sidebar-container"></div>
+
+            <!-- Content Area -->
+            <div class="components-content">
+                <!-- Content Area -->
+                <div class="content-area" style="display: block; width: 100%;">
+                    <!-- Hero Section -->
+                    <div style="text-align: center; margin-bottom: 60px;">
+                        <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                            Header Product
+                        </h1>
+                        <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                            Encabezado de página con volver atrás, título, botones de acción y opcionalmente pestañas o ruta (breadcrumb). Se usa en pantallas de producto o flujos concretos.
+                        </p>
+                    </div>
+
+                    <!-- Preview Section -->
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                        <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Preview del componente
+                        </h2>
+                        <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                            Usa los switches para mostrar u ocultar diferentes elementos del header-product.
+                        </p>
+                        
+                        <!-- Preview Container -->
+                        <div class="preview-container">
+                            <div id="header-product-preview"></div>
+                        </div>
+                        
+                        <!-- Preview Controls (compactos) -->
+                        <div class="preview-controls">
+                            <!-- Variante -->
+                            <div class="control-group">
+                                <span class="control-group-label">Variante</span>
+                                <div class="variant-radios">
+                                    <label class="ubits-radio ubits-radio--sm">
+                                        <input type="radio" class="ubits-radio__input" name="header-variant" value="default" checked>
+                                        <span class="ubits-radio__circle"></span>
+                                        <span class="ubits-radio__label">Default (título + back + info + acciones + breadcrumb)</span>
+                                    </label>
+                                    <label class="ubits-radio ubits-radio--sm">
+                                        <input type="radio" class="ubits-radio__input" name="header-variant" value="tabs-with-actions">
+                                        <span class="ubits-radio__circle"></span>
+                                        <span class="ubits-radio__label">Tabs + acciones (sin breadcrumb)</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <!-- Controles variante Default -->
+                            <div id="controls-default" class="control-group">
+                                <span class="control-group-label">Fila principal</span>
+                                <div class="control-row">
+                                    <div class="control-item">
+                                        <label class="ubits-switch ubits-switch--md">
+                                            <input type="checkbox" class="ubits-switch__input" id="switch-back-button" role="switch">
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            <span class="ubits-switch__label">Back</span>
+                                        </label>
+                                    </div>
+                                    <div class="control-item">
+                                        <label class="ubits-switch ubits-switch--md">
+                                            <input type="checkbox" class="ubits-switch__input" id="switch-product-title" role="switch" checked>
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            <span class="ubits-switch__label">Título</span>
+                                        </label>
+                                    </div>
+                                    <div class="control-item">
+                                        <label class="ubits-switch ubits-switch--md">
+                                            <input type="checkbox" class="ubits-switch__input" id="switch-info-button" role="switch">
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            <span class="ubits-switch__label">Info</span>
+                                        </label>
+                                    </div>
+                                    <div class="control-item">
+                                        <label class="ubits-switch ubits-switch--md">
+                                            <input type="checkbox" class="ubits-switch__input" id="switch-actions" role="switch" checked>
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            <span class="ubits-switch__label">Actions</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="control-row control-group-nested">
+                                    <div class="control-item">
+                                        <label class="ubits-switch ubits-switch--md">
+                                            <input type="checkbox" class="ubits-switch__input" id="switch-primary-action" role="switch" checked>
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            <span class="ubits-switch__label">Primary</span>
+                                        </label>
+                                    </div>
+                                    <div class="control-item">
+                                        <label class="ubits-switch ubits-switch--md">
+                                            <input type="checkbox" class="ubits-switch__input" id="switch-save-indicator" role="switch">
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            <span class="ubits-switch__label">Save indicator</span>
+                                        </label>
+                                    </div>
+                                    <div class="control-item">
+                                        <label class="ubits-switch ubits-switch--md">
+                                            <input type="checkbox" class="ubits-switch__input" id="switch-ai-button" role="switch">
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            <span class="ubits-switch__label">AI</span>
+                                        </label>
+                                    </div>
+                                    <div class="control-item">
+                                        <label class="ubits-switch ubits-switch--md">
+                                            <input type="checkbox" class="ubits-switch__input" id="switch-secondary-actions" role="switch" checked>
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            <span class="ubits-switch__label">Secondary</span>
+                                        </label>
+                                    </div>
+                                    <div class="control-item">
+                                        <label class="ubits-switch ubits-switch--md">
+                                            <input type="checkbox" class="ubits-switch__input" id="switch-more-actions" role="switch">
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            <span class="ubits-switch__label">More</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="controls-default-secondary" class="control-group">
+                                <span class="control-group-label">Fila secundaria</span>
+                                <div class="control-row">
+                                    <div class="control-item">
+                                        <label class="ubits-switch ubits-switch--md">
+                                            <input type="checkbox" class="ubits-switch__input" id="switch-secondary-row" role="switch">
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            <span class="ubits-switch__label">Fila</span>
+                                        </label>
+                                    </div>
+                                    <div class="control-item">
+                                        <label class="ubits-switch ubits-switch--md">
+                                            <input type="checkbox" class="ubits-switch__input" id="switch-breadcrumb" role="switch">
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            <span class="ubits-switch__label">Breadcrumb</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Controles variante Tabs + acciones -->
+                            <div id="controls-tabs" class="control-group" style="display: none;">
+                                <span class="control-group-label">Tabs</span>
+                                <div class="control-group-tabs">
+                                    <div id="header-product-tab-select-container"></div>
+                                </div>
+                                <span class="control-group-label" style="min-width: auto;">Acciones</span>
+                                <div class="control-row control-group-nested">
+                                    <div class="control-item">
+                                        <label class="ubits-switch ubits-switch--md">
+                                            <input type="checkbox" class="ubits-switch__input" id="switch-tabs-primary" role="switch" checked>
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            <span class="ubits-switch__label">Primary</span>
+                                        </label>
+                                    </div>
+                                    <div class="control-item">
+                                        <label class="ubits-switch ubits-switch--md">
+                                            <input type="checkbox" class="ubits-switch__input" id="switch-tabs-secondary" role="switch" checked>
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            <span class="ubits-switch__label">Secondary</span>
+                                        </label>
+                                    </div>
+                                    <div class="control-item">
+                                        <label class="ubits-switch ubits-switch--md">
+                                            <input type="checkbox" class="ubits-switch__input" id="switch-tabs-more" role="switch" checked>
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                            <span class="ubits-switch__label">More</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Características generales -->
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                        <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Características generales
+                        </h2>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--gap-lg);">
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-sliders-h"></i></div>
+                                <div class="ubits-body-sm-bold">Flexible</div>
+                                <div class="ubits-body-sm-regular">Puedes mostrar u ocultar volver, título, botones y ruta</div>
+                            </div>
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-mobile-alt"></i></div>
+                                <div class="ubits-body-sm-bold">Responsive</div>
+                                <div class="ubits-body-sm-regular">Se adapta a móvil y escritorio</div>
+                            </div>
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-list"></i></div>
+                                <div class="ubits-body-sm-bold">Ruta (breadcrumb)</div>
+                                <div class="ubits-body-sm-regular">Opcional: muestra la ruta de navegación bajo el título</div>
+                            </div>
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-columns"></i></div>
+                                <div class="ubits-body-sm-bold">Pestañas</div>
+                                <div class="ubits-body-sm-regular">Variante con pestañas (ej. Tareas | Planes) y botones de acción</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Prompts útiles -->
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                        <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Prompts útiles
+                        </h2>
+                        <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                            Copia el prompt, reemplaza lo que va entre [corchetes] y pide a Cursor que lo aplique. Asegúrate de que importe header-product.css, button.css, tab.css, ia-button.css y alert.css para que no se vea roto.
+                        </p>
+
+                        <div id="header-product-warning-alert" style="margin-bottom: 32px;"></div>
+
+                        <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Insertar Header Product</h3>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('header-product-prompt-0')">
+                                    <i class="far fa-copy"></i>
+                                    <span>Copiar</span>
+                                </button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="header-product-prompt-0">Inserta un Header Product en [ubicación] con título "[nombre del producto]", botón volver atrás y opcionalmente ruta (breadcrumb). Debe importar header-product.css, button.css y alert.css.</code></pre>
+                            </div>
+                        </div>
+
+                        <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Cambiar título del header</h3>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('header-product-prompt-1')">
+                                    <i class="far fa-copy"></i>
+                                    <span>Copiar</span>
+                                </button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="header-product-prompt-1">Cambia el título del Header Product a "[nuevo título]".</code></pre>
+                            </div>
+                        </div>
+
+                        <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Añadir ruta (breadcrumb)</h3>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('header-product-prompt-2')">
+                                    <i class="far fa-copy"></i>
+                                    <span>Copiar</span>
+                                </button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="header-product-prompt-2">En el Header Product de [ubicación], añade la ruta: [nivel 1], [nivel 2], [nivel actual]. Debe importar header-product.css y alert.css.</code></pre>
+                            </div>
+                        </div>
+
+                        <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Añadir botón de acción principal</h3>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('header-product-prompt-3')">
+                                    <i class="far fa-copy"></i>
+                                    <span>Copiar</span>
+                                </button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="header-product-prompt-3">En el Header Product de [ubicación], añade un botón principal que diga "[texto]" y al hacer clic [acción]. Debe importar button.css y alert.css.</code></pre>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Header con pestañas</h3>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('header-product-prompt-4')">
+                                    <i class="far fa-copy"></i>
+                                    <span>Copiar</span>
+                                </button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="header-product-prompt-4">Usa el Header Product con pestañas "[Tab 1]" y "[Tab 2]", tab activo [Tab 1 o Tab 2], y botón principal "[texto]". Debe importar header-product.css, tab.css, button.css y alert.css.</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Documentación técnica (sección colapsable) -->
+                    <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
+                        <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Documentación técnica
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
+                                Requisitos, código de implementación y notas técnicas del componente Header Product.
+                            </p>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                            <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                <i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>
+                                Mostrar
+                            </span>
+                        </div>
+                        <div id="technical-docs-content" style="display: none; padding: 0;">
+                            <!-- Requisitos obligatorios -->
+                            <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                    <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                        <i class="far fa-check-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                        Requisitos obligatorios
+                                    </h2>
+                                </div>
+                                <ul style="list-style: none; padding: 0; margin: 0;">
+                                    <li style="margin-bottom: 12px; display: flex; align-items: flex-start; gap: var(--gap-md);">
+                                        <i class="far fa-check" style="color: var(--ubits-accent-brand); margin-top: 4px;"></i>
+                                        <span class="ubits-body-md-regular">CSS: <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs); font-family: 'Courier New', monospace;">&lt;link rel="stylesheet" href="../../components/header-product.css"&gt;</code></span>
+                                    </li>
+                                    <li style="margin-bottom: 12px; display: flex; align-items: flex-start; gap: var(--gap-md);">
+                                        <i class="far fa-check" style="color: var(--ubits-accent-brand); margin-top: 4px;"></i>
+                                        <span class="ubits-body-md-regular">JavaScript: <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs); font-family: 'Courier New', monospace;">&lt;script src="../../components/header-product.js"&gt;&lt;/script&gt;</code></span>
+                                    </li>
+                                    <li style="margin-bottom: 12px; display: flex; align-items: flex-start; gap: var(--gap-md);">
+                                        <i class="far fa-check" style="color: var(--ubits-accent-brand); margin-top: 4px;"></i>
+                                        <span class="ubits-body-md-regular">Componentes dependientes: Button, IA-Button (para el botón de IA)</span>
+                                    </li>
+                                    <li style="margin-bottom: 12px; display: flex; align-items: flex-start; gap: var(--gap-md);">
+                                        <i class="far fa-check" style="color: var(--ubits-accent-brand); margin-top: 4px;"></i>
+                                        <span class="ubits-body-md-regular">FontAwesome: <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs); font-family: 'Courier New', monospace;">&lt;link rel="stylesheet" href="../../general-styles/fontawesome-icons.css"&gt;</code></span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- Cómo implementar -->
+                            <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                    <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                        <i class="far fa-code-branch" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                        Cómo implementar
+                                    </h2>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('header-product-implementation-code')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto; white-space: pre-wrap;"><code id="header-product-implementation-code">&lt;!-- Contenedor --&gt;
+&lt;div id="header-product-container"&gt;&lt;/div&gt;
+
+&lt;!-- CSS (en &lt;head&gt;) --&gt;
+&lt;link rel="stylesheet" href="../../components/header-product.css"&gt;
+&lt;link rel="stylesheet" href="../../components/button.css"&gt;
+&lt;link rel="stylesheet" href="../../components/ia-button.css"&gt;
+&lt;link rel="stylesheet" href="../../general-styles/fontawesome-icons.css"&gt;
+
+&lt;!-- JavaScript --&gt;
+&lt;script src="../../components/header-product.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+    loadHeaderProduct('header-product-container', {
+        productName: 'Name product',
+        breadcrumbItems: [
+            { text: 'Default', active: false },
+            { text: 'Active', active: true }
+        ],
+    backButton: { onClick: function() { window.history.back(); } },
+    infoButton: { onClick: function() { console.log('Info'); } },
+    aiButton: { text: 'AI', onClick: function() {} },
+    secondaryButtons: [{ text: 'Button', icon: 'fa-th', onClick: function() {} }],
+    primaryButton: { text: 'Primary', icon: 'fa-th', onClick: function() {} },
+    menuButton: { onClick: function() {} }
+    });
+&lt;/script&gt;</code></pre>
+                        </div>
+                    </div>
+                            <!-- Alineación de acciones -->
+                            <div style="padding: 32px;">
+                                <h2 class="ubits-heading-h2" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-align-right" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Alineación de acciones (header sin título ni flecha atrás)
+                        </h2>
+                                <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 12px;">
+                                    En muchas páginas el header se usa sin nombre de producto y sin botón atrás (ocultando <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">.ubits-header-product__product-info</code> con CSS). En ese caso las acciones deben seguir siempre a la <strong>derecha</strong>.
+                                </p>
+                                <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 12px;">
+                                    <strong>Por qué:</strong> <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">product-info</code> tiene <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">flex: 1</code>. Al ocultarlo, la fila solo tiene <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">__actions</code> y sin más reglas quedaría a la izquierda.
+                                </p>
+                                <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 0;">
+                                    <strong>Solución:</strong> En <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">header-product.css</code>, <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">.ubits-header-product__actions</code> usa <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">margin-left: auto</code>, así las acciones quedan siempre a la derecha. No hace falta añadir estilos en la página.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="ubits-toast-container"></div>
+
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/dropdown-menu.js"></script>
+    <script src="../../components/input.js"></script>
+    <script src="../../components/save-indicator.js"></script>
+    <script src="../../components/header-product.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../script.js"></script>
+    <script>
+        function toggleTechnicalDocs() {
+            var content = document.getElementById('technical-docs-content');
+            var isHidden = content.style.display === 'none' || !content.style.display;
+            content.style.display = isHidden ? 'block' : 'none';
+            var trigger = content.previousElementSibling;
+            if (trigger) {
+                var span = trigger.querySelector('span');
+                if (span) {
+                    span.innerHTML = isHidden
+                        ? '<i class="far fa-chevron-up" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Ocultar'
+                        : '<i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Mostrar';
+                }
+            }
+        }
+        function copyPrompt(promptId) {
+            var el = document.getElementById(promptId);
+            if (!el) return;
+            var text = el.textContent;
+            navigator.clipboard.writeText(text).then(function() {
+                var btn = document.querySelector('[onclick="copyPrompt(\'' + promptId + '\')"]');
+                if (btn) {
+                    var icon = btn.querySelector('i');
+                    var span = btn.querySelector('span');
+                    if (icon) icon.className = 'far fa-check';
+                    if (span) span.textContent = 'Copiado';
+                    setTimeout(function() { if (icon) icon.className = 'far fa-copy'; if (span) span.textContent = 'Copiar'; }, 2000);
+                }
+                if (typeof showToast === 'function') showToast('success', '¡Prompt copiado!', { containerId: 'ubits-toast-container', duration: 3500 });
+            }).catch(function() {
+                if (typeof showToast === 'function') showToast('error', 'Error al copiar', { containerId: 'ubits-toast-container', duration: 3500 });
+            });
+        }
+        function copyCode(elementId) {
+            var el = document.getElementById(elementId);
+            if (!el) return;
+            var text = el.textContent;
+            navigator.clipboard.writeText(text).then(function() {
+                var btn = event.target.closest('button');
+                if (btn) {
+                    var icon = btn.querySelector('i');
+                    var span = btn.querySelector('span');
+                    var origIcon = icon ? icon.className : '';
+                    var origText = span ? span.textContent : '';
+                    if (icon) icon.className = 'far fa-check';
+                    if (span) span.textContent = 'Copiado!';
+                    setTimeout(function() { if (icon) icon.className = origIcon; if (span) span.textContent = origText; }, 2000);
+                }
+                if (typeof showToast === 'function') showToast('success', 'Código copiado al portapapeles', { containerId: 'ubits-toast-container', duration: 3500 });
+            }).catch(function() {
+                if (typeof showToast === 'function') showToast('error', 'Error al copiar', { containerId: 'ubits-toast-container', duration: 3500 });
+            });
+        }
+    </script>
+    <script>
+        // Cargar componentes dinámicamente
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSubNav('top-nav-container', 'documentacion');
+            loadDocsSidebar('header-product');
+            if (typeof showAlert === 'function') {
+                showAlert('warning', 'Antes de enviar estos prompts a Cursor, reemplaza los textos entre [corchetes] con la información de tu página.', { containerId: 'header-product-warning-alert', noClose: true });
+            }
+            
+            // Estado de los switches
+            let previewState = {
+                variant: 'default',
+                activeTabId: 'tareas',
+                backButton: false,
+                productTitle: true,
+                infoButton: false,
+                actions: true,
+                saveIndicator: false,
+                primaryAction: true,
+                aiButton: false,
+                secondaryActions: true,
+                moreActions: false,
+                secondaryRow: false,
+                breadcrumb: false
+            };
+            
+            function getVariant() {
+                const r = document.querySelector('input[name="header-variant"]:checked');
+                return r ? r.value : 'default';
+            }
+            
+            var headerProductTabSelectApi = null;
+            
+            function ensureTabSelectInput() {
+                if (getVariant() !== 'tabs-with-actions') return;
+                var container = document.getElementById('header-product-tab-select-container');
+                if (!container || headerProductTabSelectApi != null) return;
+                if (typeof createInput !== 'function') return;
+                headerProductTabSelectApi = createInput({
+                    containerId: 'header-product-tab-select-container',
+                    type: 'select',
+                    label: 'Tab activo:',
+                    selectOptions: [ { value: 'tareas', text: 'Tareas' }, { value: 'planes', text: 'Planes' } ],
+                    value: previewState.activeTabId,
+                    onChange: function(v) {
+                        previewState.activeTabId = v;
+                        updatePreview();
+                    }
+                });
+            }
+            
+            function updateControlsVisibility() {
+                const isTabs = getVariant() === 'tabs-with-actions';
+                document.getElementById('controls-default').style.display = isTabs ? 'none' : 'flex';
+                document.getElementById('controls-default-secondary').style.display = isTabs ? 'none' : 'flex';
+                document.getElementById('controls-tabs').style.display = isTabs ? 'flex' : 'none';
+                if (isTabs) ensureTabSelectInput();
+            }
+            
+            // Función para actualizar el preview
+            function updatePreview() {
+                previewState.variant = getVariant();
+                const container = document.getElementById('header-product-preview');
+                if (!container || typeof loadHeaderProduct !== 'function') return;
+                
+                if (previewState.variant === 'tabs-with-actions') {
+                    ensureTabSelectInput();
+                    if (headerProductTabSelectApi && typeof headerProductTabSelectApi.getValue === 'function') {
+                        previewState.activeTabId = headerProductTabSelectApi.getValue() || previewState.activeTabId;
+                    }
+                    var elPrimary = document.getElementById('switch-tabs-primary');
+                    var elSecondary = document.getElementById('switch-tabs-secondary');
+                    var elMore = document.getElementById('switch-tabs-more');
+                    loadHeaderProduct('header-product-preview', {
+                        variant: 'tabs-with-actions',
+                        tabs: [
+                            { id: 'tareas', label: 'Tareas' },
+                            { id: 'planes', label: 'Planes' }
+                        ],
+                        activeTabId: previewState.activeTabId,
+                        onTabChange: function(tabId) {
+                            previewState.activeTabId = tabId;
+                            if (headerProductTabSelectApi && typeof headerProductTabSelectApi.setValue === 'function') {
+                                headerProductTabSelectApi.setValue(tabId);
+                            }
+                            console.log('Tab changed to', tabId);
+                        },
+                        primaryButton: (elPrimary && elPrimary.checked) ? {
+                            text: 'Crear',
+                            icon: 'fa-plus',
+                            onClick: function() { console.log('Primary clicked'); }
+                        } : null,
+                        secondaryButtons: (elSecondary && elSecondary.checked) ? [
+                            { text: 'Filtros', icon: 'fa-filter', onClick: function() { console.log('Secondary clicked'); } }
+                        ] : [],
+                        aiButton: null,
+                        menuButton: (elMore && elMore.checked) ? { onClick: function() { console.log('Menu clicked'); } } : null
+                    });
+                    var saveIndicatorEl = document.getElementById('header-product-preview-save-indicator');
+                    if (saveIndicatorEl) {
+                        if (previewState.saveIndicator && typeof renderSaveIndicator === 'function') {
+                            renderSaveIndicator('header-product-preview-save-indicator', { state: 'idle', size: 'xs' });
+                        } else {
+                            saveIndicatorEl.innerHTML = '';
+                        }
+                    }
+                    return;
+                }
+                
+                const options = {
+                    productName: previewState.productTitle ? 'Name product' : '',
+                    breadcrumbItems: (previewState.secondaryRow && previewState.breadcrumb) ? [
+                        { text: 'Default', active: false },
+                        { text: 'Default', active: false },
+                        { text: 'Active', active: true }
+                    ] : [],
+                    backButton: previewState.backButton ? {
+                        onClick: function() { console.log('Back button clicked'); }
+                    } : null,
+                    infoButton: previewState.infoButton ? {
+                        onClick: function() { console.log('Info button clicked'); }
+                    } : null,
+                    aiButton: (previewState.actions && previewState.aiButton) ? {
+                        text: 'AI button',
+                        onClick: function() { console.log('AI button clicked'); }
+                    } : null,
+                    secondaryButtons: (previewState.actions && previewState.secondaryActions) ? [
+                        { text: 'Button text', icon: 'fa-th', onClick: function() { console.log('Secondary button clicked'); } }
+                    ] : [],
+                    primaryButton: (previewState.actions && previewState.primaryAction) ? {
+                        text: 'Primary action',
+                        icon: 'fa-th',
+                        onClick: function() { console.log('Primary button clicked'); }
+                    } : null,
+                    menuButton: (previewState.actions && previewState.moreActions) ? {
+                        onClick: function() { console.log('Menu button clicked'); }
+                    } : null
+                };
+                loadHeaderProduct('header-product-preview', options);
+                var saveIndicatorEl = document.getElementById('header-product-preview-save-indicator');
+                if (saveIndicatorEl) {
+                    if (previewState.saveIndicator && typeof renderSaveIndicator === 'function') {
+                        renderSaveIndicator('header-product-preview-save-indicator', { state: 'idle', size: 'xs' });
+                    } else {
+                        saveIndicatorEl.innerHTML = '';
+                    }
+                }
+            }
+            
+            // Event listeners para los switches
+            document.getElementById('switch-back-button').addEventListener('change', function() {
+                previewState.backButton = this.checked;
+                updatePreview();
+            });
+            
+            document.getElementById('switch-product-title').addEventListener('change', function() {
+                previewState.productTitle = this.checked;
+                updatePreview();
+            });
+            
+            document.getElementById('switch-info-button').addEventListener('change', function() {
+                previewState.infoButton = this.checked;
+                updatePreview();
+            });
+            
+            document.getElementById('switch-actions').addEventListener('change', function() {
+                previewState.actions = this.checked;
+                // Si se desactiva actions, desactivar también los sub-switches
+                if (!this.checked) {
+                    previewState.primaryAction = false;
+                    previewState.aiButton = false;
+                    previewState.secondaryActions = false;
+                    previewState.moreActions = false;
+                    document.getElementById('switch-primary-action').checked = false;
+                    document.getElementById('switch-ai-button').checked = false;
+                    document.getElementById('switch-secondary-actions').checked = false;
+                    document.getElementById('switch-more-actions').checked = false;
+                }
+                updatePreview();
+            });
+            
+            document.getElementById('switch-primary-action').addEventListener('change', function() {
+                previewState.primaryAction = this.checked;
+                // Si se activa primary action, activar también actions
+                if (this.checked && !previewState.actions) {
+                    previewState.actions = true;
+                    document.getElementById('switch-actions').checked = true;
+                }
+                updatePreview();
+            });
+            
+            document.getElementById('switch-save-indicator').addEventListener('change', function() {
+                previewState.saveIndicator = this.checked;
+                updatePreview();
+            });
+            
+            document.getElementById('switch-ai-button').addEventListener('change', function() {
+                previewState.aiButton = this.checked;
+                // Si se activa AI button, activar también actions
+                if (this.checked && !previewState.actions) {
+                    previewState.actions = true;
+                    document.getElementById('switch-actions').checked = true;
+                }
+                updatePreview();
+            });
+            
+            document.getElementById('switch-secondary-actions').addEventListener('change', function() {
+                previewState.secondaryActions = this.checked;
+                // Si se activa secondary actions, activar también actions
+                if (this.checked && !previewState.actions) {
+                    previewState.actions = true;
+                    document.getElementById('switch-actions').checked = true;
+                }
+                updatePreview();
+            });
+            
+            document.getElementById('switch-more-actions').addEventListener('change', function() {
+                previewState.moreActions = this.checked;
+                // Si se activa more actions, activar también actions
+                if (this.checked && !previewState.actions) {
+                    previewState.actions = true;
+                    document.getElementById('switch-actions').checked = true;
+                }
+                updatePreview();
+            });
+            
+            document.getElementById('switch-secondary-row').addEventListener('change', function() {
+                previewState.secondaryRow = this.checked;
+                // Si se desactiva secondary row, desactivar también breadcrumb
+                if (!this.checked) {
+                    previewState.breadcrumb = false;
+                    document.getElementById('switch-breadcrumb').checked = false;
+                }
+                updatePreview();
+            });
+            
+            document.getElementById('switch-breadcrumb').addEventListener('change', function() {
+                previewState.breadcrumb = this.checked;
+                if (this.checked && !previewState.secondaryRow) {
+                    previewState.secondaryRow = true;
+                    document.getElementById('switch-secondary-row').checked = true;
+                }
+                updatePreview();
+            });
+            
+            document.querySelectorAll('input[name="header-variant"]').forEach(function(radio) {
+                radio.addEventListener('change', function() {
+                    updateControlsVisibility();
+                    updatePreview();
+                });
+            });
+            
+            ['switch-tabs-primary', 'switch-tabs-secondary', 'switch-tabs-more'].forEach(function(id) {
+                var el = document.getElementById(id);
+                if (el) el.addEventListener('change', updatePreview);
+            });
+            
+            updateControlsVisibility();
+            updatePreview();
+        });
+    </script>
+</body>
+</html>
+

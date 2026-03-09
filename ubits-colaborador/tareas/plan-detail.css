@@ -1,0 +1,511 @@
+/* ========================================
+   ESTILOS DETALLE DEL PLAN
+   Alineado con task-group-detail: colores --ubits-*, fuentes Noto Sans,
+   tokens --font-size-*, --padding-*, --gap-*, --border-radius-*
+   ======================================== */
+
+/* Coherencia de fuentes: Noto Sans en toda la página (design system) */
+.page-plan-detail,
+.page-plan-detail .main-content,
+.page-plan-detail .content-area,
+.page-plan-detail .plan-detail-sections,
+.page-plan-detail .plan-detail-header,
+.page-plan-detail .plan-detail-card,
+.page-plan-detail .plan-detail-tasks-card,
+.page-plan-detail .plan-detail-empty,
+.page-plan-detail .plan-detail-tasks-list,
+.page-plan-detail .plan-detail-feedback__ai-content,
+.page-plan-detail .plan-detail-feedback__ai-text span,
+.page-plan-detail input,
+.page-plan-detail button {
+    font-family: var(--font-family, "Noto Sans"), sans-serif;
+}
+
+/* Iconos: mantener Font Awesome (no heredar Noto Sans) */
+.page-plan-detail i[class*="fa-"],
+.page-plan-detail .plan-detail-empty__icon {
+    font-family: "Font Awesome 6 Pro", "Font Awesome 6 Free", "Font Awesome 6 Brands", sans-serif !important;
+}
+
+.page-plan-detail .main-content,
+.page-plan-detail .content-area {
+    background: var(--ubits-bg-2);
+}
+
+/* Contenedor principal: 3 secciones independientes (section-single) con gap estándar */
+.page-plan-detail .plan-detail-sections {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    background: var(--ubits-bg-2);
+    gap: var(--gap-lg, 16px);
+}
+
+/* Sección 1: header product oficial (solo back + nombre). Sin caja. */
+.page-plan-detail .plan-detail-section--header > .widget-header-product {
+    background: transparent !important;
+    padding: 0 !important;
+}
+
+/* Mostrar título del plan en el header product (el componente lo oculta por defecto) */
+.page-plan-detail .ubits-header-product__product-info {
+    display: flex;
+}
+.page-plan-detail .ubits-header-product__product-title h2 {
+    display: block;
+}
+
+/* Legacy: header custom (ya no se usa; se mantiene por si se referencia en otros estilos) */
+.plan-detail-header {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-lg, 16px);
+}
+
+.plan-detail-back {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: var(--padding-sm, 8px);
+    background: transparent;
+    border: none;
+    border-radius: var(--border-radius-sm, 8px);
+    cursor: pointer;
+    color: var(--ubits-fg-1-high);
+}
+
+.plan-detail-back:hover {
+    background: var(--ubits-bg-2);
+}
+
+.plan-detail-back i {
+    font-size: var(--font-size-h1, 24px);
+}
+
+/* Título: alineado con .task-group-detail-header__title (h2 20px, color-fg-2-high, line-height 100%) */
+.plan-detail-title {
+    margin: 0;
+    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-size: var(--font-size-h2, 20px);
+    font-style: normal;
+    font-weight: var(--font-weight-bold);
+    line-height: 100%;
+    color: var(--ubits-fg-2-high);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Espacio entre secciones lo da .plan-detail-sections { gap }. Sin margin-bottom extra en las cards. */
+.page-plan-detail .plan-detail-section .plan-detail-card,
+.page-plan-detail .plan-detail-section .plan-detail-tasks-card {
+    margin-bottom: 0;
+}
+
+/* Plan detail card: tokens Figma/UBITS (tipografía, color, espaciado, border-radius) */
+.plan-detail-card {
+    position: relative;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-md);
+    padding: var(--padding-2xl);
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+/* Fila título + botón opciones (como task-detail-title-row) */
+.plan-detail-card__title-row {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--gap-sm);
+    min-width: 0;
+    margin: 0 0 var(--gap-sm) 0;
+}
+
+.plan-detail-card__title-row .task-detail-title-editable {
+    flex: 1;
+    min-width: 0;
+}
+
+.plan-detail-card__title-row .ubits-button--icon-only {
+    flex-shrink: 0;
+}
+
+/* Título editable inline: mismos estilos que task-detail */
+.plan-detail-card .task-detail-title-editable {
+    font-family: 'Noto Sans', sans-serif;
+    line-height: 1.25;
+    color: var(--ubits-fg-1-high);
+    border: none;
+    background: transparent;
+    width: 100%;
+    min-height: 1.25em;
+    padding: 0;
+    margin: 0;
+    resize: none;
+    overflow: hidden;
+    outline: none;
+    cursor: text;
+    position: relative;
+    z-index: 1;
+    box-sizing: border-box;
+}
+
+.plan-detail-card .task-detail-title-editable:hover,
+.plan-detail-card .task-detail-title-editable:focus {
+    background: var(--ubits-bg-2);
+    border-radius: var(--border-radius-xs);
+}
+
+.plan-detail-card .task-detail-title-editable::placeholder {
+    color: var(--ubits-fg-1-low);
+}
+
+/* Descripción editable inline: mismos estilos que task-detail */
+.plan-detail-card .task-detail-desc-editable {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    line-height: 1.5;
+    color: var(--ubits-fg-1-medium);
+    border: none;
+    background: transparent;
+    width: 100%;
+    min-height: 0;
+    padding: 0;
+    margin: 0;
+    resize: none;
+    outline: none;
+    cursor: text;
+    position: relative;
+    z-index: 1;
+    box-sizing: border-box;
+    overflow-y: hidden;
+}
+
+.plan-detail-card .task-detail-desc-editable:hover,
+.plan-detail-card .task-detail-desc-editable:focus {
+    background: var(--ubits-bg-2);
+    border-radius: var(--border-radius-xs);
+}
+
+.plan-detail-card .task-detail-desc-editable::placeholder {
+    color: var(--ubits-fg-1-low);
+}
+
+/* Descripción */
+.plan-detail-card__desc-wrap {
+    margin: 0 0 var(--gap-lg) 0;
+}
+
+/* Línea divisora después de descripción */
+.plan-detail-card__divider {
+    height: 0;
+    border: none;
+    border-top: 1px solid var(--ubits-border-1);
+    margin: 0 0 var(--gap-lg) 0;
+}
+
+/* Label "Creado por": mismos estilos que task-detail-meta-label (tamaño, color, peso) */
+.plan-detail-card__meta-label {
+    color: var(--ubits-fg-1-medium);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+}
+
+/* Creado por: fila con avatar + nombre */
+.plan-detail-card__creado-row {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+    margin: 0 0 var(--gap-lg) 0;
+}
+
+.plan-detail-card__creado-value {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    min-width: 0;
+}
+
+.plan-detail-card__creado-name {
+    color: var(--ubits-fg-1-medium);
+}
+
+/* Descripción body: body/md regular, fg-1-medium */
+.plan-detail-card__desc-text {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-regular);
+    line-height: 24px;
+    color: var(--ubits-fg-1-medium);
+    margin: 0 0 var(--gap-lg) 0;
+}
+
+
+.plan-detail-card__text {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-regular);
+    line-height: 24px;
+    color: var(--ubits-fg-1-medium);
+    margin: 0;
+}
+
+.plan-detail-card__progress-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--gap-lg);
+}
+
+.plan-detail-card__percent-date-wrap {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.plan-detail-card__progress-row .plan-detail-card__bar {
+    flex: 1;
+    min-width: 100px;
+}
+
+/* Label "Tareas finalizadas": mismo estilo que meta-label (Creado por) */
+.plan-detail-card__progress-row .plan-detail-card__meta-label {
+    color: var(--ubits-fg-1-medium);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+}
+
+/* Número XXX/XXX: peso regular */
+.plan-detail-card__count-regular {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-regular);
+    color: var(--ubits-fg-1-medium);
+}
+
+.plan-detail-card__bar {
+    height: 8px;
+    background: var(--ubits-bg-3);
+    border-radius: var(--border-radius-full);
+    overflow: hidden;
+}
+
+.plan-detail-card__bar-fill {
+    height: 100%;
+    background: var(--ubits-accent-brand);
+    border-radius: var(--border-radius-full);
+    transition: width 0.3s ease;
+}
+
+/* Porcentaje: body/sm semibold, fg-1-medium */
+.plan-detail-card__percent {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    line-height: 19.5px;
+    color: var(--ubits-fg-1-medium);
+}
+
+.plan-detail-card__date-wrap {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+/* Contenedor Vencimiento: label + calendario (mismo selector que task-detail) */
+.plan-detail-card__date-wrap .plan-detail-card__meta-label {
+    color: var(--ubits-fg-1-medium);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+}
+
+/* Input fecha: usa componente oficial .ubits-input; ancho fijo para alineación */
+/* Mismo ancho que task-detail (vencimiento-wrap: 125px) */
+#plan-detail-vencimiento-wrap {
+    width: 125px;
+    min-width: 125px;
+}
+#plan-detail-vencimiento-wrap .ubits-input {
+    width: 100%;
+    box-sizing: border-box;
+}
+.plan-detail-card__date-wrap .ubits-input {
+    text-align: center;
+}
+
+/* Status tag: body/sm semibold + feedback tokens */
+/* Botón Finalizar plan = secondary (Figma: bg white, border, fg high) */
+/* Card Tareas del plan */
+.plan-detail-tasks-card {
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-md);
+    padding: var(--padding-2xl, 24px);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06); /* sin token */
+}
+
+.plan-detail-tasks-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--gap-lg, 16px);
+}
+
+/* Título sección tareas: alineado con módulo (font-family, font-size-md, color-fg-1-high) */
+.plan-detail-tasks-card__title {
+    margin: 0;
+    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-size: var(--font-size-md, 16px);
+    font-weight: var(--font-weight-bold);
+    color: var(--ubits-fg-1-high);
+}
+
+.plan-detail-tasks-card__filters {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md, 12px);
+}
+
+.plan-detail-tasks-card__counters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-lg, 16px);
+    margin-bottom: var(--gap-lg, 16px);
+}
+
+.plan-detail-tasks-card__counter {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm, 8px); /* 6px → superior */
+    font-size: var(--font-size-md, 16px); /* 14px → superior */
+    color: var(--ubits-fg-1-medium);
+}
+
+.plan-detail-tasks-card__counter i {
+    font-size: var(--font-size-xs, 11px); /* 6px → superior en escala */
+}
+
+.plan-detail-tasks-card__counter--iniciadas i {
+    color: var(--ubits-accent-brand);
+}
+
+.plan-detail-tasks-card__counter--vencidas i {
+    color: var(--ubits-feedback-accent-error);
+}
+
+.plan-detail-tasks-card__counter--finalizadas i {
+    color: var(--ubits-feedback-accent-success);
+}
+
+.plan-detail-tasks-card__add {
+    margin-bottom: var(--gap-lg, 16px);
+}
+
+.plan-detail-tasks-card__add .ubits-button {
+    width: 100%;
+}
+
+/* Tirilla "Mover tarea" en contexto de plan */
+.plan-detail-tasks-list .tarea-action-btn--mover .tarea-action-btn__label {
+    display: inline;
+}
+
+.tarea-action-btn__label {
+    display: none;
+}
+
+/* Botón "Detalles" (chevron-right) oculto; avisar si se quiere reactivar */
+.tarea-action-btn--details {
+    display: none !important;
+}
+
+/* Lista de tareas - misma estructura que tab tareas */
+.plan-detail-tasks {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm, 8px);
+}
+
+.plan-detail-tasks-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm, 8px);
+}
+
+/* Tirillas en detalle del plan: misma apariencia que tab Tareas (componente task-strip).
+   Sin borde extra para no diferenciar visualmente de tareas.html. */
+.page-plan-detail .plan-detail-tasks-list {
+    min-width: 0;
+}
+
+/* Empty state */
+.plan-detail-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-12, 48px) var(--padding-2xl, 24px);
+    background: var(--ubits-bg-1);
+    border-radius: var(--border-radius-md);
+    border: 1px dashed var(--ubits-border-1);
+}
+
+.plan-detail-empty__icon {
+    font-size: var(--font-size-d1, 40px); /* 80px → superior en escala (máx token) */
+    color: var(--ubits-fg-1-medium);
+    opacity: 0.5;
+    margin-bottom: var(--gap-lg, 16px);
+}
+
+/* Empty state: alineado con task-group (font-family, font-size, color-fg-1-high/medium) */
+.plan-detail-empty__title {
+    margin: 0 0 var(--gap-sm, 8px) 0;
+    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-size: var(--font-size-h2, 20px);
+    font-weight: var(--font-weight-bold);
+    color: var(--ubits-fg-1-high);
+}
+
+.plan-detail-empty__desc {
+    margin: 0 0 var(--gap-2xl, 24px) 0;
+    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-size: var(--font-size-md, 16px);
+    font-weight: var(--font-weight-regular);
+    line-height: 1.5;
+    color: var(--ubits-fg-1-medium);
+}
+
+/* ========================================
+   BLOQUE FEEDBACK IA (alineado con task-group-feedback__ai-*)
+   Visible cuando el plan es creado por IA (label AIMade)
+   ======================================== */
+.plan-detail-feedback__ai-content {
+    display: flex;
+    align-items: center;
+    gap: 11px; /* sin token - valor del módulo */
+    padding-top: var(--padding-lg, 16px);
+}
+
+.plan-detail-feedback__ai-text {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-xs, 4px);
+}
+
+.plan-detail-feedback__ai-text span {
+    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-weight: var(--font-weight-regular);
+    font-size: var(--font-size-sm, 13px);
+    font-style: normal;
+    line-height: 1.5em;
+    color: var(--ubits-fg-1-high);
+}
+
+.plan-detail-feedback__ai-buttons {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-xs, 4px);
+}

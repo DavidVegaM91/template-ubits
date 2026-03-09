@@ -1,0 +1,147 @@
+/* ========================================
+   UBITS TOOLTIP COMPONENT
+   ======================================== */
+
+/* Elevación aplicada al contenedor para que contenido + colita sean una sola forma (benchmark: Material, Radix, Fluent) */
+.ubits-tooltip {
+    position: fixed;
+    z-index: 10000;
+    width: max-content;
+    max-width: 320px;
+    min-width: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    overflow: visible;
+    filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.14)) drop-shadow(0px 0px 2px rgba(0, 0, 0, 0.12));
+}
+
+.ubits-tooltip.ubits-tooltip--visible {
+    opacity: 1;
+}
+
+.ubits-tooltip__content {
+    /* Por defecto: bg-1 con modifier inverted y fg-1-high con modifier inverted. Sin box-shadow aquí: la elevación va en .ubits-tooltip para que contenido + colita tengan una sola sombra. */
+    background: var(--ubits-bg-1-inverted);
+    color: var(--ubits-fg-1-high-inverted);
+    padding: var(--padding-sm) var(--padding-md);
+    border-radius: var(--border-radius-sm);
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    line-height: 19.5px;
+    font-weight: var(--font-weight-regular);
+    word-wrap: break-word;
+    position: relative;
+    overflow: visible;
+}
+
+/* Variación normal (bg-1 y fg-1-high sin modificadores) */
+.ubits-tooltip--normal .ubits-tooltip__content {
+    background: var(--ubits-bg-1);
+    color: var(--ubits-fg-1-high);
+}
+
+/* Tooltip arrow/tail: sin sombra propia; la elevación la aporta el contenedor .ubits-tooltip (filter: drop-shadow) para que se vea una sola pieza. */
+.ubits-tooltip__arrow {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-style: solid;
+}
+
+/* Ocultar flecha si no tiene cola */
+.ubits-tooltip--no-arrow .ubits-tooltip__arrow {
+    display: none;
+}
+
+/* Arrow positions: TOP */
+.ubits-tooltip--top .ubits-tooltip__arrow {
+    bottom: -9px;
+    border-width: 9px 9px 0 9px;
+    border-color: var(--ubits-bg-1-inverted) transparent transparent transparent;
+}
+
+.ubits-tooltip--top.ubits-tooltip--normal .ubits-tooltip__arrow {
+    border-color: var(--ubits-bg-1) transparent transparent transparent;
+}
+
+.ubits-tooltip--top.ubits-tooltip--align-left .ubits-tooltip__arrow {
+    left: 12px;
+}
+
+.ubits-tooltip--top.ubits-tooltip--align-center .ubits-tooltip__arrow {
+    left: calc(50% - 9px);
+}
+
+.ubits-tooltip--top.ubits-tooltip--align-right .ubits-tooltip__arrow {
+    right: 12px;
+}
+
+/* Arrow positions: BOTTOM */
+.ubits-tooltip--bottom .ubits-tooltip__arrow {
+    top: -9px;
+    border-width: 0 9px 9px 9px;
+    border-color: transparent transparent var(--ubits-bg-1-inverted) transparent;
+}
+
+.ubits-tooltip--bottom.ubits-tooltip--normal .ubits-tooltip__arrow {
+    border-color: transparent transparent var(--ubits-bg-1) transparent;
+}
+
+.ubits-tooltip--bottom.ubits-tooltip--align-left .ubits-tooltip__arrow {
+    left: 12px;
+}
+
+.ubits-tooltip--bottom.ubits-tooltip--align-center .ubits-tooltip__arrow {
+    left: calc(50% - 9px);
+}
+
+.ubits-tooltip--bottom.ubits-tooltip--align-right .ubits-tooltip__arrow {
+    right: 12px;
+}
+
+/* Arrow positions: LEFT */
+.ubits-tooltip--left .ubits-tooltip__arrow {
+    right: -9px;
+    border-width: 9px 0 9px 9px;
+    border-color: transparent transparent transparent var(--ubits-bg-1-inverted);
+}
+
+.ubits-tooltip--left.ubits-tooltip--normal .ubits-tooltip__arrow {
+    border-color: transparent transparent transparent var(--ubits-bg-1);
+}
+
+.ubits-tooltip--left.ubits-tooltip--align-top .ubits-tooltip__arrow {
+    top: 12px;
+}
+
+.ubits-tooltip--left.ubits-tooltip--align-center .ubits-tooltip__arrow {
+    top: calc(50% - 9px);
+}
+
+.ubits-tooltip--left.ubits-tooltip--align-bottom .ubits-tooltip__arrow {
+    bottom: 12px;
+}
+
+/* Arrow positions: RIGHT */
+.ubits-tooltip--right .ubits-tooltip__arrow {
+    left: -9px;
+    border-width: 9px 9px 9px 0;
+    border-color: transparent var(--ubits-bg-1-inverted) transparent transparent;
+}
+
+.ubits-tooltip--right.ubits-tooltip--normal .ubits-tooltip__arrow {
+    border-color: transparent var(--ubits-bg-1) transparent transparent;
+}
+
+.ubits-tooltip--right.ubits-tooltip--align-top .ubits-tooltip__arrow {
+    top: 12px;
+}
+
+.ubits-tooltip--right.ubits-tooltip--align-center .ubits-tooltip__arrow {
+    top: calc(50% - 9px);
+}
+
+.ubits-tooltip--right.ubits-tooltip--align-bottom .ubits-tooltip__arrow {
+    bottom: 12px;
+}

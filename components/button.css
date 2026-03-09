@@ -1,0 +1,521 @@
+/* ========================================
+   UBITS BUTTON COMPONENT
+   Componente de botón con todas las variantes
+   ======================================== */
+
+/* ========================================
+   BASE BUTTON STYLES
+   ======================================== */
+
+.ubits-button {
+    /* Base styles */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap-sm);
+    padding: var(--padding-md) var(--padding-lg);
+    border: none;
+    border-radius: var(--border-radius-sm);
+    font-family: 'Noto Sans', sans-serif;
+    font-weight: var(--font-weight-semibold);
+    line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    user-select: none;
+    white-space: nowrap;
+    overflow: visible;
+    
+    /* Default state */
+    background: var(--ubits-button-primary-bg-default);
+    color: var(--ubits-btn-primary-fg);
+    border: 1px solid var(--ubits-button-primary-bg-default);
+}
+
+/* ========================================
+   BUTTON STATES
+   ======================================== */
+
+/* Hover State */
+.ubits-button:hover:not(:disabled) {
+    background: var(--ubits-button-primary-hover);
+    border-color: var(--ubits-button-primary-hover);
+}
+
+/* Pressed State */
+.ubits-button:active:not(:disabled) {
+    background: var(--ubits-button-primary-pressed);
+    border-color: var(--ubits-button-primary-pressed);
+    transform: translateY(1px);
+}
+
+/* Focus State */
+.ubits-button:focus-visible {
+    outline: none;
+    box-shadow: 0px 0px 0px 4px var(--ubits-button-focus-ring);
+}
+
+/* Disabled State */
+.ubits-button:disabled {
+    background: var(--ubits-bg-disabled-button) !important;
+    color: var(--ubits-fg-on-disabled-button) !important;
+    border-color: var(--ubits-border-disabled-button) !important;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Disabled State for all variants */
+.ubits-button--primary:disabled,
+.ubits-button--secondary:disabled,
+.ubits-button--tertiary:disabled,
+.ubits-button--error:disabled,
+.ubits-button--error-secondary:disabled,
+.ubits-button--error-tertiary:disabled {
+    background: var(--ubits-bg-disabled-button) !important;
+    color: var(--ubits-fg-on-disabled-button) !important;
+    border-color: var(--ubits-border-disabled-button) !important;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.ubits-button:disabled::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 1px solid var(--ubits-border-disabled-button);
+    border-radius: var(--border-radius-sm);
+    pointer-events: none;
+}
+
+/* ========================================
+   BUTTON VARIANTS
+   ======================================== */
+
+/* Active/Outline Variant */
+.ubits-button--active {
+    background: var(--ubits-button-active-bg);
+    color: var(--ubits-accent-brand);
+    border: 1px solid var(--ubits-accent-brand);
+}
+
+.ubits-button--active:hover:not(:disabled) {
+    background: var(--ubits-button-active-bg);
+    color: var(--ubits-accent-brand);
+    border-color: var(--ubits-accent-brand);
+}
+
+.ubits-button--active:active:not(:disabled) {
+    background: var(--ubits-button-active-bg);
+    color: var(--ubits-accent-brand);
+    border-color: var(--ubits-accent-brand);
+}
+
+/* ========================================
+   SECONDARY BUTTON VARIANT
+   ======================================== */
+
+/* Secondary Button Base */
+.ubits-button--secondary {
+    background: var(--ubits-btn-secondary-bg-default);
+    color: var(--ubits-btn-secondary-fg-default);
+    border: 1px solid var(--ubits-btn-secondary-border);
+}
+
+/* Secondary Button Hover */
+.ubits-button--secondary:hover:not(:disabled) {
+    background: var(--ubits-btn-secondary-bg-hover);
+    color: var(--ubits-btn-secondary-fg-default);
+    border-color: var(--ubits-btn-secondary-border);
+}
+
+/* Secondary Button Pressed */
+.ubits-button--secondary:active:not(:disabled) {
+    background: var(--ubits-btn-secondary-bg-pressed);
+    color: var(--ubits-btn-secondary-fg-default);
+    border-color: var(--ubits-btn-secondary-border);
+    transform: translateY(1px);
+}
+
+/* Secondary Button Active State */
+.ubits-button--secondary.ubits-button--active {
+    background: var(--ubits-button-active-bg);
+    color: var(--ubits-accent-brand);
+    border: none;
+}
+
+.ubits-button--secondary.ubits-button--active:hover:not(:disabled) {
+    background: var(--ubits-button-active-bg);
+    color: var(--ubits-accent-brand);
+    border: none;
+}
+
+.ubits-button--secondary.ubits-button--active:active:not(:disabled) {
+    background: var(--ubits-button-active-bg);
+    color: var(--ubits-accent-brand);
+    border: none;
+}
+
+/* ========================================
+   TERTIARY BUTTON VARIANT
+   ======================================== */
+
+/* Tertiary Button Base */
+.ubits-button--tertiary {
+    background: transparent;
+    color: var(--ubits-btn-tertiary-fg);
+    border: 1px solid transparent;
+}
+
+/* Tertiary Button Hover */
+.ubits-button--tertiary:hover:not(:disabled) {
+    background: var(--ubits-btn-tertiary-bg-hover);
+    color: var(--ubits-btn-tertiary-fg);
+    border: 1px solid transparent;
+}
+
+/* Tertiary Button Pressed */
+.ubits-button--tertiary:active:not(:disabled) {
+    background: var(--ubits-btn-tertiary-bg-pressed);
+    color: var(--ubits-btn-tertiary-fg);
+    border: 1px solid transparent;
+    transform: translateY(1px);
+}
+
+/* Tertiary Button Active State */
+.ubits-button--tertiary.ubits-button--active {
+    background: var(--ubits-button-active-bg);
+    color: var(--ubits-accent-brand);
+    border: 1px solid transparent;
+}
+
+.ubits-button--tertiary.ubits-button--active:hover:not(:disabled) {
+    background: var(--ubits-button-active-bg);
+    color: var(--ubits-accent-brand);
+    border: 1px solid transparent;
+}
+
+.ubits-button--tertiary.ubits-button--active:active:not(:disabled) {
+    background: var(--ubits-button-active-bg);
+    color: var(--ubits-accent-brand);
+    border: 1px solid transparent;
+}
+
+/* Tertiary Button Focus State */
+.ubits-button--tertiary:focus-visible {
+    background: transparent;
+    color: var(--ubits-btn-tertiary-fg);
+    border: 1px solid transparent;
+}
+
+/* ========================================
+   ERROR BUTTON VARIANT (eliminación, acciones destructivas)
+   Tokens: ubits-colors.css --ubits-btn-error-*
+   ======================================== */
+
+.ubits-button--error {
+    background: var(--ubits-btn-error-primary-bg-default);
+    color: var(--ubits-btn-error-primary-fg);
+    border: 1px solid var(--ubits-btn-error-primary-bg-default);
+}
+
+.ubits-button--error:hover:not(:disabled) {
+    background: var(--ubits-btn-error-primary-bg-hover);
+    border-color: var(--ubits-btn-error-primary-bg-hover);
+}
+
+.ubits-button--error:active:not(:disabled) {
+    background: var(--ubits-btn-error-primary-bg-pressed);
+    border-color: var(--ubits-btn-error-primary-bg-pressed);
+    transform: translateY(1px);
+}
+
+.ubits-button--error:focus-visible {
+    outline: none;
+    box-shadow: 0px 0px 0px 4px var(--ubits-button-focus-ring);
+}
+
+/* Error Secondary (outline, fondo sutil error) */
+.ubits-button--error-secondary {
+    background: var(--ubits-btn-error-secondary-bg-default);
+    color: var(--ubits-btn-error-secondary-fg-default);
+    border: 1px solid var(--ubits-btn-error-secondary-border);
+}
+
+.ubits-button--error-secondary:hover:not(:disabled) {
+    background: var(--ubits-btn-error-secondary-bg-hover);
+    color: var(--ubits-btn-error-secondary-fg-default);
+    border-color: var(--ubits-btn-error-secondary-border);
+}
+
+.ubits-button--error-secondary:active:not(:disabled) {
+    background: var(--ubits-btn-error-secondary-bg-pressed);
+    color: var(--ubits-btn-error-secondary-fg-default);
+    border-color: var(--ubits-btn-error-secondary-border);
+    transform: translateY(1px);
+}
+
+.ubits-button--error-secondary:focus-visible {
+    outline: none;
+    box-shadow: 0px 0px 0px 4px var(--ubits-button-focus-ring);
+}
+
+/* Error Tertiary (ghost, solo texto/icono error) */
+.ubits-button--error-tertiary {
+    background: transparent;
+    color: var(--ubits-btn-error-tertiary-fg);
+    border: 1px solid transparent;
+}
+
+.ubits-button--error-tertiary:hover:not(:disabled) {
+    background: var(--ubits-btn-error-tertiary-bg-hover);
+    color: var(--ubits-btn-error-tertiary-fg);
+    border: 1px solid transparent;
+}
+
+.ubits-button--error-tertiary:active:not(:disabled) {
+    background: var(--ubits-btn-error-tertiary-bg-pressed);
+    color: var(--ubits-btn-error-tertiary-fg);
+    transform: translateY(1px);
+}
+
+.ubits-button--error-tertiary:focus-visible {
+    outline: none;
+    box-shadow: 0px 0px 0px 4px var(--ubits-button-focus-ring);
+}
+
+/* ========================================
+   BUTTON TYPES
+   ======================================== */
+
+/* Icon Only Button - Base (sin restricciones de tamaño) */
+.ubits-button--icon-only {
+    padding: var(--padding-md);
+}
+
+/* ========================================
+   BUTTON SIZES - KISS: UNA CLASE POR TAMAÑO
+   ======================================== */
+
+/* Medium (default) - usa ubits-body-md-semibold */
+.ubits-button {
+    height: 40px;
+    /* Hereda de ubits-body-md-semibold: 16px, weight 600, line-height 24px */
+}
+
+/* Aplicar tipografía UBITS al texto del botón medium */
+.ubits-button span {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+    line-height: 24px;
+}
+
+/* Medium (default) Icon Only */
+.ubits-button.ubits-button--icon-only {
+    padding: var(--padding-md);
+    width: 40px;
+    height: 40px;
+}
+
+/* Extra Small - usa ubits-body-xs-semibold */
+.ubits-button--xs {
+    padding: 7.5px 8px;
+    height: 28px;
+    /* Hereda de ubits-body-xs-semibold: 11px, weight 600, line-height 16.5px */
+}
+
+/* Aplicar tipografía UBITS al texto del botón extra small - ubits-body-xs-semibold */
+.ubits-button--xs span {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    line-height: 16.5px;
+}
+
+.ubits-button--xs.ubits-button--icon-only {
+    padding: 7.5px;
+    width: 28px;
+    height: 28px;
+}
+
+/* Small - usa ubits-body-sm-semibold */
+.ubits-button--sm {
+    padding: 9.5px 12px;
+    height: 32px;
+    /* Hereda de ubits-body-sm-semibold: 13px, weight 600, line-height 19.5px */
+}
+
+/* Aplicar tipografía UBITS al texto del botón small - ubits-body-sm-semibold */
+.ubits-button--sm span {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    line-height: 19.5px;
+}
+
+.ubits-button--sm.ubits-button--icon-only {
+    padding: 9.5px 8px;
+    width: 32px;
+    height: 32px;
+}
+
+/* Large - usa ubits-body-lg-semibold */
+.ubits-button--lg {
+    padding: var(--padding-lg) var(--padding-xl);
+    height: 48px;
+    /* Hereda de ubits-body-lg-semibold: 20px, weight 600, line-height 30px */
+}
+
+/* Aplicar tipografía UBITS al texto del botón large */
+.ubits-button--lg span {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-h2);
+    font-weight: var(--font-weight-semibold);
+    line-height: 30px;
+}
+
+.ubits-button--lg.ubits-button--icon-only {
+    padding: var(--padding-lg) var(--padding-lg);
+    width: 48px;
+    height: 48px;
+}
+
+/* ========================================
+   BUTTON BADGE (puntito o número: 1, 2, 3…)
+   Texto siempre blanco (token oficial) en todos los tipos de botón.
+   ======================================== */
+
+.ubits-button__badge {
+    position: absolute;
+    top: -8px;
+    right: -12px;
+    min-width: 10px;
+    min-height: 10px;
+    background: var(--ubits-button-badge);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Noto Sans', sans-serif;
+    line-height: 1;
+    color: var(--ubits-btn-primary-fg) !important;
+}
+
+/* Texto blanco en badge para todos los tipos de botón (forzado para que no herede del botón) */
+.ubits-button--primary .ubits-button__badge,
+.ubits-button--secondary .ubits-button__badge,
+.ubits-button--tertiary .ubits-button__badge,
+.ubits-button--error .ubits-button__badge,
+.ubits-button--error-secondary .ubits-button__badge,
+.ubits-button--error-tertiary .ubits-button__badge {
+    color: var(--ubits-btn-primary-fg) !important;
+}
+
+/* Badge vacío = solo puntito (más adentro que el badge con número) */
+.ubits-button__badge:empty {
+    width: 10px;
+    height: 10px;
+    top: -2px;
+    right: -4px;
+}
+
+/* Badge con número: por defecto pill que abraza el contenido */
+.ubits-button__badge:not(:empty) {
+    padding: 0 5px;
+    height: 18px;
+    min-width: 18px;
+    border-radius: var(--border-radius-full);
+    font-size: 10px;
+    font-weight: var(--font-weight-semibold);
+}
+
+/* Un solo dígito: circular. Añadir clase ubits-button__badge--circle al span del badge. */
+.ubits-button__badge--circle:not(:empty) {
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    padding: 0;
+    border-radius: 50%;
+}
+
+.ubits-button--icon-only .ubits-button__badge {
+    top: -8px;
+    right: -8px;
+}
+
+.ubits-button--icon-only .ubits-button__badge:empty {
+    top: -2px;
+    right: -2px;
+}
+
+/* ========================================
+   BUTTON ICONS
+   ======================================== */
+
+.ubits-button__icon {
+    font-size: var(--font-size-md);
+    line-height: 1;
+}
+
+/* PROTECCIÓN ESPECÍFICA PARA BOTONES PRIMARIOS */
+.ubits-button--primary {
+    color: var(--ubits-btn-primary-fg) !important;
+}
+
+.ubits-button--primary i {
+    font-family: "Font Awesome 6 Pro", "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
+}
+
+.ubits-button--small .ubits-button__icon {
+    font-size: var(--font-size-sm);
+}
+
+.ubits-button--large .ubits-button__icon {
+    font-size: var(--font-size-h2);
+}
+
+/* ========================================
+   BUTTON TEXT
+   ======================================== */
+
+/* ========================================
+   ACCESSIBILITY
+   ======================================== */
+
+.ubits-button:focus-visible {
+    outline: none;
+    box-shadow: 0px 0px 0px 4px var(--ubits-button-focus-ring);
+}
+
+.ubits-button[aria-disabled="true"] {
+    background: var(--ubits-bg-disabled-button);
+    color: var(--ubits-fg-on-disabled-button);
+    border-color: var(--ubits-border-disabled-button);
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 768px) {
+    .ubits-button {
+        font-size: var(--font-size-sm);
+        padding: var(--padding-md) var(--padding-lg);
+    }
+    
+    .ubits-button--small {
+        font-size: var(--font-size-sm);
+        padding: var(--padding-sm) var(--padding-md);
+    }
+    
+    .ubits-button--large {
+        font-size: var(--font-size-md);
+        padding: var(--padding-lg) var(--padding-xl);
+    }
+}

@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Button | UBITS Playground</title>
+    
+    <!-- Estilos locales -->
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/tab-bar.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/switch.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <style>
+        /* Preview control buttons - override UBITS button styles for active state */
+        .preview-control-btn.active {
+            background: var(--ubits-accent-brand) !important;
+            color: white !important;
+            border-color: var(--ubits-accent-brand) !important;
+        }
+        
+        .preview-control-btn.active span {
+            color: white !important;
+        }
+        
+        /* Badge: posición igual que components/button.css (salido para no tapar texto) */
+        .ubits-button__badge {
+            position: absolute;
+            top: -8px;
+            right: -12px;
+            min-width: 10px;
+            min-height: 10px;
+            background: var(--ubits-button-badge);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--ubits-btn-primary-fg) !important;
+        }
+        .ubits-button--icon-only .ubits-button__badge {
+            top: -8px;
+            right: -8px;
+        }
+        .ubits-button__badge:empty { width: 10px; height: 10px; top: -2px; right: -4px; }
+        .ubits-button--icon-only .ubits-button__badge:empty { top: -2px; right: -2px; }
+        .ubits-button__badge:not(:empty) {
+            padding: 0 5px;
+            height: 18px;
+            min-width: 18px;
+            border-radius: var(--border-radius-full);
+            font-size: 10px;
+            font-weight: 500;
+            color: var(--ubits-btn-primary-fg) !important;
+        }
+        .ubits-button__badge--circle:not(:empty) {
+            width: 18px; height: 18px; min-width: 18px; padding: 0; border-radius: 50%;
+        }
+        
+        .ubits-button {
+            position: relative;
+        }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navigation -->
+            <div id="top-nav-container"></div>
+            
+            <!-- Content with Sidebar -->
+            <div style="display: flex;">
+            
+            <!-- Dropdown Móvil para Documentación -->
+            <div id="docs-dropdown-container"></div>
+            
+            <!-- Sidebar de Documentación -->
+            <div id="docs-sidebar-container"></div>
+
+            <!-- Content Area -->
+            <div class="components-content">
+                <!-- Content Area -->
+                <div class="content-area" style="display: block; width: 100%;">
+                    <!-- Hero Section -->
+                    <div style="text-align: center; margin-bottom: 60px;">
+                        <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                            Button
+                        </h1>
+                        <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                            Componente de botón con múltiples variantes, tamaños y estados para acciones del usuario.
+                        </p>
+                    </div>
+
+                    <!-- Preview Section -->
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                        <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Preview del componente
+                        </h2>
+                        <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                            Aquí puedes ver el componente Button en acción. Haz clic en los botones para ver las diferentes variantes disponibles. En <strong>Error</strong> usa el estilo (Primario / Secundario / Terciario) para cambiar el tipo y ver los mismos tamaños xs, sm, md y lg.
+                        </p>
+                        
+                        <!-- Preview Container -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; position: relative;">
+                            
+                            <!-- Button Preview -->
+                            <div id="button-preview">
+                                <div style="display: flex; flex-direction: column; gap: 16px; align-items: flex-start;">
+                                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                                        <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Extra Small (xs)</span>
+                                        <button class="ubits-button ubits-button--primary ubits-button--xs">
+                                            <i class="far fa-check"></i>
+                                            <span>Botón primario</span>
+                                        </button>
+                                    </div>
+                                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                                        <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Small (sm)</span>
+                                        <button class="ubits-button ubits-button--primary ubits-button--sm">
+                                            <i class="far fa-check"></i>
+                                            <span>Botón primario</span>
+                                        </button>
+                                    </div>
+                                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                                        <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Medium (md)</span>
+                                        <button class="ubits-button ubits-button--primary ubits-button--md">
+                                            <i class="far fa-check"></i>
+                                            <span>Botón primario</span>
+                                        </button>
+                                    </div>
+                                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                                        <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Large (lg)</span>
+                                        <button class="ubits-button ubits-button--primary ubits-button--lg">
+                                            <i class="far fa-check"></i>
+                                            <span>Botón primario</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Preview Controls -->
+                        <div style="margin-top: 16px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" onclick="setPreviewOption('primary')">
+                                <span>Primario</span>
+                            </button>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewOption('secondary')">
+                                <span>Secundario</span>
+                            </button>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewOption('tertiary')">
+                                <span>Terciario</span>
+                            </button>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewOption('disabled')">
+                                <span>Disabled</span>
+                            </button>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewOption('error')">
+                                <span>Error</span>
+                            </button>
+                            <!-- Subcontroles Error (solo visibles cuando Error está seleccionado) -->
+                            <div id="error-sub-controls" style="display: none; margin-left: 8px; padding-left: 12px; border-left: 1px solid var(--ubits-border-1); flex-wrap: wrap; gap: 8px; align-items: center;" class="ubits-body-sm-regular">
+                                <span style="color: var(--ubits-fg-1-medium);">Estilo:</span>
+                                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs error-sub-control-btn active" data-error-sub="error" onclick="setErrorSubOption('error')">
+                                    <span>Primario</span>
+                                </button>
+                                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs error-sub-control-btn" data-error-sub="error-secondary" onclick="setErrorSubOption('error-secondary')">
+                                    <span>Secundario</span>
+                                </button>
+                                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs error-sub-control-btn" data-error-sub="error-tertiary" onclick="setErrorSubOption('error-tertiary')">
+                                    <span>Terciario</span>
+                                </button>
+                            </div>
+                            
+                            <!-- Switch para Iconos -->
+                            <div style="display: flex; align-items: center; gap: 8px; margin-left: 16px;">
+                                <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Iconos:</span>
+                                <label class="ubits-switch ubits-switch--md">
+                                    <input type="checkbox" class="ubits-switch__input" id="icon-toggle" role="switch" onchange="toggleIcons()" checked>
+                                    <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                </label>
+                            </div>
+                            
+                            <!-- Switch para Icon-only -->
+                            <div style="display: flex; align-items: center; gap: 8px; margin-left: 16px;">
+                                <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Icon-only:</span>
+                                <label class="ubits-switch ubits-switch--md">
+                                    <input type="checkbox" class="ubits-switch__input" id="icon-only-toggle" role="switch" onchange="toggleIconOnly()">
+                                    <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                </label>
+                            </div>
+                            
+                            <!-- Switch para Badge + selector puntito / número -->
+                            <div style="display: flex; align-items: center; gap: 8px; margin-left: 16px;">
+                                <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Badge:</span>
+                                <label class="ubits-switch ubits-switch--md">
+                                    <input type="checkbox" class="ubits-switch__input" id="badge-toggle" role="switch" onchange="toggleBadge()">
+                                    <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                </label>
+                                <div id="badge-type-wrapper" style="display: none; align-items: center; gap: 8px; margin-left: 8px; padding-left: 8px; border-left: 1px solid var(--ubits-border-1);">
+                                    <label style="display: flex; align-items: center; gap: 4px; cursor: pointer;" class="ubits-body-sm-regular">
+                                        <input type="radio" name="badge-type" value="dot" checked onchange="updatePreview(currentPreviewOption)">
+                                        <span style="color: var(--ubits-fg-1-medium);">Puntito</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 4px; cursor: pointer;" class="ubits-body-sm-regular">
+                                        <input type="radio" name="badge-type" value="number" onchange="toggleBadgeNumberInput(); updatePreview(currentPreviewOption)">
+                                        <span style="color: var(--ubits-fg-1-medium);">Con número</span>
+                                    </label>
+                                    <input type="number" id="badge-number-input" min="1" max="99" value="3" style="width: 48px; padding: 4px 8px; border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-sm); font-size: var(--font-size-sm); color: var(--ubits-fg-1-high); background: var(--ubits-bg-1); display: none;" onchange="updatePreview(currentPreviewOption)" oninput="updatePreview(currentPreviewOption)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Características generales -->
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                        <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Características generales
+                        </h2>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-palette"></i></div>
+                                <div class="ubits-body-sm-bold">Variantes</div>
+                                <div class="ubits-body-sm-regular">Primario, secundario, terciario; error (primario, secundario, terciario)</div>
+                            </div>
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-expand-arrows-alt"></i></div>
+                                <div class="ubits-body-sm-bold">Tamaños</div>
+                                <div class="ubits-body-sm-regular">Extra small, small, medium y large</div>
+                            </div>
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-tag"></i></div>
+                                <div class="ubits-body-sm-bold">Badge</div>
+                                <div class="ubits-body-sm-regular">Indicador opcional: puntito o número (1, 2, 3…)</div>
+                            </div>
+                        </div>
+                </div>
+
+                <!-- PROMPTS ÚTILES -->
+                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                    <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                        <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                        Prompts útiles
+                    </h2>
+                    <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                        Usa estos prompts con Cursor AI para configurar y personalizar el componente Button de manera eficiente.
+                    </p>
+
+                    <!-- Alert Warning -->
+                    <div id="button-warning-alert" style="margin-bottom: 32px;"></div>
+
+                    <!-- Prompt 0: Crear botón UBITS -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Crear botón UBITS
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('button-prompt-0')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="button-prompt-0">Crea un botón UBITS con estas características:
+- Texto: [especifica texto]
+- Variante: [primary/secondary/tertiary/error/error-secondary/error-tertiary]
+- Tamaño: [xs/sm/md/lg]
+- Icono: [especifica icono FontAwesome]
+- Ubicación: [describe en que parte del layout debe estar el botón]</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 1: Cambiar variante del botón -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Cambiar estilo del botón
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('button-prompt-1')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="button-prompt-1">Cambia el botón [nombre_del_boton] a estilo [primary, secondary o tertiary].</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 2: Cambiar tamaño del botón -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Cambiar tamaño del botón
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('button-prompt-2')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="button-prompt-2">Cambia el tamaño del botón [nombre_del_boton] a [extra small, small, medium o large].</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 3: Agregar ícono al botón -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Agregar ícono al botón
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('button-prompt-3')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="button-prompt-3">Agrega el ícono [nombre_del_icono] al botón [nombre_del_boton].</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 4: Crear nuevo botón -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Crear nuevo botón
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('button-prompt-4')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="button-prompt-4">Crea un botón que diga "[texto_del_boton]" con estilo [primary, secondary o tertiary] y tamaño [extra small, small, medium o large] en [ubicación donde quieres el botón].</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 5: Agregar badge al botón -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Agregar indicador al botón
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('button-prompt-5')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="button-prompt-5">Agrega un indicador al botón [nombre_del_boton]: un punto rojo de notificación o un número (por ejemplo &lt;span class="ubits-button__badge"&gt;3&lt;/span&gt;).</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 6: Cambiar funcionalidad del botón -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Cambiar acción del botón
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('button-prompt-6')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="button-prompt-6">Haz que el botón [nombre_del_boton] al hacer clic [describe qué acción debe realizar].</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 7: Convertir a botón de solo icono -->
+                    <div>
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Convertir a botón de solo icono
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('button-prompt-7')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="button-prompt-7">Convierte el botón [nombre_del_boton] a la variante de solo icono. Quita el texto y usa solo el icono [nombre_del_icono]. Agrega la clase ubits-button--icon-only.</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technical Documentation -->
+                    <div style="background: var(--ubits-bg-1); border-radius: 16px; margin-bottom: 40px; overflow: hidden;">
+                        <!-- Header del acordeón -->
+                        <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Documentación técnica
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
+                                Información técnica detallada para implementar el componente Button.
+                            </p>
+                        </div>
+                        
+                        <!-- Botón de expansión -->
+                        <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                            <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                <i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>
+                                Mostrar
+                            </span>
+                        </div>
+
+                        <!-- Contenido del acordeón (inicialmente oculto) -->
+                        <div id="technical-docs-content" style="display: none; padding: 0;">
+                            <!-- Estructura del Componente -->
+                            <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                    <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                        <i class="far fa-sitemap" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                        Estructura del componente
+                                    </h2>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('structure-code')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="structure-code">&lt;button class="ubits-button ubits-button--primary ubits-button--md"&gt;
+  &lt;i class="far fa-check"&gt;&lt;/i&gt;
+  &lt;span&gt;Botón primario&lt;/span&gt;
+&lt;/button&gt;</code></pre>
+                                </div>
+                            </div>
+
+                            <!-- Clases disponibles -->
+                            <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                    <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                        <i class="far fa-tags" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                        Clases disponibles
+                                    </h2>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('classes-code')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="classes-code">/* Variantes */
+.ubits-button--primary    /* Botón principal (azul) */
+.ubits-button--secondary  /* Botón secundario (gris) */
+.ubits-button--tertiary   /* Botón terciario (transparente) */
+.ubits-button--error           /* Error primario: fondo rojo, texto claro (eliminar principal) */
+.ubits-button--error-secondary  /* Error secundario: fondo sutil rojo, borde y texto error */
+.ubits-button--error-tertiary   /* Error terciario: transparente, solo texto/icono rojo */
+
+/* Tamaños */
+.ubits-button--xs        /* Extra pequeño (11px, 28px alto) */
+.ubits-button--sm        /* Pequeño (13px, 32px alto) */
+.ubits-button--md        /* Mediano (16px, 40px alto) */
+.ubits-button--lg        /* Grande (20px, 48px alto) */
+
+/* Modificadores */
+.ubits-button--icon-only /* Solo icono, sin texto */
+  /* Extra Small: 28x28px, Small: 32x32px, Medium: 40x40px, Large: 48x48px */
+  /* Uso: Acciones secundarias, eliminar, controles compactos */</code></pre>
+                                </div>
+                            </div>
+
+                            <!-- Cómo implementar -->
+                            <div style="padding: 32px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                    <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                        <i class="far fa-code-branch" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                        Cómo implementar
+                                    </h2>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('implementation-code')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                
+                                <!-- REQUISITOS DE RENDERIZADO -->
+                                <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">🔧 REQUISITOS OBLIGATORIOS:</h3>
+                                    <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.5;">
+                                        <strong>CSS Requerido:</strong><br>
+                                        • <code>components/button.css</code> - Estilos del componente<br>
+                                        • <code>fontawesome-icons.css</code> - Iconos FontAwesome<br>
+                                        • <code>ubits-colors.css</code> - Tokens de color UBITS<br>
+                                        • <code>ubits-typography.css</code> - Tipografía UBITS<br><br>
+                                        <strong>JavaScript:</strong> NO requerido - Componente puramente CSS<br><br>
+                                        <strong>Renderizado:</strong> HTML directo con clases UBITS
+                                    </div>
+                                </div>
+                                
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="implementation-code">&lt;!-- IMPLEMENTACIÓN BÁSICA --&gt;
+&lt;!-- Botón primario extra pequeño --&gt;
+&lt;button class="ubits-button ubits-button--primary ubits-button--xs"&gt;
+  &lt;i class="far fa-check"&gt;&lt;/i&gt;
+  &lt;span&gt;Confirmar&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- Botón secundario pequeño --&gt;
+&lt;button class="ubits-button ubits-button--secondary ubits-button--sm"&gt;
+  &lt;span&gt;Cancelar&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- Botón primario mediano --&gt;
+&lt;button class="ubits-button ubits-button--primary ubits-button--md"&gt;
+  &lt;i class="far fa-check"&gt;&lt;/i&gt;
+  &lt;span&gt;Confirmar&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- Botón terciario grande --&gt;
+&lt;button class="ubits-button ubits-button--tertiary ubits-button--lg"&gt;
+  &lt;i class="far fa-plus"&gt;&lt;/i&gt;
+  &lt;span&gt;Agregar elemento&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- Botón error primario (eliminación principal) --&gt;
+&lt;button class="ubits-button ubits-button--error ubits-button--md"&gt;
+  &lt;i class="far fa-trash-alt"&gt;&lt;/i&gt;
+  &lt;span&gt;Eliminar&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- Botón error secundario (outline, fondo sutil) --&gt;
+&lt;button class="ubits-button ubits-button--error-secondary ubits-button--md"&gt;
+  &lt;i class="far fa-trash-alt"&gt;&lt;/i&gt;
+  &lt;span&gt;Eliminar&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- Botón error terciario (ghost, solo texto rojo) --&gt;
+&lt;button class="ubits-button ubits-button--error-tertiary ubits-button--md"&gt;
+  &lt;i class="far fa-trash-alt"&gt;&lt;/i&gt;
+  &lt;span&gt;Eliminar&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- Botón de solo icono --&gt;
+&lt;button class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only"&gt;
+  &lt;i class="far fa-trash"&gt;&lt;/i&gt;
+&lt;/button&gt;
+
+&lt;!-- Badge: puntito (vacío) --&gt;
+&lt;button class="ubits-button ubits-button--primary ubits-button--md"&gt;
+  &lt;i class="far fa-bell"&gt;&lt;/i&gt;
+  &lt;span&gt;Notificaciones&lt;/span&gt;
+  &lt;span class="ubits-button__badge"&gt;&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- Badge con número (1, 2, 3…) --&gt;
+&lt;button class="ubits-button ubits-button--primary ubits-button--md"&gt;
+  &lt;i class="far fa-bell"&gt;&lt;/i&gt;
+  &lt;span&gt;Notificaciones&lt;/span&gt;
+  &lt;span class="ubits-button__badge"&gt;3&lt;/span&gt;
+&lt;/button&gt;</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Contenedor para Toast UBITS -->
+    <div id="ubits-toast-container"></div>
+
+    <!-- Tab Bar Container -->
+
+    <!-- Floating Menu Container -->
+    <div id="floating-menu-container"></div>
+    
+    <!-- Profile Menu Container -->
+    <div id="profile-menu-container"></div>
+
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/tab-bar.js"></script>
+    <script src="../../components/floating-menu.js"></script>
+    <script src="../../components/profile-menu.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cargar top-nav con variante documentación
+            loadSubNav('top-nav-container', 'documentacion');
+            
+            // Forzar activación de Componentes en todas las páginas de documentación
+            setTimeout(() => {
+                // Quitar todas las clases active primero
+                document.querySelectorAll('.nav-tab.active, .hamburger-item.active').forEach(item => {
+                    item.classList.remove('active');
+                });
+                
+                // Activar solo Componentes
+                const navTab = document.querySelector('.nav-tab[data-tab="section3"]');
+                const hamburgerItem = document.querySelector('.hamburger-item[data-tab="section3"]');
+                if (navTab) navTab.classList.add('active');
+                if (hamburgerItem) hamburgerItem.classList.add('active');
+            }, 200);
+            
+            // Cargar sidebar de documentación
+            loadDocsSidebar('button');
+            
+            // Cargar alert de warning para prompts usando el componente oficial
+            showAlert('warning', 'Importante: Antes de enviar estos prompts a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
+                containerId: 'button-warning-alert',
+                noClose: true
+            });
+        });
+
+        // Variable global para guardar la opción actual del preview
+        let currentPreviewOption = 'primary';
+        // Sub-variante de Error (error = primario, error-secondary, error-tertiary)
+        let currentErrorSubOption = 'error';
+
+        // Función para toggle de iconos
+        function toggleIcons() {
+            // Obtener la opción activa actual
+            const activeButton = document.querySelector('.preview-control-btn.active');
+            if (activeButton) {
+                const option = activeButton.textContent.trim().toLowerCase();
+                if (option === 'primario') {
+                    updatePreview('primary');
+                } else if (option === 'secundario') {
+                    updatePreview('secondary');
+                } else if (option === 'terciario') {
+                    updatePreview('tertiary');
+                } else if (option === 'disabled') {
+                    updatePreview('disabled');
+                } else if (option === 'error') {
+                    updatePreview('error');
+                }
+            }
+        }
+
+        function setErrorSubOption(subOption) {
+            currentErrorSubOption = subOption;
+            document.querySelectorAll('.error-sub-control-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.getAttribute('data-error-sub') === subOption);
+            });
+            updatePreview('error');
+        }
+        
+        // Función para toggle de icon-only
+        function toggleIconOnly() {
+            updatePreview(currentPreviewOption);
+        }
+        
+        // Función para toggle de badge: muestra/oculta selector puntito vs número y actualiza preview
+        function toggleBadge() {
+            const showBadge = document.getElementById('badge-toggle').checked;
+            const wrapper = document.getElementById('badge-type-wrapper');
+            if (wrapper) wrapper.style.display = showBadge ? 'flex' : 'none';
+            toggleBadgeNumberInput();
+            updatePreview(currentPreviewOption);
+        }
+        
+        // Muestra/oculta el input de número según el radio "Con número"
+        function toggleBadgeNumberInput() {
+            const isNumber = document.querySelector('input[name="badge-type"]:checked')?.value === 'number';
+            const input = document.getElementById('badge-number-input');
+            if (input) input.style.display = isNumber ? 'inline-block' : 'none';
+        }
+        
+        // Función auxiliar para generar HTML de botón con/sin badge y con/sin iconos
+        // badgeValue: null = sin badge, '' = puntito, '3' = número dentro del badge
+        function generateButtonHTML(variant, size, text, icon, isIconOnly = false, showIcons = true, isDisabled = false, badgeValue = null) {
+            const iconHTML = showIcons ? `<i class="far fa-${icon}"></i>` : '';
+            const disabledAttr = isDisabled ? ' disabled' : '';
+            const iconOnlyClass = isIconOnly ? ` ubits-button--icon-only` : '';
+            const textHTML = isIconOnly ? '' : `<span>${text}</span>`;
+            const circleClass = (badgeValue !== null && badgeValue !== '' && String(badgeValue).length === 1) ? ' ubits-button__badge--circle' : '';
+            const badgeHTML = badgeValue === null ? '' : `<span class="ubits-button__badge${circleClass}">${badgeValue}</span>`;
+            return `<button class="ubits-button ubits-button--${variant} ubits-button--${size}${iconOnlyClass}"${disabledAttr}>
+                ${iconHTML}
+                ${textHTML}
+                ${badgeHTML}
+            </button>`;
+        }
+        
+        // Función interna para actualizar preview sin cambiar estado visual
+        function updatePreview(option) {
+            // Obtener estado del icon-only, iconos y badge
+            const iconOnlyToggle = document.getElementById('icon-only-toggle');
+            const iconToggle = document.getElementById('icon-toggle');
+            const badgeToggle = document.getElementById('badge-toggle');
+            const isIconOnly = iconOnlyToggle ? iconOnlyToggle.checked : false;
+            const showIcons = iconToggle ? iconToggle.checked : true;
+            const showBadge = badgeToggle ? badgeToggle.checked : false;
+            let badgeParam = null;
+            if (showBadge) {
+                const typeRadio = document.querySelector('input[name="badge-type"]:checked');
+                if (typeRadio && typeRadio.value === 'number') {
+                    const numInput = document.getElementById('badge-number-input');
+                    const n = numInput ? Math.max(1, Math.min(99, parseInt(numInput.value, 10) || 1)) : 3;
+                    badgeParam = String(n);
+                } else {
+                    badgeParam = '';
+                }
+            }
+            
+            // Cambiar el preview
+            const preview = document.getElementById('button-preview');
+            const structureCode = document.getElementById('structure-code');
+            const implementationCode = document.getElementById('implementation-code');
+            
+            switch(option) {
+                case 'primary':
+                    preview.innerHTML = `
+                        <div style="display: flex; flex-direction: column; gap: 16px; align-items: flex-start;">
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Extra Small (xs)</span>
+                                ${generateButtonHTML('primary', 'xs', 'Botón primario', 'check', isIconOnly, showIcons, false, badgeParam)}
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Small (sm)</span>
+                                ${generateButtonHTML('primary', 'sm', 'Botón primario', 'check', isIconOnly, showIcons, false, badgeParam)}
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Medium (md)</span>
+                                ${generateButtonHTML('primary', 'md', 'Botón primario', 'check', isIconOnly, showIcons, false, badgeParam)}
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Large (lg)</span>
+                                ${generateButtonHTML('primary', 'lg', 'Botón primario', 'check', isIconOnly, showIcons, false, badgeParam)}
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 'secondary':
+                    preview.innerHTML = `
+                        <div style="display: flex; flex-direction: column; gap: 16px; align-items: flex-start;">
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Extra Small (xs)</span>
+                                ${generateButtonHTML('secondary', 'xs', 'Botón secundario', 'times', isIconOnly, showIcons, false, badgeParam)}
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Small (sm)</span>
+                                ${generateButtonHTML('secondary', 'sm', 'Botón secundario', 'times', isIconOnly, showIcons, false, badgeParam)}
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Medium (md)</span>
+                                ${generateButtonHTML('secondary', 'md', 'Botón secundario', 'times', isIconOnly, showIcons, false, badgeParam)}
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Large (lg)</span>
+                                ${generateButtonHTML('secondary', 'lg', 'Botón secundario', 'times', isIconOnly, showIcons, false, badgeParam)}
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 'tertiary':
+                    preview.innerHTML = `
+                        <div style="display: flex; flex-direction: column; gap: 16px; align-items: flex-start;">
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Extra Small (xs)</span>
+                                ${generateButtonHTML('tertiary', 'xs', 'Botón terciario', 'plus', isIconOnly, showIcons, false, badgeParam)}
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Small (sm)</span>
+                                ${generateButtonHTML('tertiary', 'sm', 'Botón terciario', 'plus', isIconOnly, showIcons, false, badgeParam)}
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Medium (md)</span>
+                                ${generateButtonHTML('tertiary', 'md', 'Botón terciario', 'plus', isIconOnly, showIcons, false, badgeParam)}
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Large (lg)</span>
+                                ${generateButtonHTML('tertiary', 'lg', 'Botón terciario', 'plus', isIconOnly, showIcons, false, badgeParam)}
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 'disabled':
+                    preview.innerHTML = `
+                        <div style="display: flex; flex-direction: column; gap: 16px; align-items: flex-start;">
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Extra Small (xs)</span>
+                                ${generateButtonHTML('primary', 'xs', 'Botón deshabilitado', 'check', isIconOnly, showIcons, true, badgeParam)}
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Small (sm)</span>
+                                ${generateButtonHTML('primary', 'sm', 'Botón deshabilitado', 'check', isIconOnly, showIcons, true, badgeParam)}
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Medium (md)</span>
+                                ${generateButtonHTML('secondary', 'md', 'Botón deshabilitado', 'times', isIconOnly, showIcons, true, badgeParam)}
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Large (lg)</span>
+                                ${generateButtonHTML('tertiary', 'lg', 'Botón deshabilitado', 'plus', isIconOnly, showIcons, true, badgeParam)}
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 'error':
+                    const errorVariant = typeof currentErrorSubOption !== 'undefined' ? currentErrorSubOption : 'error';
+                    preview.innerHTML = `
+                        <div style="display: flex; flex-direction: column; gap: 16px; align-items: flex-start;">
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Extra Small (xs)</span>
+                                ${generateButtonHTML(errorVariant, 'xs', 'Eliminar', 'trash-alt', isIconOnly, showIcons, false, badgeParam)}
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Small (sm)</span>
+                                ${generateButtonHTML(errorVariant, 'sm', 'Eliminar', 'trash-alt', isIconOnly, showIcons, false, badgeParam)}
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Medium (md)</span>
+                                ${generateButtonHTML(errorVariant, 'md', 'Eliminar', 'trash-alt', isIconOnly, showIcons, false, badgeParam)}
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Large (lg)</span>
+                                ${generateButtonHTML(errorVariant, 'lg', 'Eliminar', 'trash-alt', isIconOnly, showIcons, false, badgeParam)}
+                            </div>
+                        </div>
+                    `;
+                    break;
+            }
+        }
+        
+        // Función para cambiar el preview
+        function setPreviewOption(option) {
+            // Guardar la opción actual en la variable global
+            currentPreviewOption = option;
+            
+            // Remover clase active de todos los botones principales
+            document.querySelectorAll('.preview-control-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Agregar clase active al botón clickeado
+            const clicked = event.target.closest('.preview-control-btn');
+            if (clicked) clicked.classList.add('active');
+            
+            // Mostrar u ocultar subcontroles de Error
+            const errorSubEl = document.getElementById('error-sub-controls');
+            if (errorSubEl) {
+                if (option === 'error') {
+                    errorSubEl.style.display = 'flex';
+                    document.querySelectorAll('.error-sub-control-btn').forEach(btn => {
+                        btn.classList.toggle('active', btn.getAttribute('data-error-sub') === currentErrorSubOption);
+                    });
+                } else {
+                    errorSubEl.style.display = 'none';
+                }
+            }
+            
+            // Actualizar el preview
+            updatePreview(option);
+        }
+
+        // Función para toggle de documentación técnica
+        function toggleTechnicalDocs() {
+            const content = document.getElementById('technical-docs-content');
+            const chevron = document.getElementById('tech-docs-chevron');
+            const toggleText = chevron.parentElement;
+            
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                chevron.style.transform = 'rotate(180deg)';
+                toggleText.innerHTML = '<i class="far fa-chevron-up" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Ocultar';
+            } else {
+                content.style.display = 'none';
+                chevron.style.transform = 'rotate(0deg)';
+                toggleText.innerHTML = '<i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Mostrar';
+            }
+        }
+
+        // Función para copiar prompts
+        function copyPrompt(promptId) {
+            const promptElement = document.getElementById(promptId);
+            const promptText = promptElement.textContent;
+            
+            // Copiar al portapapeles
+            navigator.clipboard.writeText(promptText).then(function() {
+                // Mostrar feedback visual
+                const button = document.querySelector(`[onclick="copyPrompt('${promptId}')"]`);
+                const icon = button.querySelector('i');
+                const text = button.querySelector('span');
+                
+                // Cambiar estado del botón
+                icon.className = 'far fa-check';
+                text.textContent = 'Copiado';
+                button.classList.add('ubits-button--active');
+                
+                // Mostrar toast
+                showToast('success', '¡Prompt copiado! 🎉', {
+                    containerId: 'ubits-toast-container',
+                    duration: 3500
+                });
+                
+                // Restaurar estado después de 2 segundos
+                setTimeout(function() {
+                    icon.className = 'far fa-copy';
+                    text.textContent = 'Copiar';
+                    button.classList.remove('ubits-button--active');
+                }, 2000);
+                
+            }).catch(function(err) {
+                console.error('Error al copiar: ', err);
+                showToast('error', 'Error al copiar el prompt', {
+                    containerId: 'ubits-toast-container',
+                    duration: 6500
+                });
+            });
+        }
+
+        // Función para copiar código
+        function copyCode(elementId) {
+            const codeElement = document.getElementById(elementId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(function() {
+                // Mostrar feedback visual
+                const button = event.target.closest('button');
+                const icon = button.querySelector('i');
+                const span = button.querySelector('span');
+                const originalIconClass = icon.className;
+                const originalText = span.textContent;
+                
+                // Cambiar estado del botón
+                icon.className = 'far fa-check';
+                span.textContent = 'Copiado!';
+                button.classList.add('ubits-button--active');
+                
+                // Restaurar estado después de 2 segundos
+                setTimeout(() => {
+                    icon.className = originalIconClass;
+                    span.textContent = originalText;
+                    button.classList.remove('ubits-button--active');
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Radio Button | UBITS Playground</title>
+    
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/radio-button.css">
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div style="display: flex;">
+                <div id="docs-dropdown-container"></div>
+                <div id="docs-sidebar-container"></div>
+
+                <div class="components-content">
+                    <div class="content-area" style="display: block; width: 100%;">
+                        <div style="text-align: center; margin-bottom: 60px;">
+                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                                Radio Button
+                            </h1>
+                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                                Opción circular para elegir una sola opción entre varias (por ejemplo en formularios o filtros). Tiene dos tamaños: pequeño y mediano.
+                            </p>
+                        </div>
+
+                        <!-- Preview del componente -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Preview del componente
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                                Estados: sin marcar, marcado y deshabilitado. Tamaños: pequeño (sm) y mediano (md).
+                            </p>
+
+                            <p class="ubits-body-sm-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-medium);">Tamaño SM</p>
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: center; margin-bottom: 32px;">
+                                <label class="ubits-radio ubits-radio--sm">
+                                    <input type="radio" name="preview-sm" class="ubits-radio__input" value="1">
+                                    <span class="ubits-radio__circle"></span>
+                                    <span class="ubits-radio__label">Sin marcar</span>
+                                </label>
+                                <label class="ubits-radio ubits-radio--sm">
+                                    <input type="radio" name="preview-sm" class="ubits-radio__input" value="2" checked>
+                                    <span class="ubits-radio__circle"></span>
+                                    <span class="ubits-radio__label">Marcado</span>
+                                </label>
+                                <label class="ubits-radio ubits-radio--sm">
+                                    <input type="radio" name="preview-sm-disabled" class="ubits-radio__input" value="1" disabled>
+                                    <span class="ubits-radio__circle"></span>
+                                    <span class="ubits-radio__label">Deshabilitado</span>
+                                </label>
+                                <label class="ubits-radio ubits-radio--sm">
+                                    <input type="radio" name="preview-sm-disabled" class="ubits-radio__input" value="2" checked disabled>
+                                    <span class="ubits-radio__circle"></span>
+                                    <span class="ubits-radio__label">Marcado + disabled</span>
+                                </label>
+                            </div>
+
+                            <p class="ubits-body-sm-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-medium);">Tamaño MD</p>
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: center; margin-bottom: 24px;">
+                                <label class="ubits-radio ubits-radio--md">
+                                    <input type="radio" name="preview-md" class="ubits-radio__input" value="1">
+                                    <span class="ubits-radio__circle"></span>
+                                    <span class="ubits-radio__label">Sin marcar</span>
+                                </label>
+                                <label class="ubits-radio ubits-radio--md">
+                                    <input type="radio" name="preview-md" class="ubits-radio__input" value="2" checked>
+                                    <span class="ubits-radio__circle"></span>
+                                    <span class="ubits-radio__label">Marcado</span>
+                                </label>
+                                <label class="ubits-radio ubits-radio--md">
+                                    <input type="radio" name="preview-md" class="ubits-radio__input" value="3">
+                                    <span class="ubits-radio__circle"></span>
+                                    <span class="ubits-radio__label">Opción 3</span>
+                                </label>
+                            </div>
+
+                            <p class="ubits-body-sm-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-medium);">Grupo de opciones (nombre igual en todos los radios)</p>
+                            <div style="display: flex; flex-direction: column; gap: 12px;">
+                                <label class="ubits-radio ubits-radio--md">
+                                    <input type="radio" name="grupo-ejemplo" class="ubits-radio__input" value="a">
+                                    <span class="ubits-radio__circle"></span>
+                                    <span class="ubits-radio__label">Opción A</span>
+                                </label>
+                                <label class="ubits-radio ubits-radio--md">
+                                    <input type="radio" name="grupo-ejemplo" class="ubits-radio__input" value="b">
+                                    <span class="ubits-radio__circle"></span>
+                                    <span class="ubits-radio__label">Opción B</span>
+                                </label>
+                                <label class="ubits-radio ubits-radio--md">
+                                    <input type="radio" name="grupo-ejemplo" class="ubits-radio__input" value="c">
+                                    <span class="ubits-radio__circle"></span>
+                                    <span class="ubits-radio__label">Opción C</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Características generales -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Características generales
+                            </h2>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-circle"></i></div>
+                                    <div class="ubits-body-sm-bold">Estados</div>
+                                    <div class="ubits-body-sm-regular">Sin marcar, marcado y deshabilitado</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-expand-arrows-alt"></i></div>
+                                    <div class="ubits-body-sm-bold">Tamaños</div>
+                                    <div class="ubits-body-sm-regular">Dos tamaños: pequeño (sm) y mediano (md)</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-list"></i></div>
+                                    <div class="ubits-body-sm-bold">Grupo</div>
+                                    <div class="ubits-body-sm-regular">Varios radios con el mismo nombre para elegir una opción</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Prompts útiles -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Prompts útiles
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                Copia el prompt, reemplaza lo que va entre [corchetes] y pide a Cursor que lo aplique. Asegúrate de que importe radio-button.css y alert.css para que no se vea roto.
+                            </p>
+                            <div id="radio-button-warning-alert" style="margin-bottom: 32px;"></div>
+
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Insertar grupo de Radio Button</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('radio-button-prompt-1')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="radio-button-prompt-1">En [ubicación] inserta un grupo de Radio Button con opciones [opción 1], [opción 2], [opción 3] y tamaño [sm o md]. Debe importar radio-button.css y alert.css.</code></pre>
+                                </div>
+                            </div>
+
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Cambiar tamaño</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('radio-button-prompt-2')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="radio-button-prompt-2">Cambia el tamaño de los Radio Button de [ubicación] a [sm o md]. Debe importar radio-button.css y alert.css.</code></pre>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Deshabilitar una opción</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('radio-button-prompt-3')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="radio-button-prompt-3">Deshabilita el Radio Button que dice "[texto de la opción]" en [ubicación]. Debe importar radio-button.css y alert.css.</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Documentación técnica -->
+                        <div style="background: var(--ubits-bg-1); border-radius: 16px; margin-bottom: 40px; overflow: hidden;">
+                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Documentación técnica
+                                </h2>
+                                <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
+                                    Información técnica para implementar el componente Radio Button.
+                                </p>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                    <i class="far fa-chevron-down" style="transition: transform 0.3s ease;"></i>
+                                    Mostrar
+                                </span>
+                            </div>
+                            <div id="technical-docs-content" style="display: none; padding: 0;">
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                            <i class="far fa-sitemap" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                            Estructura del componente
+                                        </h2>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('structure-code')">
+                                            <i class="far fa-copy"></i>
+                                            <span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="structure-code">&lt;label class="ubits-radio ubits-radio--md"&gt;
+  &lt;input type="radio" name="mi-grupo" class="ubits-radio__input" value="1"&gt;
+  &lt;span class="ubits-radio__circle"&gt;&lt;/span&gt;
+  &lt;span class="ubits-radio__label"&gt;Opción 1&lt;/span&gt;
+&lt;/label&gt;</code></pre>
+                                    </div>
+                                </div>
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                            <i class="far fa-tags" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                            Clases disponibles
+                                        </h2>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('classes-code')">
+                                            <i class="far fa-copy"></i>
+                                            <span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="classes-code">/* Contenedor (label) */
+.ubits-radio
+.ubits-radio--sm        /* Círculo 16px */
+.ubits-radio--md        /* Círculo 20px */
+
+/* Elementos internos */
+.ubits-radio__input     /* input type="radio" (oculto visualmente) */
+.ubits-radio__circle    /* Círculo visual */
+.ubits-radio__label     /* Texto de la opción */</code></pre>
+                                    </div>
+                                </div>
+                                <div style="padding: 32px;">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                            <i class="far fa-code-branch" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                            Cómo implementar
+                                        </h2>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('implementation-code')">
+                                            <i class="far fa-copy"></i>
+                                            <span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <div style="background: var(--ubits-feedback-bg-warning-subtle); border: 1px solid var(--ubits-feedback-accent-warning); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                                        <h3 class="ubits-body-md-bold" style="margin-bottom: 8px; color: var(--ubits-fg-1-high);">⚠️ OBLIGATORIO: Importar el CSS en cada página</h3>
+                                        <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.5; margin: 0;">
+                                            Si la página que usa radios <strong>no</strong> incluye <code>radio-button.css</code>, los radios se verán como inputs nativos o rotos. Siempre añade en el <code>&lt;head&gt;</code> de ese HTML: <code>&lt;link rel="stylesheet" href="../../components/radio-button.css"&gt;</code> (ruta relativa según carpeta: desde <code>ubits-colaborador/*</code> o <code>ubits-admin/*</code> usar <code>../../components/</code>; desde raíz usar <code>components/</code>).
+                                        </p>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                                        <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">🔧 REQUISITOS OBLIGATORIOS:</h3>
+                                        <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.5;">
+                                            <strong>CSS:</strong> <code>components/radio-button.css</code>, <code>general-styles/ubits-colors.css</code> — <strong>sin el CSS del componente los radios no se ven como UBITS.</strong><br>
+                                            <strong>JavaScript:</strong> No requerido. Uso con <code>&lt;label&gt;</code> y <code>name</code> igual para agrupar.<br>
+                                            <strong>Tamaños:</strong> Solo sm y md (según Figma).
+                                        </div>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="implementation-code">&lt;!-- Grupo: mismo name en todos --&gt;
+&lt;label class="ubits-radio ubits-radio--md"&gt;
+  &lt;input type="radio" name="prioridad" class="ubits-radio__input" value="baja"&gt;
+  &lt;span class="ubits-radio__circle"&gt;&lt;/span&gt;
+  &lt;span class="ubits-radio__label"&gt;Baja&lt;/span&gt;
+&lt;/label&gt;
+&lt;label class="ubits-radio ubits-radio--md"&gt;
+  &lt;input type="radio" name="prioridad" class="ubits-radio__input" value="media" checked&gt;
+  &lt;span class="ubits-radio__circle"&gt;&lt;/span&gt;
+  &lt;span class="ubits-radio__label"&gt;Media&lt;/span&gt;
+&lt;/label&gt;
+&lt;label class="ubits-radio ubits-radio--md"&gt;
+  &lt;input type="radio" name="prioridad" class="ubits-radio__input" value="alta" disabled&gt;
+  &lt;span class="ubits-radio__circle"&gt;&lt;/span&gt;
+  &lt;span class="ubits-radio__label"&gt;Alta (disabled)&lt;/span&gt;
+&lt;/label&gt;</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="ubits-toast-container"></div>
+
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof loadSubNav === 'function') loadSubNav('top-nav-container', 'documentacion');
+            if (typeof loadSidebar === 'function') loadSidebar('ninguno');
+            if (typeof loadDocsSidebar === 'function') loadDocsSidebar('radio-button');
+            if (typeof showAlert === 'function') {
+                showAlert('warning', 'Importante: Antes de enviar estos prompts a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
+                    containerId: 'radio-button-warning-alert',
+                    noClose: true
+                });
+            }
+        });
+
+        function toggleTechnicalDocs() {
+            var content = document.getElementById('technical-docs-content');
+            var isHidden = content.style.display === 'none' || !content.style.display;
+            content.style.display = isHidden ? 'block' : 'none';
+            var trigger = content.previousElementSibling;
+            if (trigger) {
+                var span = trigger.querySelector('span');
+                if (span) {
+                    span.innerHTML = isHidden
+                        ? '<i class="far fa-chevron-up" style="transition: transform 0.3s ease;"></i>Ocultar'
+                        : '<i class="far fa-chevron-down" style="transition: transform 0.3s ease;"></i>Mostrar';
+                }
+            }
+        }
+
+        function copyPrompt(promptId) {
+            var el = document.getElementById(promptId);
+            var text = el.textContent;
+            navigator.clipboard.writeText(text).then(function() {
+                var btn = document.querySelector('[onclick="copyPrompt(\'' + promptId + '\')"]');
+                var icon = btn.querySelector('i');
+                var span = btn.querySelector('span');
+                icon.className = 'far fa-check';
+                span.textContent = 'Copiado';
+                if (typeof showToast === 'function') showToast('success', '¡Prompt copiado!', { containerId: 'ubits-toast-container', duration: 3500 });
+                setTimeout(function() { icon.className = 'far fa-copy'; span.textContent = 'Copiar'; }, 2000);
+            }).catch(function(err) {
+                if (typeof showToast === 'function') showToast('error', 'Error al copiar', { containerId: 'ubits-toast-container', duration: 3500 });
+            });
+        }
+
+        function copyCode(elementId) {
+            var el = document.getElementById(elementId);
+            var text = el.textContent;
+            navigator.clipboard.writeText(text).then(function() {
+                var btn = event.target.closest('button');
+                var icon = btn.querySelector('i');
+                var span = btn.querySelector('span');
+                var origIcon = icon.className;
+                var origText = span.textContent;
+                icon.className = 'far fa-check';
+                span.textContent = 'Copiado!';
+                if (typeof showToast === 'function') showToast('success', 'Código copiado al portapapeles', { containerId: 'ubits-toast-container', duration: 3500 });
+                setTimeout(function() { icon.className = origIcon; span.textContent = origText; }, 2000);
+            }).catch(function(err) {
+                if (typeof showToast === 'function') showToast('error', 'Error al copiar', { containerId: 'ubits-toast-container', duration: 3500 });
+            });
+        }
+    </script>
+</body>
+</html>

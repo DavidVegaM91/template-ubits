@@ -1,0 +1,1039 @@
+/* ========================================
+   UBITS COLOR TOKENS
+   Sistema de colores oficial de UBITS
+   ======================================== */
+
+:root {
+  /* ========================================
+     BRAND COLORS
+     ======================================== */
+  
+  /* Use it to represent the brand color in interface elements, icons, borders, illustrations, and more. (btn blue 44 and 48) */
+  --ubits-accent-brand: #0c5bef;
+  --ubits-accent-brand-inverted: #0c5bef;
+  --ubits-accent-brand-static: #0c5bef;
+  --ubits-accent-brand-static-inverted: #3865f5;
+  
+  /* Accent Green */
+  --ubits-accent-green: #1E8D58;
+  
+  /* Use this color for the primary button background, aligned with the brand tone. Button foreground: for bold text/icons on primary surfaces. */
+  /* Button Colors */
+  --ubits-button-primary-bg-default: #0c5bef;
+  --ubits-button-primary-hover: #223a91;
+  --ubits-button-primary-pressed: #1e4abf;
+  --ubits-button-active-bg: rgba(12, 91, 239, 0.15);
+  --ubits-button-focus-ring: rgba(82, 151, 244, 0.3);
+  --ubits-button-badge: #cf0e34;
+  --ubits-btn-primary-fg: #ffffff;
+
+  /* Secondary Button Colors - LIGHT MODE */
+  --ubits-btn-secondary-bg-default: #ffffff;
+  --ubits-btn-secondary-bg-hover: #f3f3f4;
+  --ubits-btn-secondary-bg-pressed: #e7e8ea;
+  --ubits-btn-secondary-fg-default: #303a47;
+  --ubits-btn-secondary-border: #d0d2d5;
+
+  /* Tertiary Button Colors - LIGHT MODE (sub-surface oficial: pec-gray-16 10%/20%) */
+  --ubits-btn-tertiary-fg: #5c646f;
+  --ubits-btn-tertiary-bg-hover: #2028371a;
+  --ubits-btn-tertiary-bg-pressed: #20283733;
+
+  /* Error Button Colors - LIGHT MODE (eliminación, acciones destructivas; oficial: red-36/28) */
+  --ubits-btn-error-primary-bg-default: #cf0e34;
+  --ubits-btn-error-primary-bg-hover: #a41f22;
+  --ubits-btn-error-primary-bg-pressed: #801b21;
+  --ubits-btn-error-primary-fg: #ffffff;
+  --ubits-btn-error-secondary-bg-default: #FFF0EE;
+  --ubits-btn-error-secondary-bg-hover: #FFE0DD;
+  --ubits-btn-error-secondary-bg-pressed: #FFD2CD;
+  --ubits-btn-error-secondary-border: #FD8A82;
+  --ubits-btn-error-secondary-fg-default: #65181E;
+  --ubits-btn-error-tertiary-fg: #E9343C;
+  --ubits-btn-error-tertiary-bg-hover: #FFF0EE;
+  --ubits-btn-error-tertiary-bg-pressed: #FFE0DD;
+  
+  /* UBITS Logo */
+  --ubits-logo: #0d1f57;
+  --ubits-logo-inverted: #ffffff;
+  --ubits-logo-static: #0d1f57;
+  --ubits-logo-static-inverted: #ffffff;
+  
+  /* ========================================
+     FOREGROUND COLORS
+     ======================================== */
+  
+  /* Use it for primary foreground elements (such as text or icons) on primary backgrounds. */
+  --ubits-fg-1-high: #303a47;
+  --ubits-fg-1-high-inverted: #edeeef;
+  /* Use it for secondary foreground elements (such as text or icons) on primary backgrounds. */
+  --ubits-fg-1-medium: #5c646f;
+  --ubits-fg-1-medium-inverted: #d0d2d5;
+  --ubits-fg-1-high-static: #303a47;
+  --ubits-fg-1-high-static-inverted: #edeeef;
+  --ubits-fg-1-medium-static: #5c646f;
+  --ubits-fg-1-medium-static-inverted: #d0d2d5;
+  
+  /* Use it for primary foreground elements (such as text or icons) on secondary backgrounds. */
+  --ubits-fg-2-high: #2a303f;
+  --ubits-fg-2-high-inverted: #ffffff;
+  /* Use it for secondary foreground elements (such as text or icons) on secondary backgrounds. */
+  --ubits-fg-2-medium: #5a5e6a;
+  --ubits-fg-2-medium-inverted: #d0d2d5;
+  --ubits-fg-2-high-static: #2a303f;
+  --ubits-fg-2-medium-static: #5a5e6a;
+  --ubits-fg-2-medium-static-inverted: #d0d2d5;
+  
+  /* Use it for disabled foreground elements, such as text or icons. */
+  --ubits-fg-disabled: #a2a6ad;
+  --ubits-fg-disabled-inverted: #777c86;
+  /* Use it for disabled foreground elements on disabled surfaces, such as text or icons. */
+  --ubits-fg-on-disabled: #8d9199;
+  --ubits-fg-on-disabled-button: #8d9199;
+  --ubits-fg-on-disabled-inverted: #828690;
+  --ubits-fg-disabled-static: #a2a6ad;
+  --ubits-fg-on-disabled-static: #8d9199;
+  
+  /* Use it for bold foreground elements (such as text or icons) on default, hover and pressed-state bold surfaces, when the color has no specific meaning. */
+  --ubits-fg-bold: #ffffff;
+  
+  /* ========================================
+     COLORED FOREGROUNDS
+     ======================================== */
+  
+  /* Use it for foreground elements (such as text or icons) on default-state blue subtle surfaces, when the color has no specific meaning. */
+  /* Blue */
+  --ubits-fg-blue-subtle: #212f70;
+  --ubits-fg-blue-subtle-inverted: #d6dbff;
+  --ubits-fg-blue-subtle-hover: #c3c1fd;
+  --ubits-fg-blue-subtle-inverted-hover: #141e3f;
+  --ubits-fg-blue-subtle-static: #d6dbff;
+  --ubits-fg-blue-subtle-static-inverted: #212f70;
+  --ubits-fg-blue-subtle-static-hover: #c3c1fd;
+  --ubits-fg-blue-subtle-static-inverted-hover: #141e3f;
+  
+  /* Use it for foreground elements (such as text or icons) on default-state gray subtle surfaces, when the color has no specific meaning. */
+  /* Gray */
+  --ubits-fg-gray-subtle: #2b3543;
+  --ubits-fg-gray-subtle-default: #2B3543;
+  --ubits-fg-gray-subtle-inverted: #2b3543;
+  --ubits-fg-gray-subtle-hover: #16202F;
+  --ubits-fg-gray-subtle-inverted-hover: #16202f;
+  --ubits-fg-gray-subtle-static: #2b3543;
+  --ubits-fg-gray-subtle-static-inverted: #dbdde0;
+  --ubits-fg-gray-subtle-static-hover: #16202f;
+  --ubits-fg-gray-subtle-static-inverted-hover: #c5c6cb;
+  
+  /* Use it for foreground elements (such as text or icons) on default-state yellow subtle surfaces, when the color has no specific meaning. */
+  /* Yellow */
+  --ubits-fg-yellow-subtle: #433214;
+  --ubits-fg-yellow-subtle-inverted: #ffd555;
+  --ubits-fg-yellow-subtle-hover: #e9c410;
+  --ubits-fg-yellow-subtle-inverted-hover: #251f0e;
+  --ubits-fg-yellow-bold: #251f0e;
+  --ubits-fg-yellow-bold-inverted: #2f2711;
+  --ubits-fg-yellow-bold-hover: #1c170a;
+  --ubits-fg-yellow-bold-inverted-hover: #251f0e;
+  --ubits-fg-yellow-subtle-static: #433214;
+  --ubits-fg-yellow-subtle-static-inverted: #ffd555;
+  --ubits-fg-yellow-subtle-static-hover: #251f0e;
+  --ubits-fg-yellow-subtle-static-inverted-hover: #e9c410;
+  --ubits-fg-yellow-bold-static: #2f2711;
+  --ubits-fg-yellow-bold-static-inverted: #251f0e;
+  --ubits-fg-yellow-bold-static-hover: #251f0e;
+  --ubits-fg-yellow-bold-static-inverted-hover: #1c170a;
+  
+  /* Use it for foreground elements (such as text or icons) on default-state green subtle surfaces, when the color has no specific meaning. */
+  /* Green */
+  --ubits-fg-green-subtle: #183b28;
+  --ubits-fg-green-subtle-inverted: #bce7c3;
+  --ubits-fg-green-subtle-hover: #82d8a5;
+  --ubits-fg-green-subtle-inverted-hover: #142318;
+  --ubits-fg-green-subtle-static: #183b28;
+  --ubits-fg-green-subtle-static-inverted: #bce7c3;
+  --ubits-fg-green-subtle-static-hover: #142318;
+  --ubits-fg-green-subtle-static-inverted-hover: #82d8a5;
+  
+  /* Use it for foreground elements (such as text or icons) on default-state teal subtle surfaces, when the color has no specific meaning. */
+  /* Teal */
+  --ubits-fg-teal-subtle: #183a3b;
+  --ubits-fg-teal-subtle-inverted: #c9e2e3;
+  --ubits-fg-teal-subtle-hover: #a4ced4;
+  --ubits-fg-teal-subtle-inverted-hover: #122224;
+  --ubits-fg-teal-subtle-static: #183a3b;
+  --ubits-fg-teal-subtle-static-inverted: #c9e2e3;
+  --ubits-fg-teal-subtle-static-hover: #122224;
+  --ubits-fg-teal-subtle-static-inverted-hover: #a4ced4;
+  
+  /* Use it for foreground elements (such as text or icons) on default-state purple subtle surfaces, when the color has no specific meaning. */
+  /* Purple */
+  --ubits-fg-purple-subtle-default: #272a79;
+  --ubits-fg-purple-subtle-inverted-default: #e3d7ff;
+  --ubits-fg-purple-subtle-inverted: #272a79;
+  --ubits-fg-purple-subtle-hover: #d8bafd;
+  --ubits-fg-purple-subtle-inverted-hover: #221940;
+  --ubits-fg-purple-subtle-static: #272a79;
+  --ubits-fg-purple-subtle-static-inverted: #e3d7ff;
+  --ubits-fg-purple-subtle-static-hover: #221940;
+  --ubits-fg-purple-subtle-static-inverted-hover: #d8bafd;
+  
+  /* Use it for foreground elements (such as text or icons) on default-state pink subtle surfaces, when the color has no specific meaning. */
+  /* Pink */
+  --ubits-fg-pink-subtle-default: #542440;
+  --ubits-fg-pink-subtle-inverted-default: #fcd1e5;
+  --ubits-fg-pink-subtle-inverted: #542440;
+  --ubits-fg-pink-subtle-hover: #fab2ce;
+  --ubits-fg-pink-subtle-inverted-hover: #301824;
+  --ubits-fg-pink-subtle-static: #542440;
+  --ubits-fg-pink-subtle-static-inverted: #fcd1e5;
+  --ubits-fg-pink-subtle-static-hover: #301824;
+  --ubits-fg-pink-subtle-static-inverted-hover: #fab2ce;
+  
+  /* Use it for foreground elements (such as text or icons) on default-state rose subtle surfaces, when the color has no specific meaning. */
+  /* Rose */
+  --ubits-fg-rose-subtle-default: #4a255b;
+  --ubits-fg-rose-subtle-inverted-default: #f0d4f6;
+  --ubits-fg-rose-subtle-inverted: #4a255b;
+  --ubits-fg-rose-subtle-hover: #ecb5ea;
+  --ubits-fg-rose-subtle-inverted-hover: #2d1731;
+  --ubits-fg-rose-subtle-static: #4a255b;
+  --ubits-fg-rose-subtle-static-inverted: #f0d4f6;
+  --ubits-fg-rose-subtle-static-hover: #2d1731;
+  --ubits-fg-rose-subtle-static-inverted-hover: #ecb5ea;
+  
+  /* ========================================
+     FEEDBACK COLORS
+     ======================================== */
+  
+  /* Use it to communicate a favorable outcome, such as a success message in an input field or a border on a neutral surface. */
+  /* Success (light: pec-lime-52 #328e2c; dark: lime-64 #4ab028) */
+  --ubits-feedback-accent-success: #328e2c;
+  --ubits-feedback-accent-success-inverted: #4ab028;
+  /* Status Tag: feedback-bg-success-subtle-default */
+  --ubits-feedback-bg-success-subtle: #E8F8E4;
+  --ubits-feedback-bg-success-subtle-inverted: #223b16;
+  --ubits-feedback-bg-success-subtle-hover: #bde9ac;
+  --ubits-feedback-bg-success-subtle-inverted-hover: #152311;
+  --ubits-feedback-bg-success-subtle-static: #E8F8E4;
+  --ubits-feedback-bg-success-subtle-static-inverted: #223b16;
+  --ubits-feedback-bg-success-subtle-static-hover: #bde9ac;
+  --ubits-feedback-bg-success-subtle-static-inverted-hover: #152311;
+  /* Status Tag: feedback-fg-success-subtle-default */
+  --ubits-feedback-fg-success-subtle: #223B16;
+  --ubits-feedback-fg-success-subtle-inverted: #bde9ac;
+  --ubits-feedback-fg-success-subtle-hover: #152311;
+  --ubits-feedback-fg-success-subtle-inverted-hover: #7ddb7f;
+  --ubits-feedback-accent-success-static: #328e2c;
+  --ubits-feedback-accent-success-static-inverted: #368226;
+  --ubits-feedback-fg-success-subtle-static: #223B16;
+  --ubits-feedback-fg-success-subtle-static-inverted: #bde9ac;
+  --ubits-feedback-fg-success-subtle-static-hover: #152311;
+  --ubits-feedback-fg-success-subtle-static-inverted-hover: #7ddb7f;
+  
+  /* Use it to communicate a previous state to continue, or that something is in progress — such as validations, loading states, or progress bars. */
+  /* Info (light: pec-indigo-52 #4a74ee; dark: indigo-64 #7397fe) */
+  --ubits-feedback-accent-info: #4a74ee;
+  --ubits-feedback-accent-info-inverted: #7397fe;
+  /* Status Tag: feedback-bg-info-subtle-default */
+  --ubits-feedback-bg-info-subtle: #F3F2FF;
+  --ubits-feedback-bg-info-subtle-inverted: #20335f;
+  --ubits-feedback-bg-info-subtle-hover: #e6e4ff;
+  --ubits-feedback-bg-info-subtle-inverted-hover: #0f1a3a;
+  --ubits-feedback-bg-info-subtle-static: #F3F2FF;
+  --ubits-feedback-bg-info-subtle-static-inverted: #20335f;
+  --ubits-feedback-bg-info-subtle-static-hover: #e6e4ff;
+  --ubits-feedback-bg-info-subtle-static-inverted-hover: #0f1a3a;
+  /* Status Tag: fg-blue-subtle-default */
+  --ubits-feedback-fg-info-subtle: #212F70;
+  --ubits-feedback-fg-info-subtle-inverted: #212F70;
+  --ubits-feedback-fg-info-subtle-hover: #c4c1fc;
+  --ubits-feedback-fg-info-subtle-inverted-hover: #1b1e34;
+  --ubits-feedback-accent-info-static: #4a74ee;
+  --ubits-feedback-accent-info-static-inverted: #3a6cda;
+  --ubits-feedback-fg-info-subtle-static: #212F70;
+  --ubits-feedback-fg-info-subtle-static-inverted: #d7daff;
+  --ubits-feedback-fg-info-subtle-static-hover: #1b1e34;
+  --ubits-feedback-fg-info-subtle-static-inverted-hover: #c4c1fc;
+  
+  /* Use it to emphasize caution, such as in warning text or borders on neutral surfaces. */
+  /* Warning (light: pec-orange-52 #b16c19; dark: orange-64 #d68b0d) */
+  --ubits-feedback-accent-warning: #b16c19;
+  --ubits-feedback-accent-warning-inverted: #d68b0d;
+  /* Status Tag: feedback-bg-warning-subtle-default */
+  --ubits-feedback-bg-warning-subtle: #FFF1E0;
+  --ubits-feedback-bg-warning-subtle-inverted: #4c2e15;
+  --ubits-feedback-bg-warning-subtle-hover: #ffe8c7;
+  --ubits-feedback-bg-warning-subtle-inverted-hover: #2d1a0c;
+  --ubits-feedback-bg-warning-subtle-static: #FFF1E0;
+  --ubits-feedback-bg-warning-subtle-static-inverted: #4c2e15;
+  --ubits-feedback-bg-warning-subtle-static-hover: #ffe8c7;
+  --ubits-feedback-bg-warning-subtle-static-inverted-hover: #2d1a0c;
+  /* Status Tag: feedback-fg-warning-subtle-default */
+  --ubits-feedback-fg-warning-subtle: #4C2E15;
+  --ubits-feedback-fg-warning-subtle-inverted: #4c2e15;
+  --ubits-feedback-fg-warning-subtle-hover: #ffb954;
+  --ubits-feedback-fg-warning-subtle-inverted-hover: #2a1d0d;
+  --ubits-feedback-fg-warning-bold: #2a1d0d;
+  --ubits-feedback-fg-warning-bold-inverted: #35250f;
+  --ubits-feedback-fg-warning-bold-hover: #1f1609;
+  --ubits-feedback-fg-warning-bold-inverted-hover: #2a1d0d;
+  --ubits-feedback-fg-warning-subtle-static: #4C2E15;
+  --ubits-feedback-fg-warning-subtle-static-inverted: #ffd4a0;
+  --ubits-feedback-fg-warning-subtle-static-hover: #2a1d0d;
+  --ubits-feedback-fg-warning-subtle-static-inverted-hover: #ffb954;
+  
+  /* Use it in critical contexts, such as error messages or borders on neutral surfaces. */
+  /* Error */
+  --ubits-feedback-accent-error: #e9343c;
+  --ubits-feedback-accent-error-inverted: #f96f6f;
+  /* Status Tag: feedback-bg-error-subtle-default */
+  --ubits-feedback-bg-error-subtle: #FFF0EE;
+  --ubits-feedback-bg-error-subtle-inverted: #65181e;
+  --ubits-feedback-bg-error-subtle-hover: #ffe0dd;
+  --ubits-feedback-bg-error-subtle-inverted-hover: #3d0e12;
+  --ubits-feedback-bg-error-subtle-static: #FFF0EE;
+  --ubits-feedback-bg-error-subtle-static-inverted: #65181e;
+  --ubits-feedback-bg-error-subtle-static-hover: #ffe0dd;
+  --ubits-feedback-bg-error-subtle-static-inverted-hover: #3d0e12;
+  /* Status Tag: feedback-fg-error-subtle-default */
+  --ubits-feedback-fg-error-subtle: #65181E;
+  --ubits-feedback-fg-error-subtle-inverted: #65181e;
+  --ubits-feedback-fg-error-subtle-hover: #ffb4a6;
+  --ubits-feedback-fg-error-subtle-inverted-hover: #391411;
+  --ubits-feedback-fg-error-subtle-static: #65181E;
+  --ubits-feedback-fg-error-subtle-static-inverted: #ffd2cd;
+  --ubits-feedback-fg-error-subtle-static-hover: #391411;
+  --ubits-feedback-fg-error-subtle-static-inverted-hover: #ffb4a6;
+  
+  /* ========================================
+     BACKGROUND COLORS
+     ======================================== */
+  
+  /* Use it for active/selected state backgrounds (e.g. selected list item). Light: #0C5BEF @ 15% opacity */
+  --ubits-bg-active: rgba(12, 91, 239, 0.15);
+  --ubits-bg-level-1: var(--ubits-bg-1);
+  /* Use it for primary surfaces (those with the highest z-index). */
+  --ubits-bg-1: #ffffff;
+  /* Use it for secondary surfaces. This is the base background color for screens. */
+  --ubits-bg-2: #F3F3F4;
+  /* Gray subtle surfaces (e.g. Chip default, focus) */
+  --ubits-bg-gray-subtle-default: #F3F3F4;
+  --ubits-bg-gray-subtle-hover: #DBDDE0;
+  /* Use it for tertiary surfaces. */
+  --ubits-bg-3: #e7e8ea;
+  /* Use it for quaternary surfaces. */
+  --ubits-bg-4: #dbdde0;
+  --ubits-bg-4-static: #DBDDE0;
+  /* Use it for gray subtle pressed state (e.g. Chip pressed). Figma: color/bg/gray/subtle/pressed */
+  --ubits-bg-gray-subtle-pressed: #c5c6cb;
+  /* Active state (e.g. Chip active). Light: #0C5BEF @ 15% opacity; dark: solid #0C5BEF */
+  --ubits-bg-active-solid: rgba(12, 91, 239, 0.15);
+  --ubits-bg-5: #ced0d5;
+  --ubits-bg-dim: #00000080;
+  /* Use it for disabled-state surfaces, such as disabled buttons, cards or containers. */
+  --ubits-bg-disabled: #edeeef;
+  --ubits-bg-disabled-button: #edeeef;
+  
+  /* Use it for default-state blue bold surfaces (e.g. primary button, prominent CTAs). */
+  /* Background Blue Bold */
+  --ubits-bg-blue-bold-default: #0C5BEF;
+  
+  /* Background Colors - Inverted (valores del modo oscuro en modo claro) */
+  --ubits-bg-1-inverted: #202837;
+  --ubits-bg-2-inverted: #0E1825;
+  --ubits-bg-3-inverted: #0c121c;
+  --ubits-bg-4-inverted: #050b15;
+  --ubits-bg-5-inverted: #000000;
+  --ubits-bg-disabled-inverted: #3b4350;
+  --ubits-bg-disabled-button-inverted: #3b4350;
+  
+  /* ========================================
+     BORDER COLORS
+     ======================================== */
+  
+  /* Use it to visually group or separate UI elements on primary surfaces (those with the highest z-index), such as flat cards, input fields or side panel dividers. */
+  --ubits-border-1: #d0d2d5;
+  /* Use it to visually group or separate UI elements on secondary surfaces. */
+  --ubits-border-2: #b9bbc1;
+  --ubits-border-disabled: #e1e2e5;
+  --ubits-border-disabled-button: #e1e2e5;
+  
+  /* Border Colors - Inverted (valores del modo oscuro en modo claro) */
+  --ubits-border-1-inverted: #4f5561;
+  --ubits-border-2-inverted: #404754;
+  --ubits-border-disabled-inverted: #545a66;
+  --ubits-border-disabled-button-inverted: #545a66;
+  
+  /* Colored Borders */
+  --ubits-border-blue: #a2a3fb;
+  --ubits-border-gray: #a8abb2;
+  --ubits-border-green: #25c37a;
+  --ubits-border-teal: #74b6bb;
+  --ubits-border-indigo: #97a5fd;
+  --ubits-border-purple: #b59bff;
+  --ubits-border-pink: #f08bbe;
+  --ubits-border-yellow: #c9a916;
+  --ubits-border-rose: #d991e5;
+  
+  /* Inverted Borders */
+  --ubits-border-1-inverted: #4f5561;
+  --ubits-border-2-inverted: #353e4c;
+  --ubits-border-disabled-inverted: #545a66;
+  
+  /* Static Borders */
+  --ubits-border-1-static: #d0d2d5;
+  --ubits-border-2-static: #c5c6cb;
+  --ubits-border-disabled-static: #e1e2e5;
+  
+  /* Static Inverted Borders */
+  --ubits-border-1-static-inverted: #4f5561;
+  --ubits-border-2-static-inverted: #353e4c;
+  --ubits-border-disabled-static-inverted: #545a66;
+  --ubits-border-blue-inverted: #3865f5;
+  --ubits-border-gray-inverted: #6c727d;
+  --ubits-border-green-inverted: #1e8251;
+  --ubits-border-teal-inverted: #177e84;
+  --ubits-border-indigo-inverted: #3a6cda;
+  --ubits-border-purple-inverted: #6457ff;
+  --ubits-border-pink-inverted: #bf418a;
+  --ubits-border-yellow-inverted: #8e6d1b;
+  --ubits-border-rose-inverted: #ad3fcb;
+  
+  /* Colored Border Static */
+  --ubits-border-blue-static: #a2a3fb;
+  --ubits-border-gray-static: #a8abb2;
+  --ubits-border-green-static: #25c37a;
+  --ubits-border-teal-static: #74b6bb;
+  --ubits-border-indigo-static: #97a5fd;
+  --ubits-border-purple-static: #b59bff;
+  --ubits-border-pink-static: #f08bbe;
+  --ubits-border-yellow-static: #c9a916;
+  --ubits-border-rose-static: #d991e5;
+  
+  /* Colored Border Static Inverted */
+  --ubits-border-blue-static-inverted: #3865f5;
+  --ubits-border-gray-static-inverted: #6c727d;
+  --ubits-border-green-static-inverted: #1e8251;
+  --ubits-border-teal-static-inverted: #177e84;
+  --ubits-border-indigo-static-inverted: #3a6cda;
+  --ubits-border-purple-static-inverted: #6457ff;
+  --ubits-border-pink-static-inverted: #bf418a;
+  --ubits-border-yellow-static-inverted: #8e6d1b;
+  --ubits-border-rose-static-inverted: #ad3fcb;
+  
+  /* Static Borders */
+  --ubits-border-1-static: #d0d2d5;
+  --ubits-border-2-static: #c5c6cb;
+  --ubits-border-disabled-static: #e1e2e5;
+  
+  /* Static Inverted Borders */
+  --ubits-border-1-static-inverted: #4f5561;
+  --ubits-border-2-static-inverted: #353e4c;
+  --ubits-border-disabled-static-inverted: #545a66;
+  --ubits-border-blue-static-inverted: #3865f5;
+  --ubits-border-gray-static-inverted: #6c727d;
+  --ubits-border-green-static-inverted: #1e8251;
+  --ubits-border-teal-static-inverted: #177e84;
+  --ubits-border-indigo-static-inverted: #3a6cda;
+  --ubits-border-purple-static-inverted: #6457ff;
+  --ubits-border-pink-static-inverted: #bf418a;
+  --ubits-border-yellow-static-inverted: #8e6d1b;
+  --ubits-border-rose-static-inverted: #ad3fcb;
+  
+  /* Status Tag: feedback-border-success-subtle-default */
+  --ubits-feedback-border-success: #41C433;
+  /* Status Tag: borde = color-accent-brand */
+  --ubits-feedback-border-info: #0C5BEF;
+  /* Status Tag: feedback-border-warning */
+  --ubits-feedback-border-warning: #EC9907;
+  /* Status Tag: feedback-border-error */
+  --ubits-feedback-border-error: #FD8A82;
+  --ubits-feedback-border-success-inverted: #368226;
+  --ubits-feedback-border-info-inverted: #B6B5FC;
+  --ubits-feedback-border-warning-inverted: #A4621B;
+  --ubits-feedback-border-error-inverted: #E20D34;
+  --ubits-feedback-border-success-static: #41C433;
+  --ubits-feedback-border-info-static: #0C5BEF;
+  --ubits-feedback-border-warning-static: #EC9907;
+  --ubits-feedback-border-error-static: #FD8A82;
+  --ubits-feedback-border-success-static-inverted: #368226;
+  --ubits-feedback-border-info-static-inverted: #3a6cda;
+  --ubits-feedback-border-warning-static-inverted: #a4621b;
+  --ubits-feedback-border-error-static-inverted: #e20d34;
+  
+  /* ========================================
+     SIDEBAR COLORS
+     ======================================== */
+  
+  /* Sidebar: background. */
+  --ubits-sidebar-bg: #202837;
+  --ubits-sidebar-logo: #ffffff;
+  --ubits-sidebar-button-bg-pressed: #3b4350;
+  --ubits-sidebar-button-bg-disabled: #3b4350;
+  /* Background color for the active state of the sidebar button component. */
+  --ubits-sidebar-button-bg-active: #ffffff;
+  /* Foreground color for the default state of the sidebar button component. */
+  --ubits-sidebar-button-fg-default: #d0d2d5;
+  /* Foreground color for the hovered state of the sidebar button component. */
+  --ubits-sidebar-button-fg-hover: #edeeef;
+  /* Foreground color for the pressed state of the sidebar button component. */
+  --ubits-sidebar-button-fg-pressed: #edeeef;
+  /* Foreground color for the active state of the sidebar button component. */
+  --ubits-sidebar-button-fg-active: #303a47;
+  /* Foreground color for the disabled state of the sidebar button component. */
+  --ubits-sidebar-button-fg-disabled: #828690;
+  
+  /* ========================================
+     FOCUS & FOCUS RING (desde tokens oficiales)
+     ======================================== */
+  
+  /* Use this token for focused state components: light: pec-blue-40 (40%) | dark: pec-blue-56 (60%) */
+  --ubits-focus: #1953d766;
+  --ubits-focus-ring-inner: #ffffff;
+  --ubits-focus-ring-outer: #000000;
+  
+  /* ========================================
+     SUB-SURFACE (hover/pressed en chips, tertiary; oficial)
+     ======================================== */
+  
+  /* Use it for interactive inner surfaces, such as chip close buttons or row tables in its hovered state. Light mode: pec-gray-16 at 10%. Dark mode: pec-white at 10%. */
+  --ubits-bg-sub-surface-hover: #2028371a;
+  /* Use it for interactive inner surfaces, such as chip close buttons or row tables in its pressed state. Light mode: pec-gray-16 at 20%. Dark mode: pec-white at 20%. */
+  --ubits-bg-sub-surface-pressed: #20283733;
+  
+  /* ========================================
+     TOGGLE (estado activo; oficial)
+     ======================================== */
+  
+  /* Use it for the toggle component in its active state. */
+  --ubits-toggle-bg-active: #13bd74;
+  
+  /* ========================================
+     ACCENT DECORATIVOS (sin significado semántico; oficial)
+     ======================================== */
+  
+  /* Use accent-blue to highlight elements on light neutral surfaces when the color carries no semantic meaning or status. Ideal for decorative borders or foreground elements. */
+  --ubits-accent-blue: #5470f6;
+  /* Use accent-gray to highlight elements on light neutral surfaces when the color carries no semantic meaning or status. Ideal for decorative borders or foreground elements. */
+  --ubits-accent-gray: #777c86;
+  /* Use accent-yellow to highlight elements on light neutral surfaces when the color carries no semantic meaning or status. Ideal for decorative borders or foreground elements. */
+  --ubits-accent-yellow: #98781a;
+  /* Use accent-teal to highlight elements on light neutral surfaces when the color carries no semantic meaning or status. Ideal for decorative borders or foreground elements. */
+  --ubits-accent-teal: #128992;
+  /* Use accent-purple to highlight elements on light neutral surfaces when the color carries no semantic meaning or status. Ideal for decorative borders or foreground elements. */
+  --ubits-accent-purple: #8060fd;
+  /* Use accent-pink to highlight elements on light neutral surfaces when the color carries no semantic meaning or status. Ideal for decorative borders or foreground elements. */
+  --ubits-accent-pink: #d34593;
+  /* Use accent-rose to highlight elements on light neutral surfaces when the color carries no semantic meaning or status. Ideal for decorative borders or foreground elements. */
+  --ubits-accent-rose: #be48d2;
+  
+  /* ========================================
+     CHART COLORS
+     ======================================== */
+  
+  /* Use it for the subtle success background of the heatmap-item component. (chart tokens) */
+  --ubits-chart-bg-level-1: #ffffff;
+  /* Use it when it's necessary to show only one chart or graph. */
+  --ubits-chart-bg-neutral-blue-base: #557593;
+  /* Use it for subtle foreground (such as text or icons) of the heatmap-item component, when the color has no specific meaning. */
+  --ubits-chart-fg-subtle: #000000;
+  /* Use it for bold foreground (such as text or icons) of the heatmap-item component when the color has no specific meaning. */
+  --ubits-chart-fg-bold: #ffffff;
+  /* Use it to represent the clearest chart when it's necessary to display more than one. */
+  --ubits-chart-bg-neutral-blue-1: #7c93ab;
+  /* Use it to represent a level 2 chart when it's necessary to display more than one. */
+  --ubits-chart-bg-neutral-blue-2: #6f89a3;
+  /* Use it to represent a level 3 chart when it's necessary to display more than one. */
+  --ubits-chart-bg-neutral-blue-3: #627f9b;
+  
+  /* ========================================
+     TOAST COLORS
+     ======================================== */
+  
+  /* Use it for the toast notification background. */
+  --ubits-toast-feedback-bg: #ffffff;
+  
+  /* ========================================
+     BOTTOM NAVIGATION
+     ======================================== */
+  
+  /* Use it for bottom navigation shadow. */
+  --ubits-bottom-nav-shadow-opacity: rgba(0, 0, 0, 0.36);
+  
+  /* ========================================
+     SCROLL BAR
+     ======================================== */
+  
+  /* Use this token for the scroll bar background component in its default state. */
+  --ubits-scroll-bar-color-bg-default: #c5c6cb;
+
+  /* ========================================
+     ELEVATION (Figma Planes y Tareas R4)
+     ======================================== */
+  /* Default: sombra sutil para cards, dropdowns en reposo. */
+  --ubits-elevation-default: 0 0 2px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.14);
+  /* Hover: mismo nivel que default (dropdown/cards al pasar el cursor). */
+  --ubits-elevation-hover: 0 0 2px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.14);
+  /* Overlay: modales, popovers, capas sobre contenido. */
+  --ubits-elevation-overlay: 0 0 2px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.14);
+  /* Floating: elementos muy elevados (tooltips flotantes, menus de contexto). */
+  --ubits-elevation-floating: 0 0 8px rgba(0, 0, 0, 0.2), 0 14px 29px rgba(0, 0, 0, 0.24);
+}
+
+/* ========================================
+   DARK MODE OVERRIDES
+   ======================================== */
+
+/* Same usage as light mode; values below override for dark theme. */
+[data-theme="dark"] {
+  /* ========================================
+     BRAND COLORS - DARK MODE
+     ======================================== */
+  
+  --ubits-accent-brand: #b6b5fc;
+  --ubits-accent-brand-inverted: #0c5bef;
+  --ubits-accent-brand-static: #0c5bef;
+  --ubits-accent-brand-static-inverted: #3865f5;
+  
+  /* Button Colors - DARK MODE */
+  --ubits-button-primary-bg-default: #3865f5;
+  --ubits-button-primary-hover: #223a91;
+  --ubits-button-primary-pressed: #1e4abf;
+  --ubits-button-active-bg: #0c5bef33;
+  --ubits-button-focus-ring: rgba(82, 151, 244, 0.3);
+  --ubits-button-badge: #cf0e34;
+  --ubits-btn-primary-fg: #ffffff;
+
+  /* Secondary Button Colors - DARK MODE */
+  --ubits-btn-secondary-bg-default: #202837;
+  --ubits-btn-secondary-bg-hover: #0e1825;
+  --ubits-btn-secondary-bg-pressed: #0c121c;
+  --ubits-btn-secondary-fg-default: #edeeef;
+  --ubits-btn-secondary-border: #4f5561;
+
+  /* Tertiary Button Colors - DARK MODE (sub-surface oficial: white 10%/20%) */
+  --ubits-btn-tertiary-fg: #d0d2d5;
+  --ubits-btn-tertiary-bg-hover: #ffffff1a;
+  --ubits-btn-tertiary-bg-pressed: #ffffff33;
+
+  /* Error Button Colors - DARK MODE (oficial: red-48/40/36) */
+  --ubits-btn-error-primary-bg-default: #e20d34;
+  --ubits-btn-error-primary-bg-hover: #b62221;
+  --ubits-btn-error-primary-bg-pressed: #a41f22;
+  --ubits-btn-error-primary-fg: #ffffff;
+  --ubits-btn-error-secondary-bg-default: #801B21;
+  --ubits-btn-error-secondary-bg-hover: #65181E;
+  --ubits-btn-error-secondary-bg-pressed: #4D1217;
+  --ubits-btn-error-secondary-border: #E20D34;
+  --ubits-btn-error-secondary-fg-default: #FFD2CD;
+  --ubits-btn-error-tertiary-fg: #F96F6F;
+  --ubits-btn-error-tertiary-bg-hover: #801B21;
+  --ubits-btn-error-tertiary-bg-pressed: #65181E;
+  
+  /* UBITS Logo - DARK MODE */
+  --ubits-logo: #ffffff;
+  --ubits-logo-inverted: #ffffff;
+  --ubits-logo-static: #0d1f57;
+  --ubits-logo-static-inverted: #ffffff;
+  
+  /* Accent Green - DARK MODE */
+  --ubits-accent-green: #17B16D;
+  
+  /* ========================================
+     FOREGROUND COLORS - DARK MODE
+     ======================================== */
+  
+  --ubits-fg-1-high: #edeeef;
+  --ubits-fg-1-high-inverted: #303a47;
+  --ubits-fg-1-high-static: #303a47;
+  --ubits-fg-1-high-static-inverted: #edeeef;
+  --ubits-fg-1-medium: #d0d2d5;
+  --ubits-fg-1-medium-inverted: #5c646f;
+  --ubits-fg-1-medium-static: #5c646f;
+  --ubits-fg-1-medium-static-inverted: #d0d2d5;
+  
+  --ubits-fg-2-high: #ffffff;
+  --ubits-fg-2-high-inverted: #2a303f;
+  --ubits-fg-2-high-static: #2a303f;
+  --ubits-fg-2-high-static-inverted: #ffffff;
+  --ubits-fg-2-medium: #d0d2d5;
+  --ubits-fg-2-medium-inverted: #5a5e6a;
+  --ubits-fg-2-medium-static: #5a5e6a;
+  --ubits-fg-2-medium-static-inverted: #d0d2d5;
+  
+  --ubits-fg-disabled: #777c86;
+  --ubits-fg-disabled-inverted: #a2a6ad;
+  --ubits-fg-disabled-static: #a2a6ad;
+  --ubits-fg-disabled-static-inverted: #777c86;
+  --ubits-fg-on-disabled: #828690;
+  --ubits-fg-on-disabled-button: #828690;
+  --ubits-fg-on-disabled-inverted: #8d9199;
+  --ubits-fg-on-disabled-static: #8d9199;
+  --ubits-fg-on-disabled-static-inverted: #828690;
+  
+  /* ========================================
+     COLORED FOREGROUNDS - DARK MODE
+     ======================================== */
+  
+  --ubits-fg-blue-subtle: #d6dbff;
+  --ubits-fg-blue-subtle-inverted: #212f70;
+  --ubits-fg-blue-subtle-hover: #c3c1fd;
+  --ubits-fg-blue-subtle-inverted-hover: #141e3f;
+  --ubits-fg-blue-subtle-static: #d6dbff;
+  --ubits-fg-blue-subtle-static-inverted: #212f70;
+  --ubits-fg-blue-subtle-static-hover: #c3c1fd;
+  --ubits-fg-blue-subtle-static-inverted-hover: #141e3f;
+  
+  --ubits-fg-gray-subtle: #dbdde0;
+  --ubits-fg-gray-subtle-default: #DBDDE0;
+  --ubits-fg-gray-subtle-inverted: #dbdde0;
+  --ubits-fg-gray-subtle-hover: #C5C6CB;
+  --ubits-fg-gray-subtle-inverted-hover: #16202f;
+  --ubits-fg-gray-subtle-static: #2b3543;
+  --ubits-fg-gray-subtle-static-inverted: #dbdde0;
+  --ubits-fg-gray-subtle-static-hover: #16202f;
+  --ubits-fg-gray-subtle-static-inverted-hover: #c5c6cb;
+  
+  --ubits-fg-yellow-subtle: #ffd555;
+  --ubits-fg-yellow-subtle-inverted: #433214;
+  --ubits-fg-yellow-subtle-hover: #e9c410;
+  --ubits-fg-yellow-subtle-inverted-hover: #251f0e;
+  --ubits-fg-yellow-bold: #251f0e;
+  --ubits-fg-yellow-bold-inverted: #2f2711;
+  --ubits-fg-yellow-bold-hover: #1c170a;
+  --ubits-fg-yellow-bold-inverted-hover: #251f0e;
+  --ubits-fg-yellow-subtle-static: #433214;
+  --ubits-fg-yellow-subtle-static-inverted: #ffd555;
+  --ubits-fg-yellow-bold-static: #2f2711;
+  --ubits-fg-yellow-bold-static-inverted: #251f0e;
+  --ubits-fg-yellow-subtle-static-hover: #251f0e;
+  --ubits-fg-yellow-subtle-static-inverted-hover: #e9c410;
+  --ubits-fg-yellow-bold-static-hover: #251f0e;
+  --ubits-fg-yellow-bold-static-inverted-hover: #1c170a;
+  
+  --ubits-fg-green-subtle: #bce7c3;
+  --ubits-fg-green-subtle-inverted: #183b28;
+  --ubits-fg-green-subtle-hover: #82d8a5;
+  --ubits-fg-green-subtle-inverted-hover: #142318;
+  --ubits-fg-green-subtle-static: #bce7c3;
+  --ubits-fg-green-subtle-static-inverted: #183b28;
+  --ubits-fg-green-subtle-static-hover: #82d8a5;
+  --ubits-fg-green-subtle-static-inverted-hover: #142318;
+  
+  --ubits-fg-teal-subtle: #c9e2e3;
+  --ubits-fg-teal-subtle-inverted: #183a3b;
+  --ubits-fg-teal-subtle-hover: #a4ced4;
+  --ubits-fg-teal-subtle-inverted-hover: #122224;
+  --ubits-fg-teal-subtle-static: #c9e2e3;
+  --ubits-fg-teal-subtle-static-inverted: #183a3b;
+  --ubits-fg-teal-subtle-static-hover: #a4ced4;
+  --ubits-fg-teal-subtle-static-inverted-hover: #122224;
+  
+  --ubits-fg-purple-subtle-default: #e3d7ff;
+  --ubits-fg-purple-subtle-inverted-default: #272a79;
+  --ubits-fg-purple-subtle-inverted: #272a79;
+  --ubits-fg-purple-subtle-hover: #d8bafd;
+  --ubits-fg-purple-subtle-inverted-hover: #221940;
+  --ubits-fg-purple-subtle-static: #272a79;
+  --ubits-fg-purple-subtle-static-inverted: #e3d7ff;
+  --ubits-fg-purple-subtle-static-hover: #221940;
+  --ubits-fg-purple-subtle-static-inverted-hover: #d8bafd;
+  
+  --ubits-fg-pink-subtle-default: #fcd1e5;
+  --ubits-fg-pink-subtle-inverted-default: #542440;
+  --ubits-fg-pink-subtle-inverted: #542440;
+  --ubits-fg-pink-subtle-hover: #fab2ce;
+  --ubits-fg-pink-subtle-inverted-hover: #301824;
+  --ubits-fg-pink-subtle-static: #542440;
+  --ubits-fg-pink-subtle-static-inverted: #fcd1e5;
+  --ubits-fg-pink-subtle-static-hover: #301824;
+  --ubits-fg-pink-subtle-static-inverted-hover: #fab2ce;
+  
+  --ubits-fg-rose-subtle-default: #f0d4f6;
+  --ubits-fg-rose-subtle-inverted-default: #4a255b;
+  --ubits-fg-rose-subtle-inverted: #4a255b;
+  --ubits-fg-rose-subtle-hover: #ecb5ea;
+  --ubits-fg-rose-subtle-inverted-hover: #2d1731;
+  --ubits-fg-rose-subtle-static: #4a255b;
+  --ubits-fg-rose-subtle-static-inverted: #f0d4f6;
+  --ubits-fg-rose-subtle-static-hover: #2d1731;
+  --ubits-fg-rose-subtle-static-inverted-hover: #ecb5ea;
+  
+  /* ========================================
+     FEEDBACK COLORS - DARK MODE
+     Status Tag: fondo oscuro + texto claro (Figma Planes y Tareas R4)
+     ======================================== */
+  
+  --ubits-feedback-accent-success: #4ab028;
+  --ubits-feedback-accent-success-inverted: #328e2c;
+  /* Status Tag dark: feedback-bg-success-subtle-default */
+  --ubits-feedback-bg-success-subtle: #254B1B;
+  --ubits-feedback-bg-success-subtle-inverted: #223b16;
+  --ubits-feedback-bg-success-subtle-hover: #2d3d32;
+  --ubits-feedback-bg-success-subtle-inverted-hover: #152311;
+  --ubits-feedback-bg-success-subtle-static: #254B1B;
+  --ubits-feedback-bg-success-subtle-static-inverted: #223b16;
+  --ubits-feedback-bg-success-subtle-static-hover: #2d3d32;
+  --ubits-feedback-bg-success-subtle-static-inverted-hover: #152311;
+  /* Status Tag dark: feedback-fg-success-subtle-default */
+  --ubits-feedback-fg-success-subtle: #BDE9AC;
+  --ubits-feedback-fg-success-subtle-inverted: #223b16;
+  --ubits-feedback-fg-success-subtle-hover: #9bcf6b;
+  --ubits-feedback-fg-success-subtle-inverted-hover: #152311;
+  --ubits-feedback-accent-success-static: #4ab028;
+  --ubits-feedback-accent-success-static-inverted: #328e2c;
+  --ubits-feedback-fg-success-subtle-static: #BDE9AC;
+  --ubits-feedback-fg-success-subtle-static-inverted: #bde9ac;
+  --ubits-feedback-fg-success-subtle-static-hover: #152311;
+  --ubits-feedback-fg-success-subtle-static-inverted-hover: #7ddb7f;
+  
+  --ubits-feedback-accent-info: #7397fe;
+  --ubits-feedback-accent-info-inverted: #4a74ee;
+  /* Status Tag dark: feedback-bg-info-subtle-default */
+  --ubits-feedback-bg-info-subtle: #2B3F79;
+  --ubits-feedback-bg-info-subtle-inverted: #20335f;
+  --ubits-feedback-bg-info-subtle-hover: #2e3349;
+  --ubits-feedback-bg-info-subtle-inverted-hover: #0f1a3a;
+  --ubits-feedback-bg-info-subtle-static: #2B3F79;
+  --ubits-feedback-bg-info-subtle-static-inverted: #20335f;
+  --ubits-feedback-bg-info-subtle-static-hover: #2e3349;
+  --ubits-feedback-bg-info-subtle-static-inverted-hover: #0f1a3a;
+  /* Status Tag dark: fg-blue-subtle-default */
+  --ubits-feedback-fg-info-subtle: #D6DBFF;
+  --ubits-feedback-fg-info-subtle-inverted: #20335f;
+  --ubits-feedback-fg-info-subtle-hover: #b3bce9;
+  --ubits-feedback-fg-info-subtle-inverted-hover: #1b1e34;
+  --ubits-feedback-accent-info-static: #7397fe;
+  --ubits-feedback-accent-info-static-inverted: #4a74ee;
+  --ubits-feedback-fg-info-subtle-static: #D6DBFF;
+  --ubits-feedback-fg-info-subtle-static-inverted: #d7daff;
+  --ubits-feedback-fg-info-subtle-static-hover: #1b1e34;
+  --ubits-feedback-fg-info-subtle-static-inverted-hover: #c4c1fc;
+  
+  --ubits-feedback-accent-warning: #d68b0d;
+  --ubits-feedback-accent-warning-inverted: #b16c19;
+  /* Status Tag dark: feedback-bg-warning-subtle-default */
+  --ubits-feedback-bg-warning-subtle: #5E3A16;
+  --ubits-feedback-bg-warning-subtle-inverted: #4c2e15;
+  --ubits-feedback-bg-warning-subtle-hover: #3d2611;
+  --ubits-feedback-bg-warning-subtle-inverted-hover: #2d1a0c;
+  --ubits-feedback-bg-warning-subtle-static: #5E3A16;
+  --ubits-feedback-bg-warning-subtle-static-inverted: #4c2e15;
+  --ubits-feedback-bg-warning-subtle-static-hover: #3d2611;
+  --ubits-feedback-bg-warning-subtle-static-inverted-hover: #2d1a0c;
+  /* Status Tag dark: feedback-fg-warning-subtle-default */
+  --ubits-feedback-fg-warning-subtle: #FFD4A0;
+  --ubits-feedback-fg-warning-subtle-inverted: #4c2e15;
+  --ubits-feedback-fg-warning-subtle-hover: #ffb954;
+  --ubits-feedback-fg-warning-subtle-inverted-hover: #2a1d0d;
+  --ubits-feedback-fg-warning-bold: #2a1d0d;
+  --ubits-feedback-fg-warning-bold-inverted: #35250f;
+  --ubits-feedback-fg-warning-bold-hover: #1f1609;
+  --ubits-feedback-fg-warning-bold-inverted-hover: #2a1d0d;
+  --ubits-feedback-fg-warning-subtle-static: #FFD4A0;
+  --ubits-feedback-fg-warning-subtle-static-inverted: #FFD4A0;
+  --ubits-feedback-fg-warning-subtle-static-hover: #2a1d0d;
+  --ubits-feedback-fg-warning-subtle-static-inverted-hover: #ffb954;
+  
+  --ubits-feedback-accent-error: #e9343c;
+  --ubits-feedback-accent-error-inverted: #f96f6f;
+  /* Status Tag dark: feedback-bg-error-subtle-default */
+  --ubits-feedback-bg-error-subtle: #801B21;
+  --ubits-feedback-bg-error-subtle-inverted: #65181e;
+  --ubits-feedback-bg-error-subtle-hover: #4a2525;
+  --ubits-feedback-bg-error-subtle-inverted-hover: #3d0e12;
+  --ubits-feedback-bg-error-subtle-static: #801B21;
+  --ubits-feedback-bg-error-subtle-static-inverted: #65181e;
+  --ubits-feedback-bg-error-subtle-static-hover: #4a2525;
+  --ubits-feedback-bg-error-subtle-static-inverted-hover: #3d0e12;
+  /* Status Tag dark: feedback-fg-error-subtle-default */
+  --ubits-feedback-fg-error-subtle: #FFD2CD;
+  --ubits-feedback-fg-error-subtle-inverted: #65181e;
+  --ubits-feedback-fg-error-subtle-hover: #f5b3b3;
+  --ubits-feedback-fg-error-subtle-inverted-hover: #391411;
+  --ubits-feedback-fg-error-subtle-static: #FFD2CD;
+  --ubits-feedback-fg-error-subtle-static-inverted: #ffd2cd;
+  --ubits-feedback-fg-error-subtle-static-hover: #391411;
+  --ubits-feedback-fg-error-subtle-static-inverted-hover: #ffb4a6;
+  
+  /* ========================================
+     BACKGROUND COLORS - DARK MODE
+     ======================================== */
+  
+  --ubits-bg-active: rgba(12, 91, 239, 0.2);
+  --ubits-bg-level-1: var(--ubits-bg-1);
+  --ubits-bg-1: #202837;
+  --ubits-bg-2: #0E1825;
+  --ubits-bg-gray-subtle-default: #3B4350;
+  --ubits-bg-gray-subtle-hover: #2A303F;
+  --ubits-bg-3: #0c121c;
+  --ubits-bg-4: #050b15;
+  --ubits-bg-4-static: #DBDDE0;
+  --ubits-bg-gray-subtle-pressed: #16202F;
+  --ubits-bg-active-solid: #0C5BEF;
+  --ubits-bg-5: #000000;
+  --ubits-bg-dim: #000000b2;
+  --ubits-bg-disabled: #3b4350;
+  --ubits-bg-disabled-button: #3b4350;
+  
+  /* Background Blue Bold - DARK MODE */
+  --ubits-bg-blue-bold-default: #3865F5;
+  
+  /* Background Colors - Inverted (valores del modo claro en modo oscuro) */
+  --ubits-bg-1-inverted: #ffffff;
+  --ubits-bg-2-inverted: #F3F3F4;
+  --ubits-bg-3-inverted: #e7e8ea;
+  --ubits-bg-4-inverted: #dbdde0;
+  --ubits-bg-5-inverted: #ced0d5;
+  --ubits-bg-disabled-inverted: #edeeef;
+  --ubits-bg-disabled-button-inverted: #edeeef;
+  
+  /* ========================================
+     BORDER COLORS - DARK MODE
+     ======================================== */
+  
+  /* Main Borders */
+  --ubits-border-1: #4f5561;
+  --ubits-border-2: #404754;
+  --ubits-border-disabled: #545a66;
+  --ubits-border-disabled-button: #545a66;
+  
+  /* Colored Borders */
+  --ubits-border-blue: #3865f5;
+  --ubits-border-gray: #6c727d;
+  --ubits-border-green: #1e8251;
+  --ubits-border-teal: #177e84;
+  --ubits-border-indigo: #3a6cda;
+  --ubits-border-purple: #6457ff;
+  --ubits-border-pink: #bf418a;
+  --ubits-border-yellow: #8e6d1b;
+  --ubits-border-rose: #ad3fcb;
+  
+  /* Inverted Borders */
+  --ubits-border-1-inverted: #d0d2d5;
+  --ubits-border-2-inverted: #c5c6cb;
+  --ubits-border-disabled-inverted: #e1e2e5;
+  --ubits-border-blue-inverted: #a2a3fb;
+  --ubits-border-gray-inverted: #a8abb2;
+  --ubits-border-green-inverted: #25c37a;
+  --ubits-border-teal-inverted: #74b6bb;
+  --ubits-border-indigo-inverted: #97a5fd;
+  --ubits-border-purple-inverted: #b59bff;
+  --ubits-border-pink-inverted: #f08bbe;
+  --ubits-border-yellow-inverted: #c9a916;
+  --ubits-border-rose-inverted: #d991e5;
+  
+  /* Static Borders */
+  --ubits-border-1-static: #d0d2d5;
+  --ubits-border-2-static: #c5c6cb;
+  --ubits-border-disabled-static: #e1e2e5;
+  
+  /* Static Inverted Borders */
+  --ubits-border-1-static-inverted: #4f5561;
+  --ubits-border-2-static-inverted: #353e4c;
+  --ubits-border-disabled-static-inverted: #545a66;
+  --ubits-border-blue-static-inverted: #3865f5;
+  --ubits-border-gray-static-inverted: #6c727d;
+  --ubits-border-green-static-inverted: #1e8251;
+  --ubits-border-teal-static-inverted: #177e84;
+  --ubits-border-indigo-static-inverted: #3a6cda;
+  --ubits-border-purple-static-inverted: #6457ff;
+  --ubits-border-pink-static-inverted: #bf418a;
+  --ubits-border-yellow-static-inverted: #8e6d1b;
+  --ubits-border-rose-static-inverted: #ad3fcb;
+  
+  /* Colored Border Static - Dark Mode */
+  --ubits-border-blue-static: #a2a3fb;
+  --ubits-border-gray-static: #a8abb2;
+  --ubits-border-green-static: #25c37a;
+  --ubits-border-teal-static: #74b6bb;
+  --ubits-border-indigo-static: #97a5fd;
+  --ubits-border-purple-static: #b59bff;
+  --ubits-border-pink-static: #f08bbe;
+  --ubits-border-yellow-static: #c9a916;
+  --ubits-border-rose-static: #d991e5;
+  
+  /* Feedback Borders - Status Tag dark (tokens exactos) */
+  --ubits-feedback-border-success: #368226;
+  --ubits-feedback-border-info: #B6B5FC;
+  --ubits-feedback-border-warning: #A4621B;
+  --ubits-feedback-border-error: #E20D34;
+  --ubits-feedback-border-success-inverted: #41c433;
+  --ubits-feedback-border-info-inverted: #97a5fd;
+  --ubits-feedback-border-warning-inverted: #ec9907;
+  --ubits-feedback-border-error-inverted: #fd8a82;
+  --ubits-feedback-border-success-static: #368226;
+  --ubits-feedback-border-info-static: #B6B5FC;
+  --ubits-feedback-border-warning-static: #A4621B;
+  --ubits-feedback-border-error-static: #E20D34;
+  --ubits-feedback-border-success-static-inverted: #368226;
+  --ubits-feedback-border-info-static-inverted: #3a6cda;
+  --ubits-feedback-border-warning-static-inverted: #a4621b;
+  --ubits-feedback-border-error-static-inverted: #e20d34;
+  
+  /* ========================================
+     SIDEBAR COLORS - DARK MODE
+     ======================================== */
+  
+  --ubits-sidebar-bg: #202837;
+  --ubits-sidebar-logo: #ffffff;
+  --ubits-sidebar-button-bg-pressed: #3b4350;
+  --ubits-sidebar-button-bg-disabled: #3b4350;
+  --ubits-sidebar-button-bg-active: #ffffff;
+  --ubits-sidebar-button-fg-default: #d0d2d5;
+  --ubits-sidebar-button-fg-hover: #edeeef;
+  --ubits-sidebar-button-fg-pressed: #edeeef;
+  --ubits-sidebar-button-fg-active: #303a47;
+  --ubits-sidebar-button-fg-disabled: #828690;
+  
+  /* ========================================
+     FOCUS & SUB-SURFACE & TOGGLE - DARK MODE (oficial)
+     ======================================== */
+  
+  --ubits-focus: #6a7bf799;
+  --ubits-bg-sub-surface-hover: #ffffff1a;
+  --ubits-bg-sub-surface-pressed: #ffffff33;
+  --ubits-toggle-bg-active: #1aa566;
+  
+  /* ========================================
+     ACCENT DECORATIVOS - DARK MODE (oficial)
+     ======================================== */
+  
+  --ubits-accent-blue: #8c91fa;
+  --ubits-accent-gray: #979ba3;
+  --ubits-accent-yellow: #b69918;
+  --ubits-accent-teal: #54a8ac;
+  --ubits-accent-purple: #9a8bff;
+  --ubits-accent-pink: #e873b6;
+  --ubits-accent-rose: #c97de4;
+  
+  /* ========================================
+     CHART COLORS - DARK MODE
+     ======================================== */
+  
+  --ubits-chart-bg-level-1: #ffffff;
+  --ubits-chart-bg-neutral-blue-base: #899db3;
+  --ubits-chart-fg-subtle: #000000;
+  --ubits-chart-fg-bold: #ffffff;
+  --ubits-chart-bg-neutral-blue-1: #7c93ab;
+  --ubits-chart-bg-neutral-blue-2: #6f89a3;
+  --ubits-chart-bg-neutral-blue-3: #627f9b;
+  
+  /* ========================================
+     TOAST COLORS - DARK MODE
+     ======================================== */
+  
+  --ubits-toast-feedback-bg: #ffffff;
+  
+  /* ========================================
+     BOTTOM NAVIGATION - DARK MODE
+     ======================================== */
+  
+  --ubits-bottom-nav-shadow-opacity: rgba(0, 0, 0, 0.36);
+  
+  /* ========================================
+     SCROLL BAR - DARK MODE
+     ======================================== */
+  
+  --ubits-scroll-bar-color-bg-default: #979ba3;
+}

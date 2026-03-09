@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>UBITS Playground - Modo estudio IA</title>
+
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="./aprendizaje-ia-gradientes.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../components/tab-bar.css">
+    <link rel="stylesheet" href="../../components/floating-menu.css">
+    <link rel="stylesheet" href="../../components/profile-menu.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/calendar.css">
+    <link rel="stylesheet" href="../../components/ia-button.css">
+    <link rel="stylesheet" href="../../components/header-product.css">
+    <link rel="stylesheet" href="../../components/loader.css">
+    <link rel="stylesheet" href="../../components/study-chat.css">
+    <link rel="stylesheet" href="../../components/status-tag.css">
+    <link rel="stylesheet" href="../../components/badge-tag.css">
+    <link rel="stylesheet" href="../../components/avatar.css">
+    <link rel="stylesheet" href="../../components/card-content-compact.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/tooltip.css">
+    <link rel="stylesheet" href="../../components/modal.css">
+    <link rel="stylesheet" href="../../components/empty-state.css">
+    <link rel="stylesheet" href="../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../components/radio-button.css">
+    <link rel="stylesheet" href="./modo-estudio-ia.css">
+</head>
+
+<body class="modo-estudio-ia-page modo-tutor-ia-page aprendizaje-ia-pages" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+
+        <!-- Sidebar Container -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navigation -->
+            <div id="top-nav-container"></div>
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Content wrapper con secciones de widgets -->
+                <div class="content-sections">
+                    <!-- Sección header-product -->
+                    <div class="section-single">
+                        <div class="widget-header-product" id="header-product-container"></div>
+                    </div>
+
+                    <!-- Sección chat + panel derecho (Canvas tipo Gemini) -->
+                    <div class="section-single modo-tutor-ia-chat-section">
+                        <!-- Panel historial (izquierda, 30%) - se muestra con clase is-open -->
+                        <div class="modo-estudio-ia-historial-panel" id="historial-panel"
+                            aria-label="Historial de chats">
+                            <div class="modo-estudio-ia-historial-panel__header">
+                                <span class="ubits-body-md-bold">Historial</span>
+                                <button type="button"
+                                    class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only"
+                                    id="historial-panel-close" title="Cerrar" aria-label="Cerrar panel historial">
+                                    <i class="far fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="modo-estudio-ia-historial-panel__body">
+                                <div id="historial-list" class="modo-estudio-ia-historial-panel__list"></div>
+                                <div id="historial-empty" class="modo-estudio-ia-historial-panel__empty">
+                                    <div id="historial-empty-state-container"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modo-tutor-ia-chat-main">
+                            <div class="widget-chat" id="study-chat-container"></div>
+                        </div>
+                        <div class="modo-tutor-ia-canvas-panel" id="tutor-canvas-panel"
+                            aria-label="Panel de materiales de estudio">
+                            <!-- Quiz / Flashcards / Guía se inyectan aquí desde study-chat.js -->
+                            <div class="study-chat-canvas-placeholder" id="tutor-canvas-placeholder">
+                                <i class="far fa-lightbulb"></i>
+                                <p class="ubits-body-md-regular">Elige un tema y pide un quiz, flashcards o guía de
+                                    estudio para verlo aquí.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Tab Bar Container -->
+    <div id="tab-bar-container"></div>
+
+    <!-- Floating Menu Container -->
+    <div id="floating-menu-container"></div>
+
+    <!-- Profile Menu Container -->
+    <div id="profile-menu-container"></div>
+
+    <!-- Contenedor para Toast UBITS -->
+    <div id="ubits-toast-container"></div>
+
+    <!-- Contenedor para modales (ej. confirmación eliminar chat) -->
+    <div id="modo-estudio-ia-modals-container"></div>
+
+    <script src="../../components/tooltip.js"></script>
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/tab-bar.js"></script>
+    <script src="../../components/floating-menu.js"></script>
+    <script src="../../components/profile-menu.js"></script>
+    <script src="../../components/calendar.js"></script>
+    <script src="../../components/input.js?v=cachebust1"></script>
+    <script src="../../components/header-product.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/card-content-compact.js"></script>
+    <script src="../../components/modal.js"></script>
+    <script src="../../components/empty-state.js"></script>
+    <script src="../../components/loader.js"></script>
+    <script src="../../components/study-chat.js"></script>
+    <script src="../../script.js"></script>
+    <script>
+        // Cargar componentes dinámicamente
+        document.addEventListener('DOMContentLoaded', function () {
+            loadSidebar('default', 'aprendizaje');
+            loadSubNav('top-nav-container', 'aprendizaje');
+            loadTabBar('tab-bar-container');
+            loadFloatingMenu('floating-menu-container');
+            loadProfileMenu('profile-menu-container');
+
+            // Modal de confirmación eliminar chat (getModalHtml)
+            var modalsContainer = document.getElementById('modo-estudio-ia-modals-container');
+            if (modalsContainer && typeof getModalHtml === 'function') {
+                var deleteBody = '<p class="ubits-body-md-regular">¿Estás seguro de que deseas eliminar este chat?</p>';
+                var deleteFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="delete-chat-cancel">Cancelar</button><button type="button" class="ubits-button ubits-button--error ubits-button--md" id="delete-chat-confirm">Eliminar</button>';
+                modalsContainer.innerHTML = getModalHtml({
+                    overlayId: 'delete-chat-modal-overlay',
+                    title: 'Confirmar eliminación',
+                    bodyHtml: deleteBody,
+                    footerHtml: deleteFooter,
+                    size: 'xs',
+                    closeButtonId: 'delete-chat-modal-close'
+                });
+            }
+
+            // Activar el tab Modo estudio IA en el SubNav
+            setTimeout(() => {
+                const modoEstudioTab = document.querySelector('.nav-tab[data-tab="modo-estudio-ia"]');
+                const modoEstudioSelectorItem = document.querySelector('.module-selector-item[data-tab="modo-estudio-ia"]');
+                if (modoEstudioTab) {
+                    modoEstudioTab.classList.add('active');
+                }
+                if (modoEstudioSelectorItem) {
+                    modoEstudioSelectorItem.classList.add('active');
+                }
+            }, 300);
+
+            // Cargar header-product
+            if (typeof loadHeaderProduct === 'function') {
+                loadHeaderProduct('header-product-container', {
+                    productName: 'Modo estudio IA',
+                    breadcrumbItems: [], // Array vacío para ocultar breadcrumb
+                    backButton: {
+                        onClick: function () {
+                            console.log('Back button clicked');
+                            // Regresar a la página anterior del historial del navegador
+                            if (window.history.length > 1) {
+                                window.history.back();
+                            } else {
+                                // Si no hay historial, redirigir a catalogo.html como fallback
+                                window.location.href = 'catalogo.html';
+                            }
+                        }
+                    },
+                    secondaryButtons: []
+                });
+            }
+
+            // Los botones Historial y Nuevo chat están en el encabezado del chat (dentro del componente)
+            window.updateModoEstudioIaActionsVisibility = function () { };
+
+            // Inicializar chat de tutor (empty state con nombre + competencias, panel derecho)
+            if (typeof initStudyChat === 'function') {
+                initStudyChat('study-chat-container', {
+                    userFirstName: 'María Alejandra',
+                    competencies: ['Liderazgo', 'Comunicación', 'Inglés'],
+                    rightPanelId: 'tutor-canvas-panel',
+                    placeholderId: 'tutor-canvas-placeholder',
+                    welcomeLayout: true,
+                    podcastDefaults: {
+                        title: 'Encuentra tu norte y gestiona tu energía',
+                        audioUrl: '../../audios/Encuentra_tu_norte_y_gestiona_tu_energía.m4a',
+                        transcription: 'Vamos con un análisis rápido sobre el autoliderazgo. La clave para influir de verdad en los demás, bueno, pues empieza por uno mismo. A ver, todas las fuentes que hemos revisado, desde biografías de líderes como Abraham Lincoln hasta la neurociencia coinciden en algo: antes de poder gestionar equipos, tienes que dominar tu propio mundo interior. Así de claro.\n\nPrimero, encuentra tu norte verdadero. Este es un concepto del autor Bill George y es básicamente tu brújula interna, ¿vale? Una mezcla de tus valores, tus creencias, tu propósito. Y esto te obliga a preguntarte con total honestidad: oye, ¿por qué quiero liderar? Si es por el ego o por el poder, mira, ese liderazgo no va a durar. Líderes como Lincoln superaron crisis brutales porque su motor era un propósito mucho mayor, no una simple recompensa externa.\n\nSegundo, gestiona tu energía, no tu tiempo. El tiempo es finito, claro, pero tu energía personal la puedes renovar. En lugar de correr una maratón diaria, expertos como los del Kaizen Institute recomiendan trabajar en *sprints* de alta concentración y luego de verdad desconectar para recargar. Piensa que tienes cuatro baterías que cuidar: la física con descanso y nutrición, la mental manteniendo el foco, la emocional cultivando la positividad y la espiritual conectando con tu propósito.\n\nY por último, desarrolla el autoconocimiento con hábitos prácticos. Empieza por desafiar tus creencias limitantes, esa vocecita interna que siempre te frena. La neurociencia demuestra que con prácticas como el *mindfulness* puedes literalmente reconfigurar tu cerebro. Y además, en vez de obsesionarte con tus debilidades, usa herramientas como el inventario VIA para descubrir y potenciar tus superpoderes naturales como la creatividad o la perseverancia.\n\nEn resumen, el autoliderazgo no es un rasgo con el que se nace, sino la disciplina de construir una base interna sólida para poder navegar la complejidad del mundo exterior.'
+                    }
+                });
+            }
+
+            // Si se llegó desde resultados: tema+recurso -> "quiero un [recurso] de [tema]"; tema+subtema -> enviar tema y luego subtema para que pregunte qué recurso quiere
+            (function () {
+                var params = new URLSearchParams(window.location.search);
+                var tema = params.get('tema');
+                var recurso = params.get('recurso');
+                var subtema = params.get('subtema');
+                var input = document.getElementById('ubits-study-chat-input');
+                var sendBtn = document.getElementById('ubits-study-chat-send-btn');
+                if (!input || !sendBtn) return;
+
+                if (tema && recurso) {
+                    var message = 'quiero un ' + recurso + ' de ' + tema;
+                    setTimeout(function () {
+                        input.value = message;
+                        input.dispatchEvent(new Event('input', { bubbles: true }));
+                        sendBtn.click();
+                        window.history.replaceState({}, document.title, window.location.pathname + window.location.hash);
+                    }, 600);
+                    return;
+                }
+                if (tema && subtema) {
+                    setTimeout(function () {
+                        input.value = tema;
+                        input.dispatchEvent(new Event('input', { bubbles: true }));
+                        sendBtn.click();
+                    }, 600);
+                    setTimeout(function () {
+                        input.value = subtema;
+                        input.dispatchEvent(new Event('input', { bubbles: true }));
+                        sendBtn.click();
+                        window.history.replaceState({}, document.title, window.location.pathname + window.location.hash);
+                    }, 2200);
+                    return;
+                }
+                if (tema) {
+                    setTimeout(function () {
+                        input.value = tema;
+                        input.dispatchEvent(new Event('input', { bubbles: true }));
+                        sendBtn.click();
+                        window.history.replaceState({}, document.title, window.location.pathname + window.location.hash);
+                    }, 600);
+                }
+            })();
+
+            // Panel historial: abrir (historial, chat y canvas pueden estar abiertos a la vez)
+            function openHistorialPanel() {
+                var historialPanel = document.getElementById('historial-panel');
+                if (historialPanel) {
+                    historialPanel.classList.add('is-open');
+                    document.body.classList.add('historial-panel-open');
+                }
+                if (typeof renderHistorialList === 'function') renderHistorialList();
+            }
+            window.openHistorialPanel = openHistorialPanel;
+
+            var historialCloseBtn = document.getElementById('historial-panel-close');
+            var historialPanelEl = document.getElementById('historial-panel');
+            if (historialCloseBtn && historialPanelEl) {
+                historialCloseBtn.addEventListener('click', function () {
+                    historialPanelEl.classList.remove('is-open');
+                    document.body.classList.remove('historial-panel-open');
+                });
+            }
+            var btnHistorial = document.getElementById('btn-historial');
+            var btnNuevoChat = document.getElementById('btn-nuevo-chat');
+            var btnHistorialWelcome = document.getElementById('btn-historial-welcome');
+            if (btnHistorial) btnHistorial.addEventListener('click', function () { if (typeof openHistorialPanel === 'function') openHistorialPanel(); });
+            if (btnNuevoChat) btnNuevoChat.addEventListener('click', function () { if (typeof startNewChat === 'function') startNewChat(); });
+            if (btnHistorialWelcome) btnHistorialWelcome.addEventListener('click', function () { if (typeof openHistorialPanel === 'function') openHistorialPanel(); });
+
+            // Listeners modal eliminar chat
+            var deleteModalClose = document.getElementById('delete-chat-modal-close');
+            var deleteModalCancel = document.getElementById('delete-chat-cancel');
+            var deleteModalConfirm = document.getElementById('delete-chat-confirm');
+            var deleteOverlay = document.getElementById('delete-chat-modal-overlay');
+            if (deleteModalClose) deleteModalClose.addEventListener('click', function () { if (typeof cancelDeleteChatModal === 'function') cancelDeleteChatModal(); });
+            if (deleteModalCancel) deleteModalCancel.addEventListener('click', function () { if (typeof cancelDeleteChatModal === 'function') cancelDeleteChatModal(); });
+            if (deleteOverlay) deleteOverlay.addEventListener('click', function (e) { if (e.target === deleteOverlay && typeof cancelDeleteChatModal === 'function') cancelDeleteChatModal(); });
+            if (deleteModalConfirm) deleteModalConfirm.addEventListener('click', function () { if (typeof confirmDeleteChat === 'function') confirmDeleteChat(); });
+        });
+    </script>
+</body>
+
+</html>

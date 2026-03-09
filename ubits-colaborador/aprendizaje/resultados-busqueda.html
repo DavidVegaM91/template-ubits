@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Resultados de búsqueda - UBITS</title>
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="./aprendizaje-ia-gradientes.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../components/tab-bar.css">
+    <link rel="stylesheet" href="../../components/floating-menu.css">
+    <link rel="stylesheet" href="../../components/profile-menu.css">
+    <link rel="stylesheet" href="../../components/avatar.css">
+    <link rel="stylesheet" href="../../components/card-content.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/ia-button.css">
+    <link rel="stylesheet" href="../../components/status-tag.css">
+    <link rel="stylesheet" href="../../components/empty-state.css">
+    <link rel="stylesheet" href="./profile.css">
+    <link rel="stylesheet" href="./resultados-busqueda.css">
+</head>
+<body class="aprendizaje-ia-pages" data-theme="light">
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div id="sidebar-container"></div>
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div class="content-area">
+                <div class="content-sections">
+                    <!-- Buscador arriba (como en catálogo) -->
+                    <div class="section-single resultados-hero-buscador">
+                        <div class="resultados-hero-buscador-inner">
+                            <div class="resultados-buscador-input-wrap resultados-buscador-input-wrap--top">
+                                <div id="resultados-buscador-input-container"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Panel encabezado cerrable: visión IA + recursos (solo si hay tema válido) -->
+                    <div class="section-single resultados-overview-panel-wrapper" id="resultados-overview-panel-wrapper" style="display: none;">
+                        <div class="resultados-overview-panel" id="resultados-overview-panel">
+                            <div class="resultados-overview-panel__header">
+                                <span class="resultados-overview-panel__header-title">
+                                    <i class="far fa-sparkles" aria-hidden="true"></i>
+                                    Resultado generado con IA
+                                </span>
+                                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only resultados-overview-panel-close" id="resultados-overview-panel-close" aria-label="Cerrar panel">
+                                    <i class="far fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="resultados-overview-panel__body">
+                                <div class="resultados-overview-panel__col resultados-overview-panel__col--left">
+                                    <div class="resultados-overview-panel__definition" id="resultados-overview-definition"></div>
+                                    <p class="resultados-overview-panel__skills-label ubits-body-md-bold">Habilidades</p>
+                                    <div class="resultados-overview-panel__skills-tags" id="resultados-overview-skills-list"></div>
+                                </div>
+                                <div class="resultados-overview-panel__col resultados-overview-panel__col--right">
+                                    <div class="resultados-recurso-cards" id="resultados-recurso-cards"></div>
+                                </div>
+                            </div>
+                            <div class="resultados-overview-panel__footer">
+                                <a href="modo-estudio-ia.html" id="resultados-probar-modo-ia-btn" class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--sm resultados-overview-panel-cta">
+                                    <i class="far fa-sparkles"></i>
+                                    <span>Probar Modo IA</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Buscador + grid -->
+                    <div class="section-single">
+                        <div class="widget-buscador-filtros">
+                            <div class="buscador-header">
+                                <div class="buscador-title-container">
+                                    <h2 class="buscador-title">Lista de contenidos</h2>
+                                    <div class="buscador-results">
+                                        <span class="buscador-results-count" id="resultados-count">0</span>
+                                        <span class="buscador-results-text">resultados</span>
+                                    </div>
+                                </div>
+                                <div class="buscador-actions">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only" aria-label="Filtros">
+                                        <i class="far fa-filter"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section-single">
+                        <div class="widget-grid-resultados">
+                            <div class="resultados-grid-container" id="resultados-cards-container"></div>
+                        </div>
+                        <div id="empty-state-resultados" style="display: none;"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="tab-bar-container"></div>
+    <div id="floating-menu-container"></div>
+    <div id="profile-menu-container"></div>
+
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/input.js"></script>
+    <script src="../../components/tab-bar.js"></script>
+    <script src="../../components/floating-menu.js"></script>
+    <script src="../../components/profile-menu.js"></script>
+    <script src="../../components/card-content.js"></script>
+    <script src="../../components/empty-state.js"></script>
+    <script src="../../script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSidebar('sidebar-container', 'aprendizaje');
+            loadSubNav('top-nav-container', 'aprendizaje');
+            loadTabBar('tab-bar-container');
+            loadFloatingMenu('floating-menu-container');
+            loadProfileMenu('profile-menu-container');
+
+            var temaValidos = { 'liderazgo': 'Liderazgo', 'inglés': 'Inglés', 'ingles': 'Inglés', 'comunicación': 'Comunicación', 'comunicacion': 'Comunicación' };
+            var params = new URLSearchParams(window.location.search);
+            var q = (params.get('q') || '').trim();
+            var temaNormalizado = temaValidos[q.toLowerCase()] || null;
+
+            var overviewData = {
+                Liderazgo: {
+                    definition: 'El liderazgo es la capacidad de influir y guiar a otras personas hacia metas comunes, desarrollando su potencial y generando impacto positivo. En UBITS puedes fortalecerlo con cursos sobre estilos de liderazgo, coaching e inteligencia emocional.',
+                    habilidades: ['Empoderamiento', 'Motivación', 'Pensamiento estratégico', 'Coaching de equipos']
+                },
+                Comunicación: {
+                    definition: 'La comunicación efectiva es la capacidad de transmitir ideas con claridad, escuchar activamente y adaptar el mensaje al contexto para lograr entendimiento mutuo. Mejorar en asertividad, hablar en público y redacción te ayuda en cualquier rol.',
+                    habilidades: ['Asertividad', 'Comunicación efectiva', 'Marca personal', 'Redacción y ortografía', 'Protocolo y etiqueta empresarial', 'Hablar en público', 'Gestión de stakeholders']
+                },
+                Inglés: {
+                    definition: 'El inglés laboral permite comunicarte en entornos profesionales: reuniones, correos, presentaciones y conversaciones con equipos globales. Trabajar grammar, listening y speaking te da ventaja en equipos internacionales.',
+                    habilidades: ['Grammar', 'Listening', 'Reading', 'Speaking', 'Writing', 'Vocabulary']
+                }
+            };
+
+            var recursoCards = [
+                { action: 'quiz', icon: 'fa-circle-question', title: 'Quiz', desc: 'Responde preguntas sobre el tema y recibe feedback inmediato.' },
+                { action: 'studyPlan', icon: 'fa-layer-group', title: 'Plan de estudio', desc: 'Organiza tu aprendizaje con un plan de tareas personalizado sobre este tema.' },
+                { action: 'flashcards', icon: 'fa-bring-forward', title: 'Flashcards', desc: 'Crea un set de flashcards para repasar y afianzar conceptos.' },
+                { action: 'podcast', icon: 'fa-podcast', title: 'Podcast', desc: 'Escucha un podcast sobre este tema para aprender mientras haces otras cosas.' }
+            ];
+
+            var datosPorTema = {
+                'Liderazgo': [
+                    { type: 'Curso', title: 'Ruta: liderazgo centrado en la estrategia empresarial', provider: 'UBITS', providerLogo: '../../images/Favicons/UBITS.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/ruta-liderazgo-centrado-en-la-estrategia-empresarial.jpeg', competency: 'Liderazgo', language: 'Español' },
+                    { type: 'Short', title: 'De soldado a CEO', provider: 'Harvard Business Publishing', providerLogo: '../../images/Favicons/Harvard-Business-Publishing.jpg', duration: '15 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/de-soldado-a-ceo.jpeg', competency: 'Liderazgo', language: 'Español' },
+                    { type: 'Charla', title: 'Liderazgo en planeación estratégica', provider: 'Bureau Veritas', providerLogo: '../../images/Favicons/Bureau-Veritas.jpg', duration: '45 min', level: 'Intermedio', progress: 0, status: 'default', image: '../../images/cards-learn/liderazgo-en-planeacion-estrategica.jpeg', competency: 'Liderazgo', language: 'Español' },
+                    { type: 'Curso', title: 'Autodirección de equipos de alto desempeño', provider: 'WOBI', providerLogo: '../../images/Favicons/WOBI.jpg', duration: '90 min', level: 'Avanzado', progress: 0, status: 'default', image: '../../images/cards-learn/autodireccion-de-equipos-de-alto-desmpeno.jpeg', competency: 'Liderazgo', language: 'Español' },
+                    { type: 'Artículo', title: 'Comunicación efectiva para liderar equipos', provider: 'Microsoft', providerLogo: '../../images/Favicons/Microsoft.jpg', duration: '15 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/comunicacion-efectiva-para-liderar-equipos.jpeg', competency: 'Liderazgo', language: 'Español' },
+                    { type: 'Curso', title: 'Comunicación efectiva para líderes', provider: 'Hubspot', providerLogo: '../../images/Favicons/Hubspot.jpg', duration: '60 min', level: 'Intermedio', progress: 0, status: 'default', image: '../../images/cards-learn/comunicacion-efectiva-para-lideres.jpeg', competency: 'Liderazgo', language: 'Español' },
+                    { type: 'Podcast', title: 'El liderazgo suficiente', provider: 'TED', providerLogo: '../../images/Favicons/TED.jpg', duration: '30 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/el-liderazgo-suficiente.jpeg', competency: 'Liderazgo', language: 'Español' },
+                    { type: 'Charla', title: 'Desarrollo y gestión de talento', provider: 'IE University', providerLogo: '../../images/Favicons/IE-University-Publishing.jpg', duration: '75 min', level: 'Intermedio', progress: 0, status: 'default', image: '../../images/cards-learn/desarrollo-y-gestion-de-talento.jpeg', competency: 'Liderazgo', language: 'Español' },
+                    { type: 'Curso', title: 'Liderazgo, ambición y culpa', provider: 'Welu', providerLogo: '../../images/Favicons/Welu.jpg', duration: '120 min', level: 'Avanzado', progress: 0, status: 'default', image: '../../images/cards-learn/liderazgo-ambicion-y-culpa.jpeg', competency: 'Liderazgo', language: 'Español' },
+                    { type: 'Curso', title: 'La inteligencia social y biología del liderazgo', provider: 'Instafit', providerLogo: '../../images/Favicons/Instafit.jpg', duration: '60 min', level: 'Intermedio', progress: 0, status: 'default', image: '../../images/cards-learn/la-inteligencia-social-y-biologia-del-liderazgo.jpeg', competency: 'Liderazgo', language: 'Español' },
+                    { type: 'Short', title: 'Resolver las disfunciones del equipo', provider: 'AWS', providerLogo: '../../images/Favicons/AWS.jpg', duration: '30 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/resolver-las-disfunciones-del-equipo.jpeg', competency: 'Liderazgo', language: 'Español' },
+                    { type: 'Charla', title: 'Líderes cotidianos', provider: 'Código Facilito', providerLogo: '../../images/Favicons/Código-Facilito.jpg', duration: '90 min', level: 'Avanzado', progress: 0, status: 'default', image: '../../images/cards-learn/lideres-cotidianos.jpeg', competency: 'Liderazgo', language: 'Español' },
+                    { type: 'Curso', title: 'Emplea los valores del liderazgo femenino', provider: 'UBITS', providerLogo: '../../images/Favicons/UBITS.jpg', duration: '75 min', level: 'Intermedio', progress: 0, status: 'default', image: '../../images/cards-learn/emplea-los-valores-del-liderazgo-femenino.jpeg', competency: 'Liderazgo', language: 'Español' },
+                    { type: 'Artículo', title: 'La clave del liderazgo inclusivo', provider: 'Harvard Business Publishing', providerLogo: '../../images/Favicons/Harvard-Business-Publishing.jpg', duration: '15 min', level: 'Avanzado', progress: 0, status: 'default', image: '../../images/cards-learn/la-clave-del-liderazgo-inclusivo.jpeg', competency: 'Liderazgo', language: 'Español' },
+                    { type: 'Podcast', title: 'La confianza: una clave para el liderazgo', provider: 'WOBI', providerLogo: '../../images/Favicons/WOBI.jpg', duration: '45 min', level: 'Intermedio', progress: 0, status: 'default', image: '../../images/cards-learn/la-confianza-una-clave-para-el-liderazgo.jpeg', competency: 'Liderazgo', language: 'Español' },
+                    { type: 'Charla', title: 'Liderar como los grandes directores de orquesta', provider: 'Microsoft', providerLogo: '../../images/Favicons/Microsoft.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/liderar-como-los-grandes-directores-de-orquesta.jpeg', competency: 'Liderazgo', language: 'Español' },
+                    { type: 'Curso', title: 'Potencia tu liderazgo en entornos VUCA', provider: 'Hubspot', providerLogo: '../../images/Favicons/Hubspot.jpg', duration: '90 min', level: 'Intermedio', progress: 0, status: 'default', image: '../../images/cards-learn/potencia-tu-liderazgo-en-entornos-vuca.jpeg', competency: 'Liderazgo', language: 'Español' },
+                    { type: 'Short', title: 'El buen coaching inspira liderazgo', provider: 'TED', providerLogo: '../../images/Favicons/TED.jpg', duration: '15 min', level: 'Avanzado', progress: 0, status: 'default', image: '../../images/cards-learn/el-buen-coaching-inspira-liderazgo.jpeg', competency: 'Liderazgo', language: 'Español' },
+                    { type: 'Curso', title: 'Ruta: desarrollo de habilidades de liderazgo', provider: 'Bureau Veritas', providerLogo: '../../images/Favicons/Bureau-Veritas.jpg', duration: '120 min', level: 'Avanzado', progress: 0, status: 'default', image: '../../images/cards-learn/ruta-desarrollo-de-habilidades-de-liderazgo.jpeg', competency: 'Liderazgo', language: 'Español' },
+                    { type: 'Artículo', title: 'Liderar con inteligencia emocional', provider: 'IE University', providerLogo: '../../images/Favicons/IE-University-Publishing.jpg', duration: '15 min', level: 'Intermedio', progress: 0, status: 'default', image: '../../images/cards-learn/liderar-con-inteligencia-emocional.jpeg', competency: 'Liderazgo', language: 'Español' },
+                    { type: 'Podcast', title: 'Implementa el liderazgo colectivo en tu empresa', provider: 'AWS', providerLogo: '../../images/Favicons/AWS.jpg', duration: '45 min', level: 'Intermedio', progress: 0, status: 'default', image: '../../images/cards-learn/implementa-el-liderazgo-coletivo-en-tu-empresa.jpeg', competency: 'Liderazgo', language: 'Español' },
+                    { type: 'Charla', title: 'Neuroliderazgo: configura tu mente', provider: 'Welu', providerLogo: '../../images/Favicons/Welu.jpg', duration: '75 min', level: 'Avanzado', progress: 0, status: 'default', image: '../../images/cards-learn/neuroliderazgo-configura-tu-mente.jpeg', competency: 'Liderazgo', language: 'Español' }
+                ],
+                'Comunicación': [
+                    { type: 'Curso', title: 'Cómo hablar y escuchar mejor: competencias de comunicación oral', provider: 'UBITS', providerLogo: '../../images/Favicons/UBITS.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/como-hablar-y-escuchar-mejor-competencias-de-comunicacion-oral.jpeg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Short', title: 'Comunicación y empatía: claves para el éxito en equipo', provider: 'Hubspot', providerLogo: '../../images/Favicons/Hubspot.jpg', duration: '15 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/comunicacion-y-empatia-claves-para-el-exito-en-equipo.jpeg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Charla', title: 'Diseña tu primer contenido con ayuda de UX writing', provider: 'TED', providerLogo: '../../images/Favicons/TED.jpg', duration: '45 min', level: 'Intermedio', progress: 0, status: 'default', image: '../../images/cards-learn/disena-tu-primer-contenido-con-ayuda-de-ux-writing.jpeg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Curso', title: 'De la comunicación a la neurocomunicación', provider: 'Harvard Business Publishing', providerLogo: '../../images/Favicons/Harvard-Business-Publishing.jpg', duration: '90 min', level: 'Intermedio', progress: 0, status: 'default', image: '../../images/cards-learn/de-la-comunicacion-a-la-neurocomunicacion.jpeg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Artículo', title: 'Creatividad e innovación en equipos', provider: 'Microsoft', providerLogo: '../../images/Favicons/Microsoft.jpg', duration: '15 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/creatividad-e-innovacion-en-equipos.jpeg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Podcast', title: 'Content marketing: mide el rendimiento de tu estrategia', provider: 'WOBI', providerLogo: '../../images/Favicons/WOBI.jpg', duration: '30 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/content-marketing-mide-el-rendimiento-de-tu-estrategia.jpeg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Curso', title: 'Content marketing más allá de las redes sociales', provider: 'Welu', providerLogo: '../../images/Favicons/Welu.jpg', duration: '30 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/content-marketing-mas-alla-de-las-redes-sociales.jpeg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Charla', title: 'Content marketing: crea el plan de tu marca', provider: 'IE University', providerLogo: '../../images/Favicons/IE-University-Publishing.jpg', duration: '75 min', level: 'Avanzado', progress: 0, status: 'default', image: '../../images/cards-learn/content-marketing-crea-el-plan-de-tu-marca.jpeg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Curso', title: 'Crea historias de usuario más efectivas', provider: 'Bureau Veritas', providerLogo: '../../images/Favicons/Bureau-Veritas.jpg', duration: '60 min', level: 'Intermedio', progress: 0, status: 'default', image: '../../images/cards-learn/crea-historias-de-usuario-mas-efectivas.jpeg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Short', title: 'UX research: conoce a tu usuario y aumenta el engagement', provider: 'AWS', providerLogo: '../../images/Favicons/AWS.jpg', duration: '15 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/ux-research-conoce-tu-usuario-y-aumenta-el-engagement.jpeg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Artículo', title: 'Qué hace que algunos equipos tengan alto desempeño', provider: 'Código Facilito', providerLogo: '../../images/Favicons/Código-Facilito.jpg', duration: '15 min', level: 'Intermedio', progress: 0, status: 'default', image: '../../images/cards-learn/que-hace-que-alugnos-equipos-tengan-alto-desempeno.jpeg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Curso', title: 'Administración efectiva del tiempo', provider: 'Instafit', providerLogo: '../../images/Favicons/Instafit.jpg', duration: '120 min', level: 'Avanzado', progress: 0, status: 'default', image: '../../images/cards-learn/administracion-efectiva-del-tiempo.jpg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Podcast', title: 'Segmenta la experiencia del cliente', provider: 'TED', providerLogo: '../../images/Favicons/TED.jpg', duration: '45 min', level: 'Intermedio', progress: 0, status: 'default', image: '../../images/cards-learn/segmenta-la-experiencia-del-cliente.jpg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Charla', title: 'Estrategias de marketing digital y de contenidos', provider: 'Harvard Business Publishing', providerLogo: '../../images/Favicons/Harvard-Business-Publishing.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/estrategias-de-marketing-digital-y-de-contenidos.jpeg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Curso', title: 'Implementa la estrategia de go-to-market', provider: 'UBITS', providerLogo: '../../images/Favicons/UBITS.jpg', duration: '75 min', level: 'Intermedio', progress: 0, status: 'default', image: '../../images/cards-learn/implementa-la-estrategia-de-go-to-market.jpeg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Short', title: 'Diseña la estrategia de lanzamiento de tu producto', provider: 'Microsoft', providerLogo: '../../images/Favicons/Microsoft.jpg', duration: '15 min', level: 'Avanzado', progress: 0, status: 'default', image: '../../images/cards-learn/disena-la-estrategia-de-lanzamiento-de-tu-producto.jpeg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Artículo', title: '360 grados: citas, glosas y reflexiones', provider: 'WOBI', providerLogo: '../../images/Favicons/WOBI.jpg', duration: '15 min', level: 'Intermedio', progress: 0, status: 'default', image: '../../images/cards-learn/360-grados-Citas-glosas-reflexiones.jpeg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Charla', title: 'Introducción al marketing con Google Ads', provider: 'Hubspot', providerLogo: '../../images/Favicons/Hubspot.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/introduccion-al-marketing-con-google-ads.jpeg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Curso', title: 'Innovación disruptiva', provider: 'Welu', providerLogo: '../../images/Favicons/Welu.jpg', duration: '90 min', level: 'Avanzado', progress: 0, status: 'default', image: '../../images/cards-learn/innovacion-disruptiva.jpeg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Podcast', title: 'Análisis de mercado', provider: 'IE University', providerLogo: '../../images/Favicons/IE-University-Publishing.jpg', duration: '30 min', level: 'Intermedio', progress: 0, status: 'default', image: '../../images/cards-learn/analisis-de-mercado.jpeg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Short', title: 'Cómo diseñar una organización para la creatividad', provider: 'Código Facilito', providerLogo: '../../images/Favicons/Código-Facilito.jpg', duration: '15 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/como-disenar-una-organizacion-para-la-creatividad.jpeg', competency: 'Comunicación', language: 'Español' },
+                    { type: 'Charla', title: 'Ruta: pensamiento creativo e innovación', provider: 'Bureau Veritas', providerLogo: '../../images/Favicons/Bureau-Veritas.jpg', duration: '60 min', level: 'Intermedio', progress: 0, status: 'default', image: '../../images/cards-learn/ruta-pensamiento-creativo-e-innovacion.jpeg', competency: 'Comunicación', language: 'Español' }
+                ],
+                'Inglés': [
+                    { type: 'Curso', title: 'Inglés para negocios y reuniones', provider: 'UBITS', providerLogo: '../../images/Favicons/UBITS.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: 'https://images.unsplash.com/photo-1546412414-e1885259563a?w=400&h=250&fit=crop', competency: 'Inglés', language: 'Español' },
+                    { type: 'Short', title: 'Gramática esencial: tiempos verbales', provider: 'Advanced English', providerLogo: '../../images/Favicons/Advanced-English.jpg', duration: '15 min', level: 'Básico', progress: 0, status: 'default', image: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=400&h=250&fit=crop', competency: 'Inglés', language: 'Español' },
+                    { type: 'Charla', title: 'Listening: comprensión auditiva paso a paso', provider: 'All Ears English', providerLogo: '../../images/Favicons/All Ears English.jpg', duration: '45 min', level: 'Intermedio', progress: 0, status: 'default', image: 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=400&h=250&fit=crop', competency: 'Inglés', language: 'Español' },
+                    { type: 'Curso', title: 'Speaking con confianza en el trabajo', provider: 'American & British Academy', providerLogo: '../../images/Favicons/American & British Academy.jpg', duration: '90 min', level: 'Intermedio', progress: 0, status: 'default', image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=250&fit=crop', competency: 'Inglés', language: 'Español' },
+                    { type: 'Artículo', title: 'Writing profesional: emails y reportes', provider: 'Harvard Business Publishing', providerLogo: '../../images/Favicons/Harvard-Business-Publishing.jpg', duration: '15 min', level: 'Básico', progress: 0, status: 'default', image: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=400&h=250&fit=crop', competency: 'Inglés', language: 'Español' },
+                    { type: 'Podcast', title: 'Vocabulary en contexto laboral', provider: 'IE University', providerLogo: '../../images/Favicons/IE-University-Publishing.jpg', duration: '30 min', level: 'Básico', progress: 0, status: 'default', image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=250&fit=crop', competency: 'Inglés', language: 'Español' },
+                    { type: 'Curso', title: 'Inglés en reuniones y presentaciones', provider: 'UBITS', providerLogo: '../../images/Favicons/UBITS.jpg', duration: '75 min', level: 'Avanzado', progress: 0, status: 'default', image: 'https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=400&h=250&fit=crop', competency: 'Inglés', language: 'Español' },
+                    { type: 'Short', title: 'Reading técnico y comprensión lectora', provider: 'Advanced English', providerLogo: '../../images/Favicons/Advanced-English.jpg', duration: '15 min', level: 'Intermedio', progress: 0, status: 'default', image: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=400&h=250&fit=crop', competency: 'Inglés', language: 'Español' },
+                    { type: 'Charla', title: 'Pronunciación clara y acento neutro', provider: 'All Ears English', providerLogo: '../../images/Favicons/All Ears English.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&h=250&fit=crop', competency: 'Inglés', language: 'Español' },
+                    { type: 'Curso', title: 'Inglés para ventas y negociación', provider: 'American & British Academy', providerLogo: '../../images/Favicons/American & British Academy.jpg', duration: '120 min', level: 'Avanzado', progress: 0, status: 'default', image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=250&fit=crop', competency: 'Inglés', language: 'Español' },
+                    { type: 'Artículo', title: 'Phrasal verbs para el día a día', provider: 'Harvard Business Publishing', providerLogo: '../../images/Favicons/Harvard-Business-Publishing.jpg', duration: '15 min', level: 'Intermedio', progress: 0, status: 'default', image: 'https://images.unsplash.com/photo-1516979187457-637abb4f8413?w=400&h=250&fit=crop', competency: 'Inglés', language: 'Español' },
+                    { type: 'Podcast', title: 'Inglés para atención al cliente', provider: 'IE University', providerLogo: '../../images/Favicons/IE-University-Publishing.jpg', duration: '45 min', level: 'Básico', progress: 0, status: 'default', image: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=400&h=250&fit=crop', competency: 'Inglés', language: 'Español' },
+                    { type: 'Curso', title: 'Entrevistas de trabajo en inglés', provider: 'UBITS', providerLogo: '../../images/Favicons/UBITS.jpg', duration: '60 min', level: 'Intermedio', progress: 0, status: 'default', image: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=400&h=250&fit=crop', competency: 'Inglés', language: 'Español' },
+                    { type: 'Short', title: 'Inglés para gestión de proyectos', provider: 'Advanced English', providerLogo: '../../images/Favicons/Advanced-English.jpg', duration: '30 min', level: 'Avanzado', progress: 0, status: 'default', image: 'https://images.unsplash.com/photo-1551434678-e076c223a692?w=400&h=250&fit=crop', competency: 'Inglés', language: 'Español' },
+                    { type: 'Charla', title: 'Small talk y networking en inglés', provider: 'All Ears English', providerLogo: '../../images/Favicons/All Ears English.jpg', duration: '45 min', level: 'Básico', progress: 0, status: 'default', image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&h=250&fit=crop', competency: 'Inglés', language: 'Español' },
+                    { type: 'Curso', title: 'Inglés para liderazgo y equipos', provider: 'American & British Academy', providerLogo: '../../images/Favicons/American & British Academy.jpg', duration: '90 min', level: 'Avanzado', progress: 0, status: 'default', image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=400&h=250&fit=crop', competency: 'Inglés', language: 'Español' },
+                    { type: 'Artículo', title: 'Idiomas y cultura en negocios', provider: 'Harvard Business Publishing', providerLogo: '../../images/Favicons/Harvard-Business-Publishing.jpg', duration: '15 min', level: 'Intermedio', progress: 0, status: 'default', image: 'https://images.unsplash.com/photo-1523240795612-9a05468c4e85?w=400&h=250&fit=crop', competency: 'Inglés', language: 'Español' },
+                    { type: 'Podcast', title: 'Listening: noticias y podcasts en inglés', provider: 'IE University', providerLogo: '../../images/Favicons/IE-University-Publishing.jpg', duration: '30 min', level: 'Intermedio', progress: 0, status: 'default', image: 'https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=400&h=250&fit=crop', competency: 'Inglés', language: 'Español' },
+                    { type: 'Curso', title: 'Preparación para certificaciones de inglés', provider: 'UBITS', providerLogo: '../../images/Favicons/UBITS.jpg', duration: '120 min', level: 'Avanzado', progress: 0, status: 'default', image: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=400&h=250&fit=crop', competency: 'Inglés', language: 'Español' },
+                    { type: 'Short', title: 'Expresiones idiomáticas en el trabajo', provider: 'Advanced English', providerLogo: '../../images/Favicons/Advanced-English.jpg', duration: '15 min', level: 'Básico', progress: 0, status: 'default', image: 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=400&h=250&fit=crop', competency: 'Inglés', language: 'Español' }
+                ]
+            };
+
+            var container = document.getElementById('resultados-cards-container');
+            var emptyEl = document.getElementById('empty-state-resultados');
+            var countEl = document.getElementById('resultados-count');
+
+            if (temaNormalizado && datosPorTema[temaNormalizado]) {
+                var cards = datosPorTema[temaNormalizado];
+                if (countEl) countEl.textContent = cards.length;
+                container.style.display = 'grid';
+                if (emptyEl) emptyEl.style.display = 'none';
+                if (typeof loadCardContent === 'function') loadCardContent('resultados-cards-container', cards);
+
+                var panelWrapper = document.getElementById('resultados-overview-panel-wrapper');
+                var data = overviewData[temaNormalizado];
+                if (panelWrapper && data) {
+                    panelWrapper.style.display = 'block';
+                    document.getElementById('resultados-overview-definition').textContent = data.definition;
+                    var skillsList = document.getElementById('resultados-overview-skills-list');
+                    skillsList.innerHTML = data.habilidades.map(function(h) {
+                        var url = 'modo-estudio-ia.html?tema=' + encodeURIComponent(temaNormalizado) + '&subtema=' + encodeURIComponent(h);
+                        return '<a href="' + url + '" class="ubits-status-tag ubits-status-tag--neutral ubits-status-tag--sm resultados-subtema-link"><span class="ubits-status-tag__text">' + h.replace(/</g, '&lt;') + '</span></a>';
+                    }).join('');
+                    var recursoContainer = document.getElementById('resultados-recurso-cards');
+                    recursoContainer.innerHTML = recursoCards.map(function(r) {
+                        var url = 'modo-estudio-ia.html?tema=' + encodeURIComponent(temaNormalizado) + '&recurso=' + encodeURIComponent(r.title);
+                        return '<a href="' + url + '" class="resultados-recurso-option">' +
+                            '<span class="resultados-recurso-option-icon"><i class="far ' + r.icon + '"></i></span>' +
+                            '<div class="resultados-recurso-option-text">' +
+                            '<span class="resultados-recurso-option-title">' + r.title + '</span>' +
+                            '<span class="resultados-recurso-option-desc">' + r.desc + '</span></div></a>';
+                    }).join('');
+                    document.getElementById('resultados-overview-panel-close').onclick = function() {
+                        panelWrapper.style.display = 'none';
+                    };
+                    var probarModoBtn = document.getElementById('resultados-probar-modo-ia-btn');
+                    if (probarModoBtn) probarModoBtn.href = 'modo-estudio-ia.html?tema=' + encodeURIComponent(temaNormalizado);
+                }
+            } else {
+                if (countEl) countEl.textContent = '0';
+                container.style.display = 'none';
+                if (emptyEl) {
+                    emptyEl.style.display = 'flex';
+                    emptyEl.className = '';
+                    emptyEl.innerHTML = '';
+                    if (typeof loadEmptyState === 'function') {
+                        loadEmptyState('empty-state-resultados', {
+                            icon: 'fa-search',
+                            iconSize: 'lg',
+                            title: 'Sin resultados',
+                            description: 'Busca por Liderazgo, Inglés o Comunicación en el catálogo para ver contenidos.',
+                            buttons: { secondary: { text: 'Ir al catálogo', icon: 'fa-arrow-left', onClick: function() {} } }
+                        });
+                        var btn = emptyEl.querySelector('.ubits-button--secondary');
+                        if (btn) btn.onclick = function() { window.location.href = 'catalogo.html'; };
+                    }
+                }
+            }
+
+            if (typeof createInput === 'function') {
+                var searchValue = temaNormalizado || q || '';
+                createInput({
+                    containerId: 'resultados-buscador-input-container',
+                    type: 'search',
+                    placeholder: 'Buscar un tema, competencia o habilidad...',
+                    size: 'lg',
+                    value: searchValue,
+                    onChange: function(value) {
+                        if ((value || '').trim() === '') {
+                            window.location.href = 'catalogo.html';
+                        }
+                    }
+                });
+                var searchInputEl = document.querySelector('#resultados-buscador-input-container input');
+                if (searchInputEl) {
+                    searchInputEl.addEventListener('keydown', function(e) {
+                        if (e.key === 'Enter') {
+                            var val = (this.value || '').trim();
+                            var v = val.toLowerCase();
+                            if (v === 'liderazgo' || v === 'ingles' || v === 'inglés' || v === 'comunicacion' || v === 'comunicación') {
+                                var label = v === 'liderazgo' ? 'Liderazgo' : (v === 'ingles' || v === 'inglés') ? 'Inglés' : 'Comunicación';
+                                window.location.href = 'resultados-busqueda.html?q=' + encodeURIComponent(label);
+                            }
+                        }
+                    });
+                }
+            }
+
+            setTimeout(function() {
+                var aprendizajeBtn = document.querySelector('.nav-button[data-section="aprendizaje"]');
+                if (aprendizajeBtn) {
+                    document.querySelectorAll('.nav-button').forEach(function(b) { b.classList.remove('active'); });
+                    aprendizajeBtn.classList.add('active');
+                }
+                if (typeof setActiveAccordionLink === 'function') setActiveAccordionLink('catalogo');
+            }, 200);
+        });
+    </script>
+</body>
+</html>

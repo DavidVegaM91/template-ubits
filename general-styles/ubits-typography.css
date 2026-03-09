@@ -1,0 +1,404 @@
+/* ========================================
+   SISTEMA DE TIPOGRAFÍA OFICIAL UBITS
+   ======================================== */
+
+/* NOTA: ubits-colors.css debe cargarse ANTES de este archivo en el HTML */
+
+/* Tokens de tamaño de fuente y peso (fuente única para todas las páginas) */
+:root {
+    --font-size-d1: 40px;
+    --font-size-d2: 36px;
+    --font-size-d3: 32px;
+    --font-size-d4: 28px;
+    --font-size-h1: 24px;
+    --font-size-h2: 20px;
+    --font-size-md: 16px;
+    --font-size-sm: 13px;
+    --font-size-xs: 11px;
+
+    /* Font weight tokens (alineados con Figma: regular 400, semibold 600, bold 700) */
+    --font-weight-regular: 400;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+}
+
+/* ========================================
+   DISPLAY STYLES (Títulos grandes)
+   ======================================== */
+
+/* Display/d1 */
+.ubits-display-d1-regular {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-d1);
+    font-weight: 400;
+    line-height: 60px;
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-display-d1-semibold {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-d1);
+    font-weight: 600;
+    line-height: 60px;
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-display-d1-bold {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-d1);
+    font-weight: 700;
+    line-height: 60px;
+    color: var(--ubits-fg-1-high);
+}
+
+/* Display/d2 */
+.ubits-display-d2-regular {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-d2);
+    font-weight: 400;
+    line-height: 54px;
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-display-d2-semibold {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-d2);
+    font-weight: 600;
+    line-height: 54px;
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-display-d2-bold {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-d2);
+    font-weight: 700;
+    line-height: 54px;
+    color: var(--ubits-fg-1-high);
+}
+
+/* Display/d3 */
+.ubits-display-d3-regular {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-d3);
+    font-weight: 400;
+    line-height: 48px;
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-display-d3-semibold {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-d3);
+    font-weight: 600;
+    line-height: 48px;
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-display-d3-bold {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-d3);
+    font-weight: 700;
+    line-height: 48px;
+    color: var(--ubits-fg-1-high);
+}
+
+/* Display/d4 */
+.ubits-display-d4-regular {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-d4);
+    font-weight: 400;
+    line-height: 42px;
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-display-d4-semibold {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-d4);
+    font-weight: 600;
+    line-height: 42px;
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-display-d4-bold {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-d4);
+    font-weight: 700;
+    line-height: 42px;
+    color: var(--ubits-fg-1-high);
+}
+
+/* ========================================
+   HEADING STYLES (Encabezados)
+   ======================================== */
+
+.ubits-heading-h1 {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-h1);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-heading-h2 {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-h2);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--ubits-fg-1-high);
+}
+
+/* ========================================
+   BODY STYLES (Texto de contenido)
+   ======================================== */
+
+/* Body/md */
+.ubits-body-md-regular {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-md);
+    font-weight: 400;
+    line-height: 24px;
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-body-md-semibold {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    line-height: 24px;
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-body-md-bold {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-md);
+    font-weight: 700;
+    line-height: 24px;
+    color: var(--ubits-fg-1-medium);
+}
+
+/* Body/lg - Solo para botones LG (no usar en layouts) */
+.ubits-body-lg-semibold {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-h2);
+    font-weight: 600;
+    line-height: 30px;
+    color: var(--ubits-fg-1-medium);
+}
+
+/* Body/sm */
+.ubits-body-sm-regular {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    font-weight: 400;
+    line-height: 19.5px;
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-body-sm-semibold {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    line-height: 19.5px;
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-body-sm-bold {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    line-height: 19.5px;
+    color: var(--ubits-fg-1-medium);
+}
+
+/* Body/xs */
+.ubits-body-xs-regular {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-xs);
+    font-weight: 400;
+    line-height: 16.5px;
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-body-xs-semibold {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    line-height: 16.5px;
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-body-xs-bold {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    line-height: 16.5px;
+    color: var(--ubits-fg-1-medium);
+}
+
+/* ========================================
+   VARIANTES DE COLOR
+   ======================================== */
+
+/* Variante clara */
+.ubits-text-light {
+    color: var(--ubits-fg-1-medium) !important;
+}
+
+/* Variante oscura */
+.ubits-text-dark {
+    color: var(--ubits-fg-2-high) !important;
+}
+
+/* Variante blanca */
+.ubits-text-white {
+    color: var(--ubits-fg-bold) !important;
+}
+
+/* ========================================
+   UTILIDADES ADICIONALES
+   ======================================== */
+
+/* Para sobrescribir el color en casos específicos */
+.ubits-text-custom {
+    color: inherit;
+}
+
+/* Clases de peso para aplicar sobre cualquier estilo */
+.ubits-weight-regular {
+    font-weight: var(--font-weight-regular) !important;
+}
+
+.ubits-weight-semibold {
+    font-weight: var(--font-weight-semibold) !important;
+}
+
+.ubits-weight-bold {
+    font-weight: var(--font-weight-bold) !important;
+}
+
+/* Clases de tamaño para aplicar sobre cualquier estilo */
+.ubits-size-xs {
+    font-size: var(--font-size-xs) !important;
+    line-height: 16.5px !important;
+}
+
+.ubits-size-sm {
+    font-size: var(--font-size-sm) !important;
+    line-height: 19.5px !important;
+}
+
+.ubits-size-md {
+    font-size: var(--font-size-md) !important;
+    line-height: 24px !important;
+}
+
+.ubits-size-h2 {
+    font-size: var(--font-size-h2) !important;
+    line-height: 1 !important;
+}
+
+.ubits-size-h1 {
+    font-size: var(--font-size-h1) !important;
+    line-height: 1 !important;
+}
+
+.ubits-size-d4 {
+    font-size: var(--font-size-d4) !important;
+    line-height: 42px !important;
+}
+
+.ubits-size-d3 {
+    font-size: var(--font-size-d3) !important;
+    line-height: 48px !important;
+}
+
+.ubits-size-d2 {
+    font-size: var(--font-size-d2) !important;
+    line-height: 54px !important;
+}
+
+.ubits-size-d1 {
+    font-size: var(--font-size-d1) !important;
+    line-height: 60px !important;
+}
+
+/* ========================================
+   MODO OSCURO
+   ======================================== */
+
+[data-theme="dark"] {
+    /* Los tokens de color están definidos en ubits-colors.css */
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+/* Ajustes para pantallas pequeñas */
+@media (max-width: 768px) {
+    .ubits-display-d1-regular,
+    .ubits-display-d1-semibold,
+    .ubits-display-d1-bold {
+        font-size: var(--font-size-d3);
+        line-height: 48px;
+    }
+    
+    .ubits-display-d2-regular,
+    .ubits-display-d2-semibold,
+    .ubits-display-d2-bold {
+        font-size: var(--font-size-d4);
+        line-height: 42px;
+    }
+    
+    .ubits-display-d3-regular,
+    .ubits-display-d3-semibold,
+    .ubits-display-d3-bold {
+        font-size: var(--font-size-h1);
+        line-height: 36px;
+    }
+    
+    .ubits-display-d4-regular,
+    .ubits-display-d4-semibold,
+    .ubits-display-d4-bold {
+        font-size: var(--font-size-h2);
+        line-height: 30px;
+    }
+}
+
+/* ========================================
+   FALLBACK TIPOGRÁFICO - PROTECCIÓN BULLETPROOF
+   ======================================== */
+
+/* FALLBACK UNIVERSAL - SOLO FONT-FAMILY (NO TAMAÑOS) */
+*:not(.fa):not(.fas):not(.far):not(.fal):not(.fab):not(.fad):not(.fat):not([class*="fa-"]):not(i) {
+    font-family: 'Noto Sans', sans-serif !important;
+}
+
+/* PROTECCIÓN ESPECÍFICA PARA ICONOS FONTAWESOME */
+i[class*="fa-"], .fa, .fas, .far, .fal, .fab, .fad, .fat {
+    font-family: "Font Awesome 6 Pro", "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
+}
+
+/* Fallback para clases inventadas que no existen - SOLO FONT-FAMILY */
+.ubits-h1, .ubits-h2, .ubits-h3, .ubits-h4, .ubits-h5, .ubits-h6,
+.ubits-title, .ubits-subtitle, .ubits-text, .ubits-paragraph,
+.ubits-label, .ubits-caption, .ubits-heading {
+    font-family: 'Noto Sans', sans-serif !important;
+}
+
+/* Fallback para HTML tags sin clase UBITS - SOLO FONT-FAMILY */
+h1:not([class*="ubits-"]), h2:not([class*="ubits-"]), 
+h3:not([class*="ubits-"]), h4:not([class*="ubits-"]), 
+h5:not([class*="ubits-"]), h6:not([class*="ubits-"]),
+p:not([class*="ubits-"]), span:not([class*="ubits-"]) {
+    font-family: 'Noto Sans', sans-serif !important;
+}
+
+/* PROTECCIÓN ESPECÍFICA PARA SPANS EN BOTONES */
+.ubits-button span {
+    color: inherit !important;
+}
+
+/* Fallback para cualquier clase que empiece con ubits- pero no exista - SOLO FONT-FAMILY */
+[class*="ubits-"]:not(.ubits-display-d1-regular):not(.ubits-display-d1-semibold):not(.ubits-display-d1-bold):not(.ubits-display-d2-regular):not(.ubits-display-d2-semibold):not(.ubits-display-d2-bold):not(.ubits-display-d3-regular):not(.ubits-display-d3-semibold):not(.ubits-display-d3-bold):not(.ubits-display-d4-regular):not(.ubits-display-d4-semibold):not(.ubits-display-d4-bold):not(.ubits-heading-h1):not(.ubits-heading-h2):not(.ubits-body-md-regular):not(.ubits-body-md-semibold):not(.ubits-body-md-bold):not(.ubits-body-sm-regular):not(.ubits-body-sm-semibold):not(.ubits-body-sm-bold):not(.ubits-body-lg-semibold):not(.ubits-body-xs-regular):not(.ubits-body-xs-semibold):not(.ubits-body-xs-bold):not(.ubits-text-light):not(.ubits-text-dark):not(.ubits-text-white):not(.ubits-text-custom):not(.ubits-weight-regular):not(.ubits-weight-semibold):not(.ubits-weight-bold):not(.ubits-size-xs):not(.ubits-size-sm):not(.ubits-size-md):not(.ubits-size-h2):not(.ubits-size-h1):not(.ubits-size-d4):not(.ubits-size-d3):not(.ubits-size-d2):not(.ubits-size-d1) {
+    font-family: 'Noto Sans', sans-serif !important;
+}

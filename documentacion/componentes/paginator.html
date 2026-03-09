@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Paginator | UBITS Playground</title>
+    
+    <!-- Estilos locales -->
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/tab-bar.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/paginator.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <style>
+        /* Preview control buttons - override UBITS button styles for active state */
+        .preview-control-btn.active {
+            background: var(--ubits-accent-brand) !important;
+            color: white !important;
+            border-color: var(--ubits-accent-brand) !important;
+        }
+        
+        .preview-control-btn.active span {
+            color: white !important;
+        }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navigation -->
+            <div id="top-nav-container"></div>
+            
+            <!-- Content with Sidebar -->
+            <div style="display: flex;">
+            
+            <!-- Dropdown Móvil para Documentación -->
+            <div id="docs-dropdown-container"></div>
+            
+            <!-- Sidebar de Documentación -->
+            <div id="docs-sidebar-container"></div>
+
+            <!-- Content Area -->
+            <div class="components-content">
+                <!-- Content Area -->
+                <div class="content-area" style="display: block; width: 100%;">
+                    <!-- Hero Section -->
+                    <div style="text-align: center; margin-bottom: 60px;">
+                        <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                            Paginator
+                        </h1>
+                        <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                            Componente de paginación con navegación entre páginas y selector de items por página. Incluye posicionamiento inteligente del dropdown según el espacio disponible en el viewport.
+                        </p>
+                    </div>
+
+                    <!-- Preview Section -->
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                        <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Preview del componente
+                        </h2>
+                        <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                            Aquí puedes ver el componente Paginator en acción. Usa los controles para cambiar el número total de items y ver cómo se comporta el paginador.
+                        </p>
+                        
+                        <!-- Preview Container -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; position: relative;">
+                            
+                            <!-- Paginator Preview -->
+                            <div id="paginator-preview"></div>
+                        </div>
+                        
+                        <!-- Preview Controls -->
+                        <div style="margin-top: 24px;">
+                            <!-- Total Items -->
+                            <div style="margin-bottom: 16px;">
+                                <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium); margin-right: 12px;">Total de items:</span>
+                                <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;">
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewTotalItems(19)">
+                                        <span>19</span>
+                                    </button>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" onclick="setPreviewTotalItems(120)">
+                                        <span>120</span>
+                                    </button>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewTotalItems(200)">
+                                        <span>200</span>
+                                    </button>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewTotalItems(500)">
+                                        <span>500</span>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Items Per Page -->
+                            <div style="margin-bottom: 16px;">
+                                <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium); margin-right: 12px;">Items por página:</span>
+                                <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;">
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewItemsPerPage(16)">
+                                        <span>16</span>
+                                    </button>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" onclick="setPreviewItemsPerPage(20)">
+                                        <span>20</span>
+                                    </button>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewItemsPerPage(32)">
+                                        <span>32</span>
+                                    </button>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewItemsPerPage(48)">
+                                        <span>48</span>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+
+                    <!-- Características generales -->
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                        <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Características generales
+                        </h2>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-arrows-alt"></i></div>
+                                <div class="ubits-body-sm-bold">Navegación</div>
+                                <div class="ubits-body-sm-regular">Botones anterior/siguiente y números de página</div>
+                            </div>
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-list"></i></div>
+                                <div class="ubits-body-sm-bold">Selector</div>
+                                <div class="ubits-body-sm-regular">Dropdown para cambiar items por página</div>
+                            </div>
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-magic"></i></div>
+                                <div class="ubits-body-sm-bold">Inteligente</div>
+                                <div class="ubits-body-sm-regular">Posicionamiento automático del dropdown</div>
+                            </div>
+                        </div>
+                </div>
+
+                <!-- PROMPTS ÚTILES -->
+                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                    <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                        <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                        Prompts útiles
+                    </h2>
+                    <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                        Usa estos prompts con Cursor AI para configurar y personalizar el componente Paginator de manera eficiente.
+                    </p>
+
+                    <!-- Alert Warning -->
+                    <div id="paginator-warning-alert" style="margin-bottom: 32px;"></div>
+
+                    <!-- Prompt 1: Crear paginador básico -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Crear paginador básico
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('paginator-prompt-1')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="paginator-prompt-1">Crea un paginador UBITS con estas características:
+- Total de items: [especifica número]
+- Items por página: [16, 20, 32 o 48]
+- Ubicación: [describe en que parte del layout debe estar el paginador]</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 2: Agregar callbacks -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Agregar callbacks al paginador
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('paginator-prompt-2')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="paginator-prompt-2">Agrega callbacks al paginador [nombre_del_paginador] para que cuando cambie la página o los items por página, ejecute [describe qué acción debe realizar, por ejemplo: actualizar el contenido de las cards, hacer una petición al servidor, etc.].</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 3: Cambiar opciones del selector -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Cambiar opciones del selector
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('paginator-prompt-3')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="paginator-prompt-3">Cambia las opciones del selector de items por página del paginador [nombre_del_paginador] a [lista de opciones, por ejemplo: 10, 20, 50, 100].</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 4: Ocultar selector -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Ocultar selector de items por página
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('paginator-prompt-4')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="paginator-prompt-4">Oculta el selector de items por página del paginador [nombre_del_paginador]. Agrega la opción showItemsSelector: false en la configuración del paginador.</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 5: Actualizar total de items -->
+                    <div>
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Actualizar total de items dinámicamente
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('paginator-prompt-5')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="paginator-prompt-5">Actualiza el total de items del paginador [nombre_del_paginador] a [nuevo número] cuando [describe cuándo debe actualizarse, por ejemplo: después de aplicar un filtro, después de una búsqueda, etc.]. Usa el método updateTotalItems() del objeto retornado por loadPaginator().</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technical Documentation -->
+                    <div style="background: var(--ubits-bg-1); border-radius: 16px; margin-bottom: 40px; overflow: hidden;">
+                        <!-- Header del acordeón -->
+                        <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Documentación técnica
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
+                                Información técnica detallada para implementar el componente Paginator.
+                            </p>
+                        </div>
+                        
+                        <!-- Botón de expansión -->
+                        <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                            <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                <i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>
+                                Mostrar
+                            </span>
+                        </div>
+
+                        <!-- Contenido del acordeón (inicialmente oculto) -->
+                        <div id="technical-docs-content" style="display: none; padding: 0;">
+                            <!-- Estructura del Componente -->
+                            <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                    <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                        <i class="far fa-sitemap" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                        Estructura del componente
+                                    </h2>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('structure-code')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="structure-code">&lt;!-- Container para el paginador --&gt;
+&lt;div id="mi-paginador"&gt;&lt;/div&gt;
+
+&lt;!-- JavaScript --&gt;
+&lt;script&gt;
+loadPaginator('mi-paginador', {
+    totalItems: 120,
+    itemsPerPage: 16,
+    currentPage: 1
+});
+&lt;/script&gt;</code></pre>
+                                </div>
+                            </div>
+
+                            <!-- Cómo implementar -->
+                            <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                    <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                        <i class="far fa-code-branch" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                        Cómo implementar
+                                    </h2>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('implementation-code')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                
+                                <!-- REQUISITOS DE RENDERIZADO -->
+                                <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">🔧 REQUISITOS OBLIGATORIOS:</h3>
+                                    <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.5;">
+                                        <strong>CSS Requerido:</strong><br>
+                                        • <code>components/paginator.css</code> - Estilos del componente<br>
+                                        • <code>components/button.css</code> - Botones del paginador<br>
+                                        • <code>components/input.css</code> - Selector de items por página<br>
+                                        • <code>fontawesome-icons.css</code> - Iconos FontAwesome<br>
+                                        • <code>ubits-colors.css</code> - Tokens de color UBITS<br>
+                                        • <code>ubits-typography.css</code> - Tipografía UBITS<br><br>
+                                        <strong>JavaScript Requerido:</strong><br>
+                                        • <code>components/paginator.js</code> - Lógica del componente<br>
+                                        • <code>components/input.js</code> - Selector de items por página<br><br>
+                                        <strong>Renderizado:</strong> JavaScript con función loadPaginator()
+                                    </div>
+                                </div>
+                                
+                                <!-- IMPORTANTE: CENTRADO DEL PAGINADOR -->
+                                <div style="background: var(--ubits-feedback-bg-info); padding: 16px; border-radius: 8px; border-left: 4px solid var(--ubits-feedback-accent-info); margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">⚠️ IMPORTANTE: El paginador siempre debe estar centrado</h3>
+                                    <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6;">
+                                        <p style="margin-bottom: 12px;">
+                                            El componente paginator <strong>siempre debe aparecer centrado</strong> en la página. El CSS del componente aplica automáticamente el centrado, pero si necesitas mostrar/ocultar el paginador con JavaScript, asegúrate de usar <code>display: flex</code> en lugar de <code>display: block</code>.
+                                        </p>
+                                        <div style="background: var(--ubits-bg-1); padding: 12px; border-radius: 6px; margin-top: 12px;">
+                                            <strong style="color: var(--ubits-fg-1-high);">✅ CORRECTO:</strong>
+                                            <pre style="margin: 8px 0 0 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>// Mostrar paginador (centrado)
+const paginatorContainer = document.getElementById('paginador-container');
+if (paginatorContainer) {
+    paginatorContainer.style.display = 'flex'; // ✅ Usar flex para centrar
+}</code></pre>
+                                        </div>
+                                        <div style="background: var(--ubits-bg-1); padding: 12px; border-radius: 6px; margin-top: 12px;">
+                                            <strong style="color: var(--ubits-fg-1-high);">❌ INCORRECTO:</strong>
+                                            <pre style="margin: 8px 0 0 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>// Mostrar paginador (NO centrado)
+const paginatorContainer = document.getElementById('paginador-container');
+if (paginatorContainer) {
+    paginatorContainer.style.display = 'block'; // ❌ NO usar block, no permite centrar
+}</code></pre>
+                                        </div>
+                                        <p style="margin-top: 12px; margin-bottom: 0;">
+                                            El CSS del componente aplica automáticamente <code>display: flex</code>, <code>justify-content: center</code> y <code>align-items: center</code> a los contenedores comunes del paginador (como <code>.paginador-container</code>, <code>.paginator-container</code>, o IDs que contengan "paginador" o "paginator").
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="implementation-code">&lt;!-- IMPLEMENTACIÓN BÁSICA --&gt;
+&lt;!-- HTML --&gt;
+&lt;div id="mi-paginador"&gt;&lt;/div&gt;
+
+&lt;!-- JavaScript --&gt;
+&lt;script&gt;
+loadPaginator('mi-paginador', {
+    totalItems: 120,
+    itemsPerPage: 16,
+    currentPage: 1
+});
+&lt;/script&gt;
+
+&lt;!-- IMPLEMENTACIÓN CON CALLBACKS --&gt;
+&lt;script&gt;
+const paginator = loadPaginator('mi-paginador', {
+    totalItems: 120,
+    itemsPerPage: 16,
+    currentPage: 1,
+    onPageChange: function(page) {
+        console.log('Página cambiada a:', page);
+        // Actualizar contenido aquí
+    },
+    onItemsPerPageChange: function(itemsPerPage) {
+        console.log('Items por página cambiados a:', itemsPerPage);
+        // Recargar contenido aquí
+    }
+});
+
+// Usar métodos públicos
+paginator.goToPage(3);
+paginator.setItemsPerPage(32);
+paginator.updateTotalItems(200);
+&lt;/script&gt;
+
+&lt;!-- IMPLEMENTACIÓN SIN SELECTOR --&gt;
+&lt;script&gt;
+loadPaginator('mi-paginador', {
+    totalItems: 120,
+    itemsPerPage: 16,
+    currentPage: 1,
+    showItemsSelector: false
+});
+&lt;/script&gt;</code></pre>
+                                </div>
+                            </div>
+
+                            <!-- API y Funciones -->
+                            <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-cogs" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    API y funciones
+                                </h2>
+                                <div style="margin-bottom: 24px;">
+                                    <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">loadPaginator(containerId, options)</h3>
+                                    <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
+                                        Función principal para crear y renderizar el paginador.
+                                    </p>
+                                    <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: 6px; border-left: 4px solid var(--ubits-accent-brand);">
+                                        <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                            <strong>Parámetros:</strong><br>
+                                            • containerId (string, requerido) - ID del contenedor donde se renderizará<br>
+                                            • options.totalItems (number, requerido) - Número total de items a paginar<br>
+                                            • options.itemsPerPage (number, default: 16) - Items por página por defecto<br>
+                                            • options.currentPage (number, default: 1) - Página inicial<br>
+                                            • options.itemsPerPageOptions (array, default: [16, 20, 32, 48]) - Opciones del selector<br>
+                                            • options.onPageChange (function) - Callback cuando cambia la página<br>
+                                            • options.onItemsPerPageChange (function) - Callback cuando cambia items por página<br>
+                                            • options.showItemsSelector (boolean, default: true) - Mostrar selector<br><br>
+                                            <strong>Retorna:</strong> Objeto con métodos públicos<br><br>
+                                            <strong>Ejemplo:</strong> loadPaginator('mi-paginador', { totalItems: 120 })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 24px;">
+                                    <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Métodos públicos</h3>
+                                    <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: 6px; border-left: 4px solid var(--ubits-accent-brand);">
+                                        <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                            <strong>goToPage(page)</strong> - Ir a una página específica<br>
+                                            <strong>setItemsPerPage(itemsPerPage)</strong> - Cambiar items por página<br>
+                                            <strong>getCurrentPage()</strong> - Obtener página actual<br>
+                                            <strong>getItemsPerPage()</strong> - Obtener items por página actual<br>
+                                            <strong>updateTotalItems(newTotalItems)</strong> - Actualizar total de items<br><br>
+                                            <strong>Ejemplo:</strong><br>
+                                            const paginator = loadPaginator('mi-paginador', { totalItems: 120 });<br>
+                                            paginator.goToPage(3);
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Personalización -->
+                            <div style="padding: 32px;">
+                                <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-paint-brush" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Personalización
+                                </h2>
+                                <div style="margin-bottom: 24px;">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                                        <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Cambiar opciones del selector</h3>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('custom-options-code')">
+                                            <i class="far fa-copy"></i>
+                                            <span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <p class="ubits-body-md-regular" style="margin-bottom: 12px; line-height: 1.5;">
+                                        Personaliza las opciones disponibles en el selector de items por página:
+                                    </p>
+                                    <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px;">
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="custom-options-code">loadPaginator('mi-paginador', {
+    totalItems: 120,
+    itemsPerPage: 10,
+    itemsPerPageOptions: [10, 20, 50, 100] // Opciones personalizadas
+});</code></pre>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                                        <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Integrar con contenido dinámico</h3>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('dynamic-content-code')">
+                                            <i class="far fa-copy"></i>
+                                            <span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <p class="ubits-body-md-regular" style="margin-bottom: 12px; line-height: 1.5;">
+                                        Ejemplo de integración con contenido que se actualiza según la página:
+                                    </p>
+                                    <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px;">
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="dynamic-content-code">// Datos de ejemplo
+const allItems = [/* ... 120 items ... */];
+let currentPage = 1;
+let itemsPerPage = 16;
+
+// Función para renderizar items de la página actual
+function renderItems() {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const pageItems = allItems.slice(startIndex, endIndex);
+    
+    // Renderizar items aquí
+    console.log('Mostrando items:', pageItems);
+}
+
+// Crear paginador con callbacks
+loadPaginator('mi-paginador', {
+    totalItems: allItems.length,
+    itemsPerPage: itemsPerPage,
+    currentPage: currentPage,
+    onPageChange: function(page) {
+        currentPage = page;
+        renderItems();
+    },
+    onItemsPerPageChange: function(newItemsPerPage) {
+        itemsPerPage = newItemsPerPage;
+        currentPage = 1;
+        renderItems();
+    }
+});
+
+// Renderizar inicialmente
+renderItems();</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Contenedor para Toast UBITS -->
+    <div id="ubits-toast-container"></div>
+
+    <!-- Tab Bar Container -->
+
+    <!-- Floating Menu Container -->
+    <div id="floating-menu-container"></div>
+    
+    <!-- Profile Menu Container -->
+    <div id="profile-menu-container"></div>
+
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/tab-bar.js"></script>
+    <script src="../../components/floating-menu.js"></script>
+    <script src="../../components/profile-menu.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/input.js"></script>
+    <script src="../../components/dropdown-menu.js"></script>
+    <script src="../../components/paginator.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../script.js"></script>
+    <script>
+        // Estado del preview
+        let previewTotalItems = 120;
+        let previewItemsPerPage = 20;
+        let paginatorInstance = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cargar top-nav con variante documentación
+            loadSubNav('top-nav-container', 'documentacion');
+            
+            // Forzar activación de Componentes en todas las páginas de documentación
+            setTimeout(() => {
+                // Quitar todas las clases active primero
+                document.querySelectorAll('.nav-tab.active, .hamburger-item.active').forEach(item => {
+                    item.classList.remove('active');
+                });
+                
+                // Activar solo Componentes
+                const navTab = document.querySelector('.nav-tab[data-tab="section3"]');
+                const hamburgerItem = document.querySelector('.hamburger-item[data-tab="section3"]');
+                if (navTab) navTab.classList.add('active');
+                if (hamburgerItem) hamburgerItem.classList.add('active');
+            }, 200);
+            
+            // Cargar sidebar de documentación
+            loadDocsSidebar('paginator');
+            
+            // Cargar alert de warning para prompts usando el componente oficial
+            showAlert('warning', 'Importante: Antes de enviar estos prompts a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
+                containerId: 'paginator-warning-alert',
+                noClose: true
+            });
+            
+            // Inicializar preview
+            updatePreview();
+        });
+
+        // Función para actualizar preview
+        function updatePreview() {
+            const preview = document.getElementById('paginator-preview');
+            if (!preview) return;
+            
+            preview.innerHTML = '';
+            
+            paginatorInstance = loadPaginator('paginator-preview', {
+                totalItems: previewTotalItems,
+                itemsPerPage: previewItemsPerPage,
+                currentPage: 1
+                // showItemsSelector siempre es true por defecto
+            });
+        }
+
+        // Función para cambiar total de items
+        function setPreviewTotalItems(total) {
+            previewTotalItems = total;
+            
+            // Actualizar botones activos
+            document.querySelectorAll('[onclick^="setPreviewTotalItems"]').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.closest('.preview-control-btn').classList.add('active');
+            
+            updatePreview();
+        }
+
+        // Función para cambiar items por página
+        function setPreviewItemsPerPage(items) {
+            previewItemsPerPage = items;
+            
+            // Actualizar botones activos
+            document.querySelectorAll('[onclick^="setPreviewItemsPerPage"]').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.closest('.preview-control-btn').classList.add('active');
+            
+            updatePreview();
+        }
+
+        // Función para toggle de documentación técnica
+        function toggleTechnicalDocs() {
+            const content = document.getElementById('technical-docs-content');
+            const chevron = document.getElementById('tech-docs-chevron');
+            const toggleText = chevron.parentElement;
+            
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                chevron.style.transform = 'rotate(180deg)';
+                toggleText.innerHTML = '<i class="far fa-chevron-up" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Ocultar';
+            } else {
+                content.style.display = 'none';
+                chevron.style.transform = 'rotate(0deg)';
+                toggleText.innerHTML = '<i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Mostrar';
+            }
+        }
+
+        // Función para copiar prompts
+        function copyPrompt(promptId) {
+            const promptElement = document.getElementById(promptId);
+            const promptText = promptElement.textContent;
+            
+            // Copiar al portapapeles
+            navigator.clipboard.writeText(promptText).then(function() {
+                // Mostrar feedback visual
+                const button = document.querySelector(`[onclick="copyPrompt('${promptId}')"]`);
+                const icon = button.querySelector('i');
+                const text = button.querySelector('span');
+                
+                // Cambiar estado del botón
+                icon.className = 'far fa-check';
+                text.textContent = 'Copiado';
+                button.classList.add('ubits-button--active');
+                
+                // Mostrar toast
+                showToast('success', '¡Prompt copiado! 🎉', {
+                    containerId: 'ubits-toast-container',
+                    duration: 3500
+                });
+                
+                // Restaurar estado después de 2 segundos
+                setTimeout(function() {
+                    icon.className = 'far fa-copy';
+                    text.textContent = 'Copiar';
+                    button.classList.remove('ubits-button--active');
+                }, 2000);
+                
+            }).catch(function(err) {
+                console.error('Error al copiar: ', err);
+                showToast('error', 'Error al copiar el prompt', {
+                    containerId: 'ubits-toast-container',
+                    duration: 6500
+                });
+            });
+        }
+
+        // Función para copiar código
+        function copyCode(elementId) {
+            const codeElement = document.getElementById(elementId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(function() {
+                // Mostrar feedback visual
+                const button = event.target.closest('button');
+                const icon = button.querySelector('i');
+                const span = button.querySelector('span');
+                const originalIconClass = icon.className;
+                const originalText = span.textContent;
+                
+                // Cambiar estado del botón
+                icon.className = 'far fa-check';
+                span.textContent = 'Copiado!';
+                button.classList.add('ubits-button--active');
+                
+                // Mostrar toast
+                showToast('success', 'Código copiado al portapapeles', {
+                    containerId: 'ubits-toast-container',
+                    duration: 3500
+                });
+                
+                // Restaurar estado después de 2 segundos
+                setTimeout(() => {
+                    icon.className = originalIconClass;
+                    span.textContent = originalText;
+                    button.classList.remove('ubits-button--active');
+                }, 2000);
+            }).catch(err => {
+                console.error('Error al copiar: ', err);
+                showToast('error', 'Error al copiar el código', {
+                    containerId: 'ubits-toast-container',
+                    duration: 6500
+                });
+            });
+        }
+    </script>
+    <script>
+</body>
+</html>
+

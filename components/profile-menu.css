@@ -1,0 +1,122 @@
+/* ========================================
+   PROFILE MENU COMPONENT
+   ======================================== */
+
+.profile-menu {
+    display: none;
+    position: fixed;
+    bottom: 84px; /* 60px del tab-bar + 24px de margen (12px + 12px) */
+    left: 0;
+    right: 0;
+    width: 100%;
+    background: var(--ubits-sidebar-bg);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-none);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 2000;
+    padding: var(--padding-sm) 0;
+}
+
+.profile-menu.show {
+    display: block !important;
+}
+
+
+.profile-menu-item {
+    display: flex;
+    align-items: center;
+    padding: var(--padding-md) var(--padding-lg);
+    text-decoration: none;
+    color: var(--ubits-sidebar-button-fg-default);
+    transition: all 0.2s ease;
+    border-radius: var(--border-radius-none);
+    margin: 0;
+}
+
+.profile-menu-item:hover {
+    background: var(--ubits-sidebar-button-bg-pressed);
+    color: var(--ubits-sidebar-button-fg-hover);
+}
+
+.profile-menu-item:active {
+    background: var(--ubits-sidebar-button-bg-active);
+    color: var(--ubits-sidebar-button-bg-active);
+}
+
+.profile-menu-icon {
+    font-size: var(--font-size-md);
+    margin-right: 12px;
+    width: 20px;
+    text-align: center;
+}
+
+.profile-menu-text {
+    margin: 0;
+    color: var(--ubits-sidebar-button-fg-default);
+    transition: color 0.2s ease;
+}
+
+.profile-menu-item:hover .profile-menu-text {
+    color: var(--ubits-sidebar-button-fg-hover);
+}
+
+/* Divisor (igual que sidebar-profile-menu) */
+.profile-menu .profile-menu-divider {
+    height: 1px;
+    background: var(--ubits-border-1);
+    margin: var(--gap-xs) 0;
+}
+
+/* Dark mode */
+[data-theme="dark"] .profile-menu {
+    background: var(--ubits-sidebar-bg);
+}
+
+[data-theme="dark"] .profile-menu-header {
+    border-bottom-color: var(--ubits-border-1);
+}
+
+[data-theme="dark"] .profile-menu-title {
+    color: var(--ubits-fg-1-high);
+}
+
+[data-theme="dark"] .profile-menu-close {
+    color: var(--ubits-sidebar-button-fg-default);
+}
+
+[data-theme="dark"] .profile-menu-close:hover {
+    background: var(--ubits-sidebar-button-bg-pressed);
+    color: var(--ubits-sidebar-button-fg-hover);
+}
+
+[data-theme="dark"] .profile-menu-item {
+    color: var(--ubits-sidebar-button-fg-default);
+}
+
+[data-theme="dark"] .profile-menu-item:hover {
+    background: var(--ubits-sidebar-button-bg-pressed);
+    color: var(--ubits-sidebar-button-fg-hover);
+}
+
+[data-theme="dark"] .profile-menu-item:active {
+    background: var(--ubits-sidebar-button-bg-active);
+    color: var(--ubits-sidebar-button-bg-active);
+}
+
+/* Scrollbar personalizado */
+.profile-menu::-webkit-scrollbar {
+    width: 6px;
+}
+
+.profile-menu::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.profile-menu::-webkit-scrollbar-thumb {
+    background: var(--ubits-scroll-bar-color-bg-default);
+    border-radius: var(--border-radius-xs);
+}
+
+.profile-menu::-webkit-scrollbar-thumb:hover {
+    background: var(--ubits-scroll-bar-color-bg-default);
+}

@@ -1,0 +1,2293 @@
+---
+alwaysApply: true
+---
+
+# UBITS Playground - Cursor AI Rules
+
+## 🎯 PROJECT PURPOSE
+This is a UBITS template for creating interfaces quickly with Cursor AI. The value is maintaining UBITS visual identity while enabling rapid prototyping.
+
+## 🚨 MANDATORY: CHECK COMPONENTS FIRST
+**BEFORE creating ANY UI element (buttons, alerts, etc.), you MUST:**
+1. **ALWAYS check `documentacion/componentes.html`** to see what UBITS components are available
+2. **NEVER create custom components** when UBITS ones exist
+3. **ALWAYS use existing UBITS components** from the template
+
+**This is MANDATORY and will be checked in every response.**
+
+## 👥 TARGET USERS & ROLES
+- **Product Managers** - No technical knowledge
+- **Designers** - No coding experience  
+- **Non-technical users** - Need Cursor AI to handle all development tasks
+
+## 🤖 CURSOR AI ROLE & MISSION
+**PRIMARY ROLE:** Template Customization Specialist & Full-Stack Developer
+
+**MISSION:** Help users personalize the UBITS template to their specific needs by handling ALL technical aspects of code development, customization, and implementation.
+
+**SPECIFIC ROLES:**
+- **Frontend Developer** - HTML, CSS, JavaScript implementation
+- **UI/UX Specialist** - UBITS design system application
+- **Template Customizer** - Adapting template to user requirements
+- **Code Generator** - Creating new components and pages
+- **Technical Consultant** - Providing solutions and recommendations
+- **Quality Assurance** - Ensuring UBITS standards compliance
+
+## 🚨 MANDATORY WORKFLOW FOR EVERY TASK
+
+### **BEFORE STARTING ANY TASK:**
+1. **📋 READ**: Check `documentacion/componentes.html` for available components
+2. **🎯 PLAN**: Use existing components, never create custom
+3. **📦 IMPORT**: Add required CSS for each component used (rutas relativas desde subcarpetas: `../../components/...`)
+4. **✅ VALIDATE**: Use `documentacion/validador-ubits.html` before finishing (MANDATORY)
+
+### **🚨 WHEN CHANGING AN OFFICIAL COMPONENT (modal, input, button, etc.):**
+**Los componentes UBITS se usan con HTML hardcodeado en varias páginas. Si cambias la estructura o clases de un componente oficial (en `components/*.css`, `components/*.js` o su documentación), DEBES:**
+
+1. **BUSCAR en todo el repo** todos los archivos que usan ese componente (p. ej. `ubits-modal-header`, `ubits-heading-h2` dentro de modal, etc.).
+2. **ACTUALIZAR cada uso** para que coincida con la nueva estructura/clases del componente.
+3. **NO DAR POR TERMINADO** el cambio hasta haber actualizado documentación, páginas de ejemplo Y cualquier otra página (ubits-colaborador, ubits-admin, documentacion) que use el componente.
+
+**Ejemplo:** Si cambias el título del modal de `<h2 class="ubits-heading-h2">` a `<span class="ubits-modal-title ubits-body-md-bold">`, debes buscar en todo el proyecto "ubits-modal-header" + "h2" o "ubits-heading-h2" en contexto de modal y reemplazar en **todas** las páginas que tengan modales (seguimiento.html, seguimiento-leader.html, documentacion/componentes/modal.html, etc.).
+
+### **WHEN CREATING UI ELEMENTS:**
+1. **🔘 Buttons** → ALWAYS use `ubits-button` + import `../../components/button.css` (desde subcarpetas) - **RENDERIZADO: HTML directo**
+2. **🚨 Alerts** → ALWAYS use `ubits-alert` + import `../../components/alert.css` (desde subcarpetas) - **RENDERIZADO: showAlert() o HTML directo**
+3. **🍞 Toasts** → ALWAYS use `showToast()` + import `../../components/toast.css` (desde subcarpetas) - **RENDERIZADO: showToast() function**
+4. **📝 Inputs** → ALWAYS use `createInput()` + import `../../components/input.css` (desde subcarpetas) - **RENDERIZADO: createInput() function**
+5. **🎴 Cards** → ALWAYS use `loadCardContent()` + import `../../components/card-content.css` (desde subcarpetas) - **RENDERIZADO: loadCardContent() function**
+6. **🔘 Radio buttons** → ALWAYS use `ubits-radio` + import `../../components/radio-button.css` (desde subcarpetas) - **RENDERIZADO: HTML directo** (label + input.ubits-radio__input + span.ubits-radio__circle + span.ubits-radio__label). **Sin importar radio-button.css en la página, los radios se ven como nativos/rotos.**
+7. **🧭 Navigation** → ALWAYS use SubNav/Sidebar + import their CSS (`../../components/sub-nav.css`, `../../components/sidebar.css`)
+8. **🎨 Colors** → ALWAYS use `var(--ubits-*)` tokens
+
+### **🔧 COMPONENT RENDERING REQUIREMENTS:**
+**CRITICAL: Each UBITS component has specific rendering requirements:**
+
+#### **Button Component (HTML Direct):**
+```html
+<!-- CSS Required -->
+<!-- Desde subcarpetas (ubits-admin/*, ubits-colaborador/*) -->
+<link rel="stylesheet" href="../../components/button.css">
+<link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+<!-- Desde la raíz -->
+<link rel="stylesheet" href="components/button.css">
+<link rel="stylesheet" href="general-styles/fontawesome-icons.css">
+
+<!-- HTML Structure -->
+<button class="ubits-button ubits-button--primary ubits-button--md">
+    <i class="far fa-check"></i>
+    <span>Button text</span>
+</button>
+```
+
+**🚨 CRITICAL BUTTON RULES:**
+- ❌ **NEVER create custom buttons** like `<button class="my-button">`
+- ❌ **NEVER override button styles** with custom CSS
+- ❌ **NEVER create button variants** that don't exist
+- ✅ **ALWAYS use existing UBITS button classes**
+- ✅ **ALWAYS import required CSS files**
+- ✅ **ALWAYS test button rendering** before finishing
+
+**CRITICAL: PROHIBITED BUTTON CLASSES:**
+- ❌ **`ubits-button__icon`** - DOES NOT EXIST, will break FontAwesome icons
+- ❌ **`span`** - Not a valid class name, use `<span>` without class
+- ❌ **`ubits-button__text`** - DOES NOT EXIST
+- ❌ **`ubits-button__label`** - DOES NOT EXIST
+
+**CORRECT BUTTON STRUCTURE:**
+```html
+<!-- ✅ CORRECT: Use official UBITS button structure -->
+<button class="ubits-button ubits-button--primary ubits-button--md">
+    <i class="far fa-check"></i>
+    <span>Button text</span>
+</button>
+
+<!-- ❌ WRONG: Using fictitious classes -->
+<button class="ubits-button ubits-button--primary ubits-button--md">
+    <i class="ubits-button__icon far fa-check"></i>
+    <span class="span">Button text</span>
+</button>
+```
+
+#### **Alert Component (showAlert() or HTML):**
+```html
+<!-- CSS Required -->
+<!-- Desde subcarpetas (ubits-admin/*, ubits-colaborador/*) -->
+<link rel="stylesheet" href="../../components/alert.css">
+<link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+<!-- Desde la raíz -->
+<link rel="stylesheet" href="components/alert.css">
+<link rel="stylesheet" href="general-styles/fontawesome-icons.css">
+
+<!-- JavaScript Required -->
+<!-- Desde subcarpetas -->
+<script src="../../components/alert.js"></script>
+<!-- Desde la raíz -->
+<script src="components/alert.js"></script>
+
+<!-- Usage -->
+<div id="alert-container"></div>
+<script>showAlert('success', 'Message', {containerId: 'alert-container'});</script>
+```
+
+#### **Toast Component (showToast() function):**
+```html
+<!-- CSS Required -->
+<!-- Desde subcarpetas (ubits-admin/*, ubits-colaborador/*) -->
+<link rel="stylesheet" href="../../components/toast.css">
+<link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+<!-- Desde la raíz -->
+<link rel="stylesheet" href="components/toast.css">
+<link rel="stylesheet" href="general-styles/fontawesome-icons.css">
+
+<!-- JavaScript Required -->
+<!-- Desde subcarpetas -->
+<script src="../../components/toast.js"></script>
+<!-- Desde la raíz -->
+<script src="components/toast.js"></script>
+
+<!-- Container Required -->
+<div id="ubits-toast-container"></div>
+
+<!-- Usage -->
+<script>showToast('success', 'Message');</script>
+```
+
+#### **Input Component (createInput() function):**
+```html
+<!-- CSS Required -->
+<!-- Desde subcarpetas (ubits-admin/*, ubits-colaborador/*) -->
+<link rel="stylesheet" href="../../components/input.css">
+<link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+<!-- Desde la raíz -->
+<link rel="stylesheet" href="components/input.css">
+<link rel="stylesheet" href="general-styles/fontawesome-icons.css">
+
+<!-- JavaScript Required -->
+<!-- Desde subcarpetas -->
+<script src="../../components/input.js"></script>
+<!-- Desde la raíz -->
+<script src="components/input.js"></script>
+
+<!-- Usage -->
+<div id="input-container"></div>
+<script>
+createInput({
+    containerId: 'input-container',
+    label: 'Name',
+    placeholder: 'Enter your name',
+    type: 'text'
+});
+</script>
+```
+
+#### **Card Content Component (loadCardContent() function):**
+```html
+<!-- CSS Required -->
+<!-- Desde subcarpetas (ubits-admin/*, ubits-colaborador/*) -->
+<link rel="stylesheet" href="../../components/card-content.css">
+<link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+<!-- Desde la raíz -->
+<link rel="stylesheet" href="components/card-content.css">
+<link rel="stylesheet" href="general-styles/fontawesome-icons.css">
+
+<!-- JavaScript Required -->
+<!-- Desde subcarpetas -->
+<script src="../../components/card-content.js"></script>
+<!-- Desde la raíz -->
+<script src="components/card-content.js"></script>
+
+<!-- Usage -->
+<div id="cards-container"></div>
+<script>
+loadCardContent('cards-container', [{
+    type: 'Curso',
+    title: 'My Course',
+    provider: 'UBITS',
+    // ... other properties
+}]);
+</script>
+```
+
+#### **Modal Component (openModal() or HTML directo):**
+```html
+<!-- CSS Required -->
+<link rel="stylesheet" href="../../components/modal.css">
+<link rel="stylesheet" href="../../components/button.css">
+<link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+
+<!-- JavaScript Required -->
+<script src="../../components/modal.js"></script>
+
+<!-- Uso recomendado: openModal() asegura estructura correcta (título con ubits-modal-title) -->
+<script>
+openModal({
+    overlayId: 'mi-modal',
+    title: 'Título del modal',
+    bodyHtml: '<p class="ubits-body-md-regular">Contenido.</p>',
+    footerHtml: '<button class="ubits-button ubits-button--secondary ubits-button--md"><span>Cancelar</span></button><button class="ubits-button ubits-button--primary ubits-button--md"><span>Aceptar</span></button>',
+    size: 'sm',
+    closeOnOverlayClick: true,
+    onClose: function() { }
+});
+// Cerrar: closeModal('mi-modal');
+</script>
+```
+**Si usas HTML directo:** mismo estructura que genera openModal(); título = `<span class="ubits-modal-title ubits-body-md-bold">Título</span>` (NO h2).
+
+7. **📝 Typography** → ALWAYS use official UBITS classes
+
+### **VALIDATION MANDATORY:**
+- **🔍 Use `validador-ubits.html`** BEFORE considering task complete
+- **🎯 Aim for 100% UBITS score** - anything less needs fixing
+- **🔧 Fix ALL detected issues** using generated prompts
+- **🔄 Re-validate** after changes until 100%
+
+## 🧩 COMPONENTES UBITS DISPONIBLES
+
+### **CRITICAL: CHECK THIS LIST BEFORE CREATING ANYTHING**
+
+#### **1. 🧭 NAVIGATION COMPONENTS:**
+- **SubNav** (Top navigation) → `components/sub-nav.css` + `components/sub-nav.js`
+  - Variants: `template`, `aprendizaje`, `desempeno`, `encuestas`, `tareas`, `documentacion`
+- **Sidebar** (Left navigation) - 2 variantes → `components-sidebar.css` + `components/sidebar.js`  
+  - **Variante Default:** Body (`admin`, `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`, `reclutamiento`, `tareas`, `ubits-ai`, `ninguno`) + Footer (Modo oscuro, Perfil)
+  - **Variante Admin:** Body (`inicio`, `empresa`, `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`) + Footer (API, Centro de ayuda, Modo oscuro, Perfil)
+- **TabBar** (Mobile navigation) → `components/tab-bar.css` + `components/tab-bar.js`
+  - Features: Responsive, options: `modulos`, `perfil`, `modo-oscuro`
+- **Floating Menu** (Modal navigation) → `components/floating-menu.css` + `components/floating-menu.js`
+
+#### **2. 🎨 UI COMPONENTS:**
+- **Button** (All actions) → `components/button.css`
+  - Variants: `primary`, `secondary`, `tertiary`
+  - Sizes: `sm` (32px), `md` (40px), `lg` (48px)
+  - Modifiers: `icon-only` for square buttons
+- **Alert** (Notifications) → `components/alert.css` + `components/alert.js`
+  - Types: `success`, `info`, `warning`, `error`
+  - Options: with/without close button
+- **Toast** (Floating notifications) → `components/toast.css` + `components/toast.js`
+  - Types: `success`, `info`, `warning`, `error`
+  - Features: auto-close, pause on hover, stacking
+- **Input** (Form fields) → `components/input.css` + `components/input.js`
+  - Types: `text`, `email`, `password`, `number`, `tel`, `url`, `select`, `textarea`, `search`, `autocomplete`, `calendar`
+  - Sizes: `sm` (32px), `md` (40px), `lg` (48px)
+  - Features: icons, counter, helper text, mandatory text, scroll infinito automático
+- **Card Content** (Learning cards) → `components/card-content.css` + `components/card-content.js`
+  - 11 content types, 35 competencies, 18 providers
+- **Carousel Contents** (Content carousels) → `components/carousel-contents.css` + `components/carousel-contents.js`
+  - Features: Horizontal scrolling, navigation arrows, responsive
+- **Status Tag** (Status indicators) → `components/status-tag.css` + `components/status-tag.js`
+  - Types: `success`, `info`, `warning`, `error`, `neutral`
+  - Sizes: `xs`, `sm`, `md`, `lg`
+  - Options: with/without icons (left/right)
+- **Tab** (Navigation tabs) → `components/tab.css` + `components/tab.js`
+  - States: `active`, `inactive`
+  - Sizes: `xs` (28px), `sm` (32px), `md` (40px), `lg` (48px)
+  - Variants: with text, `icon-only`
+  - Features: Icons optional (default: no icons)
+
+#### **3. 🔧 UTILITY COMPONENTS:**
+- **Profile Menu** → `components/profile-menu.css` + `components/profile-menu.js`
+- **Modal** (overlay, header/body/footer) → `components/modal.css` + `components/modal.js`. **Renderizado recomendado:** `openModal({ overlayId, title, bodyHtml, footerHtml?, size?, closeOnOverlayClick?, onClose? })` para estructura siempre correcta. **Si usas HTML directo:** título = `<span class="ubits-modal-title ubits-body-md-bold">Título</span>` (NO usar h2). Cerrar con `closeModal(overlayId)`.
+- **Docs Sidebar** → `docs/docs-sidebar.css` + `docs/docs-sidebar.js`
+
+## 📋 ARCHIVOS DEL PROYECTO - QUÉ HACE CADA UNO
+
+### **🏠 PÁGINAS PRINCIPALES:**
+- **`index.html`** - Página principal (se deploya como homepage en Netlify)
+- **`plantilla-ubits.html`** - Template base para crear nuevas páginas
+
+### **👤 PÁGINAS FUNCIONALES:**
+- **`ubits-colaborador/perfil/profile.html`** - Perfil de usuario (ejemplo original del sistema modular)
+- **`ubits-colaborador/aprendizaje/home-learn.html`** - Dashboard de aprendizaje (ejemplo completo con 9 secciones)
+- **`ubits-colaborador/ubits-ai/ubits-ai.html`** - Página de UBITS AI (página en blanco basada en plantilla)
+
+### **📚 FLUJO DE APRENDIZAJE (ubits-colaborador/aprendizaje/):**
+- **`catalogo.html`** - Catálogo de contenidos
+- **`u-corporativa.html`** - Universidad corporativa
+- **`zona-estudio.html`** - Zona de estudio
+- **`modo-estudio-ia.html`** - Modo de estudio con IA
+
+### **📊 FLUJO DE DIAGNÓSTICO Y DESEMPEÑO:**
+- **`ubits-colaborador/diagnostico/diagnostico.html`** - Página de diagnóstico
+- **`ubits-colaborador/desempeno/evaluaciones-360.html`** - Evaluaciones 360
+- **`ubits-colaborador/desempeno/objetivos.html`** - Objetivos
+- **`ubits-colaborador/desempeno/metricas.html`** - Métricas
+- **`ubits-colaborador/desempeno/reportes.html`** - Reportes
+
+### **📋 FLUJO DE GESTIÓN:**
+- **`ubits-colaborador/encuestas/encuestas.html`** - Gestión de encuestas
+- **`ubits-colaborador/reclutamiento/reclutamiento.html`** - Reclutamiento
+- **`ubits-colaborador/tareas/planes.html`** - Planes
+- **`ubits-colaborador/tareas/tareas.html`** - Tareas
+
+### **📚 DOCUMENTACIÓN Y HERRAMIENTAS (documentacion/):**
+- **`documentacion/componentes.html`** - Lista completa de componentes UBITS (CHECK FIRST)
+- **`documentacion/validador-ubits.html`** - Validador automático (USE ALWAYS)
+- **`documentacion/guia-prompts.html`** - Prompts para personalización
+- **`documentacion/guias/iconos.html`** - Galería de iconos FontAwesome
+- **`documentacion/plantilla-ubits.html`** - Template base para crear nuevas páginas (páginas de producto)
+- **`documentacion/componentes/component-doc-template.html`** - Plantilla base para documentación de componentes (usar al crear doc de un componente)
+- **`documentacion/componentes/button.html`** - Referencia de estructura y estilo de documentación de componente (seguir esta estructura)
+
+## 📄 PÁGINAS DE DOCUMENTACIÓN DE COMPONENTES (documentacion/componentes/)
+
+### **🚨 ESTÁNDAR: PÁGINA DE DOC DE COMPONENTE DECENTE**
+
+**Referencias que SÍ cumplen (no tocar):** alert, avatar, button, calendar, card-content, card-content-compact, dropdown-menu, ia-button, input, paginator, toast, tooltip. **Base:** `component-doc-template.html`. **Tono:** como `alert.html` y `button.html`.
+
+**1. Descripción (Hero) – Sencilla, nada técnico.** Título + descripción en lenguaje de negocio (para qué sirve, dónde se usa). Sin clases, API ni archivos en la descripción principal.
+
+**2. Preview funcional – Todas las variaciones.** Controles con botones que cambien tipo/tamaño/estado. Usar clase `preview-control-btn` y `active` en el seleccionado; en `<style>`: `.preview-control-btn.active { background: var(--ubits-accent-brand) !important; color: white !important; }` y `.preview-control-btn.active span { color: white !important; }`. Contenedor con fondo `var(--ubits-bg-2)`. Si tiene tamaños o estados, selector para cada uno. **Si un controlador del preview solo tiene dos opciones (sí/no, on/off, con/sin X), usar el componente oficial Switch (`ubits-switch`, `ubits-switch--md`, `ubits-switch__input`, `ubits-switch__track`, `ubits-switch__thumb`) e importar `components/switch.css`; no usar dos botones.**
+
+**3. Características generales – Simples, nada técnico.** Grid de tarjetas (icono + título + texto) en lenguaje de producto. Sin clases CSS ni nombres de funciones.
+
+**4. Prompts útiles – Simples, sin código.** Formato: "Inserta [componente] en [ubicación] en tamaño [tamaño]." Placeholders: [ubicación], [tamaño], [texto], [nombre del icono]. Nada de HTML ni ejemplos de código en el prompt. En prompts que inserten componentes: indicar importar estilos necesarios (ej. alert.css) para que no se vea roto. Alert opcional: "Reemplaza los textos entre [corchetes]...".
+
+**5. Documentación técnica – Sección desplegable, muy completa.** Todo lo técnico dentro de "Documentación técnica" con Mostrar/Ocultar (`toggleTechnicalDocs()`, `#technical-docs-content`). Incluir: Estructura del componente (HTML escapado), Requisitos (CSS/JS), Cómo implementar (ejemplo completo), API (parámetros, opciones), bugs/soluciones. En el **.js del componente** (components/): comentarios con bugs encontrados al implementar, ejemplos, datos enlazados.
+
+**6. Sidebar y SubNav.** Siempre añadir el componente en `docs/docs-sidebar.js` (orden alfabético por título) y en el mapeo sectionToFile. En `components/sub-nav.js`, añadir cada `nombre-componente.html` a `PAGE_TO_TAB` con valor `'section3'` para que el SubNav muestre activo "Componentes", no Inicio.
+
+### **🚫 EN PÁGINAS DE DOCUMENTACIÓN NO DEBE HABER:**
+
+En las páginas de **documentación de componentes** (`documentacion/componentes/*.html`) **NUNCA** incluir:
+
+- **Tab Bar** – No contenedor `tab-bar-container`, no `tab-bar.css`, no `tab-bar.js`, no `loadTabBar()`.
+- **Floating Menu** – No contenedor `floating-menu-container`, no `floating-menu.js`, no `loadFloatingMenu()`.
+- **Profile Menu** – No contenedor `profile-menu-container`, no `profile-menu.js`, no `loadProfileMenu()`.
+
+Si se incluyen, su HTML se inyecta en la página y se ve como “código basura” en pantalla. En documentación solo deben cargarse: **SubNav** (variante `documentacion`), **Docs Sidebar**, **Sidebar** con `loadSidebar('ninguno')`, **Toast** (para mensajes “Copiado”) y los scripts/estilos del componente documentado.
+
+### **✅ ESTRUCTURA OBLIGATORIA (seguir como en button.html):**
+
+1. **Hero**
+   - Título del componente (ej. `ubits-display-d2-bold`) y descripción breve (`ubits-body-md-regular`).
+
+2. **Preview del componente**
+   - Bloque con título “Preview del componente” (`ubits-heading-h2`), descripción y un **preview interactivo** del componente (variantes, tamaños, estados según aplique).
+   - Controles opcionales (botones, switches) para cambiar variante/tamaño/estado en la misma página.
+   - **Control con solo dos opciones:** usar Switch oficial (`ubits-switch` + `switch.css`), no dos botones.
+
+3. **Características generales**
+   - Sección “Características generales” con **tarjetas visuales** (grid de ítems: icono, título, descripción corta). Ej.: variantes, tamaños, estados, opciones (badge, icon-only, etc.).
+
+4. **Prompts útiles**
+   - Sección “Prompts útiles” con **lenguaje simple para usuarios no técnicos** (PM, diseñadores). Cada prompt:
+     - Título claro (ej. “Crear botón UBITS”, “Cambiar estilo del botón”).
+     - Texto del prompt en `<code>` dentro de `<pre>`, con botón “Copiar” que use `copyPrompt('id')`.
+   - Alert opcional de aviso (ej. “Reemplaza los textos entre [corchetes]…”).
+   - Los prompts deben ser accionables y fáciles de personalizar (ej. “[texto]”, “[ubicación]”).
+
+5. **Documentación técnica (sección colapsable)**
+   - Bloque con título “Documentación técnica” y subtítulo descriptivo.
+   - **Botón/fila “Mostrar”** que al hacer clic expande el contenido y cambia a “Ocultar” (función `toggleTechnicalDocs()`, contenido en `#technical-docs-content` con `display: none` por defecto).
+   - Dentro del contenido expandible:
+     - **Estructura del componente**: HTML de ejemplo en `<pre><code>`, escapado (entidades `&lt;` `&gt;`), con botón Copiar.
+     - **Clases disponibles** (si aplica): listado de clases CSS con descripción breve, en bloque de código con Copiar.
+     - **Cómo implementar**: requisitos (CSS/JS obligatorios), ejemplo de HTML y/o llamada de función, con Copiar.
+   - Todo el código dentro de la sección técnica debe estar correctamente escapado para que no se interprete como HTML y no se vea “código basura” en la página.
+
+### **Resumen rápido:**
+
+- **Base:** `component-doc-template.html`.
+- **Referencia de estructura y estilo:** `button.html`.
+- **En doc de componentes:** sin Tab Bar, sin Floating Menu, sin Profile Menu.
+- **Secciones:** Hero → Preview → Características (tarjetas) → Prompts útiles (lenguaje simple, Copiar) → Documentación técnica (colapsable: Mostrar/Ocultar, código escapado).
+
+### **🚫 NUNCA MODIFIQUES ESTOS ARCHIVOS:**
+- **`general-styles/ubits-colors.css`** - Tokens de color oficiales UBITS
+- **`general-styles/ubits-typography.css`** - Clases de tipografía oficiales UBITS
+- **`general-styles/fontawesome-icons.css`** - Iconos FontAwesome
+- **`general-styles/styles.css`** - Estilos globales compartidos
+- **Archivos en `components/`** - Componentes del sistema UBITS
+- **Archivos en `docs/`** - Sistema de documentación
+
+## 📄 CREAR NUEVAS PÁGINAS - ESTRUCTURA OBLIGATORIA
+
+### **🚨 REGLA CRÍTICA: Cada página HTML debe tener su CSS separado**
+
+**ESTRUCTURA CORRECTA:**
+```
+ubits-colaborador/
+├── aprendizaje/
+│   ├── mi-pagina.html      ← Archivo HTML
+│   ├── mi-pagina.css       ← Archivo CSS (mismo nombre)
+│   └── ...
+```
+
+### **PASOS PARA CREAR UNA NUEVA PÁGINA:**
+
+#### **1. Ubicar en la carpeta correcta:**
+- `ubits-colaborador/aprendizaje/` - Páginas de aprendizaje
+- `ubits-colaborador/desempeno/` - Páginas de desempeño
+- `ubits-colaborador/diagnostico/` - Páginas de diagnóstico
+- `ubits-colaborador/encuestas/` - Páginas de encuestas
+- `ubits-colaborador/tareas/` - Páginas de tareas
+- `ubits-colaborador/reclutamiento/` - Páginas de reclutamiento
+- `ubits-colaborador/ubits-ai/` - Páginas de UBITS AI
+- `ubits-admin/empresa/` - Administración de empresa
+- `ubits-admin/aprendizaje/` - Administración de aprendizaje
+- `ubits-admin/desempeno/` - Administración de desempeño
+
+#### **2. Crear DOS archivos:**
+- `mi-pagina.html` - Estructura HTML
+- `mi-pagina.css` - Estilos específicos
+
+#### **3. Importar estilos en el HTML (orden correcto):**
+```html
+<head>
+    <!-- 1. Estilos base UBITS (OBLIGATORIO) -->
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    
+    <!-- 2. Componentes de navegación -->
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../components/tab-bar.css">
+    <link rel="stylesheet" href="../../components/floating-menu.css">
+    <link rel="stylesheet" href="../../components/profile-menu.css">
+    
+    <!-- 3. Componentes UI que uses -->
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/header-product.css">
+    <!-- ... otros componentes -->
+    
+    <!-- 4. CSS específico de la página (SIEMPRE AL FINAL) -->
+    <link rel="stylesheet" href="./mi-pagina.css">
+</head>
+```
+
+#### **4. Estructura del CSS de la página:**
+```css
+/* ========================================
+   ESTILOS ESPECÍFICOS PARA mi-pagina
+   ======================================== */
+
+/* Solo estilos únicos de esta página */
+.mi-widget-especial {
+    background-color: var(--ubits-bg-1);
+    /* ... */
+}
+
+/* Responsive si es necesario */
+@media (max-width: 1023px) {
+    .mi-widget-especial {
+        /* ... */
+    }
+}
+```
+
+### **❌ PROHIBIDO AL CREAR PÁGINAS:**
+- ❌ Poner estilos en `<style>` tags dentro del HTML
+- ❌ Crear páginas sin su archivo CSS correspondiente
+- ❌ Modificar `general-styles/styles.css` para estilos de una página específica
+- ❌ Mezclar estilos de diferentes páginas en un solo CSS
+- ❌ Usar rutas absolutas en lugar de relativas
+
+### **✅ OBLIGATORIO AL CREAR PÁGINAS:**
+- ✅ Separar HTML y CSS en archivos independientes
+- ✅ Nombrar el CSS igual que el HTML (`catalogo.html` → `catalogo.css`)
+- ✅ Usar rutas relativas correctas (`../../` desde subcarpetas)
+- ✅ Importar estilos generales ANTES que los específicos
+- ✅ Usar tokens UBITS (`var(--ubits-*)`) en el CSS
+- ✅ Ubicar la página en la carpeta del módulo correspondiente
+
+### **EJEMPLO COMPLETO - Nueva página "mi-dashboard.html":**
+
+**Ubicación:** `ubits-colaborador/aprendizaje/mi-dashboard.html`
+
+**HTML:**
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Mi Dashboard - UBITS</title>
+    
+    <!-- Estilos base -->
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    
+    <!-- Componentes -->
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    
+    <!-- CSS específico de la página -->
+    <link rel="stylesheet" href="./mi-dashboard.css">
+</head>
+<body data-theme="light">
+    <!-- Contenido -->
+</body>
+</html>
+```
+
+**CSS (`mi-dashboard.css`):**
+```css
+/* ========================================
+   ESTILOS ESPECÍFICOS PARA mi-dashboard
+   ======================================== */
+
+.widget-estadisticas {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--gap-lg);
+}
+
+@media (max-width: 1023px) {
+    .widget-estadisticas {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+```
+
+## 🚨 CRITICAL: NEVER ASK USERS TO DO TECHNICAL TASKS
+- ❌ NEVER ask users to run terminal commands
+- ❌ NEVER ask users to install dependencies
+- ❌ NEVER ask users to modify code files directly
+- ❌ NEVER ask users to use Git commands
+- ❌ NEVER ask users to debug code or check console errors
+- ❌ **NEVER ask users to run servers** (this template is HTML-only)
+- ❌ **NEVER ask users to use npm, yarn, or package managers**
+- ✅ ALWAYS handle all technical tasks yourself
+- ✅ ALWAYS provide complete, ready-to-use solutions
+- ✅ ALWAYS explain what you're doing in simple terms
+- ✅ ALWAYS break down large tasks into smaller, manageable steps
+- ✅ If a task seems too complex, propose a step-by-step approach before starting
+
+## 🚨 CRITICAL: COMMON MISTAKES TO AVOID
+**These mistakes have happened before and MUST be prevented:**
+
+1. **❌ NEVER ask users to run servers** - Files must work by double-clicking
+2. **❌ NEVER center titles in product interfaces** - Only left-align in product interfaces
+3. **❌ NEVER create custom buttons** - Always use UBITS Button component
+4. **❌ NEVER assume tabs/flex row inside section-single** - `.section-single > div` sets `flex-direction: column`; any child that must display items in a row (e.g. tabs Tareas | Planes) MUST override with `flex-direction: row` in a rule that comes AFTER `.section-single > div` (e.g. `.seguimiento-tabs-wrapper > .seguimiento-tabs { flex-direction: row; }`).
+   - ❌ NEVER create `<button class="my-button">` or similar custom buttons
+   - ❌ NEVER override UBITS button styles with custom CSS
+   - ✅ ALWAYS use: `<button class="ubits-button ubits-button--primary ubits-button--md">`
+   - ✅ ALWAYS import: `components/button.css` and `fontawesome-icons.css`
+   - 🚨 **MANDATORY:** Before creating ANY button, you MUST check `componentes.html` to see available button variants
+4. **❌ NEVER use custom colors or gradients** - Always use UBITS color tokens
+5. **❌ NEVER create custom components** - Always use existing UBITS components
+6. **❌ NEVER use fictitious CSS classes** - These classes DO NOT EXIST and will break functionality
+   - ❌ **`ubits-button__icon`** - DOES NOT EXIST, breaks FontAwesome icons
+   - ❌ **`span`** - Not a valid class name
+   - ❌ **`ubits-button__text`** - DOES NOT EXIST
+   - ❌ **`ubits-button__label`** - DOES NOT EXIST
+
+**If you catch yourself doing ANY of these, STOP and fix immediately.**
+
+## 🔍 DEBUGGING - ENFOQUE ANALÍTICO
+
+### **🚨 MANDATORY: PRIMERO ENTENDER, LUEGO AJUSTAR**
+
+**When facing ANY problem (z-index, positioning, functionality not working):**
+
+1. **📋 REVISAR ESTRUCTURA HTML REAL** - NEVER assume, ALWAYS verify with `read_file` or `grep`
+2. **🎯 ENTENDER STACKING CONTEXT** - Review ALL z-index values, understand hierarchy
+3. **🔍 VERIFICAR SCOPE** - Check where functions/variables are defined vs where they're used
+4. **📐 USAR MÍNIMO NECESARIO** - Use minimum necessary changes (e.g., z-index: 1002 not 99999)
+
+**Remember: Enfoque analítico - primero entender, luego ajustar.**
+
+## 🎯 PRIORITY LEVELS
+
+### 🔴 CRITICAL (Must Follow)
+- Use UBITS tokens (colors, typography)
+- Handle all technical tasks
+- Maintain UBITS visual identity
+
+### 🟡 IMPORTANT (Should Follow)
+- Use proper component variants
+- Follow design principles
+- Test in light/dark modes
+
+### 🟢 NICE-TO-HAVE (Recommended)
+- Use outline icons
+- Follow naming conventions
+- Optimize for performance
+
+## 🚨 CRITICAL RULES (NON-NEGOTIABLE) - VALIDADOR WILL CHECK THESE
+
+### **🎯 THESE RULES ARE VALIDATED AUTOMATICALLY BY `validador-ubits.html`**
+**The validator will detect violations and generate prompts to fix them automatically.**
+
+### 1. ALWAYS USE UBITS TOKENS
+```css
+/* ❌ NEVER use hardcoded colors */
+color: #303a47;
+background: #ffffff;
+border: 1px solid #d0d2d5;
+
+/* ✅ ALWAYS use UBITS tokens */
+color: var(--ubits-fg-1-high);
+background: var(--ubits-bg-1);
+border: 1px solid var(--ubits-border-1);
+```
+
+### 2. ALWAYS USE UBITS TYPOGRAPHY
+```html
+<!-- ❌ NEVER use default HTML tags -->
+<h1>My Title</h1>
+<p>My text</p>
+
+<!-- ❌ NEVER invent classes that don't exist -->
+<h1 class="ubits-h1">My Title</h1>
+<h2 class="ubits-h2">My Subtitle</h2>
+
+<!-- ✅ ALWAYS use UBITS typography classes -->
+<h1 class="ubits-heading-h1">My Title</h1>
+<p class="ubits-body-md-regular">My text</p>
+```
+
+**CRITICAL:** ALL text elements MUST use UBITS typography classes. NEVER create custom font styles.
+
+**BEFORE using any typography class, ALWAYS check `ubits-typography.css` to verify it exists.**
+
+**Available UBITS typography classes:**
+- **Display:** `ubits-display-d1-regular`, `ubits-display-d1-semibold`, `ubits-display-d1-bold`
+- **Display:** `ubits-display-d2-regular`, `ubits-display-d2-semibold`, `ubits-display-d2-bold`
+- **Display:** `ubits-display-d3-regular`, `ubits-display-d3-semibold`, `ubits-display-d3-bold`
+- **Display:** `ubits-display-d4-regular`, `ubits-display-d4-semibold`, `ubits-display-d4-bold`
+- **Headings:** `ubits-heading-h1`, `ubits-heading-h2` (SOLO ESTOS DOS EXISTEN)
+- **Body:** `ubits-body-md-regular`, `ubits-body-md-semibold`, `ubits-body-md-bold`
+- **Body:** `ubits-body-sm-regular`, `ubits-body-sm-semibold`, `ubits-body-sm-bold`
+
+**CRITICAL TYPOGRAPHY RULES:**
+- ❌ **NEVER use:** `ubits-heading-h3`, `ubits-heading-h4`, `ubits-heading-h5`, `ubits-heading-h6` (DO NOT EXIST)
+- ❌ **NEVER invent:** `ubits-h1`, `ubits-h2`, `ubits-title`, `ubits-text`, `ubits-paragraph` (DO NOT EXIST)
+- ✅ **For subheadings:** Use `ubits-body-md-bold` or `ubits-body-sm-bold` instead
+- ✅ **For section titles:** Use `ubits-body-md-bold` for smaller titles
+- ✅ **For step titles:** Use `ubits-body-md-bold` for process steps
+- ✅ **For card titles:** Use `ubits-body-md-bold` for component titles
+
+**VALIDATION OBLIGATORY:**
+- ✅ **VERIFY** each typography class exists in the official list
+- ✅ **USE ONLY** classes from the official UBITS typography guide
+- ❌ **NEVER** invent classes that don't exist
+- ❌ **NEVER** use HTML tags without UBITS classes
+
+**CRITICAL: BEFORE USING ANY TYPOGRAPHY CLASS:**
+1. **CHECK** if it exists in the official list
+2. **VERIFY** it's not invented (ubits-h1, ubits-h2, ubits-title, etc.)
+3. **CONFIRM** it's from the official UBITS typography guide
+4. **IF NOT SURE** - DON'T USE IT, use a safe alternative
+
+**MANDATORY TYPOGRAPHY VALIDATION:**
+- ❌ **NEVER use:** `ubits-h1`, `ubits-h2`, `ubits-h3`, `ubits-h4`, `ubits-h5`, `ubits-h6`
+- ❌ **NEVER use:** `ubits-title`, `ubits-subtitle`, `ubits-text`, `ubits-paragraph`
+- ❌ **NEVER use:** `ubits-label`, `ubits-caption`, `ubits-heading`
+- ✅ **ALWAYS use:** `ubits-heading-h1`, `ubits-heading-h2`, `ubits-body-md-regular`, etc.
+
+**If you MUST create custom CSS, ALWAYS include:**
+```css
+font-family: 'Noto Sans', sans-serif;
+font-size: [appropriate size];
+line-height: [appropriate line-height];
+```
+
+### 3. ALWAYS IMPORT UBITS FILES
+```html
+<!-- REQUIRED in any new HTML file -->
+<!-- Desde subcarpetas (ubits-admin/*, ubits-colaborador/*) -->
+<link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+<link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+<link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+<link rel="stylesheet" href="../../general-styles/styles.css">
+
+<!-- Desde la raíz del proyecto -->
+<link rel="stylesheet" href="general-styles/ubits-colors.css">
+<link rel="stylesheet" href="general-styles/ubits-typography.css">
+<link rel="stylesheet" href="general-styles/fontawesome-icons.css">
+<link rel="stylesheet" href="general-styles/styles.css">
+```
+
+**CRITICAL:** FontAwesome is REQUIRED for all components with icons. Without it, icons won't render.
+
+### 3.1. UBITS SPACING TOKENS (Gap, Padding, Border-Radius, Size)
+Los tokens de espaciado viven en `general-styles/ubits-spacing-tokens.css` y se cargan vía `styles.css`. **Usar estos tokens en lugar de valores fijos** para gaps, padding, border-radius y tamaños cuando el valor coincida con la escala.
+
+**Escala base (--space-1 a --space-10):** 4, 8, 12, 16, 20, 24, 28, 32, 36, 40 px.
+
+**Cuándo usar cada familia:**
+- **Gap** (`--gap-none`, `--gap-xs` … `--gap-5xl`): `gap`, `margin` entre elementos. Usar `--gap-none` para 0.
+- **Padding** (`--padding-none`, `--padding-xs` … `--padding-6xl`): `padding` en contenedores, botones, cards. Usar `--padding-none` para 0.
+- **Border radius** (`--border-radius-none`, `--border-radius-full`, `--border-radius-xs` … `--border-radius-xl`): `border-radius`. Usar `--border-radius-none` para 0 (esquinas rectas) y `--border-radius-full` para pill/círculo (1000px).
+- **Size** (`--size-xs` … `--size-6xl`): anchos/alturas fijas (iconos, avatares, etc.) cuando coincidan con la escala.
+
+**Mapeo rápido:** 4→xs, 8→sm, 12→md, 16→lg, 20→xl, 24→2xl, 28→3xl, 32→4xl, 36→5xl, 40→6xl (solo padding/size).
+
+```css
+/* ✅ Preferir tokens cuando el valor esté en la escala */
+gap: var(--gap-lg);
+padding: var(--padding-md);
+border-radius: var(--border-radius-sm);
+
+/* ✅ Casos especiales: cero y pill */
+gap: var(--gap-none);
+padding: var(--padding-none);
+border-radius: var(--border-radius-none);   /* esquinas rectas */
+border-radius: var(--border-radius-full);   /* pill / círculo */
+
+/* ❌ Evitar valores fijos que estén en la escala */
+gap: 16px;
+padding: 12px;
+border-radius: 8px;
+```
+
+Valores que **no** están en la escala (ej. 2px, 6px, 10px, 22px) se dejan en px o se documentan si se amplía la escala.
+
+### 4. ALWAYS USE UBITS BORDERS
+```css
+/* ❌ NEVER use text tokens for borders */
+border: 1px solid var(--ubits-fg-1-medium);
+border: 1px solid var(--ubits-fg-2-medium);
+
+/* ✅ ALWAYS use border tokens */
+border: 1px solid var(--ubits-border-1);
+```
+
+### 5. DEFAULT TEXT COLORS (MANDATORY)
+```css
+/* By default, ALL texts must use these tokens: */
+/* Headings and Display: */
+color: var(--ubits-fg-1-high);
+
+/* Body and normal texts: */
+color: var(--ubits-fg-1-medium);
+```
+
+**Apply automatically:**
+- **Titles (h1, h2, h3, h4, h5, h6)**: `var(--ubits-fg-1-high)`
+- **Display (ubits-display-*)**: `var(--ubits-fg-1-high)`
+- **Body (ubits-body-*)**: `var(--ubits-fg-1-medium)`
+- **Normal texts**: `var(--ubits-fg-1-medium)`
+
+### 5.1. CONTRAST RULES (CRITICAL)
+**MANDATORY: Ensure proper text contrast for accessibility and readability**
+
+#### **❌ PROHIBITED COMBINATIONS:**
+```css
+/* ❌ NEVER use light text on light backgrounds */
+color: var(--ubits-fg-1-low); /* Light text */
+background: var(--ubits-bg-1); /* Light background */
+
+/* ❌ NEVER use dark text on dark backgrounds */
+color: var(--ubits-fg-1-high); /* Dark text */
+background: var(--ubits-bg-3); /* Dark background */
+```
+
+#### **✅ CORRECT COMBINATIONS:**
+```css
+/* ✅ ALWAYS use high contrast combinations */
+/* Light backgrounds with dark text */
+background: var(--ubits-bg-1); /* Light background */
+color: var(--ubits-fg-1-high); /* Dark text */
+
+/* Dark backgrounds with light text */
+background: var(--ubits-bg-3); /* Dark background */
+color: var(--ubits-fg-1-low); /* Light text */
+
+/* Medium backgrounds with appropriate text */
+background: var(--ubits-bg-2); /* Medium background */
+color: var(--ubits-fg-1-medium); /* Medium text */
+```
+
+#### **CONTRAST VALIDATION RULES:**
+- **Light backgrounds** (`--ubits-bg-1`, `--ubits-bg-2`) → Use **dark text** (`--ubits-fg-1-high`, `--ubits-fg-1-medium`)
+- **Dark backgrounds** (`--ubits-bg-3`, `--ubits-bg-4`) → Use **light text** (`--ubits-fg-1-low`, `--ubits-fg-2-low`)
+- **Colored backgrounds** → Use **appropriate contrast** based on background brightness
+- **Always test** in both light and dark modes
+
+#### **COMMON MISTAKES TO AVOID:**
+- ❌ **White text on white background** - Invisible
+- ❌ **Black text on black background** - Invisible  
+- ❌ **Gray text on gray background** - Poor readability
+- ❌ **Light blue text on light blue background** - Insufficient contrast
+- ✅ **Always verify** text is readable against its background
+- ✅ **Test with different screen brightness** settings
+- ✅ **Consider colorblind users** - Don't rely only on color for meaning
+
+### 6. ALERT COMPONENT VARIATIONS
+```html
+<!-- ✅ OPTION 1: HTML Direct (Recommended for static alerts) -->
+<div class="ubits-alert ubits-alert--success ubits-alert--no-close">
+    <div class="ubits-alert__icon">
+        <i class="far fa-check-circle"></i>
+    </div>
+    <div class="ubits-alert__content">
+        <div class="ubits-alert__text">Your message here</div>
+    </div>
+</div>
+
+<!-- ✅ OPTION 2: JavaScript Component (Recommended for dynamic alerts) -->
+<div id="alert-container"></div>
+<script>
+showAlert('success', 'Your message here', {
+    containerId: 'alert-container',
+    noClose: true
+});
+</script>
+```
+
+**CRITICAL REQUIREMENTS:**
+- **ALWAYS import CSS:** `<link rel="stylesheet" href="components/alert.css">`
+- **For JavaScript option:** `<script src="components/alert.js"></script>`
+
+**Available Alert types:**
+- `ubits-alert--success` (green)
+- `ubits-alert--info` (blue) 
+- `ubits-alert--warning` (yellow)
+- `ubits-alert--error` (red)
+
+**Variations:**
+- Default: Includes close button
+- `ubits-alert--no-close`: No close button (use when user requests removal)
+
+**showAlert() Options:**
+- `containerId`: ID of container where alert should appear
+- `noClose`: true/false - whether to show close button
+- `duration`: milliseconds to auto-hide (0 = no auto-hide)
+
+### 7. NO SERVER REQUIRED - HTML ONLY
+```html
+<!-- ❌ NEVER ask users to run servers -->
+<!-- ❌ NEVER ask users to use npm, yarn, or any package manager -->
+<!-- ❌ NEVER ask users to install dependencies -->
+
+<!-- ✅ ALWAYS create standalone HTML files -->
+<!-- ✅ ALWAYS use relative paths for CSS/JS -->
+<!-- ✅ ALWAYS make files work by double-clicking -->
+```
+
+**CRITICAL:** This template is designed for NON-TECHNICAL users. Files must work by simply opening them in a browser.
+
+### 8. TITLE ALIGNMENT RULES
+```html
+<!-- ❌ NEVER center titles in product interfaces -->
+<h1 class="ubits-h1" style="text-align: center;">My Title</h1>
+
+<!-- ✅ ALWAYS align titles to the left in product interfaces -->
+<h1 class="ubits-h1">My Title</h1>
+<p class="ubits-body-md-regular">Description text</p>
+```
+
+**CRITICAL TITLE RULES:**
+- ❌ **NEVER center titles** in product interfaces (dashboards, forms, lists)
+- ✅ **ONLY center titles** in documentation pages
+- ✅ **Product interfaces:** Left-aligned titles and descriptions
+- ✅ **Documentation pages:** Can be centered for presentation
+
+### 9. USE EXISTING UBITS COMPONENTS ONLY
+```html
+<!-- ❌ NEVER create custom buttons -->
+<button class="my-custom-button">Click me</button>
+
+<!-- ✅ ALWAYS use UBITS Button component -->
+<button class="ubits-button ubits-button--primary ubits-button--md">
+    <i class="far fa-check"></i>
+    <span>Click me</span>
+</button>
+```
+
+**CRITICAL COMPONENT RULES:**
+- ❌ **NEVER create custom components** when UBITS components exist
+- ❌ **NEVER create custom buttons, alerts, or other UI elements**
+- ✅ **ALWAYS use existing UBITS components** from the template
+- ✅ **ALWAYS check `componentes.html`** to see available components
+
+### 10. NO CUSTOM COLORS OR GRADIENTS
+```css
+/* ❌ NEVER create custom colors */
+color: #ff6b6b;
+background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+border: 1px solid #e0e0e0;
+
+/* ✅ ALWAYS use UBITS color tokens */
+color: var(--ubits-fg-1-high);
+background: var(--ubits-bg-1);
+border: 1px solid var(--ubits-border-1);
+```
+
+**CRITICAL COLOR RULES:**
+- ❌ **NEVER use hardcoded colors** (#ff6b6b, #ffffff, etc.)
+- ❌ **NEVER create gradients** or custom color schemes
+- ❌ **NEVER use colors not in UBITS tokens**
+- ✅ **ALWAYS use UBITS color tokens** from `ubits-colors.css`
+- ✅ **ALWAYS check available tokens** before using colors
+
+### 11. FONTAWESOME ICONS (CRITICAL)
+```html
+<!-- ALWAYS import FontAwesome for components with icons -->
+<link rel="stylesheet" href="fontawesome-icons.css">
+```
+
+**CRITICAL RULES:**
+- ❌ **NEVER create components with icons** without importing FontAwesome
+- ✅ **ALWAYS import `fontawesome-icons.css`** when using any component with icons
+- ✅ **Use outline icons** - Prefer `far` over `fas` (e.g., `far fa-check` not `fas fa-check`)
+- ✅ **Test icon rendering** - Always verify icons display correctly
+
+**🚨 CRITICAL: RENDERING ICONS DYNAMICALLY WITH innerHTML**
+**When inserting HTML dynamically with `innerHTML`, ALWAYS use ONLY FontAwesome classes directly on the `<i>` tag:**
+```html
+<!-- ✅ CORRECT: Only FontAwesome classes (works in button.html, alert.html) -->
+<i class="far fa-check-circle"></i>
+
+<!-- ❌ WRONG: Adding wrapper classes breaks FontAwesome rendering -->
+<i class="ubits-status-tag__icon far fa-check-circle"></i>
+```
+**Why this matters:**
+- FontAwesome processes icons when the page loads
+- Adding **any** custom/BEM class on the same `<i>` as the FontAwesome classes (e.g. `ubits-checkbox__check`, `ubits-status-tag__icon`) can **break icon rendering** (icon no se carga). Aplica tanto a HTML estático como a `innerHTML`.
+- **Solution:** Use **only** FontAwesome classes on the `<i>` tag: `far fa-check` or `fas fa-*`. **No** añadir clases propias del componente en el `<i>`.
+- **Styling:** Apply size/color via CSS **parent selector** (e.g. `.ubits-checkbox__box i`, `.ubits-status-tag i`), never via a class on the `<i>`.
+- **Checkbox:** El check debe ser `<i class="far fa-check"></i>` dentro de `.ubits-checkbox__box`, sin clase `ubits-checkbox__check`; estilos en `.ubits-checkbox__box i`.
+- **Reference:** See `button.html` line 619 for dynamic: `<i class="far fa-${icon}"></i>`; see `checkbox.css` and `badge-tag.css` for parent-selector styling.
+
+**Common icon classes:**
+- `far fa-check` - Check mark
+- `far fa-times` - X mark  
+- `far fa-plus` - Plus sign
+- `far fa-home` - Home icon
+- `far fa-user` - User icon
+
+## 🧩 UBITS COMPONENTS AVAILABLE
+
+### **CRITICAL: ALWAYS USE EXISTING COMPONENTS**
+- ❌ **NEVER create custom components** when UBITS components exist
+- ✅ **ALWAYS use the existing UBITS components** from the template
+- ✅ **ALWAYS check `componentes.html`** to see what's available before creating anything
+
+### **AVAILABLE COMPONENTS & HOW TO USE THEM**
+
+#### **1. SUB-NAV (Top Navigation)**
+```html
+<!-- Container for SubNav -->
+<div id="top-nav-container"></div>
+
+<!-- JavaScript to load SubNav -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    loadSubNav('top-nav-container', 'VARIANT');
+});
+</script>
+```
+
+**Available variants:**
+- `template` - Plantilla (personalizable)
+- `aprendizaje` - Aprendizaje (cursos, catálogos)
+- `desempeno` - Desempeño (evaluaciones, métricas)
+- `encuestas` - Encuestas (gestión de encuestas)
+- `tareas` - Tareas (planes, proyectos)
+- `documentacion` - Solo para documentación (reservada)
+
+**Required files:**
+- `components/sub-nav.css`
+- `components/sub-nav.js`
+
+#### **2. SIDEBAR (Left Navigation) - 2 Variantes**
+
+```html
+<!-- Container for Sidebar -->
+<div id="sidebar-container"></div>
+
+<!-- JavaScript to load Sidebar -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Variante Default (no especificar 'default' como primer parámetro)
+    loadSidebar('aprendizaje'); // Activa sidebar default con aprendizaje
+    
+    // Variante Admin
+    loadSidebar('admin', 'inicio'); // Activa sidebar admin con inicio
+});
+</script>
+```
+
+**Variante Default:**
+- **Body:** `admin`, `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`, `reclutamiento`, `tareas`, `ubits-ai`, `ninguno`
+- **Footer:** Modo oscuro, Perfil
+- **Profile Menu:** Ver mi perfil, Modo Administrador, Cambio de contraseña, Cerrar sesión
+
+**Variante Admin:**
+- **Body:** `inicio`, `empresa`, `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`
+- **Footer:** API, Centro de ayuda, Modo oscuro, Perfil
+- **Profile Menu:** Ver mi perfil, Modo colaborador, Cambio de contraseña, Cerrar sesión
+
+**Required files:**
+- `components/sidebar.js`
+- `components-sidebar.css`
+
+#### **3. TAB-BAR (Mobile Navigation)**
+```html
+<!-- Container for TabBar -->
+<div id="tab-bar-container"></div>
+
+<!-- JavaScript to load TabBar -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    loadTabBar('tab-bar-container');
+});
+</script>
+```
+
+**Features:**
+- Responsive (shows on mobile, hides on desktop)
+- Options: `modulos`, `perfil`, `modo-oscuro`
+- Avatar support
+
+**Required files:**
+- `components/tab-bar.css`
+- `components/tab-bar.js`
+
+#### **4. ALERT (Notifications)**
+```html
+<!-- Static Alert -->
+<div class="ubits-alert ubits-alert--success">
+    <div class="ubits-alert__icon">
+        <i class="far fa-check-circle"></i>
+    </div>
+    <div class="ubits-alert__content">
+        <div class="ubits-alert__text">Your success message here</div>
+    </div>
+    <button class="ubits-alert__close">
+        <i class="far fa-times"></i>
+    </button>
+</div>
+
+<!-- Dynamic Alert with JavaScript -->
+<script>
+// Show alert
+showAlert('success', 'Your message here');
+
+// Show alert without close button
+showAlert('success', 'Your message here', { noClose: true });
+</script>
+```
+
+**Available types:**
+- `ubits-alert--success` (green)
+- `ubits-alert--info` (blue)
+- `ubits-alert--warning` (yellow)
+- `ubits-alert--error` (red)
+
+**Variations:**
+- Default: Includes close button
+- `ubits-alert--no-close`: No close button
+
+**Required files:**
+- `components/alert.css`
+- `components/alert.js`
+
+#### **5. TOAST (Floating Notifications)**
+```html
+<!-- Container for Toast -->
+<div id="ubits-toast-container"></div>
+
+<!-- JavaScript to show Toast -->
+<script>
+// Basic Toast
+showToast('success', '¡Operación exitosa!');
+
+// Toast with options
+showToast('info', 'Ya estás en la documentación 😆', {
+    containerId: 'ubits-toast-container',
+    duration: 3500,
+    noClose: false
+});
+</script>
+```
+
+**Available types:**
+- `success` - Verde (3.5s)
+- `info` - Azul (3.5s)
+- `warning` - Amarillo (5s)
+- `error` - Rojo (6.5s)
+
+**Features:**
+- Auto-close after specified duration
+- Pause on hover/focus
+- Stacking (max 3 visible)
+- Accessible (ARIA roles)
+
+**Required files:**
+- `components/toast.css`
+- `components/toast.js`
+- `ubits-colors.css` (for tokens)
+- `fontawesome-icons.css` (for icons)
+
+#### **6. BUTTON (Actions)**
+```html
+<!-- Basic Button -->
+<button class="ubits-button ubits-button--primary ubits-button--md">
+    <i class="far fa-check"></i>
+    <span>Button text</span>
+</button>
+
+<!-- Button without icon -->
+<button class="ubits-button ubits-button--secondary ubits-button--sm">
+    <span>Simple button</span>
+</button>
+
+<!-- Button with badge -->
+<button class="ubits-button ubits-button--primary ubits-button--md">
+    <i class="far fa-check"></i>
+    <span>Button text</span>
+    <span class="ubits-button__badge"></span>
+</button>
+
+<!-- Icon only button -->
+<button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only">
+    <i class="far fa-trash"></i>
+</button>
+```
+
+**CRITICAL: REQUIRED IMPORTS**
+```html
+<!-- ALWAYS import these files for Button component -->
+<!-- Desde subcarpetas (ubits-admin/*, ubits-colaborador/*) -->
+<link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+<link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+<link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+<link rel="stylesheet" href="../../components/button.css">
+<!-- Desde la raíz -->
+<link rel="stylesheet" href="general-styles/ubits-colors.css">
+<link rel="stylesheet" href="general-styles/ubits-typography.css">
+<link rel="stylesheet" href="general-styles/fontawesome-icons.css">
+<link rel="stylesheet" href="components/button.css">
+```
+
+**Available variants:**
+- `ubits-button--primary` (blue)
+- `ubits-button--secondary` (gray)
+- `ubits-button--tertiary` (transparent)
+
+**Available sizes:**
+- `ubits-button--sm` (small - 12px)
+- `ubits-button--md` (medium - 16px)
+- `ubits-button--lg` (large - 20px)
+
+**Available modifiers:**
+- `ubits-button--icon-only` (solo icono, sin texto)
+  - Small: 32x32px
+  - Medium: 40x40px  
+  - Large: 48x48px
+  - Uso: Acciones secundarias, botones de eliminar, controles compactos
+
+**Badge support:**
+- `ubits-button__badge` - Red dot indicator (no text, no border)
+
+**Required files:**
+- `components/button.css`
+- `fontawesome-icons.css` (CRITICAL for icons)
+
+**CRITICAL BUTTON RULES:**
+- ❌ **NEVER create custom buttons** like `<button class="my-button">`
+- ❌ **NEVER override button styles** with custom CSS
+- ❌ **NEVER create button variants** that don't exist
+- ❌ **NEVER use the fictitious class `ubits-button__icon`** - This class DOES NOT EXIST and will break icon rendering
+- ❌ **NEVER use the fictitious class `span`** - This is not a valid class name
+- ✅ **ALWAYS use existing UBITS button classes**
+- ✅ **ALWAYS import required CSS files**
+- ✅ **ALWAYS test button rendering** before finishing
+
+**CRITICAL: PROHIBITED BUTTON CLASSES:**
+- ❌ **`ubits-button__icon`** - DOES NOT EXIST, will break FontAwesome icons
+- ❌ **`span`** - Not a valid class name, use `<span>` without class
+- ❌ **`ubits-button__text`** - DOES NOT EXIST
+- ❌ **`ubits-button__label`** - DOES NOT EXIST
+
+**CORRECT BUTTON STRUCTURE:**
+```html
+<!-- ✅ CORRECT: Use official UBITS button structure -->
+<button class="ubits-button ubits-button--primary ubits-button--md">
+    <i class="far fa-check"></i>
+    <span>Button text</span>
+</button>
+
+<!-- ❌ WRONG: Using fictitious classes -->
+<button class="ubits-button ubits-button--primary ubits-button--md">
+    <i class="ubits-button__icon far fa-check"></i>
+    <span class="span">Button text</span>
+</button>
+```
+
+#### **6. INPUT (Form Fields)**
+```html
+<!-- Container for Input -->
+<div id="mi-input-container"></div>
+
+<!-- JavaScript to create Input -->
+<script>
+// Basic Input
+createInput({
+    containerId: 'mi-input-container',
+    label: 'Nombre',
+    placeholder: 'Escribe tu nombre'
+});
+
+// Input with icons and helper text
+createInput({
+    containerId: 'mi-input-container',
+    label: 'Email',
+    placeholder: 'correo@ejemplo.com',
+    type: 'email',
+    leftIcon: 'fa-envelope',
+    helperText: 'Ingresa tu email válido',
+    showHelper: true
+});
+
+// SELECT with options
+createInput({
+    containerId: 'mi-select',
+    type: 'select',
+    label: 'Categoría',
+    placeholder: 'Selecciona una opción...',
+    selectOptions: [
+        {value: '1', text: 'Opción 1'},
+        {value: '2', text: 'Opción 2'}
+    ]
+});
+
+// TEXTAREA multiline
+createInput({
+    containerId: 'mi-textarea',
+    type: 'textarea',
+    label: 'Comentario',
+    placeholder: 'Escribe tu comentario aquí...'
+});
+
+// SEARCH with clear
+createInput({
+    containerId: 'mi-search',
+    type: 'search',
+    label: 'Búsqueda',
+    placeholder: 'Buscar...'
+});
+
+// AUTOCOMPLETE with suggestions
+createInput({
+    containerId: 'mi-autocomplete',
+    type: 'autocomplete',
+    label: 'Lenguaje',
+    placeholder: 'Escribe un lenguaje...',
+    autocompleteOptions: [
+        {value: '1', text: 'JavaScript'},
+        {value: '2', text: 'TypeScript'}
+    ]
+});
+
+// CALENDAR with date picker
+createInput({
+    containerId: 'mi-calendar',
+    type: 'calendar',
+    label: 'Fecha de nacimiento',
+    placeholder: 'Selecciona una fecha...'
+});
+
+// PASSWORD with toggle show/hide
+createInput({
+    containerId: 'mi-password',
+    type: 'password',
+    label: 'Contraseña',
+    placeholder: 'Ingresa tu contraseña...'
+});
+</script>
+```
+
+**Available types (11 total):**
+- `text` - Input de texto básico
+- `email` - Input de email con validación manual obligatoria
+- `password` - Input de contraseña con toggle mostrar/ocultar
+- `number` - Input numérico
+- `tel` - Input de teléfono con validación manual obligatoria
+- `url` - Input de URL con validación manual obligatoria
+- `select` - Dropdown personalizado con opciones (scroll infinito automático para 50+ opciones)
+- `textarea` - Área de texto multilínea con redimensionamiento vertical
+- `search` - Input de búsqueda con botón limpiar (X) que aparece al escribir
+- `autocomplete` - Input con sugerencias automáticas y botón limpiar
+- `calendar` - Input con date picker personalizado con navegación por mes/año
+
+**Available sizes:**
+- `sm` - Small (32px height)
+- `md` - Medium (40px height) 
+- `lg` - Large (48px height)
+
+**Available states:**
+- `default` - Estado normal
+- `hover` - Al pasar el mouse (borde azul 1px)
+- `focus` - Al enfocar con teclado (borde azul 1px + box-shadow 2px)
+- `invalid` - Estado de error (borde rojo 1px)
+- `disabled` - Estado deshabilitado (fondo gris, cursor not-allowed)
+
+**Features:**
+- Iconos FontAwesome (left/right) con posicionamiento automático
+- Contador de caracteres independiente del helper text
+- Texto mandatory/optional (obligatorio/opcional)
+- **Scroll infinito automático** en SELECT para listas largas (50+ opciones)
+- **Loading visual** con spinner durante la carga
+- **Carga progresiva** de 10 opciones por vez
+- **Validación manual obligatoria** - La automática no funciona confiablemente
+- **Botón limpiar (X)** en SEARCH y AUTOCOMPLETE que aparece al escribir
+- **Toggle mostrar/ocultar** en PASSWORD
+- **Date picker con navegación** por mes/año en CALENDAR
+- Callbacks: onChange, onFocus, onBlur
+- Métodos: getValue(), setValue(), focus(), blur(), disable(), enable(), setState()
+
+**Required files:**
+- `components/input.css`
+- `components/input.js`
+- `ubits-colors.css` (for tokens)
+- `ubits-typography.css` (for typography)
+- `fontawesome-icons.css` (for icons)
+
+**CRITICAL: VALIDACIÓN MANUAL OBLIGATORIA**
+```javascript
+// El componente Input NO incluye validación automática
+// SIEMPRE implementa validación manual:
+
+const emailInput = createInput({
+    containerId: 'mi-email',
+    type: 'email',
+    placeholder: 'correo@ejemplo.com',
+    value: 'email-invalido'
+});
+
+// Agregar validación manual OBLIGATORIA
+setTimeout(() => {
+    const input = document.querySelector('#mi-email input');
+    if (input) {
+        input.addEventListener('input', function() {
+            const value = this.value;
+            if (value.includes('@') && value.includes('.')) {
+                this.style.borderColor = 'var(--ubits-border-1)';
+                this.style.borderWidth = '1px';
+            } else if (value.length > 0) {
+                this.style.borderColor = 'var(--ubits-feedback-accent-error)';
+                this.style.borderWidth = '2px';
+            } else {
+                this.style.borderColor = 'var(--ubits-border-1)';
+                this.style.borderWidth = '1px';
+            }
+        });
+    }
+}, 500);
+```
+
+**REGLAS DE VALIDACIÓN MANUAL:**
+- ✅ **SIEMPRE** implementa validación manual para email, tel, url
+- ✅ **USA estilos inline** - `input.style.borderColor` para garantizar que funcione
+- ✅ **Timeout de 500ms** - Para asegurar que el input esté creado
+- ✅ **Event listener 'input'** - Para validación en tiempo real
+- ❌ **NO existe** validación automática en el componente
+
+**CRITICAL: POSICIONAMIENTO DE DROPDOWN:**
+- ✅ **JavaScript automático** - Aplica `position: relative` al contenedor
+- ✅ **CSS manual** - Si usas CSS, asegúrate de `position: relative` en el contenedor
+- ❌ **Problema común** - Dropdowns aparecen abajo de la página sin `position: relative`
+
+#### **7. CARD CONTENT (Learning Content Cards)**
+```html
+<!-- Container for Card Content -->
+<div id="mi-contenedor-cards"></div>
+
+<!-- JavaScript to load Card Content -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const datosCards = [
+        {
+            type: 'Curso',
+            title: 'Mi contenido de aprendizaje',
+            provider: 'UBITS',
+            providerLogo: '../../images/Favicons/UBITS.jpg',  // ✅ Rutas relativas desde subcarpetas
+            duration: '60 min',
+            level: 'Intermedio',
+            progress: 75,
+            status: 'progress',
+            image: '../../images/cards-learn/mi-imagen.jpg',  // ✅ Rutas relativas desde subcarpetas
+            competency: 'Product design',
+            language: 'Español'
+        }
+    ];
+    
+    loadCardContent('mi-contenedor-cards', datosCards);
+});
+</script>
+```
+
+**Available content types (11 total):**
+- `Curso`, `Cápsula`, `Charla`, `Artículo`, `Podcast`, `Libro`, `Ideas de libro`, `Caso de estudio`, `Documento técnico`, `Ejercicios de práctica`, `Ruta de aprendizaje`
+
+**Available competencies (35 official UBITS):**
+- `Product design`, `Desarrollo de software`, `Liderazgo`, `Marketing digital`, `Inteligencia emocional`, and 30 more
+
+**Available providers (18 official):**
+- `UBITS`, `Microsoft`, `TED`, `AWS`, `Harvard Business Publishing`, `Hubspot`, and 12 more
+
+**Available levels:**
+- `Básico` (far fa-gauge-min), `Intermedio` (far fa-gauge), `Avanzado` (far fa-gauge-max)
+
+**Available statuses:**
+- `default` (no progress), `progress` (blue progress bar), `completed` (green progress bar)
+
+**Required files:**
+- `components/card-content.css`
+- `components/card-content.js`
+- `fontawesome-icons.css` (CRITICAL for icons)
+
+**CRITICAL CARD CONTENT RULES:**
+- ❌ **NEVER create custom card components** when Card Content exists
+- ❌ **NEVER use hardcoded images** - use images from `images/cards-learn/`
+- ❌ **NEVER use invalid competencies** - only use the 35 official UBITS competencies
+- ❌ **NEVER use invalid providers** - only use the 18 official providers with logos
+- ✅ **ALWAYS use existing Card Content component**
+- ✅ **ALWAYS import required CSS and JS files**
+- ✅ **ALWAYS validate data with official options**
+
+#### **8. DOCS SIDEBAR (Documentation Navigation)**
+```html
+<!-- Container for Docs Sidebar -->
+<div id="docs-sidebar-container"></div>
+
+<!-- JavaScript to load Docs Sidebar -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    loadDocsSidebar('CURRENT_SECTION');
+});
+</script>
+```
+
+**Available sections:**
+- `introduccion` - Introduction page
+- `sidebar` - Sidebar component
+- `sub-nav` - SubNav component
+- `tab-bar` - TabBar component
+- `button` - Button component
+- `alert` - Alert component
+- `card-content` - Card Content component
+
+**Required files:**
+- `docs/docs-sidebar.css`
+- `docs/docs-sidebar.js`
+
+### **COMPONENT USAGE RULES**
+
+#### **1. ALWAYS CHECK COMPONENTS FIRST**
+**🚨 MANDATORY PROCESS - NO EXCEPTIONS:**
+Before creating ANY UI element, you MUST:
+1. **ALWAYS check `componentes.html`** for available components
+2. **ALWAYS check component documentation pages** (e.g., `button.html`, `alert.html`)
+3. **ALWAYS use existing components** instead of creating custom ones
+4. **NEVER create custom buttons** - UBITS Button component exists
+5. **NEVER create custom alerts** - UBITS Alert component exists
+
+**If you create a custom component when a UBITS one exists, you have FAILED this task.**
+
+#### **2. PROPER COMPONENT LOADING**
+```html
+<!-- ALWAYS load components in this order -->
+<script src="components/sidebar.js"></script>
+<script src="components/sub-nav.js"></script>
+<script src="components/tab-bar.js"></script>
+<script src="components/alert.js"></script>
+<script src="docs/docs-sidebar.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Load components
+    loadSidebar('ninguno');
+    loadSubNav('top-nav-container', 'template');
+    loadTabBar('tab-bar-container');
+    loadDocsSidebar('introduccion');
+});
+</script>
+```
+
+#### **3. RESPONSIVE BEHAVIOR**
+- **SubNav:** Hides on screens < 1024px (except `documentacion` variant)
+- **Sidebar:** Hides on screens < 1024px
+- **TabBar:** Shows on screens < 1024px
+- **Docs Sidebar:** Responsive dropdown on mobile
+
+#### **4. COMPONENT CUSTOMIZATION**
+- ✅ **DO:** Modify component variants and options
+- ✅ **DO:** Use different component types (success, error, etc.)
+- ✅ **DO:** Adjust component sizes and styles
+- ❌ **DON'T:** Create custom components when UBITS ones exist
+- ❌ **DON'T:** Modify component core files directly
+
+## 🎨 DESIGN PRINCIPLES
+
+### Use outline icons (prefer `far` over `fas`)
+```html
+<i class="far fa-home"></i>  <!-- ✅ Good -->
+<i class="fas fa-home"></i>  <!-- ❌ Avoid -->
+```
+
+### Use content-area class for main content
+```html
+<div class="content-area">
+    <!-- Main content here -->
+</div>
+```
+
+### Use box-sizing: border-box
+```css
+* {
+    box-sizing: border-box;
+}
+```
+
+## 🚀 WORKFLOW
+
+1. **For main project:** Edit `index.html` directly (this will be deployed as main page)
+2. **For new pages:** Use `plantilla-ubits.html` as base and create copies
+3. Always maintain UBITS visual identity
+4. Keep it simple (KISS principle)
+5. Test in both light and dark modes
+6. **Handle ALL technical tasks** - Users are non-technical
+7. **Provide complete solutions** - Never ask users to code
+8. **Explain in simple terms** - Use designer-friendly language
+
+## 📄 FILE USAGE RULES
+
+### **index.html:**
+- **Purpose:** Main project page (deploys to Netlify as homepage)
+- **Usage:** Edit directly for your main project
+- **Deployment:** This is what users see when they visit your site
+
+### **plantilla-ubits.html:**
+- **Purpose:** Template base for creating new pages
+- **Usage:** Clone this file when user needs new pages
+- **Command:** "Open plantilla-ubits.html and create a copy named [new-page].html"
+
+### **componentes.html:**
+- **Purpose:** Main documentation page for components
+- **Content:** Introduction and navigation to all components
+- **Sidebar:** Documentation navigation sidebar
+- **Usage:** Entry point for component documentation
+
+### **sidebar.html:**
+- **Purpose:** Specific documentation for Sidebar component
+- **Content:** Interactive preview, characteristics, and technical documentation
+- **Features:** Functional preview with controls, collapsible technical accordion
+- **Usage:** Detailed component documentation with live examples
+
+### **docs/ folder:**
+- **Purpose:** Documentation system components
+- **Files:** docs-sidebar.js, docs-sidebar.css
+- **Usage:** Reusable navigation for documentation pages
+- **Features:** Responsive, scroll behavior, smooth navigation
+
+## 🎯 SUB-NAV VARIANTES DISPONIBLES
+
+### **Variantes para usuarios:**
+- **`template`** - Plantilla (personalizable)
+- **`aprendizaje`** - Aprendizaje (cursos, catálogos)
+- **`desempeno`** - Desempeño (evaluaciones, métricas)
+- **`encuestas`** - Encuestas (gestión de encuestas)
+- **`tareas`** - Tareas (planes, proyectos)
+
+### **Variante reservada:**
+- **`documentacion`** - Solo para el desarrollador principal
+
+## 🎯 SIDEBAR Y TAB-BAR OPCIONES
+
+### **Sidebar - 2 Variantes Disponibles:**
+
+#### **Variante Default:**
+- **Body:** `admin`, `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`, `reclutamiento`, `tareas`, `ubits-ai`, `ninguno`
+- **Footer:** Modo oscuro, Perfil
+- **Profile Menu:** Ver mi perfil, Modo Administrador, Cambio de contraseña, Cerrar sesión
+- **Ejemplo:**
+  ```html
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+      loadSidebar('default', 'aprendizaje');
+  });
+  </script>
+  ```
+
+#### **Variante Admin:**
+- **Body:** `inicio`, `empresa`, `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`
+- **Footer:** API, Centro de ayuda, Modo oscuro, Perfil
+- **Profile Menu:** Ver mi perfil, Modo colaborador, Cambio de contraseña, Cerrar sesión
+- **Ejemplo:**
+  ```html
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+      loadSidebar('admin', 'inicio');
+  });
+  </script>
+  ```
+
+### **Tab-bar responsive:**
+- **Opciones:** `modulos`, `perfil`, `modo-oscuro`
+
+## 📝 PROMPTS Y PERSONALIZACIÓN
+
+### **Guía de Prompts:**
+- **Ubicación:** `documentacion/guia-prompts.html`
+- **4 prompts disponibles:** Clonar repositorio, Crear página inicio, Crear nueva página, Actualizar repositorio
+- **Uso:** Algunos prompts requieren personalización antes de usar
+- **Personalización:** Reemplazar textos entre [corchetes] con información específica
+- **Flujo:** Copiar → Personalizar → Enviar a Cursor AI
+
+### **🚨 MANDATORY: COMPONENT CHECK IN PROMPTS**
+**ALL prompts MUST include this verification step:**
+- **ALWAYS check `documentacion/componentes.html`** before creating any UI element
+- **NEVER create custom buttons** - UBITS Button component exists
+- **NEVER create custom alerts** - UBITS Alert component exists
+- **ALWAYS use existing UBITS components** from the template
+
+## 🎯 ESTRUCTURA MODULAR (NUEVO SISTEMA)
+
+### **IMPORTANTE: TODAS LAS PÁGINAS USAN ESTRUCTURA MODULAR**
+Todas las páginas del template (excepto documentación) ahora usan un sistema modular de secciones y widgets inspirado en `profile.html`.
+
+### **SISTEMA DE SECCIONES:**
+```html
+<div class="content-sections">
+    <!-- Sección de 1 columna -->
+    <div class="section-single">
+        <div class="widget-nombre">
+            <p class="ubits-body-md-regular">Nombre del widget</p>
+            <br><br><br> <!-- Ajustar altura según necesidad -->
+        </div>
+    </div>
+    
+    <!-- Sección de 2 columnas -->
+    <div class="section-dual">
+        <div class="widget-nombre1">
+            <p class="ubits-body-md-regular">Widget 1</p>
+            <br><br><br><br><br>
+        </div>
+        <div class="widget-nombre2">
+            <p class="ubits-body-md-regular">Widget 2</p>
+            <br><br><br><br><br>
+        </div>
+    </div>
+    
+    <!-- Sección de 3 columnas -->
+    <div class="section-triple">
+        <div class="widget-a">...</div>
+        <div class="widget-b">...</div>
+        <div class="widget-c">...</div>
+    </div>
+    
+    <!-- Sección de 4 columnas -->
+    <div class="section-quad">
+        <div class="widget-a">...</div>
+        <div class="widget-b">...</div>
+        <div class="widget-c">...</div>
+        <div class="widget-d">...</div>
+    </div>
+</div>
+```
+
+### **PROMPTS PARA PERSONALIZACIÓN:**
+
+#### **Añadir secciones:**
+- "Añade una section-dual con widget-estadisticas y widget-progreso después de Banner principal"
+- "Añade una section-single llamada widget-anuncios con 8 br de altura al final"
+
+#### **Modificar secciones:**
+- "Cambia el nombre del widget-contenido a 'Dashboard principal'"
+- "Añade 5 br al widget-banner para hacerlo más alto"
+- "Quita 3 br al widget-busqueda para hacerlo más compacto"
+
+#### **Reemplazar secciones:**
+- "Reemplaza la section-single de 'Banner' por una section-dual con widget-hero y widget-stats"
+
+#### **Eliminar secciones:**
+- "Elimina la sección de 'Aliados destacados'"
+- "Elimina todas las secciones que están debajo de 'Contenido principal'"
+
+### **CARACTERÍSTICAS DEL SISTEMA:**
+- **Sin altura mínima forzada**: Los widgets se adaptan a su contenido
+- **Responsive**: Las secciones multi-columna se apilan en móvil
+- **Espaciados consistentes**: 16px entre secciones, 20px entre columnas
+- **Paddings**: 16px desktop, 12px mobile
+- **Sin elevaciones**: Diseño plano sin box-shadow
+
+### **ARCHIVOS CON ESTRUCTURA MODULAR:**
+- `ubits-colaborador/aprendizaje/home-learn.html` - 9 secciones variadas (ejemplo completo)
+- `ubits-colaborador/aprendizaje/catalogo.html` - 2 secciones básicas
+- `ubits-colaborador/aprendizaje/u-corporativa.html` - 3 secciones específicas
+- `ubits-colaborador/aprendizaje/zona-estudio.html` - 2 secciones con tabs
+- `ubits-colaborador/diagnostico/diagnostico.html` - 1 sección enfocada
+- `ubits-colaborador/desempeno/evaluaciones-360.html` - 1 sección específica
+- `ubits-colaborador/desempeno/objetivos.html` - 1 sección específica
+- `ubits-colaborador/desempeno/metricas.html` - 1 sección específica
+- `ubits-colaborador/desempeno/reportes.html` - 1 sección específica
+- `ubits-colaborador/encuestas/encuestas.html` - 1 sección específica
+- `ubits-colaborador/reclutamiento/reclutamiento.html` - 1 sección específica
+- `ubits-colaborador/tareas/planes.html` - 1 sección específica
+- `ubits-colaborador/tareas/tareas.html` - 1 sección específica
+- `index.html` - 1 sección básica (ubicada en raíz)
+- `documentacion/plantilla-ubits.html` - 1 sección base (template)
+
+### **VENTAJAS DEL SISTEMA:**
+1. **Fácil de entender**: Nombres semánticos claros
+2. **Flexible**: Cualquier combinación de columnas y alturas
+3. **Reutilizable**: Widgets se pueden usar en cualquier página
+4. **Escalable**: Fácil añadir nuevos tipos de secciones
+5. **Consistente**: Misma experiencia en todas las páginas
+
+### **REGLAS IMPORTANTES:**
+- **SIEMPRE** usar `content-sections` como contenedor principal
+- **SIEMPRE** usar nombres descriptivos para widgets (widget-dashboard, widget-stats, etc.)
+- **NUNCA** usar alturas mínimas forzadas
+- **SIEMPRE** mantener tokens UBITS y navegación correcta
+- **SIEMPRE** verificar responsive y modo oscuro
+
+## ⚠️ VERIFICATION CHECKLIST
+
+Before finishing any task, verify:
+- [ ] **NO SERVER REQUIRED:** Files work by double-clicking (no npm, yarn, or server needed)
+- [ ] **TITLE ALIGNMENT:** Product interfaces have left-aligned titles (NOT centered)
+- [ ] **COMPONENTS:** Using existing UBITS components (NOT custom buttons/alerts)
+- [ ] **DOC PAGES (documentacion/componentes/):** No tab bar, floating menu, nor profile menu; use `component-doc-template.html` as base and `button.html` as structure reference
+- [ ] **COMPONENTS:** Checked `componentes.html` before creating any UI element
+- [ ] **COMPONENTS:** NO custom buttons created (UBITS Button component exists)
+- [ ] **COMPONENTS:** NO custom alerts created (UBITS Alert component exists)
+- [ ] **COLORS:** Using UBITS tokens ONLY (NO custom colors or gradients)
+- [ ] No hardcoded colors (#303a47, #ffffff, etc.)
+- [ ] **TYPOGRAPHY:** All text uses UBITS typography classes from official list
+- [ ] **TYPOGRAPHY:** NO invented classes like ubits-h1, ubits-h2, ubits-title, ubits-text, ubits-paragraph
+- [ ] **TYPOGRAPHY:** NO headings h3, h4, h5, h6 (use ubits-body-md-bold instead)
+- [ ] **TYPOGRAPHY:** All classes verified against official UBITS typography guide
+- [ ] **TYPOGRAPHY:** BEFORE using any class, CHECKED it exists in official list
+- [ ] **TYPOGRAPHY:** NO HTML tags without UBITS classes
+- [ ] `general-styles/ubits-colors.css` is imported (desde subcarpetas: `../../general-styles/ubits-colors.css`)
+- [ ] `general-styles/ubits-typography.css` is imported (desde subcarpetas: `../../general-styles/ubits-typography.css`)
+- [ ] **`general-styles/fontawesome-icons.css` is imported** (CRITICAL for components with icons, desde subcarpetas: `../../general-styles/fontawesome-icons.css`)
+- [ ] Colors change in dark mode
+- [ ] Borders use var(--ubits-border-1) by default
+- [ ] No text tokens used for borders
+- [ ] **ICONS:** All icons render correctly (test visually)
+- [ ] **ICONS:** Using outline icons (`far` not `fas`)
+- [ ] **COMPONENTS:** Using existing UBITS components instead of custom ones
+- [ ] **COMPONENTS:** Proper component loading with correct JavaScript functions
+- [ ] **COMPONENTS:** Correct component variants and options
+- [ ] **COMPONENTS:** Required CSS and JS files are imported
+- [ ] **COMPONENT CSS:** Each component has its specific CSS imported (see Component CSS Requirements below)
+- [ ] **CLASSES:** NO fictitious classes like ubits-button__icon, span, ubits-button__text
+- [ ] **CLASSES:** All button elements use correct structure: <i class="far fa-icon"></i> <span>text</span>
+- [ ] **CLASSES:** JavaScript selectors use correct element names: querySelector('i'), querySelector('span')
+
+## 🚨 COMPONENT CSS REQUIREMENTS (CRITICAL)
+
+### **MANDATORY: EACH COMPONENT NEEDS ITS CSS**
+**BEFORE using ANY UBITS component, you MUST import its corresponding CSS file:**
+
+#### **COMPONENT → CSS MAPPING (CRITICAL):**
+```html
+<!-- ✅ ALWAYS import the CSS for each component you use -->
+
+<!-- Button component -->
+<!-- Desde subcarpetas: <link rel="stylesheet" href="../../components/button.css"> -->
+<!-- Desde la raíz: <link rel="stylesheet" href="components/button.css"> -->
+<!-- Required when using: ubits-button classes -->
+
+<!-- Alert component -->
+<!-- Desde subcarpetas: <link rel="stylesheet" href="../../components/alert.css"> -->
+<!-- Desde la raíz: <link rel="stylesheet" href="components/alert.css"> -->
+<!-- Required when using: ubits-alert classes or showAlert() -->
+
+<!-- Radio Button component -->
+<!-- Desde subcarpetas: <link rel="stylesheet" href="../../components/radio-button.css"> -->
+<!-- Desde la raíz: <link rel="stylesheet" href="components/radio-button.css"> -->
+<!-- Required when using: ubits-radio, ubits-radio__input, ubits-radio__circle, ubits-radio__label. Sin este CSS los radios se ven como inputs nativos. -->
+
+<!-- Toast component -->
+<!-- Desde subcarpetas: <link rel="stylesheet" href="../../components/toast.css"> -->
+<!-- Desde la raíz: <link rel="stylesheet" href="components/toast.css"> -->
+<!-- Required when using: showToast() -->
+
+<!-- Input component -->
+<!-- Desde subcarpetas: <link rel="stylesheet" href="../../components/input.css"> -->
+<!-- Desde la raíz: <link rel="stylesheet" href="components/input.css"> -->
+<!-- Required when using: createInput() -->
+
+<!-- Modal component -->
+<!-- Desde subcarpetas: <link rel="stylesheet" href="../../components/modal.css"> -->
+<!-- Desde la raíz: <link rel="stylesheet" href="components/modal.css"> -->
+<!-- Required when using: openModal() or ubits-modal classes -->
+
+<!-- SubNav component -->
+<!-- Desde subcarpetas: <link rel="stylesheet" href="../../components/sub-nav.css"> -->
+<!-- Desde la raíz: <link rel="stylesheet" href="components/sub-nav.css"> -->
+<!-- Required when using: loadSubNav() -->
+
+<!-- Sidebar component -->
+<link rel="stylesheet" href="../../components/sidebar.css">
+<!-- Required when using: loadSidebar() -->
+<!-- From root: <link rel="stylesheet" href="components/sidebar.css"> -->
+
+<!-- TabBar component -->
+<link rel="stylesheet" href="components/tab-bar.css">
+<!-- Required when using: loadTabBar() -->
+
+<!-- Floating Menu component -->
+<link rel="stylesheet" href="components/floating-menu.css">
+<!-- Required when using: loadFloatingMenu() -->
+
+<!-- Profile Menu component -->
+<link rel="stylesheet" href="components/profile-menu.css">
+<!-- Required when using: loadProfileMenu() -->
+
+<!-- Card Content component -->
+<link rel="stylesheet" href="components/card-content.css">
+<!-- Required when using: loadCardContent() -->
+```
+
+### **CRITICAL COMPONENT CSS RULES:**
+- ❌ **NEVER use components without their CSS** - They will look broken/deformed
+- ❌ **NEVER assume CSS is inherited** - Each component needs its specific CSS
+- ✅ **ALWAYS import component CSS BEFORE custom CSS** - Prevents overrides
+- ✅ **ALWAYS test visual appearance** - Verify components look correct
+- ✅ **ALWAYS check button proportions** - Icon-only buttons should be square
+
+### **COMMON CSS IMPORT MISTAKES TO AVOID:**
+- ❌ Using `ubits-button` without `components/button.css` → Deformed buttons
+- ❌ Using `ubits-radio` without `components/radio-button.css` → Radios se ven nativos/rotos (no como UBITS)
+- ❌ Using `loadSidebar()` without `components-sidebar.css` → Broken sidebar styles
+- ❌ Using `showAlert()` without `components/alert.css` → Unstyled alerts
+- ❌ Using `showToast()` without `components/toast.css` → Unstyled toasts
+- ❌ Importing component CSS AFTER custom CSS → Styles get overridden
+
+### **CSS IMPORT ORDER (MANDATORY):**
+```html
+<!-- ✅ CORRECT ORDER: -->
+<link rel="stylesheet" href="ubits-colors.css">
+<link rel="stylesheet" href="fontawesome-icons.css">
+<link rel="stylesheet" href="ubits-typography.css">
+<link rel="stylesheet" href="components/button.css">
+<link rel="stylesheet" href="components-sidebar.css">
+<link rel="stylesheet" href="components/sub-nav.css">
+<link rel="stylesheet" href="components/tab-bar.css">
+<!-- Component CSS BEFORE custom CSS -->
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="profile.css">
+```
+
+- [ ] **CLASSES:** JavaScript selectors use correct element names: querySelector('i'), querySelector('span')
+
+## 🔍 VALIDADOR UBITS - CONTROL DE CALIDAD
+
+### **MANDATORY: USE VALIDATOR BEFORE FINISHING**
+**ALWAYS validate your pages with the UBITS Validator before considering them complete:**
+
+#### **How to use the validator:**
+1. **Open**: `validador-ubits.html` in browser
+2. **Drag & Drop**: Your HTML file to the validator
+3. **Review**: All errors and warnings detected
+4. **Copy**: The generated Cursor prompt if there are issues
+5. **Paste**: The prompt in Cursor to auto-fix all problems
+6. **Repeat**: Until you achieve 100% UBITS score
+
+#### **What the validator detects:**
+- ✅ **Hardcoded colors**: Detects #fff, #000, rgba(), rgb(), hsl() patterns
+- ✅ **Invalid typography classes**: Finds ubits-h1, ubits-title, ubits-heading-h3, etc.
+- ✅ **Custom buttons**: Detects buttons not using ubits-button
+- ✅ **Missing component CSS**: Validates each component has its required CSS
+- ✅ **Missing imports**: Checks for ubits-colors.css, ubits-typography.css, fontawesome-icons.css
+
+#### **Validator generates automatic prompts:**
+When issues are found, the validator creates a detailed prompt for Cursor with:
+- 🔴 **Critical errors list**: Specific problems found
+- 🟡 **Warnings list**: Recommendations for improvement  
+- 📋 **Specific instructions**: Exact steps to fix each issue
+- ✅ **Verification checklist**: Final checks to ensure quality
+- 🎯 **Clear objective**: Achieve 100% UBITS score
+
+#### **CRITICAL: ALWAYS AIM FOR 100% SCORE**
+- ❌ **NEVER ignore validator warnings** - They indicate real problems
+- ❌ **NEVER skip validation** - It catches subtle but important issues
+- ✅ **ALWAYS fix all detected issues** - Use the generated prompts
+- ✅ **ALWAYS re-validate** - After making changes, validate again
+- ✅ **ALWAYS achieve 100%** - Only consider page complete at 100% score
+
+### **VALIDATOR SUCCESS EXAMPLES:**
+- `overview.html`: Detected 15 hardcoded colors → Replaced with UBITS tokens
+- `iconos.html`: Detected invalid `ubits-heading-h3` → Replaced with `ubits-body-md-bold`
+- `guia-prompts.html`: Detected rgba() colors in shadows → Removed elevations
+
+- [ ] **CLASSES:** JavaScript selectors use correct element names: querySelector('i'), querySelector('span')
+
+## 🚫 LANDING HEADERS - DO NOT USE IN PRODUCT
+
+### LARGE HEADERS WITH HERO SECTIONS
+```html
+<!-- ❌ DO NOT use in product interfaces -->
+<div class="hero-section">
+    <h1 class="ubits-display-d2-bold">Main Title</h1>
+    <h2 class="ubits-display-d3-semibold">Subtitle</h2>
+    <p class="ubits-body-lg-regular">Long description...</p>
+</div>
+```
+
+**When TO use:**
+- ✅ Documentation pages
+- ✅ Marketing landing pages
+- ✅ Presentation pages
+
+**When NOT to use:**
+- ❌ Product interfaces (dashboards, forms, lists)
+- ❌ Reusable components
+- ❌ Functional application pages
+
+**For product interfaces use:**
+```html
+<!-- ✅ Use in product interfaces -->
+<div class="page-header">
+    <h1 class="ubits-h1">Page title</h1>
+    <p class="ubits-body-md-regular">Brief description only if needed</p>
+</div>
+```
+
+### **🚨 CRITICAL: PÁGINAS SIN SUBNAV - MARGIN SUPERIOR EN MÓVIL**
+
+**PROBLEMA IDENTIFICADO:** Cuando se quita el SubNav de una página, el `content-area` se ve pegado al borde superior en móvil.
+
+**SOLUCIÓN OBLIGATORIA:** Añadir este CSS en páginas sin SubNav:
+
+```css
+/* Fix para páginas sin SubNav - margin superior en móvil */
+@media (max-width: 1023px) {
+    .content-area {
+        margin-top: 0 !important;
+    }
+}
+```
+
+**CUÁNDO APLICAR:**
+- ✅ **SIEMPRE** cuando se quite el SubNav de una página
+- ✅ **SIEMPRE** cuando se comente `<div id="top-nav-container"></div>`
+- ✅ **SIEMPRE** cuando se comente `loadSubNav()` en JavaScript
+
+**ARCHIVOS QUE YA LO TIENEN:**
+- `ubits-colaborador/perfil/profile.html` ✅
+- `diagnostico.html` ✅  
+- `reclutamiento.html` ✅
+
+**EJEMPLO DE IMPLEMENTACIÓN:**
+```html
+<style>
+    /* ... otros estilos ... */
+    
+    /* Fix para páginas sin SubNav - margin superior en móvil */
+    @media (max-width: 1023px) {
+        .content-area {
+            margin-top: 0 !important;
+        }
+    }
+</style>
+```
+
+**VALIDACIÓN:**
+- ✅ **Verificar** que en móvil el contenido no esté pegado al borde superior
+- ✅ **Probar** en diferentes tamaños de pantalla móvil
+- ✅ **Confirmar** que el espaciado se ve correcto
+
+### 12. TITLES AND TEXT (SENTENCE CASE)
+```html
+<!-- ❌ NEVER use titles in all caps -->
+<h1>My Important Title</h1>
+<h2>Navigation Section</h2>
+
+<!-- ✅ ALWAYS use sentence case -->
+<h1>My important title</h1>
+<h2>Navigation section</h2>
+```
+
+**MANDATORY RULES:**
+- ✅ **Only first letter** capitalized
+- ✅ **Proper nouns** remain (e.g., "UBITS", "JavaScript")
+- ✅ **Acronyms** remain (e.g., "API", "CSS", "HTML")
+- ✅ **Apply to:** titles, subtitles, labels, buttons, links
+
+## 🎯 REMEMBER
+
+**The value of this template is speed and ease of use.**
+**Without tokens = No UBITS identity.**
+**With tokens = Authentic UBITS interfaces in record time.**
+
+## 📋 QUICK REFERENCE
+
+### Essential Files
+- `index.html` - Main project page
+- `plantilla-ubits.html` - Template for new pages
+- `ubits-colors.css` - Color tokens
+- `ubits-typography.css` - Typography classes
+- `components/` - Reusable components
+
+### Key Components
+- **SubNav** - Top navigation (variants: template, aprendizaje, desempeno, encuestas, tareas, documentacion)
+- **Sidebar** - Left navigation (options: admin, aprendizaje, diagnóstico, desempeño, encuestas, reclutamiento, tareas, ubits-ai, ninguno)
+- **TabBar** - Mobile navigation (options: modulos, perfil, modo-oscuro)
+- **Alert** - Notifications (types: success, info, warning, error; with/without close button)
+- **Button** - Actions (variants: primary, secondary, tertiary; sizes: sm, md, lg)
+- **Docs Sidebar** - Documentation navigation (sections: introduccion, sidebar, sub-nav, tab-bar, button, alert)
+
+### Component Files
+- `components/sub-nav.css` + `components/sub-nav.js` - SubNav component
+- `components/sidebar.js` + `components-sidebar.css` - Sidebar component  
+- `components/tab-bar.css` + `components/tab-bar.js` - TabBar component
+- `components/floating-menu.css` + `components/floating-menu.js` - Floating Menu component
+- `components/alert.css` + `components/alert.js` - Alert component
+- `components/toast.css` + `components/toast.js` - Toast component
+- `components/modal.css` + `components/modal.js` - Modal component
+- `components/button.css` - Button component
+- `docs/docs-sidebar.css` + `docs/docs-sidebar.js` - Docs Sidebar component
+
+## 🎯 FLOATING MENU (Modal Navigation)
+
+### **CRITICAL: ACTIVATING SPECIFIC ITEMS AUTOMATICALLY**
+
+When user requests to show a specific item as active in the floating menu, use this process:
+
+#### **1. FOR DIRECT LINKS (ubits-ai, encuestas):**
+```javascript
+// In the specific HTML page, add this to DOMContentLoaded:
+setTimeout(() => {
+    setActiveDirectLink('ITEM_ID');
+}, 500);
+```
+
+#### **2. FOR ACCORDION SUBITEMS (inicio, catalogo, etc.):**
+```javascript
+// In the specific HTML page, add this to DOMContentLoaded:
+setTimeout(() => {
+    setActiveAccordionLink('ITEM_ID');
+}, 500);
+```
+
+#### **3. AVAILABLE ITEM IDS:**
+**Direct Links:**
+- `ubits-ai` - UBITS AI page
+- `encuestas` - Encuestas page
+
+**Accordion Subitems:**
+- `inicio` - Aprendizaje > Inicio (ubits-colaborador/aprendizaje/home-learn.html)
+- `catalogo` - Aprendizaje > Catálogo
+- `corporativa` - Aprendizaje > U. Corporativa
+- `zona-estudio` - Aprendizaje > Zona de estudio
+- `evaluaciones` - Diagnóstico > Evaluaciones 360
+- `objetivos` - Diagnóstico > Objetivos
+- `metricas` - Desempeño > Métricas
+- `reportes` - Desempeño > Reportes
+- `planes` - Tareas > Planes
+- `tareas` - Tareas > Tareas
+
+#### **4. REQUIRED CSS RULES (ALREADY IMPLEMENTED):**
+```css
+/* Direct Links Active States */
+.accordion-link.direct-link.active span {
+    color: var(--ubits-sidebar-button-bg-active) !important;
+    font-weight: 600;
+}
+
+.accordion-link.direct-link.active .accordion-chevron {
+    color: var(--ubits-sidebar-button-bg-active) !important;
+}
+
+.accordion-link.direct-link.active .accordion-icon-circle {
+    background: var(--ubits-sidebar-button-bg-active) !important;
+}
+
+.accordion-link.direct-link.active .accordion-icon-circle i {
+    color: var(--ubits-sidebar-button-fg-active) !important;
+}
+
+/* Regular Accordion Links Active States */
+.accordion-link.active span {
+    color: var(--ubits-sidebar-button-bg-active) !important;
+    font-weight: 600;
+}
+
+.accordion-title.active span {
+    color: var(--ubits-sidebar-button-bg-active) !important;
+    font-weight: 700;
+}
+```
+
+#### **5. EXAMPLE IMPLEMENTATION:**
+```html
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    loadSidebar('ubits-ai');
+    loadTabBar('tab-bar-container');
+    loadFloatingMenu('floating-menu-container');
+    loadProfileMenu('profile-menu-container');
+    
+    // Activate UBITS AI in floating menu
+    setTimeout(() => {
+        setActiveDirectLink('ubits-ai');
+    }, 500);
+});
+</script>
+```
+
+#### **6. FLOATING MENU STRUCTURE:**
+- **Aprendizaje** (accordion with subitems)
+  - Inicio, Catálogo, U. Corporativa, Zona de estudio
+- **Diagnóstico** (accordion with subitems)
+  - Evaluaciones 360, Objetivos
+- **Desempeño** (accordion with subitems)
+  - Métricas, Reportes
+- **Encuestas** (direct link)
+- **Tareas** (accordion with subitems)
+  - Planes, Tareas
+- **UBITS AI** (direct link)
+
+#### **8. TROUBLESHOOTING:**
+- **Item not showing active?** Check if CSS rules exist for that item type
+- **JavaScript not working?** Ensure setTimeout is used (DOM loading timing)
+- **Wrong item ID?** Verify the ID matches the floating menu structure
+
+## 🎯 RESUMEN EJECUTIVO PARA AGENTES AI
+
+### **📋 CHECKLIST RÁPIDO - LEE ESTO PRIMERO:**
+
+#### **🚨 ANTES DE CUALQUIER TAREA:**
+1. ✅ **Check `documentacion/componentes.html`** - Ver qué componentes UBITS existen
+2. ✅ **Never create custom** - Usar solo componentes UBITS existentes
+3. ✅ **Import component CSS** - Cada componente necesita su CSS (rutas relativas: `../../components/...`)
+4. ✅ **Use UBITS tokens** - Solo `var(--ubits-*)`, nunca colores hardcodeados
+5. ✅ **Validate with `documentacion/validador-ubits.html`** - Objetivo: 100% score
+
+#### **🎯 USUARIOS SON NO-TÉCNICOS:**
+- ❌ **NEVER ask users** to run commands, install things, or code
+- ✅ **ALWAYS handle** all technical tasks yourself
+- ✅ **Files must work** by double-clicking (no servers)
+
+#### **🧩 COMPONENTES CRÍTICOS:**
+- **Buttons**: `ubits-button` + `components/button.css`
+- **Radio buttons**: `ubits-radio` + `components/radio-button.css` (obligatorio en cada página que use radios)
+- **Alerts**: `ubits-alert` + `components/alert.css`
+- **Toasts**: `showToast()` + `components/toast.css`
+- **Navigation**: `loadSidebar()` + `components/sidebar.css` (desde subcarpetas: `../../components/sidebar.css`)
+- **Typography**: Only official classes (`ubits-heading-h1`, `ubits-body-md-regular`)
+
+#### **🔍 VALIDATION WORKFLOW:**
+1. **Create/modify** page following UBITS rules
+2. **Open** `documentacion/validador-ubits.html` in browser
+3. **Drag & drop** your HTML file
+4. **Copy** generated prompt if issues found
+5. **Fix** all issues until 100% score
+
+#### **📁 KEY FILES TO KNOW:**
+- **`documentacion/componentes.html`** - Component library (check first)
+- **`documentacion/validador-ubits.html`** - Quality validator (use always)
+- **`documentacion/plantilla-ubits.html`** - Base template for new pages
+- **`documentacion/componentes/component-doc-template.html`** - Base template for component docs (doc pages only)
+- **`documentacion/componentes/button.html`** - Reference structure for component docs (Hero → Preview → Características → Prompts → Doc técnica colapsable)
+- **`ubits-colaborador/perfil/profile.html`** - Modular structure example
+
+### **🚀 SUCCESS FORMULA:**
+**UBITS Components + UBITS Tokens + Component CSS + Validation = Perfect UBITS Interface**
+
+### **⚠️ COMMON FAILURES TO AVOID:**
+- Creating custom buttons when `ubits-button` exists
+- Using hardcoded colors instead of UBITS tokens
+- Using components without importing their CSS
+- **🚨 NEVER override official UBITS components** - Don't create custom styles for `.course-card`, `.ubits-alert`, `.ubits-button`, etc. in global CSS files
+- Skipping validation before finishing
+- Asking users to do technical tasks
+
+## 🚨 MANDATORY: VERIFY AVAILABLE RESOURCES
+
+**BEFORE using ANY image, competency, or provider:**
+
+1. **ALWAYS check `images/cards-learn/`** for available course images (85 images available)
+2. **ALWAYS check `images/Favicons/`** for available provider logos (18 providers available)
+3. **ALWAYS check `images/empty-states/`** for available empty state images (2 SVG files)
+4. **ALWAYS check `images/Profile-image.jpg`** for user avatar
+5. **ALWAYS check `components/card-content.js`** for official competencies list (35 competencies)
+6. **NEVER invent resource names** that don't exist
+7. **ALWAYS verify** resource paths before implementation
+8. **🚨 CRITICAL: Image paths are relative to HTML** - NOT to JavaScript:
+   - From subcarpetas (`ubits-admin/*`, `ubits-colaborador/*`): use `../../images/...`
+   - From root: use `images/...`
+9. **For other images** - Use external services like Unsplash with proper attribution
+
+**This prevents broken images and invalid data.**
+
+## 🎯 COMPETENCIES OFFICIAL UBITS (35 TOTAL)
+
+### **Available competencies:**
+- `Accountability`
+- `Administración de negocios`
+- `Agilidad`
+- `Comunicación`
+- `Cumplimiento (Compliance)`
+- `Data skills`
+- `Desarrollo de software`
+- `Desarrollo web`
+- `Digital skills`
+- `e-Commerce`
+- `Emprendimiento`
+- `Experiencia del cliente`
+- `Gestión de procesos y operaciones`
+- `Gestión de proyectos`
+- `Gestión de recursos tecnológicos`
+- `Gestión del cambio`
+- `Gestión del riesgo`
+- `Gestión financiera`
+- `Herramientas tecnológicas`
+- `Inglés`
+- `Innovación`
+- `Inteligencia emocional`
+- `Lenguajes de Programación`
+- `Liderazgo`
+- `Marketing`
+- `Marketing digital`
+- `Negociación`
+- `People management`
+- `Product design`
+- `Productividad`
+- `Resolución de problemas`
+- `Trabajo en equipo`
+- `Ventas`
+- `Wellness`
+
+### **⚠️ CRITICAL RULES:**
+- **NEVER invent competencies** that don't exist
+- **ALWAYS use** only competencies from this official list
+- **ALWAYS verify** competency spelling exactly as listed
+
+## 🚨 NO SOBRESCRIBIR COMPONENTES OFICIALES UBITS
+
+**CRITICAL RULE:** NUNCA crear estilos custom para componentes oficiales en archivos globales.
+
+### **❌ PROHIBIDO:**
+- Crear estilos para `.course-card`, `.course-image`, `.course-content` en `profile.css` o `styles.css`
+- Crear estilos para `.ubits-alert`, `.ubits-button`, `.ubits-input` en archivos globales
+- Sobrescribir cualquier clase que pertenezca a componentes oficiales UBITS
+
+### **✅ PERMITIDO:**
+- Usar componentes oficiales de `/components/` sin modificar
+- Crear clases wrapper específicas (ej: `.mi-seccion .course-card`)
+- Usar selectores contextuales para personalización limitada
+
+### **🔍 ARCHIVOS A REVISAR:**
+- `profile.css` - Puede tener código legacy
+- `styles.css` - Solo estilos globales del layout
+- Cualquier CSS custom debe usar selectores específicos, NO globales
+
+### **🛠️ SI ENCUENTRAS CONFLICTOS:**
+1. **ELIMINA** los estilos legacy que sobrescriben componentes oficiales
+2. **DEJA** un comentario explicativo
+3. **USA** el componente oficial sin modificar
+
+**🎯 REMEMBER: Speed + UBITS Identity = Project Value**
+
+<!-- Last updated: October 2024 -->

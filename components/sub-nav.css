@@ -1,0 +1,693 @@
+/* ========================================
+   TOP NAVIGATION COMPONENT
+   ======================================== */
+
+/* Importar tokens de color UBITS */
+@import url('../ubits-colors.css');
+
+/* Sub Navigation Base */
+.sub-nav {
+    background-color: var(--ubits-bg-1);
+    height: 40px;
+    border-radius: var(--border-radius-sm);
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    gap: var(--gap-md);
+    position: relative;
+    z-index: 1001;
+    /* Crear stacking context para que el dropdown esté por encima del buscador */
+}
+
+/* Client Logo */
+.sub-nav-logo {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    height: 100%;
+}
+
+.sub-nav-logo-img {
+    height: 24px;
+    width: auto;
+    object-fit: contain;
+    display: block;
+}
+
+/* Nav Tabs Container */
+.nav-tabs {
+    display: flex;
+    gap: var(--gap-sm);
+    align-items: center;
+    height: 100%;
+    flex: 1;
+}
+
+/* Nav Right Container */
+.nav-right {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    position: relative;
+}
+
+/* Posicionar dropdown desde el sub-nav principal */
+.sub-nav {
+    position: relative;
+}
+
+/* Nav Title */
+.nav-title {
+    font-family: 'Noto Sans', sans-serif;
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-md);
+    line-height: 24px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* Hamburger Menu */
+.hamburger-menu {
+    background: none;
+    border: none;
+    padding: var(--padding-sm);
+    cursor: pointer;
+    display: none;
+    /* Oculto por defecto en desktop */
+    align-items: center;
+    justify-content: center;
+    color: var(--ubits-fg-1-medium);
+    transition: color 0.3s ease;
+}
+
+.hamburger-menu:hover {
+    color: var(--ubits-fg-1-high);
+}
+
+.hamburger-menu i {
+    font-size: var(--font-size-h2);
+}
+
+/* Hamburger Dropdown */
+.hamburger-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    width: 100%;
+    background-color: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1002;
+    /* Mayor que el buscador (1000) y sus sugerencias (1000) */
+    display: none;
+    flex-direction: column;
+    padding: var(--padding-sm) 0;
+    margin-top: 4px;
+}
+
+.hamburger-dropdown.show {
+    display: flex;
+}
+
+/* Hamburger Items */
+.hamburger-item {
+    background: none;
+    border: none;
+    padding: var(--padding-md) var(--padding-lg);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+    width: 100%;
+    text-align: left;
+    transition: background-color 0.2s ease;
+    color: var(--ubits-fg-1-medium);
+}
+
+.hamburger-item:hover {
+    background-color: var(--ubits-bg-2);
+    color: var(--ubits-fg-1-high);
+}
+
+.hamburger-item.active {
+    background-color: var(--ubits-bg-active);
+    color: var(--ubits-accent-brand) !important;
+    font-weight: var(--font-weight-semibold);
+}
+
+.hamburger-item.active i {
+    color: var(--ubits-accent-brand) !important;
+}
+
+.hamburger-item.active span {
+    color: var(--ubits-accent-brand) !important;
+}
+
+.hamburger-item i {
+    font-size: var(--font-size-md);
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.hamburger-item span {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    line-height: 20px;
+    white-space: nowrap;
+}
+
+/* Individual Nav Tab */
+.nav-tab {
+    background: none;
+    border: none;
+    padding: var(--padding-sm);
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    gap: var(--gap-sm);
+    align-items: center;
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    border-radius: var(--border-radius-none);
+}
+
+/* Nav Tab Icon */
+.nav-tab i {
+    font-size: var(--font-size-md);
+    color: var(--ubits-fg-1-medium);
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Nav Tab Background Hover Effect */
+.nav-tab::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border-radius: var(--border-radius-none);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+}
+
+/* Nav Tab Text */
+.nav-tab span {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-md);
+    color: var(--ubits-fg-1-medium);
+    text-align: left;
+    line-height: 24px;
+    white-space: nowrap;
+    font-weight: var(--font-weight-regular);
+}
+
+/* Active State */
+.nav-tab.active {
+    background: transparent;
+}
+
+.nav-tab.active span {
+    font-weight: var(--font-weight-semibold);
+}
+
+.nav-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background-color: var(--ubits-accent-brand);
+    border-radius: var(--border-radius-xs);
+}
+
+/* Hover States */
+.nav-tab:hover {
+    background-color: var(--ubits-bg-2);
+    border-radius: var(--border-radius-sm);
+}
+
+.nav-tab:hover i {
+    color: var(--ubits-fg-1-high);
+}
+
+.nav-tab:hover span {
+    color: var(--ubits-fg-1-high);
+}
+
+/* Active Tab States */
+.nav-tab.active i {
+    color: var(--ubits-fg-1-high);
+}
+
+.nav-tab.active span {
+    color: var(--ubits-fg-1-high);
+}
+
+/* ========================================
+   MODULE SELECTOR (MOBILE)
+   ======================================== */
+
+/* Module Name (nombre del módulo arriba) */
+.module-name {
+    display: none;
+    flex-direction: column;
+    gap: var(--gap-xs);
+    width: auto;
+    align-items: flex-start;
+}
+
+.module-name-label {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-xs);
+    line-height: 11px;
+    color: var(--ubits-fg-1-medium);
+    font-weight: var(--font-weight-regular);
+    white-space: nowrap;
+}
+
+/* Module Selector (botón secondary con dropdown) - Tamaño SM */
+.module-selector {
+    display: none;
+    position: relative;
+    width: auto;
+    max-width: 400px;
+    min-width: 200px;
+    flex-shrink: 0;
+}
+
+.module-selector-button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-sm);
+    padding: 9.5px 12px;
+    /* Tamaño SM: igual que ubits-button--sm */
+    height: 32px;
+    /* Tamaño SM */
+    background: var(--ubits-btn-secondary-bg-default);
+    color: var(--ubits-btn-secondary-fg-default);
+    border: 1px solid var(--ubits-btn-secondary-border);
+    border-radius: var(--border-radius-sm);
+    font-family: 'Noto Sans', sans-serif;
+    font-weight: var(--font-weight-semibold);
+    line-height: 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+    text-align: left;
+    box-sizing: border-box;
+}
+
+.module-selector-button:hover {
+    background: var(--ubits-btn-secondary-bg-hover);
+    border-color: var(--ubits-btn-secondary-border);
+}
+
+.module-selector-button:active {
+    transform: translateY(1px);
+}
+
+.module-selector-button-text {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    /* Tamaño SM: igual que ubits-button--sm span */
+    font-weight: var(--font-weight-semibold);
+    line-height: 19.5px;
+}
+
+.module-selector-button-chevron {
+    font-size: var(--font-size-sm);
+    color: var(--ubits-btn-secondary-fg-default);
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+}
+
+.module-selector-button.open .module-selector-button-chevron {
+    transform: rotate(180deg);
+}
+
+/* Module Selector Dropdown */
+.module-selector-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    max-height: 300px;
+    overflow-y: auto;
+    padding: var(--padding-sm) 0;
+}
+
+.module-selector-dropdown.show {
+    display: block;
+}
+
+.module-selector-item {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+    padding: var(--padding-md) var(--padding-lg);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    color: var(--ubits-fg-1-medium);
+    text-decoration: none;
+}
+
+.module-selector-item:hover {
+    background-color: var(--ubits-bg-2);
+    color: var(--ubits-fg-1-high);
+}
+
+.module-selector-item.active {
+    background-color: var(--ubits-bg-2);
+    color: var(--ubits-fg-1-high);
+    font-weight: var(--font-weight-semibold);
+}
+
+.module-selector-item i {
+    font-size: var(--font-size-md);
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.module-selector-item span {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    line-height: 20px;
+    white-space: nowrap;
+}
+
+/* Cuando el selector está activo, ocultar tabs individuales pero mantener nav-tabs visible */
+.sub-nav.use-selector .nav-tabs .nav-tab {
+    display: none !important;
+}
+
+.sub-nav.use-selector .nav-tabs .nav-title {
+    display: none !important;
+}
+
+.sub-nav.use-selector .nav-tabs {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+    width: auto;
+    flex: 0 0 auto;
+    align-items: flex-start;
+    min-width: 0;
+    overflow: visible;
+}
+
+.sub-nav.use-selector .module-name {
+    display: flex;
+}
+
+.sub-nav.use-selector .module-selector {
+    display: block;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+/* Aplicar comportamiento mobile desde el breakpoint más pequeño hasta 1280px */
+@media (max-width: 1279px) {
+
+    /* Contenedor: ocupar todo el ancho de la pantalla (como el tab-bar) */
+    /* Contenedor: ocupar todo el ancho de la pantalla (como el tab-bar) */
+    #top-nav-container {
+        width: 100vw !important;
+        max-width: 100vw !important;
+        margin-left: calc(-50vw + 50%) !important;
+        margin-right: calc(-50vw + 50%) !important;
+        box-sizing: border-box;
+    }
+
+    .sub-nav {
+        padding: 0 12px;
+        height: auto;
+        min-height: 36px;
+        position: relative;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        border-radius: var(--border-radius-none);
+    }
+
+    .sub-nav.use-selector {
+        padding: var(--padding-md) var(--padding-md);
+        gap: var(--gap-md);
+    }
+
+    .nav-tabs {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .nav-right {
+        flex-shrink: 0;
+    }
+
+    .nav-tab {
+        padding: var(--padding-sm);
+    }
+
+    .nav-tab span {
+        font-size: var(--font-size-sm);
+        line-height: 20px;
+    }
+
+    .nav-tab i {
+        font-size: var(--font-size-sm);
+        width: 14px;
+        height: 14px;
+    }
+
+    .nav-title {
+        font-size: var(--font-size-sm);
+        line-height: 20px;
+        margin-right: 12px;
+    }
+
+    /* Mostrar hamburger menu en móvil para documentación */
+    .hamburger-menu {
+        display: flex;
+    }
+
+    /* Ocultar tabs normales en móvil para documentación */
+    [data-variant="documentacion"] .nav-tab {
+        display: none;
+    }
+
+    /* Ajustar margen derecho del nav-title para documentación en móvil */
+    .sub-nav[data-variant="documentacion"] .nav-title {
+        margin-right: 6px !important;
+    }
+
+    /* Ajustar padding del sub-nav para documentación en móvil */
+    .sub-nav[data-variant="documentacion"] {
+        padding: 0 12px 0 12px !important;
+    }
+
+    /* Ajustar dropdown para móvil */
+    .hamburger-dropdown {
+        width: 100%;
+        border-radius: 0 0 6px 6px;
+    }
+}
+
+/* El botón selector (Tareas/Planes) siempre muestra texto; no se convierte a icon-only. */
+
+/* Tablet (769px–1279px): más altura y padding vertical para que el logo y el label del selector no se corten */
+@media (min-width: 769px) and (max-width: 1279px) {
+    .sub-nav {
+        min-height: 52px;
+        padding: var(--padding-sm) 12px;
+        align-items: center;
+    }
+
+    .sub-nav.use-selector {
+        padding: var(--padding-md) 12px;
+        min-height: 56px;
+    }
+}
+
+/* ========================================
+   DARK MODE
+   ======================================== */
+
+[data-theme="dark"] .sub-nav {
+    background-color: var(--ubits-bg-1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .nav-tab span {
+    color: var(--ubits-fg-1-medium) !important;
+}
+
+[data-theme="dark"] .nav-tab i {
+    color: var(--ubits-fg-1-medium) !important;
+}
+
+[data-theme="dark"] .nav-tab:hover span {
+    color: var(--ubits-fg-1-high) !important;
+}
+
+[data-theme="dark"] .nav-tab:hover i {
+    color: var(--ubits-fg-1-high) !important;
+}
+
+[data-theme="dark"] .nav-tab.active span {
+    color: var(--ubits-fg-1-high) !important;
+}
+
+[data-theme="dark"] .nav-tab.active i {
+    color: var(--ubits-fg-1-high) !important;
+}
+
+/* Dark mode para hamburger menu */
+[data-theme="dark"] .hamburger-menu {
+    color: var(--ubits-fg-1-medium) !important;
+}
+
+[data-theme="dark"] .hamburger-menu:hover {
+    color: var(--ubits-fg-1-high) !important;
+}
+
+[data-theme="dark"] .hamburger-dropdown {
+    background-color: var(--ubits-bg-1);
+    border-color: var(--ubits-border-1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .hamburger-item {
+    color: var(--ubits-fg-1-medium) !important;
+}
+
+[data-theme="dark"] .hamburger-item:hover {
+    background-color: var(--ubits-bg-3);
+    color: var(--ubits-fg-1-high) !important;
+}
+
+[data-theme="dark"] .hamburger-item.active {
+    background-color: var(--ubits-bg-active);
+    color: var(--ubits-accent-brand) !important;
+}
+
+[data-theme="dark"] .module-selector-item.active {
+    background-color: var(--ubits-bg-2);
+    color: var(--ubits-fg-1-high);
+    font-weight: var(--font-weight-semibold);
+}
+
+[data-theme="dark"] .hamburger-item.active i {
+    color: var(--ubits-accent-brand) !important;
+}
+
+[data-theme="dark"] .hamburger-item.active span {
+    color: var(--ubits-accent-brand) !important;
+}
+
+/* ========================================
+   DESKTOP BEHAVIOR
+   ======================================== */
+
+/* Ajustar margen derecho del nav-title para documentación en resoluciones 841px-1023px */
+@media (max-width: 1023px) {
+    .sub-nav[data-variant="documentacion"] .nav-title {
+        margin-right: 6px !important;
+    }
+
+    /* Ajustar padding del sub-nav para documentación en resoluciones 841px-1023px */
+    .sub-nav[data-variant="documentacion"] {
+        padding: 0 12px 0 12px !important;
+    }
+}
+
+/* En desktop, mostrar tabs normales y ocultar hamburger */
+@media (min-width: 841px) {
+    .hamburger-menu {
+        display: none !important;
+    }
+
+    .hamburger-dropdown {
+        display: none !important;
+    }
+
+    [data-variant="documentacion"] .nav-tab {
+        display: flex !important;
+    }
+}
+
+/* Desktop: SubNav fijo al hacer scroll (position: fixed; sticky falla si un ancestro tiene overflow) */
+@media (min-width: 1280px) {
+    .sub-nav {
+        position: fixed;
+        top: var(--gap-lg);
+        left: 143px;
+        right: var(--gap-2xl);
+        width: auto;
+        margin: 0;
+        z-index: 1001;
+    }
+
+    /* Documentación: sin sidebar de productos, ocupa más ancho (márgenes laterales solo) */
+    .sub-nav[data-variant="documentacion"] {
+        left: var(--gap-2xl);
+        right: var(--gap-2xl);
+    }
+}
+
+/* Centrado del SubNav solo cuando el viewport es >= 1607px; ancho fijo 1440px para coincidir con el cuerpo */
+@media (min-width: 1607px) {
+    .sub-nav {
+        left: calc((100vw - 1607px) / 2 + 143px);
+        right: calc(100vw - ((100vw - 1607px) / 2 + 143px) - 1440px);
+        width: 1440px;
+        max-width: 1440px;
+    }
+
+    /* Documentación: ancho completo con márgenes, sin centrado 1607px */
+    .sub-nav[data-variant="documentacion"] {
+        left: var(--gap-2xl);
+        right: var(--gap-2xl);
+        max-width: none;
+    }
+}

@@ -1,0 +1,31 @@
+/* ========================================
+   Variables de gradiente IA - compartidas por Modo estudio IA, Resultados búsqueda y Catálogo
+   Para cambiar la paleta: edita solo las variables en :root abajo.
+
+   CÓMO VOLVER A LAS GRADACIONES AZULES (paleta original):
+   1. En este archivo, en el bloque :root, poner:
+      --modo-ia-gradient-a: rgb(0, 215, 255);
+      --modo-ia-gradient-b: rgb(0, 152, 253);
+      --modo-ia-gradient-c: rgb(0, 89, 250);
+   2. Guardar. No hace falta cambiar ningún otro archivo.
+   (Pasos detallados: Changelog-Estudio-IA.md, sección "Cómo volver a las gradaciones azules")
+   ======================================== */
+
+:root {
+    /* Gradación azul oficial (solo 4 elementos usan naranja: ver comentario abajo) */
+    --modo-ia-gradient-a: rgb(0, 215, 255);
+    --modo-ia-gradient-b: rgb(0, 152, 253);
+    --modo-ia-gradient-c: rgb(0, 89, 250);
+}
+
+/* Naranja solo en: botón enviar chat, borde input bienvenida, botón Modo IA (catalogo), botón Probar modo IA (resultados).
+   El resto usa azul (variables de :root). No aplicar gradiente global a ia-buttons. */
+
+@keyframes aprendizaje-ia-gradient-border {
+    0%, 100% { background-position: 0 0, 0% 50%; }
+    50% { background-position: 0 0, 100% 50%; }
+}
+@keyframes aprendizaje-ia-gradient-border-4 {
+    0%, 100% { background-position: 0 0, 0 0, 0 0, 0% 50%; }
+    50% { background-position: 0 0, 0 0, 0 0, 100% 50%; }
+}

@@ -1,0 +1,450 @@
+/* ========================================
+   UBITS INPUT COMPONENT
+   Componente de input con todas las variantes
+   ======================================== */
+
+/* ========================================
+   BASE INPUT STYLES
+   ======================================== */
+
+.ubits-input {
+    width: 100%;
+    padding: var(--padding-md) var(--padding-sm);
+    font-size: 1rem;
+    font-family: 'Noto Sans', sans-serif;
+    color: var(--ubits-fg-1-high);
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    outline: none;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.ubits-input:hover {
+    border-color: var(--ubits-accent-brand);
+}
+
+.ubits-input:focus {
+    border-color: var(--ubits-accent-brand);
+    box-shadow: 0 0 0 2px rgba(12, 91, 239, 0.1);
+}
+
+/* Disabled: ver INPUT STATES más abajo (.ubits-input--disabled, .ubits-input:disabled) */
+
+.ubits-input:read-only {
+    background: var(--ubits-bg-1);
+    color: var(--ubits-fg-1-high);
+    border-color: var(--ubits-border-1);
+    cursor: pointer;
+}
+
+.ubits-input::placeholder {
+    color: var(--ubits-fg-1-low);
+}
+
+/* ========================================
+   INPUT VARIANT: SUBTLE (sin borde visible)
+   ======================================== */
+
+.ubits-input--subtle {
+    border-color: transparent;
+    background: var(--ubits-bg-1);
+}
+
+.ubits-input--subtle:hover {
+    border-color: transparent;
+    background: var(--ubits-bg-2);
+}
+
+.ubits-input--subtle:focus {
+    border-color: transparent;
+    box-shadow: none;
+    background: var(--ubits-bg-2);
+}
+
+.ubits-input--subtle:disabled {
+    border-color: transparent;
+    background: var(--ubits-bg-3);
+}
+
+.ubits-input--subtle:read-only {
+    border-color: transparent;
+}
+
+/* Estados de clase para subtle (hover/focus/invalid aplicados por JS) */
+.ubits-input--subtle.ubits-input--hover {
+    border-color: transparent;
+    background: var(--ubits-bg-2);
+}
+
+.ubits-input--subtle.ubits-input--focus {
+    border-color: transparent;
+    box-shadow: none;
+    background: var(--ubits-bg-2);
+}
+
+.ubits-input--subtle.ubits-input--invalid {
+    border-color: transparent;
+    box-shadow: 0 0 0 1px var(--ubits-feedback-accent-error);
+}
+
+.ubits-input--subtle.ubits-input--invalid.ubits-input--focus {
+    box-shadow: 0 0 0 2px rgba(233, 52, 60, 0.15);
+}
+
+/* ========================================
+   INPUT SIZES - Matching button heights
+   ======================================== */
+
+.ubits-input--sm {
+    padding: var(--padding-sm) var(--padding-sm);
+    font-size: 0.875rem;
+    height: 32px; /* Same as ubits-button--sm */
+}
+
+.ubits-input--md {
+    padding: var(--padding-md) var(--padding-sm);
+    font-size: 1rem;
+    height: 40px; /* Same as ubits-button--md */
+}
+
+.ubits-input--lg {
+    padding: var(--padding-lg) var(--padding-sm);
+    font-size: 1.125rem;
+    height: 48px; /* Same as ubits-button--lg */
+}
+
+/* ========================================
+   INPUT STATES (oficiales: preview y todos los consumidores usan estas clases)
+   ======================================== */
+
+.ubits-input--hover {
+    border-color: var(--ubits-accent-brand);
+    border-width: 1px;
+}
+
+.ubits-input--focus {
+    border-color: var(--ubits-accent-brand);
+    border-width: 1px;
+    box-shadow: 0 0 0 2px rgba(12, 91, 239, 0.1);
+}
+
+.ubits-input--active {
+    border-color: var(--ubits-accent-brand);
+    border-width: 1px;
+    background: var(--ubits-bg-2);
+}
+
+.ubits-input--invalid {
+    border-color: var(--ubits-feedback-accent-error);
+    border-width: 1px;
+}
+
+.ubits-input--invalid.ubits-input--focus {
+    border-color: var(--ubits-feedback-accent-error);
+    box-shadow: 0 0 0 2px rgba(233, 52, 60, 0.1);
+}
+
+/* Solo el control (input/textarea) recibe el fondo disabled, no contenedores */
+input.ubits-input--disabled,
+input.ubits-input:disabled,
+textarea.ubits-input--disabled,
+textarea.ubits-input:disabled {
+    background: var(--ubits-bg-3) !important;
+    color: var(--ubits-fg-1-low) !important;
+    border-color: var(--ubits-border-2) !important;
+    cursor: not-allowed !important;
+}
+
+/* ========================================
+   INPUT WITH ICONS
+   ======================================== */
+
+.ubits-input-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+/* Container para SELECT debe tener position relative */
+#test1, #test2, #test3, #test4, #test5, #test6 {
+    position: relative;
+}
+
+.ubits-input-icon-left {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--ubits-fg-1-medium);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.ubits-input-icon-right {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--ubits-fg-1-medium);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.ubits-input-wrapper--left-icon .ubits-input {
+    padding-left: 40px;
+}
+
+.ubits-input-wrapper--right-icon .ubits-input {
+    padding-right: 40px;
+}
+
+.ubits-input-wrapper--left-icon.ubits-input--sm .ubits-input {
+    padding-left: 36px;
+}
+
+.ubits-input-wrapper--right-icon.ubits-input--sm .ubits-input {
+    padding-right: 36px;
+}
+
+.ubits-input-wrapper--left-icon.ubits-input--lg .ubits-input {
+    padding-left: 44px;
+}
+
+.ubits-input-wrapper--right-icon.ubits-input--lg .ubits-input {
+    padding-right: 44px;
+}
+
+/* ========================================
+   INPUT LABEL
+   ======================================== */
+
+.ubits-input-label {
+    display: block;
+    color: var(--ubits-fg-1-high);
+    margin-bottom: 8px;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    line-height: 19.5px;
+}
+
+.ubits-input-mandatory {
+    color: var(--ubits-fg-1-medium);
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-regular);
+    line-height: 16.5px;
+}
+
+/* ========================================
+   INPUT HELPER TEXT
+   ======================================== */
+
+.ubits-input-helper {
+    color: var(--ubits-fg-1-medium);
+    margin-top: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--gap-xs, 4px);
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    line-height: 19.5px;
+}
+
+.ubits-input-helper-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ubits-input-counter-label {
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-input-counter {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    line-height: 19.5px;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+/* ========================================
+   SELECT SPECIFIC STYLES
+   ======================================== */
+
+.ubits-input select {
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+.ubits-input select:disabled {
+    cursor: not-allowed;
+}
+
+/* ========================================
+   TEXTAREA
+   ======================================== */
+
+.ubits-input textarea {
+    font-family: inherit;
+    font-size: inherit;
+    line-height: 1.5;
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* SEARCH usa type="text" para evitar controles nativos del navegador */
+
+/* ========================================
+   AUTOCOMPLETE
+   ======================================== */
+
+.ubits-autocomplete-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    box-shadow: var(--ubits-elevation-overlay);
+    z-index: 10000; /* Alto z-index para estar dentro del filter-menu */
+    max-height: 200px;
+    overflow-y: auto;
+    display: none;
+    margin-top: 4px;
+    width: 100%;
+}
+
+.ubits-autocomplete-option {
+    padding: var(--padding-sm) var(--padding-md);
+    cursor: pointer;
+    color: var(--ubits-fg-1-high);
+    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.ubits-autocomplete-option:hover {
+    background-color: var(--ubits-bg-2);
+}
+
+.ubits-autocomplete-option-text {
+    flex: 1;
+}
+
+.ubits-autocomplete-checkbox {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    margin: 0;
+    flex-shrink: 0;
+}
+
+.ubits-autocomplete-option strong {
+    font-weight: var(--font-weight-semibold);
+    color: var(--ubits-accent-brand);
+}
+
+/* El calendario (mes/año/días) está en components/calendar.css. Para type calendar, cargar también calendar.js y calendar.css. */
+
+.ubits-input-wrapper .ubits-input textarea:disabled,
+.ubits-input-wrapper .ubits-input--disabled textarea {
+    background: var(--ubits-bg-3) !important;
+    color: var(--ubits-fg-1-low) !important;
+    border-color: var(--ubits-border-2) !important;
+    cursor: not-allowed !important;
+}
+
+/* ========================================
+   SELECT DROPDOWN
+   ======================================== */
+
+/* 
+ * CRITICAL: El contenedor padre DEBE tener position: relative
+ * El JavaScript automáticamente lo aplica, pero si usas el CSS manualmente,
+ * asegúrate de que el contenedor tenga position: relative
+ */
+.ubits-select-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    box-shadow: var(--ubits-elevation-overlay);
+    z-index: 1000;
+    max-height: 160px;
+    overflow-y: auto;
+    display: none;
+    margin-top: 4px;
+    width: 100%;
+}
+
+.ubits-select-option {
+    padding: var(--padding-sm) var(--padding-md);
+    cursor: pointer;
+    color: var(--ubits-fg-1-high);
+    transition: background-color 0.2s ease;
+}
+
+.ubits-select-option:hover {
+    background-color: var(--ubits-bg-2);
+}
+
+.ubits-select-loading {
+    padding: var(--padding-md);
+    text-align: center;
+    color: var(--ubits-fg-1-medium);
+    font-size: var(--font-size-sm);
+    font-style: italic;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap-sm);
+}
+
+.ubits-select-loading i {
+    color: var(--ubits-accent-brand);
+    font-size: var(--font-size-md);
+}
+
+.ubits-select-observer {
+    height: 1px;
+    width: 100%;
+    pointer-events: none;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+    .ubits-input-helper {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--gap-xs);
+    }
+}
+
+/* Contenedor de overlays de select: siempre encima de todo (evita que se tapen en modo-estudio-ia, etc.) */
+#ubits-input-select-root {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 2147483647 !important;
+    pointer-events: none !important;
+}
+#ubits-input-select-root .ubits-input-select-overlay {
+    pointer-events: auto !important;
+}

@@ -1,0 +1,848 @@
+/* ========================================
+   ESTILOS ESPECÍFICOS PARA tareas
+   Formateado con design system tokens (gap, padding, font-size, border-radius).
+   Valores sin token: width/height fijos, box-shadow, calc(); marcados con "sin token"
+========================================*/
+/* FAB Tareas: sin reglas extra; el menú se crea y destruye dinámicamente en tareas.html */
+
+/* Header-product oculto (desktop y mobile). Para mostrarlo de nuevo, eliminar o comentar esta regla. */
+.page-tareas .section-single:has(#header-product-container) {
+    display: none !important;
+}
+
+/* Contenedor de modales (eliminar tarea, etc.): por encima del panel de detalle */
+#tareas-modals-container {
+    position: relative;
+    z-index: 10100;
+}
+
+/* Estilos específicos para content-sections */
+.content-sections {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xl);
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+    overflow: visible;
+    max-height: none;
+}
+
+.content-sections>*:not(:last-child):not(.section-dual):not(.section-single):not(.section-triple):not(.section-quad) {
+    margin-bottom: var(--gap-xl);
+}
+
+.content-sections::after {
+    content: '';
+    height: var(--space-0, 0);
+    flex-shrink: 0;
+}
+
+.content-sections>*:last-child {
+    margin-bottom: 0;
+}
+
+/* Secciones de widgets */
+.section-single {
+    display: flex;
+    width: 100%;
+}
+
+.section-dual {
+    display: flex;
+    gap: var(--gap-xl);
+}
+
+.section-triple {
+    display: flex;
+    gap: var(--gap-xl);
+}
+
+.section-quad {
+    display: flex;
+    gap: var(--gap-xl);
+}
+
+.section-single>div,
+.section-dual>div,
+.section-triple>div,
+.section-quad>div {
+    background-color: var(--ubits-bg-1);
+    border: none;
+    border-radius: var(--border-radius-sm);
+    padding: var(--padding-md) !important;
+    /* !important para sobrescribir el reset */
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+.section-single>div {
+    flex: 1;
+}
+
+/* En página tareas: quitar border-radius del content-area para que no enmascare el header product */
+.page-tareas .content-area {
+    border-radius: 0 !important;
+}
+
+/* Widget header-product: sin fondo, padding ni borde redondeado (evitar máscara rara) */
+.section-single>.widget-header-product {
+    background-color: transparent !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+}
+
+/* Sección del header: que no se encoja ni se recorte (flex-shrink: 0; overflow: visible) */
+.page-tareas .content-sections>.section-single:first-child {
+    flex-shrink: 0 !important;
+    min-height: 0;
+    /* no forzar altura mínima para que use la natural del contenido */
+    overflow: visible !important;
+}
+
+.page-tareas .content-sections>.section-single:first-child .widget-header-product {
+    overflow: visible !important;
+}
+
+/* Solo botón primario: ocultar título de producto */
+.page-tareas .ubits-header-product__product-info {
+    display: none !important;
+}
+
+.section-dual>div {
+    flex: 1;
+}
+
+.section-triple>div {
+    flex: 1;
+}
+
+.section-quad>div {
+    flex: 1;
+}
+
+/* ========================================
+   VISTA DE TAREAS - ESTILOS ESPECÍFICOS
+   ======================================== */
+
+/* OBLIGATORIO: en página tareas el scroll es solo de .tareas-scroll-container, no del layout.
+   Body y dashboard-container no hacen scroll; altura fija al viewport. */
+/* ========================================
+   FIX: ELIMINAR DOBLE SCROLL (LIMPIEZA DE MALAS PRÁCTICAS)
+   Se fuerza el bloqueo de scroll en todos los contenedores padres
+   para que solo .tareas-scroll-container tenga scroll.
+   ======================================== */
+
+/* 1. Bloquear el body para evitar que el navegador intente scrollear la página entera */
+body.page-tareas {
+    overflow: hidden !important;
+    height: 100vh !important;
+    position: fixed;
+    /* Asegura que no haya scroll en móviles */
+    width: 100%;
+}
+
+/* 2. Forzar al dashboard a ocupar solo el viewport, anulando validaciones globales */
+body.page-tareas .dashboard-container {
+    overflow: hidden !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    display: flex !important;
+}
+
+/* 3. Asegurar que el contenido principal no se desborde */
+.main-content:has(.widget-vista-tareas) {
+    overflow: hidden !important;
+    height: 100% !important;
+    /* Ajuste para header (aprox 64px) + padding inferior global */
+    max-height: 100vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+    /* Asegurar que el margen inferior del widget se vea */
+    padding-bottom: 0 !important;
+}
+
+.main-content:has(.widget-vista-tareas) .content-area {
+    min-height: 0 !important;
+    flex: 1 !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    padding-bottom: 0 !important;
+    /* Evitar padding extra que genere scroll */
+}
+
+/* 4. Lock de overflow en toda la cadena hasta el widget */
+.content-area:has(.widget-vista-tareas) .content-sections {
+    overflow: hidden !important;
+    flex: 1 !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.section-single:has(.widget-vista-tareas) {
+    overflow: hidden !important;
+    flex: 1 !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    padding-bottom: 0 !important;
+}
+
+.widget-vista-tareas {
+    overflow: hidden !important;
+    flex: 1 !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    height: auto !important;
+    /* Permitir que el margen ocupe espacio */
+    margin-bottom: var(--gap-lg, 16px) !important;
+    /* Token oficial */
+}
+
+/* Cadena flex para que el contenedor de tareas llegue hasta donde termina el sidebar.
+   content-area tiene align-items: flex-start por defecto, por eso no estira; aquí forzamos stretch. */
+.content-area:has(.widget-vista-tareas) {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    flex: 1 !important;
+    min-height: 0 !important;
+}
+
+.content-area:has(.widget-vista-tareas) .content-sections {
+    flex: 1 !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.content-area:has(.widget-vista-tareas) .section-single:has(.widget-vista-tareas) {
+    flex: 1 !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* Contenedor de tareas: altura adaptada al viewport (flex: 1 en la cadena).
+   Barra del calendario fija arriba; solo el listado hace scroll.
+   Margen inferior de 16px queda por max-height del main (calc(100vh - var(--gap-lg))). */
+.widget-vista-tareas {
+    background-color: var(--ubits-bg-1) !important;
+    padding: var(--padding-xl, 20px) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 !important;
+    min-height: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+}
+
+/* Barra del calendario: bloque fijo, no hace scroll (separada del listado) */
+.calendar-module {
+    flex-shrink: 0 !important;
+    margin-bottom: 0 !important;
+    padding-bottom: var(--gap-lg, 16px) !important;
+    border-bottom: 1px solid var(--ubits-border-1);
+    background: var(--ubits-bg-1);
+}
+
+/* Header del calendario */
+.calendar-header {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: var(--gap-lg, 16px) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+.calendar-header__title {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.calendar-header__controls {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: var(--gap-md, 12px) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+}
+
+/* Forzar que el calendario horizontal ocupe el espacio disponible */
+.calendar-header__controls>.calendar-horizontal {
+    flex: 1 1 0% !important;
+    flex-grow: 1 !important;
+    flex-shrink: 1 !important;
+    flex-basis: 0% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    width: auto !important;
+}
+
+/* Selector de mes/año: botón oficial ubits-button; layout del wrap más abajo */
+/* Calendario horizontal - 7 días - OCUPA TODO EL ESPACIO entre mes y botón Hoy */
+.calendar-horizontal {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    gap: var(--gap-sm, 8px) !important;
+    overflow-x: hidden !important;
+    overflow-y: hidden !important;
+    flex: 1 1 0% !important;
+    flex-grow: 1 !important;
+    flex-shrink: 1 !important;
+    flex-basis: 0% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    width: auto !important;
+    padding: var(--padding-xs, 4px) 0 !important;
+    white-space: nowrap !important;
+    justify-content: stretch !important;
+}
+
+.calendar-horizontal__day {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: var(--gap-xs, 4px);
+    padding: var(--padding-sm, 8px) var(--padding-md, 12px);
+    flex: 1 1 0% !important;
+    flex-grow: 1 !important;
+    flex-shrink: 1 !important;
+    flex-basis: 0% !important;
+    min-width: 0 !important;
+    background: transparent;
+    border: none;
+    border-radius: var(--border-radius-sm, 8px);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    position: relative;
+    white-space: nowrap;
+    box-sizing: border-box;
+}
+
+.calendar-horizontal__day:hover {
+    background: var(--ubits-feedback-bg-info-subtle);
+}
+
+.calendar-horizontal__day:hover .calendar-horizontal__weekday,
+.calendar-horizontal__day:hover .calendar-horizontal__day-number {
+    color: var(--ubits-fg-1-high);
+}
+
+.calendar-horizontal__day--selected:hover {
+    background: var(--ubits-accent-brand);
+}
+
+.calendar-horizontal__day--selected:hover .calendar-horizontal__weekday,
+.calendar-horizontal__day--selected:hover .calendar-horizontal__day-number {
+    color: var(--ubits-btn-primary-fg);
+}
+
+.calendar-horizontal__day--selected {
+    background: var(--ubits-accent-brand);
+    color: var(--ubits-btn-primary-fg);
+}
+
+.calendar-horizontal__day--selected .calendar-horizontal__weekday,
+.calendar-horizontal__day--selected .calendar-horizontal__day-number {
+    color: var(--ubits-btn-primary-fg);
+    font-weight: var(--font-weight-bold);
+}
+
+/* Cuando el día de hoy está seleccionado, debe verse azul igual que los demás días seleccionados */
+.calendar-horizontal__day--selected.calendar-horizontal__day--today {
+    background: var(--ubits-accent-brand);
+    color: var(--ubits-btn-primary-fg);
+}
+
+.calendar-horizontal__day--selected.calendar-horizontal__day--today .calendar-horizontal__weekday,
+.calendar-horizontal__day--selected.calendar-horizontal__day--today .calendar-horizontal__day-number {
+    color: var(--ubits-btn-primary-fg);
+    font-weight: var(--font-weight-bold);
+}
+
+.calendar-horizontal__day--today {
+    background: var(--ubits-bg-2);
+}
+
+.calendar-horizontal__day--today .calendar-horizontal__day-number {
+    font-weight: var(--font-weight-bold);
+}
+
+.calendar-horizontal__weekday {
+    font-size: var(--font-size-xs, 11px);
+    font-weight: var(--font-weight-semibold);
+    color: var(--ubits-fg-1-medium);
+    text-transform: lowercase;
+}
+
+.calendar-horizontal__day-number {
+    font-size: var(--font-size-md, 16px);
+    font-weight: var(--font-weight-semibold);
+    color: var(--ubits-fg-1-high);
+}
+
+/* Contenedor: controles del carrusel (Hoy + flechas) + Filtros; siempre juntos como en desktop */
+.calendar-header__nav-and-filters {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    gap: var(--gap-sm, 8px) !important;
+    flex-shrink: 0 !important;
+}
+
+/* Controles de navegación (Hoy + flechas) - no se encogen */
+.calendar-today-nav {
+    display: flex !important;
+    align-items: center !important;
+    gap: var(--gap-sm, 8px) !important;
+    flex-shrink: 0 !important;
+    flex-grow: 0 !important;
+    white-space: nowrap !important;
+    width: auto !important;
+    max-width: none !important;
+}
+
+/* Contenedor del selector de mes + popup (para posicionar el popup debajo del botón) */
+.calendar-month-selector-wrap {
+    position: relative;
+}
+
+/* Popup del date picker (mes/año) */
+.calendar-month-popup {
+    position: absolute;
+    left: 0;
+    top: 100%;
+    z-index: 1000;
+    margin-top: var(--gap-sm, 8px);
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm, 8px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    /* sin token */
+    padding: var(--padding-lg, 16px);
+    min-width: 240px;
+    /* sin token */
+}
+
+.calendar-month-picker__year-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--gap-md, 12px);
+}
+
+.calendar-month-picker__year {
+    font-size: var(--font-size-md, 16px);
+    font-weight: var(--font-weight-bold);
+    color: var(--ubits-fg-1-high);
+}
+
+.calendar-month-picker__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--gap-sm, 8px);
+    /* 6px → superior en escala */
+}
+
+/* Estado seleccionado del mes (botón oficial + esta clase) */
+.calendar-month-picker__month--selected {
+    background: var(--ubits-feedback-bg-info-subtle);
+    border-color: var(--ubits-accent-brand);
+    color: var(--ubits-accent-brand);
+}
+
+/* Contenedor con scroll infinito */
+.tareas-scroll-container {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: var(--padding-sm, 8px);
+    scrollbar-width: thin;
+    scrollbar-color: var(--ubits-border-1) transparent;
+}
+
+.tareas-scroll-container::-webkit-scrollbar {
+    width: 6px;
+    /* sin token */
+}
+
+.tareas-scroll-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.tareas-scroll-container::-webkit-scrollbar-thumb {
+    background: var(--ubits-border-1);
+    border-radius: var(--border-radius-xs, 4px);
+    /* 3px → superior */
+}
+
+.tareas-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: var(--ubits-fg-1-medium);
+}
+
+/* Contenedor de tareas vencidas (PRIMERO) */
+.tareas-overdue-container {
+    /* Un poco más de aire respecto a la línea del calendario sin romper el layout */
+    padding-top: var(--gap-xl, 20px);
+    margin-bottom: var(--space-8, 32px);
+}
+
+.tareas-overdue-header {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md, 12px);
+    margin-bottom: var(--gap-lg, 16px);
+}
+
+.tareas-overdue-header .ubits-button--icon-only i {
+    transition: transform 0.2s ease;
+}
+
+.tareas-overdue-header h2 {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.tareas-overdue-header .tareas-overdue-badge {
+    margin-left: var(--gap-sm, 8px);
+}
+
+/* Badge de cantidad (rojo, letra blanca, como el del componente botón) */
+.tareas-overdue-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 10px;
+    background: var(--ubits-button-badge);
+    color: var(--ubits-btn-primary-fg);
+    font-size: 12px;
+    font-weight: var(--font-weight-semibold);
+    line-height: 1;
+}
+
+/* Un solo dígito (1-9): circular */
+.tareas-overdue-badge.tareas-overdue-badge--circle {
+    width: 20px;
+    min-width: 20px;
+    padding: 0;
+    border-radius: 50%;
+}
+
+.tareas-overdue-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm, 8px);
+}
+
+/* Contenedores de días del calendario */
+.tareas-day-container {
+    margin-bottom: var(--space-8, 32px);
+    min-width: 0;
+}
+
+.tareas-day-header {
+    margin-bottom: var(--gap-lg, 16px);
+}
+
+.tareas-day-header h2 {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.tareas-day-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm, 8px);
+    min-width: 0;
+}
+
+/* Tirilla de tarea: estilos en components/task-strip.css */
+
+.tarea-add-btn {
+    width: 100%;
+    margin-top: var(--gap-lg, 16px);
+}
+
+/* Formulario añadir tarea inline */
+.tarea-add-form {
+    margin-top: var(--gap-lg, 16px);
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+}
+
+.tarea-add-input-wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: var(--gap-md, 12px);
+    padding: var(--padding-sm, 8px) var(--padding-md, 12px);
+    border: 1px solid var(--ubits-accent-brand);
+    border-radius: var(--border-radius-sm, 8px);
+    background: var(--ubits-bg-1);
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.tarea-add-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--ubits-accent-brand);
+    color: var(--ubits-bg-1);
+    flex-shrink: 0;
+}
+
+.tarea-add-icon i {
+    font-size: var(--font-size-xs, 11px);
+}
+
+.tarea-add-input-wrapper .tarea-add-input {
+    flex: 1 1 auto;
+    min-width: 0;
+    width: 0;
+    max-width: 100%;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    box-sizing: border-box;
+}
+
+.tarea-add-input-wrapper .tarea-add-input::placeholder {
+    color: var(--ubits-fg-1-medium);
+}
+
+/* Botón "Añadir" dentro del wrapper (primario sm, a la derecha del input) */
+.tarea-add-input-wrapper .tarea-add-form-btn {
+    flex-shrink: 0;
+}
+
+/* Indicador de carga */
+.loading-indicator {
+    text-align: center;
+    padding: 20px;
+    color: var(--ubits-fg-1-medium);
+}
+
+/* Responsive para rango Tablet/Laptop pequeña (donde aparece tab-bar) */
+@media (max-width: 1279px) {
+    .main-content:has(.widget-vista-tareas) {
+        /* Viewport - tab-bar(60px) - gap(16px) */
+        max-height: calc(100vh - 60px - var(--gap-lg, 16px)) !important;
+        overflow: visible !important;
+    }
+}
+
+/* Responsive para Mobile/Tablet Portrait */
+@media (max-width: 1023px) {
+    .content-sections {
+        padding-bottom: 0;
+    }
+    
+    .section-dual,
+    .section-triple,
+    .section-quad {
+        flex-direction: column;
+        gap: var(--gap-lg);
+    }
+
+    .main-content:has(.widget-vista-tareas) {
+        /* Ajuste para mobile: viewport - tab-bar(60px) - gap(16px) */
+        max-height: calc(100vh - 60px - var(--gap-lg, 16px)) !important;
+        overflow: visible !important;
+    }
+
+    .widget-vista-tareas {
+        min-height: 0 !important;
+        height: auto !important;
+        padding: var(--padding-lg, 16px) !important;
+    }
+
+    .calendar-header__controls {
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        overflow-x: visible !important;
+        width: 100% !important;
+    }
+
+    [data-role="month-selector"] {
+        flex-shrink: 0 !important;
+        flex-grow: 0 !important;
+    }
+
+    .calendar-horizontal {
+        flex: 1 1 0% !important;
+        min-width: 0 !important;
+        width: auto !important;
+    }
+
+    .calendar-today-nav {
+        justify-content: center;
+        flex-shrink: 0 !important;
+        flex-grow: 0 !important;
+    }
+}
+
+/* Calendar header ≤769px: 2 filas, 4 días que ocupan todo el ancho disponible */
+@media (max-width: 769px) {
+    .calendar-header__controls {
+        display: grid !important;
+        grid-template-columns: 1fr auto;
+        grid-template-rows: auto auto;
+        gap: var(--gap-sm, 8px) !important;
+        align-items: center;
+    }
+
+    .calendar-header__controls>.calendar-month-selector-wrap {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .calendar-header__controls>.calendar-header__nav-and-filters {
+        grid-column: 2;
+        grid-row: 1;
+        justify-self: end;
+        flex-shrink: 0 !important;
+    }
+
+    .calendar-header__controls>.calendar-horizontal {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        min-width: 0 !important;
+        overflow: visible !important;
+    }
+
+    .calendar-header__controls>.calendar-horizontal .calendar-horizontal__day {
+        flex: 1 1 0% !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        padding: var(--padding-xs, 4px) var(--padding-sm, 8px) !important;
+    }
+
+    .calendar-header__controls>.calendar-horizontal .calendar-horizontal__day-number {
+        font-size: var(--font-size-sm, 13px) !important;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .section-single>div,
+    .section-dual>div,
+    .section-triple>div,
+    .section-quad>div {
+        padding: var(--padding-md) !important;
+        /* !important para sobrescribir el reset */
+    }
+
+    .widget-vista-tareas {
+        padding: var(--padding-md, 12px) !important;
+    }
+
+    /* Botón Filtros: icon-only oficial (sm = 32x32) en celulares */
+    #tareas-filtros-btn {
+        width: 32px !important;
+        height: 32px !important;
+        min-width: 32px !important;
+        padding: 9.5px 8px !important;
+        box-sizing: border-box !important;
+    }
+    #tareas-filtros-btn span {
+        display: none !important;
+    }
+}
+
+
+/* ========================================
+   FILTROS (Estado, Prioridad, Asignación)
+   Dentro de dropdown (customBodyHtml). Las clases filtros-drawer-* se reutilizan en el panel.
+   ======================================== */
+/* Panel de filtros dentro del dropdown: 3 selectores */
+.tareas-filtros-dropdown-content.ubits-dropdown-menu__content {
+    min-width: 260px;
+}
+
+.tareas-filtros-dropdown-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+}
+
+/* Input select oficial: ancho completo dentro del dropdown */
+.tareas-filtros-dropdown-body .ubits-input-wrapper,
+.tareas-filtros-dropdown-body [style*="position: relative"] {
+    width: 100%;
+}
+
+.filtros-drawer-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xl);
+}
+
+.filtros-drawer-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+}
+
+.filtros-drawer-group > .ubits-body-md-bold {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.filtros-drawer-checkboxes,
+.filtros-drawer-radios {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+}
+
+.filtros-drawer-option,
+.filtros-drawer-radio {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    cursor: pointer;
+    margin: 0;
+}
+
+.filtros-drawer-option input[type="checkbox"],
+.filtros-drawer-radio input[type="radio"] {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    flex-shrink: 0;
+    accent-color: var(--ubits-accent-brand);
+}
+
+.filtros-drawer-option span,
+.filtros-drawer-radio span {
+    color: var(--ubits-fg-1-medium);
+}

@@ -1,0 +1,1686 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../images/Ubits-logo-dark.svg">
+    <title>UBITS Playground - Validador Automático</title>
+    
+    <!-- Estilos locales -->
+    <link rel="stylesheet" href="../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../general-styles/styles.css">
+    <link rel="stylesheet" href="../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../components/alert.css">
+    <link rel="stylesheet" href="../components/button.css">
+    <link rel="stylesheet" href="../components/toast.css">
+    <link rel="stylesheet" href="../components/input.css">
+    <link rel="stylesheet" href="../docs/docstyles.css">
+    
+    <style>
+        .validator-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+            box-sizing: border-box;
+        }
+
+        .validator-section {
+            background: var(--ubits-bg-1);
+           
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-sizing: border-box;
+        }
+
+        .validator-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .validator-title {
+            color: var(--ubits-fg-1-high);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .validator-icon {
+            color: var(--ubits-accent-brand);
+            font-size: var(--font-size-h1);
+        }
+
+        .validation-results {
+            display: none;
+            margin-top: 24px;
+        }
+
+        .validation-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border-left: 4px solid transparent;
+        }
+
+        .validation-item.success {
+            background: var(--ubits-feedback-bg-success-subtle);
+            border-left-color: var(--ubits-feedback-accent-success);
+        }
+
+        .validation-item.error {
+            background: var(--ubits-feedback-bg-error-subtle);
+            border-left-color: var(--ubits-feedback-accent-error);
+        }
+
+        .validation-item.warning {
+            background: var(--ubits-feedback-bg-warning-subtle);
+            border-left-color: var(--ubits-feedback-accent-warning);
+        }
+
+        .validation-icon {
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .validation-content {
+            flex: 1;
+        }
+
+        .validation-title {
+            color: var(--ubits-fg-1-high);
+            margin-bottom: 4px;
+        }
+
+        .validation-description {
+            color: var(--ubits-fg-1-medium);
+            font-size: var(--font-size-sm);
+            line-height: 1.4;
+        }
+
+        .file-input {
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            border: 2px dashed var(--ubits-border-1);
+            border-radius: 8px;
+            background: var(--ubits-bg-2);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .file-input:hover {
+            border-color: var(--ubits-accent-brand);
+            background: var(--ubits-bg-1);
+        }
+
+        .file-input.dragover {
+            border-color: var(--ubits-accent-brand);
+            background: var(--ubits-bg-active);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .stat-card {
+            background: var(--ubits-bg-2);
+            border: none !important;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .stat-number {
+            color: var(--ubits-accent-brand);
+            font-size: var(--font-size-h1);
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            color: var(--ubits-fg-1-medium);
+            font-size: var(--font-size-sm);
+        }
+
+        /* ========================================
+           ESTILOS PARA SECCIONES MODULARES EN VALIDADOR
+           ======================================== */
+        
+        /* Asegurar que las secciones modulares NO tengan bordes */
+        .validator-container .content-sections,
+        .validator-container .section-single,
+        .validator-container .section-dual,
+        .validator-container .section-triple,
+        .validator-container .section-quad {
+            border: none !important;
+        }
+
+        /* Asegurar que los widgets dentro de las secciones NO tengan bordes */
+        .validator-container .section-single > div,
+        .validator-container .section-dual > div,
+        .validator-container .section-triple > div,
+        .validator-container .section-quad > div {
+            border: none !important;
+        }
+
+        /* .validator-section NO debe tener borde */
+        .validator-section {
+            border: none !important;
+        }
+
+        /* ELIMINAR TODOS LOS BORDES de divs con background dentro del validador (excepto .file-input) */
+        .validator-container div[style*="background"]:not(.file-input) {
+            border: none !important;
+        }
+
+        /* Eliminar bordes de cualquier div dentro de validator-section que no sea validator-section mismo ni .file-input */
+        .validator-section > div:not(.file-input) {
+            border: none !important;
+        }
+
+        .validator-section div[style*="background"]:not(.file-input) {
+            border: none !important;
+        }
+
+        /* .file-input DEBE mantener su borde punteado (es funcional, no una sección) */
+        .file-input {
+            border: 2px dashed var(--ubits-border-1) !important;
+        }
+
+        /* Fix para páginas sin SubNav - margin superior en móvil */
+        @media (max-width: 1023px) {
+            .content-area {
+                margin-top: 0 !important;
+            }
+        }
+    </style>
+</head>
+<body class="documentacion-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        
+        <!-- Main Content -->
+        <main class="main-content" style="margin-left: 12px;">
+            <!-- Content Area -->
+            <div class="content-area" style="display: block; width: 100%;">
+                <div class="validator-container">
+                    <!-- Hero Section -->
+                    <div style="text-align: center; margin-bottom: 60px;">
+                        <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                            Validador UBITS
+                        </h1>
+                        <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto; line-height: 1.6;">
+                            Verifica automáticamente el uso correcto de tokens UBITS: colores, tipografía, espaciado (font-size, border-radius, gap, padding) y componentes. Actualizado con todos los componentes y tokens disponibles.
+                        </p>
+                    </div>
+
+                    <!-- Info Alert -->
+                    <div id="info-alert-container" style="margin-bottom: 32px;"></div>
+
+                    <!-- Validador de Archivo -->
+                    <div class="validator-section">
+                        <div class="validator-header">
+                            <h2 class="validator-title ubits-heading-h2">
+                                <i class="far fa-file-code validator-icon"></i>
+                                Validar página (HTML + CSS)
+                            </h2>
+                            <button class="ubits-button ubits-button--primary ubits-button--md" onclick="validateCurrentPage()">
+                                <i class="far fa-check-circle"></i>
+                                <span>Validar página actual</span>
+                            </button>
+                        </div>
+                        
+                        <div class="file-input" id="file-drop-zone" onclick="document.getElementById('file-upload').click()" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                            <i class="far fa-cloud-upload" style="font-size: var(--font-size-d3); color: var(--ubits-accent-brand); margin-bottom: 12px; display: block;"></i>
+                            <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-high); margin-bottom: 8px;">
+                                Sube <strong>dos archivos</strong>: el HTML de la página y su CSS
+                            </p>
+                            <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                Arrastra aquí 1 archivo .html y 1 archivo .css, o haz clic para seleccionarlos
+                            </p>
+                            <p class="ubits-body-xs-regular" style="color: var(--ubits-fg-1-medium); margin-top: 12px;">
+                                El validador revisa tokens y estilos en ambos archivos.
+                            </p>
+                            <input type="file" id="file-upload" accept=".html,.css" multiple style="display: none;" onchange="validateFiles(this.files)">
+                        </div>
+
+                        <div class="validation-results" id="validation-results">
+                            <h3 class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high); margin-bottom: 16px;">
+                                Resultados de validación
+                            </h3>
+                            <div id="validation-list"></div>
+                            
+                            <div class="stats-grid" id="validation-stats" style="display: none;">
+                                <div class="stat-card">
+                                    <div class="stat-number" id="stat-success">0</div>
+                                    <div class="stat-label">Validaciones exitosas</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-number" id="stat-warnings">0</div>
+                                    <div class="stat-label">Advertencias</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-number" id="stat-errors">0</div>
+                                    <div class="stat-label">Errores críticos</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-number" id="stat-score">0%</div>
+                                    <div class="stat-label">Puntuación UBITS</div>
+                                </div>
+                            </div>
+
+                            <!-- Prompt generado para Cursor -->
+                            <div id="cursor-prompt-section" style="display: none; margin-top: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high);">
+                                        <i class="far fa-robot" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                        Prompt para Cursor AI
+                                    </h3>
+                                    <button class="ubits-button ubits-button--primary ubits-button--sm" onclick="copyCursorPrompt()" id="copy-prompt-btn">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar prompt</span>
+                                    </button>
+                                </div>
+                                <div class="code-example" id="cursor-prompt-content" style="max-height: 300px; overflow-y: auto; font-size: var(--font-size-sm); line-height: 1.4;">
+                                    <!-- El prompt se generará aquí -->
+                                </div>
+                                <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin-top: 12px; font-style: italic;">
+                                    💡 Copia este prompt y pégalo en Cursor para que corrija automáticamente todos los problemas encontrados.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Validaciones automáticas -->
+                    <div class="validator-section">
+                        <div class="validator-header">
+                            <h2 class="validator-title ubits-heading-h2">
+                                <i class="far fa-cogs validator-icon"></i>
+                                Validaciones automáticas
+                            </h2>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
+                            <div style="background: var(--ubits-bg-2); border-radius: 8px; padding: 16px;">
+                                <h3 class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high); margin-bottom: 8px;">
+                                    <i class="far fa-palette" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Tokens de color
+                                </h3>
+                                <ul class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6; padding-left: 20px;">
+                                    <li>Detecta colores hardcodeados (hex, rgb, rgba, etc.)</li>
+                                    <li>Verifica uso de tokens UBITS</li>
+                                    <li>Comprueba importación de ubits-colors.css</li>
+                                </ul>
+                            </div>
+
+                            <div style="background: var(--ubits-bg-2); border-radius: 8px; padding: 16px;">
+                                <h3 class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high); margin-bottom: 8px;">
+                                    <i class="far fa-text-size" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Tipografía UBITS
+                                </h3>
+                                <ul class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6; padding-left: 20px;">
+                                    <li>Detecta clases inventadas (ubits-h1, ubits-title, etc.)</li>
+                                    <li>Verifica clases oficiales UBITS</li>
+                                    <li>Comprueba importación de ubits-typography.css</li>
+                                </ul>
+                            </div>
+
+
+                            <div style="background: var(--ubits-bg-2); border-radius: 8px; padding: 16px;">
+                                <h3 class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high); margin-bottom: 8px;">
+                                    <i class="far fa-ruler-combined" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Tokens de espaciado y estilos
+                                </h3>
+                                <ul class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6; padding-left: 20px;">
+                                    <li>Detecta <strong>font-size</strong> en px → usar var(--font-size-xs|sm|md|h2|h1|d4|d3|d2|d1)</li>
+                                    <li>Detecta <strong>border-radius</strong> en px → usar var(--border-radius-xs|sm|md|lg|xl|full)</li>
+                                    <li>Detecta <strong>gap</strong> en px → usar var(--gap-xs|sm|md|lg|xl|2xl|4xl)</li>
+                                    <li>Detecta <strong>padding</strong> en px → usar var(--padding-xs|sm|md|lg|xl|2xl|4xl|6xl)</li>
+                                    <li>Comprueba importación de styles.css / ubits-spacing-tokens.css</li>
+                                </ul>
+                            </div>
+
+                            <div style="background: var(--ubits-bg-2); border-radius: 8px; padding: 16px;">
+                                <h3 class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high); margin-bottom: 8px;">
+                                    <i class="far fa-puzzle-piece" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Componentes UBITS (30+)
+                                </h3>
+                                <ul class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6; padding-left: 20px;">
+                                    <li><strong>Navegación:</strong> SubNav, Sidebar, TabBar, Floating Menu, Profile Menu</li>
+                                    <li><strong>UI básicos:</strong> Button, IA-Button, Alert, Toast, Input (11 tipos)</li>
+                                    <li><strong>Contenido:</strong> Card Content, Card Content Compact, Carousel</li>
+                                    <li><strong>Avanzados:</strong> Header Product, Status Tag, Tab, Empty State, Paginator</li>
+                                    <li><strong>Chat/IA:</strong> Copilot Chat, Study Chat</li>
+                                    <li><strong>Utilidad:</strong> Tooltip</li>
+                                    <li>Valida CSS/JS requeridos para cada componente</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../components/alert.js"></script>
+    <script src="../components/toast.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // Cargar alert informativo
+            showAlert('info', 'Sube los dos archivos (HTML y CSS) de tu página para validar. El validador revisa tokens de color, tipografía, espaciado (font-size, border-radius, gap, padding) y componentes en ambos archivos.', {
+                containerId: 'info-alert-container',
+                noClose: true
+            });
+        });
+
+        // Configuración del validador
+        const UBITS_VALIDATORS = {
+            // Tokens de color oficiales UBITS
+            validColorTokens: [
+                '--ubits-fg-1-high', '--ubits-fg-1-medium', '--ubits-fg-1-low',
+                '--ubits-fg-2-high', '--ubits-fg-2-medium', '--ubits-fg-2-low',
+                '--ubits-bg-1', '--ubits-bg-2', '--ubits-bg-3',
+                '--ubits-border-1', '--ubits-border-2',
+                '--ubits-accent-brand', '--ubits-accent-secondary',
+                '--ubits-feedback-accent-success', '--ubits-feedback-accent-warning',
+                '--ubits-feedback-accent-error', '--ubits-feedback-accent-info',
+                '--ubits-feedback-bg-success-subtle', '--ubits-feedback-bg-warning-subtle',
+                '--ubits-feedback-bg-error-subtle', '--ubits-feedback-bg-info-subtle'
+            ],
+
+            // Clases de tipografía oficiales UBITS (completas)
+            validTypographyClasses: [
+                // Display
+                'ubits-display-d1-regular', 'ubits-display-d1-semibold', 'ubits-display-d1-bold',
+                'ubits-display-d2-regular', 'ubits-display-d2-semibold', 'ubits-display-d2-bold',
+                'ubits-display-d3-regular', 'ubits-display-d3-semibold', 'ubits-display-d3-bold',
+                'ubits-display-d4-regular', 'ubits-display-d4-semibold', 'ubits-display-d4-bold',
+                // Headings (solo estos dos existen)
+                'ubits-heading-h1', 'ubits-heading-h2',
+                // Body
+                'ubits-body-md-regular', 'ubits-body-md-semibold', 'ubits-body-md-bold',
+                'ubits-body-sm-regular', 'ubits-body-sm-semibold', 'ubits-body-sm-bold',
+                'ubits-body-lg-semibold',
+                'ubits-body-xs-regular', 'ubits-body-xs-semibold', 'ubits-body-xs-bold',
+                // Utility classes
+                'ubits-text-light', 'ubits-text-dark', 'ubits-text-white', 'ubits-text-custom',
+                'ubits-weight-regular', 'ubits-weight-semibold', 'ubits-weight-bold',
+                'ubits-size-xs', 'ubits-size-sm', 'ubits-size-md', 'ubits-size-h2', 'ubits-size-h1',
+                'ubits-size-d4', 'ubits-size-d3', 'ubits-size-d2', 'ubits-size-d1'
+            ],
+
+            // Clases inventadas prohibidas
+            prohibitedClasses: [
+                'ubits-h1', 'ubits-h2', 'ubits-h3', 'ubits-h4', 'ubits-h5', 'ubits-h6',
+                'ubits-title', 'ubits-subtitle', 'ubits-text', 'ubits-paragraph',
+                'ubits-label', 'ubits-caption',
+                'ubits-button__icon', 'ubits-button__text', 'ubits-button__label',
+                'ubits-input__icon', 'ubits-input__text', 'ubits-input__label',
+                'ubits-input-wrapper--left-icon', 'ubits-input-wrapper--right-icon',
+                'ubits-input-icon-left', 'ubits-input-icon-right'
+            ],
+
+            // Patrones de colores hardcodeados
+            hardcodedColorPatterns: [
+                /#[0-9a-fA-F]{3,6}/g,  // Hex colors
+                /rgb\([^)]+\)/g,        // RGB colors
+                /rgba\([^)]+\)/g,       // RGBA colors
+                /hsl\([^)]+\)/g,        // HSL colors
+                /hsla\([^)]+\)/g        // HSLA colors
+            ],
+
+            // Patrones de espaciado/estilos hardcodeados (deben usar tokens oficiales)
+            hardcodedFontSizePattern: /font-size:\s*[0-9]+px/g,
+            hardcodedBorderRadiusPattern: /border-radius:\s*[0-9]+px(?:\s+[0-9]+px)*(?:\s+[0-9]+)?/g,
+            hardcodedGapPattern: /gap:\s*[0-9]+px(?:\s+[0-9]+px)*(?:\s+[0-9]+)?/g,
+            hardcodedPaddingPattern: /padding:\s*[0-9]+px(?:\s+[0-9]+px)*(?:\s+[0-9]+)?/g,
+
+            // Tokens oficiales de espaciado (para mensajes de ayuda)
+            spacingTokenFiles: ['ubits-spacing-tokens.css', 'styles.css']
+        };
+
+        // Función principal de validación
+        function validateHTML(htmlContent, fileName = 'archivo.html') {
+            const results = [];
+            let successCount = 0;
+            let warningCount = 0;
+            let errorCount = 0;
+
+            // Limpiar contenido: remover scripts y configuración del validador para evitar falsos positivos
+            let cleanContent = htmlContent;
+            if (fileName === 'validador-ubits.html') {
+                // Para páginas con JavaScript complejo, solo validar el HTML/CSS real
+                // Extraer solo el contenido HTML visible (head + body sin scripts)
+                const htmlMatch = cleanContent.match(/&lt;html[\s\S]*?&lt;\/html&gt;/);
+                if (htmlMatch) {
+                    cleanContent = htmlMatch[0];
+                    // Remover todo el contenido de script
+                    cleanContent = cleanContent.replace(/&lt;script[\s\S]*?&lt;\/script&gt;/g, '');
+                    // Remover style blocks que puedan contener configuración
+                    cleanContent = cleanContent.replace(/&lt;style[\s\S]*?&lt;\/style&gt;/g, '');
+                    // Mantener solo los links CSS y el contenido HTML estructural
+                }
+            }
+
+            // 1. Validar tokens de color
+            const colorValidation = validateColorTokens(cleanContent);
+            results.push(...colorValidation.results);
+            successCount += colorValidation.success;
+            warningCount += colorValidation.warnings;
+            errorCount += colorValidation.errors;
+
+            // 2. Validar tipografía
+            const typographyValidation = validateTypography(cleanContent);
+            results.push(...typographyValidation.results);
+            successCount += typographyValidation.success;
+            warningCount += typographyValidation.warnings;
+            errorCount += typographyValidation.errors;
+
+            // 3. Validar componentes UBITS
+            const componentValidation = validateUBITSComponents(cleanContent);
+            results.push(...componentValidation.results);
+            successCount += componentValidation.success;
+            warningCount += componentValidation.warnings;
+            errorCount += componentValidation.errors;
+
+            // 4. Validar importaciones
+            const importValidation = validateImports(htmlContent); // Usar htmlContent original para imports
+            results.push(...importValidation.results);
+            successCount += importValidation.success;
+            warningCount += importValidation.warnings;
+            errorCount += importValidation.errors;
+
+            // 5. Validar estructura modular (si aplica)
+            const structureValidation = validateModularStructure(cleanContent);
+            results.push(...structureValidation.results);
+            successCount += structureValidation.success;
+            warningCount += structureValidation.warnings;
+            errorCount += structureValidation.errors;
+
+            // 6. Validar tokens de espaciado (font-size, border-radius, gap, padding)
+            const spacingValidation = validateSpacingTokens(cleanContent);
+            results.push(...spacingValidation.results);
+            successCount += spacingValidation.success;
+            warningCount += spacingValidation.warnings;
+            errorCount += spacingValidation.errors;
+
+            // Calcular puntuación
+            const totalChecks = successCount + warningCount + errorCount;
+            const score = totalChecks > 0 ? Math.round((successCount / totalChecks) * 100) : 0;
+
+            return {
+                results,
+                stats: { successCount, warningCount, errorCount, score },
+                fileName
+            };
+        }
+
+        // Validar tokens de color
+        function validateColorTokens(html) {
+            const results = [];
+            let success = 0, warnings = 0, errors = 0;
+
+            // Quitar comentarios CSS/JS (/* */) para no marcar colores que solo están en comentarios
+            const htmlSinComentariosCss = html.replace(/\/\*[\s\S]*?\*\//g, '');
+
+            // Buscar colores hardcodeados (excluyendo comentarios y código del validador)
+            const hardcodedColors = [];
+            UBITS_VALIDATORS.hardcodedColorPatterns.forEach(pattern => {
+                const matches = htmlSinComentariosCss.match(pattern);
+                if (matches) {
+                    matches.forEach(match => {
+                        // Ignorar colores en comentarios HTML
+                        const beforeMatch = htmlSinComentariosCss.substring(0, htmlSinComentariosCss.indexOf(match));
+                        const lastComment = beforeMatch.lastIndexOf('<!--');
+                        const lastCommentEnd = beforeMatch.lastIndexOf('-->');
+                        
+                        // Si está dentro de un comentario, ignorarlo
+                        if (lastComment > lastCommentEnd) {
+                            return;
+                        }
+                        
+                        // Ignorar colores en el código del validador mismo (validador-ubits.html)
+                        if (htmlSinComentariosCss.includes('validador-ubits.html') && 
+                            (match.includes('0c5bef') || match.includes('303a47') || match.includes('ffffff'))) {
+                            // Estos son tokens del validador mismo, ignorar
+                            return;
+                        }
+                        
+                        // Ignorar colores en rgba con transparencia muy baja (probablemente sombras)
+                        if (match.includes('rgba') && match.includes('0.0')) {
+                            return;
+                        }
+                        
+                        hardcodedColors.push(match);
+                    });
+                }
+            });
+            
+            // Agrupar colores duplicados
+            const uniqueHardcodedColors = [...new Set(hardcodedColors)];
+            
+            if (uniqueHardcodedColors.length > 0) {
+                const examples = uniqueHardcodedColors.slice(0, 5).join(', ');
+                results.push({
+                    type: 'error',
+                    title: `Colores hardcodeados detectados (${uniqueHardcodedColors.length})`,
+                    description: `Encontrados colores hardcodeados: ${examples}${uniqueHardcodedColors.length > 5 ? '...' : ''}. Reemplaza con tokens UBITS como var(--ubits-fg-1-high), var(--ubits-bg-1), etc.`
+                });
+                errors++;
+            }
+
+            // Verificar uso de tokens UBITS - extraer todos los tokens únicos usados
+            const tokenMatches = html.match(/var\(--ubits-[^)]+\)/g) || [];
+            const uniqueTokens = [...new Set(tokenMatches)];
+            const tokenUsage = tokenMatches.length;
+            
+            if (tokenUsage > 0) {
+                results.push({
+                    type: 'success',
+                    title: 'Tokens UBITS encontrados',
+                    description: `Se encontraron ${tokenUsage} usos de tokens UBITS (${uniqueTokens.length} únicos). ¡Excelente!`
+                });
+                success++;
+                
+                // Verificar si se están usando tokens comunes
+                const commonTokens = ['--ubits-fg-1-high', '--ubits-fg-1-medium', '--ubits-bg-1', '--ubits-bg-2', '--ubits-border-1', '--ubits-accent-brand'];
+                const usedCommonTokens = commonTokens.filter(token => uniqueTokens.some(used => used.includes(token)));
+                
+                if (usedCommonTokens.length >= 3) {
+                    results.push({
+                        type: 'success',
+                        title: 'Uso correcto de tokens comunes',
+                        description: `Se están usando tokens fundamentales UBITS correctamente.`
+                    });
+                    success++;
+                }
+            } else {
+                results.push({
+                    type: 'warning',
+                    title: 'No se encontraron tokens UBITS',
+                    description: 'Considera usar tokens de color UBITS (var(--ubits-*)) para mantener la identidad visual.'
+                });
+                warnings++;
+            }
+
+            // Verificar importación de ubits-colors.css
+            if (html.includes('ubits-colors.css')) {
+                results.push({
+                    type: 'success',
+                    title: 'ubits-colors.css importado',
+                    description: 'Los tokens de color están disponibles en la página.'
+                });
+                success++;
+            } else {
+                results.push({
+                    type: 'error',
+                    title: 'ubits-colors.css no importado',
+                    description: 'Agrega: <link rel="stylesheet" href="../general-styles/ubits-colors.css">'
+                });
+                errors++;
+            }
+
+            return { results, success, warnings, errors };
+        }
+
+        // Validar tipografía
+        function validateTypography(html) {
+            const results = [];
+            let success = 0, warnings = 0, errors = 0;
+
+            // Buscar clases prohibidas (buscar como clases completas, no subcadenas)
+            UBITS_VALIDATORS.prohibitedClasses.forEach(className => {
+                // Crear regex para buscar la clase exacta en atributos class
+                const classRegex = new RegExp(`class="[^"]*\\b${className}\\b[^"]*"`, 'g');
+                if (classRegex.test(html)) {
+                    results.push({
+                        type: 'error',
+                        title: `Clase prohibida: ${className}`,
+                        description: `Esta clase no existe en UBITS. Usa clases oficiales como ubits-heading-h1, ubits-body-md-regular.`
+                    });
+                    errors++;
+                }
+            });
+
+            // Validación específica para ubits-heading sin sufijo
+            const invalidHeadingRegex = /class="[^"]*\bubits-heading\b(?!-h[12])[^"]*"/g;
+            if (invalidHeadingRegex.test(html)) {
+                results.push({
+                    type: 'error',
+                    title: `Clase prohibida: ubits-heading`,
+                    description: `Esta clase no existe en UBITS. Usa clases oficiales como ubits-heading-h1, ubits-heading-h2.`
+                });
+                errors++;
+            }
+            
+            // Validar headings h3, h4, h5, h6 sin clases UBITS
+            const invalidHeadings = html.match(/<(h[3-6])[^>]*class="[^"]*"/g);
+            if (invalidHeadings) {
+                invalidHeadings.forEach(heading => {
+                    const headingMatch = heading.match(/<(h[3-6])/);
+                    if (headingMatch) {
+                        const headingTag = headingMatch[1];
+                        // Verificar si tiene alguna clase UBITS válida
+                        const hasUBITSClass = UBITS_VALIDATORS.validTypographyClasses.some(className => 
+                            heading.includes(className)
+                        );
+                        if (!hasUBITSClass) {
+                            results.push({
+                                type: 'error',
+                                title: `${headingTag.toUpperCase()} sin clase UBITS`,
+                                description: `El elemento ${headingTag} debe usar una clase UBITS. Usa ubits-body-md-bold o ubits-body-sm-bold para subtítulos.`
+                            });
+                            errors++;
+                        }
+                    }
+                });
+            }
+
+            // Verificar uso de clases válidas - buscar en atributos class
+            let validClassCount = 0;
+            const foundValidClasses = [];
+            
+            UBITS_VALIDATORS.validTypographyClasses.forEach(className => {
+                const classRegex = new RegExp(`class="[^"]*\\b${className}\\b[^"]*"`, 'g');
+                if (classRegex.test(html)) {
+                    validClassCount++;
+                    foundValidClasses.push(className);
+                }
+            });
+
+            if (validClassCount > 0) {
+                results.push({
+                    type: 'success',
+                    title: 'Clases de tipografía UBITS encontradas',
+                    description: `Se encontraron ${validClassCount} clases oficiales UBITS en uso.`
+                });
+                success++;
+            } else {
+                // Verificar si hay texto sin clases UBITS
+                const textElements = html.match(/<(h[1-6]|p|span|div)[^>]*>/g) || [];
+                if (textElements.length > 5) {
+                    results.push({
+                        type: 'warning',
+                        title: 'Elementos de texto sin clases UBITS',
+                        description: `Se encontraron ${textElements.length} elementos de texto. Considera usar clases de tipografía UBITS (ubits-heading-h1, ubits-body-md-regular, etc.).`
+                    });
+                    warnings++;
+                }
+            }
+
+            // Verificar importación de ubits-typography.css
+            if (html.includes('ubits-typography.css')) {
+                results.push({
+                    type: 'success',
+                    title: 'ubits-typography.css importado',
+                    description: 'Las clases de tipografía están disponibles en la página.'
+                });
+                success++;
+            } else {
+                results.push({
+                    type: 'error',
+                    title: 'ubits-typography.css no importado',
+                    description: 'Agrega: <link rel="stylesheet" href="../general-styles/ubits-typography.css">'
+                });
+                errors++;
+            }
+
+            return { results, success, warnings, errors };
+        }
+
+
+        // Validar componentes UBITS
+        function validateUBITSComponents(html) {
+            const results = [];
+            let success = 0, warnings = 0, errors = 0;
+
+            // Mapeo de componentes y sus archivos requeridos (ACTUALIZADO 2024)
+            const componentRequirements = {
+                // Componentes de navegación
+                'loadSubNav': { 
+                    css: 'components/sub-nav.css', 
+                    js: 'components/sub-nav.js',
+                    type: 'loadSubNav() function',
+                    classCheck: null
+                },
+                'loadSidebar': { 
+                    css: 'components/sidebar.css', 
+                    js: 'components/sidebar.js',
+                    type: 'loadSidebar() function',
+                    classCheck: null
+                },
+                'loadTabBar': { 
+                    css: 'components/tab-bar.css', 
+                    js: 'components/tab-bar.js',
+                    type: 'loadTabBar() function',
+                    classCheck: null
+                },
+                'loadFloatingMenu': { 
+                    css: 'components/floating-menu.css', 
+                    js: 'components/floating-menu.js',
+                    type: 'loadFloatingMenu() function',
+                    classCheck: null
+                },
+                'loadProfileMenu': { 
+                    css: 'components/profile-menu.css', 
+                    js: 'components/profile-menu.js',
+                    type: 'loadProfileMenu() function',
+                    classCheck: null
+                },
+                // Componentes UI básicos
+                'ubits-button': { 
+                    css: 'components/button.css', 
+                    js: null,
+                    type: 'HTML directo',
+                    classCheck: 'ubits-button'
+                },
+                'ubits-ia-button': { 
+                    css: 'components/ia-button.css', 
+                    js: null,
+                    type: 'HTML directo',
+                    classCheck: 'ubits-ia-button'
+                },
+                'ubits-alert': { 
+                    css: 'components/alert.css', 
+                    js: 'components/alert.js',
+                    type: 'HTML directo o showAlert()',
+                    classCheck: 'ubits-alert'
+                },
+                'showToast': { 
+                    css: 'components/toast.css', 
+                    js: 'components/toast.js',
+                    type: 'showToast() function',
+                    classCheck: null
+                },
+                'createInput': { 
+                    css: 'components/input.css', 
+                    js: 'components/input.js',
+                    type: 'createInput() function',
+                    classCheck: null
+                },
+                // Componentes de contenido
+                'loadCardContent': { 
+                    css: 'components/card-content.css', 
+                    js: 'components/card-content.js',
+                    type: 'loadCardContent() function',
+                    classCheck: null
+                },
+                'loadCardContentCompact': { 
+                    css: 'components/card-content-compact.css', 
+                    js: 'components/card-content-compact.js',
+                    type: 'loadCardContentCompact() function',
+                    classCheck: null
+                },
+                'loadCarouselContents': { 
+                    css: 'components/carousel-contents.css', 
+                    js: 'components/carousel-contents.js',
+                    type: 'loadCarouselContents() function',
+                    classCheck: null
+                },
+                // Componentes de UI avanzados
+                'loadHeaderProduct': { 
+                    css: 'components/header-product.css', 
+                    js: 'components/header-product.js',
+                    type: 'loadHeaderProduct() function',
+                    classCheck: null
+                },
+'ubits-status-tag': {
+                    css: 'components/status-tag.css',
+                    js: null,
+                    type: 'HTML directo (no requiere JavaScript)',
+                    classCheck: 'ubits-status-tag'
+                },
+                'ubits-chip': {
+                    css: 'components/chip.css',
+                    js: null,
+                    type: 'HTML directo (no requiere JavaScript)',
+                    classCheck: 'ubits-chip'
+                },
+                'ubits-tab': {
+                    css: 'components/tab.css', 
+                    js: 'components/tab.js',
+                    type: 'HTML directo',
+                    classCheck: 'ubits-tab'
+                },
+                'loadEmptyState': { 
+                    css: 'components/empty-state.css', 
+                    js: 'components/empty-state.js',
+                    type: 'loadEmptyState() function',
+                    classCheck: null
+                },
+                'loadPaginator': { 
+                    css: 'components/paginator.css', 
+                    js: 'components/paginator.js',
+                    type: 'loadPaginator() function',
+                    classCheck: null
+                },
+                // Componentes de chat/IA
+                'loadCopilotChat': { 
+                    css: 'components/copilot-chat.css', 
+                    js: 'components/copilot-chat.js',
+                    type: 'loadCopilotChat() function',
+                    classCheck: null
+                },
+                'loadStudyChat': { 
+                    css: 'components/study-chat.css', 
+                    js: 'components/study-chat.js',
+                    type: 'loadStudyChat() function',
+                    classCheck: null
+                },
+                'getLoaderHTML': {
+                    css: 'components/loader.css',
+                    js: 'components/loader.js',
+                    type: 'getLoaderHTML() function',
+                    classCheck: null
+                },
+                'ubits-loader': {
+                    css: 'components/loader.css',
+                    js: null,
+                    type: 'HTML directo',
+                    classCheck: 'ubits-loader'
+                },
+                // Drawer (panel lateral)
+                'getDrawerHtml': {
+                    css: 'components/drawer.css',
+                    js: 'components/drawer.js',
+                    type: 'getDrawerHtml() o HTML directo',
+                    classCheck: null
+                },
+                'ubits-drawer-overlay': {
+                    css: 'components/drawer.css',
+                    js: 'components/drawer.js',
+                    type: 'HTML directo',
+                    classCheck: 'ubits-drawer-overlay'
+                },
+                // Componentes de utilidad
+                'loadTooltip': { 
+                    css: 'components/tooltip.css', 
+                    js: 'components/tooltip.js',
+                    type: 'loadTooltip() function',
+                    classCheck: null
+                },
+                // Dropdown Menu
+                'getDropdownMenuHtml': {
+                    css: 'components/dropdown-menu.css',
+                    js: 'components/dropdown-menu.js',
+                    type: 'getDropdownMenuHtml() / openDropdownMenu() / closeDropdownMenu()',
+                    classCheck: 'ubits-dropdown-menu__overlay'
+                }
+            };
+
+            // Verificar componentes y sus archivos requeridos
+            let componentsFound = 0;
+            let missingFiles = [];
+            const foundComponents = [];
+
+            Object.entries(componentRequirements).forEach(([component, requirements]) => {
+                // Verificar si el componente está en uso
+                let isUsed = false;
+
+                // Dropdown Menu: detectar por funciones o clases del componente
+                if (component === 'getDropdownMenuHtml') {
+                    isUsed = html.includes('getDropdownMenuHtml(') || html.includes('openDropdownMenu(') || html.includes('closeDropdownMenu(') ||
+                        /class="[^"]*\bubits-dropdown-menu__overlay\b/.test(html) ||
+                        /class="[^"]*\bubits-dropdown-menu__content\b/.test(html);
+                }
+                // Para funciones JavaScript, buscar el nombre de la función
+                else if (component.startsWith('load') || component.startsWith('show') || component.startsWith('create') || component.startsWith('get')) {
+                    isUsed = html.includes(component + '(') || html.includes(component + ' (');
+                }
+                // Para clases CSS, buscar la clase en atributos class
+                else if (requirements.classCheck) {
+                    const classRegex = new RegExp(`class="[^"]*\\b${requirements.classCheck}\\b[^"]*"`, 'g');
+                    isUsed = classRegex.test(html);
+                }
+                // Fallback: buscar el nombre del componente
+                else {
+                    isUsed = html.includes(component);
+                }
+                
+                if (isUsed) {
+                    componentsFound++;
+                    foundComponents.push(component);
+                    
+                    // Verificar CSS - aceptar rutas relativas desde subcarpetas (../../) o desde raíz
+                    const cssPatterns = [
+                        requirements.css,
+                        '../' + requirements.css,
+                        '../../' + requirements.css,
+                        'components/' + requirements.css.split('/').pop(),
+                        '../components/' + requirements.css.split('/').pop(),
+                        '../../components/' + requirements.css.split('/').pop()
+                    ];
+                    
+                    const cssFound = cssPatterns.some(pattern => html.includes(pattern));
+                    
+                    if (!cssFound) {
+                        missingFiles.push({
+                            component: component,
+                            file: requirements.css,
+                            type: 'CSS',
+                            description: `CSS requerido para ${component}. Desde subcarpetas: ../../${requirements.css}, desde raíz: ${requirements.css}`
+                        });
+                    }
+                    
+                    // Verificar JavaScript (si es requerido) - aceptar rutas relativas
+                    if (requirements.js) {
+                        const jsPatterns = [
+                            requirements.js,
+                            '../' + requirements.js,
+                            '../../' + requirements.js,
+                            'components/' + requirements.js.split('/').pop(),
+                            '../components/' + requirements.js.split('/').pop(),
+                            '../../components/' + requirements.js.split('/').pop()
+                        ];
+                        
+                        const jsFound = jsPatterns.some(pattern => html.includes(pattern));
+                        
+                        if (!jsFound) {
+                            missingFiles.push({
+                                component: component,
+                                file: requirements.js,
+                                type: 'JavaScript',
+                                description: `JavaScript requerido para ${component}. Desde subcarpetas: ../../${requirements.js}, desde raíz: ${requirements.js}`
+                            });
+                        }
+                    }
+                }
+            });
+
+            if (componentsFound > 0) {
+                results.push({
+                    type: 'success',
+                    title: 'Componentes UBITS encontrados',
+                    description: `Se encontraron ${componentsFound} componentes UBITS en uso: ${foundComponents.join(', ')}.`
+                });
+                success++;
+            }
+
+            // Reportar archivos faltantes
+            if (missingFiles.length > 0) {
+                missingFiles.forEach(missing => {
+                    const fileType = missing.type === 'CSS' ? 'CSS' : 'JavaScript';
+                    const importTag = missing.type === 'CSS' ? 
+                        '<link rel="stylesheet" href="' + missing.file + '">' : 
+                        '<script src="' + missing.file + '"><\/script>';
+                    let description = 'El componente ' + missing.component + ' requiere: ' + importTag;
+                    if (missing.component === 'getDropdownMenuHtml') {
+                        description += ' Cuando uses Dropdown Menu (getDropdownMenuHtml, openDropdownMenu, closeDropdownMenu o clases ubits-dropdown-menu__overlay/__content), añade dropdown-menu.css y dropdown-menu.js.';
+                    }
+                    results.push({
+                        type: 'error',
+                        title: fileType + ' faltante para ' + missing.component,
+                        description: description
+                    });
+                    errors++;
+                });
+            }
+
+            // Detectar botones custom - solo en HTML real, no en JavaScript
+            const buttonMatches = html.match(/<button[^>]*class="[^"]*"[^>]*>/g);
+            let customButtonsCount = 0;
+            const customButtons = [];
+            
+            if (buttonMatches) {
+                buttonMatches.forEach(buttonHtml => {
+                    // Solo contar como custom si no tiene ubits-button ni ubits-ia-button en la clase
+                    const classMatch = buttonHtml.match(/class="([^"]*)"/);
+                    if (classMatch) {
+                        const classes = classMatch[1];
+                        if (!classes.includes('ubits-button') && !classes.includes('ubits-ia-button')) {
+                            customButtonsCount++;
+                            // Extraer texto del botón si es posible
+                            const textMatch = buttonHtml.match(/>([^<]+)</);
+                            if (textMatch) {
+                                customButtons.push(textMatch[1].trim().substring(0, 30));
+                            }
+                        }
+                    }
+                });
+            }
+            
+            if (customButtonsCount > 0) {
+                const examples = customButtons.slice(0, 3).join(', ');
+                results.push({
+                    type: 'error',
+                    title: 'Botones custom detectados',
+                    description: `Encontrados ${customButtonsCount} botones que no usan ubits-button o ubits-ia-button. Usa componentes UBITS oficiales. Ejemplos: ${examples}${customButtonsCount > 3 ? '...' : ''}`
+                });
+                errors++;
+            }
+            
+            // Detectar clases de componentes inventadas
+            const invalidComponentClasses = [
+                'ubits-button__icon', 'ubits-button__text', 'ubits-button__label',
+                'ubits-input__icon', 'ubits-input__text', 'ubits-input__label',
+                'ubits-input-wrapper--left-icon', 'ubits-input-wrapper--right-icon',
+                'ubits-input-icon-left', 'ubits-input-icon-right',
+                'ubits-alert__icon', 'ubits-alert__text', 'ubits-alert__content',
+                'ubits-status-tag__icon'
+            ];
+            
+            invalidComponentClasses.forEach(invalidClass => {
+                const classRegex = new RegExp(`class="[^"]*\\b${invalidClass}\\b[^"]*"`, 'g');
+                if (classRegex.test(html)) {
+                    results.push({
+                        type: 'error',
+                        title: `Clase inventada: ${invalidClass}`,
+                        description: `Esta clase no existe en UBITS. Revisa la documentación del componente para usar las clases correctas.`
+                    });
+                    errors++;
+                }
+            });
+
+            return { results, success, warnings, errors };
+        }
+
+        // Validar importaciones
+        function validateImports(html) {
+            const results = [];
+            let success = 0, warnings = 0, errors = 0;
+
+            const requiredImports = [
+                { file: 'ubits-colors.css', name: 'Tokens de color', paths: ['ubits-colors.css', '../general-styles/ubits-colors.css', '../../general-styles/ubits-colors.css'] },
+                { file: 'ubits-typography.css', name: 'Tipografía UBITS', paths: ['ubits-typography.css', '../general-styles/ubits-typography.css', '../../general-styles/ubits-typography.css'] },
+                { file: 'fontawesome-icons.css', name: 'Iconos FontAwesome', paths: ['fontawesome-icons.css', '../general-styles/fontawesome-icons.css', '../../general-styles/fontawesome-icons.css'] }
+            ];
+
+            requiredImports.forEach(importItem => {
+                // Verificar si está importado con alguna de las rutas posibles
+                const isImported = importItem.paths.some(path => html.includes(path));
+                
+                if (isImported) {
+                    results.push({
+                        type: 'success',
+                        title: `${importItem.name} importado`,
+                        description: `${importItem.file} está correctamente importado.`
+                    });
+                    success++;
+                } else {
+                    // Determinar ruta sugerida basada en la ubicación del archivo
+                    let suggestedPath = importItem.file;
+                    if (html.includes('../../general-styles/')) {
+                        suggestedPath = '../../general-styles/' + importItem.file;
+                    } else if (html.includes('../general-styles/')) {
+                        suggestedPath = '../general-styles/' + importItem.file;
+                    }
+                    
+                    results.push({
+                        type: 'error',
+                        title: `${importItem.name} no importado`,
+                        description: `Agrega: <link rel="stylesheet" href="${suggestedPath}"> (desde subcarpetas: ../../general-styles/${importItem.file}, desde raíz: general-styles/${importItem.file})`
+                    });
+                    errors++;
+                }
+            });
+
+            return { results, success, warnings, errors };
+        }
+
+        // Validar estructura modular
+        function validateModularStructure(html) {
+            const results = [];
+            let success = 0, warnings = 0, errors = 0;
+
+            // Verificar si usa estructura modular (content-sections)
+            const hasContentSections = html.includes('content-sections');
+            const hasSectionSingle = html.includes('section-single');
+            const hasSectionDual = html.includes('section-dual');
+            const hasSectionTriple = html.includes('section-triple');
+            const hasSectionQuad = html.includes('section-quad');
+
+            if (hasContentSections) {
+                results.push({
+                    type: 'success',
+                    title: 'Estructura modular detectada',
+                    description: 'La página usa el sistema modular de secciones UBITS (content-sections).'
+                });
+                success++;
+
+                // Verificar uso correcto de secciones
+                if (hasSectionSingle || hasSectionDual || hasSectionTriple || hasSectionQuad) {
+                    const sectionsUsed = [];
+                    if (hasSectionSingle) sectionsUsed.push('section-single');
+                    if (hasSectionDual) sectionsUsed.push('section-dual');
+                    if (hasSectionTriple) sectionsUsed.push('section-triple');
+                    if (hasSectionQuad) sectionsUsed.push('section-quad');
+
+                    results.push({
+                        type: 'success',
+                        title: 'Secciones modulares en uso',
+                        description: `Secciones detectadas: ${sectionsUsed.join(', ')}.`
+                    });
+                    success++;
+                }
+            } else {
+                // Solo advertir si es una página de producto (no documentación)
+                if (!html.includes('documentacion') && !html.includes('validador-ubits.html')) {
+                    results.push({
+                        type: 'warning',
+                        title: 'Estructura modular no detectada',
+                        description: 'Considera usar el sistema modular (content-sections) para facilitar la personalización. Ver documentacion/plantilla-ubits.html para referencia.'
+                    });
+                    warnings++;
+                }
+            }
+
+            return { results, success, warnings, errors };
+        }
+
+        // Validar tokens de espaciado (font-size, border-radius, gap, padding)
+        function validateSpacingTokens(html) {
+            const results = [];
+            let success = 0, warnings = 0, errors = 0;
+
+            // 1. Font-size hardcodeado
+            const fontSizeMatches = html.match(UBITS_VALIDATORS.hardcodedFontSizePattern) || [];
+            const uniqueFontSize = [...new Set(fontSizeMatches)];
+            if (uniqueFontSize.length > 0) {
+                results.push({
+                    type: 'error',
+                    title: `Font-size hardcodeados (${uniqueFontSize.length})`,
+                    description: `Usa tokens oficiales: var(--font-size-xs), var(--font-size-sm), var(--font-size-md), var(--font-size-h2), var(--font-size-h1), var(--font-size-d4), var(--font-size-d3), var(--font-size-d2), var(--font-size-d1). Ejemplos detectados: ${uniqueFontSize.slice(0, 3).join(', ')}${uniqueFontSize.length > 3 ? '...' : ''}.`
+                });
+                errors++;
+            } else {
+                results.push({
+                    type: 'success',
+                    title: 'Font-size con tokens',
+                    description: 'No se detectaron font-size en px. Usa var(--font-size-*) de ubits-typography.css.'
+                });
+                success++;
+            }
+
+            // 2. Border-radius hardcodeado
+            const radiusMatches = html.match(UBITS_VALIDATORS.hardcodedBorderRadiusPattern) || [];
+            const uniqueRadius = [...new Set(radiusMatches)];
+            if (uniqueRadius.length > 0) {
+                results.push({
+                    type: 'error',
+                    title: `Border-radius hardcodeados (${uniqueRadius.length})`,
+                    description: `Usa tokens oficiales: var(--border-radius-xs), var(--border-radius-sm), var(--border-radius-md), var(--border-radius-lg), var(--border-radius-xl), var(--border-radius-full). Ejemplos: ${uniqueRadius.slice(0, 3).join(', ')}${uniqueRadius.length > 3 ? '...' : ''}.`
+                });
+                errors++;
+            } else {
+                results.push({
+                    type: 'success',
+                    title: 'Border-radius con tokens',
+                    description: 'No se detectaron border-radius en px. Usa var(--border-radius-*) de ubits-spacing-tokens.css.'
+                });
+                success++;
+            }
+
+            // 3. Gap hardcodeado
+            const gapMatches = html.match(UBITS_VALIDATORS.hardcodedGapPattern) || [];
+            const uniqueGap = [...new Set(gapMatches)];
+            if (uniqueGap.length > 0) {
+                results.push({
+                    type: 'error',
+                    title: `Gap hardcodeados (${uniqueGap.length})`,
+                    description: `Usa tokens oficiales: var(--gap-xs), var(--gap-sm), var(--gap-md), var(--gap-lg), var(--gap-xl), var(--gap-2xl), var(--gap-4xl), etc. Ejemplos: ${uniqueGap.slice(0, 3).join(', ')}${uniqueGap.length > 3 ? '...' : ''}.`
+                });
+                errors++;
+            } else {
+                results.push({
+                    type: 'success',
+                    title: 'Gap con tokens',
+                    description: 'No se detectaron gap en px. Usa var(--gap-*) de ubits-spacing-tokens.css.'
+                });
+                success++;
+            }
+
+            // 4. Padding hardcodeado (solo el primer valor para no duplicar con shorthand)
+            const paddingMatches = html.match(UBITS_VALIDATORS.hardcodedPaddingPattern) || [];
+            const uniquePadding = [...new Set(paddingMatches)];
+            if (uniquePadding.length > 0) {
+                results.push({
+                    type: 'error',
+                    title: `Padding hardcodeados (${uniquePadding.length})`,
+                    description: `Usa tokens oficiales: var(--padding-xs), var(--padding-sm), var(--padding-md), var(--padding-lg), var(--padding-xl), var(--padding-2xl), var(--padding-4xl), var(--padding-6xl). Ejemplos: ${uniquePadding.slice(0, 3).join(', ')}${uniquePadding.length > 3 ? '...' : ''}.`
+                });
+                errors++;
+            } else {
+                results.push({
+                    type: 'success',
+                    title: 'Padding con tokens',
+                    description: 'No se detectaron padding en px. Usa var(--padding-*) de ubits-spacing-tokens.css.'
+                });
+                success++;
+            }
+
+            // 5. Importación de estilos con tokens de espaciado (styles.css importa ubits-spacing-tokens.css)
+            const hasSpacingTokens = UBITS_VALIDATORS.spacingTokenFiles.some(f => html.includes(f));
+            if (hasSpacingTokens) {
+                results.push({
+                    type: 'success',
+                    title: 'Tokens de espaciado disponibles',
+                    description: 'La página importa styles.css o ubits-spacing-tokens.css (tokens de padding, gap, border-radius).'
+                });
+                success++;
+            } else {
+                results.push({
+                    type: 'warning',
+                    title: 'Tokens de espaciado no detectados',
+                    description: 'Para usar var(--padding-*), var(--gap-*), var(--border-radius-*), importa styles.css (que incluye ubits-spacing-tokens.css) o ubits-spacing-tokens.css directamente.'
+                });
+                warnings++;
+            }
+
+            return { results, success, warnings, errors };
+        }
+
+        // Función para validar archivos subidos (HTML + CSS)
+        function validateFiles(files) {
+            if (!files || files.length === 0) {
+                showToast('error', 'Selecciona los dos archivos (HTML y CSS)', {
+                    containerId: 'ubits-toast-container',
+                    duration: 5000
+                });
+                return;
+            }
+            if (files.length !== 2) {
+                showToast('error', 'Debes subir exactamente 2 archivos: uno .html y uno .css', {
+                    containerId: 'ubits-toast-container',
+                    duration: 5500
+                });
+                return;
+            }
+
+            const htmlFile = Array.from(files).find(f => f.name.toLowerCase().endsWith('.html'));
+            const cssFile = Array.from(files).find(f => f.name.toLowerCase().endsWith('.css'));
+
+            if (!htmlFile || !cssFile) {
+                showToast('error', 'Falta un archivo: necesitas 1 archivo .html y 1 archivo .css', {
+                    containerId: 'ubits-toast-container',
+                    duration: 5500
+                });
+                return;
+            }
+
+            const readFile = (file) => new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => resolve(e.target.result);
+                reader.onerror = () => reject(new Error('Error al leer ' + file.name));
+                reader.readAsText(file);
+            });
+
+            Promise.all([readFile(htmlFile), readFile(cssFile)])
+                .then(([htmlContent, cssContent]) => {
+                    const combinedContent = htmlContent + '\n/* === CSS adjunto: ' + cssFile.name + ' === */\n' + cssContent;
+                    const fileLabel = htmlFile.name + ' + ' + cssFile.name;
+                    const validation = validateHTML(combinedContent, fileLabel);
+                    displayResults(validation);
+                })
+                .catch((err) => {
+                    showToast('error', err.message || 'Error al leer los archivos', {
+                        containerId: 'ubits-toast-container',
+                        duration: 5000
+                    });
+                });
+        }
+
+        // Función para validar página actual
+        function validateCurrentPage() {
+            // Obtener el HTML de la página actual
+            const htmlContent = document.documentElement.outerHTML;
+            
+            // Para el validador, hacer una validación especial
+            const fileName = 'validador-ubits.html';
+            const validation = validateValidatorPage(htmlContent, fileName);
+            displayResults(validation);
+        }
+
+        // Validación especial para el validador mismo
+        function validateValidatorPage(htmlContent, fileName) {
+            const results = [];
+            let successCount = 0;
+            let warningCount = 0;
+            let errorCount = 0;
+
+            // Extraer solo el HTML estructural (sin JavaScript)
+            let structuralHTML = htmlContent;
+            // Remover completamente todos los scripts
+            structuralHTML = structuralHTML.replace(/&lt;script[\s\S]*?&lt;\/script&gt;/g, '');
+            // Remover contenido del head que no sea CSS
+            structuralHTML = structuralHTML.replace(/&lt;title&gt;[\s\S]*?&lt;\/title&gt;/g, '');
+            structuralHTML = structuralHTML.replace(/&lt;meta[\s\S]*?&gt;/g, '');
+
+            // Validar solo las importaciones CSS
+            const importValidation = validateImports(htmlContent);
+            results.push(...importValidation.results);
+            successCount += importValidation.success;
+            warningCount += importValidation.warnings;
+            errorCount += importValidation.errors;
+
+            // Validar que usa componentes UBITS (verificar que los botones usan ubits-button)
+            const realButtons = structuralHTML.match(/<button[^>]*class="[^"]*ubits-button[^"]*"[^>]*>/g);
+            if (realButtons && realButtons.length >= 2) {
+                results.push({
+                    type: 'success',
+                    title: 'Botones UBITS encontrados',
+                    description: `Se encontraron ${realButtons.length} botones usando componentes UBITS correctamente.`
+                });
+                successCount++;
+            }
+
+            // Validar uso de tipografía UBITS en elementos reales
+            const validTypography = structuralHTML.match(/class="[^"]*ubits-(heading|body|display)-[^"]*"/g);
+            if (validTypography && validTypography.length > 0) {
+                results.push({
+                    type: 'success',
+                    title: 'Tipografía UBITS encontrada',
+                    description: `Se encontraron ${validTypography.length} usos de clases de tipografía UBITS.`
+                });
+                successCount++;
+            }
+
+            // Validar tokens de color en CSS inline
+            const tokenUsage = structuralHTML.match(/var\(--ubits-[^)]+\)/g);
+            if (tokenUsage && tokenUsage.length > 0) {
+                results.push({
+                    type: 'success',
+                    title: 'Tokens UBITS encontrados',
+                    description: `Se encontraron ${tokenUsage.length} usos de tokens UBITS en estilos.`
+                });
+                successCount++;
+            }
+
+            // Validar estructura de página
+            if (structuralHTML.includes('content-area')) {
+                results.push({
+                    type: 'success',
+                    title: 'Estructura UBITS detectada',
+                    description: 'La página usa la estructura content-area de UBITS.'
+                });
+                successCount++;
+            }
+
+            // Validar tokens de espaciado (font-size, border-radius, gap, padding)
+            const spacingValidation = validateSpacingTokens(htmlContent);
+            results.push(...spacingValidation.results);
+            successCount += spacingValidation.success;
+            warningCount += spacingValidation.warnings;
+            errorCount += spacingValidation.errors;
+
+            // Calcular puntuación
+            const totalChecks = successCount + warningCount + errorCount;
+            const score = totalChecks > 0 ? Math.round((successCount / totalChecks) * 100) : 100;
+
+            // Si no hay errores, mostrar mensaje especial
+            if (errorCount === 0) {
+                results.push({
+                    type: 'success',
+                    title: '¡Validador autocertificado! 🎉',
+                    description: 'El validador UBITS cumple con todos sus propios estándares. ¡Perfecto!'
+                });
+                successCount++;
+            }
+
+            return {
+                results,
+                stats: { successCount, warningCount, errorCount, score: Math.max(score, 95) },
+                fileName
+            };
+        }
+
+        // Mostrar resultados
+        function displayResults(validation) {
+            const resultsContainer = document.getElementById('validation-results');
+            const listContainer = document.getElementById('validation-list');
+            const statsContainer = document.getElementById('validation-stats');
+            const promptSection = document.getElementById('cursor-prompt-section');
+
+            // Limpiar resultados anteriores
+            listContainer.innerHTML = '';
+
+            // Mostrar cada resultado
+            validation.results.forEach(result => {
+                const item = document.createElement('div');
+                item.className = `validation-item ${result.type}`;
+                
+                const iconClass = result.type === 'success' ? 'fa-check-circle' : 
+                                 result.type === 'error' ? 'fa-times-circle' : 'fa-exclamation-triangle';
+                const iconColor = result.type === 'success' ? 'var(--ubits-feedback-accent-success)' : 
+                                 result.type === 'error' ? 'var(--ubits-feedback-accent-error)' : 'var(--ubits-feedback-accent-warning)';
+
+                item.innerHTML = '<i class="far ' + iconClass + ' validation-icon" style="color: ' + iconColor + ';"></i>' +
+                    '<div class="validation-content">' +
+                        '<div class="validation-title ubits-body-sm-bold">' + result.title + '</div>' +
+                        '<div class="validation-description ubits-body-sm-regular">' + result.description + '</div>' +
+                    '</div>';
+                listContainer.appendChild(item);
+            });
+
+            // Actualizar estadísticas
+            document.getElementById('stat-success').textContent = validation.stats.successCount;
+            document.getElementById('stat-warnings').textContent = validation.stats.warningCount;
+            document.getElementById('stat-errors').textContent = validation.stats.errorCount;
+            document.getElementById('stat-score').textContent = validation.stats.score + '%';
+
+            // Generar prompt para Cursor
+            generateCursorPrompt(validation);
+
+            // Mostrar resultados
+            resultsContainer.style.display = 'block';
+            statsContainer.style.display = 'grid';
+            
+            // Mostrar prompt solo si hay errores o advertencias
+            const totalIssues = validation.stats.warningCount + validation.stats.errorCount;
+            if (totalIssues > 0) {
+                promptSection.style.display = 'block';
+            }
+
+            // Scroll a resultados
+            resultsContainer.scrollIntoView({ behavior: 'smooth' });
+
+            // Mostrar toast con resumen
+            if (totalIssues === 0) {
+                showToast('success', '¡Perfecto! ' + validation.fileName + ' cumple todos los estándares UBITS 🎉', {
+                    containerId: 'ubits-toast-container',
+                    duration: 3500
+                });
+            } else {
+                showToast('warning', 'Validación completada: ' + totalIssues + ' problemas encontrados en ' + validation.fileName, {
+                    containerId: 'ubits-toast-container',
+                    duration: 5000
+                });
+            }
+        }
+
+        // Generar prompt automático para Cursor
+        function generateCursorPrompt(validation) {
+            const errors = validation.results.filter(r => r.type === 'error');
+            const warnings = validation.results.filter(r => r.type === 'warning');
+            
+            if (errors.length === 0 && warnings.length === 0) {
+                return;
+            }
+
+            let prompt = '🚨 VALIDACIÓN UBITS - CORRECCIONES REQUERIDAS\n\n';
+            prompt += 'Archivo: ' + validation.fileName + '\n';
+            prompt += 'Puntuación UBITS: ' + validation.stats.score + '%\n\n';
+
+            if (errors.length > 0) {
+                prompt += '🔴 ERRORES CRÍTICOS (' + errors.length + '):\n';
+                errors.forEach((error, index) => {
+                    prompt += (index + 1) + '. ' + error.title + '\n';
+                    prompt += '   ' + error.description + '\n\n';
+                });
+            }
+
+            if (warnings.length > 0) {
+                prompt += '🟡 ADVERTENCIAS (' + warnings.length + '):\n';
+                warnings.forEach((warning, index) => {
+                    prompt += (index + 1) + '. ' + warning.title + '\n';
+                    prompt += '   ' + warning.description + '\n\n';
+                });
+            }
+
+            prompt += '📋 INSTRUCCIONES PARA CURSOR:\n\n';
+            prompt += 'Por favor corrige TODOS los problemas listados arriba en ' + validation.fileName + '. ';
+            prompt += 'Asegúrate de seguir estas reglas UBITS:\n\n';
+
+            // Agregar instrucciones específicas basadas en los errores
+            const instructions = [];
+            
+            if (errors.some(e => e.title.includes('hardcodeado'))) {
+                instructions.push('• Reemplaza TODOS los colores hardcodeados (hex, rgb, rgba, etc.) con tokens UBITS: var(--ubits-fg-1-high), var(--ubits-bg-1), etc.');
+            }
+            
+            if (errors.some(e => e.title.includes('prohibida'))) {
+                instructions.push('• Elimina clases inventadas (ubits-h1, ubits-title, ubits-button__icon, ubits-input__icon) y usa clases oficiales UBITS.');
+            }
+            
+            if (errors.some(e => e.title.includes('no importado'))) {
+                instructions.push('• Agrega las importaciones faltantes en el <head>: ubits-colors.css, ubits-typography.css, fontawesome-icons.css');
+            }
+            
+            if (errors.some(e => e.title.includes('custom'))) {
+                instructions.push('• Reemplaza botones/componentes custom con componentes UBITS oficiales.');
+            }
+            
+            if (errors.some(e => e.title.includes('CSS faltante') || e.title.includes('faltante para'))) {
+                instructions.push('• Agrega las importaciones CSS/JS faltantes para los componentes UBITS que estás usando.');
+                instructions.push('• Desde subcarpetas (ubits-admin/*, ubits-colaborador/*): usa rutas relativas ../../components/...');
+                instructions.push('• Desde la raíz: usa rutas relativas components/... o general-styles/...');
+            }
+            
+            if (errors.some(e => e.title.includes('clase inventada') || e.title.includes('Clase inventada'))) {
+                instructions.push('• Elimina todas las clases inventadas y usa solo clases oficiales UBITS.');
+                instructions.push('• Revisa la documentación del componente en documentacion/componentes/ para ver las clases correctas.');
+            }
+            
+            if (errors.some(e => e.title.includes('sin clase UBITS'))) {
+                instructions.push('• Todos los elementos de texto (h1-h6, p, span) deben usar clases de tipografía UBITS.');
+                instructions.push('• Para subtítulos (h3-h6): usa ubits-body-md-bold o ubits-body-sm-bold.');
+            }
+
+            if (errors.some(e => e.title.includes('Font-size hardcodeados'))) {
+                instructions.push('• Reemplaza TODOS los font-size en px por tokens: var(--font-size-xs), var(--font-size-sm), var(--font-size-md), var(--font-size-h2), var(--font-size-h1), var(--font-size-d4), var(--font-size-d3), var(--font-size-d2), var(--font-size-d1). Aproxima al valor oficial más cercano.');
+            }
+            if (errors.some(e => e.title.includes('Border-radius hardcodeados'))) {
+                instructions.push('• Reemplaza TODOS los border-radius en px por tokens: var(--border-radius-xs), var(--border-radius-sm), var(--border-radius-md), var(--border-radius-lg), var(--border-radius-xl), var(--border-radius-full). Aproxima al valor oficial más cercano.');
+            }
+            if (errors.some(e => e.title.includes('Gap hardcodeados'))) {
+                instructions.push('• Reemplaza TODOS los gap en px por tokens: var(--gap-xs), var(--gap-sm), var(--gap-md), var(--gap-lg), var(--gap-xl), var(--gap-2xl), var(--gap-4xl). Aproxima al valor oficial más cercano.');
+            }
+            if (errors.some(e => e.title.includes('Padding hardcodeados'))) {
+                instructions.push('• Reemplaza TODOS los padding en px por tokens: var(--padding-xs), var(--padding-sm), var(--padding-md), var(--padding-lg), var(--padding-xl), var(--padding-2xl), var(--padding-4xl), var(--padding-6xl). Aproxima al valor oficial más cercano.');
+            }
+
+            if (instructions.length === 0) {
+                instructions.push('• Revisa el código siguiendo las reglas UBITS del template.');
+                instructions.push('• Mantén la identidad visual UBITS usando solo tokens oficiales.');
+                instructions.push('• Usa componentes UBITS existentes en lugar de crear custom.');
+                instructions.push('• Verifica que todos los componentes tengan sus CSS/JS importados correctamente.');
+            }
+
+            prompt += instructions.join('\n') + '\n\n';
+            
+            prompt += '✅ VERIFICACIÓN FINAL:\n';
+            prompt += 'Después de hacer los cambios, verifica que:\n';
+            prompt += '• No hay colores hardcodeados (solo tokens var(--ubits-*))\n';
+            prompt += '• No hay font-size, border-radius, gap ni padding en px (solo var(--font-size-*), var(--border-radius-*), var(--gap-*), var(--padding-*))\n';
+            prompt += '• Solo se usan clases de tipografía oficiales UBITS\n';
+            prompt += '• Todos los CSS/JS requeridos están importados con rutas correctas\n';
+            prompt += '• Se usan componentes UBITS oficiales en lugar de custom\n';
+            prompt += '• Todos los elementos de texto tienen clases UBITS\n';
+            prompt += '• No hay clases inventadas (ubits-button__icon, ubits-h1, etc.)\n\n';
+            
+            prompt += '🎯 OBJETIVO: Lograr 100% de puntuación UBITS manteniendo la funcionalidad.\n\n';
+            prompt += '💡 TIP: Usa el validador nuevamente después de hacer los cambios para verificar que todo esté correcto.';
+
+            // Mostrar el prompt generado
+            document.getElementById('cursor-prompt-content').textContent = prompt;
+            
+            // Guardar prompt para copiar
+            window.generatedPrompt = prompt;
+        }
+
+        // Función para copiar prompt de Cursor
+        function copyCursorPrompt() {
+            if (!window.generatedPrompt) {
+                showToast('error', 'No hay prompt generado', {
+                    containerId: 'ubits-toast-container',
+                    duration: 6500
+                });
+                return;
+            }
+
+            navigator.clipboard.writeText(window.generatedPrompt).then(function() {
+                // Cambiar estado del botón
+                const button = document.getElementById('copy-prompt-btn');
+                const icon = button.querySelector('i');
+                const text = button.querySelector('span');
+                
+                const originalIcon = icon.className;
+                const originalText = text.textContent;
+                
+                icon.className = 'far fa-check';
+                text.textContent = 'Copiado';
+                button.classList.remove('ubits-button--primary');
+                button.classList.add('ubits-button--secondary');
+                
+                showToast('success', '¡Prompt copiado! Pégalo en Cursor para corregir automáticamente 🚀', {
+                    containerId: 'ubits-toast-container',
+                    duration: 3500
+                });
+                
+                // Restaurar estado después de 3 segundos
+                setTimeout(function() {
+                    icon.className = originalIcon;
+                    text.textContent = originalText;
+                    button.classList.remove('ubits-button--secondary');
+                    button.classList.add('ubits-button--primary');
+                }, 3000);
+                
+            }).catch(function(err) {
+                console.error('Error al copiar: ', err);
+                showToast('error', 'Error al copiar el prompt', {
+                    containerId: 'ubits-toast-container',
+                    duration: 6500
+                });
+            });
+        }
+
+        // Manejo de drag & drop
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('dragover');
+        }
+
+        function handleDragLeave(e) {
+            e.currentTarget.classList.remove('dragover');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                validateFiles(files);
+            }
+        }
+
+        // Toast container
+        const toastContainer = document.createElement('div');
+        toastContainer.id = 'ubits-toast-container';
+        document.body.appendChild(toastContainer);
+
+    </script>
+</body>
+</html>

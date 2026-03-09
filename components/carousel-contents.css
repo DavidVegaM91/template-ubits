@@ -1,0 +1,1412 @@
+/* ========================================
+   UBITS CAROUSEL CONTENTS COMPONENT
+   Componente de carrusel con múltiples variantes
+   Variante principal: Hero (banner grande horizontal)
+   ======================================== */
+
+/* Carousel Contents Container - Variante Hero */
+.carousel-contents--hero {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 21 / 9;
+    border-radius: var(--border-radius-sm);
+    overflow: hidden;
+    background: var(--ubits-bg-1);
+    touch-action: pan-x pan-y pinch-zoom; /* Permitir swipe horizontal y vertical */
+}
+
+/* Zoom effect on hover */
+.carousel-contents--hero:hover .carousel-contents--hero__image {
+    transform: scale(1.08);
+}
+
+/* Slides Container */
+.carousel-contents--hero__slides-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    touch-action: pan-x pan-y pinch-zoom; /* Permitir swipe horizontal y vertical */
+}
+
+/* Individual Slide */
+.carousel-contents--hero__slide {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+}
+
+.carousel-contents--hero__slide.active {
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 1;
+}
+
+/* Hero Image Background */
+.carousel-contents--hero__image-wrapper {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    border-radius: var(--border-radius-sm);
+    overflow: hidden;
+}
+
+.carousel-contents--hero__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    background: var(--ubits-bg-2);
+    transition: transform 0.6s ease;
+    transform: scale(1);
+}
+
+.carousel-contents--hero__gradient {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(0, 0, 0, 0.3) 50%,
+        rgba(0, 0, 0, 0.7) 100%
+    );
+}
+
+/* Hero Content Overlay */
+.carousel-contents--hero__content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: var(--padding-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    z-index: 2;
+}
+
+/* Content Type */
+.carousel-contents--hero__type {
+    display: flex;
+    gap: var(--gap-md);
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.carousel-contents--hero__type-text {
+    color: var(--ubits-fg-1-high-static-inverted) !important;
+}
+
+/* Title Section */
+.carousel-contents--hero__title-wrapper {
+    display: flex;
+    gap: var(--gap-sm);
+    align-items: flex-start;
+}
+
+.carousel-contents--hero__title {
+    flex: 1;
+    color: var(--ubits-fg-1-high-static-inverted) !important;
+    margin: 0;
+    line-height: 48px;
+}
+
+/* Provider Info */
+.carousel-contents--hero__provider {
+    display: flex;
+    gap: var(--gap-xs);
+    align-items: center;
+}
+
+.carousel-contents--hero__provider-avatar {
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 50%;
+    flex-shrink: 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.carousel-contents--hero__provider-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.carousel-contents--hero__provider-name {
+    flex: 1;
+    color: var(--ubits-fg-1-high-static-inverted) !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Múltiples avatares para Ruta de aprendizaje en Hero */
+.carousel-contents--hero__provider--multiple {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-xs);
+}
+
+.carousel-contents--hero__provider-avatars-list {
+    display: flex;
+    align-items: center;
+    position: relative;
+    height: 28px;
+    isolation: isolate; /* Crear nuevo contexto de apilamiento */
+}
+
+.carousel-contents--hero__provider-avatar--stacked {
+    position: relative;
+    width: 28px;
+    height: 28px;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* Avatar con contador para +4 o más */
+.carousel-contents--hero__provider-avatar--count {
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+}
+
+.carousel-contents--hero__provider-count-text {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    line-height: 19.5px;
+    color: var(--ubits-fg-1-high-static-inverted) !important;
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* Competency */
+.carousel-contents--hero__competency {
+    display: flex;
+    gap: var(--gap-xs);
+    align-items: center;
+    color: var(--ubits-fg-1-high-static-inverted);
+}
+
+.carousel-contents--hero__competency-icon {
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.carousel-contents--hero__competency-icon i {
+    font-size: var(--font-size-sm);
+    color: var(--ubits-fg-1-high-static-inverted) !important;
+}
+
+.carousel-contents--hero__competency-text {
+    color: var(--ubits-fg-1-high-static-inverted) !important;
+}
+
+/* Specs */
+.carousel-contents--hero__specs {
+    display: flex;
+    gap: var(--gap-sm);
+    align-items: center;
+}
+
+.carousel-contents--hero__spec-item {
+    display: flex;
+    gap: var(--gap-xs);
+    align-items: center;
+    color: var(--ubits-fg-1-high-static-inverted);
+}
+
+.carousel-contents--hero__spec-icon {
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.carousel-contents--hero__spec-icon i {
+    font-size: var(--font-size-sm);
+    color: var(--ubits-fg-1-high-static-inverted) !important;
+}
+
+.carousel-contents--hero__spec-text {
+    color: var(--ubits-fg-1-high-static-inverted) !important;
+}
+
+/* Actions Section */
+.carousel-contents--hero__actions {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    width: 100%;
+    gap: var(--gap-sm);
+    position: relative;
+}
+
+.carousel-contents--hero__button-wrapper {
+    flex-shrink: 0;
+}
+
+/* Carousel Indicators - Inside (Desktop/Tablet) */
+.carousel-contents--hero__indicators--inside {
+    display: flex;
+    gap: var(--gap-md);
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 12px;
+    flex: 0 0 auto;
+}
+
+/* Carousel Indicators - Outside (Mobile) */
+.carousel-contents--hero__indicators--outside {
+    display: none;
+    gap: var(--gap-md);
+    align-items: center;
+    justify-content: center;
+    margin-top: 8px;
+    height: 12px;
+    width: 100%;
+}
+
+.carousel-contents--hero__indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--ubits-fg-gray-subtle-hover);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.carousel-contents--hero__indicator.active {
+    width: 12px;
+    height: 12px;
+    background: var(--ubits-accent-brand);
+}
+
+.carousel-contents--hero__indicator:not(.active) {
+    width: 10px;
+    height: 10px;
+}
+
+/* Carousel Contents Wrapper */
+.carousel-contents--hero-wrapper {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Carousel Controls */
+.carousel-contents--hero__controls {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    display: flex;
+    gap: var(--gap-sm);
+    align-items: center;
+    z-index: 10;
+    flex-shrink: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 1023px) {
+    /* Tablet: mantener 21:9 */
+    .carousel-contents--hero {
+        aspect-ratio: 21 / 9;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Mobile: cambiar a 1:1 */
+    .carousel-contents--hero {
+        aspect-ratio: 1 / 1;
+    }
+    
+    .carousel-contents--hero__content {
+        padding: var(--padding-md);
+    }
+    
+    /* Ocultar controles de navegación en mobile */
+    .carousel-contents--hero__controls {
+        display: none;
+    }
+    
+    /* Ocultar indicadores dentro del card en mobile */
+    .carousel-contents--hero__indicators--inside {
+        display: none;
+    }
+    
+    /* Ocultar botón "Ver ahora" en mobile */
+    .carousel-contents--hero__button-wrapper {
+        display: none;
+    }
+    
+    /* Ocultar indicadores dentro del card en mobile */
+    .carousel-contents--hero__indicators--inside {
+        display: none;
+    }
+    
+    /* Mostrar indicadores fuera del card en mobile */
+    .carousel-contents--hero__indicators--outside {
+        display: flex !important;
+        margin-top: 8px;
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    /* Ajustar acciones sin botón */
+    .carousel-contents--hero__actions {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .carousel-contents--hero {
+        aspect-ratio: 1 / 1;
+    }
+    
+    /* Cambiar título a body-sm-bold en móviles pequeños (igual que outstanding) */
+    .carousel-contents--hero__title {
+        font-family: 'Noto Sans', sans-serif !important;
+        font-size: var(--font-size-sm) !important;
+        font-weight: var(--font-weight-bold) !important;
+        line-height: 19.5px !important;
+    }
+}
+
+/* ========================================
+   VARIANTE: PROMO VERTICAL
+   ======================================== */
+
+/* Container principal */
+.carousel-contents--promo-vertical-wrapper {
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    box-sizing: border-box;
+}
+
+/* Título de sección con controles */
+.carousel-contents--promo-vertical__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-sm);
+    height: 32px;
+}
+
+.carousel-contents--promo-vertical__title {
+    flex: 1;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-h2);
+    font-weight: var(--font-weight-bold);
+    line-height: 1;
+    color: var(--ubits-fg-1-high);
+    margin: 0;
+}
+
+.carousel-contents--promo-vertical__controls {
+    display: flex;
+    gap: var(--gap-sm);
+    align-items: center;
+}
+
+.carousel-contents--promo-vertical__controls button.disabled,
+.carousel-contents--promo-vertical__controls button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Container de cards */
+.carousel-contents--promo-vertical__cards-container {
+    display: flex;
+    gap: var(--gap-2xl);
+    align-items: center;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+    position: relative;
+}
+
+.carousel-contents--promo-vertical__cards-container::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+
+/* Card individual */
+.carousel-contents--promo-vertical__card {
+    flex: 0 0 calc((100% - (3 * 24px)) / 4);
+    width: calc((100% - (3 * 24px)) / 4);
+    max-width: calc((100% - (3 * 24px)) / 4);
+    min-width: calc((100% - (3 * 24px)) / 4);
+    aspect-ratio: 3 / 4;
+    border-radius: var(--border-radius-sm);
+    overflow: hidden;
+    position: relative;
+    background: var(--ubits-bg-1);
+    box-sizing: border-box;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+/* Zoom effect on hover */
+.carousel-contents--promo-vertical__card:hover .carousel-contents--promo-vertical__card-image {
+    transform: scale(1.08);
+}
+
+.carousel-contents--promo-vertical__card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    transition: transform 0.6s ease;
+}
+
+/* Responsive: Tablet */
+@media (max-width: 1023px) {
+    .carousel-contents--promo-vertical__card {
+        flex: 0 0 calc((100% - (2 * 24px)) / 3);
+        width: calc((100% - (2 * 24px)) / 3);
+        max-width: calc((100% - (2 * 24px)) / 3);
+        min-width: calc((100% - (2 * 24px)) / 3);
+    }
+}
+
+/* Indicadores (dots) para mobile */
+.carousel-contents--promo-vertical__indicators {
+    display: none;
+    gap: var(--gap-sm);
+    align-items: center;
+    justify-content: center;
+    margin-top: 8px;
+    width: 100%;
+}
+
+.carousel-contents--promo-vertical__indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--ubits-border-1);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.carousel-contents--promo-vertical__indicator.active {
+    width: 12px;
+    height: 12px;
+    background: var(--ubits-accent-brand);
+}
+
+/* Responsive: Mobile */
+@media (max-width: 768px) {
+    /* Ocultar controles en mobile */
+    .carousel-contents--promo-vertical__controls {
+        display: none;
+    }
+    
+    /* Mostrar indicadores en mobile */
+    .carousel-contents--promo-vertical__indicators {
+        display: flex;
+    }
+    
+    .carousel-contents--promo-vertical__cards-container {
+        gap: var(--gap-2xl);
+    }
+    
+    .carousel-contents--promo-vertical__card {
+        flex: 0 0 calc((100% - (1 * 24px)) / 2);
+        width: calc((100% - (1 * 24px)) / 2);
+        max-width: calc((100% - (1 * 24px)) / 2);
+        min-width: calc((100% - (1 * 24px)) / 2);
+    }
+}
+
+/* Responsive: Mobile pequeño */
+@media (max-width: 480px) {
+    .carousel-contents--promo-vertical__card {
+        flex: 0 0 100%;
+        width: 100%;
+        max-width: 100%;
+        min-width: 100%;
+    }
+}
+
+/* ========================================
+   VARIANTE: ALLIES (Aliados destacados)
+   ======================================== */
+
+/* Container principal */
+.carousel-contents--allies-wrapper {
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    position: relative;
+    box-sizing: border-box;
+}
+
+/* Header con título y controles */
+.carousel-contents--allies__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0;
+}
+
+.carousel-contents--allies__title {
+    color: var(--ubits-fg-1-high);
+    margin: 0;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-h2);
+    font-weight: var(--font-weight-bold);
+    line-height: 1;
+}
+
+.carousel-contents--allies__controls {
+    display: flex;
+    gap: var(--gap-sm);
+    align-items: center;
+}
+
+.carousel-contents--allies__controls button.disabled,
+.carousel-contents--allies__controls button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Container de carrusel */
+.carousel-contents--allies__carousel {
+    display: flex;
+    flex-direction: row;
+    gap: var(--gap-2xl);
+    overflow-x: auto;
+    overflow-y: visible;
+    scroll-behavior: smooth;
+    padding: var(--padding-none);
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE y Edge */
+}
+
+.carousel-contents--allies__carousel::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+/* Card de aliado */
+.carousel-contents--allies__card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--gap-none);
+    cursor: pointer;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+    overflow: visible;
+    padding: var(--padding-none);
+    margin: 0;
+    border: 1px solid transparent;
+    flex: 0 0 calc((100% - (7 * 24px)) / 8);
+    width: calc((100% - (7 * 24px)) / 8);
+    max-width: calc((100% - (7 * 24px)) / 8);
+    min-width: calc((100% - (7 * 24px)) / 8);
+    box-sizing: border-box;
+    flex-shrink: 0;
+    position: relative;
+    border-radius: 50%;
+}
+
+.carousel-contents--allies__card:hover {
+    border-color: var(--ubits-border-1);
+}
+
+/* Imagen del aliado */
+.carousel-contents--allies__card-image {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--ubits-bg-1);
+    border: none;
+    transition: transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+    padding: var(--padding-none);
+}
+
+.carousel-contents--allies__card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 50%;
+    transition: transform 0.2s ease;
+}
+
+.carousel-contents--allies__card:hover .carousel-contents--allies__card-image img {
+    transform: scale(1.1);
+}
+
+/* Tooltip para cards de aliados */
+.carousel-contents--allies__card-tooltip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ubits-fg-1-high);
+    color: var(--ubits-logo-inverted);
+    padding: var(--padding-sm) var(--padding-md);
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-sm);
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 99999;
+    font-family: 'Noto Sans', sans-serif;
+    font-weight: var(--font-weight-regular);
+    visibility: hidden;
+    display: block;
+}
+
+.carousel-contents--allies__card:hover .carousel-contents--allies__card-tooltip {
+    opacity: 1;
+    visibility: visible;
+}
+
+.carousel-contents--allies__card-tooltip.tooltip-right {
+    left: auto;
+    right: 0;
+    transform: none;
+}
+
+.carousel-contents--allies__card-tooltip.tooltip-left {
+    left: 0;
+    right: auto;
+    transform: none;
+}
+
+.carousel-contents--allies__card-tooltip.tooltip-bottom {
+    bottom: auto;
+    top: calc(100% + 8px);
+}
+
+.carousel-contents--allies__card-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid var(--ubits-fg-1-high);
+}
+
+.carousel-contents--allies__card-tooltip.tooltip-bottom::after {
+    top: auto;
+    bottom: 100%;
+    border-top: none;
+    border-bottom: 5px solid var(--ubits-fg-1-high);
+}
+
+.carousel-contents--allies__card-tooltip.tooltip-right::after {
+    left: auto;
+    right: 14px;
+    transform: none;
+}
+
+.carousel-contents--allies__card-tooltip.tooltip-left::after {
+    left: 14px;
+    right: auto;
+    transform: none;
+}
+
+/* Responsive: Tablet */
+@media (max-width: 1023px) {
+    .carousel-contents--allies__card {
+        flex: 0 0 calc((100% - (5 * 24px)) / 6);
+        width: calc((100% - (5 * 24px)) / 6);
+        max-width: calc((100% - (5 * 24px)) / 6);
+        min-width: calc((100% - (5 * 24px)) / 6);
+    }
+}
+
+/* Indicadores (dots) para mobile - Allies */
+.carousel-contents--allies__indicators {
+    display: none;
+    gap: var(--gap-sm);
+    align-items: center;
+    justify-content: center;
+    margin-top: 8px;
+    width: 100%;
+}
+
+.carousel-contents--allies__indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--ubits-border-1);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.carousel-contents--allies__indicator.active {
+    width: 12px;
+    height: 12px;
+    background: var(--ubits-accent-brand);
+}
+
+/* Responsive: Mobile */
+@media (max-width: 768px) {
+    /* Ocultar controles en mobile */
+    .carousel-contents--allies__controls {
+        display: none;
+    }
+    
+    /* Mostrar indicadores en mobile */
+    .carousel-contents--allies__indicators {
+        display: flex;
+    }
+    
+    .carousel-contents--allies__card {
+        flex: 0 0 calc((100% - (3 * 24px)) / 4);
+        width: calc((100% - (3 * 24px)) / 4);
+        max-width: calc((100% - (3 * 24px)) / 4);
+        min-width: calc((100% - (3 * 24px)) / 4);
+    }
+}
+
+/* ========================================
+   VARIANTE: CONTENT CARDS
+   ======================================== */
+
+/* Container principal */
+.carousel-contents--content-cards-wrapper {
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    box-sizing: border-box;
+}
+
+/* Header con título y controles */
+.carousel-contents--content-cards__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-sm);
+    height: 32px;
+}
+
+.carousel-contents--content-cards__title {
+    flex: 1;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-h2);
+    font-weight: var(--font-weight-bold);
+    line-height: 1;
+    color: var(--ubits-fg-1-high);
+    margin: 0;
+}
+
+.carousel-contents--content-cards__controls {
+    display: flex;
+    gap: var(--gap-sm);
+    align-items: center;
+}
+
+.carousel-contents--content-cards__controls button.disabled,
+.carousel-contents--content-cards__controls button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Container de cards */
+.carousel-contents--content-cards__cards-container {
+    display: flex;
+    gap: var(--gap-2xl);
+    align-items: flex-start;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.carousel-contents--content-cards__cards-container::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+
+/* Card individual (usando componente oficial card-content) */
+.carousel-contents--content-cards__cards-container .course-card {
+    flex: 0 0 calc((100% - (3 * 24px)) / 4);
+    width: calc((100% - (3 * 24px)) / 4);
+    max-width: calc((100% - (3 * 24px)) / 4);
+    min-width: calc((100% - (3 * 24px)) / 4);
+    box-sizing: border-box;
+    flex-shrink: 0;
+    /* Asegurar que el card no tenga width: 100% que pueda interferir */
+}
+
+/* Responsive: Tablet */
+@media (max-width: 1365px) {
+    .carousel-contents--content-cards__cards-container .course-card {
+        flex: 0 0 calc((100% - (2 * 24px)) / 3);
+        width: calc((100% - (2 * 24px)) / 3);
+        max-width: calc((100% - (2 * 24px)) / 3);
+        min-width: calc((100% - (2 * 24px)) / 3);
+    }
+}
+
+/* Indicadores (dots) para mobile */
+.carousel-contents--content-cards__indicators {
+    display: none;
+    gap: var(--gap-sm);
+    align-items: center;
+    justify-content: center;
+    margin-top: 8px;
+    width: 100%;
+}
+
+.carousel-contents--content-cards__indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--ubits-border-1);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.carousel-contents--content-cards__indicator.active {
+    width: 12px;
+    height: 12px;
+    background: var(--ubits-accent-brand);
+}
+
+/* Responsive: Mobile */
+@media (max-width: 768px) {
+    /* Ocultar controles en mobile */
+    .carousel-contents--content-cards__controls {
+        display: none;
+    }
+    
+    /* Mostrar indicadores en mobile */
+    .carousel-contents--content-cards__indicators {
+        display: flex;
+    }
+    
+    .carousel-contents--content-cards__cards-container {
+        gap: var(--gap-2xl);
+    }
+    
+    .carousel-contents--content-cards__cards-container .course-card {
+        flex: 0 0 calc((100% - (1 * 24px)) / 2);
+        width: calc((100% - (1 * 24px)) / 2);
+        max-width: calc((100% - (1 * 24px)) / 2);
+        min-width: calc((100% - (1 * 24px)) / 2);
+    }
+}
+
+/* Responsive: Mobile pequeño */
+@media (max-width: 480px) {
+    .carousel-contents--content-cards__cards-container .course-card {
+        flex: 0 0 100%;
+        width: 100%;
+        max-width: 100%;
+        min-width: 100%;
+    }
+}
+
+/* ========================================
+   VARIANTE OUTSTANDING
+   Layout horizontal: contenido izquierda, imagen derecha
+   ======================================== */
+
+.carousel-contents--outstanding-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+    touch-action: pan-x pan-y pinch-zoom; /* Permitir swipe horizontal y vertical */
+}
+
+.carousel-contents--outstanding__header {
+    width: 100%;
+}
+
+.carousel-contents--outstanding__header .carousel-contents--outstanding__title {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+    /* El tamaño viene de ubits-heading-h2, no sobrescribir */
+}
+
+.carousel-contents--outstanding__slides-container {
+    position: relative;
+    width: 100%;
+    min-height: 375px;
+    touch-action: pan-x pan-y pinch-zoom; /* Permitir swipe horizontal y vertical */
+}
+
+.carousel-contents--outstanding__slide {
+    display: none;
+    width: 100%;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.carousel-contents--outstanding__slide.active {
+    display: flex;
+    opacity: 1;
+    gap: var(--gap-none);
+    align-items: stretch;
+    background: var(--ubits-bg-1);
+    border-radius: var(--border-radius-sm);
+    overflow: hidden;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* Contenido izquierda */
+.carousel-contents--outstanding__content {
+    flex: 0 0 40%;
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    min-width: 0;
+    padding: var(--padding-xl);
+    box-sizing: border-box;
+    justify-content: center;
+}
+
+.carousel-contents--outstanding__type {
+    width: fit-content;
+}
+
+.carousel-contents--outstanding__type-text {
+    color: var(--ubits-fg-1-medium);
+    /* Usa ubits-body-sm-regular: 13px, 400, 19.5px */
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    line-height: 19.5px;
+}
+
+.carousel-contents--outstanding__title-wrapper {
+    width: 100%;
+    height: 84px; /* Alto fijo para 2 líneas (2 * 42px line-height) */
+    display: flex;
+    align-items: flex-start;
+    box-sizing: border-box;
+}
+
+.carousel-contents--outstanding__content .carousel-contents--outstanding__title {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+    line-height: 42px;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-d4);
+    font-weight: var(--font-weight-bold);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+.carousel-contents--outstanding__provider {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-xs);
+}
+
+.carousel-contents--outstanding__provider-avatar {
+    width: 28px;
+    height: 28px;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.carousel-contents--outstanding__provider-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.carousel-contents--outstanding__provider-name {
+    color: var(--ubits-fg-1-high);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    flex: 1;
+    min-width: 0;
+    /* Usa ubits-body-sm-regular: 13px, 400, 19.5px - La clase ubits-body-sm-regular ya aplica estos estilos */
+}
+
+/* Múltiples avatares para Ruta de aprendizaje en Outstanding */
+.carousel-contents--outstanding__provider--multiple {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-xs);
+}
+
+.carousel-contents--outstanding__provider-avatars-list {
+    display: flex;
+    align-items: center;
+    position: relative;
+    height: 28px;
+    isolation: isolate; /* Crear nuevo contexto de apilamiento */
+}
+
+.carousel-contents--outstanding__provider-avatar--stacked {
+    position: relative;
+    width: 28px;
+    height: 28px;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* Avatar con contador para +4 o más */
+.carousel-contents--outstanding__provider-avatar--count {
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+}
+
+.carousel-contents--outstanding__provider-count-text {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    line-height: 19.5px;
+    color: var(--ubits-fg-1-high);
+    text-align: center;
+    white-space: nowrap;
+}
+
+.carousel-contents--outstanding__competency {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-xs);
+    color: var(--ubits-fg-1-medium);
+}
+
+.carousel-contents--outstanding__competency-icon {
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.carousel-contents--outstanding__competency-icon i {
+    font-size: var(--font-size-sm);
+    color: var(--ubits-fg-1-medium);
+}
+
+.carousel-contents--outstanding__competency-text {
+    color: var(--ubits-fg-1-medium);
+    /* Usa ubits-body-sm-regular: 13px, 400, 19.5px */
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    line-height: 19.5px;
+}
+
+.carousel-contents--outstanding__specs {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    flex-wrap: wrap;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.carousel-contents--outstanding__spec-item {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-xs);
+    color: var(--ubits-fg-1-medium);
+    flex-shrink: 1;
+    min-width: 0;
+}
+
+.carousel-contents--outstanding__spec-icon {
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.carousel-contents--outstanding__spec-icon i {
+    font-size: var(--font-size-sm);
+    color: var(--ubits-fg-1-medium);
+}
+
+.carousel-contents--outstanding__spec-text {
+    color: var(--ubits-fg-1-medium);
+    /* Usa ubits-body-sm-regular: 13px, 400, 19.5px - La clase ubits-body-sm-regular ya aplica estos estilos */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 1;
+    min-width: 0;
+}
+
+.carousel-contents--outstanding__button-wrapper {
+    width: fit-content;
+    margin-top: 8px;
+}
+
+/* Imagen derecha */
+.carousel-contents--outstanding__image-wrapper {
+    position: relative;
+    flex: 0 0 60%;
+    width: 60%;
+    overflow: hidden;
+    display: flex;
+    align-items: stretch;
+    align-self: stretch;
+}
+
+.carousel-contents--outstanding__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.3s ease;
+    display: block;
+}
+
+.carousel-contents--outstanding__slide.active:hover .carousel-contents--outstanding__image {
+    transform: scale(1.05);
+}
+
+/* Controles dentro de la imagen */
+.carousel-contents--outstanding__controls {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    display: flex;
+    gap: var(--gap-sm);
+    z-index: 10;
+}
+
+/* Indicadores (dots) - Ocultos por defecto, visibles solo en mobile */
+.carousel-contents--outstanding__indicators {
+    display: none;
+}
+
+.carousel-contents--outstanding__indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--ubits-border-1);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.carousel-contents--outstanding__indicator:hover {
+    background: var(--ubits-fg-1-medium);
+}
+
+.carousel-contents--outstanding__indicator.active {
+    width: 12px;
+    height: 12px;
+    background: var(--ubits-accent-brand);
+}
+
+/* Responsive: Tablet */
+@media (max-width: 1023px) {
+    .carousel-contents--outstanding__slide.active {
+        flex-direction: column;
+    }
+
+    .carousel-contents--outstanding__content {
+        width: 100%;
+        order: 2;
+    }
+
+    .carousel-contents--outstanding__image-wrapper {
+        flex: 0 0 100%;
+        width: 100%;
+        order: 1;
+    }
+
+    .carousel-contents--outstanding__controls {
+        top: 12px;
+        right: 12px;
+    }
+}
+
+/* Responsive: Mobile */
+@media (max-width: 768px) {
+    .carousel-contents--outstanding__slide.active {
+        gap: var(--gap-none);
+    }
+
+    .carousel-contents--outstanding__content {
+        gap: var(--gap-sm);
+        padding: var(--padding-lg);
+    }
+
+    .carousel-contents--outstanding__specs {
+        gap: var(--gap-sm);
+    }
+
+    /* Ocultar controles en mobile */
+    .carousel-contents--outstanding__controls {
+        display: none;
+    }
+
+    /* Mostrar indicadores solo en mobile */
+    .carousel-contents--outstanding__indicators {
+        display: flex;
+        gap: var(--gap-sm);
+        align-items: center;
+        justify-content: center;
+        margin-top: 8px;
+    }
+
+    .carousel-contents--outstanding__indicator {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--ubits-border-1);
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .carousel-contents--outstanding__indicator:hover {
+        background: var(--ubits-fg-1-medium);
+    }
+
+    .carousel-contents--outstanding__indicator.active {
+        width: 12px;
+        height: 12px;
+        background: var(--ubits-accent-brand);
+    }
+}
+
+/* Responsive: Mobile pequeño (mismo breakpoint donde content-cards se vuelve de una columna) */
+@media (max-width: 480px) {
+    .carousel-contents--outstanding__title-wrapper {
+        height: 39px; /* Alto fijo para 2 líneas (2 * 19.5px line-height) */
+    }
+    
+    .carousel-contents--outstanding__content .carousel-contents--outstanding__title {
+        /* Usar estilos de ubits-body-sm-bold */
+        font-family: 'Noto Sans', sans-serif;
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-bold);
+        line-height: 19.5px;
+        color: var(--ubits-fg-1-high);
+        /* Limitar a 2 líneas con puntos suspensivos */
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-height: calc(19.5px * 2); /* line-height * número de líneas */
+    }
+
+    /* Ocultar botón Ver ahora en mobile */
+    .carousel-contents--outstanding__button-wrapper {
+        display: none;
+    }
+}
+
+/* Fix para pantallas grandes - asegurar que los carruseles no se desborden */
+@media (min-width: 1440px) {
+    .carousel-contents--hero,
+    .carousel-contents--promo-vertical,
+    .carousel-contents--allies,
+    .carousel-contents--content-cards,
+    .carousel-contents--outstanding {
+        max-width: 100%;
+        width: 100%;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
+    
+    .carousel-contents--hero__slides-container,
+    .carousel-contents--promo-vertical__slides-container,
+    .carousel-contents--allies__slides-container,
+    .carousel-contents--content-cards__slides-container,
+    .carousel-contents--outstanding__slides-container {
+        max-width: 100%;
+        width: 100%;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
+    
+    .carousel-contents--promo-vertical__slides-wrapper,
+    .carousel-contents--allies__slides-wrapper,
+    .carousel-contents--content-cards__slides-wrapper {
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+}
+

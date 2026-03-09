@@ -1,0 +1,1420 @@
+/* ========================================
+   ESTILOS ESPECÍFICOS PARA seguimiento
+   ======================================== */
+
+/* Contenedor de modales/drawers: por encima de .main-content (z-index: 5) para que
+   filtros, columnas, período y demás overlays se vean. */
+#seguimiento-modals-container {
+    position: relative;
+    z-index: 1050;
+}
+
+/* Content sections */
+.content-sections {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xl);
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+    overflow: visible;
+    max-height: none;
+}
+
+.content-sections>*:not(:last-child):not(.section-dual):not(.section-single):not(.section-triple):not(.section-quad) {
+    margin-bottom: var(--gap-xl);
+}
+
+.content-sections::after {
+    content: '';
+    height: 0;
+    flex-shrink: 0;
+}
+
+.content-sections>*:last-child {
+    margin-bottom: 0;
+}
+
+/* Tabs Tareas | Planes
+   IMPORTANTE: El contenedor de tabs debe ser flex-direction: row para que los tabs
+   queden uno al lado del otro. La regla .section-single > div aplica flex-direction: column
+   a todos los div hijos; por eso hay que sobrescribirla explícitamente aquí (después de esa regla). */
+.seguimiento-tabs-wrapper {
+    margin-bottom: 0;
+}
+
+/* Fila: tabs a la izquierda, botón Crear a la derecha. Sin caja ni padding. */
+.seguimiento-tabs-wrapper>.seguimiento-tabs-row {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--padding-none) !important;
+    width: 100%;
+    background: transparent;
+    border: none;
+}
+
+.seguimiento-tabs-wrapper .seguimiento-tabs {
+    display: flex;
+    gap: var(--gap-xs);
+    background: var(--ubits-bg-2);
+    border-radius: var(--border-radius-sm);
+    width: fit-content;
+}
+
+.section-single {
+    display: flex;
+    width: 100%;
+}
+
+.section-single>div,
+.section-dual>div {
+    background-color: var(--ubits-bg-1);
+    border: none;
+    border-radius: var(--border-radius-sm);
+    padding: var(--padding-md) !important;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Tabs: mantener en fila y sin padding dentro de la row */
+.seguimiento-tabs-row .seguimiento-tabs {
+    flex-direction: row;
+    padding: var(--padding-none) !important;
+}
+
+.section-single>div {
+    flex: 1;
+}
+
+/* Header product (tabs + Crear): sin caja, igual que antes */
+.section-single>.widget-header-product {
+    background-color: transparent !important;
+    padding: var(--padding-none) !important;
+}
+
+/* Header bar */
+.widget-header-seguimiento {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+}
+
+.seguimiento-header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--gap-md);
+}
+
+.seguimiento-header-left {
+    display: flex;
+    align-items: baseline;
+    gap: var(--gap-md);
+}
+
+.seguimiento-header-left h1 {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.seguimiento-header-left .ubits-body-sm-regular {
+    color: var(--ubits-fg-1-medium);
+}
+
+.seguimiento-header-right {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+/* Action bar (visible cuando hay selección) */
+.widget-action-bar-seguimiento {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--gap-md);
+    padding: var(--padding-md) 0;
+}
+
+.widget-action-bar-seguimiento.is-visible {
+    display: flex;
+}
+
+.seguimiento-action-buttons {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+/* Alert experiencia desktop */
+.seguimiento-alert-experiencia {
+    margin-bottom: var(--gap-md);
+}
+
+/* Tabla: usa componente UBITS (components/table.css). Contener overflow en resoluciones pequeñas para que el scroll horizontal enmarque la tabla y no se salga del contenedor. */
+.widget-tabla-seguimiento {
+    width: 100%;
+    min-width: 0;
+    /* permitir que reduzca dentro de flex */
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Chip +N clickeable en tab Planes (dentro de celda assignee del componente tabla) */
+/* Filas clicables: abrir detalle de plan o de tarea */
+#seguimiento-tbody tr {
+    cursor: pointer;
+}
+
+#seguimiento-table .ubits-table__cell-assignee .ubits-profile-list__count {
+    cursor: pointer;
+}
+
+/* Badge de prioridad: ancho fijo en la columna Prioridad */
+#seguimiento-table td[data-col="prioridad"] .ubits-badge-tag {
+    width: 72px;
+    min-width: 72px;
+    max-width: 72px;
+    box-sizing: border-box;
+    justify-content: center;
+}
+
+/* Búsqueda inline */
+.seguimiento-search-inline {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+/* Overlay fecha personalizada (usa componente ubits-modal-overlay) */
+.date-picker-overlay {
+    background: var(--ubits-bg-dim);
+}
+
+/* Modal de eliminación: márgenes del body (componente ubits-modal-*) */
+#delete-modal-overlay .ubits-modal-body p {
+    margin: 0 0 8px 0;
+}
+
+#delete-modal-overlay .ubits-modal-body p:last-child {
+    margin-bottom: 0;
+}
+
+/* Menú columnas */
+.columns-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+}
+
+.columns-menu {
+    position: fixed;
+    top: 120px;
+    right: 24px;
+    min-width: 220px;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    box-shadow: 0 4px 16px var(--ubits-bottom-nav-shadow-opacity);
+    z-index: 1001;
+    padding: var(--padding-md);
+}
+
+.columns-menu-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+}
+
+.columns-menu-option {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    cursor: pointer;
+    padding: var(--padding-sm) var(--padding-md);
+    border-radius: var(--border-radius-sm);
+    transition: background-color 0.15s ease;
+}
+
+.columns-menu-option:hover {
+    background: var(--ubits-bg-2);
+}
+
+.columns-menu-option input {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    cursor: pointer;
+    accent-color: var(--ubits-accent-brand);
+}
+
+/* Popover asignados: lista de personas al hacer clic en +N (solo visualización) */
+.asignados-popover-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+}
+
+.asignados-popover {
+    position: fixed;
+    min-width: 220px;
+    max-width: 320px;
+    max-height: 320px;
+    overflow-y: auto;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    box-shadow: 0 4px 16px var(--ubits-bottom-nav-shadow-opacity);
+    z-index: 1001;
+    padding: var(--padding-sm) 0;
+}
+
+.asignados-popover-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-none);
+}
+
+.asignados-popover-item {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+    padding: var(--padding-sm) var(--padding-md);
+    color: var(--ubits-fg-1-medium);
+}
+
+.asignados-popover-item .ubits-avatar {
+    flex-shrink: 0;
+}
+
+.asignados-popover-item .ubits-body-sm-regular {
+    color: var(--ubits-fg-1-medium);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Filtros aplicados (chips) */
+.widget-filtros-aplicados {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+    flex-wrap: wrap;
+}
+
+.filtros-chips-container {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    flex-wrap: wrap;
+}
+
+/* Chip oficial UBITS (xs): conservar ancho máximo en seguimiento */
+.filtros-chips-container .ubits-chip {
+    max-width: 150px;
+}
+
+.filtros-chips-container .ubits-chip__text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+}
+
+/* Contenedor del botón "Cargar más" (sustituye paginador) */
+.widget-paginador-seguimiento {
+    display: flex;
+    justify-content: center;
+}
+
+.widget-paginador-seguimiento .ubits-paginator,
+#seguimiento-paginador .ubits-paginator {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+/* Ocultar contenedor cuando no hay botón "Cargar más" (todos los registros visibles o sin datos) */
+#seguimiento-paginador:empty {
+    display: none;
+}
+
+.seguimiento-load-more-wrap {
+    margin-top: var(--padding-lg, 16px);
+    margin-bottom: var(--padding-md, 12px);
+}
+
+/* Empty State */
+#seguimiento-empty-state {
+    width: 100%;
+    padding: var(--padding-6xl) var(--padding-xl);
+}
+
+/* Columnas con ordenamiento */
+.seguimiento-th-sortable {
+    white-space: nowrap;
+}
+
+.seguimiento-sort-btn {
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+    vertical-align: middle;
+    margin-left: 4px;
+}
+
+.seguimiento-th-sortable:hover .seguimiento-sort-btn,
+.seguimiento-th-sortable:hover .seguimiento-date-sort-btn,
+.seguimiento-th-filterable:hover .seguimiento-filter-btn,
+.seguimiento-th-filterable:hover .seguimiento-checkbox-btn {
+    opacity: 1;
+}
+
+.seguimiento-filter-btn,
+.seguimiento-checkbox-btn,
+.seguimiento-date-sort-btn {
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+    vertical-align: middle;
+    margin-left: 4px;
+}
+
+/* Estado activo: filtro aplicado en esa columna (sin borde, texto e icono accent-brand) */
+.seguimiento-filter-btn--active,
+.seguimiento-checkbox-btn--active {
+    opacity: 1;
+    background: var(--ubits-feedback-bg-info-subtle) !important;
+    border-color: transparent !important;
+    color: var(--ubits-accent-brand) !important;
+}
+
+.seguimiento-filter-btn--active i,
+.seguimiento-checkbox-btn--active i {
+    color: var(--ubits-accent-brand) !important;
+}
+
+/* Menú de filtro con autocomplete */
+.filter-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+}
+
+.filter-menu {
+    position: fixed;
+    min-width: 280px;
+    max-width: 306px;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    box-shadow: 0 4px 16px var(--ubits-bottom-nav-shadow-opacity);
+    z-index: 1001;
+    padding: var(--padding-md);
+    overflow: visible;
+    /* Permitir que el dropdown se muestre fuera del menú */
+}
+
+.filter-menu-content {
+    margin-bottom: 12px;
+    position: relative;
+    overflow: visible;
+    min-height: 40px;
+    /* Altura mínima para el input */
+}
+
+#filter-autocomplete-container {
+    position: relative;
+    overflow: visible;
+}
+
+/* Estilos para la variante de filter con opciones siempre visibles */
+.seguimiento-filter-input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.seguimiento-filter-input-wrapper .ubits-input {
+    width: 100%;
+    padding-right: 40px;
+    /* Espacio para el icono de búsqueda */
+    box-sizing: border-box;
+    height: 40px;
+    /* md size */
+    padding-left: 12px;
+    padding-top: 0;
+    padding-bottom: 0;
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    background: var(--ubits-bg-1);
+    color: var(--ubits-fg-1-high);
+    font-family: var(--ubits-font-family);
+    font-size: var(--font-size-sm);
+    line-height: 20px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.seguimiento-filter-input-wrapper .ubits-input:focus {
+    outline: none;
+    border-color: var(--ubits-accent-brand);
+    box-shadow: 0 0 0 2px var(--ubits-button-focus-ring);
+}
+
+.seguimiento-filter-input-wrapper .ubits-input::placeholder {
+    color: var(--ubits-fg-1-low);
+}
+
+.seguimiento-filter-options-container {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-top: 8px;
+    background: var(--ubits-bg-1);
+}
+
+.seguimiento-filter-option {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    padding: var(--padding-sm) 0;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.seguimiento-filter-option:hover {
+    background-color: var(--ubits-bg-2);
+}
+
+.seguimiento-filter-checkbox {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    margin: 0;
+    flex-shrink: 0;
+}
+
+.seguimiento-filter-option-label {
+    flex: 1;
+    cursor: pointer;
+    color: var(--ubits-fg-1-high);
+    font-family: var(--ubits-font-family);
+    font-size: var(--font-size-sm);
+    line-height: 20px;
+    font-weight: var(--font-weight-regular);
+    user-select: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+    /* Permite que el flex item se encoja */
+}
+
+.filter-menu-footer {
+    display: flex;
+    gap: var(--gap-sm);
+    justify-content: flex-end;
+}
+
+/* Menú de checkboxes */
+.checkbox-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+}
+
+.checkbox-menu {
+    position: fixed;
+    min-width: 180px;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    box-shadow: 0 4px 16px var(--ubits-bottom-nav-shadow-opacity);
+    z-index: 1001;
+    padding: var(--padding-md);
+}
+
+.checkbox-menu-options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+}
+
+.checkbox-menu-option {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    cursor: pointer;
+    padding: var(--padding-sm) var(--padding-md);
+    margin: 0 calc(-1 * var(--padding-md));
+    border-radius: var(--border-radius-sm);
+    transition: background-color 0.15s ease;
+}
+
+.checkbox-menu-option:hover {
+    background: var(--ubits-bg-2);
+}
+
+.checkbox-menu-option input {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    cursor: pointer;
+    accent-color: var(--ubits-accent-brand);
+}
+
+.checkbox-menu-footer {
+    display: none;
+}
+
+/* Modal filtros - grupos (contenido dentro del drawer de filtros) */
+.filtros-group {
+    margin-bottom: 20px;
+}
+
+.filtros-group:last-child {
+    margin-bottom: 0;
+}
+
+.filtros-label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--ubits-fg-1-high);
+}
+
+.filtros-checkbox-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+}
+
+.filtros-checkbox-option {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    cursor: pointer;
+    padding: var(--padding-sm) var(--padding-md);
+    margin: 0 calc(-1 * var(--padding-md));
+    border-radius: var(--border-radius-sm);
+    transition: background-color 0.15s ease;
+}
+
+.filtros-checkbox-option:hover {
+    background: var(--ubits-bg-2);
+}
+
+.filtros-checkbox-option input {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    cursor: pointer;
+    accent-color: var(--ubits-accent-brand);
+}
+
+/* Radio buttons */
+.filtros-radio-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-lg);
+}
+
+.filtros-radio-option {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    cursor: pointer;
+}
+
+.filtros-radio-option input {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    cursor: pointer;
+    accent-color: var(--ubits-accent-brand);
+}
+
+.filtros-group-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gap-lg);
+}
+
+/* En tab Planes solo se muestra Estado: el select ocupa todo el ancho */
+.filtros-group-row.filtros-group-row--single {
+    grid-template-columns: 1fr;
+}
+
+.filtros-date-field,
+.filtros-field {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Select con dropdown de checkboxes (Estado / Prioridad en modal de filtros) */
+.filtros-select-wrap {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.filtros-select-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-sm);
+    cursor: pointer;
+    width: 100%;
+    min-height: 40px;
+    padding: var(--padding-md) var(--padding-sm);
+    font-size: 1rem;
+    font-family: 'Noto Sans', sans-serif;
+    color: var(--ubits-fg-1-high);
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.filtros-select-trigger:hover {
+    border-color: var(--ubits-accent-brand);
+}
+
+.filtros-select-trigger[aria-expanded="true"] {
+    border-color: var(--ubits-accent-brand);
+    box-shadow: 0 0 0 2px rgba(12, 91, 239, 0.1);
+}
+
+.filtros-select-trigger-text {
+    flex: 1;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--ubits-fg-1-medium);
+}
+
+.filtros-select-trigger[aria-expanded="true"] .filtros-select-trigger-text,
+.filtros-select-trigger.filtros-select-has-value .filtros-select-trigger-text {
+    color: var(--ubits-fg-1-high);
+}
+
+.filtros-select-chevron {
+    flex-shrink: 0;
+    font-size: 0.75rem;
+    color: var(--ubits-fg-1-medium);
+    transition: transform 0.2s ease;
+}
+
+.filtros-select-trigger[aria-expanded="true"] .filtros-select-chevron {
+    transform: rotate(180deg);
+    color: var(--ubits-accent-brand);
+}
+
+.filtros-select-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 4px;
+    padding: var(--padding-sm);
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    box-shadow: 0 4px 16px var(--ubits-bottom-nav-shadow-opacity);
+    z-index: 1060;
+    max-height: 220px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    box-sizing: border-box;
+    min-width: 0;
+}
+
+.filtros-select-dropdown.is-open {
+    display: block;
+}
+
+.filtros-select-dropdown .filtros-checkbox-list {
+    margin: 0;
+    min-width: 0;
+}
+
+/* Evitar que el margen negativo de las opciones genere overflow horizontal */
+.filtros-select-dropdown .filtros-checkbox-option {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.filtros-select-dropdown .filtros-checkbox-option span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+}
+
+/* Menú de ordenamiento */
+.sort-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+}
+
+.sort-menu {
+    position: fixed;
+    min-width: 200px;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    box-shadow: 0 4px 16px var(--ubits-bottom-nav-shadow-opacity);
+    z-index: 1001;
+    padding: var(--padding-sm);
+}
+
+.sort-menu-options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-none);
+}
+
+.sort-menu-option {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: var(--gap-md);
+    padding: var(--padding-md) var(--padding-md);
+    background: transparent;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    width: 100%;
+    text-align: left;
+    transform: none;
+    box-shadow: none;
+}
+
+.sort-menu-option span {
+    font-weight: var(--font-weight-regular);
+    text-align: left;
+}
+
+.sort-menu-option:hover {
+    background: var(--ubits-bg-2);
+    transform: none;
+    box-shadow: none;
+}
+
+.sort-menu-option:active {
+    transform: none;
+}
+
+.sort-menu-option.selected {
+    background: var(--ubits-accent-brand-subtle);
+}
+
+.sort-menu-option i {
+    color: var(--ubits-fg-1-medium);
+    font-size: var(--font-size-sm);
+}
+
+.sort-menu-footer {
+    display: none;
+}
+
+/* Botón Descargar con chevron (menú desplegable) */
+#seguimiento-descargar .fa-chevron-down {
+    margin-left: 4px;
+    font-size: var(--font-size-xs);
+}
+
+/* Overlay del menú Descargar (mismo patrón que sort-menu) */
+.descargar-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+}
+
+/* Menús flotantes para acciones */
+.priority-menu-overlay,
+.status-menu-overlay,
+.reasignar-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+}
+
+.priority-menu,
+.status-menu {
+    position: fixed;
+    min-width: 160px;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    box-shadow: 0 4px 16px var(--ubits-bottom-nav-shadow-opacity);
+    z-index: 1001;
+    padding: var(--padding-sm);
+}
+
+.priority-menu-options,
+.status-menu-options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-none);
+}
+
+.priority-menu-option,
+.status-menu-option {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: var(--gap-md);
+    padding: var(--padding-md) var(--padding-md);
+    background: transparent;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    width: 100%;
+    text-align: left;
+    transform: none;
+    box-shadow: none;
+}
+
+.priority-menu-option:hover,
+.status-menu-option:hover {
+    background: var(--ubits-bg-2);
+    transform: none;
+    box-shadow: none;
+}
+
+.priority-menu-option:active,
+.status-menu-option:active {
+    transform: none;
+}
+
+.priority-menu-option span,
+.status-menu-option span {
+    font-weight: var(--font-weight-regular);
+    text-align: left;
+}
+
+.priority-menu-option i {
+    font-size: var(--font-size-sm);
+    width: 16px;
+    text-align: center;
+}
+
+/* Menú reasignar */
+.reasignar-menu {
+    position: fixed;
+    min-width: 300px;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    box-shadow: 0 4px 16px var(--ubits-bottom-nav-shadow-opacity);
+    z-index: 1001;
+    padding: var(--padding-md);
+}
+
+.reasignar-menu-content {
+    margin-bottom: 12px;
+}
+
+.reasignar-menu-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--gap-sm);
+    padding-top: 8px;
+    border-top: 1px solid var(--ubits-border-1);
+}
+
+/* Menú añadir colaborador al plan */
+.anadir-colaborador-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+}
+
+.anadir-colaborador-menu {
+    position: fixed;
+    min-width: 300px;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    box-shadow: 0 4px 16px var(--ubits-bottom-nav-shadow-opacity);
+    z-index: 1001;
+    padding: var(--padding-md);
+}
+
+.anadir-colaborador-content {
+    margin-bottom: 12px;
+}
+
+.anadir-colaborador-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--gap-sm);
+    padding-top: 8px;
+    border-top: 1px solid var(--ubits-border-1);
+}
+
+/* Menú de período */
+.periodo-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+}
+
+.periodo-menu {
+    position: fixed;
+    min-width: 200px;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    box-shadow: 0 4px 16px var(--ubits-bottom-nav-shadow-opacity);
+    z-index: 1001;
+    padding: var(--padding-sm);
+}
+
+.periodo-menu-options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-none);
+}
+
+.periodo-menu-option {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+    padding: var(--padding-md) var(--padding-md);
+    background: transparent;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    width: 100%;
+    text-align: left;
+}
+
+.periodo-menu-option:hover {
+    background: var(--ubits-bg-2);
+}
+
+.periodo-menu-option.selected {
+    background: var(--ubits-button-active-bg);
+    color: var(--ubits-accent-brand);
+}
+
+.periodo-menu-option.selected span {
+    color: var(--ubits-accent-brand);
+    font-weight: var(--font-weight-semibold);
+}
+
+/* Responsive */
+@media (max-width: 1023px) {
+    .content-sections {
+        padding-bottom: 0;
+    }
+
+    .seguimiento-header-bar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .seguimiento-action-buttons {
+        flex-wrap: wrap;
+    }
+
+    .filtros-group-row {
+        grid-template-columns: 1fr;
+    }
+
+    /* Ocultar texto en botones de acción en móvil */
+    .widget-action-bar-seguimiento .ubits-button span {
+        display: none;
+    }
+
+    .widget-action-bar-seguimiento .ubits-button {
+        padding: var(--padding-sm);
+    }
+
+    /* Menús flotantes */
+    .sort-menu,
+    .priority-menu,
+    .status-menu,
+    .reasignar-menu,
+    .columns-menu,
+    .periodo-menu {
+        left: 16px !important;
+        right: 16px;
+        min-width: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .section-single>div {
+        padding: var(--padding-md) !important;
+    }
+
+    .seguimiento-header-left {
+        flex-direction: column;
+        gap: var(--gap-none);
+        align-items: flex-start;
+    }
+}
+
+/* ========================================
+   INDICADORES DE SEGUIMIENTO
+   ======================================== */
+
+.widget-indicadores-seguimiento {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--gap-sm);
+    margin-top: 8px;
+}
+
+.seguimiento-indicador-card {
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    padding: var(--padding-sm) var(--padding-md);
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+    min-height: 48px;
+}
+
+.seguimiento-indicador-card .indicador-icon-badge {
+    width: 28px;
+    height: 28px;
+    border-radius: var(--border-radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 1px solid transparent;
+    box-sizing: border-box;
+}
+
+.seguimiento-indicador-card .indicador-icon-badge i {
+    font-size: var(--font-size-sm);
+    font-family: "Font Awesome 6 Pro", "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
+}
+
+.seguimiento-indicador-card .indicador-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-none);
+    min-width: 0;
+}
+
+.seguimiento-indicador-card .indicador-number {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-h2);
+    font-weight: var(--font-weight-bold);
+    line-height: 22px;
+    color: var(--ubits-fg-1-high);
+}
+
+.seguimiento-indicador-card .indicador-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.seguimiento-indicador-card .indicador-label {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    line-height: 14px;
+    color: var(--ubits-fg-1-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.seguimiento-indicador-card .indicador-percentage {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    line-height: 14px;
+    color: var(--ubits-fg-1-medium);
+}
+
+/* Responsive para indicadores */
+@media (max-width: 1023px) {
+    .widget-indicadores-seguimiento {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .widget-indicadores-seguimiento {
+        grid-template-columns: 1fr;
+    }
+
+    .seguimiento-indicador-card {
+        min-height: 52px;
+    }
+}
+
+/* ========================================
+   SELECTOR DE FECHAS PERSONALIZADO
+   ======================================== */
+
+.date-picker-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+}
+
+.date-picker-modal-content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--ubits-bg-1);
+    border-radius: var(--border-radius-sm);
+    z-index: 1001;
+    width: 320px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--ubits-border-1);
+}
+
+.date-picker-modal-header {
+    padding: var(--padding-lg) var(--padding-xl);
+    border-bottom: 1px solid var(--ubits-border-1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.date-picker-modal-header h2 {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.date-picker-modal-body {
+    padding: var(--padding-xl);
+    overflow-y: auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xl);
+}
+
+.date-picker-inputs {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+}
+
+.date-picker-input-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+}
+
+.date-picker-label {
+    color: var(--ubits-fg-1-medium);
+}
+
+.date-picker-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.date-picker-input {
+    width: 100%;
+    padding: var(--padding-md) var(--padding-md);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    background: var(--ubits-bg-1);
+    color: var(--ubits-fg-1-high);
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    cursor: text;
+    transition: border-color 0.2s;
+}
+
+.date-picker-input:hover {
+    border-color: var(--ubits-accent-brand);
+}
+
+.date-picker-input:focus {
+    outline: none;
+    border-color: var(--ubits-accent-brand);
+    border-width: 2px;
+}
+
+.date-picker-separator {
+    color: var(--ubits-fg-1-medium);
+    font-weight: var(--font-weight-semibold);
+    margin-top: 24px;
+}
+
+.date-picker-calendar {
+    flex: 1;
+    min-height: 300px;
+}
+
+.date-picker-calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: var(--gap-none);
+}
+
+.date-picker-calendar-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: var(--gap-none);
+    margin-bottom: 8px;
+}
+
+.date-picker-calendar-day-header {
+    text-align: center;
+    padding: var(--padding-sm);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--ubits-fg-1-medium);
+    text-transform: uppercase;
+}
+
+.date-picker-calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    color: var(--ubits-fg-1-high);
+    transition: all 0.2s;
+    position: relative;
+}
+
+.date-picker-calendar-day:hover:not(.disabled):not(.selected) {
+    background: var(--ubits-bg-2);
+}
+
+.date-picker-calendar-day.disabled {
+    color: var(--ubits-fg-1-low);
+    cursor: not-allowed;
+}
+
+.date-picker-calendar-day.selected {
+    background: var(--ubits-accent-brand);
+    color: var(--ubits-bg-1);
+    font-weight: var(--font-weight-semibold);
+}
+
+.date-picker-calendar-day.in-range {
+    background: var(--ubits-bg-2);
+}
+
+.date-picker-calendar-day.range-start,
+.date-picker-calendar-day.range-end {
+    background: var(--ubits-accent-brand);
+    color: var(--ubits-bg-1);
+    font-weight: var(--font-weight-semibold);
+}
+
+.date-picker-calendar-month-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    padding: 0 4px;
+}
+
+.date-picker-calendar-month-title {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+    color: var(--ubits-fg-1-high);
+    text-transform: uppercase;
+}
+
+.date-picker-calendar-nav-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ubits-fg-1-medium);
+    transition: all 0.2s;
+}
+
+.date-picker-calendar-nav-btn:hover {
+    background: var(--ubits-bg-2);
+    color: var(--ubits-fg-1-high);
+}
+
+.date-picker-modal-footer {
+    padding: var(--padding-lg) var(--padding-xl);
+    border-top: 1px solid var(--ubits-border-1);
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--gap-md);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .date-picker-modal-content {
+        width: 95vw;
+        max-height: 95vh;
+    }
+
+    .date-picker-modal-body {
+        padding: var(--padding-lg);
+        gap: var(--gap-lg);
+    }
+
+    .date-picker-inputs {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .date-picker-separator {
+        display: none;
+    }
+}

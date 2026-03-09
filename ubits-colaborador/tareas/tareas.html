@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>UBITS Playground - Dashboard</title>
+    
+    <!-- Estilos locales -->
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../components/tab-bar.css">
+    <link rel="stylesheet" href="../../components/floating-menu.css">
+    <link rel="stylesheet" href="../../components/profile-menu.css">
+    <link rel="stylesheet" href="../../components/header-product.css">
+    <link rel="stylesheet" href="../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../components/tooltip.css">
+    <link rel="stylesheet" href="../../components/tab.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/status-tag.css">
+    <link rel="stylesheet" href="../../components/badge-tag.css">
+    <link rel="stylesheet" href="../../components/avatar.css">
+    <link rel="stylesheet" href="../../components/task-strip.css">
+    <link rel="stylesheet" href="../../components/checkbox.css">
+    <link rel="stylesheet" href="./tareas.css">
+    <link rel="stylesheet" href="./planes.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/calendar.css">
+    <link rel="stylesheet" href="../../components/radio-button.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/save-indicator.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/modal.css">
+    <link rel="stylesheet" href="../../components/empty-state.css">
+    <link rel="stylesheet" href="../../components/drawer.css">
+</head>
+<body data-theme="light" class="page-tareas">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        <div id="ubits-toast-container"></div>
+        <div id="tareas-modals-container"></div>
+        
+        <!-- Sidebar Container -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navigation -->
+            <div id="top-nav-container"></div>
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Content wrapper con secciones de widgets -->
+                <div class="content-sections">
+                    <!-- Sección header-product -->
+                    <div class="section-single">
+                        <div class="widget-header-product" id="header-product-container"></div>
+                    </div>
+                    <!-- Sección vista de tareas -->
+                    <div class="section-single">
+                        <div class="widget-vista-tareas">
+                            <!-- CONTENEDOR GENERAL DEL MÓDULO -->
+                            <section class="calendar-module">
+                                <!-- TÍTULO PRINCIPAL -->
+                                <header class="calendar-header">
+                                    <!-- BARRA SUPERIOR: SELECTOR DE MES + NAV HORIZONTAL + BOTÓN HOY -->
+                                    <div class="calendar-header__controls">
+                                        <!-- Contenedor selector de mes + popup date picker -->
+                                        <div class="calendar-month-selector-wrap">
+                                            <button
+                                                type="button"
+                                                class="ubits-button ubits-button--secondary ubits-button--sm"
+                                                data-role="month-selector"
+                                                aria-haspopup="dialog"
+                                                aria-expanded="false"
+                                            >
+                                                <span id="current-month">Enero</span>
+                                                <span id="current-year">2026</span>
+                                                <i class="far fa-chevron-down" aria-hidden="true"></i>
+                                            </button>
+                                            <!-- Popup date picker: navegación entre meses -->
+                                            <div
+                                                class="calendar-month-popup"
+                                                data-role="month-popup"
+                                                hidden
+                                                aria-label="Seleccionar mes y año"
+                                                id="month-popup"
+                                            >
+                                                <div class="calendar-month-picker">
+                                                    <div class="calendar-month-picker__year-row">
+                                                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-role="year-prev" aria-label="Año anterior">
+                                                            <i class="far fa-chevron-left"></i>
+                                                        </button>
+                                                        <span class="calendar-month-picker__year" id="month-picker-year">2026</span>
+                                                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-role="year-next" aria-label="Año siguiente">
+                                                            <i class="far fa-chevron-right"></i>
+                                                        </button>
+                                                    </div>
+                                                    <div class="calendar-month-picker__grid" id="month-picker-grid">
+                                                        <!-- 12 meses se generan con JS -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- TIRA HORIZONTAL DE DÍAS (7 días: 3 antes, seleccionado, 3 después) -->
+                                        <div class="calendar-horizontal" data-role="horizontal-days" id="calendar-horizontal">
+                                            <!-- Los días se generan dinámicamente con JavaScript -->
+                                        </div>
+
+                                        <!-- Contenedor: controles del carrusel + Filtros siempre juntos (desktop y móvil) -->
+                                        <div class="calendar-header__nav-and-filters">
+                                            <div class="calendar-today-nav">
+                                                <button
+                                                    type="button"
+                                                    class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only"
+                                                    data-role="horizontal-prev"
+                                                    aria-label="Ver días anteriores"
+                                                >
+                                                    <i class="far fa-chevron-left"></i>
+                                                </button>
+
+                                                <button
+                                                    type="button"
+                                                    class="ubits-button ubits-button--secondary ubits-button--sm"
+                                                    data-role="go-today"
+                                                >
+                                                    <span>Hoy</span>
+                                                </button>
+
+                                                <button
+                                                    type="button"
+                                                    class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only"
+                                                    data-role="horizontal-next"
+                                                    aria-label="Ver días siguientes"
+                                                >
+                                                    <i class="far fa-chevron-right"></i>
+                                                </button>
+                                            </div>
+
+                                            <button
+                                                type="button"
+                                                class="ubits-button ubits-button--secondary ubits-button--sm"
+                                                id="tareas-filtros-btn"
+                                                aria-haspopup="dialog"
+                                                aria-expanded="false"
+                                                aria-label="Abrir filtros"
+                                            >
+                                                <i class="far fa-filter"></i>
+                                                <span>Filtros</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </header>
+                            </section>
+
+                            <!-- Contenedor principal con scroll infinito -->
+                            <div class="tareas-scroll-container" id="tareas-scroll-container">
+                                <!-- Contenedor de tareas vencidas (PRIMERO) -->
+                                <div class="tareas-overdue-container" id="overdue-section">
+                                    <div class="tareas-overdue-header" id="overdue-header">
+                                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="overdue-toggle" aria-label="Expandir o colapsar vencidas">
+                                            <i class="far fa-chevron-down"></i>
+                                        </button>
+                                        <h2 class="ubits-body-md-bold">Vencidas</h2>
+                                    </div>
+                                    <div class="tareas-overdue-content" id="overdue-content">
+                                        <!-- Las tareas vencidas se generan dinámicamente -->
+                                    </div>
+                                </div>
+
+                                <!-- Contenedores de días (se renderizan con scroll infinito) -->
+                                <div id="days-container">
+                                    <!-- Los días se generan dinámicamente con JavaScript -->
+                                </div>
+
+                                <!-- Indicador de carga -->
+                                <div class="loading-indicator" id="loading-indicator" style="display: none;">
+                                    <p class="ubits-body-sm-regular">Cargando más días...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Tab Bar Container -->
+    <div id="tab-bar-container"></div>
+
+    <!-- Floating Menu Container -->
+    <div id="floating-menu-container"></div>
+    
+    <!-- Profile Menu Container -->
+    <div id="profile-menu-container"></div>
+
+    <!-- Drawers crear plantilla y crear plan: se crean con componente UBITS (planes.js + drawer.js) -->
+    <!-- Filtros de tareas: se abren en dropdown (tareas.js openFiltrosDropdown + dropdown-menu.js customBodyHtml) -->
+
+    <script src="../../components/tooltip.js"></script>
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/tab-bar.js"></script>
+    <script src="../../components/floating-menu.js"></script>
+    <script src="../../components/profile-menu.js"></script>
+    <script src="../../components/header-product.js"></script>
+    <script src="../../components/dropdown-menu.js"></script>
+    <script src="../../script.js"></script>
+    <script src="../../components/input.js"></script>
+    <script src="../../components/calendar.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/save-indicator.js"></script>
+    <script src="../../components/modal.js"></script>
+    <script src="../../components/empty-state.js"></script>
+    <script src="../../components/avatar.js"></script>
+    <script src="../../components/task-strip.js"></script>
+    <script src="../../components/drawer.js"></script>
+    <script src="./tareas-base-unificada.js"></script>
+    <script src="./tareas.js"></script>
+    <script src="./planes.js"></script>
+    <script>
+        // Cargar componentes dinámicamente
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSidebar('sidebar-container', 'tareas');
+            loadSubNav('top-nav-container', 'tareas');
+            loadTabBar('tab-bar-container');
+            loadFloatingMenu('floating-menu-container');
+            loadProfileMenu('profile-menu-container');
+
+            // Cargar header-product con variante solo botón primario
+            if (typeof loadHeaderProduct === 'function') {
+                loadHeaderProduct('header-product-container', {
+                    productName: 'Tareas',
+                    breadcrumbItems: [],
+                    primaryButton: {
+                        text: 'Crear',
+                        icon: 'fa-plus',
+                        onClick: function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            if (typeof window.openCrearMenu === 'function') window.openCrearMenu(e.currentTarget);
+                        }
+                    }
+                });
+            }
+
+            // Activar el tab "Tareas" específicamente después de cargar el SubNav
+            // NOTA: El reordenamiento de tabs, eliminación de logo e icono se maneja en sub-nav.js
+            setTimeout(() => {
+                // Remover active de todos los tabs (desktop y móvil)
+                document.querySelectorAll('.nav-tab, .hamburger-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                
+                // Activar el tab Tareas en desktop
+                const tareasTab = document.querySelector('.nav-tab[data-tab="tasks"]');
+                if (tareasTab) {
+                    tareasTab.classList.add('active');
+                }
+                
+                // Activar el tab Tareas en móvil (hamburger menu)
+                const tareasHamburger = document.querySelector('.hamburger-item[data-tab="tasks"]');
+                if (tareasHamburger) {
+                    tareasHamburger.classList.add('active');
+                }
+                
+                // Activar el botón de tareas en el sidebar
+                const tareasButton = document.querySelector('.nav-button[data-section="tareas"]');
+                if (tareasButton) {
+                    // Remover active de todos los botones del sidebar
+                    document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
+                    // Activar el botón de tareas
+                    tareasButton.classList.add('active');
+                }
+                
+                // Activar el botón "Módulos" del Tab-bar móvil
+                const modulosTabBarItem = document.querySelector('.tab-bar-item[data-tab="modulos"]');
+                if (modulosTabBarItem) {
+                    // Remover active de todos los items del tab-bar
+                    document.querySelectorAll('.tab-bar-item').forEach(item => item.classList.remove('active'));
+                    // Activar el item módulos
+                    modulosTabBarItem.classList.add('active');
+                }
+                
+                // Activar la opción "Tareas" dentro del acordeón "Tareas" del floating menu
+                if (typeof setActiveAccordionLink === 'function') {
+                    setActiveAccordionLink('tareas');
+                }
+
+                // Inicializar vista de tareas
+                if (typeof initTareasView === 'function') {
+                    console.log('Inicializando vista de tareas...');
+                    initTareasView();
+                } else {
+                    console.error('initTareasView no está definida. Verificar que tareas.js se cargó correctamente.');
+                }
+
+                // Drawers (necesarios para Crear plan / plantilla)
+                if (typeof renderTemplateDrawer === 'function') renderTemplateDrawer();
+                if (typeof renderPlanDrawer === 'function') renderPlanDrawer();
+            }, 500);
+        });
+    </script>
+</body>
+</html>

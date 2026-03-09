@@ -1,0 +1,1234 @@
+/* ========================================
+   ESTILOS ESPECÍFICOS DE DOCUMENTACIÓN
+   ========================================
+   
+   Este archivo contiene estilos que SOLO se usan en páginas de documentación.
+   Los estilos generales del proyecto están en general-styles/styles.css
+   
+   NOTA: Los estilos de Toast duplicados fueron eliminados (ya están en components/toast.css)
+   NOTA: Referencias a .overview-page fueron eliminadas (archivo ya no existe)
+*/
+
+/* ========================================
+   ELIMINAR BORDES DE SECCIONES MODULARES
+   ======================================== */
+
+/* Asegurar que las secciones modulares NO tengan bordes en TODAS las páginas de documentación */
+.documentacion-page .content-sections,
+.documentacion-page .section-single,
+.documentacion-page .section-dual,
+.documentacion-page .section-triple,
+.documentacion-page .section-quad,
+.componentes-page .content-sections,
+.componentes-page .section-single,
+.componentes-page .section-dual,
+.componentes-page .section-triple,
+.componentes-page .section-quad,
+.validador-page .content-sections,
+.validador-page .section-single,
+.validador-page .section-dual,
+.validador-page .section-triple,
+.validador-page .section-quad,
+.guia-prompts-page .content-sections,
+.guia-prompts-page .section-single,
+.guia-prompts-page .section-dual,
+.guia-prompts-page .section-triple,
+.guia-prompts-page .section-quad,
+.iconos-page .content-sections,
+.iconos-page .section-single,
+.iconos-page .section-dual,
+.iconos-page .section-triple,
+.iconos-page .section-quad {
+    border: none !important;
+}
+
+/* Asegurar que los widgets dentro de las secciones NO tengan bordes en TODAS las páginas de documentación */
+.documentacion-page .section-single > div,
+.documentacion-page .section-dual > div,
+.documentacion-page .section-triple > div,
+.documentacion-page .section-quad > div,
+.componentes-page .section-single > div,
+.componentes-page .section-dual > div,
+.componentes-page .section-triple > div,
+.componentes-page .section-quad > div,
+.validador-page .section-single > div,
+.validador-page .section-dual > div,
+.validador-page .section-triple > div,
+.validador-page .section-quad > div,
+.guia-prompts-page .section-single > div,
+.guia-prompts-page .section-dual > div,
+.guia-prompts-page .section-triple > div,
+.guia-prompts-page .section-quad > div,
+.iconos-page .section-single > div,
+.iconos-page .section-dual > div,
+.iconos-page .section-triple > div,
+.iconos-page .section-quad > div {
+    border: none !important;
+}
+
+/* También eliminar bordes de cualquier div con background dentro de content-sections en documentación */
+.documentacion-page .content-sections > div,
+.componentes-page .content-sections > div,
+.validador-page .content-sections > div,
+.guia-prompts-page .content-sections > div,
+.iconos-page .content-sections > div {
+    border: none !important;
+}
+
+/* Regla adicional: eliminar bordes de cualquier div dentro de content-sections que tenga background pero no sea un elemento específico de documentación */
+.documentacion-page .content-sections div[class*="widget-"],
+.componentes-page .content-sections div[class*="widget-"],
+.validador-page .content-sections div[class*="widget-"],
+.guia-prompts-page .content-sections div[class*="widget-"],
+.iconos-page .content-sections div[class*="widget-"] {
+    border: none !important;
+}
+
+/* REGLA AGRESIVA: Eliminar bordes de CUALQUIER div con estilos inline que contengan "border" en TODAS las páginas de documentación (excepto .file-input) */
+.documentacion-page div[style*="border"]:not(.file-input),
+.componentes-page div[style*="border"]:not(.file-input),
+.validador-page div[style*="border"]:not(.file-input),
+.guia-prompts-page div[style*="border"]:not(.file-input),
+.iconos-page div[style*="border"]:not(.file-input) {
+    border: none !important;
+}
+
+/* .file-input DEBE mantener su borde punteado (es funcional, no una sección) */
+.file-input {
+    border: 2px dashed var(--ubits-border-1) !important;
+}
+
+/* REGLA AGRESIVA: Eliminar bordes de divs con background dentro de content-area (excepto elementos específicos de documentación) */
+.documentacion-page .content-area div[style*="background"]:not(.feature-card):not(.component-card):not(.philosophy-item):not(.resource-card):not(.step):not(.type-example):not(.hero-section):not(.cta-section):not(.validator-section),
+.componentes-page .content-area div[style*="background"]:not(.feature-card):not(.component-card):not(.philosophy-item):not(.resource-card):not(.step):not(.type-example):not(.hero-section):not(.cta-section):not(.validator-section),
+.validador-page .content-area div[style*="background"]:not(.feature-card):not(.component-card):not(.philosophy-item):not(.resource-card):not(.step):not(.type-example):not(.hero-section):not(.cta-section):not(.validator-section),
+.guia-prompts-page .content-area div[style*="background"]:not(.feature-card):not(.component-card):not(.philosophy-item):not(.resource-card):not(.step):not(.type-example):not(.hero-section):not(.cta-section):not(.validator-section),
+.iconos-page .content-area div[style*="background"]:not(.feature-card):not(.component-card):not(.philosophy-item):not(.resource-card):not(.step):not(.type-example):not(.hero-section):not(.cta-section):not(.validator-section) {
+    border: none !important;
+}
+
+/* REGLA AGRESIVA: Eliminar bordes de cualquier div dentro de content-sections */
+.documentacion-page .content-sections div,
+.componentes-page .content-sections div,
+.validador-page .content-sections div,
+.guia-prompts-page .content-sections div,
+.iconos-page .content-sections div {
+    border: none !important;
+}
+
+/* CRITICAL: Eliminar bordes de .validator-section en TODAS las páginas de documentación */
+.documentacion-page .validator-section,
+.componentes-page .validator-section,
+.validador-page .validator-section,
+.guia-prompts-page .validator-section,
+.iconos-page .validator-section {
+    border: none !important;
+}
+
+/* ========================================
+   ELIMINAR SOMBRAS (BOX-SHADOW) DE SECCIONES EN DOCUMENTACIÓN
+   ======================================== */
+
+/* Eliminar box-shadow de TODAS las secciones modulares en TODAS las páginas de documentación */
+.documentacion-page .content-sections,
+.documentacion-page .section-single,
+.documentacion-page .section-dual,
+.documentacion-page .section-triple,
+.documentacion-page .section-quad,
+.componentes-page .content-sections,
+.componentes-page .section-single,
+.componentes-page .section-dual,
+.componentes-page .section-triple,
+.componentes-page .section-quad,
+.validador-page .content-sections,
+.validador-page .section-single,
+.validador-page .section-dual,
+.validador-page .section-triple,
+.validador-page .section-quad,
+.guia-prompts-page .content-sections,
+.guia-prompts-page .section-single,
+.guia-prompts-page .section-dual,
+.guia-prompts-page .section-triple,
+.guia-prompts-page .section-quad,
+.iconos-page .content-sections,
+.iconos-page .section-single,
+.iconos-page .section-dual,
+.iconos-page .section-triple,
+.iconos-page .section-quad {
+    box-shadow: none !important;
+}
+
+/* Eliminar box-shadow de widgets dentro de las secciones */
+.documentacion-page .section-single > div,
+.documentacion-page .section-dual > div,
+.documentacion-page .section-triple > div,
+.documentacion-page .section-quad > div,
+.componentes-page .section-single > div,
+.componentes-page .section-dual > div,
+.componentes-page .section-triple > div,
+.componentes-page .section-quad > div,
+.validador-page .section-single > div,
+.validador-page .section-dual > div,
+.validador-page .section-triple > div,
+.validador-page .section-quad > div,
+.guia-prompts-page .section-single > div,
+.guia-prompts-page .section-dual > div,
+.guia-prompts-page .section-triple > div,
+.guia-prompts-page .section-quad > div,
+.iconos-page .section-single > div,
+.iconos-page .section-dual > div,
+.iconos-page .section-triple > div,
+.iconos-page .section-quad > div {
+    box-shadow: none !important;
+}
+
+/* REGLA AGRESIVA: Eliminar box-shadow de CUALQUIER div con estilos inline en TODAS las páginas de documentación */
+.documentacion-page div[style*="box-shadow"],
+.componentes-page div[style*="box-shadow"],
+.validador-page div[style*="box-shadow"],
+.guia-prompts-page div[style*="box-shadow"],
+.iconos-page div[style*="box-shadow"] {
+    box-shadow: none !important;
+}
+
+/* REGLA AGRESIVA: Eliminar box-shadow de divs con background dentro de content-area */
+.documentacion-page .content-area div[style*="background"]:not(.feature-card):not(.component-card):not(.philosophy-item):not(.resource-card):not(.step):not(.type-example):not(.hero-section):not(.cta-section):not(.validator-section):not(.file-input),
+.componentes-page .content-area div[style*="background"]:not(.feature-card):not(.component-card):not(.philosophy-item):not(.resource-card):not(.step):not(.type-example):not(.hero-section):not(.cta-section):not(.validator-section):not(.file-input),
+.validador-page .content-area div[style*="background"]:not(.feature-card):not(.component-card):not(.philosophy-item):not(.resource-card):not(.step):not(.type-example):not(.hero-section):not(.cta-section):not(.validator-section):not(.file-input),
+.guia-prompts-page .content-area div[style*="background"]:not(.feature-card):not(.component-card):not(.philosophy-item):not(.resource-card):not(.step):not(.type-example):not(.hero-section):not(.cta-section):not(.validator-section):not(.file-input),
+.iconos-page .content-area div[style*="background"]:not(.feature-card):not(.component-card):not(.philosophy-item):not(.resource-card):not(.step):not(.type-example):not(.hero-section):not(.cta-section):not(.validator-section):not(.file-input) {
+    box-shadow: none !important;
+}
+
+/* ========================================
+   LAYOUT DE DOCUMENTACIÓN
+   ======================================== */
+
+/* CRITICAL: Sobrescribir padding-left de 143px para TODAS las páginas de documentación en pantallas > 1440px */
+/* Esto incluye TODAS las páginas dentro de documentacion/ (incluyendo documentacion/componentes/) */
+@media (min-width: 1440px) {
+    /* Sobrescribir padding-left para todas las páginas de documentación */
+    .documentacion-page .main-content,
+    .componentes-page .main-content,
+    .validador-page .main-content,
+    .guia-prompts-page .main-content,
+    .iconos-page .main-content {
+        padding-left: 24px !important; /* En lugar de 143px */
+        padding-right: 24px !important;
+    }
+    
+    /* También para cualquier página dentro de documentacion/componentes/ */
+    body[class*="documentacion"] .main-content,
+    body[class*="componentes"] .main-content {
+        padding-left: 24px !important;
+        padding-right: 24px !important;
+    }
+}
+
+/* Documentación - Sin sidebar */
+.documentacion-page .main-content {
+    margin-left: 24px;
+    margin-right: 24px;
+    width: calc(100% - 48px);
+}
+
+/* Páginas de documentación - Mobile */
+@media (max-width: 1023px) {
+    .documentacion-page .main-content {
+        margin-left: 12px;
+        margin-right: 12px;
+        margin-top: 16px;
+        width: calc(100% - 24px);
+    }
+}
+
+/* Página de iconos - Sin sidebar también */
+.iconos-page .main-content {
+    margin-left: 24px;
+    margin-right: 24px;
+    width: calc(100% - 48px);
+}
+
+/* Página de iconos - Mobile */
+@media (max-width: 1023px) {
+    .iconos-page .main-content {
+        margin-left: 12px;
+        margin-right: 12px;
+        margin-top: 16px;
+        width: calc(100% - 24px);
+    }
+}
+
+/* Páginas de documentación general - Sin sidebar */
+.componentes-page .main-content,
+.validador-page .main-content,
+.guia-prompts-page .main-content {
+    margin-left: 24px;
+    margin-right: 24px;
+    width: calc(100% - 48px);
+}
+
+/* Páginas de documentación general - Mobile */
+@media (max-width: 1023px) {
+    .componentes-page .main-content,
+    .validador-page .main-content,
+    .guia-prompts-page .main-content {
+        margin-left: 12px;
+        margin-right: 12px;
+        margin-top: 16px;
+        width: calc(100% - 24px);
+    }
+}
+
+/* Página de iconos - Con sidebar lateral */
+.iconos-page .content-area {
+    margin-right: 12px;
+    padding-left: 0; /* Sin padding ya que el sidebar está en layout flex */
+}
+
+/* ========================================
+   ESTILOS PARA LA PÁGINA DE ICONOS FONTAWESOME
+   ======================================== */
+
+.page-title {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    margin-bottom: 20px;
+}
+
+.page-title-icon {
+    font-size: var(--font-size-h1);
+    color: var(--ubits-fg-1-high);
+}
+
+.page-title h1 {
+    text-align: left;
+    color: var(--ubits-fg-2-high);
+    margin: 0;
+    font-size: var(--font-size-h1);
+    font-weight: var(--font-weight-bold);
+    line-height: 1;
+    font-family: 'Noto Sans', sans-serif;
+}
+
+.results-search-filters {
+    background: var(--ubits-bg-1);
+    padding: var(--padding-lg);
+    border-radius: var(--border-radius-md);
+    margin-bottom: 20px;
+    position: sticky;
+    top: 16px;
+    z-index: 100;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.results-search-layout {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.results-left {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.results-title {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    color: var(--ubits-fg-2-high);
+    line-height: 24px;
+    font-family: 'Noto Sans', sans-serif;
+}
+
+.results-count {
+    font-size: var(--font-size-sm);
+    color: var(--ubits-fg-1-medium);
+    line-height: 19.5px;
+    font-family: 'Noto Sans', sans-serif;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    width: 350px;
+    min-width: 350px;
+    max-width: 350px;
+}
+
+.search-icon {
+    font-size: var(--font-size-h2);
+    color: var(--ubits-fg-1-medium);
+    flex-shrink: 0;
+}
+
+.clear-search-btn {
+    background: transparent;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--border-radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.clear-search-btn:hover {
+    background: var(--ubits-fg-2-medium);
+}
+
+.clear-search-btn i {
+    font-size: var(--font-size-sm);
+    color: var(--ubits-accent-brand);
+}
+
+#searchInput {
+    flex: 1;
+    min-width: 0;
+    padding: var(--padding-sm) 0;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    border: none;
+    outline: none;
+    transition: all 0.2s ease;
+    background: transparent;
+    color: var(--ubits-fg-1-medium);
+    font-family: 'Noto Sans', sans-serif;
+    box-sizing: border-box;
+}
+
+#searchInput:not(:placeholder-shown) {
+    color: var(--ubits-fg-1-high);
+}
+
+#searchInput:focus {
+    border-color: var(--ubits-accent-brand);
+}
+
+
+#searchInput::placeholder {
+    color: var(--ubits-fg-1-medium);
+}
+
+.icons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: var(--gap-lg);
+    margin-top: 20px;
+}
+
+.icon-card {
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-md);
+    padding: var(--padding-sm);
+    text-align: center;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    height: 89px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.icon-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    border-color: var(--ubits-accent-brand);
+}
+
+.icon-card i {
+    font-size: var(--font-size-h1);
+    color: var(--ubits-fg-1-high);
+    margin-bottom: 10px;
+    display: block;
+}
+
+.icon-name {
+    font-size: var(--font-size-sm);
+    color: var(--ubits-fg-1-medium);
+    font-weight: var(--font-weight-regular);
+    line-height: 19.5px;
+    font-family: 'Noto Sans', sans-serif;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-height: 39px; /* 2 líneas * 19.5px line-height */
+    width: 100%;
+}
+
+.stats {
+    text-align: center;
+    margin-bottom: 24px;
+    color: var(--ubits-fg-1-medium);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    line-height: 20px;
+}
+
+.no-results {
+    text-align: center;
+    color: var(--ubits-fg-1-medium);
+    font-size: var(--font-size-h2);
+    margin-top: 40px;
+}
+
+.letter-section {
+    margin-bottom: 40px;
+}
+
+.letter-section h2 {
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--ubits-border-1);
+}
+
+.letter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: var(--gap-lg);
+}
+
+.empty-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.empty-state-content {
+    max-width: 400px;
+}
+
+.empty-state-illustration {
+    margin-bottom: 24px;
+}
+
+.empty-state-title {
+    font-size: var(--font-size-h2);
+    font-weight: var(--font-weight-semibold);
+    color: var(--ubits-fg-1-high);
+    margin-bottom: 8px;
+    font-family: 'Noto Sans', sans-serif;
+}
+
+.empty-state-description {
+    font-size: var(--font-size-sm);
+    color: var(--ubits-fg-1-medium);
+    margin-bottom: 24px;
+    line-height: 1.5;
+    font-family: 'Noto Sans', sans-serif;
+}
+
+.clear-search-button {
+    background: var(--ubits-accent-brand);
+    color: white;
+    border: none;
+    padding: var(--padding-md) var(--padding-2xl);
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: 'Noto Sans', sans-serif;
+}
+
+.clear-search-button:hover {
+    background: var(--ubits-accent-brand-hover);
+    transform: translateY(-1px);
+}
+
+/* Navegación alfabética lateral para iconos - fixed, 16px margen arriba (subnav) y abajo (viewport). Solo docstyles, no toca subnav. */
+.iconos-page .alphabet-nav-icons {
+    position: fixed;
+    left: 24px;
+    top: 56px; /* subnav 40px + 16px margen (cuando main margin-top es 0) */
+    bottom: 16px; /* 16px de distancia del borde inferior siempre */
+    width: 96px;
+    background: var(--ubits-bg-1);
+    border-radius: var(--border-radius-xl);
+    padding: var(--padding-sm) var(--padding-xs);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--ubits-scroll-bar-color-bg-default) transparent;
+}
+
+/* Desktop: main-content tiene margin-top 16px, subnav termina en 56px → sidebar a 72px para 16px de margen */
+@media (min-width: 1280px) {
+    .iconos-page .alphabet-nav-icons {
+        top: 72px; /* 16px margin main + 40px subnav + 16px margen */
+    }
+}
+
+/* Espacio para que el contenido no quede debajo del sidebar fijo (no mueve el sidebar) */
+.iconos-page .icons-content {
+    margin-left: 120px; /* 96px ancho sidebar + 24px gap */
+}
+
+.alphabet-nav-icons::-webkit-scrollbar {
+    width: 4px;
+}
+
+.alphabet-nav-icons::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.alphabet-nav-icons::-webkit-scrollbar-thumb {
+    background: var(--ubits-scroll-bar-color-bg-default);
+    border-radius: var(--border-radius-xs);
+}
+
+.alphabet-nav-icons::-webkit-scrollbar-thumb:hover {
+    background: var(--ubits-scroll-bar-color-bg-default);
+}
+
+.alphabet-nav-icons a {
+    display: block;
+    text-decoration: none;
+    color: var(--ubits-fg-1-medium);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    padding: var(--padding-sm) var(--padding-sm);
+    margin: 2px 0;
+    border-radius: var(--border-radius-md);
+    text-align: center;
+    transition: all 0.2s ease;
+    font-family: 'Noto Sans', sans-serif;
+}
+
+.alphabet-nav-icons a:hover {
+    background: var(--ubits-bg-2);
+    color: var(--ubits-fg-1-high);
+}
+
+.alphabet-nav-icons a.active {
+    background: var(--ubits-accent-brand);
+    color: white;
+}
+
+/* ========================================
+   ESTILOS DE DOCUMENTACIÓN GENERAL
+   ======================================== */
+
+/* Page Header */
+.page-header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding: var(--padding-4xl) 0;
+    border-bottom: 1px solid var(--ubits-border-1);
+}
+
+.page-header h1 {
+    margin-bottom: 16px;
+    color: var(--ubits-fg-1-high);
+}
+
+.page-header p {
+    color: var(--ubits-fg-1-medium);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Content Sections */
+.content-section {
+    display: none;
+    padding: var(--padding-xl) 0;
+}
+
+.content-section.active {
+    display: block;
+}
+
+/* Hero Section */
+.hero-section {
+    text-align: center;
+    margin-bottom: 60px;
+    padding: var(--padding-6xl) 0;
+    background: linear-gradient(135deg, var(--ubits-bg-1) 0%, var(--ubits-fg-2-medium) 100%);
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--ubits-border-1);
+}
+
+.hero-section h2 {
+    margin-bottom: 20px;
+    color: var(--ubits-fg-1-high);
+}
+
+.hero-section p {
+    color: var(--ubits-fg-1-medium);
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+/* Features Grid */
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--gap-2xl);
+    margin-bottom: 60px;
+}
+
+.feature-card {
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-md);
+    padding: var(--padding-2xl);
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border-color: var(--ubits-accent-brand);
+}
+
+.feature-icon {
+    width: 60px;
+    height: 60px;
+    background: var(--ubits-accent-brand);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    color: var(--ubits-fg-bold);
+    font-size: var(--font-size-h1);
+}
+
+.feature-card h3 {
+    margin-bottom: 12px;
+    color: var(--ubits-fg-1-high);
+}
+
+.feature-card p {
+    margin-bottom: 20px;
+    color: var(--ubits-fg-1-medium);
+    line-height: 1.6;
+}
+
+/* Buttons */
+.btn-primary, .btn-secondary {
+    display: inline-block;
+    padding: var(--padding-md) var(--padding-2xl);
+    border-radius: var(--border-radius-sm);
+    text-decoration: none;
+    font-weight: var(--font-weight-semibold);
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    font-family: 'Noto Sans', sans-serif;
+}
+
+.btn-primary {
+    background: var(--ubits-accent-brand);
+    color: var(--ubits-fg-bold);
+}
+
+.btn-primary:hover {
+    background: var(--ubits-accent-brand-hover);
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--ubits-accent-brand);
+    border: 1px solid var(--ubits-accent-brand);
+}
+
+.btn-secondary:hover {
+    background: var(--ubits-accent-brand);
+    color: var(--ubits-fg-bold);
+}
+
+/* Philosophy Section */
+.philosophy-section {
+    margin-bottom: 60px;
+}
+
+.philosophy-section h2 {
+    text-align: center;
+    margin-bottom: 40px;
+    color: var(--ubits-fg-1-high);
+}
+
+.philosophy-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--gap-2xl);
+}
+
+.philosophy-item {
+    text-align: center;
+    padding: var(--padding-2xl);
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-md);
+}
+
+.philosophy-item h3 {
+    margin-bottom: 12px;
+    color: var(--ubits-fg-1-high);
+}
+
+.philosophy-item p {
+    color: var(--ubits-fg-1-medium);
+    line-height: 1.6;
+}
+
+/* Components Grid */
+.components-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--gap-2xl);
+    margin-bottom: 40px;
+}
+
+.component-card {
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-md);
+    padding: var(--padding-2xl);
+    transition: all 0.3s ease;
+}
+
+.component-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.component-card h3 {
+    margin-bottom: 12px;
+    color: var(--ubits-fg-1-high);
+}
+
+.component-card p {
+    margin-bottom: 20px;
+    color: var(--ubits-fg-1-medium);
+    line-height: 1.6;
+}
+
+/* Component Preview */
+.component-preview {
+    background: var(--ubits-bg-2);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    padding: var(--padding-lg);
+    margin-bottom: 20px;
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Mini Components */
+.mini-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    width: 120px;
+}
+
+.mini-nav-item {
+    padding: var(--padding-sm) var(--padding-md);
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-xs);
+    font-size: var(--font-size-sm);
+    color: var(--ubits-fg-1-medium);
+}
+
+.mini-nav-item.active {
+    background: var(--ubits-accent-brand);
+    color: var(--ubits-fg-bold);
+}
+
+.mini-topnav {
+    display: flex;
+    gap: var(--gap-sm);
+}
+
+.mini-tab {
+    padding: var(--padding-sm) var(--padding-md);
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-xs);
+    font-size: var(--font-size-sm);
+    color: var(--ubits-fg-1-medium);
+}
+
+.mini-tab.active {
+    background: var(--ubits-accent-brand);
+    color: var(--ubits-fg-bold);
+}
+
+.mini-card {
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    overflow: hidden;
+    width: 150px;
+}
+
+.mini-card-header {
+    padding: var(--padding-sm) var(--padding-md);
+    background: var(--ubits-fg-2-medium);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--ubits-fg-1-high);
+}
+
+.mini-card-body {
+    padding: var(--padding-sm) var(--padding-md);
+    font-size: var(--font-size-sm);
+    color: var(--ubits-fg-1-medium);
+}
+
+.mini-buttons {
+    display: flex;
+    gap: var(--gap-sm);
+}
+
+.mini-btn {
+    padding: var(--padding-sm) var(--padding-md);
+    border-radius: var(--border-radius-xs);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+}
+
+.mini-btn.primary {
+    background: var(--ubits-accent-brand);
+    color: var(--ubits-fg-bold);
+}
+
+.mini-btn.secondary {
+    background: transparent;
+    color: var(--ubits-accent-brand);
+    border: 1px solid var(--ubits-accent-brand);
+}
+
+/* Colors Overview */
+.colors-overview {
+    margin-bottom: 40px;
+}
+
+.color-category {
+    margin-bottom: 32px;
+}
+
+.color-category h3 {
+    margin-bottom: 16px;
+    color: var(--ubits-fg-1-high);
+}
+
+.color-swatches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-lg);
+}
+
+.color-swatch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.swatch {
+    width: 60px;
+    height: 60px;
+    border-radius: var(--border-radius-sm);
+    border: 1px solid var(--ubits-border-1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.swatch-name {
+    font-size: var(--font-size-sm);
+    color: var(--ubits-fg-1-medium);
+    text-align: center;
+}
+
+/* Icons Overview */
+.icons-overview {
+    margin-bottom: 40px;
+}
+
+.icon-category h3 {
+    margin-bottom: 20px;
+    color: var(--ubits-fg-1-high);
+}
+
+.icon-categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: var(--gap-lg);
+}
+
+.icon-category-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--gap-sm);
+    padding: var(--padding-lg);
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    transition: all 0.3s ease;
+}
+
+.icon-category-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.icon-category-item i {
+    font-size: var(--font-size-h1);
+    color: var(--ubits-accent-brand);
+}
+
+.icon-category-item span {
+    font-size: var(--font-size-sm);
+    color: var(--ubits-fg-1-medium);
+    font-weight: var(--font-weight-semibold);
+}
+
+/* Typography Examples */
+.typography-examples {
+    margin-bottom: 40px;
+}
+
+.typography-scale h3 {
+    margin-bottom: 24px;
+    color: var(--ubits-fg-1-high);
+}
+
+.type-example {
+    margin-bottom: 24px;
+    padding: var(--padding-lg);
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+}
+
+.type-example code {
+    display: block;
+    margin-top: 8px;
+    padding: var(--padding-sm) var(--padding-md);
+    background: var(--ubits-bg-2);
+    border-radius: var(--border-radius-xs);
+    font-family: 'Courier New', monospace;
+    font-size: var(--font-size-sm);
+    color: var(--ubits-fg-1-medium);
+}
+
+/* Getting Started Steps */
+.getting-started-steps {
+    margin-bottom: 40px;
+}
+
+.step {
+    display: flex;
+    gap: var(--gap-xl);
+    margin-bottom: 32px;
+    padding: var(--padding-2xl);
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-md);
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    background: var(--ubits-accent-brand);
+    color: var(--ubits-fg-bold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-h2);
+    flex-shrink: 0;
+}
+
+.step-content h3 {
+    margin-bottom: 12px;
+    color: var(--ubits-fg-1-high);
+}
+
+.step-content p {
+    margin-bottom: 16px;
+    color: var(--ubits-fg-1-medium);
+    line-height: 1.6;
+}
+
+.step-content pre {
+    background: var(--ubits-bg-2);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    padding: var(--padding-lg);
+    overflow-x: auto;
+    margin: 0;
+}
+
+.step-content code {
+    font-family: 'Courier New', monospace;
+    font-size: var(--font-size-sm);
+    color: var(--ubits-fg-1-high);
+}
+
+/* Resources Section */
+.resources-section {
+    margin-bottom: 40px;
+}
+
+.resources-section h3 {
+    margin-bottom: 24px;
+    color: var(--ubits-fg-1-high);
+}
+
+.resources-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--gap-xl);
+}
+
+.resource-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--gap-md);
+    padding: var(--padding-2xl);
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-md);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.resource-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border-color: var(--ubits-accent-brand);
+}
+
+.resource-card i {
+    font-size: var(--font-size-d3);
+    color: var(--ubits-accent-brand);
+}
+
+.resource-card h4 {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+    font-size: var(--font-size-md);
+}
+
+.resource-card p {
+    margin: 0;
+    color: var(--ubits-fg-1-medium);
+    text-align: center;
+    font-size: var(--font-size-sm);
+}
+
+/* CTA Section */
+.cta-section {
+    text-align: center;
+    padding: var(--padding-4xl);
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-md);
+    margin-bottom: 40px;
+}
+
+.cta-section h3 {
+    margin-bottom: 12px;
+    color: var(--ubits-fg-1-high);
+}
+
+.cta-section p {
+    margin-bottom: 24px;
+    color: var(--ubits-fg-1-medium);
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ========================================
+   RESPONSIVE DE DOCUMENTACIÓN
+   ======================================== */
+
+@media (max-width: 768px) {
+    .alphabet-nav-icons {
+        display: none; /* Ocultar en móvil para no interferir */
+    }
+
+    .iconos-page .icons-content {
+        margin-left: 0;
+    }
+    
+    /* Página de iconos - Responsive */
+    .iconos-page .content-area {
+        padding-left: 0; /* Sin padding en móvil */
+    }
+    
+    /* Layout del buscador en móvil */
+    .results-search-layout {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--gap-lg);
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .results-left {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .search-container {
+        width: 100%;
+        max-width: none;
+        min-width: auto;
+        box-sizing: border-box; /* Incluir padding y border en el ancho */
+    }
+    
+    .features-grid,
+    .components-grid,
+    .philosophy-grid,
+    .pages-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .color-swatches {
+        justify-content: center;
+    }
+    
+    .icon-categories-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+    
+    .step {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .step-number {
+        align-self: center;
+    }
+    
+    .resources-grid {
+        grid-template-columns: 1fr;
+    }
+}

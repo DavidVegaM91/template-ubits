@@ -1,0 +1,221 @@
+/* ========================================
+   UBITS STATUS TAG COMPONENT
+   Componente de etiqueta de estado con variantes
+   Tokens: general-styles/ubits-colors.css (alineados a Figma Planes y Tareas R4)
+   ======================================== */
+
+/* ========================================
+   BASE STATUS TAG STYLES
+   ======================================== */
+
+.ubits-status-tag {
+    /* Base styles */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap-sm);
+    padding: var(--padding-sm) var(--padding-md);
+    border-radius: var(--border-radius-sm);
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    line-height: 16px;
+    white-space: nowrap;
+    box-sizing: border-box;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+    height: 28px; /* Altura por defecto (sm) */
+}
+
+/* Asegurar que los iconos dentro del tag usen FontAwesome */
+.ubits-status-tag i {
+    font-family: "Font Awesome 6 Pro", "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
+}
+
+/* ========================================
+   STATUS TAG VARIANTS
+   ======================================== */
+
+/* Success (Verde) */
+.ubits-status-tag--success {
+    background: var(--ubits-feedback-bg-success-subtle);
+    color: var(--ubits-feedback-fg-success-subtle);
+    border-color: var(--ubits-feedback-border-success);
+}
+
+/* Info (Azul) */
+.ubits-status-tag--info {
+    background: var(--ubits-feedback-bg-info-subtle);
+    color: var(--ubits-feedback-fg-info-subtle);
+    border-color: var(--ubits-feedback-border-info);
+}
+
+/* Warning (Amarillo) */
+.ubits-status-tag--warning {
+    background: var(--ubits-feedback-bg-warning-subtle);
+    color: var(--ubits-feedback-fg-warning-subtle);
+    border-color: var(--ubits-feedback-border-warning);
+}
+
+/* Error (Rojo) */
+.ubits-status-tag--error {
+    background: var(--ubits-feedback-bg-error-subtle);
+    color: var(--ubits-feedback-fg-error-subtle);
+    border-color: var(--ubits-feedback-border-error);
+}
+
+/* Neutral (Gris) */
+.ubits-status-tag--neutral {
+    background: var(--ubits-bg-2);
+    color: var(--ubits-fg-1-medium);
+    border-color: var(--ubits-border-1);
+}
+
+/* ========================================
+   STATUS TAG ICON POSITIONS
+   ======================================== */
+
+/* Icono a la izquierda */
+.ubits-status-tag--icon-left {
+    flex-direction: row;
+}
+
+.ubits-status-tag--icon-left i {
+    order: 0;
+}
+
+.ubits-status-tag--icon-left .ubits-status-tag__text {
+    order: 1;
+}
+
+/* Icono a la derecha */
+.ubits-status-tag--icon-right {
+    flex-direction: row;
+}
+
+.ubits-status-tag--icon-right i {
+    order: 1;
+}
+
+.ubits-status-tag--icon-right .ubits-status-tag__text {
+    order: 0;
+}
+
+/* ========================================
+   STATUS TAG ELEMENTS
+   ======================================== */
+
+/* Estilos para iconos dentro del status tag */
+.ubits-status-tag i {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: var(--font-size-xs);
+    line-height: 1;
+    width: 12px;
+    height: 12px;
+}
+
+.ubits-status-tag__text {
+    display: inline-block;
+    line-height: 16px;
+}
+
+/* ========================================
+   STATUS TAG SIZES
+   ======================================== */
+
+/* Extra Small size */
+.ubits-status-tag--xs {
+    padding: var(--padding-xs) var(--padding-sm);
+    font-size: var(--font-size-xs);
+    line-height: 16px;
+    gap: var(--gap-xs);
+    height: 20px;
+}
+
+.ubits-status-tag--xs i {
+    font-size: var(--font-size-xs);
+    width: 10px;
+    height: 10px;
+}
+
+/* Small size */
+.ubits-status-tag--sm {
+    padding: var(--padding-sm) var(--padding-md);
+    font-size: var(--font-size-xs);
+    line-height: 16px;
+    gap: var(--gap-sm);
+    height: 28px;
+}
+
+.ubits-status-tag--sm i {
+    font-size: var(--font-size-xs);
+    width: 12px;
+    height: 12px;
+}
+
+/* Medium size */
+.ubits-status-tag--md {
+    padding: var(--padding-md) var(--padding-md);
+    font-size: var(--font-size-sm);
+    line-height: 16px;
+    gap: var(--gap-sm);
+    height: 36px;
+}
+
+.ubits-status-tag--md i {
+    font-size: var(--font-size-sm);
+    width: 14px;
+    height: 14px;
+}
+
+/* Large size */
+.ubits-status-tag--lg {
+    padding: var(--padding-md) var(--padding-lg);
+    font-size: var(--font-size-sm);
+    line-height: 16px;
+    gap: var(--gap-sm);
+    height: 40px;
+}
+
+.ubits-status-tag--lg i {
+    font-size: var(--font-size-sm);
+    width: 16px;
+    height: 16px;
+}
+
+/* ========================================
+   STATUS TAG ICON-ONLY (cuadrado 1:1)
+   ======================================== */
+
+.ubits-status-tag--icon-only .ubits-status-tag__text {
+    display: none;
+}
+
+.ubits-status-tag--icon-only {
+    padding: 0;
+    min-width: 0;
+}
+
+.ubits-status-tag--icon-only.ubits-status-tag--xs {
+    width: 20px;
+    height: 20px;
+}
+
+.ubits-status-tag--icon-only.ubits-status-tag--sm {
+    width: 28px;
+    height: 28px;
+}
+
+.ubits-status-tag--icon-only.ubits-status-tag--md {
+    width: 36px;
+    height: 36px;
+}
+
+.ubits-status-tag--icon-only.ubits-status-tag--lg {
+    width: 40px;
+    height: 40px;
+}
+

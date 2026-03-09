@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>UBITS Playground - Iconos</title>
+    
+    <!-- Estilos locales -->
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/empty-state.css">
+    <!-- Estilos de documentación -->
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+</head>
+<body class="iconos-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navigation -->
+            <div id="top-nav-container"></div>
+            
+            <!-- Content with Sidebar -->
+            <div style="display: flex;">
+            <!-- Sidebar de Iconos -->
+            <aside class="alphabet-nav-icons" id="alphabetNavIcons">
+                <!-- Se generará dinámicamente -->
+            </aside>
+
+            <!-- Content Area -->
+            <div class="icons-content" style="flex: 1; min-width: 0;">
+                <!-- Content Area -->
+                <div class="content-area" style="display: block; width: 100%;">
+                <!-- Hero Section -->
+                <div style="text-align: center; margin-bottom: 60px;">
+                    <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                        Iconos UBITS
+                    </h1>
+                    <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto; line-height: 1.6;">
+                        Explora todos los iconos disponibles en el sistema UBITS. Busca, filtra y encuentra el icono que necesitas.
+                    </p>
+                </div>
+                
+                <div class="results-search-filters">
+                    <div class="results-search-layout">
+                        <div class="results-left">
+                            <div class="results-title ubits-body-md-bold">Lista de iconos</div>
+                            <div class="results-count ubits-body-sm-regular" id="resultsCount">Cargando...</div>
+                        </div>
+                        <div class="search-container" id="search-input-container"></div>
+                    </div>
+                </div>
+
+                <div class="icons-container" id="iconsContainer">
+                    <!-- Las secciones de letras se cargarán aquí dinámicamente -->
+                </div>
+
+                <div id="emptyState" style="display: none;"></div>
+            </div>
+            </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/input.js"></script>
+    <script src="../../components/empty-state.js"></script>
+    <script src="../../script.js"></script>
+    
+    <!-- Contenedor para Toast UBITS -->
+    <div id="ubits-toast-container"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cargar top-nav con variante documentación
+            loadSubNav('top-nav-container', 'documentacion');
+            // Iconos ordenados alfabéticamente para fácil búsqueda
+            const allIcons = [
+                { name: 'award', class: 'fa-award', icon: '🏅' },
+                { name: 'album-collection', class: 'fa-album-collection', icon: '📚' },
+                { name: 'badge-check', class: 'fa-badge-check', icon: '✅' },
+                { name: 'arrow-down', class: 'fa-arrow-down', icon: '⬇️' },
+                { name: 'arrow-down-arrow-up', class: 'fa-arrow-down-arrow-up', icon: '↕️' },
+                { name: 'arrow-down-to-line', class: 'fa-arrow-down-to-line', icon: '⬇️📏' },
+                { name: 'arrow-left', class: 'fa-arrow-left', icon: '⬅️' },
+                { name: 'arrow-left-to-line', class: 'fa-arrow-left-to-line', icon: '⬅️📏' },
+                { name: 'arrow-right', class: 'fa-arrow-right', icon: '➡️' },
+                { name: 'arrow-right-to-line', class: 'fa-arrow-right-to-line', icon: '➡️📏' },
+                { name: 'arrow-trend-down', class: 'fa-arrow-trend-down', icon: '📉' },
+                { name: 'arrow-trend-up', class: 'fa-arrow-trend-up', icon: '📈' },
+                { name: 'arrow-up', class: 'fa-arrow-up', icon: '⬆️' },
+                { name: 'arrow-up-from-bracket', class: 'fa-arrow-up-from-bracket', icon: '⬆️📁' },
+                { name: 'arrow-up-right-from-square', class: 'fa-arrow-up-right-from-square', icon: '⬆️➡️' },
+                { name: 'arrows-left-right', class: 'fa-arrows-left-right', icon: '↔️' },
+                { name: 'arrows-left-right-to-line', class: 'fa-arrows-left-right-to-line', icon: '↔️📏' },
+                { name: 'arrows-rotate', class: 'fa-arrows-rotate', icon: '🔄' },
+                { name: 'chevron-down', class: 'fa-chevron-down', icon: '⌄' },
+                { name: 'chevron-left', class: 'fa-chevron-left', icon: '⌃' },
+                { name: 'chevron-right', class: 'fa-chevron-right', icon: '⌃' },
+                { name: 'chevron-up', class: 'fa-chevron-up', icon: '⌃' },
+                { name: 'chevrons-left', class: 'fa-chevrons-left', icon: '«' },
+                { name: 'chevrons-right', class: 'fa-chevrons-right', icon: '»' },
+                { name: 'alarm-clock', class: 'fa-alarm-clock', icon: '⏰' },
+                { name: 'analytics', class: 'fa-analytics', icon: '📊' },
+                { name: 'angle-down', class: 'fa-angle-down', icon: '⌄' },
+                { name: 'angle-left', class: 'fa-angle-left', icon: '⌃' },
+                { name: 'angle-right', class: 'fa-angle-right', icon: '⌃' },
+                { name: 'angle-up', class: 'fa-angle-up', icon: '⌃' },
+                { name: 'bars', class: 'fa-bars', icon: '☰' },
+                { name: 'bars-progress', class: 'fa-bars-progress', icon: '📈' },
+                { name: 'bed', class: 'fa-bed', icon: '🛏️' },
+                { name: 'bell', class: 'fa-bell', icon: '🔔' },
+                { name: 'bell-on', class: 'fa-bell-on', icon: '🔔' },
+                { name: 'bell-slash', class: 'fa-bell-slash', icon: '🔕' },
+                { name: 'birthday-cake', class: 'fa-birthday-cake', icon: '🎂' },
+                { name: 'bolt', class: 'fa-bolt', icon: '⚡' },
+                { name: 'book', class: 'fa-book', icon: '📖' },
+                { name: 'bookmark', class: 'fa-bookmark', icon: '🔖' },
+                { name: 'book-open', class: 'fa-book-open', icon: '📚' },
+                { name: 'books', class: 'fa-books', icon: '📚' },
+                { name: 'brain', class: 'fa-brain', icon: '🧠' },
+                { name: 'briefcase', class: 'fa-briefcase', icon: '💼' },
+                { name: 'brush', class: 'fa-brush', icon: '🖌️' },
+                { name: 'bug', class: 'fa-bug', icon: '🐛' },
+                { name: 'building', class: 'fa-building', icon: '🏢' },
+                { name: 'building-columns', class: 'fa-building-columns', icon: '🏛️' },
+                { name: 'bullseye', class: 'fa-bullseye', icon: '🎯' },
+                { name: 'bullseye-arrow', class: 'fa-bullseye-arrow', icon: '🏹' },
+                { name: 'bullseye-pointer', class: 'fa-bullseye-pointer', icon: '👆' },
+                { name: 'bus', class: 'fa-bus', icon: '🚌' },
+                { name: 'calendar', class: 'fa-calendar', icon: '📅' },
+                { name: 'calendar-check', class: 'fa-calendar-check', icon: '✅' },
+                { name: 'calendar-arrow-down', class: 'fa-calendar-arrow-down', icon: '📅⬇️' },
+                { name: 'calendar-days', class: 'fa-calendar-days', icon: '📆' },
+                { name: 'caret-down', class: 'fa-caret-down', icon: '⌄' },
+                { name: 'caret-left', class: 'fa-caret-left', icon: '⌃' },
+                { name: 'caret-right', class: 'fa-caret-right', icon: '⌃' },
+                { name: 'caret-up', class: 'fa-caret-up', icon: '⌃' },
+                { name: 'camera', class: 'fa-camera', icon: '📷' },
+                { name: 'car', class: 'fa-car', icon: '🚗' },
+                { name: 'cube', class: 'fa-cube', icon: '🧊' },
+                { name: 'chart-line', class: 'fa-chart-line', icon: '📈' },
+                { name: 'chart-mixed', class: 'fa-chart-mixed', icon: '📊' },
+                { name: 'chart-pie', class: 'fa-chart-pie', icon: '🥧' },
+                { name: 'chart-tree-map', class: 'fa-chart-tree-map', icon: '📊' },
+                { name: 'chart-column', class: 'fa-chart-column', icon: '📊' },
+                { name: 'check', class: 'fa-check', icon: '✅' },
+                { name: 'check-circle', class: 'fa-check-circle', icon: '✅' },
+                { name: 'circle-down', class: 'fa-circle-down', icon: '⬇️' },
+                { name: 'circle-chevron-down', class: 'fa-circle-chevron-down', icon: '⭕⌄' },
+                { name: 'circle-chevron-left', class: 'fa-circle-chevron-left', icon: '⭕⌃' },
+                { name: 'circle-chevron-right', class: 'fa-circle-chevron-right', icon: '⭕⌃' },
+                { name: 'circle-chevron-up', class: 'fa-circle-chevron-up', icon: '⭕⌃' },
+                { name: 'circle-dot', class: 'fa-circle-dot', icon: '⭕' },
+                { name: 'clock', class: 'fa-clock', icon: '🕐' },
+                { name: 'clock-rotate-left', class: 'fa-clock-rotate-left', icon: '🕐🔄' },
+                { name: 'clone', class: 'fa-clone', icon: '📋' },
+                { name: 'closed-captioning', class: 'fa-closed-captioning', icon: '📺' },
+                { name: 'cloud', class: 'fa-cloud', icon: '☁️' },
+                { name: 'cloud-arrow-down', class: 'fa-cloud-arrow-down', icon: '☁️⬇️' },
+                { name: 'coin-vertical', class: 'fa-coin-vertical', icon: '🪙' },
+                { name: 'cog', class: 'fa-cog', icon: '⚙️' },
+                { name: 'cogs', class: 'fa-cogs', icon: '⚙️' },
+                { name: 'comment', class: 'fa-comment', icon: '💬' },
+                { name: 'comment-lines', class: 'fa-comment-lines', icon: '💬' },
+                { name: 'comments', class: 'fa-comments', icon: '💬' },
+                { name: 'copy', class: 'fa-copy', icon: '📋' },
+                { name: 'clipboard', class: 'fa-clipboard', icon: '📋' },
+                { name: 'clipboard-list-check', class: 'fa-clipboard-list-check', icon: '✅' },
+                { name: 'credit-card', class: 'fa-credit-card', icon: '💳' },
+                { name: 'database', class: 'fa-database', icon: '🗄️' },
+                { name: 'desktop', class: 'fa-desktop', icon: '🖥️' },
+                { name: 'diploma', class: 'fa-diploma', icon: '🎓' },
+                { name: 'display-arrow-down', class: 'fa-display-arrow-down', icon: '🖥️⬇️' },
+                { name: 'download', class: 'fa-download', icon: '⬇️' },
+                { name: 'down-to-line', class: 'fa-down-to-line', icon: '⬇️📏' },
+                { name: 'edit', class: 'fa-edit', icon: '✏️' },
+                { name: 'ellipsis-vertical', class: 'fa-ellipsis-vertical', icon: '⋮' },
+                { name: 'envelope', class: 'fa-envelope', icon: '✉️' },
+                { name: 'envelope-open-dollar', class: 'fa-envelope-open-dollar', icon: '💌' },
+                { name: 'envelope-open-text', class: 'fa-envelope-open-text', icon: '📧' },
+                { name: 'exclamation-triangle', class: 'fa-exclamation-triangle', icon: '⚠️' },
+                { name: 'eye', class: 'fa-eye', icon: '👁️' },
+                { name: 'eye-dropper-full', class: 'fa-eye-dropper-full', icon: '🎨' },
+                { name: 'eye-slash', class: 'fa-eye-slash', icon: '👁️‍🗨️' },
+                { name: 'file', class: 'fa-file', icon: '📄' },
+                { name: 'file-alt', class: 'fa-file-alt', icon: '📄' },
+                { name: 'file-arrow-down', class: 'fa-file-arrow-down', icon: '📄⬇️' },
+                { name: 'file-arrow-up', class: 'fa-file-arrow-up', icon: '📄⬆️' },
+                { name: 'file-audio', class: 'fa-file-audio', icon: '🎵' },
+                { name: 'file-certificate', class: 'fa-file-certificate', icon: '📜' },
+                { name: 'file-check', class: 'fa-file-check', icon: '✅' },
+                { name: 'file-circle-check', class: 'fa-file-circle-check', icon: '✅' },
+                { name: 'file-excel', class: 'fa-file-excel', icon: '📊' },
+                { name: 'file-exclamation', class: 'fa-file-exclamation', icon: '⚠️' },
+                { name: 'file-export', class: 'fa-file-export', icon: '📤' },
+                { name: 'file-lock', class: 'fa-file-lock', icon: '🔒' },
+                { name: 'file-magnifying-glass', class: 'fa-file-magnifying-glass', icon: '🔍' },
+                { name: 'file-minus', class: 'fa-file-minus', icon: '➖' },
+                { name: 'file-music', class: 'fa-file-music', icon: '🎵' },
+                { name: 'file-plus', class: 'fa-file-plus', icon: '➕' },
+                { name: 'file-video', class: 'fa-file-video', icon: '🎥' },
+                { name: 'file-word', class: 'fa-file-word', icon: '📝' },
+                { name: 'file-zipper', class: 'fa-file-zipper', icon: '🗜️' },
+                { name: 'file-chart-column', class: 'fa-file-chart-column', icon: '📊' },
+                { name: 'file-chart-pie', class: 'fa-file-chart-pie', icon: '🥧' },
+                { name: 'file-invoice-dollar', class: 'fa-file-invoice-dollar', icon: '💰' },
+                { name: 'file-signature', class: 'fa-file-signature', icon: '✍️' },
+                { name: 'file-waveform', class: 'fa-file-waveform', icon: '🌊' },
+                { name: 'film', class: 'fa-film', icon: '🎬' },
+                { name: 'filter', class: 'fa-filter', icon: '🔍' },
+                { name: 'filter-circle-xmark', class: 'fa-filter-circle-xmark', icon: '❌' },
+                { name: 'filter-list', class: 'fa-filter-list', icon: '📋' },
+                { name: 'filter-slash', class: 'fa-filter-slash', icon: '🚫' },
+                { name: 'filters', class: 'fa-filters', icon: '🔍' },
+                { name: 'fire', class: 'fa-fire', icon: '🔥' },
+                { name: 'face-frown-slight', class: 'fa-face-frown-slight', icon: '🙁' },
+                { name: 'face-laugh-beam', class: 'fa-face-laugh-beam', icon: '😄' },
+                { name: 'face-meh', class: 'fa-face-meh', icon: '😐' },
+                { name: 'face-tired', class: 'fa-face-tired', icon: '😴' },
+                { name: 'flag', class: 'fa-flag', icon: '🏁' },
+                { name: 'flag-pennant', class: 'fa-flag-pennant', icon: '🏴' },
+                { name: 'floppy-disk', class: 'fa-floppy-disk', icon: '💾' },
+                { name: 'folder', class: 'fa-folder', icon: '📁' },
+                { name: 'folder-arrow-down', class: 'fa-folder-arrow-down', icon: '📁⬇️' },
+                { name: 'folder-open', class: 'fa-folder-open', icon: '📂' },
+                { name: 'globe', class: 'fa-globe', icon: '🌍' },
+                { name: 'gauge', class: 'fa-gauge', icon: '📊' },
+                { name: 'gauge-max', class: 'fa-gauge-max', icon: '📊' },
+                { name: 'gauge-min', class: 'fa-gauge-min', icon: '📊' },
+                { name: 'graduation-cap', class: 'fa-graduation-cap', icon: '🎓' },
+                { name: 'grid-2', class: 'fa-grid-2', icon: '⊞' },
+                { name: 'hand', class: 'fa-hand', icon: '✋' },
+                { name: 'hand-holding-heart', class: 'fa-hand-holding-heart', icon: '🤝❤️' },
+                { name: 'hand-point-up', class: 'fa-hand-point-up', icon: '☝️' },
+                { name: 'handshake', class: 'fa-handshake', icon: '🤝' },
+                { name: 'headphones', class: 'fa-headphones', icon: '🎧' },
+                { name: 'heading', class: 'fa-heading', icon: '📝' },
+                { name: 'heart', class: 'fa-heart', icon: '❤️' },
+                { name: 'home', class: 'fa-home', icon: '🏠' },
+                { name: 'image', class: 'fa-image', icon: '🖼️' },
+                { name: 'icons', class: 'fa-icons', icon: '🎨' },
+                { name: 'info-circle', class: 'fa-info-circle', icon: 'ℹ️' },
+                { name: 'key', class: 'fa-key', icon: '🔑' },
+                { name: 'layer-group', class: 'fa-layer-group', icon: '📚' },
+                { name: 'lightbulb', class: 'fa-lightbulb', icon: '💡' },
+                { name: 'link', class: 'fa-link', icon: '🔗' },
+                { name: 'link-slash', class: 'fa-link-slash', icon: '🚫🔗' },
+                { name: 'list', class: 'fa-list', icon: '📋' },
+                { name: 'location-dot', class: 'fa-location-dot', icon: '📍' },
+                { name: 'lock', class: 'fa-lock', icon: '🔒' },
+                { name: 'map', class: 'fa-map', icon: '🗺️' },
+                { name: 'map-location-dot', class: 'fa-map-location-dot', icon: '📍' },
+                { name: 'microphone', class: 'fa-microphone', icon: '🎤' },
+                { name: 'message-lines', class: 'fa-message-lines', icon: '💬' },
+                { name: 'mobile', class: 'fa-mobile', icon: '📱' },
+                { name: 'money-bill', class: 'fa-money-bill', icon: '💰' },
+                { name: 'moon', class: 'fa-moon', icon: '🌙' },
+                { name: 'moon-stars', class: 'fa-moon-stars', icon: '🌙✨' },
+                { name: 'music', class: 'fa-music', icon: '🎵' },
+                { name: 'paint-brush', class: 'fa-paint-brush', icon: '🎨' },
+                { name: 'paint-roller', class: 'fa-paint-roller', icon: '🖌️' },
+                { name: 'palette', class: 'fa-palette', icon: '🎨' },
+                { name: 'paper-plane', class: 'fa-paper-plane', icon: '✈️' },
+                { name: 'paperclip', class: 'fa-paperclip', icon: '📎' },
+                { name: 'paragraph', class: 'fa-paragraph', icon: '¶' },
+                { name: 'pause', class: 'fa-pause', icon: '⏸️' },
+                { name: 'pen-to-square', class: 'fa-pen-to-square', icon: '✏️📝' },
+                { name: 'play', class: 'fa-play', icon: '▶️' },
+                { name: 'play-circle', class: 'fa-play-circle', icon: '▶️' },
+                { name: 'plus', class: 'fa-plus', icon: '➕' },
+                { name: 'power-off', class: 'fa-power-off', icon: '⏻' },
+                { name: 'print', class: 'fa-print', icon: '🖨️' },
+                { name: 'question', class: 'fa-question', icon: '❓' },
+                { name: 'question-circle', class: 'fa-question-circle', icon: '❓' },
+                { name: 'refresh', class: 'fa-refresh', icon: '🔄' },
+                { name: 'repeat', class: 'fa-repeat', icon: '🔄' },
+                { name: 'rotate-right', class: 'fa-rotate-right', icon: '🔄' },
+                { name: 'route', class: 'fa-route', icon: '🛣️' },
+                { name: 'rocket', class: 'fa-rocket', icon: '🚀' },
+                { name: 'search', class: 'fa-search', icon: '🔍' },
+                { name: 'share', class: 'fa-share', icon: '📤' },
+                { name: 'sitemap', class: 'fa-sitemap', icon: '🗺️' },
+                { name: 'skull-crossbones', class: 'fa-skull-crossbones', icon: '☠️' },
+                { name: 'sliders', class: 'fa-sliders', icon: '🎛️' },
+                { name: 'sliders-simple', class: 'fa-sliders-simple', icon: '🎛️' },
+                { name: 'sliders-up', class: 'fa-sliders-up', icon: '🎛️' },
+                { name: 'slider', class: 'fa-slider', icon: '🎚️' },
+                { name: 'sparkles', class: 'fa-sparkles', icon: '✨' },
+                { name: 'store', class: 'fa-store', icon: '🏪' },
+                { name: 'shield', class: 'fa-shield', icon: '🛡️' },
+                { name: 'shield-check', class: 'fa-shield-check', icon: '✅' },
+                { name: 'star', class: 'fa-star', icon: '⭐' },
+                { name: 'stop', class: 'fa-stop', icon: '⏹️' },
+                { name: 'sun', class: 'fa-sun', icon: '☀️' },
+                { name: 'sun-bright', class: 'fa-sun-bright', icon: '☀️' },
+                { name: 'subtitles', class: 'fa-subtitles', icon: '📺' },
+                { name: 'tablet', class: 'fa-tablet', icon: '📱' },
+                { name: 'tag', class: 'fa-tag', icon: '🏷️' },
+                { name: 'text-size', class: 'fa-text-size', icon: 'Aa' },
+                { name: 'text-slash', class: 'fa-text-slash', icon: '🚫' },
+                { name: 'th-large', class: 'fa-th-large', icon: '⊞' },
+                { name: 'thumbs-up', class: 'fa-thumbs-up', icon: '👍' },
+                { name: 'thumbs-down', class: 'fa-thumbs-down', icon: '👎' },
+                { name: 'times', class: 'fa-times', icon: '❌' },
+                { name: 'trash', class: 'fa-trash', icon: '🗑️' },
+                { name: 'trophy', class: 'fa-trophy', icon: '🏆' },
+                { name: 'upload', class: 'fa-upload', icon: '⬆️' },
+                { name: 'user', class: 'fa-user', icon: '👤' },
+                { name: 'users', class: 'fa-users', icon: '👥' },
+                { name: 'video', class: 'fa-video', icon: '📹' },
+                { name: 'volume-up', class: 'fa-volume-up', icon: '🔊' },
+                { name: 'wifi', class: 'fa-wifi', icon: '📶' },
+                { name: 'wand-magic-sparkles', class: 'fa-wand-magic-sparkles', icon: '✨' },
+                { name: 'wrench', class: 'fa-wrench', icon: '🔧' }
+            ];
+
+            let filteredIcons = [...allIcons];
+
+            let emptyStateInstance = null;
+            let searchInputInstance = null;
+
+            function renderIcons() {
+                const container = document.getElementById('iconsContainer');
+                const resultsCount = document.getElementById('resultsCount');
+                const emptyStateContainer = document.getElementById('emptyState');
+
+                if (filteredIcons.length === 0) {
+                    container.innerHTML = '';
+                    emptyStateContainer.style.display = 'block';
+                    
+                    // Cargar o actualizar empty state
+                    if (!emptyStateInstance) {
+                        emptyStateInstance = loadEmptyState('emptyState', {
+                            icon: 'fa-search',
+                            iconSize: 'lg',
+                            title: 'Sin resultados',
+                            description: 'Intenta nuevamente ingresando otro término de búsqueda.',
+                            buttons: {
+                                secondary: {
+                                    text: 'Limpiar búsqueda',
+                                    icon: 'fa-refresh',
+                                    onClick: clearSearch
+                                }
+                            }
+                        });
+                    }
+                    
+                    resultsCount.textContent = '0 resultados';
+                    return;
+                }
+
+                emptyStateContainer.style.display = 'none';
+                resultsCount.textContent = `${filteredIcons.length} resultados`;
+
+                // Agrupar iconos por letra
+                const iconsByLetter = {};
+                filteredIcons.forEach(icon => {
+                    const firstLetter = icon.name.charAt(0).toUpperCase();
+                    if (!iconsByLetter[firstLetter]) {
+                        iconsByLetter[firstLetter] = [];
+                    }
+                    iconsByLetter[firstLetter].push(icon);
+                });
+
+                // Renderizar secciones por letra
+                container.innerHTML = Object.keys(iconsByLetter)
+                    .sort()
+                    .map(letter => `
+                        <div class="letter-section" id="section-${letter}">
+                            <h2 class="ubits-heading-h2">${letter}</h2>
+                            <div class="letter-grid">
+                                ${iconsByLetter[letter].map(icon => `
+                                    <div class="icon-card" onclick="copyToClipboard('${icon.name}')">
+                                        <i class="far ${icon.class}"></i>
+                                        <div class="icon-name">${icon.name}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `).join('');
+            }
+
+            function filterIcons(searchTerm) {
+                if (!searchTerm.trim()) {
+                    filteredIcons = [...allIcons];
+                } else {
+                    filteredIcons = allIcons.filter(icon => 
+                        icon.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        icon.class.toLowerCase().includes(searchTerm.toLowerCase())
+                    );
+                }
+                renderIcons();
+            }
+
+            window.copyToClipboard = function(text) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showToast('success', '¡Nombre copiado! 😉', {
+                        containerId: 'ubits-toast-container',
+                        duration: 3500
+                    });
+                }).catch(err => {
+                    console.error('Error al copiar:', err);
+                    // Fallback para navegadores antiguos
+                    const textArea = document.createElement('textarea');
+                    textArea.value = text;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    showToast('success', '¡Nombre copiado! 😉', {
+                        containerId: 'ubits-toast-container',
+                        duration: 3500
+                    });
+                });
+            }
+
+
+            window.clearSearch = function() {
+                if (searchInputInstance && typeof searchInputInstance.setValue === 'function') {
+                    searchInputInstance.setValue('');
+                }
+                filterIcons('');
+            }
+
+            // Input de búsqueda oficial UBITS (createInput type: search)
+            if (typeof createInput === 'function') {
+                searchInputInstance = createInput({
+                    containerId: 'search-input-container',
+                    type: 'search',
+                    placeholder: 'Buscar iconos',
+                    onChange: function(value) {
+                        filterIcons(value);
+                    }
+                });
+            }
+
+            // Funciones para la navegación alfabética
+            function generateAlphabetNav() {
+                const alphabetNav = document.getElementById('alphabetNavIcons');
+                const letters = getAvailableLetters();
+                
+                alphabetNav.innerHTML = letters.map(letter => `
+                    <a href="#${letter}" data-letter="${letter}" onclick="scrollToLetter('${letter}')">
+                        ${letter}
+                    </a>
+                `).join('');
+            }
+
+            function getAvailableLetters() {
+                const letters = new Set();
+                allIcons.forEach(icon => {
+                    const firstLetter = icon.name.charAt(0).toUpperCase();
+                    letters.add(firstLetter);
+                });
+                return Array.from(letters).sort();
+            }
+
+            window.scrollToLetter = function(letter) {
+                const section = document.getElementById(`section-${letter}`);
+                
+                if (section) {
+                    updateActiveLetter(letter);
+                    const offset = 100; // Ajustar según la altura del buscador fijo
+                    const elementPosition = section.offsetTop;
+                    const offsetPosition = elementPosition - offset;
+                    
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            }
+
+            function updateActiveLetter(letter) {
+                const sidebar = document.getElementById('alphabetNavIcons');
+                if (!sidebar) return;
+
+                // Remover clase active de todas las letras
+                sidebar.querySelectorAll('a').forEach(link => link.classList.remove('active'));
+
+                // Añadir clase active a la letra seleccionada
+                const activeLink = sidebar.querySelector(`[data-letter="${letter}"]`);
+                if (activeLink) {
+                    activeLink.classList.add('active');
+                    // Scroll dinámico del sidebar: que la letra activa quede visible
+                    activeLink.scrollIntoView({ block: 'nearest', behavior: 'auto' });
+                }
+            }
+
+            // Función para detectar qué sección está visible y actualizar navegación
+            function updateActiveSectionOnScroll() {
+                const sections = document.querySelectorAll('.letter-section');
+                const navLinks = document.querySelectorAll('.alphabet-nav-icons a');
+                
+                let currentSection = '';
+                
+                sections.forEach(section => {
+                    const rect = section.getBoundingClientRect();
+                    if (rect.top <= 120 && rect.bottom >= 120) {
+                        currentSection = section.id.replace('section-', '');
+                    }
+                });
+                
+                if (currentSection) {
+                    updateActiveLetter(currentSection);
+                }
+            }
+
+            // Event listener para scroll
+            window.addEventListener('scroll', updateActiveSectionOnScroll);
+
+            // Inicializar
+            renderIcons();
+            generateAlphabetNav();
+        });
+    </script>
+</body>
+</html>

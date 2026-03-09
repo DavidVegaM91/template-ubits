@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Card Content Compact - Variante horizontal compacta | UBITS Playground</title>
+    
+    <!-- Estilos locales -->
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../components/card-content-compact.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <style>
+        /* Preview Styles */
+        /* Preview control buttons - override UBITS button styles for active state */
+        .preview-control-btn.active {
+            background: var(--ubits-accent-brand) !important;
+            color: white !important;
+            border-color: var(--ubits-accent-brand) !important;
+        }
+        
+        .preview-control-btn.active span {
+            color: white !important;
+        }
+        
+        /* Card Content Compact Preview Styles */
+        .card-preview-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 200px;
+            margin-bottom: 24px;
+        }
+        
+        .single-card-preview {
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        /* Asegurar que el card tenga el ancho correcto */
+        .single-card-preview .course-card-compact {
+            width: 100%;
+            max-width: 100%;
+        }
+        
+        .preview-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--gap-lg);
+            margin-top: 24px;
+        }
+        
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--gap-sm);
+        }
+        
+        .control-label {
+            font-weight: 600;
+            color: var(--ubits-fg-1-high);
+        }
+        
+        /* Hover state simulation */
+        .course-card-compact.hover-state {
+            border-color: var(--ubits-border-1);
+        }
+        
+        .course-card-compact.hover-state .course-image-compact {
+            transform: scale(1.05);
+        }
+        
+        /* Quitar animación de entrada para el preview */
+        .single-card-preview .course-card-compact {
+            animation: none !important;
+            border: 1px solid transparent !important;
+        }
+        
+        .single-card-preview .course-card-compact.hover-state {
+            border-color: var(--ubits-border-1) !important;
+        }
+        
+        /* Asegurar que el avatar del provider sea 28px en el preview */
+        .single-card-preview .provider-avatar-compact {
+            width: 28px !important;
+            height: 28px !important;
+            min-width: 28px !important;
+            min-height: 28px !important;
+            max-width: 28px !important;
+            max-height: 28px !important;
+        }
+        
+        /* Asegurar que los specs no se partan en el preview */
+        .single-card-preview .spec-item-compact {
+            flex-shrink: 1 !important;
+            min-width: 0 !important;
+        }
+        
+        .single-card-preview .spec-item-compact span {
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            flex-shrink: 1 !important;
+            min-width: 0 !important;
+            display: block !important;
+        }
+        
+        /* Asegurar que el contenedor de specs permita truncamiento */
+        .single-card-preview .course-specs-compact {
+            min-width: 0 !important;
+            overflow: hidden !important;
+            flex-wrap: nowrap !important;
+        }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navigation -->
+            <div id="top-nav-container"></div>
+            
+            <!-- Content with Sidebar -->
+            <div style="display: flex;">
+            
+            <!-- Dropdown Móvil para Documentación -->
+            <div id="docs-dropdown-container"></div>
+            
+            <!-- Sidebar de Documentación -->
+            <div id="docs-sidebar-container"></div>
+
+            <!-- Content Area -->
+            <div class="components-content">
+                <!-- Content Area -->
+                <div class="content-area" style="display: block; width: 100%;">
+                <!-- Hero Section -->
+                <div style="text-align: center; margin-bottom: 60px;">
+                    <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                        Card content compact
+                    </h1>
+                    <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                        Variante horizontal y compacta del componente Card Content. Ideal para mostrar contenidos de aprendizaje en espacios reducidos con diseño horizontal optimizado.
+                    </p>
+                </div>
+
+                <!-- Preview Section -->
+                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                    <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                        <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                        Preview del componente
+                    </h2>
+                    <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                        Personaliza el card compact en tiempo real usando los selectores. Cambia el estado, progreso, tipo de contenido y más para ver todas las variantes disponibles.
+                    </p>
+                    
+                    <!-- Preview Container -->
+                    <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md); position: relative;">
+                        
+                        <!-- Card Preview -->
+                        <div class="card-preview-container">
+                            <div class="single-card-preview" id="card-preview"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Preview Controls (componente Input UBITS type select) -->
+                    <div class="preview-controls">
+                        <div class="control-group" id="estado-select-container"></div>
+                        <div class="control-group" id="progreso-select-container"></div>
+                        <div class="control-group" id="tipo-select-container"></div>
+                        <div class="control-group" id="aliado-select-container"></div>
+                        <div class="control-group" id="nivel-select-container"></div>
+                        <div class="control-group" id="idioma-select-container"></div>
+                    </div>
+                </div>
+
+                <!-- Características generales -->
+                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                    <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                        <i class="far fa-sparkles" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                        Características principales
+                    </h2>
+                    <p class="ubits-body-md-regular" style="margin-bottom: 24px; color: var(--ubits-fg-1-medium);">
+                        El componente Card Content Compact es una variante horizontal y compacta del Card Content, diseñada para espacios reducidos y listas de contenido.
+                    </p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--gap-xl);">
+                        <div style="text-align: center; padding: 24px; background: var(--ubits-bg-2); border-radius: var(--border-radius-md);">
+                            <div style="font-size: var(--font-size-d3); color: var(--ubits-accent-brand); margin-bottom: 16px;"><i class="far fa-compress"></i></div>
+                            <div class="ubits-body-md-bold" style="margin-bottom: 8px;">Diseño compacto</div>
+                            <div class="ubits-body-sm-regular">Layout horizontal optimizado con imagen de 85x48px y contenido alineado verticalmente</div>
+                        </div>
+                        <div style="text-align: center; padding: 24px; background: var(--ubits-bg-2); border-radius: var(--border-radius-md);">
+                            <div style="font-size: var(--font-size-d3); color: var(--ubits-accent-brand); margin-bottom: 16px;"><i class="far fa-expand"></i></div>
+                            <div class="ubits-body-md-bold" style="margin-bottom: 8px;">Siempre horizontal</div>
+                            <div class="ubits-body-sm-regular">Mantiene el layout horizontal en todas las resoluciones, nunca cambia a vertical</div>
+                        </div>
+                        <div style="text-align: center; padding: 24px; background: var(--ubits-bg-2); border-radius: var(--border-radius-md);">
+                            <div style="font-size: var(--font-size-d3); color: var(--ubits-accent-brand); margin-bottom: 16px;"><i class="far fa-check-circle"></i></div>
+                            <div class="ubits-body-md-bold" style="margin-bottom: 8px;">Misma funcionalidad</div>
+                            <div class="ubits-body-sm-regular">Comparte todas las características del Card Content: tipos, competencias, aliados, estados y progreso</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROMPTS ÚTILES -->
+                <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                    <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                        <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                        Prompts útiles
+                    </h2>
+                    <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                        Usa estos prompts con Cursor AI para configurar y personalizar el componente Card Content Compact de manera eficiente.
+                    </p>
+
+                    <!-- Alert Warning -->
+                    <div id="cardcontentcompact-warning-alert" style="margin-bottom: 32px;"></div>
+
+                    <!-- Prompt 1: Crear cards compactas -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Crear cards compactas de contenido
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('cardcontentcompact-prompt-1')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontentcompact-prompt-1">Crea una lista de [número] cards compactas de contenido de aprendizaje sobre [tema] en [ubicación donde quieres la lista]. Usa el componente card-content-compact.</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 2: Cambiar tipo de contenido -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Cambiar tipo de contenido
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('cardcontentcompact-prompt-2')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontentcompact-prompt-2">Cambia la card compacta [nombre_del_card] de [tipo_actual] a [nuevo_tipo: Curso, Short, Charla, Artículo, Podcast, Libro, etc.].</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 3: Filtrar por proveedor -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Filtrar por proveedor de contenido
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('cardcontentcompact-prompt-4')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontentcompact-prompt-4">Cambia la card compacta [nombre_del_card] para que muestre contenido del proveedor [nombre_del_proveedor: UBITS, Microsoft, TED, AWS, Harvard, etc.].</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 4: Cambiar nivel de dificultad -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Cambiar nivel de dificultad
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('cardcontentcompact-prompt-4')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontentcompact-prompt-4">Cambia la card compacta [nombre_del_card] para mostrar contenido de nivel [Básico, Intermedio o Avanzado].</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 5: Mostrar contenido completado -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Mostrar contenido completado
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('cardcontentcompact-prompt-6')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontentcompact-prompt-6">Haz que la card compacta [nombre_del_card] muestre contenido completado al 100% con barra de progreso verde en la parte inferior.</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 6: Mostrar contenido en progreso -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Mostrar contenido en progreso
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('cardcontentcompact-prompt-6')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontentcompact-prompt-6">Haz que la card compacta [nombre_del_card] muestre contenido en progreso con [porcentaje]% completado y barra de progreso azul en la parte inferior.</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 7: Cambiar duración del contenido -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Cambiar duración del contenido
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('cardcontentcompact-prompt-8')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontentcompact-prompt-8">Cambia la duración de la card compacta [nombre_del_card] para que muestre [nueva_duracion] minutos.</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 8: Cambiar idioma del contenido -->
+                    <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Cambiar idioma del contenido
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('cardcontentcompact-prompt-8')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontentcompact-prompt-8">Cambia la card compacta [nombre_del_card] para mostrar contenido en [idioma: Español, Inglés, Portugués, etc.].</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Prompt 9: Personalizar imagen de las cards -->
+                    <div>
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                Personalizar imagen de las cards
+                            </h3>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('cardcontentcompact-prompt-9')">
+                                <i class="far fa-copy"></i>
+                                <span>Copiar</span>
+                            </button>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardcontentcompact-prompt-9">Cambia la imagen de la card compacta [nombre_del_card] para que use [descripción_de_la_nueva_imagen].</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ACORDEÓN DE DOCUMENTACIÓN TÉCNICA -->
+                <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
+                    <!-- Header del acordeón -->
+                    <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                        <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Documentación técnica
+                        </h2>
+                        <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
+                            Documentación completa del componente Card Content Compact con ejemplos de código y guías de implementación.
+                        </p>
+                    </div>
+                    
+                    <!-- Botón de expansión -->
+                    <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                        <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: var(--gap-sm);">
+                            <i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>
+                            Mostrar
+                        </span>
+                    </div>
+                    
+                    <!-- Contenido del acordeón (inicialmente oculto) -->
+                    <div id="technical-docs-content" style="display: none; padding: 0;">
+                        <!-- Estructura del Componente -->
+                        <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-sitemap" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Estructura del componente
+                                </h2>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('structure-code')">
+                                    <i class="far fa-copy"></i>
+                                    <span>Copiar</span>
+                                </button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="structure-code">&lt;div class="course-card-compact" data-progress="75" data-status="progress"&gt;
+  &lt;div class="course-card-compact-inner"&gt;
+    &lt;!-- Parte superior: Imagen y título --&gt;
+    &lt;div class="course-header-compact-wrapper"&gt;
+      &lt;div class="course-thumbnail-compact-wrapper"&gt;
+        &lt;div class="course-thumbnail-compact"&gt;
+          &lt;img src="imagen.jpg" alt="Título" class="course-image-compact"&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="course-title-wrapper-compact"&gt;
+        &lt;h3 class="course-title-compact ubits-body-sm-bold"&gt;Título del contenido&lt;/h3&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;!-- Debajo: Avatar y tipo de contenido --&gt;
+    &lt;div class="course-content-compact"&gt;
+      &lt;div class="course-provider-compact"&gt;
+        &lt;div class="provider-avatar-compact"&gt;
+          &lt;img src="logo.jpg" alt="Proveedor" class="provider-icon-compact"&gt;
+        &lt;/div&gt;
+        &lt;span class="provider-name-compact"&gt;Nombre del proveedor&lt;/span&gt;
+        &lt;span class="provider-separator-compact"&gt;|&lt;/span&gt;
+        &lt;span class="course-type-compact"&gt;Curso&lt;/span&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;!-- Debajo: Nivel, tiempo e idioma --&gt;
+    &lt;div class="course-specs-compact"&gt;
+      &lt;div class="spec-item-compact"&gt;
+        &lt;div class="spec-icon-compact"&gt;&lt;i class="far fa-gauge"&gt;&lt;/i&gt;&lt;/div&gt;
+        &lt;span class="ubits-body-xs-regular"&gt;Intermedio&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;div class="spec-item-compact"&gt;
+        &lt;div class="spec-icon-compact"&gt;&lt;i class="far fa-clock"&gt;&lt;/i&gt;&lt;/div&gt;
+        &lt;span class="ubits-body-xs-regular"&gt;60 min&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;div class="spec-item-compact"&gt;
+        &lt;div class="spec-icon-compact"&gt;&lt;i class="far fa-globe"&gt;&lt;/i&gt;&lt;/div&gt;
+        &lt;span class="ubits-body-xs-regular"&gt;Español&lt;/span&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;!-- Barra de progreso en la parte inferior del card --&gt;
+  &lt;div class="course-progress-overlay-compact"&gt;
+    &lt;div class="progress-bar"&gt;
+      &lt;div class="progress-fill" style="width: 75%"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                            </div>
+                        </div>
+
+                        <!-- Cómo Implementar -->
+                        <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Cómo implementar
+                                </h2>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('implement-code')">
+                                    <i class="far fa-copy"></i>
+                                    <span>Copiar</span>
+                                </button>
+                            </div>
+                            
+                            <!-- REQUISITOS DE RENDERIZADO -->
+                            <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: var(--border-radius-sm); margin-bottom: 16px;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">🔧 REQUISITOS OBLIGATORIOS:</h3>
+                                <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.5;">
+                                    <strong>CSS Requerido:</strong><br>
+                                    • <code>components/card-content-compact.css</code> - Estilos del componente compact<br>
+                                    • <code>fontawesome-icons.css</code> - Iconos FontAwesome<br>
+                                    • <code>ubits-colors.css</code> - Tokens de color UBITS<br>
+                                    • <code>ubits-typography.css</code> - Tipografía UBITS<br><br>
+                                    <strong>JavaScript Requerido:</strong><br>
+                                    • <code>components/card-content-compact.js</code> - Función loadCardContentCompact()<br><br>
+                                    <strong>Renderizado:</strong> loadCardContentCompact() function con containerId y datos
+                                </div>
+                            </div>
+                            
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="implement-code">&lt;!-- 1. HTML: Crear contenedor --&gt;
+&lt;div id="mi-contenedor-compact"&gt;&lt;/div&gt;
+
+&lt;!-- 2. CSS: Importar dependencias --&gt;
+&lt;link rel="stylesheet" href="../../general-styles/ubits-colors.css"&gt;
+&lt;link rel="stylesheet" href="../../general-styles/ubits-typography.css"&gt;
+&lt;link rel="stylesheet" href="../../general-styles/fontawesome-icons.css"&gt;
+&lt;link rel="stylesheet" href="../../components/card-content-compact.css"&gt;
+
+&lt;!-- 3. JavaScript: Cargar componente --&gt;
+&lt;script src="../../components/card-content-compact.js"&gt;&lt;/script&gt;
+
+&lt;!-- 4. Implementación: Usar el componente --&gt;
+&lt;script&gt;
+document.addEventListener('DOMContentLoaded', function() {
+    const datosCards = [
+        {
+            type: 'Curso',
+            title: 'Mi contenido compacto',
+            provider: 'UBITS',
+            providerLogo: '../../images/Favicons/UBITS.jpg',
+            duration: '60 min',
+            level: 'Intermedio',
+            progress: 50,
+            status: 'progress',
+            image: '../../images/cards-learn/mi-imagen.jpg',
+            competency: 'Product design',
+            language: 'Español'
+        }
+    ];
+    
+    loadCardContentCompact('mi-contenedor-compact', datosCards);
+});
+&lt;/script&gt;</code></pre>
+                            </div>
+                        </div>
+
+                        <!-- Rutas de Imágenes - CRÍTICO -->
+                        <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-image" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Rutas de imágenes
+                                </h2>
+                            </div>
+                            
+                            <div style="background: var(--ubits-feedback-bg-warning); padding: 20px; border-radius: var(--border-radius-md); border: 1px solid var(--ubits-feedback-accent-warning); margin-bottom: 24px;">
+                                <div style="display: flex; align-items: start; gap: var(--gap-md);">
+                                    <i class="far fa-triangle-exclamation" style="font-size: var(--font-size-h1); color: var(--ubits-feedback-accent-warning); margin-top: 2px;"></i>
+                                    <div>
+                                        <h3 class="ubits-body-md-bold" style="margin-bottom: 8px; color: var(--ubits-fg-1-high);">
+                                            ⚠️ IMPORTANTE: Rutas relativas desde la ubicación del HTML
+                                        </h3>
+                                        <p class="ubits-body-sm-regular" style="margin-bottom: 12px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                            Las rutas de imágenes en los datos de las cards son <strong>relativas al archivo HTML</strong> que carga el componente, NO al archivo JavaScript. Esto significa que debes ajustar las rutas según dónde esté ubicado tu HTML.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 24px;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">
+                                    📁 Rutas desde subcarpetas (ubits-admin/*, ubits-colaborador/*)
+                                </h3>
+                                <p class="ubits-body-md-regular" style="margin-bottom: 12px; line-height: 1.5; color: var(--ubits-fg-1-medium);">
+                                    Si tu HTML está en una subcarpeta como <code>ubits-colaborador/aprendizaje/catalogo.html</code>, usa rutas con <code>../../images/</code>:
+                                </p>
+                                <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: var(--border-radius-sm);">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium);"><code>const datosCards = [
+    {
+        type: 'Curso',
+        title: 'Mi contenido compacto',
+        provider: 'UBITS',
+        providerLogo: '../../images/Favicons/UBITS.jpg',  // ✅ Correcto desde subcarpeta
+        image: '../../images/cards-learn/mi-imagen.jpeg', // ✅ Correcto desde subcarpeta
+        // ... otros campos
+    }
+];</code></pre>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 24px;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">
+                                    📁 Rutas desde la raíz del proyecto
+                                </h3>
+                                <p class="ubits-body-md-regular" style="margin-bottom: 12px; line-height: 1.5; color: var(--ubits-fg-1-medium);">
+                                    Si tu HTML está en la raíz del proyecto, usa rutas con <code>images/</code>:
+                                </p>
+                                <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: var(--border-radius-sm);">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium);"><code>const datosCards = [
+    {
+        type: 'Curso',
+        title: 'Mi contenido compacto',
+        provider: 'UBITS',
+        providerLogo: 'images/Favicons/UBITS.jpg',  // ✅ Correcto desde raíz
+        image: 'images/cards-learn/mi-imagen.jpeg', // ✅ Correcto desde raíz
+        // ... otros campos
+    }
+];</code></pre>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 24px;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">
+                                    🗂️ Estructura de carpetas de imágenes
+                                </h3>
+                                <p class="ubits-body-md-regular" style="margin-bottom: 12px; line-height: 1.5; color: var(--ubits-fg-1-medium);">
+                                    El proyecto tiene estas carpetas de imágenes disponibles:
+                                </p>
+                                <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: var(--border-radius-sm);">
+                                    <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.8;">
+                                        <strong>📸 Imágenes de cards:</strong><br>
+                                        • <code>images/cards-learn/</code> - Imágenes horizontales para cards (85+ imágenes disponibles)<br>
+                                        • <code>images/vertical-cards/</code> - Imágenes verticales para libros (16 imágenes disponibles)<br><br>
+                                        
+                                        <strong>🏢 Logos de proveedores:</strong><br>
+                                        • <code>images/Favicons/</code> - Logos de aliados oficiales (18 proveedores disponibles)<br><br>
+                                        
+                                        <strong>🎓 Imágenes de academias:</strong><br>
+                                        • <code>images/academias/</code> - Imágenes para academias (5 imágenes disponibles)<br><br>
+                                        
+                                        <strong>🏷️ Imágenes de competencias:</strong><br>
+                                        • <code>images/imagenes competencias/</code> - Imágenes para competencias (35 imágenes disponibles)
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 0;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">
+                                    ✅ Regla de oro
+                                </h3>
+                                <div style="background: var(--ubits-feedback-bg-success); padding: 16px; border-radius: var(--border-radius-sm); border: 1px solid var(--ubits-feedback-accent-success);">
+                                    <p class="ubits-body-md-regular" style="margin: 0; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                        <strong>Las rutas siempre son relativas al HTML que carga el componente.</strong><br>
+                                        • Desde <code>ubits-colaborador/aprendizaje/catalogo.html</code> → <code>../../images/...</code><br>
+                                        • Desde <code>ubits-admin/inicio/admin.html</code> → <code>../../images/...</code><br>
+                                        • Desde la raíz → <code>images/...</code>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- API y Funciones -->
+                        <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-cogs" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                API y funciones
+                            </h2>
+                            <div style="margin-bottom: 24px;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">loadCardContentCompact(containerId, cardsData)</h3>
+                                <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
+                                    Carga múltiples cards compactas de contenido en un contenedor específico con layout horizontal siempre.
+                                </p>
+                                <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: var(--border-radius-sm); border-left: 4px solid var(--ubits-accent-brand);">
+                                    <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                        <strong>Parámetros:</strong> containerId (string), cardsData (array)<br>
+                                        <strong>Ejemplo:</strong> loadCardContentCompact('mi-contenedor', datosArray)
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 24px;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">renderCardContentCompact(cardData)</h3>
+                                <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
+                                    Renderiza una sola card compacta de contenido y devuelve el HTML como string para insertar manualmente.
+                                </p>
+                                <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: var(--border-radius-sm); border-left: 4px solid var(--ubits-accent-brand);">
+                                    <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                        <strong>Parámetros:</strong> cardData (object) - Datos de la card<br>
+                                        <strong>Ejemplo:</strong> renderCardContentCompact(miCardData)
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 24px;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">validateCardDataCompact(cardData)</h3>
+                                <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
+                                    Valida que los datos de la card compacta tengan tipos y competencias válidas según las opciones oficiales UBITS.
+                                </p>
+                                <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: var(--border-radius-sm); border-left: 4px solid var(--ubits-accent-brand);">
+                                    <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                        <strong>Parámetros:</strong> cardData (object) - Datos a validar<br>
+                                        <strong>Ejemplo:</strong> validateCardDataCompact(miCardData)
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 24px;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">getRecommendedDurationCompact(type)</h3>
+                                <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
+                                    Obtiene la duración recomendada según el tipo de contenido (Short = 15min, Ruta = 240min, etc.).
+                                </p>
+                                <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: var(--border-radius-sm); border-left: 4px solid var(--ubits-accent-brand);">
+                                    <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                        <strong>Parámetros:</strong> type (string) - Tipo de contenido<br>
+                                        <strong>Ejemplo:</strong> getRecommendedDurationCompact('Short') // '15 min'
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 0;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">window.CARD_CONTENT_COMPACT_OPTIONS</h3>
+                                <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
+                                    Objeto global que contiene todas las opciones disponibles (tipos, competencias, niveles, proveedores, etc.).
+                                </p>
+                                <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: var(--border-radius-sm); border-left: 4px solid var(--ubits-accent-brand);">
+                                    <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                        <strong>Uso:</strong> Variable global de solo lectura<br>
+                                        <strong>Ejemplo:</strong> console.log(window.CARD_CONTENT_COMPACT_OPTIONS)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Personalización -->
+                        <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-paint-brush" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Personalización
+                            </h2>
+                            <div style="margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Personalizar estilos CSS</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('modify-styles-code')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <p class="ubits-body-md-regular" style="margin-bottom: 12px; line-height: 1.5;">
+                                    Puedes personalizar la apariencia del componente compact sobrescribiendo las clases CSS:
+                                </p>
+                                <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: var(--border-radius-sm);">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="modify-styles-code">/* Personalizar el hover del card compact */
+.course-card-compact:hover {
+  transform: translateY(-2px); /* Elevación sutil */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra más fuerte */
+}
+
+/* Personalizar el tamaño de la imagen (por defecto 85x48px) */
+.course-thumbnail-compact-wrapper {
+  width: 100px; /* Más ancho */
+  height: 56px; /* Más alto */
+}
+
+/* Personalizar colores de progreso */
+.course-progress-overlay-compact .progress-fill {
+  background: var(--ubits-feedback-accent-warning-static); /* Naranja */
+}
+
+/* Personalizar tipografía del título */
+.course-title-compact {
+  font-size: var(--font-size-md); /* Título más grande */
+  line-height: 1.4;
+}</code></pre>
+                                </div>
+                            </div>
+                            <div>
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Diferencias con Card Content</h3>
+                                </div>
+                                <p class="ubits-body-md-regular" style="margin-bottom: 12px; line-height: 1.5;">
+                                    El componente Card Content Compact comparte la misma funcionalidad que Card Content pero con diferencias clave:
+                                </p>
+                                <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: var(--border-radius-sm);">
+                                    <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6;">
+                                        <strong>Estructura:</strong><br>
+                                        • Layout horizontal siempre (nunca cambia a vertical)<br>
+                                        • Imagen fija de 85x48px en la parte superior izquierda<br>
+                                        • Título alineado verticalmente con la imagen<br>
+                                        • Barra de progreso en la parte inferior del card completo<br><br>
+                                        <strong>Tipografía:</strong><br>
+                                        • Título: <code>ubits-body-sm-bold</code> (13px, bold)<br>
+                                        • Tipo, aliado, nivel, tiempo, idioma: <code>ubits-body-xs-regular</code> (11px, regular)<br><br>
+                                        <strong>Uso recomendado:</strong><br>
+                                        • Listas de contenido en espacios reducidos<br>
+                                        • Tablas o grids compactos<br>
+                                        • Sidebars con contenido de aprendizaje<br>
+                                        • Cuando necesitas mostrar más contenido en menos espacio
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Contenedor para Toast UBITS -->
+    <div id="ubits-toast-container"></div>
+
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/dropdown-menu.js"></script>
+    <script src="../../components/input.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../components/card-content-compact.js"></script>
+    <script src="../../script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cargar top-nav con variante documentación
+            loadSubNav('top-nav-container', 'documentacion');
+            
+            // Forzar activación de Componentes en todas las páginas de documentación
+            setTimeout(() => {
+                // Quitar todas las clases active primero
+                document.querySelectorAll('.nav-tab.active, .hamburger-item.active').forEach(item => {
+                    item.classList.remove('active');
+                });
+                
+                // Activar solo Componentes
+                const navTab = document.querySelector('.nav-tab[data-tab="section3"]');
+                const hamburgerItem = document.querySelector('.hamburger-item[data-tab="section3"]');
+                if (navTab) navTab.classList.add('active');
+                if (hamburgerItem) hamburgerItem.classList.add('active');
+            }, 200);
+            
+            // Cargar sidebar de documentación
+            loadDocsSidebar('card-content-compact');
+            
+            // Cargar alert de warning para prompts usando el componente oficial
+            showAlert('warning', 'Importante: Antes de enviar estos prompts a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
+                containerId: 'cardcontentcompact-warning-alert',
+                noClose: true
+            });
+            
+            // Inicializar preview del card
+            initCardPreview();
+        });
+
+        // Datos base del card compact
+        let currentCardData = {
+            type: 'Curso',
+            title: 'Asegurar la medición del equipo a través del coaching',
+            provider: 'Harvard Business Publishing',
+            providerLogo: '../../images/Favicons/Harvard-Business-Publishing.jpg',
+            duration: '60 min',
+            level: 'Intermedio',
+            progress: 75,
+            status: 'progress',
+            image: '../../images/cards-learn/abm-marketing-la-mejor-estrategia-para-ventas-b2b.jpeg',
+            competency: 'Liderazgo',
+            language: 'Español'
+        };
+        
+        var logoMap = {
+            'UBITS': 'UBITS.jpg',
+            'Microsoft': 'Microsoft.jpg',
+            'TED': 'TED.jpg',
+            'AWS': 'AWS.jpg',
+            'Hubspot': 'Hubspot.jpg',
+            'Harvard Business Publishing': 'Harvard-Business-Publishing.jpg',
+            'Universidad de Los Andes': 'Universidad-de-Los Andes.jpg',
+            'Advanced English': 'Advanced-English.jpg',
+            'IE University': 'IE-University-Publishing.jpg',
+            'Código Facilito': 'Código-Facilito.jpg',
+            'Hackers del Talento': 'Hackers-del-Talento.jpg',
+            'All Ears English': 'All Ears English.jpg',
+            'American & British Academy': 'American & British Academy.jpg',
+            'Bureau Veritas': 'Bureau-Veritas.jpg',
+            'Welu': 'Welu.jpg',
+            'Figsha Smart Consulting': 'Figsha Smart Consulting.jpg',
+            'Instafit': 'Instafit.jpg',
+            'WOBI': 'WOBI.jpg'
+        };
+
+        // Inicializar preview del card con inputs UBITS oficiales (createInput type select)
+        function initCardPreview() {
+            updateCardPreview();
+
+            if (typeof createInput !== 'function') return;
+
+            createInput({
+                containerId: 'estado-select-container',
+                type: 'select',
+                label: 'Estado',
+                selectOptions: [ { value: 'default', text: 'Default' }, { value: 'hover', text: 'Hover' } ],
+                value: 'default',
+                onChange: function(value) {
+                    var card = document.querySelector('#card-preview .course-card-compact');
+                    if (card) {
+                        if (value === 'hover') card.classList.add('hover-state');
+                        else card.classList.remove('hover-state');
+                    }
+                }
+            });
+
+            createInput({
+                containerId: 'progreso-select-container',
+                type: 'select',
+                label: 'Progreso',
+                selectOptions: [
+                    { value: 'default', text: 'Default (0%)' },
+                    { value: 'progress', text: 'En progreso (75%)' },
+                    { value: 'completed', text: 'Completado (100%)' }
+                ],
+                value: 'progress',
+                onChange: function(value) {
+                    if (value === 'default') {
+                        currentCardData.progress = 0;
+                        currentCardData.status = 'default';
+                    } else if (value === 'progress') {
+                        currentCardData.progress = 75;
+                        currentCardData.status = 'progress';
+                    } else {
+                        currentCardData.progress = 100;
+                        currentCardData.status = 'completed';
+                    }
+                    updateCardPreview();
+                }
+            });
+
+            createInput({
+                containerId: 'tipo-select-container',
+                type: 'select',
+                label: 'Tipo de contenido',
+                selectOptions: [
+                    { value: 'Curso', text: 'Curso' }, { value: 'Short', text: 'Short' }, { value: 'Charla', text: 'Charla' },
+                    { value: 'Artículo', text: 'Artículo' }, { value: 'Podcast', text: 'Podcast' }, { value: 'Libro', text: 'Libro' },
+                    { value: 'Ideas de libro', text: 'Ideas de libro' }, { value: 'Caso de estudio', text: 'Caso de estudio' },
+                    { value: 'Documento técnico', text: 'Documento técnico' }, { value: 'Ejercicios de práctica', text: 'Ejercicios de práctica' },
+                    { value: 'Ruta de aprendizaje', text: 'Ruta de aprendizaje' }, { value: 'Programa', text: 'Programa' }
+                ],
+                value: 'Curso',
+                onChange: function(value) {
+                    currentCardData.type = value;
+                    if (value === 'Short') currentCardData.duration = '15 min';
+                    else if (value === 'Ruta de aprendizaje' || value === 'Programa') currentCardData.duration = '240 min';
+                    else currentCardData.duration = '60 min';
+                    updateCardPreview();
+                }
+            });
+
+            createInput({
+                containerId: 'aliado-select-container',
+                type: 'select',
+                label: 'Aliado',
+                selectOptions: [
+                    { value: 'UBITS', text: 'UBITS' }, { value: 'Microsoft', text: 'Microsoft' }, { value: 'TED', text: 'TED' },
+                    { value: 'AWS', text: 'AWS' }, { value: 'Hubspot', text: 'Hubspot' },
+                    { value: 'Harvard Business Publishing', text: 'Harvard Business Publishing' },
+                    { value: 'Universidad de Los Andes', text: 'Universidad de Los Andes' },
+                    { value: 'Advanced English', text: 'Advanced English' }, { value: 'IE University', text: 'IE University' },
+                    { value: 'Código Facilito', text: 'Código Facilito' }, { value: 'Hackers del Talento', text: 'Hackers del Talento' },
+                    { value: 'All Ears English', text: 'All Ears English' },
+                    { value: 'American & British Academy', text: 'American & British Academy' },
+                    { value: 'Bureau Veritas', text: 'Bureau Veritas' }, { value: 'Welu', text: 'Welu' },
+                    { value: 'Figsha Smart Consulting', text: 'Figsha Smart Consulting' },
+                    { value: 'Instafit', text: 'Instafit' }, { value: 'WOBI', text: 'WOBI' }
+                ],
+                value: 'Harvard Business Publishing',
+                onChange: function(value) {
+                    currentCardData.provider = value;
+                    currentCardData.providerLogo = '../../images/Favicons/' + (logoMap[value] || 'UBITS.jpg');
+                    updateCardPreview();
+                }
+            });
+
+            createInput({
+                containerId: 'nivel-select-container',
+                type: 'select',
+                label: 'Nivel',
+                selectOptions: [ { value: 'Básico', text: 'Básico' }, { value: 'Intermedio', text: 'Intermedio' }, { value: 'Avanzado', text: 'Avanzado' } ],
+                value: 'Intermedio',
+                onChange: function(value) {
+                    currentCardData.level = value;
+                    updateCardPreview();
+                }
+            });
+
+            createInput({
+                containerId: 'idioma-select-container',
+                type: 'select',
+                label: 'Idioma',
+                selectOptions: [ { value: 'Español', text: 'Español' }, { value: 'Inglés', text: 'Inglés' }, { value: 'Portugués', text: 'Portugués' } ],
+                value: 'Español',
+                onChange: function(value) {
+                    currentCardData.language = value;
+                    updateCardPreview();
+                }
+            });
+        }
+        
+        // Actualizar preview del card
+        function updateCardPreview() {
+            const container = document.getElementById('card-preview');
+            container.innerHTML = renderCardContentCompact(currentCardData);
+        }
+
+
+        // Función para el acordeón de documentación técnica
+        function toggleTechnicalDocs() {
+            const content = document.getElementById('technical-docs-content');
+            const button = document.querySelector('[onclick="toggleTechnicalDocs()"]');
+            
+            if (content.style.display === 'none' || content.style.display === '') {
+                // Expandir
+                content.style.display = 'block';
+                button.innerHTML = '<i class="far fa-chevron-up" id="tech-docs-chevron" style="color: var(--ubits-accent-brand);"></i> <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand);">Ocultar</span>';
+            } else {
+                // Contraer
+                content.style.display = 'none';
+                button.innerHTML = '<i class="far fa-chevron-down" id="tech-docs-chevron" style="color: var(--ubits-accent-brand);"></i> <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand);">Mostrar</span>';
+            }
+        }
+
+        // Función para copiar prompts
+        function copyPrompt(promptId) {
+            const promptElement = document.getElementById(promptId);
+            const promptText = promptElement.textContent;
+            
+            // Copiar al portapapeles
+            navigator.clipboard.writeText(promptText).then(function() {
+                // Mostrar feedback visual
+                const button = document.querySelector(`[onclick="copyPrompt('${promptId}')"]`);
+                const icon = button.querySelector('i');
+                const text = button.querySelector('span');
+                
+                // Cambiar estado del botón
+                icon.className = 'far fa-check';
+                text.textContent = 'Copiado';
+                button.classList.add('ubits-button--active');
+                
+                // Mostrar toast
+                showToast('success', '¡Prompt copiado! 🎉', {
+                    containerId: 'ubits-toast-container',
+                    duration: 3500
+                });
+                
+                // Restaurar estado después de 2 segundos
+                setTimeout(function() {
+                    icon.className = 'far fa-copy';
+                    text.textContent = 'Copiar';
+                    button.classList.remove('ubits-button--active');
+                }, 2000);
+                
+            }).catch(function(err) {
+                console.error('Error al copiar: ', err);
+                showToast('error', 'Error al copiar el prompt', {
+                    containerId: 'ubits-toast-container',
+                    duration: 6500
+                });
+            });
+        }
+
+        // Función para copiar código
+        function copyCode(codeId) {
+            const codeElement = document.getElementById(codeId);
+            const codeText = codeElement.textContent;
+            
+            // Copiar al portapapeles
+            navigator.clipboard.writeText(codeText).then(function() {
+                // Mostrar feedback visual
+                const button = document.querySelector(`[onclick="copyCode('${codeId}')"]`);
+                const icon = button.querySelector('i');
+                const text = button.querySelector('span');
+                
+                // Cambiar estado del botón
+                icon.className = 'far fa-check';
+                text.textContent = 'Copiado';
+                button.classList.add('ubits-button--active');
+                
+                // Mostrar toast
+                showToast('success', '¡Código copiado! 🎉', {
+                    containerId: 'ubits-toast-container',
+                    duration: 3500
+                });
+                
+                // Restaurar estado después de 2 segundos
+                setTimeout(function() {
+                    icon.className = 'far fa-copy';
+                    text.textContent = 'Copiar';
+                    button.classList.remove('ubits-button--active');
+                }, 2000);
+                
+            }).catch(function(err) {
+                console.error('Error al copiar: ', err);
+                showToast('error', 'Error al copiar el código', {
+                    containerId: 'ubits-toast-container',
+                    duration: 6500
+                });
+            });
+        }
+
+    </script>
+    <script>
+</body>
+</html>

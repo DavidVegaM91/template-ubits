@@ -1,0 +1,172 @@
+/* ========================================
+   UBITS EMPTY STATE COMPONENT
+   Componente para mostrar estados vacíos con icono, título, descripción y acciones
+   ======================================== */
+
+/* ========================================
+   EMPTY STATE CONTAINER
+   ======================================== */
+
+.ubits-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: var(--padding-xl);
+    gap: var(--gap-md);
+    background-color: var(--ubits-bg-1);
+    border-radius: var(--border-radius-sm);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* ========================================
+   EMPTY STATE HEADER
+   ======================================== */
+
+.ubits-empty-state__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--gap-sm);
+    width: 100%;
+}
+
+/* ========================================
+   EMPTY STATE ICON CONTAINER
+   ======================================== */
+
+.ubits-empty-state__icon-container {
+    background-color: var(--ubits-bg-2);
+    border-radius: var(--border-radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-sizing: border-box;
+}
+
+/* Tamaño Small (sm) */
+.ubits-empty-state__icon-container--sm {
+    width: 28px;
+    height: 28px;
+    padding: var(--padding-sm);
+}
+
+.ubits-empty-state__icon-container--sm .ubits-empty-state__icon {
+    width: 12px;
+    height: 12px;
+}
+
+.ubits-empty-state__icon-container--sm .ubits-empty-state__icon i {
+    font-size: var(--font-size-sm);
+}
+
+/* Tamaño Medium (md) */
+.ubits-empty-state__icon-container--md {
+    width: 32px;
+    height: 32px;
+    padding: var(--padding-sm);
+}
+
+.ubits-empty-state__icon-container--md .ubits-empty-state__icon {
+    width: 16px;
+    height: 16px;
+}
+
+.ubits-empty-state__icon-container--md .ubits-empty-state__icon i {
+    font-size: var(--font-size-md);
+}
+
+/* Tamaño Large (lg) - Default */
+.ubits-empty-state__icon-container--lg {
+    width: 36px;
+    height: 36px;
+    padding: var(--padding-sm);
+}
+
+.ubits-empty-state__icon-container--lg .ubits-empty-state__icon {
+    width: 20px;
+    height: 20px;
+}
+
+.ubits-empty-state__icon-container--lg .ubits-empty-state__icon i {
+    font-size: var(--font-size-h2);
+}
+
+.ubits-empty-state__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ubits-fg-1-high);
+}
+
+/* ========================================
+   EMPTY STATE TITLE
+   ======================================== */
+
+.ubits-empty-state__title {
+    color: var(--ubits-fg-1-high);
+    margin: 0;
+    width: 100%;
+}
+
+/* ========================================
+   EMPTY STATE DESCRIPTION
+   ======================================== */
+
+.ubits-empty-state__description {
+    color: var(--ubits-fg-1-medium);
+    margin: 0;
+    width: 100%;
+}
+
+/* ========================================
+   EMPTY STATE FOOTER
+   ======================================== */
+
+.ubits-empty-state__footer {
+    display: flex;
+    gap: var(--gap-md);
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+    .ubits-empty-state {
+        padding: var(--padding-lg);
+        gap: var(--gap-md);
+    }
+
+    /* En mobile, los tamaños se mantienen iguales */
+    .ubits-empty-state__icon-container--sm {
+        width: 28px;
+        height: 28px;
+        padding: var(--padding-sm);
+    }
+
+    .ubits-empty-state__icon-container--md {
+        width: 32px;
+        height: 32px;
+        padding: var(--padding-sm);
+    }
+
+    .ubits-empty-state__icon-container--lg {
+        width: 36px;
+        height: 36px;
+        padding: var(--padding-sm);
+    }
+
+    /* Las clases de tipografía UBITS ya manejan el responsive */
+
+    .ubits-empty-state__footer {
+        gap: var(--gap-sm);
+    }
+}

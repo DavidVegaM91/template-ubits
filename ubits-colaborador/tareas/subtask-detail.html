@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Detalle de subtarea - UBITS</title>
+
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../components/tab-bar.css">
+    <link rel="stylesheet" href="../../components/floating-menu.css">
+    <link rel="stylesheet" href="../../components/profile-menu.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/header-product.css">
+    <link rel="stylesheet" href="../../components/save-indicator.css">
+    <link rel="stylesheet" href="../../components/status-tag.css">
+    <link rel="stylesheet" href="../../components/tooltip.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/badge-tag.css">
+    <link rel="stylesheet" href="../../components/avatar.css">
+    <link rel="stylesheet" href="../../components/calendar.css">
+    <link rel="stylesheet" href="../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../components/modal.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="./task-detail.css">
+    <link rel="stylesheet" href="./subtask-detail.css">
+</head>
+
+<body data-theme="light" class="page-subtask-detail">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+
+        <div id="sidebar-container"></div>
+
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div class="content-area subtask-detail-content-area">
+                <div class="content-sections subtask-detail-sections">
+                    <div class="section-single subtask-detail-section subtask-detail-section--body">
+                        <div class="subtask-detail-single-col">
+                            <div class="subtask-detail-section subtask-detail-section--header">
+                                <div class="widget-header-product" id="subtask-detail-header-container"></div>
+                            </div>
+                            <div class="task-detail-card task-detail-card--info">
+                                <div id="subtask-detail-info-block" class="task-detail-info-block"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="subtask-detail-modals-container"></div>
+    <div id="ubits-toast-container"></div>
+    <div id="tab-bar-container"></div>
+    <div id="floating-menu-container"></div>
+    <div id="profile-menu-container"></div>
+
+    <script src="../../components/tooltip.js"></script>
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/tab-bar.js"></script>
+    <script src="../../components/floating-menu.js"></script>
+    <script src="../../components/profile-menu.js"></script>
+    <script src="../../components/save-indicator.js"></script>
+    <script src="../../components/header-product.js"></script>
+    <script src="../../script.js"></script>
+    <script src="../../components/avatar.js"></script>
+    <script src="../../components/input.js"></script>
+    <script src="../../components/calendar.js"></script>
+    <script src="../../components/dropdown-menu.js"></script>
+    <script src="../../components/modal.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="./tareas-base-unificada.js"></script>
+    <script src="./subtask-detail.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            loadSidebar('sidebar-container', 'tareas');
+            loadSubNav('top-nav-container', 'tareas');
+            loadTabBar('tab-bar-container');
+            loadFloatingMenu('floating-menu-container');
+            loadProfileMenu('profile-menu-container');
+
+            if (typeof initSubtaskDetailPage === 'function') {
+                initSubtaskDetailPage();
+            }
+
+            setTimeout(function () {
+                var tareasButton = document.querySelector('.nav-button[data-section="tareas"]');
+                if (tareasButton) {
+                    document.querySelectorAll('.nav-button').forEach(function (btn) { btn.classList.remove('active'); });
+                    tareasButton.classList.add('active');
+                }
+                var modulosTabBar = document.querySelector('.tab-bar-item[data-tab="modulos"]');
+                if (modulosTabBar) {
+                    document.querySelectorAll('.tab-bar-item').forEach(function (item) { item.classList.remove('active'); });
+                    modulosTabBar.classList.add('active');
+                }
+                if (typeof setActiveAccordionLink === 'function') {
+                    setActiveAccordionLink('tareas');
+                }
+            }, 200);
+        });
+    </script>
+</body>
+
+</html>

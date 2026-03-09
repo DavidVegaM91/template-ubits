@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Switch | UBITS Playground</title>
+    
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../components/switch.css">
+    <style>
+        .preview-control-btn.active {
+            background: var(--ubits-accent-brand) !important;
+            color: white !important;
+            border-color: var(--ubits-accent-brand) !important;
+        }
+        .preview-control-btn.active span { color: white !important; }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div style="display: flex;">
+                <div id="docs-dropdown-container"></div>
+                <div id="docs-sidebar-container"></div>
+
+                <div class="components-content">
+                    <div class="content-area" style="display: block; width: 100%;">
+                        <div style="text-align: center; margin-bottom: 60px;">
+                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                                Switch
+                            </h1>
+                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                                Interruptor on/off con pista ovalada y thumb que se desplaza. Dos tamaños: sm y md. Usa tokens UBITS (--ubits-toggle-bg-active, --ubits-bg-3, etc.).
+                            </p>
+                        </div>
+
+                        <!-- Preview del componente -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Preview del componente
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                                Usa los controles para cambiar tamaño y estado. El switch de abajo se actualiza en vivo.
+                            </p>
+
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-end; margin-bottom: 24px;">
+                                <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+                                    <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Tamaño:</span>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-ctrl="size" data-value="sm" onclick="setSwitchPreviewControl('size','sm')">
+                                        <span>SM</span>
+                                    </button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-ctrl="size" data-value="md" onclick="setSwitchPreviewControl('size','md')">
+                                        <span>MD</span>
+                                    </button>
+                                </div>
+                                <div style="width: 220px; max-width: 100%;">
+                                    <div id="switch-preview-state-container"></div>
+                                </div>
+                            </div>
+
+                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px;">
+                                <p class="ubits-body-sm-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-medium);">Resultado</p>
+                                <div id="switch-preview-container">
+                                    <label id="switch-preview" class="ubits-switch ubits-switch--md">
+                                        <input type="checkbox" class="ubits-switch__input" id="switch-preview-input" role="switch">
+                                        <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                        <span class="ubits-switch__label">Notificaciones</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Características generales -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Características generales
+                            </h2>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-toggle-on"></i></div>
+                                    <div class="ubits-body-sm-bold">Estados</div>
+                                    <div class="ubits-body-sm-regular">Off, on (verde), deshabilitado (off y on)</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-expand-arrows-alt"></i></div>
+                                    <div class="ubits-body-sm-bold">Tamaños</div>
+                                    <div class="ubits-body-sm-regular">sm (ancho 32px, alto 16px, thumb 12) y md (ancho 36px, alto 20px, thumb 16)</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-palette"></i></div>
+                                    <div class="ubits-body-sm-bold">Tokens</div>
+                                    <div class="ubits-body-sm-regular">--ubits-toggle-bg-active, --ubits-bg-3, --ubits-bg-1, --ubits-bg-disabled, --ubits-fg-on-disabled</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Prompts útiles -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Prompts útiles
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                Copia el prompt, reemplaza lo que va entre [corchetes] y pide a Cursor que lo aplique. Asegúrate de que importe switch.css.
+                            </p>
+                            <div id="switch-warning-alert" style="margin-bottom: 32px;"></div>
+
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Insertar Switch</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('switch-prompt-1')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="switch-prompt-1">En [ubicación] inserta un Switch UBITS con etiqueta "[texto]" y tamaño [sm o md]. Debe importar switch.css y ubits-colors.css (tokens). Usa la estructura: label.ubits-switch, input.ubits-switch__input (type="checkbox" role="switch"), .ubits-switch__track con .ubits-switch__thumb dentro, y .ubits-switch__label.</code></pre>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Deshabilitar Switch</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('switch-prompt-2')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="switch-prompt-2">Deshabilita el Switch que dice "[texto]" en [ubicación]. Añade el atributo disabled al input.ubits-switch__input. Debe importar switch.css.</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Documentación técnica -->
+                        <div style="background: var(--ubits-bg-1); border-radius: 16px; margin-bottom: 40px; overflow: hidden;">
+                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Documentación técnica
+                                </h2>
+                                <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
+                                    Información técnica para implementar el componente Switch.
+                                </p>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                    <i class="far fa-chevron-down" style="transition: transform 0.3s ease;"></i>
+                                    Mostrar
+                                </span>
+                            </div>
+                            <div id="technical-docs-content" style="display: none; padding: 0;">
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                            <i class="far fa-sitemap" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                            Estructura del componente
+                                        </h2>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('structure-code')">
+                                            <i class="far fa-copy"></i>
+                                            <span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="structure-code">&lt;label class="ubits-switch ubits-switch--md"&gt;
+  &lt;input type="checkbox" class="ubits-switch__input" role="switch"&gt;
+  &lt;span class="ubits-switch__track" aria-hidden="true"&gt;&lt;span class="ubits-switch__thumb"&gt;&lt;/span&gt;&lt;/span&gt;
+  &lt;span class="ubits-switch__label"&gt;Notificaciones&lt;/span&gt;
+&lt;/label&gt;
+
+&lt;!-- Tamaño sm --&gt;
+&lt;label class="ubits-switch ubits-switch--sm"&gt;
+  &lt;input type="checkbox" class="ubits-switch__input" role="switch" checked&gt;
+  &lt;span class="ubits-switch__track"&gt;&lt;span class="ubits-switch__thumb"&gt;&lt;/span&gt;&lt;/span&gt;
+  &lt;span class="ubits-switch__label"&gt;Activo&lt;/span&gt;
+&lt;/label&gt;</code></pre>
+                                    </div>
+                                </div>
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                            <i class="far fa-tags" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                            Clases disponibles
+                                        </h2>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('classes-code')">
+                                            <i class="far fa-copy"></i>
+                                            <span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="classes-code">/* Contenedor (label) */
+.ubits-switch
+.ubits-switch--sm          /* ancho 32px, alto 16px, thumb 12 */
+.ubits-switch--md         /* ancho 36px, alto 20px, thumb 16 */
+
+/* Elementos internos */
+.ubits-switch__input      /* input type="checkbox" role="switch" (oculto visualmente) */
+.ubits-switch__track      /* Pista ovalada */
+.ubits-switch__thumb      /* Círculo que se desplaza */
+.ubits-switch__label      /* Texto opcional */</code></pre>
+                                    </div>
+                                </div>
+                                <div style="padding: 32px;">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                            <i class="far fa-code-branch" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                            Cómo implementar
+                                        </h2>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('implementation-code')">
+                                            <i class="far fa-copy"></i>
+                                            <span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <div style="background: var(--ubits-feedback-bg-warning-subtle); border: 1px solid var(--ubits-feedback-accent-warning); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                                        <h3 class="ubits-body-md-bold" style="margin-bottom: 8px; color: var(--ubits-fg-1-high);">⚠️ OBLIGATORIO: Importar el CSS en cada página</h3>
+                                        <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.5; margin: 0;">
+                                            Si la página que usa switches <strong>no</strong> incluye <code>switch.css</code>, el switch no tendrá el estilo UBITS. Añade en el <code>&lt;head&gt;</code>: <code>&lt;link rel="stylesheet" href="../../components/switch.css"&gt;</code> (desde subcarpetas usar <code>../../components/</code>; desde raíz usar <code>components/</code>). También se necesita <code>ubits-colors.css</code> para los tokens.
+                                        </p>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                                        <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">🔧 REQUISITOS:</h3>
+                                        <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.5;">
+                                            <strong>CSS:</strong> <code>components/switch.css</code>, <code>general-styles/ubits-colors.css</code>.<br>
+                                            <strong>JavaScript:</strong> No requerido. Uso con <code>&lt;label&gt;</code> y <code>input type="checkbox"</code>.<br>
+                                            <strong>Tamaños:</strong> sm (ancho 32px, alto 16px, thumb 12) y md (ancho 36px, alto 20px, thumb 16).
+                                        </div>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="implementation-code">&lt;!-- Switch md, off --&gt;
+&lt;label class="ubits-switch ubits-switch--md"&gt;
+  &lt;input type="checkbox" class="ubits-switch__input" role="switch"&gt;
+  &lt;span class="ubits-switch__track"&gt;&lt;span class="ubits-switch__thumb"&gt;&lt;/span&gt;&lt;/span&gt;
+  &lt;span class="ubits-switch__label"&gt;Notificaciones&lt;/span&gt;
+&lt;/label&gt;
+
+&lt;!-- Switch sm, on --&gt;
+&lt;label class="ubits-switch ubits-switch--sm"&gt;
+  &lt;input type="checkbox" class="ubits-switch__input" role="switch" checked&gt;
+  &lt;span class="ubits-switch__track"&gt;&lt;span class="ubits-switch__thumb"&gt;&lt;/span&gt;&lt;/span&gt;
+  &lt;span class="ubits-switch__label"&gt;Activo&lt;/span&gt;
+&lt;/label&gt;</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="ubits-toast-container"></div>
+
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/dropdown-menu.js"></script>
+    <script src="../../components/input.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script>
+        var switchPreviewState = { size: 'md', state: 'off' };
+
+        function setSwitchPreviewControl(ctrl, value) {
+            switchPreviewState[ctrl] = value;
+            document.querySelectorAll('.preview-control-btn[data-ctrl="' + ctrl + '"]').forEach(function(btn) {
+                btn.classList.toggle('active', btn.getAttribute('data-value') === value);
+            });
+            applySwitchPreview();
+        }
+
+        function applySwitchPreview() {
+            var el = document.getElementById('switch-preview');
+            var input = document.getElementById('switch-preview-input');
+            if (!el || !input) return;
+            el.className = 'ubits-switch ubits-switch--' + switchPreviewState.size;
+            input.checked = (switchPreviewState.state === 'on' || switchPreviewState.state === 'on-disabled');
+            input.disabled = (switchPreviewState.state === 'disabled' || switchPreviewState.state === 'on-disabled');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof loadSubNav === 'function') loadSubNav('top-nav-container', 'documentacion');
+            if (typeof loadSidebar === 'function') loadSidebar('ninguno');
+            if (typeof loadDocsSidebar === 'function') loadDocsSidebar('switch');
+            if (typeof showAlert === 'function') {
+                showAlert('warning', 'Antes de enviar estos prompts a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
+                    containerId: 'switch-warning-alert',
+                    noClose: true
+                });
+            }
+            applySwitchPreview();
+
+            if (typeof createInput === 'function') {
+                createInput({
+                    containerId: 'switch-preview-state-container',
+                    type: 'select',
+                    label: 'Estado',
+                    placeholder: 'Selecciona estado...',
+                    value: 'off',
+                    size: 'sm',
+                    selectOptions: [
+                        { value: 'off', text: 'Off' },
+                        { value: 'on', text: 'On' },
+                        { value: 'disabled', text: 'Deshabilitado (off)' },
+                        { value: 'on-disabled', text: 'Deshabilitado (on)' }
+                    ],
+                    onChange: function(value) {
+                        switchPreviewState.state = value;
+                        applySwitchPreview();
+                    }
+                });
+            }
+        });
+
+        function toggleTechnicalDocs() {
+            var content = document.getElementById('technical-docs-content');
+            var isHidden = content.style.display === 'none' || !content.style.display;
+            content.style.display = isHidden ? 'block' : 'none';
+            var trigger = content.previousElementSibling;
+            if (trigger) {
+                var span = trigger.querySelector('span');
+                if (span) {
+                    span.innerHTML = isHidden
+                        ? '<i class="far fa-chevron-up" style="transition: transform 0.3s ease;"></i>Ocultar'
+                        : '<i class="far fa-chevron-down" style="transition: transform 0.3s ease;"></i>Mostrar';
+                }
+            }
+        }
+
+        function copyPrompt(promptId) {
+            var el = document.getElementById(promptId);
+            var text = el.textContent;
+            navigator.clipboard.writeText(text).then(function() {
+                var btn = document.querySelector('[onclick="copyPrompt(\'' + promptId + '\')"]');
+                var icon = btn.querySelector('i');
+                var span = btn.querySelector('span');
+                icon.className = 'far fa-check';
+                span.textContent = 'Copiado';
+                if (typeof showToast === 'function') showToast('success', '¡Prompt copiado!', { containerId: 'ubits-toast-container', duration: 3500 });
+                setTimeout(function() { icon.className = 'far fa-copy'; span.textContent = 'Copiar'; }, 2000);
+            }).catch(function(err) {
+                if (typeof showToast === 'function') showToast('error', 'Error al copiar', { containerId: 'ubits-toast-container', duration: 3500 });
+            });
+        }
+
+        function copyCode(elementId) {
+            var el = document.getElementById(elementId);
+            var text = el.textContent;
+            navigator.clipboard.writeText(text).then(function() {
+                var btn = event.target.closest('button');
+                var icon = btn.querySelector('i');
+                var span = btn.querySelector('span');
+                var origIcon = icon.className;
+                var origText = span.textContent;
+                icon.className = 'far fa-check';
+                span.textContent = 'Copiado!';
+                if (typeof showToast === 'function') showToast('success', 'Código copiado al portapapeles', { containerId: 'ubits-toast-container', duration: 3500 });
+                setTimeout(function() { icon.className = origIcon; span.textContent = origText; }, 2000);
+            }).catch(function(err) {
+                if (typeof showToast === 'function') showToast('error', 'Error al copiar', { containerId: 'ubits-toast-container', duration: 3500 });
+            });
+        }
+    </script>
+</body>
+</html>

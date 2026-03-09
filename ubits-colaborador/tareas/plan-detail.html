@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>UBITS - Detalle del plan</title>
+
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../components/tab-bar.css">
+    <link rel="stylesheet" href="../../components/floating-menu.css">
+    <link rel="stylesheet" href="../../components/profile-menu.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/radio-button.css">
+    <link rel="stylesheet" href="../../components/header-product.css">
+    <link rel="stylesheet" href="../../components/tooltip.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/status-tag.css">
+    <link rel="stylesheet" href="../../components/badge-tag.css">
+    <link rel="stylesheet" href="../../components/avatar.css">
+    <link rel="stylesheet" href="../../components/task-strip.css">
+    <link rel="stylesheet" href="../../components/checkbox.css">
+    <link rel="stylesheet" href="../../components/calendar.css">
+    <link rel="stylesheet" href="../../components/save-indicator.css">
+    <link rel="stylesheet" href="../../components/empty-state.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../components/modal.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="./tareas.css">
+    <link rel="stylesheet" href="./profile.css">
+    <link rel="stylesheet" href="./planes.css">
+    <link rel="stylesheet" href="./plan-detail.css">
+</head>
+
+<body data-theme="light" class="page-plan-detail">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+
+        <div id="sidebar-container"></div>
+
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div class="content-area">
+                <div class="content-sections plan-detail-sections">
+                    <!-- Sección 1: Header product oficial (solo back + nombre del plan) -->
+                    <div class="section-single plan-detail-section plan-detail-section--header">
+                        <div class="widget-header-product" id="header-product-container"></div>
+                    </div>
+
+                    <!-- Sección 2: Card de información del plan (título, descripción, opciones, divisor, creado por, progress) -->
+                    <div class="section-single plan-detail-section">
+                        <div id="plan-detail-card" class="plan-detail-card" style="display: none;">
+                            <div class="plan-detail-card__title-row">
+                                <textarea class="task-detail-title-editable ubits-heading-h1" id="plan-detail-title" placeholder="Nombre del plan" rows="1" maxlength="250"></textarea>
+                                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="plan-detail-options-btn" aria-label="Opciones" data-tooltip="Opciones">
+                                    <i class="far fa-ellipsis-vertical"></i>
+                                </button>
+                            </div>
+                            <div class="plan-detail-card__desc-wrap">
+                                <textarea class="task-detail-desc-editable ubits-body-sm-regular" id="plan-detail-desc" placeholder="Descripción del plan" rows="1"></textarea>
+                            </div>
+                            <div class="plan-detail-card__divider"></div>
+                            <div class="plan-detail-card__creado-row">
+                                <span class="ubits-body-sm-semibold plan-detail-card__meta-label">Creado por</span>
+                                <div class="plan-detail-card__creado-value" id="plan-detail-created-by"></div>
+                            </div>
+                            <div class="plan-detail-card__progress-row">
+                                <span class="plan-detail-card__meta-label">Tareas finalizadas </span><span id="plan-detail-tasks-count" class="plan-detail-card__count-regular">0/0</span>
+                                <div class="plan-detail-card__bar">
+                                    <div class="plan-detail-card__bar-fill" id="plan-detail-bar-fill"></div>
+                                </div>
+                                <div class="plan-detail-card__percent-date-wrap">
+                                    <span class="plan-detail-card__percent" id="plan-detail-percent">0%</span>
+                                    <div class="plan-detail-card__date-wrap">
+                                        <span id="plan-detail-vencimiento-label" class="plan-detail-card__meta-label">Vencimiento</span>
+                                        <div id="plan-detail-vencimiento-wrap"></div>
+                                    </div>
+                                </div>
+                                <span class="ubits-status-tag ubits-status-tag--sm" id="plan-detail-status"><span
+                                        class="ubits-status-tag__text"></span></span>
+                                <button type="button" class="ubits-button ubits-button--primary ubits-button--sm"
+                                    id="plan-detail-finalizar">
+                                    <i class="far fa-check"></i>
+                                    <span>Finalizar plan</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sección 3: Tareas del plan -->
+                    <div class="section-single plan-detail-section">
+                        <div id="plan-detail-tasks-card" class="plan-detail-tasks-card" style="display: none;">
+                            <div class="plan-detail-tasks-card__header">
+                                <h2 class="plan-detail-tasks-card__title">Tareas del plan</h2>
+                                <div class="plan-detail-tasks-card__filters">
+                                    <button type="button"
+                                        class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only"
+                                        aria-label="Buscar">
+                                        <i class="far fa-search"></i>
+                                    </button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm">
+                                        <i class="far fa-sliders-h"></i>
+                                        <span>Ver filtros</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="plan-detail-tasks-card__counters">
+                                <span
+                                    class="plan-detail-tasks-card__counter plan-detail-tasks-card__counter--iniciadas">
+                                    <i class="fas fa-circle"></i> Por hacer: <strong
+                                        id="plan-detail-count-iniciadas">0</strong>
+                                </span>
+                                <span class="plan-detail-tasks-card__counter plan-detail-tasks-card__counter--vencidas">
+                                    <i class="fas fa-circle"></i> Vencidas: <strong
+                                        id="plan-detail-count-vencidas">0</strong>
+                                </span>
+                                <span
+                                    class="plan-detail-tasks-card__counter plan-detail-tasks-card__counter--finalizadas">
+                                    <i class="fas fa-circle"></i> Finalizadas: <strong
+                                        id="plan-detail-count-finalizadas">0</strong>
+                                </span>
+                            </div>
+                            <div class="plan-detail-tasks-card__add">
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm"
+                                    id="plan-detail-add-task-btn">
+                                    <i class="far fa-plus"></i>
+                                    <span>Agregar tarea</span>
+                                </button>
+                            </div>
+                            <div id="plan-detail-tasks" class="plan-detail-tasks">
+                                <div id="plan-detail-tasks-list" class="plan-detail-tasks-list">
+                                    <!-- Las tareas se renderizan dinámicamente -->
+                                </div>
+                                <div id="plan-detail-empty" class="plan-detail-empty" style="display: none;">
+                                    <i class="far fa-clipboard-list plan-detail-empty__icon"></i>
+                                    <h2 class="plan-detail-empty__title">¡Crea tu primera tarea!</h2>
+                                    <p class="plan-detail-empty__desc">Empieza a organizar tus actividades creando una
+                                        tarea.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="plan-detail-modals-container"></div>
+    <div id="ubits-toast-container"></div>
+
+    <div id="tab-bar-container"></div>
+    <div id="floating-menu-container"></div>
+    <div id="profile-menu-container"></div>
+
+    <script src="../../components/tooltip.js"></script>
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/tab-bar.js"></script>
+    <script src="../../components/floating-menu.js"></script>
+    <script src="../../components/profile-menu.js"></script>
+    <script src="../../components/header-product.js"></script>
+    <script src="../../script.js"></script>
+    <script src="../../components/avatar.js"></script>
+    <script src="../../components/task-strip.js"></script>
+    <script src="../../components/input.js"></script>
+    <script src="../../components/calendar.js"></script>
+    <script src="../../components/save-indicator.js"></script>
+    <script src="../../components/empty-state.js"></script>
+    <script src="../../components/dropdown-menu.js"></script>
+    <script src="../../components/modal.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="./tareas-base-unificada.js"></script>
+    <script src="./planes.js"></script>
+    <script src="./plan-detail.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            loadSidebar('sidebar-container', 'tareas');
+            loadSubNav('top-nav-container', 'tareas');
+            loadTabBar('tab-bar-container');
+            loadFloatingMenu('floating-menu-container');
+            loadProfileMenu('profile-menu-container');
+
+            loadHeaderProduct('header-product-container', {
+                productName: 'Detalle del plan',
+                breadcrumbItems: [],
+                backButton: {
+                    onClick: function () {
+                        if (window.history.length > 1) {
+                            window.history.back();
+                        } else {
+                            window.location.href = 'planes.html';
+                        }
+                    }
+                }
+            });
+            if (typeof renderSaveIndicator === 'function') {
+                renderSaveIndicator('header-product-container-save-indicator', { state: 'idle', size: 'xs' });
+            }
+
+            if (typeof initPlanDetail === 'function') {
+                initPlanDetail();
+            }
+
+            setTimeout(() => {
+                document.querySelectorAll('.nav-tab, .hamburger-item').forEach(item => item.classList.remove('active'));
+                const planesTab = document.querySelector('.nav-tab[data-tab="plans"]');
+                if (planesTab) planesTab.classList.add('active');
+                const planesHamburger = document.querySelector('.hamburger-item[data-tab="plans"]');
+                if (planesHamburger) planesHamburger.classList.add('active');
+                const tareasButton = document.querySelector('.nav-button[data-section="tareas"]');
+                if (tareasButton) {
+                    document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
+                    tareasButton.classList.add('active');
+                }
+                const modulosTabBar = document.querySelector('.tab-bar-item[data-tab="modulos"]');
+                if (modulosTabBar) {
+                    document.querySelectorAll('.tab-bar-item').forEach(item => item.classList.remove('active'));
+                    modulosTabBar.classList.add('active');
+                }
+                if (typeof setActiveAccordionLink === 'function') {
+                    setActiveAccordionLink('planes');
+                }
+            }, 200);
+        });
+    </script>
+</body>
+
+</html>
