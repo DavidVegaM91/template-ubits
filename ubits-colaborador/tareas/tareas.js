@@ -945,8 +945,51 @@ function initTareasView() {
                             const wasDone = tarea.done;
                             tarea.done = !tarea.done;
                             tarea.status = tarea.done ? 'Finalizado' : 'Activo';
-                            if (tarea.done) tarea._justFinalized = true;
-                            else tarea._justFinalized = false;
+                            if (tarea.done) {
+                                tarea._justFinalized = true;
+                                tarea.finalizedAt = today;
+                                // Quitar esta tarea de todos los días futuros (ya no debe mostrarse)
+                                Object.keys(tareasEjemplo.porDia || {}).forEach(function (fk) {
+                                    if (fk > today) {
+                                        tareasEjemplo.porDia[fk] = (tareasEjemplo.porDia[fk] || []).filter(function (t) { return !taskIdMatches(t, tareaId); });
+                                        if (tareasEjemplo.porDia[fk].length === 0) delete tareasEjemplo.porDia[fk];
+                                    }
+                                });
+                                // Re-renderizar todos los días futuros que estén en el DOM para que la tarea desaparezca de pantalla
+                                var daysContainer = document.getElementById('days-container');
+                                if (daysContainer) {
+                                    daysContainer.querySelectorAll('.tareas-day-container').forEach(function (container) {
+                                        var dk = container.dataset.date;
+                                        if (dk && dk > today) {
+                                            var fecha = parseDateString(dk);
+                                            var tempDiv = document.createElement('div');
+                                            tempDiv.innerHTML = renderDaySection(fecha);
+                                            var newContent = tempDiv.firstElementChild;
+                                            if (newContent) container.innerHTML = newContent.innerHTML;
+                                            if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
+                                        }
+                                    });
+                                }
+                            } else {
+                                tarea._justFinalized = false;
+                                tarea.finalizedAt = undefined;
+                                // Volver a mostrar la tarea en días futuros hasta su vencimiento
+                                if (tarea.endDate && tarea.endDate > today) {
+                                    var d = new Date(parseDateString(today).getTime());
+                                    d.setDate(d.getDate() + 1);
+                                    var endD = parseDateString(tarea.endDate);
+                                    while (d <= endD) {
+                                        if (d.getDay() !== 0 && d.getDay() !== 6) {
+                                            var dateStr = createLocalDate(d.getFullYear(), d.getMonth(), d.getDate());
+                                            if (!tareasEjemplo.porDia[dateStr]) tareasEjemplo.porDia[dateStr] = [];
+                                            if (!tareasEjemplo.porDia[dateStr].some(function (x) { return taskIdMatches(x, tareaId); })) {
+                                                tareasEjemplo.porDia[dateStr].push(tarea);
+                                            }
+                                        }
+                                        d.setDate(d.getDate() + 1);
+                                    }
+                                }
+                            }
                             input.checked = tarea.done;
                             const row = control.closest('.tarea-item');
                             const oldRect = (row && tarea.done) ? row.getBoundingClientRect() : null;
@@ -1414,7 +1457,8 @@ function handleCreateTaskInline(fechaKey, nombreTarea) {
             description: '',
             done: false,
             status: 'Activo',
-            endDate: null,
+            endDate: fechaKey,
+            created_at: fechaKey,
             priority: 'media',
             assignee_name: TAREA_INLINE_CREATED_BY,
             assignee_email: null,
@@ -1426,11 +1470,19 @@ function handleCreateTaskInline(fechaKey, nombreTarea) {
             etiqueta: null
         };
 
-        // Agregar tarea a la fecha correspondiente
-        if (!tareasEjemplo.porDia[fechaKey]) {
-            tareasEjemplo.porDia[fechaKey] = [];
-        }
-        tareasEjemplo.porDia[fechaKey].push(nuevaTarea);
+        // Agregar tarea a todos los días desde creación hasta vencimiento (solo ese día si endDate = fechaKey)
+        (function addTaskToRange(startStr, endStr, task) {
+            var d = parseDateString(startStr);
+            var endD = parseDateString(endStr);
+            while (d <= endD) {
+                if (d.getDay() !== 0 && d.getDay() !== 6) {
+                    var dateStr = createLocalDate(d.getFullYear(), d.getMonth(), d.getDate());
+                    if (!tareasEjemplo.porDia[dateStr]) tareasEjemplo.porDia[dateStr] = [];
+                    tareasEjemplo.porDia[dateStr].push(task);
+                }
+                d.setDate(d.getDate() + 1);
+            }
+        })(fechaKey, nuevaTarea.endDate || fechaKey, nuevaTarea);
 
         // Limpiar estado
         estadoTareas.addingTaskForDate = null;
@@ -1491,32 +1543,30 @@ function handleUpdatePriority(tareaId) {
     }
 }
 
-// Función para eliminar tarea
+// Función para eliminar tarea (quitar de vencidas y de todos los días en porDia)
 function handleDelete(tareaId) {
-    // Buscar y eliminar de vencidas
-    const indexVencidas = tareasEjemplo.vencidas.findIndex(t => taskIdMatches(t, tareaId));
-    if (indexVencidas !== -1) {
-        tareasEjemplo.vencidas.splice(indexVencidas, 1);
-        renderTareasVencidas();
-        return;
-    }
-
-    // Buscar y eliminar de tareas por día
-    for (const fechaKey in tareasEjemplo.porDia) {
-        const index = tareasEjemplo.porDia[fechaKey].findIndex(t => taskIdMatches(t, tareaId));
-        if (index !== -1) {
-            tareasEjemplo.porDia[fechaKey].splice(index, 1);
-            const dayContainer = document.querySelector(`.tareas-day-container[data-date="${fechaKey}"]`);
+    tareasEjemplo.vencidas = (tareasEjemplo.vencidas || []).filter(t => !taskIdMatches(t, tareaId));
+    var fechasAfectadas = [];
+    Object.keys(tareasEjemplo.porDia || {}).forEach(function (fk) {
+        var hadTask = (tareasEjemplo.porDia[fk] || []).some(t => taskIdMatches(t, tareaId));
+        tareasEjemplo.porDia[fk] = (tareasEjemplo.porDia[fk] || []).filter(t => !taskIdMatches(t, tareaId));
+        if (tareasEjemplo.porDia[fk].length === 0) delete tareasEjemplo.porDia[fk];
+        if (hadTask) fechasAfectadas.push(fk);
+    });
+    renderTareasVencidas();
+    var daysContainer = document.getElementById('days-container');
+    if (daysContainer) {
+        fechasAfectadas.forEach(function (fechaKey) {
+            var dayContainer = daysContainer.querySelector('.tareas-day-container[data-date="' + fechaKey + '"]');
             if (dayContainer) {
-                const fecha = parseDateString(fechaKey);
-                const tempDiv = document.createElement('div');
+                var fecha = parseDateString(fechaKey);
+                var tempDiv = document.createElement('div');
                 tempDiv.innerHTML = renderDaySection(fecha);
-                const newContent = tempDiv.firstElementChild;
+                var newContent = tempDiv.firstElementChild;
                 dayContainer.innerHTML = newContent.innerHTML;
                 if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
             }
-            return;
-        }
+        });
     }
 }
 
@@ -1540,7 +1590,24 @@ function findTaskById(tareaId) {
     return { tarea: null, ubicacion: null };
 }
 
-// Función para actualizar fecha de vencimiento de una tarea
+// Añade una tarea a porDia en todos los días laborables del rango [startStr, endStr]
+function addTaskToDayRange(startStr, endStr, task, taskId) {
+    if (!startStr || !endStr) return;
+    var d = parseDateString(startStr);
+    var endD = parseDateString(endStr);
+    while (d <= endD) {
+        if (d.getDay() !== 0 && d.getDay() !== 6) {
+            var dateStr = createLocalDate(d.getFullYear(), d.getMonth(), d.getDate());
+            if (!tareasEjemplo.porDia[dateStr]) tareasEjemplo.porDia[dateStr] = [];
+            if (!tareasEjemplo.porDia[dateStr].some(function (x) { return taskIdMatches(x, taskId); })) {
+                tareasEjemplo.porDia[dateStr].push(task);
+            }
+        }
+        d.setDate(d.getDate() + 1);
+    }
+}
+
+// Función para actualizar fecha de vencimiento de una tarea (mantiene visibilidad en todo el rango creación–vencimiento)
 function handleUpdateTaskEndDate(tareaId, newYmd) {
     const { tarea, ubicacion } = findTaskById(tareaId);
     if (!tarea) return;
@@ -1549,13 +1616,17 @@ function handleUpdateTaskEndDate(tareaId, newYmd) {
 
     if (ubicacion === 'vencidas') {
         tareasEjemplo.vencidas = tareasEjemplo.vencidas.filter(t => !taskIdMatches(t, tareaId));
-    } else if (ubicacion) {
-        tareasEjemplo.porDia[ubicacion] = (tareasEjemplo.porDia[ubicacion] || []).filter(t => !taskIdMatches(t, tareaId));
     }
+    // Quitar la tarea de todos los días (luego la reañadimos en el rango correcto)
+    Object.keys(tareasEjemplo.porDia || {}).forEach(function (fk) {
+        tareasEjemplo.porDia[fk] = (tareasEjemplo.porDia[fk] || []).filter(function (t) { return !taskIdMatches(t, tareaId); });
+        if (tareasEjemplo.porDia[fk].length === 0) delete tareasEjemplo.porDia[fk];
+    });
 
     if (newYmd) {
-        if (!tareasEjemplo.porDia[newYmd]) tareasEjemplo.porDia[newYmd] = [];
-        tareasEjemplo.porDia[newYmd].push(tarea);
+        var startDate = tarea.created_at || newYmd;
+        var lastVisible = (tarea.status === 'Finalizado' && tarea.finalizedAt) ? tarea.finalizedAt : newYmd;
+        addTaskToDayRange(startDate, lastVisible, tarea, tareaId);
     } else {
         tareasEjemplo.vencidas.push(tarea);
     }
@@ -1563,8 +1634,12 @@ function handleUpdateTaskEndDate(tareaId, newYmd) {
     renderTareasVencidas();
     const daysContainer = document.getElementById('days-container');
     if (daysContainer) {
-        [ubicacion, newYmd].filter(Boolean).forEach(fechaKey => {
-            const dayContainer = daysContainer.querySelector(`.tareas-day-container[data-date="${fechaKey}"]`);
+        var fechasAReRender = [ubicacion, newYmd];
+        Object.keys(tareasEjemplo.porDia || {}).forEach(function (fk) {
+            if (tareasEjemplo.porDia[fk].some(function (t) { return taskIdMatches(t, tareaId); })) fechasAReRender.push(fk);
+        });
+        fechasAReRender.filter(Boolean).filter(function (v, i, a) { return a.indexOf(v) === i; }).forEach(function (fechaKey) {
+            const dayContainer = daysContainer.querySelector('.tareas-day-container[data-date="' + fechaKey + '"]');
             if (dayContainer) {
                 const fecha = parseDateString(fechaKey);
                 const tempDiv = document.createElement('div');
