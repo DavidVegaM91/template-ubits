@@ -535,22 +535,17 @@
                     }
                     const [ey, em, ed] = endDateStr.split('-').map(Number);
                     const endDate = new Date(ey, em - 1, ed);
-                    // Creación hasta 10 días antes del vencimiento; nunca en el futuro (no se puede crear una tarea en el futuro).
-                    const fechaCreacionCalc = new Date(ey, em - 1, Math.max(1, ed - 10));
-                    const created_at_raw = fechaCreacionCalc.getFullYear() + '-' + pad(fechaCreacionCalc.getMonth() + 1) + '-' + pad(fechaCreacionCalc.getDate());
-                    const created_at = created_at_raw > todayStr ? todayStr : created_at_raw;
-                    const [cy, cm, cd] = created_at.split('-').map(Number);
-                    const fechaCreacion = new Date(cy, cm - 1, cd);
+                    const fechaCreacion = new Date(ey, em - 1, Math.max(1, ed - 2));
                     const prioridades = ['Alta', 'Media', 'Baja'];
                     const prioridad = prioridades[Math.floor(seeder(seed, baseIdx + i + 200) * 3)];
                     const nombreTarea = TITULOS_TAREAS[(baseIdx + i) % TITULOS_TAREAS.length];
+
                     const tareaVista = {
                         id: idActividad,
                         name: nombreTarea,
                         done: doneFinal,
                         status: estadoFinal === 'Finalizada' ? 'Finalizado' : (estadoFinal === 'Vencida' ? 'Vencido' : 'Activo'),
                         endDate: endDateStr,
-                        created_at: created_at,
                         priority: prioridad.toLowerCase(),
                         assignee_email: username,
                         assignee_name: emp.nombre || null,
@@ -690,14 +685,12 @@
                     var dayWeekday = toWeekdayInMonth(y, m, d);
                     var endDateVencida = y + '-' + pad(m) + '-' + pad(dayWeekday);
                     var fechaCreacionVencida = new Date(y, m - 1, Math.max(1, dayWeekday - 2));
-                    var created_atVencida = fechaCreacionVencida.getFullYear() + '-' + pad(fechaCreacionVencida.getMonth() + 1) + '-' + pad(fechaCreacionVencida.getDate());
                     var tareaVencida = {
                         id: idActividad,
                         name: titulosVencidas[k - 1],
                         done: false,
                         status: 'Vencido',
                         endDate: endDateVencida,
-                        created_at: created_atVencida,
                         priority: prioridades[(k - 1) % 3],
                         assignee_email: usernameMaria,
                         assignee_name: mariaEmp.nombre || null,
@@ -765,11 +758,7 @@
                     const day = toWeekdayInMonth(year, m, 15); // día 15 o el laborable más cercano
                     const endDateStr = year + '-' + pad(m) + '-' + pad(day);
                     const endDate = new Date(year, m - 1, day);
-                    const fechaCreacionCalc = new Date(year, m - 1, Math.max(1, day - 10));
-                    const created_atCompaniaRaw = fechaCreacionCalc.getFullYear() + '-' + pad(fechaCreacionCalc.getMonth() + 1) + '-' + pad(fechaCreacionCalc.getDate());
-                    const created_atCompaniaStr = created_atCompaniaRaw > todayStr ? todayStr : created_atCompaniaRaw;
-                    const [cy, cm, cd] = created_atCompaniaStr.split('-').map(Number);
-                    const fechaCreacion = new Date(cy, cm - 1, cd);
+                    const fechaCreacion = new Date(year, m - 1, Math.max(1, day - 2));
                     const esFechaFutura = endDateStr > todayStr;
                     asignadosCompania.forEach(function (empAsig, idxCompania) {
                         const asignado = { nombre: empAsig.nombre, avatar: empAsig.avatar || '', username: empAsig.username || generarUsername(empAsig.nombre) };
@@ -806,7 +795,6 @@
                             done: done,
                             status: statusVista,
                             endDate: endDateStr,
-                            created_at: created_atCompaniaStr,
                             priority: 'media',
                             assignee_email: asignado.username || null,
                             assignee_name: asignado.nombre || null,
@@ -816,7 +804,8 @@
                             created_by_avatar_url: creadorEmp && (creadorEmp.avatar && String(creadorEmp.avatar).trim()) ? creadorEmp.avatar : null,
                             planId: null,
                             planNombre: nombrePlan,
-                            description: tipo === 'Objetivos' ? 'Tarea de objetivos trimestrales.' : 'Tarea de encuesta de compañía.'
+                            description: tipo === 'Objetivos' ? 'Tarea de objetivos trimestrales.' : 'Tarea de encuesta de compañía.',
+                            created_at: fechaCreacion.toISOString()
                         };
                         const tieneSubtareasCompania = seeder(8888, idActividad + 700) < 0.2;
                         const detalleCompania = generarDetalleTarea(idActividad, {
@@ -986,27 +975,6 @@
         return out;
     }
 
-    /** Devuelve array de fechas YYYY-MM-DD de días laborables entre inicioStr y finStr (inclusive). */
-    function getWeekdaysBetween(inicioStr, finStr) {
-        if (!inicioStr || !finStr || inicioStr > finStr) return [];
-        const [y0, m0, d0] = inicioStr.split('-').map(Number);
-        const [y1, m1, d1] = finStr.split('-').map(Number);
-        const start = new Date(y0, m0 - 1, d0);
-        const end = new Date(y1, m1 - 1, d1);
-        start.setHours(0, 0, 0, 0);
-        end.setHours(0, 0, 0, 0);
-        const out = [];
-        let d = new Date(start.getTime());
-        while (d <= end) {
-            const dow = d.getDay();
-            if (dow !== 0 && dow !== 6) {
-                out.push(d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()));
-            }
-            d.setDate(d.getDate() + 1);
-        }
-        return out;
-    }
-
     function getTareasVistaTareas() {
         const empleadoId = currentUserEmpleadoId != null ? currentUserEmpleadoId : USUARIO_ACTUAL.id;
         const data = tareasPorEmpleadoParaVistaTareas[empleadoId] || { individuales: [], grupales: [] };
@@ -1038,58 +1006,69 @@
             tareasPorEmpleado['__self__'] = (data.grupales || []).concat(data.individuales || []);
 
             /**
-             * Indica si una tarea es visible en un día: desde created_at hasta min(endDate, finalizedAt).
+             * Busca la tarea de un empleado para un día dado.
+             * Orden de preferencia: exacta en endDate → más cercana por fecha.
              */
-            function visibleOnDay(t, dateStr) {
-                if (!t.endDate) return false;
-                var start = t.created_at || t.endDate;
-                var lastVisible = (t.status === 'Finalizado' && t.finalizedAt) ? t.finalizedAt : t.endDate;
-                return start <= dateStr && dateStr <= lastVisible;
-            }
-            /**
-             * Normaliza una tarea para mostrarla en un día: si se muestra en un día distinto al de vencimiento, se muestra como Activo.
-             */
-            function normalizarParaDia(t, dateStr) {
-                var esReutilizada = dateStr !== t.endDate;
-                var copia = Object.assign({}, t);
-                if (esReutilizada) {
-                    copia.done = false;
-                    copia.status = 'Activo';
-                } else {
-                    copia.done = (copia.status === 'Finalizado') ? true : !!copia.done;
-                }
-                return copia;
-            }
-            /** Todas las tareas de un empleado visibles en dateStr (misma lógica que vista normal: se repiten todos los días del rango). */
-            function getTasksVisibleOnDay(empId, dateStr) {
+            function pickTaskForDay(empId, dateStr) {
                 const lista = tareasPorEmpleado[empId] || [];
-                return lista.filter(function (t) { return visibleOnDay(t, dateStr); }).map(function (t) { return normalizarParaDia(t, dateStr); });
+                /**
+                 * Normaliza done para que sea siempre booleano coherente con status.
+                 * Si esReutilizada=true (tarea de otro día), la mostramos como Activo
+                 * para que no aparezca "Finalizada" en un día diferente al original.
+                 */
+                function normalizar(t, overrides) {
+                    var esReutilizada = overrides && overrides.endDate && overrides.endDate !== t.endDate;
+                    var copia = Object.assign({}, t, overrides);
+                    if (esReutilizada) {
+                        // Al reutilizar en otro día, no tiene sentido mostrarla finalizada
+                        copia.done = false;
+                        copia.status = 'Activo';
+                    } else {
+                        copia.done = (copia.status === 'Finalizado') ? true : !!copia.done;
+                    }
+                    return copia;
+                }
+                // 1. Exacta
+                const exacta = lista.find(function (t) { return t.endDate === dateStr; });
+                if (exacta) return normalizar(exacta);
+                // 2. Más cercana (por diferencia absoluta de días)
+                if (!lista.length) return null;
+                var best = null, bestDiff = Infinity;
+                const ts = new Date(dateStr).getTime();
+                lista.forEach(function (t) {
+                    if (!t.endDate) return;
+                    var diff = Math.abs(new Date(t.endDate).getTime() - ts);
+                    if (diff < bestDiff) { bestDiff = diff; best = t; }
+                });
+                return best ? normalizar(best, { endDate: dateStr }) : null;
             }
 
             weekdays.forEach(function (dateStr) {
                 const list = [];
 
-                // 1. Todas las tareas visibles de cada reporte directo (creadas por o asignadas a la usuaria actual)
+                // 1. Una tarea real por cada reporte directo (solo si la tarea fue creada por o asignada a la usuaria actual)
                 reportesDirectos.forEach(function (emp) {
                     const empId = emp.id || emp.idColaborador;
-                    getTasksVisibleOnDay(empId, dateStr).forEach(function (tarea) {
-                        if (tarea.created_by === nombreUsuarioActual || (tarea.assignee_name && String(tarea.assignee_name).trim() === nombreUsuarioActual)) {
-                            list.push(tarea);
-                        }
-                    });
+                    const tarea = pickTaskForDay(empId, dateStr);
+                    if (tarea && (tarea.created_by === nombreUsuarioActual || (tarea.assignee_name && String(tarea.assignee_name).trim() === nombreUsuarioActual))) {
+                        list.push(tarea);
+                    }
                 });
 
-                // 2. Todas las tareas propias de María visibles ese día
-                list.push.apply(list, getTasksVisibleOnDay('__self__', dateStr));
+                // 2. Una tarea propia de María para ese día
+                const tareaPropia = pickTaskForDay('__self__', dateStr);
+                if (tareaPropia) {
+                    list.push(tareaPropia);
+                }
 
-                // 3. Todas las tareas de la jefa (Patricia) visibles ese día
+                // 3. Tarea de la jefa (Patricia): buscamos grupales donde created_by = jefa.nombre
                 if (jefa) {
                     const tareasJefa = (data.grupales || []).filter(function (t) {
                         return t.created_by && t.created_by === jefa.nombre;
                     });
-                    tareasJefa.filter(function (t) { return visibleOnDay(t, dateStr); }).forEach(function (t) {
-                        list.push(normalizarParaDia(t, dateStr));
-                    });
+                    const exactaJefa = tareasJefa.find(function (t) { return t.endDate === dateStr; });
+                    const tareaJefa = exactaJefa || (tareasJefa.length ? Object.assign({}, tareasJefa[0], { endDate: dateStr }) : null);
+                    if (tareaJefa) list.push(Object.assign({}, tareaJefa));
                 }
 
                 if (list.length) porDia[dateStr] = list;
@@ -1112,8 +1091,6 @@
             .map(function (a) {
                 const asignado = a.asignado || {};
                 const endDate = fechaSeguimientoToYYYYMMDD(a.fechaFinalizacion);
-                const createdDate = parseFechaSeguimiento(a.fechaCreacion);
-                const created_at = createdDate ? (createdDate.getFullYear() + '-' + pad(createdDate.getMonth() + 1) + '-' + pad(createdDate.getDate())) : endDate;
                 var porHora = estadoGrupalPorHora(a.id, endDate);
                 return {
                     id: a.id,
@@ -1121,7 +1098,6 @@
                     done: porHora.done,
                     status: porHora.status,
                     endDate: endDate,
-                    created_at: created_at,
                     priority: (a.prioridad || 'Media').toLowerCase(),
                     assignee_email: asignado.username || null,
                     assignee_name: asignado.nombre || null,
@@ -1146,8 +1122,6 @@
             .map(function (a) {
                 const asignado = a.asignado || {};
                 const endDate = fechaSeguimientoToYYYYMMDD(a.fechaFinalizacion);
-                const createdDate = parseFechaSeguimiento(a.fechaCreacion);
-                const created_at = createdDate ? (createdDate.getFullYear() + '-' + pad(createdDate.getMonth() + 1) + '-' + pad(createdDate.getDate())) : endDate;
                 var porHora = (a.plan && planNombreToId[a.plan] != null) ? estadoGrupalPorHora(a.id, endDate) : { done: a.estado === 'Finalizada', status: a.estado === 'Finalizada' ? 'Finalizado' : (a.estado === 'Vencida' ? 'Vencido' : 'Activo') };
                 return {
                     id: a.id,
@@ -1155,7 +1129,6 @@
                     done: porHora.done,
                     status: porHora.status,
                     endDate: endDate,
-                    created_at: created_at,
                     priority: (a.prioridad || 'Media').toLowerCase(),
                     assignee_email: asignado.username || null,
                     assignee_name: asignado.nombre || null,
@@ -1182,15 +1155,10 @@
 
         const vencidas = todasTareas.filter(t => t.status === 'Vencido').map(t => Object.assign({}, t));
         const porDia = {};
-        // Visibilidad: una tarea se muestra todos los días desde created_at hasta el día de vencimiento o hasta el día en que se finalizó (si se finalizó antes).
         todasTareas.filter(t => t.endDate).forEach(t => {
-            const startDate = t.created_at || t.endDate;
-            const lastVisibleDate = (t.status === 'Finalizado' && t.finalizedAt) ? t.finalizedAt : t.endDate;
-            const diasVisibles = getWeekdaysBetween(startDate, lastVisibleDate).filter(d => d >= INICIO_RANGO && d <= FIN_RANGO);
-            diasVisibles.forEach(dateStr => {
-                if (!porDia[dateStr]) porDia[dateStr] = [];
-                porDia[dateStr].push(Object.assign({}, t));
-            });
+            const c = Object.assign({}, t);
+            if (!porDia[c.endDate]) porDia[c.endDate] = [];
+            porDia[c.endDate].push(c);
         });
         return { vencidas, porDia };
     }
