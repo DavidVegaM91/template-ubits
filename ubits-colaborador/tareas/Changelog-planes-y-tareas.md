@@ -272,6 +272,17 @@ Ajustes pendientes sobre los archivos entregados por la PM Mafe para las página
 
     En **tareas.html**, al hacer scroll en la lista de días, el día que queda visible en pantalla se refleja automáticamente como **seleccionado** en el **calendario horizontal** (y, si aplica, se actualiza el indicador de mes/año). Así se mantiene la sincronización en ambos sentidos: (1) clic en un día del calendario → scroll hasta ese día (comportamiento existente); (2) scroll manual → el día que entra en vista se marca como activo en el calendario. Implementación en `tareas.js`: función `updateSelectedDayFromScroll()` (detecta el último `.tareas-day-container` cuyo borde superior está dentro del umbral de 80px desde el top del `#tareas-scroll-container`), listener de scroll con throttle de 80 ms y `setupScrollSpy()` llamada en `initTareasView()`.
 
+39. [x] **Doble clic en el nombre de la tarea/subtarea: edición inline del nombre**
+
+    En las tirillas que usan el componente **task-strip**, **doble clic solo en el nombre** (`.tarea-titulo` / `.tarea-titulo-wrap`) abre la **edición inline del nombre** (misma acción que la opción "Cambiar nombre" del menú ⋮). Un solo clic en el nombre sigue llevando al detalle, con un retraso breve (300 ms) para poder distinguir el doble clic.
+
+    **Dónde aplica:**
+    - **tareas.html** (`tareas.js`): lista de tareas por día; clic retrasado + `dblclick` en el nombre → `startInlineEditTaskName` con actualización y toast "Nombre actualizado".
+    - **plan-detail.html** (`plan-detail.js`): lista de tareas del plan; misma lógica; opción "Cambiar nombre" añadida implícitamente vía doble clic (el menú ⋮ de plan-detail solo tiene Enviar recordatorio / Eliminar).
+    - **task-detail.html** (`task-detail.js`): lista de **subtasks**; misma lógica de clic retrasado y doble clic; además el menú ⋮ de cada subtarea incluye **"Cambiar nombre"** como primera opción (icono pen), con el mismo comportamiento que el doble clic.
+
+    Implementación: variable de timeout por contexto (`estadoTareas.pendingTaskClickTimeout`, `planDetailPendingTaskClickTimeout`, `taskDetailSubtaskPendingClickTimeout`), listener `dblclick` delegado en el contenedor de la lista, y en task-detail opción "Cambiar nombre" en el dropdown de opciones de la subtarea.
+
 ---
 
-*Última actualización: ítems 1–20 (11 feb), 21–26 (19 feb), 27 (Cargar más), 28–30 (20 feb), 31 (21 feb), 32 (23 feb), 33 (nueva versión task-detail), 34 (dropdowns Estado y Prioridad en task-detail), 35 (panel de comentarios: adjuntar imágenes y archivos), 36 (implementación de subtask-detail), 37 (homologación encabezados plan-detail con task-detail), 38 (scroll-spy calendario horizontal, 10 mar) implementados.*
+*Última actualización: ítems 1–20 (11 feb), 21–26 (19 feb), 27 (Cargar más), 28–30 (20 feb), 31 (21 feb), 32 (23 feb), 33 (nueva versión task-detail), 34 (dropdowns Estado y Prioridad en task-detail), 35 (panel de comentarios: adjuntar imágenes y archivos), 36 (implementación de subtask-detail), 37 (homologación encabezados plan-detail con task-detail), 38 (scroll-spy calendario horizontal, 10 mar), 39 (doble clic para cambio de nombre en tirillas y opción Cambiar nombre en subtareas) implementados.*

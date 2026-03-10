@@ -115,6 +115,8 @@ window.planDetailTasksCache = window.planDetailTasksCache || {};
 window.planDetailPlanCache = window.planDetailPlanCache || {};
 // ID de tarea a eliminar desde el modal (opciones de la tirilla)
 let planDetailTaskIdToDelete = null;
+// Timeout para retrasar apertura del detalle y permitir doble clic en el nombre
+let planDetailPendingTaskClickTimeout = null;
 
 function getTasksForPlan(planId) {
     if (!planId) return [];
@@ -428,11 +430,43 @@ function handlePlanDetailListClick(e) {
     if (item && !e.target.closest('.tarea-done-radio') && !e.target.closest('.tarea-action-btn') && !e.target.closest('.tarea-priority-badge') && !e.target.closest('.tarea-titulo-edit-wrap')) {
         e.preventDefault();
         const id = item.dataset.tareaId || item.getAttribute('data-tarea-id');
-        if (id) {
-            const task = tasks.find(t => String(t.id) === String(id));
-            if (task) openTaskDetailPanel(task);
+        if (!id) return;
+        const task = tasks.find(t => String(t.id) === String(id));
+        if (!task) return;
+        const clickOnTitle = e.target.closest('.tarea-titulo') || e.target.closest('.tarea-titulo-wrap');
+        if (clickOnTitle) {
+            if (planDetailPendingTaskClickTimeout) clearTimeout(planDetailPendingTaskClickTimeout);
+            planDetailPendingTaskClickTimeout = setTimeout(function () {
+                planDetailPendingTaskClickTimeout = null;
+                openTaskDetailPanel(task);
+            }, 300);
+        } else {
+            openTaskDetailPanel(task);
         }
     }
+}
+
+function handlePlanDetailListDblclick(e) {
+    if (!e.target.closest('.tarea-titulo') && !e.target.closest('.tarea-titulo-wrap')) return;
+    const tareaItem = e.target.closest('.tarea-item');
+    if (!tareaItem) return;
+    e.preventDefault();
+    e.stopPropagation();
+    if (planDetailPendingTaskClickTimeout) {
+        clearTimeout(planDetailPendingTaskClickTimeout);
+        planDetailPendingTaskClickTimeout = null;
+    }
+    const planId = getPlanIdFromUrl();
+    const tareaId = tareaItem.dataset.tareaId || tareaItem.getAttribute('data-tarea-id');
+    if (!planId || !tareaId || typeof window.startInlineEditTaskName !== 'function') return;
+    const tasks = getTasksForPlan(planId);
+    const task = tasks.find(t => String(t.id) === String(tareaId));
+    if (!task) return;
+    window.startInlineEditTaskName(tareaItem, tareaId, function (newName) {
+        task.name = newName;
+        renderPlanDetail(planId);
+        if (typeof showToast === 'function') showToast('success', 'Nombre actualizado');
+    });
 }
 
 function attachTaskListeners() {
@@ -441,6 +475,7 @@ function attachTaskListeners() {
     if (listEl._planDetailClickBound) return;
     listEl._planDetailClickBound = true;
     listEl.addEventListener('click', handlePlanDetailListClick);
+    listEl.addEventListener('dblclick', handlePlanDetailListDblclick);
 }
 
 function initPlanDetail() {

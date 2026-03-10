@@ -86,6 +86,7 @@
         addingSubtask: false
     };
     var subtaskIdToDelete = null;
+    var taskDetailSubtaskPendingClickTimeout = null;
 
     function getMockTask() {
         return {
@@ -1348,7 +1349,7 @@
             }
         }
 
-        /* Delegación: clic en Opciones de una subtarea (tirilla) abre dropdown Enviar recordatorio / Eliminar */
+        /* Delegación: clic en Opciones de una subtarea (tirilla) abre dropdown Cambiar nombre / Enviar recordatorio / Eliminar */
         document.body.addEventListener('click', function (e) {
             var list = document.getElementById('task-detail-subtasks-list');
             if (!list || !list.contains(e.target)) return;
@@ -1363,6 +1364,7 @@
             var existing = document.getElementById(overlayId);
             if (existing) existing.remove();
             var options = [
+                { text: 'Cambiar nombre', value: 'cambiar-nombre', leftIcon: 'pen' },
                 { text: 'Enviar recordatorio', value: 'recordatorio', leftIcon: 'bell' },
                 { text: 'Eliminar', value: 'eliminar', leftIcon: 'trash' }
             ];
@@ -1371,12 +1373,23 @@
             var overlayEl = document.getElementById(overlayId);
             if (overlayEl) {
                 overlayEl.style.zIndex = '10100';
+                var tareaItem = btn.closest('.tarea-item');
+                var subtask = id != null ? estado.subtasks.find(function (s) { return String(s.id) === String(id); }) : null;
                 overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function (opt) {
                     opt.addEventListener('click', function () {
                         var val = this.getAttribute('data-value');
                         window.closeDropdownMenu(overlayId);
                         if (overlayEl.parentNode) overlayEl.remove();
-                        if (val === 'recordatorio') {
+                        if (val === 'cambiar-nombre') {
+                            if (tareaItem && subtask && typeof window.startInlineEditTaskName === 'function') {
+                                window.startInlineEditTaskName(tareaItem, id, function (newName) {
+                                    subtask.name = newName;
+                                    renderSubtasksBlock();
+                                    triggerFakeSave();
+                                    if (typeof showToast === 'function') showToast('success', 'Nombre actualizado');
+                                });
+                            }
+                        } else if (val === 'recordatorio') {
                             if (typeof showToast === 'function') showToast('success', 'Recordatorio enviado');
                         } else if (val === 'eliminar') {
                             subtaskIdToDelete = id;
@@ -1525,8 +1538,41 @@
             if (!e.target.closest('.tarea-action-btn--options') && !e.target.closest('.tarea-priority-badge') && !e.target.closest('.tarea-assigned') && !e.target.closest('.tarea-fecha-btn') && !e.target.closest('.tarea-done-radio') && !e.target.closest('input[type="checkbox"]') && !e.target.closest('.tarea-titulo-edit-wrap')) {
                 e.preventDefault();
                 var taskId = estado.task && estado.task.id != null ? estado.task.id : '';
-                window.location.href = 'subtask-detail.html?taskId=' + encodeURIComponent(taskId) + '&id=' + encodeURIComponent(subtaskId);
+                var clickOnTitle = e.target.closest('.tarea-titulo') || e.target.closest('.tarea-titulo-wrap');
+                if (clickOnTitle) {
+                    if (taskDetailSubtaskPendingClickTimeout) clearTimeout(taskDetailSubtaskPendingClickTimeout);
+                    taskDetailSubtaskPendingClickTimeout = setTimeout(function () {
+                        taskDetailSubtaskPendingClickTimeout = null;
+                        window.location.href = 'subtask-detail.html?taskId=' + encodeURIComponent(taskId) + '&id=' + encodeURIComponent(subtaskId);
+                    }, 300);
+                } else {
+                    window.location.href = 'subtask-detail.html?taskId=' + encodeURIComponent(taskId) + '&id=' + encodeURIComponent(subtaskId);
+                }
             }
+        });
+
+        /* Doble clic en el nombre de una subtarea: edición inline del nombre */
+        document.body.addEventListener('dblclick', function (e) {
+            var block = document.getElementById('task-detail-subtasks-block');
+            if (!block || !block.contains(e.target)) return;
+            if (!e.target.closest('.tarea-titulo') && !e.target.closest('.tarea-titulo-wrap')) return;
+            var row = e.target.closest('.tarea-item');
+            if (!row) return;
+            e.preventDefault();
+            e.stopPropagation();
+            if (taskDetailSubtaskPendingClickTimeout) {
+                clearTimeout(taskDetailSubtaskPendingClickTimeout);
+                taskDetailSubtaskPendingClickTimeout = null;
+            }
+            var subtaskId = row.dataset.tareaId || row.getAttribute('data-tarea-id');
+            var subtask = subtaskId != null ? estado.subtasks.find(function (s) { return String(s.id) === String(subtaskId); }) : null;
+            if (!subtask || typeof window.startInlineEditTaskName !== 'function') return;
+            window.startInlineEditTaskName(row, subtaskId, function (newName) {
+                subtask.name = newName;
+                renderSubtasksBlock();
+                triggerFakeSave();
+                if (typeof showToast === 'function') showToast('success', 'Nombre actualizado');
+            });
         });
 
         if (typeof loadHeaderProduct === 'function') {

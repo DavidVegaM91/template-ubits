@@ -42,6 +42,7 @@ let estadoTareas = {
     moveTaskId: null, // ID de tarea que se está moviendo a otro plan
     userDropdownTaskId: null, // ID de tarea para la cual se muestra el dropdown de usuarios
     userSearch: '', // Búsqueda de usuarios
+    pendingTaskClickTimeout: null, // Timeout para retrasar navegación al detalle y permitir doble clic en título
     userResults: [], // Resultados de búsqueda de usuarios
     loadingUsers: false, // Estado de carga de usuarios
     planSearch: '', // Búsqueda de planes
@@ -1258,7 +1259,15 @@ function initTareasView() {
             if (e.target.closest('.tarea-item') && !e.target.closest('.tarea-item__radio') && !e.target.closest('.tarea-item__actions') && !e.target.closest('.tarea-titulo-edit-wrap')) {
                 const tareaItem = e.target.closest('.tarea-item');
                 const tareaId = parseInt(tareaItem.dataset.tareaId || tareaItem.getAttribute('data-tarea-id'), 10);
-                if (!isNaN(tareaId)) {
+                if (isNaN(tareaId)) return;
+                const clickOnTitle = e.target.closest('.tarea-titulo') || e.target.closest('.tarea-titulo-wrap');
+                if (clickOnTitle) {
+                    if (estadoTareas.pendingTaskClickTimeout) clearTimeout(estadoTareas.pendingTaskClickTimeout);
+                    estadoTareas.pendingTaskClickTimeout = setTimeout(function () {
+                        estadoTareas.pendingTaskClickTimeout = null;
+                        handleTaskClick(tareaId);
+                    }, 300);
+                } else {
                     handleTaskClick(tareaId);
                 }
             }
@@ -1377,6 +1386,28 @@ function initTareasView() {
                 });
                 window.openDropdownMenu(overlayId, assignedEl);
             }
+        });
+        tareasContainer.addEventListener('dblclick', function (e) {
+            /* Doble clic solo en el nombre de la tarea: edición inline del nombre (mismo que "Cambiar nombre" del menú ⋮) */
+            if (!e.target.closest('.tarea-titulo') && !e.target.closest('.tarea-titulo-wrap')) return;
+            const tareaItem = e.target.closest('.tarea-item');
+            if (!tareaItem) return;
+            e.preventDefault();
+            e.stopPropagation();
+            if (estadoTareas.pendingTaskClickTimeout) {
+                clearTimeout(estadoTareas.pendingTaskClickTimeout);
+                estadoTareas.pendingTaskClickTimeout = null;
+            }
+            const tareaId = parseInt(tareaItem.dataset.tareaId || tareaItem.getAttribute('data-tarea-id'), 10);
+            if (isNaN(tareaId) || typeof window.startInlineEditTaskName !== 'function') return;
+            window.startInlineEditTaskName(tareaItem, tareaId, function (newName) {
+                const res = findTaskById(tareaId);
+                if (res && res.tarea) {
+                    res.tarea.name = newName;
+                    renderAllTasks();
+                }
+                if (typeof showToast === 'function') showToast('success', 'Nombre actualizado');
+            });
         });
     }
 
