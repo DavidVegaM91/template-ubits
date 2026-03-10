@@ -531,6 +531,10 @@
                             window.closeDropdownMenu(overlayId);
                             if (overlayEl.parentNode) overlayEl.remove();
                             if (val === 'recordatorio') {
+                                var taskName = estado.task && estado.task.name ? estado.task.name : 'esta tarea';
+                                pushActivity('fa-bell', currentUserName, 'envió al asignado un recordatorio sobre "' + taskName + '".');
+                                renderCommentsBlock();
+                                triggerFakeSave();
                                 if (typeof showToast === 'function') showToast('success', 'Recordatorio enviado');
                             } else if (val === 'eliminar') {
                                 if (typeof showModal === 'function') showModal('task-detail-delete-task-modal-overlay');
@@ -1390,6 +1394,10 @@
                                 });
                             }
                         } else if (val === 'recordatorio') {
+                            var subtaskName = subtask && subtask.name ? subtask.name : 'esta subtarea';
+                            pushActivity('fa-bell', currentUserName, 'envió al asignado un recordatorio sobre "' + subtaskName + '".');
+                            renderCommentsBlock();
+                            triggerFakeSave();
                             if (typeof showToast === 'function') showToast('success', 'Recordatorio enviado');
                         } else if (val === 'eliminar') {
                             subtaskIdToDelete = id;

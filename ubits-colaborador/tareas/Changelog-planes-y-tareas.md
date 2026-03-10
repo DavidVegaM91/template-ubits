@@ -283,6 +283,10 @@ Ajustes pendientes sobre los archivos entregados por la PM Mafe para las página
 
     Implementación: variable de timeout por contexto (`estadoTareas.pendingTaskClickTimeout`, `planDetailPendingTaskClickTimeout`, `taskDetailSubtaskPendingClickTimeout`), listener `dblclick` delegado en el contenedor de la lista, y en task-detail opción "Cambiar nombre" en el dropdown de opciones de la subtarea.
 
+40. [x] **Task-detail: enviar recordatorio registrado en el historial de actividades**
+
+    En **task-detail.html**, al elegir **"Enviar recordatorio"** (desde las opciones ⋮ del título de la tarea o desde las opciones de cada subtarea en la tirilla), además del toast de éxito se registra un **evento en el historial de actividades** con el formato: *"[Usuario actual] envió al asignado un recordatorio sobre \"[Nombre de la tarea o subtarea]\"."* (icono `fa-bell`). Se llama a `pushActivity`, `renderCommentsBlock()` y `triggerFakeSave()` para que la entrada aparezca de inmediato en la sección de comentarios/actividades.
+
 ---
 
-*Última actualización: ítems 1–20 (11 feb), 21–26 (19 feb), 27 (Cargar más), 28–30 (20 feb), 31 (21 feb), 32 (23 feb), 33 (nueva versión task-detail), 34 (dropdowns Estado y Prioridad en task-detail), 35 (panel de comentarios: adjuntar imágenes y archivos), 36 (implementación de subtask-detail), 37 (homologación encabezados plan-detail con task-detail), 38 (scroll-spy calendario horizontal, 10 mar), 39 (doble clic para cambio de nombre en tirillas y opción Cambiar nombre en subtareas) implementados.*
+*Última actualización: ítems 1–20 (11 feb), 21–26 (19 feb), 27 (Cargar más), 28–30 (20 feb), 31 (21 feb), 32 (23 feb), 33 (nueva versión task-detail), 34 (dropdowns Estado y Prioridad en task-detail), 35 (panel de comentarios: adjuntar imágenes y archivos), 36 (implementación de subtask-detail), 37 (homologación encabezados plan-detail con task-detail), 38 (scroll-spy calendario horizontal, 10 mar), 39 (doble clic para cambio de nombre en tirillas y opción Cambiar nombre en subtareas), 40 (recordatorio registrado en historial en task-detail) implementados.*
