@@ -266,4 +266,12 @@ Ajustes pendientes sobre los archivos entregados por la PM Mafe para las página
 
 ---
 
-*Última actualización: ítems 1–20 (11 feb), 21–26 (19 feb), 27 (Cargar más), 28–30 (20 feb), 31 (21 feb), 32 (23 feb), 33 (nueva versión task-detail), 34 (dropdowns Estado y Prioridad en task-detail), 35 (panel de comentarios: adjuntar imágenes y archivos), 36 (implementación de subtask-detail), 37 (homologación encabezados plan-detail con task-detail) implementados.*
+## 10 de marzo de 2026
+
+38. [x] **Scroll-spy en vista de tareas: día visible reflejado en el calendario horizontal**
+
+    En **tareas.html**, al hacer scroll en la lista de días, el día que queda visible en pantalla se refleja automáticamente como **seleccionado** en el **calendario horizontal** (y, si aplica, se actualiza el indicador de mes/año). Así se mantiene la sincronización en ambos sentidos: (1) clic en un día del calendario → scroll hasta ese día (comportamiento existente); (2) scroll manual → el día que entra en vista se marca como activo en el calendario. Implementación en `tareas.js`: función `updateSelectedDayFromScroll()` (detecta el último `.tareas-day-container` cuyo borde superior está dentro del umbral de 80px desde el top del `#tareas-scroll-container`), listener de scroll con throttle de 80 ms y `setupScrollSpy()` llamada en `initTareasView()`.
+
+---
+
+*Última actualización: ítems 1–20 (11 feb), 21–26 (19 feb), 27 (Cargar más), 28–30 (20 feb), 31 (21 feb), 32 (23 feb), 33 (nueva versión task-detail), 34 (dropdowns Estado y Prioridad en task-detail), 35 (panel de comentarios: adjuntar imágenes y archivos), 36 (implementación de subtask-detail), 37 (homologación encabezados plan-detail con task-detail), 38 (scroll-spy calendario horizontal, 10 mar) implementados.*

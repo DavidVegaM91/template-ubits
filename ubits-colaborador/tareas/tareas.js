@@ -650,6 +650,45 @@ function scrollToDay(fecha) {
     daySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
+// Scroll-spy: al hacer scroll, actualizar el día seleccionado en el calendario horizontal según la sección visible.
+var scrollSpyThrottle = null;
+function updateSelectedDayFromScroll() {
+    var scrollContainer = document.getElementById('tareas-scroll-container');
+    if (!scrollContainer) return;
+    var sections = scrollContainer.querySelectorAll('.tareas-day-container');
+    if (!sections.length) return;
+    var containerRect = scrollContainer.getBoundingClientRect();
+    var threshold = 80;
+    var activeSection = null;
+    for (var i = 0; i < sections.length; i++) {
+        var rect = sections[i].getBoundingClientRect();
+        if (rect.top <= containerRect.top + threshold) activeSection = sections[i];
+    }
+    if (!activeSection) activeSection = sections[0];
+    var dateKey = activeSection.dataset.date;
+    if (dateKey && dateKey !== estadoTareas.selectedDay) {
+        estadoTareas.selectedDay = dateKey;
+        var parsed = parseDateString(dateKey);
+        if (estadoTareas.currentDate && (parsed.getMonth() !== estadoTareas.currentDate.getMonth() || parsed.getFullYear() !== estadoTareas.currentDate.getFullYear())) {
+            estadoTareas.currentDate = new Date(parsed.getFullYear(), parsed.getMonth(), 1);
+            updateMonthYearDisplay();
+        }
+        renderCalendarHorizontal();
+    }
+}
+
+function setupScrollSpy() {
+    var scrollContainer = document.getElementById('tareas-scroll-container');
+    if (!scrollContainer) return;
+    scrollContainer.addEventListener('scroll', function () {
+        if (scrollSpyThrottle) return;
+        scrollSpyThrottle = setTimeout(function () {
+            scrollSpyThrottle = null;
+            updateSelectedDayFromScroll();
+        }, 80);
+    }, { passive: true });
+}
+
 // Navegación del calendario
 const handlePreviousDay = () => {
     const [year, month, day] = estadoTareas.selectedDay.split('-').map(Number);
@@ -861,6 +900,9 @@ function initTareasView() {
             renderCalendarHorizontal();
         });
     }
+
+    // Scroll-spy: al hacer scroll, el día visible se refleja como seleccionado en el calendario horizontal
+    setupScrollSpy();
 
     // Renderizar tareas vencidas (PRIMERO)
     renderTareasVencidas();
