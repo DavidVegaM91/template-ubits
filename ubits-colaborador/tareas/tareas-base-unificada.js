@@ -419,7 +419,7 @@
                 pushAct('fa-plus-circle', asignadoNombre, 'añadió la subtarea "' + (subtasks[0].name) + '".', addHours(fechaCreacion, 4));
             } else {
                 subtasks.slice(0, 2).forEach((st, i) => pushAct('fa-plus-circle', asignadoNombre, 'añadió la subtarea "' + st.name + '".', addHours(fechaCreacion, 4 + i)));
-                pushAct('fa-list-plus', asignadoNombre, 'añadió ' + numSubtareas + ' subtareas en lote.', addHours(fechaCreacion, 5));
+                pushAct('fa-layer-plus', asignadoNombre, 'añadió ' + numSubtareas + ' subtareas en lote.', addHours(fechaCreacion, 5));
             }
             const completadas = subtasks.filter(st => st.done);
             if (completadas.length > 0) {

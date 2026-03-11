@@ -560,7 +560,7 @@
     padding: var(--padding-md);
     display: flex;
     flex-direction: column;
-    gap: var(--gap-md);
+    gap: var(--gap-xl);
 }
 
 .task-detail-comment-item {
@@ -578,9 +578,6 @@
 }
 
 .task-detail-comment-meta {
-    display: flex;
-    align-items: baseline;
-    gap: var(--gap-sm);
     margin-bottom: var(--gap-xs);
 }
 
@@ -588,15 +585,14 @@
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-high);
-    flex: 1;
 }
 
 .task-detail-comment-time {
+    display: block;
     font-size: var(--font-size-xs);
     color: var(--ubits-fg-1-medium);
-    margin-left: auto;
-    /* siempre a la derecha */
     white-space: nowrap;
+    margin-top: var(--gap-xs);
 }
 
 /* Globo: texto + imágenes; superior izquierdo recto, resto redondeado 8px (token) */
@@ -653,9 +649,10 @@
 }
 
 .task-detail-activity-item {
-    display: flex;
-    gap: var(--gap-md);
-    align-items: baseline;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--gap-xs) var(--gap-md);
+    align-items: start;
 }
 
 .task-detail-activity-item i {
@@ -664,11 +661,17 @@
     font-size: var(--font-size-sm);
 }
 
+.task-detail-activity-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+    min-width: 0;
+}
+
 .task-detail-activity-text {
     font-size: var(--font-size-sm);
     line-height: 1.4;
     color: var(--ubits-fg-1-medium);
-    flex: 1;
 }
 
 /* Nombre del autor dentro del texto de actividad: mismo peso que .task-detail-comment-author */
@@ -677,13 +680,11 @@
     color: var(--ubits-fg-1-high);
 }
 
-/* Timestamp alineado a la derecha: mismos tokens que .task-detail-comment-time */
+/* Timestamp debajo del texto, alineado con el texto (no con el icono) */
 .task-detail-activity-time {
     font-size: var(--font-size-xs);
     color: var(--ubits-fg-1-medium);
-    flex-shrink: 0;
     white-space: nowrap;
-    margin-left: auto;
 }
 
 .task-detail-comments-separator {

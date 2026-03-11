@@ -257,11 +257,12 @@
             btn.addEventListener('click', function (ev) {
                 ev.stopPropagation();
                 var val = btn.getAttribute('data-value');
+                var isSubtask = estado.task && entity !== estado.task;
                 if (val === 'none') {
                     entity.assignee_email = null;
                     entity.assignee_name = null;
                     entity.assignee_avatar_url = null;
-                    pushActivity('fa-user-pen', currentUserName, 'dejó la tarea sin asignar.');
+                    pushActivity('fa-user-pen', currentUserName, isSubtask ? 'dejó la subtarea "' + (entity.name || '') + '" sin asignar.' : 'dejó la tarea sin asignar.');
                 } else {
                     var user = users.find(function (u) { return String(u.id) === val; });
                     if (user) {
@@ -269,7 +270,8 @@
                         entity.assignee_email = user.email;
                         entity.assignee_name = user.full_name || user.email;
                         entity.assignee_avatar_url = user.avatar_url;
-                        pushActivity('fa-user-pen', currentUserName, 'asignó la tarea a ' + nuevoNombre + '.');
+                        var assignText = isSubtask ? 'asignó la subtarea "' + (entity.name || '') + '" a ' + nuevoNombre + '.' : 'asignó la tarea a ' + nuevoNombre + '.';
+                        pushActivity('fa-user-pen', currentUserName, assignText);
                     }
                 }
                 if (typeof window.closeDropdownMenu === 'function') window.closeDropdownMenu(overlayId);
@@ -854,7 +856,7 @@
                     if (lines.length === 1) {
                         pushActivity('fa-plus-circle', currentUserName, 'añadió la subtarea "' + lines[0] + '".');
                     } else if (lines.length > 1) {
-                        pushActivity('fa-list-plus', currentUserName, 'añadió ' + lines.length + ' subtareas en lote.');
+                        pushActivity('fa-layer-plus', currentUserName, 'añadió ' + lines.length + ' subtareas en lote.');
                     }
                     estado.massPanelOpen = false;
                     renderSubtasksBlock();
@@ -1005,8 +1007,7 @@
                     '<div class="task-detail-comment-avatar">' + authorBlock + '</div>' +
                     '<div class="task-detail-comment-body">' +
                     '<div class="task-detail-comment-meta">' +
-                    '<span class="task-detail-comment-author">' + escapeHtml(c.author) + '</span>' +
-                    '<span class="task-detail-comment-time">' + formatCommentTime(c.time) + '</span></div>' +
+                    '<span class="task-detail-comment-author">' + escapeHtml(c.author) + '</span></div>' +
                     '<div class="task-detail-comment-bubble">' +
                     (c.text ? '<p class="task-detail-comment-text">' + escapeHtml(c.text) + '</p>' : '') +
                     (c.images && c.images.length ? '<div class="task-detail-comment-images">' + c.images.map(function (img) { return '<img src="' + escapeHtml(img) + '" alt="">'; }).join('') + '</div>' : '') +
@@ -1016,7 +1017,8 @@
                         var nameAttr = (f && f.name) ? String(f.name).replace(/"/g, '&quot;') : '';
                         return '<span class="ubits-chip ubits-chip--sm ubits-chip--icon-left task-detail-comment-file-chip" data-tooltip="Descargar archivo" data-file-url="' + url + '" data-file-name="' + nameAttr + '" role="' + (url ? 'button' : '') + '" tabindex="' + (url ? '0' : '-1') + '"><i class="far fa-file-lines"></i><span class="ubits-chip__text">' + name + '</span></span>';
                     }).join('') + '</div>' : '') +
-                    '</div></div></div>'
+                    '</div>' +
+                    '<span class="task-detail-comment-time">' + formatCommentTime(c.time) + '</span></div></div>'
                 );
             } else {
                 var a = item.data;
@@ -1027,8 +1029,10 @@
                 feed.push(
                     '<div class="task-detail-activity-item">' +
                     '<i class="far ' + (a.icon || 'fa-circle-info') + '"></i>' +
+                    '<div class="task-detail-activity-content">' +
                     '<span class="task-detail-activity-text">' + authorHtml + escapeHtml(a.text) + '</span>' +
                     '<span class="task-detail-activity-time">' + formatCommentTime(a.time) + '</span>' +
+                    '</div>' +
                     '</div>'
                 );
             }
