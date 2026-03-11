@@ -524,10 +524,17 @@
 .task-detail-comments-header {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: var(--gap-sm);
     padding: var(--padding-md) var(--padding-lg);
     border-bottom: 1px solid var(--ubits-border-1);
     flex-shrink: 0;
+}
+
+.task-detail-comments-header-left {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
 }
 
 .task-detail-comments-header-title {
@@ -565,6 +572,7 @@
 
 .task-detail-comments-feed {
     flex: 1;
+    min-height: 0;
     overflow-y: auto;
     padding: var(--padding-md);
     display: flex;

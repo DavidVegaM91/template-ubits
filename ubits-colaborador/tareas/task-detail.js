@@ -83,7 +83,8 @@
         comments: [],
         activities: [],
         massPanelOpen: false,
-        addingSubtask: false
+        addingSubtask: false,
+        commentsFeedFilter: 'all'  /* 'all' | 'comments' | 'events' */
     };
     var subtaskIdToDelete = null;
     var taskDetailSubtaskPendingClickTimeout = null;
@@ -994,10 +995,16 @@
         var total = allItems.filter(function (i) { return i.type === 'comment'; }).length;
         allItems.sort(function (a, b) { return new Date(a.time) - new Date(b.time); });
 
+        /* Aplicar filtro de feed (todo / solo comentarios / solo historial de eventos) */
+        var filterVal = estado.commentsFeedFilter || 'all';
+        var filteredItems = filterVal === 'all' ? allItems : allItems.filter(function (i) {
+            return filterVal === 'comments' ? i.type === 'comment' : i.type === 'activity';
+        });
+
         /* ── Renderizar items con separadores de fecha al cambiar de día ── */
         var feed = [];
         var lastDateKey = null;
-        allItems.forEach(function (item) {
+        filteredItems.forEach(function (item) {
             var dateKey = toDateKey(item.time);
             if (dateKey !== lastDateKey) {
                 feed.push('<div class="task-detail-comments-separator"><span>' + dateKeyLabel(dateKey) + '</span></div>');
@@ -1048,8 +1055,12 @@
 
         var html =
             '<div class="task-detail-comments-header">' +
+            '<div class="task-detail-comments-header-left">' +
             '<h2 class="task-detail-comments-header-title"><i class="far fa-comments"></i> Comentarios</h2>' +
-            '<span class="task-detail-comments-badge' + (total < 10 ? ' task-detail-comments-badge--circle' : '') + '">' + total + '</span></div>' +
+            '<span class="task-detail-comments-badge' + (total < 10 ? ' task-detail-comments-badge--circle' : '') + '">' + total + '</span>' +
+            '</div>' +
+            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only" id="task-detail-comments-filter-btn" aria-label="Filtrar"><i class="far fa-filter"></i></button>' +
+            '</div>' +
             '<div class="task-detail-comments-feed" id="task-detail-comments-feed">' + feed.join('') + '</div>' +
             '<input type="file" class="task-detail-comments-file-input" id="task-detail-comment-files" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.csv,.ppt,.pptx" multiple hidden />' +
             '<div class="task-detail-comments-input-wrap">' +
@@ -1063,9 +1074,62 @@
             '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only task-detail-comments-attach" id="task-detail-comment-attach-btn" aria-label="Adjuntar imagen o documento"><i class="far fa-paperclip"></i></button>' +
             '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm ubits-button--icon-only" id="task-detail-comment-send" aria-label="Enviar"><i class="far fa-paper-plane"></i></button>' +
             '</div></div></div>';
-        var el = document.getElementById('task-detail-comments-block');
-        if (el) el.innerHTML = html;
+        var blockEl = document.getElementById('task-detail-comments-block');
+        if (blockEl) blockEl.innerHTML = html;
 
+        /* Botón filtro: al hacer clic se crea el dropdown en body (como el de opciones del título) y se abre con alignRight */
+        var filterBtn = document.getElementById('task-detail-comments-filter-btn');
+        if (filterBtn && typeof getDropdownMenuHtml === 'function' && typeof openDropdownMenu === 'function' && typeof closeDropdownMenu === 'function') {
+            filterBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var filterOverlayId = 'task-detail-comments-filter-overlay';
+                var existing = document.getElementById(filterOverlayId);
+                if (existing) existing.remove();
+                var currentFilter = estado.commentsFeedFilter || 'all';
+                var htmlDropdown = getDropdownMenuHtml({
+                    overlayId: filterOverlayId,
+                    contentId: filterOverlayId + '-content',
+                    radioGroup: true,
+                    radioName: filterOverlayId + '-radio',
+                    options: [
+                        { text: 'Todo', value: 'all', selected: currentFilter === 'all' },
+                        { text: 'Solo comentarios', value: 'comments', selected: currentFilter === 'comments' },
+                        { text: 'Solo historial de eventos', value: 'events', selected: currentFilter === 'events' }
+                    ]
+                });
+                document.body.insertAdjacentHTML('beforeend', htmlDropdown);
+                var overlay = document.getElementById(filterOverlayId);
+                if (overlay) {
+                    overlay.addEventListener('click', function (ev) {
+                        if (ev.target === overlay) {
+                            closeDropdownMenu(filterOverlayId);
+                            if (overlay.parentNode) overlay.remove();
+                        }
+                    });
+                    var content = overlay.querySelector('.ubits-dropdown-menu__content');
+                    if (content) content.addEventListener('click', function (ev) { ev.stopPropagation(); });
+                    overlay.querySelectorAll('input[type=radio]').forEach(function (radio) {
+                        radio.addEventListener('change', function () {
+                            estado.commentsFeedFilter = this.value;
+                            closeDropdownMenu(filterOverlayId);
+                            if (overlay.parentNode) overlay.remove();
+                            renderCommentsBlock();
+                        });
+                    });
+                }
+                openDropdownMenu(filterOverlayId, filterBtn, { alignRight: true });
+                /* Re-aplicar alineación derecha en el siguiente frame (el ancho del contenido ya está calculado) */
+                requestAnimationFrame(function () {
+                    var ov = document.getElementById(filterOverlayId);
+                    var cnt = ov ? ov.querySelector('.ubits-dropdown-menu__content') : null;
+                    if (cnt && filterBtn) {
+                        var br = filterBtn.getBoundingClientRect();
+                        cnt.style.left = (br.right - cnt.offsetWidth) + 'px';
+                    }
+                });
+            });
+        }
 
         var sendBtn = document.getElementById('task-detail-comment-send');
         var inputEl = document.getElementById('task-detail-comment-input');
