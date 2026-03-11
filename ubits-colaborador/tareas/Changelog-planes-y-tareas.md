@@ -289,4 +289,26 @@ Ajustes pendientes sobre los archivos entregados por la PM Mafe para las página
 
 ---
 
-*Última actualización: ítems 1–20 (11 feb), 21–26 (19 feb), 27 (Cargar más), 28–30 (20 feb), 31 (21 feb), 32 (23 feb), 33 (nueva versión task-detail), 34 (dropdowns Estado y Prioridad en task-detail), 35 (panel de comentarios: adjuntar imágenes y archivos), 36 (implementación de subtask-detail), 37 (homologación encabezados plan-detail con task-detail), 38 (scroll-spy calendario horizontal, 10 mar), 39 (doble clic para cambio de nombre en tirillas y opción Cambiar nombre en subtareas), 40 (recordatorio registrado en historial en task-detail) implementados.*
+## 11 de marzo de 2026
+
+41. [x] **Plan-detail: personas asignadas, filtro por asignado, filtros aplicados y ajustes de UI**
+
+    Cambio único en **plan-detail** que agrupa varias mejoras en la card del plan y en la sección de tareas:
+
+    - **Personas asignadas al lado del creador:** En la card de información del plan, junto a "Creado por", se muestra **"Personas asignadas"** con un **avatar profile list** (componente oficial, `renderProfileList`) con tooltips en los nombres. Cuando hay más de tres asignados, el avatar **+X** es clicable y abre un **dropdown/popover** con el resto de personas (mismo patrón que la columna "Personas asignadas" en la tabla de planes en seguimiento). Los asignados se obtienen de las tareas del plan (únicos por email/nombre).
+
+    - **Clic en avatar = filtrar tareas por esa persona:** Al hacer clic en un avatar (en la lista o en el popover), se filtran las tareas del plan para mostrar solo las de ese asignado. El avatar seleccionado tiene **borde azul 2px** (token `--ubits-accent-brand`).
+
+    - **Filtros aplicados:** Debajo del header "Tareas del plan" aparece la barra **"Filtros aplicados"** (chips + botón "Limpiar filtros") cuando hay filtro por asignado activo, con el mismo aspecto que en seguimiento. Al quitar el chip o pulsar "Limpiar filtros" se vuelve a mostrar toda la lista.
+
+    - **Botón de filtros:** El botón de filtros de la sección de tareas pasó a ser **solo icono** (variante tertiary, xs, icono `fa-filter`), igual que los botones de filtro en los encabezados de tabla de seguimiento. Sin implementar acción (ya en producción).
+
+    - **Botón "Configurar miembros":** Junto al profile list de asignados se añadió un botón con icono `fa-users` y texto "Configurar miembros". Sin acción ni disabled (reservado para producción).
+
+    - **Ajustes de UI:** Se aumentó el espacio entre la barra de filtros aplicados y los counters (Por hacer, Vencidas, Finalizadas), y se redujo el **font-size** de esos counters de **md** a **xs**.
+
+    Archivos: `plan-detail.html`, `plan-detail.js`, `plan-detail.css`; popover de asignados; import de `chip.css` para los chips de filtros aplicados.
+
+---
+
+*Última actualización: ítems 1–20 (11 feb), 21–26 (19 feb), 27 (Cargar más), 28–30 (20 feb), 31 (21 feb), 32 (23 feb), 33 (nueva versión task-detail), 34 (dropdowns Estado y Prioridad en task-detail), 35 (panel de comentarios: adjuntar imágenes y archivos), 36 (implementación de subtask-detail), 37 (homologación encabezados plan-detail con task-detail), 38 (scroll-spy calendario horizontal, 10 mar), 39 (doble clic para cambio de nombre en tirillas y opción Cambiar nombre en subtareas), 40 (recordatorio registrado en historial en task-detail), 41 (plan-detail: asignados, filtro por persona, filtros aplicados y UI, 11 mar) implementados.*

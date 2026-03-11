@@ -214,23 +214,152 @@
     font-weight: var(--font-weight-semibold);
 }
 
-/* Creado por: fila con avatar + nombre */
-.plan-detail-card__creado-row {
+/* Creado por + Personas asignadas: fila en dos celdas */
+.plan-detail-card__creado-asignados-row {
     display: flex;
-    align-items: center;
-    gap: var(--gap-md);
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: var(--gap-2xl);
     margin: 0 0 var(--gap-lg) 0;
 }
 
-.plan-detail-card__creado-value {
+.plan-detail-card__creado-cell,
+.plan-detail-card__asignados-cell {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+    min-width: 0;
+}
+
+.plan-detail-card__asignados-cell {
+    flex: 1;
+    min-width: 0;
+}
+
+.plan-detail-card__creado-value,
+.plan-detail-card__asignados-value {
     display: flex;
     align-items: center;
     gap: var(--gap-sm);
     min-width: 0;
+    flex-wrap: wrap;
+}
+
+.plan-detail-card__asignados-row {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    flex-wrap: wrap;
+    min-width: 0;
+}
+
+.plan-detail-card__asignados-value {
+    gap: var(--gap-sm);
+}
+
+.plan-detail-card__creado-value {
+    gap: var(--gap-sm);
 }
 
 .plan-detail-card__creado-name {
     color: var(--ubits-fg-1-medium);
+}
+
+/* Avatar de asignado con filtro activo: borde brand 2px */
+#plan-detail-assignees-wrap .ubits-profile-list__avatar.plan-detail-assignee-avatar--active {
+    outline: 2px solid var(--ubits-accent-brand);
+    outline-offset: 1px;
+    border-radius: var(--border-radius-full);
+}
+
+#plan-detail-assignees-wrap .ubits-profile-list__avatar {
+    border-radius: var(--border-radius-full);
+}
+
+/* Botón Configurar miembros: al lado del profile list */
+.plan-detail-card__asignados-value .ubits-button#plan-detail-configurar-miembros-btn {
+    flex-shrink: 0;
+}
+
+/* Popover asignados (+N): mismo patrón que seguimiento */
+.plan-detail-asignados-popover-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+}
+
+.plan-detail-asignados-popover {
+    position: fixed;
+    min-width: 220px;
+    max-width: 320px;
+    max-height: 320px;
+    overflow-y: auto;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    z-index: 1001;
+    padding: var(--padding-sm) 0;
+}
+
+.plan-detail-asignados-popover-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.plan-detail-asignados-popover-item {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+    padding: var(--padding-sm) var(--padding-md);
+    color: var(--ubits-fg-1-medium);
+}
+
+.plan-detail-asignados-popover-item .ubits-avatar {
+    flex-shrink: 0;
+}
+
+.plan-detail-asignados-popover-item .ubits-body-sm-regular {
+    color: var(--ubits-fg-1-medium);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Filtros aplicados (debajo del header de tareas del plan): igual que seguimiento */
+.plan-detail-filtros-aplicados.widget-filtros-aplicados {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+    flex-wrap: wrap;
+    margin-top: var(--gap-sm);
+    margin-bottom: var(--gap-lg);
+}
+
+.plan-detail-filtros-aplicados .filtros-chips-container {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    flex-wrap: wrap;
+}
+
+.plan-detail-filtros-aplicados .filtros-chips-container .ubits-chip {
+    max-width: 150px;
+}
+
+.plan-detail-filtros-aplicados .filtros-chips-container .ubits-chip__text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+}
+
+.plan-detail-clear-filters-btn {
+    flex-shrink: 0;
 }
 
 /* Descripción body: body/md regular, fg-1-medium */
@@ -379,8 +508,8 @@
 .plan-detail-tasks-card__counter {
     display: flex;
     align-items: center;
-    gap: var(--gap-sm, 8px); /* 6px → superior */
-    font-size: var(--font-size-md, 16px); /* 14px → superior */
+    gap: var(--gap-sm, 8px);
+    font-size: var(--font-size-xs, 12px);
     color: var(--ubits-fg-1-medium);
 }
 

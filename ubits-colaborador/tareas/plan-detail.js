@@ -117,6 +117,10 @@ window.planDetailPlanCache = window.planDetailPlanCache || {};
 let planDetailTaskIdToDelete = null;
 // Timeout para retrasar apertura del detalle y permitir doble clic en el nombre
 let planDetailPendingTaskClickTimeout = null;
+// Filtro por asignado: clave (email o nombre) para filtrar tareas del plan; null = sin filtro
+let planDetailFilterByAssigneeKey = null;
+// Lista de asignados del plan actual (para popover +N y marcar activo)
+let planDetailAssigneesList = [];
 
 function getTasksForPlan(planId) {
     if (!planId) return [];
@@ -124,6 +128,20 @@ function getTasksForPlan(planId) {
     if (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getTareasPorPlan === 'function')
         return TAREAS_PLANES_DB.getTareasPorPlan(planId) || [];
     return [];
+}
+
+/** Asignados únicos del plan (desde tareas), con clave para filtro y display. */
+function getUniqueAssigneesFromTasks(tasks) {
+    const seen = {};
+    const out = [];
+    (tasks || []).forEach(function (t) {
+        const key = (t.assignee_email && String(t.assignee_email).trim()) || (t.assignee_name && String(t.assignee_name).trim()) || '';
+        if (!key || seen[key]) return;
+        seen[key] = true;
+        const display = getAssigneeDisplayForPlanDetail(t);
+        out.push({ name: display.name, nombre: display.name, avatar: display.avatar, _key: key });
+    });
+    return out;
 }
 
 function loadPlanAndTasks(planId) {
@@ -206,10 +224,45 @@ function renderPlanDetail(planId) {
             createdByEl.textContent = creatorName;
         }
     }
-    const doneCount = tasks.filter(t => t.done).length;
-    if (countEl) countEl.textContent = `${doneCount}/${tasks.length}`;
 
-    const progress = tasks.length > 0 ? Math.round((doneCount / tasks.length) * 100) : 0;
+    const assigneesList = getUniqueAssigneesFromTasks(tasks);
+    planDetailAssigneesList = assigneesList;
+    const assigneesWrap = document.getElementById('plan-detail-assignees-wrap');
+    if (assigneesWrap) {
+        if (assigneesList.length === 0) {
+            assigneesWrap.innerHTML = '<span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-low);">Sin asignados</span>';
+        } else {
+            const tooltipOpts = { showTooltip: true, tooltipDelay: 1000 };
+            const listHtml = typeof window.renderProfileList === 'function'
+                ? window.renderProfileList(assigneesList, { size: 'xs', maxVisible: 3, ...tooltipOpts })
+                : '';
+            assigneesWrap.innerHTML = listHtml;
+            const profileList = assigneesWrap.querySelector('.ubits-profile-list');
+            if (profileList) {
+                const avatars = profileList.querySelectorAll('.ubits-profile-list__avatar');
+                avatars.forEach(function (el, i) {
+                    if (assigneesList[i]) {
+                        el.setAttribute('data-assignee-key', assigneesList[i]._key);
+                        el.style.cursor = 'pointer';
+                        if (assigneesList[i]._key === planDetailFilterByAssigneeKey) el.classList.add('plan-detail-assignee-avatar--active');
+                    }
+                });
+                const countEl = profileList.querySelector('.ubits-profile-list__count');
+                if (countEl) countEl.style.cursor = 'pointer';
+            }
+        }
+    }
+
+    const filteredTasks = planDetailFilterByAssigneeKey
+        ? tasks.filter(function (t) {
+            const key = (t.assignee_email && String(t.assignee_email).trim()) || (t.assignee_name && String(t.assignee_name).trim()) || '';
+            return key === planDetailFilterByAssigneeKey;
+        })
+        : tasks;
+    const doneCount = filteredTasks.filter(t => t.done).length;
+    if (countEl) countEl.textContent = `${doneCount}/${filteredTasks.length}`;
+
+    const progress = filteredTasks.length > 0 ? Math.round((doneCount / filteredTasks.length) * 100) : 0;
     if (barEl) barEl.style.width = progress + '%';
     if (percentEl) percentEl.textContent = progress + '%';
 
@@ -250,19 +303,36 @@ function renderPlanDetail(planId) {
         finalizarBtn.style.display = plan.status === 'Finalizado' ? 'none' : '';
     }
 
-    const vencidas = tasks.filter(t => t.endDate && t.endDate < today && !t.done);
-    const iniciadas = tasks.filter(t => !t.done && !(t.endDate && t.endDate < today));
-    const finalizadas = tasks.filter(t => t.done);
+    const vencidas = filteredTasks.filter(t => t.endDate && t.endDate < today && !t.done);
+    const iniciadas = filteredTasks.filter(t => !t.done && !(t.endDate && t.endDate < today));
+    const finalizadas = filteredTasks.filter(t => t.done);
     if (countIniciadasEl) countIniciadasEl.textContent = iniciadas.length;
     if (countVencidasEl) countVencidasEl.textContent = vencidas.length;
     if (countFinalizadasEl) countFinalizadasEl.textContent = finalizadas.length;
 
-    if (tasks.length === 0) {
+    const filtrosWidget = document.getElementById('plan-detail-filtros-aplicados');
+    const filtrosChipsContainer = document.getElementById('plan-detail-filtros-chips-container');
+    if (filtrosWidget && filtrosChipsContainer) {
+        if (planDetailFilterByAssigneeKey) {
+            filtrosWidget.style.display = 'flex';
+            const asignado = planDetailAssigneesList.find(function (a) { return a._key === planDetailFilterByAssigneeKey; });
+            const labelAsignado = asignado ? asignado.name : planDetailFilterByAssigneeKey;
+            filtrosChipsContainer.innerHTML = '<span class="ubits-chip ubits-chip--xs ubits-chip--close plan-detail-filtro-chip" data-filter-type="asignado" data-tooltip="Asignado: ' + escapeHtml(labelAsignado) + '" data-tooltip-position="top">' +
+                '<span class="ubits-chip__text">Asignado: ' + escapeHtml(labelAsignado) + '</span>' +
+                '<button type="button" class="ubits-chip__close" data-filter-type="asignado" aria-label="Quitar filtro"><i class="far fa-times"></i></button></span>';
+            if (typeof initTooltip === 'function') initTooltip('#plan-detail-filtros-chips-container [data-tooltip]');
+        } else {
+            filtrosWidget.style.display = 'none';
+            filtrosChipsContainer.innerHTML = '';
+        }
+    }
+
+    if (filteredTasks.length === 0) {
         if (tasksListEl) tasksListEl.innerHTML = '';
         if (emptyEl) emptyEl.style.display = 'flex';
     } else {
         if (emptyEl) emptyEl.style.display = 'none';
-        var ordered = tasks.slice().sort(function (a, b) {
+        var ordered = filteredTasks.slice().sort(function (a, b) {
             if (a.done !== b.done) return (a.done ? 1 : 0) - (b.done ? 1 : 0);
             if (a.done && b.done) return (a._justFinalized ? 0 : 1) - (b._justFinalized ? 0 : 1);
             return 0;
@@ -487,6 +557,86 @@ function initPlanDetail() {
 
     // Enlazar clics de la lista de tareas ANTES de renderizar (así funciona al llegar desde seguimiento)
     attachTaskListeners();
+
+    function closePlanDetailAsignadosPopover() {
+        const overlay = document.getElementById('plan-detail-asignados-popover-overlay');
+        const popover = document.getElementById('plan-detail-asignados-popover');
+        if (overlay) { overlay.style.display = 'none'; overlay.setAttribute('aria-hidden', 'true'); }
+        if (popover) popover.style.display = 'none';
+    }
+
+    document.addEventListener('click', function (e) {
+        const wrap = document.getElementById('plan-detail-assignees-wrap');
+        if (!wrap || !wrap.contains(e.target)) return;
+        const avatar = e.target.closest('.ubits-profile-list__avatar');
+        const countEl = e.target.closest('.ubits-profile-list__count');
+        if (avatar && avatar.hasAttribute('data-assignee-key')) {
+            e.preventDefault();
+            e.stopPropagation();
+            planDetailFilterByAssigneeKey = avatar.getAttribute('data-assignee-key');
+            renderPlanDetail(planId);
+            return;
+        }
+        if (countEl && planDetailAssigneesList.length > 3) {
+            e.preventDefault();
+            e.stopPropagation();
+            const remaining = planDetailAssigneesList.slice(3);
+            const listEl = document.getElementById('plan-detail-asignados-popover-list');
+            const popover = document.getElementById('plan-detail-asignados-popover');
+            const overlay = document.getElementById('plan-detail-asignados-popover-overlay');
+            if (!listEl || !popover || !overlay) return;
+            listEl.innerHTML = '';
+            remaining.forEach(function (p) {
+                const div = document.createElement('div');
+                div.className = 'plan-detail-asignados-popover-item';
+                div.setAttribute('data-assignee-key', p._key);
+                if (typeof renderAvatar === 'function') {
+                    const av = document.createElement('span');
+                    av.innerHTML = renderAvatar(p, { size: 'sm' });
+                    div.appendChild(av);
+                }
+                const span = document.createElement('span');
+                span.className = 'ubits-body-sm-regular';
+                span.textContent = p.name || 'Sin asignar';
+                div.appendChild(span);
+                div.style.cursor = 'pointer';
+                div.addEventListener('click', function (ev) {
+                    ev.preventDefault();
+                    ev.stopPropagation();
+                    planDetailFilterByAssigneeKey = p._key;
+                    closePlanDetailAsignadosPopover();
+                    renderPlanDetail(planId);
+                });
+                listEl.appendChild(div);
+            });
+            const rect = countEl.getBoundingClientRect();
+            popover.style.top = (rect.bottom + 4) + 'px';
+            popover.style.left = rect.left + 'px';
+            overlay.style.display = 'block';
+            overlay.setAttribute('aria-hidden', 'false');
+            popover.style.display = 'block';
+        }
+    });
+
+    const asignadosOverlay = document.getElementById('plan-detail-asignados-popover-overlay');
+    if (asignadosOverlay) asignadosOverlay.addEventListener('click', closePlanDetailAsignadosPopover);
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closePlanDetailAsignadosPopover();
+    });
+
+    document.addEventListener('click', function (e) {
+        const clearBtn = document.getElementById('plan-detail-clear-filters-btn');
+        if (clearBtn && e.target.closest('#plan-detail-clear-filters-btn')) {
+            planDetailFilterByAssigneeKey = null;
+            renderPlanDetail(planId);
+            return;
+        }
+        const chipClose = e.target.closest('#plan-detail-filtros-chips-container .ubits-chip__close');
+        if (chipClose) {
+            planDetailFilterByAssigneeKey = null;
+            renderPlanDetail(planId);
+        }
+    });
 
     // Modal eliminar tarea (desde opciones de la tirilla): mismo flujo que tareas.html
     const modalsContainer = document.getElementById('plan-detail-modals-container');

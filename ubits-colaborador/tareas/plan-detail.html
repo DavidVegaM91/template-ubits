@@ -26,6 +26,7 @@
     <link rel="stylesheet" href="../../components/avatar.css">
     <link rel="stylesheet" href="../../components/task-strip.css">
     <link rel="stylesheet" href="../../components/checkbox.css">
+    <link rel="stylesheet" href="../../components/chip.css">
     <link rel="stylesheet" href="../../components/calendar.css">
     <link rel="stylesheet" href="../../components/save-indicator.css">
     <link rel="stylesheet" href="../../components/empty-state.css">
@@ -67,9 +68,21 @@
                                 <textarea class="task-detail-desc-editable ubits-body-sm-regular" id="plan-detail-desc" placeholder="Descripción del plan" rows="1"></textarea>
                             </div>
                             <div class="plan-detail-card__divider"></div>
-                            <div class="plan-detail-card__creado-row">
-                                <span class="ubits-body-sm-semibold plan-detail-card__meta-label">Creado por</span>
-                                <div class="plan-detail-card__creado-value" id="plan-detail-created-by"></div>
+                            <div class="plan-detail-card__creado-asignados-row">
+                                <div class="plan-detail-card__creado-cell">
+                                    <span class="ubits-body-sm-semibold plan-detail-card__meta-label">Creado por</span>
+                                    <div class="plan-detail-card__creado-value" id="plan-detail-created-by"></div>
+                                </div>
+                                <div class="plan-detail-card__asignados-cell">
+                                    <span class="ubits-body-sm-semibold plan-detail-card__meta-label">Personas asignadas</span>
+                                    <div class="plan-detail-card__asignados-row">
+                                        <div class="plan-detail-card__asignados-value" id="plan-detail-assignees-wrap"></div>
+                                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm" id="plan-detail-configurar-miembros-btn" aria-label="Configurar miembros">
+                                            <i class="far fa-users"></i>
+                                            <span>Configurar miembros</span>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                             <div class="plan-detail-card__progress-row">
                                 <span class="plan-detail-card__meta-label">Tareas finalizadas </span><span id="plan-detail-tasks-count" class="plan-detail-card__count-regular">0/0</span>
@@ -105,11 +118,22 @@
                                         aria-label="Buscar">
                                         <i class="far fa-search"></i>
                                     </button>
-                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm">
-                                        <i class="far fa-sliders-h"></i>
-                                        <span>Ver filtros</span>
+                                    <button type="button"
+                                        class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only plan-detail-filters-btn"
+                                        aria-label="Filtrar" data-tooltip="Filtrar" data-tooltip-delay="1000">
+                                        <i class="far fa-filter"></i>
                                     </button>
                                 </div>
+                            </div>
+                            <div class="plan-detail-filtros-aplicados widget-filtros-aplicados" id="plan-detail-filtros-aplicados" style="display: none;">
+                                <span class="ubits-body-sm-regular">Filtros aplicados:</span>
+                                <div class="filtros-chips-container" id="plan-detail-filtros-chips-container"></div>
+                                <button type="button"
+                                    class="ubits-button ubits-button--tertiary ubits-button--xs plan-detail-clear-filters-btn"
+                                    id="plan-detail-clear-filters-btn" aria-label="Limpiar todos los filtros">
+                                    <i class="far fa-filter-slash"></i>
+                                    <span>Limpiar filtros</span>
+                                </button>
                             </div>
                             <div class="plan-detail-tasks-card__counters">
                                 <span
@@ -154,6 +178,12 @@
 
     <div id="plan-detail-modals-container"></div>
     <div id="ubits-toast-container"></div>
+
+    <!-- Popover asignados (+N): lista de personas no visibles en el profile list -->
+    <div class="plan-detail-asignados-popover-overlay" id="plan-detail-asignados-popover-overlay" style="display: none;" aria-hidden="true"></div>
+    <div class="plan-detail-asignados-popover" id="plan-detail-asignados-popover" style="display: none;" role="dialog" aria-label="Personas asignadas">
+        <div class="plan-detail-asignados-popover-list" id="plan-detail-asignados-popover-list"></div>
+    </div>
 
     <div id="tab-bar-container"></div>
     <div id="floating-menu-container"></div>
