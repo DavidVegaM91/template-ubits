@@ -876,6 +876,14 @@
     }
 
     var currentUserName = 'María Alejandra Sánchez Pardo';
+    var currentUserAvatar = null;
+    if (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getUsuarioActual === 'function') {
+        var u = TAREAS_PLANES_DB.getUsuarioActual();
+        if (u) {
+            if (u.nombre) currentUserName = u.nombre;
+            if (u.avatar && String(u.avatar).trim()) currentUserAvatar = u.avatar;
+        }
+    }
 
     // Imágenes y documentos pendientes de envío (persisten entre re-renders del bloque de comentarios)
     var pendingImages = [];
@@ -1114,7 +1122,7 @@
                 estado.comments.push({
                     id: Date.now(),
                     author: currentUserName,
-                    authorAvatar: null,
+                    authorAvatar: currentUserAvatar,
                     time: new Date().toISOString(),
                     text: text || '',
                     images: pendingImages.slice(),
