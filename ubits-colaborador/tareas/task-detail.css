@@ -540,18 +540,27 @@
     color: var(--ubits-fg-1-high);
 }
 
+/* Badge comentarios: circular con un dígito, pill cuando son varios (como el badge del botón oficial) */
 .task-detail-comments-badge {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 20px;
     height: 20px;
+    min-width: 20px;
     padding: 0 6px;
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-semibold);
-    color: var(--ubits-feedback-fg-info);
-    background: var(--ubits-feedback-bg-info-subtle);
-    border-radius: 10px;
+    color: var(--ubits-fg-2-high-inverted);
+    background: var(--ubits-accent-brand);
+    border-radius: var(--border-radius-full);
+}
+
+/* Un solo dígito: circular */
+.task-detail-comments-badge--circle {
+    width: 20px;
+    min-width: 20px;
+    padding: 0;
+    border-radius: 50%;
 }
 
 .task-detail-comments-feed {
@@ -621,7 +630,7 @@
 
 /* Usuario actual: texto blanco dentro del globo */
 .task-detail-comment-item--user .task-detail-comment-bubble .task-detail-comment-text {
-    color: var(--ubits-btn-primary-fg);
+    color: var(--ubits-fg-2-high-inverted);
 }
 
 .task-detail-comment-item--user .task-detail-comment-author,

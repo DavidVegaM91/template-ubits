@@ -1049,7 +1049,7 @@
         var html =
             '<div class="task-detail-comments-header">' +
             '<h2 class="task-detail-comments-header-title"><i class="far fa-comments"></i> Comentarios</h2>' +
-            '<span class="task-detail-comments-badge">' + total + '</span></div>' +
+            '<span class="task-detail-comments-badge' + (total < 10 ? ' task-detail-comments-badge--circle' : '') + '">' + total + '</span></div>' +
             '<div class="task-detail-comments-feed" id="task-detail-comments-feed">' + feed.join('') + '</div>' +
             '<input type="file" class="task-detail-comments-file-input" id="task-detail-comment-files" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.csv,.ppt,.pptx" multiple hidden />' +
             '<div class="task-detail-comments-input-wrap">' +
