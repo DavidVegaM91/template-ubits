@@ -445,8 +445,8 @@
                         </div>
                         <div style="text-align: center; padding: 20px; background: var(--ubits-bg-2); border-radius: 12px;">
                             <div style="font-size: var(--font-size-d3); color: var(--ubits-accent-brand); margin-bottom: 12px;"><i class="far fa-palette"></i></div>
-                            <div class="ubits-body-md-bold" style="margin-bottom: 8px;">3 Tamaños</div>
-                            <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Small (32px), Medium (40px), Large (48px)</div>
+                            <div class="ubits-body-md-bold" style="margin-bottom: 8px;">4 Tamaños</div>
+                            <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">XS (28px), Small (32px), Medium (40px), Large (48px)</div>
                         </div>
                         <div style="text-align: center; padding: 20px; background: var(--ubits-bg-2); border-radius: 12px;">
                             <div style="font-size: var(--font-size-d3); color: var(--ubits-accent-brand); margin-bottom: 12px;"><i class="far fa-toggle-on"></i></div>
@@ -718,7 +718,7 @@
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="input-prompt-13">Cambia el tamaño del input [descripción_del_input] a [small, medium o large].</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="input-prompt-13">Cambia el tamaño del input [descripción_del_input] a [xs, small, medium o large].</code></pre>
                         </div>
                     </div>
 
@@ -1217,6 +1217,10 @@ input.setState(state)     // Cambiar estado (default, hover, focus, invalid, dis
     <script src="../../docs/docs-sidebar.js"></script>
     <script src="../../script.js"></script>
     <script>
+        // Valores reales de los selects (createInput type select guarda el texto en el input, no el value)
+        var previewSelectedSize = 'md';
+        var previewSelectedState = 'default';
+
         document.addEventListener('DOMContentLoaded', function() {
             // Cargar top-nav con variante documentación
             loadSubNav('top-nav-container', 'documentacion');
@@ -1345,7 +1349,7 @@ input.setState(state)     // Cambiar estado (default, hover, focus, invalid, dis
                 onChange: updateInput
             });
 
-            // Size Select Control
+            // Size Select Control (onChange recibe el value: xs, sm, md, lg)
             createInput({
                 containerId: 'size-select-control',
                 type: 'select',
@@ -1353,14 +1357,15 @@ input.setState(state)     // Cambiar estado (default, hover, focus, invalid, dis
                 value: 'md',
                 size: 'sm',
                 selectOptions: [
-                    {value: 'sm', text: 'Small (sm)'},
-                    {value: 'md', text: 'Medium (md)'},
-                    {value: 'lg', text: 'Large (lg)'}
+                    {value: 'xs', text: 'Extra small (xs) - 28px'},
+                    {value: 'sm', text: 'Small (sm) - 32px'},
+                    {value: 'md', text: 'Medium (md) - 40px'},
+                    {value: 'lg', text: 'Large (lg) - 48px'}
                 ],
-                onChange: updateInput
+                onChange: function(val) { previewSelectedSize = val; updateInput(); }
             });
 
-            // State Select Control
+            // State Select Control (onChange recibe el value: default, hover, focus, etc.)
             createInput({
                 containerId: 'state-select-control',
                 type: 'select',
@@ -1374,7 +1379,7 @@ input.setState(state)     // Cambiar estado (default, hover, focus, invalid, dis
                     {value: 'invalid', text: 'Invalid'},
                     {value: 'disabled', text: 'Disabled'}
                 ],
-                onChange: updateInput
+                onChange: function(val) { previewSelectedState = val; updateInput(); }
             });
 
             // Placeholder Content Control
@@ -1431,29 +1436,18 @@ input.setState(state)     // Cambiar estado (default, hover, focus, invalid, dis
             const showRightIcon = rightIconToggle.checked;
             const rightIconContentValue = document.querySelector('#right-icon-content-control input')?.value || 'fa-check';
             
-            // Para los selects, obtener el valor del input personalizado
-            const sizeInput = document.querySelector('#size-select-control input');
-            const size = sizeInput?.value || 'md';
-            
-            const stateInput = document.querySelector('#state-select-control input');
-            const state = stateInput?.value || 'default';
+            // Para los selects usar el valor real guardado en onChange (el input muestra el texto, no el value)
+            const size = previewSelectedSize || 'md';
+            const state = previewSelectedState || 'default';
             
             const placeholderContentValue = document.querySelector('#placeholder-content-control input')?.value || 'Placeholder text';
             
             console.log('Valores obtenidos:', {
                 size: size,
                 state: state,
-                mandatoryType: mandatoryTypeValue,
-                sizeInput: sizeInput,
-                stateInput: stateInput
+                mandatoryType: mandatoryTypeValue
             });
             
-            // Debug: verificar si los elementos select existen
-            console.log('Elementos select encontrados:', {
-                sizeSelect: document.querySelector('#size-select-control'),
-                stateSelect: document.querySelector('#state-select-control'),
-                mandatorySelect: document.querySelector('#mandatory-type-control')
-            });
 
             // Crear el input con las opciones seleccionadas
             const options = {
@@ -1506,21 +1500,7 @@ input.setState(state)     // Cambiar estado (default, hover, focus, invalid, dis
                 if (inputElement) {
                     console.log('Aplicando estado:', state);
                     console.log('Aplicando tamaño:', size);
-                    
-                    // Aplicar el tamaño seleccionado
-                    if (size === 'Small (sm)') {
-                        inputElement.classList.add('ubits-input--sm');
-                        inputElement.classList.remove('ubits-input--md', 'ubits-input--lg');
-                        console.log('Aplicado tamaño Small (sm)');
-                    } else if (size === 'Medium (md)') {
-                        inputElement.classList.add('ubits-input--md');
-                        inputElement.classList.remove('ubits-input--sm', 'ubits-input--lg');
-                        console.log('Aplicado tamaño Medium (md)');
-                    } else if (size === 'Large (lg)') {
-                        inputElement.classList.add('ubits-input--lg');
-                        inputElement.classList.remove('ubits-input--sm', 'ubits-input--md');
-                        console.log('Aplicado tamaño Large (lg)');
-                    }
+                    // El tamaño ya viene aplicado por createInput (ubits-input--xs, --sm, --md, --lg)
                     
                     // Remover todas las clases de estado primero del input
                     inputElement.classList.remove('ubits-input--hover', 'ubits-input--focus', 'ubits-input--invalid', 'ubits-input--disabled');

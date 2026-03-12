@@ -340,7 +340,7 @@
             '<i class="far ' + (prioridadIcon[prioridad] || 'fa-chevron-up') + '"></i><span class="ubits-badge-tag__text">' + escapeHtml(prioridadLabel) + '</span></span>' +
             '</div></span>' +
             '<span class="task-detail-meta-cell">' +
-            '<span id="task-detail-vencimiento-label" class="ubits-body-sm-semibold task-detail-meta-label">Vencimiento</span>' +
+            '<span id="task-detail-vencimiento-label" class="ubits-body-sm-semibold task-detail-meta-label">Finaliza el:</span>' +
             '<div id="task-detail-vencimiento-wrap"></div></span>' +
             '</div>';
         var el = document.getElementById('task-detail-info-block');
@@ -349,7 +349,7 @@
             createInput({
                 containerId: 'task-detail-vencimiento-wrap',
                 type: 'calendar',
-                size: 'sm',
+                size: 'xs',
                 showLabel: false,
                 placeholder: 'Sin fecha',
                 value: ymdToDmySlash(task.endDate),

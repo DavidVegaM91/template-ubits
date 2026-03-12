@@ -97,6 +97,14 @@
    INPUT SIZES - Matching button heights
    ======================================== */
 
+.ubits-input--xs {
+    padding: 6px var(--padding-sm);
+    font-size: var(--font-size-xs);
+    line-height: 16.5px;
+    height: 28px;
+    font-family: 'Noto Sans', sans-serif;
+}
+
 .ubits-input--sm {
     padding: var(--padding-sm) var(--padding-sm);
     font-size: 0.875rem;
@@ -198,6 +206,14 @@ textarea.ubits-input:disabled {
 
 .ubits-input-wrapper--right-icon .ubits-input {
     padding-right: 40px;
+}
+
+.ubits-input-wrapper--left-icon.ubits-input--xs .ubits-input {
+    padding-left: 32px;
+}
+
+.ubits-input-wrapper--right-icon.ubits-input--xs .ubits-input {
+    padding-right: 32px;
 }
 
 .ubits-input-wrapper--left-icon.ubits-input--sm .ubits-input {

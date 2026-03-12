@@ -251,7 +251,7 @@
             '<i class="far ' + (prioridadIcon[prioridad] || 'fa-chevron-up') + '"></i><span class="ubits-badge-tag__text">' + escapeHtml(prioridadLabel) + '</span></span>' +
             '</div></div>' +
             '<div class="subtask-detail-info-cell">' +
-            '<span id="subtask-detail-vencimiento-label" class="ubits-body-sm-semibold task-detail-meta-label">Vencimiento</span>' +
+            '<span id="subtask-detail-vencimiento-label" class="ubits-body-sm-semibold task-detail-meta-label">Finaliza el:</span>' +
             '<div id="subtask-detail-vencimiento-wrap"></div></div>' +
             '</div>' +
             '</div>';

@@ -142,7 +142,7 @@
  * | `label` | string | `''` | Texto del label |
  * | `placeholder` | string | `''` | Texto del placeholder |
  * | `helperText` | string | `''` | Texto de ayuda |
- * | `size` | string | `'md'` | Tamaño: 'sm', 'md', 'lg' |
+ * | `size` | string | `'md'` | Tamaño: 'xs' (28px), 'sm', 'md', 'lg' |
  * | `state` | string | `'default'` | Estado del input |
  * | `variant` | string | `'default'` | Apariencia: 'default' (borde visible) o 'subtle' (sin borde visible) |
  * | `type` | string | `'text'` | Tipo de input |
@@ -504,7 +504,7 @@
  * @param {string} [options.label] - Texto del label (opcional)
  * @param {string} [options.placeholder] - Texto del placeholder
  * @param {string} [options.helperText] - Texto de ayuda (opcional)
- * @param {string} [options.size='md'] - Tamaño del input: 'sm', 'md', 'lg'
+ * @param {string} [options.size='md'] - Tamaño del input: 'xs' (28px, body-xs), 'sm', 'md', 'lg'
  * @param {string} [options.state='default'] - Estado del input: 'default', 'hover', 'focus', 'active', 'invalid', 'disabled'
  * @param {string} [options.variant='default'] - Apariencia: 'default' (borde visible) o 'subtle' (sin borde visible)
  * @param {string} [options.type='text'] - Tipo de input: 'text', 'email', 'password', 'number', 'tel', 'url', 'select', 'textarea', 'search', 'autocomplete', 'calendar'

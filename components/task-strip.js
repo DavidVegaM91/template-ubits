@@ -85,7 +85,7 @@ function renderTaskStrip(tarea, opts) {
         '</span>' +
         '</div>' +
         '<div class="tarea-fecha ' + (!fechaDisplay ? 'tarea-fecha--sin-fecha' : '') + (esVencidaReal ? ' tarea-fecha--overdue' : '') + '">' +
-        '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm tarea-fecha-btn" data-tarea-id="' + idSafe + '" data-tooltip="Fecha de vencimiento">' +
+        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs tarea-fecha-btn" data-tarea-id="' + idSafe + '" data-tooltip="Fecha de vencimiento">' +
         (fechaDisplay ? '<span>' + escapeHtml(fechaDisplay) + '</span>' : '<span>Sin fecha</span>') +
         '</button>' +
         '</div>' +

@@ -452,10 +452,9 @@
 }
 
 /* Input fecha: usa componente oficial .ubits-input; ancho fijo para alineación */
-/* Mismo ancho que task-detail (vencimiento-wrap: 125px) */
 #plan-detail-vencimiento-wrap {
-    width: 125px;
-    min-width: 125px;
+    width: 100px;
+    min-width: 100px;
 }
 #plan-detail-vencimiento-wrap .ubits-input {
     width: 100%;
