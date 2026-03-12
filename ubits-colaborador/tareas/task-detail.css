@@ -307,6 +307,22 @@
     gap: var(--gap-sm);
 }
 
+.task-detail-subtasks-bar {
+    flex: 1;
+    min-width: 80px;
+    height: 8px;
+    background: var(--ubits-bg-3);
+    border-radius: var(--border-radius-full);
+    overflow: hidden;
+}
+
+.task-detail-subtasks-bar-fill {
+    height: 100%;
+    background: var(--ubits-accent-brand);
+    border-radius: var(--border-radius-full);
+    transition: width 0.3s ease;
+}
+
 .task-detail-subtasks-title {
     display: flex;
     align-items: center;
@@ -355,8 +371,8 @@
 .task-detail-add-subtask-wrapper {
     display: flex;
     flex-direction: row;
-    flex-wrap: nowrap;
-    align-items: center;
+    flex-wrap: wrap;
+    align-items: flex-end;
     gap: var(--gap-md);
     padding: var(--padding-sm) var(--padding-md);
     border: 1px solid var(--ubits-accent-brand);
@@ -405,7 +421,24 @@
     flex-shrink: 0;
 }
 
-/* Panel modo creación masiva */
+.task-detail-add-subtask-wrapper textarea.task-detail-add-subtask-input {
+    resize: none;
+    min-height: 36px;
+    overflow-y: hidden;
+    transition: height 0.05s ease-out;
+}
+
+.task-detail-add-subtask-wrapper .task-detail-add-subtask-multi-check {
+    width: 100%;
+    flex: 1 1 100%;
+}
+
+.task-detail-add-subtask-wrapper .task-detail-add-subtask-multi-check .ubits-checkbox__label {
+    font-size: var(--font-size-sm);
+    color: var(--ubits-fg-1-medium);
+}
+
+/* Panel modo creación masiva (legacy: ya no se usa; se reemplazó por checkbox en el form) */
 .task-detail-mass-panel {
     display: none;
     flex-direction: column;

@@ -82,7 +82,6 @@
         subtasks: [],
         comments: [],
         activities: [],
-        massPanelOpen: false,
         addingSubtask: false,
         commentsFeedFilter: 'all'  /* 'all' | 'comments' | 'events' */
     };
@@ -350,7 +349,7 @@
             createInput({
                 containerId: 'task-detail-vencimiento-wrap',
                 type: 'calendar',
-                size: 'xs',
+                size: 'sm',
                 showLabel: false,
                 placeholder: 'Sin fecha',
                 value: ymdToDmySlash(task.endDate),
@@ -580,50 +579,25 @@
         var listHtml = ordered.length
             ? ordered.map(function (t) { return window.renderTaskStrip(t, opts); }).join('')
             : '';
-        var massPri = estado.massPanelPriority != null ? estado.massPanelPriority : (estado.task && estado.task.priority) || 'media';
-        massPri = String(massPri).toLowerCase();
-        var massPriLabel = massPri === 'alta' ? 'Alta' : massPri === 'baja' ? 'Baja' : 'Media';
-        var massPriIcon = { alta: 'fa-chevrons-up', media: 'fa-chevron-up', baja: 'fa-chevron-down' };
-        var massPriVariant = { alta: 'error', media: 'warning', baja: 'info' };
-        var massPriBadgeHtml = '<span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--' + (massPriVariant[massPri] || 'warning') + ' ubits-badge-tag--sm ubits-badge-tag--with-icon"><i class="far ' + (massPriIcon[massPri] || 'fa-chevron-up') + '"></i><span class="ubits-badge-tag__text">' + escapeHtml(massPriLabel) + '</span></span>';
-        var massPanel = estado.massPanelOpen
-            ? '<div class="task-detail-mass-panel is-open" id="task-detail-mass-panel">' +
-            '<div class="task-detail-mass-panel-header">' +
-            '<h3 class="ubits-body-md-semibold task-detail-mass-panel-title"><i class="far fa-folder"></i> Creación a partir de lista</h3>' +
-            '<span class="ubits-body-sm-regular task-detail-mass-panel-detected" id="task-detail-mass-detected">Se detectaron 0 subtareas</span></div>' +
-            '<textarea class="task-detail-mass-panel-textarea" id="task-detail-mass-textarea" placeholder="Escribe una subtarea por línea&#10;Línea 1&#10;Línea 2&#10;..."></textarea>' +
-            '<div class="task-detail-mass-panel-options">' +
-            '<div class="task-detail-mass-panel-date"><span class="ubits-body-sm-semibold task-detail-meta-label">Vencimiento</span><div id="task-detail-mass-date-wrap"></div></div>' +
-            '<div class="task-detail-mass-panel-priority"><span class="ubits-body-sm-semibold task-detail-meta-label">Prioridad</span><div class="task-detail-prioridad-trigger task-detail-mass-prioridad-trigger" id="task-detail-mass-prioridad-trigger" role="button" tabindex="0" aria-haspopup="listbox" aria-expanded="false">' + massPriBadgeHtml + '</div></div>' +
-            '<div class="task-detail-mass-panel-actions">' +
-            '<p class="ubits-body-xs-regular task-detail-mass-panel-tip">Escribe varias líneas de texto para crear múltiples subtareas a la vez.</p>' +
-            '<div class="task-detail-mass-panel-actions__btns">' +
-            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="task-detail-mass-cancel"><span class="ubits-body-sm-regular">Cancelar</span></button>' +
-            '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="task-detail-mass-create"><span class="ubits-body-sm-regular">Crear subtareas</span></button>' +
-            '</div></div></div>' +
-            '</div>'
-            : '<div class="task-detail-mass-panel" id="task-detail-mass-panel"></div>';
-
         var addFormHtml = estado.addingSubtask
             ? '<form class="task-detail-add-subtask-form" id="task-detail-add-subtask-form">' +
             '<div class="task-detail-add-subtask-wrapper">' +
-            '<div class="task-detail-add-subtask-icon"><i class="far fa-plus"></i></div>' +
-            '<input type="text" class="ubits-input ubits-input--sm task-detail-add-subtask-input" placeholder="Nombre de la subtarea" data-subtask-add autofocus />' +
+            '<textarea class="ubits-input ubits-input--sm task-detail-add-subtask-input" placeholder="Nombre de la subtarea" data-subtask-add rows="2" autofocus></textarea>' +
             '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm task-detail-add-subtask-btn"><span class="ubits-body-sm-regular">Añadir</span></button>' +
+            '<label class="ubits-checkbox ubits-checkbox--sm task-detail-add-subtask-multi-check"><input type="checkbox" class="ubits-checkbox__input" id="task-detail-add-multi-checkbox" data-subtask-multi><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label">Agregar múltiples subtareas a partir de lista</span></label>' +
             '</div></form>'
             : '';
+        var barPercent = total > 0 ? (100 * completed / total) : 0;
         var html =
             '<div class="task-detail-subtasks-header">' +
             '<h2 class="ubits-body-md-bold task-detail-subtasks-title"><i class="far fa-list-check"></i> Subtareas</h2>' +
-            '<span class="ubits-body-sm-regular task-detail-subtasks-counter">' + completed + '/' + total + ' Completadas</span></div>' +
+            '<div class="task-detail-subtasks-bar"><div class="task-detail-subtasks-bar-fill" style="width:' + barPercent + '%"></div></div>' +
+            '<span class="ubits-body-sm-regular task-detail-subtasks-counter">' + completed + ' de ' + total + ' completadas</span></div>' +
             '<div class="task-detail-subtasks-list" id="task-detail-subtasks-list">' + listHtml + '</div>' +
             addFormHtml +
-            massPanel +
             '<div class="task-detail-add-row">' +
             '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="task-detail-add-subtask-btn">' +
-            '<i class="far fa-plus"></i><span class="ubits-body-sm-regular">Agregar una subtarea</span></button>' +
-            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="task-detail-mass-btn">' +
-            '<i class="far fa-list"></i><span class="ubits-body-sm-regular">Creación a partir de lista de texto</span></button>' +
+            '<i class="far fa-plus"></i><span class="ubits-body-sm-regular">Añadir subtarea</span></button>' +
             '</div>';
         var el = document.getElementById('task-detail-subtasks-block');
         if (el) el.innerHTML = html;
@@ -690,21 +664,33 @@
         }
 
         function submitSubtaskForm(form) {
-            var inp = form.querySelector('input[data-subtask-add]');
+            var inp = form.querySelector('[data-subtask-add]');
             if (!inp || !inp.value.trim()) return;
-            var nombre = inp.value.trim();
-            estado.subtasks.push({
-                id: Date.now(),
-                name: nombre,
-                done: false,
-                status: 'Activo',
-                endDate: estado.task ? estado.task.endDate : today,
-                priority: estado.task ? estado.task.priority : 'media',
-                assignee_name: estado.task ? estado.task.assignee_name : null,
-                assignee_email: estado.task ? estado.task.assignee_email : null,
-                assignee_avatar_url: estado.task ? estado.task.assignee_avatar_url : null
+            var multiCheck = form.querySelector('input[data-subtask-multi]');
+            var isMulti = multiCheck && multiCheck.checked;
+            var text = inp.value.trim();
+            var names = isMulti ? text.split('\n').map(function (s) { return s.trim(); }).filter(Boolean) : [text];
+            if (names.length === 0) return;
+            var parentEndDate = estado.task ? estado.task.endDate : today;
+            var parentPriority = estado.task ? estado.task.priority : 'media';
+            names.forEach(function (nombre) {
+                estado.subtasks.push({
+                    id: Date.now() + Math.random(),
+                    name: nombre,
+                    done: false,
+                    status: 'Activo',
+                    endDate: parentEndDate,
+                    priority: parentPriority,
+                    assignee_name: estado.task ? estado.task.assignee_name : null,
+                    assignee_email: estado.task ? estado.task.assignee_email : null,
+                    assignee_avatar_url: estado.task ? estado.task.assignee_avatar_url : null
+                });
             });
-            pushActivity('fa-plus-circle', currentUserName, 'añadió la subtarea "' + nombre + '".');
+            if (names.length === 1) {
+                pushActivity('fa-plus-circle', currentUserName, 'añadió la subtarea "' + names[0] + '".');
+            } else {
+                pushActivity('fa-layer-plus', currentUserName, 'añadió ' + names.length + ' subtareas en lote.');
+            }
             estado.addingSubtask = false;
             renderSubtasksBlock();
             renderCommentsBlock();
@@ -713,7 +699,7 @@
 
         function closeSubtaskFormIfEmpty() {
             var form = document.getElementById('task-detail-add-subtask-form');
-            var inp = form && form.querySelector('input[data-subtask-add]');
+            var inp = form && form.querySelector('[data-subtask-add]');
             if (form && inp && !inp.value.trim()) {
                 estado.addingSubtask = false;
                 renderSubtasksBlock();
@@ -726,18 +712,19 @@
                 estado.addingSubtask = true;
                 renderSubtasksBlock();
                 var form = document.getElementById('task-detail-add-subtask-form');
-                var inp = form && form.querySelector('input[data-subtask-add]');
+                var inp = form && form.querySelector('[data-subtask-add]');
                 if (inp) setTimeout(function () { inp.focus(); }, 50);
                 if (form) {
                     var wrapper = form.querySelector('.task-detail-add-subtask-wrapper');
                     if (wrapper) {
                         setTimeout(function () {
                             function closeIfEmptyAndOutside(ev) {
+                                var target = ev.target;
+                                if (target && typeof target.closest === 'function' && target.closest('.task-detail-add-subtask-form')) return;
                                 if (!form.isConnected) {
                                     document.removeEventListener('click', closeIfEmptyAndOutside, true);
                                     return;
                                 }
-                                if (wrapper.contains(ev.target)) return;
                                 closeSubtaskFormIfEmpty();
                                 document.removeEventListener('click', closeIfEmptyAndOutside, true);
                             }
@@ -749,131 +736,48 @@
         }
         var addForm = document.getElementById('task-detail-add-subtask-form');
         if (addForm) {
+            var inp = addForm.querySelector('[data-subtask-add]');
+            var MIN_TEXTAREA_HEIGHT = 36;
+            function autoResizeSubtaskTextarea(ta) {
+                if (!ta || !ta.isConnected) return;
+                ta.style.height = '0';
+                ta.style.height = Math.max(MIN_TEXTAREA_HEIGHT, ta.scrollHeight) + 'px';
+            }
             addForm.onsubmit = function (e) {
                 e.preventDefault();
                 submitSubtaskForm(addForm);
             };
-            var inp = addForm.querySelector('input[data-subtask-add]');
-            if (inp) {
-                inp.addEventListener('blur', function () {
-                    closeSubtaskFormIfEmpty();
-                }, { once: true });
-            }
             var addSubtaskBtnEl = addForm.querySelector('.task-detail-add-subtask-btn');
             if (addSubtaskBtnEl) {
                 addSubtaskBtnEl.onclick = function () {
                     submitSubtaskForm(addForm);
                 };
             }
-        }
-        var massBtn = document.getElementById('task-detail-mass-btn');
-        if (massBtn) {
-            massBtn.onclick = function () {
-                estado.massPanelOpen = true;
-                renderSubtasksBlock();
-            };
-        }
-        if (estado.massPanelOpen) {
-            var panel = document.getElementById('task-detail-mass-panel');
-            if (panel) {
-                var ta = document.getElementById('task-detail-mass-textarea');
-                if (ta) ta.addEventListener('input', updateMassPanelDetected);
-                if (typeof createInput === 'function') {
-                    var parentEndDateYmd = (estado.task && estado.task.endDate) ? estado.task.endDate : getTodayString();
-                    createInput({ containerId: 'task-detail-mass-date-wrap', type: 'calendar', size: 'xs', showLabel: false, placeholder: 'Fecha', value: ymdToDmySlash(parentEndDateYmd) });
-                }
-                var massPrioridadTrigger = document.getElementById('task-detail-mass-prioridad-trigger');
-                if (massPrioridadTrigger && typeof window.getDropdownMenuHtml === 'function' && typeof window.openDropdownMenu === 'function' && typeof window.closeDropdownMenu === 'function') {
-                    massPrioridadTrigger.addEventListener('click', function (e) {
+            var multiCheck = addForm.querySelector('input[data-subtask-multi]');
+            if (inp) {
+                inp.addEventListener('input', function () { autoResizeSubtaskTextarea(inp); });
+                inp.addEventListener('paste', function () { setTimeout(function () { autoResizeSubtaskTextarea(inp); }, 0); });
+                inp.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter' && !e.shiftKey && multiCheck && !multiCheck.checked) {
                         e.preventDefault();
-                        e.stopPropagation();
-                        var overlayId = 'task-detail-mass-prioridad-overlay';
-                        var existing = document.getElementById(overlayId);
-                        if (existing) existing.remove();
-                        var options = [
-                            { text: 'Alta', value: 'alta' },
-                            { text: 'Media', value: 'media' },
-                            { text: 'Baja', value: 'baja' }
-                        ];
-                        var html = window.getDropdownMenuHtml({ overlayId: overlayId, options: options });
-                        document.body.insertAdjacentHTML('beforeend', html);
-                        var overlayEl = document.getElementById(overlayId);
-                        if (overlayEl) {
-                            overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function (opt) {
-                                opt.addEventListener('click', function () {
-                                    var val = this.getAttribute('data-value');
-                                    var label = val === 'alta' ? 'Alta' : val === 'baja' ? 'Baja' : 'Media';
-                                    estado.massPanelPriority = val;
-                                    window.closeDropdownMenu(overlayId);
-                                    if (overlayEl.parentNode) overlayEl.remove();
-                                    var trigger = document.getElementById('task-detail-mass-prioridad-trigger');
-                                    if (trigger) {
-                                        var icon = { alta: 'fa-chevrons-up', media: 'fa-chevron-up', baja: 'fa-chevron-down' };
-                                        var variant = { alta: 'error', media: 'warning', baja: 'info' };
-                                        trigger.innerHTML = '<span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--' + (variant[val] || 'warning') + ' ubits-badge-tag--sm ubits-badge-tag--with-icon"><i class="far ' + (icon[val] || 'fa-chevron-up') + '"></i><span class="ubits-badge-tag__text">' + escapeHtml(label) + '</span></span>';
-                                    }
-                                });
-                            });
-                            overlayEl.addEventListener('click', function (ev) {
-                                if (ev.target === overlayEl) { window.closeDropdownMenu(overlayId); if (overlayEl.parentNode) overlayEl.remove(); }
-                            });
-                        }
-                        window.openDropdownMenu(overlayId, massPrioridadTrigger);
-                    });
-                    massPrioridadTrigger.addEventListener('keydown', function (e) {
-                        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); massPrioridadTrigger.click(); }
-                    });
-                }
-                var cancel = document.getElementById('task-detail-mass-cancel');
-                var createBtn = document.getElementById('task-detail-mass-create');
-                if (cancel) cancel.onclick = function () { estado.massPanelOpen = false; renderSubtasksBlock(); };
-                if (createBtn) createBtn.onclick = function () {
-                    var textarea = document.getElementById('task-detail-mass-textarea');
-                    var lines = (textarea ? textarea.value : '').split('\n').map(function (s) { return s.trim(); }).filter(Boolean);
-                    var priority = estado.massPanelPriority != null ? estado.massPanelPriority : (estado.task && estado.task.priority) || 'media';
-                    var endDate = estado.task ? estado.task.endDate : getTodayString();
-                    var dateWrap = document.getElementById('task-detail-mass-date-wrap');
-                    if (dateWrap) {
-                        var dateInput = dateWrap.querySelector('input');
-                        if (dateInput && dateInput.value && dateInput.value.trim()) {
-                            var ymdFromInput = dmySlashToYmd(dateInput.value.trim());
-                            if (ymdFromInput) endDate = ymdFromInput;
-                        }
+                        submitSubtaskForm(addForm);
                     }
-                    lines.forEach(function (name) {
-                        estado.subtasks.push({
-                            id: Date.now() + Math.random(),
-                            name: name,
-                            done: false,
-                            status: 'Activo',
-                            endDate: endDate,
-                            priority: priority,
-                            assignee_name: estado.task ? estado.task.assignee_name : null,
-                            assignee_email: estado.task ? estado.task.assignee_email : null,
-                            assignee_avatar_url: estado.task ? estado.task.assignee_avatar_url : null
-                        });
-                    });
-                    /* ── Actividad: creación masiva de subtareas ── */
-                    if (lines.length === 1) {
-                        pushActivity('fa-plus-circle', currentUserName, 'añadió la subtarea "' + lines[0] + '".');
-                    } else if (lines.length > 1) {
-                        pushActivity('fa-layer-plus', currentUserName, 'añadió ' + lines.length + ' subtareas en lote.');
+                });
+                setTimeout(function () { autoResizeSubtaskTextarea(inp); }, 50);
+            }
+            if (multiCheck && inp) {
+                multiCheck.addEventListener('change', function () {
+                    if (this.checked) {
+                        inp.placeholder = 'Una subtarea por línea';
+                        inp.rows = 4;
+                    } else {
+                        inp.placeholder = 'Nombre de la subtarea';
+                        inp.rows = 2;
                     }
-                    estado.massPanelOpen = false;
-                    renderSubtasksBlock();
-                    renderCommentsBlock();
-                    triggerFakeSave();
-                };
+                    setTimeout(function () { autoResizeSubtaskTextarea(inp); }, 0);
+                });
             }
         }
-    }
-
-    function updateMassPanelDetected() {
-        var ta = document.getElementById('task-detail-mass-textarea');
-        var el = document.getElementById('task-detail-mass-detected');
-        if (!el || !ta) return;
-        var lines = (ta.value || '').split('\n').map(function (s) { return s.trim(); }).filter(Boolean);
-        el.textContent = lines.length === 0 ? 'Se detectaron 0 subtareas' : (lines.length === 1 ? 'Se detectó 1 subtarea' : 'Se detectaron ' + lines.length + ' subtareas');
     }
 
     var currentUserName = 'María Alejandra Sánchez Pardo';
@@ -1059,7 +963,7 @@
             '<h2 class="ubits-body-md-bold task-detail-comments-header-title"><i class="far fa-comments"></i> Comentarios</h2>' +
             '<span class="ubits-body-xs-semibold task-detail-comments-badge' + (total < 10 ? ' task-detail-comments-badge--circle' : '') + '">' + total + '</span>' +
             '</div>' +
-            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only" id="task-detail-comments-filter-btn" aria-label="Filtrar"><i class="far fa-filter"></i></button>' +
+            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs" id="task-detail-comments-filter-btn" aria-label="Filtrar"><i class="far fa-filter"></i><span>Filtrar</span></button>' +
             '</div>' +
             '<div class="task-detail-comments-feed" id="task-detail-comments-feed">' + feed.join('') + '</div>' +
             '<input type="file" class="task-detail-comments-file-input" id="task-detail-comment-files" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.csv,.ppt,.pptx" multiple hidden />' +
@@ -1095,7 +999,7 @@
                     options: [
                         { text: 'Todo', value: 'all', selected: currentFilter === 'all' },
                         { text: 'Solo comentarios', value: 'comments', selected: currentFilter === 'comments' },
-                        { text: 'Solo historial de eventos', value: 'events', selected: currentFilter === 'events' }
+                        { text: 'Solo historial de cambios', value: 'events', selected: currentFilter === 'events' }
                     ]
                 });
                 document.body.insertAdjacentHTML('beforeend', htmlDropdown);

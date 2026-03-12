@@ -233,6 +233,7 @@ body.page-tareas .dashboard-container {
    Margen inferior de 16px queda por max-height del main (calc(100vh - var(--gap-lg))). */
 .widget-vista-tareas {
     background-color: var(--ubits-bg-1) !important;
+    border-radius: var(--border-radius-md) !important;
     padding: var(--padding-xl, 20px) !important;
     display: flex !important;
     flex-direction: column !important;

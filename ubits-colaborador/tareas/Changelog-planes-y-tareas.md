@@ -2,12 +2,18 @@
 
 # Backlog – Tareas y Planes
 
-Ajustes pendientes sobre los archivos entregados por la PM Mafe para las páginas de **Tareas**, **Planes** y **Detalle de plan**.
+Registro de cambios realizados en los archivos del módulo de Tareas y Planes (Planes, Detalle de plan, Mi lista de tareas, Detalle de tarea, Detalle de subtarea, Seguimiento, Seguimiento líder). Las entradas están ordenadas en orden cronológico, del más antiguo al más reciente.
 
-**Archivos en scope:**
-- `plan-detail.css`, `plan-detail.html`, `plan-detail.js`
-- `planes.css`, `planes.html`, `planes.js`
-- `tareas.css`, `tareas.html`, `tareas.js`
+**Archivos en scope (carpeta `ubits-colaborador/tareas/`):**
+- **Planes:** `planes.css`, `planes.html`, `planes.js`
+- **Detalle de plan:** `plan-detail.css`, `plan-detail.html`, `plan-detail.js`
+- **Tareas (mi lista):** `tareas.css`, `tareas.html`, `tareas.js`
+- **Detalle de tarea:** `task-detail.css`, `task-detail.html`, `task-detail.js`
+- **Detalle de subtarea:** `subtask-detail.css`, `subtask-detail.html`, `subtask-detail.js`
+- **Seguimiento:** `seguimiento.css`, `seguimiento.html`, `seguimiento.js`
+- **Seguimiento líder:** `seguimiento-leader.css`, `seguimiento-leader.html`
+- **Base de datos unificada:** `tareas-base-unificada.js`
+- **Plantilla:** `plantilla.html`, `plantilla.css`
 
 ---
 
@@ -311,4 +317,24 @@ Ajustes pendientes sobre los archivos entregados por la PM Mafe para las página
 
 ---
 
-*Última actualización: ítems 1–20 (11 feb), 21–26 (19 feb), 27 (Cargar más), 28–30 (20 feb), 31 (21 feb), 32 (23 feb), 33 (nueva versión task-detail), 34 (dropdowns Estado y Prioridad en task-detail), 35 (panel de comentarios: adjuntar imágenes y archivos), 36 (implementación de subtask-detail), 37 (homologación encabezados plan-detail con task-detail), 38 (scroll-spy calendario horizontal, 10 mar), 39 (doble clic para cambio de nombre en tirillas y opción Cambiar nombre en subtareas), 40 (recordatorio registrado en historial en task-detail), 41 (plan-detail: asignados, filtro por persona, filtros aplicados y UI, 11 mar) implementados.*
+## 12 de marzo de 2026
+
+42. [x] **Task-detail: input vencimiento sm, barra de progreso subtareas, botón Filtrar y "Historial de cambios"**
+
+    Cambios en **task-detail** (detalle de tarea):
+
+    - **Input fecha de vencimiento en tamaño sm:** El campo de fecha de vencimiento en el bloque de información de la tarea usa ahora el tamaño `sm` del componente input/calendar.
+
+    - **Barra de progreso en subtareas:** Entre el título "Subtareas" y el texto "X de Y completadas" se añadió una barra de progreso (progress bar) con los mismos estilos que en plan-detail, mostrando visualmente el avance de subtareas completadas.
+
+    - **Botón de filtros de comentarios:** El botón que abre el menú de filtro del feed (Todo / Solo comentarios / Solo historial de cambios) pasó a ser **secundario, tamaño xs**, y muestra el texto **"Filtrar"** además del icono (ya no es icon-only).
+
+    - **"Historial de eventos" → "Historial de cambios":** En el menú de filtro del feed de comentarios, la opción se renombró a **"Solo historial de cambios"** para mayor claridad.
+
+    - **Nueva versión del formulario de agregar subtareas:** Un solo bloque con textarea + botón "Añadir" + checkbox **"Agregar múltiples subtareas a partir de lista"**. Si el checkbox está desmarcado: una subtarea por envío; **Enter** envía el formulario. Si está marcado: el texto se interpreta como una subtarea por línea (split por `\n`) y **Enter** inserta salto de línea. El textarea **crece en alto** con el contenido (auto-resize); el botón "Añadir" queda **alineado abajo**. El formulario no se cierra al hacer clic en el checkbox (solo al hacer clic fuera o al enviar).
+
+    Archivos: `task-detail.js`, `task-detail.css`.
+
+---
+
+*Última actualización: ítems 1–20 (11 feb), 21–26 (19 feb), 27 (Cargar más), 28–30 (20 feb), 31 (21 feb), 32 (23 feb), 33 (nueva versión task-detail), 34 (dropdowns Estado y Prioridad en task-detail), 35 (panel de comentarios: adjuntar imágenes y archivos), 36 (implementación de subtask-detail), 37 (homologación encabezados plan-detail con task-detail), 38 (scroll-spy calendario horizontal, 10 mar), 39 (doble clic para cambio de nombre en tirillas y opción Cambiar nombre en subtareas), 40 (recordatorio registrado en historial en task-detail), 41 (plan-detail: asignados, filtro por persona, filtros aplicados y UI, 11 mar), 42 (task-detail: vencimiento sm, progress bar subtareas, botón Filtrar, Historial de cambios, nueva versión formulario subtareas, 12 mar) implementados.*
