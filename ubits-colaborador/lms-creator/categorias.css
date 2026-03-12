@@ -1,0 +1,8 @@
+/* ========================================
+   ESTILOS ESPECÍFICOS PARA CATEGORÍAS
+   ======================================== */
+
+/* Estilos propios de la página Categorías (LMS Creator). Identidad visual con tokens UBITS. */
+.widget-contenido-lms {
+    color: var(--ubits-fg-1-medium);
+}

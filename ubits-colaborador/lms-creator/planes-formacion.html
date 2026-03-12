@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>UBITS Playground - LMS Creator - Planes de formación</title>
+    
+    <!-- Estilos locales -->
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../components/tab-bar.css">
+    <link rel="stylesheet" href="../../components/floating-menu.css">
+    <link rel="stylesheet" href="../../components/profile-menu.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/ia-button.css">
+    <link rel="stylesheet" href="../../components/header-product.css">
+    <link rel="stylesheet" href="../../components/tooltip.css">
+    <link rel="stylesheet" href="../../components/table.css">
+    <link rel="stylesheet" href="../../components/status-tag.css">
+    <link rel="stylesheet" href="../../components/checkbox.css">
+    <link rel="stylesheet" href="../../components/tab.css">
+    <link rel="stylesheet" href="../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/modal.css">
+    <link rel="stylesheet" href="../../components/empty-state.css">
+    <link rel="stylesheet" href="./lms-creator.css">
+    <link rel="stylesheet" href="./planes-formacion.css">
+</head>
+<body data-theme="light" class="page-planes-formacion">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        
+        <div id="sidebar-container"></div>
+
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div class="content-area">
+                <div class="content-sections">
+                    <div class="section-single">
+                        <div class="widget-header-product" id="header-product-container"></div>
+                    </div>
+                    <!-- Tabla de planes: sección sin --asignaciones para evitar doble borde; misma estructura y datos -->
+                    <div class="section-single section-single--test-tabla">
+                        <div class="widget-planes-formacion">
+                            <!-- Header: título Lista de planes, contador X/X, botón búsqueda -->
+                            <div class="lms-table-header-bar">
+                                <div class="lms-table-header-left">
+                                    <span class="ubits-body-md-bold" id="planes-header-title">Lista de planes</span>
+                                    <span class="ubits-body-sm-regular" id="planes-results-count">0/0</span>
+                                </div>
+                                <div class="lms-table-header-right">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only" id="planes-search-toggle" aria-label="Buscar" data-tooltip="Buscar" data-tooltip-delay="1000">
+                                        <i class="far fa-magnifying-glass"></i>
+                                    </button>
+                                    <div id="planes-search-container" class="lms-table-search-inline" style="display: none;"></div>
+                                </div>
+                            </div>
+                            <!-- Action bar (visible cuando hay filas seleccionadas) -->
+                            <div class="lms-table-action-bar" id="planes-action-bar">
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="planes-ver-seleccionados">
+                                    <i class="far fa-eye"></i>
+                                    <span>Ver seleccionados</span>
+                                </button>
+                                <div class="lms-table-action-buttons">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="planes-mass-descargar">
+                                        <i class="far fa-download"></i>
+                                        <span>Descargar</span>
+                                    </button>
+                                    <button type="button" class="ubits-button ubits-button--error-secondary ubits-button--sm" id="planes-mass-eliminar">
+                                        <i class="far fa-trash"></i>
+                                        <span>Eliminar</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="asignaciones-list-wrapper">
+                                <div class="ubits-table-wrapper ubits-table-wrapper--min-width" id="planes-table-wrapper">
+                                    <table class="ubits-table" id="asignaciones-table">
+                                        <thead>
+                                            <tr>
+                                                <th class="ubits-table__th--checkbox" data-col="checkbox" data-tooltip="Seleccionar todo" data-tooltip-delay="1000"><label class="ubits-checkbox ubits-checkbox--sm" style="display:inline-flex;"><input type="checkbox" class="ubits-checkbox__input" id="asignaciones-select-all" aria-label="Seleccionar todo"><span class="ubits-checkbox__box"><i class="fas fa-check"></i><i class="fas fa-minus"></i></span><span class="ubits-checkbox__label sr-only" aria-hidden="true">&nbsp;</span></label></th>
+                                                <th data-col="nombre" class="ubits-body-sm-semibold lms-th-sortable">Nombre del plan <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only lms-sort-btn" data-sort="nombre" aria-label="Ordenar por nombre del plan" data-tooltip="Ordenar por nombre del plan" data-tooltip-delay="1000"><i class="far fa-arrow-up-arrow-down"></i></button></th>
+                                                <th data-col="tipo" class="ubits-body-sm-semibold">Tipo de asignación</th>
+                                                <th data-col="fecha-inicio" class="ubits-body-sm-semibold lms-th-sortable">Fecha inicio <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only lms-sort-btn" data-sort="fecha-inicio" aria-label="Ordenar por fecha inicio" data-tooltip="Ordenar por fecha inicio" data-tooltip-delay="1000"><i class="far fa-arrow-up-arrow-down"></i></button></th>
+                                                <th data-col="fecha-fin" class="ubits-body-sm-semibold lms-th-sortable">Fecha fin <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only lms-sort-btn" data-sort="fecha-fin" aria-label="Ordenar por fecha fin" data-tooltip="Ordenar por fecha fin" data-tooltip-delay="1000"><i class="far fa-arrow-up-arrow-down"></i></button></th>
+                                                <th data-col="estado" class="ubits-body-sm-semibold lms-th-filterable">Estado <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only lms-filter-btn" data-filter="estado" aria-label="Filtrar por estado" data-tooltip="Filtrar por estado" data-tooltip-delay="1000"><i class="far fa-filter"></i></button></th>
+                                                <th data-col="progreso" class="ubits-body-sm-semibold lms-th-sortable">Progreso <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only lms-sort-btn" data-sort="progreso" aria-label="Ordenar por progreso" data-tooltip="Ordenar por progreso" data-tooltip-delay="1000"><i class="far fa-arrow-up-arrow-down"></i></button></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr data-tipo="contenidos" data-plan-id="1" class="asignacion-row-clickable">
+                                                <td class="ubits-table__td--checkbox" data-col="checkbox" data-tooltip="Seleccionar" data-tooltip-delay="1000"><label class="ubits-checkbox ubits-checkbox--sm" style="display:inline-flex;"><input type="checkbox" class="ubits-checkbox__input asignacion-row-check" data-id="1"><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label sr-only" aria-hidden="true">&nbsp;</span></label></td>
+                                                <td data-col="nombre"><span class="ubits-body-sm-regular">Plan de onboarding 2025</span></td>
+                                                <td data-col="tipo"><span class="ubits-body-sm-regular">Contenidos</span></td>
+                                                <td data-col="fecha-inicio" data-date="01/01/2025"><span class="ubits-body-sm-regular">01/01/2025</span></td>
+                                                <td data-col="fecha-fin" data-date="31/03/2025"><span class="ubits-body-sm-regular">31/03/2025</span></td>
+                                                <td data-col="estado"><span class="ubits-status-tag ubits-status-tag--success ubits-status-tag--sm"><span class="ubits-status-tag__text">Vigente</span></span></td>
+                                                <td data-col="progreso">
+                                                    <div class="ubits-table__cell-progress">
+                                                        <div class="ubits-table__progress-bar"><div class="ubits-table__progress-bar-fill" style="width: 65%"></div></div>
+                                                        <span class="ubits-body-sm-regular">65%</span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr data-tipo="competencias" data-plan-id="2" class="asignacion-row-clickable">
+                                                <td class="ubits-table__td--checkbox" data-col="checkbox" data-tooltip="Seleccionar" data-tooltip-delay="1000"><label class="ubits-checkbox ubits-checkbox--sm" style="display:inline-flex;"><input type="checkbox" class="ubits-checkbox__input asignacion-row-check" data-id="2"><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label sr-only" aria-hidden="true">&nbsp;</span></label></td>
+                                                <td data-col="nombre"><span class="ubits-body-sm-regular">Competencias de liderazgo</span></td>
+                                                <td data-col="tipo"><span class="ubits-body-sm-regular">Competencias</span></td>
+                                                <td data-col="fecha-inicio" data-date="15/02/2025"><span class="ubits-body-sm-regular">15/02/2025</span></td>
+                                                <td data-col="fecha-fin" data-date="30/06/2025"><span class="ubits-body-sm-regular">30/06/2025</span></td>
+                                                <td data-col="estado"><span class="ubits-status-tag ubits-status-tag--success ubits-status-tag--sm"><span class="ubits-status-tag__text">Vigente</span></span></td>
+                                                <td data-col="progreso">
+                                                    <div class="ubits-table__cell-progress">
+                                                        <div class="ubits-table__progress-bar"><div class="ubits-table__progress-bar-fill" style="width: 20%"></div></div>
+                                                        <span class="ubits-body-sm-regular">20%</span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr data-tipo="contenidos" data-plan-id="3" class="asignacion-row-clickable">
+                                                <td class="ubits-table__td--checkbox" data-col="checkbox" data-tooltip="Seleccionar" data-tooltip-delay="1000"><label class="ubits-checkbox ubits-checkbox--sm" style="display:inline-flex;"><input type="checkbox" class="ubits-checkbox__input asignacion-row-check" data-id="3"><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label sr-only" aria-hidden="true">&nbsp;</span></label></td>
+                                                <td data-col="nombre"><span class="ubits-body-sm-regular">Cursos de cumplimiento Q1</span></td>
+                                                <td data-col="tipo"><span class="ubits-body-sm-regular">Contenidos</span></td>
+                                                <td data-col="fecha-inicio" data-date="01/03/2025"><span class="ubits-body-sm-regular">01/03/2025</span></td>
+                                                <td data-col="fecha-fin" data-date="31/03/2025"><span class="ubits-body-sm-regular">31/03/2025</span></td>
+                                                <td data-col="estado"><span class="ubits-status-tag ubits-status-tag--warning ubits-status-tag--sm"><span class="ubits-status-tag__text">Pendiente</span></span></td>
+                                                <td data-col="progreso">
+                                                    <div class="ubits-table__cell-progress">
+                                                        <div class="ubits-table__progress-bar"><div class="ubits-table__progress-bar-fill" style="width: 0%"></div></div>
+                                                        <span class="ubits-body-sm-regular">0%</span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr data-tipo="competencias" data-plan-id="4" class="asignacion-row-clickable">
+                                                <td class="ubits-table__td--checkbox" data-col="checkbox" data-tooltip="Seleccionar" data-tooltip-delay="1000"><label class="ubits-checkbox ubits-checkbox--sm" style="display:inline-flex;"><input type="checkbox" class="ubits-checkbox__input asignacion-row-check" data-id="4"><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label sr-only" aria-hidden="true">&nbsp;</span></label></td>
+                                                <td data-col="nombre"><span class="ubits-body-sm-regular">Evaluación técnica 2024</span></td>
+                                                <td data-col="tipo"><span class="ubits-body-sm-regular">Competencias</span></td>
+                                                <td data-col="fecha-inicio" data-date="01/09/2024"><span class="ubits-body-sm-regular">01/09/2024</span></td>
+                                                <td data-col="fecha-fin" data-date="15/12/2024"><span class="ubits-body-sm-regular">15/12/2024</span></td>
+                                                <td data-col="estado"><span class="ubits-status-tag ubits-status-tag--neutral ubits-status-tag--sm"><span class="ubits-status-tag__text">No vigente</span></span></td>
+                                                <td data-col="progreso">
+                                                    <div class="ubits-table__cell-progress">
+                                                        <div class="ubits-table__progress-bar"><div class="ubits-table__progress-bar-fill" style="width: 100%"></div></div>
+                                                        <span class="ubits-body-sm-regular">100%</span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div id="planes-empty-state" class="lms-table-empty-state" style="display: none;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="planes-modals-container"></div>
+    <div id="tab-bar-container"></div>
+    <div id="floating-menu-container"></div>
+    <div id="profile-menu-container"></div>
+    <div id="ubits-toast-container"></div>
+
+    <script src="../../components/tooltip.js"></script>
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/tab-bar.js"></script>
+    <script src="../../components/floating-menu.js"></script>
+    <script src="../../components/profile-menu.js"></script>
+    <script src="../../components/header-product.js"></script>
+    <script src="../../components/dropdown-menu.js"></script>
+    <script src="../../components/input.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/modal.js"></script>
+    <script src="../../components/empty-state.js"></script>
+    <script src="../../script.js"></script>
+    <script src="./lms-creator-tables.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSidebar('creator');
+            loadSubNav('top-nav-container', 'creator');
+            loadTabBar('tab-bar-container');
+            loadFloatingMenu('floating-menu-container');
+            loadProfileMenu('profile-menu-container');
+
+            var table = document.getElementById('asignaciones-table');
+            var tableRows = table ? Array.from(table.querySelectorAll('tbody tr')) : [];
+            var tabActivo = 'contenidos';
+
+            if (typeof getModalHtml === 'function') {
+                var deleteBody = '<p class="ubits-body-md-regular">¿Estás seguro de que deseas eliminar <strong id="planes-delete-count">0</strong> plan(es) seleccionado(s)?</p><p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Esta acción no se puede deshacer.</p><div class="delete-confirm-group" style="margin-top: var(--gap-lg);"><label class="ubits-body-sm-regular" for="planes-delete-type-input">Escriba <strong>eliminar</strong> para habilitar el botón:</label><input type="text" id="planes-delete-type-input" class="ubits-input" placeholder="Escriba la palabra de confirmación" autocomplete="off" style="margin-top: var(--gap-sm); width: 100%; padding: var(--padding-sm) var(--padding-md); border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-sm); font-size: var(--font-size-sm); color: var(--ubits-fg-1-high); box-sizing: border-box;"></div>';
+                var deleteFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="planes-delete-cancel">Cancelar</button><button type="button" class="ubits-button ubits-button--error ubits-button--md" id="planes-delete-confirm" disabled>Eliminar</button>';
+                document.getElementById('planes-modals-container').innerHTML = getModalHtml({ overlayId: 'planes-delete-overlay', title: 'Confirmar eliminación', bodyHtml: deleteBody, footerHtml: deleteFooter, size: 'sm', closeButtonId: 'planes-delete-close' });
+            }
+            var searchQuery = '';
+            var isSearchMode = false;
+            var viewOnlySelected = false;
+            var filterEstado = []; // ['Vigente','Pendiente','No vigente'] vacío = todos
+            var sortCol = '';
+            var sortDir = 'asc';
+
+            function getRowText(row, col) {
+                var td = row.querySelector('td[data-col="' + col + '"]');
+                if (!td) return '';
+                if (col === 'progreso') {
+                    var span = td.querySelector('.ubits-table__cell-progress .ubits-body-sm-regular');
+                    var t = span ? span.textContent.replace(/%/, '') : '';
+                    return parseInt(t, 10) || 0;
+                }
+                var span = td.querySelector('.ubits-status-tag__text');
+                if (span) return span.textContent.trim();
+                span = td.querySelector('.ubits-body-sm-regular');
+                return span ? span.textContent.trim() : '';
+            }
+
+            function getRowDate(row, col) {
+                var td = row.querySelector('td[data-col="' + col + '"]');
+                if (!td) return '';
+                return td.getAttribute('data-date') || getRowText(row, col) || '';
+            }
+
+            function passesSearch(row) {
+                if (!searchQuery) return true;
+                var q = searchQuery.toLowerCase().replace(/\s+/g, ' ');
+                var nombre = getRowText(row, 'nombre').toLowerCase();
+                var tipo = getRowText(row, 'tipo').toLowerCase();
+                return nombre.indexOf(q) !== -1 || tipo.indexOf(q) !== -1;
+            }
+
+            function passesEstado(row) {
+                if (filterEstado.length === 0) return true;
+                var est = getRowText(row, 'estado');
+                return filterEstado.indexOf(est) !== -1;
+            }
+
+            function getVisibleRows() {
+                var base = tableRows.filter(function(r) {
+                    if (r.getAttribute('data-tipo') !== tabActivo) return false;
+                    if (!passesSearch(r)) return false;
+                    if (!passesEstado(r)) return false;
+                    return true;
+                });
+                if (viewOnlySelected) base = base.filter(function(r) { var cb = r.querySelector('.asignacion-row-check'); return cb && cb.checked; });
+                return base;
+            }
+
+            function updateResultsCount() {
+                var el = document.getElementById('planes-results-count');
+                if (!el) return;
+                var total = tableRows.filter(function(r) { return r.getAttribute('data-tipo') === tabActivo; }).length;
+                var visible = getVisibleRows().length;
+                el.textContent = visible + '/' + total;
+            }
+
+            function applyVisibility() {
+                var visible = getVisibleRows();
+                tableRows.forEach(function(r) {
+                    var show = r.getAttribute('data-tipo') === tabActivo && passesSearch(r) && passesEstado(r);
+                    if (show && viewOnlySelected) { var cb = r.querySelector('.asignacion-row-check'); show = cb && cb.checked; }
+                    r.style.display = show ? '' : 'none';
+                    r.classList.remove('last-visible-row');
+                });
+                if (visible.length) visible[visible.length - 1].classList.add('last-visible-row');
+                updateResultsCount();
+                updatePlanesEmptyState();
+                updatePlanesSelectAll();
+                if (typeof initTooltip === 'function') {
+                    initTooltip('#asignaciones-table thead [data-tooltip]');
+                    initTooltip('#asignaciones-table tbody .ubits-table__td--checkbox[data-tooltip]');
+                }
+            }
+
+            function clearPlanesSearchAndFilters() {
+                searchQuery = '';
+                filterEstado = [];
+                var searchContainer = document.getElementById('planes-search-container');
+                if (searchContainer) { searchContainer.innerHTML = ''; searchContainer.style.display = 'none'; }
+                var searchToggle = document.getElementById('planes-search-toggle');
+                if (searchToggle) searchToggle.style.display = 'flex';
+                isSearchMode = false;
+                applyVisibility();
+                applySort();
+                updatePlanesEmptyState();
+                if (typeof showToast === 'function') showToast('success', 'Búsqueda y filtros limpiados');
+            }
+
+            function updatePlanesEmptyState() {
+                var wrapper = document.getElementById('planes-table-wrapper');
+                var emptyEl = document.getElementById('planes-empty-state');
+                var listWrapper = wrapper ? wrapper.closest('.asignaciones-list-wrapper') : null;
+                if (!wrapper || !emptyEl) return;
+                var visibleCount = getVisibleRows().length;
+                var totalInTab = tableRows.filter(function(r) { return r.getAttribute('data-tipo') === tabActivo; }).length;
+                if (visibleCount === 0) {
+                    if (listWrapper) listWrapper.classList.add('is-empty');
+                    emptyEl.innerHTML = '';
+                    if (typeof loadEmptyState === 'function') {
+                        var isNoData = tableRows.length === 0;
+                        if (isNoData) {
+                            loadEmptyState('planes-empty-state', {
+                                icon: 'fa-layer-group',
+                                iconSize: 'lg',
+                                title: 'Aún no hay planes',
+                                description: 'Crea tu primer plan de contenidos o competencias para comenzar.',
+                                buttons: { secondary: { text: 'Crear plan', icon: 'fa-plus', onClick: function() {} } }
+                            });
+                            emptyEl.classList.add('lms-table-empty-state');
+                            setTimeout(function() {
+                                var btn = emptyEl.querySelector('.ubits-button--secondary');
+                                if (btn) btn.onclick = function() { var p = document.querySelector('.ubits-header-product__actions .ubits-button--primary'); if (p) p.click(); };
+                            }, 50);
+                        } else {
+                            loadEmptyState('planes-empty-state', {
+                                icon: 'fa-search',
+                                iconSize: 'lg',
+                                title: 'No se encontraron resultados',
+                                description: 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.',
+                                buttons: { secondary: { text: 'Limpiar búsqueda', icon: 'fa-times', onClick: function() {} } }
+                            });
+                            emptyEl.classList.add('lms-table-empty-state');
+                            setTimeout(function() {
+                                var btn = emptyEl.querySelector('.ubits-button--secondary');
+                                if (btn) btn.onclick = function(e) { e.preventDefault(); e.stopPropagation(); clearPlanesSearchAndFilters(); };
+                            }, 50);
+                        }
+                    }
+                } else {
+                    if (listWrapper) listWrapper.classList.remove('is-empty');
+                    emptyEl.innerHTML = '';
+                }
+            }
+
+            function filtrarPorTipo(tipo) {
+                tabActivo = tipo;
+                applyVisibility();
+                var sel = document.getElementById('asignaciones-select-all');
+                if (sel) sel.checked = false;
+                toggleActionBar();
+            }
+
+            function updatePlanesSelectAll() {
+                var selectAll = document.getElementById('asignaciones-select-all');
+                if (!selectAll) return;
+                var visible = getVisibleRows();
+                var checkedCount = visible.filter(function(r) { var cb = r.querySelector('.asignacion-row-check'); return cb && cb.checked; }).length;
+                selectAll.checked = visible.length > 0 && checkedCount === visible.length;
+                selectAll.indeterminate = checkedCount > 0 && checkedCount < visible.length;
+                var th = selectAll.closest('th');
+                if (th) th.setAttribute('data-tooltip', checkedCount > 0 ? 'Deseleccionar todo' : 'Seleccionar todo');
+            }
+
+            function toggleActionBar() {
+                var bar = document.getElementById('planes-action-bar');
+                var btnVer = document.getElementById('planes-ver-seleccionados');
+                if (!bar) return;
+                var checks = table.querySelectorAll('tbody tr[data-tipo="' + tabActivo + '"] .asignacion-row-check');
+                var n = Array.from(checks).filter(function(cb) { return cb.checked; }).length;
+                if (n > 0) {
+                    bar.classList.add('is-visible');
+                    if (btnVer) {
+                        var icon = btnVer.querySelector('i');
+                        var span = btnVer.querySelector('span');
+                        if (viewOnlySelected) {
+                            if (icon) icon.className = 'far fa-eye-slash';
+                            if (span) span.textContent = 'Dejar de ver seleccionados (' + n + ')';
+                            btnVer.classList.add('active');
+                        } else {
+                            if (icon) icon.className = 'far fa-eye';
+                            if (span) span.textContent = 'Ver seleccionados';
+                            btnVer.classList.remove('active');
+                        }
+                    }
+                } else {
+                    bar.classList.remove('is-visible');
+                    viewOnlySelected = false;
+                    if (btnVer) {
+                        var icon = btnVer.querySelector('i');
+                        var span = btnVer.querySelector('span');
+                        if (icon) icon.className = 'far fa-eye';
+                        if (span) span.textContent = 'Ver seleccionados';
+                        btnVer.classList.remove('active');
+                    }
+                }
+                updatePlanesSelectAll();
+            }
+
+            function applySort() {
+                var tbody = table.querySelector('tbody');
+                if (!tbody || !sortCol) return;
+                var visible = getVisibleRows();
+                var parseDate = function(str) {
+                    if (!str) return 0;
+                    var p = String(str).split(/[\/\-]/);
+                    if (p.length < 3) return 0;
+                    var d = p[0].length === 4 ? new Date(p[0], p[1]-1, p[2]) : new Date(p[2], p[1]-1, p[0]);
+                    return d.getTime();
+                };
+                visible.sort(function(a, b) {
+                    var va, vb;
+                    if (sortCol === 'nombre' || sortCol === 'tipo') {
+                        va = getRowText(a, sortCol); vb = getRowText(b, sortCol);
+                        return sortDir === 'asc' ? va.localeCompare(vb) : vb.localeCompare(va);
+                    }
+                    if (sortCol === 'fecha-inicio' || sortCol === 'fecha-fin') {
+                        va = parseDate(getRowDate(a, sortCol)); vb = parseDate(getRowDate(b, sortCol));
+                        return sortDir === 'asc' ? va - vb : vb - va;
+                    }
+                    if (sortCol === 'progreso') {
+                        va = getRowText(a, 'progreso'); vb = getRowText(b, 'progreso');
+                        return sortDir === 'asc' ? va - vb : vb - va;
+                    }
+                    return 0;
+                });
+                visible.forEach(function(tr) { tbody.appendChild(tr); });
+                var last = visible[visible.length - 1];
+                tableRows.forEach(function(r) { r.classList.remove('last-visible-row'); });
+                if (last) last.classList.add('last-visible-row');
+            }
+
+            if (typeof loadHeaderProduct === 'function') {
+                loadHeaderProduct('header-product-container', {
+                    variant: 'tabs-with-actions',
+                    tabs: [
+                        { id: 'contenidos', label: 'Contenidos' },
+                        { id: 'competencias', label: 'Competencias' }
+                    ],
+                    activeTabId: 'contenidos',
+                    onTabChange: function(tabId) {
+                        filtrarPorTipo(tabId);
+                    },
+                    aiButton: {
+                        text: 'Crear con IA',
+                        onClick: function() {
+                            window.location.href = 'crear-plan-asistente.html';
+                        }
+                    },
+                    primaryButton: {
+                        text: 'Crear plan',
+                        icon: 'fa-chevron-down',
+                        onClick: function(e) {
+                            e.preventDefault();
+                            var btn = e.currentTarget;
+                            var overlayId = 'asignaciones-crear-plan-dropdown';
+                            var overlay = document.getElementById(overlayId);
+                            if (!overlay && typeof getDropdownMenuHtml === 'function') {
+                                var html = getDropdownMenuHtml({
+                                    overlayId: overlayId,
+                                    options: [
+                                        { text: 'Plan de contenidos', value: 'contenidos' },
+                                        { text: 'Plan de competencias', value: 'competencias' }
+                                    ]
+                                });
+                                document.body.insertAdjacentHTML('beforeend', html);
+                                overlay = document.getElementById(overlayId);
+                                overlay.addEventListener('click', function(ev) {
+                                    if (ev.target === overlay) {
+                                        if (typeof closeDropdownMenu === 'function') closeDropdownMenu(overlayId);
+                                    }
+                                });
+                                overlay.querySelectorAll('.ubits-dropdown-menu__option').forEach(function(opt) {
+                                    opt.addEventListener('click', function() {
+                                        var val = this.getAttribute('data-value');
+                                        if (typeof closeDropdownMenu === 'function') closeDropdownMenu(overlayId);
+                                        if (val) window.location.href = 'crear-asignacion.html?tipo=' + val;
+                                    });
+                                });
+                            }
+                            if (overlay && typeof openDropdownMenu === 'function') {
+                                openDropdownMenu(overlayId, btn, { alignRight: true });
+                            }
+                        }
+                    }
+                });
+            }
+
+            filtrarPorTipo('contenidos');
+            updatePlanesEmptyState();
+            updatePlanesSelectAll();
+            if (typeof initTooltip === 'function') {
+                initTooltip('#planes-search-toggle[data-tooltip]');
+                initTooltip('#asignaciones-table thead [data-tooltip]');
+                initTooltip('#asignaciones-table tbody .ubits-table__td--checkbox[data-tooltip]');
+            }
+            if (typeof humanizeTableDates === 'function') humanizeTableDates('asignaciones-table', ['fecha-inicio', 'fecha-fin']);
+
+            // Búsqueda expandible (colapso al clic fuera si está vacío, como seguimiento)
+            var searchToggle = document.getElementById('planes-search-toggle');
+            var searchContainer = document.getElementById('planes-search-container');
+            if (searchToggle && searchContainer && typeof createInput === 'function') {
+                searchToggle.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    if (!isSearchMode) {
+                        searchToggle.style.display = 'none';
+                        searchContainer.style.display = 'flex';
+                        searchContainer.innerHTML = '';
+                        createInput({
+                            containerId: 'planes-search-container',
+                            type: 'search',
+                            placeholder: 'Buscar planes...',
+                            size: 'md',
+                            onChange: function(val) {
+                                searchQuery = val || '';
+                                applyVisibility();
+                                applySort();
+                            }
+                        });
+                        setTimeout(function() {
+                            var wrap = searchContainer.querySelector('.ubits-input-wrapper');
+                            if (wrap) {
+                                var closeBtn = document.createElement('button');
+                                closeBtn.type = 'button';
+                                closeBtn.className = 'ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only';
+                                closeBtn.setAttribute('aria-label', 'Cerrar búsqueda');
+                                closeBtn.style.marginLeft = '8px';
+                                closeBtn.innerHTML = '<i class="far fa-times"></i>';
+                                closeBtn.addEventListener('click', function() {
+                                    searchQuery = '';
+                                    searchContainer.innerHTML = '';
+                                    searchContainer.style.display = 'none';
+                                    searchToggle.style.display = 'flex';
+                                    isSearchMode = false;
+                                    applyVisibility();
+                                    applySort();
+                                });
+                                searchContainer.appendChild(closeBtn);
+                                var inp = wrap.querySelector('input');
+                                if (inp) inp.focus();
+                            }
+                        }, 100);
+                        isSearchMode = true;
+                    }
+                });
+                document.addEventListener('click', function(e) {
+                    if (!isSearchMode) return;
+                    if (searchContainer.contains(e.target) || searchToggle.contains(e.target)) return;
+                    if (!searchQuery || !searchQuery.trim()) {
+                        searchContainer.innerHTML = '';
+                        searchContainer.style.display = 'none';
+                        searchToggle.style.display = 'flex';
+                        isSearchMode = false;
+                    }
+                });
+            }
+
+            // Ordenamiento por columna (dropdown oficial como en seguimiento)
+            if (typeof getDropdownMenuHtml === 'function' && typeof openDropdownMenu === 'function' && typeof closeDropdownMenu === 'function') {
+                var sortOverlayId = 'planes-sort-overlay';
+                document.addEventListener('click', function(e) {
+                    var btn = e.target.closest('.lms-sort-btn');
+                    if (!btn || !table.contains(btn)) return;
+                    e.stopPropagation();
+                    var col = btn.getAttribute('data-sort');
+                    var currentDir = (sortCol === col) ? sortDir : null;
+                    var isDate = col === 'fecha-inicio' || col === 'fecha-fin';
+                    var isProgress = col === 'progreso';
+                    var descText = isProgress ? 'Mayor avance primero' : (isDate ? 'Más reciente primero' : 'Z a A');
+                    var ascText = isProgress ? 'Mayor avance al final' : (isDate ? 'Más reciente al final' : 'A a Z');
+                    var options = [
+                        { text: descText, value: 'desc', leftIcon: 'arrow-up', selected: currentDir === 'desc' },
+                        { text: ascText, value: 'asc', leftIcon: 'arrow-down', selected: currentDir === 'asc' }
+                    ];
+                    var existing = document.getElementById(sortOverlayId);
+                    if (existing) existing.remove();
+                    var html = getDropdownMenuHtml({ overlayId: sortOverlayId, options: options });
+                    document.body.insertAdjacentHTML('beforeend', html);
+                    var overlayEl = document.getElementById(sortOverlayId);
+                    if (overlayEl) {
+                        overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function(opt) {
+                            opt.addEventListener('click', function() {
+                                sortCol = col;
+                                sortDir = this.getAttribute('data-value');
+                                applySort();
+                                closeDropdownMenu(sortOverlayId);
+                            });
+                        });
+                        overlayEl.addEventListener('click', function(ev) {
+                            if (ev.target === overlayEl) closeDropdownMenu(sortOverlayId);
+                        });
+                    }
+                    openDropdownMenu(sortOverlayId, btn);
+                });
+            }
+
+            // Filtro Estado (dropdown)
+            var filterBtn = table.querySelector('.lms-filter-btn[data-filter="estado"]');
+            if (filterBtn && typeof getDropdownMenuHtml === 'function' && typeof openDropdownMenu === 'function') {
+                filterBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    var overlayId = 'planes-filter-estado-overlay';
+                    var existing = document.getElementById(overlayId);
+                    if (existing) { existing.remove(); }
+                    var opts = [
+                        { text: 'Vigente', value: 'Vigente' },
+                        { text: 'Pendiente', value: 'Pendiente' },
+                        { text: 'No vigente', value: 'No vigente' }
+                    ];
+                    var html = getDropdownMenuHtml({
+                        overlayId: overlayId,
+                        options: opts.map(function(o) {
+                            return { text: o.text, value: o.value, checkbox: true, selected: filterEstado.indexOf(o.value) !== -1 };
+                        })
+                    });
+                    document.body.insertAdjacentHTML('beforeend', html);
+                    var overlay = document.getElementById(overlayId);
+                    overlay.querySelectorAll('.ubits-dropdown-menu__option').forEach(function(opt) {
+                        opt.addEventListener('click', function(ev) {
+                            ev.preventDefault();
+                            var val = this.getAttribute('data-value');
+                            var idx = filterEstado.indexOf(val);
+                            if (idx === -1) filterEstado.push(val);
+                            else filterEstado.splice(idx, 1);
+                            applyVisibility();
+                            applySort();
+                        });
+                    });
+                    overlay.addEventListener('click', function(ev) {
+                        if (ev.target === overlay) closeDropdownMenu(overlayId);
+                    });
+                    openDropdownMenu(overlayId, filterBtn);
+                });
+            }
+
+            // Seleccionar todo (solo filas visibles del tab) + estado indeterminado
+            var selectAll = document.getElementById('asignaciones-select-all');
+            if (selectAll) {
+                selectAll.addEventListener('change', function() {
+                    var visible = getVisibleRows();
+                    var checkedCount = visible.filter(function(r) { var cb = r.querySelector('.asignacion-row-check'); return cb && cb.checked; }).length;
+                    if (this.checked && checkedCount > 0 && checkedCount < visible.length) {
+                        visible.forEach(function(row) {
+                            var cb = row.querySelector('.asignacion-row-check');
+                            if (cb) cb.checked = false;
+                            var td = row.querySelector('.ubits-table__td--checkbox');
+                            if (td) td.setAttribute('data-tooltip', 'Seleccionar');
+                        });
+                        toggleActionBar();
+                        if (typeof initTooltip === 'function') initTooltip('#asignaciones-table tbody .ubits-table__td--checkbox[data-tooltip]');
+                        return;
+                    }
+                    getVisibleRows().forEach(function(row) {
+                        var cb = row.querySelector('.asignacion-row-check');
+                        if (cb) cb.checked = selectAll.checked;
+                        var td = row.querySelector('.ubits-table__td--checkbox');
+                        if (td) td.setAttribute('data-tooltip', selectAll.checked ? 'Deseleccionar' : 'Seleccionar');
+                    });
+                    toggleActionBar();
+                    if (typeof initTooltip === 'function') initTooltip('#asignaciones-table tbody .ubits-table__td--checkbox[data-tooltip]');
+                });
+            }
+
+            table.querySelectorAll('tbody .asignacion-row-check').forEach(function(cb) {
+                cb.addEventListener('change', function() {
+                    var td = this.closest('.ubits-table__td--checkbox');
+                    if (td) td.setAttribute('data-tooltip', this.checked ? 'Deseleccionar' : 'Seleccionar');
+                    toggleActionBar();
+                });
+            });
+
+            var btnVerSeleccionados = document.getElementById('planes-ver-seleccionados');
+            if (btnVerSeleccionados) {
+                btnVerSeleccionados.addEventListener('click', function() {
+                    var checks = table.querySelectorAll('tbody tr[data-tipo="' + tabActivo + '"] .asignacion-row-check:checked');
+                    if (checks.length === 0) return;
+                    viewOnlySelected = !viewOnlySelected;
+                    applyVisibility();
+                    applySort();
+                    updatePlanesEmptyState();
+                    toggleActionBar();
+                    if (typeof initTooltip === 'function') {
+                        initTooltip('#asignaciones-table thead [data-tooltip]');
+                        initTooltip('#asignaciones-table tbody .ubits-table__td--checkbox[data-tooltip]');
+                    }
+                });
+            }
+
+            // Modal eliminar y acciones masivas
+            var deleteOverlay = document.getElementById('planes-delete-overlay');
+            var deleteClose = document.getElementById('planes-delete-close');
+            var deleteCancel = document.getElementById('planes-delete-cancel');
+            var deleteConfirm = document.getElementById('planes-delete-confirm');
+            var deleteCountEl = document.getElementById('planes-delete-count');
+            var deleteTypeInput = document.getElementById('planes-delete-type-input');
+
+            function closePlanesDeleteModal() {
+                if (deleteOverlay) { deleteOverlay.style.display = 'none'; deleteOverlay.setAttribute('aria-hidden', 'true'); }
+                if (deleteTypeInput) deleteTypeInput.value = '';
+                if (deleteConfirm) deleteConfirm.disabled = true;
+            }
+
+            var btnEliminar = document.getElementById('planes-mass-eliminar');
+            if (btnEliminar) {
+                btnEliminar.addEventListener('click', function() {
+                    var rowsToRemove = tableRows.filter(function(r) { var cb = r.querySelector('.asignacion-row-check'); return cb && cb.checked; });
+                    if (rowsToRemove.length === 0) return;
+                    if (deleteCountEl) deleteCountEl.textContent = rowsToRemove.length;
+                    if (deleteTypeInput) { deleteTypeInput.value = ''; deleteTypeInput.focus(); }
+                    if (deleteConfirm) deleteConfirm.disabled = true;
+                    if (deleteOverlay) { deleteOverlay.style.display = 'flex'; deleteOverlay.setAttribute('aria-hidden', 'false'); }
+                });
+            }
+            if (deleteTypeInput && deleteConfirm) {
+                deleteTypeInput.addEventListener('input', function() {
+                    deleteConfirm.disabled = this.value.trim().toLowerCase() !== 'eliminar';
+                });
+            }
+            if (deleteClose) deleteClose.addEventListener('click', closePlanesDeleteModal);
+            if (deleteCancel) deleteCancel.addEventListener('click', closePlanesDeleteModal);
+            if (deleteOverlay) deleteOverlay.addEventListener('click', function(e) { if (e.target === deleteOverlay) closePlanesDeleteModal(); });
+            if (deleteConfirm) {
+                deleteConfirm.addEventListener('click', function() {
+                    var rowsToRemove = tableRows.filter(function(r) { var cb = r.querySelector('.asignacion-row-check'); return cb && cb.checked; });
+                    var n = rowsToRemove.length;
+                    closePlanesDeleteModal();
+                    rowsToRemove.forEach(function(tr) {
+                        tr.remove();
+                        var idx = tableRows.indexOf(tr);
+                        if (idx !== -1) tableRows.splice(idx, 1);
+                    });
+                    var selectAll = document.getElementById('asignaciones-select-all');
+                    if (selectAll) selectAll.checked = false;
+                    applyVisibility();
+                    applySort();
+                    toggleActionBar();
+                    updatePlanesEmptyState();
+                    if (typeof showToast === 'function') showToast('success', n + ' plan(es) eliminado(s) correctamente');
+                });
+            }
+            var btnDescargar = document.getElementById('planes-mass-descargar');
+            if (btnDescargar) {
+                btnDescargar.addEventListener('click', function() {
+                    var sel = table.querySelectorAll('tbody tr[data-tipo="' + tabActivo + '"] .asignacion-row-check:checked');
+                    if (sel.length === 0) return;
+                    if (typeof showToast === 'function') showToast('success', 'Descargando ' + sel.length + ' plan(es) (demo)');
+                });
+            }
+
+            setTimeout(() => {
+                const tab = document.querySelector('.nav-tab[data-tab="planes-formacion"]');
+                if (tab) {
+                    document.querySelectorAll('.nav-tab, .hamburger-item').forEach(item => item.classList.remove('active'));
+                    tab.classList.add('active');
+                }
+                const sidebarBtn = document.querySelector('.nav-button[data-section="creator"]');
+                if (sidebarBtn) {
+                    document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
+                    sidebarBtn.classList.add('active');
+                }
+                const modulosTab = document.querySelector('.tab-bar-item[data-tab="modulos"]');
+                if (modulosTab) {
+                    document.querySelectorAll('.tab-bar-item').forEach(item => item.classList.remove('active'));
+                    modulosTab.classList.add('active');
+                }
+                if (typeof setActiveAccordionLink === 'function') {
+                    setActiveAccordionLink('planes-formacion');
+                }
+            }, 200);
+
+            // Click en fila para ir al detalle del plan (evitar navegación al hacer clic en checkbox)
+            document.querySelectorAll('.asignacion-row-clickable').forEach(function(row) {
+                row.addEventListener('click', function(e) {
+                    if (e.target.closest('.ubits-checkbox') || e.target.closest('input[type="checkbox"]')) return;
+                    var planId = row.getAttribute('data-plan-id');
+                    if (planId) window.location.href = 'detalle-plan.html?id=' + planId;
+                });
+            });
+        });
+    </script>
+</body>
+</html>

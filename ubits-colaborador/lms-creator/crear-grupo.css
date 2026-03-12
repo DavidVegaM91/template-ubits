@@ -1,0 +1,80 @@
+/* ========================================
+   ESTILOS ESPECÍFICOS PARA CREAR GRUPO
+   ======================================== */
+
+.crear-grupo-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xl);
+}
+
+.crear-grupo-form__field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+}
+
+.crear-grupo-form__label {
+    color: var(--ubits-fg-1-high);
+}
+
+/* Nombre editable en el header */
+.crear-grupo-title-editable {
+    font-family: 'Noto Sans', sans-serif;
+    line-height: 1.25;
+    color: var(--ubits-fg-1-high);
+    border: none;
+    background: transparent;
+    width: 100%;
+    min-width: 120px;
+    min-height: 1.25em;
+    padding: 0;
+    margin: 0;
+    resize: none;
+    overflow: hidden;
+    outline: none;
+    cursor: text;
+    box-sizing: border-box;
+    transition: background 0.2s ease, border-radius 0.2s ease;
+}
+
+.crear-grupo-title-editable:hover,
+.crear-grupo-title-editable:focus {
+    background: var(--ubits-bg-2);
+    border-radius: var(--border-radius-xs);
+}
+
+.crear-grupo-title-editable::placeholder {
+    color: var(--ubits-fg-1-low);
+}
+
+#header-product-container .ubits-header-product__product-title .crear-grupo-title-editable {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Integrantes - tabla y botón */
+.crear-grupo-integrantes-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+}
+
+.crear-grupo-integrantes-table td[data-col="nombre"],
+.crear-grupo-integrantes-table td[data-col="correo"] {
+    min-width: 160px;
+}
+
+.ubits-table__th--actions {
+    width: 80px;
+    text-align: center;
+}
+
+.crear-grupo-integrantes-table td[data-col="acciones"] {
+    text-align: center;
+}
+
+.crear-grupo-form__field--integrantes #btn-agregar-persona {
+    align-self: flex-start;
+}

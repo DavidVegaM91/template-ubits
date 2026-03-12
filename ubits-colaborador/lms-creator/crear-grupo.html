@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>UBITS Playground - LMS Creator - Nuevo grupo</title>
+    
+    <!-- Estilos locales -->
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../components/tab-bar.css">
+    <link rel="stylesheet" href="../../components/floating-menu.css">
+    <link rel="stylesheet" href="../../components/profile-menu.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/ia-button.css">
+    <link rel="stylesheet" href="../../components/header-product.css">
+    <link rel="stylesheet" href="../../components/tooltip.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/table.css">
+    <link rel="stylesheet" href="./lms-creator.css">
+    <link rel="stylesheet" href="./crear-grupo.css">
+</head>
+<body data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        
+        <div id="sidebar-container"></div>
+
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div class="content-area">
+                <div class="content-sections">
+                    <div class="section-single">
+                        <div class="widget-header-product" id="header-product-container"></div>
+                    </div>
+                    <div class="section-single">
+                        <div class="widget-crear-grupo">
+                        <div class="crear-grupo-form">
+                            <!-- Descripción -->
+                            <div class="crear-grupo-form__field">
+                                <span class="ubits-body-sm-semibold crear-grupo-form__label">Descripción</span>
+                                <div id="grupo-descripcion-container"></div>
+                            </div>
+
+                            <!-- Integrantes -->
+                            <div class="crear-grupo-form__field crear-grupo-form__field--integrantes">
+                                <span class="ubits-heading-h2 crear-grupo-form__label">Integrantes</span>
+                                <div class="crear-grupo-integrantes-wrapper">
+                                    <div class="ubits-table-wrapper ubits-table-wrapper--min-width">
+                                        <table class="ubits-table crear-grupo-integrantes-table" id="grupos-integrantes-table">
+                                            <thead>
+                                                <tr>
+                                                    <th data-col="nombre" class="ubits-body-sm-semibold">Nombre</th>
+                                                    <th data-col="correo" class="ubits-body-sm-semibold">Correo</th>
+                                                    <th class="ubits-table__th--actions ubits-body-sm-semibold" data-col="acciones">Acciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="grupos-integrantes-tbody">
+                                                <tr>
+                                                    <td data-col="nombre"><span class="ubits-body-sm-regular">María García López</span></td>
+                                                    <td data-col="correo"><span class="ubits-body-sm-regular">maria.garcia@empresa.com</span></td>
+                                                    <td data-col="acciones">
+                                                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only js-crear-grupo-eliminar" aria-label="Eliminar" title="Eliminar">
+                                                            <i class="far fa-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td data-col="nombre"><span class="ubits-body-sm-regular">Carlos Rodríguez</span></td>
+                                                    <td data-col="correo"><span class="ubits-body-sm-regular">carlos.rodriguez@empresa.com</span></td>
+                                                    <td data-col="acciones">
+                                                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only js-crear-grupo-eliminar" aria-label="Eliminar" title="Eliminar">
+                                                            <i class="far fa-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="btn-agregar-persona">
+                                        <i class="far fa-plus"></i>
+                                        <span class="ubits-body-sm-regular">Agregar persona</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="tab-bar-container"></div>
+    <div id="floating-menu-container"></div>
+    <div id="profile-menu-container"></div>
+
+    <script src="../../components/tooltip.js"></script>
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/tab-bar.js"></script>
+    <script src="../../components/floating-menu.js"></script>
+    <script src="../../components/profile-menu.js"></script>
+    <script src="../../components/header-product.js"></script>
+    <script src="../../components/input.js"></script>
+    <script src="../../script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSidebar('creator');
+            loadSubNav('top-nav-container', 'creator');
+            loadTabBar('tab-bar-container');
+            loadFloatingMenu('floating-menu-container');
+            loadProfileMenu('profile-menu-container');
+            
+            if (typeof loadHeaderProduct === 'function') {
+                loadHeaderProduct('header-product-container', {
+                    productName: '',
+                    breadcrumbItems: [
+                        { text: 'Grupos', active: false },
+                        { text: 'Nuevo grupo', active: true }
+                    ],
+                    backButton: {
+                        onClick: function() {
+                            window.location.href = 'grupos.html';
+                        }
+                    },
+                    secondaryButtons: [
+                        {
+                            text: 'Guardar',
+                            icon: 'fa-check',
+                            onClick: function() {
+                                window.location.href = 'grupos.html';
+                            }
+                        }
+                    ]
+                });
+                // Reemplazar el título estático por campo editable en el header
+                var titleContainer = document.querySelector('#header-product-container .ubits-header-product__product-title h2');
+                if (titleContainer) {
+                    var textarea = document.createElement('textarea');
+                    textarea.id = 'grupo-nombre';
+                    textarea.className = 'crear-grupo-title-editable ubits-heading-h2';
+                    textarea.placeholder = 'Nombre del grupo';
+                    textarea.rows = 1;
+                    textarea.maxLength = 250;
+                    titleContainer.parentNode.replaceChild(textarea, titleContainer);
+                }
+            }
+
+            // Descripción: textarea
+            if (typeof createInput === 'function') {
+                createInput({
+                    containerId: 'grupo-descripcion-container',
+                    type: 'textarea',
+                    placeholder: 'Describe el propósito del grupo...',
+                    showLabel: false
+                });
+            }
+            
+            setTimeout(() => {
+                var tab = document.querySelector('.nav-tab[data-tab="grupos"]');
+                if (tab) {
+                    document.querySelectorAll('.nav-tab, .hamburger-item').forEach(function(item) { item.classList.remove('active'); });
+                    tab.classList.add('active');
+                }
+                var sidebarBtn = document.querySelector('.nav-button[data-section="creator"]');
+                if (sidebarBtn) {
+                    document.querySelectorAll('.nav-button').forEach(function(btn) { btn.classList.remove('active'); });
+                    sidebarBtn.classList.add('active');
+                }
+                var modulosTab = document.querySelector('.tab-bar-item[data-tab="modulos"]');
+                if (modulosTab) {
+                    document.querySelectorAll('.tab-bar-item').forEach(function(item) { item.classList.remove('active'); });
+                    modulosTab.classList.add('active');
+                }
+                if (typeof setActiveAccordionLink === 'function') {
+                    setActiveAccordionLink('grupos');
+                }
+            }, 200);
+
+            // Auto-resize textarea del nombre (en el header)
+            setTimeout(function() {
+                var nombreTa = document.getElementById('grupo-nombre');
+                if (nombreTa) {
+                    nombreTa.addEventListener('input', function() {
+                        this.style.height = 'auto';
+                        this.style.height = Math.min(this.scrollHeight, 80) + 'px';
+                    });
+                }
+            }, 0);
+
+            // Agregar persona
+            var integrantesCounter = 0;
+            var personasEjemplo = [
+                { nombre: 'Ana Martínez', correo: 'ana.martinez@empresa.com' },
+                { nombre: 'Pedro Sánchez', correo: 'pedro.sanchez@empresa.com' },
+                { nombre: 'Laura Fernández', correo: 'laura.fernandez@empresa.com' }
+            ];
+            document.getElementById('btn-agregar-persona').addEventListener('click', function() {
+                var tbody = document.getElementById('grupos-integrantes-tbody');
+                var persona = personasEjemplo[integrantesCounter % personasEjemplo.length];
+                integrantesCounter++;
+                var tr = document.createElement('tr');
+                tr.innerHTML = '<td data-col="nombre"><span class="ubits-body-sm-regular">' + persona.nombre + '</span></td>' +
+                    '<td data-col="correo"><span class="ubits-body-sm-regular">' + persona.correo + '</span></td>' +
+                    '<td data-col="acciones"><button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only js-crear-grupo-eliminar" aria-label="Eliminar" title="Eliminar"><i class="far fa-trash"></i></button></td>';
+                tbody.appendChild(tr);
+            });
+
+            // Delegación: eliminar integrante
+            document.getElementById('grupos-integrantes-table').addEventListener('click', function(e) {
+                if (e.target.closest('.js-crear-grupo-eliminar')) {
+                    var tr = e.target.closest('tr');
+                    if (tr && tr.parentNode.tagName === 'TBODY') tr.remove();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>UBITS Playground - LMS Creator - Nuevo plan</title>
+    
+    <!-- Estilos locales -->
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../components/tab-bar.css">
+    <link rel="stylesheet" href="../../components/floating-menu.css">
+    <link rel="stylesheet" href="../../components/profile-menu.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/ia-button.css">
+    <link rel="stylesheet" href="../../components/header-product.css">
+    <link rel="stylesheet" href="../../components/tooltip.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/radio-button.css">
+    <link rel="stylesheet" href="../../components/calendar.css">
+    <link rel="stylesheet" href="../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../components/drawer.css">
+    <link rel="stylesheet" href="../../components/card-content-compact.css">
+    <link rel="stylesheet" href="../../components/table.css">
+    <link rel="stylesheet" href="../../components/checkbox.css">
+    <link rel="stylesheet" href="../../components/empty-state.css">
+    <link rel="stylesheet" href="../../components/modal.css">
+    <link rel="stylesheet" href="./lms-creator.css">
+    <link rel="stylesheet" href="./crear-asignacion.css">
+</head>
+<body data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        
+        <div id="sidebar-container"></div>
+
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div class="content-area">
+                <div class="content-sections">
+                    <div class="section-single">
+                        <div class="widget-header-product" id="header-product-container"></div>
+                    </div>
+                    <div class="section-single">
+                        <div class="widget-crear-asignacion">
+                        <div class="crear-asignacion-form">
+                            <input type="hidden" id="plan-tipo" name="plan-tipo" value="">
+                            <div class="crear-asignacion-form__field crear-asignacion-form__field--nombre-plan">
+                                <textarea class="task-detail-title-editable ubits-heading-h1" id="asignacion-nombre" placeholder="Nombre del plan" rows="1" maxlength="250"></textarea>
+                            </div>
+                            <div class="crear-asignacion-form__field crear-asignacion-form__field--vigencia">
+                                <div class="crear-asignacion-vigencia-row">
+                                    <div class="crear-asignacion-vigencia-item" id="fecha-inicio-container"></div>
+                                    <div class="crear-asignacion-vigencia-item" id="fecha-fin-container"></div>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    <!-- Asignaciones: tabla con título, contador, búsqueda, +Agregar asignación -->
+                    <div class="section-single crear-asignacion-asignaciones-section">
+                        <div class="widget-asignaciones-lista">
+                            <div class="lms-table-header-bar">
+                                <div class="lms-table-header-left">
+                                    <span class="ubits-body-md-bold" id="asignaciones-header-title">Asignaciones</span>
+                                    <span class="ubits-body-sm-regular" id="asignaciones-results-count">0/0</span>
+                                </div>
+                                <div class="lms-table-header-right">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only" id="asignaciones-search-toggle" aria-label="Buscar" data-tooltip="Buscar" data-tooltip-delay="1000">
+                                        <i class="far fa-magnifying-glass"></i>
+                                    </button>
+                                    <div id="asignaciones-search-container" class="lms-table-search-inline" style="display: none;"></div>
+                                    <button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="btn-agregar-asignacion">
+                                        <i class="far fa-plus"></i>
+                                        <span class="ubits-body-sm-regular">Agregar asignación</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="lms-table-action-bar" id="asignaciones-action-bar">
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="asignaciones-ver-seleccionados">
+                                    <i class="far fa-eye"></i>
+                                    <span>Ver seleccionados</span>
+                                </button>
+                                <div class="lms-table-action-buttons">
+                                    <button type="button" class="ubits-button ubits-button--error-secondary ubits-button--sm" id="asignaciones-mass-eliminar">
+                                        <i class="far fa-trash"></i>
+                                        <span>Eliminar</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="asignaciones-list-wrapper">
+                                <div class="ubits-table-wrapper ubits-table-wrapper--min-width" id="asignaciones-table-wrapper">
+                                    <table class="ubits-table" id="asignaciones-table">
+                                        <thead>
+                                            <tr>
+                                                <th class="ubits-table__th--checkbox" data-col="checkbox" data-tooltip="Seleccionar todo" data-tooltip-delay="1000"><label class="ubits-checkbox ubits-checkbox--sm" style="display:inline-flex;"><input type="checkbox" class="ubits-checkbox__input" id="asignaciones-select-all" aria-label="Seleccionar todo"><span class="ubits-checkbox__box"><i class="fas fa-check"></i><i class="fas fa-minus"></i></span><span class="ubits-checkbox__label sr-only" aria-hidden="true">&nbsp;</span></label></th>
+                                                <th data-col="asignados" class="ubits-body-sm-semibold">Asignados</th>
+                                                <th data-col="cursos" class="ubits-body-sm-semibold">Cursos asignados</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="asignaciones-tbody">
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div id="asignaciones-empty-state" class="lms-table-empty-state" style="display: none;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="asignaciones-modals-container"></div>
+    <div id="tab-bar-container"></div>
+    <div id="floating-menu-container"></div>
+    <div id="profile-menu-container"></div>
+
+    <script src="../../components/tooltip.js"></script>
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/tab-bar.js"></script>
+    <script src="../../components/floating-menu.js"></script>
+    <script src="../../components/profile-menu.js"></script>
+    <script src="../../components/header-product.js"></script>
+    <script src="../../components/input.js"></script>
+    <script src="../../components/calendar.js"></script>
+    <script src="../../components/drawer.js"></script>
+    <script src="../../components/card-content-compact.js"></script>
+    <script src="../../components/empty-state.js"></script>
+    <script src="../../components/modal.js"></script>
+    <script src="../../script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Leer tipo de plan desde URL (?tipo=contenidos | ?tipo=competencias)
+            var params = new URLSearchParams(window.location.search);
+            var planTipo = params.get('tipo') || 'contenidos';
+            var planTipoInput = document.getElementById('plan-tipo');
+            if (planTipoInput) planTipoInput.value = planTipo;
+
+            loadSidebar('creator');
+            loadSubNav('top-nav-container', 'creator');
+            loadTabBar('tab-bar-container');
+            loadFloatingMenu('floating-menu-container');
+            loadProfileMenu('profile-menu-container');
+            
+            if (typeof loadHeaderProduct === 'function') {
+                loadHeaderProduct('header-product-container', {
+                    productName: 'Crear plan de contenidos',
+                    breadcrumbItems: [],
+                    backButton: {
+                        onClick: function() {
+                            window.location.href = 'planes-formacion.html';
+                        }
+                    },
+                    secondaryButtons: [
+                        {
+                            text: 'Guardar',
+                            icon: 'fa-floppy-disk',
+                            onClick: function() {
+                                window.location.href = 'planes-formacion.html';
+                            }
+                        }
+                    ]
+                });
+            }
+            
+            setTimeout(() => {
+                const tab = document.querySelector('.nav-tab[data-tab="contenidos"]');
+                if (tab) {
+                    document.querySelectorAll('.nav-tab, .hamburger-item').forEach(item => item.classList.remove('active'));
+                    tab.classList.add('active');
+                }
+                const sidebarBtn = document.querySelector('.nav-button[data-section="creator"]');
+                if (sidebarBtn) {
+                    document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
+                    sidebarBtn.classList.add('active');
+                }
+                const modulosTab = document.querySelector('.tab-bar-item[data-tab="modulos"]');
+                if (modulosTab) {
+                    document.querySelectorAll('.tab-bar-item').forEach(item => item.classList.remove('active'));
+                    modulosTab.classList.add('active');
+                }
+                if (typeof setActiveAccordionLink === 'function') {
+                    setActiveAccordionLink('contenidos');
+                }
+            }, 200);
+
+            // Auto-resize textarea del nombre (en el header)
+            setTimeout(function() {
+                var nombreTa = document.getElementById('asignacion-nombre');
+                if (nombreTa) {
+                    nombreTa.addEventListener('input', function() {
+                        this.style.height = 'auto';
+                        this.style.height = Math.min(this.scrollHeight, 80) + 'px';
+                    });
+                }
+            }, 0);
+
+            // Selectores de fecha (vigencia)
+            if (typeof createInput === 'function') {
+                createInput({
+                    containerId: 'fecha-inicio-container',
+                    type: 'calendar',
+                    label: 'Fecha de inicio',
+                    placeholder: 'Selecciona la fecha de inicio'
+                });
+                createInput({
+                    containerId: 'fecha-fin-container',
+                    type: 'calendar',
+                    label: 'Fecha de finalización',
+                    placeholder: 'Selecciona la fecha de finalización'
+                });
+            }
+
+            // Asignaciones: datos y refs de tabla
+            var asignacionesData = [];
+            var asignacionIdCounter = 0;
+            var searchQuery = '';
+            var isSearchMode = false;
+            var viewOnlySelected = false;
+            var pendingCursosRow = null;
+            var catalogoCursos = [
+                { id: 'c1', type: 'Curso', title: 'Design Thinking: bases y aplicación', provider: 'UBITS', providerLogo: '../../images/Favicons/UBITS.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/Ubits-logo.svg', competency: 'Product design', language: 'Español' },
+                { id: 'c2', type: 'Short', title: 'Comunicación efectiva', provider: 'Microsoft', providerLogo: '../../images/Favicons/Microsoft.jpg', duration: '15 min', level: 'Intermedio', progress: 0, status: 'default', image: '../../images/Ubits-logo.svg', competency: 'Comunicación', language: 'Español' },
+                { id: 'c3', type: 'Curso', title: 'Liderazgo situacional', provider: 'Harvard Business Publishing', providerLogo: '../../images/Favicons/Harvard-Business-Publishing.jpg', duration: '90 min', level: 'Avanzado', progress: 0, status: 'default', image: '../../images/Ubits-logo.svg', competency: 'Liderazgo', language: 'Español' },
+                { id: 'c4', type: 'Charla', title: 'Gestión del tiempo', provider: 'TED', providerLogo: '../../images/Favicons/TED.jpg', duration: '20 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/Ubits-logo.svg', competency: 'Productividad', language: 'Español' },
+                { id: 'c5', type: 'Podcast', title: 'Innovación en equipos', provider: 'UBITS', providerLogo: '../../images/Favicons/UBITS.jpg', duration: '45 min', level: 'Intermedio', progress: 0, status: 'default', image: '../../images/Ubits-logo.svg', competency: 'Innovación', language: 'Español' },
+                { id: 'c6', type: 'Curso', title: 'Negociación avanzada', provider: 'IE University', providerLogo: '../../images/Favicons/IE-University-Publishing.jpg', duration: '75 min', level: 'Avanzado', progress: 0, status: 'default', image: '../../images/Ubits-logo.svg', competency: 'Negociación', language: 'Español' },
+                { id: 'c7', type: 'Artículo', title: 'Trabajo en equipo remoto', provider: 'Hubspot', providerLogo: '../../images/Favicons/Hubspot.jpg', duration: '15 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/Ubits-logo.svg', competency: 'Trabajo en equipo', language: 'Español' },
+                { id: 'c8', type: 'Curso', title: 'Data skills para líderes', provider: 'AWS', providerLogo: '../../images/Favicons/AWS.jpg', duration: '120 min', level: 'Avanzado', progress: 0, status: 'default', image: '../../images/Ubits-logo.svg', competency: 'Data skills', language: 'Inglés' }
+            ];
+
+            var asignacionesTable = document.getElementById('asignaciones-table');
+            var asignacionesTbody = document.getElementById('asignaciones-tbody');
+            function getAsignacionesTableRows() { return asignacionesTbody ? Array.from(asignacionesTbody.querySelectorAll('tr')) : []; }
+
+            if (typeof getModalHtml === 'function') {
+                var deleteBody = '<p class="ubits-body-md-regular">¿Estás seguro de que deseas eliminar <strong id="asignaciones-delete-count">0</strong> asignación(es) seleccionada(s)?</p><p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Esta acción no se puede deshacer.</p><div style="margin-top: var(--gap-lg);"><label class="ubits-body-sm-regular" for="asignaciones-delete-type-input">Escriba <strong>eliminar</strong> para habilitar el botón:</label><input type="text" id="asignaciones-delete-type-input" class="ubits-input" placeholder="Escriba la palabra de confirmación" autocomplete="off" style="margin-top: var(--gap-sm); width: 100%; padding: var(--padding-sm) var(--padding-md); border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-sm); font-size: var(--font-size-sm); color: var(--ubits-fg-1-high); box-sizing: border-box;"></div>';
+                var deleteFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="asignaciones-delete-cancel">Cancelar</button><button type="button" class="ubits-button ubits-button--error ubits-button--md" id="asignaciones-delete-confirm" disabled>Eliminar</button>';
+                document.getElementById('asignaciones-modals-container').innerHTML = getModalHtml({ overlayId: 'asignaciones-delete-overlay', title: 'Confirmar eliminación', bodyHtml: deleteBody, footerHtml: deleteFooter, size: 'sm', closeButtonId: 'asignaciones-delete-close' });
+            }
+
+            function getDrawerUsuariosBodyHtml() {
+                return '<div class="drawer-agregar-usuarios-options">' +
+                    '<label class="drawer-option-card ubits-radio ubits-radio--md" data-opcion="toda-empresa">' +
+                    '  <input type="radio" name="tipo-agregar-usuarios" class="ubits-radio__input" value="toda-empresa" checked>' +
+                    '  <span class="ubits-radio__circle"></span>' +
+                    '  <div class="drawer-option-card__content">' +
+                    '    <span class="ubits-body-md-semibold">Agregar toda la empresa</span>' +
+                    '    <p class="ubits-body-sm-regular">Asigna el plan a todos los colaboradores de la empresa de una sola vez.</p>' +
+                    '  </div>' +
+                    '</label>' +
+                    '<label class="drawer-option-card ubits-radio ubits-radio--md" data-opcion="por-colaborador">' +
+                    '  <input type="radio" name="tipo-agregar-usuarios" class="ubits-radio__input" value="por-colaborador">' +
+                    '  <span class="ubits-radio__circle"></span>' +
+                    '  <div class="drawer-option-card__content">' +
+                    '    <span class="ubits-body-md-semibold">Agregar colaborador</span>' +
+                    '    <p class="ubits-body-sm-regular">Busca y agrega colaboradores individualmente a la lista de participantes.</p>' +
+                    '  </div>' +
+                    '</label>' +
+                    '<label class="drawer-option-card ubits-radio ubits-radio--md" data-opcion="por-grupos">' +
+                    '  <input type="radio" name="tipo-agregar-usuarios" class="ubits-radio__input" value="por-grupos">' +
+                    '  <span class="ubits-radio__circle"></span>' +
+                    '  <div class="drawer-option-card__content">' +
+                    '    <span class="ubits-body-md-semibold">Agregar por grupos</span>' +
+                    '    <p class="ubits-body-sm-regular">Selecciona uno o más grupos para asignar el plan a sus integrantes.</p>' +
+                    '  </div>' +
+                    '</label>' +
+                    '<label class="drawer-option-card ubits-radio ubits-radio--md" data-opcion="desde-archivo">' +
+                    '  <input type="radio" name="tipo-agregar-usuarios" class="ubits-radio__input" value="desde-archivo">' +
+                    '  <span class="ubits-radio__circle"></span>' +
+                    '  <div class="drawer-option-card__content">' +
+                    '    <span class="ubits-body-md-semibold">Agregar desde archivo</span>' +
+                    '    <p class="ubits-body-sm-regular">Importa una lista de participantes desde un archivo CSV o Excel.</p>' +
+                    '  </div>' +
+                    '</label>' +
+                    '</div>' +
+                    '<div class="drawer-usuarios-panel drawer-usuarios-panel--colaborador" id="drawer-usuarios-colaborador-panel" style="display:none">' +
+                    '  <span class="ubits-body-sm-semibold crear-asignacion-form__label">Buscar colaboradores</span>' +
+                    '  <div id="drawer-usuarios-colaborador-search"></div>' +
+                    '  <div class="drawer-usuarios-resultados" id="drawer-usuarios-colaborador-resultados"></div>' +
+                    '  <div class="drawer-usuarios-lista-wrapper">' +
+                    '    <span class="ubits-body-sm-semibold crear-asignacion-form__label">Usuarios agregados</span>' +
+                    '    <ul class="drawer-usuarios-lista" id="drawer-usuarios-colaborador-lista"></ul>' +
+                    '    <p class="drawer-usuarios-empty ubits-body-sm-regular" id="drawer-usuarios-colaborador-empty">No hay usuarios agregados. Busca y selecciona para agregar.</p>' +
+                    '  </div>' +
+                    '</div>' +
+                    '<div class="drawer-usuarios-panel drawer-usuarios-panel--grupos" id="drawer-usuarios-grupos-panel" style="display:none">' +
+                    '  <span class="ubits-body-sm-semibold crear-asignacion-form__label">Buscar grupos</span>' +
+                    '  <div id="drawer-usuarios-grupos-search"></div>' +
+                    '  <div class="drawer-usuarios-resultados" id="drawer-usuarios-grupos-resultados"></div>' +
+                    '  <div class="drawer-usuarios-grupos-seleccionados">' +
+                    '    <span class="ubits-body-sm-semibold crear-asignacion-form__label">Grupos seleccionados</span>' +
+                    '    <div class="drawer-usuarios-grupos-lista" id="drawer-usuarios-grupos-lista"></div>' +
+                    '    <p class="drawer-usuarios-empty ubits-body-sm-regular" id="drawer-usuarios-grupos-empty">No hay grupos seleccionados. Busca y selecciona un grupo.</p>' +
+                    '  </div>' +
+                    '</div>' +
+                    '<div class="drawer-usuarios-panel drawer-usuarios-panel--archivo" id="drawer-usuarios-archivo-panel" style="display:none">' +
+                    '  <div class="drawer-archivo-dropzone" id="drawer-archivo-dropzone">' +
+                    '    <i class="far fa-cloud-upload drawer-archivo-icon"></i>' +
+                    '    <p class="ubits-body-sm-regular drawer-archivo-text">Arrastra un archivo aquí o haz clic para subir</p>' +
+                    '    <input type="file" id="drawer-archivo-input" style="display:none">' +
+                    '  </div>' +
+                    '</div>';
+            }
+
+            function crearFilaAsignacion(item) {
+                var id = item.id;
+                var label = item.asignadosLabel || 'Por definir';
+                var count = item.contenidosCount || 0;
+                var btnText = count === 0 ? 'Agregar contenidos' : (count + ' contenidos');
+                var tr = document.createElement('tr');
+                tr.setAttribute('data-asignacion-id', id);
+                tr.innerHTML = '<td class="ubits-table__td--checkbox" data-col="checkbox" data-tooltip="Seleccionar" data-tooltip-delay="1000"><label class="ubits-checkbox ubits-checkbox--sm" style="display:inline-flex;"><input type="checkbox" class="ubits-checkbox__input asignacion-row-check" data-asignacion-id="' + id + '"><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label sr-only" aria-hidden="true">&nbsp;</span></label></td>' +
+                    '<td data-col="asignados"><span class="ubits-body-sm-regular">' + (label.replace(/</g, '&lt;').replace(/>/g, '&gt;')) + '</span></td>' +
+                    '<td data-col="cursos"><button type="button" class="ubits-button ubits-button--secondary ubits-button--xs js-asignacion-agregar-contenidos" data-asignacion-id="' + id + '"><i class="far fa-plus"></i><span>' + btnText + '</span></button></td>';
+                return tr;
+            }
+
+            function abrirDrawerAgregarUsuarios() {
+                var footerHtml = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" onclick="cerrarDrawerYActualizar()"><span class="ubits-body-sm-regular">Cancelar</span></button>' +
+                    '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" onclick="cerrarDrawerYActualizar()"><span class="ubits-body-sm-regular">Agregar</span></button>';
+
+                openDrawer({
+                    overlayId: 'drawer-agregar-usuarios',
+                    title: 'Agregar asignación',
+                    bodyHtml: getDrawerUsuariosBodyHtml(),
+                    footerHtml: footerHtml,
+                    size: 'lg',
+                    onClose: function() {}
+                });
+
+                initDrawerAgregarUsuarios();
+            }
+
+            var colabMock = [
+                { id: 'u1', nombre: 'Ana Martínez', email: 'ana.martinez@empresa.com', cargo: 'Diseñadora' },
+                { id: 'u2', nombre: 'Carlos López', email: 'carlos.lopez@empresa.com', cargo: 'Desarrollador' },
+                { id: 'u3', nombre: 'María García', email: 'maria.garcia@empresa.com', cargo: 'Product Manager' },
+                { id: 'u4', nombre: 'Pedro Sánchez', email: 'pedro.sanchez@empresa.com', cargo: 'Analista' },
+                { id: 'u5', nombre: 'Laura Fernández', email: 'laura.fernandez@empresa.com', cargo: 'UX Researcher' },
+                { id: 'u6', nombre: 'Roberto Díaz', email: 'roberto.diaz@empresa.com', cargo: 'Líder técnico' }
+            ];
+            var gruposMock = [
+                { id: 'g1', nombre: 'Equipo de ventas', descripcion: 'Colaboradores del área comercial', integrantes: 24 },
+                { id: 'g2', nombre: 'Onboarding 2025', descripcion: 'Nuevos colaboradores incorporados en 2025', integrantes: 12 },
+                { id: 'g3', nombre: 'Líderes de área', descripcion: 'Jefes y coordinadores de cada departamento', integrantes: 8 },
+                { id: 'g4', nombre: 'Equipo IT', descripcion: 'Desarrolladores y soporte técnico', integrantes: 15 }
+            ];
+
+            function initDrawerAgregarUsuarios() {
+                var overlay = document.getElementById('drawer-agregar-usuarios');
+                if (!overlay) return;
+
+                var colaboradorPanel = overlay.querySelector('#drawer-usuarios-colaborador-panel');
+                var gruposPanel = overlay.querySelector('#drawer-usuarios-grupos-panel');
+                var archivoPanel = overlay.querySelector('#drawer-usuarios-archivo-panel');
+                var usuariosAgregados = [];
+                var gruposSeleccionados = [];
+
+                overlay.querySelectorAll('input[name="tipo-agregar-usuarios"]').forEach(function(radio) {
+                    radio.addEventListener('change', function() {
+                        var opcion = this.value;
+                        colaboradorPanel.style.display = opcion === 'por-colaborador' ? 'flex' : 'none';
+                        gruposPanel.style.display = opcion === 'por-grupos' ? 'flex' : 'none';
+                        archivoPanel.style.display = opcion === 'desde-archivo' ? 'flex' : 'none';
+                    });
+                });
+
+                if (typeof createInput === 'function') {
+                    createInput({
+                        containerId: 'drawer-usuarios-colaborador-search',
+                        type: 'search',
+                        placeholder: 'Buscar por nombre o email...',
+                        showLabel: false
+                    });
+                    createInput({
+                        containerId: 'drawer-usuarios-grupos-search',
+                        type: 'search',
+                        placeholder: 'Buscar grupos...',
+                        showLabel: false
+                    });
+                }
+
+                var searchColab = overlay.querySelector('#drawer-usuarios-colaborador-search input');
+                var searchGrupos = overlay.querySelector('#drawer-usuarios-grupos-search input');
+                var resultadosColab = overlay.querySelector('#drawer-usuarios-colaborador-resultados');
+                var resultadosGrupos = overlay.querySelector('#drawer-usuarios-grupos-resultados');
+                var listaColab = overlay.querySelector('#drawer-usuarios-colaborador-lista');
+                var listaGrupos = overlay.querySelector('#drawer-usuarios-grupos-lista');
+                var emptyColab = overlay.querySelector('#drawer-usuarios-colaborador-empty');
+                var emptyGrupos = overlay.querySelector('#drawer-usuarios-grupos-empty');
+
+                function renderListaColab() {
+                    listaColab.innerHTML = '';
+                    usuariosAgregados.forEach(function(u) {
+                        var li = document.createElement('li');
+                        li.className = 'drawer-usuarios-lista-item';
+                        li.innerHTML = '<span class="ubits-body-sm-regular">' + (u.nombre || '') + '</span>' +
+                            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only js-drawer-usuarios-remove" aria-label="Quitar"><i class="far fa-times"></i></button>';
+                        li.dataset.userId = u.id;
+                        li.querySelector('.js-drawer-usuarios-remove').addEventListener('click', function() {
+                            usuariosAgregados = usuariosAgregados.filter(function(x) { return x.id !== u.id; });
+                            renderListaColab();
+                        });
+                        listaColab.appendChild(li);
+                    });
+                    if (emptyColab) emptyColab.style.display = usuariosAgregados.length === 0 ? 'block' : 'none';
+                    if (listaColab) listaColab.style.display = usuariosAgregados.length === 0 ? 'none' : 'block';
+                }
+
+                function renderListaGrupos() {
+                    listaGrupos.innerHTML = '';
+                    gruposSeleccionados.forEach(function(g) {
+                        var div = document.createElement('div');
+                        div.className = 'drawer-usuarios-grupo-item';
+                        div.innerHTML = '<span class="ubits-body-sm-regular">' + (g.nombre || '') + ' <span class="ubits-body-xs-regular">(' + (g.integrantes || 0) + ' integrantes)</span></span>' +
+                            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only js-drawer-usuarios-remove" aria-label="Quitar"><i class="far fa-times"></i></button>';
+                        div.dataset.groupId = g.id;
+                        div.querySelector('.js-drawer-usuarios-remove').addEventListener('click', function() {
+                            gruposSeleccionados = gruposSeleccionados.filter(function(x) { return x.id !== g.id; });
+                            renderListaGrupos();
+                        });
+                        listaGrupos.appendChild(div);
+                    });
+                    if (emptyGrupos) emptyGrupos.style.display = gruposSeleccionados.length === 0 ? 'block' : 'none';
+                    if (listaGrupos) listaGrupos.style.display = gruposSeleccionados.length === 0 ? 'none' : 'flex';
+                }
+
+                function mostrarResultadosColab(q) {
+                    var filtrados = !q ? [] : colabMock.filter(function(u) {
+                        return (u.nombre && u.nombre.toLowerCase().includes(q)) ||
+                            (u.email && u.email.toLowerCase().includes(q));
+                    }).filter(function(u) { return !usuariosAgregados.some(function(a) { return a.id === u.id; }); });
+                    resultadosColab.innerHTML = '';
+                    resultadosColab.style.display = filtrados.length === 0 ? 'none' : 'block';
+                    filtrados.forEach(function(u) {
+                        var btn = document.createElement('button');
+                        btn.type = 'button';
+                        btn.className = 'drawer-usuarios-resultado-item';
+                        btn.innerHTML = '<span class="ubits-body-sm-regular">' + (u.nombre || '') + '</span>' +
+                            '<span class="ubits-body-xs-regular drawer-usuarios-resultado-email">' + (u.email || '') + '</span>';
+                        btn.addEventListener('click', function() {
+                            usuariosAgregados.push(u);
+                            renderListaColab();
+                            if (searchColab) { searchColab.value = ''; searchColab.dispatchEvent(new Event('input')); }
+                            mostrarResultadosColab('');
+                        });
+                        resultadosColab.appendChild(btn);
+                    });
+                }
+
+                function mostrarResultadosGrupos(q) {
+                    var filtrados = gruposMock.filter(function(g) {
+                        if (gruposSeleccionados.some(function(a) { return a.id === g.id; })) return false;
+                        if (!q) return true;
+                        return (g.nombre && g.nombre.toLowerCase().includes(q)) ||
+                            (g.descripcion && g.descripcion.toLowerCase().includes(q));
+                    });
+                    resultadosGrupos.innerHTML = '';
+                    resultadosGrupos.style.display = filtrados.length === 0 ? 'none' : 'block';
+                    filtrados.forEach(function(g) {
+                        var btn = document.createElement('button');
+                        btn.type = 'button';
+                        btn.className = 'drawer-usuarios-resultado-item';
+                        btn.innerHTML = '<span class="ubits-body-sm-regular">' + (g.nombre || '') + '</span>' +
+                            '<span class="ubits-body-xs-regular drawer-usuarios-resultado-desc">' + (g.integrantes || 0) + ' integrantes</span>';
+                        btn.addEventListener('click', function() {
+                            gruposSeleccionados.push(g);
+                            renderListaGrupos();
+                            if (searchGrupos) { searchGrupos.value = ''; searchGrupos.dispatchEvent(new Event('input')); }
+                            mostrarResultadosGrupos('');
+                        });
+                        resultadosGrupos.appendChild(btn);
+                    });
+                }
+
+                if (searchColab) {
+                    searchColab.addEventListener('input', function() { mostrarResultadosColab(this.value.trim().toLowerCase()); });
+                    searchColab.addEventListener('focus', function() { if (this.value.trim()) mostrarResultadosColab(this.value.trim().toLowerCase()); });
+                }
+                if (searchGrupos) {
+                    searchGrupos.addEventListener('input', function() { mostrarResultadosGrupos(this.value.trim().toLowerCase()); });
+                    searchGrupos.addEventListener('focus', function() { if (this.value.trim()) mostrarResultadosGrupos(this.value.trim().toLowerCase()); else mostrarResultadosGrupos(''); });
+                }
+
+                colaboradorPanel.style.flexDirection = 'column';
+                gruposPanel.style.flexDirection = 'column';
+                archivoPanel.style.flexDirection = 'column';
+
+                var dropzone = overlay.querySelector('#drawer-archivo-dropzone');
+                var archivoInput = overlay.querySelector('#drawer-archivo-input');
+
+                function procesarArchivoSubido() {
+                    var id = 'asignacion-' + (++asignacionIdCounter);
+                    asignacionesData.push({ id: id, asignadosLabel: 'Importación desde archivo', contenidosCount: 0 });
+                    var tr = crearFilaAsignacion(asignacionesData[asignacionesData.length - 1]);
+                    if (asignacionesTbody) asignacionesTbody.appendChild(tr);
+                    bindAsignacionRow(tr);
+                    applyAsignacionesVisibility();
+                    if (typeof closeDrawer === 'function') closeDrawer('drawer-agregar-usuarios');
+                }
+
+                dropzone.addEventListener('click', function() { archivoInput.click(); });
+                dropzone.addEventListener('dragover', function(e) { e.preventDefault(); dropzone.classList.add('drawer-archivo-dropzone--dragover'); });
+                dropzone.addEventListener('dragleave', function() { dropzone.classList.remove('drawer-archivo-dropzone--dragover'); });
+                dropzone.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    dropzone.classList.remove('drawer-archivo-dropzone--dragover');
+                    if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                        procesarArchivoSubido();
+                    }
+                });
+                archivoInput.addEventListener('change', function() {
+                    if (this.files && this.files.length > 0) {
+                        procesarArchivoSubido();
+                    }
+                    this.value = '';
+                });
+            }
+
+            function cerrarDrawerYActualizar() {
+                var overlay = document.getElementById('drawer-agregar-usuarios');
+                if (!overlay) { if (typeof closeDrawer === 'function') closeDrawer('drawer-agregar-usuarios'); return; }
+                var radio = overlay.querySelector('input[name="tipo-agregar-usuarios"]:checked');
+                var opcion = radio ? radio.value : 'toda-empresa';
+                var label = 'Por definir';
+                if (opcion === 'toda-empresa') label = 'Toda la empresa';
+                else if (opcion === 'por-colaborador') {
+                    var listColab = overlay.querySelector('#drawer-usuarios-colaborador-lista');
+                    var items = listColab ? listColab.querySelectorAll('.drawer-usuarios-lista-item') : [];
+                    label = items.length ? Array.from(items).map(function(li) { var s = li.querySelector('.ubits-body-sm-regular'); return s ? s.textContent.trim() : ''; }).filter(Boolean).join(', ') : 'Por definir';
+                } else if (opcion === 'por-grupos') {
+                    var listGrupos = overlay.querySelector('#drawer-usuarios-grupos-lista');
+                    var divs = listGrupos ? listGrupos.querySelectorAll('.drawer-usuarios-grupo-item') : [];
+                    label = divs.length ? Array.from(divs).map(function(d) { var s = d.querySelector('.ubits-body-sm-regular'); return s ? s.textContent.trim().replace(/\s*\(\d+\s*integrantes\)\s*$/, '').trim() : ''; }).filter(Boolean).join(', ') : 'Por definir';
+                } else if (opcion === 'desde-archivo') { if (typeof closeDrawer === 'function') closeDrawer('drawer-agregar-usuarios'); return; }
+                var id = 'asignacion-' + (++asignacionIdCounter);
+                asignacionesData.push({ id: id, asignadosLabel: label, contenidosCount: 0 });
+                var tr = crearFilaAsignacion(asignacionesData[asignacionesData.length - 1]);
+                if (asignacionesTbody) asignacionesTbody.appendChild(tr);
+                bindAsignacionRow(tr);
+                applyAsignacionesVisibility();
+                if (typeof closeDrawer === 'function') closeDrawer('drawer-agregar-usuarios');
+            }
+            window.cerrarDrawerYActualizar = cerrarDrawerYActualizar;
+
+            document.getElementById('btn-agregar-asignacion').addEventListener('click', function() {
+                abrirDrawerAgregarUsuarios();
+            });
+
+            function getAsignacionRowText(row, col) {
+                var td = row.querySelector('td[data-col="' + col + '"]');
+                if (!td) return '';
+                var span = td.querySelector('.ubits-body-sm-regular');
+                return span ? span.textContent.trim() : '';
+            }
+            function passesAsignacionSearch(row) {
+                if (!searchQuery) return true;
+                var q = searchQuery.toLowerCase();
+                var asignados = getAsignacionRowText(row, 'asignados').toLowerCase();
+                return asignados.indexOf(q) !== -1;
+            }
+            function getVisibleAsignacionRows() {
+                var rows = getAsignacionesTableRows();
+                var base = rows.filter(passesAsignacionSearch);
+                if (viewOnlySelected) base = base.filter(function(r) { var cb = r.querySelector('.asignacion-row-check'); return cb && cb.checked; });
+                return base;
+            }
+            function updateAsignacionesResultsCount() {
+                var el = document.getElementById('asignaciones-results-count');
+                if (!el) return;
+                var total = getAsignacionesTableRows().length;
+                var visible = getVisibleAsignacionRows().length;
+                el.textContent = visible + '/' + total;
+            }
+            function applyAsignacionesVisibility() {
+                var rows = getAsignacionesTableRows();
+                var visible = getVisibleAsignacionRows();
+                rows.forEach(function(r) {
+                    var show = passesAsignacionSearch(r);
+                    if (show && viewOnlySelected) { var cb = r.querySelector('.asignacion-row-check'); show = cb && cb.checked; }
+                    r.style.display = show ? '' : 'none';
+                });
+                updateAsignacionesResultsCount();
+                updateAsignacionesEmptyState();
+                updateAsignacionesSelectAll();
+                if (typeof initTooltip === 'function') {
+                    initTooltip('#asignaciones-table thead [data-tooltip]');
+                    initTooltip('#asignaciones-table tbody .ubits-table__td--checkbox[data-tooltip]');
+                }
+            }
+            function updateAsignacionesEmptyState() {
+                var wrapper = document.getElementById('asignaciones-table-wrapper');
+                var emptyEl = document.getElementById('asignaciones-empty-state');
+                var listWrapper = wrapper ? wrapper.closest('.asignaciones-list-wrapper') : null;
+                var rows = getAsignacionesTableRows();
+                var visibleCount = getVisibleAsignacionRows().length;
+                if (visibleCount === 0) {
+                    if (listWrapper) listWrapper.classList.add('is-empty');
+                    emptyEl.innerHTML = '';
+                    if (typeof loadEmptyState === 'function') {
+                        if (rows.length === 0) {
+                            loadEmptyState('asignaciones-empty-state', { icon: 'fa-user-check', iconSize: 'lg', title: 'Aún no hay asignaciones', description: 'Agrega asignaciones para definir quiénes tendrán acceso a este plan.', buttons: {} });
+                            emptyEl.classList.add('lms-table-empty-state');
+                        } else {
+                            loadEmptyState('asignaciones-empty-state', { icon: 'fa-search', iconSize: 'lg', title: 'No se encontraron resultados', description: 'Intenta ajustar tu búsqueda.', buttons: { secondary: { text: 'Limpiar búsqueda', icon: 'fa-times', onClick: function() {} } } });
+                            emptyEl.classList.add('lms-table-empty-state');
+                            setTimeout(function() { var btn = emptyEl.querySelector('.ubits-button--secondary'); if (btn) btn.onclick = function(e) { e.preventDefault(); e.stopPropagation(); clearAsignacionesSearchAndFilters(); }; }, 50);
+                        }
+                    }
+                } else {
+                    if (listWrapper) listWrapper.classList.remove('is-empty');
+                    emptyEl.innerHTML = '';
+                }
+            }
+            function updateAsignacionesSelectAll() {
+                var selectAll = document.getElementById('asignaciones-select-all');
+                if (!selectAll) return;
+                var visible = getVisibleAsignacionRows();
+                var checkedCount = visible.filter(function(r) { var cb = r.querySelector('.asignacion-row-check'); return cb && cb.checked; }).length;
+                selectAll.checked = visible.length > 0 && checkedCount === visible.length;
+                selectAll.indeterminate = checkedCount > 0 && checkedCount < visible.length;
+                var th = selectAll.closest('th');
+                if (th) th.setAttribute('data-tooltip', checkedCount > 0 ? 'Deseleccionar todo' : 'Seleccionar todo');
+            }
+            function toggleAsignacionesActionBar() {
+                var bar = document.getElementById('asignaciones-action-bar');
+                var btnVer = document.getElementById('asignaciones-ver-seleccionados');
+                if (!bar) return;
+                var rows = getAsignacionesTableRows();
+                var n = rows.filter(function(r) { var cb = r.querySelector('.asignacion-row-check'); return cb && cb.checked; }).length;
+                if (n > 0) {
+                    bar.classList.add('is-visible');
+                    if (btnVer) {
+                        var icon = btnVer.querySelector('i');
+                        var span = btnVer.querySelector('span');
+                        if (viewOnlySelected) {
+                            if (icon) icon.className = 'far fa-eye-slash';
+                            if (span) span.textContent = 'Dejar de ver seleccionados (' + n + ')';
+                            btnVer.classList.add('active');
+                        } else {
+                            if (icon) icon.className = 'far fa-eye';
+                            if (span) span.textContent = 'Ver seleccionados';
+                            btnVer.classList.remove('active');
+                        }
+                    }
+                } else {
+                    bar.classList.remove('is-visible');
+                    if (btnVer) { btnVer.classList.remove('active'); var span = btnVer.querySelector('span'); if (span) span.textContent = 'Ver seleccionados'; var icon = btnVer.querySelector('i'); if (icon) icon.className = 'far fa-eye'; }
+                }
+            }
+            function clearAsignacionesSearchAndFilters() {
+                searchQuery = '';
+                var searchContainer = document.getElementById('asignaciones-search-container');
+                if (searchContainer) { searchContainer.innerHTML = ''; searchContainer.style.display = 'none'; }
+                var searchToggle = document.getElementById('asignaciones-search-toggle');
+                if (searchToggle) searchToggle.style.display = 'flex';
+                isSearchMode = false;
+                viewOnlySelected = false;
+                applyAsignacionesVisibility();
+                if (typeof showToast === 'function') showToast('success', 'Búsqueda limpiada');
+            }
+            function bindAsignacionRow(tr) {
+                var cb = tr.querySelector('.asignacion-row-check');
+                if (cb) cb.addEventListener('change', function() {
+                    var td = this.closest('.ubits-table__td--checkbox');
+                    if (td) td.setAttribute('data-tooltip', this.checked ? 'Deseleccionar' : 'Seleccionar');
+                    toggleAsignacionesActionBar();
+                });
+                var btn = tr.querySelector('.js-asignacion-agregar-contenidos');
+                if (btn) btn.addEventListener('click', function() { abrirDrawerAgregarCursos(tr); });
+            }
+
+            var searchToggle = document.getElementById('asignaciones-search-toggle');
+            var searchContainer = document.getElementById('asignaciones-search-container');
+            if (searchToggle && searchContainer) {
+                searchToggle.addEventListener('click', function() {
+                    if (isSearchMode) return;
+                    searchContainer.style.display = 'flex';
+                    searchToggle.style.display = 'none';
+                    searchContainer.innerHTML = '';
+                    if (typeof createInput === 'function') {
+                        createInput({ containerId: 'asignaciones-search-container', type: 'search', placeholder: 'Buscar asignaciones...', size: 'md', onChange: function(val) { searchQuery = val || ''; applyAsignacionesVisibility(); } });
+                        setTimeout(function() {
+                            var wrap = searchContainer.querySelector('.ubits-input-wrapper');
+                            if (wrap) {
+                                var closeBtn = document.createElement('button');
+                                closeBtn.type = 'button';
+                                closeBtn.className = 'ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only';
+                                closeBtn.setAttribute('aria-label', 'Cerrar búsqueda');
+                                closeBtn.style.marginLeft = '8px';
+                                closeBtn.innerHTML = '<i class="far fa-times"></i>';
+                                closeBtn.addEventListener('click', function() {
+                                    searchQuery = '';
+                                    searchContainer.innerHTML = '';
+                                    searchContainer.style.display = 'none';
+                                    searchToggle.style.display = 'flex';
+                                    isSearchMode = false;
+                                    applyAsignacionesVisibility();
+                                });
+                                searchContainer.appendChild(closeBtn);
+                                var inp = wrap.querySelector('input');
+                                if (inp) inp.focus();
+                            }
+                        }, 100);
+                    }
+                    isSearchMode = true;
+                });
+            }
+            document.addEventListener('click', function(e) {
+                if (!isSearchMode) return;
+                if (searchContainer && searchContainer.contains(e.target)) return;
+                if (searchToggle && searchToggle.contains(e.target)) return;
+                if (!searchQuery || !searchQuery.trim()) {
+                    if (searchContainer) { searchContainer.innerHTML = ''; searchContainer.style.display = 'none'; }
+                    if (searchToggle) searchToggle.style.display = 'flex';
+                    isSearchMode = false;
+                }
+            });
+
+            var selectAll = document.getElementById('asignaciones-select-all');
+            if (selectAll) {
+                selectAll.addEventListener('change', function() {
+                    var visible = getVisibleAsignacionRows();
+                    var checkedCount = visible.filter(function(r) { var cb = r.querySelector('.asignacion-row-check'); return cb && cb.checked; }).length;
+                    if (this.checked && checkedCount > 0 && checkedCount < visible.length) {
+                        visible.forEach(function(row) {
+                            var cb = row.querySelector('.asignacion-row-check');
+                            if (cb) cb.checked = false;
+                            var td = row.querySelector('.ubits-table__td--checkbox');
+                            if (td) td.setAttribute('data-tooltip', 'Seleccionar');
+                        });
+                        toggleAsignacionesActionBar();
+                        if (typeof initTooltip === 'function') initTooltip('#asignaciones-table tbody .ubits-table__td--checkbox[data-tooltip]');
+                        return;
+                    }
+                    getVisibleAsignacionRows().forEach(function(row) {
+                        var cb = row.querySelector('.asignacion-row-check');
+                        if (cb) cb.checked = selectAll.checked;
+                        var td = row.querySelector('.ubits-table__td--checkbox');
+                        if (td) td.setAttribute('data-tooltip', selectAll.checked ? 'Deseleccionar' : 'Seleccionar');
+                    });
+                    toggleAsignacionesActionBar();
+                    if (typeof initTooltip === 'function') initTooltip('#asignaciones-table tbody .ubits-table__td--checkbox[data-tooltip]');
+                });
+            }
+
+            var btnVerSeleccionados = document.getElementById('asignaciones-ver-seleccionados');
+            if (btnVerSeleccionados) {
+                btnVerSeleccionados.addEventListener('click', function() {
+                    var rows = getAsignacionesTableRows();
+                    var n = rows.filter(function(r) { var cb = r.querySelector('.asignacion-row-check'); return cb && cb.checked; }).length;
+                    if (n === 0) return;
+                    viewOnlySelected = !viewOnlySelected;
+                    applyAsignacionesVisibility();
+                    toggleAsignacionesActionBar();
+                });
+            }
+
+            var deleteOverlay = document.getElementById('asignaciones-delete-overlay');
+            var deleteClose = document.getElementById('asignaciones-delete-close');
+            var deleteCancel = document.getElementById('asignaciones-delete-cancel');
+            var deleteConfirm = document.getElementById('asignaciones-delete-confirm');
+            var deleteCountEl = document.getElementById('asignaciones-delete-count');
+            var deleteTypeInput = document.getElementById('asignaciones-delete-type-input');
+            function closeAsignacionesDeleteModal() {
+                if (deleteOverlay) { deleteOverlay.style.display = 'none'; deleteOverlay.setAttribute('aria-hidden', 'true'); }
+                if (deleteTypeInput) deleteTypeInput.value = '';
+                if (deleteConfirm) deleteConfirm.disabled = true;
+            }
+            var btnEliminar = document.getElementById('asignaciones-mass-eliminar');
+            if (btnEliminar) {
+                btnEliminar.addEventListener('click', function() {
+                    var rows = getAsignacionesTableRows();
+                    var rowsToRemove = rows.filter(function(r) { var cb = r.querySelector('.asignacion-row-check'); return cb && cb.checked; });
+                    if (rowsToRemove.length === 0) return;
+                    if (deleteCountEl) deleteCountEl.textContent = rowsToRemove.length;
+                    if (deleteTypeInput) { deleteTypeInput.value = ''; deleteTypeInput.focus(); }
+                    if (deleteConfirm) deleteConfirm.disabled = true;
+                    if (deleteOverlay) { deleteOverlay.style.display = 'flex'; deleteOverlay.setAttribute('aria-hidden', 'false'); }
+                });
+            }
+            if (deleteTypeInput && deleteConfirm) {
+                deleteTypeInput.addEventListener('input', function() {
+                    deleteConfirm.disabled = this.value.trim().toLowerCase() !== 'eliminar';
+                });
+            }
+            if (deleteClose) deleteClose.addEventListener('click', closeAsignacionesDeleteModal);
+            if (deleteCancel) deleteCancel.addEventListener('click', closeAsignacionesDeleteModal);
+            if (deleteOverlay) deleteOverlay.addEventListener('click', function(e) { if (e.target === deleteOverlay) closeAsignacionesDeleteModal(); });
+            if (deleteConfirm) {
+                deleteConfirm.addEventListener('click', function() {
+                    var rows = getAsignacionesTableRows();
+                    var rowsToRemove = rows.filter(function(r) { var cb = r.querySelector('.asignacion-row-check'); return cb && cb.checked; });
+                    var idsToRemove = rowsToRemove.map(function(r) { return r.getAttribute('data-asignacion-id'); });
+                    closeAsignacionesDeleteModal();
+                    rowsToRemove.forEach(function(tr) { tr.remove(); });
+                    asignacionesData = asignacionesData.filter(function(a) { return idsToRemove.indexOf(a.id) === -1; });
+                    var selAll = document.getElementById('asignaciones-select-all');
+                    if (selAll) selAll.checked = false;
+                    applyAsignacionesVisibility();
+                    toggleAsignacionesActionBar();
+                    if (typeof showToast === 'function') showToast('success', rowsToRemove.length + ' asignación(es) eliminada(s) correctamente');
+                });
+            }
+
+            updateAsignacionesEmptyState();
+
+            // ========== Drawer Agregar contenidos (ex cursos) ==========
+            function getDrawerCursosBodyHtml() {
+                return '<div class="drawer-agregar-cursos">' +
+                    '<div class="drawer-agregar-cursos__section">' +
+                    '  <span class="ubits-body-sm-semibold crear-asignacion-form__label">Contenidos agregados</span>' +
+                    '  <div class="drawer-cursos-table-wrapper">' +
+                    '    <table class="drawer-cursos-table" id="drawer-cursos-table">' +
+                    '      <thead><tr><th class="ubits-body-sm-semibold">Contenido</th><th class="ubits-body-sm-semibold">Acciones</th></tr></thead>' +
+                    '      <tbody id="drawer-cursos-agregados-tbody"></tbody>' +
+                    '    </table>' +
+                    '    <p class="drawer-cursos-empty ubits-body-sm-regular" id="drawer-cursos-empty-msg">No hay contenidos agregados</p>' +
+                    '  </div>' +
+                    '</div>' +
+                    '<div class="drawer-agregar-cursos__section">' +
+                    '  <span class="ubits-body-sm-semibold crear-asignacion-form__label">Buscar y agregar contenidos</span>' +
+                    '  <div id="drawer-cursos-search-container"></div>' +
+                    '  <div class="drawer-cursos-cards-grid" id="drawer-cursos-cards-container"></div>' +
+                    '</div>' +
+                    '</div>';
+            }
+
+            function abrirDrawerAgregarCursos(tr) {
+                pendingCursosRow = tr;
+                var cursosSeleccionados = [];
+                var footerHtml = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" onclick="cerrarDrawerCursos()"><span class="ubits-body-sm-regular">Cancelar</span></button>' +
+                    '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" onclick="cerrarDrawerCursosYAplicar()"><span class="ubits-body-sm-regular">Agregar</span></button>';
+
+                openDrawer({
+                    overlayId: 'drawer-agregar-cursos',
+                    title: 'Agregar contenidos',
+                    bodyHtml: getDrawerCursosBodyHtml(),
+                    footerHtml: footerHtml,
+                    size: 'lg',
+                    onClose: function() {
+                        pendingCursosRow = null;
+                    }
+                });
+
+                var overlay = document.getElementById('drawer-agregar-cursos');
+                if (!overlay) return;
+
+                actualizarTabla();
+
+                function actualizarTabla() {
+                    var tbody = overlay.querySelector('#drawer-cursos-agregados-tbody');
+                    var emptyMsg = overlay.querySelector('#drawer-cursos-empty-msg');
+                    var tableEl = overlay.querySelector('#drawer-cursos-table');
+                    if (!tbody) return;
+                    tbody.innerHTML = '';
+                    if (tableEl) tableEl.style.display = cursosSeleccionados.length === 0 ? 'none' : 'table';
+                    if (emptyMsg) emptyMsg.style.display = cursosSeleccionados.length === 0 ? 'block' : 'none';
+                    cursosSeleccionados.forEach(function(c) {
+                        var tr = document.createElement('tr');
+                        tr.className = 'drawer-cursos-table-row';
+                        tr.innerHTML = '<td class="ubits-body-sm-regular">' + (c.title || '') + '</td>' +
+                            '<td><button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only js-drawer-cursos-delete" aria-label="Eliminar" title="Eliminar"><i class="far fa-trash"></i></button></td>';
+                        tr.dataset.courseId = c.id;
+                        tr.querySelector('.js-drawer-cursos-delete').addEventListener('click', function() {
+                            cursosSeleccionados = cursosSeleccionados.filter(function(x) { return x.id !== c.id; });
+                            actualizarTabla();
+                        });
+                        tbody.appendChild(tr);
+                    });
+                }
+
+                if (typeof createInput === 'function') {
+                    createInput({
+                        containerId: 'drawer-cursos-search-container',
+                        type: 'search',
+                        placeholder: 'Buscar contenidos...',
+                        showLabel: false
+                    });
+                }
+                var searchContainer = overlay.querySelector('#drawer-cursos-search-container');
+                var searchInput = searchContainer ? searchContainer.querySelector('input') : null;
+                var cardsContainer = overlay.querySelector('#drawer-cursos-cards-container');
+
+                function filtrarYRenderizarCards() {
+                    if (!cardsContainer || typeof loadCardContentCompact !== 'function') return;
+                    var q = (searchInput && searchInput.value) ? searchInput.value.trim().toLowerCase() : '';
+                    var filtrados = catalogoCursos.filter(function(c) {
+                        return !q || (c.title && c.title.toLowerCase().includes(q)) || (c.competency && c.competency.toLowerCase().includes(q));
+                    }).slice(0, 6);
+                    loadCardContentCompact('drawer-cursos-cards-container', filtrados);
+                    filtrados.forEach(function(course, idx) {
+                        var cards = cardsContainer.querySelectorAll('.course-card-compact');
+                        var cardEl = cards[idx];
+                        if (cardEl) {
+                            cardEl.style.cursor = 'pointer';
+                            cardEl.dataset.courseId = course.id;
+                        }
+                    });
+                }
+
+                cardsContainer.addEventListener('click', function(e) {
+                    var cardEl = e.target.closest('.course-card-compact');
+                    if (!cardEl || !cardEl.dataset.courseId) return;
+                    var course = catalogoCursos.find(function(c) { return c.id === cardEl.dataset.courseId; });
+                    if (!course) return;
+                    if (cursosSeleccionados.some(function(x) { return x.id === course.id; })) return;
+                    cursosSeleccionados.push(course);
+                    actualizarTabla();
+                    if (searchInput) {
+                        searchInput.value = '';
+                        searchInput.dispatchEvent(new Event('input'));
+                    }
+                });
+
+                if (searchInput) {
+                    searchInput.addEventListener('input', filtrarYRenderizarCards);
+                    searchInput.addEventListener('keyup', filtrarYRenderizarCards);
+                }
+                filtrarYRenderizarCards();
+            }
+
+            function cerrarDrawerCursos() {
+                if (typeof closeDrawer === 'function') closeDrawer('drawer-agregar-cursos');
+                pendingCursosRow = null;
+            }
+            window.cerrarDrawerCursos = cerrarDrawerCursos;
+
+            function cerrarDrawerCursosYAplicar() {
+                var overlay = document.getElementById('drawer-agregar-cursos');
+                var tbody = overlay ? overlay.querySelector('#drawer-cursos-agregados-tbody') : null;
+                var count = tbody ? tbody.querySelectorAll('tr').length : 0;
+                if (typeof closeDrawer === 'function') closeDrawer('drawer-agregar-cursos');
+                if (pendingCursosRow) {
+                    aplicarCursosAAsignacion(pendingCursosRow, count);
+                    pendingCursosRow = null;
+                }
+            }
+            window.cerrarDrawerCursosYAplicar = cerrarDrawerCursosYAplicar;
+
+            function aplicarCursosAAsignacion(tr, count) {
+                if (!tr) return;
+                var id = tr.getAttribute('data-asignacion-id');
+                var item = asignacionesData.find(function(a) { return a.id === id; });
+                if (item) item.contenidosCount = count;
+                var btn = tr.querySelector('.js-asignacion-agregar-contenidos');
+                if (btn) {
+                    var span = btn.querySelector('span');
+                    var icon = btn.querySelector('i');
+                    if (count === 0) {
+                        if (span) span.textContent = 'Agregar contenidos';
+                        if (icon) { icon.className = 'far fa-plus'; icon.style.display = ''; }
+                    } else {
+                        if (span) span.textContent = count + ' contenidos';
+                        if (icon) icon.style.display = 'none';
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

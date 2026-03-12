@@ -1,0 +1,280 @@
+/* ========================================
+   ESTILOS PARA DETALLE DEL PLAN
+   ======================================== */
+
+/* Mostrar nombre del plan en el header (entre Atrás y Editar plan) */
+.page-detalle-plan .ubits-header-product__product-title h2 {
+    display: block;
+    margin: 0;
+}
+
+/* Card progreso del plan (sin borde ni padding; el contenedor ya los aporta) */
+.detalle-plan-progress-card {
+    background: var(--ubits-bg-1);
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+}
+
+.detalle-plan-progress-card__label {
+    color: var(--ubits-fg-1-high);
+}
+
+.detalle-plan-progress-card__fechas {
+    display: flex;
+    justify-content: space-between;
+    color: var(--ubits-fg-1-medium);
+}
+
+.detalle-plan-progress-card__content {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+}
+
+.detalle-plan-progress-card__bar {
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+}
+
+.detalle-plan-progress-card__content .ubits-body-md-bold {
+    color: var(--ubits-accent-brand);
+    flex-shrink: 0;
+}
+
+/* Asignaciones - header bar, action bar, sort */
+.lms-table-header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--gap-md);
+    margin-bottom: var(--gap-md);
+}
+
+.lms-table-header-left {
+    display: flex;
+    align-items: baseline;
+    gap: var(--gap-md);
+}
+
+.lms-table-header-left .ubits-body-sm-regular {
+    color: var(--ubits-fg-1-medium);
+}
+
+.lms-table-header-right {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.lms-table-search-inline {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.lms-table-action-bar {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--gap-md);
+    padding: var(--padding-sm) 0 var(--padding-md);
+}
+
+.lms-table-action-bar.is-visible {
+    display: flex;
+}
+
+.lms-table-action-buttons {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.lms-th-sortable {
+    white-space: nowrap;
+}
+
+.lms-th-sortable .lms-sort-btn {
+    opacity: 0.7;
+    margin-left: 2px;
+}
+
+.lms-th-sortable .lms-sort-btn:hover {
+    opacity: 1;
+}
+
+.lms-table-empty-state {
+    width: 100%;
+    padding: var(--padding-6xl) var(--padding-xl);
+    min-height: 200px;
+    display: none;
+}
+
+.detalle-plan-asignaciones-wrapper.is-empty #asignaciones-table-wrapper {
+    display: none !important;
+}
+
+.detalle-plan-asignaciones-wrapper.is-empty #asignaciones-empty-state {
+    display: flex !important;
+}
+
+/* Asignaciones - tabla de usuarios */
+.detalle-plan-asignaciones-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+}
+
+.detalle-plan-recordatorio-bar {
+    display: flex;
+    align-items: center;
+    padding-bottom: var(--gap-sm);
+    border-bottom: 1px solid var(--ubits-border-1);
+}
+
+/* Título Asignaciones fuera del card */
+.section-single--asignaciones-titulo > .detalle-plan-asignaciones-titulo-wrapper {
+    background-color: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+}
+
+.detalle-plan-asignaciones__titulo {
+    color: var(--ubits-fg-1-high);
+}
+
+.section-single--asignaciones-detalle .ubits-table tbody td[data-col="usuario"] {
+    min-width: 180px;
+}
+
+.section-single--asignaciones-detalle .ubits-table tbody td[data-col="ultimo-acceso"],
+.section-single--asignaciones-detalle .ubits-table tbody td[data-col="ultima-fecha-progreso"] {
+    min-width: 140px;
+}
+
+.section-single--asignaciones-detalle .ubits-table tbody td[data-col="contenidos"] {
+    min-width: 120px;
+}
+
+.detalle-plan-contenidos-link {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    color: var(--ubits-accent-brand);
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.detalle-plan-contenidos-link:hover {
+    color: var(--ubits-accent-brand);
+}
+
+.section-single--asignaciones-detalle .ubits-table tbody td[data-col="progreso"] {
+    min-width: 120px;
+}
+
+.section-single--asignaciones-detalle .ubits-table__th--actions {
+    width: 80px;
+    text-align: center;
+}
+
+.section-single--asignaciones-detalle .ubits-table td[data-col="acciones"] {
+    text-align: center;
+}
+
+/* Panel lateral contenidos del estudiante */
+.detalle-plan-panel-contenidos {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+}
+
+.detalle-plan-contenidos-lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    padding: var(--padding-xs);
+}
+
+.detalle-plan-contenido-item {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    padding: var(--padding-sm) var(--padding-md);
+    background: var(--ubits-bg-2);
+    border-radius: var(--border-radius-xs);
+}
+
+.detalle-plan-contenido-item span:first-child {
+    flex: 1;
+    min-width: 0;
+}
+
+.detalle-plan-contenido-duration {
+    color: var(--ubits-fg-1-medium);
+    flex-shrink: 0;
+}
+
+.detalle-plan-contenidos-empty {
+    padding: var(--padding-md);
+    color: var(--ubits-fg-1-medium);
+    margin: 0;
+}
+
+.detalle-plan-contenidos-search-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+}
+
+.detalle-plan-contenidos-resultados {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+    max-height: 180px;
+    overflow-y: auto;
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    padding: var(--padding-xs);
+}
+
+.detalle-plan-contenido-resultado {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--padding-sm) var(--padding-md);
+    border: none;
+    background: transparent;
+    border-radius: var(--border-radius-xs);
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    transition: background 0.2s ease;
+}
+
+.detalle-plan-contenido-resultado:hover {
+    background: var(--ubits-bg-2);
+}
+
+.detalle-plan-contenido-resultado span:last-child {
+    color: var(--ubits-fg-1-medium);
+    margin-top: 2px;
+}
+
+/* Footer del drawer con botón Cerrar alineado a la derecha */
+#drawer-contenidos-estudiante .ubits-drawer-footer {
+    justify-content: flex-end;
+}

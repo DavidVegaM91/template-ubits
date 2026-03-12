@@ -1,0 +1,123 @@
+/* ========================================
+   ESTILOS ESPECÍFICOS PARA PLANES DE FORMACIÓN (lista)
+   ======================================== */
+
+/* Header: variante tabs-with-actions (tabs Contenidos | Competencias + acciones en el header) */
+
+/* Filas de tabla clickeables para ir al detalle */
+.asignacion-row-clickable {
+    cursor: pointer;
+}
+
+/* Header bar: título Lista de planes + contador X/X + búsqueda */
+.lms-table-header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--gap-md);
+    margin-bottom: var(--gap-md);
+}
+
+.lms-table-header-left {
+    display: flex;
+    align-items: baseline;
+    gap: var(--gap-md);
+}
+
+.lms-table-header-left .ubits-body-sm-regular {
+    color: var(--ubits-fg-1-medium);
+}
+
+.lms-table-header-right {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.lms-table-search-inline {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+/* Action bar (visible cuando hay selección) */
+.lms-table-action-bar {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--gap-md);
+    padding: var(--padding-sm) 0 var(--padding-md);
+}
+
+.lms-table-action-bar.is-visible {
+    display: flex;
+}
+
+.lms-table-action-buttons {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+/* Cabeceras con ordenamiento/filtro */
+.lms-th-sortable,
+.lms-th-filterable {
+    white-space: nowrap;
+}
+
+.lms-th-sortable .lms-sort-btn,
+.lms-th-filterable .lms-filter-btn {
+    opacity: 0.7;
+    margin-left: 2px;
+}
+
+.lms-th-sortable .lms-sort-btn:hover,
+.lms-th-filterable .lms-filter-btn:hover {
+    opacity: 1;
+}
+
+/* Tabla filtrable por tab: la última fila visible no es tr:last-child (hay filas con display:none),
+   así que quitamos borde en la fila marcada con .last-visible-row (JS la asigna al filtrar). */
+.section-single--test-tabla .ubits-table tbody tr.last-visible-row td,
+.section-single--test-tabla .ubits-table tbody tr.last-visible-row td[data-col] {
+    border-bottom: none;
+}
+
+.lms-table-empty-state {
+    width: 100%;
+    padding: var(--padding-6xl) var(--padding-xl);
+    min-height: 200px;
+    display: none;
+}
+
+.asignaciones-list-wrapper.is-empty #planes-table-wrapper {
+    display: none !important;
+}
+
+.asignaciones-list-wrapper.is-empty #planes-empty-state {
+    display: flex !important;
+}
+
+.asignaciones-list-wrapper {
+    width: 100%;
+}
+
+.section-single--test-tabla .ubits-table thead th[data-col="nombre"] {
+    min-width: 160px;
+}
+
+.section-single--test-tabla .ubits-table thead th[data-col="tipo"],
+.section-single--test-tabla .ubits-table thead th[data-col="fecha-inicio"],
+.section-single--test-tabla .ubits-table thead th[data-col="fecha-fin"] {
+    min-width: 120px;
+}
+
+.section-single--test-tabla .ubits-table thead th[data-col="estado"] {
+    min-width: 100px;
+}
+
+.section-single--test-tabla .ubits-table thead th[data-col="progreso"] {
+    min-width: 100px;
+}
