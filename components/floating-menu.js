@@ -15,6 +15,17 @@ const FLOATING_MENU_SECTIONS = [
         ]
     },
     {
+        id: 'creator',
+        title: 'LMS Creator',
+        icon: 'far fa-bolt',
+        subitems: [
+            { id: 'contenidos', title: 'Contenidos', icon: 'far fa-folder-open', url: '../../ubits-colaborador/lms-creator/contenidos.html' },
+            { id: 'categorias', title: 'Categorías', icon: 'far fa-tags', url: '../../ubits-colaborador/lms-creator/categorias.html' },
+            { id: 'planes-formacion', title: 'Planes de formación', icon: 'far fa-clipboard-list', url: '../../ubits-colaborador/lms-creator/planes-formacion.html' },
+            { id: 'grupos', title: 'Grupos', icon: 'far fa-users', url: '../../ubits-colaborador/lms-creator/grupos.html' }
+        ]
+    },
+    {
         id: 'diagnostico',
         title: 'Diagnóstico',
         icon: 'far fa-chart-mixed',
@@ -242,7 +253,7 @@ function closeAllAccordions() {
 function setActiveItemByCurrentPage() {
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
     
-    // Mapear páginas a IDs de elementos
+    // Mapear páginas a IDs de elementos (floating-menu: subitem id o section id para enlaces directos)
     const pageToElementMap = {
         'ubits-ai.html': 'ubits-ai',
         'diagnostico.html': 'diagnostico',
@@ -258,7 +269,16 @@ function setActiveItemByCurrentPage() {
         'encuestas.html': 'encuestas',
         'planes.html': 'planes',
         'tareas.html': 'tareas',
-        'plantilla.html': 'plantillas'
+        'plantilla.html': 'plantillas',
+        // LMS Creator (acordeón creator)
+        'contenidos.html': 'contenidos',
+        'categorias.html': 'categorias',
+        'grupos.html': 'grupos',
+        'crear-grupo.html': 'grupos',
+        'crear-plan-asistente.html': 'planes-formacion',
+        'detalle-plan.html': 'planes-formacion',
+        'planes-formacion.html': 'planes-formacion',
+        'crear-asignacion.html': 'contenidos'
     };
     
     const activeElementId = pageToElementMap[currentPage];

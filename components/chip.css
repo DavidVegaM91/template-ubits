@@ -201,7 +201,7 @@
 }
 
 .ubits-chip.ubits-chip--active .ubits-chip__close:hover {
-    background: rgba(12, 91, 239, 0.25);
+    background: var(--ubits-bg-active);
 }
 
 /* ========== Focus (teclado): mismo fondo y texto que default + ring ========== */

@@ -561,6 +561,17 @@ ubits-colaborador/
 - ✅ ALWAYS break down large tasks into smaller, manageable steps
 - ✅ If a task seems too complex, propose a step-by-step approach before starting
 
+## 📋 TABLAS: TOOLTIPS Y CHECKBOXES (OBLIGATORIO)
+**Cuando una tabla tenga botones en encabezados y/o columna de checkboxes, SIEMPRE aplicar el patrón de seguimiento (`ubits-colaborador/tareas/seguimiento.html` y `seguimiento.js`):**
+
+1. **Tooltips en encabezados:** Todo botón en `<thead>` (ordenar, filtrar) debe llevar `data-tooltip="[Texto descriptivo]"` y `data-tooltip-delay="1000"`. Ejemplo: "Ordenar por nombre", "Filtrar por estado".
+2. **Tooltips en columna de checkboxes:** El `<th>` del "Seleccionar todo" debe tener `data-tooltip="Seleccionar todo"` (actualizable a "Deseleccionar todo" por JS). Cada `<td class="ubits-table__td--checkbox">` de fila debe tener `data-tooltip="Seleccionar"` (actualizable a "Deseleccionar" al marcar). Tras renderizar o cambiar selección, llamar `initTooltip('#id-tabla thead [data-tooltip]')` e `initTooltip('#id-tabla tbody .ubits-table__td--checkbox[data-tooltip]')`.
+3. **Checkbox "Seleccionar todo":** Mantener estado `indeterminate` cuando hay filas seleccionadas pero no todas: `selectAll.indeterminate = checkedCount > 0 && checkedCount < visibleLength`. Actualizar el `data-tooltip` del `<th>` a "Deseleccionar todo" o "Seleccionar todo" según el estado.
+4. **Búsqueda expandible:** Si la búsqueda se abre como input al hacer clic en la lupa, al hacer clic fuera **sin haber escrito nada** el input debe contraerse de nuevo y mostrarse solo el botón icon-only (igual que en seguimiento: `isSearchMode`, listener de `document.click` que comprueba `!searchQuery` y colapsa).
+5. **Empty state por búsqueda:** Cuando no hay resultados por búsqueda/filtros (pero sí hay datos), mostrar empty state con icono de búsqueda, título "No se encontraron resultados" y botón "Limpiar búsqueda" funcional que limpie búsqueda (y filtros si aplica), cierre el input de búsqueda y vuelva a aplicar visibilidad.
+
+**Referencia:** `ubits-colaborador/tareas/seguimiento.html`, `seguimiento.js` (initSearchToggle, renderTable empty state, updateSelectAll, tooltips en thead/tbody).
+
 ## 🚨 CRITICAL: COMMON MISTAKES TO AVOID
 **These mistakes have happened before and MUST be prevented:**
 

@@ -319,7 +319,7 @@
             '<div class="task-detail-assignee-row" id="task-detail-assignee-row" role="button" tabindex="0">' +
             assigneeBlock +
             '<span class="ubits-body-sm-regular">' + escapeHtml(assigneeName) + '</span>' +
-            '<i class="far fa-chevron-down" style="font-size: 12px; color: var(--ubits-fg-1-medium);"></i>' +
+            '<i class="far fa-chevron-down" style="font-size: var(--font-size-sm); color: var(--ubits-fg-1-medium);"></i>' +
             '</div></div>' +
             '<div class="task-detail-meta-cell">' +
             '<span class="ubits-body-sm-semibold task-detail-meta-label">Creada por</span>' +
@@ -589,17 +589,17 @@
         var massPanel = estado.massPanelOpen
             ? '<div class="task-detail-mass-panel is-open" id="task-detail-mass-panel">' +
             '<div class="task-detail-mass-panel-header">' +
-            '<h3 class="task-detail-mass-panel-title"><i class="far fa-folder"></i> Creación a partir de lista</h3>' +
-            '<span class="task-detail-mass-panel-detected" id="task-detail-mass-detected">Se detectaron 0 subtareas</span></div>' +
+            '<h3 class="ubits-body-md-semibold task-detail-mass-panel-title"><i class="far fa-folder"></i> Creación a partir de lista</h3>' +
+            '<span class="ubits-body-sm-regular task-detail-mass-panel-detected" id="task-detail-mass-detected">Se detectaron 0 subtareas</span></div>' +
             '<textarea class="task-detail-mass-panel-textarea" id="task-detail-mass-textarea" placeholder="Escribe una subtarea por línea&#10;Línea 1&#10;Línea 2&#10;..."></textarea>' +
             '<div class="task-detail-mass-panel-options">' +
             '<div class="task-detail-mass-panel-date"><span class="ubits-body-sm-semibold task-detail-meta-label">Vencimiento</span><div id="task-detail-mass-date-wrap"></div></div>' +
             '<div class="task-detail-mass-panel-priority"><span class="ubits-body-sm-semibold task-detail-meta-label">Prioridad</span><div class="task-detail-prioridad-trigger task-detail-mass-prioridad-trigger" id="task-detail-mass-prioridad-trigger" role="button" tabindex="0" aria-haspopup="listbox" aria-expanded="false">' + massPriBadgeHtml + '</div></div>' +
             '<div class="task-detail-mass-panel-actions">' +
-            '<p class="task-detail-mass-panel-tip">Escribe varias líneas de texto para crear múltiples subtareas a la vez.</p>' +
+            '<p class="ubits-body-xs-regular task-detail-mass-panel-tip">Escribe varias líneas de texto para crear múltiples subtareas a la vez.</p>' +
             '<div class="task-detail-mass-panel-actions__btns">' +
-            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="task-detail-mass-cancel"><span>Cancelar</span></button>' +
-            '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="task-detail-mass-create"><span>Crear subtareas</span></button>' +
+            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="task-detail-mass-cancel"><span class="ubits-body-sm-regular">Cancelar</span></button>' +
+            '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="task-detail-mass-create"><span class="ubits-body-sm-regular">Crear subtareas</span></button>' +
             '</div></div></div>' +
             '</div>'
             : '<div class="task-detail-mass-panel" id="task-detail-mass-panel"></div>';
@@ -609,7 +609,7 @@
             '<div class="task-detail-add-subtask-wrapper">' +
             '<div class="task-detail-add-subtask-icon"><i class="far fa-plus"></i></div>' +
             '<input type="text" class="ubits-input ubits-input--sm task-detail-add-subtask-input" placeholder="Nombre de la subtarea" data-subtask-add autofocus />' +
-            '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm task-detail-add-subtask-btn"><span>Añadir</span></button>' +
+            '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm task-detail-add-subtask-btn"><span class="ubits-body-sm-regular">Añadir</span></button>' +
             '</div></form>'
             : '';
         var html =
@@ -621,9 +621,9 @@
             massPanel +
             '<div class="task-detail-add-row">' +
             '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="task-detail-add-subtask-btn">' +
-            '<i class="far fa-plus"></i><span>Agregar una subtarea</span></button>' +
+            '<i class="far fa-plus"></i><span class="ubits-body-sm-regular">Agregar una subtarea</span></button>' +
             '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="task-detail-mass-btn">' +
-            '<i class="far fa-list"></i><span>Creación a partir de lista de texto</span></button>' +
+            '<i class="far fa-list"></i><span class="ubits-body-sm-regular">Creación a partir de lista de texto</span></button>' +
             '</div>';
         var el = document.getElementById('task-detail-subtasks-block');
         if (el) el.innerHTML = html;
@@ -1007,7 +1007,7 @@
         filteredItems.forEach(function (item) {
             var dateKey = toDateKey(item.time);
             if (dateKey !== lastDateKey) {
-                feed.push('<div class="task-detail-comments-separator"><span>' + dateKeyLabel(dateKey) + '</span></div>');
+                feed.push('<div class="task-detail-comments-separator"><span class="ubits-body-xs-regular">' + dateKeyLabel(dateKey) + '</span></div>');
                 lastDateKey = dateKey;
             }
             if (item.type === 'comment') {
@@ -1022,9 +1022,9 @@
                     '<div class="task-detail-comment-avatar">' + authorBlock + '</div>' +
                     '<div class="task-detail-comment-body">' +
                     '<div class="task-detail-comment-meta">' +
-                    '<span class="task-detail-comment-author">' + escapeHtml(c.author) + '</span></div>' +
+                    '<span class="ubits-body-sm-semibold task-detail-comment-author">' + escapeHtml(c.author) + '</span></div>' +
                     '<div class="task-detail-comment-bubble">' +
-                    (c.text ? '<p class="task-detail-comment-text">' + escapeHtml(c.text) + '</p>' : '') +
+                    (c.text ? '<p class="ubits-body-sm-regular task-detail-comment-text">' + escapeHtml(c.text) + '</p>' : '') +
                     (c.images && c.images.length ? '<div class="task-detail-comment-images">' + c.images.map(function (img) { return '<img src="' + escapeHtml(img) + '" alt="">'; }).join('') + '</div>' : '') +
                     (c.files && c.files.length ? '<div class="task-detail-comment-files">' + c.files.map(function (f) {
                         var url = (f && f.url) ? String(f.url).replace(/"/g, '&quot;') : '';
@@ -1033,20 +1033,20 @@
                         return '<span class="ubits-chip ubits-chip--sm ubits-chip--icon-left task-detail-comment-file-chip" data-tooltip="Descargar archivo" data-file-url="' + url + '" data-file-name="' + nameAttr + '" role="' + (url ? 'button' : '') + '" tabindex="' + (url ? '0' : '-1') + '"><i class="far fa-file-lines"></i><span class="ubits-chip__text">' + name + '</span></span>';
                     }).join('') + '</div>' : '') +
                     '</div>' +
-                    '<span class="task-detail-comment-time">' + formatCommentTime(c.time) + '</span></div></div>'
+                    '<span class="ubits-body-xs-regular task-detail-comment-time">' + formatCommentTime(c.time) + '</span></div></div>'
                 );
             } else {
                 var a = item.data;
                 /* Nombre en span semibold/high para igualar el autor de comentarios */
                 var authorHtml = a.author
-                    ? '<span class="task-detail-activity-author">' + escapeHtml(a.author) + '</span> '
+                    ? '<span class="ubits-body-sm-semibold task-detail-activity-author">' + escapeHtml(a.author) + '</span> '
                     : '';
                 feed.push(
                     '<div class="task-detail-activity-item">' +
                     '<i class="far ' + (a.icon || 'fa-circle-info') + '"></i>' +
                     '<div class="task-detail-activity-content">' +
-                    '<span class="task-detail-activity-text">' + authorHtml + escapeHtml(a.text) + '</span>' +
-                    '<span class="task-detail-activity-time">' + formatCommentTime(a.time) + '</span>' +
+                    '<span class="ubits-body-sm-regular task-detail-activity-text">' + authorHtml + escapeHtml(a.text) + '</span>' +
+                    '<span class="ubits-body-xs-regular task-detail-activity-time">' + formatCommentTime(a.time) + '</span>' +
                     '</div>' +
                     '</div>'
                 );
@@ -1056,8 +1056,8 @@
         var html =
             '<div class="task-detail-comments-header">' +
             '<div class="task-detail-comments-header-left">' +
-            '<h2 class="task-detail-comments-header-title"><i class="far fa-comments"></i> Comentarios</h2>' +
-            '<span class="task-detail-comments-badge' + (total < 10 ? ' task-detail-comments-badge--circle' : '') + '">' + total + '</span>' +
+            '<h2 class="ubits-body-md-bold task-detail-comments-header-title"><i class="far fa-comments"></i> Comentarios</h2>' +
+            '<span class="ubits-body-xs-semibold task-detail-comments-badge' + (total < 10 ? ' task-detail-comments-badge--circle' : '') + '">' + total + '</span>' +
             '</div>' +
             '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only" id="task-detail-comments-filter-btn" aria-label="Filtrar"><i class="far fa-filter"></i></button>' +
             '</div>' +
@@ -1355,9 +1355,9 @@
         var modalsContainer = document.getElementById('task-detail-modals-container');
         if (modalsContainer && typeof getModalHtml === 'function' && !document.getElementById('task-detail-delete-subtask-modal-overlay')) {
             var deleteSubtaskBody = '<p class="ubits-body-md-regular">¿Estás seguro? Esta acción no se puede deshacer y se perderán los datos de la subtarea.</p>';
-            var deleteSubtaskFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="task-detail-delete-subtask-cancel"><span>Cancelar</span></button><button type="button" class="ubits-button ubits-button--error ubits-button--md" id="task-detail-delete-subtask-confirm"><span>Eliminar</span></button>';
+            var deleteSubtaskFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="task-detail-delete-subtask-cancel"><span class="ubits-body-sm-regular">Cancelar</span></button><button type="button" class="ubits-button ubits-button--error ubits-button--md" id="task-detail-delete-subtask-confirm"><span class="ubits-body-sm-regular">Eliminar</span></button>';
             var deleteTaskBody = '<p class="ubits-body-md-regular">¿Estás seguro? Esta acción no se puede deshacer y se perderán los datos de la tarea.</p>';
-            var deleteTaskFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="task-detail-delete-task-cancel"><span>Cancelar</span></button><button type="button" class="ubits-button ubits-button--error ubits-button--md" id="task-detail-delete-task-confirm"><span>Eliminar</span></button>';
+            var deleteTaskFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="task-detail-delete-task-cancel"><span class="ubits-body-sm-regular">Cancelar</span></button><button type="button" class="ubits-button ubits-button--error ubits-button--md" id="task-detail-delete-task-confirm"><span class="ubits-body-sm-regular">Eliminar</span></button>';
             modalsContainer.innerHTML = getModalHtml({
                 overlayId: 'task-detail-delete-subtask-modal-overlay',
                 title: 'Eliminar subtarea',

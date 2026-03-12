@@ -208,7 +208,7 @@
     height: 14px;
     border-radius: 50%;
     background: var(--ubits-bg-1);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--ubits-elevation-default);
     transition: transform 0.2s ease;
 }
 

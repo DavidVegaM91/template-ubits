@@ -82,6 +82,15 @@ const TOP_NAV_VARIANTS = {
             { id: 'seguimiento', label: 'Seguimiento', icon: 'far fa-chart-line', url: '../../ubits-colaborador/tareas/seguimiento.html' }
         ]
     },
+    creator: {
+        name: 'Creator',
+        tabs: [
+            { id: 'contenidos', label: 'Contenidos', icon: 'far fa-folder-open', url: '../../ubits-colaborador/lms-creator/contenidos.html' },
+            { id: 'categorias', label: 'Categorías', icon: 'far fa-tags', url: '../../ubits-colaborador/lms-creator/categorias.html' },
+            { id: 'planes-formacion', label: 'Planes de formación', icon: 'far fa-clipboard-list', url: '../../ubits-colaborador/lms-creator/planes-formacion.html' },
+            { id: 'grupos', label: 'Grupos', icon: 'far fa-users', url: '../../ubits-colaborador/lms-creator/grupos.html' }
+        ]
+    },
     empresa: {
         name: 'Empresa',
         tabs: [
@@ -346,6 +355,15 @@ const PAGE_TO_TAB = {
     'diagnostico.html': 'diagnostico',
     // Reclutamiento
     'reclutamiento.html': 'reclutamiento',
+    // Creator (LMS Creator)
+    'contenidos.html': 'contenidos',
+    'categorias.html': 'categorias',
+    'crear-plan-asistente.html': 'planes-formacion',
+    'detalle-plan.html': 'planes-formacion',
+    'grupos.html': 'grupos',
+    'crear-grupo.html': 'grupos',
+    'planes-formacion.html': 'planes-formacion',
+    'crear-asignacion.html': 'contenidos',
     // Admin empresa
     'gestion-de-usuarios.html': 'gestion-usuarios',
     'organigrama.html': 'organigrama',

@@ -695,7 +695,7 @@
 
 .filtros-select-trigger[aria-expanded="true"] {
     border-color: var(--ubits-accent-brand);
-    box-shadow: 0 0 0 2px rgba(12, 91, 239, 0.1);
+    box-shadow: 0 0 0 2px var(--ubits-button-focus-ring);
 }
 
 .filtros-select-trigger-text {

@@ -285,7 +285,7 @@
         max-height: 48px !important;
         padding: 0 !important;
         border-radius: var(--border-radius-sm) !important;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        box-shadow: var(--ubits-elevation-overlay);
         /* Forzar cuadrado: centrar icono */
         display: flex !important;
         align-items: center !important;

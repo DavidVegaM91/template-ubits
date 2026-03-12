@@ -103,7 +103,7 @@
     background-color: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
     border-radius: 0 0 8px 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--ubits-elevation-overlay);
     z-index: 1002;
     /* Mayor que el buscador (1000) y sus sugerencias (1000) */
     display: none;
@@ -362,7 +362,7 @@
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-sm);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--ubits-elevation-overlay);
     z-index: 1000;
     max-height: 300px;
     overflow-y: auto;
@@ -594,7 +594,7 @@
 [data-theme="dark"] .hamburger-dropdown {
     background-color: var(--ubits-bg-1);
     border-color: var(--ubits-border-1);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    box-shadow: var(--ubits-elevation-floating);
 }
 
 [data-theme="dark"] .hamburger-item {

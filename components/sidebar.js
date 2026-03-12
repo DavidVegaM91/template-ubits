@@ -43,41 +43,60 @@ function adjustSidebarHeight() {
 //   SIDEBAR COMPONENT - DOCUMENTACIÓN
 // ========================================
 //
-// FUNCIÓN: loadSidebar(variant, activeButton)
+// FUNCIÓN: loadSidebar(variantOrActiveButton, activeButton)
 //
-// PARÁMETROS:
-//   - variant (string, opcional): 'default' o 'admin' - Variante del sidebar
-//   - activeButton (string, opcional): Sección a activar según la variante
+// ----------------------------------------
+// FORMA CORRECTA DE IMPLEMENTAR (módulo activo visible)
+// ----------------------------------------
+// Para que el ítem del sidebar se marque activo automáticamente, usa una de estas formas:
 //
-// VARIANTE DEFAULT:
-//   - Opciones disponibles: 'aprendizaje', 'diagnóstico', 'desempeño', 
-//     'encuestas', 'reclutamiento', 'tareas', 'ubits-ai', 'ninguno'
-//   - Uso: loadSidebar('default', 'aprendizaje')
+// 1) Un solo argumento (recomendado para variante default):
+//    loadSidebar('aprendizaje')   → sidebar default, ítem "Aprendizaje" activo
+//    loadSidebar('creator')      → sidebar default, ítem "LMS Creator" activo
+//    loadSidebar('tareas')        → sidebar default, ítem "Tareas" activo
+//    loadSidebar('diagnóstico')   → sidebar default, ítem "Diagnóstico" activo
+//    (Cualquier data-section de la variante default.)
+//
+// 2) Dos argumentos con variante explícita:
+//    loadSidebar('default', 'aprendizaje')  → default, ítem "Aprendizaje" activo
+//    loadSidebar('default', 'creator')      → default, ítem "LMS Creator" activo
+//    loadSidebar('admin', 'inicio')          → admin, ítem "Inicio" activo
+//    loadSidebar('admin', 'empresa')         → admin, ítem "Empresa" activo
+//
+// NO usar loadSidebar('sidebar-container', 'aprendizaje'): el primer argumento
+// 'sidebar-container' no es un data-section, por tanto ningún botón recibe la
+// clase .active. Las páginas que usan ese patrón (ej. aprendizaje) deben
+// activar el botón manualmente en un setTimeout (querySelector por data-section,
+// quitar .active de todos los .nav-button, añadir .active al botón correcto).
+//
+// ----------------------------------------
+// PARÁMETROS
+// ----------------------------------------
+//   - variantOrActiveButton (string): 'default' | 'admin' | o bien la sección a activar (API de un argumento)
+//   - activeButton (string, opcional): Sección a activar cuando el primer parámetro es 'default' o 'admin'
+//
+// VARIANTE DEFAULT (data-section en el HTML):
+//   'inicio' (solo admin), 'empresa' (solo admin), 'aprendizaje', 'creator', 'diagnóstico',
+//   'desempeño', 'encuestas', 'reclutamiento', 'tareas', 'ubits-ai', 'ninguno'
 //
 // VARIANTE ADMIN:
-//   - Opciones disponibles en body: 'inicio', 'empresa', 'aprendizaje', 'diagnóstico', 
-//     'desempeño', 'encuestas'
-//   - Footer incluye: modo-oscuro, perfil, api, centro-de-ayuda
-//   - Uso: loadSidebar('admin', 'inicio')
+//   Body: 'inicio', 'empresa', 'aprendizaje', 'diagnóstico', 'desempeño', 'encuestas'
+//   Uso: loadSidebar('admin', 'inicio')
 //
-// EJEMPLOS:
-//   - Sidebar default con aprendizaje activo:
-//     loadSidebar('default', 'aprendizaje')
-//
-//   - Sidebar admin con empresa activa:
-//     loadSidebar('admin', 'empresa')
-//
-//   - Sidebar default sin sección activa:
-//     loadSidebar()
-//
-//   - Compatibilidad hacia atrás (API antigua):
-//     loadSidebar('aprendizaje')  // Igual a loadSidebar('default', 'aprendizaje')
+// ----------------------------------------
+// EJEMPLOS
+// ----------------------------------------
+//   loadSidebar('creator')              // LMS Creator activo (recomendado)
+//   loadSidebar('aprendizaje')          // Aprendizaje activo
+//   loadSidebar('default', 'aprendizaje')
+//   loadSidebar('admin', 'inicio')
+//   loadSidebar()                       // Sin sección activa
 //
 // CONTENEDOR REQUERIDO:
 //   <div id="sidebar-container"></div>
 //
 // FILES REQUIRED:
-//   - components-sidebar.css
+//   - components-sidebar.css (o components/sidebar.css)
 //   - components/sidebar.js
 function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
     // Compatibilidad hacia atrás: si el primer parámetro es una opción de sección (no 'default' ni 'admin'), 
@@ -211,6 +230,9 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
                 <div class="sidebar-body">
                     <button class="nav-button" data-section="aprendizaje" data-tooltip="Aprendizaje" onclick="window.location.href='${basePath}ubits-colaborador/aprendizaje/home-learn.html'" style="cursor: pointer;">
                         <i class="far fa-graduation-cap"></i>
+                    </button>
+                    <button class="nav-button" data-section="creator" data-tooltip="LMS Creator" onclick="window.location.href='${basePath}ubits-colaborador/lms-creator/contenidos.html'" style="cursor: pointer;">
+                        <i class="far fa-bolt"></i>
                     </button>
                     <button class="nav-button" data-section="diagnóstico" data-tooltip="Diagnóstico" onclick="window.location.href='${basePath}ubits-colaborador/diagnostico/diagnostico.html'" style="cursor: pointer;">
                         <i class="far fa-chart-mixed"></i>

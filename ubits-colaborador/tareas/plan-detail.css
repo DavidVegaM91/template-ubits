@@ -300,7 +300,7 @@
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-sm);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    box-shadow: var(--ubits-elevation-overlay);
     z-index: 1001;
     padding: var(--padding-sm) 0;
 }
@@ -614,7 +614,7 @@
 .plan-detail-feedback__ai-content {
     display: flex;
     align-items: center;
-    gap: 11px; /* sin token - valor del módulo */
+    gap: var(--gap-md);
     padding-top: var(--padding-lg, 16px);
 }
 

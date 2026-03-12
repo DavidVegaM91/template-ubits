@@ -745,7 +745,7 @@
     overflow-x: auto;
     overflow-y: visible;
     /* padding-top da espacio al botón ✕ (top: -6px) para no quedar recortado */
-    padding: 8px 2px 4px 2px;
+    padding: var(--padding-sm) var(--padding-xs) var(--padding-xs) var(--padding-xs);
     /* Scroll suave y sin barra visible en webkit */
     scrollbar-width: thin;
     scrollbar-color: var(--ubits-border-1) transparent;
@@ -757,7 +757,7 @@
 
 .task-detail-pending-images-strip::-webkit-scrollbar-thumb {
     background: var(--ubits-border-1);
-    border-radius: 2px;
+    border-radius: var(--border-radius-xs);
 }
 
 /* Contenedor de cada preview */
@@ -799,7 +799,7 @@
 }
 
 .task-detail-pending-img-remove i {
-    font-size: 9px;
+    font-size: var(--font-size-xs);
     color: var(--ubits-bg-1);
     line-height: 1;
 }
@@ -814,7 +814,7 @@
     flex-direction: row;
     flex-wrap: wrap;
     gap: var(--gap-xs);
-    padding: 4px 0;
+    padding: var(--padding-xs) 0;
 }
 
 .task-detail-pending-file-chip.ubits-chip {
