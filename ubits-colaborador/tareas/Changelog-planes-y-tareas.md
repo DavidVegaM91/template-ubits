@@ -335,6 +335,12 @@ Registro de cambios realizados en los archivos del módulo de Tareas y Planes (P
 
     Archivos: `task-detail.js`, `task-detail.css`.
 
+43. [x] **Task-detail: marca "- editado" en comentarios editados**
+
+    En el panel de comentarios del detalle de tarea, cuando un comentario del usuario se edita (desde el menú de opciones del comentario), junto a la fecha del comentario se muestra la etiqueta **"- editado"**. La fecha del comentario se mantiene igual (fecha de publicación original). En producción ya existía el botón de opciones y la edición; este cambio añade únicamente la indicación visual de que el comentario fue editado.
+
+    Archivos: `task-detail.js`.
+
 ---
 
-*Última actualización: ítems 1–20 (11 feb), 21–26 (19 feb), 27 (Cargar más), 28–30 (20 feb), 31 (21 feb), 32 (23 feb), 33 (nueva versión task-detail), 34 (dropdowns Estado y Prioridad en task-detail), 35 (panel de comentarios: adjuntar imágenes y archivos), 36 (implementación de subtask-detail), 37 (homologación encabezados plan-detail con task-detail), 38 (scroll-spy calendario horizontal, 10 mar), 39 (doble clic para cambio de nombre en tirillas y opción Cambiar nombre en subtareas), 40 (recordatorio registrado en historial en task-detail), 41 (plan-detail: asignados, filtro por persona, filtros aplicados y UI, 11 mar), 42 (task-detail: vencimiento sm, progress bar subtareas, botón Filtrar, Historial de cambios, nueva versión formulario subtareas, 12 mar) implementados.*
+*Última actualización: ítems 1–20 (11 feb), 21–26 (19 feb), 27 (Cargar más), 28–30 (20 feb), 31 (21 feb), 32 (23 feb), 33 (nueva versión task-detail), 34 (dropdowns Estado y Prioridad en task-detail), 35 (panel de comentarios: adjuntar imágenes y archivos), 36 (implementación de subtask-detail), 37 (homologación encabezados plan-detail con task-detail), 38 (scroll-spy calendario horizontal, 10 mar), 39 (doble clic para cambio de nombre en tirillas y opción Cambiar nombre en subtareas), 40 (recordatorio registrado en historial en task-detail), 41 (plan-detail: asignados, filtro por persona, filtros aplicados y UI, 11 mar), 42 (task-detail: vencimiento sm, progress bar subtareas, botón Filtrar, Historial de cambios, nueva versión formulario subtareas, 12 mar), 43 (marca "- editado" en comentarios editados, 12 mar) implementados.*

@@ -629,7 +629,15 @@
 }
 
 .task-detail-comment-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-sm);
     margin-bottom: var(--gap-xs);
+}
+
+.task-detail-comment-meta-actions {
+    flex-shrink: 0;
 }
 
 .task-detail-comment-author {
@@ -644,6 +652,27 @@
     color: var(--ubits-fg-1-medium);
     white-space: nowrap;
     margin-top: var(--gap-xs);
+}
+
+/* Modo edición de comentario: textarea + botones Cancelar / Guardar */
+.task-detail-comment-edit-wrap {
+    margin-top: var(--gap-xs);
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+}
+
+.task-detail-comment-edit-textarea {
+    width: 100%;
+    min-height: 60px;
+    resize: vertical;
+    box-sizing: border-box;
+}
+
+.task-detail-comment-edit-actions {
+    display: flex;
+    gap: var(--gap-sm);
+    flex-wrap: wrap;
 }
 
 /* Globo: texto + imágenes; superior izquierdo recto, resto redondeado 8px (token) */

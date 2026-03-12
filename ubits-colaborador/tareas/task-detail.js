@@ -918,15 +918,22 @@
                 var c = item.data;
                 var isUser = c.author === currentUserName;
                 var itemClass = 'task-detail-comment-item' + (isUser ? ' task-detail-comment-item--user' : '');
+                var commentId = c.id != null ? String(c.id) : '';
                 var authorBlock = typeof renderAvatar === 'function'
                     ? renderAvatar({ nombre: c.author, avatar: c.authorAvatar }, { size: 'xs' })
                     : '<span class="ubits-avatar ubits-avatar--sm"><span class="ubits-avatar__fallback"><i class="far fa-user"></i></span></span>';
+                var timeLabel = formatCommentTime(c.time) + (c.edited ? ' - editado' : '');
+                var optionsBtnHtml = isUser && commentId
+                    ? '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only task-detail-comment-options-btn" data-comment-id="' + escapeHtml(commentId) + '" aria-label="Opciones" data-tooltip="Opciones"><i class="far fa-ellipsis-vertical"></i></button>'
+                    : '';
                 feed.push(
-                    '<div class="' + itemClass + '">' +
+                    '<div class="' + itemClass + '" data-comment-id="' + escapeHtml(commentId) + '">' +
                     '<div class="task-detail-comment-avatar">' + authorBlock + '</div>' +
                     '<div class="task-detail-comment-body">' +
                     '<div class="task-detail-comment-meta">' +
-                    '<span class="ubits-body-sm-semibold task-detail-comment-author">' + escapeHtml(c.author) + '</span></div>' +
+                    '<span class="ubits-body-sm-semibold task-detail-comment-author">' + escapeHtml(c.author) + '</span>' +
+                    (optionsBtnHtml ? '<span class="task-detail-comment-meta-actions">' + optionsBtnHtml + '</span>' : '') +
+                    '</div>' +
                     '<div class="task-detail-comment-bubble">' +
                     (c.text ? '<p class="ubits-body-sm-regular task-detail-comment-text">' + escapeHtml(c.text) + '</p>' : '') +
                     (c.images && c.images.length ? '<div class="task-detail-comment-images">' + c.images.map(function (img) { return '<img src="' + escapeHtml(img) + '" alt="">'; }).join('') + '</div>' : '') +
@@ -937,7 +944,7 @@
                         return '<span class="ubits-chip ubits-chip--sm ubits-chip--icon-left task-detail-comment-file-chip" data-tooltip="Descargar archivo" data-file-url="' + url + '" data-file-name="' + nameAttr + '" role="' + (url ? 'button' : '') + '" tabindex="' + (url ? '0' : '-1') + '"><i class="far fa-file-lines"></i><span class="ubits-chip__text">' + name + '</span></span>';
                     }).join('') + '</div>' : '') +
                     '</div>' +
-                    '<span class="ubits-body-xs-regular task-detail-comment-time">' + formatCommentTime(c.time) + '</span></div></div>'
+                    '<span class="ubits-body-xs-regular task-detail-comment-time">' + escapeHtml(timeLabel) + '</span></div></div>'
                 );
             } else {
                 var a = item.data;
@@ -1170,10 +1177,127 @@
                     }
                 });
             });
-            if (typeof initTooltip === 'function') initTooltip('.task-detail-comment-file-chip[data-tooltip]');
+            if (typeof initTooltip === 'function') {
+                initTooltip('.task-detail-comment-file-chip[data-tooltip]');
+                initTooltip('.task-detail-comment-options-btn[data-tooltip]');
+            }
+
+            /* Delegación: botón opciones de comentario (dropdown Editar / Eliminar) */
+            if (!blockEl._commentOptionsBound && typeof getDropdownMenuHtml === 'function' && typeof openDropdownMenu === 'function' && typeof closeDropdownMenu === 'function') {
+                blockEl._commentOptionsBound = true;
+                blockEl.addEventListener('click', function (ev) {
+                    var optionsBtn = ev.target.closest('.task-detail-comment-options-btn');
+                    if (!optionsBtn) return;
+                    ev.preventDefault();
+                    ev.stopPropagation();
+                    var commentId = optionsBtn.getAttribute('data-comment-id');
+                    if (!commentId) return;
+                    var overlayId = 'task-detail-comment-options-overlay';
+                    var existing = document.getElementById(overlayId);
+                    if (existing) existing.remove();
+                    var htmlDropdown = getDropdownMenuHtml({
+                        overlayId: overlayId,
+                        contentId: overlayId + '-content',
+                        options: [
+                            { text: 'Editar', value: 'edit' },
+                            { text: 'Eliminar', value: 'delete' }
+                        ]
+                    });
+                    document.body.insertAdjacentHTML('beforeend', htmlDropdown);
+                    var overlay = document.getElementById(overlayId);
+                    if (overlay) {
+                        overlay.addEventListener('click', function (e) {
+                            if (e.target === overlay) {
+                                closeDropdownMenu(overlayId);
+                                if (overlay.parentNode) overlay.remove();
+                            }
+                        });
+                        var content = overlay.querySelector('.ubits-dropdown-menu__content');
+                        if (content) content.addEventListener('click', function (e) { e.stopPropagation(); });
+                        overlay.querySelectorAll('.ubits-dropdown-menu__option').forEach(function (opt) {
+                            opt.addEventListener('click', function () {
+                                var val = this.getAttribute('data-value');
+                                closeDropdownMenu(overlayId);
+                                if (overlay.parentNode) overlay.remove();
+                                if (val === 'delete') {
+                                    var idNum = Number(commentId);
+                                    var idx = estado.comments.findIndex(function (co) { return (co.id !== undefined && (co.id === idNum || String(co.id) === commentId)); });
+                                    if (idx !== -1) {
+                                        estado.comments.splice(idx, 1);
+                                        renderCommentsBlock();
+                                    }
+                                } else if (val === 'edit') {
+                                    switchCommentToEditMode(commentId);
+                                }
+                            });
+                        });
+                    }
+                    openDropdownMenu(overlayId, optionsBtn, { alignRight: true });
+                    requestAnimationFrame(function () {
+                        var ov = document.getElementById(overlayId);
+                        var cnt = ov ? ov.querySelector('.ubits-dropdown-menu__content') : null;
+                        if (cnt && optionsBtn) {
+                            var br = optionsBtn.getBoundingClientRect();
+                            cnt.style.left = (br.right - cnt.offsetWidth) + 'px';
+                        }
+                    });
+                });
+            }
 
             /* Scroll automático al elemento más reciente (parte inferior del feed) */
             feedEl.scrollTop = feedEl.scrollHeight;
+        }
+    }
+
+    function switchCommentToEditMode(commentId) {
+        var feedEl = document.getElementById('task-detail-comments-feed');
+        if (!feedEl) return;
+        var item = feedEl.querySelector('.task-detail-comment-item[data-comment-id="' + commentId.replace(/"/g, '\\"') + '"]');
+        if (!item) return;
+        var body = item.querySelector('.task-detail-comment-body');
+        if (!body) return;
+        var bubble = body.querySelector('.task-detail-comment-bubble');
+        var timeSpan = body.querySelector('.task-detail-comment-time');
+        if (!bubble || !timeSpan) return;
+        var comment = estado.comments.find(function (c) {
+            if (c.id === undefined) return false;
+            return String(c.id) === commentId || c.id === Number(commentId);
+        });
+        if (!comment) return;
+        var editWrap = document.createElement('div');
+        editWrap.className = 'task-detail-comment-edit-wrap';
+        editWrap.setAttribute('data-comment-id', commentId);
+        editWrap.innerHTML =
+            '<textarea class="ubits-input ubits-input--sm task-detail-comment-edit-textarea" rows="3" placeholder="Escribe tu comentario...">' + (comment.text || '') + '</textarea>' +
+            '<div class="task-detail-comment-edit-actions">' +
+            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs task-detail-comment-edit-cancel"><span>Cancelar</span></button>' +
+            '<button type="button" class="ubits-button ubits-button--primary ubits-button--xs task-detail-comment-edit-save"><span>Guardar</span></button>' +
+            '</div>';
+        body.insertBefore(editWrap, timeSpan);
+        bubble.style.display = 'none';
+        timeSpan.style.display = 'none';
+        var textarea = editWrap.querySelector('.task-detail-comment-edit-textarea');
+        var cancelBtn = editWrap.querySelector('.task-detail-comment-edit-cancel');
+        var saveBtn = editWrap.querySelector('.task-detail-comment-edit-save');
+        if (textarea) textarea.focus();
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', function () {
+                renderCommentsBlock();
+            });
+        }
+        if (saveBtn) {
+            saveBtn.addEventListener('click', function () {
+                var newText = (textarea && textarea.value) ? textarea.value.trim() : '';
+                var co = estado.comments.find(function (c) {
+                    if (c.id === undefined) return false;
+                    return String(c.id) === commentId || c.id === Number(commentId);
+                });
+                if (co) {
+                    co.text = newText;
+                    co.edited = true;
+                }
+                renderCommentsBlock();
+            });
         }
     }
 
