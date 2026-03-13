@@ -842,7 +842,7 @@
                     '  <span class="drawer-agregar-cursos__section-title ubits-body-sm-semibold">Buscar y agregar contenidos</span>' +
                     '  <div class="drawer-cursos-search-row">' +
                     '    <div id="drawer-cursos-search-container" class="drawer-cursos-search-input-wrap"></div>' +
-                    '    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only" id="drawer-cursos-filter-btn" aria-label="Filtrar por origen"><i class="far fa-filter"></i></button>' +
+                    '    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" id="drawer-cursos-filter-btn" aria-label="Filtrar por origen"><i class="far fa-filter"></i></button>' +
                     '  </div>' +
                     '  <div class="drawer-cursos-resultados-bg drawer-cursos-resultados-bg--dos-columnas">' +
                     '    <div class="drawer-cursos-cards-grid" id="drawer-cursos-cards-container"></div>' +
@@ -907,7 +907,7 @@
                                     icon: 'fa-folder-open',
                                     iconSize: 'lg',
                                     title: 'No hay contenidos agregados',
-                                    description: 'Busca y agrega contenidos desde el catálogo de la izquierda.',
+                                    description: 'Busca y agrega contenidos desde el buscador.',
                                     buttons: {}
                                 });
                             }
@@ -936,6 +936,7 @@
                         containerId: 'drawer-cursos-search-container',
                         type: 'search',
                         placeholder: 'Buscar contenidos...',
+                        size: 'sm',
                         showLabel: false
                     });
                 }
