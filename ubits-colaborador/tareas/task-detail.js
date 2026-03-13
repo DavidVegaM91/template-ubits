@@ -87,6 +87,7 @@
     };
     var subtaskIdToDelete = null;
     var taskDetailSubtaskPendingClickTimeout = null;
+    var taskDetailLastTapForEdit = null;
 
     function getMockTask() {
         return {
@@ -309,7 +310,13 @@
         var html =
             '<div class="task-detail-title-row">' +
             '<textarea class="task-detail-title-editable ubits-heading-h1" id="task-detail-title" placeholder="Título de la tarea" rows="1" maxlength="250">' + escapeHtml(task.name) + '</textarea>' +
-            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="task-detail-title-options-btn" aria-label="Opciones" data-tooltip="Opciones"><i class="far fa-ellipsis-vertical"></i></button>' +
+            '<div class="task-detail-title-actions">' +
+            '<div class="task-detail-title-action-btns">' +
+            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" id="task-detail-title-recordatorio-btn" aria-label="Enviar recordatorio" data-tooltip="Enviar recordatorio"><i class="far fa-bell"></i></button>' +
+            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" id="task-detail-title-delete-btn" aria-label="Eliminar tarea" data-tooltip="Eliminar tarea"><i class="far fa-trash"></i></button>' +
+            '</div>' +
+            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only task-detail-title-options-btn" id="task-detail-title-options-btn" aria-label="Opciones" data-tooltip="Opciones"><i class="far fa-ellipsis-vertical"></i></button>' +
+            '</div>' +
             '</div>' +
             '<textarea class="task-detail-desc-editable ubits-body-sm-regular" id="task-detail-desc" placeholder="Descripción de la tarea" rows="1">' + escapeHtml(task.description || '') + '</textarea>' +
             '<div class="task-detail-meta-row">' +
@@ -548,6 +555,27 @@
                     });
                 }
                 window.openDropdownMenu(overlayId, titleOptionsBtn, { alignRight: true });
+            });
+        }
+        /* Botones directos (desktop): Enviar recordatorio y Eliminar tarea */
+        var recordatorioBtn = document.getElementById('task-detail-title-recordatorio-btn');
+        if (recordatorioBtn) {
+            recordatorioBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var taskName = estado.task && estado.task.name ? estado.task.name : 'esta tarea';
+                pushActivity('fa-bell', currentUserName, 'envió al asignado un recordatorio sobre "' + taskName + '".');
+                renderCommentsBlock();
+                triggerFakeSave();
+                if (typeof showToast === 'function') showToast('success', 'Recordatorio enviado');
+            });
+        }
+        var deleteTaskBtn = document.getElementById('task-detail-title-delete-btn');
+        if (deleteTaskBtn) {
+            deleteTaskBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (typeof showModal === 'function') showModal('task-detail-delete-task-modal-overlay');
             });
         }
     }
@@ -1384,7 +1412,7 @@
         if (modalsContainer && typeof getModalHtml === 'function' && !document.getElementById('task-detail-delete-subtask-modal-overlay')) {
             var deleteSubtaskBody = '<p class="ubits-body-md-regular">¿Estás seguro? Esta acción no se puede deshacer y se perderán los datos de la subtarea.</p>';
             var deleteSubtaskFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="task-detail-delete-subtask-cancel"><span class="ubits-body-sm-regular">Cancelar</span></button><button type="button" class="ubits-button ubits-button--error ubits-button--md" id="task-detail-delete-subtask-confirm"><span class="ubits-body-sm-regular">Eliminar</span></button>';
-            var deleteTaskBody = '<p class="ubits-body-md-regular">¿Estás seguro? Esta acción no se puede deshacer y se perderán los datos de la tarea.</p>';
+            var deleteTaskBody = '<p class="ubits-body-md-regular">Al eliminar esta tarea se eliminarán también todas sus subtareas (si tiene). Esta acción no se puede deshacer.</p>';
             var deleteTaskFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="task-detail-delete-task-cancel"><span class="ubits-body-sm-regular">Cancelar</span></button><button type="button" class="ubits-button ubits-button--error ubits-button--md" id="task-detail-delete-task-confirm"><span class="ubits-body-sm-regular">Eliminar</span></button>';
             modalsContainer.innerHTML = getModalHtml({
                 overlayId: 'task-detail-delete-subtask-modal-overlay',
@@ -1398,7 +1426,7 @@
                 title: 'Eliminar tarea',
                 bodyHtml: deleteTaskBody,
                 footerHtml: deleteTaskFooter,
-                size: 'xs',
+                size: 'sm',
                 closeButtonId: 'task-detail-delete-task-close'
             });
             var overlayDel = document.getElementById('task-detail-delete-subtask-modal-overlay');
@@ -1650,15 +1678,38 @@
             if (!e.target.closest('.tarea-action-btn--options') && !e.target.closest('.tarea-priority-badge') && !e.target.closest('.tarea-assigned') && !e.target.closest('.tarea-fecha-btn') && !e.target.closest('.tarea-done-radio') && !e.target.closest('input[type="checkbox"]') && !e.target.closest('.tarea-titulo-edit-wrap')) {
                 e.preventDefault();
                 var taskId = estado.task && estado.task.id != null ? estado.task.id : '';
+                var row = e.target.closest('.tarea-item');
+                var subtaskIdFromRow = row ? (row.dataset.tareaId || row.getAttribute('data-tarea-id')) : null;
                 var clickOnTitle = e.target.closest('.tarea-titulo') || e.target.closest('.tarea-titulo-wrap');
-                if (clickOnTitle) {
+                if (clickOnTitle && row) {
+                    /* Doble toque en mobile: dos taps en el mismo título en <400ms = editar nombre */
+                    var now = Date.now();
+                    if (taskDetailLastTapForEdit && taskDetailLastTapForEdit.row === row && (now - taskDetailLastTapForEdit.time) < 400) {
+                        taskDetailLastTapForEdit = null;
+                        if (taskDetailSubtaskPendingClickTimeout) {
+                            clearTimeout(taskDetailSubtaskPendingClickTimeout);
+                            taskDetailSubtaskPendingClickTimeout = null;
+                        }
+                        e.stopPropagation();
+                        var subtask = subtaskIdFromRow != null ? estado.subtasks.find(function (s) { return String(s.id) === String(subtaskIdFromRow); }) : null;
+                        if (subtask && typeof window.startInlineEditTaskName === 'function') {
+                            window.startInlineEditTaskName(row, subtaskIdFromRow, function (newName) {
+                                subtask.name = newName;
+                                renderSubtasksBlock();
+                                triggerFakeSave();
+                                if (typeof showToast === 'function') showToast('success', 'Nombre actualizado');
+                            });
+                        }
+                        return;
+                    }
+                    taskDetailLastTapForEdit = { row: row, time: now };
                     if (taskDetailSubtaskPendingClickTimeout) clearTimeout(taskDetailSubtaskPendingClickTimeout);
                     taskDetailSubtaskPendingClickTimeout = setTimeout(function () {
                         taskDetailSubtaskPendingClickTimeout = null;
-                        window.location.href = 'subtask-detail.html?taskId=' + encodeURIComponent(taskId) + '&id=' + encodeURIComponent(subtaskId);
+                        window.location.href = 'subtask-detail.html?taskId=' + encodeURIComponent(taskId) + '&id=' + encodeURIComponent(subtaskIdFromRow);
                     }, 300);
-                } else {
-                    window.location.href = 'subtask-detail.html?taskId=' + encodeURIComponent(taskId) + '&id=' + encodeURIComponent(subtaskId);
+                } else if (row) {
+                    window.location.href = 'subtask-detail.html?taskId=' + encodeURIComponent(taskId) + '&id=' + encodeURIComponent(subtaskIdFromRow);
                 }
             }
         });

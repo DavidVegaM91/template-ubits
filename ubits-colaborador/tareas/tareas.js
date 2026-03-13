@@ -1262,6 +1262,29 @@ function initTareasView() {
                 if (isNaN(tareaId)) return;
                 const clickOnTitle = e.target.closest('.tarea-titulo') || e.target.closest('.tarea-titulo-wrap');
                 if (clickOnTitle) {
+                    /* Doble toque en mobile (dblclick no se dispara en touch): dos taps en el mismo título en <400ms = editar nombre */
+                    var now = Date.now();
+                    if (estadoTareas.lastTapForEdit && estadoTareas.lastTapForEdit.tareaItem === tareaItem && (now - estadoTareas.lastTapForEdit.time) < 400) {
+                        estadoTareas.lastTapForEdit = null;
+                        if (estadoTareas.pendingTaskClickTimeout) {
+                            clearTimeout(estadoTareas.pendingTaskClickTimeout);
+                            estadoTareas.pendingTaskClickTimeout = null;
+                        }
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (typeof window.startInlineEditTaskName === 'function') {
+                            window.startInlineEditTaskName(tareaItem, tareaId, function (newName) {
+                                var res = findTaskById(tareaId);
+                                if (res && res.tarea) {
+                                    res.tarea.name = newName;
+                                    renderAllTasks();
+                                }
+                                if (typeof showToast === 'function') showToast('success', 'Nombre actualizado');
+                            });
+                        }
+                        return;
+                    }
+                    estadoTareas.lastTapForEdit = { tareaItem: tareaItem, time: now };
                     if (estadoTareas.pendingTaskClickTimeout) clearTimeout(estadoTareas.pendingTaskClickTimeout);
                     estadoTareas.pendingTaskClickTimeout = setTimeout(function () {
                         estadoTareas.pendingTaskClickTimeout = null;

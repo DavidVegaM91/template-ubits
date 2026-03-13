@@ -117,6 +117,7 @@ window.planDetailPlanCache = window.planDetailPlanCache || {};
 let planDetailTaskIdToDelete = null;
 // Timeout para retrasar apertura del detalle y permitir doble clic en el nombre
 let planDetailPendingTaskClickTimeout = null;
+let planDetailLastTapForEdit = null;
 // Filtro por asignado: clave (email o nombre) para filtrar tareas del plan; null = sin filtro
 let planDetailFilterByAssigneeKey = null;
 // Lista de asignados del plan actual (para popover +N y marcar activo)
@@ -505,6 +506,26 @@ function handlePlanDetailListClick(e) {
         if (!task) return;
         const clickOnTitle = e.target.closest('.tarea-titulo') || e.target.closest('.tarea-titulo-wrap');
         if (clickOnTitle) {
+            /* Doble toque en mobile: dos taps en el mismo título en <400ms = editar nombre */
+            var now = Date.now();
+            if (planDetailLastTapForEdit && planDetailLastTapForEdit.item === item && (now - planDetailLastTapForEdit.time) < 400) {
+                planDetailLastTapForEdit = null;
+                if (planDetailPendingTaskClickTimeout) {
+                    clearTimeout(planDetailPendingTaskClickTimeout);
+                    planDetailPendingTaskClickTimeout = null;
+                }
+                e.preventDefault();
+                e.stopPropagation();
+                if (typeof window.startInlineEditTaskName === 'function') {
+                    window.startInlineEditTaskName(item, id, function (newName) {
+                        task.name = newName;
+                        renderPlanDetail(getPlanIdFromUrl());
+                        if (typeof showToast === 'function') showToast('success', 'Nombre actualizado');
+                    });
+                }
+                return;
+            }
+            planDetailLastTapForEdit = { item: item, time: now };
             if (planDetailPendingTaskClickTimeout) clearTimeout(planDetailPendingTaskClickTimeout);
             planDetailPendingTaskClickTimeout = setTimeout(function () {
                 planDetailPendingTaskClickTimeout = null;
