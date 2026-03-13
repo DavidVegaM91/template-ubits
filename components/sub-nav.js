@@ -363,7 +363,7 @@ const PAGE_TO_TAB = {
     'grupos.html': 'grupos',
     'crear-grupo.html': 'grupos',
     'planes-formacion.html': 'planes-formacion',
-    'crear-asignacion.html': 'contenidos',
+    'crear-asignacion.html': 'planes-formacion',
     // Admin empresa
     'gestion-de-usuarios.html': 'gestion-usuarios',
     'organigrama.html': 'organigrama',

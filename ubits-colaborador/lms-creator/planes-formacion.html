@@ -48,8 +48,10 @@
                     <!-- Tabla de planes: sección sin --asignaciones para evitar doble borde; misma estructura y datos -->
                     <div class="section-single section-single--test-tabla">
                         <div class="widget-planes-formacion">
+                            <!-- Contenedor único: al ocultarlo no se ve header ni tabla (como en seguimiento) -->
+                            <div id="planes-list-with-header">
                             <!-- Header: título Lista de planes, contador X/X, botón búsqueda -->
-                            <div class="lms-table-header-bar">
+                            <div class="lms-table-header-bar" id="planes-header-bar">
                                 <div class="lms-table-header-left">
                                     <span class="ubits-body-md-bold" id="planes-header-title">Lista de planes</span>
                                     <span class="ubits-body-sm-regular" id="planes-results-count">0/0</span>
@@ -78,14 +80,13 @@
                                     </button>
                                 </div>
                             </div>
-                            <div class="asignaciones-list-wrapper">
+                            <div class="asignaciones-list-wrapper" id="planes-table-section">
                                 <div class="ubits-table-wrapper ubits-table-wrapper--min-width" id="planes-table-wrapper">
                                     <table class="ubits-table" id="asignaciones-table">
                                         <thead>
                                             <tr>
                                                 <th class="ubits-table__th--checkbox" data-col="checkbox" data-tooltip="Seleccionar todo" data-tooltip-delay="1000"><label class="ubits-checkbox ubits-checkbox--sm" style="display:inline-flex;"><input type="checkbox" class="ubits-checkbox__input" id="asignaciones-select-all" aria-label="Seleccionar todo"><span class="ubits-checkbox__box"><i class="fas fa-check"></i><i class="fas fa-minus"></i></span><span class="ubits-checkbox__label sr-only" aria-hidden="true">&nbsp;</span></label></th>
                                                 <th data-col="nombre" class="ubits-body-sm-semibold lms-th-sortable">Nombre del plan <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only lms-sort-btn" data-sort="nombre" aria-label="Ordenar por nombre del plan" data-tooltip="Ordenar por nombre del plan" data-tooltip-delay="1000"><i class="far fa-arrow-up-arrow-down"></i></button></th>
-                                                <th data-col="tipo" class="ubits-body-sm-semibold">Tipo de asignación</th>
                                                 <th data-col="fecha-inicio" class="ubits-body-sm-semibold lms-th-sortable">Fecha inicio <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only lms-sort-btn" data-sort="fecha-inicio" aria-label="Ordenar por fecha inicio" data-tooltip="Ordenar por fecha inicio" data-tooltip-delay="1000"><i class="far fa-arrow-up-arrow-down"></i></button></th>
                                                 <th data-col="fecha-fin" class="ubits-body-sm-semibold lms-th-sortable">Fecha fin <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only lms-sort-btn" data-sort="fecha-fin" aria-label="Ordenar por fecha fin" data-tooltip="Ordenar por fecha fin" data-tooltip-delay="1000"><i class="far fa-arrow-up-arrow-down"></i></button></th>
                                                 <th data-col="estado" class="ubits-body-sm-semibold lms-th-filterable">Estado <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only lms-filter-btn" data-filter="estado" aria-label="Filtrar por estado" data-tooltip="Filtrar por estado" data-tooltip-delay="1000"><i class="far fa-filter"></i></button></th>
@@ -96,7 +97,6 @@
                                             <tr data-tipo="contenidos" data-plan-id="1" class="asignacion-row-clickable">
                                                 <td class="ubits-table__td--checkbox" data-col="checkbox" data-tooltip="Seleccionar" data-tooltip-delay="1000"><label class="ubits-checkbox ubits-checkbox--sm" style="display:inline-flex;"><input type="checkbox" class="ubits-checkbox__input asignacion-row-check" data-id="1"><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label sr-only" aria-hidden="true">&nbsp;</span></label></td>
                                                 <td data-col="nombre"><span class="ubits-body-sm-regular">Plan de onboarding 2025</span></td>
-                                                <td data-col="tipo"><span class="ubits-body-sm-regular">Contenidos</span></td>
                                                 <td data-col="fecha-inicio" data-date="01/01/2025"><span class="ubits-body-sm-regular">01/01/2025</span></td>
                                                 <td data-col="fecha-fin" data-date="31/03/2025"><span class="ubits-body-sm-regular">31/03/2025</span></td>
                                                 <td data-col="estado"><span class="ubits-status-tag ubits-status-tag--success ubits-status-tag--sm"><span class="ubits-status-tag__text">Vigente</span></span></td>
@@ -110,7 +110,6 @@
                                             <tr data-tipo="competencias" data-plan-id="2" class="asignacion-row-clickable">
                                                 <td class="ubits-table__td--checkbox" data-col="checkbox" data-tooltip="Seleccionar" data-tooltip-delay="1000"><label class="ubits-checkbox ubits-checkbox--sm" style="display:inline-flex;"><input type="checkbox" class="ubits-checkbox__input asignacion-row-check" data-id="2"><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label sr-only" aria-hidden="true">&nbsp;</span></label></td>
                                                 <td data-col="nombre"><span class="ubits-body-sm-regular">Competencias de liderazgo</span></td>
-                                                <td data-col="tipo"><span class="ubits-body-sm-regular">Competencias</span></td>
                                                 <td data-col="fecha-inicio" data-date="15/02/2025"><span class="ubits-body-sm-regular">15/02/2025</span></td>
                                                 <td data-col="fecha-fin" data-date="30/06/2025"><span class="ubits-body-sm-regular">30/06/2025</span></td>
                                                 <td data-col="estado"><span class="ubits-status-tag ubits-status-tag--success ubits-status-tag--sm"><span class="ubits-status-tag__text">Vigente</span></span></td>
@@ -124,7 +123,6 @@
                                             <tr data-tipo="contenidos" data-plan-id="3" class="asignacion-row-clickable">
                                                 <td class="ubits-table__td--checkbox" data-col="checkbox" data-tooltip="Seleccionar" data-tooltip-delay="1000"><label class="ubits-checkbox ubits-checkbox--sm" style="display:inline-flex;"><input type="checkbox" class="ubits-checkbox__input asignacion-row-check" data-id="3"><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label sr-only" aria-hidden="true">&nbsp;</span></label></td>
                                                 <td data-col="nombre"><span class="ubits-body-sm-regular">Cursos de cumplimiento Q1</span></td>
-                                                <td data-col="tipo"><span class="ubits-body-sm-regular">Contenidos</span></td>
                                                 <td data-col="fecha-inicio" data-date="01/03/2025"><span class="ubits-body-sm-regular">01/03/2025</span></td>
                                                 <td data-col="fecha-fin" data-date="31/03/2025"><span class="ubits-body-sm-regular">31/03/2025</span></td>
                                                 <td data-col="estado"><span class="ubits-status-tag ubits-status-tag--warning ubits-status-tag--sm"><span class="ubits-status-tag__text">Pendiente</span></span></td>
@@ -138,7 +136,6 @@
                                             <tr data-tipo="competencias" data-plan-id="4" class="asignacion-row-clickable">
                                                 <td class="ubits-table__td--checkbox" data-col="checkbox" data-tooltip="Seleccionar" data-tooltip-delay="1000"><label class="ubits-checkbox ubits-checkbox--sm" style="display:inline-flex;"><input type="checkbox" class="ubits-checkbox__input asignacion-row-check" data-id="4"><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label sr-only" aria-hidden="true">&nbsp;</span></label></td>
                                                 <td data-col="nombre"><span class="ubits-body-sm-regular">Evaluación técnica 2024</span></td>
-                                                <td data-col="tipo"><span class="ubits-body-sm-regular">Competencias</span></td>
                                                 <td data-col="fecha-inicio" data-date="01/09/2024"><span class="ubits-body-sm-regular">01/09/2024</span></td>
                                                 <td data-col="fecha-fin" data-date="15/12/2024"><span class="ubits-body-sm-regular">15/12/2024</span></td>
                                                 <td data-col="estado"><span class="ubits-status-tag ubits-status-tag--neutral ubits-status-tag--sm"><span class="ubits-status-tag__text">No vigente</span></span></td>
@@ -152,8 +149,10 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <div id="planes-empty-state" class="lms-table-empty-state" style="display: none;"></div>
                             </div>
+                            </div>
+                            <!-- Empty state fuera del bloque ocultable: solo este se ve cuando no hay planes -->
+                            <div id="planes-empty-state" class="lms-table-empty-state" style="display: none;"></div>
                         </div>
                     </div>
                 </div>
@@ -229,8 +228,7 @@
                 if (!searchQuery) return true;
                 var q = searchQuery.toLowerCase().replace(/\s+/g, ' ');
                 var nombre = getRowText(row, 'nombre').toLowerCase();
-                var tipo = getRowText(row, 'tipo').toLowerCase();
-                return nombre.indexOf(q) !== -1 || tipo.indexOf(q) !== -1;
+                return nombre.indexOf(q) !== -1;
             }
 
             function passesEstado(row) {
@@ -291,47 +289,63 @@
             }
 
             function updatePlanesEmptyState() {
-                var wrapper = document.getElementById('planes-table-wrapper');
+                var listBlock = document.getElementById('planes-list-with-header');
                 var emptyEl = document.getElementById('planes-empty-state');
-                var listWrapper = wrapper ? wrapper.closest('.asignaciones-list-wrapper') : null;
-                if (!wrapper || !emptyEl) return;
+                var widget = listBlock ? listBlock.closest('.widget-planes-formacion') : null;
+                if (!listBlock || !emptyEl) return;
+                var tbody = table ? table.querySelector('tbody') : null;
+                var totalRows = tbody ? tbody.querySelectorAll('tr').length : 0;
+                var rowsInCurrentTab = tableRows.filter(function(r) { return r.getAttribute('data-tipo') === tabActivo; }).length;
+                var noPlanesAtAll = totalRows === 0;
+                var noPlanesInCurrentTab = rowsInCurrentTab === 0;
+                var showNoPlanesState = noPlanesAtAll || noPlanesInCurrentTab;
                 var visibleCount = getVisibleRows().length;
-                var totalInTab = tableRows.filter(function(r) { return r.getAttribute('data-tipo') === tabActivo; }).length;
-                if (visibleCount === 0) {
-                    if (listWrapper) listWrapper.classList.add('is-empty');
+
+                if (showNoPlanesState) {
+                    document.body.setAttribute('data-planes-vacios', 'true');
+                    if (widget) widget.classList.add('planes-sin-items');
+                    listBlock.style.setProperty('display', 'none');
                     emptyEl.innerHTML = '';
                     if (typeof loadEmptyState === 'function') {
-                        var isNoData = tableRows.length === 0;
-                        if (isNoData) {
-                            loadEmptyState('planes-empty-state', {
-                                icon: 'fa-layer-group',
-                                iconSize: 'lg',
-                                title: 'Aún no hay planes',
-                                description: 'Crea tu primer plan de contenidos o competencias para comenzar.',
-                                buttons: { secondary: { text: 'Crear plan', icon: 'fa-plus', onClick: function() {} } }
-                            });
-                            emptyEl.classList.add('lms-table-empty-state');
-                            setTimeout(function() {
-                                var btn = emptyEl.querySelector('.ubits-button--secondary');
-                                if (btn) btn.onclick = function() { var p = document.querySelector('.ubits-header-product__actions .ubits-button--primary'); if (p) p.click(); };
-                            }, 50);
-                        } else {
-                            loadEmptyState('planes-empty-state', {
-                                icon: 'fa-search',
-                                iconSize: 'lg',
-                                title: 'No se encontraron resultados',
-                                description: 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.',
-                                buttons: { secondary: { text: 'Limpiar búsqueda', icon: 'fa-times', onClick: function() {} } }
-                            });
-                            emptyEl.classList.add('lms-table-empty-state');
-                            setTimeout(function() {
-                                var btn = emptyEl.querySelector('.ubits-button--secondary');
-                                if (btn) btn.onclick = function(e) { e.preventDefault(); e.stopPropagation(); clearPlanesSearchAndFilters(); };
-                            }, 50);
-                        }
+                        loadEmptyState('planes-empty-state', {
+                            icon: 'fa-layer-group',
+                            iconSize: 'lg',
+                            title: 'Aún no hay planes',
+                            description: 'Crea tu primer plan de contenidos o competencias usando el botón de arriba.',
+                            buttons: {}
+                        });
+                        emptyEl.classList.add('lms-table-empty-state');
+                    }
+                    emptyEl.style.setProperty('display', 'flex');
+                    return;
+                }
+
+                document.body.removeAttribute('data-planes-vacios');
+                if (widget) widget.classList.remove('planes-sin-items');
+                listBlock.style.removeProperty('display');
+
+                var tableSection = document.getElementById('planes-table-section');
+                if (visibleCount === 0 && !noPlanesInCurrentTab) {
+                    if (tableSection) tableSection.classList.add('is-empty');
+                    emptyEl.style.display = 'flex';
+                    emptyEl.innerHTML = '';
+                    if (typeof loadEmptyState === 'function') {
+                        loadEmptyState('planes-empty-state', {
+                            icon: 'fa-search',
+                            iconSize: 'lg',
+                            title: 'No se encontraron resultados',
+                            description: 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.',
+                            buttons: { secondary: { text: 'Limpiar búsqueda', icon: 'fa-times', onClick: function() {} } }
+                        });
+                        emptyEl.classList.add('lms-table-empty-state');
+                        setTimeout(function() {
+                            var btn = emptyEl.querySelector('.ubits-button--secondary');
+                            if (btn) btn.onclick = function(e) { e.preventDefault(); e.stopPropagation(); clearPlanesSearchAndFilters(); };
+                        }, 50);
                     }
                 } else {
-                    if (listWrapper) listWrapper.classList.remove('is-empty');
+                    if (tableSection) tableSection.classList.remove('is-empty');
+                    emptyEl.style.display = 'none';
                     emptyEl.innerHTML = '';
                 }
             }
@@ -403,7 +417,7 @@
                 };
                 visible.sort(function(a, b) {
                     var va, vb;
-                    if (sortCol === 'nombre' || sortCol === 'tipo') {
+                    if (sortCol === 'nombre') {
                         va = getRowText(a, sortCol); vb = getRowText(b, sortCol);
                         return sortDir === 'asc' ? va.localeCompare(vb) : vb.localeCompare(va);
                     }
@@ -427,8 +441,8 @@
                 loadHeaderProduct('header-product-container', {
                     variant: 'tabs-with-actions',
                     tabs: [
-                        { id: 'contenidos', label: 'Contenidos' },
-                        { id: 'competencias', label: 'Competencias' }
+                        { id: 'contenidos', label: 'Planes de contenidos' },
+                        { id: 'competencias', label: 'Planes de competencias' }
                     ],
                     activeTabId: 'contenidos',
                     onTabChange: function(tabId) {
@@ -442,7 +456,7 @@
                     },
                     primaryButton: {
                         text: 'Crear plan',
-                        icon: 'fa-chevron-down',
+                        icon: 'fa-plus',
                         onClick: function(e) {
                             e.preventDefault();
                             var btn = e.currentTarget;
@@ -724,10 +738,19 @@
                     });
                     var selectAll = document.getElementById('asignaciones-select-all');
                     if (selectAll) selectAll.checked = false;
-                    applyVisibility();
-                    applySort();
-                    toggleActionBar();
-                    updatePlanesEmptyState();
+                    var tbodyAfter = table ? table.querySelector('tbody') : null;
+                    var noRowsLeft = tbodyAfter ? tbodyAfter.querySelectorAll('tr').length === 0 : true;
+                    if (noRowsLeft) {
+                        updatePlanesEmptyState();
+                        toggleActionBar();
+                        setTimeout(function() { updatePlanesEmptyState(); }, 0);
+                    } else {
+                        updatePlanesEmptyState();
+                        applyVisibility();
+                        applySort();
+                        toggleActionBar();
+                        setTimeout(function() { updatePlanesEmptyState(); }, 0);
+                    }
                     if (typeof showToast === 'function') showToast('success', n + ' plan(es) eliminado(s) correctamente');
                 });
             }

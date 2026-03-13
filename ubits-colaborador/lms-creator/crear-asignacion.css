@@ -437,11 +437,58 @@
     color: var(--ubits-fg-1-medium);
 }
 
-/* Drawer Agregar cursos */
+/* Dropdown del filtro del drawer: por encima del drawer (drawer usa z-index 1100–1101) */
+#drawer-cursos-filter-overlay.ubits-dropdown-menu__overlay {
+    z-index: 1102;
+}
+#drawer-cursos-filter-overlay .ubits-dropdown-menu__content {
+    z-index: 1103;
+}
+
+/* Drawer Agregar cursos: cuerpo sin scroll para que cada columna scroll independiente */
+#drawer-agregar-cursos .ubits-drawer-body {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
 .drawer-agregar-cursos {
     display: flex;
     flex-direction: column;
     gap: var(--gap-lg);
+}
+
+/* Dos columnas: izquierda = buscador + catálogo, derecha = contenidos agregados */
+.drawer-agregar-cursos--two-cols {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    min-height: 0;
+    gap: var(--gap-xl);
+}
+
+.drawer-agregar-cursos__left {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: var(--gap-sm);
+    min-height: 0;
+}
+
+.drawer-agregar-cursos__right {
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 370px;
+    gap: var(--gap-sm);
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* 8px entre título "Contenidos agregados" y la tabla (token oficial --gap-sm) */
+.drawer-agregar-cursos__right .drawer-agregar-cursos__section-title {
+    margin-bottom: var(--gap-sm);
+    flex-shrink: 0;
 }
 
 .drawer-agregar-cursos__section {
@@ -450,39 +497,88 @@
     gap: var(--gap-sm);
 }
 
-.drawer-cursos-table-wrapper {
+/* Título de cada sección del drawer: mismo tamaño, color y gap que "Buscar y agregar contenidos" */
+.drawer-agregar-cursos__section-title {
+    color: var(--ubits-fg-1-high);
+    margin: 0 0 var(--gap-sm) 0;
+}
+
+/* Fila buscador + botón filtro: input crece, botón alineado a la derecha */
+.drawer-cursos-search-row {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+}
+.drawer-cursos-search-input-wrap {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Tabla de contenidos agregados usa componente oficial ubits-table (table.css); solo ajuste de columna acciones */
+.drawer-agregar-cursos .ubits-table-wrapper {
     position: relative;
-    border: 1px solid var(--ubits-border-1);
-    border-radius: var(--border-radius-sm);
+}
+
+/* Contenedor de la columna derecha: empty state o tabla, con scroll si hay muchos ítems */
+.drawer-cursos-agregados-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
     overflow: hidden;
 }
 
-.drawer-cursos-table {
-    width: 100%;
-    border-collapse: collapse;
+#drawer-cursos-table-wrapper {
+    flex: 1;
+    min-height: 0;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    scrollbar-gutter: stable;
 }
 
-.drawer-cursos-table th,
-.drawer-cursos-table td {
-    padding: var(--padding-sm) var(--padding-md);
-    text-align: left;
+/* Scrollbar siempre visible (WebKit/Blink) */
+#drawer-cursos-table-wrapper::-webkit-scrollbar {
+    width: 6px;
 }
 
-.drawer-cursos-table th {
+#drawer-cursos-table-wrapper::-webkit-scrollbar-track {
     background: var(--ubits-bg-2);
-    color: var(--ubits-fg-1-medium);
-    font-weight: 600;
+    border-radius: 3px;
 }
 
-.drawer-cursos-table td {
-    border-top: 1px solid var(--ubits-border-1);
+#drawer-cursos-table-wrapper::-webkit-scrollbar-thumb {
+    background: var(--ubits-border-2);
+    border-radius: 3px;
 }
 
-.drawer-cursos-empty {
-    padding: var(--padding-md);
-    color: var(--ubits-fg-1-medium);
-    margin: 0;
+#drawer-cursos-table-wrapper::-webkit-scrollbar-thumb:hover {
+    background: var(--ubits-fg-1-low);
+}
+
+.drawer-cursos-empty-state-wrap {
     display: none;
+    flex: 1;
+    min-height: 120px;
+}
+
+.drawer-cursos-empty-state-wrap .ubits-empty-state {
+    padding: var(--padding-lg) 0;
+}
+
+/* Contenedor de resultados de búsqueda (columna izquierda): flex 1 para ocupar el espacio y scroll propio */
+.drawer-cursos-resultados-bg {
+    background: var(--ubits-bg-2);
+    padding: var(--padding-md);
+    border-radius: var(--border-radius-sm);
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.drawer-cursos-resultados-bg--dos-columnas .drawer-cursos-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--gap-md);
 }
 
 .drawer-cursos-cards-grid {
@@ -493,6 +589,20 @@
 
 .drawer-cursos-cards-grid .course-card-compact {
     min-width: 0;
+}
+
+/* Indicador visual: contenidos ya seleccionados en el drawer */
+.drawer-cursos-resultados-bg .course-card-compact--selected {
+    border: 2px solid var(--ubits-accent-brand);
+    border-radius: var(--border-radius-sm);
+    box-sizing: border-box;
+}
+
+/* Drawer dos columnas: en pantallas estrechas se apilan */
+@media (max-width: 768px) {
+    .drawer-agregar-cursos--two-cols {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 640px) {

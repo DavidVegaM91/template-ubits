@@ -92,12 +92,20 @@
     display: none;
 }
 
-.asignaciones-list-wrapper.is-empty #planes-table-wrapper {
+/* Sin planes (o sin planes en la pestaña actual): ocultar TODO; solo mostrar empty "Aún no hay planes" */
+body[data-planes-vacios="true"] #planes-list-with-header,
+.widget-planes-formacion.planes-sin-items #planes-list-with-header {
     display: none !important;
 }
 
-.asignaciones-list-wrapper.is-empty #planes-empty-state {
+body[data-planes-vacios="true"] .widget-planes-formacion #planes-empty-state,
+.widget-planes-formacion.planes-sin-items #planes-empty-state {
     display: flex !important;
+}
+
+/* Con planes pero 0 visibles (búsqueda/filtros): tabla visible, empty de búsqueda */
+.asignaciones-list-wrapper.is-empty #planes-table-wrapper {
+    display: none !important;
 }
 
 .asignaciones-list-wrapper {
