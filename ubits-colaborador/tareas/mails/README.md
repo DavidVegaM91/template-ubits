@@ -1,10 +1,11 @@
 # Plantillas de correo: recordatorios de tareas
 
-Tres variantes de correo para el módulo de tareas/subtareas:
+Cuatro variantes de correo para el módulo de tareas/subtareas:
 
 | Archivo | Uso |
 |--------|-----|
-| `mail-recordatorio-pre-vencimiento.html` | Envío manual ("Enviar notificación") o recordatorio programado antes del vencimiento. |
+| `mail-recordatorio-pre-vencimiento.html` | Envío manual ("Enviar notificación") o recordatorio programado antes del vencimiento. Incluye fecha límite. |
+| `mail-recordatorio-sin-vencimiento.html` | Igual que pre-vencimiento pero **sin fecha de vencimiento** (para tareas sin fecha límite). |
 | `mail-recordatorio-dia-vencimiento.html` | Envío automático el día que vence la tarea. "Tu tarea vence hoy". |
 | `mail-recordatorio-vencida.html` | Envío **automático** después del vencimiento o **manual** ("Enviar notificación" sobre tarea vencida). "Tu tarea se venció". |
 
@@ -19,7 +20,7 @@ El backend debe reemplazar estos placeholders antes de enviar. Usar el mismo nom
 | `{{nombre_destinatario}}` | Nombre de quien recibe el correo | María Alejandra |
 | `{{nombre_remitente}}` | Quien envía: en **pre-vencimiento** y en **vencida** (manual = nombre de la persona; automático = "UBITS") | Carlos Ruiz / UBITS |
 | `{{nombre_tarea}}` | Título de la tarea o subtarea | Revisar contratos vigentes |
-| `{{fecha_vencimiento}}` | Fecha límite formateada | 15 mar 2026 |
+| `{{fecha_vencimiento}}` | Fecha límite formateada (no se usa en `mail-recordatorio-sin-vencimiento.html`) | 15 mar 2026 |
 | `{{url_ver_tarea}}` | URL absoluta al detalle de la tarea en la app | https://app.ubits.com/tarea?id=123 |
 | `{{url_plataforma}}` | URL base de la plataforma | https://app.ubits.com |
 | `{{es_subtarea}}` | Opcional: "true" si es subtarea (para variar copy si se desea) | true |
@@ -62,7 +63,7 @@ Ilustración flat para email “tu tarea se venció”. Persona revisando una li
 ## Imágenes por plantilla
 
 Cada correo lleva una sola imagen: la **ilustración** (que incluye el logo UBITS), desde `mails/images/`:
-- Pre-vencimiento: `images/recordatorio-tarea-pendiente.png`
+- Pre-vencimiento y sin vencimiento: `images/recordatorio-tarea-pendiente.png`
 - Día vencimiento: `images/tu-tarea-vence-hoy.png`
 - Vencida: `images/tu-tarea-vencio.png`
 
