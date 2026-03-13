@@ -210,3 +210,29 @@
 .ubits-badge-tag--lg.ubits-badge-tag--with-icon i {
     font-size: 16px;
 }
+
+/* ========================================
+   VARIANTE: ICON ONLY (solo icono, sin texto)
+   Para prioridad/estado en listas móviles (ej. task-strip)
+   ======================================== */
+
+.ubits-badge-tag--icon-only {
+    padding: 0;
+    min-width: 28px;
+    width: 28px;
+    min-height: 28px;
+    height: 28px;
+    border-radius: var(--border-radius-sm, 8px);
+}
+
+.ubits-badge-tag--icon-only .ubits-badge-tag__text {
+    display: none;
+}
+
+.ubits-badge-tag--icon-only .ubits-badge-tag__indicator {
+    display: none;
+}
+
+.ubits-badge-tag--icon-only.ubits-badge-tag--with-icon i {
+    font-size: 12px;
+}
