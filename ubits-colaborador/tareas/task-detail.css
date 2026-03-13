@@ -13,6 +13,7 @@
     max-width: 100%;
     width: 100%;
     box-sizing: border-box;
+    border-top: 4px solid var(--ubits-accent-brand);
 }
 
 .task-detail-sections {
