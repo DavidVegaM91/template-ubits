@@ -445,6 +445,10 @@
     z-index: 1103;
 }
 
+#drawer-agregar-cursos .ubits-drawer-content {
+    min-height: 0;
+}
+
 /* Drawer Agregar cursos: cuerpo sin scroll para que cada columna scroll independiente */
 #drawer-agregar-cursos .ubits-drawer-body {
     overflow: hidden;
@@ -456,6 +460,8 @@
 .drawer-agregar-cursos {
     display: flex;
     flex-direction: column;
+    flex: 1;
+    min-height: 0;
     gap: var(--gap-lg);
 }
 
@@ -477,12 +483,9 @@
 }
 
 .drawer-agregar-cursos__right {
-    display: flex;
-    flex-direction: column;
+    position: relative;
     flex: 0 0 370px;
-    gap: var(--gap-sm);
     min-height: 0;
-    overflow: hidden;
 }
 
 /* 8px entre título "Contenidos agregados" y la tabla (token oficial --gap-sm) */
@@ -499,6 +502,7 @@
 
 /* Título de cada sección del drawer: mismo tamaño, color y gap que "Buscar y agregar contenidos" */
 .drawer-agregar-cursos__section-title {
+    display: block;
     color: var(--ubits-fg-1-high);
     margin: 0 0 var(--gap-sm) 0;
 }
@@ -514,17 +518,33 @@
     min-width: 0;
 }
 
-/* Tabla de contenidos agregados usa componente oficial ubits-table (table.css); solo ajuste de columna acciones */
-.drawer-agregar-cursos .ubits-table-wrapper {
-    position: relative;
-}
+/* =========================================================================
+   BUG FIX: Tabla infinita y scroll roto en navegadores WebKit/Blink
+   El problema: Las etiquetas nativas HTML <table> tienen alturas intrínsecas
+   muy fuertes que ignoran las restricciones de altura de Flexbox y Grid, forzando
+   a los contenedores padres a crecer hasta salirse de la pantalla.
+   
+   Lo que FALLÓ:
+   1. max-height: 55vh en la tabla (no funcionaba bien en todos los viewports)
+   2. display: grid con grid-template-rows: 1fr (WebKit/Safari aún deja escapar la tabla)
+   3. flex: 1 con min-height: 0 (La tabla se rehusa a respetar el min-height: 0 en Safari)
+   
+   LA "VIEJA ESCUELA" (Lo que funcionó):
+   1. Poner display block en su contenedor directo: .drawer-agregar-cursos__right { position: relative; }
+   2. Poner 'position: absolute' al envoltorio de la tabla, con top/bottom. Al estar
+      fuera del flujo, la tabla HTML no puede engañar la altura de su Flex parent,
+      bloqueando el bug y forzando el 'overflow-y: scroll'.
+========================================================================= */
 
-/* Contenedor de la columna derecha: empty state o tabla, con scroll si hay muchos ítems */
+/* Contenedor de la columna derecha: posicionado absolutamente para EVITAR que la tabla rompa el layout */
 .drawer-cursos-agregados-content {
+    position: absolute;
+    top: 32px; /* Span line-height (~24px) + margin-bottom (8px) */
+    bottom: 0;
+    left: 0;
+    right: 0;
     display: flex;
     flex-direction: column;
-    flex: 1;
-    min-height: 0;
     overflow: hidden;
 }
 
