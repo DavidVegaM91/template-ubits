@@ -369,10 +369,10 @@
     }
 
     .tarea-titulo {
-        font-size: var(--font-size-md, 16px);
-        font-weight: var(--font-weight-semibold, 600);
-        line-height: var(--line-height-md, 24px);
-        color: var(--ubits-fg-1-high);
+        font-size: var(--font-size-md);
+        font-weight: var(--font-weight-regular);
+        line-height: 24px;
+        color: var(--ubits-fg-1-medium);
         padding: 0;
         white-space: normal;
         display: -webkit-box;
@@ -383,7 +383,12 @@
     }
 
     .tarea-item--completed .tarea-titulo {
-        color: var(--ubits-fg-1-high);
+        color: var(--ubits-fg-1-medium);
+    }
+
+    .tarea-titulo-edit-input {
+        font-size: var(--font-size-md);
+        line-height: 24px;
     }
 
     /* Meta row: cuerpo xs semibold (la fecha mantiene estilo botón xs secundario) */

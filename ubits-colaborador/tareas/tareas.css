@@ -684,6 +684,7 @@ body.page-tareas .dashboard-container {
         min-height: 0 !important;
         height: auto !important;
         padding: var(--padding-lg, 16px) !important;
+        margin-bottom: 0 !important;
     }
 
     .calendar-header__controls {
