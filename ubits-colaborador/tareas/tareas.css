@@ -338,7 +338,7 @@ body.page-tareas .dashboard-container {
 }
 
 .calendar-horizontal__day:hover {
-    background: var(--ubits-feedback-bg-info-subtle);
+    background: var(--ubits-bg-2);
 }
 
 .calendar-horizontal__day:hover .calendar-horizontal__weekday,
@@ -522,10 +522,6 @@ body.page-tareas .dashboard-container {
     color: var(--ubits-fg-1-high);
 }
 
-.tareas-overdue-header .tareas-overdue-badge {
-    margin-left: var(--gap-sm, 8px);
-}
-
 /* Badge de cantidad (rojo, letra blanca, como el del componente botón) */
 .tareas-overdue-badge {
     display: inline-flex;
@@ -658,6 +654,12 @@ body.page-tareas .dashboard-container {
         /* Viewport - tab-bar(60px) - gap(16px) */
         max-height: calc(100vh - 60px - var(--gap-lg, 16px)) !important;
         overflow: visible !important;
+    }
+}
+
+@media (min-width: 1024px) and (max-width: 1279px) {
+    .widget-vista-tareas {
+        margin-bottom: 0 !important;
     }
 }
 

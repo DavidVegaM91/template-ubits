@@ -70,10 +70,6 @@
                                     <span>Ver seleccionados</span>
                                 </button>
                                 <div class="lms-table-action-buttons">
-                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="planes-mass-descargar">
-                                        <i class="far fa-download"></i>
-                                        <span>Descargar</span>
-                                    </button>
                                     <button type="button" class="ubits-button ubits-button--error-secondary ubits-button--sm" id="planes-mass-eliminar">
                                         <i class="far fa-trash"></i>
                                         <span>Eliminar</span>
@@ -754,15 +750,6 @@
                     if (typeof showToast === 'function') showToast('success', n + ' plan(es) eliminado(s) correctamente');
                 });
             }
-            var btnDescargar = document.getElementById('planes-mass-descargar');
-            if (btnDescargar) {
-                btnDescargar.addEventListener('click', function() {
-                    var sel = table.querySelectorAll('tbody tr[data-tipo="' + tabActivo + '"] .asignacion-row-check:checked');
-                    if (sel.length === 0) return;
-                    if (typeof showToast === 'function') showToast('success', 'Descargando ' + sel.length + ' plan(es) (demo)');
-                });
-            }
-
             setTimeout(() => {
                 const tab = document.querySelector('.nav-tab[data-tab="planes-formacion"]');
                 if (tab) {
