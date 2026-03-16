@@ -289,17 +289,81 @@
     }
 }
 
+/* Estructura tipo Figma: [icono + título] fila 1; descripción y contador alineados con icono; radio a la derecha centrado */
 .drawer-option-card {
     display: flex;
-    align-items: flex-start;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
     gap: var(--gap-md);
-    padding: var(--padding-lg);
+    padding: var(--padding-md);
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-sm);
     cursor: pointer;
     transition: border-color 0.2s ease, background 0.2s ease;
     min-width: 0;
+}
+
+/* Input primero en DOM para accesibilidad; circle justo después para que :checked + .circle funcione */
+.drawer-option-card .ubits-radio__input {
+    order: -1;
+}
+
+.drawer-option-card__main {
+    order: 1;
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+    align-items: stretch;
+}
+
+/* Orden visual: contenido a la izquierda, radio a la derecha */
+.drawer-option-card .ubits-radio__circle {
+    order: 2;
+    flex-shrink: 0;
+}
+
+/* Fila 1: icono + título (solo el título al lado del icono) */
+.drawer-option-card__row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.drawer-option-card__icon {
+    flex-shrink: 0;
+    width: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ubits-fg-1-medium);
+}
+
+.drawer-option-card__icon i {
+    font-size: 16px;
+}
+
+.drawer-option-card__title {
+    color: var(--ubits-fg-1-high);
+}
+
+/* Descripción y contador alineados con el icono (mismo inicio que el icono, no con el título) */
+.drawer-option-card__desc {
+    color: var(--ubits-fg-1-medium);
+    margin: 0;
+    line-height: 1.5;
+}
+
+.drawer-option-card__count {
+    color: var(--ubits-fg-1-medium);
+}
+
+.drawer-option-card__count .ubits-body-md-bold {
+    color: var(--ubits-fg-1-high);
 }
 
 .drawer-option-card:hover {
@@ -311,24 +375,6 @@
     background: var(--ubits-bg-2);
 }
 
-.drawer-option-card__content {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-xs);
-}
-
-.drawer-option-card__content span {
-    color: var(--ubits-fg-1-high);
-}
-
-.drawer-option-card__content p {
-    color: var(--ubits-fg-1-medium);
-    margin: 0;
-    line-height: 1.5;
-}
-
 /* Drawer Agregar usuarios - paneles colaborador y grupos */
 .drawer-usuarios-panel {
     display: flex;
@@ -337,6 +383,66 @@
     margin-top: var(--gap-md);
     padding-top: var(--gap-md);
     border-top: 1px solid var(--ubits-border-1);
+}
+
+/* Panel colaborador: mismo espaciado que seguimiento (widget-header-seguimiento: flex column + gap-md) */
+.drawer-usuarios-panel--colaborador {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+}
+
+.drawer-usuarios-panel--colaborador .lms-table-action-bar {
+    padding: var(--padding-md) 0;
+}
+
+.drawer-colab-list-wrapper {
+    width: 100%;
+    overflow: hidden;
+}
+
+.drawer-colab-list-wrapper.is-empty #drawer-colab-table-wrapper {
+    display: none !important;
+}
+
+.drawer-colab-list-wrapper.is-empty #drawer-colab-empty-state {
+    display: flex !important;
+}
+
+/* Panel grupos: mismo espaciado que seguimiento (flex column + gap-md) */
+.drawer-usuarios-panel--grupos {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+}
+
+.drawer-usuarios-panel--grupos .lms-table-action-bar {
+    padding: var(--padding-md) 0;
+}
+
+.drawer-grupos-list-wrapper {
+    width: 100%;
+    overflow: hidden;
+}
+
+.drawer-grupos-list-wrapper.is-empty #drawer-grupos-table-wrapper {
+    display: none !important;
+}
+
+.drawer-grupos-list-wrapper.is-empty #drawer-grupos-empty-state {
+    display: flex !important;
+}
+
+.drawer-usuarios-panel--grupos .ubits-table tbody td[data-col="nombre"] {
+    min-width: 180px;
+}
+
+.drawer-usuarios-panel--grupos .ubits-table tbody td[data-col="descripcion"] {
+    min-width: 220px;
+}
+
+.drawer-usuarios-panel--grupos .ubits-table tbody td[data-col="integrantes"] {
+    min-width: 100px;
 }
 
 .drawer-usuarios-lista-wrapper,
@@ -451,10 +557,14 @@
 }
 
 /* Dropdown del filtro del drawer: por encima del drawer (drawer usa z-index 1100–1101) */
-#drawer-cursos-filter-overlay.ubits-dropdown-menu__overlay {
+#drawer-cursos-filter-overlay.ubits-dropdown-menu__overlay,
+#drawer-colab-filter-overlay.ubits-dropdown-menu__overlay,
+#drawer-grupos-sort-overlay.ubits-dropdown-menu__overlay {
     z-index: 1102;
 }
-#drawer-cursos-filter-overlay .ubits-dropdown-menu__content {
+#drawer-cursos-filter-overlay .ubits-dropdown-menu__content,
+#drawer-colab-filter-overlay .ubits-dropdown-menu__content,
+#drawer-grupos-sort-overlay .ubits-dropdown-menu__content {
     z-index: 1103;
 }
 
@@ -648,4 +758,73 @@
     .asignaciones-plan-list {
         grid-template-columns: 1fr;
     }
+}
+
+/* Drawer: Filtros aplicados (igual que seguimiento) */
+.drawer-filtros-aplicados {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+    flex-wrap: wrap;
+}
+
+.drawer-filtros-aplicados .filtros-chips-container {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    flex-wrap: wrap;
+}
+
+.drawer-filtros-aplicados .filtros-chips-container .ubits-chip {
+    max-width: 150px;
+}
+
+.drawer-filtros-aplicados .filtros-chips-container .ubits-chip__text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+}
+
+/* Drawer tablas: cabeceras ordenar/filtrar (como seguimiento) */
+/* Encabezados drawer: botones ordenar/filtrar por encima para que reciban clic */
+#drawer-colab-table thead th,
+#drawer-grupos-table thead th {
+    position: relative;
+    z-index: 2;
+}
+
+#drawer-colab-table thead th .drawer-sort-btn,
+#drawer-colab-table thead th .drawer-filter-btn,
+#drawer-grupos-table thead th .drawer-sort-btn {
+    position: relative;
+    z-index: 1;
+    pointer-events: auto;
+}
+
+.drawer-th-sortable,
+.drawer-th-filterable {
+    white-space: nowrap;
+}
+
+.drawer-sort-btn,
+.drawer-filter-btn {
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+}
+
+.drawer-th-sortable:hover .drawer-sort-btn,
+.drawer-th-filterable:hover .drawer-filter-btn {
+    opacity: 1;
+}
+
+.drawer-filter-btn--active {
+    opacity: 1;
+    background: var(--ubits-feedback-bg-info-subtle) !important;
+    border-color: transparent !important;
+    color: var(--ubits-accent-brand) !important;
+}
+
+.drawer-filter-btn--active i {
+    color: var(--ubits-accent-brand) !important;
 }

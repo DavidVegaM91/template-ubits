@@ -28,9 +28,11 @@
     <link rel="stylesheet" href="../../components/card-content-compact.css">
     <link rel="stylesheet" href="../../components/table.css">
     <link rel="stylesheet" href="../../components/checkbox.css">
+    <link rel="stylesheet" href="../../components/chip.css">
     <link rel="stylesheet" href="../../components/empty-state.css">
     <link rel="stylesheet" href="../../components/modal.css">
     <link rel="stylesheet" href="./lms-creator.css">
+    <link rel="stylesheet" href="./grupos.css">
     <link rel="stylesheet" href="./crear-asignacion.css">
 </head>
 <body data-theme="light">
@@ -137,6 +139,8 @@
     <script src="../../components/empty-state.js"></script>
     <script src="../../components/modal.js"></script>
     <script src="../../script.js"></script>
+    <!-- Misma base de datos que seguimiento.html (empresa de pruebas: Fiqsha) -->
+    <script src="../tareas/tareas-base-unificada.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Leer tipo de plan desde URL (?tipo=contenidos | ?tipo=competencias)
@@ -268,56 +272,118 @@
             function getDrawerUsuariosBodyHtml() {
                 return '<div class="drawer-agregar-usuarios-options">' +
                     '<label class="drawer-option-card ubits-radio ubits-radio--md" data-opcion="toda-empresa">' +
-                    '  <input type="radio" name="tipo-agregar-usuarios" class="ubits-radio__input" value="toda-empresa" checked>' +
+                    '  <input type="radio" name="tipo-agregar-usuarios" class="ubits-radio__input" value="toda-empresa">' +
                     '  <span class="ubits-radio__circle"></span>' +
-                    '  <div class="drawer-option-card__content">' +
-                    '    <span class="ubits-body-md-semibold">Agregar toda la empresa</span>' +
-                    '    <p class="ubits-body-sm-regular">Asigna el plan a todos los colaboradores de la empresa de una sola vez.</p>' +
+                    '  <div class="drawer-option-card__main">' +
+                    '    <div class="drawer-option-card__row">' +
+                    '      <span class="drawer-option-card__icon"><i class="far fa-building"></i></span>' +
+                    '      <span class="ubits-body-md-semibold drawer-option-card__title">Agregar toda la empresa</span>' +
+                    '    </div>' +
+                    '    <p class="ubits-body-sm-regular drawer-option-card__desc">Asigna el plan a todos los colaboradores de la empresa de una sola vez.</p>' +
+                    '    <span class="drawer-option-card__count ubits-body-md-regular"><span class="ubits-body-md-bold">0</span>/<span class="ubits-body-md-bold">290</span> seleccionados</span>' +
                     '  </div>' +
                     '</label>' +
                     '<label class="drawer-option-card ubits-radio ubits-radio--md" data-opcion="por-colaborador">' +
                     '  <input type="radio" name="tipo-agregar-usuarios" class="ubits-radio__input" value="por-colaborador">' +
                     '  <span class="ubits-radio__circle"></span>' +
-                    '  <div class="drawer-option-card__content">' +
-                    '    <span class="ubits-body-md-semibold">Agregar colaborador</span>' +
-                    '    <p class="ubits-body-sm-regular">Busca y agrega colaboradores individualmente a la lista de participantes.</p>' +
+                    '  <div class="drawer-option-card__main">' +
+                    '    <div class="drawer-option-card__row">' +
+                    '      <span class="drawer-option-card__icon"><i class="far fa-user"></i></span>' +
+                    '      <span class="ubits-body-md-semibold drawer-option-card__title">Agregar colaborador</span>' +
+                    '    </div>' +
+                    '    <p class="ubits-body-sm-regular drawer-option-card__desc">Busca y agrega colaboradores individualmente a la lista de participantes.</p>' +
+                    '    <span class="drawer-option-card__count ubits-body-md-regular"><span class="ubits-body-md-bold">0</span>/<span class="ubits-body-md-bold">290</span> seleccionados</span>' +
                     '  </div>' +
                     '</label>' +
                     '<label class="drawer-option-card ubits-radio ubits-radio--md" data-opcion="por-grupos">' +
                     '  <input type="radio" name="tipo-agregar-usuarios" class="ubits-radio__input" value="por-grupos">' +
                     '  <span class="ubits-radio__circle"></span>' +
-                    '  <div class="drawer-option-card__content">' +
-                    '    <span class="ubits-body-md-semibold">Agregar por grupos</span>' +
-                    '    <p class="ubits-body-sm-regular">Selecciona uno o más grupos para asignar el plan a sus integrantes.</p>' +
+                    '  <div class="drawer-option-card__main">' +
+                    '    <div class="drawer-option-card__row">' +
+                    '      <span class="drawer-option-card__icon"><i class="far fa-users"></i></span>' +
+                    '      <span class="ubits-body-md-semibold drawer-option-card__title">Agregar por grupos</span>' +
+                    '    </div>' +
+                    '    <p class="ubits-body-sm-regular drawer-option-card__desc">Selecciona uno o más grupos para asignar el plan a sus integrantes.</p>' +
+                    '    <span class="drawer-option-card__count ubits-body-md-regular"><span class="ubits-body-md-bold">0</span>/<span class="ubits-body-md-bold">4</span> seleccionados</span>' +
                     '  </div>' +
                     '</label>' +
                     '<label class="drawer-option-card ubits-radio ubits-radio--md" data-opcion="desde-archivo">' +
                     '  <input type="radio" name="tipo-agregar-usuarios" class="ubits-radio__input" value="desde-archivo">' +
                     '  <span class="ubits-radio__circle"></span>' +
-                    '  <div class="drawer-option-card__content">' +
-                    '    <span class="ubits-body-md-semibold">Agregar desde archivo</span>' +
-                    '    <p class="ubits-body-sm-regular">Importa una lista de participantes desde un archivo CSV o Excel.</p>' +
+                    '  <div class="drawer-option-card__main">' +
+                    '    <div class="drawer-option-card__row">' +
+                    '      <span class="drawer-option-card__icon"><i class="far fa-file-arrow-up"></i></span>' +
+                    '      <span class="ubits-body-md-semibold drawer-option-card__title">Agregar desde archivo</span>' +
+                    '    </div>' +
+                    '    <p class="ubits-body-sm-regular drawer-option-card__desc">Importa una lista de participantes desde un archivo CSV o Excel.</p>' +
+                    '    <span class="drawer-option-card__count ubits-body-md-regular"><span class="ubits-body-md-bold">0</span>/<span class="ubits-body-md-bold">290</span> seleccionados</span>' +
                     '  </div>' +
                     '</label>' +
                     '</div>' +
                     '<div class="drawer-usuarios-panel drawer-usuarios-panel--colaborador" id="drawer-usuarios-colaborador-panel" style="display:none">' +
-                    '  <span class="ubits-body-sm-semibold crear-asignacion-form__label">Buscar colaboradores</span>' +
-                    '  <div id="drawer-usuarios-colaborador-search"></div>' +
-                    '  <div class="drawer-usuarios-resultados" id="drawer-usuarios-colaborador-resultados"></div>' +
-                    '  <div class="drawer-usuarios-lista-wrapper">' +
-                    '    <span class="ubits-body-sm-semibold crear-asignacion-form__label">Usuarios agregados</span>' +
-                    '    <ul class="drawer-usuarios-lista" id="drawer-usuarios-colaborador-lista"></ul>' +
-                    '    <p class="drawer-usuarios-empty ubits-body-sm-regular" id="drawer-usuarios-colaborador-empty">No hay usuarios agregados. Busca y selecciona para agregar.</p>' +
+                    '  <div class="lms-table-header-bar">' +
+                    '    <div class="lms-table-header-left">' +
+                    '      <span class="ubits-body-md-bold">Lista de colaboradores</span>' +
+                    '      <span class="ubits-body-sm-regular" id="drawer-colab-results-count">0/0</span>' +
+                    '    </div>' +
+                    '    <div class="lms-table-header-right">' +
+                    '      <button type="button" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only" id="drawer-colab-search-toggle" aria-label="Buscar" data-tooltip="Buscar" data-tooltip-delay="1000"><i class="far fa-magnifying-glass"></i></button>' +
+                    '      <div id="drawer-colab-search-container" class="lms-table-search-inline" style="display:none;"></div>' +
+                    '    </div>' +
+                    '  </div>' +
+                    '  <div class="widget-filtros-aplicados drawer-filtros-aplicados" id="drawer-colab-filtros-aplicados" style="display:none;">' +
+                    '    <span class="ubits-body-sm-regular">Filtros aplicados:</span>' +
+                    '    <div class="filtros-chips-container" id="drawer-colab-filtros-chips-container"></div>' +
+                    '    <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs" id="drawer-colab-clear-filters" aria-label="Limpiar todos los filtros">' +
+                    '      <i class="far fa-filter-slash"></i>' +
+                    '      <span>Limpiar filtros</span>' +
+                    '    </button>' +
+                    '  </div>' +
+                    '  <div class="lms-table-action-bar" id="drawer-colab-action-bar">' +
+                    '    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="drawer-colab-ver-seleccionados">' +
+                    '      <i class="far fa-eye"></i>' +
+                    '      <span>Ver seleccionados</span>' +
+                    '    </button>' +
+                    '  </div>' +
+                    '  <div class="drawer-colab-list-wrapper">' +
+                    '    <div class="ubits-table-wrapper ubits-table-wrapper--min-width" id="drawer-colab-table-wrapper">' +
+                    '      <table class="ubits-table" id="drawer-colab-table">' +
+                    '        <thead>' +
+                    '          <tr id="drawer-colab-thead-row"></tr>' +
+                    '        </thead>' +
+                    '        <tbody id="drawer-colab-tbody"></tbody>' +
+                    '      </table>' +
+                    '    </div>' +
+                    '    <div id="drawer-colab-empty-state" class="lms-table-empty-state" style="display:none;"></div>' +
                     '  </div>' +
                     '</div>' +
                     '<div class="drawer-usuarios-panel drawer-usuarios-panel--grupos" id="drawer-usuarios-grupos-panel" style="display:none">' +
-                    '  <span class="ubits-body-sm-semibold crear-asignacion-form__label">Buscar grupos</span>' +
-                    '  <div id="drawer-usuarios-grupos-search"></div>' +
-                    '  <div class="drawer-usuarios-resultados" id="drawer-usuarios-grupos-resultados"></div>' +
-                    '  <div class="drawer-usuarios-grupos-seleccionados">' +
-                    '    <span class="ubits-body-sm-semibold crear-asignacion-form__label">Grupos seleccionados</span>' +
-                    '    <div class="drawer-usuarios-grupos-lista" id="drawer-usuarios-grupos-lista"></div>' +
-                    '    <p class="drawer-usuarios-empty ubits-body-sm-regular" id="drawer-usuarios-grupos-empty">No hay grupos seleccionados. Busca y selecciona un grupo.</p>' +
+                    '  <div class="lms-table-header-bar">' +
+                    '    <div class="lms-table-header-left">' +
+                    '      <span class="ubits-body-md-bold">Lista de grupos</span>' +
+                    '      <span class="ubits-body-sm-regular" id="drawer-grupos-results-count">0/0</span>' +
+                    '    </div>' +
+                    '    <div class="lms-table-header-right">' +
+                    '      <button type="button" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only" id="drawer-grupos-search-toggle" aria-label="Buscar" data-tooltip="Buscar" data-tooltip-delay="1000"><i class="far fa-magnifying-glass"></i></button>' +
+                    '      <div id="drawer-grupos-search-container" class="lms-table-search-inline" style="display:none;"></div>' +
+                    '    </div>' +
+                    '  </div>' +
+                    '  <div class="lms-table-action-bar" id="drawer-grupos-action-bar">' +
+                    '    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="drawer-grupos-ver-seleccionados">' +
+                    '      <i class="far fa-eye"></i>' +
+                    '      <span>Ver seleccionados</span>' +
+                    '    </button>' +
+                    '  </div>' +
+                    '  <div class="drawer-grupos-list-wrapper">' +
+                    '    <div class="ubits-table-wrapper ubits-table-wrapper--min-width" id="drawer-grupos-table-wrapper">' +
+                    '      <table class="ubits-table" id="drawer-grupos-table">' +
+                    '        <thead>' +
+                    '          <tr id="drawer-grupos-thead-row"></tr>' +
+                    '        </thead>' +
+                    '        <tbody id="drawer-grupos-tbody"></tbody>' +
+                    '      </table>' +
+                    '    </div>' +
+                    '    <div id="drawer-grupos-empty-state" class="lms-table-empty-state" style="display:none;"></div>' +
                     '  </div>' +
                     '</div>' +
                     '<div class="drawer-usuarios-panel drawer-usuarios-panel--archivo" id="drawer-usuarios-archivo-panel" style="display:none">' +
@@ -358,14 +424,6 @@
                 initDrawerAgregarUsuarios();
             }
 
-            var colabMock = [
-                { id: 'u1', nombre: 'Ana Martínez', email: 'ana.martinez@empresa.com', cargo: 'Diseñadora' },
-                { id: 'u2', nombre: 'Carlos López', email: 'carlos.lopez@empresa.com', cargo: 'Desarrollador' },
-                { id: 'u3', nombre: 'María García', email: 'maria.garcia@empresa.com', cargo: 'Product Manager' },
-                { id: 'u4', nombre: 'Pedro Sánchez', email: 'pedro.sanchez@empresa.com', cargo: 'Analista' },
-                { id: 'u5', nombre: 'Laura Fernández', email: 'laura.fernandez@empresa.com', cargo: 'UX Researcher' },
-                { id: 'u6', nombre: 'Roberto Díaz', email: 'roberto.diaz@empresa.com', cargo: 'Líder técnico' }
-            ];
             var gruposMock = [
                 { id: 'g1', nombre: 'Equipo de ventas', descripcion: 'Colaboradores del área comercial', integrantes: 24 },
                 { id: 'g2', nombre: 'Onboarding 2025', descripcion: 'Nuevos colaboradores incorporados en 2025', integrantes: 12 },
@@ -380,8 +438,21 @@
                 var colaboradorPanel = overlay.querySelector('#drawer-usuarios-colaborador-panel');
                 var gruposPanel = overlay.querySelector('#drawer-usuarios-grupos-panel');
                 var archivoPanel = overlay.querySelector('#drawer-usuarios-archivo-panel');
-                var usuariosAgregados = [];
-                var gruposSeleccionados = [];
+
+                /* Al abrir: ningún card pre-seleccionado; todos los paneles ocultos */
+                overlay.querySelectorAll('input[name="tipo-agregar-usuarios"]').forEach(function(r) { r.checked = false; });
+                if (colaboradorPanel) colaboradorPanel.style.display = 'none';
+                if (gruposPanel) gruposPanel.style.display = 'none';
+                if (archivoPanel) archivoPanel.style.display = 'none';
+
+                function actualizarContadorTodaEmpresa(seleccionado) {
+                    var cardEmpresa = overlay.querySelector('.drawer-option-card[data-opcion="toda-empresa"] .drawer-option-card__count');
+                    if (cardEmpresa) {
+                        cardEmpresa.innerHTML = seleccionado
+                            ? '<span class="ubits-body-md-bold">290</span>/<span class="ubits-body-md-bold">290</span> seleccionados'
+                            : '<span class="ubits-body-md-bold">0</span>/<span class="ubits-body-md-bold">290</span> seleccionados';
+                    }
+                }
 
                 overlay.querySelectorAll('input[name="tipo-agregar-usuarios"]').forEach(function(radio) {
                     radio.addEventListener('change', function() {
@@ -389,124 +460,802 @@
                         colaboradorPanel.style.display = opcion === 'por-colaborador' ? 'flex' : 'none';
                         gruposPanel.style.display = opcion === 'por-grupos' ? 'flex' : 'none';
                         archivoPanel.style.display = opcion === 'desde-archivo' ? 'flex' : 'none';
+                        actualizarContadorTodaEmpresa(opcion === 'toda-empresa');
+                        if (opcion === 'por-grupos') updateDrawerCardGruposCount();
+                        if (opcion === 'por-colaborador') updateDrawerCardColabCount();
                     });
                 });
 
-                if (typeof createInput === 'function') {
-                    createInput({
-                        containerId: 'drawer-usuarios-colaborador-search',
-                        type: 'search',
-                        placeholder: 'Buscar por nombre o email...',
-                        showLabel: false
-                    });
-                    createInput({
-                        containerId: 'drawer-usuarios-grupos-search',
-                        type: 'search',
-                        placeholder: 'Buscar grupos...',
-                        showLabel: false
+                /* Tabla de colaboradores en drawer: misma base que seguimiento (TAREAS_PLANES_DB.getEmpleadosEjemplo) */
+                function getUsernameEmpleado(e) {
+                    if (e.username) return e.username;
+                    var palabras = (e.nombre || '').toLowerCase().split(' ').filter(function(p) { return p.length > 0; });
+                    var iniciales = palabras.map(function(p) { return p.charAt(0); }).join('');
+                    return iniciales ? iniciales + '@fiqsha.demo' : 'user@fiqsha.demo';
+                }
+                var empleadosDrawer = (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getEmpleadosEjemplo === 'function') ? TAREAS_PLANES_DB.getEmpleadosEjemplo() : [];
+                var drawerColabTbody = overlay.querySelector('#drawer-colab-tbody');
+                var drawerColabSelectAll = overlay.querySelector('#drawer-colab-select-all');
+                var drawerColabResultsCount = overlay.querySelector('#drawer-colab-results-count');
+                var drawerColabActionBar = overlay.querySelector('#drawer-colab-action-bar');
+                var drawerColabVerSeleccionados = overlay.querySelector('#drawer-colab-ver-seleccionados');
+                var drawerColabSearchToggle = overlay.querySelector('#drawer-colab-search-toggle');
+                var drawerColabSearchContainer = overlay.querySelector('#drawer-colab-search-container');
+                var drawerColabViewOnlySelected = false;
+                var drawerColabSearchQuery = '';
+                var drawerColabTotal = empleadosDrawer.length;
+                var drawerColabFilters = { username: [], nombre: [], correo: [], area: [], lider: [] };
+                var drawerColabSort = { column: null, direction: 'asc' };
+                var drawerGruposSort = { column: null, direction: 'asc' };
+                var drawerColabTheadRow = overlay.querySelector('#drawer-colab-thead-row');
+                var drawerGruposTheadRow = overlay.querySelector('#drawer-grupos-thead-row');
+                var drawerColabFiltrosAplicados = overlay.querySelector('#drawer-colab-filtros-aplicados');
+                var drawerColabFiltrosChipsContainer = overlay.querySelector('#drawer-colab-filtros-chips-container');
+                var drawerColabClearFiltersBtn = overlay.querySelector('#drawer-colab-clear-filters');
+
+                function normalizeDrawerText(t) {
+                    if (!t) return '';
+                    return String(t).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                }
+
+                function getDrawerColabRowText(row, col) {
+                    var td = row.querySelector('td[data-col="' + col + '"]');
+                    if (!td) return '';
+                    var span = td.querySelector('.ubits-body-sm-regular');
+                    return span ? span.textContent.trim() : '';
+                }
+
+                function getDrawerColabTableRows() {
+                    return drawerColabTbody ? Array.from(drawerColabTbody.querySelectorAll('tr')) : [];
+                }
+
+                function getDrawerColabSelectedRows() {
+                    return getDrawerColabTableRows().filter(function(r) {
+                        var cb = r.querySelector('.drawer-colab-row-check');
+                        return cb && cb.checked;
                     });
                 }
 
-                var searchColab = overlay.querySelector('#drawer-usuarios-colaborador-search input');
-                var searchGrupos = overlay.querySelector('#drawer-usuarios-grupos-search input');
-                var resultadosColab = overlay.querySelector('#drawer-usuarios-colaborador-resultados');
-                var resultadosGrupos = overlay.querySelector('#drawer-usuarios-grupos-resultados');
-                var listaColab = overlay.querySelector('#drawer-usuarios-colaborador-lista');
-                var listaGrupos = overlay.querySelector('#drawer-usuarios-grupos-lista');
-                var emptyColab = overlay.querySelector('#drawer-usuarios-colaborador-empty');
-                var emptyGrupos = overlay.querySelector('#drawer-usuarios-grupos-empty');
+                function passesDrawerColabSearch(row) {
+                    if (!drawerColabSearchQuery) return true;
+                    var q = normalizeDrawerText(drawerColabSearchQuery);
+                    var username = normalizeDrawerText(getDrawerColabRowText(row, 'username'));
+                    var nombre = normalizeDrawerText(getDrawerColabRowText(row, 'nombre'));
+                    var correo = normalizeDrawerText(getDrawerColabRowText(row, 'correo'));
+                    var area = normalizeDrawerText(getDrawerColabRowText(row, 'area'));
+                    var lider = normalizeDrawerText(getDrawerColabRowText(row, 'lider'));
+                    return username.indexOf(q) !== -1 || nombre.indexOf(q) !== -1 || correo.indexOf(q) !== -1 || area.indexOf(q) !== -1 || lider.indexOf(q) !== -1;
+                }
 
-                function renderListaColab() {
-                    listaColab.innerHTML = '';
-                    usuariosAgregados.forEach(function(u) {
-                        var li = document.createElement('li');
-                        li.className = 'drawer-usuarios-lista-item';
-                        li.innerHTML = '<span class="ubits-body-sm-regular">' + (u.nombre || '') + '</span>' +
-                            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only js-drawer-usuarios-remove" aria-label="Quitar"><i class="far fa-times"></i></button>';
-                        li.dataset.userId = u.id;
-                        li.querySelector('.js-drawer-usuarios-remove').addEventListener('click', function() {
-                            usuariosAgregados = usuariosAgregados.filter(function(x) { return x.id !== u.id; });
-                            renderListaColab();
+                function passesDrawerColabColumnFilters(row) {
+                    var cols = ['username', 'nombre', 'correo', 'area', 'lider'];
+                    for (var c = 0; c < cols.length; c++) {
+                        var col = cols[c];
+                        if (drawerColabFilters[col].length === 0) continue;
+                        var cellVal = getDrawerColabRowText(row, col);
+                        var normalized = normalizeDrawerText(cellVal);
+                        var match = drawerColabFilters[col].some(function(f) { return normalizeDrawerText(f) === normalized; });
+                        if (!match) return false;
+                    }
+                    return true;
+                }
+
+                function getDrawerColabVisibleRows() {
+                    var base = getDrawerColabTableRows().filter(function(r) {
+                        return passesDrawerColabSearch(r) && passesDrawerColabColumnFilters(r);
+                    });
+                    if (drawerColabViewOnlySelected) base = base.filter(function(r) { var cb = r.querySelector('.drawer-colab-row-check'); return cb && cb.checked; });
+                    var col = drawerColabSort.column;
+                    var dir = drawerColabSort.direction;
+                    if (col) {
+                        base = base.slice().sort(function(a, b) {
+                            var va = getDrawerColabRowText(a, col);
+                            var vb = getDrawerColabRowText(b, col);
+                            var cmp = (va || '').localeCompare(vb || '', 'es');
+                            return dir === 'asc' ? cmp : -cmp;
                         });
-                        listaColab.appendChild(li);
-                    });
-                    if (emptyColab) emptyColab.style.display = usuariosAgregados.length === 0 ? 'block' : 'none';
-                    if (listaColab) listaColab.style.display = usuariosAgregados.length === 0 ? 'none' : 'block';
+                    }
+                    return base;
                 }
 
-                function renderListaGrupos() {
-                    listaGrupos.innerHTML = '';
-                    gruposSeleccionados.forEach(function(g) {
-                        var div = document.createElement('div');
-                        div.className = 'drawer-usuarios-grupo-item';
-                        div.innerHTML = '<span class="ubits-body-sm-regular">' + (g.nombre || '') + ' <span class="ubits-body-xs-regular">(' + (g.integrantes || 0) + ' integrantes)</span></span>' +
-                            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only js-drawer-usuarios-remove" aria-label="Quitar"><i class="far fa-times"></i></button>';
-                        div.dataset.groupId = g.id;
-                        div.querySelector('.js-drawer-usuarios-remove').addEventListener('click', function() {
-                            gruposSeleccionados = gruposSeleccionados.filter(function(x) { return x.id !== g.id; });
-                            renderListaGrupos();
+                function updateDrawerColabResultsCount() {
+                    if (!drawerColabResultsCount) return;
+                    var total = getDrawerColabTableRows().length;
+                    var visible = getDrawerColabVisibleRows().length;
+                    drawerColabResultsCount.textContent = visible + '/' + total;
+                }
+
+                function updateDrawerCardColabCount() {
+                    var card = overlay.querySelector('.drawer-option-card[data-opcion="por-colaborador"] .drawer-option-card__count');
+                    if (!card) return;
+                    var selected = getDrawerColabSelectedRows().length;
+                    card.innerHTML = '<span class="ubits-body-md-bold">' + selected + '</span>/<span class="ubits-body-md-bold">' + drawerColabTotal + '</span> seleccionados';
+                }
+
+                function clearDrawerColabSearch() {
+                    drawerColabSearchQuery = '';
+                    if (drawerColabSearchContainer) { drawerColabSearchContainer.innerHTML = ''; drawerColabSearchContainer.style.display = 'none'; }
+                    if (drawerColabSearchToggle) drawerColabSearchToggle.style.display = 'flex';
+                    applyDrawerColabVisibility();
+                    if (typeof showToast === 'function') showToast('success', 'Búsqueda limpiada');
+                }
+
+                function updateDrawerColabEmptyState() {
+                    var wrapper = overlay.querySelector('#drawer-colab-table-wrapper');
+                    var emptyEl = overlay.querySelector('#drawer-colab-empty-state');
+                    var listWrapper = overlay.querySelector('.drawer-colab-list-wrapper');
+                    if (!wrapper || !emptyEl || !listWrapper) return;
+                    var visibleCount = getDrawerColabVisibleRows().length;
+                    if (visibleCount === 0) {
+                        listWrapper.classList.add('is-empty');
+                        emptyEl.innerHTML = '';
+                        if (typeof loadEmptyState === 'function') {
+                            loadEmptyState('drawer-colab-empty-state', {
+                                icon: 'fa-search',
+                                iconSize: 'lg',
+                                title: 'No se encontraron resultados',
+                                description: 'Intenta ajustar tu búsqueda para encontrar lo que buscas.',
+                                buttons: { secondary: { text: 'Limpiar búsqueda', icon: 'fa-times', onClick: function() {} } }
+                            });
+                            emptyEl.classList.add('lms-table-empty-state');
+                            setTimeout(function() {
+                                var btn = emptyEl.querySelector('.ubits-button--secondary');
+                                if (btn) btn.onclick = function(e) { e.preventDefault(); e.stopPropagation(); clearDrawerColabSearch(); };
+                            }, 50);
+                        }
+                    } else {
+                        listWrapper.classList.remove('is-empty');
+                        emptyEl.innerHTML = '';
+                    }
+                }
+
+                function applyDrawerColabVisibility() {
+                    var visible = getDrawerColabVisibleRows();
+                    var visibleSet = new Set(visible);
+                    getDrawerColabTableRows().forEach(function(r) {
+                        r.style.display = visibleSet.has(r) ? '' : 'none';
+                    });
+                    visible.forEach(function(r) { drawerColabTbody.appendChild(r); });
+                    updateDrawerColabResultsCount();
+                    updateDrawerColabSelectAll();
+                    updateDrawerColabEmptyState();
+                    updateDrawerColabVerSeleccionadosBtn();
+                    renderDrawerColabFiltrosAplicados();
+                }
+
+                function renderDrawerColabThead() {
+                    if (!drawerColabTheadRow) return;
+                    var cols = [
+                        { id: 'username', label: 'Username' },
+                        { id: 'nombre', label: 'Nombre' },
+                        { id: 'correo', label: 'Correo electrónico' },
+                        { id: 'area', label: 'Área' },
+                        { id: 'lider', label: 'Líder' }
+                    ];
+                    var html = '<th class="ubits-table__th--checkbox" data-col="checkbox" data-tooltip="Seleccionar todo" data-tooltip-delay="1000"><label class="ubits-checkbox ubits-checkbox--sm" style="display:inline-flex;"><input type="checkbox" class="ubits-checkbox__input" id="drawer-colab-select-all" aria-label="Seleccionar todo"><span class="ubits-checkbox__box"><i class="fas fa-check"></i><i class="fas fa-minus"></i></span><span class="ubits-checkbox__label sr-only" aria-hidden="true">&nbsp;</span></label></th>';
+                    cols.forEach(function(c) {
+                        var activeClass = (drawerColabFilters[c.id] && drawerColabFilters[c.id].length > 0) ? ' drawer-filter-btn--active' : '';
+                        html += '<th class="drawer-th-filterable" data-col="' + c.id + '">' + c.label + ' <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only drawer-filter-btn drawer-colab-filter-btn' + activeClass + '" data-filter="' + c.id + '" aria-label="Filtrar por ' + c.label + '" data-tooltip="Filtrar por ' + c.label + '" data-tooltip-delay="1000"><i class="far fa-filter"></i></button></th>';
+                    });
+                    drawerColabTheadRow.innerHTML = html;
+                }
+
+                function renderDrawerGruposThead() {
+                    if (!drawerGruposTheadRow) return;
+                    var cols = [
+                        { id: 'nombre', label: 'Nombre del grupo' },
+                        { id: 'descripcion', label: 'Descripción' },
+                        { id: 'integrantes', label: 'Integrantes' }
+                    ];
+                    var html = '<th class="ubits-table__th--checkbox" data-col="checkbox" data-tooltip="Seleccionar todo" data-tooltip-delay="1000"><label class="ubits-checkbox ubits-checkbox--sm" style="display:inline-flex;"><input type="checkbox" class="ubits-checkbox__input" id="drawer-grupos-select-all" aria-label="Seleccionar todo"><span class="ubits-checkbox__box"><i class="fas fa-check"></i><i class="fas fa-minus"></i></span><span class="ubits-checkbox__label sr-only" aria-hidden="true">&nbsp;</span></label></th>';
+                    cols.forEach(function(c) {
+                        html += '<th class="drawer-th-sortable" data-col="' + c.id + '">' + c.label + ' <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only drawer-sort-btn drawer-grupos-sort-btn" data-sort="' + c.id + '" aria-label="Ordenar por ' + c.label + '" data-tooltip="Ordenar por ' + c.label + '" data-tooltip-delay="1000"><i class="far fa-arrow-up-arrow-down"></i></button></th>';
+                    });
+                    drawerGruposTheadRow.innerHTML = html;
+                }
+
+                renderDrawerColabThead();
+                renderDrawerGruposThead();
+                drawerColabSelectAll = overlay.querySelector('#drawer-colab-select-all');
+                drawerGruposSelectAll = overlay.querySelector('#drawer-grupos-select-all');
+
+                function renderDrawerColabFiltrosAplicados() {
+                    if (!drawerColabFiltrosChipsContainer || !drawerColabFiltrosAplicados) return;
+                    var chips = [];
+                    var labels = { username: 'Username', nombre: 'Nombre', correo: 'Correo electrónico', area: 'Área', lider: 'Líder' };
+                    if (drawerColabSearchQuery && drawerColabSearchQuery.trim()) {
+                        chips.push({ type: 'search', label: 'Búsqueda', value: drawerColabSearchQuery, remove: function() {
+                            drawerColabSearchQuery = '';
+                            if (drawerColabSearchContainer) { drawerColabSearchContainer.innerHTML = ''; drawerColabSearchContainer.style.display = 'none'; }
+                            if (drawerColabSearchToggle) drawerColabSearchToggle.style.display = 'flex';
+                            applyDrawerColabVisibility();
+                            renderDrawerColabFiltrosAplicados();
+                        }});
+                    }
+                    ['username', 'nombre', 'correo', 'area', 'lider'].forEach(function(col) {
+                        (drawerColabFilters[col] || []).forEach(function(val, idx) {
+                            chips.push({ type: col, label: labels[col], value: val, remove: function() {
+                                drawerColabFilters[col] = drawerColabFilters[col].filter(function(_, i) { return i !== idx; });
+                                applyDrawerColabVisibility();
+                                renderDrawerColabThead();
+                                renderDrawerColabFiltrosAplicados();
+                            }});
                         });
-                        listaGrupos.appendChild(div);
                     });
-                    if (emptyGrupos) emptyGrupos.style.display = gruposSeleccionados.length === 0 ? 'block' : 'none';
-                    if (listaGrupos) listaGrupos.style.display = gruposSeleccionados.length === 0 ? 'none' : 'flex';
-                }
-
-                function mostrarResultadosColab(q) {
-                    var filtrados = !q ? [] : colabMock.filter(function(u) {
-                        return (u.nombre && u.nombre.toLowerCase().includes(q)) ||
-                            (u.email && u.email.toLowerCase().includes(q));
-                    }).filter(function(u) { return !usuariosAgregados.some(function(a) { return a.id === u.id; }); });
-                    resultadosColab.innerHTML = '';
-                    resultadosColab.style.display = filtrados.length === 0 ? 'none' : 'block';
-                    filtrados.forEach(function(u) {
-                        var btn = document.createElement('button');
-                        btn.type = 'button';
-                        btn.className = 'drawer-usuarios-resultado-item';
-                        btn.innerHTML = '<span class="ubits-body-sm-regular">' + (u.nombre || '') + '</span>' +
-                            '<span class="ubits-body-xs-regular drawer-usuarios-resultado-email">' + (u.email || '') + '</span>';
-                        btn.addEventListener('click', function() {
-                            usuariosAgregados.push(u);
-                            renderListaColab();
-                            if (searchColab) { searchColab.value = ''; searchColab.dispatchEvent(new Event('input')); }
-                            mostrarResultadosColab('');
+                    if (chips.length > 0) {
+                        drawerColabFiltrosAplicados.style.display = 'flex';
+                        drawerColabFiltrosChipsContainer.innerHTML = chips.map(function(chip, index) {
+                            var labelVal = (chip.label + ': ' + chip.value).replace(/"/g, '&quot;');
+                            return '<span class="ubits-chip ubits-chip--xs ubits-chip--close drawer-filtro-chip" data-chip-index="' + index + '" data-tooltip="' + labelVal + '" data-tooltip-position="top">' +
+                                '<span class="ubits-chip__text">' + (chip.label + ': ' + chip.value).replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</span>' +
+                                '<button type="button" class="ubits-chip__close" data-chip-index="' + index + '" aria-label="Quitar filtro"><i class="far fa-times"></i></button></span>';
+                        }).join('');
+                        drawerColabFiltrosChipsContainer.querySelectorAll('.ubits-chip__close').forEach(function(btn) {
+                            btn.addEventListener('click', function() {
+                                var idx = parseInt(this.getAttribute('data-chip-index'), 10);
+                                if (!isNaN(idx) && chips[idx] && typeof chips[idx].remove === 'function') {
+                                    chips[idx].remove();
+                                }
+                            });
                         });
-                        resultadosColab.appendChild(btn);
-                    });
+                        if (typeof initTooltip === 'function') initTooltip('#drawer-colab-filtros-chips-container .ubits-chip[data-tooltip]');
+                    } else {
+                        drawerColabFiltrosAplicados.style.display = 'none';
+                        drawerColabFiltrosChipsContainer.innerHTML = '';
+                    }
                 }
 
-                function mostrarResultadosGrupos(q) {
-                    var filtrados = gruposMock.filter(function(g) {
-                        if (gruposSeleccionados.some(function(a) { return a.id === g.id; })) return false;
-                        if (!q) return true;
-                        return (g.nombre && g.nombre.toLowerCase().includes(q)) ||
-                            (g.descripcion && g.descripcion.toLowerCase().includes(q));
+                function updateDrawerColabSelectAll() {
+                    if (!drawerColabSelectAll) return;
+                    var visible = getDrawerColabVisibleRows();
+                    var checkedCount = visible.filter(function(r) { var cb = r.querySelector('.drawer-colab-row-check'); return cb && cb.checked; }).length;
+                    drawerColabSelectAll.checked = visible.length > 0 && checkedCount === visible.length;
+                    drawerColabSelectAll.indeterminate = checkedCount > 0 && checkedCount < visible.length;
+                    var th = drawerColabSelectAll.closest('th');
+                    if (th) th.setAttribute('data-tooltip', checkedCount > 0 ? 'Deseleccionar todo' : 'Seleccionar todo');
+                }
+
+                function renderDrawerColabTable() {
+                    if (!drawerColabTbody) return;
+                    drawerColabTbody.innerHTML = '';
+                    empleadosDrawer.forEach(function(e, idx) {
+                        var id = e.id || e.idColaborador || ('E' + (idx + 1));
+                        var username = getUsernameEmpleado(e);
+                        var nombre = (e.nombre || '').trim();
+                        var correo = username;
+                        var area = (e.area || '').trim();
+                        var lider = (e.jefe || '').trim();
+                        var tr = document.createElement('tr');
+                        tr.innerHTML = '<td class="ubits-table__td--checkbox" data-col="checkbox" data-tooltip="Seleccionar" data-tooltip-delay="1000"><label class="ubits-checkbox ubits-checkbox--sm" style="display:inline-flex;"><input type="checkbox" class="ubits-checkbox__input drawer-colab-row-check" data-id="' + id + '"><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label sr-only" aria-hidden="true">&nbsp;</span></label></td>' +
+                            '<td data-col="username"><span class="ubits-body-sm-regular">' + username + '</span></td>' +
+                            '<td data-col="nombre"><span class="ubits-body-sm-regular">' + nombre + '</span></td>' +
+                            '<td data-col="correo"><span class="ubits-body-sm-regular">' + correo + '</span></td>' +
+                            '<td data-col="area"><span class="ubits-body-sm-regular">' + area + '</span></td>' +
+                            '<td data-col="lider"><span class="ubits-body-sm-regular">' + lider + '</span></td>';
+                        drawerColabTbody.appendChild(tr);
+                        var rowCb = tr.querySelector('.drawer-colab-row-check');
+                        if (rowCb) {
+                            rowCb.addEventListener('change', function() {
+                                updateDrawerColabSelectAll();
+                                updateDrawerColabResultsCount();
+                                applyDrawerColabVisibility();
+                                updateDrawerCardColabCount();
+                                if (drawerColabActionBar) drawerColabActionBar.classList.toggle('is-visible', getDrawerColabSelectedRows().length > 0);
+                            });
+                        }
                     });
-                    resultadosGrupos.innerHTML = '';
-                    resultadosGrupos.style.display = filtrados.length === 0 ? 'none' : 'block';
-                    filtrados.forEach(function(g) {
-                        var btn = document.createElement('button');
-                        btn.type = 'button';
-                        btn.className = 'drawer-usuarios-resultado-item';
-                        btn.innerHTML = '<span class="ubits-body-sm-regular">' + (g.nombre || '') + '</span>' +
-                            '<span class="ubits-body-xs-regular drawer-usuarios-resultado-desc">' + (g.integrantes || 0) + ' integrantes</span>';
-                        btn.addEventListener('click', function() {
-                            gruposSeleccionados.push(g);
-                            renderListaGrupos();
-                            if (searchGrupos) { searchGrupos.value = ''; searchGrupos.dispatchEvent(new Event('input')); }
-                            mostrarResultadosGrupos('');
+                    updateDrawerColabResultsCount();
+                    updateDrawerColabSelectAll();
+                    updateDrawerCardColabCount();
+                    if (drawerColabActionBar) drawerColabActionBar.classList.toggle('is-visible', getDrawerColabSelectedRows().length > 0);
+                }
+
+                if (drawerColabSelectAll) {
+                    drawerColabSelectAll.addEventListener('change', function() {
+                        var visible = getDrawerColabVisibleRows();
+                        var checkedCount = visible.filter(function(r) {
+                            var cb = r.querySelector('.drawer-colab-row-check');
+                            return cb && cb.checked;
+                        }).length;
+                        // Como en seguimiento: si había selección (parcial o total) y el header quedó checked, el usuario quiso deseleccionar
+                        if (this.checked && checkedCount > 0 && checkedCount < visible.length) {
+                            this.checked = false;
+                            this.indeterminate = false;
+                            visible.forEach(function(r) {
+                                var cb = r.querySelector('.drawer-colab-row-check');
+                                if (cb) cb.checked = false;
+                            });
+                        } else if (this.checked) {
+                            visible.forEach(function(r) {
+                                var cb = r.querySelector('.drawer-colab-row-check');
+                                if (cb) cb.checked = true;
+                            });
+                        } else {
+                            visible.forEach(function(r) {
+                                var cb = r.querySelector('.drawer-colab-row-check');
+                                if (cb) cb.checked = false;
+                            });
+                        }
+                        updateDrawerColabResultsCount();
+                        updateDrawerColabSelectAll();
+                        applyDrawerColabVisibility();
+                        updateDrawerCardColabCount();
+                        if (drawerColabActionBar) drawerColabActionBar.classList.toggle('is-visible', getDrawerColabSelectedRows().length > 0);
+                    });
+                }
+                function updateDrawerColabVerSeleccionadosBtn() {
+                    if (!drawerColabVerSeleccionados) return;
+                    var n = getDrawerColabSelectedRows().length;
+                    var icon = drawerColabVerSeleccionados.querySelector('i');
+                    var span = drawerColabVerSeleccionados.querySelector('span');
+                    if (n === 0) {
+                        drawerColabViewOnlySelected = false;
+                        if (icon) icon.className = 'far fa-eye';
+                        if (span) span.textContent = 'Ver seleccionados';
+                        drawerColabVerSeleccionados.classList.remove('active');
+                    } else {
+                        if (drawerColabViewOnlySelected) {
+                            if (icon) icon.className = 'far fa-eye-slash';
+                            if (span) span.textContent = 'Dejar de ver seleccionados (' + n + ')';
+                            drawerColabVerSeleccionados.classList.add('active');
+                        } else {
+                            if (icon) icon.className = 'far fa-eye';
+                            if (span) span.textContent = 'Ver seleccionados';
+                            drawerColabVerSeleccionados.classList.remove('active');
+                        }
+                    }
+                }
+                if (drawerColabVerSeleccionados) {
+                    drawerColabVerSeleccionados.addEventListener('click', function() {
+                        if (getDrawerColabSelectedRows().length === 0) return;
+                        drawerColabViewOnlySelected = !drawerColabViewOnlySelected;
+                        applyDrawerColabVisibility();
+                        updateDrawerColabVerSeleccionadosBtn();
+                    });
+                }
+                if (drawerColabClearFiltersBtn) {
+                    drawerColabClearFiltersBtn.addEventListener('click', function() {
+                        drawerColabSearchQuery = '';
+                        if (drawerColabSearchContainer) { drawerColabSearchContainer.innerHTML = ''; drawerColabSearchContainer.style.display = 'none'; }
+                        if (drawerColabSearchToggle) drawerColabSearchToggle.style.display = 'flex';
+                        drawerColabFilters = { username: [], nombre: [], correo: [], area: [], lider: [] };
+                        applyDrawerColabVisibility();
+                        renderDrawerColabThead();
+                        renderDrawerColabFiltrosAplicados();
+                    });
+                }
+                var drawerBody = overlay.querySelector('.ubits-drawer-body');
+                if (drawerBody) {
+                    drawerBody.addEventListener('click', function(e) {
+                    var filterBtn = e.target.closest('.drawer-colab-filter-btn');
+                    if (filterBtn && typeof window.getDropdownMenuHtml === 'function' && typeof window.openDropdownMenu === 'function') {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        var col = filterBtn.getAttribute('data-filter');
+                        var currentFilterValues = drawerColabFilters[col] || [];
+                        var allOptions = [];
+                        getDrawerColabTableRows().forEach(function(r) {
+                            var v = getDrawerColabRowText(r, col);
+                            if (v && allOptions.indexOf(v) === -1) allOptions.push(v);
                         });
-                        resultadosGrupos.appendChild(btn);
+                        allOptions.sort(function(a, b) { return (a || '').localeCompare(b || '', 'es'); });
+                        var options = allOptions.map(function(v) {
+                            return { text: v, value: v, checkbox: true, selected: currentFilterValues.indexOf(v) >= 0 };
+                        });
+                        var overlayId = 'drawer-colab-filter-overlay';
+                        var existing = document.getElementById(overlayId);
+                        if (existing) existing.remove();
+                        var config = {
+                            overlayId: overlayId,
+                            hasAutocomplete: true,
+                            autocompletePlaceholder: 'Filtrar por ' + col + '...',
+                            autocompleteContainerId: overlayId + '-autocomplete',
+                            options: options,
+                            footerSecondaryLabel: 'Cancelar',
+                            footerPrimaryLabel: 'Aplicar',
+                            footerSecondaryId: overlayId + '-cancel',
+                            footerPrimaryId: overlayId + '-apply'
+                        };
+                        var html = window.getDropdownMenuHtml(config);
+                        document.body.insertAdjacentHTML('beforeend', html);
+                        var overlayEl = document.getElementById(overlayId);
+                        if (overlayEl) {
+                            var optionsContainer = overlayEl.querySelector('.ubits-dropdown-menu__options');
+                            var optionButtons = optionsContainer ? optionsContainer.querySelectorAll('.ubits-dropdown-menu__option') : [];
+                            var FILTER_VISIBLE_MAX = 5;
+                            function filterVisibleOptions(searchVal) {
+                                var q = normalizeDrawerText(searchVal || '');
+                                var shown = 0;
+                                optionButtons.forEach(function(opt) {
+                                    var labelEl = opt.querySelector('.ubits-checkbox__label');
+                                    var text = labelEl ? labelEl.textContent : '';
+                                    var match = !q || normalizeDrawerText(text).indexOf(q) >= 0;
+                                    if (match && shown < FILTER_VISIBLE_MAX) {
+                                        opt.style.display = '';
+                                        shown++;
+                                    } else {
+                                        opt.style.display = 'none';
+                                    }
+                                });
+                            }
+                            var inputEl = document.getElementById(overlayId + '-autocomplete-input');
+                            var clearIcon = document.getElementById(overlayId + '-autocomplete-clear');
+                            if (inputEl) {
+                                inputEl.value = '';
+                                inputEl.addEventListener('input', function() {
+                                    if (clearIcon) clearIcon.style.display = this.value.length > 0 ? 'block' : 'none';
+                                    filterVisibleOptions(this.value);
+                                });
+                                inputEl.addEventListener('focus', function() {
+                                    filterVisibleOptions(this.value);
+                                });
+                            }
+                            if (clearIcon) {
+                                clearIcon.style.display = 'none';
+                                clearIcon.addEventListener('click', function(ev) {
+                                    ev.preventDefault();
+                                    ev.stopPropagation();
+                                    if (inputEl) { inputEl.value = ''; inputEl.focus(); }
+                                    filterVisibleOptions('');
+                                });
+                            }
+                            filterVisibleOptions('');
+                            var applyBtn = document.getElementById(overlayId + '-apply');
+                            if (applyBtn) applyBtn.addEventListener('click', function() {
+                                var selected = [];
+                                overlayEl.querySelectorAll('.ubits-dropdown-menu__option-left input[type="checkbox"]:checked').forEach(function(cb) {
+                                    if (cb.dataset.value) selected.push(cb.dataset.value);
+                                });
+                                drawerColabFilters[col] = selected;
+                                applyDrawerColabVisibility();
+                                renderDrawerColabThead();
+                                renderDrawerColabFiltrosAplicados();
+                                if (typeof window.closeDropdownMenu === 'function') window.closeDropdownMenu(overlayId);
+                            });
+                            var cancelBtn = document.getElementById(overlayId + '-cancel');
+                            if (cancelBtn) cancelBtn.addEventListener('click', function() {
+                                if (typeof window.closeDropdownMenu === 'function') window.closeDropdownMenu(overlayId);
+                            });
+                            overlayEl.addEventListener('click', function(ev) {
+                                if (ev.target === overlayEl && typeof window.closeDropdownMenu === 'function') window.closeDropdownMenu(overlayId);
+                            });
+                        }
+                        window.openDropdownMenu(overlayId, filterBtn);
+                    }
+                    var gruposSortBtn = e.target.closest('.drawer-grupos-sort-btn');
+                    if (gruposSortBtn && typeof window.getDropdownMenuHtml === 'function' && typeof window.openDropdownMenu === 'function' && typeof window.closeDropdownMenu === 'function') {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        var col = gruposSortBtn.getAttribute('data-sort');
+                        var currentDir = (drawerGruposSort.column === col) ? drawerGruposSort.direction : null;
+                        var isNumber = col === 'integrantes';
+                        var descText = isNumber ? 'Mayor a menor' : 'Z a A';
+                        var ascText = isNumber ? 'Menor a mayor' : 'A a Z';
+                        var options = [
+                            { text: descText, value: 'desc', leftIcon: 'arrow-up', selected: currentDir === 'desc' },
+                            { text: ascText, value: 'asc', leftIcon: 'arrow-down', selected: currentDir === 'asc' }
+                        ];
+                        var sortOverlayId = 'drawer-grupos-sort-overlay';
+                        var existing = document.getElementById(sortOverlayId);
+                        if (existing) existing.remove();
+                        var sortHtml = window.getDropdownMenuHtml({ overlayId: sortOverlayId, options: options });
+                        document.body.insertAdjacentHTML('beforeend', sortHtml);
+                        var sortOverlayEl = document.getElementById(sortOverlayId);
+                        if (sortOverlayEl) {
+                            sortOverlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function(opt) {
+                                opt.addEventListener('click', function() {
+                                    drawerGruposSort.column = col;
+                                    drawerGruposSort.direction = this.getAttribute('data-value');
+                                    applyDrawerGruposVisibility();
+                                    if (typeof window.closeDropdownMenu === 'function') window.closeDropdownMenu(sortOverlayId);
+                                });
+                            });
+                            sortOverlayEl.addEventListener('click', function(ev) {
+                                if (ev.target === sortOverlayEl && typeof window.closeDropdownMenu === 'function') window.closeDropdownMenu(sortOverlayId);
+                            });
+                        }
+                        window.openDropdownMenu(sortOverlayId, gruposSortBtn);
+                    }
+                    });
+                }
+                if (drawerColabSearchToggle && drawerColabSearchContainer && typeof createInput === 'function') {
+                    drawerColabSearchToggle.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        if (drawerColabSearchContainer.style.display === 'none' || !drawerColabSearchContainer.innerHTML.trim()) {
+                            drawerColabSearchToggle.style.display = 'none';
+                            drawerColabSearchContainer.style.display = 'flex';
+                            createInput({ containerId: 'drawer-colab-search-container', type: 'search', placeholder: 'Buscar colaboradores...', showLabel: false });
+                            setTimeout(function() {
+                                var input = drawerColabSearchContainer.querySelector('input');
+                                if (input) {
+                                    input.focus();
+                                    input.addEventListener('input', function() {
+                                        drawerColabSearchQuery = (input.value || '').trim();
+                                        applyDrawerColabVisibility();
+                                    });
+                                }
+                            }, 100);
+                        }
+                    });
+                }
+                renderDrawerColabTable();
+                applyDrawerColabVisibility();
+                renderDrawerColabFiltrosAplicados();
+                updateDrawerColabEmptyState();
+                if (typeof initTooltip === 'function') {
+                    initTooltip('#drawer-colab-table thead [data-tooltip]');
+                    initTooltip('#drawer-colab-table tbody .ubits-table__td--checkbox[data-tooltip]');
+                    initTooltip('#drawer-colab-search-toggle');
+                }
+
+                /* Tabla de grupos en drawer: igual que grupos.html (buscador + contador resultados/total + contador card seleccionados/total) */
+                var drawerGruposTbody = overlay.querySelector('#drawer-grupos-tbody');
+                var drawerGruposSelectAll = overlay.querySelector('#drawer-grupos-select-all');
+                var drawerGruposResultsCount = overlay.querySelector('#drawer-grupos-results-count');
+                var drawerGruposActionBar = overlay.querySelector('#drawer-grupos-action-bar');
+                var drawerGruposVerSeleccionados = overlay.querySelector('#drawer-grupos-ver-seleccionados');
+                var drawerGruposSearchToggle = overlay.querySelector('#drawer-grupos-search-toggle');
+                var drawerGruposSearchContainer = overlay.querySelector('#drawer-grupos-search-container');
+                var drawerGruposViewOnlySelected = false;
+                var drawerGruposSearchQuery = '';
+                var drawerGruposTotal = gruposMock.length;
+
+                function getDrawerGrupoRowText(row, col) {
+                    var td = row.querySelector('td[data-col="' + col + '"]');
+                    if (!td) return '';
+                    var span = td.querySelector('.ubits-body-sm-regular');
+                    return span ? span.textContent.trim() : '';
+                }
+
+                function getDrawerGruposTableRows() {
+                    return drawerGruposTbody ? Array.from(drawerGruposTbody.querySelectorAll('tr')) : [];
+                }
+
+                function getDrawerGruposSelectedRows() {
+                    return getDrawerGruposTableRows().filter(function(r) {
+                        var cb = r.querySelector('.drawer-grupo-row-check');
+                        return cb && cb.checked;
                     });
                 }
 
-                if (searchColab) {
-                    searchColab.addEventListener('input', function() { mostrarResultadosColab(this.value.trim().toLowerCase()); });
-                    searchColab.addEventListener('focus', function() { if (this.value.trim()) mostrarResultadosColab(this.value.trim().toLowerCase()); });
+                function passesDrawerGruposSearch(row) {
+                    if (!drawerGruposSearchQuery) return true;
+                    var q = drawerGruposSearchQuery.toLowerCase();
+                    var nombre = getDrawerGrupoRowText(row, 'nombre').toLowerCase();
+                    var desc = getDrawerGrupoRowText(row, 'descripcion').toLowerCase();
+                    return nombre.indexOf(q) !== -1 || desc.indexOf(q) !== -1;
                 }
-                if (searchGrupos) {
-                    searchGrupos.addEventListener('input', function() { mostrarResultadosGrupos(this.value.trim().toLowerCase()); });
-                    searchGrupos.addEventListener('focus', function() { if (this.value.trim()) mostrarResultadosGrupos(this.value.trim().toLowerCase()); else mostrarResultadosGrupos(''); });
+
+                function getDrawerGruposRowText(row, col) {
+                    var td = row.querySelector('td[data-col="' + col + '"]');
+                    if (!td) return '';
+                    var span = td.querySelector('.ubits-body-sm-regular');
+                    return span ? span.textContent.trim() : '';
+                }
+
+                function getDrawerGruposVisibleRows() {
+                    var base = getDrawerGruposTableRows().filter(passesDrawerGruposSearch);
+                    if (drawerGruposViewOnlySelected) base = base.filter(function(r) { var cb = r.querySelector('.drawer-grupo-row-check'); return cb && cb.checked; });
+                    var col = drawerGruposSort.column;
+                    var dir = drawerGruposSort.direction;
+                    if (col) {
+                        base = base.slice().sort(function(a, b) {
+                            var va = getDrawerGruposRowText(a, col);
+                            var vb = getDrawerGruposRowText(b, col);
+                            if (col === 'integrantes') {
+                                var na = parseInt(va, 10) || 0;
+                                var nb = parseInt(vb, 10) || 0;
+                                return dir === 'asc' ? na - nb : nb - na;
+                            }
+                            var cmp = (va || '').localeCompare(vb || '', 'es');
+                            return dir === 'asc' ? cmp : -cmp;
+                        });
+                    }
+                    return base;
+                }
+
+                function updateDrawerGruposResultsCount() {
+                    if (!drawerGruposResultsCount) return;
+                    var total = getDrawerGruposTableRows().length;
+                    var visible = getDrawerGruposVisibleRows().length;
+                    drawerGruposResultsCount.textContent = visible + '/' + total;
+                }
+
+                function updateDrawerCardGruposCount() {
+                    var card = overlay.querySelector('.drawer-option-card[data-opcion="por-grupos"] .drawer-option-card__count');
+                    if (!card) return;
+                    var selected = getDrawerGruposSelectedRows().length;
+                    card.innerHTML = '<span class="ubits-body-md-bold">' + selected + '</span>/<span class="ubits-body-md-bold">' + drawerGruposTotal + '</span> seleccionados';
+                }
+
+                function clearDrawerGruposSearch() {
+                    drawerGruposSearchQuery = '';
+                    if (drawerGruposSearchContainer) {
+                        drawerGruposSearchContainer.innerHTML = '';
+                        drawerGruposSearchContainer.style.display = 'none';
+                    }
+                    if (drawerGruposSearchToggle) drawerGruposSearchToggle.style.display = 'flex';
+                    applyDrawerGruposVisibility();
+                    if (typeof showToast === 'function') showToast('success', 'Búsqueda limpiada');
+                }
+
+                function updateDrawerGruposEmptyState() {
+                    var wrapper = overlay.querySelector('#drawer-grupos-table-wrapper');
+                    var emptyEl = overlay.querySelector('#drawer-grupos-empty-state');
+                    var listWrapper = overlay.querySelector('.drawer-grupos-list-wrapper');
+                    if (!wrapper || !emptyEl || !listWrapper) return;
+                    var visibleCount = getDrawerGruposVisibleRows().length;
+                    if (visibleCount === 0) {
+                        listWrapper.classList.add('is-empty');
+                        emptyEl.innerHTML = '';
+                        if (typeof loadEmptyState === 'function') {
+                            loadEmptyState('drawer-grupos-empty-state', {
+                                icon: 'fa-search',
+                                iconSize: 'lg',
+                                title: 'No se encontraron resultados',
+                                description: 'Intenta ajustar tu búsqueda para encontrar lo que buscas.',
+                                buttons: { secondary: { text: 'Limpiar búsqueda', icon: 'fa-times', onClick: function() {} } }
+                            });
+                            emptyEl.classList.add('lms-table-empty-state');
+                            setTimeout(function() {
+                                var btn = emptyEl.querySelector('.ubits-button--secondary');
+                                if (btn) btn.onclick = function(e) { e.preventDefault(); e.stopPropagation(); clearDrawerGruposSearch(); };
+                            }, 50);
+                        }
+                    } else {
+                        listWrapper.classList.remove('is-empty');
+                        emptyEl.innerHTML = '';
+                    }
+                }
+
+                function applyDrawerGruposVisibility() {
+                    var visible = getDrawerGruposVisibleRows();
+                    var visibleSet = new Set(visible);
+                    getDrawerGruposTableRows().forEach(function(r) {
+                        r.style.display = visibleSet.has(r) ? '' : 'none';
+                    });
+                    visible.forEach(function(r) { drawerGruposTbody.appendChild(r); });
+                    updateDrawerGruposResultsCount();
+                    updateDrawerGruposSelectAll();
+                    updateDrawerGruposEmptyState();
+                    updateDrawerGruposVerSeleccionadosBtn();
+                }
+
+                function updateDrawerGruposSelectAll() {
+                    if (!drawerGruposSelectAll) return;
+                    var visible = getDrawerGruposVisibleRows();
+                    var checkedCount = visible.filter(function(r) { var cb = r.querySelector('.drawer-grupo-row-check'); return cb && cb.checked; }).length;
+                    drawerGruposSelectAll.checked = visible.length > 0 && checkedCount === visible.length;
+                    drawerGruposSelectAll.indeterminate = checkedCount > 0 && checkedCount < visible.length;
+                    var th = drawerGruposSelectAll.closest('th');
+                    if (th) th.setAttribute('data-tooltip', checkedCount > 0 ? 'Deseleccionar todo' : 'Seleccionar todo');
+                }
+
+                function renderDrawerGruposTable() {
+                    if (!drawerGruposTbody) return;
+                    drawerGruposTbody.innerHTML = '';
+                    gruposMock.forEach(function(g, idx) {
+                        var tr = document.createElement('tr');
+                        var id = g.id || ('g' + (idx + 1));
+                        tr.innerHTML = '<td class="ubits-table__td--checkbox" data-col="checkbox" data-tooltip="Seleccionar" data-tooltip-delay="1000"><label class="ubits-checkbox ubits-checkbox--sm" style="display:inline-flex;"><input type="checkbox" class="ubits-checkbox__input drawer-grupo-row-check" data-id="' + id + '"><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label sr-only" aria-hidden="true">&nbsp;</span></label></td>' +
+                            '<td data-col="nombre"><span class="ubits-body-sm-regular">' + (g.nombre || '') + '</span></td>' +
+                            '<td data-col="descripcion"><span class="ubits-body-sm-regular">' + (g.descripcion || '') + '</span></td>' +
+                            '<td data-col="integrantes"><span class="ubits-body-sm-regular">' + (g.integrantes != null ? g.integrantes : '') + '</span></td>';
+                        drawerGruposTbody.appendChild(tr);
+                        var rowCb = tr.querySelector('.drawer-grupo-row-check');
+                        if (rowCb) {
+                            rowCb.addEventListener('change', function() {
+                                updateDrawerGruposSelectAll();
+                                updateDrawerGruposResultsCount();
+                                applyDrawerGruposVisibility();
+                                updateDrawerCardGruposCount();
+                                if (drawerGruposActionBar) drawerGruposActionBar.classList.toggle('is-visible', getDrawerGruposSelectedRows().length > 0);
+                            });
+                        }
+                    });
+                    updateDrawerGruposResultsCount();
+                    updateDrawerGruposSelectAll();
+                    updateDrawerCardGruposCount();
+                    if (drawerGruposActionBar) drawerGruposActionBar.classList.toggle('is-visible', getDrawerGruposSelectedRows().length > 0);
+                    applyDrawerGruposVisibility();
+                }
+
+                if (drawerGruposSelectAll) {
+                    drawerGruposSelectAll.addEventListener('change', function() {
+                        var visible = getDrawerGruposVisibleRows();
+                        var checkedCount = visible.filter(function(r) {
+                            var cb = r.querySelector('.drawer-grupo-row-check');
+                            return cb && cb.checked;
+                        }).length;
+                        // Como en seguimiento: si había selección (parcial o total) y el header quedó checked, el usuario quiso deseleccionar
+                        if (this.checked && checkedCount > 0 && checkedCount < visible.length) {
+                            this.checked = false;
+                            this.indeterminate = false;
+                            visible.forEach(function(r) {
+                                var cb = r.querySelector('.drawer-grupo-row-check');
+                                if (cb) cb.checked = false;
+                            });
+                        } else if (this.checked) {
+                            visible.forEach(function(r) {
+                                var cb = r.querySelector('.drawer-grupo-row-check');
+                                if (cb) cb.checked = true;
+                            });
+                        } else {
+                            visible.forEach(function(r) {
+                                var cb = r.querySelector('.drawer-grupo-row-check');
+                                if (cb) cb.checked = false;
+                            });
+                        }
+                        updateDrawerGruposResultsCount();
+                        updateDrawerGruposSelectAll();
+                        applyDrawerGruposVisibility();
+                        updateDrawerCardGruposCount();
+                        if (drawerGruposActionBar) drawerGruposActionBar.classList.toggle('is-visible', getDrawerGruposSelectedRows().length > 0);
+                    });
+                }
+                function updateDrawerGruposVerSeleccionadosBtn() {
+                    if (!drawerGruposVerSeleccionados) return;
+                    var n = getDrawerGruposSelectedRows().length;
+                    var icon = drawerGruposVerSeleccionados.querySelector('i');
+                    var span = drawerGruposVerSeleccionados.querySelector('span');
+                    if (n === 0) {
+                        drawerGruposViewOnlySelected = false;
+                        if (icon) icon.className = 'far fa-eye';
+                        if (span) span.textContent = 'Ver seleccionados';
+                        drawerGruposVerSeleccionados.classList.remove('active');
+                    } else {
+                        if (drawerGruposViewOnlySelected) {
+                            if (icon) icon.className = 'far fa-eye-slash';
+                            if (span) span.textContent = 'Dejar de ver seleccionados (' + n + ')';
+                            drawerGruposVerSeleccionados.classList.add('active');
+                        } else {
+                            if (icon) icon.className = 'far fa-eye';
+                            if (span) span.textContent = 'Ver seleccionados';
+                            drawerGruposVerSeleccionados.classList.remove('active');
+                        }
+                    }
+                }
+                if (drawerGruposVerSeleccionados) {
+                    drawerGruposVerSeleccionados.addEventListener('click', function() {
+                        if (getDrawerGruposSelectedRows().length === 0) return;
+                        drawerGruposViewOnlySelected = !drawerGruposViewOnlySelected;
+                        applyDrawerGruposVisibility();
+                        updateDrawerGruposVerSeleccionadosBtn();
+                    });
+                }
+
+                if (drawerGruposSearchToggle && drawerGruposSearchContainer && typeof createInput === 'function') {
+                    drawerGruposSearchToggle.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        if (drawerGruposSearchContainer.style.display === 'none' || !drawerGruposSearchContainer.innerHTML.trim()) {
+                            drawerGruposSearchToggle.style.display = 'none';
+                            drawerGruposSearchContainer.style.display = 'flex';
+                            createInput({
+                                containerId: 'drawer-grupos-search-container',
+                                type: 'search',
+                                placeholder: 'Buscar grupos...',
+                                showLabel: false
+                            });
+                            setTimeout(function() {
+                                var input = drawerGruposSearchContainer.querySelector('input');
+                                if (input) {
+                                    input.focus();
+                                    input.addEventListener('input', function() {
+                                        drawerGruposSearchQuery = (input.value || '').trim();
+                                        applyDrawerGruposVisibility();
+                                    });
+                                }
+                            }, 100);
+                        }
+                    });
+                }
+
+                renderDrawerGruposTable();
+                updateDrawerGruposEmptyState();
+                if (typeof initTooltip === 'function') {
+                    initTooltip('#drawer-grupos-table thead [data-tooltip]');
+                    initTooltip('#drawer-grupos-table tbody .ubits-table__td--checkbox[data-tooltip]');
+                    initTooltip('#drawer-grupos-search-toggle');
                 }
 
                 colaboradorPanel.style.flexDirection = 'column';
@@ -553,13 +1302,27 @@
                 var label = 'Por definir';
                 if (opcion === 'toda-empresa') label = 'Toda la empresa';
                 else if (opcion === 'por-colaborador') {
-                    var listColab = overlay.querySelector('#drawer-usuarios-colaborador-lista');
-                    var items = listColab ? listColab.querySelectorAll('.drawer-usuarios-lista-item') : [];
-                    label = items.length ? Array.from(items).map(function(li) { var s = li.querySelector('.ubits-body-sm-regular'); return s ? s.textContent.trim() : ''; }).filter(Boolean).join(', ') : 'Por definir';
+                    var tbodyColab = overlay.querySelector('#drawer-colab-tbody');
+                    var checkedColab = tbodyColab ? tbodyColab.querySelectorAll('tr .drawer-colab-row-check:checked') : [];
+                    var nombresColab = Array.from(checkedColab).map(function(cb) {
+                        var row = cb.closest('tr');
+                        if (!row) return '';
+                        var td = row.querySelector('td[data-col="nombre"]');
+                        var span = td ? td.querySelector('.ubits-body-sm-regular') : null;
+                        return span ? span.textContent.trim() : '';
+                    }).filter(Boolean);
+                    label = nombresColab.length ? nombresColab.join(', ') : 'Por definir';
                 } else if (opcion === 'por-grupos') {
-                    var listGrupos = overlay.querySelector('#drawer-usuarios-grupos-lista');
-                    var divs = listGrupos ? listGrupos.querySelectorAll('.drawer-usuarios-grupo-item') : [];
-                    label = divs.length ? Array.from(divs).map(function(d) { var s = d.querySelector('.ubits-body-sm-regular'); return s ? s.textContent.trim().replace(/\s*\(\d+\s*integrantes\)\s*$/, '').trim() : ''; }).filter(Boolean).join(', ') : 'Por definir';
+                    var tbody = overlay.querySelector('#drawer-grupos-tbody');
+                    var checked = tbody ? tbody.querySelectorAll('tr .drawer-grupo-row-check:checked') : [];
+                    var nombres = Array.from(checked).map(function(cb) {
+                        var row = cb.closest('tr');
+                        if (!row) return '';
+                        var td = row.querySelector('td[data-col="nombre"]');
+                        var span = td ? td.querySelector('.ubits-body-sm-regular') : null;
+                        return span ? span.textContent.trim() : '';
+                    }).filter(Boolean);
+                    label = nombres.length ? nombres.join(', ') : 'Por definir';
                 } else if (opcion === 'desde-archivo') { if (typeof closeDrawer === 'function') closeDrawer('drawer-agregar-usuarios'); return; }
                 var id = 'asignacion-' + (++asignacionIdCounter);
                 asignacionesData.push({ id: id, asignadosLabel: label, contenidosCount: 0, contenidos: [] });
