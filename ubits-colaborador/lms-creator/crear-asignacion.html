@@ -387,10 +387,23 @@
                     '  </div>' +
                     '</div>' +
                     '<div class="drawer-usuarios-panel drawer-usuarios-panel--archivo" id="drawer-usuarios-archivo-panel" style="display:none">' +
-                    '  <div class="drawer-archivo-dropzone" id="drawer-archivo-dropzone">' +
-                    '    <i class="far fa-cloud-upload drawer-archivo-icon"></i>' +
-                    '    <p class="ubits-body-sm-regular drawer-archivo-text">Arrastra un archivo aquí o haz clic para subir</p>' +
-                    '    <input type="file" id="drawer-archivo-input" style="display:none">' +
+                    '  <div class="drawer-archivo-section">' +
+                    '    <div class="drawer-archivo-header">' +
+                    '      <h2 class="ubits-body-md-bold drawer-archivo-title">Importar archivo</h2>' +
+                    '      <div class="drawer-archivo-actions">' +
+                    '        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="drawer-archivo-descargar-lista"><i class="far fa-arrow-down-to-line"></i><span>Descargar lista de colaboradores</span></button>' +
+                    '        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="drawer-archivo-descargar-plantilla"><i class="far fa-arrow-down-to-line"></i><span>Descargar plantilla</span></button>' +
+                    '      </div>' +
+                    '    </div>' +
+                    '    <div class="drawer-archivo-dropzone" id="drawer-archivo-dropzone">' +
+                    '      <div class="drawer-archivo-dropzone-inner">' +
+                    '        <div class="drawer-archivo-file-icon-wrap"><i class="far fa-file-arrow-up"></i></div>' +
+                    '        <p class="ubits-body-md-semibold drawer-archivo-dropzone-title">Subir archivos</p>' +
+                    '        <p class="ubits-body-sm-regular drawer-archivo-dropzone-formats">CSV, xlsx &bull; Hasta 5mb</p>' +
+                    '        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="drawer-archivo-btn-seleccionar"><i class="far fa-arrow-up-from-bracket"></i><span>Seleccionar archivos</span></button>' +
+                    '      </div>' +
+                    '      <input type="file" id="drawer-archivo-input" accept=".csv,.xlsx,.xls" style="display:none">' +
+                    '    </div>' +
                     '  </div>' +
                     '</div>';
             }
@@ -445,12 +458,13 @@
                 if (gruposPanel) gruposPanel.style.display = 'none';
                 if (archivoPanel) archivoPanel.style.display = 'none';
 
+                var totalEmpresa = 0;
                 function actualizarContadorTodaEmpresa(seleccionado) {
                     var cardEmpresa = overlay.querySelector('.drawer-option-card[data-opcion="toda-empresa"] .drawer-option-card__count');
                     if (cardEmpresa) {
                         cardEmpresa.innerHTML = seleccionado
-                            ? '<span class="ubits-body-md-bold">290</span>/<span class="ubits-body-md-bold">290</span> seleccionados'
-                            : '<span class="ubits-body-md-bold">0</span>/<span class="ubits-body-md-bold">290</span> seleccionados';
+                            ? '<span class="ubits-body-md-bold">' + totalEmpresa + '</span>/<span class="ubits-body-md-bold">' + totalEmpresa + '</span> seleccionados'
+                            : '<span class="ubits-body-md-bold">0</span>/<span class="ubits-body-md-bold">' + totalEmpresa + '</span> seleccionados';
                     }
                 }
 
@@ -474,6 +488,11 @@
                     return iniciales ? iniciales + '@fiqsha.demo' : 'user@fiqsha.demo';
                 }
                 var empleadosDrawer = (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getEmpleadosEjemplo === 'function') ? TAREAS_PLANES_DB.getEmpleadosEjemplo() : [];
+                totalEmpresa = empleadosDrawer.length;
+                var cardEmpresaCount = overlay.querySelector('.drawer-option-card[data-opcion="toda-empresa"] .drawer-option-card__count');
+                if (cardEmpresaCount) cardEmpresaCount.innerHTML = '<span class="ubits-body-md-bold">0</span>/<span class="ubits-body-md-bold">' + totalEmpresa + '</span> seleccionados';
+                var cardArchivoCount = overlay.querySelector('.drawer-option-card[data-opcion="desde-archivo"] .drawer-option-card__count');
+                if (cardArchivoCount) cardArchivoCount.innerHTML = '<span class="ubits-body-md-bold">0</span>/<span class="ubits-body-md-bold">' + totalEmpresa + '</span> seleccionados';
                 var drawerColabTbody = overlay.querySelector('#drawer-colab-tbody');
                 var drawerColabSelectAll = overlay.querySelector('#drawer-colab-select-all');
                 var drawerColabResultsCount = overlay.querySelector('#drawer-colab-results-count');
@@ -1264,19 +1283,19 @@
 
                 var dropzone = overlay.querySelector('#drawer-archivo-dropzone');
                 var archivoInput = overlay.querySelector('#drawer-archivo-input');
+                var btnSeleccionar = overlay.querySelector('#drawer-archivo-btn-seleccionar');
 
-                function procesarArchivoSubido() {
-                    var id = 'asignacion-' + (++asignacionIdCounter);
-                    asignacionesData.push({ id: id, asignadosLabel: 'Importación desde archivo', contenidosCount: 0, contenidos: [] });
-                    var tr = crearFilaAsignacion(asignacionesData[asignacionesData.length - 1]);
-                    if (asignacionesTbody) asignacionesTbody.appendChild(tr);
-                    bindAsignacionRow(tr);
-                    applyAsignacionesVisibility();
-                    if (typeof updateGuardarButtonState === 'function') updateGuardarButtonState();
-                    if (typeof closeDrawer === 'function') closeDrawer('drawer-agregar-usuarios');
+                if (btnSeleccionar) {
+                    btnSeleccionar.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (archivoInput) archivoInput.click();
+                    });
                 }
-
-                dropzone.addEventListener('click', function() { archivoInput.click(); });
+                dropzone.addEventListener('click', function(e) {
+                    if (e.target === btnSeleccionar || (btnSeleccionar && btnSeleccionar.contains(e.target))) return;
+                    if (archivoInput) archivoInput.click();
+                });
                 dropzone.addEventListener('dragover', function(e) { e.preventDefault(); dropzone.classList.add('drawer-archivo-dropzone--dragover'); });
                 dropzone.addEventListener('dragleave', function() { dropzone.classList.remove('drawer-archivo-dropzone--dragover'); });
                 dropzone.addEventListener('drop', function(e) {
@@ -1292,6 +1311,56 @@
                     }
                     this.value = '';
                 });
+
+                function escapeCsvCell(val) {
+                    var s = (val == null ? '' : String(val)).trim();
+                    if (/[,\r\n"]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+                    return s;
+                }
+                function descargarCsv(nombreArchivo, contenido) {
+                    var blob = new Blob(['\ufeff' + contenido], { type: 'text/csv;charset=utf-8' });
+                    var a = document.createElement('a');
+                    a.href = URL.createObjectURL(blob);
+                    a.download = nombreArchivo;
+                    a.click();
+                    URL.revokeObjectURL(a.href);
+                }
+                var btnDescargarLista = overlay.querySelector('#drawer-archivo-descargar-lista');
+                var btnDescargarPlantilla = overlay.querySelector('#drawer-archivo-descargar-plantilla');
+                if (btnDescargarLista) {
+                    btnDescargarLista.addEventListener('click', function() {
+                        var headers = ['username', 'nombre', 'correo', 'area', 'lider'];
+                        var filas = [headers.map(escapeCsvCell).join(',')];
+                        empleadosDrawer.forEach(function(e) {
+                            var username = getUsernameEmpleado(e);
+                            var nombre = (e.nombre || '').trim();
+                            var correo = username;
+                            var area = (e.area || '').trim();
+                            var lider = (e.jefe || '').trim();
+                            filas.push([username, nombre, correo, area, lider].map(escapeCsvCell).join(','));
+                        });
+                        descargarCsv('lista-colaboradores.csv', filas.join('\r\n'));
+                    });
+                }
+                if (btnDescargarPlantilla) {
+                    btnDescargarPlantilla.addEventListener('click', function() {
+                        var headers = ['username', 'nombre', 'correo', 'area', 'lider'];
+                        var filaEjemplo = ['19237418387', 'José Fernando Pérez Sánchez', 'joseperez@correo.com', 'Ventas', 'Luz Angela Arango Bernal'];
+                        var contenido = headers.map(escapeCsvCell).join(',') + '\r\n' + filaEjemplo.map(escapeCsvCell).join(',');
+                        descargarCsv('plantilla-participantes.csv', contenido);
+                    });
+                }
+
+                function procesarArchivoSubido() {
+                    var id = 'asignacion-' + (++asignacionIdCounter);
+                    asignacionesData.push({ id: id, asignadosLabel: 'Importación desde archivo', contenidosCount: 0, contenidos: [] });
+                    var tr = crearFilaAsignacion(asignacionesData[asignacionesData.length - 1]);
+                    if (asignacionesTbody) asignacionesTbody.appendChild(tr);
+                    bindAsignacionRow(tr);
+                    applyAsignacionesVisibility();
+                    if (typeof updateGuardarButtonState === 'function') updateGuardarButtonState();
+                    if (typeof closeDrawer === 'function') closeDrawer('drawer-agregar-usuarios');
+                }
             }
 
             function cerrarDrawerYActualizar() {
