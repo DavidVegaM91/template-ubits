@@ -691,7 +691,7 @@
                                 '<button type="button" class="ubits-chip__close" data-chip-index="' + index + '" aria-label="Quitar filtro"><i class="far fa-times"></i></button></span>';
                         }).join('');
                         drawerColabFiltrosChipsContainer.querySelectorAll('.ubits-chip__close').forEach(function(btn) {
-                            btn.addEventListener('click', function() {
+                        btn.addEventListener('click', function() {
                                 var idx = parseInt(this.getAttribute('data-chip-index'), 10);
                                 if (!isNaN(idx) && chips[idx] && typeof chips[idx].remove === 'function') {
                                     chips[idx].remove();
