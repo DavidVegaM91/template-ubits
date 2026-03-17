@@ -30,6 +30,7 @@
     <link rel="stylesheet" href="../../components/avatar.css">
     <link rel="stylesheet" href="../../components/checkbox.css">
     <link rel="stylesheet" href="../../components/chip.css">
+    <link rel="stylesheet" href="../../components/ubits-data-table.css">
     <link rel="stylesheet" href="../../components/empty-state.css">
     <link rel="stylesheet" href="../../components/modal.css">
     <link rel="stylesheet" href="./lms-creator.css">
@@ -65,53 +66,10 @@
                         </div>
                     </div>
                                     </div>
-                    <!-- Asignaciones: tabla con título, contador, búsqueda, +Agregar asignación -->
+                    <!-- Asignaciones: componente oficial ubits-data-table -->
                     <div class="section-single crear-plan-contenidos-asignaciones-section">
                         <div class="widget-asignaciones-lista">
-                            <div class="lms-table-header-bar">
-                                <div class="lms-table-header-left">
-                                    <span class="ubits-body-md-bold" id="asignaciones-header-title">Asignaciones</span>
-                                    <span class="ubits-body-sm-regular" id="asignaciones-results-count">0/0</span>
-                                </div>
-                                <div class="lms-table-header-right">
-                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only" id="asignaciones-search-toggle" aria-label="Buscar" data-tooltip="Buscar" data-tooltip-delay="1000">
-                                        <i class="far fa-magnifying-glass"></i>
-                                    </button>
-                                    <div id="asignaciones-search-container" class="lms-table-search-inline" style="display: none;"></div>
-                                    <button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="btn-agregar-asignacion">
-                                        <i class="far fa-plus"></i>
-                                        <span class="ubits-body-sm-regular">Agregar asignación</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            <div class="lms-table-action-bar" id="asignaciones-action-bar">
-                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="asignaciones-ver-seleccionados">
-                                    <i class="far fa-eye"></i>
-                                    <span>Ver seleccionados</span>
-                                </button>
-                                <div class="lms-table-action-buttons">
-                                    <button type="button" class="ubits-button ubits-button--error-secondary ubits-button--sm" id="asignaciones-mass-eliminar">
-                                        <i class="far fa-trash"></i>
-                                        <span>Eliminar</span>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="asignaciones-list-wrapper">
-                                <div class="ubits-table-wrapper ubits-table-wrapper--min-width" id="asignaciones-table-wrapper">
-                                    <table class="ubits-table" id="asignaciones-table">
-                                        <thead>
-                                            <tr>
-                                                <th class="ubits-table__th--checkbox" data-col="checkbox" data-tooltip="Seleccionar todo" data-tooltip-delay="1000"><label class="ubits-checkbox ubits-checkbox--sm" style="display:inline-flex;"><input type="checkbox" class="ubits-checkbox__input" id="asignaciones-select-all" aria-label="Seleccionar todo"><span class="ubits-checkbox__box"><i class="fas fa-check"></i><i class="fas fa-minus"></i></span><span class="ubits-checkbox__label sr-only" aria-hidden="true">&nbsp;</span></label></th>
-                                                <th data-col="asignados" class="ubits-body-sm-semibold">Asignados</th>
-                                                <th data-col="cursos" class="ubits-body-sm-semibold">Cursos asignados</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="asignaciones-tbody">
-                                        </tbody>
-                                    </table>
-                        </div>
-                                <div id="asignaciones-empty-state" class="lms-table-empty-state" style="display: none;"></div>
-                            </div>
+                            <div id="asignaciones-data-table-container" class="crear-plan-contenidos-asignaciones-tabla"></div>
                         </div>
                     </div>
                 </div>
@@ -143,6 +101,7 @@
     <script src="../../components/card-content-compact.js"></script>
     <script src="./catalogo-cursos-drawer-data.js"></script>
     <script src="../../components/empty-state.js"></script>
+    <script src="../../components/ubits-data-table.js"></script>
     <script src="../../components/modal.js"></script>
     <script src="../../script.js"></script>
     <!-- Misma base de datos que seguimiento.html (empresa de pruebas: Fiqsha) -->
@@ -242,16 +201,10 @@
             // Asignaciones: datos y refs de tabla
             var asignacionesData = [];
             var asignacionIdCounter = 0;
-            var searchQuery = '';
-            var isSearchMode = false;
-            var viewOnlySelected = false;
             var pendingCursosRow = null;
             // Catálogo: todas las imágenes de cards-learn (85 contenidos). Carga lazy 12 en 12.
                 var catalogoCursos = window.CATALOGO_CURSOS_DRAWER || [];
 
-            var asignacionesTable = document.getElementById('asignaciones-table');
-            var asignacionesTbody = document.getElementById('asignaciones-tbody');
-            function getAsignacionesTableRows() { return asignacionesTbody ? Array.from(asignacionesTbody.querySelectorAll('tr')) : []; }
 
             function canGuardar() {
                 var inicioInput = document.querySelector('#fecha-inicio-container input');
@@ -271,7 +224,7 @@
 
             if (typeof getModalHtml === 'function') {
                 var deleteBody = '<p class="ubits-body-md-regular">¿Estás seguro de que deseas eliminar <strong id="asignaciones-delete-count">0</strong> asignación(es) seleccionada(s)?</p><p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Esta acción no se puede deshacer.</p><div style="margin-top: var(--gap-lg);"><label class="ubits-body-sm-regular" for="asignaciones-delete-type-input">Escriba <strong>eliminar</strong> para habilitar el botón:</label><input type="text" id="asignaciones-delete-type-input" class="ubits-input" placeholder="Escriba la palabra de confirmación" autocomplete="off" style="margin-top: var(--gap-sm); width: 100%; padding: var(--padding-sm) var(--padding-md); border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-sm); font-size: var(--font-size-sm); color: var(--ubits-fg-1-high); box-sizing: border-box;"></div>';
-                var deleteFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="asignaciones-delete-cancel">Cancelar</button><button type="button" class="ubits-button ubits-button--error ubits-button--md" id="asignaciones-delete-confirm" disabled>Eliminar</button>';
+                var deleteFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="asignaciones-delete-cancel"><span>Cancelar</span></button><button type="button" class="ubits-button ubits-button--error ubits-button--md" id="asignaciones-delete-confirm" disabled><span>Eliminar</span></button>';
                 document.getElementById('asignaciones-modals-container').innerHTML = getModalHtml({ overlayId: 'asignaciones-delete-overlay', title: 'Confirmar eliminación', bodyHtml: deleteBody, footerHtml: deleteFooter, size: 'sm', closeButtonId: 'asignaciones-delete-close' });
             }
 
@@ -447,16 +400,63 @@
                 return '<div class="asignaciones-cell-asignados"><span class="ubits-body-sm-regular">' + label + '</span></div>';
             }
 
-            function crearFilaAsignacion(item) {
-                var id = item.id;
-                var count = item.contenidosCount || 0;
-                var btnText = count === 0 ? 'Agregar contenidos' : (count + ' contenidos');
-                var tr = document.createElement('tr');
-                tr.setAttribute('data-asignacion-id', id);
-                tr.innerHTML = '<td class="ubits-table__td--checkbox" data-col="checkbox" data-tooltip="Seleccionar" data-tooltip-delay="1000"><label class="ubits-checkbox ubits-checkbox--sm" style="display:inline-flex;"><input type="checkbox" class="ubits-checkbox__input asignacion-row-check" data-asignacion-id="' + id + '"><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label sr-only" aria-hidden="true">&nbsp;</span></label></td>' +
-                    '<td data-col="asignados">' + getAsignadosCellHtml(item) + '</td>' +
-                    '<td data-col="cursos"><button type="button" class="ubits-button ubits-button--secondary ubits-button--xs js-asignacion-agregar-contenidos" data-asignacion-id="' + id + '"><i class="far fa-plus"></i><span>' + btnText + '</span></button></td>';
-                return tr;
+            function escapeHtmlAttr(t) {
+                if (t == null) return '';
+                return String(t).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            }
+            function buildAsignacionRowHtml(row) {
+                var cursosCell = row.contenidosCount === 0
+                    ? '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs js-asignacion-agregar-contenidos" data-asignacion-id="' + escapeHtmlAttr(row.id) + '"><i class="far fa-plus"></i><span>Agregar contenidos</span></button>'
+                    : '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs js-asignacion-agregar-contenidos" data-asignacion-id="' + escapeHtmlAttr(row.id) + '"><i class="far fa-plus"></i><span>' + escapeHtmlAttr(String(row.contenidosCount)) + ' contenidos</span></button>';
+                return '<td data-col="asignados">' + getAsignadosCellHtml(row) + '</td><td data-col="cursos">' + cursosCell + '</td>';
+            }
+
+            var asignacionesTablaRef = null;
+            var pendingAsignacionesDeleteIds = [];
+
+            if (typeof createUbitsDataTable === 'function') {
+                asignacionesTablaRef = createUbitsDataTable({
+                    containerId: 'asignaciones-data-table-container',
+                    tableId: 'asignaciones-table',
+                    title: 'Asignaciones',
+                    columns: [ { id: 'asignados', label: 'Asignados' }, { id: 'cursos', label: 'Cursos asignados' } ],
+                    getData: function() { return asignacionesData; },
+                    rowIdField: 'id',
+                    buildRowHtml: buildAsignacionRowHtml,
+                    features: { checkboxes: true, search: true, verSeleccionados: true, actionBar: true, resultsCount: true },
+                    primaryButton: { text: 'Agregar asignación', icon: 'fa-plus', onClick: function() { if (typeof abrirDrawerAgregarUsuarios === 'function') abrirDrawerAgregarUsuarios(); } },
+                    actionBarButtons: [
+                        { id: 'eliminar', label: 'Eliminar', icon: 'fa-trash', variant: 'error-secondary', onClick: function(selectedIds) {
+                            if (!selectedIds || selectedIds.length === 0) return;
+                            pendingAsignacionesDeleteIds = selectedIds.slice();
+                            var countEl = document.getElementById('asignaciones-delete-count');
+                            var inputEl = document.getElementById('asignaciones-delete-type-input');
+                            var confirmEl = document.getElementById('asignaciones-delete-confirm');
+                            if (countEl) countEl.textContent = pendingAsignacionesDeleteIds.length;
+                            if (inputEl) { inputEl.value = ''; inputEl.focus(); }
+                            if (confirmEl) confirmEl.disabled = true;
+                            var overlay = document.getElementById('asignaciones-delete-overlay');
+                            if (overlay) { overlay.style.display = 'flex'; overlay.setAttribute('aria-hidden', 'false'); }
+                        } }
+                    ],
+                    emptyState: { message: 'Aún no hay asignaciones', icon: 'far fa-user-check', description: 'Agrega asignaciones para definir quiénes tendrán acceso a este plan.' },
+                    emptySearchState: { message: 'No se encontraron resultados', description: 'Intenta ajustar tu búsqueda.', buttonText: 'Limpiar búsqueda' },
+                    i18n: { selectAll: 'Seleccionar todo', deselectAll: 'Deseleccionar todo', verSeleccionados: 'Ver seleccionados', buscar: 'Buscar' }
+                });
+            }
+
+            function bindAsignacionesRowsAfterRefresh() {
+                if (!asignacionesTablaRef) return;
+                var container = document.getElementById('asignaciones-data-table-container');
+                if (!container) return;
+                var tbody = container.querySelector('tbody');
+                if (!tbody) return;
+                tbody.querySelectorAll('tr[data-id]').forEach(function(tr) {
+                    var id = tr.getAttribute('data-id');
+                    var item = asignacionesData.find(function(a) { return String(a.id) === id; });
+                    if (item) bindAsignadosPopover(tr, item);
+                });
+                if (typeof initTooltip === 'function') initTooltip('#asignaciones-data-table-container [data-tooltip]');
             }
 
             function closeAsignadosPopover() {
@@ -1455,10 +1455,8 @@
                 function procesarArchivoSubido() {
                     var id = 'asignacion-' + (++asignacionIdCounter);
                     asignacionesData.push({ id: id, asignadosLabel: 'Importación desde archivo', asignadosTipo: 'desde-archivo', asignadosPersonas: [], asignadosGrupos: [], contenidosCount: 0, contenidos: [] });
-                    var tr = crearFilaAsignacion(asignacionesData[asignacionesData.length - 1]);
-                    if (asignacionesTbody) asignacionesTbody.appendChild(tr);
-                    bindAsignacionRow(tr);
-                    applyAsignacionesVisibility();
+                    if (asignacionesTablaRef && typeof asignacionesTablaRef.refresh === 'function') asignacionesTablaRef.refresh();
+                    bindAsignacionesRowsAfterRefresh();
                     if (typeof updateGuardarButtonState === 'function') updateGuardarButtonState();
                     if (typeof closeDrawer === 'function') closeDrawer('drawer-agregar-usuarios');
                 }
@@ -1509,227 +1507,22 @@
                 var id = 'asignacion-' + (++asignacionIdCounter);
                 var item = { id: id, asignadosLabel: label, asignadosTipo: asignadosTipo, asignadosPersonas: asignadosPersonas, asignadosGrupos: asignadosGrupos, contenidosCount: 0, contenidos: [] };
                 asignacionesData.push(item);
-                var tr = crearFilaAsignacion(item);
-                if (asignacionesTbody) asignacionesTbody.appendChild(tr);
-                bindAsignacionRow(tr);
-                bindAsignadosPopover(tr, item);
-                if (typeof initTooltip === 'function') initTooltip('#asignaciones-tbody [data-tooltip]');
-                applyAsignacionesVisibility();
+                if (asignacionesTablaRef && typeof asignacionesTablaRef.refresh === 'function') asignacionesTablaRef.refresh();
+                bindAsignacionesRowsAfterRefresh();
                 if (typeof updateGuardarButtonState === 'function') updateGuardarButtonState();
                 if (typeof closeDrawer === 'function') closeDrawer('drawer-agregar-usuarios');
             }
             window.cerrarDrawerYActualizar = cerrarDrawerYActualizar;
 
-            document.getElementById('btn-agregar-asignacion').addEventListener('click', function() {
-                abrirDrawerAgregarUsuarios();
-            });
-
-            function getAsignacionRowText(row, col) {
-                var td = row.querySelector('td[data-col="' + col + '"]');
-                if (!td) return '';
-                var span = td.querySelector('.ubits-body-sm-regular');
-                return span ? span.textContent.trim() : '';
-            }
-            function passesAsignacionSearch(row) {
-                if (!searchQuery) return true;
-                var q = searchQuery.toLowerCase();
-                var asignados = getAsignacionRowText(row, 'asignados').toLowerCase();
-                return asignados.indexOf(q) !== -1;
-            }
-            function getVisibleAsignacionRows() {
-                var rows = getAsignacionesTableRows();
-                var base = rows.filter(passesAsignacionSearch);
-                if (viewOnlySelected) base = base.filter(function(r) { var cb = r.querySelector('.asignacion-row-check'); return cb && cb.checked; });
-                return base;
-            }
-            function updateAsignacionesResultsCount() {
-                var el = document.getElementById('asignaciones-results-count');
-                if (!el) return;
-                var total = getAsignacionesTableRows().length;
-                var visible = getVisibleAsignacionRows().length;
-                el.textContent = visible + '/' + total;
-            }
-            function applyAsignacionesVisibility() {
-                var rows = getAsignacionesTableRows();
-                var visible = getVisibleAsignacionRows();
-                rows.forEach(function(r) {
-                    var show = passesAsignacionSearch(r);
-                    if (show && viewOnlySelected) { var cb = r.querySelector('.asignacion-row-check'); show = cb && cb.checked; }
-                    r.style.display = show ? '' : 'none';
-                });
-                updateAsignacionesResultsCount();
-                updateAsignacionesEmptyState();
-                updateAsignacionesSelectAll();
-                if (typeof initTooltip === 'function') {
-                    initTooltip('#asignaciones-table thead [data-tooltip]');
-                    initTooltip('#asignaciones-table tbody .ubits-table__td--checkbox[data-tooltip]');
-                }
-            }
-            function updateAsignacionesEmptyState() {
-                var wrapper = document.getElementById('asignaciones-table-wrapper');
-                var emptyEl = document.getElementById('asignaciones-empty-state');
-                var listWrapper = wrapper ? wrapper.closest('.asignaciones-list-wrapper') : null;
-                var rows = getAsignacionesTableRows();
-                var visibleCount = getVisibleAsignacionRows().length;
-                if (visibleCount === 0) {
-                    if (listWrapper) listWrapper.classList.add('is-empty');
-                    emptyEl.innerHTML = '';
-                    if (typeof loadEmptyState === 'function') {
-                        if (rows.length === 0) {
-                            loadEmptyState('asignaciones-empty-state', { icon: 'fa-user-check', iconSize: 'lg', title: 'Aún no hay asignaciones', description: 'Agrega asignaciones para definir quiénes tendrán acceso a este plan.', buttons: {} });
-                            emptyEl.classList.add('lms-table-empty-state');
-                        } else {
-                            loadEmptyState('asignaciones-empty-state', { icon: 'fa-search', iconSize: 'lg', title: 'No se encontraron resultados', description: 'Intenta ajustar tu búsqueda.', buttons: { secondary: { text: 'Limpiar búsqueda', icon: 'fa-times', onClick: function() {} } } });
-                            emptyEl.classList.add('lms-table-empty-state');
-                            setTimeout(function() { var btn = emptyEl.querySelector('.ubits-button--secondary'); if (btn) btn.onclick = function(e) { e.preventDefault(); e.stopPropagation(); clearAsignacionesSearchAndFilters(); }; }, 50);
-                        }
-                    }
-                } else {
-                    if (listWrapper) listWrapper.classList.remove('is-empty');
-                    emptyEl.innerHTML = '';
-                }
-            }
-            function updateAsignacionesSelectAll() {
-                var selectAll = document.getElementById('asignaciones-select-all');
-                if (!selectAll) return;
-                var visible = getVisibleAsignacionRows();
-                var checkedCount = visible.filter(function(r) { var cb = r.querySelector('.asignacion-row-check'); return cb && cb.checked; }).length;
-                selectAll.checked = visible.length > 0 && checkedCount === visible.length;
-                selectAll.indeterminate = checkedCount > 0 && checkedCount < visible.length;
-                var th = selectAll.closest('th');
-                if (th) th.setAttribute('data-tooltip', checkedCount > 0 ? 'Deseleccionar todo' : 'Seleccionar todo');
-            }
-            function toggleAsignacionesActionBar() {
-                var bar = document.getElementById('asignaciones-action-bar');
-                var btnVer = document.getElementById('asignaciones-ver-seleccionados');
-                if (!bar) return;
-                var rows = getAsignacionesTableRows();
-                var n = rows.filter(function(r) { var cb = r.querySelector('.asignacion-row-check'); return cb && cb.checked; }).length;
-                if (n > 0) {
-                    bar.classList.add('is-visible');
-                    if (btnVer) {
-                        var icon = btnVer.querySelector('i');
-                        var span = btnVer.querySelector('span');
-                        if (viewOnlySelected) {
-                            if (icon) icon.className = 'far fa-eye-slash';
-                            if (span) span.textContent = 'Dejar de ver seleccionados (' + n + ')';
-                            btnVer.classList.add('active');
-                        } else {
-                            if (icon) icon.className = 'far fa-eye';
-                            if (span) span.textContent = 'Ver seleccionados';
-                            btnVer.classList.remove('active');
-                        }
-                    }
-                } else {
-                    bar.classList.remove('is-visible');
-                    if (btnVer) { btnVer.classList.remove('active'); var span = btnVer.querySelector('span'); if (span) span.textContent = 'Ver seleccionados'; var icon = btnVer.querySelector('i'); if (icon) icon.className = 'far fa-eye'; }
-                }
-            }
-            function clearAsignacionesSearchAndFilters() {
-                searchQuery = '';
-                var searchContainer = document.getElementById('asignaciones-search-container');
-                if (searchContainer) { searchContainer.innerHTML = ''; searchContainer.style.display = 'none'; }
-                var searchToggle = document.getElementById('asignaciones-search-toggle');
-                if (searchToggle) searchToggle.style.display = 'flex';
-                isSearchMode = false;
-                viewOnlySelected = false;
-                applyAsignacionesVisibility();
-                if (typeof showToast === 'function') showToast('success', 'Búsqueda limpiada');
-            }
-            function bindAsignacionRow(tr) {
-                var cb = tr.querySelector('.asignacion-row-check');
-                if (cb) cb.addEventListener('change', function() {
-                    var td = this.closest('.ubits-table__td--checkbox');
-                    if (td) td.setAttribute('data-tooltip', this.checked ? 'Deseleccionar' : 'Seleccionar');
-                    toggleAsignacionesActionBar();
-                });
-                var btn = tr.querySelector('.js-asignacion-agregar-contenidos');
-                if (btn) btn.addEventListener('click', function() { abrirDrawerAgregarCursos(tr); });
-            }
-
-            var searchToggle = document.getElementById('asignaciones-search-toggle');
-            var searchContainer = document.getElementById('asignaciones-search-container');
-            if (searchToggle && searchContainer) {
-                searchToggle.addEventListener('click', function() {
-                    if (isSearchMode) return;
-                    searchContainer.style.display = 'flex';
-                    searchToggle.style.display = 'none';
-                    searchContainer.innerHTML = '';
-                    if (typeof createInput === 'function') {
-                        createInput({ containerId: 'asignaciones-search-container', type: 'search', placeholder: 'Buscar asignaciones...', size: 'md', onChange: function(val) { searchQuery = val || ''; applyAsignacionesVisibility(); } });
-                setTimeout(function() {
-                            var wrap = searchContainer.querySelector('.ubits-input-wrapper');
-                            if (wrap) {
-                                var closeBtn = document.createElement('button');
-                                closeBtn.type = 'button';
-                                closeBtn.className = 'ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only';
-                                closeBtn.setAttribute('aria-label', 'Cerrar búsqueda');
-                                closeBtn.style.marginLeft = '8px';
-                                closeBtn.innerHTML = '<i class="far fa-times"></i>';
-                                closeBtn.addEventListener('click', function() {
-                                    searchQuery = '';
-                                    searchContainer.innerHTML = '';
-                                    searchContainer.style.display = 'none';
-                                    searchToggle.style.display = 'flex';
-                                    isSearchMode = false;
-                                    applyAsignacionesVisibility();
-                                });
-                                searchContainer.appendChild(closeBtn);
-                                var inp = wrap.querySelector('input');
-                                if (inp) inp.focus();
-                            }
-                        }, 100);
-                    }
-                    isSearchMode = true;
-                });
-            }
-            document.addEventListener('click', function(e) {
-                if (!isSearchMode) return;
-                if (searchContainer && searchContainer.contains(e.target)) return;
-                if (searchToggle && searchToggle.contains(e.target)) return;
-                if (!searchQuery || !searchQuery.trim()) {
-                    if (searchContainer) { searchContainer.innerHTML = ''; searchContainer.style.display = 'none'; }
-                    if (searchToggle) searchToggle.style.display = 'flex';
-                    isSearchMode = false;
-                }
-            });
-
-            var selectAll = document.getElementById('asignaciones-select-all');
-            if (selectAll) {
-                selectAll.addEventListener('change', function() {
-                    var visible = getVisibleAsignacionRows();
-                    var checkedCount = visible.filter(function(r) { var cb = r.querySelector('.asignacion-row-check'); return cb && cb.checked; }).length;
-                    if (this.checked && checkedCount > 0 && checkedCount < visible.length) {
-                        visible.forEach(function(row) {
-                            var cb = row.querySelector('.asignacion-row-check');
-                            if (cb) cb.checked = false;
-                            var td = row.querySelector('.ubits-table__td--checkbox');
-                            if (td) td.setAttribute('data-tooltip', 'Seleccionar');
-                        });
-                        toggleAsignacionesActionBar();
-                        if (typeof initTooltip === 'function') initTooltip('#asignaciones-table tbody .ubits-table__td--checkbox[data-tooltip]');
-                        return;
-                    }
-                    getVisibleAsignacionRows().forEach(function(row) {
-                        var cb = row.querySelector('.asignacion-row-check');
-                        if (cb) cb.checked = selectAll.checked;
-                        var td = row.querySelector('.ubits-table__td--checkbox');
-                        if (td) td.setAttribute('data-tooltip', selectAll.checked ? 'Deseleccionar' : 'Seleccionar');
-                    });
-                    toggleAsignacionesActionBar();
-                    if (typeof initTooltip === 'function') initTooltip('#asignaciones-table tbody .ubits-table__td--checkbox[data-tooltip]');
-                });
-            }
-
-            var btnVerSeleccionados = document.getElementById('asignaciones-ver-seleccionados');
-            if (btnVerSeleccionados) {
-                btnVerSeleccionados.addEventListener('click', function() {
-                    var rows = getAsignacionesTableRows();
-                    var n = rows.filter(function(r) { var cb = r.querySelector('.asignacion-row-check'); return cb && cb.checked; }).length;
-                    if (n === 0) return;
-                    viewOnlySelected = !viewOnlySelected;
-                    applyAsignacionesVisibility();
-                    toggleAsignacionesActionBar();
+            var asignacionesContainer = document.getElementById('asignaciones-data-table-container');
+            if (asignacionesContainer) {
+                asignacionesContainer.addEventListener('click', function(e) {
+                    var btn = e.target.closest('.js-asignacion-agregar-contenidos');
+                    if (!btn) return;
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var tr = btn.closest('tbody tr[data-id]');
+                    if (tr) abrirDrawerAgregarCursos(tr);
                 });
             }
 
@@ -1744,18 +1537,6 @@
                 if (deleteTypeInput) deleteTypeInput.value = '';
                 if (deleteConfirm) deleteConfirm.disabled = true;
             }
-            var btnEliminar = document.getElementById('asignaciones-mass-eliminar');
-            if (btnEliminar) {
-                btnEliminar.addEventListener('click', function() {
-                    var rows = getAsignacionesTableRows();
-                    var rowsToRemove = rows.filter(function(r) { var cb = r.querySelector('.asignacion-row-check'); return cb && cb.checked; });
-                    if (rowsToRemove.length === 0) return;
-                    if (deleteCountEl) deleteCountEl.textContent = rowsToRemove.length;
-                    if (deleteTypeInput) { deleteTypeInput.value = ''; deleteTypeInput.focus(); }
-                    if (deleteConfirm) deleteConfirm.disabled = true;
-                    if (deleteOverlay) { deleteOverlay.style.display = 'flex'; deleteOverlay.setAttribute('aria-hidden', 'false'); }
-                });
-            }
             if (deleteTypeInput && deleteConfirm) {
                 deleteTypeInput.addEventListener('input', function() {
                     deleteConfirm.disabled = this.value.trim().toLowerCase() !== 'eliminar';
@@ -1766,22 +1547,18 @@
             if (deleteOverlay) deleteOverlay.addEventListener('click', function(e) { if (e.target === deleteOverlay) closeAsignacionesDeleteModal(); });
             if (deleteConfirm) {
                 deleteConfirm.addEventListener('click', function() {
-                    var rows = getAsignacionesTableRows();
-                    var rowsToRemove = rows.filter(function(r) { var cb = r.querySelector('.asignacion-row-check'); return cb && cb.checked; });
-                    var idsToRemove = rowsToRemove.map(function(r) { return r.getAttribute('data-asignacion-id'); });
+                    var ids = pendingAsignacionesDeleteIds.slice();
                     closeAsignacionesDeleteModal();
-                    rowsToRemove.forEach(function(tr) { tr.remove(); });
-                    asignacionesData = asignacionesData.filter(function(a) { return idsToRemove.indexOf(a.id) === -1; });
-                    var selAll = document.getElementById('asignaciones-select-all');
-                    if (selAll) selAll.checked = false;
-                    applyAsignacionesVisibility();
-                    toggleAsignacionesActionBar();
+                    pendingAsignacionesDeleteIds = [];
+                    var idSet = {};
+                    ids.forEach(function(id) { idSet[String(id)] = true; });
+                    asignacionesData = asignacionesData.filter(function(a) { return !idSet[String(a.id)]; });
+                    if (asignacionesTablaRef && typeof asignacionesTablaRef.refresh === 'function') asignacionesTablaRef.refresh();
+                    bindAsignacionesRowsAfterRefresh();
                     if (typeof updateGuardarButtonState === 'function') updateGuardarButtonState();
-                    if (typeof showToast === 'function') showToast('success', rowsToRemove.length + ' asignación(es) eliminada(s) correctamente');
+                    if (typeof showToast === 'function') showToast('success', ids.length + ' asignación(es) eliminada(s) correctamente');
                 });
             }
-
-            updateAsignacionesEmptyState();
 
             // ========== Drawer Agregar contenidos (ex cursos) ==========
             function getDrawerCursosBodyHtml() {
@@ -1814,7 +1591,7 @@
             function abrirDrawerAgregarCursos(tr) {
                 pendingCursosRow = tr;
                 var cursosSeleccionados = [];
-                var asignacionId = tr ? tr.getAttribute('data-asignacion-id') : null;
+                var asignacionId = tr ? (tr.getAttribute('data-id') || tr.getAttribute('data-asignacion-id')) : null;
                 var item = asignacionId ? asignacionesData.find(function(a) { return a.id === asignacionId; }) : null;
                 if (item && item.contenidos && item.contenidos.length) {
                     cursosSeleccionados = item.contenidos.slice();
@@ -2052,25 +1829,14 @@
             function aplicarCursosAAsignacion(tr, cursosSeleccionados) {
                 if (!tr) return;
                 var list = Array.isArray(cursosSeleccionados) ? cursosSeleccionados : [];
-                var id = tr.getAttribute('data-asignacion-id');
+                var id = tr.getAttribute('data-id') || tr.getAttribute('data-asignacion-id');
                 var item = asignacionesData.find(function(a) { return a.id === id; });
                 if (item) {
                     item.contenidosCount = list.length;
                     item.contenidos = list.slice();
                 }
-                var btn = tr.querySelector('.js-asignacion-agregar-contenidos');
-                if (btn) {
-                    var span = btn.querySelector('span');
-                    var icon = btn.querySelector('i');
-                    var count = list.length;
-                    if (count === 0) {
-                        if (span) span.textContent = 'Agregar contenidos';
-                        if (icon) { icon.className = 'far fa-plus'; icon.style.display = ''; }
-                    } else {
-                        if (span) span.textContent = count + ' contenidos';
-                        if (icon) icon.style.display = 'none';
-                    }
-                }
+                if (asignacionesTablaRef && typeof asignacionesTablaRef.refresh === 'function') asignacionesTablaRef.refresh();
+                bindAsignacionesRowsAfterRefresh();
                 if (typeof updateGuardarButtonState === 'function') updateGuardarButtonState();
             }
         });
