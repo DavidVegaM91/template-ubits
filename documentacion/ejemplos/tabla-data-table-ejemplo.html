@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Ejemplo: UBITS Data Table</title>
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/table.css">
+    <link rel="stylesheet" href="../../components/checkbox.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/chip.css">
+    <link rel="stylesheet" href="../../components/empty-state.css">
+    <link rel="stylesheet" href="../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../components/tooltip.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/modal.css">
+    <link rel="stylesheet" href="../../components/status-tag.css">
+    <link rel="stylesheet" href="../../components/badge-tag.css">
+    <link rel="stylesheet" href="../../components/ubits-data-table.css">
+    <style>
+        body { min-width: 320px; overflow-x: auto; }
+        .content-area {
+            display: flex;
+            flex-direction: column;
+            padding: var(--padding-xl) var(--padding-lg);
+            max-width: 1280px;
+            min-width: 0;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+        .page-header { margin-bottom: var(--gap-xl); min-width: 0; }
+        .page-title { margin: 0 0 var(--gap-xs) 0; word-wrap: break-word; overflow-wrap: break-word; }
+        .page-desc { margin: 0; color: var(--ubits-fg-1-medium); line-height: 1.5; }
+        .tabla-ejemplo-wrap { width: 100%; min-height: 360px; min-width: 0; }
+        .tabla-ejemplo-wrap .ubits-data-table { width: 100%; }
+        .widget-ver-estados { margin-bottom: var(--gap-xl); min-width: 0; }
+        .widget-ver-estados .ver-estados-btns { display: flex; flex-wrap: wrap; gap: var(--gap-md); }
+        .widget-ver-estados .ver-estados-btns .ubits-button { flex-shrink: 0; white-space: nowrap; }
+    </style>
+</head>
+<body data-theme="light">
+    <div class="content-area">
+        <header class="page-header">
+            <h1 class="ubits-heading-h1 page-title">Ejemplo: UBITS Data Table</h1>
+            <p class="ubits-body-md-regular page-desc">Tabla tipo seguimiento (lista de tareas) con búsqueda, filtros, orden y barra de acciones.</p>
+        </header>
+        <section class="widget-ver-estados" aria-label="Estados de la tabla">
+            <div class="ver-estados-btns">
+                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="tabla-ejemplo-estado-con-datos"><span>Con datos</span></button>
+                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="tabla-ejemplo-estado-sin-datos"><span>Sin datos</span></button>
+            </div>
+        </section>
+        <div id="tabla-ejemplo-container" class="tabla-ejemplo-wrap"></div>
+    </div>
+    <div id="tabla-ejemplo-modals-container"></div>
+    <div id="ubits-toast-container"></div>
+    <script src="../../components/modal.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script>
+    /* UBITS Data Table - incrustado para abrir por doble clic */
+(function () {
+    'use strict';
+
+    var defaultI18n = {
+        selectAll: 'Seleccionar todo',
+        deselectAll: 'Deseleccionar todo',
+        verSeleccionados: 'Ver seleccionados',
+        clearFilters: 'Limpiar filtros',
+        filtrosAplicados: 'Filtros aplicados',
+        buscar: 'Buscar'
+    };
+
+    function normalizeText(t) {
+        if (t == null) return '';
+        return String(t).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    }
+
+    function getRowCellText(tr, colId) {
+        var td = tr.querySelector('td[data-col="' + colId + '"]');
+        if (!td) return '';
+        var span = td.querySelector('.ubits-body-sm-regular, .ubits-body-md-regular, span');
+        return span ? span.textContent.trim() : td.textContent.trim();
+    }
+
+    /**
+     * @param {Object} options
+     * @param {string} options.containerId - ID del contenedor donde se renderiza la tabla
+     * @param {string} [options.tableId] - id del <table>
+     * @param {Array<{id: string, label: string, sortable?: boolean, filterable?: boolean}>} options.columns
+     * @param {function(): Array} options.getData
+     * @param {string} options.rowIdField - clave del row para el id (ej. 'id')
+     * @param {function(Object): string} options.buildRowHtml - devuelve HTML de celdas (sin checkbox); si checkboxes, el componente añade la columna
+     * @param {Object} [options.features] - { checkboxes, search, filters, verSeleccionados, actionBar, resultsCount }
+     * @param {Object} [options.emptyState] - { message, icon }
+     * @param {Object} [options.emptySearchState] - { message }
+     * @param {Array} [options.actionBarButtons] - [{ id, label, icon, onClick(selectedIds) }]
+     * @param {Object} [options.i18n]
+     * @param {string} [options.title] - título opcional en la barra superior
+     */
+    function createUbitsDataTable(options) {
+        options = options || {};
+        var containerId = options.containerId;
+        var tableId = options.tableId || 'ubits-data-table';
+        var columns = options.columns || [];
+        var getData = typeof options.getData === 'function' ? options.getData : function () { return []; };
+        var rowIdField = options.rowIdField || 'id';
+        var buildRowHtml = typeof options.buildRowHtml === 'function' ? options.buildRowHtml : function () { return ''; };
+        var features = options.features || {};
+        var emptyState = options.emptyState || { message: 'No hay elementos.', icon: 'far fa-folder-open' };
+        var emptySearchState = options.emptySearchState || { message: 'No hay resultados para tu búsqueda.' };
+        var actionBarButtons = options.actionBarButtons || [];
+        var i18n = Object.assign({}, defaultI18n, options.i18n || {});
+        var title = options.title || '';
+
+        var searchQuery = '';
+        var filters = {};
+        var sortColumn = null;
+        var sortDirection = 'asc';
+        var viewOnlySelected = false;
+        var selectedIds = new Set();
+
+        var container = document.getElementById(containerId);
+        if (!container) {
+            console.error('UBITS Data Table: contenedor no encontrado:', containerId);
+            return null;
+        }
+
+        var instanceId = tableId.replace(/[^a-z0-9-_]/gi, '-');
+        var selectAllId = 'ubits-dt-select-all-' + instanceId;
+        var rowCheckClass = 'ubits-dt-row-check-' + instanceId;
+        var searchContainerId = 'ubits-dt-search-' + instanceId;
+        var emptyStateId = 'ubits-dt-empty-' + instanceId;
+        var filterOverlayPrefix = 'ubits-dt-filter-' + instanceId;
+        var sortOverlayPrefix = 'ubits-dt-sort-' + instanceId;
+
+        columns.forEach(function (c) { filters[c.id] = filters[c.id] || []; });
+
+        function getTableEl() {
+            return container.querySelector('#' + tableId) || container.querySelector('table');
+        }
+        function getTbody() {
+            var t = getTableEl();
+            return t ? t.querySelector('tbody') : null;
+        }
+        function getSelectAllCheckbox() {
+            return container.querySelector('#' + selectAllId) || container.querySelector('.ubits-table__th--checkbox input[type="checkbox"]');
+        }
+
+        function getTableRows() {
+            var tbody = getTbody();
+            return tbody ? Array.from(tbody.querySelectorAll('tr')) : [];
+        }
+
+        function getVisibleRows() {
+            var rows = getTableRows();
+            if (features.search && searchQuery.trim()) {
+                var q = normalizeText(searchQuery);
+                rows = rows.filter(function (r) {
+                    return columns.some(function (c) {
+                        return normalizeText(getRowCellText(r, c.id)).indexOf(q) >= 0;
+                    });
+                });
+            }
+            columns.forEach(function (c) {
+                if (c.filterable && filters[c.id] && filters[c.id].length > 0) {
+                    var vals = filters[c.id];
+                    rows = rows.filter(function (r) {
+                        var v = getRowCellText(r, c.id);
+                        return vals.indexOf(v) >= 0;
+                    });
+                }
+            });
+            if (features.verSeleccionados && viewOnlySelected && features.checkboxes) {
+                rows = rows.filter(function (r) {
+                    var cb = r.querySelector('.' + rowCheckClass);
+                    return cb && cb.checked;
+                });
+            }
+            if (sortColumn) {
+                var col = columns.find(function (c) { return c.id === sortColumn; });
+                var isNum = col && (col.sortType === 'number' || col.id === 'integrantes');
+                rows = rows.slice().sort(function (a, b) {
+                    var va = getRowCellText(a, sortColumn);
+                    var vb = getRowCellText(b, sortColumn);
+                    if (isNum) {
+                        var na = parseInt(va, 10) || 0;
+                        var nb = parseInt(vb, 10) || 0;
+                        return sortDirection === 'asc' ? na - nb : nb - na;
+                    }
+                    var cmp = (va || '').localeCompare(vb || '', 'es');
+                    return sortDirection === 'asc' ? cmp : -cmp;
+                });
+            }
+            return rows;
+        }
+
+        function renderStructure() {
+            var html = '<div class="ubits-data-table">';
+            if (features.search || features.resultsCount || title) {
+                html += '<div class="ubits-dt-header-bar">';
+                html += '<div class="ubits-dt-header-left">';
+                if (title) html += '<span class="ubits-body-md-bold">' + escapeHtml(title) + '</span>';
+                if (features.resultsCount) html += '<span class="ubits-body-sm-regular ubits-dt-results-count" id="' + instanceId + '-results-count">0/0</span>';
+                html += '</div>';
+                html += '<div class="ubits-dt-header-right">';
+                if (features.search) {
+                    html += '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only ubits-dt-search-toggle" aria-label="' + escapeHtml(i18n.buscar) + '" data-tooltip="' + escapeHtml(i18n.buscar) + '" data-tooltip-delay="1000"><i class="far fa-magnifying-glass"></i></button>';
+                    html += '<div id="' + searchContainerId + '" class="ubits-dt-search-inline" style="display:none;"></div>';
+                }
+                html += '</div></div>';
+            }
+            if (features.filters) {
+                html += '<div class="widget-filtros-aplicados ubits-dt-filtros-aplicados" id="' + instanceId + '-filtros" style="display:none;">';
+                html += '<span class="ubits-body-sm-regular">' + escapeHtml(i18n.filtrosAplicados) + ':</span>';
+                html += '<div class="filtros-chips-container" id="' + instanceId + '-filtros-chips"></div>';
+                html += '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-dt-clear-filters" aria-label="' + escapeHtml(i18n.clearFilters) + '"><i class="far fa-filter-slash"></i><span>' + escapeHtml(i18n.clearFilters) + '</span></button>';
+                html += '</div>';
+            }
+            if (features.actionBar || features.verSeleccionados) {
+                html += '<div class="ubits-dt-action-bar" id="' + instanceId + '-action-bar">';
+                if (features.verSeleccionados) {
+                    html += '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-dt-ver-seleccionados">';
+                    html += '<i class="far fa-eye"></i><span>' + escapeHtml(i18n.verSeleccionados) + '</span></button>';
+                }
+                if (features.actionBar && actionBarButtons.length) {
+                    html += '<div class="ubits-dt-action-buttons">';
+                    actionBarButtons.forEach(function (btn) {
+                        var btnVariant = (btn.variant === 'error-secondary') ? 'ubits-button--error-secondary' : 'ubits-button--tertiary';
+                        html += '<button type="button" class="ubits-button ' + btnVariant + ' ubits-button--sm ubits-dt-action-btn" data-action="' + escapeHtml(btn.id) + '">';
+                        if (btn.icon) html += '<i class="far ' + escapeHtml(btn.icon.replace(/^fa-/, 'fa-') + '"></i>';
+                        html += '<span>' + escapeHtml(btn.label) + '</span></button>';
+                    });
+                    html += '</div>';
+                }
+                html += '</div>';
+            }
+            html += '<div class="ubits-dt-table-wrapper">';
+            html += '<div class="ubits-table-wrapper ubits-table-wrapper--min-width">';
+            html += '<table class="ubits-table" id="' + tableId + '"><thead><tr id="' + instanceId + '-thead-row"></tr></thead><tbody id="' + instanceId + '-tbody"></tbody></table>';
+            html += '</div>';
+            html += '<div id="' + emptyStateId + '" class="ubits-dt-empty-state" style="display:none;"></div>';
+            html += '</div></div>';
+            container.innerHTML = html;
+        }
+
+        function escapeHtml(text) {
+            if (text == null) return '';
+            var div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function renderThead() {
+            var tr = container.querySelector('#' + instanceId + '-thead-row');
+            if (!tr) return;
+            var html = '';
+            if (features.checkboxes) {
+                html += '<th class="ubits-table__th--checkbox" data-col="checkbox" data-tooltip="' + escapeHtml(i18n.selectAll) + '" data-tooltip-delay="1000">';
+                html += '<label class="ubits-checkbox ubits-checkbox--sm" style="display:inline-flex;">';
+                html += '<input type="checkbox" class="ubits-checkbox__input" id="' + selectAllId + '" aria-label="' + escapeHtml(i18n.selectAll) + '">';
+                html += '<span class="ubits-checkbox__box"><i class="fas fa-check"></i><i class="fas fa-minus"></i></span>';
+                html += '<span class="ubits-checkbox__label sr-only" aria-hidden="true">&nbsp;</span></label></th>';
+            }
+            columns.forEach(function (c) {
+                var thClass = 'ubits-dt-th';
+                if (c.sortable) thClass += ' ubits-dt-th-sortable';
+                if (c.filterable) thClass += ' ubits-dt-th-filterable';
+                html += '<th class="' + thClass + '" data-col="' + escapeHtml(c.id) + '">' + escapeHtml(c.label);
+                if (c.sortable) {
+                    html += ' <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only ubits-dt-sort-btn" data-sort="' + escapeHtml(c.id) + '" aria-label="Ordenar por ' + escapeHtml(c.label) + '" data-tooltip="Ordenar por ' + escapeHtml(c.label) + '" data-tooltip-delay="1000"><i class="far fa-arrow-up-arrow-down"></i></button>';
+                }
+                if (c.filterable) {
+                    html += ' <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only ubits-dt-filter-btn" data-filter="' + escapeHtml(c.id) + '" aria-label="Filtrar por ' + escapeHtml(c.label) + '" data-tooltip="Filtrar por ' + escapeHtml(c.label) + '" data-tooltip-delay="1000"><i class="far fa-filter"></i></button>';
+                }
+                html += '</th>';
+            });
+            tr.innerHTML = html;
+        }
+
+        function renderTbody() {
+            var tbody = container.querySelector('#' + instanceId + '-tbody');
+            if (!tbody) return;
+            var data = getData();
+            tbody.innerHTML = '';
+            data.forEach(function (row) {
+                var id = row[rowIdField] != null ? String(row[rowIdField]) : '';
+                var tr = document.createElement('tr');
+                tr.setAttribute('data-id', id);
+                var rowHtml = '';
+                if (features.checkboxes) {
+                    var rowTooltip = selectedIds.has(id) ? i18n.deselectRow : i18n.selectRow;
+                    rowHtml += '<td class="ubits-table__td--checkbox" data-col="checkbox" data-tooltip="' + escapeHtml(rowTooltip) + '" data-tooltip-delay="1000">';
+                    rowHtml += '<label class="ubits-checkbox ubits-checkbox--sm" style="display:inline-flex;">';
+                    rowHtml += '<input type="checkbox" class="ubits-checkbox__input ' + rowCheckClass + '" data-id="' + escapeHtml(id) + '">';
+                    rowHtml += '<span class="ubits-checkbox__box"><i class="fas fa-check"></i></span>';
+                    rowHtml += '<span class="ubits-checkbox__label sr-only" aria-hidden="true">&nbsp;</span></label></td>';
+                }
+                rowHtml += buildRowHtml(row);
+                tr.innerHTML = rowHtml;
+                tbody.appendChild(tr);
+                var cb = tr.querySelector('.' + rowCheckClass);
+                if (cb) {
+                    if (selectedIds.has(id)) cb.checked = true;
+                    cb.addEventListener('change', function () {
+                        var rid = this.getAttribute('data-id');
+                        if (this.checked) selectedIds.add(rid);
+                        else selectedIds.delete(rid);
+                        var td = this.closest('td.ubits-table__td--checkbox');
+                        if (td) td.setAttribute('data-tooltip', this.checked ? i18n.deselectRow : i18n.selectRow);
+                        updateSelectAll();
+                        updateResultsCount();
+                        updateActionBar();
+                        updateVerSeleccionadosBtn();
+                    });
+                }
+            });
+        }
+
+        function applyVisibility() {
+            var tbody = getTbody();
+            if (!tbody) return;
+            var visible = getVisibleRows();
+            var visibleSet = new Set(visible);
+            var allRows = getTableRows();
+            allRows.forEach(function (r) {
+                r.style.display = visibleSet.has(r) ? '' : 'none';
+            });
+            var fragment = document.createDocumentFragment();
+            visible.forEach(function (r) { fragment.appendChild(r); });
+            allRows.forEach(function (r) {
+                if (!visibleSet.has(r)) fragment.appendChild(r);
+            });
+            tbody.innerHTML = '';
+            tbody.appendChild(fragment);
+            updateResultsCount();
+            updateEmptyState();
+            updateSelectAll();
+        }
+
+        function updateSelectAll() {
+            var all = getSelectAllCheckbox();
+            if (!all) return;
+            var visible = getVisibleRows();
+            var checkedCount = visible.filter(function (r) {
+                var cb = r.querySelector('.' + rowCheckClass);
+                return cb && cb.checked;
+            }).length;
+            all.checked = visible.length > 0 && checkedCount === visible.length;
+            all.indeterminate = checkedCount > 0 && checkedCount < visible.length;
+            var th = all.closest('th');
+            if (th) th.setAttribute('data-tooltip', checkedCount > 0 ? i18n.deselectAll : i18n.selectAll);
+        }
+
+        function updateResultsCount() {
+            var el = container.querySelector('.ubits-dt-results-count');
+            if (!el) return;
+            var total = getTableRows().length;
+            var visible = getVisibleRows().length;
+            el.textContent = visible + '/' + total;
+        }
+
+        function updateActionBar() {
+            var bar = container.querySelector('.ubits-dt-action-bar');
+            if (!bar) return;
+            var n = selectedIds.size;
+            bar.classList.toggle('is-visible', n > 0);
+        }
+
+        function updateVerSeleccionadosBtn() {
+            var btn = container.querySelector('.ubits-dt-ver-seleccionados');
+            if (!btn) return;
+            var n = selectedIds.size;
+            var icon = btn.querySelector('i');
+            var span = btn.querySelector('span');
+            if (n === 0) {
+                viewOnlySelected = false;
+                if (icon) icon.className = 'far fa-eye';
+                if (span) span.textContent = i18n.verSeleccionados;
+                btn.classList.remove('active');
+            } else {
+                if (viewOnlySelected) {
+                    if (icon) icon.className = 'far fa-eye-slash';
+                    if (span) span.textContent = 'Dejar de ver seleccionados (' + n + ')';
+                    btn.classList.add('active');
+                } else {
+                    if (icon) icon.className = 'far fa-eye';
+                    if (span) span.textContent = i18n.verSeleccionados;
+                    btn.classList.remove('active');
+                }
+            }
+        }
+
+        function updateEmptyState() {
+            var wrapper = container.querySelector('.ubits-dt-table-wrapper');
+            var tableWrap = wrapper ? wrapper.querySelector('.ubits-table-wrapper') : null;
+            var emptyEl = container.querySelector('#' + emptyStateId);
+            if (!wrapper || !emptyEl) return;
+            var visible = getVisibleRows();
+            var hasData = getTableRows().length > 0;
+            var hasSearchOrFilter = (features.search && searchQuery.trim()) || (features.filters && Object.keys(filters).some(function (k) { return (filters[k] || []).length > 0; }));
+            if (!hasData) {
+                if (tableWrap) tableWrap.style.display = 'none';
+                emptyEl.style.display = 'flex';
+                if (typeof loadEmptyState === 'function') {
+                    loadEmptyState(emptyStateId, {
+                        icon: (emptyState.icon || 'fa-folder-open').replace(/^far\s+/, ''),
+                        iconSize: 'lg',
+                        title: emptyState.message || 'No hay elementos.',
+                        description: emptyState.description || ' '
+                    });
+                } else {
+                    emptyEl.innerHTML = '<p class="ubits-body-md-regular">' + escapeHtml(emptyState.message) + '</p>';
+                }
+            } else if (visible.length === 0 && hasSearchOrFilter) {
+                if (tableWrap) tableWrap.style.display = 'none';
+                emptyEl.style.display = 'flex';
+                if (typeof loadEmptyState === 'function') {
+                    loadEmptyState(emptyStateId, {
+                        icon: 'fa-search',
+                        iconSize: 'lg',
+                        title: emptySearchState.message || 'No hay resultados para tu búsqueda.',
+                        description: emptySearchState.description || ' '
+                    });
+                } else {
+                    emptyEl.innerHTML = '<p class="ubits-body-md-regular">' + escapeHtml(emptySearchState.message) + '</p>';
+                }
+            } else {
+                if (tableWrap) tableWrap.style.display = '';
+                emptyEl.style.display = 'none';
+                emptyEl.innerHTML = '';
+            }
+        }
+
+        function renderFiltrosAplicados() {
+            var wrap = container.querySelector('#' + instanceId + '-filtros');
+            var chipsCont = container.querySelector('#' + instanceId + '-filtros-chips');
+            if (!wrap || !chipsCont) return;
+            var chips = [];
+            if (features.search && searchQuery.trim()) {
+                chips.push({
+                    type: 'search',
+                    label: 'Búsqueda',
+                    value: searchQuery,
+                    remove: function () {
+                        searchQuery = '';
+                        var searchCont = document.getElementById(searchContainerId);
+                        if (searchCont) { searchCont.innerHTML = ''; searchCont.style.display = 'none'; }
+                        var toggle = container.querySelector('.ubits-dt-search-toggle');
+                        if (toggle) toggle.style.display = 'flex';
+                        refresh();
+                    }
+                });
+            }
+            columns.forEach(function (c) {
+                if (!c.filterable) return;
+                (filters[c.id] || []).forEach(function (val, idx) {
+                    chips.push({
+                        type: c.id,
+                        label: c.label,
+                        value: val,
+                        remove: function () {
+                            filters[c.id] = filters[c.id].filter(function (_, i) { return i !== idx; });
+                            refresh();
+                        }
+                    });
+                });
+            });
+            if (chips.length > 0) {
+                wrap.style.display = 'flex';
+                chipsCont.innerHTML = chips.map(function (chip, index) {
+                    var labelVal = (chip.label + ': ' + chip.value).replace(/"/g, '&quot;');
+                    return '<span class="ubits-chip ubits-chip--xs ubits-chip--close ubits-dt-chip" data-chip-index="' + index + '" data-tooltip="' + labelVal + '">' +
+                        '<span class="ubits-chip__text">' + escapeHtml(chip.label + ': ' + chip.value) + '</span>' +
+                        '<button type="button" class="ubits-chip__close" data-chip-index="' + index + '" aria-label="Quitar filtro"><i class="far fa-times"></i></button></span>';
+                }).join('');
+                chipsCont.querySelectorAll('.ubits-chip__close').forEach(function (btn) {
+                    btn.addEventListener('click', function () {
+                        var idx = parseInt(this.getAttribute('data-chip-index'), 10);
+                        if (!isNaN(idx) && chips[idx] && typeof chips[idx].remove === 'function') chips[idx].remove();
+                    });
+                });
+                if (typeof initTooltip === 'function') initTooltip('#' + instanceId + '-filtros-chips .ubits-chip[data-tooltip]');
+            } else {
+                wrap.style.display = 'none';
+                chipsCont.innerHTML = '';
+            }
+        }
+
+        function attachSelectAllListener() {
+            var all = getSelectAllCheckbox();
+            if (!all) return;
+            all.addEventListener('change', function () {
+                var visible = getVisibleRows();
+                var checkedCount = visible.filter(function (r) {
+                    var cb = r.querySelector('.' + rowCheckClass);
+                    return cb && cb.checked;
+                }).length;
+                if (this.checked && checkedCount > 0 && checkedCount < visible.length) {
+                    this.checked = false;
+                    this.indeterminate = false;
+                    visible.forEach(function (r) {
+                        var cb = r.querySelector('.' + rowCheckClass);
+                        if (cb) { cb.checked = false; selectedIds.delete(cb.getAttribute('data-id')); }
+                    });
+                } else if (this.checked) {
+                    visible.forEach(function (r) {
+                        var cb = r.querySelector('.' + rowCheckClass);
+                        if (cb) { cb.checked = true; selectedIds.add(cb.getAttribute('data-id')); }
+                    });
+                } else {
+                    visible.forEach(function (r) {
+                        var cb = r.querySelector('.' + rowCheckClass);
+                        if (cb) { cb.checked = false; selectedIds.delete(cb.getAttribute('data-id')); }
+                    });
+                }
+                updateResultsCount();
+                updateSelectAll();
+                updateActionBar();
+    </script>
+    <script src="../../components/ubits-data-table.js"></script>
+    <script src="../../components/tooltip.js"></script>
+    <script src="../../components/dropdown-menu.js"></script>
+    <script src="../../components/empty-state.js"></script>
+    <script src="../../components/input.js"></script>
+    <script>
+        var datosEjemplo = [
+            { id: '1', nombre: 'Revisar presupuesto Q1', asignado: 'Ana García', areaAsignado: 'Ventas', estado: 'Por hacer', prioridad: 'Alta', fechaFinalizacion: '15 mar 2025' },
+            { id: '2', nombre: 'Configurar entorno de pruebas', asignado: 'Carlos Ruiz', areaAsignado: 'IT', estado: 'Finalizada', prioridad: 'Media', fechaFinalizacion: '10 mar 2025' },
+            { id: '3', nombre: 'Capacitación equipo comercial', asignado: 'María López', areaAsignado: 'Ventas', estado: 'Vencida', prioridad: 'Alta', fechaFinalizacion: '5 mar 2025' },
+            { id: '4', nombre: 'Actualizar políticas de RRHH', asignado: 'Pedro Sánchez', areaAsignado: 'RRHH', estado: 'Por hacer', prioridad: 'Baja', fechaFinalizacion: '20 mar 2025' },
+            { id: '5', nombre: 'Migración a nueva API', asignado: 'Laura Martínez', areaAsignado: 'IT', estado: 'Finalizada', prioridad: 'Alta', fechaFinalizacion: '12 mar 2025' },
+            { id: '6', nombre: 'Evaluación de desempeño', asignado: 'José Fernández', areaAsignado: 'RRHH', estado: 'Por hacer', prioridad: 'Media', fechaFinalizacion: '25 mar 2025' },
+            { id: '7', nombre: 'Cierre de ventas mensual', asignado: 'Elena Torres', areaAsignado: 'Ventas', estado: 'Finalizada', prioridad: 'Media', fechaFinalizacion: '8 mar 2025' }
+        ];
+        function escapeHtmlEjemplo(t) { if (t == null) return ''; var div = document.createElement('div'); div.textContent = t; return div.innerHTML; }
+        function buildRowHtmlSeguimiento(row) {
+            var statusClass = { 'Por hacer': 'info', 'Vencida': 'error', 'Finalizada': 'success' };
+            var prioridadIcon = { 'Alta': 'fa-chevrons-up', 'Media': 'fa-chevron-up', 'Baja': 'fa-chevron-down' };
+            var prioridadVariant = { 'Alta': 'error', 'Media': 'warning', 'Baja': 'info' };
+            var sc = statusClass[row.estado] || 'neutral';
+            var est = (row.estado || '').replace(/</g, '&lt;');
+            var estadoHtml = '<span class="ubits-status-tag ubits-status-tag--' + sc + ' ubits-status-tag--sm"><span class="ubits-status-tag__text">' + est + '</span></span>';
+            var pr = row.prioridad || '';
+            var pv = prioridadVariant[pr] || 'neutral';
+            var pi = prioridadIcon[pr] || 'fa-chevron-up';
+            var prioridadHtml = pr ? '<span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--' + pv + ' ubits-badge-tag--sm ubits-badge-tag--with-icon"><i class="far ' + pi + '"></i><span class="ubits-badge-tag__text">' + escapeHtmlEjemplo(pr) + '</span></span>' : '';
+            return '<td data-col="nombre"><span class="ubits-body-sm-regular">' + escapeHtmlEjemplo(row.nombre) + '</span></td>' +
+                '<td data-col="asignado"><span class="ubits-body-sm-regular">' + escapeHtmlEjemplo(row.asignado) + '</span></td>' +
+                '<td data-col="areaAsignado"><span class="ubits-body-sm-regular">' + escapeHtmlEjemplo(row.areaAsignado) + '</span></td>' +
+                '<td data-col="estado">' + estadoHtml + '</td>' +
+                '<td data-col="prioridad">' + prioridadHtml + '</td>' +
+                '<td data-col="fechaFinalizacion"><span class="ubits-body-sm-regular">' + escapeHtmlEjemplo(row.fechaFinalizacion) + '</span></td>';
+        }
+        var tablaEjemploRef = null;
+        var pendingDeleteIds = [];
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var container = document.getElementById('tabla-ejemplo-container');
+            if (!container) return;
+            if (typeof getModalHtml === 'function') {
+                var deleteBody = '<p class="ubits-body-md-regular">¿Estás seguro de que deseas eliminar <strong id="tabla-ejemplo-delete-count">0</strong> elemento(s) seleccionado(s)?</p><p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Esta acción no se puede deshacer.</p><div class="delete-confirm-group" style="margin-top: var(--gap-lg);"><label class="ubits-body-sm-regular" for="tabla-ejemplo-delete-type-input">Escriba <strong>eliminar</strong> para habilitar el botón:</label><input type="text" id="tabla-ejemplo-delete-type-input" class="ubits-input" placeholder="Escriba la palabra de confirmación" autocomplete="off" style="margin-top: var(--gap-sm); width: 100%; padding: var(--padding-sm) var(--padding-md); border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-sm); font-size: var(--font-size-sm); color: var(--ubits-fg-1-high); box-sizing: border-box;"></div>';
+                var deleteFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="tabla-ejemplo-delete-cancel"><span>Cancelar</span></button><button type="button" class="ubits-button ubits-button--error ubits-button--md" id="tabla-ejemplo-delete-confirm" disabled><span>Eliminar</span></button>';
+                var modalsCont = document.getElementById('tabla-ejemplo-modals-container');
+                if (modalsCont) modalsCont.innerHTML = getModalHtml({ overlayId: 'tabla-ejemplo-delete-overlay', title: 'Confirmar eliminación', bodyHtml: deleteBody, footerHtml: deleteFooter, size: 'sm', closeButtonId: 'tabla-ejemplo-delete-close' });
+            }
+            if (typeof createUbitsDataTable !== 'function') {
+                var script = document.createElement('script');
+                script.src = '../../components/ubits-data-table.js';
+                script.onload = function () { initTablaEjemplo(); initDeleteModal(); initVerEstados(); };
+                script.onerror = function () { container.innerHTML = '<p class="ubits-body-md-regular" style="color: var(--ubits-feedback-accent-error);">No se pudo cargar el componente.</p>'; };
+                document.head.appendChild(script);
+                return;
+            }
+            initTablaEjemplo();
+            initDeleteModal();
+            initVerEstados();
+        });
+
+        function initTablaEjemplo() {
+            if (typeof createUbitsDataTable !== 'function') return;
+            var container = document.getElementById('tabla-ejemplo-container');
+            if (!container) return;
+            try {
+                tablaEjemploRef = createUbitsDataTable({
+                    containerId: 'tabla-ejemplo-container',
+                    tableId: 'tabla-ejemplo',
+                    title: 'Lista de tareas',
+                    columns: [
+                        { id: 'nombre', label: 'Nombre de la tarea', sortable: true, filterable: true },
+                        { id: 'asignado', label: 'Asignado', sortable: true, filterable: true },
+                        { id: 'areaAsignado', label: 'Área del asignado', sortable: true, filterable: true },
+                        { id: 'estado', label: 'Estado', sortable: true, filterable: true },
+                        { id: 'prioridad', label: 'Prioridad', sortable: true, filterable: true },
+                        { id: 'fechaFinalizacion', label: 'Fecha de vencimiento', sortable: true, filterable: true }
+                    ],
+                    getData: function () { return datosEjemplo; },
+                    rowIdField: 'id',
+                    buildRowHtml: buildRowHtmlSeguimiento,
+                    features: { checkboxes: true, search: true, filters: true, verSeleccionados: true, actionBar: true, resultsCount: true, columnsToggle: true },
+                    emptyState: { message: 'Aún no hay tareas.', icon: 'far fa-tasks', description: 'Crea tu primera tarea para comenzar el seguimiento.' },
+                    emptySearchState: { message: 'No se encontraron resultados.', description: 'Intenta ajustar tu búsqueda o filtros.' },
+                    actionBarButtons: [
+                        { id: 'reasignar', label: 'Reasignar', icon: 'far fa-user-plus', onClick: function (ids) { if (typeof showToast === 'function') showToast('info', 'Reasignar'); } },
+                        { id: 'cambiar-prioridad', label: 'Cambiar prioridad', icon: 'far fa-sliders', onClick: function () { if (typeof showToast === 'function') showToast('info', 'Cambiar prioridad'); } },
+                        { id: 'cambiar-estado', label: 'Cambiar estado', icon: 'far fa-rotate', onClick: function () { if (typeof showToast === 'function') showToast('info', 'Cambiar estado'); } },
+                        { id: 'descargar', label: 'Descargar', icon: 'far fa-download', onClick: function () { if (typeof showToast === 'function') showToast('info', 'Descargar'); } },
+                        { id: 'eliminar', label: 'Eliminar', icon: 'far fa-trash', variant: 'error-secondary',
+                            onClick: function (selectedIds) {
+                                if (selectedIds.length === 0) return;
+                                pendingDeleteIds = selectedIds.slice();
+                                var countEl = document.getElementById('tabla-ejemplo-delete-count');
+                                var inputEl = document.getElementById('tabla-ejemplo-delete-type-input');
+                                var confirmEl = document.getElementById('tabla-ejemplo-delete-confirm');
+                                if (countEl) countEl.textContent = pendingDeleteIds.length;
+                                if (inputEl) { inputEl.value = ''; inputEl.focus(); }
+                                if (confirmEl) confirmEl.disabled = true;
+                                if (typeof showModal === 'function') showModal('tabla-ejemplo-delete-overlay');
+                            }
+                        }
+                    ],
+                    i18n: { selectAll: 'Seleccionar todo', deselectAll: 'Deseleccionar todo', verSeleccionados: 'Ver seleccionados', clearFilters: 'Limpiar filtros', filtrosAplicados: 'Filtros aplicados', buscar: 'Buscar' }
+                });
+                if (!tablaEjemploRef) container.innerHTML = '<p class="ubits-body-md-regular" style="color: var(--ubits-feedback-accent-error);">No se pudo crear la tabla.</p>';
+            } catch (err) {
+                container.innerHTML = '<p class="ubits-body-md-regular" style="color: var(--ubits-feedback-accent-error);">No se pudo crear la tabla.</p>';
+            }
+        }
+
+        function initDeleteModal() {
+            var overlay = document.getElementById('tabla-ejemplo-delete-overlay');
+            var inputEl = document.getElementById('tabla-ejemplo-delete-type-input');
+            var confirmBtn = document.getElementById('tabla-ejemplo-delete-confirm');
+            var cancelBtn = document.getElementById('tabla-ejemplo-delete-cancel');
+            var closeBtn = document.getElementById('tabla-ejemplo-delete-close');
+            function closeDeleteModal() {
+                if (typeof hideModal === 'function') hideModal('tabla-ejemplo-delete-overlay');
+                if (inputEl) inputEl.value = '';
+                if (confirmBtn) confirmBtn.disabled = true;
+            }
+            if (inputEl && confirmBtn) inputEl.addEventListener('input', function () { confirmBtn.disabled = this.value.trim().toLowerCase() !== 'eliminar'; });
+            if (cancelBtn) cancelBtn.addEventListener('click', closeDeleteModal);
+            if (closeBtn) closeBtn.addEventListener('click', closeDeleteModal);
+            if (overlay) overlay.addEventListener('click', function (e) { if (e.target === overlay) closeDeleteModal(); });
+            if (confirmBtn) {
+                confirmBtn.addEventListener('click', function () {
+                    var ids = pendingDeleteIds.slice();
+                    closeDeleteModal();
+                    var idSet = {};
+                    ids.forEach(function (id) { idSet[String(id)] = true; });
+                    datosEjemplo = datosEjemplo.filter(function (r) { return !idSet[String(r.id)]; });
+                    if (tablaEjemploRef && typeof tablaEjemploRef.refresh === 'function') tablaEjemploRef.refresh();
+                    pendingDeleteIds = [];
+                    if (typeof showToast === 'function') showToast('success', ids.length + ' elemento(s) eliminado(s) correctamente');
+                });
+            }
+        }
+
+        function initVerEstados() {
+            var datosOriginales = [
+                { id: '1', nombre: 'Revisar presupuesto Q1', asignado: 'Ana García', areaAsignado: 'Ventas', estado: 'Por hacer', prioridad: 'Alta', fechaFinalizacion: '15 mar 2025' },
+                { id: '2', nombre: 'Configurar entorno de pruebas', asignado: 'Carlos Ruiz', areaAsignado: 'IT', estado: 'Finalizada', prioridad: 'Media', fechaFinalizacion: '10 mar 2025' },
+                { id: '3', nombre: 'Capacitación equipo comercial', asignado: 'María López', areaAsignado: 'Ventas', estado: 'Vencida', prioridad: 'Alta', fechaFinalizacion: '5 mar 2025' },
+                { id: '4', nombre: 'Actualizar políticas de RRHH', asignado: 'Pedro Sánchez', areaAsignado: 'RRHH', estado: 'Por hacer', prioridad: 'Baja', fechaFinalizacion: '20 mar 2025' },
+                { id: '5', nombre: 'Migración a nueva API', asignado: 'Laura Martínez', areaAsignado: 'IT', estado: 'Finalizada', prioridad: 'Alta', fechaFinalizacion: '12 mar 2025' },
+                { id: '6', nombre: 'Evaluación de desempeño', asignado: 'José Fernández', areaAsignado: 'RRHH', estado: 'Por hacer', prioridad: 'Media', fechaFinalizacion: '25 mar 2025' },
+                { id: '7', nombre: 'Cierre de ventas mensual', asignado: 'Elena Torres', areaAsignado: 'Ventas', estado: 'Finalizada', prioridad: 'Media', fechaFinalizacion: '8 mar 2025' }
+            ];
+            var btnConDatos = document.getElementById('tabla-ejemplo-estado-con-datos');
+            var btnSinDatos = document.getElementById('tabla-ejemplo-estado-sin-datos');
+            if (btnConDatos) btnConDatos.addEventListener('click', function () {
+                datosEjemplo.length = 0;
+                datosOriginales.forEach(function (r) { datosEjemplo.push(r); });
+                if (tablaEjemploRef && typeof tablaEjemploRef.refresh === 'function') tablaEjemploRef.refresh();
+            });
+            if (btnSinDatos) btnSinDatos.addEventListener('click', function () {
+                datosEjemplo.length = 0;
+                if (tablaEjemploRef && typeof tablaEjemploRef.refresh === 'function') tablaEjemploRef.refresh();
+            });
+        }
+    </script>
+</body>
+</html>

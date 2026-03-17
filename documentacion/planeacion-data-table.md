@@ -97,7 +97,7 @@ table.refresh();
 
 ## 5. Plan de acción paso a paso
 
-**Principio:** No tocar las tablas que ya funcionan (drawer colaboradores, drawer grupos, seguimiento) hasta que el componente esté validado en otro sitio. La migración de tablas existentes es la **última fase**.
+**Principio:** No tocar las tablas que ya funcionan hasta que el componente esté validado en la página de ejemplo. La migración se hará **solo en las tablas de lms-creator** (drawer colaboradores, drawer grupos). La tabla de seguimiento **no se migrará** al componente; sigue como referencia de comportamiento.
 
 ---
 
@@ -119,7 +119,7 @@ table.refresh();
 | 1.12 | Crear `components/ubits-data-table.css` con estilos para tabla, empty state, barra de acciones, chips. Usar solo tokens UBITS (colores, tipografía, espaciado). | CSS sin colores hardcodeados. |
 | 1.13 | Crear una **página de ejemplo** (por ejemplo `documentacion/ejemplos/tabla-data-table-ejemplo.html` o similar) que use `createUbitsDataTable` con **datos de prueba**: columnas con orden y filtros, checkboxes, búsqueda, ver seleccionados, barra de acciones. Validar ahí que todo funciona (select all/deselect all, empty states, filtros, chips) **sin tocar** crear-asignacion ni seguimiento. | Componente renderizado y probado en una página dedicada; tablas existentes siguen igual. |
 
-**Criterio de cierre Fase 1:** El componente existe, se ve y se comporta correctamente en una página de ejemplo. Las tablas actuales (drawer, seguimiento) no se modifican.
+**Criterio de cierre Fase 1:** El componente existe, se ve y se comporta correctamente en una página de ejemplo. Las tablas de lms-creator y seguimiento no se modifican en esta fase.
 
 ---
 
@@ -135,28 +135,27 @@ table.refresh();
 
 ---
 
-### Fase 3: Migrar tablas existentes (último paso)
+### Fase 3: Migrar tablas de lms-creator (último paso)
 
-Solo cuando el componente esté validado en la página de ejemplo y documentado, se tocan las tablas que ya funcionan.
+Solo cuando el componente esté validado en la página de ejemplo y documentado, se migran **únicamente las tablas del lms-creator** (crear-asignacion). La tabla de seguimiento no se migra.
 
 | Paso | Acción | Entregable / Criterio de éxito |
 |------|--------|--------------------------------|
 | 3.1 | Migrar la tabla del **drawer de colaboradores** (crear-asignacion.html) al componente. Configurar columns, getData, buildRowHtml y features. Eliminar código duplicado. Probar que el comportamiento es idéntico. | Drawer colaboradores usa createUbitsDataTable. |
 | 3.2 | Migrar la tabla del **drawer de grupos** (crear-asignacion.html) al componente. Configurar columnas (nombre, descripción, integrantes), orden, checkboxes, ver seleccionados, empty states. | Drawer grupos usa createUbitsDataTable. |
-| 3.3 | Revisar si la **tabla principal de seguimiento** (tareas/planes) puede usar el componente. Si la complejidad (paginación, load more, múltiples pestañas) lo permite, definir config y migrar en pasos; si no, dejar para una fase posterior y documentar la decisión. | Decisión documentada y, si aplica, seguimiento usando el componente o plan para hacerlo más adelante. |
-| 3.4 | **Cierre:** Cuando todo esté listo (componente en uso, documentación publicada, migraciones hechas), eliminar este archivo temporal: `documentacion/planeacion-data-table.md`. | Archivo eliminado; el plan ya no es necesario. |
+| 3.3 | **Cierre:** Cuando todo esté listo (componente en uso, documentación publicada, migraciones de lms-creator hechas), eliminar este archivo temporal: `documentacion/planeacion-data-table.md`. | Archivo eliminado; el plan ya no es necesario. |
 
-**Criterio de cierre Fase 3:** Las tablas del drawer (y opcionalmente seguimiento) usan el componente; no se migra nada hasta que Fase 1 y 2 estén cerradas. Al terminar, se borra este documento de planificación.
+**Criterio de cierre Fase 3:** Las dos tablas del drawer (colaboradores y grupos) en lms-creator usan el componente. Seguimiento permanece sin migrar; sirve solo como referencia. Al terminar, se borra este documento de planificación.
 
 ---
 
 ## 6. Referencias de código actual
 
 - **Lógica checkbox encabezado (referencia obligatoria):** `ubits-colaborador/tareas/seguimiento.js` — en `renderTable()` el listener `change` del `#seguimiento-select-all` que usa `checkedCount` para decidir deseleccionar todo vs seleccionar todo. No depender de flags de click; decidir por estado actual de filas.
-- **Tablas a migrar (solo en Fase 3, cuando el componente esté validado):**  
+- **Tablas a migrar en Fase 3 (solo lms-creator):**  
   - Drawer colaboradores: `ubits-colaborador/lms-creator/crear-asignacion.html` (drawer con tabla de empleados, filtros, búsqueda, ver seleccionados).  
   - Drawer grupos: mismo archivo, segunda tabla del drawer (grupos, orden A–Z / Z–A).  
-  - Seguimiento: `ubits-colaborador/tareas/seguimiento.js` + HTML correspondiente (tabla principal tareas/planes).
+- **Referencia (no se migra):** Seguimiento `ubits-colaborador/tareas/seguimiento.js` + HTML — tabla principal tareas/planes; se usa solo como referencia de comportamiento.
 
 ---
 
@@ -166,6 +165,54 @@ Solo cuando el componente esté validado en la página de ejemplo y documentado,
 |------|-----------|
 | **Fase 1** | Crear `ubits-data-table.js` y `.css`, implementar thead/tbody, checkboxes (lógica seguimiento), empty states, búsqueda, filtros, orden, barra de acciones, ver seleccionados, contador; **validar en una página de ejemplo** (ej. `documentacion/ejemplos/tabla-data-table-ejemplo.html`). No tocar tablas existentes. |
 | **Fase 2** | Documentar componente en `documentacion/componentes.html` y página propia; checklist para tablas nuevas. |
-| **Fase 3** | Migrar drawer colaboradores, drawer grupos y (si aplica) tabla de seguimiento al componente; por último, eliminar `documentacion/planeacion-data-table.md`. Solo después de tener el componente probado y documentado. |
+| **Fase 3** | Migrar **solo** las tablas de lms-creator (drawer colaboradores, drawer grupos) al componente; por último, eliminar `documentacion/planeacion-data-table.md`. La tabla de seguimiento no se migra. |
 
-Al final, las tablas quedarán uniformes y el coste de una tabla nueva será solo definir la configuración (y opcionalmente `buildRowHtml`), sin repetir tooltips, dropdowns, lógica de checkboxes ni empty states. Las tablas que ya funcionan no se tocan hasta la Fase 3. Cuando todo esté listo, se elimina este archivo de planificación.
+Al final, las tablas del lms-creator usarán el componente y el coste de una tabla nueva (en ese u otro flujo) será solo definir la configuración (y opcionalmente `buildRowHtml`). La tabla de seguimiento no se toca. Cuando Fase 3 esté lista, se elimina este archivo de planificación.
+
+---
+
+## 8. Cómo replicar una “tabla tipo seguimiento” en otro producto
+
+Cuando en **otro producto** pidan una tabla parecida a la de seguimiento, usar esta receta para no reimplementar todo desde cero ni depender de memoria.
+
+### 8.1. Qué da el componente UBITS Data Table
+
+El componente (`createUbitsDataTable`) ya cubre:
+
+| Funcionalidad | Cómo activarla |
+|---------------|----------------|
+| Checkboxes (select all / deselect all, tooltips Seleccionar/Deseleccionar) | `features.checkboxes: true` |
+| Búsqueda por texto | `features.search: true` |
+| Filtros por columna (dropdown con checkboxes, chips “Filtros aplicados”, Limpiar filtros) | `features.filters: true` |
+| Orden por columna (dropdown A–Z / Z–A) | `columns[].sortable: true` |
+| Botón “Columnas” (mostrar/ocultar columnas) | `features.columnsToggle: true` |
+| Barra de acciones (botones cuando hay selección) | `features.actionBar: true` + `actionBarButtons` |
+| “Ver seleccionados” / “Dejar de ver seleccionados” | `features.verSeleccionados: true` |
+| Contador de resultados (X/Y) | `features.resultsCount: true` |
+| Empty “sin datos” y empty “sin resultados de búsqueda” (con botón Limpiar búsqueda) | `emptyState`, `emptySearchState` |
+| Modal de eliminar u otras acciones | Implementar en la página y llamar desde `actionBarButtons[].onClick` |
+
+Referencia de uso: `documentacion/ejemplos/tabla-data-table-ejemplo.html`.
+
+### 8.2. Qué hay que añadir en la página (fuera del componente)
+
+Para llegar a algo **tipo seguimiento** en otro producto, en la **misma página** (no dentro del componente) se añade:
+
+| Elemento | Descripción |
+|----------|-------------|
+| **Tabs** (ej. Tareas \| Planes) | Dos conjuntos de datos/columnas. Opciones: dos instancias de `createUbitsDataTable` (una por tab) o una sola con `getData`/`columns` que cambian según el tab activo. |
+| **Indicadores** (Total, Por hacer, Finalizadas, etc.) | HTML propio encima o al lado de la tabla; calcular los números a partir de los datos filtrados (ej. `table.getVisibleRows()` o tu propio filtrado) y actualizarlos al cambiar filtros/búsqueda/tab. |
+| **Rango de fechas / período** | Selector o botón “Período” (Últimos 7 días, personalizado, etc.). Al cambiar, filtrar `getData()` por fecha y llamar a `table.refresh()` o pasar un `getData` que ya venga filtrado. |
+| **Empty “nada en este período”** | Si hay datos pero ninguno cae en el rango elegido: mostrar otro empty state (mensaje + botón “Cambiar período”) y ocultar la tabla; lógica en la página, no en el componente. |
+| **Carga progresiva (“Cargar más”)** | El componente pinta todas las filas visibles; si quieres “Cargar más”, limitar la cantidad de filas que devuelve `getData` y en la página tener un botón que aumente ese límite y llame a `table.refresh()`. |
+| **Celdas con dropdown in-cell (estado, prioridad)** | Lo resuelve `buildRowHtml`: devolver HTML con los badges/dropdowns que necesites; el componente no pinta el contenido de las celdas, solo la estructura de tabla. |
+| **Drawer de filtros** (panel lateral “Filtros”) | Opcional. Los filtros por columna los da el componente; si además quieren un drawer con filtros (asignados, áreas, estado, prioridad, etc.), se implementa en la página. **Referente:** en seguimiento sigue el código del drawer (`getDrawerHtml`, overlay `filtros-modal-overlay` en `seguimiento.js`, aprox. líneas 10–38); está disponible como referencia para quien quiera implementarlo en otro producto. |
+
+### 8.3. Referencia visual y de comportamiento
+
+- **Página de referencia:** `ubits-colaborador/tareas/seguimiento.html` (y `seguimiento.js`).
+- **No tocar** ese código para no romper seguimiento; usarlo solo como referencia de UX y de qué combinar (componente + indicadores + período + tabs, etc.).
+
+### 8.4. Drawer de filtros en seguimiento (referente)
+
+En seguimiento el drawer de filtros **sigue en el código** (panel lateral “Filtros” con buscar asignados, áreas, estado, prioridad): se inyecta con `getDrawerHtml` en `seguimiento.js` (aprox. líneas 10–38, overlay `filtros-modal-overlay`). Quien quiera implementar un drawer de filtros en otro producto puede usar ese código como referente.

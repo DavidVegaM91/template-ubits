@@ -1,0 +1,114 @@
+/* ========================================
+   UBITS Data Table - Estilos del componente
+   Usar solo tokens UBITS (colores, tipografía, espaciado).
+   ======================================== */
+
+.ubits-data-table {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+}
+
+.ubits-data-table .ubits-dt-header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--gap-md);
+    margin-bottom: 0;
+}
+
+.ubits-data-table .ubits-dt-header-left {
+    display: flex;
+    align-items: baseline;
+    gap: var(--gap-md);
+}
+
+.ubits-data-table .ubits-dt-header-right {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.ubits-data-table .ubits-dt-filtros-aplicados {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--gap-md);
+}
+
+.ubits-data-table .ubits-dt-filtros-aplicados .filtros-chips-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-sm);
+    align-items: center;
+}
+
+.ubits-data-table .ubits-dt-action-bar {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--gap-md);
+    padding: var(--padding-sm) 0 var(--padding-md);
+}
+
+.ubits-data-table .ubits-dt-action-bar.is-visible {
+    display: flex;
+}
+
+.ubits-data-table .ubits-dt-action-buttons {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.ubits-data-table .ubits-dt-table-wrapper {
+    width: 100%;
+    overflow: hidden;
+}
+
+.ubits-data-table .ubits-dt-empty-state {
+    width: 100%;
+    padding: var(--padding-6xl) var(--padding-xl);
+    min-height: 200px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.ubits-data-table .ubits-dt-search-inline {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    min-width: 200px;
+}
+
+.ubits-data-table .ubits-dt-th-sortable,
+.ubits-data-table .ubits-dt-th-filterable {
+    white-space: nowrap;
+}
+
+.ubits-data-table .ubits-dt-th button {
+    margin-left: var(--gap-xs);
+}
+
+/* Badge de prioridad: ancho fijo como en seguimiento */
+.ubits-data-table td[data-col="prioridad"] .ubits-badge-tag {
+    width: 72px;
+    min-width: 72px;
+    max-width: 72px;
+}
+
+/* Botón de filtro en estado activo (filtro aplicado en esa columna), igual que seguimiento */
+.ubits-data-table .ubits-dt-filter-btn--active {
+    opacity: 1;
+    background: var(--ubits-feedback-bg-info-subtle) !important;
+    border-color: transparent !important;
+    color: var(--ubits-accent-brand) !important;
+}
+
+.ubits-data-table .ubits-dt-filter-btn--active i {
+    color: var(--ubits-accent-brand) !important;
+}
