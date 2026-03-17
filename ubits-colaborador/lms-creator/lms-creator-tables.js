@@ -54,6 +54,43 @@
     };
 
     /**
+     * Formato DD mmm AAAA (igual que tabla de seguimiento), ej. "28 feb 2025"
+     * dateStr: DD/MM/YYYY o YYYY-MM-DD
+     */
+    window.formatDateDDMmmAAAA = function (dateStr) {
+        var d = parseDate(String(dateStr || ''));
+        if (!d) return dateStr || '';
+        return d.getDate() + ' ' + mesesCorto[d.getMonth()] + ' ' + d.getFullYear();
+    };
+
+    /**
+     * Estado del plan según fechas: hoy < inicio → Planeado; hoy > fin → No vigente; si no → Vigente
+     */
+    window.getEstadoFromFechas = function (fechaInicio, fechaFin) {
+        var inicio = parseDate(String(fechaInicio || ''));
+        var fin = parseDate(String(fechaFin || ''));
+        if (!inicio || !fin) return 'Vigente';
+        var today = new Date();
+        today.setHours(0, 0, 0, 0);
+        if (today < inicio) return 'Planeado';
+        if (today > fin) return 'No vigente';
+        return 'Vigente';
+    };
+
+    /**
+     * Estado al terminar de procesar un plan recién creado: solo Planeado o Vigente (nunca No vigente).
+     * fechaInicio en DD/MM/YYYY. Si hoy < fecha de inicio → Planeado; si no → Vigente.
+     */
+    window.getEstadoAlTerminarProcesando = function (fechaInicio, fechaFin) {
+        var inicio = parseDate(String(fechaInicio || ''));
+        if (!inicio) return 'Vigente';
+        inicio.setHours(0, 0, 0, 0);
+        var today = new Date();
+        today.setHours(0, 0, 0, 0);
+        return today.getTime() < inicio.getTime() ? 'Planeado' : 'Vigente';
+    };
+
+    /**
      * Aplica formato humanizado a celdas con data-date (valor DD/MM/YYYY o YYYY-MM-DD)
      * selector: contenedor, ej. '#asignaciones-table'
      * dateCols: ['fecha-inicio', 'fecha-fin'] (data-col de las celdas)

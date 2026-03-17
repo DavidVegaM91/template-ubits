@@ -16,6 +16,13 @@
     gap: var(--gap-md);
 }
 
+.detalle-plan-progress-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-md);
+}
+
 .detalle-plan-progress-card__label {
     color: var(--ubits-fg-1-high);
 }
@@ -32,14 +39,30 @@
     gap: var(--gap-md);
 }
 
+/* Barra de progreso: mismos estilos que plan-detail (plan-detail-card__bar / bar-fill) */
 .detalle-plan-progress-card__bar {
     flex: 1;
-    min-width: 0;
-    width: 100%;
+    min-width: 100px;
+    height: 8px;
+    background: var(--ubits-bg-3);
+    border-radius: var(--border-radius-full);
+    overflow: hidden;
 }
 
-.detalle-plan-progress-card__content .ubits-body-md-bold {
-    color: var(--ubits-accent-brand);
+.detalle-plan-progress-card__bar-fill {
+    height: 100%;
+    background: var(--ubits-accent-brand);
+    border-radius: var(--border-radius-full);
+    transition: width 0.3s ease;
+}
+
+/* Texto del porcentaje (X%): mismos estilos que plan-detail (plan-detail-card__percent) */
+.detalle-plan-progress-card__percent {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    line-height: 19.5px;
+    color: var(--ubits-fg-1-medium);
     flex-shrink: 0;
 }
 
@@ -277,4 +300,38 @@
 /* Footer del drawer con botón Cerrar alineado a la derecha */
 #drawer-contenidos-estudiante .ubits-drawer-footer {
     justify-content: flex-end;
+}
+
+/* Celda nombre del usuario: avatar + nombre (misma línea) */
+.detalle-plan-usuario-cell {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.detalle-plan-usuario-cell .ubits-body-sm-regular {
+    color: var(--ubits-fg-1-medium);
+}
+
+/* Filas de asignaciones clicables para abrir drawer */
+.page-detalle-plan .ubits-data-table tbody tr[data-id] {
+    cursor: pointer;
+}
+
+/* Contenedor de cards en el drawer: mismo padding y fondo que drawer Agregar contenidos (crear-plan-contenidos) */
+.detalle-plan-drawer-cards-bg {
+    background: var(--ubits-bg-2);
+    padding: var(--padding-md);
+    border-radius: var(--border-radius-sm);
+}
+
+/* Dos columnas de cards, igual que en el drawer de Agregar contenidos */
+.detalle-plan-drawer-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--gap-md);
+}
+
+.detalle-plan-drawer-cards-grid .course-card-compact {
+    min-width: 0;
 }

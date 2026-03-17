@@ -92,10 +92,10 @@
             var pendingDeleteIds = [];
 
             var planesFormacionData = [
-                { id: '1', nombre: 'Plan de onboarding 2025', fechaInicio: '01/01/2025', fechaFin: '31/03/2025', estado: 'Vigente', progreso: 65, tipo: 'contenidos' },
-                { id: '2', nombre: 'Competencias de liderazgo', fechaInicio: '15/02/2025', fechaFin: '30/06/2025', estado: 'Vigente', progreso: 20, tipo: 'competencias' },
-                { id: '3', nombre: 'Cursos de cumplimiento Q1', fechaInicio: '01/03/2025', fechaFin: '31/03/2025', estado: 'Pendiente', progreso: 0, tipo: 'contenidos' },
-                { id: '4', nombre: 'Evaluación técnica 2024', fechaInicio: '01/09/2024', fechaFin: '15/12/2024', estado: 'No vigente', progreso: 100, tipo: 'competencias' }
+                { id: '2', nombre: 'Competencias de liderazgo', fechaInicio: '01/04/2026', fechaFin: '30/06/2026', estado: 'Procesando 0%', progreso: 0, tipo: 'contenidos' },
+                { id: '1', nombre: 'Plan de onboarding Q3 2026', fechaInicio: '01/07/2026', fechaFin: '30/09/2026', estado: 'Planeado', progreso: 0, tipo: 'contenidos' },
+                { id: '3', nombre: 'Cursos de cumplimiento Q1', fechaInicio: '01/01/2026', fechaFin: '31/03/2026', estado: 'Vigente', progreso: 65, tipo: 'contenidos' },
+                { id: '4', nombre: 'Evaluación técnica 2025', fechaInicio: '01/09/2025', fechaFin: '15/12/2025', estado: 'No vigente', progreso: 85, tipo: 'contenidos' }
             ];
 
             if (typeof getModalHtml === 'function') {
@@ -110,13 +110,32 @@
                 d.textContent = t;
                 return d.innerHTML;
             }
+            function getEstadoTagClass(estado) {
+                if (estado === 'Planeado') return 'info';
+                if (String(estado).indexOf('Procesando') === 0) return 'warning';
+                if (estado === 'Vigente') return 'success';
+                if (estado === 'No vigente') return 'neutral';
+                return 'neutral';
+            }
+            function getEstadoTooltip(estado) {
+                if (estado === 'Planeado') return 'Plan creado para una fecha futura; aún no ha iniciado. Solo lo ve el administrador, no los estudiantes.';
+                if (estado === 'Vigente') return 'En curso: la fecha actual está entre inicio y fin.';
+                if (estado === 'No vigente') return 'Ya pasó la fecha de cierre. El progreso quedó congelado; lo que estudien después no suma al plan.';
+                return '';
+            }
             function buildPlanesRowHtml(row) {
-                var estadoClass = { 'Vigente': 'success', 'Pendiente': 'warning', 'No vigente': 'neutral' }[row.estado] || 'neutral';
-                var estadoHtml = '<span class="ubits-status-tag ubits-status-tag--' + estadoClass + ' ubits-status-tag--sm"><span class="ubits-status-tag__text">' + escapeHtml(row.estado) + '</span></span>';
+                var estadoClass = getEstadoTagClass(row.estado);
+                var tagHtml = '<span class="ubits-status-tag ubits-status-tag--' + estadoClass + ' ubits-status-tag--sm"><span class="ubits-status-tag__text">' + escapeHtml(row.estado) + '</span></span>';
+                var tooltipText = getEstadoTooltip(row.estado);
+                var estadoHtml = tooltipText
+                    ? '<span data-tooltip="' + escapeHtml(tooltipText) + '">' + tagHtml + '</span>'
+                    : tagHtml;
                 var pct = Math.min(100, Math.max(0, parseInt(row.progreso, 10) || 0));
+                var fechaInicioDisplay = (typeof formatDateDDMmmAAAA === 'function' ? formatDateDDMmmAAAA(row.fechaInicio) : row.fechaInicio);
+                var fechaFinDisplay = (typeof formatDateDDMmmAAAA === 'function' ? formatDateDDMmmAAAA(row.fechaFin) : row.fechaFin);
                 return '<td data-col="nombre"><span class="ubits-body-sm-regular">' + escapeHtml(row.nombre) + '</span></td>' +
-                    '<td data-col="fecha-inicio" data-date="' + escapeHtml(row.fechaInicio) + '"><span class="ubits-body-sm-regular">' + escapeHtml(row.fechaInicio) + '</span></td>' +
-                    '<td data-col="fecha-fin" data-date="' + escapeHtml(row.fechaFin) + '"><span class="ubits-body-sm-regular">' + escapeHtml(row.fechaFin) + '</span></td>' +
+                    '<td data-col="fecha-inicio" data-date="' + escapeHtml(row.fechaInicio) + '"><span class="ubits-body-sm-regular">' + escapeHtml(fechaInicioDisplay) + '</span></td>' +
+                    '<td data-col="fecha-fin" data-date="' + escapeHtml(row.fechaFin) + '"><span class="ubits-body-sm-regular">' + escapeHtml(fechaFinDisplay) + '</span></td>' +
                     '<td data-col="estado">' + estadoHtml + '</td>' +
                     '<td data-col="progreso"><div class="ubits-table__cell-progress"><div class="ubits-table__progress-bar"><div class="ubits-table__progress-bar-fill" style="width:' + pct + '%"></div></div><span class="ubits-body-sm-regular">' + pct + '%</span></div></td>';
             }
@@ -157,6 +176,27 @@
                     emptySearchState: { message: 'No se encontraron resultados', description: 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.', buttonText: 'Limpiar búsqueda' },
                     i18n: { selectAll: 'Seleccionar todo', deselectAll: 'Deseleccionar todo', verSeleccionados: 'Ver seleccionados', clearFilters: 'Limpiar filtros', filtrosAplicados: 'Filtros aplicados', buscar: 'Buscar' }
                 });
+                setTimeout(function() { if (typeof initTooltip === 'function') initTooltip('#planes-data-table-container [data-tooltip]'); }, 50);
+
+                // Animación solo en el status tag (Procesando 0% … 100%); la barra de progreso de la columna se mantiene en 0%
+                var planProcesando = planesFormacionData.filter(function(p) { return String(p.estado).indexOf('Procesando') === 0; })[0];
+                if (planProcesando && planesTablaRef && typeof planesTablaRef.refresh === 'function') {
+                    var step = 2;
+                    var intervalMs = 40;
+                    var procPct = 0;
+                    var animId = setInterval(function() {
+                        procPct = Math.min(100, procPct + step);
+                        planProcesando.estado = 'Procesando ' + procPct + '%';
+                        planesTablaRef.refresh();
+                        if (procPct >= 100) {
+                            clearInterval(animId);
+                            planProcesando.progreso = 0;
+                            planProcesando.estado = (typeof getEstadoAlTerminarProcesando === 'function' ? getEstadoAlTerminarProcesando(planProcesando.fechaInicio, planProcesando.fechaFin) : 'Planeado');
+                            planesTablaRef.refresh();
+                            setTimeout(function() { if (typeof initTooltip === 'function') initTooltip('#planes-data-table-container [data-tooltip]'); }, 50);
+                        }
+                    }, intervalMs);
+                }
             }
 
             if (typeof loadHeaderProduct === 'function') {
@@ -170,6 +210,7 @@
                     onTabChange: function(tabId) {
                         tabActivo = tabId;
                         if (planesTablaRef && typeof planesTablaRef.refresh === 'function') planesTablaRef.refresh();
+                        setTimeout(function() { if (typeof initTooltip === 'function') initTooltip('#planes-data-table-container [data-tooltip]'); }, 50);
                     },
                     aiButton: {
                         text: 'Crear con IA',
