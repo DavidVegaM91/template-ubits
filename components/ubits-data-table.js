@@ -2,6 +2,26 @@
  * UBITS Data Table - Componente reutilizable de tabla con checkboxes, búsqueda, filtros, orden y barra de acciones.
  * Referencia: tabla de seguimiento y tablas del drawer "Agregar asignación".
  *
+ * -----------------------------------------------------------------------------
+ * REQUISITOS OBLIGATORIOS: IMPORTAR EN LA PÁGINA QUE USA createUbitsDataTable
+ * -----------------------------------------------------------------------------
+ * Si usas orden (sortable) o filtros (filterable) en columnas, los dropdowns de ordenamiento
+ * y filtros dependen del componente dropdown-menu. Sin importarlo, los menús no se muestran.
+ *
+ * En el HTML de la página que llama createUbitsDataTable debes incluir:
+ *   <link rel="stylesheet" href=".../components/dropdown-menu.css">
+ *   <script src=".../components/dropdown-menu.js"></script>
+ *
+ * También suelen ser necesarios (según features usados):
+ *   - table.css (tabla base)
+ *   - checkbox.css (si features.checkboxes)
+ *   - empty-state.css + empty-state.js (empty state y búsqueda sin resultados)
+ *   - tooltip.js (tooltips en botones de búsqueda, columnas, etc.)
+ *   - button.css, fontawesome-icons.css (botones y iconos)
+ *
+ * Ejemplo de página que importa todo: crear-plan-contenidos.html, grupos.html, planes-formacion.html.
+ * -----------------------------------------------------------------------------
+ *
  * Uso: createUbitsDataTable({ containerId, tableId, columns, getData, rowIdField, buildRowHtml, features, ... })
  * API: table.getSelectedIds(), table.getVisibleRows(), table.setFilter(), table.refresh()
  *
@@ -119,7 +139,8 @@
         var sortColumn = null;
         var sortDirection = 'asc';
         var viewOnlySelected = false;
-        var selectedIds = new Set();
+        var initialSelectedIds = Array.isArray(options.initialSelectedIds) ? options.initialSelectedIds : [];
+        var selectedIds = new Set(initialSelectedIds);
         var columnVisibility = {};
         columns.forEach(function (c) { columnVisibility[c.id] = true; });
 

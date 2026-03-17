@@ -2,6 +2,11 @@
    ESTILOS ESPECÍFICOS PARA CREAR GRUPO
    ======================================== */
 
+/* Mostrar nombre del producto en el header (el componente lo oculta por defecto) */
+.page-crear-grupo .ubits-header-product__product-title h2 {
+    display: block;
+}
+
 .crear-grupo-form {
     width: 100%;
     display: flex;
@@ -15,19 +20,26 @@
     gap: var(--gap-sm);
 }
 
+.crear-grupo-form__field--nombre {
+    margin-bottom: 0;
+}
+
+.crear-grupo-form__field--desc {
+    margin-top: 0;
+}
+
 .crear-grupo-form__label {
     color: var(--ubits-fg-1-high);
 }
 
-/* Nombre editable en el header */
-.crear-grupo-title-editable {
+/* Nombre editable inline (como plan-detail) */
+.widget-crear-grupo .task-detail-title-editable {
     font-family: 'Noto Sans', sans-serif;
     line-height: 1.25;
     color: var(--ubits-fg-1-high);
     border: none;
     background: transparent;
     width: 100%;
-    min-width: 120px;
     min-height: 1.25em;
     padding: 0;
     margin: 0;
@@ -36,45 +48,64 @@
     outline: none;
     cursor: text;
     box-sizing: border-box;
-    transition: background 0.2s ease, border-radius 0.2s ease;
 }
 
-.crear-grupo-title-editable:hover,
-.crear-grupo-title-editable:focus {
+.widget-crear-grupo .task-detail-title-editable:hover,
+.widget-crear-grupo .task-detail-title-editable:focus {
     background: var(--ubits-bg-2);
     border-radius: var(--border-radius-xs);
 }
 
-.crear-grupo-title-editable::placeholder {
+.widget-crear-grupo .task-detail-title-editable::placeholder {
     color: var(--ubits-fg-1-low);
 }
 
-#header-product-container .ubits-header-product__product-title .crear-grupo-title-editable {
-    flex: 1;
-    min-width: 0;
+/* Descripción editable inline (como plan-detail) */
+.widget-crear-grupo .task-detail-desc-editable {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    line-height: 1.5;
+    color: var(--ubits-fg-1-medium);
+    border: none;
+    background: transparent;
+    width: 100%;
+    min-height: 0;
+    padding: 0;
+    margin: 0;
+    resize: none;
+    outline: none;
+    cursor: text;
+    box-sizing: border-box;
+    overflow-y: hidden;
 }
 
-/* Integrantes - tabla y botón */
-.crear-grupo-integrantes-wrapper {
+.widget-crear-grupo .task-detail-desc-editable:hover,
+.widget-crear-grupo .task-detail-desc-editable:focus {
+    background: var(--ubits-bg-2);
+    border-radius: var(--border-radius-xs);
+}
+
+.widget-crear-grupo .task-detail-desc-editable::placeholder {
+    color: var(--ubits-fg-1-low);
+}
+
+/* Drawer Agregar integrantes: solo panel de colaboradores (sin cards arriba) */
+.page-crear-grupo .drawer-usuarios-panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+}
+
+.page-crear-grupo .drawer-usuarios-panel--colaborador {
     display: flex;
     flex-direction: column;
     gap: var(--gap-md);
 }
 
-.crear-grupo-integrantes-table td[data-col="nombre"],
-.crear-grupo-integrantes-table td[data-col="correo"] {
-    min-width: 160px;
-}
-
-.ubits-table__th--actions {
-    width: 80px;
-    text-align: center;
-}
-
-.crear-grupo-integrantes-table td[data-col="acciones"] {
-    text-align: center;
-}
-
-.crear-grupo-form__field--integrantes #btn-agregar-persona {
-    align-self: flex-start;
+.page-crear-grupo .drawer-colab-dt-wrapper {
+    width: 100%;
+    min-width: 0;
 }
