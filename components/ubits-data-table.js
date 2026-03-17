@@ -676,6 +676,8 @@
                         overlayId: overlayId,
                         contentId: contentId,
                         options: options,
+                        hasAutocomplete: true,
+                        autocompletePlaceholder: 'Buscar...',
                         footerPrimaryLabel: 'Aplicar',
                         footerSecondaryLabel: 'Cancelar',
                         footerPrimaryId: overlayId + '-footer-primary',
@@ -684,8 +686,38 @@
                     document.body.insertAdjacentHTML('beforeend', filterHtml);
                     var overlayEl = document.getElementById(overlayId);
                     if (overlayEl) {
+                        overlayEl.classList.add('ubits-dt-filter-overlay');
                         var content = overlayEl.querySelector('.ubits-dropdown-menu__content');
                         if (content) content.addEventListener('click', function (ev) { ev.stopPropagation(); });
+                        var searchInput = document.getElementById(overlayId + '-autocomplete-input');
+                        var searchClear = document.getElementById(overlayId + '-autocomplete-clear');
+                        var optionsWrap = overlayEl.querySelector('.ubits-dropdown-menu__options');
+                        function normalizeFilterText(t) {
+                            if (!t) return '';
+                            return String(t).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                        }
+                        function filterOptionsBySearch() {
+                            var q = (searchInput && searchInput.value) ? searchInput.value.trim() : '';
+                            var nq = normalizeFilterText(q);
+                            if (searchClear) searchClear.style.display = nq ? 'block' : 'none';
+                            if (!optionsWrap) return;
+                            optionsWrap.querySelectorAll('.ubits-dropdown-menu__option').forEach(function (opt) {
+                                var label = opt.querySelector('.ubits-checkbox__label');
+                                var text = (label ? label.textContent : '') || (opt.getAttribute('data-value') || '');
+                                var match = !nq || normalizeFilterText(text).indexOf(nq) >= 0;
+                                opt.style.display = match ? '' : 'none';
+                            });
+                        }
+                        if (searchInput) {
+                            searchInput.addEventListener('input', filterOptionsBySearch);
+                            searchInput.addEventListener('keyup', filterOptionsBySearch);
+                        }
+                        if (searchClear) {
+                            searchClear.addEventListener('click', function () {
+                                if (searchInput) { searchInput.value = ''; searchInput.focus(); }
+                                filterOptionsBySearch();
+                            });
+                        }
                         var footerPrimary = document.getElementById(overlayId + '-footer-primary');
                         if (footerPrimary) {
                             footerPrimary.addEventListener('click', function () {

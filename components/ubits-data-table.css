@@ -121,3 +121,9 @@
 .ubits-data-table.ubits-data-table--empty .ubits-dt-search-toggle {
     display: none !important;
 }
+
+/* Dropdown de filtro: autocomplete + mismo alto máximo que seguimiento (220px) */
+.ubits-dt-filter-overlay .ubits-dropdown-menu__options {
+    max-height: 220px;
+    overflow-y: auto;
+}

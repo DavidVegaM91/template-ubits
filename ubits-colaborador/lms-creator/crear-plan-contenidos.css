@@ -701,12 +701,16 @@
 /* Dropdown del filtro del drawer: por encima del drawer (drawer usa z-index 1100–1101) */
 #drawer-cursos-filter-overlay.ubits-dropdown-menu__overlay,
 #drawer-colab-filter-overlay.ubits-dropdown-menu__overlay,
-#drawer-grupos-sort-overlay.ubits-dropdown-menu__overlay {
+#drawer-grupos-sort-overlay.ubits-dropdown-menu__overlay,
+[id^="ubits-dt-filter-drawer-"].ubits-dropdown-menu__overlay,
+[id^="ubits-dt-sort-drawer-"].ubits-dropdown-menu__overlay {
     z-index: 1102;
 }
 #drawer-cursos-filter-overlay .ubits-dropdown-menu__content,
 #drawer-colab-filter-overlay .ubits-dropdown-menu__content,
-#drawer-grupos-sort-overlay .ubits-dropdown-menu__content {
+#drawer-grupos-sort-overlay .ubits-dropdown-menu__content,
+[id^="ubits-dt-filter-drawer-"] .ubits-dropdown-menu__content,
+[id^="ubits-dt-sort-drawer-"] .ubits-dropdown-menu__content {
     z-index: 1103;
 }
 
