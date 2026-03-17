@@ -601,6 +601,7 @@
                     rowIdField: 'id',
                     buildRowHtml: buildRowHtmlSeguimiento,
                     features: { checkboxes: true, search: true, filters: true, verSeleccionados: true, actionBar: true, resultsCount: true, columnsToggle: true },
+                    primaryButton: { text: 'Nueva tarea', icon: 'fa-plus', onClick: function () { if (typeof showToast === 'function') showToast('info', 'Nueva tarea'); } },
                     emptyState: { message: 'Aún no hay tareas.', icon: 'far fa-tasks', description: 'Crea tu primera tarea para comenzar el seguimiento.' },
                     emptySearchState: { message: 'No se encontraron resultados.', description: 'Intenta ajustar tu búsqueda o filtros.' },
                     actionBarButtons: [

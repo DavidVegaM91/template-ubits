@@ -67,6 +67,7 @@
      * @param {Object} [options.emptyState] - { message, icon }
      * @param {Object} [options.emptySearchState] - { message, description, buttonText } (empty de búsqueda; por defecto igual que seguimiento: título "No se encontraron resultados", botón "Limpiar búsqueda")
      * @param {Array} [options.actionBarButtons] - [{ id, label, icon, onClick(selectedIds) }]
+     * @param {Object} [options.primaryButton] - { text: string, icon?: string, onClick: function() } botón primario en el header (al lado del botón Columnas)
      * @param {Object} [options.i18n]
      * @param {string} [options.title] - título opcional en la barra superior
      */
@@ -86,6 +87,7 @@
             buttonText: 'Limpiar búsqueda'
         };
         var actionBarButtons = options.actionBarButtons || [];
+        var primaryButton = options.primaryButton || null;
         var i18n = Object.assign({}, defaultI18n, options.i18n || {});
         var title = options.title || '';
 
@@ -182,7 +184,7 @@
 
         function renderStructure() {
             var html = '<div class="ubits-data-table">';
-            if (features.search || features.resultsCount || features.columnsToggle || title) {
+            if (features.search || features.resultsCount || features.columnsToggle || title || primaryButton) {
                 html += '<div class="ubits-dt-header-bar">';
                 html += '<div class="ubits-dt-header-left">';
                 if (title) html += '<span class="ubits-body-md-bold">' + escapeHtml(title) + '</span>';
@@ -195,6 +197,11 @@
                 }
                 if (features.columnsToggle && columns.length > 0) {
                     html += '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only ubits-dt-columns-toggle" id="' + instanceId + '-columns-toggle" aria-label="' + escapeHtml(i18n.columnasVisibles) + '" data-tooltip="' + escapeHtml(i18n.columnasVisibles) + '" data-tooltip-delay="1000"><i class="far fa-columns-3"></i></button>';
+                }
+                if (primaryButton && primaryButton.text) {
+                    html += '<button type="button" class="ubits-button ubits-button--primary ubits-button--md ubits-dt-primary-btn" id="' + instanceId + '-primary-btn">';
+                    if (primaryButton.icon) html += '<i class="far ' + escapeHtml(String(primaryButton.icon).replace(/^fa-/, 'fa-')) + '"></i>';
+                    html += '<span>' + escapeHtml(primaryButton.text) + '</span></button>';
                 }
                 html += '</div></div>';
             }
@@ -694,6 +701,15 @@
             });
         }
 
+        function attachPrimaryButton() {
+            if (!primaryButton || !primaryButton.text) return;
+            var btn = container.querySelector('#' + instanceId + '-primary-btn');
+            if (!btn || typeof primaryButton.onClick !== 'function') return;
+            btn.addEventListener('click', function () {
+                primaryButton.onClick();
+            });
+        }
+
         function attachColumnsToggle() {
             if (!features.columnsToggle || columns.length === 0) return;
             var btn = document.getElementById(instanceId + '-columns-toggle');
@@ -794,6 +810,7 @@
         attachVerSeleccionados();
         attachActionButtons();
         attachColumnsToggle();
+        attachPrimaryButton();
         attachSearch();
         if (typeof initTooltip === 'function') {
             initTooltip('#' + tableId + ' thead [data-tooltip]');
