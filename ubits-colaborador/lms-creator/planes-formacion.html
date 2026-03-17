@@ -204,7 +204,8 @@
                                     opt.addEventListener('click', function() {
                                         var val = this.getAttribute('data-value');
                                         if (typeof closeDropdownMenu === 'function') closeDropdownMenu(overlayId);
-                                        if (val) window.location.href = 'crear-asignacion.html?tipo=' + val;
+                                        if (val === 'contenidos') window.location.href = 'crear-plan-contenidos.html';
+                                        // Plan de competencias: por ahora no hace nada
                                     });
                                 });
                             }

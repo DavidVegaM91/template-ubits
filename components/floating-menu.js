@@ -278,7 +278,7 @@ function setActiveItemByCurrentPage() {
         'crear-plan-asistente.html': 'planes-formacion',
         'detalle-plan.html': 'planes-formacion',
         'planes-formacion.html': 'planes-formacion',
-        'crear-asignacion.html': 'contenidos'
+        'crear-plan-contenidos.html': 'contenidos'
     };
     
     const activeElementId = pageToElementMap[currentPage];

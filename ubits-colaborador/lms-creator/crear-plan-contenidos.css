@@ -1,5 +1,5 @@
 /* ========================================
-   ESTILOS ESPECÍFICOS PARA CREAR ASIGNACIÓN
+   ESTILOS ESPECÍFICOS PARA CREAR PLAN DE CONTENIDOS
    ======================================== */
 
 /* Mostrar título del header (Crear plan de contenidos) — en header-product.css el h2 está oculto por defecto */
@@ -7,36 +7,36 @@
     display: block;
 }
 
-.crear-asignacion-form {
+.crear-plan-contenidos-form {
     width: 100%;
     display: flex;
     flex-direction: column;
     gap: var(--gap-xl);
 }
 
-.crear-asignacion-form__field {
+.crear-plan-contenidos-form__field {
     display: flex;
     flex-direction: column;
     gap: var(--gap-sm);
 }
 
-.crear-asignacion-form__label {
+.crear-plan-contenidos-form__label {
     color: var(--ubits-fg-1-high);
 }
 
-.crear-asignacion-form__helper {
+.crear-plan-contenidos-form__helper {
     color: var(--ubits-fg-1-medium);
     margin: 0;
 }
 
 /* Nombre del plan editable inline (estilos de plan-detail / task-detail) */
-.crear-asignacion-form__field--nombre-plan {
+.crear-plan-contenidos-form__field--nombre-plan {
     display: flex;
     flex-direction: column;
     gap: var(--gap-xs);
 }
 
-.widget-crear-asignacion .task-detail-title-editable {
+.widget-crear-plan-contenidos .task-detail-title-editable {
     font-family: 'Noto Sans', sans-serif;
     line-height: 1.25;
     color: var(--ubits-fg-1-high);
@@ -55,24 +55,24 @@
     box-sizing: border-box;
 }
 
-.widget-crear-asignacion .task-detail-title-editable:hover,
-.widget-crear-asignacion .task-detail-title-editable:focus {
+.widget-crear-plan-contenidos .task-detail-title-editable:hover,
+.widget-crear-plan-contenidos .task-detail-title-editable:focus {
     background: var(--ubits-bg-2);
     border-radius: var(--border-radius-xs);
 }
 
-.widget-crear-asignacion .task-detail-title-editable::placeholder {
+.widget-crear-plan-contenidos .task-detail-title-editable::placeholder {
     color: var(--ubits-fg-1-low);
 }
 
 /* Vigencia - fechas en fila */
-.crear-asignacion-vigencia-row {
+.crear-plan-contenidos-vigencia-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: var(--gap-lg);
 }
 
-.crear-asignacion-vigencia-item {
+.crear-plan-contenidos-vigencia-item {
     min-width: 0;
 }
 
@@ -137,7 +137,7 @@
     color: var(--ubits-fg-1-medium);
 }
 
-.crear-asignacion-asignaciones-section {
+.crear-plan-contenidos-asignaciones-section {
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -204,15 +204,15 @@
     display: none;
 }
 
-.crear-asignacion-buttons-row {
+.crear-plan-contenidos-buttons-row {
     display: flex;
     flex-wrap: wrap;
     gap: var(--gap-md);
     align-items: center;
 }
 
-.crear-asignacion-asignaciones-section #btn-agregar-asignacion,
-.crear-asignacion-asignaciones-section #btn-agregar-masivo {
+.crear-plan-contenidos-asignaciones-section #btn-agregar-asignacion,
+.crear-plan-contenidos-asignaciones-section #btn-agregar-masivo {
     align-self: flex-start;
 }
 
@@ -891,10 +891,10 @@
 }
 
 @media (max-width: 640px) {
-    .crear-asignacion-tipo-options {
+    .crear-plan-contenidos-tipo-options {
         grid-template-columns: 1fr;
     }
-    .crear-asignacion-vigencia-row {
+    .crear-plan-contenidos-vigencia-row {
         grid-template-columns: 1fr;
     }
     .asignaciones-plan-list {

@@ -2,7 +2,12 @@
    ESTILOS ESPECÍFICOS PARA GRUPOS (lista)
    ======================================== */
 
-/* Header bar y action bar (misma UX que planes-formacion) */
+/* Filas clickeables para ir a editar grupo (componente oficial ubits-data-table) */
+#grupos-data-table-container.grupos-formacion-tabla tbody tr[data-id] {
+    cursor: pointer;
+}
+
+/* Header bar y action bar (legacy; el componente usa sus propias clases) */
 .lms-table-header-bar {
     display: flex;
     justify-content: space-between;

@@ -1,6 +1,6 @@
 /**
  * Lista de todos los contenidos disponibles (images/cards-learn).
- * Se usa en crear-asignacion.html para el drawer "Agregar contenidos".
+ * Se usa en crear-plan-contenidos.html para el drawer "Agregar contenidos".
  * Título desde nombre de archivo; competency por palabras clave.
  */
 (function() {

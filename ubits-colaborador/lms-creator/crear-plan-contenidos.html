@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
-    <title>UBITS Playground - LMS Creator - Nuevo plan</title>
+    <title>UBITS Playground - LMS Creator - Crear plan de contenidos</title>
     
     <!-- Estilos locales -->
     <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
@@ -34,7 +34,7 @@
     <link rel="stylesheet" href="../../components/modal.css">
     <link rel="stylesheet" href="./lms-creator.css">
     <link rel="stylesheet" href="./grupos.css">
-    <link rel="stylesheet" href="./crear-asignacion.css">
+    <link rel="stylesheet" href="./crear-plan-contenidos.css">
 </head>
 <body data-theme="light">
     <div class="dashboard-container">
@@ -50,23 +50,23 @@
                         <div class="widget-header-product" id="header-product-container"></div>
                     </div>
                     <div class="section-single">
-                        <div class="widget-crear-asignacion">
-                        <div class="crear-asignacion-form">
+                        <div class="widget-crear-plan-contenidos">
+                        <div class="crear-plan-contenidos-form">
                             <input type="hidden" id="plan-tipo" name="plan-tipo" value="">
-                            <div class="crear-asignacion-form__field crear-asignacion-form__field--nombre-plan">
+                            <div class="crear-plan-contenidos-form__field crear-plan-contenidos-form__field--nombre-plan">
                                 <textarea class="task-detail-title-editable ubits-heading-h1" id="asignacion-nombre" placeholder="Nombre del plan" rows="1" maxlength="250"></textarea>
                             </div>
-                            <div class="crear-asignacion-form__field crear-asignacion-form__field--vigencia">
-                                <div class="crear-asignacion-vigencia-row">
-                                    <div class="crear-asignacion-vigencia-item" id="fecha-inicio-container"></div>
-                                    <div class="crear-asignacion-vigencia-item" id="fecha-fin-container"></div>
+                            <div class="crear-plan-contenidos-form__field crear-plan-contenidos-form__field--vigencia">
+                                <div class="crear-plan-contenidos-vigencia-row">
+                                    <div class="crear-plan-contenidos-vigencia-item" id="fecha-inicio-container"></div>
+                                    <div class="crear-plan-contenidos-vigencia-item" id="fecha-fin-container"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
                                     </div>
                     <!-- Asignaciones: tabla con título, contador, búsqueda, +Agregar asignación -->
-                    <div class="section-single crear-asignacion-asignaciones-section">
+                    <div class="section-single crear-plan-contenidos-asignaciones-section">
                         <div class="widget-asignaciones-lista">
                             <div class="lms-table-header-bar">
                                 <div class="lms-table-header-left">

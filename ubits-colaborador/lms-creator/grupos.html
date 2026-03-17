@@ -26,6 +26,8 @@
     <link rel="stylesheet" href="../../components/toast.css">
     <link rel="stylesheet" href="../../components/modal.css">
     <link rel="stylesheet" href="../../components/empty-state.css">
+    <link rel="stylesheet" href="../../components/chip.css">
+    <link rel="stylesheet" href="../../components/ubits-data-table.css">
     <link rel="stylesheet" href="../../components/dropdown-menu.css">
     <link rel="stylesheet" href="./lms-creator.css">
     <link rel="stylesheet" href="./grupos.css">
@@ -45,71 +47,7 @@
                     </div>
                     <div class="section-single section-single--grupos">
                         <div class="widget-grupos-lista">
-                            <div class="lms-table-header-bar">
-                                <div class="lms-table-header-left">
-                                    <span class="ubits-body-md-bold" id="grupos-header-title">Lista de grupos</span>
-                                    <span class="ubits-body-sm-regular" id="grupos-results-count">0/0</span>
-                                </div>
-                                <div class="lms-table-header-right">
-                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only" id="grupos-search-toggle" aria-label="Buscar" data-tooltip="Buscar" data-tooltip-delay="1000">
-                                        <i class="far fa-magnifying-glass"></i>
-                                    </button>
-                                    <div id="grupos-search-container" class="lms-table-search-inline" style="display: none;"></div>
-                                </div>
-                            </div>
-                            <div class="lms-table-action-bar" id="grupos-action-bar">
-                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="grupos-ver-seleccionados">
-                                    <i class="far fa-eye"></i>
-                                    <span>Ver seleccionados</span>
-                                </button>
-                                <div class="lms-table-action-buttons">
-                                    <button type="button" class="ubits-button ubits-button--error-secondary ubits-button--sm" id="grupos-mass-eliminar">
-                                        <i class="far fa-trash"></i>
-                                        <span>Eliminar</span>
-                                    </button>
-                                </div>
-                            </div>
-                        <div class="grupos-list-wrapper">
-                            <div class="ubits-table-wrapper ubits-table-wrapper--min-width" id="grupos-table-wrapper">
-                                <table class="ubits-table" id="grupos-table">
-                                    <thead>
-                                        <tr>
-                                            <th class="ubits-table__th--checkbox" data-col="checkbox" data-tooltip="Seleccionar todo" data-tooltip-delay="1000"><label class="ubits-checkbox ubits-checkbox--sm" style="display:inline-flex;"><input type="checkbox" class="ubits-checkbox__input" id="grupos-select-all" aria-label="Seleccionar todo"><span class="ubits-checkbox__box"><i class="fas fa-check"></i><i class="fas fa-minus"></i></span><span class="ubits-checkbox__label sr-only" aria-hidden="true">&nbsp;</span></label></th>
-                                            <th data-col="nombre" class="ubits-body-sm-semibold lms-th-sortable">Nombre del grupo <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only lms-sort-btn" data-sort="nombre" aria-label="Ordenar por nombre" data-tooltip="Ordenar por nombre" data-tooltip-delay="1000"><i class="far fa-arrow-up-arrow-down"></i></button></th>
-                                            <th data-col="descripcion" class="ubits-body-sm-semibold">Descripción</th>
-                                            <th data-col="integrantes" class="ubits-body-sm-semibold lms-th-sortable">Integrantes <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only lms-sort-btn" data-sort="integrantes" aria-label="Ordenar por integrantes" data-tooltip="Ordenar por integrantes" data-tooltip-delay="1000"><i class="far fa-arrow-up-arrow-down"></i></button></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="ubits-table__td--checkbox" data-col="checkbox" data-tooltip="Seleccionar" data-tooltip-delay="1000"><label class="ubits-checkbox ubits-checkbox--sm" style="display:inline-flex;"><input type="checkbox" class="ubits-checkbox__input grupo-row-check" data-id="1"><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label sr-only" aria-hidden="true">&nbsp;</span></label></td>
-                                            <td data-col="nombre"><span class="ubits-body-sm-regular">Equipo de ventas</span></td>
-                                            <td data-col="descripcion"><span class="ubits-body-sm-regular">Colaboradores del área comercial y ventas</span></td>
-                                            <td data-col="integrantes"><span class="ubits-body-sm-regular">24</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="ubits-table__td--checkbox" data-col="checkbox" data-tooltip="Seleccionar" data-tooltip-delay="1000"><label class="ubits-checkbox ubits-checkbox--sm" style="display:inline-flex;"><input type="checkbox" class="ubits-checkbox__input grupo-row-check" data-id="2"><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label sr-only" aria-hidden="true">&nbsp;</span></label></td>
-                                            <td data-col="nombre"><span class="ubits-body-sm-regular">Onboarding 2025</span></td>
-                                            <td data-col="descripcion"><span class="ubits-body-sm-regular">Nuevos colaboradores incorporados en 2025</span></td>
-                                            <td data-col="integrantes"><span class="ubits-body-sm-regular">12</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="ubits-table__td--checkbox" data-col="checkbox" data-tooltip="Seleccionar" data-tooltip-delay="1000"><label class="ubits-checkbox ubits-checkbox--sm" style="display:inline-flex;"><input type="checkbox" class="ubits-checkbox__input grupo-row-check" data-id="3"><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label sr-only" aria-hidden="true">&nbsp;</span></label></td>
-                                            <td data-col="nombre"><span class="ubits-body-sm-regular">Líderes de área</span></td>
-                                            <td data-col="descripcion"><span class="ubits-body-sm-regular">Jefes y coordinadores de cada departamento</span></td>
-                                            <td data-col="integrantes"><span class="ubits-body-sm-regular">8</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="ubits-table__td--checkbox" data-col="checkbox" data-tooltip="Seleccionar" data-tooltip-delay="1000"><label class="ubits-checkbox ubits-checkbox--sm" style="display:inline-flex;"><input type="checkbox" class="ubits-checkbox__input grupo-row-check" data-id="4"><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label sr-only" aria-hidden="true">&nbsp;</span></label></td>
-                                            <td data-col="nombre"><span class="ubits-body-sm-regular">Equipo IT</span></td>
-                                            <td data-col="descripcion"><span class="ubits-body-sm-regular">Desarrolladores y soporte técnico</span></td>
-                                            <td data-col="integrantes"><span class="ubits-body-sm-regular">15</span></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div id="grupos-empty-state" class="lms-table-empty-state" style="display: none;"></div>
-                        </div>
+                            <div id="grupos-data-table-container" class="grupos-formacion-tabla"></div>
                         </div>
                     </div>
                 </div>
@@ -135,6 +73,7 @@
     <script src="../../components/modal.js"></script>
     <script src="../../components/dropdown-menu.js"></script>
     <script src="../../components/empty-state.js"></script>
+    <script src="../../components/ubits-data-table.js"></script>
     <script src="../../script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -144,188 +83,73 @@
             loadFloatingMenu('floating-menu-container');
             loadProfileMenu('profile-menu-container');
 
-            var table = document.getElementById('grupos-table');
-            var tableRows = table ? Array.from(table.querySelectorAll('tbody tr')) : [];
-            var searchQuery = '';
-            var isSearchMode = false;
-            var viewOnlySelected = false;
-            var sortCol = '';
-            var sortDir = 'asc';
+            var gruposTablaRef = null;
+            var pendingDeleteIds = [];
+
+            /* Grupos basados en la empresa de ejemplo (Fiqsha): un grupo por área + Líderes + Personal operativo */
+            var gruposData = [
+                { id: 'g-ventas', nombre: 'Ventas', descripcion: 'Asesoría comercial y cierre de negocios', integrantes: 7 },
+                { id: 'g-instalaciones', nombre: 'Instalaciones', descripcion: 'Instalación de productos en sitio', integrantes: 9 },
+                { id: 'g-reparaciones', nombre: 'Reparaciones', descripcion: 'Servicio técnico y mantenimiento', integrantes: 6 },
+                { id: 'g-atencion', nombre: 'Atención al Cliente', descripcion: 'Soporte y seguimiento postventa', integrantes: 7 },
+                { id: 'g-logistica', nombre: 'Logística', descripcion: 'Bodega, inventarios y entregas', integrantes: 4 },
+                { id: 'g-admin', nombre: 'Administración', descripcion: 'Gestión administrativa y financiera', integrantes: 5 },
+                { id: 'g-marketing', nombre: 'Marketing', descripcion: 'Publicidad, diseño y redes sociales', integrantes: 4 },
+                { id: 'g-rrhh', nombre: 'Recursos Humanos', descripcion: 'Gestión de personas, objetivos, encuestas y nómina', integrantes: 3 },
+                { id: 'g-lideres', nombre: 'Líderes', descripcion: 'Jefes y coordinadores de cada departamento', integrantes: 10 },
+                { id: 'g-operativo', nombre: 'Personal operativo', descripcion: 'Colaboradores que reportan a un líder', integrantes: 41 }
+            ];
 
             if (typeof getModalHtml === 'function') {
-                var deleteBody = '<p class="ubits-body-md-regular">¿Estás seguro de que deseas eliminar <strong id="grupos-delete-count">0</strong> grupo(s) seleccionado(s)?</p><p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Esta acción no se puede deshacer.</p><div style="margin-top: var(--gap-lg);"><label class="ubits-body-sm-regular" for="grupos-delete-type-input">Escriba <strong>eliminar</strong> para habilitar el botón:</label><input type="text" id="grupos-delete-type-input" class="ubits-input" placeholder="Escriba la palabra de confirmación" autocomplete="off" style="margin-top: var(--gap-sm); width: 100%; padding: var(--padding-sm) var(--padding-md); border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-sm); font-size: var(--font-size-sm); color: var(--ubits-fg-1-high); box-sizing: border-box;"></div>';
-                var deleteFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="grupos-delete-cancel">Cancelar</button><button type="button" class="ubits-button ubits-button--error ubits-button--md" id="grupos-delete-confirm" disabled>Eliminar</button>';
+                var deleteBody = '<p class="ubits-body-md-regular">¿Estás seguro de que deseas eliminar <strong id="grupos-delete-count">0</strong> grupo(s) seleccionado(s)?</p><p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Esta acción no se puede deshacer.</p><div class="delete-confirm-group" style="margin-top: var(--gap-lg);"><label class="ubits-body-sm-regular" for="grupos-delete-type-input">Escriba <strong>eliminar</strong> para habilitar el botón:</label><input type="text" id="grupos-delete-type-input" class="ubits-input" placeholder="Escriba la palabra de confirmación" autocomplete="off" style="margin-top: var(--gap-sm); width: 100%; padding: var(--padding-sm) var(--padding-md); border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-sm); font-size: var(--font-size-sm); color: var(--ubits-fg-1-high); box-sizing: border-box;"></div>';
+                var deleteFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="grupos-delete-cancel"><span>Cancelar</span></button><button type="button" class="ubits-button ubits-button--error ubits-button--md" id="grupos-delete-confirm" disabled><span>Eliminar</span></button>';
                 document.getElementById('grupos-modals-container').innerHTML = getModalHtml({ overlayId: 'grupos-delete-overlay', title: 'Confirmar eliminación', bodyHtml: deleteBody, footerHtml: deleteFooter, size: 'sm', closeButtonId: 'grupos-delete-close' });
             }
 
-            function getRowText(row, col) {
-                var td = row.querySelector('td[data-col="' + col + '"]');
-                if (!td) return '';
-                var span = td.querySelector('.ubits-body-sm-regular');
-                return span ? span.textContent.trim() : '';
+            function escapeHtml(t) {
+                if (t == null) return '';
+                var d = document.createElement('div');
+                d.textContent = t;
+                return d.innerHTML;
+            }
+            function buildGruposRowHtml(row) {
+                return '<td data-col="nombre"><span class="ubits-body-sm-regular">' + escapeHtml(row.nombre) + '</span></td>' +
+                    '<td data-col="descripcion"><span class="ubits-body-sm-regular">' + escapeHtml(row.descripcion) + '</span></td>' +
+                    '<td data-col="integrantes"><span class="ubits-body-sm-regular">' + escapeHtml(String(row.integrantes)) + '</span></td>';
             }
 
-            function getRowNum(row, col) {
-                var t = getRowText(row, col);
-                return parseInt(t, 10) || 0;
-            }
-
-            function passesSearch(row) {
-                if (!searchQuery) return true;
-                var q = searchQuery.toLowerCase();
-                var nombre = getRowText(row, 'nombre').toLowerCase();
-                var desc = getRowText(row, 'descripcion').toLowerCase();
-                return nombre.indexOf(q) !== -1 || desc.indexOf(q) !== -1;
-            }
-
-            function getVisibleRows() {
-                var base = tableRows.filter(passesSearch);
-                if (viewOnlySelected) base = base.filter(function(r) { var cb = r.querySelector('.grupo-row-check'); return cb && cb.checked; });
-                return base;
-            }
-
-            function updateResultsCount() {
-                var el = document.getElementById('grupos-results-count');
-                if (!el) return;
-                var total = tableRows.length;
-                var visible = getVisibleRows().length;
-                el.textContent = visible + '/' + total;
-            }
-
-            function applyVisibility() {
-                var visible = getVisibleRows();
-                tableRows.forEach(function(r) {
-                    var show = passesSearch(r);
-                    if (show && viewOnlySelected) { var cb = r.querySelector('.grupo-row-check'); show = cb && cb.checked; }
-                    r.style.display = show ? '' : 'none';
+            if (typeof createUbitsDataTable === 'function') {
+                gruposTablaRef = createUbitsDataTable({
+                    containerId: 'grupos-data-table-container',
+                    tableId: 'grupos-table',
+                    title: 'Lista de grupos',
+                    columns: [
+                        { id: 'nombre', label: 'Nombre del grupo', sortable: true },
+                        { id: 'descripcion', label: 'Descripción', sortable: true },
+                        { id: 'integrantes', label: 'Integrantes', sortable: true, sortType: 'number' }
+                    ],
+                    getData: function() { return gruposData; },
+                    rowIdField: 'id',
+                    buildRowHtml: buildGruposRowHtml,
+                    features: { checkboxes: true, search: true, verSeleccionados: true, actionBar: true, resultsCount: true },
+                    actionBarButtons: [
+                        { id: 'eliminar', label: 'Eliminar', icon: 'fa-trash', variant: 'error-secondary', onClick: function(selectedIds) {
+                            if (!selectedIds || selectedIds.length === 0) return;
+                            pendingDeleteIds = selectedIds.slice();
+                            var countEl = document.getElementById('grupos-delete-count');
+                            var inputEl = document.getElementById('grupos-delete-type-input');
+                            var confirmEl = document.getElementById('grupos-delete-confirm');
+                            if (countEl) countEl.textContent = pendingDeleteIds.length;
+                            if (inputEl) { inputEl.value = ''; inputEl.focus(); }
+                            if (confirmEl) confirmEl.disabled = true;
+                            var overlay = document.getElementById('grupos-delete-overlay');
+                            if (overlay) { overlay.style.display = 'flex'; overlay.setAttribute('aria-hidden', 'false'); }
+                        } }
+                    ],
+                    emptyState: { message: 'Aún no hay grupos.', icon: 'far fa-users', description: 'Crea tu primer grupo para organizar a los colaboradores.' },
+                    emptySearchState: { message: 'No se encontraron resultados', description: 'Intenta ajustar tu búsqueda para encontrar lo que buscas.', buttonText: 'Limpiar búsqueda' },
+                    i18n: { selectAll: 'Seleccionar todo', deselectAll: 'Deseleccionar todo', verSeleccionados: 'Ver seleccionados', buscar: 'Buscar' }
                 });
-                updateResultsCount();
-                updateGruposEmptyState();
-                updateGruposSelectAll();
-                if (typeof initTooltip === 'function') {
-                    initTooltip('#grupos-table thead [data-tooltip]');
-                    initTooltip('#grupos-table tbody .ubits-table__td--checkbox[data-tooltip]');
-                }
-            }
-
-            function clearGruposSearchAndFilters() {
-                searchQuery = '';
-                var searchContainer = document.getElementById('grupos-search-container');
-                if (searchContainer) { searchContainer.innerHTML = ''; searchContainer.style.display = 'none'; }
-                var searchToggle = document.getElementById('grupos-search-toggle');
-                if (searchToggle) searchToggle.style.display = 'flex';
-                isSearchMode = false;
-                applyVisibility();
-                applySort();
-                updateGruposEmptyState();
-                if (typeof showToast === 'function') showToast('success', 'Búsqueda limpiada');
-            }
-
-            function updateGruposEmptyState() {
-                var wrapper = document.getElementById('grupos-table-wrapper');
-                var emptyEl = document.getElementById('grupos-empty-state');
-                var listWrapper = wrapper ? wrapper.closest('.grupos-list-wrapper') : null;
-                if (!wrapper || !emptyEl) return;
-                var visibleCount = getVisibleRows().length;
-                if (visibleCount === 0) {
-                    if (listWrapper) listWrapper.classList.add('is-empty');
-                    emptyEl.innerHTML = '';
-                    if (typeof loadEmptyState === 'function') {
-                        if (tableRows.length === 0) {
-                            loadEmptyState('grupos-empty-state', {
-                                icon: 'fa-users',
-                                iconSize: 'lg',
-                                title: 'Aún no hay grupos',
-                                description: 'Crea tu primer grupo para organizar a los colaboradores.',
-                                buttons: { secondary: { text: 'Agregar grupo', icon: 'fa-plus', onClick: function() {} } }
-                            });
-                            emptyEl.classList.add('lms-table-empty-state');
-                            setTimeout(function() {
-                                var btn = emptyEl.querySelector('.ubits-button--secondary');
-                                if (btn) btn.onclick = function() { window.location.href = 'crear-grupo.html'; };
-                            }, 50);
-                        } else {
-                            loadEmptyState('grupos-empty-state', {
-                                icon: 'fa-search',
-                                iconSize: 'lg',
-                                title: 'No se encontraron resultados',
-                                description: 'Intenta ajustar tu búsqueda para encontrar lo que buscas.',
-                                buttons: { secondary: { text: 'Limpiar búsqueda', icon: 'fa-times', onClick: function() {} } }
-                            });
-                            emptyEl.classList.add('lms-table-empty-state');
-                            setTimeout(function() {
-                                var btn = emptyEl.querySelector('.ubits-button--secondary');
-                                if (btn) btn.onclick = function(e) { e.preventDefault(); e.stopPropagation(); clearGruposSearchAndFilters(); };
-                            }, 50);
-                        }
-                    }
-                } else {
-                    if (listWrapper) listWrapper.classList.remove('is-empty');
-                    emptyEl.innerHTML = '';
-                }
-            }
-
-            function updateGruposSelectAll() {
-                var selectAll = document.getElementById('grupos-select-all');
-                if (!selectAll) return;
-                var visible = getVisibleRows();
-                var checkedCount = visible.filter(function(r) { var cb = r.querySelector('.grupo-row-check'); return cb && cb.checked; }).length;
-                selectAll.checked = visible.length > 0 && checkedCount === visible.length;
-                selectAll.indeterminate = checkedCount > 0 && checkedCount < visible.length;
-                var th = selectAll.closest('th');
-                if (th) th.setAttribute('data-tooltip', checkedCount > 0 ? 'Deseleccionar todo' : 'Seleccionar todo');
-            }
-
-            function toggleActionBar() {
-                var bar = document.getElementById('grupos-action-bar');
-                var btnVer = document.getElementById('grupos-ver-seleccionados');
-                if (!bar) return;
-                var n = tableRows.filter(function(r) { var cb = r.querySelector('.grupo-row-check'); return cb && cb.checked; }).length;
-                if (n > 0) {
-                    bar.classList.add('is-visible');
-                    if (btnVer) {
-                        var icon = btnVer.querySelector('i');
-                        var span = btnVer.querySelector('span');
-                        if (viewOnlySelected) {
-                            if (icon) icon.className = 'far fa-eye-slash';
-                            if (span) span.textContent = 'Dejar de ver seleccionados (' + n + ')';
-                            btnVer.classList.add('active');
-                        } else {
-                            if (icon) icon.className = 'far fa-eye';
-                            if (span) span.textContent = 'Ver seleccionados';
-                            btnVer.classList.remove('active');
-                        }
-                    }
-                } else {
-                    bar.classList.remove('is-visible');
-                    viewOnlySelected = false;
-                    if (btnVer) {
-                        var icon = btnVer.querySelector('i');
-                        var span = btnVer.querySelector('span');
-                        if (icon) icon.className = 'far fa-eye';
-                        if (span) span.textContent = 'Ver seleccionados';
-                        btnVer.classList.remove('active');
-                    }
-                }
-                updateGruposSelectAll();
-            }
-
-            function applySort() {
-                var tbody = table.querySelector('tbody');
-                if (!tbody || !sortCol) return;
-                var visible = getVisibleRows();
-                visible.sort(function(a, b) {
-                    if (sortCol === 'nombre' || sortCol === 'descripcion') {
-                        var va = getRowText(a, sortCol), vb = getRowText(b, sortCol);
-                        return sortDir === 'asc' ? va.localeCompare(vb) : vb.localeCompare(va);
-                    }
-                    if (sortCol === 'integrantes') {
-                        var va = getRowNum(a, 'integrantes'), vb = getRowNum(b, 'integrantes');
-                        return sortDir === 'asc' ? va - vb : vb - va;
-                    }
-                    return 0;
-                });
-                visible.forEach(function(tr) { tbody.appendChild(tr); });
             }
 
             if (typeof loadHeaderProduct === 'function') {
@@ -334,174 +158,12 @@
                     breadcrumbItems: [],
                     aiButton: {
                         text: 'Crear a partir de organigrama',
-                        onClick: function() {
-                            console.log('Crear a partir de organigrama');
-                        }
+                        onClick: function() { console.log('Crear a partir de organigrama'); }
                     },
                     primaryButton: {
                         text: 'Agregar grupo',
                         icon: 'fa-plus',
-                        onClick: function() {
-                            window.location.href = 'crear-grupo.html';
-                        }
-                    }
-                });
-            }
-
-            applyVisibility();
-            updateGruposEmptyState();
-            updateGruposSelectAll();
-            if (typeof initTooltip === 'function') {
-                initTooltip('#grupos-search-toggle[data-tooltip]');
-                initTooltip('#grupos-table thead [data-tooltip]');
-                initTooltip('#grupos-table tbody .ubits-table__td--checkbox[data-tooltip]');
-            }
-
-            var searchToggle = document.getElementById('grupos-search-toggle');
-            var searchContainer = document.getElementById('grupos-search-container');
-            if (searchToggle && searchContainer && typeof createInput === 'function') {
-                searchToggle.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    if (!isSearchMode) {
-                        searchToggle.style.display = 'none';
-                        searchContainer.style.display = 'flex';
-                        searchContainer.innerHTML = '';
-                        createInput({
-                            containerId: 'grupos-search-container',
-                            type: 'search',
-                            placeholder: 'Buscar grupos...',
-                            size: 'md',
-                            onChange: function(val) {
-                                searchQuery = val || '';
-                                applyVisibility();
-                                applySort();
-                            }
-                        });
-                        setTimeout(function() {
-                            var wrap = searchContainer.querySelector('.ubits-input-wrapper');
-                            if (wrap) {
-                                var closeBtn = document.createElement('button');
-                                closeBtn.type = 'button';
-                                closeBtn.className = 'ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only';
-                                closeBtn.setAttribute('aria-label', 'Cerrar búsqueda');
-                                closeBtn.style.marginLeft = '8px';
-                                closeBtn.innerHTML = '<i class="far fa-times"></i>';
-                                closeBtn.addEventListener('click', function() {
-                                    searchQuery = '';
-                                    searchContainer.innerHTML = '';
-                                    searchContainer.style.display = 'none';
-                                    searchToggle.style.display = 'flex';
-                                    isSearchMode = false;
-                                    applyVisibility();
-                                    applySort();
-                                });
-                                searchContainer.appendChild(closeBtn);
-                                var inp = wrap.querySelector('input');
-                                if (inp) inp.focus();
-                            }
-                        }, 100);
-                        isSearchMode = true;
-                    }
-                });
-                document.addEventListener('click', function(e) {
-                    if (!isSearchMode) return;
-                    if (searchContainer.contains(e.target) || searchToggle.contains(e.target)) return;
-                    if (!searchQuery || !searchQuery.trim()) {
-                        searchContainer.innerHTML = '';
-                        searchContainer.style.display = 'none';
-                        searchToggle.style.display = 'flex';
-                        isSearchMode = false;
-                    }
-                });
-            }
-
-            // Ordenamiento por columna (dropdown oficial como en seguimiento)
-            if (typeof getDropdownMenuHtml === 'function' && typeof openDropdownMenu === 'function' && typeof closeDropdownMenu === 'function') {
-                var sortOverlayId = 'grupos-sort-overlay';
-                document.addEventListener('click', function(e) {
-                    var btn = e.target.closest('.lms-sort-btn');
-                    if (!btn || !table.contains(btn)) return;
-                    e.stopPropagation();
-                    var col = btn.getAttribute('data-sort');
-                    var currentDir = (sortCol === col) ? sortDir : null;
-                    var isNumber = col === 'integrantes';
-                    var descText = isNumber ? 'Mayor a menor' : 'Z a A';
-                    var ascText = isNumber ? 'Menor a mayor' : 'A a Z';
-                    var options = [
-                        { text: descText, value: 'desc', leftIcon: 'arrow-up', selected: currentDir === 'desc' },
-                        { text: ascText, value: 'asc', leftIcon: 'arrow-down', selected: currentDir === 'asc' }
-                    ];
-                    var existing = document.getElementById(sortOverlayId);
-                    if (existing) existing.remove();
-                    var html = getDropdownMenuHtml({ overlayId: sortOverlayId, options: options });
-                    document.body.insertAdjacentHTML('beforeend', html);
-                    var overlayEl = document.getElementById(sortOverlayId);
-                    if (overlayEl) {
-                        overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function(opt) {
-                            opt.addEventListener('click', function() {
-                                sortCol = col;
-                                sortDir = this.getAttribute('data-value');
-                                applySort();
-                                closeDropdownMenu(sortOverlayId);
-                            });
-                        });
-                        overlayEl.addEventListener('click', function(ev) {
-                            if (ev.target === overlayEl) closeDropdownMenu(sortOverlayId);
-                        });
-                    }
-                    openDropdownMenu(sortOverlayId, btn);
-                });
-            }
-
-            var selectAll = document.getElementById('grupos-select-all');
-            if (selectAll) {
-                selectAll.addEventListener('change', function() {
-                    var visible = getVisibleRows();
-                    var checkedCount = visible.filter(function(r) { var cb = r.querySelector('.grupo-row-check'); return cb && cb.checked; }).length;
-                    if (this.checked && checkedCount > 0 && checkedCount < visible.length) {
-                        visible.forEach(function(row) {
-                            var cb = row.querySelector('.grupo-row-check');
-                            if (cb) cb.checked = false;
-                            var td = row.querySelector('.ubits-table__td--checkbox');
-                            if (td) td.setAttribute('data-tooltip', 'Seleccionar');
-                        });
-                        toggleActionBar();
-                        if (typeof initTooltip === 'function') initTooltip('#grupos-table tbody .ubits-table__td--checkbox[data-tooltip]');
-                        return;
-                    }
-                    getVisibleRows().forEach(function(row) {
-                        var cb = row.querySelector('.grupo-row-check');
-                        if (cb) cb.checked = selectAll.checked;
-                        var td = row.querySelector('.ubits-table__td--checkbox');
-                        if (td) td.setAttribute('data-tooltip', selectAll.checked ? 'Deseleccionar' : 'Seleccionar');
-                    });
-                    toggleActionBar();
-                    if (typeof initTooltip === 'function') initTooltip('#grupos-table tbody .ubits-table__td--checkbox[data-tooltip]');
-                });
-            }
-
-            tableRows.forEach(function(row) {
-                var cb = row.querySelector('.grupo-row-check');
-                if (cb) cb.addEventListener('change', function() {
-                    var td = this.closest('.ubits-table__td--checkbox');
-                    if (td) td.setAttribute('data-tooltip', this.checked ? 'Deseleccionar' : 'Seleccionar');
-                    toggleActionBar();
-                });
-            });
-
-            var btnVerSeleccionados = document.getElementById('grupos-ver-seleccionados');
-            if (btnVerSeleccionados) {
-                btnVerSeleccionados.addEventListener('click', function() {
-                    var n = tableRows.filter(function(r) { var cb = r.querySelector('.grupo-row-check'); return cb && cb.checked; }).length;
-                    if (n === 0) return;
-                    viewOnlySelected = !viewOnlySelected;
-                    applyVisibility();
-                    applySort();
-                    updateGruposEmptyState();
-                    toggleActionBar();
-                    if (typeof initTooltip === 'function') {
-                        initTooltip('#grupos-table thead [data-tooltip]');
-                        initTooltip('#grupos-table tbody .ubits-table__td--checkbox[data-tooltip]');
+                        onClick: function() { window.location.href = 'crear-grupo.html'; }
                     }
                 });
             }
@@ -510,25 +172,12 @@
             var deleteClose = document.getElementById('grupos-delete-close');
             var deleteCancel = document.getElementById('grupos-delete-cancel');
             var deleteConfirm = document.getElementById('grupos-delete-confirm');
-            var deleteCountEl = document.getElementById('grupos-delete-count');
             var deleteTypeInput = document.getElementById('grupos-delete-type-input');
 
             function closeGruposDeleteModal() {
                 if (deleteOverlay) { deleteOverlay.style.display = 'none'; deleteOverlay.setAttribute('aria-hidden', 'true'); }
                 if (deleteTypeInput) deleteTypeInput.value = '';
                 if (deleteConfirm) deleteConfirm.disabled = true;
-            }
-
-            var btnEliminar = document.getElementById('grupos-mass-eliminar');
-            if (btnEliminar) {
-                btnEliminar.addEventListener('click', function() {
-                    var rowsToRemove = tableRows.filter(function(r) { var cb = r.querySelector('.grupo-row-check'); return cb && cb.checked; });
-                    if (rowsToRemove.length === 0) return;
-                    if (deleteCountEl) deleteCountEl.textContent = rowsToRemove.length;
-                    if (deleteTypeInput) { deleteTypeInput.value = ''; deleteTypeInput.focus(); }
-                    if (deleteConfirm) deleteConfirm.disabled = true;
-                    if (deleteOverlay) { deleteOverlay.style.display = 'flex'; deleteOverlay.setAttribute('aria-hidden', 'false'); }
-                });
             }
             if (deleteTypeInput && deleteConfirm) {
                 deleteTypeInput.addEventListener('input', function() {
@@ -540,21 +189,26 @@
             if (deleteOverlay) deleteOverlay.addEventListener('click', function(e) { if (e.target === deleteOverlay) closeGruposDeleteModal(); });
             if (deleteConfirm) {
                 deleteConfirm.addEventListener('click', function() {
-                    var rowsToRemove = tableRows.filter(function(r) { var cb = r.querySelector('.grupo-row-check'); return cb && cb.checked; });
-                    var n = rowsToRemove.length;
+                    var ids = pendingDeleteIds.slice();
                     closeGruposDeleteModal();
-                    rowsToRemove.forEach(function(tr) {
-                        tr.remove();
-                        var idx = tableRows.indexOf(tr);
-                        if (idx !== -1) tableRows.splice(idx, 1);
-                    });
-                    var selectAll = document.getElementById('grupos-select-all');
-                    if (selectAll) selectAll.checked = false;
-                    applyVisibility();
-                    applySort();
-                    toggleActionBar();
-                    updateGruposEmptyState();
-                    if (typeof showToast === 'function') showToast('success', n + ' grupo(s) eliminado(s) correctamente');
+                    pendingDeleteIds = [];
+                    var idSet = {};
+                    ids.forEach(function(id) { idSet[String(id)] = true; });
+                    for (var i = gruposData.length - 1; i >= 0; i--) {
+                        if (idSet[String(gruposData[i].id)]) gruposData.splice(i, 1);
+                    }
+                    if (gruposTablaRef && typeof gruposTablaRef.refresh === 'function') gruposTablaRef.refresh();
+                    if (typeof showToast === 'function') showToast('success', ids.length + ' grupo(s) eliminado(s) correctamente', { containerId: 'ubits-toast-container' });
+                });
+            }
+
+            var gruposContainer = document.getElementById('grupos-data-table-container');
+            if (gruposContainer) {
+                gruposContainer.addEventListener('click', function(e) {
+                    var row = e.target.closest('tbody tr[data-id]');
+                    if (!row || e.target.closest('.ubits-checkbox') || e.target.closest('input[type="checkbox"]')) return;
+                    var grupoId = row.getAttribute('data-id');
+                    if (grupoId) window.location.href = 'crear-grupo.html?id=' + grupoId;
                 });
             }
 
