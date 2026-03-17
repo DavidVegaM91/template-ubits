@@ -27,6 +27,7 @@
     <link rel="stylesheet" href="../../components/drawer.css">
     <link rel="stylesheet" href="../../components/card-content-compact.css">
     <link rel="stylesheet" href="../../components/table.css">
+    <link rel="stylesheet" href="../../components/avatar.css">
     <link rel="stylesheet" href="../../components/checkbox.css">
     <link rel="stylesheet" href="../../components/chip.css">
     <link rel="stylesheet" href="../../components/empty-state.css">
@@ -119,11 +120,16 @@
     </div>
 
     <div id="asignaciones-modals-container"></div>
+    <div class="asignaciones-asignados-popover-overlay" id="asignaciones-asignados-popover-overlay" style="display: none;" aria-hidden="true"></div>
+    <div class="asignaciones-asignados-popover" id="asignaciones-asignados-popover" style="display: none;" role="dialog" aria-label="Personas asignadas">
+        <div class="asignaciones-asignados-popover-list" id="asignaciones-asignados-popover-list"></div>
+    </div>
     <div id="tab-bar-container"></div>
     <div id="floating-menu-container"></div>
     <div id="profile-menu-container"></div>
 
     <script src="../../components/tooltip.js"></script>
+    <script src="../../components/avatar.js"></script>
     <script src="../../components/sidebar.js"></script>
     <script src="../../components/sub-nav.js"></script>
     <script src="../../components/tab-bar.js"></script>
@@ -408,18 +414,113 @@
                     '</div>';
             }
 
+            function getAsignadosCellHtml(item) {
+                var tipo = item.asignadosTipo || '';
+                var label = (item.asignadosLabel || 'Por definir').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                if (tipo === 'toda-empresa') {
+                    return '<div class="asignaciones-cell-asignados asignaciones-cell-asignados--icon">' +
+                        '<span class="ubits-avatar ubits-avatar--sm ubits-avatar--icon-only" data-tooltip="Toda la empresa" data-tooltip-delay="500"><span class="ubits-avatar__fallback"><i class="far fa-building"></i></span></span>' +
+                        '<span class="ubits-body-sm-regular">Toda la empresa</span></div>';
+                }
+                if (tipo === 'desde-archivo') {
+                    return '<div class="asignaciones-cell-asignados asignaciones-cell-asignados--icon">' +
+                        '<span class="ubits-avatar ubits-avatar--sm ubits-avatar--icon-only" data-tooltip="Importación desde archivo" data-tooltip-delay="500"><span class="ubits-avatar__fallback"><i class="far fa-file-arrow-up"></i></span></span>' +
+                        '<span class="ubits-body-sm-regular">Importación desde archivo</span></div>';
+                }
+                if (tipo === 'por-grupos' && item.asignadosGrupos && item.asignadosGrupos.length > 0) {
+                    var gruposHtml = item.asignadosGrupos.map(function(g) {
+                        var nomAttr = (g.nombre || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                        var nomText = (g.nombre || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                        return '<span class="asignaciones-cell-grupo" data-tooltip="' + nomAttr + '" data-tooltip-delay="500">' +
+                            '<span class="ubits-avatar ubits-avatar--sm ubits-avatar--icon-only"><span class="ubits-avatar__fallback"><i class="far fa-user-group"></i></span></span>' +
+                            '<span class="ubits-body-sm-regular">' + nomText + '</span></span>';
+                    }).join('');
+                    return '<div class="asignaciones-cell-asignados asignaciones-cell-asignados--grupos">' + gruposHtml + '</div>';
+                }
+                if (tipo === 'por-colaborador' && item.asignadosPersonas && item.asignadosPersonas.length > 0) {
+                    var tooltipOpts = { showTooltip: true, tooltipDelay: 500 };
+                    var listHtml = typeof renderProfileList === 'function'
+                        ? renderProfileList(item.asignadosPersonas, { size: 'sm', maxVisible: 4, ...tooltipOpts })
+                        : '<span class="ubits-body-sm-regular">' + label + '</span>';
+                    return '<div class="asignaciones-cell-asignados asignaciones-cell-asignados--personas">' + listHtml + '</div>';
+                }
+                return '<div class="asignaciones-cell-asignados"><span class="ubits-body-sm-regular">' + label + '</span></div>';
+            }
+
             function crearFilaAsignacion(item) {
                 var id = item.id;
-                var label = item.asignadosLabel || 'Por definir';
                 var count = item.contenidosCount || 0;
                 var btnText = count === 0 ? 'Agregar contenidos' : (count + ' contenidos');
                 var tr = document.createElement('tr');
                 tr.setAttribute('data-asignacion-id', id);
                 tr.innerHTML = '<td class="ubits-table__td--checkbox" data-col="checkbox" data-tooltip="Seleccionar" data-tooltip-delay="1000"><label class="ubits-checkbox ubits-checkbox--sm" style="display:inline-flex;"><input type="checkbox" class="ubits-checkbox__input asignacion-row-check" data-asignacion-id="' + id + '"><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label sr-only" aria-hidden="true">&nbsp;</span></label></td>' +
-                    '<td data-col="asignados"><span class="ubits-body-sm-regular">' + (label.replace(/</g, '&lt;').replace(/>/g, '&gt;')) + '</span></td>' +
+                    '<td data-col="asignados">' + getAsignadosCellHtml(item) + '</td>' +
                     '<td data-col="cursos"><button type="button" class="ubits-button ubits-button--secondary ubits-button--xs js-asignacion-agregar-contenidos" data-asignacion-id="' + id + '"><i class="far fa-plus"></i><span>' + btnText + '</span></button></td>';
                 return tr;
             }
+
+            function closeAsignadosPopover() {
+                var overlay = document.getElementById('asignaciones-asignados-popover-overlay');
+                var popover = document.getElementById('asignaciones-asignados-popover');
+                if (overlay) { overlay.style.display = 'none'; overlay.setAttribute('aria-hidden', 'true'); }
+                if (popover) popover.style.display = 'none';
+            }
+            function bindAsignadosPopover(tr, item) {
+                if (!item || item.asignadosTipo !== 'por-colaborador' || !item.asignadosPersonas || item.asignadosPersonas.length <= 4) return;
+                var countEl = tr.querySelector('.ubits-profile-list__count');
+                if (!countEl) return;
+                countEl.style.cursor = 'pointer';
+                countEl.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var remaining = item.asignadosPersonas.slice(4);
+                    var listEl = document.getElementById('asignaciones-asignados-popover-list');
+                    var popover = document.getElementById('asignaciones-asignados-popover');
+                    var overlay = document.getElementById('asignaciones-asignados-popover-overlay');
+                    if (!listEl || !popover || !overlay) return;
+                    listEl.innerHTML = '';
+                    remaining.forEach(function(p) {
+                        var div = document.createElement('div');
+                        div.className = 'asignaciones-asignados-popover-item';
+                        if (typeof renderAvatar === 'function') div.innerHTML = renderAvatar(p, { size: 'sm' });
+                        var span = document.createElement('span');
+                        span.className = 'ubits-body-sm-regular';
+                        span.textContent = (p && (p.nombre || p.name)) || '';
+                        div.appendChild(span);
+                        listEl.appendChild(div);
+                    });
+                    overlay.style.display = 'block';
+                    overlay.setAttribute('aria-hidden', 'false');
+                    popover.style.display = 'block';
+                    var rect = countEl.getBoundingClientRect();
+                    var popoverH = popover.offsetHeight;
+                    var gap = 4;
+                    var margin = 8;
+                    var spaceBelow = window.innerHeight - rect.bottom - margin;
+                    var spaceAbove = rect.top - margin;
+                    if (spaceBelow >= popoverH + gap) {
+                        popover.style.top = (rect.bottom + gap) + 'px';
+                    } else if (spaceAbove >= popoverH + gap) {
+                        popover.style.top = (rect.top - popoverH - gap) + 'px';
+                    } else {
+                        popover.style.top = spaceBelow >= spaceAbove ? (rect.bottom + gap) + 'px' : (rect.top - popoverH - gap) + 'px';
+                    }
+                    var left = rect.left;
+                    var maxLeft = window.innerWidth - popover.offsetWidth - margin;
+                    if (left > maxLeft) left = maxLeft;
+                    if (left < margin) left = margin;
+                    popover.style.left = left + 'px';
+                });
+            }
+            document.addEventListener('click', function(e) {
+                var overlay = document.getElementById('asignaciones-asignados-popover-overlay');
+                if (!overlay || overlay.style.display !== 'block') return;
+                if (!e.target.closest('#asignaciones-asignados-popover') && !e.target.closest('.ubits-profile-list__count')) {
+                    closeAsignadosPopover();
+                }
+            });
+            var asignadosPopoverOverlay = document.getElementById('asignaciones-asignados-popover-overlay');
+            if (asignadosPopoverOverlay) asignadosPopoverOverlay.addEventListener('click', closeAsignadosPopover);
 
             function abrirDrawerAgregarUsuarios() {
                 var footerHtml = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" onclick="cerrarDrawerYActualizar()"><span class="ubits-body-sm-regular">Cancelar</span></button>' +
@@ -1353,7 +1454,7 @@
 
                 function procesarArchivoSubido() {
                     var id = 'asignacion-' + (++asignacionIdCounter);
-                    asignacionesData.push({ id: id, asignadosLabel: 'Importación desde archivo', contenidosCount: 0, contenidos: [] });
+                    asignacionesData.push({ id: id, asignadosLabel: 'Importación desde archivo', asignadosTipo: 'desde-archivo', asignadosPersonas: [], asignadosGrupos: [], contenidosCount: 0, contenidos: [] });
                     var tr = crearFilaAsignacion(asignacionesData[asignacionesData.length - 1]);
                     if (asignacionesTbody) asignacionesTbody.appendChild(tr);
                     bindAsignacionRow(tr);
@@ -1369,8 +1470,13 @@
                 var radio = overlay.querySelector('input[name="tipo-agregar-usuarios"]:checked');
                 var opcion = radio ? radio.value : 'toda-empresa';
                 var label = 'Por definir';
-                if (opcion === 'toda-empresa') label = 'Toda la empresa';
-                else if (opcion === 'por-colaborador') {
+                var asignadosTipo = opcion;
+                var asignadosPersonas = [];
+                var asignadosGrupos = [];
+                if (opcion === 'toda-empresa') {
+                    label = 'Toda la empresa';
+                    asignadosTipo = 'toda-empresa';
+                } else if (opcion === 'por-colaborador') {
                     var tbodyColab = overlay.querySelector('#drawer-colab-tbody');
                     var checkedColab = tbodyColab ? tbodyColab.querySelectorAll('tr .drawer-colab-row-check:checked') : [];
                     var nombresColab = Array.from(checkedColab).map(function(cb) {
@@ -1381,23 +1487,33 @@
                         return span ? span.textContent.trim() : '';
                     }).filter(Boolean);
                     label = nombresColab.length ? nombresColab.join(', ') : 'Por definir';
+                    var empleados = (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getEmpleadosEjemplo === 'function') ? TAREAS_PLANES_DB.getEmpleadosEjemplo() : [];
+                    nombresColab.forEach(function(nombre) {
+                        var e = empleados.find(function(emp) { return (emp.nombre || '').trim() === nombre; });
+                        asignadosPersonas.push({ nombre: nombre, avatar: e ? e.avatar : null });
+                    });
                 } else if (opcion === 'por-grupos') {
                     var tbody = overlay.querySelector('#drawer-grupos-tbody');
                     var checked = tbody ? tbody.querySelectorAll('tr .drawer-grupo-row-check:checked') : [];
-                    var nombres = Array.from(checked).map(function(cb) {
+                    asignadosGrupos = Array.from(checked).map(function(cb) {
                         var row = cb.closest('tr');
-                        if (!row) return '';
+                        if (!row) return null;
                         var td = row.querySelector('td[data-col="nombre"]');
                         var span = td ? td.querySelector('.ubits-body-sm-regular') : null;
-                        return span ? span.textContent.trim() : '';
+                        var nombre = span ? span.textContent.trim() : '';
+                        return nombre ? { nombre: nombre } : null;
                     }).filter(Boolean);
+                    var nombres = asignadosGrupos.map(function(g) { return g.nombre; });
                     label = nombres.length ? nombres.join(', ') : 'Por definir';
                 } else if (opcion === 'desde-archivo') { if (typeof closeDrawer === 'function') closeDrawer('drawer-agregar-usuarios'); return; }
                 var id = 'asignacion-' + (++asignacionIdCounter);
-                asignacionesData.push({ id: id, asignadosLabel: label, contenidosCount: 0, contenidos: [] });
-                var tr = crearFilaAsignacion(asignacionesData[asignacionesData.length - 1]);
+                var item = { id: id, asignadosLabel: label, asignadosTipo: asignadosTipo, asignadosPersonas: asignadosPersonas, asignadosGrupos: asignadosGrupos, contenidosCount: 0, contenidos: [] };
+                asignacionesData.push(item);
+                var tr = crearFilaAsignacion(item);
                 if (asignacionesTbody) asignacionesTbody.appendChild(tr);
                 bindAsignacionRow(tr);
+                bindAsignadosPopover(tr, item);
+                if (typeof initTooltip === 'function') initTooltip('#asignaciones-tbody [data-tooltip]');
                 applyAsignacionesVisibility();
                 if (typeof updateGuardarButtonState === 'function') updateGuardarButtonState();
                 if (typeof closeDrawer === 'function') closeDrawer('drawer-agregar-usuarios');

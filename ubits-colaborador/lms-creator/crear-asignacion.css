@@ -609,6 +609,95 @@
     color: var(--ubits-fg-1-medium);
 }
 
+/* Tabla asignaciones: celda Asignados con avatares / iconos */
+.asignaciones-cell-asignados {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    flex-wrap: wrap;
+}
+
+.asignaciones-cell-asignados--icon {
+    gap: var(--gap-sm);
+}
+
+.asignaciones-cell-asignados--personas .ubits-profile-list {
+    flex-wrap: nowrap;
+}
+
+.asignaciones-cell-asignados--personas .ubits-profile-list__count {
+    cursor: pointer;
+}
+
+.asignaciones-cell-asignados--grupos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-md);
+}
+
+.asignaciones-cell-grupo {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-xs);
+}
+
+.asignaciones-cell-grupo .ubits-body-sm-regular {
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-avatar--icon-only .ubits-avatar__fallback {
+    color: var(--ubits-fg-1-medium);
+}
+
+/* Popover +X personas asignadas: max 5 avatares visibles, scroll si hay más */
+.asignaciones-asignados-popover-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+}
+
+.asignaciones-asignados-popover {
+    position: fixed;
+    min-width: 200px;
+    max-width: 280px;
+    max-height: 220px;
+    overflow-y: auto;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    box-shadow: 0 4px 16px var(--ubits-bottom-nav-shadow-opacity);
+    z-index: 1001;
+    padding: var(--padding-sm) 0;
+}
+
+.asignaciones-asignados-popover-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.asignaciones-asignados-popover-item {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+    padding: var(--padding-sm) var(--padding-md);
+    color: var(--ubits-fg-1-medium);
+}
+
+.asignaciones-asignados-popover-item .ubits-avatar {
+    flex-shrink: 0;
+}
+
+.asignaciones-asignados-popover-item .ubits-body-sm-regular {
+    color: var(--ubits-fg-1-medium);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 /* Dropdown del filtro del drawer: por encima del drawer (drawer usa z-index 1100–1101) */
 #drawer-cursos-filter-overlay.ubits-dropdown-menu__overlay,
 #drawer-colab-filter-overlay.ubits-dropdown-menu__overlay,
