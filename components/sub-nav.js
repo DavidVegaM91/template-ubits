@@ -332,6 +332,7 @@ const PAGE_TO_TAB = {
     'chip.html': 'section3',
     'dropdown-menu.html': 'section3',
     'drawer.html': 'section3',
+    'ubits-data-table.html': 'section3',
     'empty-state.html': 'section3',
     'header-product.html': 'section3',
     'ia-button.html': 'section3',

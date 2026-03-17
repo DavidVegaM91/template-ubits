@@ -4,8 +4,8 @@
 
 /* Header: variante tabs-with-actions (tabs Contenidos | Competencias + acciones en el header) */
 
-/* Filas de tabla clickeables para ir al detalle */
-.asignacion-row-clickable {
+/* Filas de tabla clickeables para ir al detalle (componente oficial ubits-data-table) */
+#planes-data-table-container.planes-formacion-tabla tbody tr[data-id] {
     cursor: pointer;
 }
 

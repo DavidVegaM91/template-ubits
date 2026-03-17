@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Data Table | UBITS Playground</title>
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/table.css">
+    <link rel="stylesheet" href="../../components/checkbox.css">
+    <link rel="stylesheet" href="../../components/chip.css">
+    <link rel="stylesheet" href="../../components/empty-state.css">
+    <link rel="stylesheet" href="../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../components/tooltip.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/ubits-data-table.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <style>
+        /* Sección Preview: contener overflow para que el contenedor de la tabla no rompa la sección */
+        .doc-preview-section {
+            min-width: 0;
+            overflow-x: hidden;
+        }
+        /* Contenedor del preview: ancho acotado, scroll horizontal dentro de la sección */
+        .ubits-dt-doc-preview-wrap {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            min-height: 320px;
+            background: var(--ubits-bg-1);
+            padding: 24px;
+            border-radius: var(--border-radius-md);
+            border: 1px solid var(--ubits-border-1);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            box-sizing: border-box;
+        }
+        .ubits-dt-doc-preview-wrap .ubits-data-table {
+            min-width: 0;
+        }
+        /* Scroll horizontal de la tabla dentro del contenedor (como seguimiento) */
+        .ubits-dt-doc-preview-wrap .ubits-dt-table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div style="display: flex;">
+                <div id="docs-dropdown-container"></div>
+                <div id="docs-sidebar-container"></div>
+                <div class="components-content">
+                    <div class="content-area" style="display: block; width: 100%;">
+                        <!-- Hero -->
+                        <div style="text-align: center; margin-bottom: 60px;">
+                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">Data Table</h1>
+                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                                Tabla de datos configurable para listar registros con búsqueda, filtros, orden, selección y acciones. Ideal para listas de tareas, colaboradores, planes o cualquier contenido tabular. Se configura con un objeto de opciones y una función que construye cada fila.
+                            </p>
+                        </div>
+
+                        <!-- Preview: la sección contiene overflow para que la tabla no rompa el layout -->
+                        <div class="doc-preview-section" style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Preview del componente
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                                Tabla generada con <code>createUbitsDataTable(options)</code>: título, búsqueda, columnas visibles, botón primario, checkboxes, orden y filtros por columna.
+                            </p>
+                            <div id="ubits-dt-doc-preview" class="ubits-dt-doc-preview-wrap"></div>
+                        </div>
+
+                        <!-- Características generales -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Características generales
+                            </h2>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--gap-lg);">
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-columns-3"></i></div>
+                                    <div class="ubits-body-sm-bold">Columnas configurables</div>
+                                    <div class="ubits-body-sm-regular">Define columnas con etiqueta, orden y filtro por columna.</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-check-double"></i></div>
+                                    <div class="ubits-body-sm-bold">Checkboxes y selección</div>
+                                    <div class="ubits-body-sm-regular">Selección por fila y "seleccionar todo" con estado indeterminado.</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-magnifying-glass"></i></div>
+                                    <div class="ubits-body-sm-bold">Búsqueda y filtros</div>
+                                    <div class="ubits-body-sm-regular">Búsqueda global y filtros por columna con chips y limpiar.</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-eye"></i></div>
+                                    <div class="ubits-body-sm-bold">Ver seleccionados</div>
+                                    <div class="ubits-body-sm-regular">Modo para mostrar solo las filas seleccionadas.</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-sliders"></i></div>
+                                    <div class="ubits-body-sm-bold">Columnas visibles</div>
+                                    <div class="ubits-body-sm-regular">Dropdown para mostrar u ocultar columnas sin recargar.</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-bolt"></i></div>
+                                    <div class="ubits-body-sm-bold">Botón primario</div>
+                                    <div class="ubits-body-sm-regular">Botón con texto e icono opcional en el header (p. ej. "Nueva tarea").</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Checklist para tabla nueva -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-list-check" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Checklist para tabla nueva
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                Pasos reutilizables para añadir una nueva tabla con el componente.
+                            </p>
+                            <ul class="ubits-body-md-regular" style="margin: 0; padding-left: 24px; line-height: 1.8;">
+                                <li>Incluir <code>ubits-data-table.css</code> y <code>ubits-data-table.js</code> en la página (y si usas búsqueda/filtros/columnas: <code>table.css</code>, <code>button.css</code>, <code>input.css</code>, <code>checkbox.css</code>, <code>dropdown-menu.css</code>, <code>tooltip.css</code> según features).</li>
+                                <li>Definir el config: <code>containerId</code>, <code>columns</code>, <code>getData</code>, <code>rowIdField</code>, <code>buildRowHtml</code>, <code>features</code> (checkboxes, search, filters, verSeleccionados, actionBar, resultsCount, columnsToggle), y opcionalmente <code>primaryButton</code>, <code>emptyState</code>, <code>emptySearchState</code>, <code>actionBarButtons</code>, <code>i18n</code>, <code>title</code>.</li>
+                                <li>Implementar <code>buildRowHtml(row)</code> para devolver el HTML de las celdas (sin la columna de checkbox; el componente la añade si <code>features.checkboxes</code> es true). Usar <code>data-col="idColumna"</code> en cada <code>td</code> para que orden y filtros funcionen.</li>
+                                <li>Probar: checkboxes (seleccionar todo / fila), empty state sin datos, búsqueda, filtros por columna, ver seleccionados, barra de acciones y botón primario si los activaste.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Prompts útiles -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Prompts útiles
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                Reemplaza lo que va entre [corchetes]. Indica en el prompt que se importen <code>ubits-data-table.css</code> y <code>ubits-data-table.js</code>.
+                            </p>
+                            <div id="component-warning-alert" style="margin-bottom: 32px;"></div>
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0;">Añadir tabla de datos en una página</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('prompt-tabla')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <pre style="margin: 0; font-family: monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap; background: var(--ubits-bg-2); padding: 16px; border-radius: var(--border-radius-sm);"><code id="prompt-tabla">Añade una tabla de datos UBITS en [ubicación de la página] usando createUbitsDataTable. Incluye ubits-data-table.css y ubits-data-table.js. Config: containerId [id del contenedor], columns [lista de columnas con id y label], getData que devuelva los datos, rowIdField "id", buildRowHtml que devuelva el HTML de las celdas con data-col por columna. Activa features: checkboxes, search, resultsCount, columnsToggle. Añade emptyState con mensaje [mensaje]. Si quieres un botón principal en el header, usa primaryButton: { text: "[texto]", icon: "fa-plus", onClick: function() {} }.</code></pre>
+                            </div>
+                        </div>
+
+                        <!-- Documentación técnica -->
+                        <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
+                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Documentación técnica
+                                </h2>
+                                <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
+                                    Opciones del config, API y requisitos.
+                                </p>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: var(--gap-sm);">
+                                    <i class="far fa-chevron-down" id="tech-docs-chevron"></i>
+                                    Mostrar
+                                </span>
+                            </div>
+                            <div id="technical-docs-content" style="display: none;">
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <h3 class="ubits-body-md-bold" style="margin-bottom: 16px;">Opciones del config (createUbitsDataTable)</h3>
+                                    <ul class="ubits-body-sm-regular" style="margin: 0; padding-left: 24px; line-height: 1.8;">
+                                        <li><strong>containerId</strong> (string): ID del elemento donde se renderiza la tabla.</li>
+                                        <li><strong>tableId</strong> (string, opcional): id del &lt;table&gt;. Por defecto "ubits-data-table".</li>
+                                        <li><strong>columns</strong> (array): { id, label, sortable?, filterable? }.</li>
+                                        <li><strong>getData</strong> (function): devuelve array de filas.</li>
+                                        <li><strong>rowIdField</strong> (string): clave del objeto fila para el id (ej. "id").</li>
+                                        <li><strong>buildRowHtml</strong> (function(row)): devuelve HTML de las celdas (sin checkbox). Cada td debe tener data-col="idColumna".</li>
+                                        <li><strong>features</strong> (object): checkboxes, search, filters, verSeleccionados, actionBar, resultsCount, columnsToggle (boolean).</li>
+                                        <li><strong>emptyState</strong> (object): message, icon. Estado cuando no hay datos.</li>
+                                        <li><strong>emptySearchState</strong> (object): message, description, buttonText. Estado cuando la búsqueda no devuelve resultados.</li>
+                                        <li><strong>actionBarButtons</strong> (array): { id, label, icon, onClick(selectedIds), variant? }.</li>
+                                        <li><strong>primaryButton</strong> (object): { text, icon?, onClick() }. Botón primario en el header a la derecha del botón Columnas.</li>
+                                        <li><strong>i18n</strong> (object): selectAll, deselectAll, verSeleccionados, clearFilters, filtrosAplicados, buscar, columnasVisibles.</li>
+                                        <li><strong>title</strong> (string): título opcional en la barra superior.</li>
+                                    </ul>
+                                </div>
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                        <h3 class="ubits-body-md-bold" style="margin: 0;">Requisitos (CSS/JS)</h3>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('req-code')">
+                                            <i class="far fa-copy"></i>
+                                            <span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <pre style="margin: 0; font-family: monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); background: var(--ubits-bg-2); padding: 16px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code id="req-code">&lt;link rel="stylesheet" href="components/ubits-data-table.css"&gt;
+&lt;link rel="stylesheet" href="components/table.css"&gt;
+&lt;!-- Si usas checkboxes, búsqueda, filtros, columnas: button, input, checkbox, dropdown-menu, tooltip --&gt;
+&lt;script src="components/ubits-data-table.js"&gt;&lt;/script&gt;</code></pre>
+                                </div>
+                                <div style="padding: 32px;">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                        <h3 class="ubits-body-md-bold" style="margin: 0;">Ejemplo mínimo</h3>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('min-code')">
+                                            <i class="far fa-copy"></i>
+                                            <span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <pre style="margin: 0; font-family: monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); background: var(--ubits-bg-2); padding: 16px; border-radius: var(--border-radius-sm); overflow-x: auto; white-space: pre-wrap;"><code id="min-code">createUbitsDataTable({
+  containerId: 'mi-tabla-container',
+  columns: [ { id: 'nombre', label: 'Nombre', sortable: true }, { id: 'estado', label: 'Estado', filterable: true } ],
+  getData: function() { return [ { id: '1', nombre: 'Ejemplo', estado: 'Activo' } ]; },
+  rowIdField: 'id',
+  buildRowHtml: function(row) {
+    return '&lt;td data-col="nombre"&gt;&lt;span class="ubits-body-sm-regular"&gt;' + (row.nombre || '') + '&lt;/span&gt;&lt;/td&gt;&lt;td data-col="estado"&gt;&lt;span class="ubits-body-sm-regular"&gt;' + (row.estado || '') + '&lt;/span&gt;&lt;/td&gt;';
+  },
+  features: { checkboxes: true, search: true, resultsCount: true }
+});</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="ubits-toast-container"></div>
+
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/tooltip.js"></script>
+    <script src="../../components/input.js"></script>
+    <script src="../../components/dropdown-menu.js"></script>
+    <script src="../../components/empty-state.js"></script>
+    <script src="../../components/ubits-data-table.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSubNav('top-nav-container', 'documentacion');
+            setTimeout(function() {
+                document.querySelectorAll('.nav-tab.active, .hamburger-item.active').forEach(function(item) { item.classList.remove('active'); });
+                var navTab = document.querySelector('.nav-tab[data-tab="section3"]');
+                var hamburgerItem = document.querySelector('.hamburger-item[data-tab="section3"]');
+                if (navTab) navTab.classList.add('active');
+                if (hamburgerItem) hamburgerItem.classList.add('active');
+            }, 200);
+            loadDocsSidebar('ubits-data-table');
+            showAlert('warning', 'Reemplaza los textos entre [corchetes] con la información de tu proyecto antes de enviar el prompt a Cursor.', { containerId: 'component-warning-alert', noClose: true });
+
+            if (typeof createUbitsDataTable === 'function') {
+                var docPreviewData = [
+                    { id: '1', nombre: 'Revisar presupuesto Q1', asignado: 'Ana García', estado: 'Por hacer' },
+                    { id: '2', nombre: 'Configurar entorno de pruebas', asignado: 'Carlos Ruiz', estado: 'Finalizada' },
+                    { id: '3', nombre: 'Capacitación equipo comercial', asignado: 'María López', estado: 'Vencida' },
+                    { id: '4', nombre: 'Actualizar políticas de RRHH', asignado: 'Pedro Sánchez', estado: 'Por hacer' }
+                ];
+                function escapeDoc(t) { if (t == null) return ''; var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+                function buildDocRow(row) {
+                    return '<td data-col="nombre"><span class="ubits-body-sm-regular">' + escapeDoc(row.nombre) + '</span></td>' +
+                        '<td data-col="asignado"><span class="ubits-body-sm-regular">' + escapeDoc(row.asignado) + '</span></td>' +
+                        '<td data-col="estado"><span class="ubits-body-sm-regular">' + escapeDoc(row.estado) + '</span></td>';
+                }
+                createUbitsDataTable({
+                    containerId: 'ubits-dt-doc-preview',
+                    tableId: 'ubits-dt-doc-preview-table',
+                    title: 'Lista de ejemplo',
+                    columns: [
+                        { id: 'nombre', label: 'Nombre', sortable: true, filterable: true },
+                        { id: 'asignado', label: 'Asignado', sortable: true, filterable: true },
+                        { id: 'estado', label: 'Estado', sortable: true, filterable: true }
+                    ],
+                    getData: function() { return docPreviewData; },
+                    rowIdField: 'id',
+                    buildRowHtml: buildDocRow,
+                    features: { checkboxes: true, search: true, filters: true, verSeleccionados: true, resultsCount: true, columnsToggle: true },
+                    primaryButton: { text: 'Nueva fila', icon: 'fa-plus', onClick: function() { if (typeof showToast === 'function') showToast('info', 'Nueva fila (preview)', { containerId: 'ubits-toast-container' }); } },
+                    emptyState: { message: 'No hay elementos.', icon: 'far fa-folder-open' }
+                });
+            }
+        });
+        function toggleTechnicalDocs() {
+            var content = document.getElementById('technical-docs-content');
+            var btn = content.previousElementSibling;
+            if (content.style.display === 'none' || content.style.display === '') {
+                content.style.display = 'block';
+                btn.innerHTML = '<span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: var(--gap-sm);"><i class="far fa-chevron-up"></i> Ocultar</span>';
+            } else {
+                content.style.display = 'none';
+                btn.innerHTML = '<span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: var(--gap-sm);"><i class="far fa-chevron-down"></i> Mostrar</span>';
+            }
+        }
+        function copyPrompt(promptId) {
+            var el = document.getElementById(promptId);
+            if (!el) return;
+            navigator.clipboard.writeText(el.textContent).then(function() {
+                if (typeof showToast === 'function') showToast('success', 'Prompt copiado', { containerId: 'ubits-toast-container', duration: 3500 });
+            });
+        }
+        function copyCode(codeId) {
+            var el = document.getElementById(codeId);
+            if (!el) return;
+            navigator.clipboard.writeText(el.textContent).then(function() {
+                if (typeof showToast === 'function') showToast('success', 'Código copiado', { containerId: 'ubits-toast-container', duration: 3500 });
+            });
+        }
+    </script>
+</body>
+</html>

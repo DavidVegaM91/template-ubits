@@ -112,3 +112,12 @@
 .ubits-data-table .ubits-dt-filter-btn--active i {
     color: var(--ubits-accent-brand) !important;
 }
+
+/* Sin datos (empty state "Aún no hay..."): ocultar barra de acciones y botón de búsqueda */
+.ubits-data-table.ubits-data-table--empty .ubits-dt-action-bar {
+    display: none !important;
+}
+
+.ubits-data-table.ubits-data-table--empty .ubits-dt-search-toggle {
+    display: none !important;
+}

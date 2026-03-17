@@ -56,10 +56,33 @@
     }
 
     /**
+     * Parsea una fecha para ordenación. Acepta DD/MM/YYYY, YYYY-MM-DD y variantes con - o /.
+     * @param {string} str - Texto de fecha (o data-date)
+     * @returns {number} Timestamp o 0 si no se puede parsear
+     */
+    function parseDateForSort(str) {
+        if (str == null || String(str).trim() === '') return 0;
+        var parts = String(str).trim().split(/[\/\-]/);
+        if (parts.length < 3) return 0;
+        var y, m, d;
+        if (parts[0].length === 4) {
+            y = parseInt(parts[0], 10);
+            m = parseInt(parts[1], 10) - 1;
+            d = parseInt(parts[2], 10);
+        } else {
+            d = parseInt(parts[0], 10);
+            m = parseInt(parts[1], 10) - 1;
+            y = parseInt(parts[2], 10);
+        }
+        var t = new Date(y, m, d).getTime();
+        return isNaN(t) ? 0 : t;
+    }
+
+    /**
      * @param {Object} options
      * @param {string} options.containerId - ID del contenedor donde se renderiza la tabla
      * @param {string} [options.tableId] - id del <table>
-     * @param {Array<{id: string, label: string, sortable?: boolean, filterable?: boolean}>} options.columns
+     * @param {Array<{id: string, label: string, sortable?: boolean, filterable?: boolean, sortType?: 'number'|'date'}>} options.columns
      * @param {function(): Array} options.getData
      * @param {string} options.rowIdField - clave del row para el id (ej. 'id')
      * @param {function(Object): string} options.buildRowHtml - devuelve HTML de celdas (sin checkbox); si checkboxes, el componente añade la columna
@@ -116,6 +139,15 @@
 
         columns.forEach(function (c) { filters[c.id] = filters[c.id] || []; });
 
+        function getRowCellSortValue(tr, colId) {
+            var col = columns.find(function (c) { return c.id === colId; });
+            if (!col || col.sortType !== 'date') return null;
+            var td = tr.querySelector('td[data-col="' + colId + '"]');
+            if (!td) return 0;
+            var dateStr = td.getAttribute('data-date') || getRowCellText(tr, colId);
+            return parseDateForSort(dateStr);
+        }
+
         function getTableEl() {
             return container.querySelector('#' + tableId) || container.querySelector('table');
         }
@@ -160,7 +192,13 @@
             if (sortColumn) {
                 var col = columns.find(function (c) { return c.id === sortColumn; });
                 var isNum = col && (col.sortType === 'number' || col.id === 'integrantes');
+                var isDate = col && col.sortType === 'date';
                 rows = rows.slice().sort(function (a, b) {
+                    if (isDate) {
+                        var va = getRowCellSortValue(a, sortColumn) || 0;
+                        var vb = getRowCellSortValue(b, sortColumn) || 0;
+                        return sortDirection === 'asc' ? va - vb : vb - va;
+                    }
                     var va = getRowCellText(a, sortColumn);
                     var vb = getRowCellText(b, sortColumn);
                     if (isNum) {
@@ -416,10 +454,15 @@
             var wrapper = container.querySelector('.ubits-dt-table-wrapper');
             var tableWrap = wrapper ? wrapper.querySelector('.ubits-table-wrapper') : null;
             var emptyEl = container.querySelector('#' + emptyStateId);
+            var rootEl = container.querySelector('.ubits-data-table');
             if (!wrapper || !emptyEl) return;
             var visible = getVisibleRows();
             var hasData = getTableRows().length > 0;
             var hasSearchOrFilter = (features.search && searchQuery.trim()) || (features.filters && Object.keys(filters).some(function (k) { return (filters[k] || []).length > 0; }));
+            if (rootEl) {
+                if (!hasData) rootEl.classList.add('ubits-data-table--empty');
+                else rootEl.classList.remove('ubits-data-table--empty');
+            }
             if (!hasData) {
                 if (tableWrap) tableWrap.style.display = 'none';
                 emptyEl.style.display = 'flex';
@@ -580,10 +623,13 @@
                     var col = sortBtn.getAttribute('data-sort');
                     var c = columns.find(function (x) { return x.id === col; });
                     var isNum = c && (c.sortType === 'number' || c.id === 'integrantes');
+                    var isDate = c && c.sortType === 'date';
                     var currentDir = (sortColumn === col) ? sortDirection : null;
+                    var descText = isDate ? 'Más reciente primero' : (isNum ? 'Mayor a menor' : 'Z a A');
+                    var ascText = isDate ? 'Más reciente al final' : (isNum ? 'Menor a mayor' : 'A a Z');
                     var options = [
-                        { text: isNum ? 'Mayor a menor' : 'Z a A', value: 'desc', leftIcon: 'arrow-up', selected: currentDir === 'desc' },
-                        { text: isNum ? 'Menor a mayor' : 'A a Z', value: 'asc', leftIcon: 'arrow-down', selected: currentDir === 'asc' }
+                        { text: descText, value: 'desc', leftIcon: 'arrow-up', selected: currentDir === 'desc' },
+                        { text: ascText, value: 'asc', leftIcon: 'arrow-down', selected: currentDir === 'asc' }
                     ];
                     var overlayId = sortOverlayPrefix + '-' + col;
                     var existing = document.getElementById(overlayId);
@@ -762,17 +808,15 @@
                             containerId: searchContainerId,
                             type: 'search',
                             placeholder: 'Buscar...',
-                            showLabel: false
+                            showLabel: false,
+                            onChange: function (value) {
+                                searchQuery = value || '';
+                                refresh();
+                            }
                         });
                         setTimeout(function () {
                             var input = searchCont.querySelector('input');
-                            if (input) {
-                                input.focus();
-                                input.addEventListener('input', function () {
-                                    searchQuery = this.value || '';
-                                    refresh();
-                                });
-                            }
+                            if (input) input.focus();
                         }, 100);
                     }
                 }

@@ -1657,7 +1657,7 @@
                     searchContainer.innerHTML = '';
                     if (typeof createInput === 'function') {
                         createInput({ containerId: 'asignaciones-search-container', type: 'search', placeholder: 'Buscar asignaciones...', size: 'md', onChange: function(val) { searchQuery = val || ''; applyAsignacionesVisibility(); } });
-                        setTimeout(function() {
+                setTimeout(function() {
                             var wrap = searchContainer.querySelector('.ubits-input-wrapper');
                             if (wrap) {
                                 var closeBtn = document.createElement('button');
