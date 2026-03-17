@@ -630,12 +630,27 @@ function initPlanDetail() {
                 });
                 listEl.appendChild(div);
             });
-            const rect = countEl.getBoundingClientRect();
-            popover.style.top = (rect.bottom + 4) + 'px';
-            popover.style.left = rect.left + 'px';
             overlay.style.display = 'block';
             overlay.setAttribute('aria-hidden', 'false');
             popover.style.display = 'block';
+            const rect = countEl.getBoundingClientRect();
+            const popoverH = popover.offsetHeight;
+            const gap = 4;
+            const margin = 8;
+            const spaceBelow = window.innerHeight - rect.bottom - margin;
+            const spaceAbove = rect.top - margin;
+            if (spaceBelow >= popoverH + gap) {
+                popover.style.top = (rect.bottom + gap) + 'px';
+            } else if (spaceAbove >= popoverH + gap) {
+                popover.style.top = (rect.top - popoverH - gap) + 'px';
+            } else {
+                popover.style.top = spaceBelow >= spaceAbove ? (rect.bottom + gap) + 'px' : (rect.top - popoverH - gap) + 'px';
+            }
+            let left = rect.left;
+            const maxLeft = window.innerWidth - popover.offsetWidth - margin;
+            if (left > maxLeft) left = maxLeft;
+            if (left < margin) left = margin;
+            popover.style.left = left + 'px';
         }
     });
 

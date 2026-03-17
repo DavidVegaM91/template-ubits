@@ -2495,12 +2495,27 @@
                 div.appendChild(span);
                 listEl.appendChild(div);
             });
-            var rect = chip.getBoundingClientRect();
-            popover.style.top = (rect.bottom + 4) + 'px';
-            popover.style.left = rect.left + 'px';
             overlay.style.display = 'block';
             overlay.setAttribute('aria-hidden', 'false');
             popover.style.display = 'block';
+            var rect = chip.getBoundingClientRect();
+            var popoverH = popover.offsetHeight;
+            var gap = 4;
+            var margin = 8;
+            var spaceBelow = window.innerHeight - rect.bottom - margin;
+            var spaceAbove = rect.top - margin;
+            if (spaceBelow >= popoverH + gap) {
+                popover.style.top = (rect.bottom + gap) + 'px';
+            } else if (spaceAbove >= popoverH + gap) {
+                popover.style.top = (rect.top - popoverH - gap) + 'px';
+            } else {
+                popover.style.top = spaceBelow >= spaceAbove ? (rect.bottom + gap) + 'px' : (rect.top - popoverH - gap) + 'px';
+            }
+            var left = rect.left;
+            var maxLeft = window.innerWidth - popover.offsetWidth - margin;
+            if (left > maxLeft) left = maxLeft;
+            if (left < margin) left = margin;
+            popover.style.left = left + 'px';
         });
     }
 
