@@ -274,7 +274,7 @@
                     '      <span class="ubits-body-md-semibold drawer-option-card__title">Agregar toda la empresa</span>' +
                     '    </div>' +
                     '    <p class="ubits-body-sm-regular drawer-option-card__desc">Asigna el plan a todos los colaboradores de la empresa de una sola vez.</p>' +
-                    '    <span class="drawer-option-card__count ubits-body-md-regular"><span class="ubits-body-md-bold">0</span>/<span class="ubits-body-md-bold">290</span> seleccionados</span>' +
+                    '    <span class="drawer-option-card__count ubits-body-md-regular"><span class="ubits-body-md-bold">0</span>/<span class="ubits-body-md-bold" data-drawer-total>0</span> seleccionados</span>' +
                     '  </div>' +
                     '</label>' +
                     '<label class="drawer-option-card ubits-radio ubits-radio--md" data-opcion="por-colaborador">' +
@@ -286,7 +286,7 @@
                     '      <span class="ubits-body-md-semibold drawer-option-card__title">Agregar colaborador</span>' +
                     '    </div>' +
                     '    <p class="ubits-body-sm-regular drawer-option-card__desc">Busca y agrega colaboradores individualmente a la lista de participantes.</p>' +
-                    '    <span class="drawer-option-card__count ubits-body-md-regular"><span class="ubits-body-md-bold">0</span>/<span class="ubits-body-md-bold">290</span> seleccionados</span>' +
+                    '    <span class="drawer-option-card__count ubits-body-md-regular"><span class="ubits-body-md-bold">0</span>/<span class="ubits-body-md-bold" data-drawer-total>0</span> seleccionados</span>' +
                     '  </div>' +
                     '</label>' +
                     '<label class="drawer-option-card ubits-radio ubits-radio--md" data-opcion="por-grupos">' +
@@ -310,7 +310,7 @@
                     '      <span class="ubits-body-md-semibold drawer-option-card__title">Agregar desde archivo</span>' +
                     '    </div>' +
                     '    <p class="ubits-body-sm-regular drawer-option-card__desc">Importa una lista de participantes desde un archivo CSV o Excel.</p>' +
-                    '    <span class="drawer-option-card__count ubits-body-md-regular"><span class="ubits-body-md-bold">0</span>/<span class="ubits-body-md-bold">290</span> seleccionados</span>' +
+                    '    <span class="drawer-option-card__count ubits-body-md-regular"><span class="ubits-body-md-bold">0</span>/<span class="ubits-body-md-bold" data-drawer-total>0</span> seleccionados</span>' +
                     '  </div>' +
                     '</label>' +
                     '</div>' +
@@ -654,6 +654,7 @@
                         i18n: { selectAll: 'Seleccionar todo', deselectAll: 'Deseleccionar todo', verSeleccionados: 'Ver seleccionados', buscar: 'Buscar' }
                     });
                     drawerColabContainer.addEventListener('change', function(e) { if (e.target && e.target.matches && e.target.matches('input[type="checkbox"]')) updateDrawerCardColabCount(); });
+                    updateDrawerCardColabCount();
                 }
                 var drawerGruposContainer = overlay.querySelector('#drawer-grupos-data-table-container');
                 if (drawerGruposContainer && typeof createUbitsDataTable === 'function') {
@@ -677,6 +678,7 @@
                         i18n: { selectAll: 'Seleccionar todo', deselectAll: 'Deseleccionar todo', verSeleccionados: 'Ver seleccionados', buscar: 'Buscar' }
                     });
                     drawerGruposContainer.addEventListener('change', function(e) { if (e.target && e.target.matches && e.target.matches('input[type="checkbox"]')) updateDrawerCardGruposCount(); });
+                    updateDrawerCardGruposCount();
                 }
                 overlay._drawerColabTablaRef = drawerColabTablaRef;
                 overlay._drawerGruposTablaRef = drawerGruposTablaRef;
