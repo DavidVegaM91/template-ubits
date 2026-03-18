@@ -1570,6 +1570,7 @@ function createInput(options = {}) {
                 inputElement.value = '';
                 inputElement.focus();
                 clearIcon.style.display = 'none';
+                inputElement.dispatchEvent(new Event('input', { bubbles: true }));
                 if (onChange && typeof onChange === 'function') {
                     onChange('');
                 }
@@ -1615,6 +1616,7 @@ function createInput(options = {}) {
                 if (dropdown) {
                     dropdown.style.display = 'none';
                 }
+                inputElement.dispatchEvent(new Event('input', { bubbles: true }));
                 if (onChange && typeof onChange === 'function') {
                     onChange('');
                 }

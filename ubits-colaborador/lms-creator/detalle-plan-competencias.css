@@ -516,6 +516,24 @@
     flex: 1;
     min-height: 120px;
 }
+/* Mismo espacio que empty state de búsqueda en tablas (ubits-dt-empty-state) */
+#drawer-detalle-plan-agregar-cursos .drawer-competencias-empty-search-wrap {
+    padding: var(--padding-6xl) var(--padding-xl);
+    min-height: 200px;
+    box-sizing: border-box;
+}
+/* loadEmptyState reemplaza la clase del div por ubits-empty-state; forzar flex para que gap funcione */
+#drawer-competencias-empty-search.ubits-empty-state {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: var(--gap-lg) !important;
+}
+#drawer-competencias-empty-search.ubits-empty-state .ubits-empty-state__header {
+    gap: var(--gap-sm);
+}
+#drawer-competencias-empty-search.ubits-empty-state .ubits-empty-state__footer {
+    gap: var(--gap-md);
+}
 #drawer-detalle-plan-agregar-cursos .drawer-cursos-resultados-bg {
     background: var(--ubits-bg-2);
     padding: var(--padding-md);
@@ -543,12 +561,58 @@
     box-sizing: border-box;
 }
 
-/* Drawer competencias: mismo layout que crear-plan (cards + habilidades + tabla dos líneas) */
-#drawer-detalle-plan-agregar-cursos .drawer-competencias-cards-grid {
+/* Drawer competencias: mismo layout que catalogo-v5 (flex con 3 columnas para que al expandir solo crezca la columna) */
+#drawer-detalle-plan-agregar-cursos .drawer-competencias-grid-v1 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-lg);
+    align-items: flex-start;
+    overflow: visible;
+}
+#drawer-detalle-plan-agregar-cursos .drawer-competencias-column {
+    flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     gap: var(--gap-md);
 }
+@media (max-width: 900px) {
+    #drawer-detalle-plan-agregar-cursos .drawer-competencias-column {
+        min-width: calc(50% - var(--gap-lg) / 2);
+    }
+}
+@media (max-width: 480px) {
+    #drawer-detalle-plan-agregar-cursos .drawer-competencias-column {
+        min-width: 100%;
+    }
+}
+
+/* Mismo layout para drawer competencias estudiante */
+#drawer-competencias-estudiante .drawer-competencias-grid-v1 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-lg);
+    align-items: flex-start;
+    overflow: visible;
+}
+#drawer-competencias-estudiante .drawer-competencias-column {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+}
+@media (max-width: 900px) {
+    #drawer-competencias-estudiante .drawer-competencias-column {
+        min-width: calc(50% - var(--gap-lg) / 2);
+    }
+}
+@media (max-width: 480px) {
+    #drawer-competencias-estudiante .drawer-competencias-column {
+        min-width: 100%;
+    }
+}
+
 #drawer-detalle-plan-agregar-cursos .drawer-competencia-card-wrapper {
     display: flex;
     flex-direction: column;

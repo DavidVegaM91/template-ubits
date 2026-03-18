@@ -809,6 +809,7 @@
                     '    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" id="drawer-cursos-filter-btn" aria-label="Filtrar por origen"><i class="far fa-filter"></i></button>' +
                     '  </div>' +
                     '  <div class="drawer-cursos-resultados-bg drawer-cursos-resultados-bg--dos-columnas">' +
+                    '    <div id="drawer-contenidos-empty-search" class="drawer-contenidos-empty-search-wrap" style="display:none;"></div>' +
                     '    <div class="drawer-cursos-cards-grid" id="drawer-cursos-cards-container"></div>' +
                     '  </div>' +
                     '</div>' +
@@ -907,6 +908,7 @@
                 var searchContainer = overlay.querySelector('#drawer-cursos-search-container');
                 var searchInput = searchContainer ? searchContainer.querySelector('input') : null;
                 var cardsContainer = overlay.querySelector('#drawer-cursos-cards-container');
+                var emptySearchContainer = overlay.querySelector('#drawer-contenidos-empty-search');
                 var DRAWER_CURSOS_PAGE_SIZE = 12;
                 var drawerCursosVisibleCount = DRAWER_CURSOS_PAGE_SIZE;
                 var drawerCursosFilter = 'all';
@@ -924,6 +926,40 @@
                 function filtrarYRenderizarCards() {
                     if (!cardsContainer || typeof loadCardContentCompact !== 'function') return;
                     var filtrados = getFiltradosDrawerCursos();
+                    var q = (searchInput && searchInput.value) ? searchInput.value.trim() : '';
+                    if (q && filtrados.length === 0) {
+                        if (emptySearchContainer) {
+                            emptySearchContainer.style.display = 'block';
+                            emptySearchContainer.innerHTML = '';
+                            if (typeof loadEmptyState === 'function') {
+                                loadEmptyState('drawer-contenidos-empty-search', {
+                                    icon: 'fa-search',
+                                    iconSize: 'lg',
+                                    title: 'No se encontraron resultados',
+                                    description: 'Intenta ajustar tu búsqueda.',
+                                    buttons: { secondary: { text: 'Limpiar búsqueda', icon: 'fa-times', onClick: function() {} } }
+                                });
+                                setTimeout(function() {
+                                    var btn = emptySearchContainer.querySelector('.ubits-button--secondary');
+                                    if (btn) {
+                                        btn.onclick = function(e) {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            if (searchInput) { searchInput.value = ''; searchInput.dispatchEvent(new Event('input')); }
+                                            filtrarYRenderizarCards();
+                                        };
+                                    }
+                                }, 50);
+                            }
+                        }
+                        cardsContainer.style.display = 'none';
+                        return;
+                    }
+                    if (emptySearchContainer) {
+                        emptySearchContainer.style.display = 'none';
+                        emptySearchContainer.innerHTML = '';
+                    }
+                    cardsContainer.style.display = '';
                     var aMostrar = filtrados.slice(0, drawerCursosVisibleCount);
                     loadCardContentCompact('drawer-cursos-cards-container', aMostrar);
                     aMostrar.forEach(function(course, idx) {

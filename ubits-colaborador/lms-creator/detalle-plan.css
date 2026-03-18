@@ -492,6 +492,23 @@
     flex: 1;
     min-height: 120px;
 }
+#drawer-detalle-plan-agregar-cursos .drawer-contenidos-empty-search-wrap {
+    padding: var(--padding-6xl) var(--padding-xl);
+    min-height: 200px;
+    box-sizing: border-box;
+}
+/* loadEmptyState reemplaza la clase del div por ubits-empty-state; forzar flex para que gap funcione */
+#drawer-contenidos-empty-search.ubits-empty-state {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: var(--gap-lg) !important;
+}
+#drawer-contenidos-empty-search.ubits-empty-state .ubits-empty-state__header {
+    gap: var(--gap-sm);
+}
+#drawer-contenidos-empty-search.ubits-empty-state .ubits-empty-state__footer {
+    gap: var(--gap-md);
+}
 #drawer-detalle-plan-agregar-cursos .drawer-cursos-resultados-bg {
     background: var(--ubits-bg-2);
     padding: var(--padding-md);

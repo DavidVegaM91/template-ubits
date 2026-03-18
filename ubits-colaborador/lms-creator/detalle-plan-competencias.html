@@ -669,6 +669,7 @@
                     '    <div id="drawer-cursos-search-container" class="drawer-cursos-search-input-wrap"></div>' +
                     '  </div>' +
                     '  <div class="drawer-cursos-resultados-bg drawer-cursos-resultados-bg--dos-columnas">' +
+                    '    <div id="drawer-competencias-empty-search" class="drawer-competencias-empty-search-wrap" style="display:none;"></div>' +
                     '    <div class="drawer-competencias-cards-grid" id="drawer-cursos-cards-container"></div>' +
                     '  </div>' +
                     '</div>' +
@@ -697,6 +698,7 @@
                 }
                 var searchInput = overlay.querySelector('#drawer-cursos-search-container input');
                 var cardsContainer = overlay.querySelector('#drawer-cursos-cards-container');
+                var emptySearchContainer = overlay.querySelector('#drawer-competencias-empty-search');
                 var imageBase = '../../images/imagenes competencias/';
 
                 function getFiltradosDrawerCompetencias() {
@@ -747,11 +749,49 @@
                 function filtrarYRenderizarCards() {
                     if (!cardsContainer) return;
                     var filtrados = getFiltradosDrawerCompetencias();
-                    var html = filtrados.map(function(comp) {
-                        var isSelected = cursosSeleccionados.some(function(x) { return x.id === comp.id; });
-                        return buildCardHtml(comp, isSelected);
-                    }).join('');
-                    cardsContainer.innerHTML = html;
+                    var q = (searchInput && searchInput.value) ? searchInput.value.trim() : '';
+                    if (q && filtrados.length === 0) {
+                        if (emptySearchContainer) {
+                            emptySearchContainer.style.display = 'block';
+                            emptySearchContainer.innerHTML = '';
+                            if (typeof loadEmptyState === 'function') {
+                                loadEmptyState('drawer-competencias-empty-search', {
+                                    icon: 'fa-search',
+                                    iconSize: 'lg',
+                                    title: 'No se encontraron resultados',
+                                    description: 'Intenta ajustar tu búsqueda.',
+                                    buttons: { secondary: { text: 'Limpiar búsqueda', icon: 'fa-times', onClick: function() {} } }
+                                });
+                                setTimeout(function() {
+                                    var btn = emptySearchContainer.querySelector('.ubits-button--secondary');
+                                    if (btn) {
+                                        btn.onclick = function(e) {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            if (searchInput) { searchInput.value = ''; searchInput.dispatchEvent(new Event('input')); }
+                                            filtrarYRenderizarCards();
+                                        };
+                                    }
+                                }, 50);
+                            }
+                        }
+                        cardsContainer.style.display = 'none';
+                        return;
+                    }
+                    if (emptySearchContainer) {
+                        emptySearchContainer.style.display = 'none';
+                        emptySearchContainer.innerHTML = '';
+                    }
+                    cardsContainer.style.display = '';
+                    var columns = [[], [], []];
+                    filtrados.forEach(function(comp, i) { columns[i % 3].push(comp); });
+                    var gridHtml = '<div class="drawer-competencias-grid-v1">' + columns.map(function(col) {
+                        return '<div class="drawer-competencias-column">' + col.map(function(comp) {
+                            var isSelected = cursosSeleccionados.some(function(x) { return x.id === comp.id; });
+                            return buildCardHtml(comp, isSelected);
+                        }).join('') + '</div>';
+                    }).join('') + '</div>';
+                    cardsContainer.innerHTML = gridHtml;
                     cardsContainer.querySelectorAll('.drawer-competencia-card').forEach(function(cardEl) {
                         cardEl.addEventListener('click', function(e) {
                             if (e.target.closest('.drawer-competencia-card-check')) e.preventDefault();
@@ -840,6 +880,7 @@
                 }
                 var searchInput = overlay.querySelector('#drawer-cursos-search-container input');
                 var cardsContainer = overlay.querySelector('#drawer-cursos-cards-container');
+                var emptySearchContainer = overlay.querySelector('#drawer-competencias-empty-search');
                 var imageBase = '../../images/imagenes competencias/';
 
                 function getFiltradosDrawerCompetencias() {
@@ -890,11 +931,49 @@
                 function filtrarYRenderizarCards() {
                     if (!cardsContainer) return;
                     var filtrados = getFiltradosDrawerCompetencias();
-                    var html = filtrados.map(function(comp) {
-                        var isSelected = cursosSeleccionados.some(function(x) { return x.id === comp.id; });
-                        return buildCardHtml(comp, isSelected);
-                    }).join('');
-                    cardsContainer.innerHTML = html;
+                    var q = (searchInput && searchInput.value) ? searchInput.value.trim() : '';
+                    if (q && filtrados.length === 0) {
+                        if (emptySearchContainer) {
+                            emptySearchContainer.style.display = 'block';
+                            emptySearchContainer.innerHTML = '';
+                            if (typeof loadEmptyState === 'function') {
+                                loadEmptyState('drawer-competencias-empty-search', {
+                                    icon: 'fa-search',
+                                    iconSize: 'lg',
+                                    title: 'No se encontraron resultados',
+                                    description: 'Intenta ajustar tu búsqueda.',
+                                    buttons: { secondary: { text: 'Limpiar búsqueda', icon: 'fa-times', onClick: function() {} } }
+                                });
+                                setTimeout(function() {
+                                    var btn = emptySearchContainer.querySelector('.ubits-button--secondary');
+                                    if (btn) {
+                                        btn.onclick = function(e) {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            if (searchInput) { searchInput.value = ''; searchInput.dispatchEvent(new Event('input')); }
+                                            filtrarYRenderizarCards();
+                                        };
+                                    }
+                                }, 50);
+                            }
+                        }
+                        cardsContainer.style.display = 'none';
+                        return;
+                    }
+                    if (emptySearchContainer) {
+                        emptySearchContainer.style.display = 'none';
+                        emptySearchContainer.innerHTML = '';
+                    }
+                    cardsContainer.style.display = '';
+                    var columns = [[], [], []];
+                    filtrados.forEach(function(comp, i) { columns[i % 3].push(comp); });
+                    var gridHtml = '<div class="drawer-competencias-grid-v1">' + columns.map(function(col) {
+                        return '<div class="drawer-competencias-column">' + col.map(function(comp) {
+                            var isSelected = cursosSeleccionados.some(function(x) { return x.id === comp.id; });
+                            return buildCardHtml(comp, isSelected);
+                        }).join('') + '</div>';
+                    }).join('') + '</div>';
+                    cardsContainer.innerHTML = gridHtml;
                     cardsContainer.querySelectorAll('.drawer-competencia-card').forEach(function(cardEl) {
                         cardEl.addEventListener('click', function(e) {
                             if (e.target.closest('.drawer-competencia-card-check')) e.preventDefault();

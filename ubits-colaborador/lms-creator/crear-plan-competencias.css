@@ -873,6 +873,25 @@
     padding: var(--padding-lg) 0;
 }
 
+/* Mismo espacio que empty state de búsqueda en tablas (ubits-dt-empty-state) */
+.drawer-competencias-empty-search-wrap {
+    padding: var(--padding-6xl) var(--padding-xl);
+    min-height: 200px;
+    box-sizing: border-box;
+}
+/* loadEmptyState reemplaza la clase del div por ubits-empty-state; forzar flex para que gap funcione */
+#drawer-competencias-empty-search.ubits-empty-state {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: var(--gap-lg) !important;
+}
+#drawer-competencias-empty-search.ubits-empty-state .ubits-empty-state__header {
+    gap: var(--gap-sm);
+}
+#drawer-competencias-empty-search.ubits-empty-state .ubits-empty-state__footer {
+    gap: var(--gap-md);
+}
+
 /* Contenedor de resultados de búsqueda (columna izquierda): flex 1 para ocupar el espacio y scroll propio */
 .drawer-cursos-resultados-bg {
     background: var(--ubits-bg-2);
@@ -995,10 +1014,37 @@
 }
 
 /* ========== Drawer competencias: cards y tabla dos líneas ========== */
+/* Mismo layout que catalogo-v5: flex con 3 columnas (flex-direction: column) para que al expandir una card solo crezca su columna */
 .drawer-competencias-cards-grid {
+    /* contenedor; el contenido lo inyecta JS con .drawer-competencias-grid-v1 */
+}
+
+.drawer-competencias-grid-v1 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-lg);
+    align-items: flex-start;
+    overflow: visible;
+}
+
+.drawer-competencias-column {
+    flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     gap: var(--gap-md);
+}
+
+@media (max-width: 900px) {
+    .drawer-competencias-column {
+        min-width: calc(50% - var(--gap-lg) / 2);
+    }
+}
+
+@media (max-width: 480px) {
+    .drawer-competencias-column {
+        min-width: 100%;
+    }
 }
 
 .drawer-competencia-card-wrapper {
