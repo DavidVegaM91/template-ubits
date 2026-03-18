@@ -151,13 +151,21 @@
             }
 
             if (typeof loadHeaderProduct === 'function') {
-                loadHeaderProduct('header-product-container', {
-                    productName: 'Detalle del plan',
+                var headerOpts = {
+                    productName: 'Detalle del plan de contenidos',
                     breadcrumbItems: [],
                     backButton: {
                         onClick: function() { window.location.href = 'planes-formacion.html'; }
                     }
-                });
+                };
+                if (plan.estado === 'Vigente' || plan.estado === 'Planeado') {
+                    headerOpts.secondaryButtons = [
+                        { text: 'Guardar', icon: 'fa-save', onClick: function() {
+                            if (typeof showToast === 'function') showToast('success', 'Cambios guardados');
+                        } }
+                    ];
+                }
+                loadHeaderProduct('header-product-container', headerOpts);
             }
 
             var planNombreEl = document.getElementById('plan-nombre');

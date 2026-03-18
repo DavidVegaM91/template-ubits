@@ -414,10 +414,85 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: var(--gap-md);
+    align-items: flex-start;
+}
+
+/* No vigentes: drawer sm y una sola columna de cards */
+#drawer-competencias-estudiante #detalle-plan-compact-cards.detalle-plan-drawer-cards-grid {
+    grid-template-columns: 1fr;
 }
 
 .detalle-plan-drawer-cards-grid .course-card-compact {
     min-width: 0;
+}
+
+/* Cards de competencias en panel "competencias y progreso" (con barra de progreso cuando plan vigente) */
+.detalle-plan-competencias-card-wrapper {
+    min-width: 0;
+}
+.detalle-plan-competencias-card {
+    background: var(--ubits-bg-1);
+    border-radius: var(--border-radius-sm);
+    overflow: hidden;
+    border: 1px solid var(--ubits-border-1);
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+    padding: var(--padding-sm);
+    position: relative;
+}
+.detalle-plan-competencias-card-image {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: var(--border-radius-xs);
+    flex-shrink: 0;
+}
+.detalle-plan-competencias-card-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+}
+.detalle-plan-competencias-card-title {
+    color: var(--ubits-fg-1-high);
+    margin: 0;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.detalle-plan-competencias-card-count {
+    color: var(--ubits-fg-1-medium);
+    margin: 0;
+    line-height: 1.2;
+}
+/* Barra de progreso en la parte inferior del card (azul = en progreso, verde = completado) */
+.detalle-plan-competencias-card-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    border-radius: 0 0 var(--border-radius-sm) var(--border-radius-sm);
+    overflow: hidden;
+}
+.detalle-plan-competencias-card-progress-bar {
+    width: 100%;
+    height: 4px;
+    background: var(--ubits-bg-4-static);
+    position: relative;
+}
+.detalle-plan-competencias-card-progress-fill {
+    height: 100%;
+    background: var(--ubits-accent-brand);
+    border-radius: 0;
+    transition: width 0.3s ease;
+}
+.detalle-plan-competencias-card-wrapper[data-status="completed"] .detalle-plan-competencias-card-progress-fill,
+.detalle-plan-competencias-card-progress[data-status="completed"] .detalle-plan-competencias-card-progress-fill {
+    background: var(--ubits-feedback-accent-success-static);
 }
 
 /* Drawer Agregar asignación (solo colaboradores): panel sin opciones de empresa/grupos/archivo */
@@ -574,6 +649,7 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
     gap: var(--gap-md);
 }
 @media (max-width: 900px) {
@@ -587,7 +663,7 @@
     }
 }
 
-/* Mismo layout para drawer competencias estudiante */
+/* Mismo layout para drawer competencias estudiante (Vigente/Planeado: Agregar competencias) */
 #drawer-competencias-estudiante .drawer-competencias-grid-v1 {
     display: flex;
     flex-wrap: wrap;
@@ -600,6 +676,7 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
     gap: var(--gap-md);
 }
 @media (max-width: 900px) {
@@ -613,6 +690,239 @@
     }
 }
 
+/* Cards compactos en drawer "Agregar competencias" (solo icono, título, count, checkbox) */
+#drawer-competencias-estudiante .drawer-competencia-card-wrapper--compact {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-none);
+}
+#drawer-competencias-estudiante .drawer-competencia-card-wrapper--compact .drawer-competencia-card {
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    overflow: hidden;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--gap-none);
+    min-height: 56px;
+    height: auto;
+    padding: var(--padding-sm);
+    transition: border-color 0.2s ease;
+}
+#drawer-competencias-estudiante .drawer-competencia-card-wrapper--compact .drawer-competencia-card:hover {
+    border-color: var(--ubits-accent-brand);
+}
+#drawer-competencias-estudiante .drawer-competencia-card-wrapper--compact .drawer-competencia-card--selected {
+    border-color: var(--ubits-accent-brand);
+    border-width: 2px;
+}
+#drawer-competencias-estudiante .drawer-competencia-card-wrapper--compact .competencia-card-v1-image {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: var(--border-radius-xs);
+    flex-shrink: 0;
+}
+#drawer-competencias-estudiante .drawer-competencia-card-wrapper--compact .competencia-card-v1-content {
+    padding: 0 var(--padding-sm);
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+    flex: 1;
+    min-width: 0;
+    justify-content: center;
+}
+#drawer-competencias-estudiante .drawer-competencia-card-wrapper--compact .competencia-card-v1-title {
+    color: var(--ubits-fg-1-high);
+    margin: 0;
+    line-height: 1.3;
+}
+#drawer-competencias-estudiante .drawer-competencia-card-wrapper--compact .competencia-card-v1-title-text {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+#drawer-competencias-estudiante .drawer-competencia-card-wrapper--compact .competencia-card-v1-count {
+    color: var(--ubits-fg-1-medium);
+    line-height: 1.2;
+    margin: 0;
+    font-size: var(--font-size-xs);
+}
+#drawer-competencias-estudiante .drawer-competencia-card-wrapper--compact .drawer-competencia-card-check {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+#drawer-competencias-estudiante .drawer-competencia-card-wrapper--compact .drawer-competencia-card-check .ubits-checkbox__label {
+    display: none;
+}
+
+/* Barra de progreso en la parte inferior del card (drawer Agregar competencias) - pegada a la fila del card */
+#drawer-competencias-estudiante .drawer-competencia-card-progress,
+#drawer-detalle-plan-agregar-cursos .drawer-competencia-card-progress {
+    margin: 0;
+    height: 4px;
+    border-radius: 0 0 var(--border-radius-sm) var(--border-radius-sm);
+    overflow: hidden;
+    flex-shrink: 0;
+}
+#drawer-competencias-estudiante .drawer-competencia-card-progress-bar,
+#drawer-detalle-plan-agregar-cursos .drawer-competencia-card-progress-bar {
+    width: 100%;
+    height: 4px;
+    background: var(--ubits-bg-4-static);
+    position: relative;
+}
+#drawer-competencias-estudiante .drawer-competencia-card-progress-fill,
+#drawer-detalle-plan-agregar-cursos .drawer-competencia-card-progress-fill {
+    height: 100%;
+    background: var(--ubits-accent-brand);
+    border-radius: 0;
+    transition: width 0.3s ease;
+}
+#drawer-competencias-estudiante .drawer-competencia-card-progress[data-status="completed"] .drawer-competencia-card-progress-fill,
+#drawer-detalle-plan-agregar-cursos .drawer-competencia-card-progress[data-status="completed"] .drawer-competencia-card-progress-fill {
+    background: var(--ubits-feedback-accent-success-static);
+}
+
+/* Card completo con habilidades en drawer-competencias-estudiante (igual que drawer-detalle-plan-agregar-cursos) */
+#drawer-competencias-estudiante .drawer-competencia-card-wrapper:not(.drawer-competencia-card-wrapper--compact) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-none);
+    width: 100%;
+}
+#drawer-competencias-estudiante .drawer-competencia-card-wrapper:not(.drawer-competencia-card-wrapper--compact) .drawer-competencia-card {
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    overflow: hidden;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    min-height: 0;
+    transition: border-color 0.2s ease;
+}
+#drawer-competencias-estudiante .drawer-competencia-card-wrapper:not(.drawer-competencia-card-wrapper--compact) .drawer-competencia-card-row {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 0;
+    height: 48px;
+    flex-shrink: 0;
+}
+#drawer-competencias-estudiante .drawer-competencia-card-wrapper:not(.drawer-competencia-card-wrapper--compact) .drawer-competencia-card:hover {
+    border-color: var(--ubits-accent-brand);
+}
+#drawer-competencias-estudiante .drawer-competencia-card-wrapper:not(.drawer-competencia-card-wrapper--compact) .drawer-competencia-card--selected {
+    border-color: var(--ubits-accent-brand);
+    border-width: 2px;
+}
+#drawer-competencias-estudiante .drawer-competencia-card-wrapper:not(.drawer-competencia-card-wrapper--compact) .competencia-card-v1-image {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    background: var(--ubits-bg-2);
+    flex-shrink: 0;
+}
+#drawer-competencias-estudiante .drawer-competencia-card-wrapper:not(.drawer-competencia-card-wrapper--compact) .competencia-card-v1-content {
+    padding: var(--padding-sm);
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-none);
+    flex: 1;
+    min-width: 0;
+    justify-content: center;
+}
+#drawer-competencias-estudiante .drawer-competencia-card-wrapper:not(.drawer-competencia-card-wrapper--compact) .competencia-card-v1-title,
+#drawer-competencias-estudiante .drawer-competencia-card-wrapper:not(.drawer-competencia-card-wrapper--compact) .competencia-card-v1-count {
+    margin: 0;
+    line-height: 1.5;
+}
+#drawer-competencias-estudiante .drawer-competencia-card-wrapper:not(.drawer-competencia-card-wrapper--compact) .competencia-card-v1-title-text {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+#drawer-competencias-estudiante .drawer-competencia-card-wrapper:not(.drawer-competencia-card-wrapper--compact) .drawer-competencia-card-check {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    padding: 0 var(--padding-sm);
+}
+#drawer-competencias-estudiante .drawer-competencia-card-wrapper:not(.drawer-competencia-card-wrapper--compact) .competencia-habilidades-container.drawer-competencias-habilidades {
+    display: none;
+    margin-top: var(--gap-sm);
+    padding: var(--padding-sm);
+    background: var(--ubits-bg-1);
+    border-radius: var(--border-radius-sm);
+}
+#drawer-competencias-estudiante .drawer-competencia-card-wrapper:not(.drawer-competencia-card-wrapper--compact) .competencia-habilidades-container.drawer-competencias-habilidades.is-visible {
+    display: block;
+}
+/* Estilos sección habilidades en drawer-competencias-estudiante (como crear-plan-competencias) */
+#drawer-competencias-estudiante .drawer-competencia-card-wrapper:not(.drawer-competencia-card-wrapper--compact) .drawer-habilidades-copy {
+    margin: 0 0 var(--gap-sm) 0;
+    color: var(--ubits-fg-1-medium);
+}
+#drawer-competencias-estudiante .drawer-competencia-card-wrapper:not(.drawer-competencia-card-wrapper--compact) .drawer-competencias-habilidades .competencias-habilidades-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+}
+#drawer-competencias-estudiante .drawer-competencia-card-wrapper:not(.drawer-competencia-card-wrapper--compact) .drawer-habilidad-row {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+#drawer-competencias-estudiante .drawer-competencia-card-wrapper:not(.drawer-competencia-card-wrapper--compact) .drawer-habilidad-row--draggable {
+    cursor: grab;
+    padding: var(--padding-xs) 0;
+}
+#drawer-competencias-estudiante .drawer-competencia-card-wrapper:not(.drawer-competencia-card-wrapper--compact) .drawer-habilidad-row--draggable:active {
+    cursor: grabbing;
+}
+
+/* Cuerpo del drawer "Agregar competencias" dentro de drawer-competencias-estudiante (scroll y layout) */
+#drawer-competencias-estudiante .ubits-drawer-content {
+    min-height: 0;
+}
+#drawer-competencias-estudiante .ubits-drawer-body {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+#drawer-competencias-estudiante .drawer-agregar-cursos {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    gap: var(--gap-lg);
+}
+#drawer-competencias-estudiante .drawer-agregar-cursos__left {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: var(--gap-md);
+    min-height: 0;
+    overflow: hidden;
+}
+#drawer-competencias-estudiante .drawer-cursos-resultados-bg {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    background: var(--ubits-bg-2);
+    padding: var(--padding-md);
+    border-radius: var(--border-radius-sm);
+}
+
 #drawer-detalle-plan-agregar-cursos .drawer-competencia-card-wrapper {
     display: flex;
     flex-direction: column;
@@ -620,19 +930,26 @@
 }
 #drawer-detalle-plan-agregar-cursos .drawer-competencia-card {
     background: var(--ubits-bg-1);
-    border: 1px solid transparent;
+    border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-sm);
     overflow: hidden;
     cursor: pointer;
     display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--gap-none);
+    min-height: 48px;
+    transition: border-color 0.2s ease;
+}
+#drawer-detalle-plan-agregar-cursos .drawer-competencia-card-row {
+    display: flex;
     flex-direction: row;
     align-items: stretch;
     gap: var(--gap-none);
-    height: 48px;
-    transition: border-color 0.2s ease;
+    min-height: 48px;
 }
 #drawer-detalle-plan-agregar-cursos .drawer-competencia-card:hover {
-    border-color: var(--ubits-border-1);
+    border-color: var(--ubits-accent-brand);
 }
 #drawer-detalle-plan-agregar-cursos .drawer-competencia-card--selected {
     border-color: var(--ubits-accent-brand);
