@@ -667,7 +667,6 @@
                 if (!compactContainer) return;
 
                 var sinProgreso = planSinProgreso();
-                var mostrarBarra = !sinProgreso;
                 var imgBase = '../../images/imagenes competencias/';
                 var cardsHtml = list.map(function(c) {
                     var progress = sinProgreso ? 0 : (c.progress != null ? c.progress : 0);
@@ -675,9 +674,7 @@
                     var imgName = competenciaImageMap[c.nombre || c.title] || 'Accountability.jpg';
                     var imgPath = (c.image && String(c.image).indexOf('../../') === 0) ? c.image : (imgBase + imgName);
                     var nombre = c.title || c.nombre || '';
-                    var barraHtml = mostrarBarra
-                        ? '<div class="drawer-competencia-card-progress" data-status="' + escapeDrawerHtml(status) + '"><div class="drawer-competencia-card-progress-bar"><div class="drawer-competencia-card-progress-fill" style="width:' + progress + '%"></div></div></div>'
-                        : '';
+                    var barraHtml = '<div class="drawer-competencia-card-progress" data-status="' + escapeDrawerHtml(status) + '"><div class="drawer-competencia-card-progress-bar"><div class="drawer-competencia-card-progress-fill" style="width:' + progress + '%"></div></div></div>';
                     return '<div class="drawer-competencia-card-wrapper">' +
                         '<div class="drawer-competencia-card competencia-card-v1" data-competencia-id="' + escapeDrawerHtml(c.id) + '">' +
                         '<div class="drawer-competencia-card-row">' +
@@ -751,9 +748,9 @@
                             '<i class="far ' + icon + ' drawer-habilidad-icon"></i>' +
                             '<span class="ubits-body-sm-regular drawer-habilidad-title">' + escapeDrawerHtml(h) + '</span></div>';
                     }).join('');
-                    var progress = (selectedItem && selectedItem.progress != null) ? selectedItem.progress : 0;
+                    var progress = planSinProgreso() ? 0 : (selectedItem && selectedItem.progress != null ? selectedItem.progress : 0);
                     var status = (selectedItem && selectedItem.status) ? selectedItem.status : 'default';
-                    var progressBarHtml = isSelected ? ('<div class="drawer-competencia-card-progress" data-status="' + escapeDrawerHtml(status) + '"><div class="drawer-competencia-card-progress-bar"><div class="drawer-competencia-card-progress-fill" style="width:' + progress + '%"></div></div></div>') : '';
+                    var progressBarHtml = '<div class="drawer-competencia-card-progress" data-status="' + escapeDrawerHtml(status) + '"><div class="drawer-competencia-card-progress-bar"><div class="drawer-competencia-card-progress-fill" style="width:' + progress + '%"></div></div></div>';
                     var cardClass = 'drawer-competencia-card competencia-card-v1' + (isSelected ? ' drawer-competencia-card--selected' : '') + (isExpanded ? ' expanded' : '');
                     var checkChecked = isSelected ? ' checked' : '';
                     return '<div class="drawer-competencia-card-wrapper">' +
@@ -835,7 +832,16 @@
                             if (idx !== -1) {
                                 cursosSeleccionados.splice(idx, 1);
                             } else {
-                                cursosSeleccionados.push({ id: comp.id, title: comp.nombre, habilidades: (comp.habilidades || []).slice(), progress: 0, status: 'default' });
+                                var _userId = typeof rowId !== 'undefined' ? rowId : (selectedIds && selectedIds[0]);
+                                var _list = competenciaPorUsuario[_userId] || [];
+                                var _e = _list.find(function(x) { return x.id === comp.id; });
+                                cursosSeleccionados.push({
+                                    id: comp.id,
+                                    title: comp.nombre,
+                                    habilidades: (comp.habilidades || []).slice(),
+                                    progress: _e && _e.progress != null ? _e.progress : 0,
+                                    status: _e && _e.status ? _e.status : 'default'
+                                });
                             }
                             filtrarYRenderizarCards();
                         });
@@ -956,9 +962,9 @@
                             '<i class="far ' + icon + ' drawer-habilidad-icon"></i>' +
                             '<span class="ubits-body-sm-regular drawer-habilidad-title">' + escapeDrawerHtml(h) + '</span></div>';
                     }).join('');
-                    var progress = (selectedItem && selectedItem.progress != null) ? selectedItem.progress : 0;
+                    var progress = planSinProgreso() ? 0 : (selectedItem && selectedItem.progress != null ? selectedItem.progress : 0);
                     var status = (selectedItem && selectedItem.status) ? selectedItem.status : 'default';
-                    var progressBarHtml = isSelected ? ('<div class="drawer-competencia-card-progress" data-status="' + escapeDrawerHtml(status) + '"><div class="drawer-competencia-card-progress-bar"><div class="drawer-competencia-card-progress-fill" style="width:' + progress + '%"></div></div></div>') : '';
+                    var progressBarHtml = '<div class="drawer-competencia-card-progress" data-status="' + escapeDrawerHtml(status) + '"><div class="drawer-competencia-card-progress-bar"><div class="drawer-competencia-card-progress-fill" style="width:' + progress + '%"></div></div></div>';
                     var cardClass = 'drawer-competencia-card competencia-card-v1' + (isSelected ? ' drawer-competencia-card--selected' : '') + (isExpanded ? ' expanded' : '');
                     var checkChecked = isSelected ? ' checked' : '';
                     return '<div class="drawer-competencia-card-wrapper">' +
@@ -1040,7 +1046,16 @@
                             if (idx !== -1) {
                                 cursosSeleccionados.splice(idx, 1);
                             } else {
-                                cursosSeleccionados.push({ id: comp.id, title: comp.nombre, habilidades: (comp.habilidades || []).slice(), progress: 0, status: 'default' });
+                                var _userId = typeof rowId !== 'undefined' ? rowId : (selectedIds && selectedIds[0]);
+                                var _list = competenciaPorUsuario[_userId] || [];
+                                var _e = _list.find(function(x) { return x.id === comp.id; });
+                                cursosSeleccionados.push({
+                                    id: comp.id,
+                                    title: comp.nombre,
+                                    habilidades: (comp.habilidades || []).slice(),
+                                    progress: _e && _e.progress != null ? _e.progress : 0,
+                                    status: _e && _e.status ? _e.status : 'default'
+                                });
                             }
                             filtrarYRenderizarCards();
                         });

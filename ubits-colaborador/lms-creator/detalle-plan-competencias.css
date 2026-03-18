@@ -697,6 +697,7 @@
     gap: var(--gap-none);
 }
 #drawer-competencias-estudiante .drawer-competencia-card-wrapper--compact .drawer-competencia-card {
+    position: relative;
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-sm);
@@ -760,14 +761,17 @@
     display: none;
 }
 
-/* Barra de progreso en la parte inferior del card (drawer Agregar competencias) - pegada a la fila del card */
+/* Barra de progreso en la parte inferior del card (drawer Agregar competencias) - overlay para altura fija del card */
 #drawer-competencias-estudiante .drawer-competencia-card-progress,
 #drawer-detalle-plan-agregar-cursos .drawer-competencia-card-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
     margin: 0;
     height: 4px;
     border-radius: 0 0 var(--border-radius-sm) var(--border-radius-sm);
     overflow: hidden;
-    flex-shrink: 0;
 }
 #drawer-competencias-estudiante .drawer-competencia-card-progress-bar,
 #drawer-detalle-plan-agregar-cursos .drawer-competencia-card-progress-bar {
@@ -796,6 +800,7 @@
     width: 100%;
 }
 #drawer-competencias-estudiante .drawer-competencia-card-wrapper:not(.drawer-competencia-card-wrapper--compact) .drawer-competencia-card {
+    position: relative;
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-sm);
@@ -805,7 +810,7 @@
     flex-direction: column;
     align-items: stretch;
     gap: 0;
-    min-height: 0;
+    min-height: 48px;
     transition: border-color 0.2s ease;
 }
 #drawer-competencias-estudiante .drawer-competencia-card-wrapper:not(.drawer-competencia-card-wrapper--compact) .drawer-competencia-card-row {
@@ -929,6 +934,7 @@
     gap: var(--gap-none);
 }
 #drawer-detalle-plan-agregar-cursos .drawer-competencia-card {
+    position: relative;
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-sm);
@@ -1030,14 +1036,14 @@
     cursor: grabbing;
 }
 #drawer-detalle-plan-agregar-cursos .drawer-habilidad-drag {
-    color: var(--ubits-fg-1-medium);
+    color: var(--ubits-fg-1-medium-inverted);
     font-size: var(--font-size-sm);
 }
 #drawer-detalle-plan-agregar-cursos .drawer-habilidad-row .drawer-habilidad-title {
     color: var(--ubits-fg-1-high);
 }
 #drawer-competencias-estudiante .drawer-habilidad-drag {
-    color: var(--ubits-fg-1-medium);
+    color: var(--ubits-fg-1-medium-inverted);
 }
 #drawer-competencias-estudiante .drawer-habilidad-row .drawer-habilidad-title {
     color: var(--ubits-fg-1-high);

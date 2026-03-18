@@ -1166,7 +1166,7 @@
 }
 
 .drawer-habilidad-drag {
-    color: var(--ubits-fg-1-medium);
+    color: var(--ubits-fg-1-medium-inverted);
     font-size: var(--font-size-sm);
 }
 
