@@ -94,6 +94,24 @@
     text-align: center;
 }
 
+/* Horas de estudio por competencia (editable cuando Vigente/Planeado) */
+.detalle-plan-horas-editable {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+#plan-horas-estudio-wrap {
+    width: 80px;
+    min-width: 80px;
+}
+
+#plan-horas-estudio-wrap .ubits-input {
+    width: 100%;
+    box-sizing: border-box;
+    text-align: left;
+}
+
 .detalle-plan-progress-card__content {
     display: flex;
     align-items: center;

@@ -121,7 +121,8 @@ No se asignan “contenidos” (cursos/cápsulas); se asignan competencias. La c
 - **Significado:** Número de **horas que cada estudiante debe dedicar por cada competencia** asignada en el plan.
 - **Ejemplo:** Si el administrador indica **4** horas por competencia y asigna **5 competencias** a un grupo de personas, **cada persona** de ese grupo debe estudiar **4 h × 5 = 20 horas** en total (4 h por cada una de las 5 competencias).
 - **Tipo de campo:** Numérico (entero o decimal según reglas de negocio).
-- **Ubicación en la UI:** Junto a la vigencia (al lado de la fecha de finalización), solo en la pantalla de **crear/editar plan de competencias**.
+- **Ubicación en la UI:** Junto a la vigencia (al lado de la fecha de finalización) en **crear-plan-competencias** y en **detalle-plan-competencias**.
+- **En detalle del plan:** Si el plan es **Vigente** o **Planeado**, el campo es **editable** (input numérico; solo se admiten dígitos: teclado, pegado y validación en `input` filtran no numéricos). Si el plan es **No vigente**, se muestra como **texto** (solo lectura), igual que las fechas en planes no vigentes.
 
 Este valor es **por plan** (no por asignación): todas las asignaciones del plan comparten la misma “horas por competencia”. El total de horas por persona = **horas por competencia × número de competencias asignadas a esa persona/grupo**.
 
@@ -140,12 +141,25 @@ Este valor es **por plan** (no por asignación): todas las asignaciones del plan
 - **Tabla derecha:** una fila por competencia seleccionada. La celda de competencia tiene **dos líneas**: línea principal = nombre de la competencia, línea secundaria (estilo helper) = “X habilidad(es)”. Botón eliminar quita la competencia de la selección.
 - **Datos guardados por asignación:** array de ítems `{ id, title, habilidades: [] }` (id/title = nombre de la competencia; habilidades = array de nombres de habilidades seleccionadas). Origen de datos: `catalogo-competencias-drawer-data.js` (academias → competencias → habilidades, mismo modelo que catalogo-v5).
 
-### 4.4 Diferencias resumidas frente a planes de contenidos
+### 4.4 Lista de planes y navegación (planes-formacion.html)
+
+- En **planes-formacion.html** hay dos tabs: **Planes de contenidos** y **Planes de competencias**.
+- En el tab **Planes de competencias** la tabla muestra solo planes de tipo competencias (ej. 3 planes: uno Planeado, uno Vigente, uno No vigente). Al hacer clic en una fila se navega a **detalle-plan-competencias.html?id=**`<id>` (ej. `c1`, `c2`, `c3`). El detalle muestra nombre, fechas, estado, progreso y **horas de estudio por competencia** coherentes con el plan elegido.
+
+### 4.5 Detalle del plan de competencias (detalle-plan-competencias.html)
+
+- Para planes de competencias en estado **Planeado**, **Vigente** o **No vigente** se usa la misma página **detalle-plan-competencias.html** (no hay redirección a editar como en contenidos con “Procesando”).
+- Card de progreso: nombre del plan, **fechas** (inicio; fin editable solo si Vigente/Planeado, texto si No vigente), **horas de estudio por competencia** (editable si Vigente/Planeado, texto si No vigente), barra de progreso del plan.
+- Tabla de asignaciones: columnas usuario, último acceso, competencias asignadas, progreso. Botón “Agregar competencias” / “X competencias” por fila. Clic en fila o en el botón abre el **drawer “Agregar competencias”** (mismo comportamiento que en crear-plan: cards de competencia, expansión con habilidades y checkboxes, tabla derecha con dos líneas por competencia).
+- Con **varias personas seleccionadas**, barra de acciones con **“Asignar competencias”** (solo Planeado/Vigente): se abre el mismo drawer y los ítems elegidos se hacen **merge** en cada persona seleccionada (sin duplicar por id de competencia).
+
+### 4.6 Diferencias resumidas frente a planes de contenidos
 
 | Aspecto | Plan de contenidos | Plan de competencias |
 |---------|--------------------|------------------------|
 | Página de creación | `crear-plan-contenidos.html` | `crear-plan-competencias.html` |
-| Campo extra en formulario | — | **Horas por competencia** (junto a fechas) |
+| Página de detalle | `detalle-plan.html` | `detalle-plan-competencias.html` |
+| Campo extra (crear y detalle) | — | **Horas por competencia** (junto a fechas; en detalle: editable Vigente/Planeado, solo lectura No vigente) |
 | Qué se asigna | Contenidos (cursos, etc.) | Competencias |
 | Columna en tabla de asignaciones | “Contenidos asignados” | “Competencias asignadas” |
 | Drawer de asignación | Agregar contenidos (ver 3.2.1: cards compactos, filtro por origen, scroll) | Agregar competencias (ver 4.3.1: cards competencia + habilidades con checkbox; tabla dos líneas) |
@@ -163,4 +177,4 @@ Este valor es **por plan** (no por asignación): todas las asignaciones del plan
 
 ---
 
-*Última actualización: marzo 2025. Prototipo: LMS Creator. Drawer “Agregar contenidos” en 3.2.1 y en detalle-plan (3.3.2, con scroll infinito); botón “Asignar contenidos” en barra de acciones (3.3.1, solo Planeado/Vigente); drawer “Agregar competencias” en 4.3.1.*
+*Última actualización: marzo 2025. Prototipo: LMS Creator. Drawer “Agregar contenidos” en 3.2.1 y en detalle-plan (3.3.2, con scroll infinito); botón “Asignar contenidos” en barra de acciones (3.3.1, solo Planeado/Vigente). Planes de competencias: lista por tab en planes-formacion (4.4), detalle en detalle-plan-competencias (4.5), horas por competencia en crear y en detalle (editable/lectura según estado); drawer “Agregar competencias” en 4.3.1 y en detalle-plan-competencias (mismo layout y merge multi).*

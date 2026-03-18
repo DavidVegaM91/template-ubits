@@ -62,6 +62,11 @@
                                     <span class="ubits-body-xs-regular detalle-plan-card__meta-label">Fecha de finalización:</span>
                                     <div id="plan-fecha-fin-wrap"></div>
                                 </div>
+                                <span class="detalle-plan-fechas-label-wrap" id="plan-horas-estudio-static-wrap"><span class="ubits-body-xs-regular detalle-plan-card__meta-label">Horas de estudio por competencia:</span> <span id="plan-horas-estudio-static" class="ubits-body-xs-regular">4</span></span>
+                                <div class="detalle-plan-fecha-fin-editable detalle-plan-horas-editable" id="plan-horas-estudio-editable-wrap" style="display: none;">
+                                    <span class="ubits-body-xs-regular detalle-plan-card__meta-label">Horas de estudio por competencia:</span>
+                                    <div id="plan-horas-estudio-wrap"></div>
+                                </div>
                             </div>
                             <div class="detalle-plan-progress-card__content">
                                 <span class="ubits-body-sm-semibold detalle-plan-progress-card__label">Progreso del plan</span>
@@ -119,14 +124,17 @@
             loadProfileMenu('profile-menu-container');
 
             var params = new URLSearchParams(window.location.search);
-            var planId = params.get('id') || '1';
+            var planId = params.get('id') || 'c1';
             var planes = {
-                '1': { nombre: 'Plan de onboarding Q3 2026', progreso: 0, fechaInicio: '01/07/2026', fechaFin: '30/09/2026', estado: 'Planeado' },
-                '2': { nombre: 'Competencias de liderazgo', progreso: 0, fechaInicio: '01/04/2026', fechaFin: '30/06/2026', estado: 'Planeado' },
-                '3': { nombre: 'Cursos de cumplimiento Q1', progreso: 65, fechaInicio: '01/01/2026', fechaFin: '31/03/2026', estado: 'Vigente' },
-                '4': { nombre: 'Evaluación técnica 2025', progreso: 85, fechaInicio: '01/09/2025', fechaFin: '15/12/2025', estado: 'No vigente' }
+                '1': { nombre: 'Plan de onboarding Q3 2026', progreso: 0, fechaInicio: '01/07/2026', fechaFin: '30/09/2026', estado: 'Planeado', horasEstudioPorCompetencia: 4 },
+                '2': { nombre: 'Competencias de liderazgo', progreso: 0, fechaInicio: '01/04/2026', fechaFin: '30/06/2026', estado: 'Planeado', horasEstudioPorCompetencia: 6 },
+                '3': { nombre: 'Cursos de cumplimiento Q1', progreso: 65, fechaInicio: '01/01/2026', fechaFin: '31/03/2026', estado: 'Vigente', horasEstudioPorCompetencia: 5 },
+                '4': { nombre: 'Evaluación técnica 2025', progreso: 85, fechaInicio: '01/09/2025', fechaFin: '15/12/2025', estado: 'No vigente', horasEstudioPorCompetencia: 4 },
+                'c1': { nombre: 'Plan de competencias de liderazgo', progreso: 0, fechaInicio: '01/07/2026', fechaFin: '30/09/2026', estado: 'Planeado', horasEstudioPorCompetencia: 4 },
+                'c2': { nombre: 'Desarrollo de competencias Q1', progreso: 65, fechaInicio: '01/01/2026', fechaFin: '31/03/2026', estado: 'Vigente', horasEstudioPorCompetencia: 5 },
+                'c3': { nombre: 'Evaluación por competencias 2025', progreso: 85, fechaInicio: '01/09/2025', fechaFin: '15/12/2025', estado: 'No vigente', horasEstudioPorCompetencia: 4 }
             };
-            var plan = planes[planId] || planes['1'];
+            var plan = planes[planId] || planes['c1'];
 
             function getEstadoTagClass(estado) {
                 if (estado === 'Planeado') return 'info';
@@ -199,6 +207,63 @@
                 if (editableWrap) editableWrap.style.display = 'none';
                 if (fechaFinSpan) fechaFinSpan.textContent = (typeof formatDateDDMmmAAAA === 'function' ? formatDateDDMmmAAAA(plan.fechaFin) : plan.fechaFin);
             }
+
+            var horasEstudioStaticWrap = document.getElementById('plan-horas-estudio-static-wrap');
+            var horasEstudioEditableWrap = document.getElementById('plan-horas-estudio-editable-wrap');
+            var horasEstudioStaticSpan = document.getElementById('plan-horas-estudio-static');
+            var horasVal = plan.horasEstudioPorCompetencia != null ? String(plan.horasEstudioPorCompetencia) : '4';
+            if (plan.estado === 'Vigente' || plan.estado === 'Planeado') {
+                if (horasEstudioStaticWrap) horasEstudioStaticWrap.style.display = 'none';
+                if (horasEstudioEditableWrap) horasEstudioEditableWrap.style.display = 'flex';
+                var horasWrap = document.getElementById('plan-horas-estudio-wrap');
+                if (horasWrap && typeof createInput === 'function') {
+                    horasWrap.innerHTML = '';
+                    createInput({
+                        containerId: 'plan-horas-estudio-wrap',
+                        type: 'number',
+                        label: '',
+                        placeholder: 'Ej. 4',
+                        showLabel: false,
+                        size: 'xs',
+                        min: 1,
+                        value: horasVal,
+                        onChange: function(val) {
+                            if (plan.horasEstudioPorCompetencia != null) plan.horasEstudioPorCompetencia = parseInt(val, 10) || 0;
+                            if (typeof showToast === 'function') showToast('success', 'Horas de estudio actualizadas');
+                        }
+                    });
+                }
+                setTimeout(function() {
+                    var horasInput = document.querySelector('#plan-horas-estudio-wrap input');
+                    if (horasInput) {
+                        function isDigitKey(e) {
+                            var k = e.key;
+                            if (k.length === 1 && k >= '0' && k <= '9') return true;
+                            if (['Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight', 'Home', 'End'].indexOf(k) !== -1) return true;
+                            if ((e.ctrlKey || e.metaKey) && ['a', 'c', 'v', 'x'].indexOf(k.toLowerCase()) !== -1) return true;
+                            return false;
+                        }
+                        horasInput.addEventListener('keydown', function(e) {
+                            if (!isDigitKey(e)) e.preventDefault();
+                        });
+                        horasInput.addEventListener('input', function() {
+                            var v = this.value.replace(/\D/g, '');
+                            if (v !== this.value) this.value = v;
+                        });
+                        horasInput.addEventListener('paste', function(e) {
+                            e.preventDefault();
+                            var pasted = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '');
+                            this.value = pasted;
+                        });
+                    }
+                }, 500);
+            } else {
+                /* No vigente: visible como texto (igual que las fechas), no editable */
+                if (horasEstudioStaticWrap) horasEstudioStaticWrap.style.display = 'inline';
+                if (horasEstudioEditableWrap) horasEstudioEditableWrap.style.display = 'none';
+                if (horasEstudioStaticSpan) horasEstudioStaticSpan.textContent = horasVal;
+            }
+
             document.title = 'UBITS Playground - LMS Creator - ' + plan.nombre;
 
             setTimeout(function() {
@@ -241,7 +306,7 @@
                 competenciaPorUsuarioPlan3[rid] = buildCompetenciaFromCatalog(plan3Indices[rid] || []);
                 competenciaPorUsuarioPlan4[rid] = buildCompetenciaFromCatalog(plan4Indices[rid] || []);
             });
-            var competenciaPorUsuario = (planId === '3') ? competenciaPorUsuarioPlan3 : (planId === '4') ? competenciaPorUsuarioPlan4 : competenciaPorUsuarioBase;
+            var competenciaPorUsuario = (planId === '3' || planId === 'c2') ? competenciaPorUsuarioPlan3 : (planId === '4' || planId === 'c3') ? competenciaPorUsuarioPlan4 : competenciaPorUsuarioBase;
             function progresoEstudiante(rowId) {
                 var list = competenciaPorUsuario[rowId] || [];
                 if (list.length === 0) return 0;
