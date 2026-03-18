@@ -2233,15 +2233,14 @@ function renderChatMessages() {
             var showPlan = STUDY_PLAN_TOPICS.indexOf(msg.topic) >= 0;
             var planBtnHtml = showPlan ? '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-choice="studyPlan"><span>Plan de estudio</span></button>' : '';
             var choicesId = 'material-choices-restore-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
-            var messageHTML = createMessageHTML('ai', msg.text, '', false, false);
-            var choicesHTML = '<div class="ubits-study-chat__message-with-choices">' +
-                messageHTML +
-                '<div class="ubits-study-chat__material-choices" id="' + choicesId + '">' +
+            var choicesDivHtml = '<div class="ubits-study-chat__material-choices" id="' + choicesId + '">' +
                 '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-choice="quiz"><span>Quiz</span></button>' +
                 planBtnHtml +
                 '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-choice="flashcards"><span>Flashcards</span></button>' +
                 '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-choice="podcast"><span>Podcast</span></button>' +
-                '</div></div>';
+                '</div>';
+            var messageHTML = createMessageHTML('ai', msg.text, '', false, false, undefined, choicesDivHtml);
+            var choicesHTML = '<div class="ubits-study-chat__message-with-choices">' + messageHTML + '</div>';
             body.insertAdjacentHTML('beforeend', choicesHTML);
             var choicesEl = document.getElementById(choicesId);
             if (choicesEl) {
@@ -2284,13 +2283,14 @@ function renderChatMessages() {
                 subContentHTML = buildDefinitionWithCitationTags(compKey, def) +
                     '<p class="ubits-study-chat__message-text"> ¿Te interesa alguno de estos temas de <strong>' + escapeHTML(compLabel) + '</strong>: ' + escapeHTML(subs.slice(0, 8).join(', ')) + ', o prefieres ver recursos en general?</p>';
             }
-            var subMsgHTML = createMessageHTML('ai', restoreText, '', false, false, subContentHTML);
             var subBtns = subs.slice(0, 6).map(function (s, i) {
                 var esc = s.replace(/"/g, '&quot;').replace(/</g, '&lt;');
                 return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-subtopic="' + esc + '" data-subtopic-index="' + i + '"><span>' + s + '</span></button>';
             }).join('');
             subBtns += '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-study-chat__material-choice-btn" data-choice="general"><span>Ver recursos en general</span></button>';
-            var subChoicesHTML = '<div class="ubits-study-chat__message-with-choices">' + subMsgHTML + '<div class="ubits-study-chat__material-choices" id="' + subChoicesId + '">' + subBtns + '</div></div>';
+            var subChoicesDivHtml = '<div class="ubits-study-chat__material-choices" id="' + subChoicesId + '">' + subBtns + '</div>';
+            var subMsgHTML = createMessageHTML('ai', restoreText, '', false, false, subContentHTML, subChoicesDivHtml);
+            var subChoicesHTML = '<div class="ubits-study-chat__message-with-choices">' + subMsgHTML + '</div>';
             body.insertAdjacentHTML('beforeend', subChoicesHTML);
             var subWrapperEl = body.lastElementChild;
             subWrapperEl.querySelectorAll('.study-chat-citation-tag').forEach(function (tag) {
@@ -2330,15 +2330,12 @@ function renderChatMessages() {
         if (msg.quickReplies === 'topic' && msg.waitingForTopicForResource) {
             var topicText = msg.text || '';
             var topicChoicesId = 'topic-choices-restore-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
-            var topicMessageHTML = createMessageHTML('ai', topicText, '', false, false);
             var topicButtonsHTML = SUGGESTED_TOPIC_BUTTONS.map(function (t) {
                 return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-topic-key="' + (t.key.replace(/"/g, '&quot;')) + '" data-topic-label="' + (t.label.replace(/"/g, '&quot;')) + '"><span>' + t.label + '</span></button>';
             }).join('');
-            var topicChoicesHTML = '<div class="ubits-study-chat__message-with-choices">' +
-                topicMessageHTML +
-                '<div class="ubits-study-chat__material-choices" id="' + topicChoicesId + '">' +
-                topicButtonsHTML +
-                '</div></div>';
+            var topicChoicesDivHtml = '<div class="ubits-study-chat__material-choices" id="' + topicChoicesId + '">' + topicButtonsHTML + '</div>';
+            var topicMessageHTML = createMessageHTML('ai', topicText, '', false, false, undefined, topicChoicesDivHtml);
+            var topicChoicesHTML = '<div class="ubits-study-chat__message-with-choices">' + topicMessageHTML + '</div>';
             body.insertAdjacentHTML('beforeend', topicChoicesHTML);
             var topicChoicesEl = document.getElementById(topicChoicesId);
             if (topicChoicesEl) {
@@ -2641,7 +2638,7 @@ function createStudyChatHTML(options = {}) {
                     </div>
                     <div class="ubits-study-chat__input-actions">
                         <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-study-chat__input-attach" id="ubits-study-chat-attach-btn" title="Adjuntar"><i class="far fa-paperclip"></i></button>
-                        <button class="ubits-button ubits-button--primary ubits-button--sm ubits-button--icon-only ubits-study-chat__input-send" id="ubits-study-chat-send-btn" title="Enviar"><i class="far fa-paper-plane"></i></button>
+                        <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-study-chat__input-send" id="ubits-study-chat-send-btn" title="Enviar"><i class="far fa-paper-plane"></i></button>
                     </div>
                 </div>
                 <div class="ubits-study-chat__suggestions" id="ubits-study-chat-suggestions">${suggestionButtons}</div>
@@ -2683,9 +2680,10 @@ function wrapWordsInSpans(html) {
  * @param {boolean} showActions - Si mostrar botones de acción (solo para IA)
  * @param {boolean} isTyping - Si es un mensaje de carga/typing
  * @param {string} [contentHTML] - Opcional: HTML ya formateado para el globo (p. ej. definición con tags de cita)
+ * @param {string} [innerGlobeSuffixHTML] - Opcional: HTML a insertar dentro del globo después del texto (p. ej. botones de sugerencias)
  * @returns {string} HTML del mensaje
  */
-function createMessageHTML(type, text, timestamp, showActions = false, isTyping = false, contentHTML) {
+function createMessageHTML(type, text, timestamp, showActions = false, isTyping = false, contentHTML, innerGlobeSuffixHTML) {
     const messageClass = type === 'ai' ? 'ubits-study-chat__message--ai' : 'ubits-study-chat__message--user';
     const globeClass = type === 'ai'
         ? (isTyping ? 'ubits-study-chat__text-globe--ai ubits-study-chat__text-globe--typing' : 'ubits-study-chat__text-globe--ai')
@@ -2752,12 +2750,13 @@ function createMessageHTML(type, text, timestamp, showActions = false, isTyping 
         </div>
     ` : '';
 
+    const globeSuffix = (innerGlobeSuffixHTML && typeof innerGlobeSuffixHTML === 'string' && innerGlobeSuffixHTML.trim()) ? innerGlobeSuffixHTML : '';
     return `
         <div class="ubits-study-chat__message ${messageClass}">
             <div class="ubits-study-chat__text-globe ${globeClass}">
                 ${textHTML}
+                ${globeSuffix}
             </div>
-            <p class="ubits-study-chat__timestamp">${timestamp}</p>
             ${actionsHTML}
         </div>
     `;
@@ -3412,7 +3411,6 @@ function getResourceMessageHTML(type, topicKey, isNew, showOpenButton) {
     var countText = countInfo.count + ' ' + countInfo.label;
     var iconClass = getResourceIcon(type);
     var openVisibleClass = showOpenButton ? ' open-btn-visible' : '';
-    var timestamp = formatTime();
     return '<div class="ubits-study-chat__message ubits-study-chat__message--ai study-chat-resource-msg' + openVisibleClass + '" data-resource-type="' + type + '" data-resource-topic="' + topicKey + '">' +
         '<div class="ubits-study-chat__text-globe ubits-study-chat__text-globe--ai">' +
         '<p class="ubits-study-chat__message-text">' + intro + '</p>' +
@@ -3425,8 +3423,7 @@ function getResourceMessageHTML(type, topicKey, isNew, showOpenButton) {
         '</div></div>' +
         '<div class="study-chat-resource-card__action study-chat-resource-open-wrap">' +
         '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm study-chat-resource-open-btn" data-type="' + type + '" data-topic="' + topicKey + '"><span>Abrir</span></button>' +
-        '</div></div></div>' +
-        '<p class="ubits-study-chat__timestamp">' + timestamp + '</p></div>';
+        '</div></div></div></div>';
 }
 
 /**
@@ -3485,17 +3482,16 @@ function addMessageWithMaterialChoiceButtons(label, topic) {
         text = 'Perfecto, trabajemos <strong>' + label + '</strong>. Puedo hacerte un quiz, crear flashcards o un podcast. ¿Qué prefieres?';
     }
     const timestamp = formatTime();
-    const messageHTML = createMessageHTML('ai', text, timestamp, false, false);
     const choicesId = 'material-choices-' + Date.now();
     const planBtnHtml = showPlan ? '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-choice="studyPlan"><span>Plan de estudio</span></button>' : '';
-    const choicesHTML = '<div class="ubits-study-chat__message-with-choices">' +
-        messageHTML +
-        '<div class="ubits-study-chat__material-choices" id="' + choicesId + '">' +
+    const choicesDivHtml = '<div class="ubits-study-chat__material-choices" id="' + choicesId + '">' +
         '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-choice="quiz"><span>Quiz</span></button>' +
         planBtnHtml +
         '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-choice="flashcards"><span>Flashcards</span></button>' +
         '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-choice="podcast"><span>Podcast</span></button>' +
-        '</div></div>';
+        '</div>';
+    const messageHTML = createMessageHTML('ai', text, timestamp, false, false, undefined, choicesDivHtml);
+    const choicesHTML = '<div class="ubits-study-chat__message-with-choices">' + messageHTML + '</div>';
     body.insertAdjacentHTML('beforeend', choicesHTML);
     var wrapperEl = body.lastElementChild;
     var messageEl = wrapperEl.querySelector('.ubits-study-chat__message');
@@ -3563,16 +3559,15 @@ function addMessageWithDefinitionAndSubtopics(competencyKey, label, definition, 
         contentHTML = buildDefinitionWithCitationTags(competencyKey, definition) +
             '<p class="ubits-study-chat__message-text">' + questionTextHTML + '</p>';
     }
-    var messageHTML = createMessageHTML('ai', text, timestamp, false, false, contentHTML);
     var choicesId = 'subtopic-choices-' + Date.now();
     var buttonsHtml = subtopics.slice(0, 6).map(function (s, i) {
         var esc = s.replace(/"/g, '&quot;').replace(/</g, '&lt;');
         return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-subtopic="' + esc + '" data-subtopic-index="' + i + '"><span>' + s + '</span></button>';
     }).join('');
     buttonsHtml += '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-study-chat__material-choice-btn" data-choice="general"><span>Ver recursos en general</span></button>';
-    var choicesHTML = '<div class="ubits-study-chat__message-with-choices">' +
-        messageHTML +
-        '<div class="ubits-study-chat__material-choices" id="' + choicesId + '">' + buttonsHtml + '</div></div>';
+    var choicesDivHtml = '<div class="ubits-study-chat__material-choices" id="' + choicesId + '">' + buttonsHtml + '</div>';
+    var messageHTML = createMessageHTML('ai', text, timestamp, false, false, contentHTML, choicesDivHtml);
+    var choicesHTML = '<div class="ubits-study-chat__message-with-choices">' + messageHTML + '</div>';
     body.insertAdjacentHTML('beforeend', choicesHTML);
     var wrapperEl = body.lastElementChild;
     var messageEl = wrapperEl.querySelector('.ubits-study-chat__message');
@@ -3646,16 +3641,13 @@ function addMessageWithTopicChoiceButtons(resourceType, text) {
     var body = document.getElementById('ubits-study-chat-body');
     if (!body) return;
     var timestamp = formatTime();
-    var messageHTML = createMessageHTML('ai', text, timestamp, false, false);
     var choicesId = 'topic-choices-' + Date.now();
     var buttonsHTML = SUGGESTED_TOPIC_BUTTONS.map(function (t) {
         return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-topic-key="' + (t.key.replace(/"/g, '&quot;')) + '" data-topic-label="' + (t.label.replace(/"/g, '&quot;')) + '"><span>' + t.label + '</span></button>';
     }).join('');
-    var choicesHTML = '<div class="ubits-study-chat__message-with-choices">' +
-        messageHTML +
-        '<div class="ubits-study-chat__material-choices" id="' + choicesId + '">' +
-        buttonsHTML +
-        '</div></div>';
+    var choicesDivHtml = '<div class="ubits-study-chat__material-choices" id="' + choicesId + '">' + buttonsHTML + '</div>';
+    var messageHTML = createMessageHTML('ai', text, timestamp, false, false, undefined, choicesDivHtml);
+    var choicesHTML = '<div class="ubits-study-chat__message-with-choices">' + messageHTML + '</div>';
     body.insertAdjacentHTML('beforeend', choicesHTML);
     var wrapperEl = body.lastElementChild;
     var messageEl = wrapperEl.querySelector('.ubits-study-chat__message');
@@ -3721,7 +3713,6 @@ function addMessageWithResourceTypeButtons(text) {
     var body = document.getElementById('ubits-study-chat-body');
     if (!body) return;
     var timestamp = formatTime();
-    var messageHTML = createMessageHTML('ai', text, timestamp, false, false);
     var choicesId = 'resource-type-choices-' + Date.now();
     var resourceButtons = [
         { type: 'quiz', label: 'Quiz', icon: 'fa-circle-question' },
@@ -3732,11 +3723,9 @@ function addMessageWithResourceTypeButtons(text) {
     var buttonsHTML = resourceButtons.map(function (r) {
         return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-resource-type="' + (r.type.replace(/"/g, '&quot;')) + '"><span>' + r.label + '</span></button>';
     }).join('');
-    var choicesHTML = '<div class="ubits-study-chat__message-with-choices">' +
-        messageHTML +
-        '<div class="ubits-study-chat__material-choices" id="' + choicesId + '">' +
-        buttonsHTML +
-        '</div></div>';
+    var choicesDivHtml = '<div class="ubits-study-chat__material-choices" id="' + choicesId + '">' + buttonsHTML + '</div>';
+    var messageHTML = createMessageHTML('ai', text, timestamp, false, false, undefined, choicesDivHtml);
+    var choicesHTML = '<div class="ubits-study-chat__message-with-choices">' + messageHTML + '</div>';
     body.insertAdjacentHTML('beforeend', choicesHTML);
     var wrapperEl = body.lastElementChild;
     var messageEl = wrapperEl.querySelector('.ubits-study-chat__message');
@@ -3882,14 +3871,12 @@ function showThinkingIndicator() {
     const body = document.getElementById('ubits-study-chat-body');
     if (!body) return null;
 
-    const timestamp = formatTime();
     // Usamos el globo de texto normal pero le inyectamos la clase y contenido especial
     const messageHTML = `
         <div class="ubits-study-chat__message ubits-study-chat__message--ai">
             <div class="ubits-study-chat__text-globe ubits-study-chat__text-globe--ai">
                 <span class="ubits-study-chat__thinking">Pensando</span>
             </div>
-            <p class="ubits-study-chat__timestamp">${timestamp}</p>
         </div>
     `;
     body.insertAdjacentHTML('beforeend', messageHTML);

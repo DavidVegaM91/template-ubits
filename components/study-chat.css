@@ -175,6 +175,11 @@
     align-items: center;
 }
 
+/* Botones de sugerencias dentro del globo del mensaje IA */
+.ubits-study-chat__text-globe--ai .ubits-study-chat__material-choices {
+    margin-top: var(--gap-md);
+}
+
 .ubits-study-chat__material-choice-btn {
     flex-shrink: 0;
 }

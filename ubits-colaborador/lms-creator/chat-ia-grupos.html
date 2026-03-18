@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>UBITS Playground - LMS Creator - Chat IA grupos</title>
+
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../aprendizaje/aprendizaje-ia-gradientes.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../components/tab-bar.css">
+    <link rel="stylesheet" href="../../components/floating-menu.css">
+    <link rel="stylesheet" href="../../components/profile-menu.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/header-product.css">
+    <link rel="stylesheet" href="../../components/study-chat.css">
+    <link rel="stylesheet" href="../../components/empty-state.css">
+    <link rel="stylesheet" href="../../components/tooltip.css">
+    <link rel="stylesheet" href="./lms-creator.css">
+    <link rel="stylesheet" href="./chat-ia-grupos.css">
+</head>
+<body class="chat-ia-grupos-page aprendizaje-ia-pages" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        <div id="sidebar-container"></div>
+
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div class="content-area">
+                <div class="content-sections">
+                    <div class="section-single">
+                        <div class="widget-header-product" id="header-product-container"></div>
+                    </div>
+
+                    <div class="section-single chat-ia-grupos-chat-section">
+                        <div class="modo-estudio-ia-historial-panel" id="group-creation-historial-panel" aria-label="Historial de chats">
+                            <div class="modo-estudio-ia-historial-panel__header">
+                                <span class="ubits-body-md-bold">Historial</span>
+                                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="group-creation-historial-panel-close" title="Cerrar" aria-label="Cerrar panel historial">
+                                    <i class="far fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="modo-estudio-ia-historial-panel__body">
+                                <div id="group-creation-historial-list" class="modo-estudio-ia-historial-panel__list"></div>
+                                <div id="group-creation-historial-empty" class="modo-estudio-ia-historial-panel__empty">
+                                    <div id="group-creation-historial-empty-state-container"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chat-ia-grupos-chat-main study-chat-wrapper--welcome">
+                            <div class="widget-chat" id="group-creation-chat-container"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="tab-bar-container"></div>
+    <div id="floating-menu-container"></div>
+    <div id="profile-menu-container"></div>
+
+    <script src="../../components/tooltip.js"></script>
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/tab-bar.js"></script>
+    <script src="../../components/floating-menu.js"></script>
+    <script src="../../components/profile-menu.js"></script>
+    <script src="../../components/header-product.js"></script>
+    <script src="../../components/empty-state.js"></script>
+    <script src="../../components/group-creation-chat.js"></script>
+    <script src="../../script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSidebar('creator');
+            loadSubNav('top-nav-container', 'creator');
+            loadTabBar('tab-bar-container');
+            loadFloatingMenu('floating-menu-container');
+            loadProfileMenu('profile-menu-container');
+
+            if (typeof loadHeaderProduct === 'function') {
+                loadHeaderProduct('header-product-container', {
+                    productName: 'Asistente IA para grupos',
+                    breadcrumbItems: [],
+                    backButton: {
+                        onClick: function() {
+                            window.location.href = 'grupos.html';
+                        }
+                    }
+                });
+            }
+
+            if (typeof initGroupCreationChat === 'function') {
+                initGroupCreationChat('group-creation-chat-container', { welcomeLayout: true, userFirstName: 'María Alejandra' });
+            }
+
+            var historialCloseBtn = document.getElementById('group-creation-historial-panel-close');
+            var historialPanelEl = document.getElementById('group-creation-historial-panel');
+            if (historialCloseBtn && historialPanelEl) {
+                historialCloseBtn.addEventListener('click', function() {
+                    historialPanelEl.classList.remove('is-open');
+                    document.body.classList.remove('historial-panel-open');
+                });
+            }
+
+            if (typeof loadEmptyState === 'function') {
+                loadEmptyState('group-creation-historial-empty-state-container', {
+                    icon: 'fa-comments',
+                    title: 'No hay conversaciones',
+                    description: 'Aún no hay chats en esta sesión. Inicia uno desde el chat.'
+                });
+            }
+
+            setTimeout(function() {
+                var chatRoot = document.getElementById('group-creation-chat');
+                var chatMain = document.querySelector('.chat-ia-grupos-chat-main');
+                if (chatRoot && chatMain) {
+                    chatRoot.classList.add('ubits-study-chat--welcome');
+                    chatMain.classList.add('study-chat-wrapper--welcome');
+                }
+            }, 100);
+        });
+    </script>
+</body>
+</html>
