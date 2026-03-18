@@ -52,7 +52,7 @@ let estadoTareas = {
     showAssigneeDropdown: false, // Dropdown para asignar usuario
     showRoleDropdown: false, // Dropdown para elegir rol
     filtros: {
-        estados: [],      // [] = todos; si no vacío: ['Activo','Vencido','Finalizado'] (Activo = 'Por hacer')
+        estados: [],      // [] = todos; si no vacío: ['Activo','Finalizado'] (Activo = 'Por hacer'). Sin 'Vencido': las vencidas tienen su sección propia.
         prioridades: [],   // [] = todas; si no vacío: ['alta','media','baja']
         asignacion: 'todas', // 'todas' | 'asignadas-por-mi' | 'asignadas-a-mi'
         asignadosEspecificos: [] // cuando asignacion === 'asignadas-por-mi': nombres de asignados a filtrar (vacío = todos)
@@ -152,7 +152,6 @@ var TAREAS_FILTROS_ASIGNADOS_ESPECIFICOS_OVERLAY_ID = 'tareas-filtros-asignados-
 var TAREAS_FILTROS_ESTADO_OPTIONS = [
     { value: '', text: 'Todos' },
     { value: 'Activo', text: 'Por hacer' },
-    { value: 'Vencido', text: 'Vencido' },
     { value: 'Finalizado', text: 'Finalizado' }
 ];
 var TAREAS_FILTROS_PRIORIDAD_OPTIONS = [

@@ -435,17 +435,37 @@
         justify-content: flex-start;
     }
 
-    /* Prioridad: icon-only en mobile (28px, sin texto) */
+    /* Celular: botón de fecha terciario (solo en este breakpoint) */
+    .tarea-fecha .tarea-fecha-btn {
+        background: transparent;
+        border: none;
+        color: inherit;
+        box-shadow: none;
+    }
+    .tarea-fecha .tarea-fecha-btn:hover:not(:disabled) {
+        background: var(--ubits-btn-tertiary-bg-hover);
+        color: var(--ubits-btn-tertiary-fg);
+    }
+    .tarea-fecha .tarea-fecha-btn:active:not(:disabled) {
+        background: var(--ubits-btn-tertiary-bg-pressed);
+        color: var(--ubits-btn-tertiary-fg);
+    }
+
+    /* Celular: prioridad con texto visible, sin borde (solo en este breakpoint) */
     .tarea-priority-badge {
-        width: 28px;
-        min-width: 28px;
-        padding: 0;
+        width: auto;
+        min-width: 0;
+        padding: 0 var(--padding-sm);
+        border: none;
+        background: transparent;
     }
-
+    .tarea-priority-badge.ubits-badge-tag--outlined {
+        border: none;
+        background: transparent;
+    }
     .tarea-priority-badge .ubits-badge-tag__text {
-        display: none;
+        display: inline;
     }
-
     .tarea-priority-badge.ubits-badge-tag--with-icon i {
         font-size: 12px;
     }
@@ -458,14 +478,41 @@
         display: none !important;
     }
 
-    /* Status tag con texto en mobile (no icon-only) */
+    /* Celular: status tag sin borde ni padding lateral ni fondo; icono = circle-small; colores por estado (solo en este breakpoint) */
     .tarea-status .ubits-status-tag {
         width: auto;
-        min-width: 80px;
+        min-width: 0;
         height: auto;
-        padding: 4px 8px;
+        padding: 0;
+        padding-left: 0;
+        padding-right: 0;
+        border: none;
+        background: none;
+        gap: var(--gap-xs);
+    }
+    .tarea-status .ubits-status-tag i {
+        display: none;
+    }
+    .tarea-status .ubits-status-tag::before {
+        content: '';
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: currentColor;
+        flex-shrink: 0;
+    }
+    .tarea-status .ubits-status-tag--info {
+        color: var(--ubits-accent-brand);
+    }
+    .tarea-status .ubits-status-tag--error {
+        color: var(--ubits-feedback-accent-error);
+    }
+    .tarea-status .ubits-status-tag--success,
+    .tarea-status .ubits-status-tag--neutral {
+        color: var(--ubits-feedback-accent-success);
     }
     .tarea-status .ubits-status-tag .ubits-status-tag__text {
         display: inline;
+        color: inherit;
     }
 }
