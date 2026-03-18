@@ -70,8 +70,8 @@ function createGroupCreationChatHTML(options) {
         '<textarea class="ubits-study-chat__input" id="group-creation-chat-input" placeholder="Escribir mensaje..." rows="1"></textarea>' +
         '</div>' +
         '<div class="ubits-study-chat__input-actions">' +
-        '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-study-chat__input-attach" id="group-creation-chat-attach-btn" title="Adjuntar" aria-label="Adjuntar"><i class="far fa-paperclip"></i></button>' +
-        '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-study-chat__input-send" id="group-creation-chat-send-btn" title="Enviar" aria-label="Enviar"><i class="far fa-paper-plane"></i></button>' +
+        '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-study-chat__input-attach" id="group-creation-chat-attach-btn" data-tooltip="Adjuntar" aria-label="Adjuntar"><i class="far fa-paperclip"></i></button>' +
+        '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-study-chat__input-send" id="group-creation-chat-send-btn" data-tooltip="Enviar" aria-label="Enviar"><i class="far fa-paper-plane"></i></button>' +
         '</div></div>' +
         '<div class="ubits-study-chat__suggestions" id="group-creation-chat-suggestions">' + suggestionButtons + '</div>' +
         '</div>' +
@@ -294,7 +294,7 @@ function initGroupCreationChat(containerId, options) {
                 '<span class="ubits-body-sm-regular group-creation-historial-item__description">' + descriptionEscaped + '</span>' +
                 (dateEscaped ? '<span class="ubits-body-sm-regular group-creation-historial-item__date">' + dateEscaped + '</span>' : '') +
                 '</div>' +
-                '<button type="button" class="ubits-button ubits-button--error-tertiary ubits-button--xs ubits-button--icon-only group-creation-historial-item__delete" data-delete-chat-id="' + id + '" aria-label="Eliminar chat" title="Eliminar">' +
+                '<button type="button" class="ubits-button ubits-button--error-tertiary ubits-button--xs ubits-button--icon-only group-creation-historial-item__delete" data-delete-chat-id="' + id + '" aria-label="Eliminar chat" data-tooltip="Eliminar">' +
                 '<i class="far fa-trash"></i></button>' +
                 '</div>';
         });
@@ -345,6 +345,7 @@ function initGroupCreationChat(containerId, options) {
                 renderGroupCreationHistorialList();
             });
         });
+        if (typeof window.initTooltip === 'function') window.initTooltip('#group-creation-historial-list [data-tooltip]');
     }
 
     /** Guarda el título editado en el encabezado: actualiza currentChat y el chat en historial, re-renderiza la lista (como modo estudio IA). */

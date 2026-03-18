@@ -179,15 +179,15 @@
     justify-content: flex-start;
 }
 
-/* Botón "Probar Modo IA": único con gradación naranja en resultados de búsqueda */
+/* Botón "Probar Modo IA": gradación azul oficial (variables en aprendizaje-ia-gradientes.css) */
 .resultados-overview-panel-cta.ubits-ia-button--primary,
 #resultados-probar-modo-ia-btn.ubits-ia-button--primary {
     border: 1px solid transparent;
     background-image:
-        radial-gradient(40% 50% at 50% 100%, #FFCD69, rgba(0, 0, 0, 0)),
-        radial-gradient(80% 100% at 50% 120%, #FF7B4B, rgba(0, 0, 0, 0)),
-        radial-gradient(76.58% 94.29% at 47.57% 132.86%, #FFCD69 0%, #FF5416 100%),
-        linear-gradient(90deg, #FFCD69, #FF7B4B, #FF5416, #FFCD69);
+        radial-gradient(40% 50% at 50% 100%, var(--modo-ia-gradient-a), rgba(0, 0, 0, 0)),
+        radial-gradient(80% 100% at 50% 120%, var(--modo-ia-gradient-b), rgba(0, 0, 0, 0)),
+        radial-gradient(76.58% 94.29% at 47.57% 132.86%, var(--modo-ia-gradient-a) 0%, var(--modo-ia-gradient-c) 100%),
+        linear-gradient(90deg, var(--modo-ia-gradient-a), var(--modo-ia-gradient-b), var(--modo-ia-gradient-c), var(--modo-ia-gradient-a));
     background-size: 100% 100%, 100% 100%, 100% 100%, 300% 100%;
     background-position: 0 0, 0 0, 0 0, 0% 50%;
     background-origin: padding-box, padding-box, padding-box, border-box;
@@ -202,10 +202,10 @@
 #resultados-probar-modo-ia-btn.ubits-ia-button--primary:focus-visible {
     border: 1px solid transparent;
     background-image:
-        radial-gradient(40% 50% at 50% 100%, #FFCD69, rgba(0, 0, 0, 0)),
-        radial-gradient(80% 100% at 50% 120%, #FF7B4B, rgba(0, 0, 0, 0)),
-        radial-gradient(76.58% 94.29% at 47.57% 132.86%, #FFCD69 0%, #FF5416 100%),
-        linear-gradient(90deg, #FFCD69, #FF7B4B, #FF5416, #FFCD69);
+        radial-gradient(40% 50% at 50% 100%, var(--modo-ia-gradient-a), rgba(0, 0, 0, 0)),
+        radial-gradient(80% 100% at 50% 120%, var(--modo-ia-gradient-b), rgba(0, 0, 0, 0)),
+        radial-gradient(76.58% 94.29% at 47.57% 132.86%, var(--modo-ia-gradient-a) 0%, var(--modo-ia-gradient-c) 100%),
+        linear-gradient(90deg, var(--modo-ia-gradient-a), var(--modo-ia-gradient-b), var(--modo-ia-gradient-c), var(--modo-ia-gradient-a));
     background-size: 100% 100%, 100% 100%, 100% 100%, 300% 100%;
     background-position: 0 0, 0 0, 0 0, 0% 50%;
     background-origin: padding-box, padding-box, padding-box, border-box;

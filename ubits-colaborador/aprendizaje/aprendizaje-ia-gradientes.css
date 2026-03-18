@@ -12,14 +12,11 @@
    ======================================== */
 
 :root {
-    /* Gradación azul oficial (solo 4 elementos usan naranja: ver comentario abajo) */
+    /* Gradación azul oficial (Modo estudio IA, catálogo, resultados búsqueda) */
     --modo-ia-gradient-a: rgb(0, 215, 255);
     --modo-ia-gradient-b: rgb(0, 152, 253);
     --modo-ia-gradient-c: rgb(0, 89, 250);
 }
-
-/* Naranja solo en: botón enviar chat, borde input bienvenida, botón Modo IA (catalogo), botón Probar modo IA (resultados).
-   El resto usa azul (variables de :root). No aplicar gradiente global a ia-buttons. */
 
 @keyframes aprendizaje-ia-gradient-border {
     0%, 100% { background-position: 0 0, 0% 50%; }

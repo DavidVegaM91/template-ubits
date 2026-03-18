@@ -141,11 +141,8 @@
                 '1': { nombre: 'Plan de onboarding Q3 2026', fechaInicio: '01/07/2026', fechaFin: '30/09/2026', getAsignaciones: getAsignacionesPlan1 },
                 '2': { nombre: 'Competencias de liderazgo', fechaInicio: '01/04/2026', fechaFin: '30/06/2026', getAsignaciones: getAsignacionesPlan2 }
             };
-            var planEditar = planId && plansEditar[planId] ? plansEditar[planId] : null;
-            if (!planEditar) {
-                window.location.href = 'planes-formacion.html';
-                return;
-            }
+            /* Sin id o id no válido: mostrar datos de ejemplo (como task-detail.html) */
+            var planEditar = planId && plansEditar[planId] ? plansEditar[planId] : plansEditar['1'];
 
             loadSidebar('creator');
             loadSubNav('top-nav-container', 'creator');
@@ -180,7 +177,7 @@
             }
             
             setTimeout(() => {
-                const tab = document.querySelector('.nav-tab[data-tab="contenidos"]');
+                const tab = document.querySelector('.nav-tab[data-tab="planes-formacion"]');
                 if (tab) {
                     document.querySelectorAll('.nav-tab, .hamburger-item').forEach(item => item.classList.remove('active'));
                     tab.classList.add('active');
@@ -196,7 +193,7 @@
                     modulosTab.classList.add('active');
                 }
                 if (typeof setActiveAccordionLink === 'function') {
-                    setActiveAccordionLink('contenidos');
+                    setActiveAccordionLink('planes-formacion');
                 }
                 if (typeof updateGuardarButtonState === 'function') updateGuardarButtonState();
             }, 200);

@@ -363,8 +363,11 @@ const PAGE_TO_TAB = {
     'detalle-plan.html': 'planes-formacion',
     'grupos.html': 'grupos',
     'crear-grupo.html': 'grupos',
+    'detalle-grupo.html': 'grupos',
+    'chat-ia-grupos.html': 'grupos',
     'planes-formacion.html': 'planes-formacion',
     'crear-plan-contenidos.html': 'planes-formacion',
+    'editar-plan-contenidos.html': 'planes-formacion',
     // Admin empresa
     'gestion-de-usuarios.html': 'gestion-usuarios',
     'organigrama.html': 'organigrama',
@@ -388,7 +391,7 @@ const PAGE_TO_TAB = {
 };
 
 function activateCurrentPageTab(container, variant) {
-    const currentPage = window.location.pathname.split('/').pop();
+    const currentPage = (window.location.pathname.split('/').pop() || '').split('?')[0];
     const tabId = PAGE_TO_TAB[currentPage];
     
     if (tabId) {
@@ -632,10 +635,10 @@ function restoreOriginalTabs(container, variant, customTabs = []) {
     
     const tabs = variant === 'template' && customTabs.length > 0 ? customTabs : config.tabs;
     
-    // Obtener el tab activo basado en la página actual (KISS)
-    const currentPage = window.location.pathname.split('/').pop();
+    // Obtener el tab activo basado en la página actual (sin query ?id=...)
+    const currentPage = (window.location.pathname.split('/').pop() || '').split('?')[0];
     const activeTabId = PAGE_TO_TAB[currentPage] || null;
-    
+
     // Regenerar HTML de los tabs originales
     let tabsHTML = '';
     if (tabs.length > 0) {
@@ -680,8 +683,8 @@ function activateSelector(container, variant, customTabs = []) {
     
     const tabs = variant === 'template' && customTabs.length > 0 ? customTabs : config.tabs;
     
-    // Obtener el tab activo basado en la página actual (KISS)
-    const currentPage = window.location.pathname.split('/').pop();
+    // Obtener el tab activo basado en la página actual (sin query ?id=...)
+    const currentPage = (window.location.pathname.split('/').pop() || '').split('?')[0];
     let activeTabId = PAGE_TO_TAB[currentPage] || null;
     let activeTabLabel = '';
     

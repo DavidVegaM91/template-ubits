@@ -713,7 +713,7 @@ function getCanvasLoaderHTML(title, bodyText) {
     return '<div class="study-chat-canvas-content study-chat-canvas-content--generating">' +
         '<div class="study-chat-canvas-header">' +
         '<span class="ubits-body-md-bold">' + headerTitle + '</span>' +
-        '<button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only study-chat-canvas-close" title="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>' +
+        '<button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only study-chat-canvas-close" data-tooltip="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>' +
         '</div>' +
         '<div class="study-chat-canvas-body study-chat-canvas-body--generating">' +
         loaderBody +
@@ -756,15 +756,15 @@ function renderTutorPanel(type, topic, extraData) {
         html = `<div class="study-chat-canvas-content study-chat-canvas-quiz" data-topic="${topicKey}" data-quiz-total="${totalQuestions}">
             <div class="study-chat-canvas-header">
                 <span class="ubits-body-md-bold">Quiz</span>
-                <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only study-chat-canvas-close" title="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>
+                <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only study-chat-canvas-close" data-tooltip="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>
             </div>
             <div class="study-chat-canvas-body">
                 <div class="study-chat-quiz-progress">
                     ${progressBlock}
                     <span class="study-chat-quiz-progress-text">1 / ${totalQuestions}</span>
                     <span class="study-chat-quiz-progress-stats">
-                        <span class="study-chat-quiz-progress-stat-pill study-chat-quiz-progress-wrong" title="Respuestas incorrectas" aria-label="Respuestas incorrectas"><i class="far fa-times"></i><span class="study-chat-quiz-progress-wrong-n">0</span></span>
-                        <span class="study-chat-quiz-progress-stat-pill study-chat-quiz-progress-correct" title="Respuestas correctas" aria-label="Respuestas correctas"><i class="far fa-check"></i><span class="study-chat-quiz-progress-correct-n">0</span></span>
+                        <span class="study-chat-quiz-progress-stat-pill study-chat-quiz-progress-wrong" data-tooltip="Respuestas incorrectas" aria-label="Respuestas incorrectas"><i class="far fa-times"></i><span class="study-chat-quiz-progress-wrong-n">0</span></span>
+                        <span class="study-chat-quiz-progress-stat-pill study-chat-quiz-progress-correct" data-tooltip="Respuestas correctas" aria-label="Respuestas correctas"><i class="far fa-check"></i><span class="study-chat-quiz-progress-correct-n">0</span></span>
                     </span>
                 </div>
                 <div class="study-chat-quiz-questions">${questions.map((qu, i) => `
@@ -820,7 +820,7 @@ function renderTutorPanel(type, topic, extraData) {
         html = `<div class="study-chat-canvas-content study-chat-canvas-results" data-topic="${topicKey}">
             <div class="study-chat-canvas-header">
                 <span class="ubits-body-md-bold">Sugerencias de contenido</span>
-                <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only study-chat-canvas-close" title="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>
+                <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only study-chat-canvas-close" data-tooltip="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>
             </div>
             <div class="study-chat-canvas-body">
                 <p class="ubits-body-sm-regular" style="margin-bottom: 16px; color: var(--ubits-fg-2-default);">
@@ -879,7 +879,7 @@ function renderTutorPanel(type, topic, extraData) {
         html = `<div class="study-chat-canvas-content study-chat-canvas-flashcards" data-topic="${topicKey}" data-fc-set="${fcSet}">
             <div class="study-chat-canvas-header">
                 <span class="ubits-body-md-bold">Flashcards</span>
-                <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only study-chat-canvas-close" title="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>
+                <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only study-chat-canvas-close" data-tooltip="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>
             </div>
             <div class="study-chat-canvas-body">
                 <div class="study-chat-fc-main">
@@ -929,7 +929,7 @@ function renderTutorPanel(type, topic, extraData) {
         html = `<div class="study-chat-canvas-content study-chat-canvas-courses">
             <div class="study-chat-canvas-header">
                 <span class="ubits-body-md-bold">Cursos sugeridos</span>
-                <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only study-chat-canvas-close" title="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>
+                <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only study-chat-canvas-close" data-tooltip="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>
             </div>
             <div class="study-chat-canvas-body">
                 <div id="${containerId}" class="study-chat-canvas-courses-container"></div>
@@ -946,7 +946,7 @@ function renderTutorPanel(type, topic, extraData) {
         html = `<div class="study-chat-canvas-content study-chat-canvas-plan">
             <div class="study-chat-canvas-header">
                 <span class="ubits-body-md-bold">Plan de formación</span>
-                <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only study-chat-canvas-close" title="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>
+                <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only study-chat-canvas-close" data-tooltip="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>
             </div>
             <div class="study-chat-canvas-body">
                 <div class="study-chat-plan-title">${plan.title}</div>
@@ -975,7 +975,7 @@ function renderTutorPanel(type, topic, extraData) {
         html = '<div class="study-chat-canvas-content study-chat-canvas-study-plan study-chat-canvas-study-plan-editable" data-topic="' + (topicKey || '') + '">' +
             '<div class="study-chat-canvas-header">' +
             '<span class="ubits-body-md-bold">Plan de estudio</span>' +
-            '<button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only study-chat-canvas-close" title="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>' +
+            '<button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only study-chat-canvas-close" data-tooltip="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>' +
             '</div>' +
             '<div class="study-chat-canvas-body">' +
             '<div class="study-chat-study-plan-edit-row" id="study-chat-plan-input-title-wrap"><div id="study-chat-plan-input-title"></div></div>' +
@@ -1040,7 +1040,7 @@ function renderTutorPanel(type, topic, extraData) {
         html = '<div class="study-chat-canvas-content study-chat-canvas-podcast" data-topic="' + (podTopic.replace(/"/g, '&quot;')) + '">' +
             '<div class="study-chat-canvas-header">' +
             '<span class="ubits-body-md-bold">Podcast</span>' +
-            '<button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only study-chat-canvas-close" title="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>' +
+            '<button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only study-chat-canvas-close" data-tooltip="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>' +
             '</div>' +
             '<div class="study-chat-canvas-body">' +
             '<div class="study-chat-podcast-player">' +
@@ -1116,7 +1116,7 @@ function renderTutorPanel(type, topic, extraData) {
         html = '<div class="study-chat-canvas-content study-chat-canvas-content-preview">' +
             '<div class="study-chat-canvas-header">' +
             '<span class="ubits-body-md-bold">Contenido</span>' +
-            '<button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only study-chat-canvas-close" title="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>' +
+            '<button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only study-chat-canvas-close" data-tooltip="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>' +
             '</div>' +
             '<div class="study-chat-canvas-body study-chat-canvas-body--content-preview">' +
             '<div class="study-chat-content-preview-image-wrap"><img class="study-chat-content-preview-image" src="' + imgSrc + '" alt=""></div>' +
@@ -1167,6 +1167,7 @@ function renderTutorPanel(type, topic, extraData) {
 }
 
 function bindCanvasClose(panel) {
+    if (panel && panel.id && typeof window.initTooltip === 'function') window.initTooltip('#' + panel.id + ' [data-tooltip]');
     const btn = panel && panel.querySelector('.study-chat-canvas-close');
     if (btn) btn.addEventListener('click', function () {
         panel.classList.remove('is-open', 'has-content');
@@ -1240,17 +1241,17 @@ function renderStudyPlanTaskCards(container, plan, topicKey, options) {
         var actionsHtml = '';
         if (!readonly) {
             if (task.type === 'custom') {
-                actionsHtml = '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--xs ubits-button--icon-only study-chat-plan-task-delete" data-task-index="' + idx + '" title="Eliminar" aria-label="Eliminar"><i class="far fa-trash"></i></button>';
+                actionsHtml = '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--xs ubits-button--icon-only study-chat-plan-task-delete" data-task-index="' + idx + '" data-tooltip="Eliminar" aria-label="Eliminar"><i class="far fa-trash"></i></button>';
             } else if (task.type === 'activity') {
-                actionsHtml = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs ubits-button--icon-only study-chat-plan-task-rehacer" data-task-index="' + idx + '" title="Rehacer (otra opción)" aria-label="Rehacer"><i class="far fa-rotate-right"></i></button>' +
-                    '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--xs ubits-button--icon-only study-chat-plan-task-delete" data-task-index="' + idx + '" title="Eliminar" aria-label="Eliminar"><i class="far fa-trash"></i></button>';
+                actionsHtml = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs ubits-button--icon-only study-chat-plan-task-rehacer" data-task-index="' + idx + '" data-tooltip="Rehacer (otra opción)" aria-label="Rehacer"><i class="far fa-rotate-right"></i></button>' +
+                    '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--xs ubits-button--icon-only study-chat-plan-task-delete" data-task-index="' + idx + '" data-tooltip="Eliminar" aria-label="Eliminar"><i class="far fa-trash"></i></button>';
             } else {
-                actionsHtml = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs ubits-button--icon-only study-chat-plan-task-cambiar" data-task-index="' + idx + '" title="Cambiar por otro curso" aria-label="Cambiar"><i class="far fa-arrows-rotate"></i></button>' +
-                    '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--xs ubits-button--icon-only study-chat-plan-task-delete" data-task-index="' + idx + '" title="Eliminar" aria-label="Eliminar"><i class="far fa-trash"></i></button>';
+                actionsHtml = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs ubits-button--icon-only study-chat-plan-task-cambiar" data-task-index="' + idx + '" data-tooltip="Cambiar por otro curso" aria-label="Cambiar"><i class="far fa-arrows-rotate"></i></button>' +
+                    '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--xs ubits-button--icon-only study-chat-plan-task-delete" data-task-index="' + idx + '" data-tooltip="Eliminar" aria-label="Eliminar"><i class="far fa-trash"></i></button>';
             }
         }
         var titleHtml = '<div class="study-chat-plan-task-card-title-wrap">' +
-            '<span class="study-chat-plan-task-card-title ubits-body-sm-regular study-chat-plan-task-title-editable" data-task-index="' + idx + '" title="Clic para editar">' + (task.title || '') + '</span>' +
+            '<span class="study-chat-plan-task-card-title ubits-body-sm-regular study-chat-plan-task-title-editable" data-task-index="' + idx + '" data-tooltip="Clic para editar">' + (task.title || '') + '</span>' +
             '<div class="study-chat-plan-task-card-actions">' + actionsHtml + '</div></div>';
         var metaHtml = '';
         if (task.type === 'course' && task.course) {
@@ -1283,6 +1284,7 @@ function renderStudyPlanTaskCards(container, plan, topicKey, options) {
         container.appendChild(card);
     });
     bindStudyPlanTaskCardEvents(container, plan, topicKey, options);
+    if (typeof window.initTooltip === 'function') window.initTooltip('#study-chat-plan-tasks-container [data-tooltip]');
 }
 
 function bindStudyPlanTaskCardEvents(container, plan, topicKey, options) {
@@ -1327,10 +1329,11 @@ function bindStudyPlanTaskCardEvents(container, plan, topicKey, options) {
                     var newSpan = document.createElement('span');
                     newSpan.className = 'study-chat-plan-task-card-title ubits-body-sm-regular study-chat-plan-task-title-editable';
                     newSpan.setAttribute('data-task-index', String(idx));
-                    newSpan.title = 'Clic para editar';
+                    newSpan.setAttribute('data-tooltip', 'Clic para editar');
                     newSpan.textContent = task.title || '';
                     input.parentNode.replaceChild(newSpan, input);
                     bindStudyPlanTaskCardEvents(tasksContainer, plan, topicKey, options);
+                    if (typeof window.initTooltip === 'function') window.initTooltip('#ubits-study-chat [data-tooltip]');
                 }
                 input.addEventListener('blur', saveAndRevert);
                 input.addEventListener('keydown', function (e) {
@@ -1345,10 +1348,11 @@ function bindStudyPlanTaskCardEvents(container, plan, topicKey, options) {
                         var newSpan = document.createElement('span');
                         newSpan.className = 'study-chat-plan-task-card-title ubits-body-sm-regular study-chat-plan-task-title-editable';
                         newSpan.setAttribute('data-task-index', String(idx));
-                        newSpan.title = 'Clic para editar';
+                        newSpan.setAttribute('data-tooltip', 'Clic para editar');
                         newSpan.textContent = task.title || '';
                         input.parentNode.replaceChild(newSpan, input);
                         bindStudyPlanTaskCardEvents(tasksContainer, plan, topicKey, options);
+                        if (typeof window.initTooltip === 'function') window.initTooltip('#ubits-study-chat [data-tooltip]');
                     }
                 });
             });
@@ -2528,8 +2532,7 @@ function renderHistorialList() {
             '<span class="ubits-body-sm-regular modo-estudio-ia-historial-item__description">' + descriptionEscaped + '</span>' +
             (dateEscaped ? '<span class="ubits-body-sm-regular modo-estudio-ia-historial-item__date">' + dateEscaped + '</span>' : '') +
             '</div>' +
-            '<button type="button" class="ubits-button ubits-button--error-tertiary ubits-button--xs ubits-button--icon-only modo-estudio-ia-historial-item__delete" data-delete-chat-id="' + id + '" aria-label="Eliminar chat" title="Eliminar">' +
-            '<i class="far fa-trash"></i></button>' +
+            '<button type="button" class="ubits-button ubits-button--error-tertiary ubits-button--xs ubits-button--icon-only modo-estudio-ia-historial-item__delete" data-delete-chat-id="' + id + '" aria-label="Eliminar chat" data-tooltip="Eliminar"><i class="far fa-trash"></i></button>' +
             '</div>';
     });
     listEl.innerHTML = html;
@@ -2572,6 +2575,7 @@ function renderHistorialList() {
             if (chatId && typeof openDeleteChatModal === 'function') openDeleteChatModal(chatId);
         });
     });
+    if (typeof window.initTooltip === 'function') window.initTooltip('#historial-list [data-tooltip]');
 }
 
 /**
@@ -2637,8 +2641,8 @@ function createStudyChatHTML(options = {}) {
                         <textarea class="ubits-study-chat__input" id="ubits-study-chat-input" placeholder="Escribir mensaje..." rows="1"></textarea>
                     </div>
                     <div class="ubits-study-chat__input-actions">
-                        <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-study-chat__input-attach" id="ubits-study-chat-attach-btn" title="Adjuntar"><i class="far fa-paperclip"></i></button>
-                        <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-study-chat__input-send" id="ubits-study-chat-send-btn" title="Enviar"><i class="far fa-paper-plane"></i></button>
+                        <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-study-chat__input-attach" id="ubits-study-chat-attach-btn" data-tooltip="Adjuntar"><i class="far fa-paperclip"></i></button>
+                        <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-study-chat__input-send" id="ubits-study-chat-send-btn" data-tooltip="Enviar"><i class="far fa-paper-plane"></i></button>
                     </div>
                 </div>
                 <div class="ubits-study-chat__suggestions" id="ubits-study-chat-suggestions">${suggestionButtons}</div>
@@ -2741,10 +2745,10 @@ function createMessageHTML(type, text, timestamp, showActions = false, isTyping 
 
     const actionsHTML = (type === 'ai' && showActions && !isTyping) ? `
         <div class="ubits-study-chat__message-actions">
-            <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" title="Copiar">
+            <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-tooltip="Copiar">
                 <i class="far fa-copy"></i>
             </button>
-            <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" title="Regenerar">
+            <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-tooltip="Regenerar">
                 <i class="far fa-arrows-rotate"></i>
             </button>
         </div>
@@ -3026,6 +3030,7 @@ function addMessageAIWithStreaming(text, showActions, regenerateFunction) {
             chatState.lastAIMessageText = text;
             chatState.lastRegenerateFunction = regenerateFunction;
             attachAIMessageActions(messageEl, text, regenerateFunction);
+            if (typeof window.initTooltip === 'function') window.initTooltip('#ubits-study-chat-body [data-tooltip]');
             runPendingCardsRender(messageEl);
             body.scrollTop = body.scrollHeight;
             return;
@@ -3070,8 +3075,8 @@ function runPendingCardsRender(messageElement) {
 
 function attachAIMessageActions(messageElement, text, regenerateFunction) {
     if (!messageElement) return;
-    const copyBtn = messageElement.querySelector('button[title="Copiar"]');
-    const regenerateBtn = messageElement.querySelector('button[title="Regenerar"]');
+    const copyBtn = messageElement.querySelector('button[data-tooltip="Copiar"]');
+    const regenerateBtn = messageElement.querySelector('button[data-tooltip="Regenerar"]');
     const plainText = (() => {
         const div = document.createElement('div');
         div.innerHTML = text;
@@ -3325,7 +3330,7 @@ function buildDefinitionWithCitationTags(competencyKey, definition) {
         pos = rest.indexOf(phrase);
         if (pos === -1) continue;
         parts.push(wrapWordsInSpans(escapeHTML(rest.substring(0, pos + phrase.length))));
-        tagHtml = '<span class="ubits-status-tag ubits-status-tag--neutral ubits-status-tag--xs ubits-status-tag--icon-left study-chat-citation-tag" role="button" tabindex="0" data-competency="' + escapeHTML(competencyKey) + '" data-content-index="' + contentIndex + '" title="Ver contenido"><i class="far fa-book-open"></i><span class="ubits-status-tag__text">Contenido</span></span>';
+        tagHtml = '<span class="ubits-status-tag ubits-status-tag--neutral ubits-status-tag--xs ubits-status-tag--icon-left study-chat-citation-tag" role="button" tabindex="0" data-competency="' + escapeHTML(competencyKey) + '" data-content-index="' + contentIndex + '" data-tooltip="Ver contenido"><i class="far fa-book-open"></i><span class="ubits-status-tag__text">Contenido</span></span>';
         parts.push('<span class="ubits-study-chat__word">' + tagHtml + '</span>');
         rest = rest.substring(pos + phrase.length);
     }
@@ -3822,6 +3827,7 @@ function addMessage(type, text, showActions = false, regenerateFunction = null) 
 
             attachAIMessageActions(messageEl, text, regenerateFunction);
         }
+        if (typeof window.initTooltip === 'function') window.initTooltip('#ubits-study-chat-body [data-tooltip]');
         runPendingCardsRender(messageEl);
         body.scrollTop = body.scrollHeight;
         return;

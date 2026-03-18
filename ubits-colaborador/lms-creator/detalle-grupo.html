@@ -149,7 +149,10 @@
                 var params = new URLSearchParams(window.location.search);
                 return params.get('id') || '';
             })();
-            var grupo = gruposData.filter(function(g) { return g.id === grupoId; })[0];
+            /* Sin id o id no válido: mostrar datos de ejemplo (como task-detail.html) */
+            var grupoEncontrado = gruposData.filter(function(g) { return g.id === grupoId; })[0];
+            var grupo = grupoEncontrado || gruposData[0];
+            if (!grupoEncontrado && grupo) grupoId = grupo.id;
             var integrantesData = grupoId ? getIntegrantesPorGrupo(grupoId) : [];
             var integrantesTablaRef = null;
 

@@ -41,7 +41,7 @@
                         <div class="modo-estudio-ia-historial-panel" id="group-creation-historial-panel" aria-label="Historial de chats">
                             <div class="modo-estudio-ia-historial-panel__header">
                                 <span class="ubits-body-md-bold">Historial</span>
-                                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="group-creation-historial-panel-close" title="Cerrar" aria-label="Cerrar panel historial">
+                                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="group-creation-historial-panel-close" data-tooltip="Cerrar" aria-label="Cerrar panel historial">
                                     <i class="far fa-times"></i>
                                 </button>
                             </div>
@@ -77,6 +77,7 @@
     <script src="../../script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
             loadSidebar('creator');
             loadSubNav('top-nav-container', 'creator');
             loadTabBar('tab-bar-container');

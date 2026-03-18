@@ -66,7 +66,7 @@
                                 <span class="ubits-body-md-bold">Historial</span>
                                 <button type="button"
                                     class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only"
-                                    id="historial-panel-close" title="Cerrar" aria-label="Cerrar panel historial">
+                                    id="historial-panel-close" data-tooltip="Cerrar" aria-label="Cerrar panel historial">
                                     <i class="far fa-times"></i>
                                 </button>
                             </div>
@@ -129,6 +129,7 @@
     <script>
         // Cargar componentes dinámicamente
         document.addEventListener('DOMContentLoaded', function () {
+            if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
             loadSidebar('default', 'aprendizaje');
             loadSubNav('top-nav-container', 'aprendizaje');
             loadTabBar('tab-bar-container');
