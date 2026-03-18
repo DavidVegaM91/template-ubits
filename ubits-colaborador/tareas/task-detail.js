@@ -1674,8 +1674,27 @@
                 return;
             }
 
-            /* Clic en la fila (nombre/área no interactiva): abrir detalle de la subtarea; excluir edición inline del nombre */
-            if (!e.target.closest('.tarea-action-btn--options') && !e.target.closest('.tarea-priority-badge') && !e.target.closest('.tarea-assigned') && !e.target.closest('.tarea-fecha-btn') && !e.target.closest('.tarea-done-radio') && !e.target.closest('input[type="checkbox"]') && !e.target.closest('.tarea-titulo-edit-wrap')) {
+            /* Clic en botón "Cambiar nombre" (hover sobre el título): edición inline */
+            if (e.target.closest('.tarea-edit-name-btn')) {
+                e.preventDefault();
+                e.stopPropagation();
+                var editBtn = e.target.closest('.tarea-edit-name-btn');
+                var row = editBtn.closest('.tarea-item');
+                var subtaskIdFromRow = row ? (row.dataset.tareaId || row.getAttribute('data-tarea-id')) : null;
+                if (!row || subtaskIdFromRow == null) return;
+                var subtask = estado.subtasks.find(function (s) { return String(s.id) === String(subtaskIdFromRow); });
+                if (!subtask || typeof window.startInlineEditTaskName !== 'function') return;
+                window.startInlineEditTaskName(row, subtaskIdFromRow, function (newName) {
+                    subtask.name = newName;
+                    renderSubtasksBlock();
+                    triggerFakeSave();
+                    if (typeof showToast === 'function') showToast('success', 'Nombre actualizado');
+                });
+                return;
+            }
+
+            /* Clic en la fila (nombre/área no interactiva): abrir detalle de la subtarea; excluir edición inline del nombre y botón editar nombre */
+            if (!e.target.closest('.tarea-action-btn--options') && !e.target.closest('.tarea-priority-badge') && !e.target.closest('.tarea-assigned') && !e.target.closest('.tarea-fecha-btn') && !e.target.closest('.tarea-done-radio') && !e.target.closest('input[type="checkbox"]') && !e.target.closest('.tarea-edit-name-btn') && !e.target.closest('.tarea-titulo-edit-wrap')) {
                 e.preventDefault();
                 var taskId = estado.task && estado.task.id != null ? estado.task.id : '';
                 var row = e.target.closest('.tarea-item');

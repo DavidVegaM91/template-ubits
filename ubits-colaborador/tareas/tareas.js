@@ -54,7 +54,8 @@ let estadoTareas = {
     filtros: {
         estados: [],      // [] = todos; si no vacío: ['Activo','Vencido','Finalizado'] (Activo = 'Por hacer')
         prioridades: [],   // [] = todas; si no vacío: ['alta','media','baja']
-        asignacion: 'todas' // 'todas' | 'asignadas-por-mi' | 'asignadas-a-mi'
+        asignacion: 'todas', // 'todas' | 'asignadas-por-mi' | 'asignadas-a-mi'
+        asignadosEspecificos: [] // cuando asignacion === 'asignadas-por-mi': nombres de asignados a filtrar (vacío = todos)
     }
 };
 
@@ -92,12 +93,33 @@ if (!estadoTareas.selectedDay) {
     estadoTareas.selectedDay = today;
 }
 
+// Lista de asignados a los que el usuario actual les asignó al menos una tarea (para filtro "Asignado específico").
+function getAssigneesAsignadosPorMi() {
+    const nombreActual = (typeof TAREAS_PLANES_DB !== 'undefined' && TAREAS_PLANES_DB.getUsuarioActual) ? (TAREAS_PLANES_DB.getUsuarioActual().nombre || '') : '';
+    if (!nombreActual) return [];
+    const seen = {};
+    const list = [];
+    function add(t) {
+        if (t.created_by !== nombreActual || !t.assignee_name || t.assignee_name === nombreActual) return;
+        const name = String(t.assignee_name).trim();
+        if (!name || seen[name]) return;
+        seen[name] = true;
+        list.push(name);
+    }
+    (tareasEjemplo.vencidas || []).forEach(add);
+    const porDia = tareasEjemplo.porDia || {};
+    for (const key in porDia) { (porDia[key] || []).forEach(add); }
+    list.sort(function (a, b) { return a.localeCompare(b, 'es'); });
+    return list;
+}
+
 // Devuelve { vencidas, porDia } aplicando filtros (Estado, Prioridad, Asignación). Fuente: tareasEjemplo.
 function getTareasFiltradas() {
     const f = estadoTareas.filtros || {};
     const estados = f.estados || [];
     const prioridades = f.prioridades || [];
     const asignacion = f.asignacion || 'todas';
+    const asignadosEspecificos = f.asignadosEspecificos || [];
     const nombreActual = (typeof TAREAS_PLANES_DB !== 'undefined' && TAREAS_PLANES_DB.getUsuarioActual) ? (TAREAS_PLANES_DB.getUsuarioActual().nombre || '') : '';
 
     function pasaFiltro(t) {
@@ -106,6 +128,7 @@ function getTareasFiltradas() {
         if (prioridades.length > 0 && prioridades.indexOf(prio) === -1) return false;
         if (asignacion === 'asignadas-por-mi') {
             if (nombreActual && (t.created_by !== nombreActual || t.assignee_name === nombreActual)) return false;
+            if (asignadosEspecificos.length > 0 && (!t.assignee_name || asignadosEspecificos.indexOf(t.assignee_name) === -1)) return false;
         } else if (asignacion === 'asignadas-a-mi') {
             if (nombreActual && t.assignee_name !== nombreActual) return false;
         }
@@ -124,6 +147,7 @@ function getTareasFiltradas() {
 
 // Filtros de tareas: dropdown con contenido personalizado (customBodyHtml), como encabezados de seguimiento.
 var TAREAS_FILTROS_OVERLAY_ID = 'tareas-filtros-dropdown';
+var TAREAS_FILTROS_ASIGNADOS_ESPECIFICOS_OVERLAY_ID = 'tareas-filtros-asignados-especificos-dropdown';
 
 var TAREAS_FILTROS_ESTADO_OPTIONS = [
     { value: '', text: 'Todos' },
@@ -143,11 +167,21 @@ var TAREAS_FILTROS_ASIGNACION_OPTIONS = [
     { value: 'asignadas-a-mi', text: 'Solo lo asignado a mí' }
 ];
 
+// Opciones para el input oficial "Asignado específico" (solo para mostrar texto; el dropdown real es el panel de checkboxes).
+function buildAsignadoEspecificoSelectOptions() {
+    var opts = [{ value: '', text: 'Seleccionar asignados' }, { value: '1', text: '1 asignado(s)' }];
+    for (var i = 2; i <= 50; i++) opts.push({ value: String(i), text: i + ' asignados' });
+    return opts;
+}
+
 function getFiltrosDropdownBodyHtml() {
     return '<div class="tareas-filtros-dropdown-body">' +
         '<div id="tareas-filtros-estado-container"></div>' +
         '<div id="tareas-filtros-prioridad-container"></div>' +
         '<div id="tareas-filtros-asignacion-container"></div>' +
+        '<div class="tareas-filtros-asignado-especifico-wrap" id="tareas-filtros-asignado-especifico-wrap" style="display:none;">' +
+        '<div id="tareas-filtros-asignado-especifico-container"></div>' +
+        '</div>' +
         '</div>';
 }
 
@@ -209,11 +243,131 @@ function openFiltrosDropdown() {
         size: 'sm'
     });
 
+    var wrapAsignado = document.getElementById('tareas-filtros-asignado-especifico-wrap');
+    var containerAsignado = document.getElementById('tareas-filtros-asignado-especifico-container');
+    var asignadoInput = null;
+
+    function getAsignacionValue() {
+        var texto = asignacionInput && asignacionInput.getValue ? asignacionInput.getValue() : '';
+        var opt = TAREAS_FILTROS_ASIGNACION_OPTIONS.find(function (o) { return o.text === texto; });
+        return opt ? opt.value : 'todas';
+    }
+
+    function buildAsignadosEspecificosDropdownOptions() {
+        var assignees = getAssigneesAsignadosPorMi();
+        var selected = (estadoTareas.filtros.asignadosEspecificos || []).slice();
+        return assignees.map(function (name) {
+            return { text: name, value: name, checkbox: true, selected: selected.indexOf(name) !== -1 };
+        });
+    }
+
+    function setAsignadoDisplayValue(n) {
+        if (!asignadoInput || !asignadoInput.setValue) return;
+        asignadoInput.setValue(n === 0 ? 'Seleccionar asignados' : (n === 1 ? '1 asignado(s)' : n + ' asignados'));
+    }
+
+    function openAsignadosEspecificosDropdown(anchorEl) {
+        var existing = document.getElementById(TAREAS_FILTROS_ASIGNADOS_ESPECIFICOS_OVERLAY_ID);
+        if (existing) existing.remove();
+        var options = buildAsignadosEspecificosDropdownOptions();
+        var html = window.getDropdownMenuHtml({
+            overlayId: TAREAS_FILTROS_ASIGNADOS_ESPECIFICOS_OVERLAY_ID,
+            options: options.length ? options : [{ text: 'No hay asignados', value: '' }]
+        });
+        document.body.insertAdjacentHTML('beforeend', html);
+        var overlay = document.getElementById(TAREAS_FILTROS_ASIGNADOS_ESPECIFICOS_OVERLAY_ID);
+        var content = overlay && overlay.querySelector('.ubits-dropdown-menu__content');
+        if (overlay) {
+            overlay.addEventListener('click', function (ev) {
+                if (!ev.target.closest('.ubits-dropdown-menu__content')) {
+                    var contentEl = overlay.querySelector('.ubits-dropdown-menu__content');
+                    if (contentEl) {
+                        var inputs = contentEl.querySelectorAll('input.ubits-checkbox__input:checked');
+                        estadoTareas.filtros.asignadosEspecificos = Array.prototype.map.call(inputs, function (inp) { return inp.getAttribute('data-value') || inp.value || ''; }).filter(Boolean);
+                    }
+                    window.closeDropdownMenu(TAREAS_FILTROS_ASIGNADOS_ESPECIFICOS_OVERLAY_ID);
+                    if (anchorEl) anchorEl.setAttribute('aria-expanded', 'false');
+                }
+            });
+        }
+        if (content) {
+            content.addEventListener('change', function () {
+                var checked = content.querySelectorAll('input.ubits-checkbox__input:checked');
+                setAsignadoDisplayValue(checked.length);
+            });
+        }
+        window.openDropdownMenu(TAREAS_FILTROS_ASIGNADOS_ESPECIFICOS_OVERLAY_ID, anchorEl, { minWidthFromAnchor: true });
+        var contentEl = document.getElementById(TAREAS_FILTROS_ASIGNADOS_ESPECIFICOS_OVERLAY_ID) && document.getElementById(TAREAS_FILTROS_ASIGNADOS_ESPECIFICOS_OVERLAY_ID).querySelector('.ubits-dropdown-menu__content');
+        if (contentEl && anchorEl) {
+            var rect = anchorEl.getBoundingClientRect();
+            var gap = 4;
+            contentEl.style.top = (rect.top - contentEl.offsetHeight - gap) + 'px';
+            contentEl.style.bottom = 'auto';
+            contentEl.style.left = (rect.right - contentEl.offsetWidth) + 'px';
+        }
+        if (anchorEl) anchorEl.setAttribute('aria-expanded', 'true');
+    }
+
+    function updateAsignadoEspecificoVisibility() {
+        var esAsignadasPorMi = getAsignacionValue() === 'asignadas-por-mi';
+        if (wrapAsignado) wrapAsignado.style.display = esAsignadasPorMi ? '' : 'none';
+        if (!esAsignadasPorMi) return;
+        var n = (estadoTareas.filtros.asignadosEspecificos || []).length;
+        if (!containerAsignado) return;
+        var asignadosDropdownAbierto = (function () {
+            var el = document.getElementById(TAREAS_FILTROS_ASIGNADOS_ESPECIFICOS_OVERLAY_ID);
+            return el && el.style.display !== 'none';
+        })();
+        if (!containerAsignado.querySelector('.ubits-input')) {
+            asignadoInput = createInput({
+                containerId: 'tareas-filtros-asignado-especifico-container',
+                type: 'select',
+                label: 'Asignado específico',
+                placeholder: 'Seleccionar asignados',
+                selectOptions: buildAsignadoEspecificoSelectOptions(),
+                value: '',
+                size: 'sm'
+            });
+            setAsignadoDisplayValue(n);
+            var defaultDropdown = document.getElementById('ubits-input-select-tareas-filtros-asignado-especifico-container');
+            if (defaultDropdown) defaultDropdown.remove();
+            var inputEl = containerAsignado.querySelector('.ubits-input');
+            if (inputEl) {
+                inputEl.setAttribute('aria-haspopup', 'listbox');
+                inputEl.setAttribute('aria-expanded', 'false');
+                inputEl.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    openAsignadosEspecificosDropdown(inputEl);
+                }, true);
+            }
+        } else if (asignadoInput && !asignadosDropdownAbierto) {
+            setAsignadoDisplayValue(n);
+        }
+    }
+
+    updateAsignadoEspecificoVisibility();
+    var asignacionPoll = setInterval(function () {
+        if (!overlayEl.parentNode) {
+            clearInterval(asignacionPoll);
+            return;
+        }
+        updateAsignadoEspecificoVisibility();
+    }, 400);
+
+    function closeFiltrosOverlay() {
+        window.closeDropdownMenu(TAREAS_FILTROS_ASIGNADOS_ESPECIFICOS_OVERLAY_ID);
+        var assigneesEl = document.getElementById(TAREAS_FILTROS_ASIGNADOS_ESPECIFICOS_OVERLAY_ID);
+        if (assigneesEl && assigneesEl.parentNode) assigneesEl.remove();
+        window.closeDropdownMenu(TAREAS_FILTROS_OVERLAY_ID);
+        if (overlayEl.parentNode) overlayEl.remove();
+        if (btn) btn.setAttribute('aria-expanded', 'false');
+    }
+
     overlayEl.addEventListener('click', function (ev) {
         if (ev.target === overlayEl) {
-            window.closeDropdownMenu(TAREAS_FILTROS_OVERLAY_ID);
-            if (overlayEl.parentNode) overlayEl.remove();
-            if (btn) btn.setAttribute('aria-expanded', 'false');
+            clearInterval(asignacionPoll);
+            closeFiltrosOverlay();
         }
     });
 
@@ -221,15 +375,15 @@ function openFiltrosDropdown() {
     var aplicarBtn = document.getElementById('tareas-filtros-aplicar');
     if (limpiarBtn) {
         limpiarBtn.addEventListener('click', function () {
-            estadoTareas.filtros = { estados: [], prioridades: [], asignacion: 'todas' };
-            window.closeDropdownMenu(TAREAS_FILTROS_OVERLAY_ID);
-            if (overlayEl.parentNode) overlayEl.remove();
-            if (btn) btn.setAttribute('aria-expanded', 'false');
+            clearInterval(asignacionPoll);
+            estadoTareas.filtros = { estados: [], prioridades: [], asignacion: 'todas', asignadosEspecificos: [] };
+            closeFiltrosOverlay();
             renderAllTasks();
         });
     }
     if (aplicarBtn) {
         aplicarBtn.addEventListener('click', function () {
+            clearInterval(asignacionPoll);
             var textoEstado = estadoInput && estadoInput.getValue ? estadoInput.getValue() : '';
             var textoPrioridad = prioridadInput && prioridadInput.getValue ? prioridadInput.getValue() : '';
             var textoAsignacion = asignacionInput && asignacionInput.getValue ? asignacionInput.getValue() : '';
@@ -239,9 +393,17 @@ function openFiltrosDropdown() {
             estadoTareas.filtros.estados = optEstado && optEstado.value ? [optEstado.value] : [];
             estadoTareas.filtros.prioridades = optPrioridad && optPrioridad.value ? [optPrioridad.value] : [];
             estadoTareas.filtros.asignacion = optAsignacion ? optAsignacion.value : 'todas';
-            window.closeDropdownMenu(TAREAS_FILTROS_OVERLAY_ID);
-            if (overlayEl.parentNode) overlayEl.remove();
-            if (btn) btn.setAttribute('aria-expanded', 'false');
+            if (estadoTareas.filtros.asignacion === 'asignadas-por-mi') {
+                var asignadosOverlay = document.getElementById(TAREAS_FILTROS_ASIGNADOS_ESPECIFICOS_OVERLAY_ID);
+                var asignadosContent = asignadosOverlay && asignadosOverlay.querySelector('.ubits-dropdown-menu__content');
+                if (asignadosContent) {
+                    var inputs = asignadosContent.querySelectorAll('input.ubits-checkbox__input:checked');
+                    estadoTareas.filtros.asignadosEspecificos = Array.prototype.map.call(inputs, function (inp) { return inp.getAttribute('data-value') || inp.value || ''; }).filter(Boolean);
+                }
+            } else {
+                estadoTareas.filtros.asignadosEspecificos = [];
+            }
+            closeFiltrosOverlay();
             renderAllTasks();
         });
     }
@@ -1255,8 +1417,28 @@ function initTareasView() {
                 window.openDropdownMenu(overlayId, badge);
                 return;
             }
-            /* Clic en la fila (nombre, etiqueta) abre el detalle; excluir radio, columna de acciones y edición inline del nombre */
-            if (e.target.closest('.tarea-item') && !e.target.closest('.tarea-item__radio') && !e.target.closest('.tarea-item__actions') && !e.target.closest('.tarea-titulo-edit-wrap')) {
+            /* Clic en botón "Cambiar nombre" (hover sobre el título): edición inline */
+            if (e.target.closest('.tarea-edit-name-btn')) {
+                e.preventDefault();
+                e.stopPropagation();
+                var btn = e.target.closest('.tarea-edit-name-btn');
+                var tareaItem = btn.closest('.tarea-item');
+                var tareaId = parseInt(tareaItem.dataset.tareaId || tareaItem.getAttribute('data-tarea-id'), 10);
+                if (!tareaItem || isNaN(tareaId)) return;
+                if (typeof window.startInlineEditTaskName === 'function') {
+                    window.startInlineEditTaskName(tareaItem, tareaId, function (newName) {
+                        var res = findTaskById(tareaId);
+                        if (res && res.tarea) {
+                            res.tarea.name = newName;
+                            renderAllTasks();
+                        }
+                        if (typeof showToast === 'function') showToast('success', 'Nombre actualizado');
+                    });
+                }
+                return;
+            }
+            /* Clic en la fila (nombre, etiqueta) abre el detalle; excluir radio, columna de acciones, botón editar nombre y edición inline del nombre */
+            if (e.target.closest('.tarea-item') && !e.target.closest('.tarea-item__radio') && !e.target.closest('.tarea-item__actions') && !e.target.closest('.tarea-edit-name-btn') && !e.target.closest('.tarea-titulo-edit-wrap')) {
                 const tareaItem = e.target.closest('.tarea-item');
                 const tareaId = parseInt(tareaItem.dataset.tareaId || tareaItem.getAttribute('data-tarea-id'), 10);
                 if (isNaN(tareaId)) return;

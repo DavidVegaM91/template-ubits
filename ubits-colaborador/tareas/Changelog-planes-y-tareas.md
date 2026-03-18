@@ -343,4 +343,17 @@ Registro de cambios realizados en los archivos del módulo de Tareas y Planes (P
 
 ---
 
-*Última actualización: ítems 1–20 (11 feb), 21–26 (19 feb), 27 (Cargar más), 28–30 (20 feb), 31 (21 feb), 32 (23 feb), 33 (nueva versión task-detail), 34 (dropdowns Estado y Prioridad en task-detail), 35 (panel de comentarios: adjuntar imágenes y archivos), 36 (implementación de subtask-detail), 37 (homologación encabezados plan-detail con task-detail), 38 (scroll-spy calendario horizontal, 10 mar), 39 (doble clic para cambio de nombre en tirillas y opción Cambiar nombre en subtareas), 40 (recordatorio registrado en historial en task-detail), 41 (plan-detail: asignados, filtro por persona, filtros aplicados y UI, 11 mar), 42 (task-detail: vencimiento sm, progress bar subtareas, botón Filtrar, Historial de cambios, nueva versión formulario subtareas, 12 mar), 43 (marca "- editado" en comentarios editados, 12 mar) implementados.*
+## 18 de marzo de 2026
+
+44. [x] **Tareas: filtro "Asignado específico" cuando se elige "Solo lo que yo asigné a otros"**
+
+    En **tareas.html**, en el dropdown de **filtros** (Estado, Prioridad, Asignación), cuando en **Asignación** se selecciona **"Solo lo que yo asigné a otros"** aparece un nuevo filtro opcional **"Asignado específico"**:
+
+    - **Disparador:** Input oficial (`createInput` type: `select`, size: `sm`) que muestra "Seleccionar asignados" o "N asignado(s)" según la cantidad elegida.
+    - **Contenido:** Dropdown oficial (componente **dropdown-menu**) con opciones en formato **checkbox** (`getDropdownMenuHtml` con `options` con `checkbox: true` y `selected` según el estado). La lista se construye con los **asignados únicos** a los que el usuario actual (María Alejandra Sánchez Pardo) les asignó al menos una tarea (`getAssigneesAsignadosPorMi()` recorre tareas vencidas y por día).
+    - Si no se elige ningún asignado, se muestran todas las tareas "que yo asigné a otros"; si se eligen uno o más, el listado se filtra por esos asignados. Al hacer clic fuera del dropdown de asignados se cierra; al pulsar **Aplicar** en el panel de filtros se leen los checkboxes marcados y se guardan en `estadoTareas.filtros.asignadosEspecificos`. **Limpiar** resetea también este filtro.
+    - Archivos: `tareas.js` (estado `asignadosEspecificos`, `getAssigneesAsignadosPorMi`, `openAsignadosEspecificosDropdown`, integración con dropdown oficial e Input oficial), `tareas.css` (estilos solo del wrap del bloque "Asignado específico").
+
+---
+
+*Última actualización: ítems 1–20 (11 feb), 21–26 (19 feb), 27 (Cargar más), 28–30 (20 feb), 31 (21 feb), 32 (23 feb), 33 (nueva versión task-detail), 34 (dropdowns Estado y Prioridad en task-detail), 35 (panel de comentarios: adjuntar imágenes y archivos), 36 (implementación de subtask-detail), 37 (homologación encabezados plan-detail con task-detail), 38 (scroll-spy calendario horizontal, 10 mar), 39 (doble clic para cambio de nombre en tirillas y opción Cambiar nombre en subtareas), 40 (recordatorio registrado en historial en task-detail), 41 (plan-detail: asignados, filtro por persona, filtros aplicados y UI, 11 mar), 42 (task-detail: vencimiento sm, progress bar subtareas, botón Filtrar, Historial de cambios, nueva versión formulario subtareas, 12 mar), 43 (marca "- editado" en comentarios editados, 12 mar), 44 (filtro Asignado específico en tareas, 18 mar) implementados.*

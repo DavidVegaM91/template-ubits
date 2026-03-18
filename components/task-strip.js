@@ -73,7 +73,14 @@ function renderTaskStrip(tarea, opts) {
         '</label>' +
         '</span>' +
         '<div class="tarea-content">' +
-        '<div class="tarea-titulo-wrap"><h3 class="tarea-titulo ubits-body-md-regular">' + nameSafe + '</h3></div>' +
+        '<div class="tarea-titulo-wrap">' +
+        '<div class="tarea-titulo-inner">' +
+        '<h3 class="tarea-titulo ubits-body-md-regular">' + nameSafe + '</h3>' +
+        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs ubits-button--icon-only tarea-edit-name-btn" data-tarea-id="' + idSafe + '" data-tooltip="Cambiar nombre" aria-label="Cambiar nombre">' +
+        '<i class="far fa-pen-to-square"></i>' +
+        '</button>' +
+        '</div>' +
+        '</div>' +
         '</div>' +
         etiquetaBlock +
         '</div>' +
@@ -134,11 +141,23 @@ function startInlineEditTaskName(tareaItem, taskId, onSave) {
         finished = true;
         wrap.classList.remove('tarea-titulo-edit-wrap');
         var newName = input.value != null ? String(input.value) : '';
+        var displayName = save ? newName : currentName;
+        var inner = document.createElement('div');
+        inner.className = 'tarea-titulo-inner';
         var newH3 = document.createElement('h3');
         newH3.className = 'tarea-titulo ubits-body-md-regular';
-        newH3.textContent = save ? newName : currentName;
+        newH3.textContent = displayName;
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'ubits-button ubits-button--secondary ubits-button--xs ubits-button--icon-only tarea-edit-name-btn';
+        btn.setAttribute('data-tarea-id', String(taskId));
+        btn.setAttribute('data-tooltip', 'Cambiar nombre');
+        btn.setAttribute('aria-label', 'Cambiar nombre');
+        btn.innerHTML = '<i class="far fa-pen-to-square"></i>';
+        inner.appendChild(newH3);
+        inner.appendChild(btn);
         wrap.innerHTML = '';
-        wrap.appendChild(newH3);
+        wrap.appendChild(inner);
         if (save && typeof onSave === 'function') onSave(newName);
     }
 

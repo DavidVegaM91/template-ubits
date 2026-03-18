@@ -497,8 +497,28 @@ function handlePlanDetailListClick(e) {
         return;
     }
 
+    // Clic en botón "Cambiar nombre" (hover sobre el título): edición inline
+    if (e.target.closest('.tarea-edit-name-btn')) {
+        e.preventDefault();
+        e.stopPropagation();
+        const btn = e.target.closest('.tarea-edit-name-btn');
+        const item = btn.closest('.tarea-item');
+        const id = item ? (item.dataset.tareaId || item.getAttribute('data-tarea-id')) : null;
+        if (!item || !id) return;
+        const task = tasks.find(t => String(t.id) === String(id));
+        if (!task) return;
+        if (typeof window.startInlineEditTaskName === 'function') {
+            window.startInlineEditTaskName(item, id, function (newName) {
+                task.name = newName;
+                renderPlanDetail(getPlanIdFromUrl());
+                if (typeof showToast === 'function') showToast('success', 'Nombre actualizado');
+            });
+        }
+        return;
+    }
+
     const item = e.target.closest('.tarea-item');
-    if (item && !e.target.closest('.tarea-done-radio') && !e.target.closest('.tarea-action-btn') && !e.target.closest('.tarea-priority-badge') && !e.target.closest('.tarea-titulo-edit-wrap')) {
+    if (item && !e.target.closest('.tarea-done-radio') && !e.target.closest('.tarea-action-btn') && !e.target.closest('.tarea-edit-name-btn') && !e.target.closest('.tarea-priority-badge') && !e.target.closest('.tarea-titulo-edit-wrap')) {
         e.preventDefault();
         const id = item.dataset.tareaId || item.getAttribute('data-tarea-id');
         if (!id) return;

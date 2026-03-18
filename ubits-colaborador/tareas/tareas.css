@@ -804,6 +804,23 @@ body.page-tareas .dashboard-container {
     width: 100%;
 }
 
+/* Asignado específico: wrap y panel de checkboxes (el disparador es createInput tipo select oficial) */
+.tareas-filtros-asignado-especifico-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+}
+
+.tareas-filtros-asignado-especifico-wrap .ubits-input-wrapper {
+    width: 100%;
+}
+
+/* Dropdown de asignados: máximo 6 ítems visibles y scroll */
+#tareas-filtros-asignados-especificos-dropdown .ubits-dropdown-menu__options {
+    max-height: 240px;
+    overflow-y: auto;
+}
+
 .filtros-drawer-body {
     display: flex;
     flex-direction: column;
