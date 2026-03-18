@@ -34,6 +34,22 @@ El resto de este documento se estructura en: reglas comunes (estados, progreso),
 
 Al salir de **Procesando**, el plan solo puede pasar a **Planeado** o **Vigente** según la fecha actual; el progreso mostrado es el de **estudio** (empieza en 0).
 
+**Planeado:** al abrir un plan con estado Planeado se usa la **misma página de detalle** que para un plan Vigente (`detalle-plan.html`): misma vista, misma tabla de asignaciones y mismos drawers. La única diferencia es el **status tag** (“Planeado”) y que el **progreso del plan y el de cada usuario se muestran en 0 %** (al no haber iniciado, no hay progreso). No se usa una vista 100 % editable para Planeado.
+
+#### 2.1.1 Cómo se ve el detalle del plan según el estado
+
+En **planes de contenidos**, al abrir un plan desde la lista:
+
+| Estado       | Página que se abre      | Tag visible | Progreso        | Fecha de fin  | Botón principal     | Clic en fila / contenidos                    | Barra de acciones (varios seleccionados)     |
+|-------------|--------------------------|-------------|-----------------|---------------|----------------------|----------------------------------------------|-----------------------------------------------|
+| **Procesando** | Editar (p. ej. `editar-plan-contenidos`) | Procesando X% | —               | —             | —                    | —                                            | —                                              |
+| **Planeado**   | `detalle-plan.html`      | Planeado    | 0 % (plan y por fila) | Editable      | “Agregar asignación” | Drawer **Agregar contenidos**                | Enviar recordatorio, **Asignar contenidos**, Eliminar del plan |
+| **Vigente**    | `detalle-plan.html`      | Vigente     | Real (plan y por fila) | Editable      | “Agregar asignación” | Drawer **Agregar contenidos**                | Enviar recordatorio, **Asignar contenidos**, Eliminar del plan |
+| **No vigente** | `detalle-plan.html`      | No vigente  | Congelado       | Solo lectura  | No (o no destacado)  | **Panel de solo lectura** (sin drawer agregar) | Solo Enviar recordatorio y Eliminar del plan (sin “Asignar contenidos”) |
+
+- **Planeado y Vigente:** misma pantalla; solo cambian el tag y si el progreso es 0 % o real. En ambos se puede agregar asignación, editar fecha de fin, abrir el drawer para agregar contenidos por fila y usar “Asignar contenidos” para varias personas a la vez.
+- **No vigente:** no se puede agregar contenidos desde el drawer (el clic en fila abre un panel de solo lectura); la barra de acciones no muestra el botón “Asignar contenidos”.
+
 ### 2.2 Progreso: estudio, no carga
 
 - **Progreso en la tabla de planes:** agregado del avance de **todos los estudiantes** en lo asignado (contenidos o competencias).
@@ -69,9 +85,20 @@ No existe el campo “horas por competencia”; ese campo es exclusivo de planes
 
 ### 3.3 Detalle del plan – Tabla y drawer
 
+- Para planes **Planeado** y **Vigente** (y No vigente) se usa la misma página **detalle-plan**. Solo **Procesando** redirige a editar (si aplica).
 - Cada fila = un **estudiante** asignado.
-- Columnas: usuario, último acceso, **contenidos**, **progreso**.
+- Columnas: usuario, último acceso, **contenidos**, **progreso**. Si el plan es Planeado, el progreso del plan y el de cada fila se muestran en 0 %.
 - Clic en fila (o contenidos) abre el **drawer** de ese estudiante con cards de contenidos y progreso por contenido.
+
+#### 3.3.1 Barra de acciones y “Asignar contenidos” (solo Planeado y Vigente)
+
+- Con **varias personas seleccionadas** (checkboxes) en la tabla de asignaciones aparece la barra de acciones con botones.
+- **Solo para planes en estado Planeado o Vigente** (no para No vigente), entre “Enviar recordatorio” y “Eliminar del plan” hay un botón secundario **“Asignar contenidos”**.
+- Al hacer clic se abre el **mismo drawer “Agregar contenidos”** (búsqueda, cards compactos, tabla de agregados). Los contenidos elegidos se **asignan a todas las personas seleccionadas**: se hace merge por curso (sin duplicar); no se borran los contenidos que cada uno ya tenía.
+
+#### 3.3.2 Drawer “Agregar contenidos” en detalle-plan
+
+- Mismo comportamiento que en crear-plan (ver 3.2.1): búsqueda, filtro por origen (si aplica), cards compactos y **scroll infinito** (12 contenidos iniciales, más al hacer scroll en la zona de resultados), de modo que se pueden cargar todos los contenidos del catálogo.
 
 ---
 
@@ -136,4 +163,4 @@ Este valor es **por plan** (no por asignación): todas las asignaciones del plan
 
 ---
 
-*Última actualización: marzo 2025. Prototipo: LMS Creator. Drawer “Agregar contenidos” documentado en 3.2.1; drawer “Agregar competencias” en 4.3.1.*
+*Última actualización: marzo 2025. Prototipo: LMS Creator. Drawer “Agregar contenidos” en 3.2.1 y en detalle-plan (3.3.2, con scroll infinito); botón “Asignar contenidos” en barra de acciones (3.3.1, solo Planeado/Vigente); drawer “Agregar competencias” en 4.3.1.*

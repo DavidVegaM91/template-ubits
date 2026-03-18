@@ -1,0 +1,529 @@
+/* ========================================
+   ESTILOS PARA DETALLE DEL PLAN DE COMPETENCIAS
+   ======================================== */
+
+/* Mostrar título "Detalle del plan" en el header */
+.page-detalle-plan-competencias .ubits-header-product__product-title h2 {
+    display: block;
+    margin: 0;
+}
+
+/* Título del plan editable inline (mismo peso y tamaño que crear-grupo / detalle-grupo) */
+.widget-detalle-plan-progress .task-detail-title-editable {
+    font-family: 'Noto Sans', sans-serif;
+    line-height: 1.25;
+    color: var(--ubits-fg-1-high);
+    border: none;
+    background: transparent;
+    width: 100%;
+    min-height: 1.25em;
+    padding: 0;
+    margin: 0;
+    resize: none;
+    overflow: hidden;
+    outline: none;
+    cursor: text;
+    box-sizing: border-box;
+}
+
+.widget-detalle-plan-progress .task-detail-title-editable:hover,
+.widget-detalle-plan-progress .task-detail-title-editable:focus {
+    background: var(--ubits-bg-2);
+    border-radius: var(--border-radius-xs);
+}
+
+.widget-detalle-plan-progress .task-detail-title-editable::placeholder {
+    color: var(--ubits-fg-1-low);
+}
+
+/* Card progreso del plan (sin borde ni padding; el contenedor ya los aporta) */
+.detalle-plan-progress-card {
+    background: var(--ubits-bg-1);
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+}
+
+.detalle-plan-progress-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-md);
+}
+
+.detalle-plan-progress-card__header .task-detail-title-editable {
+    flex: 1;
+    min-width: 0;
+}
+
+.detalle-plan-progress-card__fechas {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--gap-sm);
+    color: var(--ubits-fg-1-medium);
+}
+
+/* Labels "Fecha de inicio:" y "Fecha de finalización:" siempre mismo tamaño y peso (xs + semibold), nunca regular */
+.detalle-plan-progress-card__fechas .detalle-plan-card__meta-label {
+    color: var(--ubits-fg-1-medium);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+}
+
+.detalle-plan-fechas-label-wrap .ubits-body-xs-regular.detalle-plan-card__meta-label {
+    font-weight: var(--font-weight-semibold);
+}
+
+/* Fecha finalización editable (solo planes Vigentes): label + input calendar */
+.detalle-plan-fecha-fin-editable {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+#plan-fecha-fin-wrap {
+    width: 100px;
+    min-width: 100px;
+}
+
+#plan-fecha-fin-wrap .ubits-input {
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.detalle-plan-progress-card__content {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+}
+
+.detalle-plan-progress-card__content .detalle-plan-progress-card__label {
+    color: var(--ubits-fg-1-high);
+    flex-shrink: 0;
+}
+
+/* Barra de progreso: mismos estilos que plan-detail (plan-detail-card__bar / bar-fill) */
+.detalle-plan-progress-card__bar {
+    flex: 1;
+    min-width: 100px;
+    height: 8px;
+    background: var(--ubits-bg-3);
+    border-radius: var(--border-radius-full);
+    overflow: hidden;
+}
+
+.detalle-plan-progress-card__bar-fill {
+    height: 100%;
+    background: var(--ubits-accent-brand);
+    border-radius: var(--border-radius-full);
+    transition: width 0.3s ease;
+}
+
+/* Texto del porcentaje (X%): mismos estilos que plan-detail (plan-detail-card__percent) */
+.detalle-plan-progress-card__percent {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    line-height: 19.5px;
+    color: var(--ubits-fg-1-medium);
+    flex-shrink: 0;
+}
+
+/* Asignaciones - header bar, action bar, sort */
+.lms-table-header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--gap-md);
+    margin-bottom: var(--gap-md);
+}
+
+.lms-table-header-left {
+    display: flex;
+    align-items: baseline;
+    gap: var(--gap-md);
+}
+
+.lms-table-header-left .ubits-body-sm-regular {
+    color: var(--ubits-fg-1-medium);
+}
+
+.lms-table-header-right {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.lms-table-search-inline {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.lms-table-action-bar {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--gap-md);
+    padding: var(--padding-sm) 0 var(--padding-md);
+}
+
+.lms-table-action-bar.is-visible {
+    display: flex;
+}
+
+.lms-table-action-buttons {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.lms-th-sortable {
+    white-space: nowrap;
+}
+
+.lms-th-sortable .lms-sort-btn {
+    opacity: 0.7;
+    margin-left: 2px;
+}
+
+.lms-th-sortable .lms-sort-btn:hover {
+    opacity: 1;
+}
+
+.lms-table-empty-state {
+    width: 100%;
+    padding: var(--padding-6xl) var(--padding-xl);
+    min-height: 200px;
+    display: none;
+}
+
+.detalle-plan-asignaciones-wrapper.is-empty #asignaciones-table-wrapper {
+    display: none !important;
+}
+
+.detalle-plan-asignaciones-wrapper.is-empty #asignaciones-empty-state {
+    display: flex !important;
+}
+
+/* Asignaciones - tabla de usuarios */
+.detalle-plan-asignaciones-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+}
+
+.detalle-plan-recordatorio-bar {
+    display: flex;
+    align-items: center;
+    padding-bottom: var(--gap-sm);
+    border-bottom: 1px solid var(--ubits-border-1);
+}
+
+/* Título Asignaciones fuera del card */
+.section-single--asignaciones-titulo > .detalle-plan-asignaciones-titulo-wrapper {
+    background-color: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+}
+
+.detalle-plan-asignaciones__titulo {
+    color: var(--ubits-fg-1-high);
+}
+
+.section-single--asignaciones-detalle .ubits-table tbody td[data-col="usuario"] {
+    min-width: 180px;
+}
+
+.section-single--asignaciones-detalle .ubits-table tbody td[data-col="ultimo-acceso"],
+.section-single--asignaciones-detalle .ubits-table tbody td[data-col="ultima-fecha-progreso"] {
+    min-width: 140px;
+}
+
+.section-single--asignaciones-detalle .ubits-table tbody td[data-col="competencias"] {
+    min-width: 120px;
+}
+
+.detalle-plan-competencias-link {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    color: var(--ubits-accent-brand);
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.detalle-plan-competencias-link:hover {
+    color: var(--ubits-accent-brand);
+}
+
+.section-single--asignaciones-detalle .ubits-table tbody td[data-col="progreso"] {
+    min-width: 120px;
+}
+
+.section-single--asignaciones-detalle .ubits-table__th--actions {
+    width: 80px;
+    text-align: center;
+}
+
+.section-single--asignaciones-detalle .ubits-table td[data-col="acciones"] {
+    text-align: center;
+}
+
+/* Panel lateral competencias del estudiante */
+.detalle-plan-panel-competencias {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+}
+
+.detalle-plan-competencias-lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    padding: var(--padding-xs);
+}
+
+.detalle-plan-competencia-item {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    padding: var(--padding-sm) var(--padding-md);
+    background: var(--ubits-bg-2);
+    border-radius: var(--border-radius-xs);
+}
+
+.detalle-plan-competencia-item span:first-child {
+    flex: 1;
+    min-width: 0;
+}
+
+.detalle-plan-competencia-duration {
+    color: var(--ubits-fg-1-medium);
+    flex-shrink: 0;
+}
+
+.detalle-plan-competencias-empty {
+    padding: var(--padding-md);
+    color: var(--ubits-fg-1-medium);
+    margin: 0;
+}
+
+.detalle-plan-competencias-search-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+}
+
+.detalle-plan-competencias-resultados {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+    max-height: 180px;
+    overflow-y: auto;
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    padding: var(--padding-xs);
+}
+
+.detalle-plan-competencia-resultado {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--padding-sm) var(--padding-md);
+    border: none;
+    background: transparent;
+    border-radius: var(--border-radius-xs);
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    transition: background 0.2s ease;
+}
+
+.detalle-plan-competencia-resultado:hover {
+    background: var(--ubits-bg-2);
+}
+
+.detalle-plan-competencia-resultado span:last-child {
+    color: var(--ubits-fg-1-medium);
+    margin-top: 2px;
+}
+
+/* Footer del drawer con botón Cerrar alineado a la derecha */
+#drawer-competencias-estudiante .ubits-drawer-footer {
+    justify-content: flex-end;
+}
+
+/* Celda nombre del usuario: avatar + nombre (misma línea) */
+.detalle-plan-usuario-cell {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.detalle-plan-usuario-cell .ubits-body-sm-regular {
+    color: var(--ubits-fg-1-medium);
+}
+
+/* Filas de asignaciones clicables para abrir drawer */
+.page-detalle-plan-competencias .ubits-data-table tbody tr[data-id] {
+    cursor: pointer;
+}
+
+/* Contenedor de cards en el drawer: mismo padding y fondo que drawer Agregar competencias (crear-plan-competencias) */
+.detalle-plan-drawer-cards-bg {
+    background: var(--ubits-bg-2);
+    padding: var(--padding-md);
+    border-radius: var(--border-radius-sm);
+}
+
+/* Dos columnas de cards, igual que en el drawer de Agregar competencias */
+.detalle-plan-drawer-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--gap-md);
+}
+
+.detalle-plan-drawer-cards-grid .course-card-compact {
+    min-width: 0;
+}
+
+/* Drawer Agregar asignación (solo colaboradores): panel sin opciones de empresa/grupos/archivo */
+.drawer-usuarios-panel--colaborador {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+}
+
+.drawer-colab-dt-wrapper {
+    width: 100%;
+    min-width: 0;
+}
+
+/* ========================================
+   Drawer "Agregar competencias" (igual que crear-plan-competencias)
+   ======================================== */
+#drawer-detalle-plan-agregar-cursos .ubits-drawer-content {
+    min-height: 0;
+}
+#drawer-detalle-plan-agregar-cursos .ubits-drawer-body {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+#drawer-detalle-plan-agregar-cursos .drawer-agregar-cursos {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    gap: var(--gap-lg);
+}
+#drawer-detalle-plan-agregar-cursos .drawer-agregar-cursos--two-cols {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    min-height: 0;
+    gap: var(--gap-xl);
+}
+#drawer-detalle-plan-agregar-cursos .drawer-agregar-cursos__left {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: var(--gap-md);
+    min-height: 0;
+}
+#drawer-detalle-plan-agregar-cursos .drawer-agregar-cursos__right {
+    position: relative;
+    flex: 0 0 370px;
+    min-height: 0;
+}
+#drawer-detalle-plan-agregar-cursos .drawer-agregar-cursos__right .drawer-agregar-cursos__section-title {
+    margin-bottom: var(--gap-sm);
+    flex-shrink: 0;
+}
+#drawer-detalle-plan-agregar-cursos .drawer-agregar-cursos__section-title {
+    display: block;
+    color: var(--ubits-fg-1-high);
+    margin: 0 0 var(--gap-sm) 0;
+}
+#drawer-detalle-plan-agregar-cursos .drawer-cursos-search-row {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+}
+#drawer-detalle-plan-agregar-cursos .drawer-cursos-search-input-wrap {
+    flex: 1;
+    min-width: 0;
+}
+#drawer-detalle-plan-agregar-cursos .drawer-cursos-agregados-content {
+    position: absolute;
+    top: 32px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+#drawer-detalle-plan-agregar-cursos #drawer-cursos-table-wrapper {
+    flex: 1;
+    min-height: 0;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    scrollbar-gutter: stable;
+}
+#drawer-detalle-plan-agregar-cursos .drawer-cursos-empty-state-wrap {
+    display: none;
+    flex: 1;
+    min-height: 120px;
+}
+#drawer-detalle-plan-agregar-cursos .drawer-cursos-resultados-bg {
+    background: var(--ubits-bg-2);
+    padding: var(--padding-md);
+    border-radius: var(--border-radius-sm);
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+}
+#drawer-detalle-plan-agregar-cursos .drawer-cursos-resultados-bg--dos-columnas .drawer-cursos-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--gap-md);
+}
+#drawer-detalle-plan-agregar-cursos .drawer-cursos-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--gap-md);
+}
+#drawer-detalle-plan-agregar-cursos .drawer-cursos-cards-grid .course-card-compact {
+    min-width: 0;
+}
+#drawer-detalle-plan-agregar-cursos .drawer-cursos-resultados-bg .course-card-compact--selected {
+    border: 2px solid var(--ubits-accent-brand);
+    border-radius: var(--border-radius-sm);
+    box-sizing: border-box;
+}
+@media (max-width: 768px) {
+    #drawer-detalle-plan-agregar-cursos .drawer-agregar-cursos--two-cols {
+        flex-direction: column;
+    }
+    #drawer-detalle-plan-agregar-cursos .drawer-agregar-cursos__right {
+        flex: 0 0 auto;
+        min-height: 200px;
+    }
+}

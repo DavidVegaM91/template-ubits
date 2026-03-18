@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
-    <title>UBITS Playground - LMS Creator - Detalle del plan</title>
+    <title>UBITS Playground - LMS Creator - Detalle del plan de competencias</title>
     
     <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
     <link rel="stylesheet" href="../../general-styles/styles.css">
@@ -33,9 +33,9 @@
     <link rel="stylesheet" href="../../components/card-content-compact.css">
     <link rel="stylesheet" href="../../components/avatar.css">
     <link rel="stylesheet" href="./lms-creator.css">
-    <link rel="stylesheet" href="./detalle-plan.css">
+    <link rel="stylesheet" href="./detalle-plan-competencias.css">
 </head>
-<body data-theme="light" class="page-detalle-plan">
+<body data-theme="light" class="page-detalle-plan-competencias">
     <div class="dashboard-container">
         <div class="tooltip" id="tooltip"></div>
         <div id="sidebar-container"></div>
@@ -75,7 +75,7 @@
                     <div class="section-single section-single--asignaciones-detalle">
                         <div class="widget-asignaciones-detalle">
                             <div class="detalle-plan-asignaciones-wrapper">
-                                <div id="asignaciones-detalle-data-table-container" class="crear-plan-contenidos-asignaciones-tabla"></div>
+                                <div id="asignaciones-detalle-data-table-container" class="crear-plan-competencias-asignaciones-tabla"></div>
                             </div>
                         </div>
                     </div>
@@ -152,7 +152,7 @@
 
             if (typeof loadHeaderProduct === 'function') {
                 loadHeaderProduct('header-product-container', {
-                    productName: 'Detalle del plan',
+                    productName: 'Detalle del plan de competencias',
                     breadcrumbItems: [],
                     backButton: {
                         onClick: function() { window.location.href = 'planes-formacion.html'; }
@@ -217,9 +217,9 @@
                 document.getElementById('asignaciones-modals-container').innerHTML = getModalHtml({ overlayId: 'asignaciones-delete-overlay', title: 'Confirmar eliminación', bodyHtml: deleteBody, footerHtml: deleteFooter, size: 'sm', closeButtonId: 'asignaciones-delete-close' });
             }
 
-            // Contenidos por usuario: construidos desde CATALOGO_CURSOS_DRAWER para que coincidan con "Buscar y agregar contenidos". Cada item tiene progress y status.
+            // Competencias por usuario: construidos desde catálogo para "Buscar y agregar competencias". Cada item tiene progress y status.
             var catalogDrawer = window.CATALOGO_CURSOS_DRAWER || [];
-            function buildContenidoFromCatalog(indicesWithProgress) {
+            function buildCompetenciaFromCatalog(indicesWithProgress) {
                 var list = [];
                 indicesWithProgress.forEach(function(x) {
                     var c = catalogDrawer[x.i];
@@ -235,22 +235,22 @@
             var baseIndices = { '1': [{i:0,p:100,s:'completed'},{i:1,p:100,s:'completed'},{i:2,p:80,s:'progress'},{i:3,p:40,s:'progress'},{i:4,p:0,s:'default'}], '2': [{i:5,p:60,s:'progress'},{i:6,p:100,s:'completed'},{i:7,p:0,s:'default'}], '3': [{i:8,p:100,s:'completed'},{i:9,p:100,s:'completed'},{i:10,p:0,s:'default'}], '4': [{i:11,p:20,s:'progress'},{i:12,p:0,s:'default'},{i:13,p:0,s:'default'}] };
             var plan3Indices = { '1': [{i:0,p:100,s:'completed'},{i:1,p:50,s:'progress'},{i:2,p:30,s:'progress'}], '2': [{i:3,p:100,s:'completed'},{i:4,p:80,s:'progress'},{i:5,p:15,s:'progress'}], '3': [{i:6,p:100,s:'completed'},{i:7,p:100,s:'completed'},{i:8,p:10,s:'progress'}], '4': [{i:9,p:100,s:'completed'},{i:10,p:50,s:'progress'},{i:11,p:45,s:'progress'}] };
             var plan4Indices = { '1': [{i:0,p:82,s:'progress'},{i:1,p:82,s:'progress'},{i:2,p:82,s:'progress'}], '2': [{i:3,p:84,s:'progress'},{i:4,p:84,s:'progress'},{i:5,p:84,s:'progress'}], '3': [{i:6,p:86,s:'progress'},{i:7,p:86,s:'progress'},{i:8,p:86,s:'progress'}], '4': [{i:9,p:88,s:'progress'},{i:10,p:88,s:'progress'},{i:11,p:88,s:'progress'}] };
-            var contenidoPorUsuarioBase = {};
-            var contenidoPorUsuarioPlan3 = {};
-            var contenidoPorUsuarioPlan4 = {};
+            var competenciaPorUsuarioBase = {};
+            var competenciaPorUsuarioPlan3 = {};
+            var competenciaPorUsuarioPlan4 = {};
             ['1','2','3','4'].forEach(function(rid) {
-                contenidoPorUsuarioBase[rid] = buildContenidoFromCatalog(baseIndices[rid] || []);
-                contenidoPorUsuarioPlan3[rid] = buildContenidoFromCatalog(plan3Indices[rid] || []);
-                contenidoPorUsuarioPlan4[rid] = buildContenidoFromCatalog(plan4Indices[rid] || []);
+                competenciaPorUsuarioBase[rid] = buildCompetenciaFromCatalog(baseIndices[rid] || []);
+                competenciaPorUsuarioPlan3[rid] = buildCompetenciaFromCatalog(plan3Indices[rid] || []);
+                competenciaPorUsuarioPlan4[rid] = buildCompetenciaFromCatalog(plan4Indices[rid] || []);
             });
-            var contenidoPorUsuario = (planId === '3') ? contenidoPorUsuarioPlan3 : (planId === '4') ? contenidoPorUsuarioPlan4 : contenidoPorUsuarioBase;
+            var competenciaPorUsuario = (planId === '3') ? competenciaPorUsuarioPlan3 : (planId === '4') ? competenciaPorUsuarioPlan4 : competenciaPorUsuarioBase;
             function progresoEstudiante(rowId) {
-                var list = contenidoPorUsuario[rowId] || [];
+                var list = competenciaPorUsuario[rowId] || [];
                 if (list.length === 0) return 0;
                 var sum = list.reduce(function(acc, c) { return acc + (c.progress || 0); }, 0);
                 return Math.round(sum / list.length);
             }
-            var catalogoContenidos = [
+            var catalogoCompetencias = [
                 { id: 'c1', title: 'Design Thinking: bases y aplicación', duration: '60 min' },
                 { id: 'c2', title: 'Comunicación efectiva', duration: '15 min' },
                 { id: 'c3', title: 'Liderazgo situacional', duration: '90 min' },
@@ -319,10 +319,10 @@
 
             function escapeDetalleHtml(t) { if (t == null) return ''; var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
             function buildDetalleAsignacionRowHtml(row) {
-                var count = (contenidoPorUsuario[row.id] || []).length;
-                var contenidosBtn = count === 0
-                    ? '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs js-detalle-plan-contenidos-btn" data-row-id="' + escapeDetalleHtml(row.id) + '"><span>Agregar contenidos</span></button>'
-                    : '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs js-detalle-plan-contenidos-btn" data-row-id="' + escapeDetalleHtml(row.id) + '"><span>' + count + ' contenidos</span></button>';
+                var count = (competenciaPorUsuario[row.id] || []).length;
+                var competenciasBtn = count === 0
+                    ? '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs js-detalle-plan-competencias-btn" data-row-id="' + escapeDetalleHtml(row.id) + '"><span>Agregar competencias</span></button>'
+                    : '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs js-detalle-plan-competencias-btn" data-row-id="' + escapeDetalleHtml(row.id) + '"><span>' + count + ' competencias</span></button>';
                 var progresoMostrar = planSinProgreso() ? 0 : (row.progreso || 0);
                 var avatarUrl = (row.avatar && String(row.avatar).trim()) ? String(row.avatar).replace(/"/g, '&quot;') : '';
                 var usuarioCell = '<div class="detalle-plan-usuario-cell">' +
@@ -333,7 +333,7 @@
                 return '<td data-col="usuario">' + usuarioCell + '</td>' +
                     '<td data-col="ultimo-acceso"><span class="ubits-body-sm-regular">' + escapeDetalleHtml(row.ultimoAcceso) + '</span></td>' +
                     '<td data-col="ultima-fecha-progreso" data-date="' + escapeDetalleHtml(row.ultimaFechaProgreso) + '"><span class="ubits-body-sm-regular">' + escapeDetalleHtml(typeof formatDateDDMmmAAAA === 'function' ? formatDateDDMmmAAAA(row.ultimaFechaProgreso) : row.ultimaFechaProgreso) + '</span></td>' +
-                    '<td data-col="contenidos">' + contenidosBtn + '</td>' +
+                    '<td data-col="competencias">' + competenciasBtn + '</td>' +
                     '<td data-col="progreso"><div class="ubits-table__cell-progress"><div class="ubits-table__progress-bar"><div class="ubits-table__progress-bar-fill" style="width:' + progresoMostrar + '%"></div></div><span class="ubits-body-sm-regular">' + progresoMostrar + '%</span></div></td>';
             }
 
@@ -452,7 +452,7 @@
                             ultimaFechaProgreso: '-',
                             progreso: 0
                         });
-                        contenidoPorUsuario[e.id || e.idColaborador] = [];
+                        competenciaPorUsuario[e.id || e.idColaborador] = [];
                         yaIds[String(e.id || e.idColaborador)] = true;
                     });
                     if (asignacionesDetalleTablaRef && typeof asignacionesDetalleTablaRef.refresh === 'function') asignacionesDetalleTablaRef.refresh();
@@ -472,7 +472,7 @@
                         { id: 'usuario', label: 'Nombre del usuario', sortable: true },
                         { id: 'ultimo-acceso', label: 'Último acceso' },
                         { id: 'ultima-fecha-progreso', label: 'Última fecha de progreso', sortable: true, sortType: 'date' },
-                        { id: 'contenidos', label: 'Contenidos' },
+                        { id: 'competencias', label: 'Competencias' },
                         { id: 'progreso', label: 'Progreso', sortable: true, sortType: 'number' }
                     ],
                     getData: function() { return asignacionesDetalleData; },
@@ -487,9 +487,9 @@
                             } }
                         ];
                         if (plan.estado === 'Vigente' || plan.estado === 'Planeado') {
-                            list.push({ id: 'asignar-contenidos', label: 'Asignar contenidos', icon: 'fa-book', variant: 'secondary', onClick: function(selectedIds) {
+                            list.push({ id: 'asignar-competencias', label: 'Asignar competencias', icon: 'fa-book', variant: 'secondary', onClick: function(selectedIds) {
                                 if (!selectedIds || selectedIds.length === 0) return;
-                                abrirDrawerAgregarContenidosMultiDetallePlan(selectedIds);
+                                abrirDrawerAgregarCompetenciasMultiDetallePlan(selectedIds);
                             } });
                         }
                         list.push({ id: 'eliminar', label: 'Eliminar del plan', icon: 'fa-trash', variant: 'error-secondary', onClick: function(selectedIds) {
@@ -537,7 +537,7 @@
                 deleteConfirm.addEventListener('click', function() {
                     var ids = pendingAsignacionesDeleteIds.slice();
                     closeAsignacionesDeleteModal();
-                    ids.forEach(function(id) { delete contenidoPorUsuario[id]; });
+                    ids.forEach(function(id) { delete competenciaPorUsuario[id]; });
                     asignacionesDetalleData = asignacionesDetalleData.filter(function(r) { return ids.indexOf(r.id) === -1; });
                     if (asignacionesDetalleTablaRef && typeof asignacionesDetalleTablaRef.refresh === 'function') asignacionesDetalleTablaRef.refresh();
                     updatePlanProgressBar();
@@ -545,30 +545,30 @@
                 });
             }
 
-            function abrirPanelContenidos(rowId, userName, contenidosActuales) {
-                var list = contenidoPorUsuario[rowId] || [];
-                var bodyHtml = '<div class="detalle-plan-panel-contenidos">' +
+            function abrirPanelCompetencias(rowId, userName, competenciasActuales) {
+                var list = competenciaPorUsuario[rowId] || [];
+                var bodyHtml = '<div class="detalle-plan-panel-competencias">' +
                     '<div class="detalle-plan-drawer-cards-bg">' +
                     '<div id="detalle-plan-compact-cards" class="detalle-plan-drawer-cards-grid"></div>' +
                     '</div>' +
                     '</div>';
-                var footerHtml = '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" onclick="cerrarPanelContenidos()"><span class="ubits-body-sm-regular">Cerrar</span></button>';
+                var footerHtml = '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" onclick="cerrarPanelCompetencias()"><span class="ubits-body-sm-regular">Cerrar</span></button>';
 
                 openDrawer({
-                    overlayId: 'drawer-contenidos-estudiante',
-                    title: (userName || 'Estudiante') + ' – contenidos y progreso',
+                    overlayId: 'drawer-competencias-estudiante',
+                    title: (userName || 'Estudiante') + ' – competencias y progreso',
                     bodyHtml: bodyHtml,
                     footerHtml: footerHtml,
                     size: 'md',
                     onClose: function() { actualizarContadorTabla(rowId); }
                 });
 
-                window.cerrarPanelContenidos = function() {
-                    if (typeof closeDrawer === 'function') closeDrawer('drawer-contenidos-estudiante');
+                window.cerrarPanelCompetencias = function() {
+                    if (typeof closeDrawer === 'function') closeDrawer('drawer-competencias-estudiante');
                     actualizarContadorTabla(rowId);
                 };
 
-                initPanelContenidos(rowId, list);
+                initPanelCompetencias(rowId, list);
                 actualizarContadorTabla(rowId);
             }
 
@@ -576,12 +576,12 @@
                 if (asignacionesDetalleTablaRef && typeof asignacionesDetalleTablaRef.refresh === 'function') asignacionesDetalleTablaRef.refresh();
             }
 
-            var imagenBaseContenido = '../../images/cards-learn/descubre-las-bases-del-design-thinking.jpeg';
-            function initPanelContenidos(rowId, contenidosActuales) {
-                var overlay = document.getElementById('drawer-contenidos-estudiante');
+            var imagenBaseCompetencia = '../../images/cards-learn/descubre-las-bases-del-design-thinking.jpeg';
+            function initPanelCompetencias(rowId, competenciasActuales) {
+                var overlay = document.getElementById('drawer-competencias-estudiante');
                 if (!overlay) return;
 
-                var list = contenidoPorUsuario[rowId] || [];
+                var list = competenciaPorUsuario[rowId] || [];
                 var compactContainer = overlay.querySelector('#detalle-plan-compact-cards');
 
                 if (compactContainer && typeof loadCardContentCompact === 'function') {
@@ -598,7 +598,7 @@
                             level: 'Intermedio',
                             competency: 'Liderazgo',
                             language: 'Español',
-                            image: c.image || imagenBaseContenido
+                            image: c.image || imagenBaseCompetencia
                         };
                     });
                     loadCardContentCompact('detalle-plan-compact-cards', cardsData);
@@ -608,7 +608,7 @@
             function getDrawerCursosBodyHtmlDetallePlan() {
                 return '<div class="drawer-agregar-cursos drawer-agregar-cursos--two-cols">' +
                     '<div class="drawer-agregar-cursos__left">' +
-                    '  <span class="drawer-agregar-cursos__section-title ubits-body-sm-semibold">Buscar y agregar contenidos</span>' +
+                    '  <span class="drawer-agregar-cursos__section-title ubits-body-sm-semibold">Buscar y agregar competencias</span>' +
                     '  <div class="drawer-cursos-search-row">' +
                     '    <div id="drawer-cursos-search-container" class="drawer-cursos-search-input-wrap"></div>' +
                     '    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" id="drawer-cursos-filter-btn" aria-label="Filtrar por origen"><i class="far fa-filter"></i></button>' +
@@ -618,12 +618,12 @@
                     '  </div>' +
                     '</div>' +
                     '<div class="drawer-agregar-cursos__right drawer-cursos-agregados-section" id="drawer-cursos-agregados-section">' +
-                    '  <span class="drawer-agregar-cursos__section-title ubits-body-sm-semibold">Contenidos agregados</span>' +
+                    '  <span class="drawer-agregar-cursos__section-title ubits-body-sm-semibold">Competencias agregadas</span>' +
                     '  <div class="drawer-cursos-agregados-content">' +
                     '    <div id="drawer-cursos-empty-state" class="drawer-cursos-empty-state-wrap"></div>' +
                     '    <div class="ubits-table-wrapper" id="drawer-cursos-table-wrapper">' +
                     '      <table class="ubits-table" id="drawer-cursos-table">' +
-                    '        <thead><tr><th data-col="contenido" class="ubits-body-sm-semibold">Contenido</th><th class="ubits-table__th--actions ubits-body-sm-semibold" data-col="acciones">Acciones</th></tr></thead>' +
+                    '        <thead><tr><th data-col="competencia" class="ubits-body-sm-semibold">Competencia</th><th class="ubits-table__th--actions ubits-body-sm-semibold" data-col="acciones">Acciones</th></tr></thead>' +
                     '        <tbody id="drawer-cursos-agregados-tbody"></tbody>' +
                     '      </table>' +
                     '    </div>' +
@@ -632,14 +632,14 @@
                     '</div>';
             }
 
-            function abrirDrawerAgregarContenidosDetallePlan(rowId) {
+            function abrirDrawerAgregarCompetenciasDetallePlan(rowId) {
                 var catalogoCursos = window.CATALOGO_CURSOS_DRAWER || [];
-                var cursosSeleccionados = (contenidoPorUsuario[rowId] || []).slice();
+                var cursosSeleccionados = (competenciaPorUsuario[rowId] || []).slice();
                 var footerHtml = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="drawer-detalle-plan-cursos-cancel"><span class="ubits-body-sm-regular">Cancelar</span></button>' +
                     '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="drawer-detalle-plan-cursos-agregar"><span class="ubits-body-sm-regular">Agregar</span></button>';
                 openDrawer({
                     overlayId: 'drawer-detalle-plan-agregar-cursos',
-                    title: 'Agregar contenidos',
+                    title: 'Agregar competencias',
                     bodyHtml: getDrawerCursosBodyHtmlDetallePlan(),
                     footerHtml: footerHtml,
                     size: 'lg',
@@ -659,7 +659,7 @@
                         if (emptyStateContainer) {
                             emptyStateContainer.style.display = 'block';
                             if (typeof loadEmptyState === 'function') {
-                                loadEmptyState('drawer-cursos-empty-state', { icon: 'fa-folder-open', iconSize: 'lg', title: 'No hay contenidos agregados', description: 'Busca y agrega contenidos desde el buscador.', buttons: {} });
+                                loadEmptyState('drawer-cursos-empty-state', { icon: 'fa-folder-open', iconSize: 'lg', title: 'No hay competencias agregadas', description: 'Busca y agrega competencias desde el buscador.', buttons: {} });
                             }
                         }
                     } else {
@@ -668,7 +668,7 @@
                         cursosSeleccionados.forEach(function(c) {
                             var tr = document.createElement('tr');
                             tr.className = 'drawer-cursos-table-row';
-                            tr.innerHTML = '<td data-col="contenido"><span class="ubits-body-sm-regular">' + (c.title || '').replace(/</g, '&lt;') + '</span></td>' +
+                            tr.innerHTML = '<td data-col="competencia"><span class="ubits-body-sm-regular">' + (c.title || '').replace(/</g, '&lt;') + '</span></td>' +
                                 '<td data-col="acciones"><button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only js-drawer-cursos-delete" aria-label="Eliminar"><i class="far fa-trash"></i></button></td>';
                             tr.dataset.courseId = c.id;
                             tr.querySelector('.js-drawer-cursos-delete').addEventListener('click', function() {
@@ -682,7 +682,7 @@
                 }
 
                 if (typeof createInput === 'function') {
-                    createInput({ containerId: 'drawer-cursos-search-container', type: 'search', placeholder: 'Buscar contenidos...', size: 'sm', showLabel: false });
+                    createInput({ containerId: 'drawer-cursos-search-container', type: 'search', placeholder: 'Buscar competencias...', size: 'sm', showLabel: false });
                 }
                 var searchInput = overlay.querySelector('#drawer-cursos-search-container input');
                 var cardsContainer = overlay.querySelector('#drawer-cursos-cards-container');
@@ -754,14 +754,14 @@
                     if (typeof closeDrawer === 'function') closeDrawer('drawer-detalle-plan-agregar-cursos');
                 });
                 overlay.querySelector('#drawer-detalle-plan-cursos-agregar').addEventListener('click', function() {
-                    contenidoPorUsuario[rowId] = cursosSeleccionados.slice();
+                    competenciaPorUsuario[rowId] = cursosSeleccionados.slice();
                     if (asignacionesDetalleTablaRef && typeof asignacionesDetalleTablaRef.refresh === 'function') asignacionesDetalleTablaRef.refresh();
                     if (typeof closeDrawer === 'function') closeDrawer('drawer-detalle-plan-agregar-cursos');
-                    if (typeof showToast === 'function') showToast('success', 'Contenidos actualizados');
+                    if (typeof showToast === 'function') showToast('success', 'Competencias actualizadas');
                 });
             }
 
-            function abrirDrawerAgregarContenidosMultiDetallePlan(selectedIds) {
+            function abrirDrawerAgregarCompetenciasMultiDetallePlan(selectedIds) {
                 if (!selectedIds || selectedIds.length === 0) return;
                 var catalogoCursos = window.CATALOGO_CURSOS_DRAWER || [];
                 var cursosSeleccionados = [];
@@ -769,7 +769,7 @@
                     '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="drawer-detalle-plan-cursos-agregar"><span class="ubits-body-sm-regular">Agregar</span></button>';
                 openDrawer({
                     overlayId: 'drawer-detalle-plan-agregar-cursos',
-                    title: 'Agregar contenidos',
+                    title: 'Agregar competencias',
                     bodyHtml: getDrawerCursosBodyHtmlDetallePlan(),
                     footerHtml: footerHtml,
                     size: 'lg',
@@ -789,7 +789,7 @@
                         if (emptyStateContainer) {
                             emptyStateContainer.style.display = 'block';
                             if (typeof loadEmptyState === 'function') {
-                                loadEmptyState('drawer-cursos-empty-state', { icon: 'fa-folder-open', iconSize: 'lg', title: 'No hay contenidos agregados', description: 'Busca y agrega contenidos desde el buscador.', buttons: {} });
+                                loadEmptyState('drawer-cursos-empty-state', { icon: 'fa-folder-open', iconSize: 'lg', title: 'No hay competencias agregadas', description: 'Busca y agrega competencias desde el buscador.', buttons: {} });
                             }
                         }
                     } else {
@@ -798,7 +798,7 @@
                         cursosSeleccionados.forEach(function(c) {
                             var tr = document.createElement('tr');
                             tr.className = 'drawer-cursos-table-row';
-                            tr.innerHTML = '<td data-col="contenido"><span class="ubits-body-sm-regular">' + (c.title || '').replace(/</g, '&lt;') + '</span></td>' +
+                            tr.innerHTML = '<td data-col="competencia"><span class="ubits-body-sm-regular">' + (c.title || '').replace(/</g, '&lt;') + '</span></td>' +
                                 '<td data-col="acciones"><button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only js-drawer-cursos-delete" aria-label="Eliminar"><i class="far fa-trash"></i></button></td>';
                             tr.dataset.courseId = c.id;
                             tr.querySelector('.js-drawer-cursos-delete').addEventListener('click', function() {
@@ -812,7 +812,7 @@
                 }
 
                 if (typeof createInput === 'function') {
-                    createInput({ containerId: 'drawer-cursos-search-container', type: 'search', placeholder: 'Buscar contenidos...', size: 'sm', showLabel: false });
+                    createInput({ containerId: 'drawer-cursos-search-container', type: 'search', placeholder: 'Buscar competencias...', size: 'sm', showLabel: false });
                 }
                 var searchInput = overlay.querySelector('#drawer-cursos-search-container input');
                 var cardsContainer = overlay.querySelector('#drawer-cursos-cards-container');
@@ -886,15 +886,15 @@
                 overlay.querySelector('#drawer-detalle-plan-cursos-agregar').addEventListener('click', function() {
                     var toAdd = cursosSeleccionados.slice();
                     selectedIds.forEach(function(id) {
-                        var current = (contenidoPorUsuario[id] || []).slice();
+                        var current = (competenciaPorUsuario[id] || []).slice();
                         toAdd.forEach(function(c) {
                             if (!current.some(function(x) { return x.id === c.id; })) current.push(c);
                         });
-                        contenidoPorUsuario[id] = current;
+                        competenciaPorUsuario[id] = current;
                     });
                     if (asignacionesDetalleTablaRef && typeof asignacionesDetalleTablaRef.refresh === 'function') asignacionesDetalleTablaRef.refresh();
                     if (typeof closeDrawer === 'function') closeDrawer('drawer-detalle-plan-agregar-cursos');
-                    if (typeof showToast === 'function') showToast('success', 'Contenidos asignados a ' + selectedIds.length + ' persona(s)');
+                    if (typeof showToast === 'function') showToast('success', 'Competencias asignadas a ' + selectedIds.length + ' persona(s)');
                 });
             }
 
@@ -905,16 +905,16 @@
                     var row = e.target.closest('tbody tr[data-id]');
                     if (!row) return;
                     var rowId = row.getAttribute('data-id');
-                    var btnContenidos = e.target.closest('.js-detalle-plan-contenidos-btn');
-                    if (btnContenidos) rowId = btnContenidos.getAttribute('data-row-id') || rowId;
+                    var btnCompetencias = e.target.closest('.js-detalle-plan-competencias-btn');
+                    if (btnCompetencias) rowId = btnCompetencias.getAttribute('data-row-id') || rowId;
                     e.preventDefault();
                     e.stopPropagation();
                     if (plan.estado === 'No vigente') {
                         var rowData = asignacionesDetalleData.find(function(r) { return String(r.id) === String(rowId); });
                         var userName = rowData ? rowData.usuario : '';
-                        abrirPanelContenidos(rowId, userName, contenidoPorUsuario[rowId] || []);
+                        abrirPanelCompetencias(rowId, userName, competenciaPorUsuario[rowId] || []);
                     } else {
-                        abrirDrawerAgregarContenidosDetallePlan(rowId);
+                        abrirDrawerAgregarCompetenciasDetallePlan(rowId);
                     }
                 });
             }
