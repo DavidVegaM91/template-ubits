@@ -1058,6 +1058,7 @@
     background: var(--ubits-bg-1);
     border: 1px solid transparent;
     border-radius: var(--border-radius-sm);
+    overflow: hidden;
     cursor: pointer;
     display: flex;
     flex-direction: row;
@@ -1082,7 +1083,7 @@
     object-fit: cover;
     background: var(--ubits-bg-2);
     flex-shrink: 0;
-    border-radius: var(--border-radius-sm) 0 0 var(--border-radius-sm); /* Igual que card-content-compact */
+    /* Sin border-radius: el card con overflow:hidden recorta la imagen a sus esquinas */
 }
 
 .drawer-competencia-card .competencia-card-v1-content {
@@ -1165,8 +1166,12 @@
 }
 
 .drawer-habilidad-drag {
-    color: var(--ubits-fg-1-low);
+    color: var(--ubits-fg-1-medium);
     font-size: var(--font-size-sm);
+}
+
+.drawer-habilidad-row .drawer-habilidad-title {
+    color: var(--ubits-fg-1-high);
 }
 
 .drawer-habilidad-row .ubits-checkbox__label {
@@ -1176,7 +1181,7 @@
 }
 
 .drawer-habilidad-icon {
-    color: var(--ubits-fg-1-medium);
+    color: var(--ubits-fg-1-high);
     font-size: var(--font-size-sm);
 }
 

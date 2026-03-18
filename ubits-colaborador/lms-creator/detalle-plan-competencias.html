@@ -721,9 +721,9 @@
                     var habilidadesHtml = habilidadesOrder.map(function(h, idx) {
                         var icon = habilidadIconMap[h] || 'fa-circle';
                         return '<div class="drawer-habilidad-row drawer-habilidad-row--draggable" draggable="true" data-competencia-id="' + escapeDrawerHtml(comp.id) + '" data-skill-index="' + idx + '" role="button">' +
-                            '<span class="drawer-habilidad-drag" aria-hidden="true"><i class="far fa-grip-vertical"></i></span>' +
+                            '<span class="drawer-habilidad-drag" aria-hidden="true"><i class="fas fa-grip-vertical"></i></span>' +
                             '<i class="far ' + icon + ' drawer-habilidad-icon"></i>' +
-                            '<span class="ubits-body-sm-regular">' + escapeDrawerHtml(h) + '</span></div>';
+                            '<span class="ubits-body-sm-regular drawer-habilidad-title">' + escapeDrawerHtml(h) + '</span></div>';
                     }).join('');
                     var cardClass = 'drawer-competencia-card competencia-card-v1' + (isSelected ? ' drawer-competencia-card--selected' : '') + (isExpanded ? ' expanded' : '');
                     var checkChecked = isSelected ? ' checked' : '';
@@ -903,9 +903,9 @@
                     var habilidadesHtml = habilidadesOrder.map(function(h, idx) {
                         var icon = habilidadIconMap[h] || 'fa-circle';
                         return '<div class="drawer-habilidad-row drawer-habilidad-row--draggable" draggable="true" data-competencia-id="' + escapeDrawerHtml(comp.id) + '" data-skill-index="' + idx + '" role="button">' +
-                            '<span class="drawer-habilidad-drag" aria-hidden="true"><i class="far fa-grip-vertical"></i></span>' +
+                            '<span class="drawer-habilidad-drag" aria-hidden="true"><i class="fas fa-grip-vertical"></i></span>' +
                             '<i class="far ' + icon + ' drawer-habilidad-icon"></i>' +
-                            '<span class="ubits-body-sm-regular">' + escapeDrawerHtml(h) + '</span></div>';
+                            '<span class="ubits-body-sm-regular drawer-habilidad-title">' + escapeDrawerHtml(h) + '</span></div>';
                     }).join('');
                     var cardClass = 'drawer-competencia-card competencia-card-v1' + (isSelected ? ' drawer-competencia-card--selected' : '') + (isExpanded ? ' expanded' : '');
                     var checkChecked = isSelected ? ' checked' : '';
