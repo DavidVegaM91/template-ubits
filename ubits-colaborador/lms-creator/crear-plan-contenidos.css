@@ -445,6 +445,17 @@
     min-width: 100px;
 }
 
+/* Celda Nombre del usuario (avatar + nombre) en drawer de colaboradores */
+.detalle-plan-usuario-cell {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.detalle-plan-usuario-cell .ubits-body-sm-regular {
+    color: var(--ubits-fg-1-medium);
+}
+
 .drawer-usuarios-lista-wrapper,
 .drawer-usuarios-grupos-seleccionados {
     display: flex;

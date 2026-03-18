@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
-    <title>UBITS Playground - LMS Creator - Crear plan de contenidos</title>
+    <title>UBITS Playground - LMS Creator - Detalle del plan</title>
     
     <!-- Estilos locales -->
     <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
@@ -111,11 +111,41 @@
     <script src="../tareas/tareas-base-unificada.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Leer tipo de plan desde URL (?tipo=contenidos | ?tipo=competencias)
             var params = new URLSearchParams(window.location.search);
             var planTipo = params.get('tipo') || 'contenidos';
+            var planId = params.get('id') || '';
             var planTipoInput = document.getElementById('plan-tipo');
             if (planTipoInput) planTipoInput.value = planTipo;
+
+            var empleados = (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getEmpleadosEjemplo === 'function') ? TAREAS_PLANES_DB.getEmpleadosEjemplo() : [];
+            var gruposMockEditar = [
+                { id: 'g-ventas', nombre: 'Ventas' }, { id: 'g-instalaciones', nombre: 'Instalaciones' }, { id: 'g-reparaciones', nombre: 'Reparaciones' },
+                { id: 'g-atencion', nombre: 'Atención al Cliente' }, { id: 'g-logistica', nombre: 'Logística' }, { id: 'g-admin', nombre: 'Administración' },
+                { id: 'g-marketing', nombre: 'Marketing' }, { id: 'g-rrhh', nombre: 'Recursos Humanos' }, { id: 'g-lideres', nombre: 'Líderes' }, { id: 'g-operativo', nombre: 'Personal operativo' }
+            ];
+            function getAsignacionesPlan1() {
+                var p1 = empleados.slice(0, 3).map(function(e) { return { id: e.id, nombre: e.nombre || '', avatar: e.avatar || null }; });
+                return [
+                    { id: 'asignacion-1', asignadosLabel: p1.length ? p1.map(function(p) { return p.nombre; }).join(', ') : 'Por definir', asignadosTipo: 'por-colaborador', asignadosPersonas: p1, asignadosGrupos: [], contenidosCount: 2, contenidos: [ { id: 'c1', title: 'Design Thinking: bases y aplicación', duration: '60 min' }, { id: 'c2', title: 'Comunicación efectiva', duration: '15 min' } ] },
+                    { id: 'asignacion-2', asignadosLabel: 'Ventas', asignadosTipo: 'por-grupos', asignadosPersonas: [], asignadosGrupos: [ { id: 'g-ventas', nombre: 'Ventas' } ], contenidosCount: 1, contenidos: [ { id: 'c3', title: 'Liderazgo situacional', duration: '90 min' } ] }
+                ];
+            }
+            function getAsignacionesPlan2() {
+                var p2 = empleados.slice(3, 6).map(function(e) { return { id: e.id, nombre: e.nombre || '', avatar: e.avatar || null }; });
+                return [
+                    { id: 'asignacion-1', asignadosLabel: 'Toda la empresa', asignadosTipo: 'toda-empresa', asignadosPersonas: [], asignadosGrupos: [], contenidosCount: 2, contenidos: [ { id: 'c1', title: 'Design Thinking: bases y aplicación', duration: '60 min' }, { id: 'c2', title: 'Comunicación efectiva', duration: '15 min' } ] },
+                    { id: 'asignacion-2', asignadosLabel: p2.length ? p2.map(function(p) { return p.nombre; }).join(', ') : 'Por definir', asignadosTipo: 'por-colaborador', asignadosPersonas: p2, asignadosGrupos: [], contenidosCount: 1, contenidos: [ { id: 'c3', title: 'Liderazgo situacional', duration: '90 min' } ] }
+                ];
+            }
+            var plansEditar = {
+                '1': { nombre: 'Plan de onboarding Q3 2026', fechaInicio: '01/07/2026', fechaFin: '30/09/2026', getAsignaciones: getAsignacionesPlan1 },
+                '2': { nombre: 'Competencias de liderazgo', fechaInicio: '01/04/2026', fechaFin: '30/06/2026', getAsignaciones: getAsignacionesPlan2 }
+            };
+            var planEditar = planId && plansEditar[planId] ? plansEditar[planId] : null;
+            if (!planEditar) {
+                window.location.href = 'planes-formacion.html';
+                return;
+            }
 
             loadSidebar('creator');
             loadSubNav('top-nav-container', 'creator');
@@ -125,7 +155,7 @@
             
             if (typeof loadHeaderProduct === 'function') {
                 loadHeaderProduct('header-product-container', {
-                    productName: 'Crear plan de contenidos',
+                    productName: 'Detalle del plan',
                     breadcrumbItems: [],
                     backButton: {
                         onClick: function() {
@@ -391,6 +421,34 @@
                     emptySearchState: { message: 'No se encontraron resultados', description: 'Intenta ajustar tu búsqueda.', buttonText: 'Limpiar búsqueda' },
                     i18n: { selectAll: 'Seleccionar todo', deselectAll: 'Deseleccionar todo', verSeleccionados: 'Ver seleccionados', buscar: 'Buscar' }
                 });
+            }
+
+            if (planEditar) {
+                (function() {
+                    function ddMmYyyyToYyyyMmDd(s) {
+                        var parts = (s || '').split('/');
+                        if (parts.length !== 3) return '';
+                        return parts[2] + '-' + parts[1] + '-' + parts[0];
+                    }
+                    var nombreEl = document.getElementById('asignacion-nombre');
+                    if (nombreEl) nombreEl.value = planEditar.nombre || '';
+                    var inicioInput = document.querySelector('#fecha-inicio-container input');
+                    var finInput = document.querySelector('#fecha-fin-container input');
+                    if (inicioInput) inicioInput.value = ddMmYyyyToYyyyMmDd(planEditar.fechaInicio);
+                    if (finInput) finInput.value = ddMmYyyyToYyyyMmDd(planEditar.fechaFin);
+                    var asignacionesIniciales = planEditar.getAsignaciones ? planEditar.getAsignaciones() : [];
+                    asignacionesData.length = 0;
+                    asignacionesIniciales.forEach(function(a) { asignacionesData.push(a); });
+                    var maxNum = 0;
+                    asignacionesData.forEach(function(a) {
+                        var m = (a.id || '').match(/asignacion-(\d+)/);
+                        if (m) maxNum = Math.max(maxNum, parseInt(m[1], 10));
+                    });
+                    asignacionIdCounter = maxNum;
+                    if (asignacionesTablaRef && typeof asignacionesTablaRef.refresh === 'function') asignacionesTablaRef.refresh();
+                    if (typeof bindAsignacionesRowsAfterRefresh === 'function') bindAsignacionesRowsAfterRefresh();
+                    if (typeof updateGuardarButtonState === 'function') updateGuardarButtonState();
+                })();
             }
 
             function bindAsignacionesRowsAfterRefresh() {

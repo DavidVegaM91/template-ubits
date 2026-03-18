@@ -109,3 +109,14 @@
     width: 100%;
     min-width: 0;
 }
+
+/* Celda usuario (avatar + nombre) en lista de integrantes y drawer */
+.page-crear-grupo .detalle-plan-usuario-cell {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.page-crear-grupo .detalle-plan-usuario-cell .ubits-body-sm-regular {
+    color: var(--ubits-fg-1-medium);
+}

@@ -2,10 +2,38 @@
    ESTILOS PARA DETALLE DEL PLAN
    ======================================== */
 
-/* Mostrar nombre del plan en el header (entre Atrás y Editar plan) */
+/* Mostrar título "Detalle del plan" en el header */
 .page-detalle-plan .ubits-header-product__product-title h2 {
     display: block;
     margin: 0;
+}
+
+/* Título del plan editable inline (mismo peso y tamaño que crear-grupo / detalle-grupo) */
+.widget-detalle-plan-progress .task-detail-title-editable {
+    font-family: 'Noto Sans', sans-serif;
+    line-height: 1.25;
+    color: var(--ubits-fg-1-high);
+    border: none;
+    background: transparent;
+    width: 100%;
+    min-height: 1.25em;
+    padding: 0;
+    margin: 0;
+    resize: none;
+    overflow: hidden;
+    outline: none;
+    cursor: text;
+    box-sizing: border-box;
+}
+
+.widget-detalle-plan-progress .task-detail-title-editable:hover,
+.widget-detalle-plan-progress .task-detail-title-editable:focus {
+    background: var(--ubits-bg-2);
+    border-radius: var(--border-radius-xs);
+}
+
+.widget-detalle-plan-progress .task-detail-title-editable::placeholder {
+    color: var(--ubits-fg-1-low);
 }
 
 /* Card progreso del plan (sin borde ni padding; el contenedor ya los aporta) */
@@ -23,20 +51,58 @@
     gap: var(--gap-md);
 }
 
-.detalle-plan-progress-card__label {
-    color: var(--ubits-fg-1-high);
+.detalle-plan-progress-card__header .task-detail-title-editable {
+    flex: 1;
+    min-width: 0;
 }
 
 .detalle-plan-progress-card__fechas {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--gap-sm);
     color: var(--ubits-fg-1-medium);
+}
+
+/* Labels "Fecha de inicio:" y "Fecha de finalización:" siempre mismo tamaño y peso (xs + semibold), nunca regular */
+.detalle-plan-progress-card__fechas .detalle-plan-card__meta-label {
+    color: var(--ubits-fg-1-medium);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+}
+
+.detalle-plan-fechas-label-wrap .ubits-body-xs-regular.detalle-plan-card__meta-label {
+    font-weight: var(--font-weight-semibold);
+}
+
+/* Fecha finalización editable (solo planes Vigentes): label + input calendar */
+.detalle-plan-fecha-fin-editable {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+#plan-fecha-fin-wrap {
+    width: 100px;
+    min-width: 100px;
+}
+
+#plan-fecha-fin-wrap .ubits-input {
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
 }
 
 .detalle-plan-progress-card__content {
     display: flex;
     align-items: center;
     gap: var(--gap-md);
+}
+
+.detalle-plan-progress-card__content .detalle-plan-progress-card__label {
+    color: var(--ubits-fg-1-high);
+    flex-shrink: 0;
 }
 
 /* Barra de progreso: mismos estilos que plan-detail (plan-detail-card__bar / bar-fill) */
@@ -334,4 +400,130 @@
 
 .detalle-plan-drawer-cards-grid .course-card-compact {
     min-width: 0;
+}
+
+/* Drawer Agregar asignación (solo colaboradores): panel sin opciones de empresa/grupos/archivo */
+.drawer-usuarios-panel--colaborador {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+}
+
+.drawer-colab-dt-wrapper {
+    width: 100%;
+    min-width: 0;
+}
+
+/* ========================================
+   Drawer "Agregar contenidos" (igual que crear-plan-contenidos)
+   ======================================== */
+#drawer-detalle-plan-agregar-cursos .ubits-drawer-content {
+    min-height: 0;
+}
+#drawer-detalle-plan-agregar-cursos .ubits-drawer-body {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+#drawer-detalle-plan-agregar-cursos .drawer-agregar-cursos {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    gap: var(--gap-lg);
+}
+#drawer-detalle-plan-agregar-cursos .drawer-agregar-cursos--two-cols {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    min-height: 0;
+    gap: var(--gap-xl);
+}
+#drawer-detalle-plan-agregar-cursos .drawer-agregar-cursos__left {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: var(--gap-md);
+    min-height: 0;
+}
+#drawer-detalle-plan-agregar-cursos .drawer-agregar-cursos__right {
+    position: relative;
+    flex: 0 0 370px;
+    min-height: 0;
+}
+#drawer-detalle-plan-agregar-cursos .drawer-agregar-cursos__right .drawer-agregar-cursos__section-title {
+    margin-bottom: var(--gap-sm);
+    flex-shrink: 0;
+}
+#drawer-detalle-plan-agregar-cursos .drawer-agregar-cursos__section-title {
+    display: block;
+    color: var(--ubits-fg-1-high);
+    margin: 0 0 var(--gap-sm) 0;
+}
+#drawer-detalle-plan-agregar-cursos .drawer-cursos-search-row {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+}
+#drawer-detalle-plan-agregar-cursos .drawer-cursos-search-input-wrap {
+    flex: 1;
+    min-width: 0;
+}
+#drawer-detalle-plan-agregar-cursos .drawer-cursos-agregados-content {
+    position: absolute;
+    top: 32px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+#drawer-detalle-plan-agregar-cursos #drawer-cursos-table-wrapper {
+    flex: 1;
+    min-height: 0;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    scrollbar-gutter: stable;
+}
+#drawer-detalle-plan-agregar-cursos .drawer-cursos-empty-state-wrap {
+    display: none;
+    flex: 1;
+    min-height: 120px;
+}
+#drawer-detalle-plan-agregar-cursos .drawer-cursos-resultados-bg {
+    background: var(--ubits-bg-2);
+    padding: var(--padding-md);
+    border-radius: var(--border-radius-sm);
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+}
+#drawer-detalle-plan-agregar-cursos .drawer-cursos-resultados-bg--dos-columnas .drawer-cursos-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--gap-md);
+}
+#drawer-detalle-plan-agregar-cursos .drawer-cursos-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--gap-md);
+}
+#drawer-detalle-plan-agregar-cursos .drawer-cursos-cards-grid .course-card-compact {
+    min-width: 0;
+}
+#drawer-detalle-plan-agregar-cursos .drawer-cursos-resultados-bg .course-card-compact--selected {
+    border: 2px solid var(--ubits-accent-brand);
+    border-radius: var(--border-radius-sm);
+    box-sizing: border-box;
+}
+@media (max-width: 768px) {
+    #drawer-detalle-plan-agregar-cursos .drawer-agregar-cursos--two-cols {
+        flex-direction: column;
+    }
+    #drawer-detalle-plan-agregar-cursos .drawer-agregar-cursos__right {
+        flex: 0 0 auto;
+        min-height: 200px;
+    }
 }

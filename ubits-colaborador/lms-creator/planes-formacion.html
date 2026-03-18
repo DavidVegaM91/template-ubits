@@ -298,7 +298,10 @@
                     var row = e.target.closest('tbody tr[data-id]');
                     if (!row || e.target.closest('.ubits-checkbox') || e.target.closest('input[type="checkbox"]')) return;
                     var planId = row.getAttribute('data-id');
-                    if (planId) window.location.href = 'detalle-plan.html?id=' + planId;
+                    if (!planId) return;
+                    var planRow = planesFormacionData.find(function(p) { return String(p.id) === String(planId); });
+                    var esPlaneadoOProcesando = planRow && (planRow.estado === 'Planeado' || String(planRow.estado).indexOf('Procesando') === 0);
+                    window.location.href = esPlaneadoOProcesando ? 'editar-plan-contenidos.html?id=' + planId : 'detalle-plan.html?id=' + planId;
                 });
             }
             setTimeout(() => {
@@ -327,7 +330,10 @@
                 row.addEventListener('click', function(e) {
                     if (e.target.closest('.ubits-checkbox') || e.target.closest('input[type="checkbox"]')) return;
                     var planId = row.getAttribute('data-plan-id');
-                    if (planId) window.location.href = 'detalle-plan.html?id=' + planId;
+                    if (!planId) return;
+                    var planRow = planesFormacionData.find(function(p) { return String(p.id) === String(planId); });
+                    var esPlaneadoOProcesando = planRow && (planRow.estado === 'Planeado' || String(planRow.estado).indexOf('Procesando') === 0);
+                    window.location.href = esPlaneadoOProcesando ? 'editar-plan-contenidos.html?id=' + planId : 'detalle-plan.html?id=' + planId;
                 });
             });
         });

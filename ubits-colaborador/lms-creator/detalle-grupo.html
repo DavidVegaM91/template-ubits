@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
-    <title>UBITS Playground - LMS Creator - Nuevo grupo</title>
+    <title>UBITS Playground - LMS Creator - Detalle del grupo</title>
     
     <!-- Estilos locales -->
     <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="../../components/button.css">
     <link rel="stylesheet" href="../../components/ia-button.css">
     <link rel="stylesheet" href="../../components/header-product.css">
+    <link rel="stylesheet" href="../../components/avatar.css">
     <link rel="stylesheet" href="../../components/tooltip.css">
     <link rel="stylesheet" href="../../components/input.css">
     <link rel="stylesheet" href="../../components/table.css">
@@ -27,11 +28,12 @@
     <link rel="stylesheet" href="../../components/ubits-data-table.css">
     <link rel="stylesheet" href="../../components/dropdown-menu.css">
     <link rel="stylesheet" href="../../components/drawer.css">
-    <link rel="stylesheet" href="../../components/avatar.css">
+    <link rel="stylesheet" href="../../components/toast.css">
     <link rel="stylesheet" href="./lms-creator.css">
     <link rel="stylesheet" href="./crear-grupo.css">
+    <link rel="stylesheet" href="./detalle-grupo.css">
 </head>
-<body data-theme="light" class="page-crear-grupo">
+<body data-theme="light" class="page-detalle-grupo">
     <div class="dashboard-container">
         <div class="tooltip" id="tooltip"></div>
         
@@ -47,20 +49,18 @@
                     <div class="section-single">
                         <div class="widget-crear-grupo">
                         <div class="crear-grupo-form">
-                            <!-- Nombre del grupo (editable inline, como plan-detail) -->
                             <div class="crear-grupo-form__field crear-grupo-form__field--nombre">
-                                <textarea class="task-detail-title-editable ubits-heading-h1" id="grupo-nombre" placeholder="Nombre del grupo" rows="1" maxlength="250"></textarea>
+                                <textarea class="task-detail-title-editable ubits-heading-h1" id="detalle-grupo-nombre" placeholder="Nombre del grupo" rows="1" maxlength="250"></textarea>
                             </div>
-                            <!-- Descripción (editable inline, como plan-detail) -->
                             <div class="crear-grupo-form__field crear-grupo-form__field--desc">
-                                <textarea class="task-detail-desc-editable ubits-body-sm-regular" id="grupo-descripcion" placeholder="Descripción del grupo" rows="1"></textarea>
+                                <textarea class="task-detail-desc-editable ubits-body-sm-regular" id="detalle-grupo-descripcion" placeholder="Descripción del grupo" rows="1"></textarea>
                             </div>
                         </div>
                         </div>
                     </div>
                     <div class="section-single">
                         <div class="widget-grupos-lista">
-                            <div id="crear-grupo-integrantes-data-table-container" class="crear-grupo-integrantes-tabla"></div>
+                            <div id="detalle-grupo-integrantes-data-table-container" class="crear-grupo-integrantes-tabla"></div>
                         </div>
                     </div>
                 </div>
@@ -71,8 +71,10 @@
     <div id="tab-bar-container"></div>
     <div id="floating-menu-container"></div>
     <div id="profile-menu-container"></div>
+    <div id="ubits-toast-container"></div>
 
     <script src="../../components/tooltip.js"></script>
+    <script src="../../components/toast.js"></script>
     <script src="../tareas/tareas-base-unificada.js"></script>
     <script src="../../components/sidebar.js"></script>
     <script src="../../components/sub-nav.js"></script>
@@ -93,71 +95,65 @@
             loadTabBar('tab-bar-container');
             loadFloatingMenu('floating-menu-container');
             loadProfileMenu('profile-menu-container');
-            
-            if (typeof loadHeaderProduct === 'function') {
-                loadHeaderProduct('header-product-container', {
-                    productName: 'Crear grupo',
-                    breadcrumbItems: [],
-                    backButton: {
-                        onClick: function() {
-                            window.location.href = 'grupos.html';
-                        }
-                    },
-                    secondaryButtons: [
-                        {
-                            text: 'Guardar',
-                            icon: 'fa-floppy-disk',
-                            onClick: function() {
-                                window.location.href = 'grupos.html';
-                            }
-                        }
-                    ]
+
+            var gruposData = [
+                { id: 'g-ventas', nombre: 'Ventas', descripcion: 'Asesoría comercial y cierre de negocios', integrantes: 7 },
+                { id: 'g-instalaciones', nombre: 'Instalaciones', descripcion: 'Instalación de productos en sitio', integrantes: 9 },
+                { id: 'g-reparaciones', nombre: 'Reparaciones', descripcion: 'Servicio técnico y mantenimiento', integrantes: 6 },
+                { id: 'g-atencion', nombre: 'Atención al Cliente', descripcion: 'Soporte y seguimiento postventa', integrantes: 7 },
+                { id: 'g-logistica', nombre: 'Logística', descripcion: 'Bodega, inventarios y entregas', integrantes: 4 },
+                { id: 'g-admin', nombre: 'Administración', descripcion: 'Gestión administrativa y financiera', integrantes: 5 },
+                { id: 'g-marketing', nombre: 'Marketing', descripcion: 'Publicidad, diseño y redes sociales', integrantes: 4 },
+                { id: 'g-rrhh', nombre: 'Recursos Humanos', descripcion: 'Gestión de personas, objetivos, encuestas y nómina', integrantes: 3 },
+                { id: 'g-lideres', nombre: 'Líderes', descripcion: 'Jefes y coordinadores de cada departamento', integrantes: 10 },
+                { id: 'g-operativo', nombre: 'Personal operativo', descripcion: 'Colaboradores que reportan a un líder', integrantes: 41 }
+            ];
+
+            function getUsernameEmpleado(e) {
+                if (e.username) return e.username;
+                var palabras = (e.nombre || '').toLowerCase().split(' ').filter(function(p) { return p.length > 0; });
+                var iniciales = palabras.map(function(p) { return p.charAt(0); }).join('');
+                return iniciales ? iniciales + '@fiqsha.demo' : 'user@fiqsha.demo';
+            }
+
+            function getIntegrantesPorGrupo(grupoId) {
+                var empleados = (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getEmpleadosEjemplo === 'function') ? TAREAS_PLANES_DB.getEmpleadosEjemplo() : [];
+                var areaPorGrupo = {
+                    'g-ventas': 'Ventas',
+                    'g-instalaciones': 'Instalaciones',
+                    'g-reparaciones': 'Reparaciones',
+                    'g-atencion': 'Atención al Cliente',
+                    'g-logistica': 'Logística',
+                    'g-admin': 'Administración',
+                    'g-marketing': 'Marketing',
+                    'g-rrhh': 'Recursos Humanos'
+                };
+                if (grupoId === 'g-lideres') {
+                    return empleados.filter(function(e) { return e.esJefe === true; }).map(function(e) {
+                        return { id: e.id || e.idColaborador, nombre: e.nombre || '', correo: getUsernameEmpleado(e), area: e.area || '', avatar: e.avatar || null };
+                    });
+                }
+                if (grupoId === 'g-operativo') {
+                    return empleados.filter(function(e) { return e.esJefe === false; }).map(function(e) {
+                        return { id: e.id || e.idColaborador, nombre: e.nombre || '', correo: getUsernameEmpleado(e), area: e.area || '', avatar: e.avatar || null };
+                    });
+                }
+                var area = areaPorGrupo[grupoId];
+                if (!area) return [];
+                return empleados.filter(function(e) { return (e.area || '') === area; }).map(function(e) {
+                    return { id: e.id || e.idColaborador, nombre: e.nombre || '', correo: getUsernameEmpleado(e), area: e.area || '', avatar: e.avatar || null };
                 });
             }
 
-            setTimeout(() => {
-                var tab = document.querySelector('.nav-tab[data-tab="grupos"]');
-                if (tab) {
-                    document.querySelectorAll('.nav-tab, .hamburger-item').forEach(function(item) { item.classList.remove('active'); });
-                    tab.classList.add('active');
-                }
-                var sidebarBtn = document.querySelector('.nav-button[data-section="creator"]');
-                if (sidebarBtn) {
-                    document.querySelectorAll('.nav-button').forEach(function(btn) { btn.classList.remove('active'); });
-                    sidebarBtn.classList.add('active');
-                }
-                var modulosTab = document.querySelector('.tab-bar-item[data-tab="modulos"]');
-                if (modulosTab) {
-                    document.querySelectorAll('.tab-bar-item').forEach(function(item) { item.classList.remove('active'); });
-                    modulosTab.classList.add('active');
-                }
-                if (typeof setActiveAccordionLink === 'function') {
-                    setActiveAccordionLink('grupos');
-                }
-            }, 200);
-
-            // Auto-resize textareas nombre y descripción (inline como plan-detail)
-            setTimeout(function() {
-                var nombreTa = document.getElementById('grupo-nombre');
-                if (nombreTa) {
-                    nombreTa.addEventListener('input', function() {
-                        this.style.height = 'auto';
-                        this.style.height = Math.min(this.scrollHeight, 80) + 'px';
-                    });
-                }
-                var descTa = document.getElementById('grupo-descripcion');
-                if (descTa) {
-                    descTa.addEventListener('input', function() {
-                        this.style.height = 'auto';
-                        this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-                    });
-                }
-            }, 0);
-
-            // Lista de integrantes: data-table vacía con título, buscador y botón Agregar integrantes
-            var integrantesData = [];
+            var grupoId = (function() {
+                var params = new URLSearchParams(window.location.search);
+                return params.get('id') || '';
+            })();
+            var grupo = gruposData.filter(function(g) { return g.id === grupoId; })[0];
+            var integrantesData = grupoId ? getIntegrantesPorGrupo(grupoId) : [];
             var integrantesTablaRef = null;
-            function escapeHtmlGrupo(t) {
+
+            function escapeHtmlDetalle(t) {
                 if (t == null) return '';
                 var d = document.createElement('div');
                 d.textContent = t;
@@ -167,25 +163,44 @@
                 var avatarUrl = (row.avatar && String(row.avatar).trim()) ? String(row.avatar).replace(/"/g, '&quot;') : '';
                 var usuarioCell = '<div class="detalle-plan-usuario-cell">' +
                     (avatarUrl
-                        ? '<span class="ubits-avatar ubits-avatar--sm"><img src="' + avatarUrl + '" alt="' + escapeHtmlGrupo(row.nombre) + '" class="ubits-avatar__img"></span>'
+                        ? '<span class="ubits-avatar ubits-avatar--sm"><img src="' + avatarUrl + '" alt="' + escapeHtmlDetalle(row.nombre) + '" class="ubits-avatar__img"></span>'
                         : '<span class="ubits-avatar ubits-avatar--sm"><span class="ubits-avatar__fallback"><i class="far fa-user"></i></span></span>') +
-                    '<span class="ubits-body-sm-regular">' + escapeHtmlGrupo(row.nombre) + '</span></div>';
+                    '<span class="ubits-body-sm-regular">' + escapeHtmlDetalle(row.nombre) + '</span></div>';
                 return '<td data-col="nombre">' + usuarioCell + '</td>' +
-                    '<td data-col="correo"><span class="ubits-body-sm-regular">' + escapeHtmlGrupo(row.correo) + '</span></td>' +
-                    '<td data-col="area"><span class="ubits-body-sm-regular">' + escapeHtmlGrupo(row.area || '') + '</span></td>';
+                    '<td data-col="correo"><span class="ubits-body-sm-regular">' + escapeHtmlDetalle(row.correo) + '</span></td>' +
+                    '<td data-col="area"><span class="ubits-body-sm-regular">' + escapeHtmlDetalle(row.area || '') + '</span></td>';
             }
 
-            function getUsernameEmpleado(e) {
-                if (e.username) return e.username;
-                var palabras = (e.nombre || '').toLowerCase().split(' ').filter(function(p) { return p.length > 0; });
-                var iniciales = palabras.map(function(p) { return p.charAt(0); }).join('');
-                return iniciales ? iniciales + '@fiqsha.demo' : 'user@fiqsha.demo';
+            if (typeof loadHeaderProduct === 'function') {
+                loadHeaderProduct('header-product-container', {
+                    productName: 'Detalle del grupo',
+                    breadcrumbItems: [],
+                    backButton: {
+                        text: 'Volver',
+                        onClick: function() { window.location.href = 'grupos.html'; }
+                    },
+                    secondaryButtons: [
+                        {
+                            text: 'Guardar',
+                            icon: 'fa-floppy-disk',
+                            onClick: function() {
+                                if (typeof showToast === 'function') showToast('success', 'Cambios guardados correctamente', { containerId: 'ubits-toast-container' });
+                                window.location.href = 'grupos.html';
+                            }
+                        }
+                    ]
+                });
             }
 
-            var isDrawerGestionar = false;
+            var nombreEl = document.getElementById('detalle-grupo-nombre');
+            var descEl = document.getElementById('detalle-grupo-descripcion');
+            if (grupo) {
+                if (nombreEl) nombreEl.value = grupo.nombre || '';
+                if (descEl) descEl.value = grupo.descripcion || '';
+            }
 
             function updateIntegrantesPrimaryButton() {
-                var cont = document.getElementById('crear-grupo-integrantes-data-table-container');
+                var cont = document.getElementById('detalle-grupo-integrantes-data-table-container');
                 if (!cont) return;
                 var btn = cont.querySelector('.ubits-dt-primary-btn');
                 if (!btn) return;
@@ -198,7 +213,7 @@
             }
 
             function abrirDrawerAgregarIntegrantes() {
-                isDrawerGestionar = integrantesData.length > 0;
+                var isDrawerGestionar = integrantesData.length > 0;
                 var tituloDrawer = isDrawerGestionar ? 'Gestionar integrantes' : 'Agregar integrantes';
                 var labelFooter = isDrawerGestionar ? 'Guardar' : 'Agregar';
                 var bodyHtml = '<div class="drawer-usuarios-panel drawer-usuarios-panel--colaborador" style="display:block">' +
@@ -206,7 +221,6 @@
                     '</div>';
                 var footerHtml = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="drawer-integrantes-cancel"><span class="ubits-body-sm-regular">Cancelar</span></button>' +
                     '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="drawer-integrantes-agregar"><span class="ubits-body-sm-regular">' + labelFooter + '</span></button>';
-
                 if (typeof openDrawer === 'function') {
                     var overlay = openDrawer({
                         overlayId: 'drawer-agregar-integrantes',
@@ -230,7 +244,6 @@
                 });
                 overlay._empleadosDrawer = empleadosDrawer;
                 overlay._isGestionar = isGestionar;
-
                 var container = overlay.querySelector('#drawer-integrantes-colab-data-table-container');
                 if (container && typeof createUbitsDataTable === 'function') {
                     function escapeDrawerHtml(t) { if (t == null) return ''; var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
@@ -269,7 +282,6 @@
                     });
                     overlay._drawerIntegrantesTablaRef = drawerTablaRef;
                 }
-
                 overlay.querySelector('#drawer-integrantes-cancel').addEventListener('click', function() {
                     if (typeof closeDrawer === 'function') closeDrawer('drawer-agregar-integrantes');
                 });
@@ -299,14 +311,13 @@
                     updateIntegrantesPrimaryButton();
                     if (typeof closeDrawer === 'function') closeDrawer('drawer-agregar-integrantes');
                 });
-
                 if (container) container.style.flexDirection = 'column';
             }
 
             if (typeof createUbitsDataTable === 'function') {
                 integrantesTablaRef = createUbitsDataTable({
-                    containerId: 'crear-grupo-integrantes-data-table-container',
-                    tableId: 'crear-grupo-integrantes-table',
+                    containerId: 'detalle-grupo-integrantes-data-table-container',
+                    tableId: 'detalle-grupo-integrantes-table',
                     title: 'Lista de integrantes',
                     columns: [
                         { id: 'nombre', label: 'Nombre del usuario', sortable: true },
@@ -318,7 +329,7 @@
                     buildRowHtml: buildIntegranteRowHtml,
                     features: { checkboxes: false, search: true, resultsCount: true },
                     emptyState: {
-                        message: 'Aún no hay integrantes',
+                        message: 'No hay integrantes en este grupo',
                         icon: 'far fa-user-plus',
                         description: 'Agrega personas al grupo para gestionar su acceso y permisos.'
                     },
@@ -331,6 +342,27 @@
                 });
                 updateIntegrantesPrimaryButton();
             }
+
+            setTimeout(function() {
+                var nombreTa = document.getElementById('detalle-grupo-nombre');
+                if (nombreTa) {
+                    nombreTa.addEventListener('input', function() {
+                        this.style.height = 'auto';
+                        this.style.height = Math.min(this.scrollHeight, 80) + 'px';
+                    });
+                }
+                var descTa = document.getElementById('detalle-grupo-descripcion');
+                if (descTa) {
+                    descTa.addEventListener('input', function() {
+                        this.style.height = 'auto';
+                        this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+                    });
+                }
+            }, 0);
+
+            setTimeout(function() {
+                if (typeof setActiveAccordionLink === 'function') setActiveAccordionLink('grupos');
+            }, 200);
         });
     </script>
 </body>

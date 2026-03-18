@@ -208,7 +208,7 @@
                     var row = e.target.closest('tbody tr[data-id]');
                     if (!row || e.target.closest('.ubits-checkbox') || e.target.closest('input[type="checkbox"]')) return;
                     var grupoId = row.getAttribute('data-id');
-                    if (grupoId) window.location.href = 'crear-grupo.html?id=' + grupoId;
+                    if (grupoId) window.location.href = 'detalle-grupo.html?id=' + grupoId;
                 });
             }
 

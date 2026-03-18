@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="../../components/table.css">
     <link rel="stylesheet" href="../../components/checkbox.css">
     <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/calendar.css">
     <link rel="stylesheet" href="../../components/drawer.css">
     <link rel="stylesheet" href="../../components/toast.css">
     <link rel="stylesheet" href="../../components/modal.css">
@@ -51,14 +52,19 @@
                         <div class="widget-detalle-plan-progress">
                         <div class="detalle-plan-progress-card">
                             <div class="detalle-plan-progress-card__header">
-                                <span class="ubits-body-sm-semibold detalle-plan-progress-card__label">Progreso del plan</span>
+                                <textarea class="task-detail-title-editable ubits-heading-h1" id="plan-nombre" placeholder="Nombre del plan" rows="1" maxlength="250"></textarea>
                                 <span id="plan-estado-container"></span>
                             </div>
                             <div class="detalle-plan-progress-card__fechas">
-                                <span class="ubits-body-xs-regular">Inicio: <span id="plan-fecha-inicio">1 ene 2025</span></span>
-                                <span class="ubits-body-xs-regular">Cierre: <span id="plan-fecha-fin">31 mar 2025</span></span>
+                                <span class="detalle-plan-fechas-label-wrap"><span class="ubits-body-xs-regular detalle-plan-card__meta-label">Fecha de inicio:</span> <span id="plan-fecha-inicio" class="ubits-body-xs-regular">1 ene 2025</span></span>
+                                <span class="detalle-plan-fecha-fin-static detalle-plan-fechas-label-wrap" id="plan-fecha-fin-static-wrap"><span class="ubits-body-xs-regular detalle-plan-card__meta-label">Fecha de finalización:</span> <span id="plan-fecha-fin" class="ubits-body-xs-regular">31 mar 2025</span></span>
+                                <div class="detalle-plan-fecha-fin-editable" id="plan-fecha-fin-editable-wrap" style="display: none;">
+                                    <span class="ubits-body-xs-regular detalle-plan-card__meta-label">Fecha de finalización:</span>
+                                    <div id="plan-fecha-fin-wrap"></div>
+                                </div>
                             </div>
                             <div class="detalle-plan-progress-card__content">
+                                <span class="ubits-body-sm-semibold detalle-plan-progress-card__label">Progreso del plan</span>
                                 <div class="detalle-plan-progress-card__bar"><div class="detalle-plan-progress-card__bar-fill" id="plan-progress-fill" style="width: 65%"></div></div>
                                 <span class="detalle-plan-progress-card__percent" id="plan-progress-value">65%</span>
                             </div>
@@ -92,6 +98,7 @@
     <script src="../../components/profile-menu.js"></script>
     <script src="../../components/header-product.js"></script>
     <script src="../../components/input.js"></script>
+    <script src="../../components/calendar.js"></script>
     <script src="../../components/toast.js"></script>
     <script src="../../components/modal.js"></script>
     <script src="../../components/dropdown-menu.js"></script>
@@ -99,6 +106,7 @@
     <script src="../../components/ubits-data-table.js"></script>
     <script src="../../components/drawer.js"></script>
     <script src="../../components/card-content-compact.js"></script>
+    <script src="./catalogo-cursos-drawer-data.js"></script>
     <script src="../tareas/tareas-base-unificada.js"></script>
     <script src="../../script.js"></script>
     <script src="./lms-creator-tables.js"></script>
@@ -144,7 +152,7 @@
 
             if (typeof loadHeaderProduct === 'function') {
                 loadHeaderProduct('header-product-container', {
-                    productName: plan.nombre,
+                    productName: 'Detalle del plan',
                     breadcrumbItems: [],
                     backButton: {
                         onClick: function() { window.location.href = 'planes-formacion.html'; }
@@ -152,11 +160,56 @@
                 });
             }
 
+            var planNombreEl = document.getElementById('plan-nombre');
+            if (planNombreEl) {
+                planNombreEl.value = plan.nombre || '';
+            }
+
             document.getElementById('plan-progress-fill').style.width = plan.progreso + '%';
             document.getElementById('plan-progress-value').textContent = plan.progreso + '%';
             document.getElementById('plan-fecha-inicio').textContent = (typeof formatDateDDMmmAAAA === 'function' ? formatDateDDMmmAAAA(plan.fechaInicio) : plan.fechaInicio);
-            document.getElementById('plan-fecha-fin').textContent = (typeof formatDateDDMmmAAAA === 'function' ? formatDateDDMmmAAAA(plan.fechaFin) : plan.fechaFin);
+            var staticWrap = document.getElementById('plan-fecha-fin-static-wrap');
+            var editableWrap = document.getElementById('plan-fecha-fin-editable-wrap');
+            var fechaFinSpan = document.getElementById('plan-fecha-fin');
+            if (plan.estado === 'Vigente') {
+                if (staticWrap) staticWrap.style.display = 'none';
+                if (editableWrap) editableWrap.style.display = 'flex';
+                var finWrap = document.getElementById('plan-fecha-fin-wrap');
+                if (finWrap && typeof createInput === 'function') {
+                    finWrap.innerHTML = '';
+                    createInput({
+                        containerId: 'plan-fecha-fin-wrap',
+                        type: 'calendar',
+                        size: 'xs',
+                        showLabel: false,
+                        placeholder: 'Selecciona fecha',
+                        value: plan.fechaFin || '',
+                        onChange: function(dateStr) {
+                            if (dateStr) {
+                                plan.fechaFin = dateStr;
+                                if (typeof showToast === 'function') showToast('success', 'Fecha de finalización actualizada');
+                            }
+                        }
+                    });
+                    var dateInputEl = document.querySelector('#plan-fecha-fin-wrap .ubits-input');
+                    if (dateInputEl) dateInputEl.setAttribute('aria-label', 'Fecha de finalización del plan');
+                }
+            } else {
+                if (staticWrap) staticWrap.style.display = '';
+                if (editableWrap) editableWrap.style.display = 'none';
+                if (fechaFinSpan) fechaFinSpan.textContent = (typeof formatDateDDMmmAAAA === 'function' ? formatDateDDMmmAAAA(plan.fechaFin) : plan.fechaFin);
+            }
             document.title = 'UBITS Playground - LMS Creator - ' + plan.nombre;
+
+            setTimeout(function() {
+                var nombreTa = document.getElementById('plan-nombre');
+                if (nombreTa) {
+                    nombreTa.addEventListener('input', function() {
+                        this.style.height = 'auto';
+                        this.style.height = Math.min(this.scrollHeight, 80) + 'px';
+                    });
+                }
+            }, 0);
 
             if (typeof getModalHtml === 'function') {
                 var deleteBody = '<p class="ubits-body-md-regular">¿Estás seguro de que deseas eliminar <strong id="asignaciones-delete-count">0</strong> asignación(es) del plan?</p><p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Esta acción no se puede deshacer.</p><div style="margin-top: var(--gap-lg);"><label class="ubits-body-sm-regular" for="asignaciones-delete-type-input">Escriba <strong>eliminar</strong> para habilitar el botón:</label><input type="text" id="asignaciones-delete-type-input" class="ubits-input" placeholder="Escriba la palabra de confirmación" autocomplete="off" style="margin-top: var(--gap-sm); width: 100%; padding: var(--padding-sm) var(--padding-md); border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-sm); font-size: var(--font-size-sm); color: var(--ubits-fg-1-high); box-sizing: border-box;"></div>';
@@ -164,77 +217,32 @@
                 document.getElementById('asignaciones-modals-container').innerHTML = getModalHtml({ overlayId: 'asignaciones-delete-overlay', title: 'Confirmar eliminación', bodyHtml: deleteBody, footerHtml: deleteFooter, size: 'sm', closeButtonId: 'asignaciones-delete-close' });
             }
 
-            // Contenidos por usuario: cada item tiene progress (0-100); progreso fila = promedio. Plan 3 y 4 tienen datos propios para coincidir con tabla y barra del plan.
-            var contenidoPorUsuarioBase = {
-                '1': [
-                    { id: 'c1', title: 'Design Thinking: bases y aplicación', duration: '60 min', progress: 100, status: 'completed' },
-                    { id: 'c2', title: 'Comunicación efectiva', duration: '15 min', progress: 100, status: 'completed' },
-                    { id: 'c3', title: 'Liderazgo situacional', duration: '90 min', progress: 80, status: 'progress' },
-                    { id: 'c4', title: 'Gestión del tiempo', duration: '20 min', progress: 40, status: 'progress' },
-                    { id: 'c5', title: 'Innovación en equipos', duration: '45 min', progress: 0, status: 'default' }
-                ],
-                '2': [
-                    { id: 'c1', title: 'Design Thinking: bases y aplicación', duration: '60 min', progress: 60, status: 'progress' },
-                    { id: 'c2', title: 'Comunicación efectiva', duration: '15 min', progress: 100, status: 'completed' },
-                    { id: 'c3', title: 'Liderazgo situacional', duration: '90 min', progress: 0, status: 'default' }
-                ],
-                '3': [
-                    { id: 'c1', title: 'Design Thinking: bases y aplicación', duration: '60 min', progress: 100, status: 'completed' },
-                    { id: 'c2', title: 'Comunicación efectiva', duration: '15 min', progress: 100, status: 'completed' },
-                    { id: 'c3', title: 'Liderazgo situacional', duration: '90 min', progress: 0, status: 'default' }
-                ],
-                '4': [
-                    { id: 'c1', title: 'Design Thinking: bases y aplicación', duration: '60 min', progress: 20, status: 'progress' },
-                    { id: 'c2', title: 'Comunicación efectiva', duration: '15 min', progress: 0, status: 'default' },
-                    { id: 'c3', title: 'Liderazgo situacional', duration: '90 min', progress: 0, status: 'default' }
-                ]
-            };
-            // Plan 3 (Cursos cumplimiento Q1): progreso por estudiante 60%, 65%, 70%, 65% → total plan 65%
-            var contenidoPorUsuarioPlan3 = {
-                '1': [
-                    { id: 'c1', title: 'Design Thinking: bases y aplicación', duration: '60 min', progress: 100, status: 'completed' },
-                    { id: 'c2', title: 'Comunicación efectiva', duration: '15 min', progress: 50, status: 'progress' },
-                    { id: 'c3', title: 'Liderazgo situacional', duration: '90 min', progress: 30, status: 'progress' }
-                ],
-                '2': [
-                    { id: 'c1', title: 'Design Thinking: bases y aplicación', duration: '60 min', progress: 100, status: 'completed' },
-                    { id: 'c2', title: 'Comunicación efectiva', duration: '15 min', progress: 80, status: 'progress' },
-                    { id: 'c3', title: 'Liderazgo situacional', duration: '90 min', progress: 15, status: 'progress' }
-                ],
-                '3': [
-                    { id: 'c1', title: 'Design Thinking: bases y aplicación', duration: '60 min', progress: 100, status: 'completed' },
-                    { id: 'c2', title: 'Comunicación efectiva', duration: '15 min', progress: 100, status: 'completed' },
-                    { id: 'c3', title: 'Liderazgo situacional', duration: '90 min', progress: 10, status: 'progress' }
-                ],
-                '4': [
-                    { id: 'c1', title: 'Design Thinking: bases y aplicación', duration: '60 min', progress: 100, status: 'completed' },
-                    { id: 'c2', title: 'Comunicación efectiva', duration: '15 min', progress: 50, status: 'progress' },
-                    { id: 'c3', title: 'Liderazgo situacional', duration: '90 min', progress: 45, status: 'progress' }
-                ]
-            };
-            // Plan 4 (Evaluación técnica 2025): progreso por estudiante 82%, 84%, 86%, 88% → total plan 85%
-            var contenidoPorUsuarioPlan4 = {
-                '1': [
-                    { id: 'c1', title: 'Design Thinking: bases y aplicación', duration: '60 min', progress: 82, status: 'progress' },
-                    { id: 'c2', title: 'Comunicación efectiva', duration: '15 min', progress: 82, status: 'progress' },
-                    { id: 'c3', title: 'Liderazgo situacional', duration: '90 min', progress: 82, status: 'progress' }
-                ],
-                '2': [
-                    { id: 'c1', title: 'Design Thinking: bases y aplicación', duration: '60 min', progress: 84, status: 'progress' },
-                    { id: 'c2', title: 'Comunicación efectiva', duration: '15 min', progress: 84, status: 'progress' },
-                    { id: 'c3', title: 'Liderazgo situacional', duration: '90 min', progress: 84, status: 'progress' }
-                ],
-                '3': [
-                    { id: 'c1', title: 'Design Thinking: bases y aplicación', duration: '60 min', progress: 86, status: 'progress' },
-                    { id: 'c2', title: 'Comunicación efectiva', duration: '15 min', progress: 86, status: 'progress' },
-                    { id: 'c3', title: 'Liderazgo situacional', duration: '90 min', progress: 86, status: 'progress' }
-                ],
-                '4': [
-                    { id: 'c1', title: 'Design Thinking: bases y aplicación', duration: '60 min', progress: 88, status: 'progress' },
-                    { id: 'c2', title: 'Comunicación efectiva', duration: '15 min', progress: 88, status: 'progress' },
-                    { id: 'c3', title: 'Liderazgo situacional', duration: '90 min', progress: 88, status: 'progress' }
-                ]
-            };
+            // Contenidos por usuario: construidos desde CATALOGO_CURSOS_DRAWER para que coincidan con "Buscar y agregar contenidos". Cada item tiene progress y status.
+            var catalogDrawer = window.CATALOGO_CURSOS_DRAWER || [];
+            function buildContenidoFromCatalog(indicesWithProgress) {
+                var list = [];
+                indicesWithProgress.forEach(function(x) {
+                    var c = catalogDrawer[x.i];
+                    if (!c) return;
+                    var copy = {};
+                    for (var k in c) copy[k] = c[k];
+                    copy.progress = x.p;
+                    copy.status = x.s;
+                    list.push(copy);
+                });
+                return list;
+            }
+            var baseIndices = { '1': [{i:0,p:100,s:'completed'},{i:1,p:100,s:'completed'},{i:2,p:80,s:'progress'},{i:3,p:40,s:'progress'},{i:4,p:0,s:'default'}], '2': [{i:5,p:60,s:'progress'},{i:6,p:100,s:'completed'},{i:7,p:0,s:'default'}], '3': [{i:8,p:100,s:'completed'},{i:9,p:100,s:'completed'},{i:10,p:0,s:'default'}], '4': [{i:11,p:20,s:'progress'},{i:12,p:0,s:'default'},{i:13,p:0,s:'default'}] };
+            var plan3Indices = { '1': [{i:0,p:100,s:'completed'},{i:1,p:50,s:'progress'},{i:2,p:30,s:'progress'}], '2': [{i:3,p:100,s:'completed'},{i:4,p:80,s:'progress'},{i:5,p:15,s:'progress'}], '3': [{i:6,p:100,s:'completed'},{i:7,p:100,s:'completed'},{i:8,p:10,s:'progress'}], '4': [{i:9,p:100,s:'completed'},{i:10,p:50,s:'progress'},{i:11,p:45,s:'progress'}] };
+            var plan4Indices = { '1': [{i:0,p:82,s:'progress'},{i:1,p:82,s:'progress'},{i:2,p:82,s:'progress'}], '2': [{i:3,p:84,s:'progress'},{i:4,p:84,s:'progress'},{i:5,p:84,s:'progress'}], '3': [{i:6,p:86,s:'progress'},{i:7,p:86,s:'progress'},{i:8,p:86,s:'progress'}], '4': [{i:9,p:88,s:'progress'},{i:10,p:88,s:'progress'},{i:11,p:88,s:'progress'}] };
+            var contenidoPorUsuarioBase = {};
+            var contenidoPorUsuarioPlan3 = {};
+            var contenidoPorUsuarioPlan4 = {};
+            ['1','2','3','4'].forEach(function(rid) {
+                contenidoPorUsuarioBase[rid] = buildContenidoFromCatalog(baseIndices[rid] || []);
+                contenidoPorUsuarioPlan3[rid] = buildContenidoFromCatalog(plan3Indices[rid] || []);
+                contenidoPorUsuarioPlan4[rid] = buildContenidoFromCatalog(plan4Indices[rid] || []);
+            });
             var contenidoPorUsuario = (planId === '3') ? contenidoPorUsuarioPlan3 : (planId === '4') ? contenidoPorUsuarioPlan4 : contenidoPorUsuarioBase;
             function progresoEstudiante(rowId) {
                 var list = contenidoPorUsuario[rowId] || [];
@@ -255,12 +263,38 @@
 
             var empleadosEjemplo = (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getEmpleadosEjemplo === 'function') ? TAREAS_PLANES_DB.getEmpleadosEjemplo() : [];
             var empleadosSinCEO = empleadosEjemplo.filter(function(e) { return !e.esGerenteGeneral; });
+            function parseDateDDMMYYYY(str) {
+                if (!str || typeof str !== 'string') return null;
+                var parts = str.trim().split(/[\/\-]/);
+                if (parts.length < 3) return null;
+                var d = parseInt(parts[0], 10), m = parseInt(parts[1], 10) - 1, y = parseInt(parts[2], 10);
+                if (parts[0].length === 4) { y = parseInt(parts[0], 10); m = parseInt(parts[1], 10) - 1; d = parseInt(parts[2], 10); }
+                if (isNaN(d) || isNaN(m) || isNaN(y)) return null;
+                var date = new Date(y, m, d);
+                return isNaN(date.getTime()) ? null : date;
+            }
+            function randomDateInRangeDDMMYYYY(fechaInicio, fechaFin) {
+                var start = parseDateDDMMYYYY(fechaInicio);
+                var end = parseDateDDMMYYYY(fechaFin);
+                if (!start || !end || end < start) return null;
+                var startTs = start.getTime();
+                var endTs = end.getTime();
+                var randomTs = startTs + Math.floor(Math.random() * (endTs - startTs + 1));
+                var d = new Date(randomTs);
+                var day = ('0' + d.getDate()).slice(-2);
+                var month = ('0' + (d.getMonth() + 1)).slice(-2);
+                return day + '/' + month + '/' + d.getFullYear();
+            }
             var asignacionesDetalleData = [
-                { id: '1', usuario: 'María García López', avatar: null, ultimoAcceso: 'Hace 2 horas', ultimaFechaProgreso: '28/02/2025', progreso: 0 },
-                { id: '2', usuario: 'Carlos Rodríguez', avatar: null, ultimoAcceso: 'Hace 1 día', ultimaFechaProgreso: '27/02/2025', progreso: 0 },
-                { id: '3', usuario: 'Ana Martínez', avatar: null, ultimoAcceso: 'Hace 3 días', ultimaFechaProgreso: '25/02/2025', progreso: 0 },
-                { id: '4', usuario: 'Pedro Sánchez', avatar: null, ultimoAcceso: 'Hace 5 días', ultimaFechaProgreso: '23/02/2025', progreso: 0 }
+                { id: '1', usuario: 'María García López', avatar: null, ultimoAcceso: 'Hace 2 horas', ultimaFechaProgreso: null, progreso: 0 },
+                { id: '2', usuario: 'Carlos Rodríguez', avatar: null, ultimoAcceso: 'Hace 1 día', ultimaFechaProgreso: null, progreso: 0 },
+                { id: '3', usuario: 'Ana Martínez', avatar: null, ultimoAcceso: 'Hace 3 días', ultimaFechaProgreso: null, progreso: 0 },
+                { id: '4', usuario: 'Pedro Sánchez', avatar: null, ultimoAcceso: 'Hace 5 días', ultimaFechaProgreso: null, progreso: 0 }
             ];
+            asignacionesDetalleData.forEach(function(r) {
+                var fecha = randomDateInRangeDDMMYYYY(plan.fechaInicio, plan.fechaFin);
+                r.ultimaFechaProgreso = fecha || '-';
+            });
             if (empleadosSinCEO.length >= 4) {
                 asignacionesDetalleData[0].usuario = empleadosSinCEO[0].nombre; asignacionesDetalleData[0].avatar = empleadosSinCEO[0].avatar || null;
                 asignacionesDetalleData[1].usuario = empleadosSinCEO[1].nombre; asignacionesDetalleData[1].avatar = empleadosSinCEO[1].avatar || null;
@@ -303,8 +337,134 @@
                     '<td data-col="progreso"><div class="ubits-table__cell-progress"><div class="ubits-table__progress-bar"><div class="ubits-table__progress-bar-fill" style="width:' + progresoMostrar + '%"></div></div><span class="ubits-body-sm-regular">' + progresoMostrar + '%</span></div></td>';
             }
 
-            if (typeof createUbitsDataTable === 'function') {
-                asignacionesDetalleTablaRef = createUbitsDataTable({
+            function updatePlanProgressBar() {
+                var total = planSinProgreso() ? 0 : progresoTotalPlan();
+                var fillEl = document.getElementById('plan-progress-fill');
+                var valueEl = document.getElementById('plan-progress-value');
+                if (fillEl) fillEl.style.width = total + '%';
+                if (valueEl) valueEl.textContent = total + '%';
+            }
+
+            function getUsernameEmpleado(e) {
+                if (e.username) return e.username;
+                var palabras = (e.nombre || '').toLowerCase().split(' ').filter(function(p) { return p.length > 0; });
+                var iniciales = palabras.map(function(p) { return p.charAt(0); }).join('');
+                return iniciales ? iniciales + '@fiqsha.demo' : 'user@fiqsha.demo';
+            }
+
+            function abrirDrawerAgregarAsignacionVigente() {
+                var bodyHtml = '<div class="drawer-usuarios-panel drawer-usuarios-panel--colaborador" style="display:block">' +
+                    '<div id="drawer-detalle-plan-colab-data-table-container" class="drawer-colab-dt-wrapper"></div>' +
+                    '</div>';
+                var footerHtml = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="drawer-detalle-plan-colab-cancel"><span class="ubits-body-sm-regular">Cancelar</span></button>' +
+                    '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="drawer-detalle-plan-colab-agregar"><span class="ubits-body-sm-regular">Agregar</span></button>';
+                if (typeof openDrawer === 'function') {
+                    var overlay = openDrawer({
+                        overlayId: 'drawer-detalle-plan-agregar-asignacion',
+                        title: 'Agregar asignación',
+                        bodyHtml: bodyHtml,
+                        footerHtml: footerHtml,
+                        size: 'lg',
+                        onClose: function() {}
+                    });
+                    initDrawerDetallePlanColab(overlay);
+                }
+            }
+
+            function initDrawerDetallePlanColab(overlay) {
+                if (!overlay) return;
+                var empleadosRaw = (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getEmpleadosEjemplo === 'function') ? TAREAS_PLANES_DB.getEmpleadosEjemplo() : [];
+                var yaAsignadosById = {};
+                var yaAsignadosByNombre = {};
+                asignacionesDetalleData.forEach(function(r) {
+                    yaAsignadosById[String(r.id)] = true;
+                    var nom = String(r.usuario || '').trim().toLowerCase();
+                    if (nom) yaAsignadosByNombre[nom] = true;
+                });
+                var empleadosDrawer = empleadosRaw.map(function(e, idx) {
+                    var id = e.id || e.idColaborador || ('E' + (idx + 1));
+                    return { id: id, username: getUsernameEmpleado(e), nombre: (e.nombre || '').trim(), correo: getUsernameEmpleado(e), area: (e.area || '').trim(), lider: (e.jefe || '').trim(), avatar: e.avatar || null };
+                }).filter(function(e) {
+                    if (yaAsignadosById[String(e.id)]) return false;
+                    if (yaAsignadosByNombre[String((e.nombre || '').trim().toLowerCase())]) return false;
+                    return true;
+                });
+
+                var container = overlay.querySelector('#drawer-detalle-plan-colab-data-table-container');
+                if (container && typeof createUbitsDataTable === 'function') {
+                    function escapeD(t) { if (t == null) return ''; var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+                    function buildDrawerColabRowHtml(row) {
+                        var avatarUrl = (row.avatar && String(row.avatar).trim()) ? String(row.avatar).replace(/"/g, '&quot;') : '';
+                        var usuarioCell = '<div class="detalle-plan-usuario-cell">' +
+                            (avatarUrl
+                                ? '<span class="ubits-avatar ubits-avatar--sm"><img src="' + avatarUrl + '" alt="' + escapeD(row.nombre) + '" class="ubits-avatar__img"></span>'
+                                : '<span class="ubits-avatar ubits-avatar--sm"><span class="ubits-avatar__fallback"><i class="far fa-user"></i></span></span>') +
+                            '<span class="ubits-body-sm-regular">' + escapeD(row.nombre) + '</span></div>';
+                        return '<td data-col="username"><span class="ubits-body-sm-regular">' + escapeD(row.username) + '</span></td>' +
+                            '<td data-col="nombre">' + usuarioCell + '</td>' +
+                            '<td data-col="correo"><span class="ubits-body-sm-regular">' + escapeD(row.correo) + '</span></td>' +
+                            '<td data-col="area"><span class="ubits-body-sm-regular">' + escapeD(row.area) + '</span></td>' +
+                            '<td data-col="lider"><span class="ubits-body-sm-regular">' + escapeD(row.lider) + '</span></td>';
+                    }
+                    overlay._drawerColabTablaRef = createUbitsDataTable({
+                        containerId: 'drawer-detalle-plan-colab-data-table-container',
+                        tableId: 'drawer-detalle-plan-colab-table',
+                        title: 'Lista de colaboradores',
+                        columns: [
+                            { id: 'username', label: 'Username', filterable: true },
+                            { id: 'nombre', label: 'Nombre del usuario', filterable: true },
+                            { id: 'correo', label: 'Correo electrónico', filterable: true },
+                            { id: 'area', label: 'Área', filterable: true },
+                            { id: 'lider', label: 'Líder', filterable: true }
+                        ],
+                        getData: function() { return empleadosDrawer; },
+                        rowIdField: 'id',
+                        buildRowHtml: buildDrawerColabRowHtml,
+                        features: { checkboxes: true, search: true, filters: true, verSeleccionados: true, resultsCount: true },
+                        emptyState: { message: 'No hay colaboradores disponibles para agregar', icon: 'far fa-user' },
+                        emptySearchState: { message: 'No se encontraron resultados', description: 'Intenta ajustar tu búsqueda.', buttonText: 'Limpiar búsqueda' },
+                        i18n: { selectAll: 'Seleccionar todo', deselectAll: 'Deseleccionar todo', verSeleccionados: 'Ver seleccionados', buscar: 'Buscar' }
+                    });
+                }
+
+                overlay.querySelector('#drawer-detalle-plan-colab-cancel').addEventListener('click', function() {
+                    if (typeof closeDrawer === 'function') closeDrawer('drawer-detalle-plan-agregar-asignacion');
+                });
+                overlay.querySelector('#drawer-detalle-plan-colab-agregar').addEventListener('click', function() {
+                    var ref = overlay._drawerColabTablaRef;
+                    var selectedIds = (ref && typeof ref.getSelectedIds === 'function') ? ref.getSelectedIds() : [];
+                    var empleadosFull = (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getEmpleadosEjemplo === 'function') ? TAREAS_PLANES_DB.getEmpleadosEjemplo() : [];
+                    var mapById = {};
+                    empleadosFull.forEach(function(e) { mapById[String(e.id || e.idColaborador)] = e; });
+                    var yaIds = {};
+                    asignacionesDetalleData.forEach(function(r) { yaIds[String(r.id)] = true; });
+                    var ultimoAccesoOpciones = ['Hace 2 horas', 'Hace 5 horas', 'Hace 1 día', 'Hace 2 días', 'Hace 3 días', 'Hace 5 días', 'Hace 1 semana'];
+                    selectedIds.forEach(function(id) {
+                        if (yaIds[String(id)]) return;
+                        var e = mapById[String(id)];
+                        if (!e) return;
+                        var ultimoAccesoRandom = ultimoAccesoOpciones[Math.floor(Math.random() * ultimoAccesoOpciones.length)];
+                        asignacionesDetalleData.push({
+                            id: e.id || e.idColaborador,
+                            usuario: e.nombre || '',
+                            avatar: e.avatar || null,
+                            ultimoAcceso: ultimoAccesoRandom,
+                            ultimaFechaProgreso: '-',
+                            progreso: 0
+                        });
+                        contenidoPorUsuario[e.id || e.idColaborador] = [];
+                        yaIds[String(e.id || e.idColaborador)] = true;
+                    });
+                    if (asignacionesDetalleTablaRef && typeof asignacionesDetalleTablaRef.refresh === 'function') asignacionesDetalleTablaRef.refresh();
+                    updatePlanProgressBar();
+                    if (typeof closeDrawer === 'function') closeDrawer('drawer-detalle-plan-agregar-asignacion');
+                    if (selectedIds.length && typeof showToast === 'function') showToast('success', selectedIds.length + ' asignación(es) agregada(s) al plan');
+                });
+
+                if (container) container.style.flexDirection = 'column';
+            }
+
+            var createUbitsDataTableConfig = {
                     containerId: 'asignaciones-detalle-data-table-container',
                     tableId: 'asignaciones-detalle-table',
                     title: 'Lista de asignaciones',
@@ -338,9 +498,14 @@
                         } }
                     ],
                     emptyState: { message: 'No hay asignaciones', icon: 'far fa-user-group', description: 'Aún no hay colaboradores asignados a este plan. Agrega asignaciones para ver el progreso.' },
-                    emptySearchState: { message: 'No se encontraron resultados', description: 'Intenta ajustar tu búsqueda.', buttonText: 'Limpiar búsqueda' },
-                    i18n: { selectAll: 'Seleccionar todo', deselectAll: 'Deseleccionar todo', verSeleccionados: 'Ver seleccionados', buscar: 'Buscar' }
-                });
+                emptySearchState: { message: 'No se encontraron resultados', description: 'Intenta ajustar tu búsqueda.', buttonText: 'Limpiar búsqueda' },
+                i18n: { selectAll: 'Seleccionar todo', deselectAll: 'Deseleccionar todo', verSeleccionados: 'Ver seleccionados', buscar: 'Buscar' }
+            };
+            if (plan.estado === 'Vigente') {
+                createUbitsDataTableConfig.primaryButton = { text: 'Agregar asignación', icon: 'fa-plus', onClick: function() { abrirDrawerAgregarAsignacionVigente(); } };
+            }
+            if (typeof createUbitsDataTable === 'function') {
+                asignacionesDetalleTablaRef = createUbitsDataTable(createUbitsDataTableConfig);
             }
 
             var deleteOverlay = document.getElementById('asignaciones-delete-overlay');
@@ -366,6 +531,7 @@
                     ids.forEach(function(id) { delete contenidoPorUsuario[id]; });
                     asignacionesDetalleData = asignacionesDetalleData.filter(function(r) { return ids.indexOf(r.id) === -1; });
                     if (asignacionesDetalleTablaRef && typeof asignacionesDetalleTablaRef.refresh === 'function') asignacionesDetalleTablaRef.refresh();
+                    updatePlanProgressBar();
                     if (typeof showToast === 'function') showToast('success', ids.length + ' asignación(es) eliminada(s) del plan');
                 });
             }
@@ -430,6 +596,148 @@
                 }
             }
 
+            function getDrawerCursosBodyHtmlDetallePlan() {
+                return '<div class="drawer-agregar-cursos drawer-agregar-cursos--two-cols">' +
+                    '<div class="drawer-agregar-cursos__left">' +
+                    '  <span class="drawer-agregar-cursos__section-title ubits-body-sm-semibold">Buscar y agregar contenidos</span>' +
+                    '  <div class="drawer-cursos-search-row">' +
+                    '    <div id="drawer-cursos-search-container" class="drawer-cursos-search-input-wrap"></div>' +
+                    '    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" id="drawer-cursos-filter-btn" aria-label="Filtrar por origen"><i class="far fa-filter"></i></button>' +
+                    '  </div>' +
+                    '  <div class="drawer-cursos-resultados-bg drawer-cursos-resultados-bg--dos-columnas">' +
+                    '    <div class="drawer-cursos-cards-grid" id="drawer-cursos-cards-container"></div>' +
+                    '  </div>' +
+                    '</div>' +
+                    '<div class="drawer-agregar-cursos__right drawer-cursos-agregados-section" id="drawer-cursos-agregados-section">' +
+                    '  <span class="drawer-agregar-cursos__section-title ubits-body-sm-semibold">Contenidos agregados</span>' +
+                    '  <div class="drawer-cursos-agregados-content">' +
+                    '    <div id="drawer-cursos-empty-state" class="drawer-cursos-empty-state-wrap"></div>' +
+                    '    <div class="ubits-table-wrapper" id="drawer-cursos-table-wrapper">' +
+                    '      <table class="ubits-table" id="drawer-cursos-table">' +
+                    '        <thead><tr><th data-col="contenido" class="ubits-body-sm-semibold">Contenido</th><th class="ubits-table__th--actions ubits-body-sm-semibold" data-col="acciones">Acciones</th></tr></thead>' +
+                    '        <tbody id="drawer-cursos-agregados-tbody"></tbody>' +
+                    '      </table>' +
+                    '    </div>' +
+                    '  </div>' +
+                    '</div>' +
+                    '</div>';
+            }
+
+            function abrirDrawerAgregarContenidosDetallePlan(rowId) {
+                var catalogoCursos = window.CATALOGO_CURSOS_DRAWER || [];
+                var cursosSeleccionados = (contenidoPorUsuario[rowId] || []).slice();
+                var footerHtml = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="drawer-detalle-plan-cursos-cancel"><span class="ubits-body-sm-regular">Cancelar</span></button>' +
+                    '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="drawer-detalle-plan-cursos-agregar"><span class="ubits-body-sm-regular">Agregar</span></button>';
+                openDrawer({
+                    overlayId: 'drawer-detalle-plan-agregar-cursos',
+                    title: 'Agregar contenidos',
+                    bodyHtml: getDrawerCursosBodyHtmlDetallePlan(),
+                    footerHtml: footerHtml,
+                    size: 'lg',
+                    onClose: function() {}
+                });
+                var overlay = document.getElementById('drawer-detalle-plan-agregar-cursos');
+                if (!overlay) return;
+
+                function actualizarTabla() {
+                    var tbody = overlay.querySelector('#drawer-cursos-agregados-tbody');
+                    var emptyStateContainer = overlay.querySelector('#drawer-cursos-empty-state');
+                    var tableWrapper = overlay.querySelector('#drawer-cursos-table-wrapper');
+                    if (!tbody) return;
+                    tbody.innerHTML = '';
+                    if (cursosSeleccionados.length === 0) {
+                        if (tableWrapper) tableWrapper.style.display = 'none';
+                        if (emptyStateContainer) {
+                            emptyStateContainer.style.display = 'block';
+                            if (typeof loadEmptyState === 'function') {
+                                loadEmptyState('drawer-cursos-empty-state', { icon: 'fa-folder-open', iconSize: 'lg', title: 'No hay contenidos agregados', description: 'Busca y agrega contenidos desde el buscador.', buttons: {} });
+                            }
+                        }
+                    } else {
+                        if (emptyStateContainer) emptyStateContainer.style.display = 'none';
+                        if (tableWrapper) tableWrapper.style.display = 'block';
+                        cursosSeleccionados.forEach(function(c) {
+                            var tr = document.createElement('tr');
+                            tr.className = 'drawer-cursos-table-row';
+                            tr.innerHTML = '<td data-col="contenido"><span class="ubits-body-sm-regular">' + (c.title || '').replace(/</g, '&lt;') + '</span></td>' +
+                                '<td data-col="acciones"><button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only js-drawer-cursos-delete" aria-label="Eliminar"><i class="far fa-trash"></i></button></td>';
+                            tr.dataset.courseId = c.id;
+                            tr.querySelector('.js-drawer-cursos-delete').addEventListener('click', function() {
+                                cursosSeleccionados = cursosSeleccionados.filter(function(x) { return x.id !== c.id; });
+                                actualizarTabla();
+                                filtrarYRenderizarCards();
+                            });
+                            tbody.appendChild(tr);
+                        });
+                    }
+                }
+
+                if (typeof createInput === 'function') {
+                    createInput({ containerId: 'drawer-cursos-search-container', type: 'search', placeholder: 'Buscar contenidos...', size: 'sm', showLabel: false });
+                }
+                var searchInput = overlay.querySelector('#drawer-cursos-search-container input');
+                var cardsContainer = overlay.querySelector('#drawer-cursos-cards-container');
+                var DRAWER_CURSOS_PAGE_SIZE = 12;
+                var drawerCursosVisibleCount = DRAWER_CURSOS_PAGE_SIZE;
+                function getFiltradosDrawerCursos() {
+                    var q = (searchInput && searchInput.value) ? searchInput.value.trim().toLowerCase() : '';
+                    return catalogoCursos.filter(function(c) {
+                        return !q || (c.title && c.title.toLowerCase().includes(q)) || (c.competency && c.competency.toLowerCase().includes(q));
+                    });
+                }
+                function filtrarYRenderizarCards() {
+                    if (!cardsContainer || typeof loadCardContentCompact !== 'function') return;
+                    var filtrados = getFiltradosDrawerCursos();
+                    var aMostrar = filtrados.slice(0, drawerCursosVisibleCount);
+                    var aMostrarConProgreso = aMostrar.map(function(course) {
+                        var sel = cursosSeleccionados.find(function(x) { return x.id === course.id; });
+                        var progress = sel && (sel.progress != null) ? sel.progress : 0;
+                        var status = sel && sel.status ? sel.status : 'default';
+                        var copy = {};
+                        for (var k in course) copy[k] = course[k];
+                        copy.progress = progress;
+                        copy.status = status;
+                        return copy;
+                    });
+                    loadCardContentCompact('drawer-cursos-cards-container', aMostrarConProgreso);
+                    aMostrar.forEach(function(course, idx) {
+                        var cards = cardsContainer.querySelectorAll('.course-card-compact');
+                        var cardEl = cards[idx];
+                        if (cardEl) {
+                            cardEl.style.cursor = 'pointer';
+                            cardEl.dataset.courseId = course.id;
+                            cardEl.classList.toggle('course-card-compact--selected', cursosSeleccionados.some(function(x) { return x.id === course.id; }));
+                        }
+                    });
+                }
+                cardsContainer.addEventListener('click', function(e) {
+                    var cardEl = e.target.closest('.course-card-compact');
+                    if (!cardEl || !cardEl.dataset.courseId) return;
+                    var course = catalogoCursos.find(function(c) { return c.id === cardEl.dataset.courseId; });
+                    if (!course) return;
+                    if (cursosSeleccionados.some(function(x) { return x.id === course.id; })) return;
+                    cursosSeleccionados.push(course);
+                    actualizarTabla();
+                    filtrarYRenderizarCards();
+                });
+                if (searchInput) {
+                    searchInput.addEventListener('input', function() { drawerCursosVisibleCount = DRAWER_CURSOS_PAGE_SIZE; filtrarYRenderizarCards(); });
+                }
+
+                actualizarTabla();
+                filtrarYRenderizarCards();
+
+                overlay.querySelector('#drawer-detalle-plan-cursos-cancel').addEventListener('click', function() {
+                    if (typeof closeDrawer === 'function') closeDrawer('drawer-detalle-plan-agregar-cursos');
+                });
+                overlay.querySelector('#drawer-detalle-plan-cursos-agregar').addEventListener('click', function() {
+                    contenidoPorUsuario[rowId] = cursosSeleccionados.slice();
+                    if (asignacionesDetalleTablaRef && typeof asignacionesDetalleTablaRef.refresh === 'function') asignacionesDetalleTablaRef.refresh();
+                    if (typeof closeDrawer === 'function') closeDrawer('drawer-detalle-plan-agregar-cursos');
+                    if (typeof showToast === 'function') showToast('success', 'Contenidos actualizados');
+                });
+            }
+
             var asignacionesDetalleContainer = document.getElementById('asignaciones-detalle-data-table-container');
             if (asignacionesDetalleContainer) {
                 asignacionesDetalleContainer.addEventListener('click', function(e) {
@@ -437,12 +745,17 @@
                     var row = e.target.closest('tbody tr[data-id]');
                     if (!row) return;
                     var rowId = row.getAttribute('data-id');
-                    var userNameEl = row.querySelector('td[data-col="usuario"] span');
-                    var userName = userNameEl ? userNameEl.textContent.trim() : '';
-                    var contenidos = contenidoPorUsuario[rowId] ? contenidoPorUsuario[rowId].slice() : [];
+                    var btnContenidos = e.target.closest('.js-detalle-plan-contenidos-btn');
+                    if (btnContenidos) rowId = btnContenidos.getAttribute('data-row-id') || rowId;
                     e.preventDefault();
                     e.stopPropagation();
-                    abrirPanelContenidos(rowId, userName, contenidos);
+                    if (plan.estado === 'No vigente') {
+                        var rowData = asignacionesDetalleData.find(function(r) { return String(r.id) === String(rowId); });
+                        var userName = rowData ? rowData.usuario : '';
+                        abrirPanelContenidos(rowId, userName, contenidoPorUsuario[rowId] || []);
+                    } else {
+                        abrirDrawerAgregarContenidosDetallePlan(rowId);
+                    }
                 });
             }
 
