@@ -458,6 +458,12 @@
     min-height: 0;
     gap: var(--gap-xl);
 }
+#drawer-detalle-plan-agregar-cursos .drawer-agregar-cursos--single-col {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
 #drawer-detalle-plan-agregar-cursos .drawer-agregar-cursos__left {
     display: flex;
     flex-direction: column;
@@ -601,6 +607,15 @@
     margin: 0;
     font-size: var(--font-size-xs);
 }
+#drawer-detalle-plan-agregar-cursos .drawer-competencia-card-check {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    padding: 0 var(--padding-sm);
+}
+#drawer-detalle-plan-agregar-cursos .drawer-competencia-card-check .ubits-checkbox__label {
+    display: none;
+}
 #drawer-detalle-plan-agregar-cursos .competencia-habilidades-container.drawer-competencias-habilidades {
     display: none;
     margin-top: var(--gap-sm);
@@ -611,6 +626,10 @@
 #drawer-detalle-plan-agregar-cursos .competencia-habilidades-container.drawer-competencias-habilidades.is-visible {
     display: block;
 }
+#drawer-detalle-plan-agregar-cursos .drawer-habilidades-copy {
+    margin: 0 0 var(--gap-sm) 0;
+    color: var(--ubits-fg-1-medium);
+}
 #drawer-detalle-plan-agregar-cursos .drawer-competencias-habilidades .competencias-habilidades-grid {
     display: flex;
     flex-direction: column;
@@ -620,7 +639,17 @@
     display: flex;
     align-items: center;
     gap: var(--gap-sm);
-    cursor: pointer;
+}
+#drawer-detalle-plan-agregar-cursos .drawer-habilidad-row--draggable {
+    cursor: grab;
+    padding: var(--padding-xs) 0;
+}
+#drawer-detalle-plan-agregar-cursos .drawer-habilidad-row--draggable:active {
+    cursor: grabbing;
+}
+#drawer-detalle-plan-agregar-cursos .drawer-habilidad-drag {
+    color: var(--ubits-fg-1-low);
+    font-size: var(--font-size-sm);
 }
 #drawer-detalle-plan-agregar-cursos .drawer-habilidad-row .ubits-checkbox__label {
     display: flex;

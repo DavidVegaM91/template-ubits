@@ -754,6 +754,14 @@
     gap: var(--gap-xl);
 }
 
+/* Una sola columna (drawer Agregar competencias sin tabla derecha) */
+.drawer-agregar-cursos--single-col {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
 .drawer-agregar-cursos__left {
     display: flex;
     flex-direction: column;
@@ -1061,6 +1069,17 @@
     font-size: var(--font-size-xs);
 }
 
+.drawer-competencia-card-check {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    padding: 0 var(--padding-sm);
+}
+
+.drawer-competencia-card-check .ubits-checkbox__label {
+    display: none;
+}
+
 .competencia-habilidades-container.drawer-competencias-habilidades {
     display: none;
     margin-top: var(--gap-sm);
@@ -1073,6 +1092,11 @@
     display: block;
 }
 
+.drawer-habilidades-copy {
+    margin: 0 0 var(--gap-sm) 0;
+    color: var(--ubits-fg-1-medium);
+}
+
 .drawer-competencias-habilidades .competencias-habilidades-grid {
     display: flex;
     flex-direction: column;
@@ -1083,7 +1107,20 @@
     display: flex;
     align-items: center;
     gap: var(--gap-sm);
-    cursor: pointer;
+}
+
+.drawer-habilidad-row--draggable {
+    cursor: grab;
+    padding: var(--padding-xs) 0;
+}
+
+.drawer-habilidad-row--draggable:active {
+    cursor: grabbing;
+}
+
+.drawer-habilidad-drag {
+    color: var(--ubits-fg-1-low);
+    font-size: var(--font-size-sm);
 }
 
 .drawer-habilidad-row .ubits-checkbox__label {
