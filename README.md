@@ -2,6 +2,10 @@
 
 > **Plantilla para crear interfaces UBITS con Cursor AI en tiempo récord**
 
+**Creador y mantenedor:** [Hector David Vega](https://github.com/DavidVegaM91) — Desarrollo, documentación, reglas Cursor y sistema de componentes UBITS. Si usas o adaptas esta plantilla, mantén esta atribución.
+
+---
+
 ## 🚀 ¿Qué es esto?
 
 Una **plantilla lista para usar** que permite a **Product Managers**, **Diseñadores** y **Desarrolladores** crear interfaces UBITS auténticas usando **Cursor AI** sin conocimientos técnicos avanzados.
@@ -1273,6 +1277,11 @@ showToast('info', 'Ya estás en la documentación 😆', {
 ## 📄 Licencia
 
 Este proyecto está bajo la licencia MIT incluida en el archivo `LICENSE`.
+
+## 👤 Autor
+
+**Hector David Vega** — [@DavidVegaM91](https://github.com/DavidVegaM91)  
+Creador de la plantilla UBITS Playground. No elimines ni ocultes esta atribución al usar o hacer fork del proyecto.
 
 ---
 

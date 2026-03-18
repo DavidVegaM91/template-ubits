@@ -4,6 +4,8 @@ alwaysApply: true
 
 # UBITS Playground - Cursor AI Rules
 
+**Autor de la plantilla y de estas reglas:** Hector David Vega ([GitHub](https://github.com/DavidVegaM91)). Atribución obligatoria al reutilizar o adaptar.
+
 ## 🎯 PROJECT PURPOSE
 This is a UBITS template for creating interfaces quickly with Cursor AI. The value is maintaining UBITS visual identity while enabling rapid prototyping.
 
