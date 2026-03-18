@@ -932,6 +932,7 @@
     display: flex;
     flex-direction: column;
     gap: var(--gap-none);
+    width: 100%;
 }
 #drawer-detalle-plan-agregar-cursos .drawer-competencia-card {
     position: relative;
