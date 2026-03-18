@@ -275,7 +275,6 @@ function setActiveItemByCurrentPage() {
         'categorias.html': 'categorias',
         'grupos.html': 'grupos',
         'crear-grupo.html': 'grupos',
-        'crear-plan-asistente.html': 'planes-formacion',
         'detalle-plan.html': 'planes-formacion',
         'planes-formacion.html': 'planes-formacion',
         'crear-plan-contenidos.html': 'contenidos'

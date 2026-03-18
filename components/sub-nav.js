@@ -359,7 +359,6 @@ const PAGE_TO_TAB = {
     // Creator (LMS Creator)
     'contenidos.html': 'contenidos',
     'categorias.html': 'categorias',
-    'crear-plan-asistente.html': 'planes-formacion',
     'detalle-plan.html': 'planes-formacion',
     'grupos.html': 'grupos',
     'crear-grupo.html': 'grupos',
@@ -367,6 +366,7 @@ const PAGE_TO_TAB = {
     'chat-ia-grupos.html': 'grupos',
     'planes-formacion.html': 'planes-formacion',
     'crear-plan-contenidos.html': 'planes-formacion',
+    'crear-plan-competencias.html': 'planes-formacion',
     'editar-plan-contenidos.html': 'planes-formacion',
     // Admin empresa
     'gestion-de-usuarios.html': 'gestion-usuarios',

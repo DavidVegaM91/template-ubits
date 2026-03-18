@@ -215,7 +215,7 @@
                     aiButton: {
                         text: 'Crear con IA',
                         onClick: function() {
-                            window.location.href = 'crear-plan-asistente.html';
+                            // Sin acción: no navega ni hace nada
                         }
                     },
                     primaryButton: {
@@ -246,7 +246,7 @@
                                         var val = this.getAttribute('data-value');
                                         if (typeof closeDropdownMenu === 'function') closeDropdownMenu(overlayId);
                                         if (val === 'contenidos') window.location.href = 'crear-plan-contenidos.html';
-                                        // Plan de competencias: por ahora no hace nada
+                                        if (val === 'competencias') window.location.href = 'crear-plan-competencias.html';
                                     });
                                 });
                             }
