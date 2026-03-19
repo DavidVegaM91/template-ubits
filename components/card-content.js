@@ -115,7 +115,9 @@ const PROVIDERS = {
     'American & British Academy': '../../images/Favicons/American & British Academy.jpg',
     'Bureau Veritas': '../../images/Favicons/Bureau-Veritas.jpg',
     'Welu': '../../images/Favicons/Welu.jpg',
-    'Figsha Smart Consulting': '../../images/Favicons/Figsha Smart Consulting.jpg',
+    'Fiqsha Smart Consulting': '../../images/Favicons/Fiqsha Smart Consulting.jpg',
+    'Fiqsha Decoraciones S.A.S.': '../../images/Favicons/Fiqsha Smart Consulting.jpg',
+    'Figsha Smart Consulting': '../../images/Favicons/Fiqsha Smart Consulting.jpg',
     'Instafit': '../../images/Favicons/Instafit.jpg',
     'WOBI': '../../images/Favicons/WOBI.jpg'
 };

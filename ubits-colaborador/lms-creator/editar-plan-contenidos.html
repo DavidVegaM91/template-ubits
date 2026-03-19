@@ -101,7 +101,6 @@
     <script src="../../components/drawer.js"></script>
     <script src="../../components/dropdown-menu.js"></script>
     <script src="../../components/card-content-compact.js"></script>
-    <script src="./catalogo-cursos-drawer-data.js"></script>
     <script src="../../components/empty-state.js"></script>
     <script src="../../components/toast.js"></script>
     <script src="../../components/ubits-data-table.js"></script>
@@ -237,8 +236,8 @@
             var asignacionesData = [];
             var asignacionIdCounter = 0;
             var pendingCursosRow = null;
-            // Catálogo: todas las imágenes de cards-learn (85 contenidos). Carga lazy 12 en 12.
-                var catalogoCursos = window.CATALOGO_CURSOS_DRAWER || [];
+            // Catálogo local (sin orquestador legacy): usa dataset de compatibilidad de esta vista.
+            var catalogoCursos = window.CATALOGO_CURSOS_DRAWER || [];
 
 
             function canGuardar() {
@@ -974,7 +973,7 @@
                     if (drawerCursosFilter === 'ubits') bySource = catalogoCursos.filter(function(c) { return c.courseSource === 'ubits'; });
                     else if (drawerCursosFilter === 'empresa') bySource = catalogoCursos.filter(function(c) { return c.courseSource === 'empresa'; });
                     return bySource.filter(function(c) {
-                        return !q || (c.title && c.title.toLowerCase().includes(q)) || (c.competency && c.competency.toLowerCase().includes(q));
+                        return !q || (c.title && c.title.toLowerCase().includes(q)) || (c.competency && c.competency.toLowerCase().includes(q)) || (c.categoria && String(c.categoria).toLowerCase().includes(q));
                     });
                 }
 

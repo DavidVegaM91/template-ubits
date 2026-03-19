@@ -81,7 +81,7 @@ No existe el campo "horas por competencia"; ese campo es exclusivo de planes de 
 
 - **Izquierda:** búsqueda por texto (título o competencia del curso) y filtro por origen (Todos los cursos / Solo cursos UBITS / Solo cursos de mi empresa). Grid de **cards compactos de contenido** (componente `card-content-compact`): miniatura, título, etc. Al hacer clic en una card se agrega a la selección y la card muestra borde azul (estado seleccionado). Scroll infinito: se cargan 12 contenidos inicialmente y más al hacer scroll.
 - **Tabla derecha:** una fila por contenido seleccionado: celda con título del contenido y botón eliminar. Empty state cuando no hay ninguno ("No hay contenidos agregados").
-- **Datos guardados por asignación:** array de ítems de curso (id, title, etc.). Origen de datos: `catalogo-cursos-drawer-data.js` (listado de contenidos/cursos disponibles).
+- **Datos guardados por asignación:** array de ítems de curso (id, title, etc.). Origen de datos: dataset local `catalogo-cursos-drawer-data.js` (compatibilidad temporal por vista).
 
 ### 3.3 Detalle del plan – Tabla y drawer
 

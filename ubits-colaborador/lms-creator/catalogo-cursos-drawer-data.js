@@ -1,7 +1,7 @@
 /**
+ * Dataset local de compatibilidad para vistas LMS que aun no migran al consumo directo por pagina.
  * Lista de todos los contenidos disponibles (images/cards-learn).
- * Se usa en crear-plan-contenidos.html para el drawer "Agregar contenidos".
- * Título desde nombre de archivo; competency por palabras clave.
+ * Se mantuvo por compatibilidad si alguna página aún lo referencia.
  */
 (function() {
     var base = '../../images/';
@@ -193,7 +193,7 @@
     });
 
     // Cursos de U. Corporativa (creados por la empresa) - mismos datos que u-corporativa.html
-    var empresaLogo = base + 'Favicons/Figsha Smart Consulting.jpg';
+    var empresaLogo = base + 'Favicons/Fiqsha Smart Consulting.jpg';
     var empresaCourses = [
         { title: 'Inducción a la cultura y valores corporativos', imagePath: 'cards-learn/U-Corporativa/Inducción-a-la-cultura-y-valores-corporativos.jpg', duration: '60 min', level: 'Básico', competency: 'Liderazgo' },
         { title: 'Prevención del acoso laboral', imagePath: 'cards-learn/U-Corporativa/prevencion-acoso-laboral.jpg', duration: '60 min', level: 'Básico', competency: 'Liderazgo' },

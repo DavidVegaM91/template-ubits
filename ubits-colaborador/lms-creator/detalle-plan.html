@@ -106,7 +106,6 @@
     <script src="../../components/ubits-data-table.js"></script>
     <script src="../../components/drawer.js"></script>
     <script src="../../components/card-content-compact.js"></script>
-    <script src="./catalogo-cursos-drawer-data.js"></script>
     <script src="../tareas/tareas-base-unificada.js"></script>
     <script src="../../script.js"></script>
     <script src="./lms-creator-tables.js"></script>
@@ -225,7 +224,7 @@
                 document.getElementById('asignaciones-modals-container').innerHTML = getModalHtml({ overlayId: 'asignaciones-delete-overlay', title: 'Confirmar eliminación', bodyHtml: deleteBody, footerHtml: deleteFooter, size: 'sm', closeButtonId: 'asignaciones-delete-close' });
             }
 
-            // Contenidos por usuario: construidos desde CATALOGO_CURSOS_DRAWER para que coincidan con "Buscar y agregar contenidos". Cada item tiene progress y status.
+            // Contenidos por usuario: dataset local de compatibilidad de esta vista.
             var catalogDrawer = window.CATALOGO_CURSOS_DRAWER || [];
             function buildContenidoFromCatalog(indicesWithProgress) {
                 var list = [];
@@ -701,7 +700,7 @@
                 function getFiltradosDrawerCursos() {
                     var q = (searchInput && searchInput.value) ? searchInput.value.trim().toLowerCase() : '';
                     return catalogoCursos.filter(function(c) {
-                        return !q || (c.title && c.title.toLowerCase().includes(q)) || (c.competency && c.competency.toLowerCase().includes(q));
+                        return !q || (c.title && c.title.toLowerCase().includes(q)) || (c.competency && c.competency.toLowerCase().includes(q)) || (c.categoria && String(c.categoria).toLowerCase().includes(q));
                     });
                 }
                 function filtrarYRenderizarCards() {
@@ -866,7 +865,7 @@
                 function getFiltradosDrawerCursos() {
                     var q = (searchInput && searchInput.value) ? searchInput.value.trim().toLowerCase() : '';
                     return catalogoCursos.filter(function(c) {
-                        return !q || (c.title && c.title.toLowerCase().includes(q)) || (c.competency && c.competency.toLowerCase().includes(q));
+                        return !q || (c.title && c.title.toLowerCase().includes(q)) || (c.competency && c.competency.toLowerCase().includes(q)) || (c.categoria && String(c.categoria).toLowerCase().includes(q));
                     });
                 }
                 function filtrarYRenderizarCards() {
