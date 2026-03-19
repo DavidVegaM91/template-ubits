@@ -713,7 +713,7 @@
             function initDrawerAgregarCompetenciasEnEstudiante(overlay, rowId) {
                 if (!overlay) return;
                 var cursosSeleccionados = (competenciaPorUsuario[rowId] || []).map(function(c) {
-                    return { id: c.id, title: c.title || c.id, nombre: c.nombre || c.title, habilidades: (c.habilidades || []).slice(), progress: c.progress != null ? c.progress : 0, status: c.status || 'default' };
+                    return { id: c.id, title: c.title || c.id, nombre: c.nombre || c.title, habilidades: (c.habilidades || []).slice(), habilidadesDesactivadas: [], progress: c.progress != null ? c.progress : 0, status: c.status || 'default' };
                 });
 
                 if (typeof createInput === 'function') {
@@ -740,13 +740,21 @@
                     var imgPath = imageBase + imgName;
                     var selectedItem = cursosSeleccionados.find(function(x) { return x.id === comp.id; });
                     var isExpanded = !!selectedItem;
-                    var habilidadesOrder = (selectedItem && selectedItem.habilidades && selectedItem.habilidades.length) ? selectedItem.habilidades.slice() : (comp.habilidades || []).slice();
+                    var desactivadas = (selectedItem && selectedItem.habilidadesDesactivadas) ? selectedItem.habilidadesDesactivadas.slice() : [];
+                    var baseHabilidades = (selectedItem && selectedItem.habilidades && selectedItem.habilidades.length) ? selectedItem.habilidades.slice() : (comp.habilidades || []).slice();
+                    var checkedList = baseHabilidades.filter(function(h) { return desactivadas.indexOf(h) === -1; });
+                    var uncheckedList = desactivadas.slice();
+                    var habilidadesOrder = checkedList.concat(uncheckedList);
                     var habilidadesHtml = habilidadesOrder.map(function(h, idx) {
                         var icon = habilidadIconMap[h] || 'fa-circle';
-                        return '<div class="drawer-habilidad-row drawer-habilidad-row--draggable" draggable="true" data-competencia-id="' + escapeDrawerHtml(comp.id) + '" data-skill-index="' + idx + '" role="button">' +
+                        var isUnchecked = desactivadas.indexOf(h) !== -1;
+                        var rowClass = 'drawer-habilidad-row drawer-habilidad-row--draggable' + (isUnchecked ? ' drawer-habilidad-row--unchecked' : '');
+                        var checkChecked = isUnchecked ? '' : ' checked';
+                        return '<div class="' + rowClass + '" draggable="' + (isUnchecked ? 'false' : 'true') + '" data-competencia-id="' + escapeDrawerHtml(comp.id) + '" data-habilidad="' + escapeDrawerHtml(h) + '" data-skill-index="' + idx + '" role="button">' +
                             '<span class="drawer-habilidad-drag" aria-hidden="true"><i class="fas fa-grip-vertical"></i></span>' +
                             '<i class="far ' + icon + ' drawer-habilidad-icon"></i>' +
-                            '<span class="ubits-body-sm-regular drawer-habilidad-title">' + escapeDrawerHtml(h) + '</span></div>';
+                            '<span class="ubits-body-sm-regular drawer-habilidad-title">' + escapeDrawerHtml(h) + '</span>' +
+                            '<label class="ubits-checkbox ubits-checkbox--sm drawer-habilidad-check-wrap" onclick="event.stopPropagation();"><input type="checkbox" class="ubits-checkbox__input drawer-habilidad-check" data-habilidad="' + escapeDrawerHtml(h) + '"' + checkChecked + '><span class="ubits-checkbox__box"><i class="far fa-check"></i></span><span class="ubits-checkbox__label" aria-hidden="true"></span></label></div>';
                     }).join('');
                     var progress = planSinProgreso() ? 0 : (selectedItem && selectedItem.progress != null ? selectedItem.progress : 0);
                     var status = (selectedItem && selectedItem.status) ? selectedItem.status : 'default';
@@ -839,6 +847,7 @@
                                     id: comp.id,
                                     title: comp.nombre,
                                     habilidades: (comp.habilidades || []).slice(),
+                                    habilidadesDesactivadas: [],
                                     progress: _e && _e.progress != null ? _e.progress : 0,
                                     status: _e && _e.status ? _e.status : 'default'
                                 });
@@ -865,10 +874,80 @@
                             if (compId !== toRow.getAttribute('data-competencia-id') || isNaN(fromIdx) || isNaN(toIdx) || fromIdx === toIdx) return;
                             var sel = cursosSeleccionados.find(function(x) { return x.id === compId; });
                             if (!sel || !sel.habilidades || sel.habilidades.length === 0) return;
-                            var arr = sel.habilidades;
-                            var item = arr.splice(fromIdx, 1)[0];
-                            arr.splice(toIdx, 0, item);
+                            var desactivadas = sel.habilidadesDesactivadas || [];
+                            var checkedList = sel.habilidades.filter(function(h) { return desactivadas.indexOf(h) === -1; });
+                            var uncheckedList = desactivadas.slice();
+                            var order = checkedList.concat(uncheckedList);
+                            var item = order.splice(fromIdx, 1)[0];
+                            order.splice(toIdx, 0, item);
+                            sel.habilidades = order.slice();
+                            sel.habilidadesDesactivadas = order.filter(function(h) { return desactivadas.indexOf(h) !== -1; });
                             filtrarYRenderizarCards();
+                        });
+                    });
+                    cardsContainer.querySelectorAll('.drawer-habilidad-check').forEach(function(chk) {
+                        chk.addEventListener('change', function(e) {
+                            e.stopPropagation();
+                            var row = chk.closest('.drawer-habilidad-row');
+                            if (!row) return;
+                            var compId = row.getAttribute('data-competencia-id');
+                            var habilidad = chk.getAttribute('data-habilidad');
+                            var sel = cursosSeleccionados.find(function(x) { return x.id === compId; });
+                            if (!sel) return;
+                            sel.habilidadesDesactivadas = sel.habilidadesDesactivadas || [];
+                            var desactivadas = sel.habilidadesDesactivadas;
+                            var isNowChecked = chk.checked;
+                            if (isNowChecked) {
+                                var idx = desactivadas.indexOf(habilidad);
+                                if (idx !== -1) desactivadas.splice(idx, 1);
+                                var idxInH = sel.habilidades.indexOf(habilidad);
+                                if (idxInH !== -1) sel.habilidades.splice(idxInH, 1);
+                                var insertAt = sel.habilidades.length - desactivadas.length;
+                                sel.habilidades.splice(insertAt, 0, habilidad);
+                            } else {
+                                desactivadas.push(habilidad);
+                                var idxInH = sel.habilidades.indexOf(habilidad);
+                                if (idxInH !== -1) sel.habilidades.splice(idxInH, 1);
+                                sel.habilidades.push(habilidad);
+                            }
+                            row.classList.toggle('drawer-habilidad-row--unchecked', !isNowChecked);
+                            row.draggable = isNowChecked;
+                            var grid = row.closest('.competencias-habilidades-grid');
+                            if (grid) reorderHabilidadesGridWithAnimation(grid, compId);
+                        });
+                    });
+                }
+                function reorderHabilidadesGridWithAnimation(grid, compId) {
+                    var sel = cursosSeleccionados.find(function(x) { return x.id === compId; });
+                    if (!sel || !sel.habilidades) return;
+                    var rows = [].slice.call(grid.children);
+                    if (rows.length === 0) return;
+                    var order = sel.habilidades.slice();
+                    var oldRects = rows.map(function(r) { return r.getBoundingClientRect(); });
+                    rows.sort(function(a, b) {
+                        var ai = order.indexOf(a.getAttribute('data-habilidad'));
+                        var bi = order.indexOf(b.getAttribute('data-habilidad'));
+                        return ai - bi;
+                    });
+                    rows.forEach(function(r) { grid.appendChild(r); });
+                    grid.offsetHeight;
+                    var newRects = rows.map(function(r) { return r.getBoundingClientRect(); });
+                    rows.forEach(function(r, i) {
+                        var oldR = oldRects[i];
+                        var newR = newRects[i];
+                        if (!oldR || !newR) return;
+                        r.style.transition = 'none';
+                        r.style.transform = 'translate(' + (oldR.left - newR.left) + 'px,' + (oldR.top - newR.top) + 'px)';
+                    });
+                    requestAnimationFrame(function() {
+                        rows.forEach(function(r) {
+                            r.style.transition = 'transform 0.22s ease-out';
+                            r.style.transform = '';
+                        });
+                        requestAnimationFrame(function() {
+                            setTimeout(function() {
+                                rows.forEach(function(r) { r.style.transition = ''; });
+                            }, 230);
                         });
                     });
                 }
@@ -896,11 +975,13 @@
                     var existing = competenciaPorUsuario[rowId] || [];
                     competenciaPorUsuario[rowId] = cursosSeleccionados.map(function(c) {
                         var prev = existing.find(function(x) { return x.id === c.id; });
+                        var desactivadas = c.habilidadesDesactivadas || [];
+                        var habilidadesGuardar = (c.habilidades || []).filter(function(h) { return desactivadas.indexOf(h) === -1; });
                         return {
                             id: c.id,
                             title: c.title,
                             nombre: c.nombre || c.title,
-                            habilidades: (c.habilidades || []).slice(),
+                            habilidades: habilidadesGuardar,
                             progress: prev && prev.progress != null ? prev.progress : 0,
                             status: prev && prev.status ? prev.status : 'default'
                         };
@@ -954,13 +1035,21 @@
                     var imgPath = imageBase + imgName;
                     var selectedItem = cursosSeleccionados.find(function(x) { return x.id === comp.id; });
                     var isExpanded = !!selectedItem;
-                    var habilidadesOrder = (selectedItem && selectedItem.habilidades && selectedItem.habilidades.length) ? selectedItem.habilidades.slice() : (comp.habilidades || []).slice();
+                    var desactivadas = (selectedItem && selectedItem.habilidadesDesactivadas) ? selectedItem.habilidadesDesactivadas.slice() : [];
+                    var baseHabilidades = (selectedItem && selectedItem.habilidades && selectedItem.habilidades.length) ? selectedItem.habilidades.slice() : (comp.habilidades || []).slice();
+                    var checkedList = baseHabilidades.filter(function(h) { return desactivadas.indexOf(h) === -1; });
+                    var uncheckedList = desactivadas.slice();
+                    var habilidadesOrder = checkedList.concat(uncheckedList);
                     var habilidadesHtml = habilidadesOrder.map(function(h, idx) {
                         var icon = habilidadIconMap[h] || 'fa-circle';
-                        return '<div class="drawer-habilidad-row drawer-habilidad-row--draggable" draggable="true" data-competencia-id="' + escapeDrawerHtml(comp.id) + '" data-skill-index="' + idx + '" role="button">' +
+                        var isUnchecked = desactivadas.indexOf(h) !== -1;
+                        var rowClass = 'drawer-habilidad-row drawer-habilidad-row--draggable' + (isUnchecked ? ' drawer-habilidad-row--unchecked' : '');
+                        var checkChecked = isUnchecked ? '' : ' checked';
+                        return '<div class="' + rowClass + '" draggable="' + (isUnchecked ? 'false' : 'true') + '" data-competencia-id="' + escapeDrawerHtml(comp.id) + '" data-habilidad="' + escapeDrawerHtml(h) + '" data-skill-index="' + idx + '" role="button">' +
                             '<span class="drawer-habilidad-drag" aria-hidden="true"><i class="fas fa-grip-vertical"></i></span>' +
                             '<i class="far ' + icon + ' drawer-habilidad-icon"></i>' +
-                            '<span class="ubits-body-sm-regular drawer-habilidad-title">' + escapeDrawerHtml(h) + '</span></div>';
+                            '<span class="ubits-body-sm-regular drawer-habilidad-title">' + escapeDrawerHtml(h) + '</span>' +
+                            '<label class="ubits-checkbox ubits-checkbox--sm drawer-habilidad-check-wrap" onclick="event.stopPropagation();"><input type="checkbox" class="ubits-checkbox__input drawer-habilidad-check" data-habilidad="' + escapeDrawerHtml(h) + '"' + checkChecked + '><span class="ubits-checkbox__box"><i class="far fa-check"></i></span><span class="ubits-checkbox__label" aria-hidden="true"></span></label></div>';
                     }).join('');
                     var progress = planSinProgreso() ? 0 : (selectedItem && selectedItem.progress != null ? selectedItem.progress : 0);
                     var status = (selectedItem && selectedItem.status) ? selectedItem.status : 'default';
@@ -1053,6 +1142,7 @@
                                     id: comp.id,
                                     title: comp.nombre,
                                     habilidades: (comp.habilidades || []).slice(),
+                                    habilidadesDesactivadas: [],
                                     progress: _e && _e.progress != null ? _e.progress : 0,
                                     status: _e && _e.status ? _e.status : 'default'
                                 });
@@ -1079,10 +1169,80 @@
                             if (compId !== toRow.getAttribute('data-competencia-id') || isNaN(fromIdx) || isNaN(toIdx) || fromIdx === toIdx) return;
                             var sel = cursosSeleccionados.find(function(x) { return x.id === compId; });
                             if (!sel || !sel.habilidades || sel.habilidades.length === 0) return;
-                            var arr = sel.habilidades;
-                            var item = arr.splice(fromIdx, 1)[0];
-                            arr.splice(toIdx, 0, item);
+                            var desactivadas = sel.habilidadesDesactivadas || [];
+                            var checkedList = sel.habilidades.filter(function(h) { return desactivadas.indexOf(h) === -1; });
+                            var uncheckedList = desactivadas.slice();
+                            var order = checkedList.concat(uncheckedList);
+                            var item = order.splice(fromIdx, 1)[0];
+                            order.splice(toIdx, 0, item);
+                            sel.habilidades = order.slice();
+                            sel.habilidadesDesactivadas = order.filter(function(h) { return desactivadas.indexOf(h) !== -1; });
                             filtrarYRenderizarCards();
+                        });
+                    });
+                    cardsContainer.querySelectorAll('.drawer-habilidad-check').forEach(function(chk) {
+                        chk.addEventListener('change', function(e) {
+                            e.stopPropagation();
+                            var row = chk.closest('.drawer-habilidad-row');
+                            if (!row) return;
+                            var compId = row.getAttribute('data-competencia-id');
+                            var habilidad = chk.getAttribute('data-habilidad');
+                            var sel = cursosSeleccionados.find(function(x) { return x.id === compId; });
+                            if (!sel) return;
+                            sel.habilidadesDesactivadas = sel.habilidadesDesactivadas || [];
+                            var desactivadas = sel.habilidadesDesactivadas;
+                            var isNowChecked = chk.checked;
+                            if (isNowChecked) {
+                                var idx = desactivadas.indexOf(habilidad);
+                                if (idx !== -1) desactivadas.splice(idx, 1);
+                                var idxInH = sel.habilidades.indexOf(habilidad);
+                                if (idxInH !== -1) sel.habilidades.splice(idxInH, 1);
+                                var insertAt = sel.habilidades.length - desactivadas.length;
+                                sel.habilidades.splice(insertAt, 0, habilidad);
+                            } else {
+                                desactivadas.push(habilidad);
+                                var idxInH = sel.habilidades.indexOf(habilidad);
+                                if (idxInH !== -1) sel.habilidades.splice(idxInH, 1);
+                                sel.habilidades.push(habilidad);
+                            }
+                            row.classList.toggle('drawer-habilidad-row--unchecked', !isNowChecked);
+                            row.draggable = isNowChecked;
+                            var grid = row.closest('.competencias-habilidades-grid');
+                            if (grid) reorderHabilidadesGridWithAnimation(grid, compId);
+                        });
+                    });
+                }
+                function reorderHabilidadesGridWithAnimation(grid, compId) {
+                    var sel = cursosSeleccionados.find(function(x) { return x.id === compId; });
+                    if (!sel || !sel.habilidades) return;
+                    var rows = [].slice.call(grid.children);
+                    if (rows.length === 0) return;
+                    var order = sel.habilidades.slice();
+                    var oldRects = rows.map(function(r) { return r.getBoundingClientRect(); });
+                    rows.sort(function(a, b) {
+                        var ai = order.indexOf(a.getAttribute('data-habilidad'));
+                        var bi = order.indexOf(b.getAttribute('data-habilidad'));
+                        return ai - bi;
+                    });
+                    rows.forEach(function(r) { grid.appendChild(r); });
+                    grid.offsetHeight;
+                    var newRects = rows.map(function(r) { return r.getBoundingClientRect(); });
+                    rows.forEach(function(r, i) {
+                        var oldR = oldRects[i];
+                        var newR = newRects[i];
+                        if (!oldR || !newR) return;
+                        r.style.transition = 'none';
+                        r.style.transform = 'translate(' + (oldR.left - newR.left) + 'px,' + (oldR.top - newR.top) + 'px)';
+                    });
+                    requestAnimationFrame(function() {
+                        rows.forEach(function(r) {
+                            r.style.transition = 'transform 0.22s ease-out';
+                            r.style.transform = '';
+                        });
+                        requestAnimationFrame(function() {
+                            setTimeout(function() {
+                                rows.forEach(function(r) { r.style.transition = ''; });
+                            }, 230);
                         });
                     });
                 }
@@ -1106,7 +1266,9 @@
                 });
                 overlay.querySelector('#drawer-detalle-plan-cursos-agregar').addEventListener('click', function() {
                     var toAdd = cursosSeleccionados.map(function(c) {
-                        return { id: c.id, title: c.title, nombre: c.nombre || c.title, habilidades: (c.habilidades || []).slice(), progress: 0, status: 'default' };
+                        var desactivadas = c.habilidadesDesactivadas || [];
+                        var habilidadesGuardar = (c.habilidades || []).filter(function(h) { return desactivadas.indexOf(h) === -1; });
+                        return { id: c.id, title: c.title, nombre: c.nombre || c.title, habilidades: habilidadesGuardar, progress: 0, status: 'default' };
                     });
                     selectedIds.forEach(function(id) {
                         var current = (competenciaPorUsuario[id] || []).slice();

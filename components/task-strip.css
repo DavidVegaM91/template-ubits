@@ -114,7 +114,7 @@
 
 .tarea-item--completed .tarea-titulo {
     text-decoration: line-through;
-    color: var(--ubits-fg-1-medium);
+    color: var(--ubits-fg-disabled);
 }
 
 .tarea-titulo-wrap {

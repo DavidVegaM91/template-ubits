@@ -1154,11 +1154,36 @@
     display: flex;
     align-items: center;
     gap: var(--gap-sm);
+    transition: transform 0.22s ease-out;
 }
 
 .drawer-habilidad-row--draggable {
     cursor: grab;
     padding: var(--padding-xs) 0;
+}
+
+.drawer-habilidad-check-wrap {
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.drawer-habilidad-row--unchecked .drawer-habilidad-title {
+    text-decoration: line-through;
+    color: var(--ubits-fg-disabled);
+    transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+.drawer-habilidad-row--unchecked .drawer-habilidad-icon {
+    color: var(--ubits-fg-disabled);
+    transition: color 0.2s ease;
+}
+
+.drawer-habilidad-row--unchecked .drawer-habilidad-drag {
+    color: var(--ubits-fg-disabled);
+}
+
+.drawer-habilidad-row--unchecked.drawer-habilidad-row--draggable {
+    cursor: default;
 }
 
 .drawer-habilidad-row--draggable:active {

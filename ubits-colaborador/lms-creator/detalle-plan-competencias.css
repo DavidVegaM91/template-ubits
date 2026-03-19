@@ -885,6 +885,26 @@
     display: flex;
     align-items: center;
     gap: var(--gap-sm);
+    transition: transform 0.22s ease-out;
+}
+#drawer-competencias-estudiante .drawer-competencia-card-wrapper:not(.drawer-competencia-card-wrapper--compact) .drawer-habilidad-check-wrap {
+    margin-left: auto;
+    flex-shrink: 0;
+}
+#drawer-competencias-estudiante .drawer-competencia-card-wrapper:not(.drawer-competencia-card-wrapper--compact) .drawer-habilidad-row--unchecked .drawer-habilidad-title {
+    text-decoration: line-through;
+    color: var(--ubits-fg-disabled);
+    transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+#drawer-competencias-estudiante .drawer-competencia-card-wrapper:not(.drawer-competencia-card-wrapper--compact) .drawer-habilidad-row--unchecked .drawer-habilidad-icon {
+    color: var(--ubits-fg-disabled);
+    transition: color 0.2s ease;
+}
+#drawer-competencias-estudiante .drawer-competencia-card-wrapper:not(.drawer-competencia-card-wrapper--compact) .drawer-habilidad-row--unchecked .drawer-habilidad-drag {
+    color: var(--ubits-fg-disabled);
+}
+#drawer-competencias-estudiante .drawer-competencia-card-wrapper:not(.drawer-competencia-card-wrapper--compact) .drawer-habilidad-row--unchecked.drawer-habilidad-row--draggable {
+    cursor: default;
 }
 #drawer-competencias-estudiante .drawer-competencia-card-wrapper:not(.drawer-competencia-card-wrapper--compact) .drawer-habilidad-row--draggable {
     cursor: grab;
@@ -1028,6 +1048,26 @@
     display: flex;
     align-items: center;
     gap: var(--gap-sm);
+    transition: transform 0.22s ease-out;
+}
+#drawer-detalle-plan-agregar-cursos .drawer-habilidad-check-wrap {
+    margin-left: auto;
+    flex-shrink: 0;
+}
+#drawer-detalle-plan-agregar-cursos .drawer-habilidad-row--unchecked .drawer-habilidad-title {
+    text-decoration: line-through;
+    color: var(--ubits-fg-disabled);
+    transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+#drawer-detalle-plan-agregar-cursos .drawer-habilidad-row--unchecked .drawer-habilidad-icon {
+    color: var(--ubits-fg-disabled);
+    transition: color 0.2s ease;
+}
+#drawer-detalle-plan-agregar-cursos .drawer-habilidad-row--unchecked .drawer-habilidad-drag {
+    color: var(--ubits-fg-disabled);
+}
+#drawer-detalle-plan-agregar-cursos .drawer-habilidad-row--unchecked.drawer-habilidad-row--draggable {
+    cursor: default;
 }
 #drawer-detalle-plan-agregar-cursos .drawer-habilidad-row--draggable {
     cursor: grab;

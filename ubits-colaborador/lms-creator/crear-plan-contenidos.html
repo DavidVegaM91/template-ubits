@@ -371,7 +371,7 @@
                     getData: function() { return asignacionesData; },
                     rowIdField: 'id',
                     buildRowHtml: buildAsignacionRowHtml,
-                    features: { checkboxes: true, search: true, verSeleccionados: true, actionBar: true, resultsCount: true },
+                    features: { checkboxes: true, search: false, verSeleccionados: true, actionBar: true, resultsCount: true },
                     primaryButton: { text: 'Agregar asignación', icon: 'fa-plus', onClick: function() { if (typeof abrirDrawerAgregarUsuarios === 'function') abrirDrawerAgregarUsuarios(); } },
                     actionBarButtons: [
                         { id: 'eliminar', label: 'Eliminar', icon: 'fa-trash', variant: 'error-secondary', onClick: function(selectedIds) {
