@@ -5,7 +5,7 @@
  */
 window.BD_MASTER_CATEGORIAS_FIQSHA = {
   "version": "1.0",
-  "nota": "Ids cfq-XXX para contenidos empresa en bd-contenidos-fiqsha.js (campo categoriaFiqshaId). El nombre visible se resuelve aquí.",
+  "nota": "Ids cfq-XXX para contenidos empresa en bd-master/bd-contenidos-fiqsha.js (campo categoriaFiqshaId). El nombre visible se resuelve aquí.",
   "categorias": [
     { "id": "cfq-001", "nombre": "Cultura y valores" },
     { "id": "cfq-002", "nombre": "Cumplimiento y ética" },

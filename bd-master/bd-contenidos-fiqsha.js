@@ -1,5 +1,5 @@
 /**
- * Playground UBITS — catálogo implementado (local, no producción).
+ * Playground UBITS — catálogo de contenidos Fiqsha/empresa (local, no producción). Vive en bd-master/.
  * Categoría empresa: `categoriaFiqshaId` → `bd-master/bd-master-categorias-fiqsha.js`.
  * Sin competencias/habilidades UBITS en modelo; sin expertos ni nivel inglés.
  * Nivel: `nivelId` → `bd-master-niveles-contenido.js`. Proveedor: `proveedorAliadoId` (`aly-018` Fiqsha) → `bd-master-aliados.js`.

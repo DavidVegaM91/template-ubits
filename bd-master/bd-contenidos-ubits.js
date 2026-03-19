@@ -1,5 +1,5 @@
 /**
- * Playground UBITS — catálogo implementado (local, no producción).
+ * Playground UBITS — catálogo de contenidos UBITS (local, no producción). Vive en bd-master/.
  * Catálogo UBITS consolidado (incluye rutas de aprendizaje con varios proveedores).
  * Nivel: `nivelId` → `bd-master/bd-master-niveles-contenido.js`.
  * Proveedores: `providersAliadosIds` → `bd-master/bd-master-aliados.js`.
