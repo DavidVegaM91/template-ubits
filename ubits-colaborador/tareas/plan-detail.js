@@ -1,6 +1,6 @@
 /* ========================================
    VISTA DETALLE DEL PLAN
-   Basado en plan-detail.tsx. Datos: solo tareas-base-unificada.js (TAREAS_PLANES_DB).
+   Basado en plan-detail.tsx. Datos: bd-master/bd-tareas-y-planes.js (TAREAS_PLANES_DB).
    ======================================== */
 
 // Utilidades de fecha (usa fecha real de BD unificada si está cargada)
@@ -158,7 +158,7 @@ function loadPlanAndTasks(planId) {
         plan = window.planDetailPlanCache[planId];
         tasks = window.planDetailTasksCache[planId] || [];
     } else {
-        plan = { name: 'Plan ' + planId, description: 'Sin datos. Cargue tareas-base-unificada.js.', created_by: '', end_date: null, status: 'Activo' };
+        plan = { name: 'Plan ' + planId, description: 'Sin datos. Cargue bd-master/bd-tareas-y-planes.js.', created_by: '', end_date: null, status: 'Activo' };
         tasks = [];
     }
     today = getTodayString();

@@ -1,7 +1,7 @@
 /* ========================================
    SEGUIMIENTO - Página de seguimiento
    Empresa: Fiqsha Decoraciones S.A.S.
-   Base de datos: tareas-base-unificada.js (TAREAS_PLANES_DB) — única fuente
+   Base de datos: bd-master/bd-tareas-y-planes.js (TAREAS_PLANES_DB) — única fuente
    ======================================== */
 
 (function () {
@@ -60,7 +60,7 @@
         }
     }
 
-    // Los datos se cargan desde TAREAS_PLANES_DB (tareas-base-unificada.js)
+    // Los datos se cargan desde TAREAS_PLANES_DB (bd-tareas-y-planes.js)
     // 3.2.2 Columnas disponibles en tab Tareas (selector con checkboxes 3.2.1)
     const COLUMN_IDS_TAREAS = ['id', 'nombre', 'asignado', 'creador', 'areaAsignado', 'areaCreador', 'estado', 'prioridad', 'plan', 'fechaCreacion', 'fechaFinalizacion', 'comentarios'];
     // 3.2.3 Por defecto mostrar: Nombre, Asignado, Área asignado, Estado, Prioridad, Fecha de vencimiento. Ocultas por defecto: Creador, Área del creador.
@@ -186,10 +186,10 @@
         menu.style.top = Math.max(padding, Math.min(top, viewportHeight - menuHeight - padding)) + 'px';
     }
 
-    // Generar datos: única fuente TAREAS_PLANES_DB (tareas-base-unificada.js).
+    // Generar datos: única fuente TAREAS_PLANES_DB (bd-tareas-y-planes.js).
     function generateData() {
         if (typeof TAREAS_PLANES_DB === 'undefined') {
-            console.warn('tareas-base-unificada.js no cargado.');
+            console.warn('bd-tareas-y-planes.js no cargado.');
             return [];
         }
         if (typeof SEGUIMIENTO_SCOPE !== 'undefined' && SEGUIMIENTO_SCOPE === 'leader' && typeof SEGUIMIENTO_CURRENT_LEADER !== 'undefined') {

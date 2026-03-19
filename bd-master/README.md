@@ -14,6 +14,7 @@ Carpeta única de **bases de datos del playground** (JavaScript en `window`, sin
 | `bd-master-niveles-contenido.js` | `window.BD_MASTER_NIVELES_CONTENIDO` | Niveles Básico / Intermedio / Avanzado (`niv-XXX`). |
 | `bd-master-categorias-fiqsha.js` | `window.BD_MASTER_CATEGORIAS_FIQSHA` | Categorías corporativas Fiqsha (`cfq-XXX`). |
 | `bd-master-colaboradores.js` | `window.BD_MASTER_COLABORADORES` | Empresa referencia + **55 colaboradores** Fiqsha (`colaboradores[]`). |
+| `bd-tareas-y-planes.js` | `window.TAREAS_PLANES_DB` | Tareas, planes, seguimiento, datos generados; lee colaboradores del maestro. |
 | `bd-contenidos-ubits.js` | `window.BDS_CONTENIDOS_UBITS` | Catálogo de contenidos UBITS (`contents[]`, ~85 ítems). |
 | `bd-contenidos-fiqsha.js` | `window.BDS_CONTENIDOS_FIQSHA` | Catálogo de contenidos empresa Fiqsha (`contents[]`). |
 
@@ -32,28 +33,29 @@ Ruta relativa típica desde HTML: `../../bd-master/nombre-archivo.js` (desde `ub
 | Mismo drawer (solo UBITS) | `bd-master-competencias.js`, `bd-master-habilidades.js` | Texto de **competencia** (y habilidades) en cards UBITS. |
 | Mismo drawer (solo Fiqsha) | `bd-master-categorias-fiqsha.js` | **Categoría empresa** desde `categoriaFiqshaId`. |
 | Mismo drawer | `bd-contenidos-ubits.js`, `bd-contenidos-fiqsha.js` | **Listas** `BDS_CONTENIDOS_UBITS.contents` + `BDS_CONTENIDOS_FIQSHA.contents` (merge en página). |
-| Listas de colaboradores / equipo (con `tareas-base-unificada.js`) | `bd-master-colaboradores.js` | **55 personas**; debe cargarse **antes** de `../tareas/tareas-base-unificada.js`. |
+| Listas de colaboradores / equipo | `bd-master-colaboradores.js` | **55 personas**; cargar **antes** de `bd-tareas-y-planes.js`. |
+| Tareas / planes / equipo (API) | `bd-tareas-y-planes.js` | `TAREAS_PLANES_DB`; después de colaboradores. |
 
-**Orden de carga en esa página (recomendado):** maestros de resolución (niveles → aliados → competencias → habilidades → categorías Fiqsha) → catálogos de contenidos (UBITS → Fiqsha) → colaboradores → `tareas-base-unificada.js` → JS de la página.
+**Orden de carga en esa página (recomendado):** maestros de resolución (niveles → aliados → competencias → habilidades → categorías Fiqsha) → catálogos de contenidos (UBITS → Fiqsha) → `bd-master-colaboradores.js` → `bd-tareas-y-planes.js` → JS de la página.
 
 ### LMS Creator — resto de páginas
 
 | Página | Sección | Scripts `bd-master` | Para qué |
 |--------|---------|---------------------|----------|
-| `crear-grupo.html` | Grupos / colaboradores | `bd-master-colaboradores.js` | Datos de personas vía `tareas-base-unificada.js`. |
+| `crear-grupo.html` | Grupos / colaboradores | `bd-master-colaboradores.js`, `bd-tareas-y-planes.js` | Colaboradores primero; luego `TAREAS_PLANES_DB` para listas de empleados. |
 | `detalle-grupo.html` | Detalle grupo | Igual | Igual. |
 | `detalle-plan.html` | Detalle plan | Igual | Igual. |
 | `editar-plan-contenidos.html` | Editar plan contenidos | Igual | Igual. |
 | `crear-plan-competencias.html` | Plan por competencias | Igual | Igual. |
 | `detalle-plan-competencias.html` | Detalle plan competencias | Igual | Igual. |
 
-*(Ninguna de estas carga `bd-contenidos-*` ni los maestros de catálogo salvo colaboradores.)*
+*(Ninguna de estas carga `bd-contenidos-*` ni los maestros de catálogo salvo colaboradores + BD tareas/planes.)*
 
 ### Tareas — `ubits-colaborador/tareas/`
 
 | Página | Sección | Scripts `bd-master` | Para qué |
 |--------|---------|---------------------|----------|
-| `tareas.html` | Lista y detalle de tareas | `bd-master-colaboradores.js` | Población de empleados/equipo; **antes** de `tareas-base-unificada.js`. |
+| `tareas.html` | Lista y detalle de tareas | `bd-master-colaboradores.js`, `bd-tareas-y-planes.js` | Colaboradores primero; luego tareas/planes/seguimiento simulados (`TAREAS_PLANES_DB`). |
 | `planes.html` | Planes | Igual | Igual. |
 | `plan-detail.html` | Detalle de plan | Igual | Igual. |
 | `seguimiento.html` | Tabla seguimiento | Igual | Igual. |
@@ -74,7 +76,7 @@ Ruta relativa típica desde HTML: `../../bd-master/nombre-archivo.js` (desde `ub
 ## Colaboradores y tareas
 
 - **`bd-master-colaboradores.js`** es la fuente de **`colaboradores[]`** (55 registros).
-- **`ubits-colaborador/tareas/tareas-base-unificada.js`** los clona en `EMPLEADOS_EJEMPLO`, `GERENTE_EJEMPLO` y `JEFES_EJEMPLO`. Sin el maestro cargado antes, la lista queda vacía y verás un aviso en consola.
+- **`bd-tareas-y-planes.js`** los clona en `EMPLEADOS_EJEMPLO`, `GERENTE_EJEMPLO` y `JEFES_EJEMPLO` y expone **`TAREAS_PLANES_DB`**. Sin el maestro de colaboradores cargado antes, la lista queda vacía y verás un aviso en consola.
 
 ---
 
@@ -90,13 +92,22 @@ Ruta relativa típica desde HTML: `../../bd-master/nombre-archivo.js` (desde `ub
 
 ---
 
-## Ejemplo de inclusión (desde `lms-creator/`)
+## Ejemplo de inclusión (desde `lms-creator/` o `tareas/`)
+
+**Maestro de competencias:**
 
 ```html
 <script src="../../bd-master/bd-master-competencias.js"></script>
 <script>
   var comps = window.BD_MASTER_COMPETENCIAS.competencias || [];
 </script>
+```
+
+**Tareas y planes (siempre colaboradores primero):**
+
+```html
+<script src="../../bd-master/bd-master-colaboradores.js"></script>
+<script src="../../bd-master/bd-tareas-y-planes.js"></script>
 ```
 
 ## Mantenimiento

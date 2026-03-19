@@ -51,7 +51,7 @@ let planDrawerState = {
 
 // ========================================
 //   INTERFAZ DE PLANES - Basado en PlanCard.tsx
-//   Datos: solo tareas-base-unificada.js (TAREAS_PLANES_DB).
+//   Datos: solo bd-master/bd-tareas-y-planes.js (TAREAS_PLANES_DB).
 // ========================================
 
 let estadoPlanes = {
@@ -64,7 +64,7 @@ let estadoPlanes = {
     plansPerPage: 6
 };
 
-// Planes solo desde BD unificada (tareas-base-unificada.js se carga antes que este script)
+// Planes solo desde BD unificada (bd-tareas-y-planes.js se carga antes que este script)
 (function () {
     var db = typeof window !== 'undefined' ? window.TAREAS_PLANES_DB : (typeof TAREAS_PLANES_DB !== 'undefined' ? TAREAS_PLANES_DB : null);
     estadoPlanes.plans = (db && typeof db.getPlanesVistaPlanes === 'function') ? db.getPlanesVistaPlanes() : [];

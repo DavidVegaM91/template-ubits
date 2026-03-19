@@ -12,7 +12,7 @@ Registro de cambios realizados en los archivos del módulo de Tareas y Planes (P
 - **Detalle de subtarea:** `subtask-detail.css`, `subtask-detail.html`, `subtask-detail.js`
 - **Seguimiento:** `seguimiento.css`, `seguimiento.html`, `seguimiento.js`
 - **Seguimiento líder:** `seguimiento-leader.css`, `seguimiento-leader.html`
-- **Base de datos unificada:** `tareas-base-unificada.js`
+- **Base de datos unificada:** `bd-master/bd-tareas-y-planes.js` (antes `tareas-base-unificada.js` en esta carpeta)
 - **Plantilla:** `plantilla.html`, `plantilla.css`
 
 ---
@@ -24,7 +24,7 @@ Registro de cambios realizados en los archivos del módulo de Tareas y Planes (P
 ### 1. Datos y usuario
 
 1. [x] **Base de datos unificada y empresa de ejemplo**  
-   Todas las páginas de tareas (Tareas, Planes, Detalle de plan, Seguimiento y Seguimiento líder) comparten **una sola base de datos** (`tareas-base-unificada.js`) que simula una empresa real: **Fiqsha Decoraciones S.A.S.**, con 8 áreas, 1 gerente, 7 jefes y 51 empleados. Los datos están en español (nombres, cargos, áreas) y el usuario que abre la plataforma es **María Alejandra Sánchez Pardo** (Jefe de Logística).  
+   Todas las páginas de tareas (Tareas, Planes, Detalle de plan, Seguimiento y Seguimiento líder) comparten **una sola base de datos** (`bd-master/bd-tareas-y-planes.js`, API `TAREAS_PLANES_DB`) que simula una empresa real: **Fiqsha Decoraciones S.A.S.**, con 8 áreas, 1 gerente, 8 jefes de área y 55 colaboradores en total. Los datos están en español (nombres, cargos, áreas) y el usuario que abre la plataforma es **María Alejandra Sánchez Pardo** (Jefe de Logística).  
    - **Tareas:** en promedio ~30 por usuario por mes: ~10 individuales (solo en Mi lista) y ~20 grupales (además en seguimiento). La mayoría vinculadas a un plan; unas pocas sueltas.  
    - **Planes:** individuales (~3 por mes para María) y grupales por área; misma lógica de estados.  
    - **Estados (tareas y planes):** reparto tipo real: **Finalizadas 70–85%**, **Iniciadas 10–20%**, **Vencidas 5–15%**.  
@@ -169,7 +169,7 @@ Registro de cambios realizados en los archivos del módulo de Tareas y Planes (P
     Añadir un **botón de filtros** en `tareas.html` que abra un **drawer** con estos filtros: **Estado**, **Prioridad**, y un filtro para ver **solo lo que asigné a otros** o **solo lo asignado a mí**.
 
 26. [x] **Base de datos y vistas: estado "Iniciada" → "Por hacer"**  
-    Cambiado en todos los HTML y JS de la carpeta `tareas`, más los componentes `task-strip.js` y `task-detail-panel.js`. El valor interno en los objetos JavaScript (`.status = 'Activo'`) **no cambió** — solo los strings de display. Archivos modificados: `task-strip.js` (línea 24 `estadoTexto`), `tareas.js` (label del drawer de filtros + `statusDisplay` del panel de detalle), `plan-detail.js` (`statusDisplay`), `seguimiento.js` (checkbox del drawer, `optionsMap`, `statusClass`, `syncTaskToRow`, `updateIndicadores`, menú "Cambiar estado" y modales), `seguimiento.html` y `seguimiento-leader.html` (label del indicador), `plan-detail.html` (contador de tareas), `tareas-base-unificada.js` (strings de generación de `row.estado` en `actividadesSeguimiento`).
+    Cambiado en todos los HTML y JS de la carpeta `tareas`, más los componentes `task-strip.js` y `task-detail-panel.js`. El valor interno en los objetos JavaScript (`.status = 'Activo'`) **no cambió** — solo los strings de display. Archivos modificados: `task-strip.js` (línea 24 `estadoTexto`), `tareas.js` (label del drawer de filtros + `statusDisplay` del panel de detalle), `plan-detail.js` (`statusDisplay`), `seguimiento.js` (checkbox del drawer, `optionsMap`, `statusClass`, `syncTaskToRow`, `updateIndicadores`, menú "Cambiar estado" y modales), `seguimiento.html` y `seguimiento-leader.html` (label del indicador), `plan-detail.html` (contador de tareas), `bd-master/bd-tareas-y-planes.js` (antes `tareas-base-unificada.js`; strings de generación de `row.estado` en `actividadesSeguimiento`).
 
 ---
 

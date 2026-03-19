@@ -1,6 +1,6 @@
 /**
  * Playground UBITS — base maestra (template local).
- * Cargar ANTES de tareas-base-unificada.js:
+ * Cargar ANTES de bd-tareas-y-planes.js:
  * <script src="../../bd-master/bd-master-colaboradores.js"></script>
  * Rutas relativas desde ubits-colaborador/tareas/ o ubits-colaborador/lms-creator/.
  */
@@ -24,7 +24,7 @@ window.BD_MASTER_COLABORADORES = {
     "Cali",
     "Pereira"
   ],
-  "nota": "Lista canónica de los 55 colaboradores Fiqsha (misma forma que EMPLEADOS_EJEMPLO en tareas). tareas-base-unificada.js clona colaboradores en EMPLEADOS_EJEMPLO, GERENTE_EJEMPLO y JEFES_EJEMPLO. API: TAREAS_PLANES_DB.getEmpleadosEjemplo().",
+  "nota": "Lista canónica de los 55 colaboradores Fiqsha (misma forma que EMPLEADOS_EJEMPLO en tareas). bd-tareas-y-planes.js clona colaboradores en EMPLEADOS_EJEMPLO, GERENTE_EJEMPLO y JEFES_EJEMPLO. API: TAREAS_PLANES_DB.getEmpleadosEjemplo().",
   "ejemploRegistro": {
     "id": "E001",
     "idColaborador": "1011000001",

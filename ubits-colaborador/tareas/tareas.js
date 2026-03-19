@@ -1,7 +1,7 @@
 /* ========================================
    VISTA DE TAREAS - BASADO EN COMPONENTE REACT
    Renderiza días del calendario dinámicamente con scroll infinito.
-   Datos: solo tareas-base-unificada.js (TAREAS_PLANES_DB).
+   Datos: bd-master/bd-tareas-y-planes.js (TAREAS_PLANES_DB).
    ======================================== */
 
 // Datos de tareas: única fuente TAREAS_PLANES_DB.getTareasVistaTareas() (estructura { vencidas, porDia }).

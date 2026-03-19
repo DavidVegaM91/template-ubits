@@ -1,8 +1,10 @@
 /* ========================================
    BASE DE DATOS UNIFICADA - TAREAS Y PLANES
+   Archivo: bd-master/bd-tareas-y-planes.js (API global: TAREAS_PLANES_DB).
+
    Única fuente de datos para: planes.html, tareas.html, seguimiento.html,
-   seguimiento-leader.html, plan-detail.html. Objetivo: no duplicar datos
-   en otros JS; poder eliminar bases de datos que había por archivo.
+   seguimiento-leader.html, plan-detail.html, flujos lms-creator que usen empleados.
+   Objetivo: no duplicar datos en otros JS.
 
    Colaboradores (55): bd-master/bd-master-colaboradores.js (BD_MASTER_COLABORADORES.colaboradores).
    Ese script debe cargarse en el HTML antes de este archivo.
@@ -141,7 +143,7 @@
     // ============================================
     // ESTRUCTURA DE EMPRESA (Fiqsha Decoraciones S.A.S.)
     // Personas: lista canónica en bd-master/bd-master-colaboradores.js (colaboradores).
-    // Cargar ese script antes de este en cada HTML que use tareas-base-unificada.js.
+    // Cargar bd-master-colaboradores.js antes de este en cada HTML que use bd-tareas-y-planes.js.
     // ============================================
     const EMPRESA_EJEMPLO = {
         nombre: 'Fiqsha Decoraciones S.A.S.',
@@ -157,7 +159,7 @@
     const GERENTE_EJEMPLO = EMPLEADOS_EJEMPLO.find(function (e) { return e.esGerenteGeneral; }) || EMPLEADOS_EJEMPLO[0];
     const JEFES_EJEMPLO = EMPLEADOS_EJEMPLO.filter(function (e) { return e.esJefe && !e.esGerenteGeneral; });
     if (EMPLEADOS_EJEMPLO.length === 0) {
-        console.warn('tareas-base-unificada: cargue bd-master/bd-master-colaboradores.js antes de este script (55 colaboradores Fiqsha).');
+        console.warn('bd-tareas-y-planes: cargue bd-master/bd-master-colaboradores.js antes de este script (55 colaboradores Fiqsha).');
     }
 
     const AREAS_EJEMPLO = [
