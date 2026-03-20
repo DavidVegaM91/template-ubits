@@ -316,7 +316,13 @@
             var container = document.getElementById('header-product-seguimiento');
             if (container) {
                 var tabsEl = container.querySelector('.ubits-header-product__tabs');
-                if (tabsEl) tabsEl.id = 'seguimiento-tabs';
+                if (tabsEl) {
+                    tabsEl.id = 'seguimiento-tabs';
+                    tabsEl.querySelectorAll('.ubits-tab[data-tab]').forEach(function (btn) {
+                        var tid = btn.getAttribute('data-tab');
+                        if (tid) btn.id = 'seguimiento-tab-' + tid;
+                    });
+                }
                 var primaryBtn = container.querySelector('.ubits-header-product__actions .ubits-button--primary');
                 if (primaryBtn) primaryBtn.id = 'seguimiento-crear-btn';
             }

@@ -762,6 +762,22 @@
         return y + '-' + m + '-' + day;
     }
 
+    /** Convierte YYYY-MM-DD a formato de filtro "1 ene 2026" (mismo que formatearFechaParaMostrar). */
+    function isoToDisplayDate(iso) {
+        if (!iso || typeof iso !== 'string') return null;
+        var m = iso.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+        if (!m) return null;
+        var d = new Date(parseInt(m[1], 10), parseInt(m[2], 10) - 1, parseInt(m[3], 10));
+        if (isNaN(d.getTime())) return null;
+        var dia = d.getDate();
+        var meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+        var mes = meses[d.getMonth()];
+        var anio = d.getFullYear();
+        return dia + ' ' + mes + ' ' + anio;
+    }
+
+    var PERIODO_PRESETS = ['7', '15', '30', '90', '180', '365'];
+
     function escapeHtml(str) {
         if (str == null || str === '') return '';
         const div = document.createElement('div');
@@ -1632,6 +1648,8 @@
                 remove: () => {
                     currentFilters.fechaCreacionDesde = null;
                     currentFilters.fechaCreacionHasta = null;
+                    currentFilters.periodo = '7';
+                    syncPeriodButtonFromCurrentFilters();
                     // Limpiar inputs de fecha
                     const desdeContainer = document.getElementById('filtros-fecha-creacion-desde');
                     const hastaContainer = document.getElementById('filtros-fecha-creacion-hasta');
@@ -1643,6 +1661,7 @@
                     updateResultsCount();
                     updateIndicadores();
                     initLoadMore();
+                    updateSeguimientoUrl();
                 }
             });
         }
@@ -2131,6 +2150,7 @@
         updateIndicadores();
         initLoadMore();
         renderFiltrosAplicados();
+        updateSeguimientoUrl();
 
         // Cerrar modal de filtros si está abierto
         closeFiltersModal();
@@ -2337,6 +2357,94 @@
         }
     }
 
+    /**
+     * Tab visible según URL: hash #planes | #tareas o query ?tab=planes|tareas (recarga conserva la pestaña).
+     */
+    function parseSeguimientoTabFromUrl() {
+        var h = (window.location.hash || '').replace(/^#/, '').toLowerCase();
+        if (h === 'planes' || h === 'tareas') return h;
+        try {
+            var p = (new URLSearchParams(window.location.search).get('tab') || '').toLowerCase();
+            if (p === 'planes' || p === 'tareas') return p;
+        } catch (e) {}
+        return null;
+    }
+
+    /**
+     * Período del tab activo: ?periodo=7|15|30|90|180|365 o rango ?desde=YYYY-MM-DD&hasta=YYYY-MM-DD (personalizado).
+     */
+    function applySeguimientoPeriodFromUrl() {
+        var params;
+        try {
+            params = new URLSearchParams(window.location.search);
+        } catch (e) {
+            return;
+        }
+        var desde = params.get('desde');
+        var hasta = params.get('hasta');
+        if (desde && hasta && /^\d{4}-\d{2}-\d{2}$/.test(desde) && /^\d{4}-\d{2}-\d{2}$/.test(hasta)) {
+            var d1 = isoToDisplayDate(desde);
+            var d2 = isoToDisplayDate(hasta);
+            if (d1 && d2) {
+                currentFilters.periodo = null;
+                currentFilters.fechaCreacionDesde = d1;
+                currentFilters.fechaCreacionHasta = d2;
+                return;
+            }
+        }
+        var pr = (params.get('periodo') || '').trim();
+        if (PERIODO_PRESETS.indexOf(pr) >= 0) {
+            currentFilters.fechaCreacionDesde = null;
+            currentFilters.fechaCreacionHasta = null;
+            currentFilters.periodo = pr;
+        }
+    }
+
+    /** Sincroniza hash (#planes) y query de período con el estado del tab activo (replaceState, sin recarga). */
+    function updateSeguimientoUrl() {
+        var tab = activeTab;
+        var cf = currentFilters;
+        try {
+            var u = new URL(window.location.href);
+            u.hash = '';
+            u.searchParams.delete('tab');
+            u.searchParams.delete('periodo');
+            u.searchParams.delete('desde');
+            u.searchParams.delete('hasta');
+
+            if (cf.fechaCreacionDesde && cf.fechaCreacionHasta) {
+                var pd1 = parseFecha(cf.fechaCreacionDesde);
+                var pd2 = parseFecha(cf.fechaCreacionHasta);
+                if (pd1 && pd2) {
+                    u.searchParams.set('desde', dateToYYYYMMDD(pd1));
+                    u.searchParams.set('hasta', dateToYYYYMMDD(pd2));
+                }
+            } else if (cf.periodo && PERIODO_PRESETS.indexOf(String(cf.periodo)) >= 0) {
+                var p = String(cf.periodo);
+                if (p !== '7') {
+                    u.searchParams.set('periodo', p);
+                }
+            }
+
+            var clean = u.pathname + u.search;
+            if (tab === 'planes') {
+                history.replaceState(null, '', clean + '#planes');
+            } else {
+                history.replaceState(null, '', clean);
+            }
+        } catch (e) {}
+    }
+
+    function syncHeaderTabsFromActiveTab() {
+        document.querySelectorAll('#seguimiento-tabs .ubits-tab').forEach(btn => {
+            const isActive = btn.dataset.tab === activeTab;
+            btn.classList.toggle('ubits-tab--active', isActive);
+            btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        });
+        const headerTitle = document.getElementById('seguimiento-header-title');
+        if (headerTitle) headerTitle.textContent = activeTab === 'planes' ? 'Lista de planes' : 'Lista de tareas';
+    }
+
     // Cambiar tab Tareas | Planes (cada tab tiene sus propios filtros)
     function switchToTab(tab) {
         if (tab !== 'tareas' && tab !== 'planes') return;
@@ -2346,13 +2454,7 @@
         currentFilters = filtersByTab[tab];
         syncPeriodButtonFromCurrentFilters();
         renderFiltrosAplicados();
-        document.querySelectorAll('#seguimiento-tabs .ubits-tab').forEach(btn => {
-            const isActive = btn.dataset.tab === tab;
-            btn.classList.toggle('ubits-tab--active', isActive);
-            btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
-        });
-        const headerTitle = document.getElementById('seguimiento-header-title');
-        if (headerTitle) headerTitle.textContent = tab === 'planes' ? 'Lista de planes' : 'Lista de tareas';
+        syncHeaderTabsFromActiveTab();
         selectedIds.clear();
         displayLimit = SEGUIMIENTO_LOAD_MORE_SIZE;
         initColumnVisibility();
@@ -2370,6 +2472,7 @@
         buildColumnsMenu();
         toggleActionBar();
         updateActionBarVisibilityForTab();
+        updateSeguimientoUrl();
     }
 
     function updateActionBarVisibilityForTab() {
@@ -2408,6 +2511,14 @@
         updateActionBarVisibilityForTab();
     }
 
+    /** Si el usuario cambia el hash manualmente o con atrás/adelante */
+    function initSeguimientoUrlTabListener() {
+        window.addEventListener('hashchange', function () {
+            var t = parseSeguimientoTabFromUrl();
+            if (t && t !== activeTab) switchToTab(t);
+        });
+    }
+
     // Inicializar modales
     function initModals() {
         // Drawer de filtros ya no se abre desde botón (se eliminó por feedback; se usan filtros de encabezados de tabla)
@@ -2427,6 +2538,7 @@
             updateIndicadores();
             initLoadMore();
             renderFiltrosAplicados();
+            updateSeguimientoUrl();
         });
         if (filtersAplicar) filtersAplicar.addEventListener('click', function () {
             readFilterCheckboxes();
@@ -2580,6 +2692,7 @@
                         updateResultsCount();
                         updateIndicadores();
                         initLoadMore();
+                        updateSeguimientoUrl();
                     });
                 });
                 overlayEl.addEventListener('click', function (ev) {
@@ -2783,6 +2896,7 @@
                 updateResultsCount();
                 updateIndicadores();
                 initLoadMore();
+                updateSeguimientoUrl();
 
                 closeDatePicker();
             });
@@ -4074,10 +4188,22 @@
         } catch (e) {}
 
         SEGUIMIENTO_DATA = generateData();
+        var tabFromUrl = parseSeguimientoTabFromUrl();
+        if (tabFromUrl) {
+            activeTab = tabFromUrl;
+            currentFilters = filtersByTab[activeTab];
+        }
+        applySeguimientoPeriodFromUrl();
+        syncPeriodButtonFromCurrentFilters();
         initColumnVisibility();
         buildTableHeader();
         initNav();
         initTabSwitcher();
+        syncHeaderTabsFromActiveTab();
+        initSeguimientoUrlTabListener();
+        try {
+            updateSeguimientoUrl();
+        } catch (e) {}
         buildColumnsMenu();
         applyFiltersAndSearch(); // Aplicar filtros (incluyendo período por defecto) antes de renderizar
         applySorting(); // Aplicar ordenamiento por defecto antes de renderizar
