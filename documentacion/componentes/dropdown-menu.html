@@ -35,7 +35,7 @@
                         <div style="text-align: center; margin-bottom: 60px;">
                             <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">Dropdown Menu</h1>
                             <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
-                                Menú desplegable unificado: padding sm, fondo blanco (bg-1), elevation, texto regular alineado a la izquierda. Opcional: autocomplete (p. ej. encabezados de tabla), opciones con icono/checkbox/switch a izquierda o derecha. Footer con botón secundario y primario a la derecha. <strong>Variante con inputs:</strong> con <code>customBodyHtml</code> el cuerpo muestra HTML personalizado (p. ej. inputs oficiales tipo select) en lugar de la lista de opciones.
+                                Menú desplegable unificado: padding sm, fondo blanco (bg-1), elevation, texto regular alineado a la izquierda. Opcional: autocomplete (p. ej. encabezados de tabla), opciones con icono/checkbox/switch a izquierda o derecha. Footer con botón secundario y primario a la derecha. <strong>Multiselect con búsqueda:</strong> con <code>hasMultiSelectSummary</code> y <code>initDropdownMultiSelectSummary</code> aparece un botón pequeño (solo si ya hay al menos un ítem marcado) que alterna la <strong>misma lista de checkboxes</strong> entre el filtro habitual y “solo seleccionados”; en ese modo el alto de la lista es ~5 filas y el resto se ve con scroll. Clic o escritura en el buscador vuelve al modo filtro. <strong>Variante con inputs:</strong> con <code>customBodyHtml</code> el cuerpo muestra HTML personalizado (p. ej. inputs oficiales tipo select) en lugar de la lista de opciones.
                             </p>
                         </div>
 
@@ -177,6 +177,10 @@ Ubicación: [describe dónde debe estar el botón que abre el menú]</code></pre
   .ubits-dropdown-menu__autocomplete-wrap  /* Opcional: input de búsqueda (lupa + X) */
     #overlayId-autocomplete-input   /* Input tipo búsqueda, tamaño sm */
     #overlayId-autocomplete-clear   /* Icono X para limpiar (visible al escribir) */
+  .ubits-dropdown-menu__multiselect-summary  /* Opcional: botón xs Ver/Ocultar seleccionados */
+    #overlayId-multiselect-summary-toggle
+  #overlayId-options  /* id en .ubits-dropdown-menu__options si hasMultiSelectSummary */
+    /* .ubits-dropdown-menu__options--selected-only-scroll → ~5 filas visibles en modo solo seleccionados */
   .ubits-dropdown-menu__options   /* O bien .ubits-dropdown-menu__custom-body si se pasa customBodyHtml */
     .ubits-dropdown-menu__option   /* Botón o label por ítem: left + text + right */
       /* Variante radioGroup: .ubits-dropdown-menu__option--radio + .ubits-radio .ubits-radio__circle .ubits-radio__label */
@@ -199,6 +203,11 @@ Ubicación: [describe dónde debe estar el botón que abre el menú]</code></pre
   config.footerSecondaryLabel?, config.footerPrimaryLabel?
   config.footerSecondaryId?, config.footerPrimaryId?
   config.customBodyHtml?     → cuerpo personalizado (inputs, formularios) en lugar de .ubits-dropdown-menu__options
+  config.hasMultiSelectSummary? → botón xs que alterna la lista entre filtro y solo ítems marcados (misma .ubits-dropdown-menu__options)
+  config.multiSelectSummaryToggleShowLabel?, multiSelectSummaryToggleHideLabel?
+
+initDropdownMultiSelectSummary(overlayId, { applyListVisibility(mode), searchInput?, anchorElement?, toggleLabelShow?, toggleLabelHide? })
+  mode: 'filter' | 'selected-only'. Clic/focus/input en searchInput vuelve a 'filter'.
 
 openDropdownMenu(overlayId, position, options?)
   position = elemento ancla (botón) o { top, left } en px

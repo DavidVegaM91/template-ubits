@@ -365,4 +365,29 @@ Registro de cambios realizados en los archivos del módulo de Tareas y Planes (P
 
 ---
 
-*Última actualización: ítems 1–20 (11 feb), 21–26 (19 feb), 27 (Cargar más), 28–30 (20 feb), 31 (21 feb), 32 (23 feb), 33 (nueva versión task-detail), 34 (dropdowns Estado y Prioridad en task-detail), 35 (panel de comentarios: adjuntar imágenes y archivos), 36 (implementación de subtask-detail), 37 (homologación encabezados plan-detail con task-detail), 38 (scroll-spy calendario horizontal, 10 mar), 39 (doble clic para cambio de nombre en tirillas y opción Cambiar nombre en subtareas), 40 (recordatorio registrado en historial en task-detail), 41 (plan-detail: asignados, filtro por persona, filtros aplicados y UI, 11 mar), 42 (task-detail: vencimiento sm, progress bar subtareas, botón Filtrar, Historial de cambios, nueva versión formulario subtareas, 12 mar), 43 (marca "- editado" en comentarios editados, 12 mar), 44 (filtro Asignado específico en tareas, 18 mar), 45 (estilos tirilla en celulares, 18 mar) implementados.*
+## 20 de marzo de 2026
+
+46. [x] **Seguimiento (Planes): "Añadir colaborador" con dropdown oficial, multiselección y posición en viewport**
+
+    En la pestaña **Planes**, la acción **Añadir colaborador** usa el mismo patrón que el filtro de columna (**dropdown-menu**): búsqueda arriba, hasta **5 opciones visibles** filtradas al escribir, **multiselección con checkbox y texto** (sin avatares en la lista), footer **Cancelar / Aplicar**. Se pueden marcar **varias personas** y al **Aplicar** se añaden a **todos los planes** seleccionados en la tabla (evitando duplicados por nombre).     La lista de personas combina `TAREAS_PLANES_DB.getEmpleadosEjemplo()` con asignados ya presentes en `SEGUIMIENTO_DATA`. **Deduplicación por nombre normalizado** (`normalizeText`), para no repetir la misma persona si aparece en empleados y en seguimiento con `username` distinto o vacío. El posicionamiento usa **`openDropdownMenu`** (arriba/abajo y ajuste horizontal al viewport). En el filtro por columna con checkboxes se corrigió la lectura del texto para filtrar usando también **`.ubits-checkbox__label`**.
+
+    Archivos: `seguimiento.js`, `seguimiento.html`, `seguimiento-leader.html`, `seguimiento.css`, `Changelog-planes-y-tareas.md`.
+
+    **Filtros encabezado Área del asignado / Área del creador:** lista **sin tope de 5 ítems**; todas las áreas que coincidan con el texto van en un bloque con **scroll** (`dropdown-menu.css`: `.ubits-dropdown-menu__options--filter-scroll`). No usa “Ver seleccionados”.
+
+    **Barra de acciones “Ver seleccionados”:** con selección en tabla y **sin** modo “solo seleccionados”, el texto del botón pasa a **Ver seleccionados (N)** con el contador entre paréntesis (Tareas y Planes).
+
+47. [x] **Dropdown Menu: resumen multiselect "Ver seleccionados" + uso en Añadir colaborador y filtros de encabezado**
+
+    En **components/dropdown-menu** (`getDropdownMenuHtml` + `initDropdownMultiSelectSummary`): **`hasMultiSelectSummary`** añade botón **secondary xs** (ojo / ojo tachado), **visible solo si hay ≥1 marcado**, que alterna la lista entre filtro y **solo seleccionados**; en ese modo la lista usa **`max-height` ~5 filas** (clase `selected-only-scroll`) y el resto con scroll. Si se desmarcan todos, se oculta el botón y vuelve el modo filtro. **Clic, focus o input** en el buscador = salir de solo seleccionados. Callback **`applyListVisibility('filter'|'selected-only')`**.
+
+    - **Añadir colaborador** (tab Planes).
+    - **Filtros de encabezado de tabla (seguimiento):** tab **Tareas** → columnas **Asignado**, **Creador**, **Plan al que pertenece**; tab **Planes** → **Creador del plan** (mismo `data-filter="creador"`). Los filtros de **área** siguen solo con scroll de lista completa, sin este bloque.
+
+    Doc: `documentacion/componentes/dropdown-menu.html`.
+
+    Archivos: `components/dropdown-menu.js`, `components/dropdown-menu.css`, `seguimiento.js`, `documentacion/componentes/dropdown-menu.html`, `Changelog-planes-y-tareas.md`.
+
+---
+
+*Última actualización: ítems 1–20 (11 feb), 21–26 (19 feb), 27 (Cargar más), 28–30 (20 feb), 31 (21 feb), 32 (23 feb), 33 (nueva versión task-detail), 34 (dropdowns Estado y Prioridad en task-detail), 35 (panel de comentarios: adjuntar imágenes y archivos), 36 (implementación de subtask-detail), 37 (homologación encabezados plan-detail con task-detail), 38 (scroll-spy calendario horizontal, 10 mar), 39 (doble clic para cambio de nombre en tirillas y opción Cambiar nombre en subtareas), 40 (recordatorio registrado en historial en task-detail), 41 (plan-detail: asignados, filtro por persona, filtros aplicados y UI, 11 mar), 42 (task-detail: vencimiento sm, progress bar subtareas, botón Filtrar, Historial de cambios, nueva versión formulario subtareas, 12 mar), 43 (marca "- editado" en comentarios editados, 12 mar), 44 (filtro Asignado específico en tareas, 18 mar), 45 (estilos tirilla en celulares, 18 mar), 46 (Añadir colaborador seguimiento, 20 mar), 47 (resumen multiselect dropdown, 20 mar) implementados.*

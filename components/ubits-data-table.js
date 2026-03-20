@@ -33,7 +33,8 @@
  *
  * 1) Lo que YA da este componente (activar con features y options):
  *    - Checkboxes, búsqueda, filtros por columna, orden, botón Columnas, barra de acciones,
- *      Ver seleccionados, contador X/Y, empty "sin datos" y empty "sin resultados" con Limpiar búsqueda.
+ *      Ver seleccionados (texto i18n + (N) si hay selección sin modo solo seleccionados; "Dejar de ver seleccionados (N)" en modo activo),
+ *      contador X/Y de resultados, empty "sin datos" y empty "sin resultados" con Limpiar búsqueda.
  *    - Ejemplo de uso: documentacion/ejemplos/tabla-data-table-ejemplo.html
  *
  * 2) Lo que hay que AÑADIR en la página (fuera del componente):
@@ -465,7 +466,7 @@
                     btn.classList.add('active');
                 } else {
                     if (icon) icon.className = 'far fa-eye';
-                    if (span) span.textContent = i18n.verSeleccionados;
+                    if (span) span.textContent = i18n.verSeleccionados + ' (' + n + ')';
                     btn.classList.remove('active');
                 }
             }

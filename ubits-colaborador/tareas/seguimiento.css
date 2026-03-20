@@ -950,39 +950,6 @@
     border-top: 1px solid var(--ubits-border-1);
 }
 
-/* Menú añadir colaborador al plan */
-.anadir-colaborador-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 999;
-}
-
-.anadir-colaborador-menu {
-    position: fixed;
-    min-width: 300px;
-    background: var(--ubits-bg-1);
-    border: 1px solid var(--ubits-border-1);
-    border-radius: var(--border-radius-sm);
-    box-shadow: 0 4px 16px var(--ubits-bottom-nav-shadow-opacity);
-    z-index: 1001;
-    padding: var(--padding-md);
-}
-
-.anadir-colaborador-content {
-    margin-bottom: 12px;
-}
-
-.anadir-colaborador-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: var(--gap-sm);
-    padding-top: 8px;
-    border-top: 1px solid var(--ubits-border-1);
-}
-
 /* Menú de período */
 .periodo-menu-overlay {
     position: fixed;

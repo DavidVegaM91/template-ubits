@@ -42,6 +42,9 @@
      * @param {string} [config.footerSecondaryId] - ID del botón secundario.
      * @param {string} [config.footerPrimaryId] - ID del botón primario.
      * @param {string} [config.customBodyHtml] - HTML personalizado para el cuerpo (inputs, formularios). Si se define, se muestra en lugar de la lista de opciones.
+     * @param {boolean} [config.hasMultiSelectSummary=false] - Tras el autocomplete (si hay): botón xs (solo visible si hay ≥1 checkbox marcado) que alterna entre modo filtro y "solo seleccionados". En solo seleccionados la lista usa altura ~5 filas con scroll (.ubits-dropdown-menu__options--selected-only-scroll). Sin panel aparte. Tras insertar el HTML, llamar initDropdownMultiSelectSummary(overlayId, { anchorElement, applyListVisibility, searchInput? }).
+     * @param {string} [config.multiSelectSummaryToggleShowLabel] - Texto botón colapsado (default: Ver seleccionados).
+     * @param {string} [config.multiSelectSummaryToggleHideLabel] - Texto botón expandido (default: Ocultar seleccionados).
      * @returns {string} HTML del overlay + content.
      */
     function getDropdownMenuHtml(config) {
@@ -53,6 +56,9 @@
         var radioGroup = config.radioGroup === true;
         var radioName = config.radioName != null ? String(config.radioName) : overlayId + '-radio';
         var hasAutocomplete = config.hasAutocomplete === true;
+        var hasMultiSelectSummary = config.hasMultiSelectSummary === true;
+        var multiShowLabel = config.multiSelectSummaryToggleShowLabel != null ? String(config.multiSelectSummaryToggleShowLabel) : 'Ver seleccionados';
+        var multiHideLabel = config.multiSelectSummaryToggleHideLabel != null ? String(config.multiSelectSummaryToggleHideLabel) : 'Ocultar seleccionados';
         var autocompletePlaceholder = config.autocompletePlaceholder != null ? config.autocompletePlaceholder : 'Buscar...';
         var autocompleteContainerId = config.autocompleteContainerId || overlayId + '-autocomplete';
         var footerSecondaryLabel = config.footerSecondaryLabel != null ? config.footerSecondaryLabel : '';
@@ -97,7 +103,7 @@
             }
             var inner = left + (opt.checkbox ? '' : '<span class="ubits-dropdown-menu__option-text">' + text + '</span>') + right;
             if (opt.checkbox) {
-                return '<div class="ubits-dropdown-menu__option' + selectedClass + '" data-value="' + value + '">' + left + '</div>';
+                return '<div class="ubits-dropdown-menu__option' + selectedClass + '" data-value="' + value + '" data-option-label="' + text + '">' + left + '</div>';
             }
             return '<button type="button" class="ubits-dropdown-menu__option' + selectedClass + '" data-value="' + value + '">' + inner + '</button>';
         }).join('');
@@ -120,16 +126,172 @@
             '</div>'
             : '';
 
+        var summaryToggleId = overlayId + '-multiselect-summary-toggle';
+        var optionsListId = overlayId + '-options';
+        var summaryBlock = hasMultiSelectSummary
+            ? '<div class="ubits-dropdown-menu__multiselect-summary">' +
+            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs" id="' + escapeHtml(summaryToggleId) + '" aria-expanded="false" aria-controls="' + escapeHtml(optionsListId) + '">' +
+            '<i class="far fa-eye" aria-hidden="true"></i><span>' + escapeHtml(multiShowLabel) + '</span></button></div>'
+            : '';
+
+        var optionsAttrs = hasMultiSelectSummary ? ' id="' + escapeHtml(optionsListId) + '"' : '';
         var bodyBlock = customBodyHtml
             ? '<div class="ubits-dropdown-menu__custom-body">' + customBodyHtml + '</div>'
-            : '<div class="ubits-dropdown-menu__options">' + optionsHtml + '</div>';
+            : '<div class="ubits-dropdown-menu__options"' + optionsAttrs + '>' + optionsHtml + '</div>';
         return '<div class="ubits-dropdown-menu__overlay" id="' + escapeHtml(overlayId) + '" style="display: none;" aria-hidden="true">' +
             '<div class="ubits-dropdown-menu__content" id="' + escapeHtml(contentId) + '" onclick="event.stopPropagation();">' +
             autocompleteBlock +
+            summaryBlock +
             bodyBlock +
             footerBlock +
             '</div>' +
             '</div>';
+    }
+
+    /**
+     * Enlaza "Ver seleccionados" (hasMultiSelectSummary): alterna la lista .ubits-dropdown-menu__options entre
+     * modo filtro y modo solo filas con checkbox marcado. Clic/focus/input en el buscador vuelve al modo filtro.
+     * @param {string} overlayId
+     * @param {Object} [options]
+     * @param {function('filter'|'selected-only')} [options.applyListVisibility] - Obligatorio si hay búsqueda/límite de filas en la página. 'selected-only' = mostrar solo checkboxes marcados; 'filter' = vista normal (ej. texto + máx. 5).
+     * @param {HTMLElement} [options.searchInput] - Input de búsqueda (default: #overlayId-autocomplete-input).
+     * @param {HTMLElement} [options.anchorElement] - Re-posicionar con openDropdownMenu.
+     * @param {string} [options.toggleLabelShow]
+     * @param {string} [options.toggleLabelHide]
+     * El botón y la fila .multiselect-summary se ocultan (display:none) si no hay ningún checkbox marcado.
+     * @returns {{ sync: function(), destroy: function } | null}
+     */
+    function initDropdownMultiSelectSummary(overlayId, options) {
+        options = options || {};
+        var overlay = document.getElementById(overlayId);
+        if (!overlay) return null;
+        var toggle = document.getElementById(overlayId + '-multiselect-summary-toggle');
+        if (!toggle) return null;
+
+        var labelShow = options.toggleLabelShow != null ? options.toggleLabelShow : 'Ver seleccionados';
+        var labelHide = options.toggleLabelHide != null ? options.toggleLabelHide : 'Ocultar seleccionados';
+        var anchorEl = options.anchorElement || null;
+        var applyListVisibility = typeof options.applyListVisibility === 'function' ? options.applyListVisibility : null;
+        var searchInput = options.searchInput || document.getElementById(overlayId + '-autocomplete-input');
+        var expanded = false;
+
+        function defaultApplyListMode(mode) {
+            var rows = overlay.querySelectorAll('.ubits-dropdown-menu__options .ubits-dropdown-menu__option');
+            if (mode === 'selected-only') {
+                rows.forEach(function (row) {
+                    var cb = row.querySelector('input[type="checkbox"]');
+                    row.style.display = cb && cb.checked ? '' : 'none';
+                });
+            } else {
+                rows.forEach(function (row) {
+                    row.style.display = '';
+                });
+            }
+        }
+
+        function setListMode(mode) {
+            if (applyListVisibility) {
+                applyListVisibility(mode);
+            } else {
+                defaultApplyListMode(mode);
+            }
+            var optionsRoot = overlay.querySelector('.ubits-dropdown-menu__options');
+            if (optionsRoot) {
+                if (mode === 'selected-only') {
+                    optionsRoot.classList.add('ubits-dropdown-menu__options--selected-only-scroll');
+                } else {
+                    optionsRoot.classList.remove('ubits-dropdown-menu__options--selected-only-scroll');
+                }
+            }
+        }
+
+        function countSelected() {
+            var n = 0;
+            overlay.querySelectorAll('.ubits-dropdown-menu__options .ubits-dropdown-menu__option input[type="checkbox"]').forEach(function (cb) {
+                if (cb.checked) n++;
+            });
+            return n;
+        }
+
+        function updateToggleLabel() {
+            var n = countSelected();
+            var summaryWrap = toggle.closest('.ubits-dropdown-menu__multiselect-summary');
+            if (n === 0) {
+                expanded = false;
+                setListMode('filter');
+                if (summaryWrap) summaryWrap.style.display = 'none';
+                toggle.setAttribute('aria-expanded', 'false');
+                return;
+            }
+            if (summaryWrap) summaryWrap.style.display = '';
+            var span = toggle.querySelector('span');
+            var icon = toggle.querySelector('i');
+            var suffix = ' (' + n + ')';
+            if (span) span.textContent = (expanded ? labelHide : labelShow) + suffix;
+            if (icon) icon.className = expanded ? 'far fa-eye-slash' : 'far fa-eye';
+            toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+        }
+
+        function reposition() {
+            if (anchorEl && typeof window.openDropdownMenu === 'function') {
+                window.openDropdownMenu(overlayId, anchorEl);
+            }
+        }
+
+        function leaveSelectedOnlyView() {
+            if (!expanded) return;
+            expanded = false;
+            setListMode('filter');
+            updateToggleLabel();
+            reposition();
+        }
+
+        function onToggleClick(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            if (countSelected() === 0) return;
+            expanded = !expanded;
+            setListMode(expanded ? 'selected-only' : 'filter');
+            updateToggleLabel();
+            reposition();
+        }
+
+        function onOverlayChange(e) {
+            var t = e.target;
+            if (!t || !t.matches || !t.matches('.ubits-dropdown-menu__options input[type="checkbox"]')) return;
+            updateToggleLabel();
+            setListMode(expanded ? 'selected-only' : 'filter');
+            reposition();
+        }
+
+        toggle.addEventListener('click', onToggleClick);
+        overlay.addEventListener('change', onOverlayChange);
+
+        if (searchInput) {
+            searchInput.addEventListener('focus', leaveSelectedOnlyView, true);
+            searchInput.addEventListener('click', leaveSelectedOnlyView, true);
+            searchInput.addEventListener('input', leaveSelectedOnlyView, true);
+        }
+
+        expanded = false;
+        setListMode('filter');
+        updateToggleLabel();
+
+        return {
+            sync: function () {
+                updateToggleLabel();
+                setListMode(expanded ? 'selected-only' : 'filter');
+            },
+            destroy: function () {
+                toggle.removeEventListener('click', onToggleClick);
+                overlay.removeEventListener('change', onOverlayChange);
+                if (searchInput) {
+                    searchInput.removeEventListener('focus', leaveSelectedOnlyView, true);
+                    searchInput.removeEventListener('click', leaveSelectedOnlyView, true);
+                    searchInput.removeEventListener('input', leaveSelectedOnlyView, true);
+                }
+            }
+        };
     }
 
     /**
@@ -214,5 +376,6 @@
         window.getDropdownMenuHtml = getDropdownMenuHtml;
         window.openDropdownMenu = openDropdownMenu;
         window.closeDropdownMenu = closeDropdownMenu;
+        window.initDropdownMultiSelectSummary = initDropdownMultiSelectSummary;
     }
 })();

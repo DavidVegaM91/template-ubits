@@ -17,7 +17,7 @@ window.BD_MASTER_NIVELES_CONTENIDO = {
     },
     {
       "id": "niv-003",
-      "nombre": "Avanzadooo",
+      "nombre": "Avanzado",
       "iconoFontAwesome": "far fa-gauge-max"
     }
   ]

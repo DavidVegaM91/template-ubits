@@ -1234,7 +1234,7 @@
                 btn.classList.add('active');
             } else {
                 icon.className = 'far fa-eye';
-                span.textContent = 'Ver seleccionados';
+                span.textContent = 'Ver seleccionados (' + n + ')';
                 btn.classList.remove('active');
             }
         } else {
@@ -2976,7 +2976,7 @@
         });
     }
 
-    // Inicializar menú de filtro por columna (Dropdown Menu oficial: autocomplete + hasta 5 ítems visibles que cambian al escribir, datos deduplicados)
+    // Inicializar menú de filtro por columna (Dropdown Menu oficial: autocomplete; hasta 5 ítems visibles salvo Área asignado/creador = todas las coincidencias + scroll; Asignado/Creador/Plan y Creador en Planes = Ver seleccionados + initDropdownMultiSelectSummary)
     function initFilterMenu() {
         if (typeof window.getDropdownMenuHtml !== 'function') return;
         var baseData = function () { return getDataFilteredByPeriodAndSearchOnly(); };
@@ -2999,6 +2999,8 @@
             if (!btn) return;
             e.stopPropagation();
             var col = btn.dataset.filter;
+            var useAreaFilterScroll = col === 'areaAsignado' || col === 'areaCreador';
+            var useMultiSelectSummary = col === 'asignado' || col === 'creador' || col === 'plan';
             var currentFilterValues = [];
             if (col === 'asignado') currentFilterValues = currentFilters.persona;
             else if (col === 'username') currentFilterValues = currentFilters.username;
@@ -3020,6 +3022,7 @@
             var config = {
                 overlayId: overlayId,
                 hasAutocomplete: true,
+                hasMultiSelectSummary: useMultiSelectSummary,
                 autocompletePlaceholder: 'Filtrar por ' + col + '...',
                 autocompleteContainerId: autocompleteContainerId,
                 options: options,
@@ -3034,13 +3037,27 @@
             if (overlayEl) {
                 var optionsContainer = overlayEl.querySelector('.ubits-dropdown-menu__options');
                 var optionButtons = optionsContainer ? optionsContainer.querySelectorAll('.ubits-dropdown-menu__option') : [];
+                if (useAreaFilterScroll && optionsContainer) {
+                    optionsContainer.classList.add('ubits-dropdown-menu__options--filter-scroll');
+                }
 
                 function filterVisibleOptions(searchVal) {
                     var q = normalizeText(searchVal || '');
+                    if (useAreaFilterScroll) {
+                        optionButtons.forEach(function (opt) {
+                            var textEl = opt.querySelector('.ubits-dropdown-menu__option-text');
+                            var labelEl = opt.querySelector('.ubits-checkbox__label');
+                            var text = (textEl ? textEl.textContent : '') || (labelEl ? labelEl.textContent : '') || '';
+                            var match = !q || normalizeText(text).indexOf(q) >= 0;
+                            opt.style.display = match ? '' : 'none';
+                        });
+                        return;
+                    }
                     var shown = 0;
                     optionButtons.forEach(function (opt) {
                         var textEl = opt.querySelector('.ubits-dropdown-menu__option-text');
-                        var text = textEl ? textEl.textContent : '';
+                        var labelEl = opt.querySelector('.ubits-checkbox__label');
+                        var text = (textEl ? textEl.textContent : '') || (labelEl ? labelEl.textContent : '') || '';
                         var match = !q || normalizeText(text).indexOf(q) >= 0;
                         if (match && shown < FILTER_VISIBLE_MAX) {
                             opt.style.display = '';
@@ -3081,6 +3098,24 @@
                     setTimeout(function () { inputEl.focus(); }, 100);
                 } else {
                     filterVisibleOptions('');
+                }
+
+                if (useMultiSelectSummary && typeof window.initDropdownMultiSelectSummary === 'function') {
+                    function applyListVisibilityMulti(mode) {
+                        if (mode === 'selected-only') {
+                            optionButtons.forEach(function (opt) {
+                                var cb = opt.querySelector('input[type="checkbox"]');
+                                opt.style.display = cb && cb.checked ? '' : 'none';
+                            });
+                        } else {
+                            filterVisibleOptions(inputEl ? inputEl.value : '');
+                        }
+                    }
+                    window.initDropdownMultiSelectSummary(overlayId, {
+                        anchorElement: btn,
+                        applyListVisibility: applyListVisibilityMulti,
+                        searchInput: inputEl || undefined
+                    });
                 }
 
                 var cancelBtn = document.getElementById(overlayId + '-cancel');
@@ -3803,68 +3838,191 @@
             });
         }
 
-        // Añadir colaborador al plan
+        // Añadir colaborador al plan (Dropdown Menu oficial: autocomplete + hasta 5 visibles + footer; selección múltiple; posición según viewport)
         var anadirColabBtn = document.getElementById('seguimiento-anadir-colaborador');
-        var anadirColabMenu = document.getElementById('anadir-colaborador-menu');
-        var anadirColabOverlay = document.getElementById('anadir-colaborador-overlay');
-        var anadirColabCancel = document.getElementById('anadir-colaborador-cancel');
-        var anadirColabApply = document.getElementById('anadir-colaborador-apply');
-        var anadirColaboradorPersona = null;
+        var AC_OVERLAY_ID = 'seguimiento-anadir-colaborador-overlay';
+        var AC_FILTER_VISIBLE_MAX = 5;
 
-        function closeAnadirColaborador() {
-            if (anadirColabOverlay) anadirColabOverlay.style.display = 'none';
-            if (anadirColabMenu) anadirColabMenu.style.display = 'none';
-            anadirColaboradorPersona = null;
+        function buildPersonasParaAnadirColaborador() {
+            var list = [];
+            var seenName = {};
+            function add(p) {
+                if (!p || !p.nombre) return;
+                var nameKey = normalizeText(String(p.nombre).replace(/\s+/g, ' ').trim());
+                if (!nameKey || seenName[nameKey]) return;
+                seenName[nameKey] = true;
+                list.push({
+                    nombre: p.nombre,
+                    avatar: (p.avatar && String(p.avatar).trim()) ? p.avatar : null,
+                    username: (p.username && String(p.username).trim()) ? p.username : ''
+                });
+            }
+            if (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getEmpleadosEjemplo === 'function') {
+                TAREAS_PLANES_DB.getEmpleadosEjemplo().forEach(add);
+            }
+            SEGUIMIENTO_DATA.forEach(function (r) {
+                if (r.asignado) add(r.asignado);
+                if (r.asignados) r.asignados.forEach(add);
+            });
+            list.sort(function (a, b) { return a.nombre.localeCompare(b.nombre, 'es'); });
+            return list;
         }
 
-        if (anadirColabBtn && anadirColabMenu) {
+        if (anadirColabBtn && typeof window.getDropdownMenuHtml === 'function') {
             anadirColabBtn.addEventListener('click', function (e) {
                 e.stopPropagation();
                 if (selectedIds.size === 0 || activeTab !== 'planes') return;
-                var rect = this.getBoundingClientRect();
-                anadirColabMenu.style.top = (rect.bottom + 4) + 'px';
-                anadirColabMenu.style.left = rect.left + 'px';
-                anadirColabMenu.style.display = 'block';
-                if (anadirColabOverlay) anadirColabOverlay.style.display = 'block';
-                var container = document.getElementById('anadir-colaborador-autocomplete');
-                if (container) container.innerHTML = '';
-                if (container && typeof createInput === 'function') {
-                    var personas = [];
-                    SEGUIMIENTO_DATA.forEach(function (r) {
-                        if (r.asignado && r.asignado.nombre && personas.indexOf(r.asignado.nombre) < 0) personas.push(r.asignado.nombre);
-                        if (r.asignados) r.asignados.forEach(function (a) { if (a.nombre && personas.indexOf(a.nombre) < 0) personas.push(a.nombre); });
-                    });
-                    createInput({
-                        containerId: 'anadir-colaborador-autocomplete',
-                        type: 'autocomplete',
-                        placeholder: 'Buscar persona...',
-                        size: 'md',
-                        autocompleteOptions: personas.map(function (p, i) { return { value: String(i), text: p }; }),
-                        onChange: function (val) {
-                            var idx = parseInt(val, 10);
-                            anadirColaboradorPersona = !isNaN(idx) && personas[idx] ? personas[idx] : (val || null);
+
+                var personas = buildPersonasParaAnadirColaborador();
+                var options = personas.map(function (p, idx) {
+                    return {
+                        text: p.nombre,
+                        value: 'ac-' + idx,
+                        checkbox: true,
+                        selected: false
+                    };
+                });
+
+                var existing = document.getElementById(AC_OVERLAY_ID);
+                if (existing) existing.remove();
+
+                var autocompleteContainerId = AC_OVERLAY_ID + '-autocomplete';
+                var html = window.getDropdownMenuHtml({
+                    overlayId: AC_OVERLAY_ID,
+                    hasAutocomplete: true,
+                    hasMultiSelectSummary: true,
+                    autocompletePlaceholder: 'Filtrar por colaborador...',
+                    autocompleteContainerId: autocompleteContainerId,
+                    options: options,
+                    footerSecondaryLabel: 'Cancelar',
+                    footerPrimaryLabel: 'Aplicar',
+                    footerSecondaryId: AC_OVERLAY_ID + '-cancel',
+                    footerPrimaryId: AC_OVERLAY_ID + '-apply'
+                });
+                document.body.insertAdjacentHTML('beforeend', html);
+
+                var overlayEl = document.getElementById(AC_OVERLAY_ID);
+                if (!overlayEl) return;
+
+                var optionsContainer = overlayEl.querySelector('.ubits-dropdown-menu__options');
+                var optionEls = optionsContainer ? optionsContainer.querySelectorAll('.ubits-dropdown-menu__option') : [];
+
+                function getOptionDisplayText(opt) {
+                    var textEl = opt.querySelector('.ubits-dropdown-menu__option-text');
+                    var labelEl = opt.querySelector('.ubits-checkbox__label');
+                    return (textEl ? textEl.textContent : '') || (labelEl ? labelEl.textContent : '') || '';
+                }
+
+                function filterVisibleOptionsAc(searchVal) {
+                    var q = normalizeText(searchVal || '');
+                    var shown = 0;
+                    optionEls.forEach(function (opt) {
+                        var text = getOptionDisplayText(opt);
+                        var match = !q || normalizeText(text).indexOf(q) >= 0;
+                        if (match && shown < AC_FILTER_VISIBLE_MAX) {
+                            opt.style.display = '';
+                            shown++;
+                        } else {
+                            opt.style.display = 'none';
                         }
                     });
                 }
-            });
-        }
-        if (anadirColabCancel) anadirColabCancel.addEventListener('click', closeAnadirColaborador);
-        if (anadirColabOverlay) anadirColabOverlay.addEventListener('click', closeAnadirColaborador);
-        if (anadirColabApply) {
-            anadirColabApply.addEventListener('click', function () {
-                if (anadirColaboradorPersona) {
-                    var personaRef = SEGUIMIENTO_DATA.find(function (r) { return r.asignado && r.asignado.nombre === anadirColaboradorPersona; }) || SEGUIMIENTO_DATA.find(function (r) { return r.asignados && r.asignados.some(function (a) { return a.nombre === anadirColaboradorPersona; }); });
-                    var nuevoColab = personaRef && (personaRef.asignado || (personaRef.asignados && personaRef.asignados[0])) ? { nombre: anadirColaboradorPersona, avatar: (personaRef.asignado || personaRef.asignados[0]).avatar, username: (personaRef.asignado || personaRef.asignados[0]).username || '' } : { nombre: anadirColaboradorPersona, avatar: null, username: '' };
-                    selectedIds.forEach(function (id) {
-                        var row = SEGUIMIENTO_DATA.find(function (r) { return r.id === id; });
-                        if (row && row.tipo === 'plan' && row.asignados) {
-                            if (!row.asignados.some(function (a) { return a.nombre === anadirColaboradorPersona; })) row.asignados.push(nuevoColab);
-                        }
+
+                var inputEl = document.getElementById(AC_OVERLAY_ID + '-autocomplete-input');
+                function applyListVisibilityAc(mode) {
+                    if (mode === 'selected-only') {
+                        optionEls.forEach(function (opt) {
+                            var cb = opt.querySelector('input[type="checkbox"]');
+                            opt.style.display = cb && cb.checked ? '' : 'none';
+                        });
+                    } else {
+                        filterVisibleOptionsAc(inputEl ? inputEl.value : '');
+                    }
+                }
+                var clearIcon = document.getElementById(AC_OVERLAY_ID + '-autocomplete-clear');
+                if (inputEl && clearIcon) {
+                    inputEl.value = '';
+                    inputEl.setAttribute('aria-label', 'Filtrar colaboradores para añadir al plan');
+                    clearIcon.style.pointerEvents = 'auto';
+                    clearIcon.style.display = 'none';
+                    function toggleClearIconAc() {
+                        clearIcon.style.display = inputEl.value.length > 0 ? 'block' : 'none';
+                    }
+                    clearIcon.addEventListener('click', function (ev) {
+                        ev.preventDefault();
+                        ev.stopPropagation();
+                        inputEl.value = '';
+                        toggleClearIconAc();
+                        filterVisibleOptionsAc('');
+                        inputEl.focus();
+                    });
+                    inputEl.addEventListener('input', function () {
+                        toggleClearIconAc();
+                        filterVisibleOptionsAc(this.value);
+                    });
+                    inputEl.addEventListener('focus', function () {
+                        filterVisibleOptionsAc(this.value);
+                    });
+                    filterVisibleOptionsAc('');
+                    setTimeout(function () { inputEl.focus(); }, 100);
+                } else {
+                    filterVisibleOptionsAc('');
+                }
+
+                if (typeof window.initDropdownMultiSelectSummary === 'function') {
+                    window.initDropdownMultiSelectSummary(AC_OVERLAY_ID, {
+                        anchorElement: anadirColabBtn,
+                        applyListVisibility: applyListVisibilityAc,
+                        searchInput: inputEl || undefined
+                    });
+                }
+
+                var cancelBtn = document.getElementById(AC_OVERLAY_ID + '-cancel');
+                var applyBtn = document.getElementById(AC_OVERLAY_ID + '-apply');
+                if (cancelBtn) cancelBtn.addEventListener('click', function () { window.closeDropdownMenu(AC_OVERLAY_ID); });
+                if (applyBtn) applyBtn.addEventListener('click', function () {
+                    var selectedIdxs = [];
+                    overlayEl.querySelectorAll('.ubits-dropdown-menu__option-left input[type="checkbox"]:checked').forEach(function (cb) {
+                        var v = cb.getAttribute('data-value') || cb.dataset.value || '';
+                        var m = String(v).match(/^ac-(\d+)$/);
+                        if (m) selectedIdxs.push(parseInt(m[1], 10));
+                    });
+                    if (selectedIdxs.length === 0) {
+                        window.closeDropdownMenu(AC_OVERLAY_ID);
+                        return;
+                    }
+                    var totalAdds = 0;
+                    selectedIdxs.forEach(function (idx) {
+                        var p = personas[idx];
+                        if (!p) return;
+                        selectedIds.forEach(function (id) {
+                            var row = SEGUIMIENTO_DATA.find(function (r) { return r.id === id; });
+                            if (row && row.tipo === 'plan') {
+                                if (!row.asignados) row.asignados = [];
+                                if (!row.asignados.some(function (a) { return a.nombre === p.nombre; })) {
+                                    row.asignados.push({ nombre: p.nombre, avatar: p.avatar, username: p.username || '' });
+                                    totalAdds++;
+                                }
+                            }
+                        });
                     });
                     renderTable();
-                    if (typeof showToast === 'function') showToast('success', anadirColaboradorPersona + ' añadido como colaborador a ' + selectedIds.size + ' plan(es)');
-                }
-                closeAnadirColaborador();
+                    updateIndicadores();
+                    if (typeof showToast === 'function') {
+                        if (totalAdds === 0) {
+                            showToast('info', 'Los colaboradores seleccionados ya estaban en todos los planes elegidos.');
+                        } else {
+                            var nPersonas = new Set(selectedIdxs.filter(function (i) { return personas[i]; }).map(function (i) { return personas[i].nombre; })).size;
+                            showToast('success', nPersonas + ' colaborador(es) añadido(s) a ' + selectedIds.size + ' plan(es).');
+                        }
+                    }
+                    window.closeDropdownMenu(AC_OVERLAY_ID);
+                });
+                overlayEl.addEventListener('click', function (ev) {
+                    if (ev.target === overlayEl) window.closeDropdownMenu(AC_OVERLAY_ID);
+                });
+
+                window.openDropdownMenu(AC_OVERLAY_ID, anadirColabBtn);
             });
         }
     }
