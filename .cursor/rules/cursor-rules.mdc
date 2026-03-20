@@ -282,6 +282,9 @@ openModal({
   - Types: `success`, `info`, `warning`, `error`, `neutral`
   - Sizes: `xs`, `sm`, `md`, `lg`
   - Options: with/without icons (left/right)
+- **Stepper** (Pasos de flujo) → `components/stepper.css` + `components/stepper.js` (JS opcional: `initStepper`, `wireStepperVerticalCollapse`)
+  - Variantes: horizontal, horizontal compacto, horizontal con título bajo el círculo, compacto + título abajo, vertical colapsable
+  - Doc: `documentacion/componentes/stepper.html`
 - **Tab** (Navigation tabs) → `components/tab.css` + `components/tab.js`
   - States: `active`, `inactive`
   - Sizes: `xs` (28px), `sm` (32px), `md` (40px), `lg` (48px)

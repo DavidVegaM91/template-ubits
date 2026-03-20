@@ -69,6 +69,7 @@ Una **plantilla lista para usar** que permite a **Product Managers**, **Diseñad
 - **Card Content Compact** - Variante horizontal compacta de Card Content (misma funcionalidad, diseño optimizado para espacios reducidos, siempre horizontal) - **RENDERIZADO: loadCardContentCompact()**
 - **Carousel Contents** - Carruseles de contenido (navegación horizontal, flechas, responsive) - **RENDERIZADO: loadCarouselContents()**
 - **Status Tag** - Etiquetas de estado (tipos: success, info, warning, error, neutral; tamaños: xs, sm, md, lg; iconos opcionales izquierda/derecha) - **RENDERIZADO: HTML directo**
+- **Stepper** - Indicador de pasos de un flujo (horizontal, compacto, título bajo el círculo, combinación compacta, vertical colapsable) - **RENDERIZADO: HTML directo**; demo con clic opcional vía `initStepper()`; colapso vertical con `wireStepperVerticalCollapse()` en **stepper.js**. **CSS:** `stepper.css`. **Vertical colapsable:** también `button.css`, `tooltip.css` y `tooltip.js`.
 - **Badge Tag** - Badge tipo pill con punto de color o icono (outlined/filled; success, info, warning, error; sm, md, lg; normalmente punto, opcionalmente icono FontAwesome) - **RENDERIZADO: HTML directo**
 - **Tab** - Tabs de navegación (estados: active, inactive; tamaños: xs, sm, md, lg; variantes: con texto, icon-only; iconos opcionales) - **RENDERIZADO: HTML directo**
 - **Empty State** - Estados vacíos (icono, título, descripción, botones opcionales; tamaños de icono: sm, md, lg; casos de uso: búsqueda sin resultados, contenido vacío, estados iniciales) - **RENDERIZADO: loadEmptyState()**
@@ -104,6 +105,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 <link rel="stylesheet" href="../../components/card-content-compact.css">
 <link rel="stylesheet" href="../../components/carousel-contents.css">
 <link rel="stylesheet" href="../../components/status-tag.css">
+<link rel="stylesheet" href="../../components/stepper.css">
 <link rel="stylesheet" href="../../components/badge-tag.css">
 <link rel="stylesheet" href="../../components/tab.css">
 <link rel="stylesheet" href="../../components/empty-state.css">
@@ -145,6 +147,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 <script src="../../components/dropdown-menu.js"></script>
 <script src="../../components/drawer.js"></script>
 <script src="../../components/modal.js"></script>
+<script src="../../components/stepper.js"></script>
 <script src="../../components/tooltip.js"></script>
 
 <!-- Base UBITS SIEMPRE REQUERIDA -->
@@ -272,6 +275,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 - **`documentacion/componentes/card-content.html`** - Documentación del componente Card Content
 - **`documentacion/componentes/card-content-compact.html`** - Documentación del componente Card Content Compact
 - **`documentacion/componentes/status-tag.html`** - Documentación del componente Status Tag
+- **`documentacion/componentes/stepper.html`** - Documentación del componente Stepper
 - **`documentacion/componentes/switch.html`** - Documentación del componente Switch
 - **`documentacion/componentes/badge-tag.html`** - Documentación del componente Badge Tag
 - **`documentacion/componentes/tab.html`** - Documentación del componente Tab
@@ -729,6 +733,7 @@ loadCardContentCompact('mi-contenedor-compact', [
 - **`documentacion/componentes/card-content.html`** - Documentación del componente Card Content
 - **`documentacion/componentes/card-content-compact.html`** - Documentación del componente Card Content Compact
 - **`documentacion/componentes/status-tag.html`** - Documentación del componente Status Tag
+- **`documentacion/componentes/stepper.html`** - Documentación del componente Stepper
 - **`documentacion/componentes/switch.html`** - Documentación del componente Switch
 - **`documentacion/componentes/badge-tag.html`** - Documentación del componente Badge Tag
 - **`documentacion/componentes/tab.html`** - Documentación del componente Tab

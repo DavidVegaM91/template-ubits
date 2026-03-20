@@ -1,0 +1,462 @@
+/* ========================================
+   UBITS STEPPER
+   Pasos de un flujo (horizontal o vertical); tokens UBITS.
+   Documentación: documentacion/componentes/stepper.html
+   ======================================== */
+
+/* ---------- Bloque stepper (horizontal / vertical) ---------- */
+.ubits-stepper {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* --- Horizontal: número + título en fila; raíles entre bloques de paso --- */
+.ubits-stepper--horizontal {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    /* Entre paso y línea: más ajustado (antes gap-xl se sentía muy amplio) */
+    gap: var(--gap-sm);
+}
+
+.ubits-stepper--horizontal .ubits-stepper__step {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: var(--gap-md);
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: 14rem;
+    text-align: left;
+}
+
+.ubits-stepper--horizontal .ubits-stepper__rail {
+    width: auto;
+    min-width: var(--gap-lg);
+    flex: 1 1 var(--gap-xl);
+    height: 2px;
+    border: none;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    align-self: center;
+    background: var(--ubits-border-1);
+}
+
+.ubits-stepper--horizontal .ubits-stepper__step--done + .ubits-stepper__rail {
+    background: var(--ubits-feedback-accent-success);
+}
+
+.ubits-stepper--horizontal .ubits-stepper__step--active + .ubits-stepper__rail {
+    background: var(--ubits-button-primary-bg-default);
+}
+
+/* Horizontal compacto: sin repartir todo el ancho; raíles de tamaño fijo */
+.ubits-stepper--horizontal.ubits-stepper--horizontal-compact {
+    justify-content: flex-start;
+    width: fit-content;
+    max-width: 100%;
+}
+
+.ubits-stepper--horizontal.ubits-stepper--horizontal-compact .ubits-stepper__step {
+    flex: 0 0 auto;
+    max-width: none;
+}
+
+.ubits-stepper--horizontal.ubits-stepper--horizontal-compact .ubits-stepper__label {
+    flex: 0 1 auto;
+    max-width: 10rem;
+}
+
+.ubits-stepper--horizontal.ubits-stepper--horizontal-compact .ubits-stepper__rail {
+    flex: 0 0 auto;
+    flex-grow: 0;
+    width: var(--gap-2xl);
+    min-width: var(--gap-xl);
+}
+
+/* Horizontal texto debajo: círculo arriba, título centrado abajo; raíles a altura del anillo */
+.ubits-stepper--horizontal.ubits-stepper--horizontal-stacked {
+    align-items: flex-start;
+}
+
+.ubits-stepper--horizontal.ubits-stepper--horizontal-stacked .ubits-stepper__step {
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: var(--gap-sm);
+    text-align: center;
+    min-width: 5.5rem;
+    max-width: 9rem;
+}
+
+.ubits-stepper--horizontal.ubits-stepper--horizontal-stacked .ubits-stepper__label {
+    flex: 0 1 auto;
+    max-width: 100%;
+    text-align: center;
+}
+
+.ubits-stepper--horizontal.ubits-stepper--horizontal-stacked .ubits-stepper__rail {
+    align-self: flex-start;
+    margin-top: calc(var(--ubits-stepper-ring) / 2 - 1px);
+}
+
+/* Texto debajo + compacto: ancho intrínseco y raíles fijos (tres modificadores) */
+.ubits-stepper--horizontal.ubits-stepper--horizontal-stacked.ubits-stepper--horizontal-compact {
+    justify-content: flex-start;
+    width: fit-content;
+    max-width: 100%;
+    align-items: flex-start;
+}
+
+.ubits-stepper--horizontal.ubits-stepper--horizontal-stacked.ubits-stepper--horizontal-compact .ubits-stepper__step {
+    flex: 0 0 auto;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: var(--gap-sm);
+    text-align: center;
+    min-width: 5.5rem;
+    max-width: 9rem;
+}
+
+.ubits-stepper--horizontal.ubits-stepper--horizontal-stacked.ubits-stepper--horizontal-compact .ubits-stepper__label {
+    flex: 0 1 auto;
+    max-width: min(100%, 10rem);
+    text-align: center;
+}
+
+.ubits-stepper--horizontal.ubits-stepper--horizontal-stacked.ubits-stepper--horizontal-compact .ubits-stepper__rail {
+    flex: 0 0 auto;
+    flex-grow: 0;
+    width: var(--gap-2xl);
+    min-width: var(--gap-xl);
+    align-self: flex-start;
+    margin-top: calc(var(--ubits-stepper-ring) / 2 - 1px);
+}
+
+/* --- Vertical: círculo + texto; segmento bajo cada círculo --- */
+.ubits-stepper--vertical {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    max-width: 100%;
+}
+
+.ubits-stepper--vertical .ubits-stepper__step {
+    display: grid;
+    grid-template-columns: var(--ubits-stepper-ring) minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    column-gap: var(--gap-md);
+    row-gap: 0;
+    position: relative;
+    /* Espacio entre pasos (2× respecto al gap-lg original de 16px → 32px) */
+    padding-bottom: var(--gap-4xl);
+}
+
+.ubits-stepper--vertical .ubits-stepper__step:last-child {
+    padding-bottom: 0;
+}
+
+.ubits-stepper--vertical .ubits-stepper__mark {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: start;
+    justify-self: center;
+}
+
+.ubits-stepper--vertical .ubits-stepper__label {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+    text-align: left;
+    min-width: 0;
+}
+
+.ubits-stepper--vertical .ubits-stepper__step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: calc(var(--ubits-stepper-ring) / 2 - 1px);
+    top: var(--ubits-stepper-ring);
+    width: 2px;
+    height: calc(100% - var(--ubits-stepper-ring));
+    background: var(--ubits-border-1);
+    pointer-events: none;
+}
+
+.ubits-stepper--vertical .ubits-stepper__step--done:not(:last-child)::after {
+    background: var(--ubits-feedback-accent-success);
+}
+
+.ubits-stepper--vertical .ubits-stepper__step--active:not(:last-child)::after {
+    background: var(--ubits-button-primary-bg-default);
+}
+
+/* Círculo / marca */
+.ubits-stepper {
+    --ubits-stepper-ring: var(--size-4xl);
+}
+
+/* Anillo algo más compacto en horizontal (misma fila número + título) */
+.ubits-stepper.ubits-stepper--horizontal {
+    --ubits-stepper-ring: var(--size-3xl);
+}
+
+.ubits-stepper__mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--ubits-stepper-ring);
+    height: var(--ubits-stepper-ring);
+    border-radius: var(--border-radius-full);
+    box-sizing: border-box;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1;
+    flex-shrink: 0;
+    border: 2px solid var(--ubits-border-1);
+    background: var(--ubits-bg-1);
+    color: var(--ubits-fg-1-medium);
+    transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.ubits-stepper__mark-num {
+    display: block;
+}
+
+/* Icono solo FontAwesome en <i>; estilos vía padre */
+.ubits-stepper__mark > i {
+    display: none;
+    font-size: var(--font-size-md);
+    line-height: 1;
+}
+
+.ubits-stepper__step--pending .ubits-stepper__mark {
+    border-color: var(--ubits-border-1);
+    background: var(--ubits-bg-1);
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-stepper__step--active .ubits-stepper__mark {
+    border-color: var(--ubits-button-primary-bg-default);
+    background: var(--ubits-button-primary-bg-default);
+    color: var(--ubits-btn-primary-fg);
+    box-shadow: 0 0 0 4px var(--ubits-bg-active);
+}
+
+.ubits-stepper__step--done .ubits-stepper__mark {
+    border-color: var(--ubits-feedback-accent-success);
+    background: var(--ubits-feedback-bg-success-subtle);
+    color: var(--ubits-feedback-accent-success);
+}
+
+.ubits-stepper__step--done .ubits-stepper__mark-num {
+    display: none;
+}
+
+.ubits-stepper__step--done .ubits-stepper__mark > i {
+    display: block;
+}
+
+.ubits-stepper__label {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    line-height: 1.35;
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-stepper--horizontal .ubits-stepper__label {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 100%;
+    text-align: left;
+    word-wrap: break-word;
+}
+
+.ubits-stepper__step--active .ubits-stepper__label {
+    color: var(--ubits-fg-1-high);
+    font-weight: var(--font-weight-semibold);
+}
+
+.ubits-stepper__step--done .ubits-stepper__label {
+    color: var(--ubits-fg-1-high);
+    font-weight: 400;
+}
+
+/* Marco colapsable vertical (sin tarjeta; sobre fondo de página o widget). */
+.ubits-stepper__vertical-frame {
+    --ubits-stepper-collapse-dur: 0.52s;
+    --ubits-stepper-collapse-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --ubits-stepper-vertical-collapsed-outer: calc(var(--size-4xl) + var(--space-px) + var(--space-px));
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    align-items: stretch;
+    max-width: 220px;
+    width: fit-content;
+    box-sizing: border-box;
+    overflow: visible;
+    transition:
+        max-width var(--ubits-stepper-collapse-dur) var(--ubits-stepper-collapse-ease),
+        box-shadow 0.35s ease;
+}
+
+/*
+ * Filas en flex (no grid) para animar ancho del texto con max-width.
+ */
+.ubits-stepper__vertical-frame .ubits-stepper--vertical .ubits-stepper__step {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: var(--gap-md);
+    transition: gap 0.35s var(--ubits-stepper-collapse-ease);
+}
+
+.ubits-stepper__vertical-frame .ubits-stepper--vertical .ubits-stepper__mark {
+    flex-shrink: 0;
+}
+
+.ubits-stepper__vertical-frame .ubits-stepper__label {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 12.5rem;
+    opacity: 1;
+    overflow: hidden;
+}
+
+/* Expandir: primero crece el hueco, luego aparece el texto (más natural) */
+.ubits-stepper__vertical-frame:not(.is-collapsed) .ubits-stepper__label {
+    transition:
+        max-width var(--ubits-stepper-collapse-dur) var(--ubits-stepper-collapse-ease),
+        opacity 0.4s var(--ubits-stepper-collapse-ease) 0.1s;
+}
+
+/* Colapsado: ancho mínimo real (5rem ≈ 80px dejaba ~24px vacíos a la derecha del anillo de 32px) */
+.ubits-stepper__vertical-frame.is-collapsed {
+    max-width: var(--ubits-stepper-vertical-collapsed-outer);
+    align-items: flex-start;
+}
+
+.ubits-stepper__vertical-frame.is-collapsed .ubits-stepper--vertical {
+    align-items: flex-start;
+    width: fit-content;
+    max-width: 100%;
+}
+
+/*
+ * Colapsar: el texto se desvanece antes de cerrar el ancho.
+ * Sin nowrap, ancho 0 hace que el texto se “apile” en muchas líneas y la fila flex
+ * crece en altura → más espacio visual entre círculos que en expandido.
+ */
+.ubits-stepper__vertical-frame.is-collapsed .ubits-stepper__label {
+    flex: 0 0 0;
+    align-self: flex-start;
+    min-width: 0;
+    min-height: 0;
+    max-width: 0;
+    max-height: var(--ubits-stepper-ring);
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    transition:
+        max-width var(--ubits-stepper-collapse-dur) var(--ubits-stepper-collapse-ease) 0.08s,
+        opacity 0.3s var(--ubits-stepper-collapse-ease);
+}
+
+.ubits-stepper__vertical-frame.is-collapsed .ubits-stepper--vertical .ubits-stepper__step {
+    justify-content: flex-start;
+    gap: 0;
+    padding-bottom: var(--gap-4xl);
+}
+
+.ubits-stepper__vertical-frame.is-collapsed .ubits-stepper--vertical .ubits-stepper__step:last-child {
+    padding-bottom: 0;
+}
+
+/* width: fit-content solo con texto; si no, pisamos el icon-only cuadrado oficial (32×32 sm) */
+.ubits-stepper__vertical-frame .ubits-stepper__vertical-toggle:not(.ubits-button--icon-only) {
+    width: fit-content;
+    max-width: 100%;
+}
+
+.ubits-stepper__vertical-frame .ubits-stepper__vertical-toggle {
+    align-self: flex-start;
+    flex-shrink: 0;
+    transition:
+        opacity calc(var(--ubits-stepper-collapse-dur) * 0.6) var(--ubits-stepper-collapse-ease),
+        transform var(--ubits-stepper-collapse-dur) var(--ubits-stepper-collapse-ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ubits-stepper__vertical-frame {
+        --ubits-stepper-collapse-dur: 0.01ms;
+    }
+
+    .ubits-stepper__vertical-frame,
+    .ubits-stepper__vertical-frame .ubits-stepper--vertical .ubits-stepper__step,
+    .ubits-stepper__vertical-frame .ubits-stepper__label,
+    .ubits-stepper__vertical-frame .ubits-stepper__vertical-toggle {
+        transition-duration: 0.01ms !important;
+        transition-delay: 0s !important;
+    }
+}
+
+/* Modo oscuro */
+[data-theme="dark"] .ubits-stepper__step--active .ubits-stepper__mark {
+    color: var(--ubits-btn-primary-fg);
+}
+
+@media (max-width: 520px) {
+    .ubits-stepper--horizontal .ubits-stepper__rail {
+        display: none;
+    }
+
+    .ubits-stepper--horizontal {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--gap-sm);
+        min-width: 0 !important;
+    }
+
+    .ubits-stepper--horizontal.ubits-stepper--horizontal-compact {
+        width: 100%;
+    }
+
+    .ubits-stepper--horizontal.ubits-stepper--horizontal-stacked {
+        align-items: stretch;
+    }
+
+    .ubits-stepper--horizontal.ubits-stepper--horizontal-stacked .ubits-stepper__step {
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        text-align: left;
+        min-width: 0;
+        max-width: none;
+    }
+
+    .ubits-stepper--horizontal.ubits-stepper--horizontal-stacked .ubits-stepper__label {
+        text-align: left;
+    }
+
+    .ubits-stepper--horizontal.ubits-stepper--horizontal-stacked .ubits-stepper__rail {
+        margin-top: 0;
+        align-self: center;
+    }
+
+    .ubits-stepper--horizontal .ubits-stepper__step {
+        max-width: none;
+        width: 100%;
+    }
+
+}

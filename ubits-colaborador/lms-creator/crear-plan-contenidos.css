@@ -270,6 +270,18 @@
     margin-top: var(--gap-xs);
 }
 
+/* Asistente en drawer: espacio entre stepper y bloque de cards (paso 1) */
+.drawer-asignacion-wizard-root {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xl);
+    width: 100%;
+}
+
+.drawer-wizard-stepper-nav {
+    flex-shrink: 0;
+}
+
 /* Drawer Agregar usuarios: 4 cards en fila arriba; paneles (colaborador/grupos/archivo) debajo */
 .drawer-agregar-usuarios-options {
     display: grid;

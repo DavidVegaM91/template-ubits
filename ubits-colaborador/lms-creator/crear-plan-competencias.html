@@ -344,6 +344,7 @@
                     '      <h2 class="ubits-body-md-bold drawer-archivo-title">Importar archivo</h2>' +
                     '      <div class="drawer-archivo-actions">' +
                     '        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="drawer-archivo-descargar-lista"><i class="far fa-arrow-down-to-line"></i><span>Descargar lista de colaboradores</span></button>' +
+                    '        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="drawer-archivo-descargar-competencias"><i class="far fa-arrow-down-to-line"></i><span>Descargar lista de competencias</span></button>' +
                     '        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="drawer-archivo-descargar-plantilla"><i class="far fa-arrow-down-to-line"></i><span>Descargar plantilla</span></button>' +
                     '      </div>' +
                     '    </div>' +
@@ -732,6 +733,19 @@
                             filas.push([e.username, e.nombre, e.correo, e.area, e.lider].map(escapeCsvCell).join(','));
                         });
                         descargarCsv('lista-colaboradores.csv', filas.join('\r\n'));
+                    });
+                }
+                var btnDescargarCompetencias = overlay.querySelector('#drawer-archivo-descargar-competencias');
+                if (btnDescargarCompetencias) {
+                    btnDescargarCompetencias.addEventListener('click', function() {
+                        var headers = ['id', 'nombre'];
+                        var filas = [headers.map(escapeCsvCell).join(',')];
+                        var comps = (window.BD_MASTER_COMPETENCIAS && window.BD_MASTER_COMPETENCIAS.competencias) || [];
+                        comps.forEach(function(c) {
+                            if (!c || c.id == null) return;
+                            filas.push([c.id, c.nombre || ''].map(escapeCsvCell).join(','));
+                        });
+                        descargarCsv('lista-competencias-maestro.csv', filas.join('\r\n'));
                     });
                 }
                 if (btnDescargarPlantilla) {

@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Stepper | UBITS Playground</title>
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/tooltip.css">
+    <link rel="stylesheet" href="../../components/stepper.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <style>
+        .preview-control-btn.active {
+            background: var(--ubits-accent-brand) !important;
+            color: white !important;
+            border-color: var(--ubits-accent-brand) !important;
+        }
+        .preview-control-btn.active span { color: white !important; }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div style="display: flex;">
+                <div id="docs-dropdown-container"></div>
+                <div id="docs-sidebar-container"></div>
+                <div class="components-content">
+                    <div class="content-area" style="display: block; width: 100%;">
+                        <div style="text-align: center; margin-bottom: 60px;">
+                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                                Stepper
+                            </h1>
+                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                                Muestra en qué parte de un proceso va la persona: pasos completados, el actual y los que faltan. Sirve en formularios largos, altas de datos o cualquier flujo por etapas.
+                            </p>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Preview del componente
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                                Elige una de las cinco variantes con los botones. En horizontal puedes cambiar de paso haciendo clic en cada uno. En vertical, usa <strong>Colapsar</strong> para ver solo los números (el botón compacto muestra un tooltip al pasar el cursor).
+                            </p>
+
+                            <div style="margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: var(--gap-sm); align-items: center;">
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn stepper-variant-btn active" data-variant="h" onclick="setStepperDocVariant('h')">
+                                    <span>Horizontal</span>
+                                </button>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn stepper-variant-btn" data-variant="h-compact" onclick="setStepperDocVariant('h-compact')">
+                                    <span>Horizontal compacto</span>
+                                </button>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn stepper-variant-btn" data-variant="h-stacked" onclick="setStepperDocVariant('h-stacked')">
+                                    <span>Título debajo del círculo</span>
+                                </button>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn stepper-variant-btn" data-variant="h-stacked-compact" onclick="setStepperDocVariant('h-stacked-compact')">
+                                    <span>Compacto + título abajo</span>
+                                </button>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn stepper-variant-btn" data-variant="vertical" onclick="setStepperDocVariant('vertical')">
+                                    <span>Vertical colapsable</span>
+                                </button>
+                            </div>
+
+                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; position: relative; min-height: 120px;">
+                                <div id="stepper-doc-horizontal-area">
+                                    <nav aria-label="Preview stepper horizontal">
+                                        <ol class="ubits-stepper ubits-stepper--horizontal js-stepper-doc-demo" id="stepper-doc-ol-horizontal">
+                                            <li class="ubits-stepper__step ubits-stepper__step--done" data-step-label="Datos básicos">
+                                                <span class="ubits-stepper__mark" aria-hidden="true">
+                                                    <span class="ubits-stepper__mark-num">1</span>
+                                                    <i class="far fa-check" aria-hidden="true"></i>
+                                                </span>
+                                                <span class="ubits-stepper__label">Datos básicos</span>
+                                            </li>
+                                            <li class="ubits-stepper__rail" aria-hidden="true"></li>
+                                            <li class="ubits-stepper__step ubits-stepper__step--active" data-step-label="Requisitos" aria-current="step">
+                                                <span class="ubits-stepper__mark" aria-hidden="true">
+                                                    <span class="ubits-stepper__mark-num">2</span>
+                                                    <i class="far fa-check" aria-hidden="true"></i>
+                                                </span>
+                                                <span class="ubits-stepper__label">Requisitos</span>
+                                            </li>
+                                            <li class="ubits-stepper__rail" aria-hidden="true"></li>
+                                            <li class="ubits-stepper__step ubits-stepper__step--pending" data-step-label="Publicar">
+                                                <span class="ubits-stepper__mark" aria-hidden="true">
+                                                    <span class="ubits-stepper__mark-num">3</span>
+                                                    <i class="far fa-check" aria-hidden="true"></i>
+                                                </span>
+                                                <span class="ubits-stepper__label">Publicar</span>
+                                            </li>
+                                        </ol>
+                                    </nav>
+                                </div>
+                                <div id="stepper-doc-vertical-area" style="display: none;">
+                                    <div class="ubits-stepper__vertical-frame" id="stepper-doc-v-frame">
+                                        <nav aria-label="Preview stepper vertical">
+                                            <ol class="ubits-stepper ubits-stepper--vertical js-stepper-doc-demo" id="stepper-doc-ol-vertical">
+                                                <li class="ubits-stepper__step ubits-stepper__step--done" data-step-label="Datos básicos">
+                                                    <span class="ubits-stepper__mark" aria-hidden="true">
+                                                        <span class="ubits-stepper__mark-num">1</span>
+                                                        <i class="far fa-check" aria-hidden="true"></i>
+                                                    </span>
+                                                    <span class="ubits-stepper__label">Datos básicos</span>
+                                                </li>
+                                                <li class="ubits-stepper__step ubits-stepper__step--active" data-step-label="Requisitos" aria-current="step">
+                                                    <span class="ubits-stepper__mark" aria-hidden="true">
+                                                        <span class="ubits-stepper__mark-num">2</span>
+                                                        <i class="far fa-check" aria-hidden="true"></i>
+                                                    </span>
+                                                    <span class="ubits-stepper__label">Requisitos</span>
+                                                </li>
+                                                <li class="ubits-stepper__step ubits-stepper__step--pending" data-step-label="Publicar">
+                                                    <span class="ubits-stepper__mark" aria-hidden="true">
+                                                        <span class="ubits-stepper__mark-num">3</span>
+                                                        <i class="far fa-check" aria-hidden="true"></i>
+                                                    </span>
+                                                    <span class="ubits-stepper__label">Publicar</span>
+                                                </li>
+                                            </ol>
+                                        </nav>
+                                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-stepper__vertical-toggle" id="stepper-doc-v-toggle" aria-expanded="true">
+                                            <i class="far fa-chevron-left" aria-hidden="true"></i>
+                                            <span>Colapsar</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Características generales
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; color: var(--ubits-fg-1-medium);">
+                                Cinco formas de mostrar los mismos pasos, según el espacio y la jerarquía visual que necesites.
+                            </p>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-arrows-alt-h"></i></div>
+                                    <div class="ubits-body-sm-bold">Horizontal</div>
+                                    <div class="ubits-body-sm-regular">Número y nombre del paso en una fila; líneas entre pasos. En pantallas pequeñas la lista se apila.</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-compress-arrows-alt"></i></div>
+                                    <div class="ubits-body-sm-bold">Horizontal compacto</div>
+                                    <div class="ubits-body-sm-regular">Ocupa solo el ancho necesario; las líneas tienen longitud fija, no se estiran.</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-bars"></i></div>
+                                    <div class="ubits-body-sm-bold">Título debajo del círculo</div>
+                                    <div class="ubits-body-sm-regular">El círculo arriba y el nombre del paso centrado debajo; útil cuando hay poco ancho horizontal.</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-object-group"></i></div>
+                                    <div class="ubits-body-sm-bold">Compacto con título abajo</div>
+                                    <div class="ubits-body-sm-regular">Combina lo anterior con ancho contenido y líneas cortas fijas.</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-arrows-alt-v"></i></div>
+                                    <div class="ubits-body-sm-bold">Vertical colapsable</div>
+                                    <div class="ubits-body-sm-regular">Lista en columna con línea entre círculos; botón para ocultar los títulos y dejar solo números (o checks).</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Prompts útiles
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                Copia el texto, cambia lo que va entre [corchetes] y pégalo en Cursor. Indica siempre que importe los estilos del stepper (y botón si usas colapsar).
+                            </p>
+                            <div id="stepper-warning-alert" style="margin-bottom: 32px;"></div>
+
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Stepper horizontal en un formulario</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('stepper-prompt-1')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="stepper-prompt-1">En la parte superior de [nombre de la pantalla o formulario] quiero ver un indicador de pasos en fila con tres etapas: [nombre paso 1], [nombre paso 2] y [nombre paso 3]. Que se vea cuál ya terminó, cuál es la actual y cuál falta. Usa el componente Stepper UBITS e importa stepper.css y fontawesome-icons.css.</code></pre>
+                                </div>
+                            </div>
+
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Versión que no ocupe todo el ancho</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('stepper-prompt-2')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="stepper-prompt-2">En [ubicación] el stepper horizontal debe ser la variante compacta: que no se estire a todo el ancho de la página y que las rayitas entre pasos tengan tamaño fijo. Importa stepper.css.</code></pre>
+                                </div>
+                            </div>
+
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Círculo arriba y nombre del paso abajo</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('stepper-prompt-3')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="stepper-prompt-3">En [ubicación] muestra el stepper con el número dentro del círculo arriba y el título del paso centrado debajo del círculo. Importa stepper.css.</code></pre>
+                                </div>
+                            </div>
+
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Lista vertical con botón para ocultar títulos</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('stepper-prompt-4')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="stepper-prompt-4">En la columna [izquierda o derecha] de [pantalla] pon el stepper en vertical con un botón pequeño que diga Colapsar: al pulsarlo deben ocultarse los nombres de los pasos y verse solo los círculos; al volver a pulsar, que reaparezcan los nombres. Sigue la variante vertical colapsable de la documentación del Stepper en la plantilla UBITS (mismos estilos y comportamiento que el ejemplo).</code></pre>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Cambiar de paso al hacer clic (demo o prototipo)</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('stepper-prompt-5')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="stepper-prompt-5">En el stepper de [ubicación], al hacer clic en un paso quiero que ese paso pase a ser el actual y los anteriores se vean como ya completados (igual que en el preview interactivo de la documentación del Stepper).</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); border-radius: 16px; margin-bottom: 40px; overflow: hidden;">
+                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Documentación técnica
+                                </h2>
+                                <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
+                                    Estructura HTML, clases y archivos necesarios.
+                                </p>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                    <i class="far fa-chevron-down" style="transition: transform 0.3s ease;"></i>
+                                    Mostrar
+                                </span>
+                            </div>
+                            <div id="technical-docs-content" style="display: none; padding: 0;">
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                            <i class="far fa-sitemap" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                            Estructura horizontal (con raíles)
+                                        </h2>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('stepper-structure-h')">
+                                            <i class="far fa-copy"></i>
+                                            <span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="stepper-structure-h">&lt;nav aria-label="Pasos del flujo"&gt;
+  &lt;ol class="ubits-stepper ubits-stepper--horizontal"&gt;
+    &lt;li class="ubits-stepper__step ubits-stepper__step--done" data-step-label="Paso 1"&gt;
+      &lt;span class="ubits-stepper__mark" aria-hidden="true"&gt;
+        &lt;span class="ubits-stepper__mark-num"&gt;1&lt;/span&gt;
+        &lt;i class="far fa-check" aria-hidden="true"&gt;&lt;/i&gt;
+      &lt;/span&gt;
+      &lt;span class="ubits-stepper__label"&gt;Paso 1&lt;/span&gt;
+    &lt;/li&gt;
+    &lt;li class="ubits-stepper__rail" aria-hidden="true"&gt;&lt;/li&gt;
+    &lt;li class="ubits-stepper__step ubits-stepper__step--active" data-step-label="Paso 2" aria-current="step"&gt;...&lt;/li&gt;
+    &lt;li class="ubits-stepper__rail" aria-hidden="true"&gt;&lt;/li&gt;
+    &lt;li class="ubits-stepper__step ubits-stepper__step--pending" data-step-label="Paso 3"&gt;...&lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/nav&gt;</code></pre>
+                                    </div>
+                                    <p class="ubits-body-sm-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
+                                        Modificadores en el <code>&lt;ol&gt;</code>: <code>ubits-stepper--horizontal-compact</code>, <code>ubits-stepper--horizontal-stacked</code> (combinables).
+                                    </p>
+                                </div>
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                            <i class="far fa-arrows-alt-v" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                            Vertical colapsable
+                                        </h2>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('stepper-structure-v')">
+                                            <i class="far fa-copy"></i>
+                                            <span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="stepper-structure-v">&lt;div class="ubits-stepper__vertical-frame" id="mi-stepper-marco"&gt;
+  &lt;nav aria-label="Pasos"&gt;
+    &lt;ol class="ubits-stepper ubits-stepper--vertical"&gt;
+      &lt;!-- li.ubits-stepper__step como arriba, sin li rail --&gt;
+    &lt;/ol&gt;
+  &lt;/nav&gt;
+  &lt;button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-stepper__vertical-toggle" id="mi-stepper-toggle" aria-expanded="true"&gt;
+    &lt;i class="far fa-chevron-left" aria-hidden="true"&gt;&lt;/i&gt;&lt;span&gt;Colapsar&lt;/span&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+&lt;script&gt;
+  wireStepperVerticalCollapse(document.getElementById('mi-stepper-marco'), document.getElementById('mi-stepper-toggle'));
+&lt;/script&gt;</code></pre>
+                                    </div>
+                                </div>
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <h2 class="ubits-heading-h2" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">
+                                        Requisitos
+                                    </h2>
+                                    <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6;">
+                                        <strong>CSS:</strong> <code>components/stepper.css</code>; base <code>ubits-colors.css</code>, <code>ubits-typography.css</code>, <code>fontawesome-icons.css</code>.<br>
+                                        <strong>Colapsar vertical:</strong> <code>components/button.css</code>, <code>components/tooltip.css</code>, <code>components/tooltip.js</code>, <code>components/stepper.js</code>.<br>
+                                        <strong>JS opcional:</strong> <code>initStepper(ol)</code> para demo con clic; <code>setStepperStepStates(ol, índice)</code> si controlas el paso desde tu lógica; <code>wireStepperVerticalCollapse(marco, botón)</code> para colapsar.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="ubits-toast-container"></div>
+
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/tooltip.js"></script>
+    <script src="../../components/stepper.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script>
+        function setStepperDocVariant(key) {
+            var horizArea = document.getElementById('stepper-doc-horizontal-area');
+            var vertArea = document.getElementById('stepper-doc-vertical-area');
+            var olH = document.getElementById('stepper-doc-ol-horizontal');
+            document.querySelectorAll('.stepper-variant-btn').forEach(function (btn) {
+                btn.classList.toggle('active', btn.getAttribute('data-variant') === key);
+            });
+            if (key === 'vertical') {
+                horizArea.style.display = 'none';
+                vertArea.style.display = '';
+            } else {
+                horizArea.style.display = '';
+                vertArea.style.display = 'none';
+                var classes = ['ubits-stepper', 'ubits-stepper--horizontal', 'js-stepper-doc-demo'];
+                if (key === 'h-compact') classes.push('ubits-stepper--horizontal-compact');
+                else if (key === 'h-stacked') classes.push('ubits-stepper--horizontal-stacked');
+                else if (key === 'h-stacked-compact') {
+                    classes.push('ubits-stepper--horizontal-stacked', 'ubits-stepper--horizontal-compact');
+                }
+                olH.className = classes.join(' ');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof loadSubNav === 'function') loadSubNav('top-nav-container', 'documentacion');
+            if (typeof loadSidebar === 'function') loadSidebar('ninguno');
+            if (typeof loadDocsSidebar === 'function') loadDocsSidebar('stepper');
+            if (typeof showAlert === 'function') {
+                showAlert('warning', 'Antes de enviar estos prompts a Cursor, reemplaza lo que va entre [corchetes] con datos reales de tu pantalla o flujo.', {
+                    containerId: 'stepper-warning-alert',
+                    noClose: true
+                });
+            }
+            ['stepper-doc-ol-horizontal', 'stepper-doc-ol-vertical'].forEach(function (id) {
+                var el = document.getElementById(id);
+                if (el && typeof initStepper === 'function') initStepper(el);
+            });
+            if (typeof wireStepperVerticalCollapse === 'function') {
+                wireStepperVerticalCollapse(
+                    document.getElementById('stepper-doc-v-frame'),
+                    document.getElementById('stepper-doc-v-toggle')
+                );
+            }
+            setStepperDocVariant('h');
+        });
+
+        function toggleTechnicalDocs() {
+            var content = document.getElementById('technical-docs-content');
+            var isHidden = content.style.display === 'none' || !content.style.display;
+            content.style.display = isHidden ? 'block' : 'none';
+            var trigger = content.previousElementSibling;
+            if (trigger) {
+                var span = trigger.querySelector('span');
+                if (span) {
+                    span.innerHTML = isHidden
+                        ? '<i class="far fa-chevron-up" style="transition: transform 0.3s ease;"></i>Ocultar'
+                        : '<i class="far fa-chevron-down" style="transition: transform 0.3s ease;"></i>Mostrar';
+                }
+            }
+        }
+
+        function copyPrompt(promptId) {
+            var el = document.getElementById(promptId);
+            var text = el.textContent;
+            navigator.clipboard.writeText(text).then(function () {
+                if (typeof showToast === 'function') showToast('success', '¡Prompt copiado!', { containerId: 'ubits-toast-container', duration: 3500 });
+            });
+        }
+
+        function copyCode(elementId) {
+            var el = document.getElementById(elementId);
+            var text = el.textContent;
+            navigator.clipboard.writeText(text).then(function () {
+                if (typeof showToast === 'function') showToast('success', 'Código copiado', { containerId: 'ubits-toast-container', duration: 3500 });
+            });
+        }
+    </script>
+</body>
+</html>

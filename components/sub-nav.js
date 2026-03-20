@@ -339,6 +339,7 @@ const PAGE_TO_TAB = {
     'radio-button.html': 'section3',
     'save-indicator.html': 'section3',
     'status-tag.html': 'section3',
+    'stepper.html': 'section3',
     'tab.html': 'section3',
     'table.html': 'section3',
     'toast.html': 'section3',
