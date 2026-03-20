@@ -1,10 +1,25 @@
 /**
- * LMS Creator (y páginas que lo enlacen): arma el catálogo del drawer de competencias
- * leyendo bd-master-competencias.js + bd-master-habilidades.js. No es una base de datos.
+ * catalogo-competencias-drawer.js
  *
- * Cargar DESPUÉS de: bd-master-competencias.js, bd-master-habilidades.js
+ * PARA QUÉ SIRVE
+ * Construye en memoria el catálogo que alimenta el drawer “Agregar competencias” (cards por
+ * competencia, habilidades, imágenes e iconos). Une los maestros de competencias y habilidades
+ * en estructuras listas para la UI. No persiste datos ni es una BD: solo lee lo ya cargado en window.
  *
- * Expone: CATALOGO_COMPETENCIAS_DRAWER, CATALOGO_ACADEMIAS, COMPETENCIA_IMAGE_MAP, HABILIDAD_ICON_MAP
+ * DÓNDE SE USA (carga este archivo con <script src="...">)
+ * - ubits-colaborador/lms-creator/crear-plan-competencias.html
+ * - ubits-colaborador/lms-creator/detalle-plan-competencias.html
+ * - ubits-colaborador/aprendizaje/catalogo.html
+ * - ubits-colaborador/aprendizaje/catalogo-v5.html
+ *
+ * DEPENDENCIAS (orden obligatorio antes de este script)
+ * - ../../bd-master/bd-master-competencias.js
+ * - ../../bd-master/bd-master-habilidades.js
+ * (desde lms-creator/; desde aprendizaje/ la ruta a bd-master ya está en esas páginas)
+ *
+ * EXPONE EN window
+ * CATALOGO_COMPETENCIAS_DRAWER, CATALOGO_ACADEMIAS, COMPETENCIA_IMAGE_MAP, HABILIDAD_ICON_MAP
+ * refreshCatalogoCompetenciasDrawer()
  */
 (function (global) {
     'use strict';

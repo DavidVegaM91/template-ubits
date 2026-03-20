@@ -1,10 +1,25 @@
 /**
- * LMS Creator — helper: arma window.CATALOGO_CURSOS_DRAWER leyendo las BDs ya cargadas
- * (bd-contenidos-ubits, bd-contenidos-fiqsha + maestros). No es una base de datos.
+ * catalogo-contenidos-drawer.js
  *
- * Orden antes de este: niveles, aliados, competencias, habilidades, categorias-fiqsha,
- * bd-contenidos-ubits, bd-contenidos-fiqsha.
- * Rutas ../../ respecto a esta carpeta (lms-creator).
+ * PARA QUÉ SIRVE
+ * Construye en memoria la lista unificada de cursos/contenidos para el drawer “Agregar contenidos”
+ * (cards estilo catálogo: UBITS + Fiqsha, niveles, aliados, competencias en cards UBITS, etc.).
+ * Transforma los catálogos crudos y maestros ya cargados en window en el formato que espera el
+ * drawer. No es una BD ni hace fetch: solo fusiona y enriquece datos en el cliente.
+ *
+ * DÓNDE SE USA (carga este archivo con <script src="./catalogo-contenidos-drawer.js">)
+ * - ubits-colaborador/lms-creator/crear-plan-contenidos.html
+ * - ubits-colaborador/lms-creator/editar-plan-contenidos.html
+ * - ubits-colaborador/lms-creator/detalle-plan.html
+ *
+ * DEPENDENCIAS (orden recomendado antes de este script)
+ * Maestros: bd-master-niveles-contenido, bd-master-aliados, bd-master-competencias,
+ * bd-master-habilidades, bd-master-categorias-fiqsha; luego bd-contenidos-ubits.js y
+ * bd-contenidos-fiqsha.js (rutas ../../bd-master/... desde lms-creator/).
+ *
+ * EXPONE EN window
+ * CATALOGO_CURSOS_DRAWER — array de ítems listos para el drawer
+ * refreshCatalogoContenidosDrawer() — vuelve a armar el catálogo y devuelve el array
  */
 (function (global) {
     'use strict';
