@@ -106,6 +106,14 @@
     <script src="../../components/ubits-data-table.js"></script>
     <script src="../../components/modal.js"></script>
     <script src="../../script.js"></script>
+    <script src="../../bd-master/bd-master-niveles-contenido.js"></script>
+    <script src="../../bd-master/bd-master-aliados.js"></script>
+    <script src="../../bd-master/bd-master-competencias.js"></script>
+    <script src="../../bd-master/bd-master-habilidades.js"></script>
+    <script src="../../bd-master/bd-master-categorias-fiqsha.js"></script>
+    <script src="../../bd-master/bd-contenidos-ubits.js"></script>
+    <script src="../../bd-master/bd-contenidos-fiqsha.js"></script>
+    <script src="./catalogo-contenidos-drawer.js"></script>
     <!-- Misma base de datos que seguimiento.html (empresa de pruebas: Fiqsha) -->
     <script src="../../bd-master/bd-master-colaboradores.js"></script>
     <script src="../../bd-master/bd-tareas-y-planes.js"></script>
@@ -123,18 +131,33 @@
                 { id: 'g-atencion', nombre: 'Atención al Cliente' }, { id: 'g-logistica', nombre: 'Logística' }, { id: 'g-admin', nombre: 'Administración' },
                 { id: 'g-marketing', nombre: 'Marketing' }, { id: 'g-rrhh', nombre: 'Recursos Humanos' }, { id: 'g-lideres', nombre: 'Líderes' }, { id: 'g-operativo', nombre: 'Personal operativo' }
             ];
+            /** Ítems { id, title, duration } alineados con CATALOGO_CURSOS_DRAWER (bd-master). */
+            function contenidosEjemploDesdeCatalogo(start, len) {
+                var cat = window.CATALOGO_CURSOS_DRAWER || [];
+                var out = [];
+                for (var i = 0; i < len; i++) {
+                    var c = cat[start + i];
+                    if (!c) break;
+                    out.push({ id: c.id, title: c.title, duration: c.duration || '60 min' });
+                }
+                return out;
+            }
             function getAsignacionesPlan1() {
                 var p1 = empleados.slice(0, 3).map(function(e) { return { id: e.id, nombre: e.nombre || '', avatar: e.avatar || null }; });
+                var c01 = contenidosEjemploDesdeCatalogo(0, 2);
+                var c2 = contenidosEjemploDesdeCatalogo(2, 1);
                 return [
-                    { id: 'asignacion-1', asignadosLabel: p1.length ? p1.map(function(p) { return p.nombre; }).join(', ') : 'Por definir', asignadosTipo: 'por-colaborador', asignadosPersonas: p1, asignadosGrupos: [], contenidosCount: 2, contenidos: [ { id: 'c1', title: 'Design Thinking: bases y aplicación', duration: '60 min' }, { id: 'c2', title: 'Comunicación efectiva', duration: '15 min' } ] },
-                    { id: 'asignacion-2', asignadosLabel: 'Ventas', asignadosTipo: 'por-grupos', asignadosPersonas: [], asignadosGrupos: [ { id: 'g-ventas', nombre: 'Ventas' } ], contenidosCount: 1, contenidos: [ { id: 'c3', title: 'Liderazgo situacional', duration: '90 min' } ] }
+                    { id: 'asignacion-1', asignadosLabel: p1.length ? p1.map(function(p) { return p.nombre; }).join(', ') : 'Por definir', asignadosTipo: 'por-colaborador', asignadosPersonas: p1, asignadosGrupos: [], contenidosCount: c01.length, contenidos: c01 },
+                    { id: 'asignacion-2', asignadosLabel: 'Ventas', asignadosTipo: 'por-grupos', asignadosPersonas: [], asignadosGrupos: [ { id: 'g-ventas', nombre: 'Ventas' } ], contenidosCount: c2.length, contenidos: c2 }
                 ];
             }
             function getAsignacionesPlan2() {
                 var p2 = empleados.slice(3, 6).map(function(e) { return { id: e.id, nombre: e.nombre || '', avatar: e.avatar || null }; });
+                var c01 = contenidosEjemploDesdeCatalogo(0, 2);
+                var c2 = contenidosEjemploDesdeCatalogo(2, 1);
                 return [
-                    { id: 'asignacion-1', asignadosLabel: 'Toda la empresa', asignadosTipo: 'toda-empresa', asignadosPersonas: [], asignadosGrupos: [], contenidosCount: 2, contenidos: [ { id: 'c1', title: 'Design Thinking: bases y aplicación', duration: '60 min' }, { id: 'c2', title: 'Comunicación efectiva', duration: '15 min' } ] },
-                    { id: 'asignacion-2', asignadosLabel: p2.length ? p2.map(function(p) { return p.nombre; }).join(', ') : 'Por definir', asignadosTipo: 'por-colaborador', asignadosPersonas: p2, asignadosGrupos: [], contenidosCount: 1, contenidos: [ { id: 'c3', title: 'Liderazgo situacional', duration: '90 min' } ] }
+                    { id: 'asignacion-1', asignadosLabel: 'Toda la empresa', asignadosTipo: 'toda-empresa', asignadosPersonas: [], asignadosGrupos: [], contenidosCount: c01.length, contenidos: c01 },
+                    { id: 'asignacion-2', asignadosLabel: p2.length ? p2.map(function(p) { return p.nombre; }).join(', ') : 'Por definir', asignadosTipo: 'por-colaborador', asignadosPersonas: p2, asignadosGrupos: [], contenidosCount: c2.length, contenidos: c2 }
                 ];
             }
             var plansEditar = {
@@ -237,8 +260,8 @@
             var asignacionesData = [];
             var asignacionIdCounter = 0;
             var pendingCursosRow = null;
-            // Catálogo local (sin orquestador legacy): usa dataset de compatibilidad de esta vista.
-            var catalogoCursos = window.CATALOGO_CURSOS_DRAWER || [];
+            // Catálogo: catalogo-contenidos-drawer.js
+            var catalogoCursos = (window.CATALOGO_CURSOS_DRAWER || []).slice();
 
 
             function canGuardar() {

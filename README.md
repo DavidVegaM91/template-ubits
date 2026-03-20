@@ -311,6 +311,13 @@ Todos los componentes UBITS requieren imports obligatorios:
 │   ├── ubits-spacing-tokens.css # Tokens de espaciado, padding, gap, border-radius y size
 │   ├── fontawesome-icons.css  # Iconos FontAwesome
 │   └── styles.css             # Estilos globales compartidos (importa ubits-spacing-tokens)
+├── 📁 general-utils/          # Utilidades JavaScript transversales (no son componentes UBITS)
+│   └── humanizador-fechas.js   # Fechas humanizadas y estado de planes por fechas (window.*)
+├── 📁 bd-master/              # “Bases de datos” de simulación del playground (JS en window, sin fetch)
+│   ├── README.md              # Inventario, mapa por página y relaciones entre archivos
+│   ├── bd-master-competencias.js, bd-master-habilidades.js, bd-master-colaboradores.js, …
+│   ├── bd-contenidos-ubits.js, bd-contenidos-fiqsha.js
+│   └── bd-tareas-y-planes.js  # Tareas, planes, seguimiento (usa colaboradores del maestro)
 ├── 📁 components/             # Componentes reutilizables UBITS
 │   ├── sub-nav.css + sub-nav.js
 │   ├── sidebar.css + sidebar.js
@@ -390,8 +397,29 @@ Todos los componentes UBITS requieren imports obligatorios:
 | **`fontawesome-icons.css`** | Definición de iconos FontAwesome (clases `far`, `fas`, etc.). **Obligatorio** cuando uses componentes con iconos. |
 | **`styles.css`** | Estilos globales: reset, body, scrollbar, layout (dashboard-container, content-area), import de `ubits-spacing-tokens.css`. Cargar en todas las páginas. |
 
+### **📁 `bd-master/` — datos de simulación (playground)**
+
+Carpeta de **scripts que exponen datos en `window`** (competencias, habilidades, colaboradores, catálogos de contenidos, tareas/planes, etc.). **No hay JSON externo ni `fetch`**: todo funciona abriendo HTML con `file://`, pensado para prototipos y demos.
+
+- **Documentación completa:** [`bd-master/README.md`](bd-master/README.md) — inventario de archivos, variables globales, mapa de qué página carga qué, y relaciones (p. ej. contenidos → niveles, aliados, competencias).
+- **Helpers fuera de esta carpeta:** algunas vistas (p. ej. LMS Creator) cargan scripts en `ubits-colaborador/lms-creator/` que **leen** estos maestros y arman listas para drawers (`catalogo-contenidos-drawer.js`, `catalogo-competencias-drawer.js`); esos helpers **no** son BD: solo transforman lo que ya está en `bd-master/`.
+
+**Ruta típica desde HTML en subcarpetas:** `../../bd-master/nombre-archivo.js`.
+
+### **📁 `general-utils/` — JavaScript transversal**
+
+Scripts **reutilizables** que no son componentes UBITS ni datos de demo. Cualquier página puede enlazarlos con rutas relativas.
+
+| Archivo | Rol |
+|--------|-----|
+| **`humanizador-fechas.js`** | Expone en `window` funciones como `formatDateHumanized`, `formatDateDDMmmAAAA`, `getEstadoFromFechas`, `getEstadoAlTerminarProcesando`, `humanizeTableDates` (fechas tipo “Hace 2 h”, “15 ene 2025”, y estado Planeado/Vigente/No vigente según fechas). Usado por vistas LMS Creator (`detalle-plan*.html`, `planes-formacion.html`, etc.). |
+
+**Ruta típica desde `ubits-colaborador/*/*/`:** `../../general-utils/humanizador-fechas.js`.
+
 ### **📁 Nueva organización de archivos:**
 - **`general-styles/`** - Estilos base compartidos (tokens, tipografía, espaciado, estilos globales)
+- **`general-utils/`** - Utilidades JavaScript transversales (p. ej. humanización de fechas)
+- **`bd-master/`** - Datos de simulación del playground (JS en `window`; ver `bd-master/README.md`)
 - **`components/`** - Todos los componentes UBITS reutilizables
 - **`ubits-admin/`** - Páginas del módulo de administración organizadas por subcarpetas
 - **`ubits-colaborador/`** - Páginas del módulo de colaborador organizadas por subcarpetas

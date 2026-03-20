@@ -65,8 +65,8 @@
                             </div>
                             <div class="detalle-plan-progress-card__content">
                                 <span class="ubits-body-sm-semibold detalle-plan-progress-card__label">Progreso del plan</span>
-                                <div class="detalle-plan-progress-card__bar"><div class="detalle-plan-progress-card__bar-fill" id="plan-progress-fill" style="width: 65%"></div></div>
-                                <span class="detalle-plan-progress-card__percent" id="plan-progress-value">65%</span>
+                                <div class="detalle-plan-progress-card__bar"><div class="detalle-plan-progress-card__bar-fill" id="plan-progress-fill" style="width: 0%"></div></div>
+                                <span class="detalle-plan-progress-card__percent" id="plan-progress-value">0%</span>
                             </div>
                         </div>
                         </div>
@@ -106,10 +106,18 @@
     <script src="../../components/ubits-data-table.js"></script>
     <script src="../../components/drawer.js"></script>
     <script src="../../components/card-content-compact.js"></script>
+    <script src="../../bd-master/bd-master-niveles-contenido.js"></script>
+    <script src="../../bd-master/bd-master-aliados.js"></script>
+    <script src="../../bd-master/bd-master-competencias.js"></script>
+    <script src="../../bd-master/bd-master-habilidades.js"></script>
+    <script src="../../bd-master/bd-master-categorias-fiqsha.js"></script>
+    <script src="../../bd-master/bd-contenidos-ubits.js"></script>
+    <script src="../../bd-master/bd-contenidos-fiqsha.js"></script>
+    <script src="./catalogo-contenidos-drawer.js"></script>
     <script src="../../bd-master/bd-master-colaboradores.js"></script>
     <script src="../../bd-master/bd-tareas-y-planes.js"></script>
     <script src="../../script.js"></script>
-    <script src="./lms-creator-tables.js"></script>
+    <script src="../../general-utils/humanizador-fechas.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             loadSidebar('creator');
@@ -173,8 +181,13 @@
                 planNombreEl.value = plan.nombre || '';
             }
 
-            document.getElementById('plan-progress-fill').style.width = plan.progreso + '%';
-            document.getElementById('plan-progress-value').textContent = plan.progreso + '%';
+            if (plan.estado === 'Planeado' || String(plan.estado).indexOf('Procesando') === 0) {
+                document.getElementById('plan-progress-fill').style.width = '0%';
+                document.getElementById('plan-progress-value').textContent = '0%';
+            } else {
+                document.getElementById('plan-progress-fill').style.width = plan.progreso + '%';
+                document.getElementById('plan-progress-value').textContent = plan.progreso + '%';
+            }
             document.getElementById('plan-fecha-inicio').textContent = (typeof formatDateDDMmmAAAA === 'function' ? formatDateDDMmmAAAA(plan.fechaInicio) : plan.fechaInicio);
             var staticWrap = document.getElementById('plan-fecha-fin-static-wrap');
             var editableWrap = document.getElementById('plan-fecha-fin-editable-wrap');
@@ -252,22 +265,22 @@
                 contenidoPorUsuarioPlan4[rid] = buildContenidoFromCatalog(plan4Indices[rid] || []);
             });
             var contenidoPorUsuario = (planId === '3') ? contenidoPorUsuarioPlan3 : (planId === '4') ? contenidoPorUsuarioPlan4 : contenidoPorUsuarioBase;
+            /* Planeado / Procesando: sin avance real; no dejar progreso mock en los objetos (evita % en tablas, refresh, orden). */
+            var planSinProgresoEstado = plan.estado === 'Planeado' || String(plan.estado).indexOf('Procesando') === 0;
+            if (planSinProgresoEstado) {
+                Object.keys(contenidoPorUsuario).forEach(function(rid) {
+                    (contenidoPorUsuario[rid] || []).forEach(function(c) {
+                        c.progress = 0;
+                        c.status = 'default';
+                    });
+                });
+            }
             function progresoEstudiante(rowId) {
                 var list = contenidoPorUsuario[rowId] || [];
                 if (list.length === 0) return 0;
                 var sum = list.reduce(function(acc, c) { return acc + (c.progress || 0); }, 0);
                 return Math.round(sum / list.length);
             }
-            var catalogoContenidos = [
-                { id: 'c1', title: 'Design Thinking: bases y aplicación', duration: '60 min' },
-                { id: 'c2', title: 'Comunicación efectiva', duration: '15 min' },
-                { id: 'c3', title: 'Liderazgo situacional', duration: '90 min' },
-                { id: 'c4', title: 'Gestión del tiempo', duration: '20 min' },
-                { id: 'c5', title: 'Innovación en equipos', duration: '45 min' },
-                { id: 'c6', title: 'Negociación avanzada', duration: '75 min' },
-                { id: 'c7', title: 'Trabajo en equipo remoto', duration: '15 min' },
-                { id: 'c8', title: 'Data skills para líderes', duration: '120 min' }
-            ];
 
             var empleadosEjemplo = (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getEmpleadosEjemplo === 'function') ? TAREAS_PLANES_DB.getEmpleadosEjemplo() : [];
             var empleadosSinCEO = empleadosEjemplo.filter(function(e) { return !e.esGerenteGeneral; });
@@ -300,8 +313,12 @@
                 { id: '4', usuario: 'Pedro Sánchez', avatar: null, ultimoAcceso: 'Hace 5 días', ultimaFechaProgreso: null, progreso: 0 }
             ];
             asignacionesDetalleData.forEach(function(r) {
-                var fecha = randomDateInRangeDDMMYYYY(plan.fechaInicio, plan.fechaFin);
-                r.ultimaFechaProgreso = fecha || '-';
+                if (planSinProgresoEstado) {
+                    r.ultimaFechaProgreso = '-';
+                } else {
+                    var fecha = randomDateInRangeDDMMYYYY(plan.fechaInicio, plan.fechaFin);
+                    r.ultimaFechaProgreso = fecha || '-';
+                }
             });
             if (empleadosSinCEO.length >= 4) {
                 asignacionesDetalleData[0].usuario = empleadosSinCEO[0].nombre; asignacionesDetalleData[0].avatar = empleadosSinCEO[0].avatar || null;
@@ -317,7 +334,7 @@
                 return Math.round(sum / rows.length);
             }
             function planSinProgreso() {
-                return plan.estado === 'Planeado' || String(plan.estado).indexOf('Procesando') === 0;
+                return planSinProgresoEstado;
             }
             var totalPlan = planSinProgreso() ? 0 : progresoTotalPlan();
             document.getElementById('plan-progress-fill').style.width = totalPlan + '%';

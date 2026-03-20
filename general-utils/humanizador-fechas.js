@@ -1,6 +1,6 @@
 /* ========================================
-   LMS Creator - Utilidades para tablas
-   Formato de fecha humanizado, helpers para header/búsqueda/acciones masivas
+   Utilidad transversal — fechas humanizadas y estado de planes por fechas
+   Expone funciones en window para cualquier vista (LMS Creator, tareas, etc.)
    ======================================== */
 
 (function () {
@@ -92,7 +92,7 @@
 
     /**
      * Aplica formato humanizado a celdas con data-date (valor DD/MM/YYYY o YYYY-MM-DD)
-     * selector: contenedor, ej. '#asignaciones-table'
+     * tableId: id de la tabla
      * dateCols: ['fecha-inicio', 'fecha-fin'] (data-col de las celdas)
      */
     window.humanizeTableDates = function (tableId, dateCols) {

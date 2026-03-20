@@ -106,7 +106,9 @@
     <script src="../../components/input.js"></script>
     <script src="../../components/carousel-contents.js"></script>
     <script src="../../script.js"></script>
-    <script src="../lms-creator/catalogo-competencias-drawer-data.js"></script>
+    <script src="../../bd-master/bd-master-competencias.js"></script>
+    <script src="../../bd-master/bd-master-habilidades.js"></script>
+    <script src="../lms-creator/catalogo-competencias-drawer.js"></script>
     <script>
         // Competencias asignadas al usuario
         const competenciasAsignadas = ['Liderazgo', 'Comunicación', 'Inglés'];
@@ -223,7 +225,7 @@
             'Academia de Tecnología': 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&h=400&fit=crop'
         };
 
-        // Iconos para habilidades (único por habilidad, desde catalogo-competencias-drawer-data.js)
+        // Iconos para habilidades (único por habilidad; bd-master + catalogo-competencias-drawer.js)
         const habilidadIconMap = window.HABILIDAD_ICON_MAP || {};
 
         // Cargar componentes dinámicamente

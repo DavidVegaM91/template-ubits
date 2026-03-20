@@ -24,32 +24,18 @@ Carpeta única de **bases de datos del playground** (JavaScript en `window`, sin
 
 Ruta relativa típica desde HTML: `../../bd-master/nombre-archivo.js` (desde `ubits-colaborador/tareas/` o `ubits-colaborador/lms-creator/`).
 
-### LMS Creator — `crear-plan-contenidos.html`
-
-| Sección / flujo | Scripts `bd-master` | Para qué |
-|-----------------|---------------------|----------|
-| Drawer **Agregar contenidos** (cards UBITS y Fiqsha) | `bd-master-niveles-contenido.js` | Resolver **nombre** del nivel desde `nivelId` en cada card. |
-| Mismo drawer | `bd-master-aliados.js` | Nombre y logo de **proveedores** (`providersAliadosIds` / `proveedorAliadoId`). |
-| Mismo drawer (solo UBITS) | `bd-master-competencias.js`, `bd-master-habilidades.js` | Texto de **competencia** (y habilidades) en cards UBITS. |
-| Mismo drawer (solo Fiqsha) | `bd-master-categorias-fiqsha.js` | **Categoría empresa** desde `categoriaFiqshaId`. |
-| Mismo drawer | `bd-contenidos-ubits.js`, `bd-contenidos-fiqsha.js` | **Listas** `BDS_CONTENIDOS_UBITS.contents` + `BDS_CONTENIDOS_FIQSHA.contents` (merge en página). |
-| Listas de colaboradores / equipo | `bd-master-colaboradores.js` | **55 personas**; cargar **antes** de `bd-tareas-y-planes.js`. |
-| Tareas / planes / equipo (API) | `bd-tareas-y-planes.js` | `TAREAS_PLANES_DB`; después de colaboradores. |
-
-**Orden de carga en esa página (recomendado):** maestros de resolución (niveles → aliados → competencias → habilidades → categorías Fiqsha) → catálogos de contenidos (UBITS → Fiqsha) → `bd-master-colaboradores.js` → `bd-tareas-y-planes.js` → JS de la página.
-
-### LMS Creator — resto de páginas
+### LMS Creator — páginas
 
 | Página | Sección | Scripts `bd-master` | Para qué |
 |--------|---------|---------------------|----------|
-| `crear-grupo.html` | Grupos / colaboradores | `bd-master-colaboradores.js`, `bd-tareas-y-planes.js` | Colaboradores primero; luego `TAREAS_PLANES_DB` para listas de empleados. |
+| `grupos.html` | Lista de grupos | `bd-master-colaboradores.js`, `bd-tareas-y-planes.js` | Conteo de **integrantes** por área / líderes / operativo vía `TAREAS_PLANES_DB.getEmpleadosEjemplo()`. |
+| `crear-grupo.html` | Grupos / colaboradores | Igual | Listas de empleados en drawer. |
 | `detalle-grupo.html` | Detalle grupo | Igual | Igual. |
-| `detalle-plan.html` | Detalle plan | Igual | Igual. |
-| `editar-plan-contenidos.html` | Editar plan contenidos | Igual | Igual. |
-| `crear-plan-competencias.html` | Plan por competencias | Igual | Igual. |
-| `detalle-plan-competencias.html` | Detalle plan competencias | Igual | Igual. |
-
-*(Ninguna de estas carga `bd-contenidos-*` ni los maestros de catálogo salvo colaboradores + BD tareas/planes.)*
+| `crear-plan-competencias.html` | Drawer **Agregar competencias** | `bd-master-competencias.js`, `bd-master-habilidades.js` (antes del helper en `lms-creator/`) | Catálogo de competencias y habilidades. El helper `catalogo-competencias-drawer.js` arma `CATALOGO_COMPETENCIAS_DRAWER` en `window` (no es BD). |
+| `detalle-plan-competencias.html` | Igual | Igual | Igual. |
+| `crear-plan-contenidos.html`, `editar-plan-contenidos.html`, `detalle-plan.html` | Planes por contenidos | `bd-master-niveles-contenido.js`, `bd-master-aliados.js`, `bd-master-competencias.js`, `bd-master-habilidades.js`, `bd-master-categorias-fiqsha.js`, `bd-contenidos-ubits.js`, `bd-contenidos-fiqsha.js`; listas: `bd-master-colaboradores.js`, `bd-tareas-y-planes.js` | Maestros y catálogos de contenidos para el drawer y asignaciones (sin detallar helpers fuera de esta carpeta). |
+| `planes-formacion.html` | Lista de planes | *(mock local en página; sin `bd-master` en el listado)* | Datos de ejemplo de planes LMS Creator. |
+| `contenidos.html`, `categorias.html`, `chat-ia-grupos.html` | Placeholder | — | Sin BD aún. |
 
 ### Tareas — `ubits-colaborador/tareas/`
 

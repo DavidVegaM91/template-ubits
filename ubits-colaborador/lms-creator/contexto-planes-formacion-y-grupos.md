@@ -81,7 +81,7 @@ No existe el campo "horas por competencia"; ese campo es exclusivo de planes de 
 
 - **Izquierda:** búsqueda por texto (título o competencia del curso) y filtro por origen (Todos los cursos / Solo cursos UBITS / Solo cursos de mi empresa). Grid de **cards compactos de contenido** (componente `card-content-compact`): miniatura, título, etc. Al hacer clic en una card se agrega a la selección y la card muestra borde azul (estado seleccionado). Scroll infinito: se cargan 12 contenidos inicialmente y más al hacer scroll.
 - **Tabla derecha:** una fila por contenido seleccionado: celda con título del contenido y botón eliminar. Empty state cuando no hay ninguno ("No hay contenidos agregados").
-- **Datos guardados por asignación:** array de ítems de curso (id, title, etc.). Origen de datos: dataset local `catalogo-cursos-drawer-data.js` (compatibilidad temporal por vista).
+- **Datos guardados por asignación:** array de ítems de curso (id, title, etc.). Origen: **`bd-master`** (`bd-contenidos-*` + maestros); la lista del drawer la arma **`catalogo-contenidos-drawer.js`** (en esta carpeta) → `window.CATALOGO_CURSOS_DRAWER`.
 
 ### 3.3 Detalle del plan – Tabla y drawer
 
@@ -139,7 +139,7 @@ Este valor es **por plan** (no por asignación): todas las asignaciones del plan
 - **Selección:** al hacer clic en una card: (1) borde azul, (2) la card se expande y muestra la lista de **habilidades** hijas de esa competencia, cada una con un **checkbox** (todas marcadas por defecto); (3) la competencia se agrega a la tabla de la derecha.
 - **Habilidades:** el usuario puede desmarcar las que no quiera. Si desmarca **todas** las habilidades, la competencia se deselecciona y se elimina de la tabla (no tiene sentido una competencia sin habilidades).
 - **Tabla derecha:** una fila por competencia seleccionada. La celda de competencia tiene **dos líneas**: línea principal = nombre de la competencia, línea secundaria (estilo helper) = "X habilidad(es)". Botón eliminar quita la competencia de la selección.
-- **Datos guardados por asignación:** array de ítems `{ id, title, habilidades: [] }` (id/title = nombre de la competencia; habilidades = array de nombres de habilidades seleccionadas). Origen de datos: `catalogo-competencias-drawer-data.js` (academias → competencias → habilidades, mismo modelo que catalogo-v5).
+- **Datos guardados por asignación:** array de ítems `{ id, title, habilidades: [] }` (`id` = id de competencia en BD, p. ej. `comp-001`; `title` = nombre; `habilidades` = nombres seleccionados). Origen: `bd-master-competencias.js` + `bd-master-habilidades.js` y el helper `catalogo-competencias-drawer.js` (expone `CATALOGO_COMPETENCIAS_DRAWER`, mismas globales que catalogo-v5).
 
 ### 4.4 Lista de planes y navegación (planes-formacion.html)
 
