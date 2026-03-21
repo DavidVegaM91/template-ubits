@@ -1157,9 +1157,9 @@
                     resetArchivoWizard();
                     if (stepperNavEdit) stepperNavEdit.style.display = 'none';
                     overlay.querySelectorAll('input[name="tipo-agregar-usuarios"]').forEach(function(r) { r.checked = r.value === 'toda-empresa'; });
-                    if (colaboradorPanel) colaboradorPanel.style.display = 'none';
-                    if (gruposPanel) gruposPanel.style.display = 'none';
-                    if (archivoPanel) archivoPanel.style.display = 'none';
+                if (colaboradorPanel) colaboradorPanel.style.display = 'none';
+                if (gruposPanel) gruposPanel.style.display = 'none';
+                if (archivoPanel) archivoPanel.style.display = 'none';
                     if (step1) step1.style.display = '';
                     if (stepParticipantes) stepParticipantes.style.display = 'none';
                     if (stepContenidos) stepContenidos.style.display = 'none';
@@ -1651,28 +1651,28 @@
                     syncWizardPrimary();
                 }
                 if (dropzone) {
-                    dropzone.addEventListener('click', function(e) {
+                dropzone.addEventListener('click', function(e) {
                         if (e.target.closest && e.target.closest('#drawer-archivo-btn-quitar')) return;
-                        if (e.target === btnSeleccionar || (btnSeleccionar && btnSeleccionar.contains(e.target))) return;
-                        if (archivoInput) archivoInput.click();
-                    });
-                    dropzone.addEventListener('dragover', function(e) { e.preventDefault(); dropzone.classList.add('drawer-archivo-dropzone--dragover'); });
-                    dropzone.addEventListener('dragleave', function() { dropzone.classList.remove('drawer-archivo-dropzone--dragover'); });
-                    dropzone.addEventListener('drop', function(e) {
-                        e.preventDefault();
-                        dropzone.classList.remove('drawer-archivo-dropzone--dragover');
-                        if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                    if (e.target === btnSeleccionar || (btnSeleccionar && btnSeleccionar.contains(e.target))) return;
+                    if (archivoInput) archivoInput.click();
+                });
+                dropzone.addEventListener('dragover', function(e) { e.preventDefault(); dropzone.classList.add('drawer-archivo-dropzone--dragover'); });
+                dropzone.addEventListener('dragleave', function() { dropzone.classList.remove('drawer-archivo-dropzone--dragover'); });
+                dropzone.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    dropzone.classList.remove('drawer-archivo-dropzone--dragover');
+                    if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
                             onArchivoElegido(e.dataTransfer.files[0]);
-                        }
-                    });
+                    }
+                });
                 }
                 if (archivoInput) {
-                    archivoInput.addEventListener('change', function() {
-                        if (this.files && this.files.length > 0) {
+                archivoInput.addEventListener('change', function() {
+                    if (this.files && this.files.length > 0) {
                             onArchivoElegido(this.files[0]);
-                        }
-                        this.value = '';
-                    });
+                    }
+                    this.value = '';
+                });
                 }
 
                 function escapeCsvCell(val) {

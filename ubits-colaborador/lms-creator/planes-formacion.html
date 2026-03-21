@@ -193,11 +193,13 @@
                 var pct = Math.min(100, Math.max(0, parseInt(row.progreso, 10) || 0));
                 var fechaInicioDisplay = (typeof formatDateDDMmmAAAA === 'function' ? formatDateDDMmmAAAA(row.fechaInicio) : row.fechaInicio);
                 var fechaFinDisplay = (typeof formatDateDDMmmAAAA === 'function' ? formatDateDDMmmAAAA(row.fechaFin) : row.fechaFin);
+                var accionesBtn = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only js-planes-row-acciones-btn" data-plan-id="' + escapeHtml(String(row.id)) + '" aria-label="Acciones del plan" data-tooltip="Acciones" data-tooltip-delay="500"><i class="far fa-ellipsis-vertical"></i></button>';
                 return '<td data-col="nombre"><span class="ubits-body-sm-regular">' + escapeHtml(row.nombre) + '</span></td>' +
                     '<td data-col="fecha-inicio" data-date="' + escapeHtml(row.fechaInicio) + '"><span class="ubits-body-sm-regular">' + escapeHtml(fechaInicioDisplay) + '</span></td>' +
                     '<td data-col="fecha-fin" data-date="' + escapeHtml(row.fechaFin) + '"><span class="ubits-body-sm-regular">' + escapeHtml(fechaFinDisplay) + '</span></td>' +
                     '<td data-col="estado">' + estadoHtml + '</td>' +
-                    '<td data-col="progreso"><div class="ubits-table__cell-progress"><div class="ubits-table__progress-bar"><div class="ubits-table__progress-bar-fill" style="width:' + pct + '%"></div></div><span class="ubits-body-sm-regular">' + pct + '%</span></div></td>';
+                    '<td data-col="progreso"><div class="ubits-table__cell-progress"><div class="ubits-table__progress-bar"><div class="ubits-table__progress-bar-fill" style="width:' + pct + '%"></div></div><span class="ubits-body-sm-regular">' + pct + '%</span></div></td>' +
+                    '<td data-col="acciones" class="planes-formacion-tabla__td-acciones">' + accionesBtn + '</td>';
             }
 
             if (typeof createUbitsDataTable === 'function') {
@@ -210,7 +212,8 @@
                         { id: 'fecha-inicio', label: 'Fecha inicio', sortable: true, sortType: 'date' },
                         { id: 'fecha-fin', label: 'Fecha fin', sortable: true, sortType: 'date' },
                         { id: 'estado', label: 'Estado', filterable: true },
-                        { id: 'progreso', label: 'Progreso', sortable: true, sortType: 'number' }
+                        { id: 'progreso', label: 'Progreso', sortable: true, sortType: 'number' },
+                        { id: 'acciones', label: 'Acciones' }
                     ],
                     getData: function() {
                         return planesFormacionData.filter(function(p) { return p.tipo === tabActivo; });
@@ -327,6 +330,40 @@
             var planesContainer = document.getElementById('planes-data-table-container');
             if (planesContainer) {
                 planesContainer.addEventListener('click', function(e) {
+                    /* Menú ⋮ por fila: Editar / Eliminar (sin acción aún; mismo patrón que tareas/task-strip) */
+                    if (e.target.closest('.js-planes-row-acciones-btn')) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        var accBtn = e.target.closest('.js-planes-row-acciones-btn');
+                        if (!accBtn || typeof window.getDropdownMenuHtml !== 'function' || typeof window.openDropdownMenu !== 'function' || typeof window.closeDropdownMenu !== 'function') return;
+                        var overlayId = 'planes-formacion-row-options-overlay';
+                        var prev = document.getElementById(overlayId);
+                        if (prev) prev.remove();
+                        var options = [
+                            { text: 'Editar', value: 'editar', leftIcon: 'pen' },
+                            { text: 'Eliminar', value: 'eliminar', leftIcon: 'trash' }
+                        ];
+                        document.body.insertAdjacentHTML('beforeend', window.getDropdownMenuHtml({ overlayId: overlayId, options: options }));
+                        var overlayEl = document.getElementById(overlayId);
+                        if (!overlayEl) return;
+                        overlayEl.style.zIndex = '10100';
+                        overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function(opt) {
+                            opt.addEventListener('click', function() {
+                                var val = this.getAttribute('data-value');
+                                window.closeDropdownMenu(overlayId);
+                                if (overlayEl.parentNode) overlayEl.remove();
+                                if (val === 'editar' || val === 'eliminar') { /* Reservado para lógica futura */ }
+                            });
+                        });
+                        overlayEl.addEventListener('click', function(ev) {
+                            if (ev.target === overlayEl) {
+                                window.closeDropdownMenu(overlayId);
+                                if (overlayEl.parentNode) overlayEl.remove();
+                            }
+                        });
+                        window.openDropdownMenu(overlayId, accBtn, { alignRight: true });
+                        return;
+                    }
                     var row = e.target.closest('tbody tr[data-id]');
                     if (!row || e.target.closest('.ubits-checkbox') || e.target.closest('input[type="checkbox"]')) return;
                     var planId = row.getAttribute('data-id');

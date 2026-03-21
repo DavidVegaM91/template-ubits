@@ -130,6 +130,32 @@ body[data-planes-vacios="true"] .widget-planes-formacion #planes-empty-state,
     min-width: 100px;
 }
 
+.section-single--test-tabla .ubits-table thead th[data-col="acciones"],
+.section-single--test-tabla .ubits-table tbody td[data-col="acciones"] {
+    width: 88px;
+    min-width: 88px;
+    max-width: 104px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.planes-formacion-tabla__td-acciones {
+    cursor: default;
+}
+
+.planes-formacion-tabla__td-acciones .js-planes-row-acciones-btn {
+    cursor: pointer;
+}
+
+/* Menú ⋮ por fila (Editar / Eliminar): por encima de la tabla */
+.page-planes-formacion #planes-formacion-row-options-overlay.ubits-dropdown-menu__overlay {
+    z-index: 10100;
+}
+
+.page-planes-formacion #planes-formacion-row-options-overlay .ubits-dropdown-menu__content {
+    z-index: 10101;
+}
+
 /* Menú "Crear plan": por encima del FAB del header-product y tab bar (móvil). */
 .page-planes-formacion #planes-formacion-crear-menu-overlay.ubits-dropdown-menu__overlay {
     z-index: 1102;

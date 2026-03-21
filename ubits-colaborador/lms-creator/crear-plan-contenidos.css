@@ -850,9 +850,11 @@
 }
 
 /* Dropdown del filtro del drawer: por encima del drawer (drawer usa z-index 1100–1101).
-   Wizard paso 3 usa #drawer-wiz-cursos-filter-overlay (mismo motivo que #drawer-cursos-filter-overlay). */
+   Wizard paso 3 usa #drawer-wiz-cursos-filter-overlay (mismo motivo que #drawer-cursos-filter-overlay).
+   editar-plan-contenidos: drawer solo contenidos usa #drawer-editplan-cursos-filter-overlay. */
 #drawer-cursos-filter-overlay.ubits-dropdown-menu__overlay,
 #drawer-wiz-cursos-filter-overlay.ubits-dropdown-menu__overlay,
+#drawer-editplan-cursos-filter-overlay.ubits-dropdown-menu__overlay,
 #drawer-colab-filter-overlay.ubits-dropdown-menu__overlay,
 #drawer-grupos-sort-overlay.ubits-dropdown-menu__overlay,
 [id^="ubits-dt-filter-drawer-"].ubits-dropdown-menu__overlay,
@@ -861,6 +863,7 @@
 }
 #drawer-cursos-filter-overlay .ubits-dropdown-menu__content,
 #drawer-wiz-cursos-filter-overlay .ubits-dropdown-menu__content,
+#drawer-editplan-cursos-filter-overlay .ubits-dropdown-menu__content,
 #drawer-colab-filter-overlay .ubits-dropdown-menu__content,
 #drawer-grupos-sort-overlay .ubits-dropdown-menu__content,
 [id^="ubits-dt-filter-drawer-"] .ubits-dropdown-menu__content,
