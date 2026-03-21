@@ -64,6 +64,7 @@
         clearFilters: 'Limpiar filtros',
         filtrosAplicados: 'Filtros aplicados',
         buscar: 'Buscar',
+        buscarPlaceholder: 'Buscar...',
         columnasVisibles: 'Columnas visibles'
     };
 
@@ -72,11 +73,22 @@
         return String(t).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     }
 
+    /**
+     * Texto de celda para búsqueda, orden y filtros.
+     * Recorre .ubits-body-sm/md-regular ignorando nodos dentro de .ubits-avatar (evita spans vacíos o ruido);
+     * si no hay tipografía, usa textContent de la celda.
+     */
     function getRowCellText(tr, colId) {
         var td = tr.querySelector('td[data-col="' + colId + '"]');
         if (!td) return '';
-        var span = td.querySelector('.ubits-body-sm-regular, .ubits-body-md-regular, span');
-        return span ? span.textContent.trim() : td.textContent.trim();
+        var parts = [];
+        td.querySelectorAll('.ubits-body-sm-regular, .ubits-body-md-regular').forEach(function (el) {
+            if (el.closest('.ubits-avatar')) return;
+            var t = el.textContent.trim();
+            if (t) parts.push(t);
+        });
+        if (parts.length > 0) return parts.join(' ');
+        return td.textContent.trim();
     }
 
     /**
@@ -864,7 +876,7 @@
                         createInput({
                             containerId: searchContainerId,
                             type: 'search',
-                            placeholder: 'Buscar...',
+                            placeholder: i18n.buscarPlaceholder || 'Buscar...',
                             showLabel: false,
                             onChange: function (value) {
                                 searchQuery = value || '';

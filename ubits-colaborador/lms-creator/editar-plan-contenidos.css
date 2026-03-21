@@ -1,0 +1,20 @@
+/* ========================================
+   editar-plan-contenidos — título + status tag (misma fila que detalle-plan: .detalle-plan-progress-card__header)
+   Debe ganar a .crear-plan-contenidos-form__field--nombre-plan { flex-direction: column; }
+   ======================================== */
+
+.crear-plan-contenidos-form__field--nombre-plan.editar-plan-nombre-row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-md);
+}
+
+.crear-plan-contenidos-form__field--nombre-plan.editar-plan-nombre-row .task-detail-title-editable {
+    flex: 1;
+    min-width: 0;
+}
+
+.crear-plan-contenidos-form__field--nombre-plan.editar-plan-nombre-row #plan-estado-container.editar-plan-estado-tag {
+    flex-shrink: 0;
+}

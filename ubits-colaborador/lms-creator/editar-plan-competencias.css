@@ -1,0 +1,23 @@
+/* ========================================
+   Estilos específicos — editar-plan-competencias
+   Reutiliza crear-plan-competencias.css + crear-plan-contenidos.css (layout drawer/vigencia).
+   ======================================== */
+
+/* Título + status tag (misma fila que detalle-plan: .detalle-plan-progress-card__header)
+   Debe ganar a .crear-plan-competencias-form__field--nombre-plan { flex-direction: column; } */
+
+.crear-plan-competencias-form__field--nombre-plan.editar-plan-nombre-row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-md);
+}
+
+.crear-plan-competencias-form__field--nombre-plan.editar-plan-nombre-row .task-detail-title-editable {
+    flex: 1;
+    min-width: 0;
+}
+
+.crear-plan-competencias-form__field--nombre-plan.editar-plan-nombre-row #plan-estado-container.editar-plan-estado-tag {
+    flex-shrink: 0;
+}

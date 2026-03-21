@@ -52,16 +52,12 @@
                         <div class="widget-detalle-plan-progress">
                         <div class="detalle-plan-progress-card">
                             <div class="detalle-plan-progress-card__header">
-                                <textarea class="task-detail-title-editable ubits-heading-h1" id="plan-nombre" placeholder="Nombre del plan" rows="1" maxlength="250"></textarea>
+                                <h1 class="ubits-heading-h1 detalle-plan-title-display" id="plan-nombre"></h1>
                                 <span id="plan-estado-container"></span>
                             </div>
                             <div class="detalle-plan-progress-card__fechas">
                                 <span class="detalle-plan-fechas-label-wrap"><span class="ubits-body-xs-regular detalle-plan-card__meta-label">Fecha de inicio:</span> <span id="plan-fecha-inicio" class="ubits-body-xs-regular">1 ene 2025</span></span>
                                 <span class="detalle-plan-fecha-fin-static detalle-plan-fechas-label-wrap" id="plan-fecha-fin-static-wrap"><span class="ubits-body-xs-regular detalle-plan-card__meta-label">Fecha de finalización:</span> <span id="plan-fecha-fin" class="ubits-body-xs-regular">31 mar 2025</span></span>
-                                <div class="detalle-plan-fecha-fin-editable" id="plan-fecha-fin-editable-wrap" style="display: none;">
-                                    <span class="ubits-body-xs-regular detalle-plan-card__meta-label">Fecha de finalización:</span>
-                                    <div id="plan-fecha-fin-wrap"></div>
-                                </div>
                             </div>
                             <div class="detalle-plan-progress-card__content">
                                 <span class="ubits-body-sm-semibold detalle-plan-progress-card__label">Progreso del plan</span>
@@ -166,19 +162,12 @@
                         onClick: function() { window.location.href = 'planes-formacion.html'; }
                     }
                 };
-                if (plan.estado === 'Vigente' || plan.estado === 'Planeado') {
-                    headerOpts.secondaryButtons = [
-                        { text: 'Guardar', icon: 'fa-save', onClick: function() {
-                            if (typeof showToast === 'function') showToast('success', 'Cambios guardados');
-                        } }
-                    ];
-                }
                 loadHeaderProduct('header-product-container', headerOpts);
             }
 
             var planNombreEl = document.getElementById('plan-nombre');
             if (planNombreEl) {
-                planNombreEl.value = plan.nombre || '';
+                planNombreEl.textContent = plan.nombre || '';
             }
 
             if (plan.estado === 'Planeado' || String(plan.estado).indexOf('Procesando') === 0) {
@@ -189,48 +178,9 @@
                 document.getElementById('plan-progress-value').textContent = plan.progreso + '%';
             }
             document.getElementById('plan-fecha-inicio').textContent = (typeof formatDateDDMmmAAAA === 'function' ? formatDateDDMmmAAAA(plan.fechaInicio) : plan.fechaInicio);
-            var staticWrap = document.getElementById('plan-fecha-fin-static-wrap');
-            var editableWrap = document.getElementById('plan-fecha-fin-editable-wrap');
             var fechaFinSpan = document.getElementById('plan-fecha-fin');
-            if (plan.estado === 'Vigente' || plan.estado === 'Planeado') {
-                if (staticWrap) staticWrap.style.display = 'none';
-                if (editableWrap) editableWrap.style.display = 'flex';
-                var finWrap = document.getElementById('plan-fecha-fin-wrap');
-                if (finWrap && typeof createInput === 'function') {
-                    finWrap.innerHTML = '';
-                    createInput({
-                        containerId: 'plan-fecha-fin-wrap',
-                        type: 'calendar',
-                        size: 'xs',
-                        showLabel: false,
-                        placeholder: 'Selecciona fecha',
-                        value: plan.fechaFin || '',
-                        onChange: function(dateStr) {
-                            if (dateStr) {
-                                plan.fechaFin = dateStr;
-                                if (typeof showToast === 'function') showToast('success', 'Fecha de finalización actualizada');
-                            }
-                        }
-                    });
-                    var dateInputEl = document.querySelector('#plan-fecha-fin-wrap .ubits-input');
-                    if (dateInputEl) dateInputEl.setAttribute('aria-label', 'Fecha de finalización del plan');
-                }
-            } else {
-                if (staticWrap) staticWrap.style.display = '';
-                if (editableWrap) editableWrap.style.display = 'none';
-                if (fechaFinSpan) fechaFinSpan.textContent = (typeof formatDateDDMmmAAAA === 'function' ? formatDateDDMmmAAAA(plan.fechaFin) : plan.fechaFin);
-            }
+            if (fechaFinSpan) fechaFinSpan.textContent = (typeof formatDateDDMmmAAAA === 'function' ? formatDateDDMmmAAAA(plan.fechaFin) : plan.fechaFin);
             document.title = 'UBITS Playground - LMS Creator - ' + plan.nombre;
-
-            setTimeout(function() {
-                var nombreTa = document.getElementById('plan-nombre');
-                if (nombreTa) {
-                    nombreTa.addEventListener('input', function() {
-                        this.style.height = 'auto';
-                        this.style.height = Math.min(this.scrollHeight, 80) + 'px';
-                    });
-                }
-            }, 0);
 
             if (typeof getModalHtml === 'function') {
                 var deleteBody = '<p class="ubits-body-md-regular">¿Estás seguro de que deseas eliminar <strong id="asignaciones-delete-count">0</strong> asignación(es) del plan?</p><p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Esta acción no se puede deshacer.</p><div style="margin-top: var(--gap-lg);"><label class="ubits-body-sm-regular" for="asignaciones-delete-type-input">Escriba <strong>eliminar</strong> para habilitar el botón:</label><input type="text" id="asignaciones-delete-type-input" class="ubits-input" placeholder="Escriba la palabra de confirmación" autocomplete="off" style="margin-top: var(--gap-sm); width: 100%; padding: var(--padding-sm) var(--padding-md); border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-sm); font-size: var(--font-size-sm); color: var(--ubits-fg-1-high); box-sizing: border-box;"></div>';
@@ -448,7 +398,13 @@
                         features: { checkboxes: true, search: true, filters: true, verSeleccionados: true, resultsCount: true },
                         emptyState: { message: 'No hay colaboradores disponibles para agregar', icon: 'far fa-user' },
                         emptySearchState: { message: 'No se encontraron resultados', description: 'Intenta ajustar tu búsqueda.', buttonText: 'Limpiar búsqueda' },
-                        i18n: { selectAll: 'Seleccionar todo', deselectAll: 'Deseleccionar todo', verSeleccionados: 'Ver seleccionados', buscar: 'Buscar' }
+                        i18n: {
+                            selectAll: 'Seleccionar todo',
+                            deselectAll: 'Deseleccionar todo',
+                            verSeleccionados: 'Ver seleccionados',
+                            buscar: 'Buscar usuarios',
+                            buscarPlaceholder: 'Buscar por nombre de usuario...'
+                        }
                     });
                 }
 
@@ -532,12 +488,15 @@
                         return list;
                     })(),
                     emptyState: { message: 'No hay asignaciones', icon: 'far fa-user-group', description: 'Aún no hay colaboradores asignados a este plan. Agrega asignaciones para ver el progreso.' },
-                emptySearchState: { message: 'No se encontraron resultados', description: 'Intenta ajustar tu búsqueda.', buttonText: 'Limpiar búsqueda' },
-                i18n: { selectAll: 'Seleccionar todo', deselectAll: 'Deseleccionar todo', verSeleccionados: 'Ver seleccionados', buscar: 'Buscar' }
+                    emptySearchState: { message: 'No se encontraron resultados', description: 'Intenta ajustar tu búsqueda.', buttonText: 'Limpiar búsqueda' },
+                    i18n: {
+                        selectAll: 'Seleccionar todo',
+                        deselectAll: 'Deseleccionar todo',
+                        verSeleccionados: 'Ver seleccionados',
+                        buscar: 'Buscar usuarios',
+                        buscarPlaceholder: 'Buscar por nombre de usuario...'
+                    }
             };
-            if (plan.estado === 'Vigente' || plan.estado === 'Planeado') {
-                createUbitsDataTableConfig.primaryButton = { text: 'Agregar asignación', icon: 'fa-plus', onClick: function() { abrirDrawerAgregarAsignacionVigente(); } };
-            }
             if (typeof createUbitsDataTable === 'function') {
                 asignacionesDetalleTablaRef = createUbitsDataTable(createUbitsDataTableConfig);
             }

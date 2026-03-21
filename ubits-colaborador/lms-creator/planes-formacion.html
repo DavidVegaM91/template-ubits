@@ -148,11 +148,61 @@
             var planesTablaRef = null;
             var pendingDeleteIds = [];
 
+            /**
+             * Tab visible según URL: hash #contenidos | #competencias o query ?tab=contenidos|competencias (recarga conserva la pestaña).
+             * Igual criterio que seguimiento (#planes / ?tab=).
+             */
+            function parsePlanesFormacionTabFromUrl() {
+                var h = (window.location.hash || '').replace(/^#/, '').toLowerCase();
+                if (h === 'contenidos' || h === 'competencias') return h;
+                try {
+                    var p = (new URLSearchParams(window.location.search).get('tab') || '').toLowerCase();
+                    if (p === 'contenidos' || p === 'competencias') return p;
+                } catch (e) {}
+                return null;
+            }
+
+            var tabFromUrl = parsePlanesFormacionTabFromUrl();
+            if (tabFromUrl) tabActivo = tabFromUrl;
+
+            function updatePlanesFormacionUrl() {
+                var tab = tabActivo;
+                try {
+                    var u = new URL(window.location.href);
+                    u.hash = '';
+                    u.searchParams.delete('tab');
+                    var clean = u.pathname + u.search;
+                    if (tab === 'competencias') {
+                        history.replaceState(null, '', clean + '#competencias');
+                    } else {
+                        history.replaceState(null, '', clean);
+                    }
+                } catch (e) {}
+            }
+
+            function syncHeaderTabsFromPlanesTab() {
+                document.querySelectorAll('#header-product-container .ubits-header-product__tabs .ubits-tab[data-tab]').forEach(function(btn) {
+                    var isActive = btn.getAttribute('data-tab') === tabActivo;
+                    btn.classList.toggle('ubits-tab--active', isActive);
+                    btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+                });
+            }
+
+            function applyPlanesTabFromUrl(tabId) {
+                if (tabId !== 'contenidos' && tabId !== 'competencias') return;
+                if (tabActivo === tabId) return;
+                tabActivo = tabId;
+                if (planesTablaRef && typeof planesTablaRef.refresh === 'function') planesTablaRef.refresh();
+                syncHeaderTabsFromPlanesTab();
+                setTimeout(function() { if (typeof initTooltip === 'function') initTooltip('#planes-data-table-container [data-tooltip]'); }, 50);
+            }
+
             var planesFormacionData = [
                 { id: '2', nombre: 'Competencias de liderazgo', fechaInicio: '01/04/2026', fechaFin: '30/06/2026', estado: 'Procesando 0%', progreso: 0, tipo: 'contenidos' },
                 { id: '1', nombre: 'Plan de onboarding Q3 2026', fechaInicio: '01/07/2026', fechaFin: '30/09/2026', estado: 'Planeado', progreso: 0, tipo: 'contenidos' },
                 { id: '3', nombre: 'Cursos de cumplimiento Q1', fechaInicio: '01/01/2026', fechaFin: '31/03/2026', estado: 'Vigente', progreso: 65, tipo: 'contenidos' },
                 { id: '4', nombre: 'Evaluación técnica 2025', fechaInicio: '01/09/2025', fechaFin: '15/12/2025', estado: 'No vigente', progreso: 85, tipo: 'contenidos' },
+                { id: 'c0', nombre: 'Plan competencias en revisión', fechaInicio: '01/04/2026', fechaFin: '30/06/2026', estado: 'Procesando 0%', progreso: 0, tipo: 'competencias' },
                 { id: 'c1', nombre: 'Plan de competencias de liderazgo', fechaInicio: '01/07/2026', fechaFin: '30/09/2026', estado: 'Planeado', progreso: 0, tipo: 'competencias' },
                 { id: 'c2', nombre: 'Desarrollo de competencias Q1', fechaInicio: '01/01/2026', fechaFin: '31/03/2026', estado: 'Vigente', progreso: 65, tipo: 'competencias' },
                 { id: 'c3', nombre: 'Evaluación por competencias 2025', fechaInicio: '01/09/2025', fechaFin: '15/12/2025', estado: 'No vigente', progreso: 85, tipo: 'competencias' }
@@ -162,6 +212,19 @@
                 var deleteBody = '<p class="ubits-body-md-regular">¿Estás seguro de que deseas eliminar <strong id="planes-delete-count">0</strong> plan(es) seleccionado(s)?</p><p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Esta acción no se puede deshacer.</p><div class="delete-confirm-group" style="margin-top: var(--gap-lg);"><label class="ubits-body-sm-regular" for="planes-delete-type-input">Escriba <strong>eliminar</strong> para habilitar el botón:</label><input type="text" id="planes-delete-type-input" class="ubits-input" placeholder="Escriba la palabra de confirmación" autocomplete="off" style="margin-top: var(--gap-sm); width: 100%; padding: var(--padding-sm) var(--padding-md); border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-sm); font-size: var(--font-size-sm); color: var(--ubits-fg-1-high); box-sizing: border-box;"></div>';
                 var deleteFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="planes-delete-cancel"><span>Cancelar</span></button><button type="button" class="ubits-button ubits-button--error ubits-button--md" id="planes-delete-confirm" disabled><span>Eliminar</span></button>';
                 document.getElementById('planes-modals-container').innerHTML = getModalHtml({ overlayId: 'planes-delete-overlay', title: 'Confirmar eliminación', bodyHtml: deleteBody, footerHtml: deleteFooter, size: 'sm', closeButtonId: 'planes-delete-close' });
+            }
+
+            function openPlanesDeleteModal(ids) {
+                if (!ids || ids.length === 0) return;
+                pendingDeleteIds = ids.slice();
+                var countEl = document.getElementById('planes-delete-count');
+                var inputEl = document.getElementById('planes-delete-type-input');
+                var confirmEl = document.getElementById('planes-delete-confirm');
+                if (countEl) countEl.textContent = pendingDeleteIds.length;
+                if (inputEl) { inputEl.value = ''; inputEl.focus(); }
+                if (confirmEl) confirmEl.disabled = true;
+                var overlay = document.getElementById('planes-delete-overlay');
+                if (overlay) { overlay.style.display = 'flex'; overlay.setAttribute('aria-hidden', 'false'); }
             }
 
             function escapeHtml(t) {
@@ -223,16 +286,7 @@
                     features: { checkboxes: true, search: true, filters: true, verSeleccionados: true, actionBar: true, resultsCount: true },
                     actionBarButtons: [
                         { id: 'eliminar', label: 'Eliminar', icon: 'fa-trash', variant: 'error-secondary', onClick: function(selectedIds) {
-                            if (!selectedIds || selectedIds.length === 0) return;
-                            pendingDeleteIds = selectedIds.slice();
-                            var countEl = document.getElementById('planes-delete-count');
-                            var inputEl = document.getElementById('planes-delete-type-input');
-                            var confirmEl = document.getElementById('planes-delete-confirm');
-                            if (countEl) countEl.textContent = pendingDeleteIds.length;
-                            if (inputEl) { inputEl.value = ''; inputEl.focus(); }
-                            if (confirmEl) confirmEl.disabled = true;
-                            var overlay = document.getElementById('planes-delete-overlay');
-                            if (overlay) { overlay.style.display = 'flex'; overlay.setAttribute('aria-hidden', 'false'); }
+                            openPlanesDeleteModal(selectedIds);
                         } }
                     ],
                     emptyState: { message: 'Aún no hay planes.', icon: 'far fa-layer-group', description: 'Crea tu primer plan de contenidos o competencias usando el botón de arriba.' },
@@ -269,10 +323,11 @@
                         { id: 'contenidos', label: 'Planes de contenidos' },
                         { id: 'competencias', label: 'Planes de competencias' }
                     ],
-                    activeTabId: 'contenidos',
+                    activeTabId: tabActivo,
                     onTabChange: function(tabId) {
                         tabActivo = tabId;
                         if (planesTablaRef && typeof planesTablaRef.refresh === 'function') planesTablaRef.refresh();
+                        updatePlanesFormacionUrl();
                         setTimeout(function() { if (typeof initTooltip === 'function') initTooltip('#planes-data-table-container [data-tooltip]'); }, 50);
                     },
                     aiButton: {
@@ -290,6 +345,17 @@
                             if (typeof window.openCrearMenu === 'function') window.openCrearMenu(e.currentTarget);
                         }
                     }
+                });
+                try {
+                    updatePlanesFormacionUrl();
+                } catch (e) {}
+                window.addEventListener('hashchange', function() {
+                    var t = parsePlanesFormacionTabFromUrl();
+                    if (t === null) {
+                        var h = (window.location.hash || '').replace(/^#/, '').toLowerCase();
+                        if (h === '') t = 'contenidos';
+                    }
+                    if (t && t !== tabActivo) applyPlanesTabFromUrl(t);
                 });
             }
 
@@ -330,19 +396,28 @@
             var planesContainer = document.getElementById('planes-data-table-container');
             if (planesContainer) {
                 planesContainer.addEventListener('click', function(e) {
-                    /* Menú ⋮ por fila: Editar / Eliminar (sin acción aún; mismo patrón que tareas/task-strip) */
+                    /* Menú ⋮: Ver progreso (Vigente/No vigente), Editar (Planeado/Procesando/Vigente, no No vigente), Eliminar */
                     if (e.target.closest('.js-planes-row-acciones-btn')) {
                         e.preventDefault();
                         e.stopPropagation();
                         var accBtn = e.target.closest('.js-planes-row-acciones-btn');
                         if (!accBtn || typeof window.getDropdownMenuHtml !== 'function' || typeof window.openDropdownMenu !== 'function' || typeof window.closeDropdownMenu !== 'function') return;
+                        var planIdAcc = accBtn.getAttribute('data-plan-id');
+                        var planRowAcc = planIdAcc ? planesFormacionData.find(function(p) { return String(p.id) === String(planIdAcc); }) : null;
+                        var estAcc = planRowAcc && planRowAcc.estado != null ? String(planRowAcc.estado) : '';
+                        var mostrarVerProgreso = estAcc === 'Vigente' || estAcc === 'No vigente';
+                        var mostrarEditar = estAcc === 'Planeado' || estAcc === 'Vigente' || String(estAcc).indexOf('Procesando') === 0;
                         var overlayId = 'planes-formacion-row-options-overlay';
                         var prev = document.getElementById(overlayId);
                         if (prev) prev.remove();
-                        var options = [
-                            { text: 'Editar', value: 'editar', leftIcon: 'pen' },
-                            { text: 'Eliminar', value: 'eliminar', leftIcon: 'trash' }
-                        ];
+                        var options = [];
+                        if (mostrarVerProgreso) {
+                            options.push({ text: 'Ver progreso', value: 'ver-progreso', leftIcon: 'chart-line' });
+                        }
+                        if (mostrarEditar) {
+                            options.push({ text: 'Editar', value: 'editar', leftIcon: 'pen' });
+                        }
+                        options.push({ text: 'Eliminar', value: 'eliminar', leftIcon: 'trash' });
                         document.body.insertAdjacentHTML('beforeend', window.getDropdownMenuHtml({ overlayId: overlayId, options: options }));
                         var overlayEl = document.getElementById(overlayId);
                         if (!overlayEl) return;
@@ -352,7 +427,29 @@
                                 var val = this.getAttribute('data-value');
                                 window.closeDropdownMenu(overlayId);
                                 if (overlayEl.parentNode) overlayEl.remove();
-                                if (val === 'editar' || val === 'eliminar') { /* Reservado para lógica futura */ }
+                                if (val === 'ver-progreso') {
+                                    var pid = accBtn.getAttribute('data-plan-id');
+                                    if (tabActivo === 'competencias') {
+                                        window.location.href = 'detalle-plan-competencias.html?id=' + encodeURIComponent(pid);
+                                    } else {
+                                        window.location.href = 'detalle-plan.html?id=' + encodeURIComponent(pid);
+                                    }
+                                    return;
+                                }
+                                if (val === 'editar') {
+                                    var pidEd = accBtn.getAttribute('data-plan-id');
+                                    if (tabActivo === 'competencias') {
+                                        window.location.href = 'editar-plan-competencias.html?id=' + encodeURIComponent(pidEd);
+                                    } else {
+                                        window.location.href = 'editar-plan-contenidos.html?id=' + encodeURIComponent(pidEd);
+                                    }
+                                    return;
+                                }
+                                if (val === 'eliminar') {
+                                    var pidDel = accBtn.getAttribute('data-plan-id');
+                                    if (pidDel) openPlanesDeleteModal([pidDel]);
+                                    return;
+                                }
                             });
                         });
                         overlayEl.addEventListener('click', function(ev) {
@@ -370,11 +467,19 @@
                     if (!planId) return;
                     var planRow = planesFormacionData.find(function(p) { return String(p.id) === String(planId); });
                     if (tabActivo === 'competencias') {
-                        window.location.href = 'detalle-plan-competencias.html?id=' + encodeURIComponent(planId);
+                        var esProcComp = planRow && String(planRow.estado).indexOf('Procesando') === 0;
+                        var esPlaneadoComp = planRow && planRow.estado === 'Planeado';
+                        /* Procesando y Planeado → editar (sin progreso aún no tiene sentido el detalle solo consulta) */
+                        window.location.href = (esProcComp || esPlaneadoComp)
+                            ? 'editar-plan-competencias.html?id=' + encodeURIComponent(planId)
+                            : 'detalle-plan-competencias.html?id=' + encodeURIComponent(planId);
                         return;
                     }
                     var esProcesando = planRow && String(planRow.estado).indexOf('Procesando') === 0;
-                    window.location.href = esProcesando ? 'editar-plan-contenidos.html?id=' + planId : 'detalle-plan.html?id=' + planId;
+                    var esPlaneadoCont = planRow && planRow.estado === 'Planeado';
+                    window.location.href = (esProcesando || esPlaneadoCont)
+                        ? 'editar-plan-contenidos.html?id=' + encodeURIComponent(planId)
+                        : 'detalle-plan.html?id=' + encodeURIComponent(planId);
                 });
             }
             setTimeout(() => {
