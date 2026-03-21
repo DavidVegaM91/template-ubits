@@ -94,7 +94,7 @@
 
 .grupos-list-wrapper {
     width: 100%;
-    overflow: hidden;
+    min-width: 0;
 }
 
 .section-single--grupos .ubits-table tbody td[data-col="nombre"] {

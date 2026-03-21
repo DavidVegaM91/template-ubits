@@ -919,7 +919,7 @@
 
                 openDrawer({
                     overlayId: 'drawer-agregar-cursos',
-                    title: 'Agregar contenidos',
+                    title: 'Editar contenidos',
                     bodyHtml: getDrawerCursosBodyHtml(),
                     footerHtml: footerHtml,
                     size: 'lg',
@@ -1111,9 +1111,9 @@
                             radioGroup: true,
                             radioName: filterOverlayId + '-radio',
                             options: [
-                                { text: 'Todos los cursos', value: 'all', selected: drawerCursosFilter === 'all' },
-                                { text: 'Solo cursos UBITS', value: 'ubits', selected: drawerCursosFilter === 'ubits' },
-                                { text: 'Solo cursos de mi empresa', value: 'empresa', selected: drawerCursosFilter === 'empresa' }
+                                { text: 'Todos', value: 'all', selected: drawerCursosFilter === 'all' },
+                                { text: 'Solo catálogo UBITS', value: 'ubits', selected: drawerCursosFilter === 'ubits' },
+                                { text: 'Solo catálogo propio', value: 'empresa', selected: drawerCursosFilter === 'empresa' }
                             ]
                         });
                         document.body.insertAdjacentHTML('beforeend', htmlDropdown);
@@ -1138,13 +1138,21 @@
                             });
                         }
                         openDropdownMenu(filterOverlayId, filterBtn, { alignRight: true });
+                        (function alignFilterDropdownToButtonRight() {
+                            var ov = document.getElementById(filterOverlayId);
+                            var cnt = ov ? ov.querySelector('.ubits-dropdown-menu__content') : null;
+                            if (!cnt || !filterBtn) return;
+                            var br = filterBtn.getBoundingClientRect();
+                            cnt.style.left = 'auto';
+                            cnt.style.right = (window.innerWidth - br.right) + 'px';
+                        })();
                         requestAnimationFrame(function() {
                             var ov = document.getElementById(filterOverlayId);
                             var cnt = ov ? ov.querySelector('.ubits-dropdown-menu__content') : null;
-                            if (cnt && filterBtn) {
-                                var br = filterBtn.getBoundingClientRect();
-                                cnt.style.left = (br.right - cnt.offsetWidth) + 'px';
-                            }
+                            if (!cnt || !filterBtn) return;
+                            var br = filterBtn.getBoundingClientRect();
+                            cnt.style.left = 'auto';
+                            cnt.style.right = (window.innerWidth - br.right) + 'px';
                         });
                     });
                 }

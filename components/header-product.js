@@ -455,6 +455,116 @@
  * - modo-estudio-ia.html (tiene back button pero sin info button ni breadcrumb)
  *
  * ========================================
+ * PATRÓN: BOTÓN PRIMARIO CON DROPDOWN MENU
+ * ========================================
+ *
+ * Cuando el botón primario del header-product necesita abrir un menú desplegable
+ * (en vez de una acción directa), se usa el componente oficial dropdown-menu.js
+ * junto con openDropdownMenu({ alignRight: true }).
+ *
+ * ⚠️ IMPORTANTE - POSICIONAMIENTO EN MOBILE:
+ * En mobile (≤ 767px), el botón primario se convierte en un FAB fijo (position:fixed,
+ * bottom: ~92px, right: 16px). El componente openDropdownMenu calcula que hay espacio
+ * debajo del FAB y posiciona el dropdown ahí, pero queda tapado por la tab-bar.
+ * Por eso, SIEMPRE hay que forzar el dropdown ARRIBA del FAB en mobile.
+ *
+ * REQUISITOS ADICIONALES al patrón normal del header-product:
+ * 1. CSS: <link rel="stylesheet" href="components/dropdown-menu.css">
+ * 2. JS:  <script src="components/dropdown-menu.js"></script>
+ *
+ * PATRÓN COMPLETO (copiar y adaptar):
+ * ```html
+ * <script>
+ * /* Menú dropdown del botón Crear – patrón oficial header-product * /
+ * (function () {
+ *     'use strict';
+ *     var MENU_OVERLAY_ID = 'mi-pagina-crear-menu-overlay'; // ID único por página
+ *     var menuOptions = [
+ *         { text: 'Opción A', value: 'a', leftIcon: 'layer-group' },
+ *         { text: 'Opción B', value: 'b', leftIcon: 'bullseye' }
+ *     ];
+ *     function ensureMenuOverlay() {
+ *         if (document.getElementById(MENU_OVERLAY_ID)) return;
+ *         if (typeof window.getDropdownMenuHtml !== 'function') return;
+ *         var html = window.getDropdownMenuHtml({ overlayId: MENU_OVERLAY_ID, options: menuOptions });
+ *         document.body.insertAdjacentHTML('beforeend', html);
+ *         var overlay = document.getElementById(MENU_OVERLAY_ID);
+ *         if (!overlay) return;
+ *         var content = overlay.querySelector('.ubits-dropdown-menu__content');
+ *         if (content) {
+ *             content.addEventListener('click', function (e) {
+ *                 var opt = e.target.closest('.ubits-dropdown-menu__option');
+ *                 if (!opt) return;
+ *                 var val = opt.getAttribute('data-value');
+ *                 if (val === null || val === '') return;
+ *                 if (typeof window.closeDropdownMenu === 'function') window.closeDropdownMenu(MENU_OVERLAY_ID);
+ *                 // --- Aquí va la acción de cada opción ---
+ *                 if (val === 'a') window.location.href = 'pagina-a.html';
+ *                 if (val === 'b') window.location.href = 'pagina-b.html';
+ *             });
+ *         }
+ *         overlay.addEventListener('click', function (e) {
+ *             if (e.target === overlay && typeof window.closeDropdownMenu === 'function') {
+ *                 window.closeDropdownMenu(MENU_OVERLAY_ID);
+ *             }
+ *         });
+ *     }
+ *     function openCrearMenu(anchorElement) {
+ *         if (!anchorElement || !anchorElement.getBoundingClientRect) return;
+ *         if (typeof window.openDropdownMenu !== 'function' || typeof window.closeDropdownMenu !== 'function') return;
+ *         var overlay = document.getElementById(MENU_OVERLAY_ID);
+ *         if (overlay && overlay.style.display === 'block') {
+ *             window.closeDropdownMenu(MENU_OVERLAY_ID);
+ *             return;
+ *         }
+ *         ensureMenuOverlay();
+ *         window.openDropdownMenu(MENU_OVERLAY_ID, anchorElement, { alignRight: true });
+ *         // ── MOBILE FIX: forzar dropdown ARRIBA del FAB ──
+ *         // Sin esto el dropdown queda debajo del FAB, tapado por la tab-bar.
+ *         if (window.matchMedia('(max-width: 767px)').matches) {
+ *             var ov = document.getElementById(MENU_OVERLAY_ID);
+ *             if (!ov) return;
+ *             var ct = ov.querySelector('.ubits-dropdown-menu__content');
+ *             if (!ct) return;
+ *             var rect = anchorElement.getBoundingClientRect();
+ *             ct.style.top = (rect.top - ct.offsetHeight - 4) + 'px';
+ *         }
+ *     }
+ *     window.openCrearMenu = openCrearMenu;
+ * })();
+ * </script>
+ * ```
+ *
+ * Luego, en la configuración del header-product, conectar el onClick del primaryButton:
+ * ```javascript
+ * loadHeaderProduct('header-product-container', {
+ *     productName: 'Mi Producto',
+ *     breadcrumbItems: [],
+ *     primaryButton: {
+ *         text: 'Crear',
+ *         icon: 'fa-plus',
+ *         onClick: function(e) {
+ *             e.preventDefault();
+ *             e.stopPropagation();
+ *             if (typeof window.openCrearMenu === 'function') window.openCrearMenu(e.currentTarget);
+ *         }
+ *     }
+ * });
+ * ```
+ *
+ * CSS RECOMENDADO en la página (z-index del dropdown por encima del FAB y tab-bar):
+ * ```css
+ * .mi-pagina #mi-pagina-crear-menu-overlay.ubits-dropdown-menu__overlay { z-index: 1102; }
+ * .mi-pagina #mi-pagina-crear-menu-overlay .ubits-dropdown-menu__content { z-index: 1103; }
+ * /* Evitar que los items del dropdown se partan en 2 líneas * /
+ * .mi-pagina .ubits-dropdown-menu__option-text { white-space: nowrap; }
+ * ```
+ *
+ * PÁGINAS DE REFERENCIA:
+ * - tareas/planes.html + tareas/planes.js (4 opciones: plan, tarea, plantilla, IA)
+ * - lms-creator/planes-formacion.html (2 opciones: plan contenidos, plan competencias)
+ *
+ * ========================================
  * NOTAS IMPORTANTES
  * ========================================
  *

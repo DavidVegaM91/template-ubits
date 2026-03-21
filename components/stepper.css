@@ -255,12 +255,13 @@
     color: var(--ubits-feedback-accent-success);
 }
 
+/* Completado: el número sigue visible con el color de acento éxito (mismo tono que antes tenía el check) */
 .ubits-stepper__step--done .ubits-stepper__mark-num {
-    display: none;
+    display: block;
 }
 
 .ubits-stepper__step--done .ubits-stepper__mark > i {
-    display: block;
+    display: none;
 }
 
 .ubits-stepper__label {
@@ -416,47 +417,85 @@
     color: var(--ubits-btn-primary-fg);
 }
 
-@media (max-width: 520px) {
-    .ubits-stepper--horizontal .ubits-stepper__rail {
-        display: none;
-    }
-
+/*
+ * Horizontal en vista estrecha (móvil / tablet): mantener una sola fila.
+ * Solo el paso activo muestra el texto del título; el resto solo el número en el círculo.
+ */
+@media (max-width: 1023px) {
     .ubits-stepper--horizontal {
-        flex-direction: column;
-        align-items: stretch;
-        gap: var(--gap-sm);
-        min-width: 0 !important;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: center;
+        justify-content: flex-start;
+        gap: var(--gap-xs);
+        min-width: 0;
+        max-width: 100%;
+        overflow-x: auto;
+        /* No usar overflow-y: hidden: recorta el halo (box-shadow 4px) del paso activo arriba/abajo */
+        overflow-y: visible;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-gutter: stable;
+        /* Refuerzo por si el motor fuerza overflow en ambos ejes */
+        padding-block: var(--gap-xs);
     }
 
     .ubits-stepper--horizontal.ubits-stepper--horizontal-compact {
-        width: 100%;
-    }
-
-    .ubits-stepper--horizontal.ubits-stepper--horizontal-stacked {
-        align-items: stretch;
-    }
-
-    .ubits-stepper--horizontal.ubits-stepper--horizontal-stacked .ubits-stepper__step {
-        flex-direction: row;
-        align-items: center;
-        justify-content: flex-start;
-        text-align: left;
-        min-width: 0;
-        max-width: none;
-    }
-
-    .ubits-stepper--horizontal.ubits-stepper--horizontal-stacked .ubits-stepper__label {
-        text-align: left;
-    }
-
-    .ubits-stepper--horizontal.ubits-stepper--horizontal-stacked .ubits-stepper__rail {
-        margin-top: 0;
-        align-self: center;
+        width: max-content;
+        max-width: 100%;
     }
 
     .ubits-stepper--horizontal .ubits-stepper__step {
+        position: relative;
+        flex: 0 0 auto;
+        width: auto;
         max-width: none;
-        width: 100%;
+        min-width: 0;
+        /* El halo del activo (.mark box-shadow 4px) no suma altura al layout; el padding evita recorte */
+        padding-block: 4px;
+        box-sizing: border-box;
     }
 
+    .ubits-stepper--horizontal .ubits-stepper__step--active {
+        flex: 1 1 auto;
+        min-width: 0;
+        max-width: min(100%, 14rem);
+    }
+
+    .ubits-stepper--horizontal .ubits-stepper__step:not(.ubits-stepper__step--active) .ubits-stepper__label {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+
+    .ubits-stepper--horizontal .ubits-stepper__rail {
+        flex: 1 1 auto;
+        min-width: var(--gap-sm);
+        max-width: var(--gap-3xl);
+    }
+
+    .ubits-stepper--horizontal.ubits-stepper--horizontal-stacked {
+        align-items: flex-start;
+    }
+
+    .ubits-stepper--horizontal.ubits-stepper--horizontal-stacked .ubits-stepper__step {
+        flex: 0 0 auto;
+        min-width: 2.75rem;
+        max-width: min(100%, 10rem);
+    }
+
+    .ubits-stepper--horizontal.ubits-stepper--horizontal-stacked .ubits-stepper__step--active {
+        flex: 1 1 auto;
+        max-width: min(100%, 11rem);
+    }
+
+    .ubits-stepper--horizontal.ubits-stepper--horizontal-stacked .ubits-stepper__rail {
+        align-self: flex-start;
+        margin-top: calc(var(--ubits-stepper-ring) / 2 - 1px);
+    }
 }

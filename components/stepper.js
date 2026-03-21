@@ -2,7 +2,8 @@
  * UBITS Stepper — estados de paso y colapso vertical opcional.
  *
  * Bugs / notas al implementar:
- * - En <i> del check de paso completado usar solo clases FontAwesome (p. ej. far fa-check), sin clases BEM en el <i>.
+ * - Paso completado: el número sigue visible en el círculo (color éxito); el <i class="far fa-check"> en el mark queda oculto por CSS (puede permanecer en el HTML por compatibilidad).
+ * - Horizontal en viewport ≤1023px: solo el paso activo muestra .ubits-stepper__label; el resto solo el número (ver stepper.css).
  * - wireStepperVerticalCollapse: tras colapsar, re-inicializar tooltips del marco si usas initTooltip (ver documentación).
  *
  * @fileoverview stepper.js

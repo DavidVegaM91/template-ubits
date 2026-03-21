@@ -146,7 +146,7 @@
 
 .asignaciones-list-wrapper {
     width: 100%;
-    overflow: hidden;
+    min-width: 0;
 }
 
 .asignaciones-list-wrapper.is-empty #asignaciones-table-wrapper {
@@ -270,6 +270,45 @@
     margin-top: var(--gap-xs);
 }
 
+/* Asistente en drawer: espacio entre stepper y bloque de cards (paso 1) — mismo criterio que crear-plan-contenidos */
+.drawer-asignacion-wizard-root {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xl);
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+}
+
+#drawer-agregar-usuarios #drawer-wizard-step1.drawer-wizard-step {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+/* Paso 2: participantes */
+#drawer-agregar-usuarios #drawer-wizard-step2.drawer-wizard-step--participantes {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    gap: var(--gap-md);
+}
+
+/* Paso 3: competencias — scroll en resultados */
+#drawer-agregar-usuarios #drawer-wizard-step3.drawer-wizard-step {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.drawer-wizard-stepper-nav {
+    flex-shrink: 0;
+}
+
 /* Drawer Agregar usuarios: 4 cards en fila arriba; paneles (colaborador/grupos/archivo) debajo */
 .drawer-agregar-usuarios-options {
     display: grid;
@@ -380,9 +419,6 @@
     display: flex;
     flex-direction: column;
     gap: var(--gap-md);
-    margin-top: var(--gap-md);
-    padding-top: var(--gap-md);
-    border-top: 1px solid var(--ubits-border-1);
 }
 
 /* Panel colaborador: mismo espaciado que seguimiento (widget-header-seguimiento: flex column + gap-md) */
@@ -398,7 +434,7 @@
 
 .drawer-colab-list-wrapper {
     width: 100%;
-    overflow: hidden;
+    min-width: 0;
 }
 
 .drawer-colab-list-wrapper.is-empty #drawer-colab-table-wrapper {
@@ -422,7 +458,7 @@
 
 .drawer-grupos-list-wrapper {
     width: 100%;
-    overflow: hidden;
+    min-width: 0;
 }
 
 .drawer-grupos-list-wrapper.is-empty #drawer-grupos-table-wrapper {
@@ -726,12 +762,14 @@
     z-index: 1103;
 }
 
-#drawer-agregar-cursos .ubits-drawer-content {
+#drawer-agregar-cursos .ubits-drawer-content,
+#drawer-agregar-usuarios .ubits-drawer-content {
     min-height: 0;
 }
 
-/* Drawer Agregar cursos: cuerpo sin scroll para que cada columna scroll independiente */
-#drawer-agregar-cursos .ubits-drawer-body {
+/* Drawer Agregar cursos / wizard: scroll interno en resultados (lazy load), no en el body */
+#drawer-agregar-cursos .ubits-drawer-body,
+#drawer-agregar-usuarios .ubits-drawer-body {
     overflow: hidden;
     display: flex;
     flex-direction: column;

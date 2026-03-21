@@ -146,7 +146,7 @@
 
 .asignaciones-list-wrapper {
     width: 100%;
-    overflow: hidden;
+    min-width: 0;
 }
 
 .asignaciones-list-wrapper.is-empty #asignaciones-table-wrapper {
@@ -276,6 +276,37 @@
     flex-direction: column;
     gap: var(--gap-xl);
     width: 100%;
+    flex: 1;
+    min-height: 0;
+}
+
+/* Paso 1: si el body ya no scrollea, el paso 1 puede necesitar scroll propio */
+#drawer-agregar-usuarios #drawer-wizard-step1.drawer-wizard-step {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xl);
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+/* Paso 2: participantes (colab / grupos) */
+#drawer-agregar-usuarios #drawer-wizard-step2.drawer-wizard-step--participantes {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    gap: var(--gap-md);
+}
+
+/* Paso 3 (contenidos): ocupar alto disponible para lazy load de cards */
+#drawer-agregar-usuarios #drawer-wizard-step3.drawer-wizard-step {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 .drawer-wizard-stepper-nav {
@@ -392,9 +423,6 @@
     display: flex;
     flex-direction: column;
     gap: var(--gap-md);
-    margin-top: var(--gap-md);
-    padding-top: var(--gap-md);
-    border-top: 1px solid var(--ubits-border-1);
 }
 
 /* Panel colaborador: mismo espaciado que seguimiento (widget-header-seguimiento: flex column + gap-md) */
@@ -410,7 +438,7 @@
 
 .drawer-colab-list-wrapper {
     width: 100%;
-    overflow: hidden;
+    min-width: 0;
 }
 
 .drawer-colab-list-wrapper.is-empty #drawer-colab-table-wrapper {
@@ -434,7 +462,7 @@
 
 .drawer-grupos-list-wrapper {
     width: 100%;
-    overflow: hidden;
+    min-width: 0;
 }
 
 .drawer-grupos-list-wrapper.is-empty #drawer-grupos-table-wrapper {
@@ -570,11 +598,20 @@
     gap: var(--gap-sm);
 }
 
+.drawer-archivo-empty {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .drawer-archivo-dropzone {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    width: 100%;
+    box-sizing: border-box;
     padding: var(--padding-lg);
     border: 1px dashed var(--ubits-border-1);
     border-radius: var(--border-radius-sm);
@@ -583,10 +620,80 @@
     transition: border-color 0.2s ease, background 0.2s ease;
 }
 
-.drawer-archivo-dropzone:hover,
+.drawer-archivo-dropzone:hover:not(.drawer-archivo-dropzone--has-file),
 .drawer-archivo-dropzone--dragover {
     border-color: var(--ubits-accent-brand);
     background: var(--ubits-bg-2);
+}
+
+.drawer-archivo-dropzone--has-file {
+    align-items: center;
+    justify-content: center;
+    cursor: default;
+    padding: var(--padding-md);
+}
+
+.drawer-archivo-dropzone--has-file:hover:not(.drawer-archivo-dropzone--dragover) {
+    border-color: var(--ubits-border-1);
+    background: var(--ubits-bg-1);
+}
+
+.drawer-archivo-file-card {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--gap-md);
+    /* min(100%, 400px) evita width:100% pegado a la izquierda; margin-inline centra en el dropzone */
+    width: min(100%, 400px);
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    align-self: center;
+    padding: var(--padding-md);
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    box-sizing: border-box;
+    pointer-events: auto;
+    text-align: start;
+}
+
+.drawer-archivo-file-card__icon-wrap {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--border-radius-sm);
+    background: var(--ubits-bg-2);
+    border: 1px solid var(--ubits-border-1);
+    color: var(--ubits-fg-1-medium);
+}
+
+.drawer-archivo-file-card__icon-wrap i {
+    font-size: 18px;
+}
+
+.drawer-archivo-file-card__meta {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+    align-items: flex-start;
+}
+
+.drawer-archivo-file-card__name {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.drawer-archivo-file-card__size {
+    color: var(--ubits-fg-1-medium);
 }
 
 .drawer-archivo-dropzone-inner {
@@ -630,6 +737,27 @@
 .drawer-archivo-dropzone-formats {
     margin: 0;
     color: var(--ubits-fg-1-medium);
+}
+
+/* Botón contenidos bloqueado (CSV/archivo): clic → alert info; sin tooltip */
+.asignacion-contenidos-btn-wrap.js-asignacion-contenidos-csv-bloqueado {
+    display: inline-flex;
+    vertical-align: middle;
+    cursor: pointer;
+    outline: none;
+}
+
+.asignacion-contenidos-btn-wrap.js-asignacion-contenidos-csv-bloqueado:focus-visible {
+    box-shadow: 0 0 0 2px var(--ubits-bg-1), 0 0 0 4px var(--ubits-accent-brand);
+    border-radius: var(--border-radius-sm);
+}
+
+.asignacion-contenidos-btn-wrap.js-asignacion-contenidos-csv-bloqueado .asignacion-contenidos-btn--solo-lectura {
+    pointer-events: none;
+    background: var(--ubits-bg-disabled-button) !important;
+    color: var(--ubits-fg-on-disabled-button) !important;
+    border-color: var(--ubits-border-disabled-button) !important;
+    cursor: default;
 }
 
 /* Tabla asignaciones: celda Asignados con avatares / iconos */
@@ -721,8 +849,10 @@
     white-space: nowrap;
 }
 
-/* Dropdown del filtro del drawer: por encima del drawer (drawer usa z-index 1100–1101) */
+/* Dropdown del filtro del drawer: por encima del drawer (drawer usa z-index 1100–1101).
+   Wizard paso 3 usa #drawer-wiz-cursos-filter-overlay (mismo motivo que #drawer-cursos-filter-overlay). */
 #drawer-cursos-filter-overlay.ubits-dropdown-menu__overlay,
+#drawer-wiz-cursos-filter-overlay.ubits-dropdown-menu__overlay,
 #drawer-colab-filter-overlay.ubits-dropdown-menu__overlay,
 #drawer-grupos-sort-overlay.ubits-dropdown-menu__overlay,
 [id^="ubits-dt-filter-drawer-"].ubits-dropdown-menu__overlay,
@@ -730,6 +860,7 @@
     z-index: 1102;
 }
 #drawer-cursos-filter-overlay .ubits-dropdown-menu__content,
+#drawer-wiz-cursos-filter-overlay .ubits-dropdown-menu__content,
 #drawer-colab-filter-overlay .ubits-dropdown-menu__content,
 #drawer-grupos-sort-overlay .ubits-dropdown-menu__content,
 [id^="ubits-dt-filter-drawer-"] .ubits-dropdown-menu__content,
@@ -737,12 +868,16 @@
     z-index: 1103;
 }
 
-#drawer-agregar-cursos .ubits-drawer-content {
+#drawer-agregar-cursos .ubits-drawer-content,
+#drawer-agregar-usuarios .ubits-drawer-content {
     min-height: 0;
 }
 
-/* Drawer Agregar cursos: cuerpo sin scroll para que cada columna scroll independiente */
-#drawer-agregar-cursos .ubits-drawer-body {
+/* Drawer Agregar cursos / wizard Agregar asignación: el body NO hace scroll global.
+   El scroll (y el lazy load) vive en .drawer-cursos-resultados-bg; si el body scrollea,
+   ese div crece con todo el contenido y scrollHeight === clientHeight → no hay evento scroll. */
+#drawer-agregar-cursos .ubits-drawer-body,
+#drawer-agregar-usuarios .ubits-drawer-body {
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -757,13 +892,23 @@
     gap: var(--gap-lg);
 }
 
-/* Dos columnas: izquierda = buscador + catálogo, derecha = contenidos agregados */
+/* Dos columnas: izquierda = buscador + catálogo, derecha = contenidos agregados (legacy; preferir --single-col) */
 .drawer-agregar-cursos--two-cols {
     display: flex;
     flex-direction: row;
     flex: 1;
     min-height: 0;
     gap: var(--gap-xl);
+}
+
+/* Paso 2 agregar contenidos: una sola columna (buscador + Ver seleccionados + cards; sin tabla a la derecha) */
+.drawer-agregar-cursos--single-col {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    gap: var(--gap-md);
+    width: 100%;
 }
 
 .drawer-agregar-cursos__left {
@@ -808,6 +953,23 @@
 .drawer-cursos-search-input-wrap {
     flex: 1;
     min-width: 0;
+}
+
+/* Wizard paso 2 y drawer "Agregar contenidos": "Ver seleccionados" bajo el buscador — misma lógica que ubits-data-table */
+.drawer-wiz-cursos-action-bar,
+.drawer-cursos-action-bar {
+    display: none;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--gap-md);
+    padding: var(--padding-sm) 0 var(--padding-md);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.drawer-wiz-cursos-action-bar.is-visible,
+.drawer-cursos-action-bar.is-visible {
+    display: flex;
 }
 
 /* =========================================================================
@@ -896,6 +1058,19 @@
     gap: var(--gap-md);
 }
 
+/* Wizard paso 2: mismo empty state que drawer-contenidos (IDs distintos) */
+#drawer-wiz-contenidos-empty-search.ubits-empty-state {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: var(--gap-lg) !important;
+}
+#drawer-wiz-contenidos-empty-search.ubits-empty-state .ubits-empty-state__header {
+    gap: var(--gap-sm);
+}
+#drawer-wiz-contenidos-empty-search.ubits-empty-state .ubits-empty-state__footer {
+    gap: var(--gap-md);
+}
+
 /* Contenedor de resultados de búsqueda (columna izquierda): flex 1 para ocupar el espacio y scroll propio */
 .drawer-cursos-resultados-bg {
     background: var(--ubits-bg-2);
@@ -910,6 +1085,25 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: var(--gap-md);
+}
+
+/* Paso 2 a ancho completo: más columnas en el grid de cards */
+.drawer-cursos-resultados-bg--paso2-full .drawer-cursos-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--gap-md);
+}
+
+@media (max-width: 900px) {
+    .drawer-cursos-resultados-bg--paso2-full .drawer-cursos-cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .drawer-cursos-resultados-bg--paso2-full .drawer-cursos-cards-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 .drawer-cursos-cards-grid {

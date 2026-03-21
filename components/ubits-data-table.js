@@ -2,6 +2,9 @@
  * UBITS Data Table - Componente reutilizable de tabla con checkboxes, búsqueda, filtros, orden y barra de acciones.
  * Referencia: tabla de seguimiento y tablas del drawer "Agregar asignación".
  *
+ * Scroll horizontal (móvil): .ubits-dt-table-wrapper usa overflow-x: auto; el .ubits-table-wrapper interno
+ * deja overflow-x: visible para un solo scroll (antes el padre con overflow:hidden recortaba la tabla).
+ *
  * -----------------------------------------------------------------------------
  * REQUISITOS OBLIGATORIOS: IMPORTAR EN LA PÁGINA QUE USA createUbitsDataTable
  * -----------------------------------------------------------------------------

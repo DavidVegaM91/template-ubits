@@ -79,7 +79,8 @@ No existe el campo "horas por competencia"; ese campo es exclusivo de planes de 
 
 #### 3.2.1 Drawer "Agregar contenidos" (detalle)
 
-- **Izquierda:** búsqueda por texto (título o competencia del curso) y filtro por origen (Todos los cursos / Solo cursos UBITS / Solo cursos de mi empresa). Grid de **cards compactos de contenido** (componente `card-content-compact`): miniatura, título, etc. Al hacer clic en una card se agrega a la selección y la card muestra borde azul (estado seleccionado). Scroll infinito: se cargan 12 contenidos inicialmente y más al hacer scroll.
+- En **crear** (y el flujo equivalente en **editar** con el mismo drawer), puede mostrarse el **wizard por pasos** (tipo de asignación → participantes → contenidos). Ver **§ 6.5** (stepper, paso participantes, filtro y z-index).
+- **Izquierda:** búsqueda por texto (título o competencia del curso) y filtro por origen (Todos / Solo catálogo UBITS / Solo catálogo propio). Grid de **cards compactos de contenido** (componente `card-content-compact`): miniatura, título, etc. Al hacer clic en una card se agrega a la selección y la card muestra borde azul (estado seleccionado). Scroll infinito: se cargan 12 contenidos inicialmente y más al hacer scroll.
 - **Tabla derecha:** una fila por contenido seleccionado: celda con título del contenido y botón eliminar. Empty state cuando no hay ninguno ("No hay contenidos agregados").
 - **Datos guardados por asignación:** array de ítems de curso (id, title, etc.). Origen: **`bd-master`** (`bd-contenidos-*` + maestros); la lista del drawer la arma **`catalogo-contenidos-drawer.js`** (en esta carpeta) → `window.CATALOGO_CURSOS_DRAWER`.
 
@@ -135,6 +136,7 @@ Este valor es **por plan** (no por asignación): todas las asignaciones del plan
 
 #### 4.3.1 Drawer "Agregar competencias" (detalle)
 
+- En **crear plan competencias**, el mismo drawer puede ser **wizard de 3 pasos** (tipo de asignación → participantes → competencias). Ver **§ 6.5** (el paso de catálogo aquí no usa el filtro UBITS/propio del plan de contenidos).
 - **Izquierda:** cards de competencia (mismo estilo que en catalogo-v5: imagen + nombre + "X habilidades"), **sin** status tag "Asignado" ni botones a la derecha. Búsqueda por texto (competencia, academia o habilidad).
 - **Selección:** al hacer clic en una card: (1) borde azul, (2) la card se expande y muestra la lista de **habilidades** hijas de esa competencia, cada una con un **checkbox** (todas marcadas por defecto); (3) la competencia se agrega a la tabla de la derecha.
 - **Habilidades:** el usuario puede desmarcar las que no quiera. Si desmarca **todas** las habilidades, la competencia se deselecciona y se elimina de la tabla (no tiene sentido una competencia sin habilidades).
@@ -213,6 +215,44 @@ Resumen de decisiones de UI y comportamiento implementado en el prototipo, para 
 | `grupos.html`, `detalle-grupo.html`, `crear-grupo.html` | Gestión de grupos. |
 | `contenidos.html`, `categorias.html`, `chat-ia-grupos.html` | Contenidos, categorías y chat IA (otros flujos del LMS Creator). |
 
+### 6.5 Wizard por pasos — drawer «Agregar asignación»
+
+En **crear-plan-contenidos** y **crear-plan-competencias**, al añadir filas a la tabla de asignaciones se usa el drawer **`#drawer-agregar-usuarios`** (título típico **«Agregar asignación»**). El cuerpo incluye un **stepper** horizontal compacto (`components/stepper.css` / `stepper.js`) y bloques por paso generados en JS (`drawer-asignacion-wizard-root`).
+
+#### Variantes de flujo (2 vs 3 pasos en el stepper)
+
+| Stepper | Pasos visibles | Cuándo aplica |
+|--------|----------------|----------------|
+| **2 pasos** | 1 · Tipo de asignación → 2 · **Contenidos** o **Competencias** | Flujos que omiten la selección explícita de participantes en el wizard (p. ej. opción acortada según tipo de asignación; ver lógica `soloPaso2` / `getOpcionAsignacion()` en cada HTML). |
+| **3 pasos** | 1 · Tipo de asignación → 2 · **Participantes** → 3 · **Contenidos** (plan de contenidos) o **Competencias** (plan de competencias) | Asignación por **colaborador** o por **grupos** (no solo «importar archivo» en un paso intermedio): hace falta elegir personas/grupos antes del catálogo. |
+
+- **Paso 1 — Tipo de asignación:** fila de **cards** (Agregar colaborador, Agregar por grupos, Importar archivo, etc.). El usuario debe completar lo requerido para habilitar **Siguiente**.
+- **Paso 2 — Participantes** (solo flujo de 3 pasos): se muestra **una** de las tablas según la opción del paso 1:
+  - Panel **`.drawer-usuarios-panel--colaborador`** — tabla de colaboradores.
+  - Panel **`.drawer-usuarios-panel--grupos`** — tabla de grupos.
+- **Paso 3 — Catálogo:** en **contenidos**, búsqueda + filtro por origen + grid de cards de contenido; en **competencias**, búsqueda + grid de cards de competencia (sin el mismo filtro de catálogo UBITS/propio que en contenidos).
+
+#### Reglas de UI acordadas (no duplicar ni líneas extra)
+
+- **Sin título duplicado en paso 2:** el stepper ya muestra la etiqueta **«Participantes»**; **no** se añade un encabezado de texto ni un separador adicional encima de las tablas (el contenido del paso es solo el panel visible).
+- **Sin borde superior en paneles de participantes:** la clase **`.drawer-usuarios-panel`** en `crear-plan-contenidos.css` y `crear-plan-competencias.css` define solo `display: flex`, `flex-direction: column` y `gap` — **sin** `border-top`, **sin** `margin-top` / `padding-top` extra que dibujaran una línea entre las cards del paso 1 y la tabla (vale tanto para colaboradores como para grupos).
+
+#### Paso 3 en plan de contenidos — filtro del catálogo (dropdown)
+
+- **Textos de las opciones** (UI): **Todos**, **Solo catálogo UBITS**, **Solo catálogo propio**. Valores internos: `all`, `ubits`, `empresa` (filtran por `courseSource` en el catálogo). Mismas etiquetas donde se reutiliza el mismo patrón en **`editar-plan-contenidos.html`** (drawer de contenidos sin wizard de 3 pasos).
+- **Visibilidad del menú:** el overlay del dropdown en el wizard usa id **`#drawer-wiz-cursos-filter-overlay`**. El componente dropdown tiene `z-index` por defecto inferior al **drawer** (1100–1101). En **`crear-plan-contenidos.css`** debe incluirse este id **junto** a `#drawer-cursos-filter-overlay` con `z-index` 1102 (overlay) / 1103 (contenido), para que el menú no quede **detrás** del panel lateral.
+- **Alineación:** el panel del menú debe quedar con el **borde derecho alineado al botón** de filtro (icono); en JS, tras `openDropdownMenu`, se fuerza `left: auto` y `right` en px respecto al ancho del viewport (`window.innerWidth - getBoundingClientRect().right` del botón), y un segundo ajuste en `requestAnimationFrame` por si cambia el ancho tras el layout.
+
+#### Archivos tocados por este flujo
+
+| Archivo | Rol |
+|---------|-----|
+| `crear-plan-contenidos.html` | HTML/JS del wizard: steppers 2 y 3 pasos, pasos DOM `#drawer-wizard-step1` … `step3`, filtro wizard `#drawer-wiz-cursos-filter-btn` / overlay `#drawer-wiz-cursos-filter-overlay`. |
+| `crear-plan-competencias.html` | Mismo patrón de wizard; paso 3 es competencias (`#drawer-wiz-comp-search-container`, etc.), sin filtro de catálogo UBITS/propio. |
+| `crear-plan-contenidos.css` | Estilos stepper en drawer, paneles `.drawer-usuarios-panel`, z-index filtros `#drawer-wiz-cursos-filter-overlay` / `#drawer-cursos-filter-overlay`. |
+| `crear-plan-competencias.css` | Igual para paneles `.drawer-usuarios-panel` y layout del wizard. |
+| `editar-plan-contenidos.html` | Drawer «Agregar contenidos» (sin wizard de 3 pasos): mismas etiquetas de filtro y patrón de alineación del dropdown al botón. |
+
 ---
 
-*Última actualización: marzo 2025. Prototipo: LMS Creator. Drawer "Agregar contenidos" en 3.2.1 y en detalle-plan (3.3.2, con scroll infinito); botón "Asignar contenidos" en barra de acciones (3.3.1, solo Planeado/Vigente). Planes de competencias: lista por tab en planes-formacion (4.4), detalle en detalle-plan-competencias (4.5), horas por competencia en crear y en detalle (editable/lectura según estado); drawer "Agregar competencias" en 4.3.1 y en detalle-plan-competencias (mismo layout y merge multi). Sección 6: detalles de implementación actual (drawers lg/sm, columnas, progress, bordes, altura fija, icono drag, tabla de archivos).*
+*Última actualización: marzo 2025. Prototipo: LMS Creator. Drawer "Agregar contenidos" en 3.2.1 y en detalle-plan (3.3.2, con scroll infinito); botón "Asignar contenidos" en barra de acciones (3.3.1, solo Planeado/Vigente). Planes de competencias: lista por tab en planes-formacion (4.4), detalle en detalle-plan-competencias (4.5), horas por competencia en crear y en detalle (editable/lectura según estado); drawer "Agregar competencias" en 4.3.1 y en detalle-plan-competencias (mismo layout y merge multi). Sección 6: detalles de implementación actual (drawers lg/sm, columnas, progress, bordes, altura fija, icono drag, tabla de archivos). **6.5:** wizard «Agregar asignación» (2 vs 3 pasos, participantes sin título duplicado, `.drawer-usuarios-panel` sin borde superior, filtro catálogo en paso contenidos: textos, z-index, alineación a la derecha del botón).*

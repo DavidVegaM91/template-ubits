@@ -5,6 +5,7 @@
 
 .ubits-data-table {
     width: 100%;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     gap: var(--gap-md);
@@ -64,9 +65,19 @@
     gap: var(--gap-sm);
 }
 
+/* Contenedor de la tabla: scroll horizontal en móvil (igual criterio que .ubits-table-wrapper en table.css).
+   No usar overflow:hidden aquí: envuelve a .ubits-table-wrapper (min-width 900px) y lo recortaba sin barra de scroll. */
 .ubits-data-table .ubits-dt-table-wrapper {
     width: 100%;
-    overflow: hidden;
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Un solo scroll horizontal: el padre anterior tenía overflow:hidden; el scroll queda en .ubits-dt-table-wrapper */
+.ubits-data-table .ubits-dt-table-wrapper .ubits-table-wrapper {
+    overflow-x: visible;
 }
 
 .ubits-data-table .ubits-dt-empty-state {

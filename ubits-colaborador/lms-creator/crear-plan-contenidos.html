@@ -226,7 +226,6 @@
             function initCatalogoCursosDesdeBdsImplementadas() {
                 catalogoCursos = (window.CATALOGO_CURSOS_DRAWER || []).slice();
                 if (typeof filtrarYRenderizarCards === 'function') filtrarYRenderizarCards();
-                if (typeof actualizarTabla === 'function') actualizarTabla();
             }
 
             initCatalogoCursosDesdeBdsImplementadas();
@@ -255,11 +254,35 @@
             }
 
             function getDrawerUsuariosBodyHtml() {
-                var stepperHtml = '<nav class="drawer-wizard-stepper-nav" aria-label="Pasos de asignación">' +
-                    '<ol id="drawer-wiz-stepper-ol" class="ubits-stepper ubits-stepper--horizontal ubits-stepper--horizontal-compact">' +
-                    '<li class="ubits-stepper__step ubits-stepper__step--active" data-step-label="Selección de usuarios">' +
+                var stepper2Html = '<nav id="drawer-wiz-stepper-nav-2" class="drawer-wizard-stepper-nav" aria-label="Pasos de asignación">' +
+                    '<ol id="drawer-wiz-stepper-ol-2" class="ubits-stepper ubits-stepper--horizontal ubits-stepper--horizontal-compact">' +
+                    '<li class="ubits-stepper__step ubits-stepper__step--active" data-step-label="Tipo de asignación">' +
                     '<span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">1</span><i class="far fa-check" aria-hidden="true"></i></span>' +
-                    '<span class="ubits-stepper__label">Selección de usuarios</span></li>' +
+                    '<span class="ubits-stepper__label">Tipo de asignación</span></li>' +
+                    '<li class="ubits-stepper__rail" aria-hidden="true"></li>' +
+                    '<li class="ubits-stepper__step ubits-stepper__step--pending" data-step-label="Contenidos">' +
+                    '<span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">2</span><i class="far fa-check" aria-hidden="true"></i></span>' +
+                    '<span class="ubits-stepper__label">Contenidos</span></li>' +
+                    '</ol></nav>';
+                var stepper3Html = '<nav id="drawer-wiz-stepper-nav-3" class="drawer-wizard-stepper-nav" aria-label="Pasos de asignación" style="display:none">' +
+                    '<ol id="drawer-wiz-stepper-ol-3" class="ubits-stepper ubits-stepper--horizontal ubits-stepper--horizontal-compact">' +
+                    '<li class="ubits-stepper__step ubits-stepper__step--active" data-step-label="Tipo de asignación">' +
+                    '<span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">1</span><i class="far fa-check" aria-hidden="true"></i></span>' +
+                    '<span class="ubits-stepper__label">Tipo de asignación</span></li>' +
+                    '<li class="ubits-stepper__rail" aria-hidden="true"></li>' +
+                    '<li class="ubits-stepper__step ubits-stepper__step--pending" data-step-label="Participantes">' +
+                    '<span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">2</span><i class="far fa-check" aria-hidden="true"></i></span>' +
+                    '<span class="ubits-stepper__label">Participantes</span></li>' +
+                    '<li class="ubits-stepper__rail" aria-hidden="true"></li>' +
+                    '<li class="ubits-stepper__step ubits-stepper__step--pending" data-step-label="Contenidos">' +
+                    '<span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">3</span><i class="far fa-check" aria-hidden="true"></i></span>' +
+                    '<span class="ubits-stepper__label">Contenidos</span></li>' +
+                    '</ol></nav>';
+                var stepperEditHtml = '<nav id="drawer-wiz-stepper-nav-edit" class="drawer-wizard-stepper-nav" style="display:none" aria-label="Editar asignación">' +
+                    '<ol id="drawer-wiz-stepper-ol-edit" class="ubits-stepper ubits-stepper--horizontal ubits-stepper--horizontal-compact">' +
+                    '<li class="ubits-stepper__step ubits-stepper__step--active" data-step-label="Participantes">' +
+                    '<span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">1</span><i class="far fa-check" aria-hidden="true"></i></span>' +
+                    '<span class="ubits-stepper__label">Participantes</span></li>' +
                     '<li class="ubits-stepper__rail" aria-hidden="true"></li>' +
                     '<li class="ubits-stepper__step ubits-stepper__step--pending" data-step-label="Contenidos">' +
                     '<span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">2</span><i class="far fa-check" aria-hidden="true"></i></span>' +
@@ -316,12 +339,6 @@
                     '  </div>' +
                     '</label>' +
                     '</div>' +
-                    '<div class="drawer-usuarios-panel drawer-usuarios-panel--colaborador" id="drawer-usuarios-colaborador-panel" style="display:none">' +
-                    '  <div id="drawer-colab-data-table-container" class="drawer-colab-dt-wrapper"></div>' +
-                    '</div>' +
-                    '<div class="drawer-usuarios-panel drawer-usuarios-panel--grupos" id="drawer-usuarios-grupos-panel" style="display:none">' +
-                    '  <div id="drawer-grupos-data-table-container" class="drawer-grupos-dt-wrapper"></div>' +
-                    '</div>' +
                     '<div class="drawer-usuarios-panel drawer-usuarios-panel--archivo" id="drawer-usuarios-archivo-panel" style="display:none">' +
                     '  <div class="drawer-archivo-section">' +
                     '    <div class="drawer-archivo-header">' +
@@ -333,43 +350,52 @@
                     '      </div>' +
                     '    </div>' +
                     '    <div class="drawer-archivo-dropzone" id="drawer-archivo-dropzone">' +
+                    '      <div class="drawer-archivo-empty" id="drawer-archivo-empty">' +
                     '      <div class="drawer-archivo-dropzone-inner">' +
                     '        <div class="drawer-archivo-file-icon-wrap"><i class="far fa-file-arrow-up"></i></div>' +
                     '        <p class="ubits-body-md-semibold drawer-archivo-dropzone-title">Subir archivos</p>' +
                     '        <p class="ubits-body-sm-regular drawer-archivo-dropzone-formats">CSV &bull; Hasta 5mb</p>' +
                     '        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="drawer-archivo-btn-seleccionar"><i class="far fa-arrow-up-from-bracket"></i><span>Seleccionar archivos</span></button>' +
                     '      </div>' +
+                    '      </div>' +
+                    '      <div class="drawer-archivo-file-card" id="drawer-archivo-file-card" hidden style="display:none" aria-live="polite">' +
+                    '        <div class="drawer-archivo-file-card__icon-wrap" aria-hidden="true"><i class="far fa-file-lines"></i></div>' +
+                    '        <div class="drawer-archivo-file-card__meta">' +
+                    '          <span class="ubits-body-sm-semibold drawer-archivo-file-card__name" data-drawer-archivo-nombre></span>' +
+                    '          <span class="ubits-body-sm-regular drawer-archivo-file-card__size" data-drawer-archivo-tamano></span>' +
+                    '        </div>' +
+                    '        <button type="button" class="ubits-button ubits-button--error-tertiary ubits-button--sm ubits-button--icon-only" id="drawer-archivo-btn-quitar" aria-label="Quitar archivo"><i class="far fa-trash-alt"></i></button>' +
+                    '      </div>' +
                     '      <input type="file" id="drawer-archivo-input" accept=".csv,text/csv" style="display:none">' +
                     '    </div>' +
                     '  </div>' +
                     '</div></div>';
-                var step2Html = '<div id="drawer-wizard-step2" class="drawer-wizard-step" style="display:none">' +
-                    '<div class="drawer-agregar-cursos drawer-agregar-cursos--two-cols">' +
-                    '<div class="drawer-agregar-cursos__left">' +
+                var stepParticipantesHtml = '<div id="drawer-wizard-step2" class="drawer-wizard-step drawer-wizard-step--participantes" style="display:none">' +
+                    '<div class="drawer-usuarios-panel drawer-usuarios-panel--colaborador" id="drawer-usuarios-colaborador-panel" style="display:none">' +
+                    '  <div id="drawer-colab-data-table-container" class="drawer-colab-dt-wrapper"></div>' +
+                    '</div>' +
+                    '<div class="drawer-usuarios-panel drawer-usuarios-panel--grupos" id="drawer-usuarios-grupos-panel" style="display:none">' +
+                    '  <div id="drawer-grupos-data-table-container" class="drawer-grupos-dt-wrapper"></div>' +
+                    '</div>' +
+                    '</div>';
+                var step3ContenidosHtml = '<div id="drawer-wizard-step3" class="drawer-wizard-step" style="display:none">' +
+                    '<div class="drawer-agregar-cursos drawer-agregar-cursos--single-col">' +
                     '  <span class="drawer-agregar-cursos__section-title ubits-body-sm-semibold">Buscar y agregar contenidos</span>' +
                     '  <div class="drawer-cursos-search-row">' +
                     '    <div id="drawer-wiz-cursos-search-container" class="drawer-cursos-search-input-wrap"></div>' +
                     '    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" id="drawer-wiz-cursos-filter-btn" aria-label="Filtrar por origen"><i class="far fa-filter"></i></button>' +
                     '  </div>' +
-                    '  <div class="drawer-cursos-resultados-bg drawer-cursos-resultados-bg--dos-columnas">' +
+                    '  <div class="drawer-wiz-cursos-action-bar" id="drawer-wiz-cursos-action-bar">' +
+                    '    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="drawer-wiz-cursos-ver-seleccionados">' +
+                    '      <i class="far fa-eye"></i><span>Ver seleccionados</span></button>' +
+                    '  </div>' +
+                    '  <div class="drawer-cursos-resultados-bg drawer-cursos-resultados-bg--paso2-full">' +
                     '    <div id="drawer-wiz-contenidos-empty-search" class="drawer-contenidos-empty-search-wrap" style="display:none;"></div>' +
                     '    <div class="drawer-cursos-cards-grid" id="drawer-wiz-cursos-cards-container"></div>' +
                     '  </div>' +
                     '</div>' +
-                    '<div class="drawer-agregar-cursos__right drawer-cursos-agregados-section" id="drawer-wiz-cursos-agregados-section">' +
-                    '  <span class="drawer-agregar-cursos__section-title ubits-body-sm-semibold">Contenidos agregados</span>' +
-                    '  <div class="drawer-cursos-agregados-content">' +
-                    '    <div id="drawer-wiz-cursos-empty-state" class="drawer-cursos-empty-state-wrap"></div>' +
-                    '    <div class="ubits-table-wrapper" id="drawer-wiz-cursos-table-wrapper">' +
-                    '      <table class="ubits-table" id="drawer-wiz-cursos-table">' +
-                    '        <thead><tr><th data-col="contenido" class="ubits-body-sm-semibold">Contenido</th><th class="ubits-table__th--actions ubits-body-sm-semibold" data-col="acciones">Acciones</th></tr></thead>' +
-                    '        <tbody id="drawer-wiz-cursos-agregados-tbody"></tbody>' +
-                    '      </table>' +
-                    '    </div>' +
-                    '  </div>' +
-                    '</div>' +
-                    '</div></div>';
-                return '<div class="drawer-asignacion-wizard-root">' + stepperHtml + step1Html + step2Html + '</div>';
+                    '</div>';
+                return '<div class="drawer-asignacion-wizard-root">' + stepper2Html + stepper3Html + stepperEditHtml + step1Html + stepParticipantesHtml + step3ContenidosHtml + '</div>';
             }
 
             function getAsignadosCellHtml(item) {
@@ -410,9 +436,15 @@
                 return String(t).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
             }
             function buildAsignacionRowHtml(row) {
-                var cursosCell = row.contenidosCount === 0
-                    ? '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs js-asignacion-agregar-contenidos" data-asignacion-id="' + escapeHtmlAttr(row.id) + '"><i class="far fa-plus"></i><span>Agregar contenidos</span></button>'
-                    : '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs js-asignacion-agregar-contenidos" data-asignacion-id="' + escapeHtmlAttr(row.id) + '"><i class="far fa-plus"></i><span>' + escapeHtmlAttr(String(row.contenidosCount)) + ' contenidos</span></button>';
+                var noEditarArchivo = row.asignadosTipo === 'desde-archivo' || row.importadoDesdeCsv === true;
+                var labelBtn = row.contenidosCount === 0 ? 'Agregar contenidos' : String(row.contenidosCount) + ' contenidos';
+                var cursosCell;
+                if (noEditarArchivo) {
+                    cursosCell = '<span class="asignacion-contenidos-btn-wrap js-asignacion-contenidos-csv-bloqueado" role="button" tabindex="0" aria-label="No se puede editar una asignación creada desde archivo">' +
+                        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs asignacion-contenidos-btn--solo-lectura" aria-hidden="true" tabindex="-1"><i class="far fa-plus"></i><span>' + escapeHtmlAttr(labelBtn) + '</span></button></span>';
+                } else {
+                    cursosCell = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs js-asignacion-agregar-contenidos" data-asignacion-id="' + escapeHtmlAttr(row.id) + '"><i class="far fa-plus"></i><span>' + escapeHtmlAttr(labelBtn) + '</span></button>';
+                }
                 return '<td data-col="asignados">' + getAsignadosCellHtml(row) + '</td><td data-col="cursos">' + cursosCell + '</td>';
             }
 
@@ -531,7 +563,7 @@
                 wizardOpts = wizardOpts || {};
                 var footerHtml = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="drawer-wiz-btn-cancel"><span>Cancelar</span></button>' +
                     '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="drawer-wiz-btn-primary" disabled><span>Siguiente</span></button>';
-                var title = wizardOpts.soloPaso2 ? 'Agregar contenidos' : 'Agregar asignación';
+                var title = wizardOpts.editarAsignacion ? 'Editar asignación' : (wizardOpts.soloPaso2 ? 'Editar contenidos' : 'Agregar asignación');
                 openDrawer({
                     overlayId: 'drawer-agregar-usuarios',
                     title: title,
@@ -540,6 +572,11 @@
                     size: 'lg',
                     onClose: function() {
                         pendingCursosRow = null;
+                        var oDrawer = document.getElementById('drawer-agregar-usuarios');
+                        if (oDrawer) {
+                            oDrawer._editarAsignacion = false;
+                            oDrawer._editItem = null;
+                        }
                     }
                 });
                 initDrawerAgregarUsuarios(wizardOpts);
@@ -561,7 +598,7 @@
             ];
 
             function attachWizardContenidosPaso2(overlay, onSync) {
-                var cursosSeleccionados = overlay._wizCursosSeleccionados;
+                if (!overlay._wizCursosSeleccionados) overlay._wizCursosSeleccionados = [];
                 var searchWrap = overlay.querySelector('#drawer-wiz-cursos-search-container');
                 if (searchWrap) searchWrap.innerHTML = '';
                 if (typeof createInput === 'function') {
@@ -580,48 +617,50 @@
                 var DRAWER_CURSOS_PAGE_SIZE = 12;
                 var drawerCursosVisibleCount = DRAWER_CURSOS_PAGE_SIZE;
                 var drawerCursosFilter = 'all';
+                overlay._wizViewOnlySeleccionados = false;
 
-                function actualizarTabla() {
-                    var agregadosSection = overlay.querySelector('#drawer-wiz-cursos-agregados-section');
-                    var tbody = overlay.querySelector('#drawer-wiz-cursos-agregados-tbody');
-                    var emptyStateContainer = overlay.querySelector('#drawer-wiz-cursos-empty-state');
-                    var tableWrapper = overlay.querySelector('#drawer-wiz-cursos-table-wrapper');
-                    if (!tbody) return;
-                    if (agregadosSection) agregadosSection.style.display = 'block';
-                    tbody.innerHTML = '';
-                    if (cursosSeleccionados.length === 0) {
-                        if (tableWrapper) tableWrapper.style.display = 'none';
-                        if (emptyStateContainer) {
-                            emptyStateContainer.style.display = 'block';
-                            if (typeof loadEmptyState === 'function') {
-                                loadEmptyState('drawer-wiz-cursos-empty-state', {
-                                    icon: 'fa-folder-open',
-                                    iconSize: 'lg',
-                                    title: 'No hay contenidos agregados',
-                                    description: 'Busca y agrega contenidos desde el buscador.',
-                                    buttons: {}
-                                });
-                            }
-                        }
-                    } else {
-                        if (emptyStateContainer) emptyStateContainer.style.display = 'none';
-                        if (tableWrapper) tableWrapper.style.display = 'block';
-                    }
-                    cursosSeleccionados.forEach(function(c) {
-                        var tr = document.createElement('tr');
-                        tr.className = 'drawer-cursos-table-row';
-                        tr.innerHTML = '<td data-col="contenido"><span class="ubits-body-sm-regular">' + (c.title || '') + '</span></td>' +
-                            '<td data-col="acciones"><button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only js-drawer-wiz-cursos-delete" aria-label="Eliminar" title="Eliminar"><i class="far fa-trash"></i></button></td>';
-                        tr.dataset.courseId = c.id;
-                        tr.querySelector('.js-drawer-wiz-cursos-delete').addEventListener('click', function() {
-                            var ix = cursosSeleccionados.findIndex(function(x) { return x.id === c.id; });
-                            if (ix !== -1) cursosSeleccionados.splice(ix, 1);
-                            actualizarTabla();
-                            filtrarYRenderizarCards();
-                            if (typeof onSync === 'function') onSync();
-                        });
-                        tbody.appendChild(tr);
+                function getFiltradosParaGrid() {
+                    var filtrados = getFiltradosDrawerCursos();
+                    var sel = overlay._wizCursosSeleccionados || [];
+                    if (!overlay._wizViewOnlySeleccionados || !sel.length) return filtrados;
+                    var idSet = {};
+                    sel.forEach(function (c) {
+                        if (c && c.id != null) idSet[String(c.id)] = true;
                     });
+                    return filtrados.filter(function (c) {
+                        return idSet[String(c.id)];
+                    });
+                }
+
+                function updateVerSeleccionadosBar() {
+                    var bar = overlay.querySelector('#drawer-wiz-cursos-action-bar');
+                    var btn = overlay.querySelector('#drawer-wiz-cursos-ver-seleccionados');
+                    if (!bar || !btn) return;
+                    var sel = overlay._wizCursosSeleccionados || [];
+                    var n = sel.length;
+                    var icon = btn.querySelector('i');
+                    var span = btn.querySelector('span');
+                    if (n === 0) {
+                        overlay._wizViewOnlySeleccionados = false;
+                        bar.classList.remove('is-visible');
+                        if (icon) icon.className = 'far fa-eye';
+                        if (span) span.textContent = 'Ver seleccionados';
+                        btn.classList.remove('active');
+                        return;
+                    }
+                    bar.classList.add('is-visible');
+                    if (overlay._wizViewOnlySeleccionados) {
+                        if (icon) icon.className = 'far fa-eye-slash';
+                        if (span) span.textContent = 'Dejar de ver seleccionados (' + n + ')';
+                        btn.classList.add('active');
+                    } else {
+                        if (icon) icon.className = 'far fa-eye';
+                        if (span) span.textContent = 'Ver seleccionados (' + n + ')';
+                        btn.classList.remove('active');
+                    }
+                }
+
+                function notifyWizardPaso2Sync() {
                     if (typeof onSync === 'function') onSync();
                 }
 
@@ -638,6 +677,7 @@
                 function filtrarYRenderizarCards() {
                     if (!cardsContainer || typeof loadCardContentCompact !== 'function') return;
                     var filtrados = getFiltradosDrawerCursos();
+                    var paraGrid = getFiltradosParaGrid();
                     var q = (searchInput && searchInput.value) ? searchInput.value.trim() : '';
                     if (q && filtrados.length === 0) {
                         if (emptySearchContainer) {
@@ -665,6 +705,25 @@
                             }
                         }
                         cardsContainer.style.display = 'none';
+                        updateVerSeleccionadosBar();
+                        return;
+                    }
+                    if (overlay._wizViewOnlySeleccionados && paraGrid.length === 0 && (overlay._wizCursosSeleccionados || []).length > 0) {
+                        if (emptySearchContainer) {
+                            emptySearchContainer.style.display = 'block';
+                            emptySearchContainer.innerHTML = '';
+                            if (typeof loadEmptyState === 'function') {
+                                loadEmptyState('drawer-wiz-contenidos-empty-search', {
+                                    icon: 'fa-eye',
+                                    iconSize: 'lg',
+                                    title: 'Sin contenidos agregados en estos resultados',
+                                    description: 'Ninguno de los contenidos ya agregados coincide con la búsqueda o el filtro. Prueba otra búsqueda o deja de ver solo seleccionados.',
+                                    buttons: {}
+                                });
+                            }
+                        }
+                        cardsContainer.style.display = 'none';
+                        updateVerSeleccionadosBar();
                         return;
                     }
                     if (emptySearchContainer) {
@@ -672,54 +731,69 @@
                         emptySearchContainer.innerHTML = '';
                     }
                     cardsContainer.style.display = '';
-                    var aMostrar = filtrados.slice(0, drawerCursosVisibleCount);
+                    var aMostrar = paraGrid.slice(0, drawerCursosVisibleCount);
                     loadCardContentCompact('drawer-wiz-cursos-cards-container', aMostrar);
+                    var listSel = overlay._wizCursosSeleccionados || [];
                     aMostrar.forEach(function(course, idx) {
                         var cardEls = cardsContainer.querySelectorAll('.course-card-compact');
                         var cardEl = cardEls[idx];
                         if (cardEl) {
                             cardEl.style.cursor = 'pointer';
                             cardEl.dataset.courseId = course.id;
-                            if (cursosSeleccionados.some(function(x) { return x.id === course.id; })) {
+                            if (listSel.some(function(x) { return String(x.id) === String(course.id); })) {
                                 cardEl.classList.add('course-card-compact--selected');
                             } else {
                                 cardEl.classList.remove('course-card-compact--selected');
                             }
                         }
                     });
+                    updateVerSeleccionadosBar();
                 }
 
                 function maybeLoadMoreDrawerCursos() {
-                    var filtrados = getFiltradosDrawerCursos();
-                    if (drawerCursosVisibleCount >= filtrados.length) return;
+                    var paraGrid = getFiltradosParaGrid();
+                    if (drawerCursosVisibleCount >= paraGrid.length) return;
                     drawerCursosVisibleCount += DRAWER_CURSOS_PAGE_SIZE;
                     filtrarYRenderizarCards();
                 }
 
-                var resultadosBg = overlay.querySelector('#drawer-wizard-step2 .drawer-cursos-resultados-bg');
+                var resultadosBg = overlay.querySelector('#drawer-wizard-step3 .drawer-cursos-resultados-bg');
                 if (resultadosBg) {
-                    resultadosBg.addEventListener('scroll', function() {
+                    if (overlay._wizContenidosScrollHandler) {
+                        resultadosBg.removeEventListener('scroll', overlay._wizContenidosScrollHandler);
+                    }
+                    overlay._wizContenidosScrollHandler = function() {
                         var el = resultadosBg;
                         var threshold = 120;
                         if (el.scrollTop + el.clientHeight >= el.scrollHeight - threshold) maybeLoadMoreDrawerCursos();
-                    });
+                    };
+                    resultadosBg.addEventListener('scroll', overlay._wizContenidosScrollHandler);
                 }
 
                 if (cardsContainer) {
-                    cardsContainer.addEventListener('click', function(e) {
+                    if (overlay._wizContenidosCardsClickHandler) {
+                        cardsContainer.removeEventListener('click', overlay._wizContenidosCardsClickHandler);
+                    }
+                    overlay._wizContenidosCardsClickHandler = function(e) {
                         var cardEl = e.target.closest('.course-card-compact');
                         if (!cardEl || !cardEl.dataset.courseId) return;
-                        var course = catalogoCursos.find(function(c) { return c.id === cardEl.dataset.courseId; });
+                        var course = catalogoCursos.find(function(c) { return String(c.id) === String(cardEl.dataset.courseId); });
                         if (!course) return;
-                        if (cursosSeleccionados.some(function(x) { return x.id === course.id; })) return;
-                        cursosSeleccionados.push(course);
-                        actualizarTabla();
-                        filtrarYRenderizarCards();
-                        if (searchInput) {
-                            searchInput.value = '';
-                            searchInput.dispatchEvent(new Event('input'));
+                        var list = overlay._wizCursosSeleccionados || [];
+                        var ix = list.findIndex(function(x) { return String(x.id) === String(course.id); });
+                        if (ix !== -1) {
+                            list.splice(ix, 1);
+                        } else {
+                            list.push(course);
+                            if (searchInput) {
+                                searchInput.value = '';
+                                searchInput.dispatchEvent(new Event('input'));
+                            }
                         }
-                    });
+                        filtrarYRenderizarCards();
+                        notifyWizardPaso2Sync();
+                    };
+                    cardsContainer.addEventListener('click', overlay._wizContenidosCardsClickHandler);
                 }
 
                 if (searchInput) {
@@ -735,7 +809,10 @@
 
                 var filterBtn = overlay.querySelector('#drawer-wiz-cursos-filter-btn');
                 if (filterBtn && typeof getDropdownMenuHtml === 'function' && typeof openDropdownMenu === 'function' && typeof closeDropdownMenu === 'function') {
-                    filterBtn.addEventListener('click', function(e) {
+                    if (overlay._wizContenidosFilterClickHandler) {
+                        filterBtn.removeEventListener('click', overlay._wizContenidosFilterClickHandler);
+                    }
+                    overlay._wizContenidosFilterClickHandler = function(e) {
                         e.preventDefault();
                         e.stopPropagation();
                         var filterOverlayId = 'drawer-wiz-cursos-filter-overlay';
@@ -747,9 +824,9 @@
                             radioGroup: true,
                             radioName: filterOverlayId + '-radio',
                             options: [
-                                { text: 'Todos los cursos', value: 'all', selected: drawerCursosFilter === 'all' },
-                                { text: 'Solo cursos UBITS', value: 'ubits', selected: drawerCursosFilter === 'ubits' },
-                                { text: 'Solo cursos de mi empresa', value: 'empresa', selected: drawerCursosFilter === 'empresa' }
+                                { text: 'Todos', value: 'all', selected: drawerCursosFilter === 'all' },
+                                { text: 'Solo catálogo UBITS', value: 'ubits', selected: drawerCursosFilter === 'ubits' },
+                                { text: 'Solo catálogo propio', value: 'empresa', selected: drawerCursosFilter === 'empresa' }
                             ]
                         });
                         document.body.insertAdjacentHTML('beforeend', htmlDropdown);
@@ -774,19 +851,39 @@
                             });
                         }
                         openDropdownMenu(filterOverlayId, filterBtn, { alignRight: true });
+                        (function alignFilterDropdownToButtonRight() {
+                            var ov = document.getElementById(filterOverlayId);
+                            var cnt = ov ? ov.querySelector('.ubits-dropdown-menu__content') : null;
+                            if (!cnt || !filterBtn) return;
+                            var br = filterBtn.getBoundingClientRect();
+                            cnt.style.left = 'auto';
+                            cnt.style.right = (window.innerWidth - br.right) + 'px';
+                        })();
                         requestAnimationFrame(function() {
                             var ov = document.getElementById(filterOverlayId);
                             var cnt = ov ? ov.querySelector('.ubits-dropdown-menu__content') : null;
-                            if (cnt && filterBtn) {
-                                var br = filterBtn.getBoundingClientRect();
-                                cnt.style.left = (br.right - cnt.offsetWidth) + 'px';
-                            }
+                            if (!cnt || !filterBtn) return;
+                            var br = filterBtn.getBoundingClientRect();
+                            cnt.style.left = 'auto';
+                            cnt.style.right = (window.innerWidth - br.right) + 'px';
                         });
-                    });
+                    };
+                    filterBtn.addEventListener('click', overlay._wizContenidosFilterClickHandler);
                 }
 
-                actualizarTabla();
+                var btnVerSel = overlay.querySelector('#drawer-wiz-cursos-ver-seleccionados');
+                if (btnVerSel) {
+                    btnVerSel.onclick = function () {
+                        var sel = overlay._wizCursosSeleccionados || [];
+                        if (!sel.length) return;
+                        overlay._wizViewOnlySeleccionados = !overlay._wizViewOnlySeleccionados;
+                        drawerCursosVisibleCount = DRAWER_CURSOS_PAGE_SIZE;
+                        filtrarYRenderizarCards();
+                    };
+                }
+
                 filtrarYRenderizarCards();
+                notifyWizardPaso2Sync();
                 overlay._wizContenidosAttached = true;
             }
 
@@ -796,17 +893,23 @@
                 if (!overlay) return;
 
                 overlay._wizContenidosAttached = false;
-                var stepperNav = overlay.querySelector('.drawer-wizard-stepper-nav');
-                var stepperOl = overlay.querySelector('#drawer-wiz-stepper-ol');
+                overlay._editarAsignacion = !!(wizardOpts.editarAsignacion && wizardOpts.item);
+                overlay._editItem = wizardOpts.item || null;
+                var stepperNav2 = overlay.querySelector('#drawer-wiz-stepper-nav-2');
+                var stepperNav3 = overlay.querySelector('#drawer-wiz-stepper-nav-3');
+                var stepperNavEdit = overlay.querySelector('#drawer-wiz-stepper-nav-edit');
+                var stepperOl2 = overlay.querySelector('#drawer-wiz-stepper-ol-2');
+                var stepperOl3 = overlay.querySelector('#drawer-wiz-stepper-ol-3');
                 var step1 = overlay.querySelector('#drawer-wizard-step1');
-                var step2 = overlay.querySelector('#drawer-wizard-step2');
+                var stepParticipantes = overlay.querySelector('#drawer-wizard-step2');
+                var stepContenidos = overlay.querySelector('#drawer-wizard-step3');
                 var colaboradorPanel = overlay.querySelector('#drawer-usuarios-colaborador-panel');
                 var gruposPanel = overlay.querySelector('#drawer-usuarios-grupos-panel');
                 var archivoPanel = overlay.querySelector('#drawer-usuarios-archivo-panel');
                 var btnPrimary = overlay.querySelector('#drawer-wiz-btn-primary');
                 var btnCancel = overlay.querySelector('#drawer-wiz-btn-cancel');
 
-                overlay._soloPaso2 = !!wizardOpts.soloPaso2;
+                overlay._soloPaso2 = !!(wizardOpts.soloPaso2 && !wizardOpts.editarAsignacion);
                 overlay._wizardEditTr = wizardOpts.editTr || null;
                 overlay._pendingStep1Meta = null;
                 overlay._wizCursosSeleccionados = [];
@@ -814,11 +917,68 @@
                 overlay._archivoImportFile = null;
                 overlay._wizardStep = 1;
 
+                function isThreeStepAssignment() {
+                    var o = getOpcionAsignacion();
+                    return o === 'por-colaborador' || o === 'por-grupos';
+                }
+
+                function updateWizardStepperNavVisibility() {
+                    if (overlay._editarAsignacion) {
+                        if (stepperNav2) stepperNav2.style.display = 'none';
+                        if (stepperNav3) stepperNav3.style.display = 'none';
+                        if (stepperNavEdit) stepperNavEdit.style.display = '';
+                        return;
+                    }
+                    if (stepperNavEdit) stepperNavEdit.style.display = 'none';
+                    var op = getOpcionAsignacion();
+                    var archivo = op === 'desde-archivo';
+                    var three = isThreeStepAssignment();
+                    if (stepperNav2) stepperNav2.style.display = archivo ? 'none' : (three ? 'none' : '');
+                    if (stepperNav3) stepperNav3.style.display = archivo ? 'none' : (three ? '' : 'none');
+                }
+
+                function updateParticipantPanelsVisibility() {
+                    var op = getOpcionAsignacion();
+                    var ws = overlay._wizardStep || 1;
+                    var showPart = isThreeStepAssignment() && ws === 2;
+                    if (colaboradorPanel) colaboradorPanel.style.display = (showPart && op === 'por-colaborador') ? 'flex' : 'none';
+                    if (gruposPanel) gruposPanel.style.display = (showPart && op === 'por-grupos') ? 'flex' : 'none';
+                    if (archivoPanel) archivoPanel.style.display = (op === 'desde-archivo' && ws === 1) ? 'flex' : 'none';
+                }
+
                 function setPrimaryLabelSpan(text) {
                     if (!btnPrimary) return;
                     var sp = btnPrimary.querySelector('span');
                     if (sp) sp.textContent = text;
                     else btnPrimary.textContent = text;
+                }
+
+                function setSecondaryLabelSpan(text) {
+                    if (!btnCancel) return;
+                    var sp = btnCancel.querySelector('span');
+                    if (sp) sp.textContent = text;
+                    else btnCancel.textContent = text;
+                }
+
+                function syncWizardSecondary() {
+                    if (!btnCancel) return;
+                    if (overlay._editarAsignacion && (overlay._wizardStep || 1) === 2) {
+                        setSecondaryLabelSpan('Cancelar');
+                        return;
+                    }
+                    if (overlay._soloPaso2) {
+                        setSecondaryLabelSpan('Cancelar');
+                        return;
+                    }
+                    if (getOpcionAsignacion() === 'desde-archivo') {
+                        setSecondaryLabelSpan('Cancelar');
+                        return;
+                    }
+                    if ((overlay._wizardStep || 1) > 1) {
+                        setSecondaryLabelSpan('Anterior');
+                        return;
+                    }
+                    setSecondaryLabelSpan('Cancelar');
                 }
 
                 function getOpcionAsignacion() {
@@ -828,18 +988,52 @@
 
                 function syncWizardPrimary() {
                     if (!btnPrimary) return;
+                    if (overlay._editarAsignacion) {
+                        var wsEd = overlay._wizardStep || 1;
+                        if (wsEd === 2) {
+                            setPrimaryLabelSpan('Siguiente');
+                            var opEd = getOpcionAsignacion();
+                            var refCEd = overlay._drawerColabTablaRef;
+                            var refGEd = overlay._drawerGruposTablaRef;
+                            var disEd = false;
+                            if (opEd === 'por-colaborador') {
+                                disEd = !refCEd || typeof refCEd.getSelectedIds !== 'function' || refCEd.getSelectedIds().length === 0;
+                            } else if (opEd === 'por-grupos') {
+                                disEd = !refGEd || typeof refGEd.getSelectedIds !== 'function' || refGEd.getSelectedIds().length === 0;
+                            }
+                            btnPrimary.disabled = disEd;
+                            syncWizardSecondary();
+                            return;
+                        }
+                        if (wsEd === 3) {
+                            setPrimaryLabelSpan('Guardar');
+                            btnPrimary.disabled = (overlay._wizCursosSeleccionados || []).length === 0;
+                            syncWizardSecondary();
+                            return;
+                        }
+                    }
                     if (overlay._soloPaso2) {
                         setPrimaryLabelSpan('Agregar');
                         btnPrimary.disabled = (overlay._wizCursosSeleccionados || []).length === 0;
+                        syncWizardSecondary();
                         return;
                     }
                     var opcion = getOpcionAsignacion();
                     if (opcion === 'desde-archivo') {
                         setPrimaryLabelSpan('Agregar');
                         btnPrimary.disabled = !overlay._archivoFileReady;
+                        syncWizardSecondary();
                         return;
                     }
-                    if ((overlay._wizardStep || 1) === 1) {
+                    var ws = overlay._wizardStep || 1;
+                    var three = isThreeStepAssignment();
+                    if (ws === 1) {
+                        setPrimaryLabelSpan('Siguiente');
+                        btnPrimary.disabled = false;
+                        syncWizardSecondary();
+                        return;
+                    }
+                    if (ws === 2 && three) {
                         setPrimaryLabelSpan('Siguiente');
                         var refColab = overlay._drawerColabTablaRef;
                         var refGrupos = overlay._drawerGruposTablaRef;
@@ -850,50 +1044,130 @@
                             dis = !refGrupos || typeof refGrupos.getSelectedIds !== 'function' || refGrupos.getSelectedIds().length === 0;
                         }
                         btnPrimary.disabled = dis;
+                        syncWizardSecondary();
+                        return;
+                    }
+                    if (ws === 3) {
+                        setPrimaryLabelSpan(overlay._editarAsignacion ? 'Guardar' : 'Agregar');
+                        btnPrimary.disabled = (overlay._wizCursosSeleccionados || []).length === 0;
+                        syncWizardSecondary();
                         return;
                     }
                     setPrimaryLabelSpan('Agregar');
                     btnPrimary.disabled = (overlay._wizCursosSeleccionados || []).length === 0;
+                    syncWizardSecondary();
                 }
 
                 function showWizardStep(num) {
                     overlay._wizardStep = num;
+                    var op = getOpcionAsignacion();
+                    var three = isThreeStepAssignment();
                     if (step1) step1.style.display = num === 1 ? '' : 'none';
-                    if (step2) step2.style.display = num === 2 ? '' : 'none';
-                    if (stepperOl && typeof setStepperStepStates === 'function') {
-                        setStepperStepStates(stepperOl, num - 1);
+                    if (stepParticipantes) stepParticipantes.style.display = (three && num === 2) ? '' : 'none';
+                    if (stepContenidos) stepContenidos.style.display = num === 3 ? '' : 'none';
+                    updateParticipantPanelsVisibility();
+                    updateWizardStepperNavVisibility();
+                    if (typeof setStepperStepStates === 'function') {
+                        var stepperOlEdit = overlay.querySelector('#drawer-wiz-stepper-ol-edit');
+                        if (overlay._editarAsignacion && stepperOlEdit) {
+                            if (num === 2) setStepperStepStates(stepperOlEdit, 0);
+                            else if (num === 3) setStepperStepStates(stepperOlEdit, 1);
+                        } else if (three && stepperOl3) {
+                            setStepperStepStates(stepperOl3, num - 1);
+                        } else if (!three && stepperOl2 && (op === 'toda-empresa')) {
+                            if (num === 1) setStepperStepStates(stepperOl2, 0);
+                            else if (num === 3) setStepperStepStates(stepperOl2, 1);
+                        }
                     }
                     syncWizardPrimary();
+                }
+
+                function formatFileSizeBytes(bytes) {
+                    if (bytes == null || isNaN(bytes)) return '0 Bytes';
+                    var n = Number(bytes);
+                    if (n < 1024) return n + ' Bytes';
+                    if (n < 1048576) return (Math.round(n / 102.4) / 10) + ' KB';
+                    return (Math.round(n / 104857.6) / 10) + ' MB';
+                }
+
+                function updateArchivoDropzoneUI() {
+                    var emptyEl = overlay.querySelector('#drawer-archivo-empty');
+                    var cardEl = overlay.querySelector('#drawer-archivo-file-card');
+                    var dz = overlay.querySelector('#drawer-archivo-dropzone');
+                    var f = overlay._archivoImportFile;
+                    if (!emptyEl || !cardEl || !dz) return;
+                    if (f) {
+                        emptyEl.style.display = 'none';
+                        cardEl.style.display = 'flex';
+                        cardEl.removeAttribute('hidden');
+                        dz.classList.add('drawer-archivo-dropzone--has-file');
+                        var nameEl = cardEl.querySelector('[data-drawer-archivo-nombre]');
+                        var sizeEl = cardEl.querySelector('[data-drawer-archivo-tamano]');
+                        if (nameEl) nameEl.textContent = f.name || 'archivo.csv';
+                        if (sizeEl) sizeEl.textContent = formatFileSizeBytes(f.size);
+                    } else {
+                        emptyEl.style.display = '';
+                        cardEl.style.display = 'none';
+                        cardEl.setAttribute('hidden', 'hidden');
+                        dz.classList.remove('drawer-archivo-dropzone--has-file');
+                    }
                 }
 
                 function resetArchivoWizard() {
                     overlay._archivoFileReady = false;
                     overlay._archivoImportFile = null;
+                    updateArchivoDropzoneUI();
                 }
 
-                if (overlay._soloPaso2) {
-                    if (stepperNav) stepperNav.style.display = 'none';
+                if (overlay._editarAsignacion && wizardOpts.item) {
+                    if (stepperNav2) stepperNav2.style.display = 'none';
+                    if (stepperNav3) stepperNav3.style.display = 'none';
+                    if (stepperNavEdit) stepperNavEdit.style.display = '';
                     if (step1) step1.style.display = 'none';
-                    if (step2) step2.style.display = '';
+                    var editItemInit = wizardOpts.item;
+                    overlay.querySelectorAll('input[name="tipo-agregar-usuarios"]').forEach(function(r) {
+                        r.checked = (r.value === editItemInit.asignadosTipo);
+                    });
                     overlay._wizardStep = 2;
+                    overlay._wizCursosSeleccionados = (editItemInit.contenidos && editItemInit.contenidos.length) ? editItemInit.contenidos.slice() : [];
+                    overlay._wizContenidosAttached = false;
+                    if (stepParticipantes) stepParticipantes.style.display = '';
+                    if (stepContenidos) stepContenidos.style.display = 'none';
+                    updateParticipantPanelsVisibility();
+                    updateWizardStepperNavVisibility();
+                    var olEditInit = overlay.querySelector('#drawer-wiz-stepper-ol-edit');
+                    if (olEditInit && typeof setStepperStepStates === 'function') setStepperStepStates(olEditInit, 0);
+                    syncWizardPrimary();
+                } else if (overlay._soloPaso2) {
+                    if (stepperNav2) stepperNav2.style.display = 'none';
+                    if (stepperNav3) stepperNav3.style.display = 'none';
+                    if (stepperNavEdit) stepperNavEdit.style.display = 'none';
+                    if (step1) step1.style.display = 'none';
+                    if (stepParticipantes) stepParticipantes.style.display = 'none';
+                    if (stepContenidos) stepContenidos.style.display = '';
+                    overlay._wizardStep = 3;
                     var trEdit = overlay._wizardEditTr || pendingCursosRow;
                     var asignacionId = trEdit ? (trEdit.getAttribute('data-id') || trEdit.getAttribute('data-asignacion-id')) : null;
                     var itemEdit = asignacionId ? asignacionesData.find(function(a) { return a.id === asignacionId; }) : null;
                     overlay._wizCursosSeleccionados = (itemEdit && itemEdit.contenidos && itemEdit.contenidos.length) ? itemEdit.contenidos.slice() : [];
                     attachWizardContenidosPaso2(overlay, syncWizardPrimary);
-                    if (stepperOl && typeof setStepperStepStates === 'function') setStepperStepStates(stepperOl, 1);
+                    if (stepperOl2 && typeof setStepperStepStates === 'function') setStepperStepStates(stepperOl2, 1);
                     syncWizardPrimary();
                 } else {
                     resetArchivoWizard();
+                    if (stepperNavEdit) stepperNavEdit.style.display = 'none';
                     overlay.querySelectorAll('input[name="tipo-agregar-usuarios"]').forEach(function(r) { r.checked = r.value === 'toda-empresa'; });
                     if (colaboradorPanel) colaboradorPanel.style.display = 'none';
                     if (gruposPanel) gruposPanel.style.display = 'none';
                     if (archivoPanel) archivoPanel.style.display = 'none';
-                    if (stepperNav) stepperNav.style.display = '';
                     if (step1) step1.style.display = '';
-                    if (step2) step2.style.display = 'none';
-                    if (stepperOl && typeof setStepperStepStates === 'function') setStepperStepStates(stepperOl, 0);
+                    if (stepParticipantes) stepParticipantes.style.display = 'none';
+                    if (stepContenidos) stepContenidos.style.display = 'none';
                     overlay._wizardStep = 1;
+                    updateWizardStepperNavVisibility();
+                    updateParticipantPanelsVisibility();
+                    if (stepperOl2 && typeof setStepperStepStates === 'function') setStepperStepStates(stepperOl2, 0);
+                    if (stepperOl3 && typeof setStepperStepStates === 'function') setStepperStepStates(stepperOl3, 0);
                     syncWizardPrimary();
                 }
 
@@ -910,20 +1184,21 @@
                 overlay.querySelectorAll('input[name="tipo-agregar-usuarios"]').forEach(function(radio) {
                     radio.addEventListener('change', function() {
                         var opcion = this.value;
-                        if (colaboradorPanel) colaboradorPanel.style.display = opcion === 'por-colaborador' ? 'flex' : 'none';
-                        if (gruposPanel) gruposPanel.style.display = opcion === 'por-grupos' ? 'flex' : 'none';
-                        if (archivoPanel) archivoPanel.style.display = opcion === 'desde-archivo' ? 'flex' : 'none';
                         actualizarContadorTodaEmpresa(opcion === 'toda-empresa');
                         if (opcion === 'por-grupos') updateDrawerCardGruposCount();
                         if (opcion === 'por-colaborador') updateDrawerCardColabCount();
                         resetArchivoWizard();
+                        overlay._wizCursosSeleccionados = [];
+                        overlay._pendingStep1Meta = null;
                         if (opcion === 'desde-archivo') {
                             overlay._wizardStep = 1;
-                            if (stepperNav) stepperNav.style.display = 'none';
-                            if (step2) step2.style.display = 'none';
+                            if (stepperNav2) stepperNav2.style.display = 'none';
+                            if (stepperNav3) stepperNav3.style.display = 'none';
+                            if (stepContenidos) stepContenidos.style.display = 'none';
+                            if (stepParticipantes) stepParticipantes.style.display = 'none';
                             if (step1) step1.style.display = '';
+                            updateParticipantPanelsVisibility();
                         } else {
-                            if (stepperNav) stepperNav.style.display = '';
                             showWizardStep(1);
                         }
                         syncWizardPrimary();
@@ -1038,6 +1313,41 @@
                 if (archivoPanel) archivoPanel.style.flexDirection = 'column';
                 actualizarContadorTodaEmpresa(getOpcionAsignacion() === 'toda-empresa');
 
+                function preselectDrawerTablaPorIds(tableSelector, ids) {
+                    if (!ids || !ids.length) return;
+                    var tbody = overlay.querySelector(tableSelector + ' tbody');
+                    if (!tbody) return;
+                    ids.forEach(function(id) {
+                        var rid = String(id).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+                        var tr = tbody.querySelector('tr[data-id="' + rid + '"]');
+                        if (!tr) return;
+                        var cb = tr.querySelector('input[type="checkbox"]');
+                        if (cb && !cb.checked) cb.click();
+                    });
+                }
+                if (overlay._editarAsignacion && wizardOpts.item) {
+                    var eiPre = wizardOpts.item;
+                    if (eiPre.asignadosTipo === 'por-colaborador' && eiPre.asignadosPersonas && eiPre.asignadosPersonas.length) {
+                        var idsPreC = [];
+                        eiPre.asignadosPersonas.forEach(function(p) {
+                            var eRow = empleadosDrawer.find(function(x) { return (x.nombre || '').trim() === (p.nombre || '').trim(); });
+                            if (eRow) idsPreC.push(eRow.id);
+                        });
+                        preselectDrawerTablaPorIds('#drawer-colab-table', idsPreC);
+                        updateDrawerCardColabCount();
+                    }
+                    if (eiPre.asignadosTipo === 'por-grupos' && eiPre.asignadosGrupos && eiPre.asignadosGrupos.length) {
+                        var idsPreG = [];
+                        eiPre.asignadosGrupos.forEach(function(g) {
+                            var gRow = gruposMock.find(function(x) { return (x.nombre || '').trim() === (g.nombre || '').trim(); });
+                            if (gRow) idsPreG.push(gRow.id);
+                        });
+                        preselectDrawerTablaPorIds('#drawer-grupos-table', idsPreG);
+                        updateDrawerCardGruposCount();
+                    }
+                    syncWizardPrimary();
+                }
+
                 function buildStep1MetaFromForm() {
                     var opcion = getOpcionAsignacion();
                     var label = 'Por definir';
@@ -1071,6 +1381,21 @@
                         label = asignadosGrupos.length ? asignadosGrupos.map(function(g) { return g.nombre; }).join(', ') : 'Por definir';
                     }
                     return { label: label, asignadosTipo: asignadosTipo, asignadosPersonas: asignadosPersonas, asignadosGrupos: asignadosGrupos };
+                }
+
+                function aplicarEdicionAsignacion() {
+                    var item = overlay._editItem;
+                    if (!item) return;
+                    var meta = buildStep1MetaFromForm();
+                    item.asignadosLabel = meta.label;
+                    item.asignadosTipo = meta.asignadosTipo;
+                    item.asignadosPersonas = meta.asignadosPersonas || [];
+                    item.asignadosGrupos = meta.asignadosGrupos || [];
+                    item.contenidos = (overlay._wizCursosSeleccionados || []).slice();
+                    item.contenidosCount = item.contenidos.length;
+                    if (asignacionesTablaRef && typeof asignacionesTablaRef.refresh === 'function') asignacionesTablaRef.refresh();
+                    bindAsignacionesRowsAfterRefresh();
+                    if (typeof updateGuardarButtonState === 'function') updateGuardarButtonState();
                 }
 
                 function parseCsvLine(line) {
@@ -1122,10 +1447,10 @@
                         var ixIds = -1;
                         for (var h = 0; h < headers.length; h++) {
                             if (headers[h] === 'username' || headers[h] === 'usuario') ixUser = h;
-                            if (headers[h] === 'id contenidos' || headers[h] === 'idcontenidos') ixIds = h;
+                            if (headers[h] === 'id contenidos' || headers[h] === 'idcontenidos' || headers[h] === 'id_contenidos') ixIds = h;
                         }
                         if (ixUser < 0 || ixIds < 0) {
-                            if (typeof showToast === 'function') showToast('error', 'El CSV debe tener columnas username e id contenidos.');
+                            if (typeof showToast === 'function') showToast('error', 'El CSV debe incluir las columnas username e IDContenidos.');
                             return;
                         }
                         var creadas = 0;
@@ -1150,6 +1475,7 @@
                                 id: idAsig,
                                 asignadosLabel: nombre,
                                 asignadosTipo: 'por-colaborador',
+                                importadoDesdeCsv: true,
                                 asignadosPersonas: [{ nombre: nombre, avatar: emp ? emp.avatar : null }],
                                 asignadosGrupos: [],
                                 contenidosCount: contenidos.length,
@@ -1173,8 +1499,38 @@
                             pendingCursosRow = null;
                             return;
                         }
-                        if ((overlay._wizardStep === 2) && getOpcionAsignacion() !== 'desde-archivo') {
-                            overlay._wizCursosSeleccionados = [];
+                        if (overlay._editarAsignacion) {
+                            var wsEd = overlay._wizardStep || 1;
+                            if (wsEd === 3) {
+                                var itBack = overlay._editItem;
+                                overlay._wizCursosSeleccionados = (itBack && itBack.contenidos && itBack.contenidos.length) ? itBack.contenidos.slice() : [];
+                                overlay._wizContenidosAttached = false;
+                                showWizardStep(2);
+                                return;
+                            }
+                            if (typeof closeDrawer === 'function') closeDrawer('drawer-agregar-usuarios');
+                            return;
+                        }
+                        var ws = overlay._wizardStep || 1;
+                        var op = getOpcionAsignacion();
+                        if (op === 'desde-archivo') {
+                            if (typeof closeDrawer === 'function') closeDrawer('drawer-agregar-usuarios');
+                            return;
+                        }
+                        if (ws === 1) {
+                            if (typeof closeDrawer === 'function') closeDrawer('drawer-agregar-usuarios');
+                            return;
+                        }
+                        overlay._wizCursosSeleccionados = [];
+                        if (ws === 3) {
+                            if (isThreeStepAssignment()) {
+                                showWizardStep(2);
+                            } else {
+                                showWizardStep(1);
+                            }
+                            return;
+                        }
+                        if (ws === 2 && isThreeStepAssignment()) {
                             showWizardStep(1);
                             return;
                         }
@@ -1185,6 +1541,30 @@
                 if (btnPrimary) {
                     btnPrimary.addEventListener('click', function() {
                         if (btnPrimary.disabled) return;
+                        if (overlay._editarAsignacion && !overlay._soloPaso2) {
+                            var wsEd = overlay._wizardStep || 1;
+                            var opEd = getOpcionAsignacion();
+                            if (wsEd === 2) {
+                                if (opEd === 'por-colaborador') {
+                                    var refCE = overlay._drawerColabTablaRef;
+                                    if (!refCE || typeof refCE.getSelectedIds !== 'function' || refCE.getSelectedIds().length === 0) return;
+                                } else if (opEd === 'por-grupos') {
+                                    var refGE = overlay._drawerGruposTablaRef;
+                                    if (!refGE || typeof refGE.getSelectedIds !== 'function' || refGE.getSelectedIds().length === 0) return;
+                                }
+                                if (!overlay._wizContenidosAttached) {
+                                    attachWizardContenidosPaso2(overlay, syncWizardPrimary);
+                                }
+                                showWizardStep(3);
+                                return;
+                            }
+                            if (wsEd === 3) {
+                                aplicarEdicionAsignacion();
+                                if (typeof closeDrawer === 'function') closeDrawer('drawer-agregar-usuarios');
+                                return;
+                            }
+                            return;
+                        }
                         if (overlay._soloPaso2) {
                             aplicarCursosAAsignacion(pendingCursosRow, overlay._wizCursosSeleccionados || []);
                             pendingCursosRow = null;
@@ -1195,8 +1575,20 @@
                             aplicarImportacionDesdeArchivo();
                             return;
                         }
-                        if (overlay._wizardStep === 1) {
-                            var op = getOpcionAsignacion();
+                        var ws = overlay._wizardStep || 1;
+                        var op = getOpcionAsignacion();
+                        if (ws === 1) {
+                            if (isThreeStepAssignment()) {
+                                showWizardStep(2);
+                                return;
+                            }
+                            overlay._pendingStep1Meta = buildStep1MetaFromForm();
+                            overlay._wizCursosSeleccionados = [];
+                            attachWizardContenidosPaso2(overlay, syncWizardPrimary);
+                            showWizardStep(3);
+                            return;
+                        }
+                        if (ws === 2 && isThreeStepAssignment()) {
                             var refC = overlay._drawerColabTablaRef;
                             var refG = overlay._drawerGruposTablaRef;
                             if (op === 'por-colaborador' && (!refC || refC.getSelectedIds().length === 0)) return;
@@ -1204,33 +1596,36 @@
                             overlay._pendingStep1Meta = buildStep1MetaFromForm();
                             overlay._wizCursosSeleccionados = [];
                             attachWizardContenidosPaso2(overlay, syncWizardPrimary);
-                            showWizardStep(2);
+                            showWizardStep(3);
                             return;
                         }
-                        var meta = overlay._pendingStep1Meta;
-                        if (!meta) return;
-                        var list = (overlay._wizCursosSeleccionados || []).slice();
-                        if (list.length === 0) return;
-                        var idNew = 'asignacion-' + (++asignacionIdCounter);
-                        asignacionesData.push({
-                            id: idNew,
-                            asignadosLabel: meta.label,
-                            asignadosTipo: meta.asignadosTipo,
-                            asignadosPersonas: meta.asignadosPersonas || [],
-                            asignadosGrupos: meta.asignadosGrupos || [],
-                            contenidosCount: list.length,
-                            contenidos: list
-                        });
-                        if (asignacionesTablaRef && typeof asignacionesTablaRef.refresh === 'function') asignacionesTablaRef.refresh();
-                        bindAsignacionesRowsAfterRefresh();
-                        if (typeof updateGuardarButtonState === 'function') updateGuardarButtonState();
-                        if (typeof closeDrawer === 'function') closeDrawer('drawer-agregar-usuarios');
+                        if (ws === 3) {
+                            var meta = overlay._pendingStep1Meta;
+                            if (!meta) return;
+                            var list = (overlay._wizCursosSeleccionados || []).slice();
+                            if (list.length === 0) return;
+                            var idNew = 'asignacion-' + (++asignacionIdCounter);
+                            asignacionesData.push({
+                                id: idNew,
+                                asignadosLabel: meta.label,
+                                asignadosTipo: meta.asignadosTipo,
+                                asignadosPersonas: meta.asignadosPersonas || [],
+                                asignadosGrupos: meta.asignadosGrupos || [],
+                                contenidosCount: list.length,
+                                contenidos: list
+                            });
+                            if (asignacionesTablaRef && typeof asignacionesTablaRef.refresh === 'function') asignacionesTablaRef.refresh();
+                            bindAsignacionesRowsAfterRefresh();
+                            if (typeof updateGuardarButtonState === 'function') updateGuardarButtonState();
+                            if (typeof closeDrawer === 'function') closeDrawer('drawer-agregar-usuarios');
+                        }
                     });
                 }
 
                 var dropzone = overlay.querySelector('#drawer-archivo-dropzone');
                 var archivoInput = overlay.querySelector('#drawer-archivo-input');
                 var btnSeleccionar = overlay.querySelector('#drawer-archivo-btn-seleccionar');
+                var btnQuitarArchivo = overlay.querySelector('#drawer-archivo-btn-quitar');
 
                 if (btnSeleccionar) {
                     btnSeleccionar.addEventListener('click', function(e) {
@@ -1239,18 +1634,28 @@
                         if (archivoInput) archivoInput.click();
                     });
                 }
-                dropzone.addEventListener('click', function(e) {
-                    if (e.target === btnSeleccionar || (btnSeleccionar && btnSeleccionar.contains(e.target))) return;
-                    if (archivoInput) archivoInput.click();
-                });
-                dropzone.addEventListener('dragover', function(e) { e.preventDefault(); dropzone.classList.add('drawer-archivo-dropzone--dragover'); });
-                dropzone.addEventListener('dragleave', function() { dropzone.classList.remove('drawer-archivo-dropzone--dragover'); });
+                if (btnQuitarArchivo) {
+                    btnQuitarArchivo.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        resetArchivoWizard();
+                        syncWizardPrimary();
+                    });
+                }
                 function onArchivoElegido(f) {
                     overlay._archivoImportFile = f || null;
                     overlay._archivoFileReady = !!f;
+                    updateArchivoDropzoneUI();
                     syncWizardPrimary();
                 }
                 if (dropzone) {
+                    dropzone.addEventListener('click', function(e) {
+                        if (e.target.closest && e.target.closest('#drawer-archivo-btn-quitar')) return;
+                        if (e.target === btnSeleccionar || (btnSeleccionar && btnSeleccionar.contains(e.target))) return;
+                        if (archivoInput) archivoInput.click();
+                    });
+                    dropzone.addEventListener('dragover', function(e) { e.preventDefault(); dropzone.classList.add('drawer-archivo-dropzone--dragover'); });
+                    dropzone.addEventListener('dragleave', function() { dropzone.classList.remove('drawer-archivo-dropzone--dragover'); });
                     dropzone.addEventListener('drop', function(e) {
                         e.preventDefault();
                         dropzone.classList.remove('drawer-archivo-dropzone--dragover');
@@ -1312,10 +1717,20 @@
                 }
                 if (btnDescargarPlantilla) {
                     btnDescargarPlantilla.addEventListener('click', function() {
-                        var headers = ['username', 'nombre', 'correo', 'area', 'lider'];
-                        var filaEjemplo = ['19237418387', 'José Fernando Pérez Sánchez', 'joseperez@correo.com', 'Ventas', 'Luz Angela Arango Bernal'];
-                        var contenido = headers.map(escapeCsvCell).join(',') + '\r\n' + filaEjemplo.map(escapeCsvCell).join(',');
-                        descargarCsv('plantilla-participantes.csv', contenido);
+                        var usernameEj = 'pateleber@fiqsha.demo';
+                        var idContEj = 'u001';
+                        if (typeof window.BD_MASTER_COLABORADORES !== 'undefined' && window.BD_MASTER_COLABORADORES.colaboradores && window.BD_MASTER_COLABORADORES.colaboradores.length) {
+                            var c0 = window.BD_MASTER_COLABORADORES.colaboradores[0];
+                            if (c0 && c0.username) usernameEj = String(c0.username).trim();
+                        }
+                        if (typeof window.BDS_CONTENIDOS_UBITS !== 'undefined' && window.BDS_CONTENIDOS_UBITS.contents && window.BDS_CONTENIDOS_UBITS.contents.length) {
+                            var u0 = window.BDS_CONTENIDOS_UBITS.contents[0];
+                            if (u0 && u0.id != null) idContEj = String(u0.id);
+                        }
+                        var headers = ['username', 'IDContenidos'];
+                        var filaDatos = [usernameEj, idContEj].map(escapeCsvCell).join(',');
+                        var contenido = headers.map(escapeCsvCell).join(',') + '\r\n' + filaDatos;
+                        descargarCsv('plantilla-importacion-asignaciones.csv', contenido);
                     });
                 }
 
@@ -1377,12 +1792,45 @@
             var asignacionesContainer = document.getElementById('asignaciones-data-table-container');
             if (asignacionesContainer) {
                 asignacionesContainer.addEventListener('click', function(e) {
+                    var bloqueado = e.target.closest('.js-asignacion-contenidos-csv-bloqueado');
+                    if (bloqueado) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (typeof showToast === 'function') {
+                            showToast('info', 'No se puede editar una asignación creada desde archivo');
+                        }
+                        return;
+                    }
                     var btn = e.target.closest('.js-asignacion-agregar-contenidos');
                     if (!btn) return;
                     e.preventDefault();
                     e.stopPropagation();
                     var tr = btn.closest('tbody tr[data-id]');
-                    if (tr) abrirDrawerAgregarCursos(tr);
+                    if (!tr) return;
+                    var aid = tr.getAttribute('data-id');
+                    var rowItem = aid ? asignacionesData.find(function(a) { return String(a.id) === String(aid); }) : null;
+                    if (!rowItem) return;
+                    var tipo = rowItem.asignadosTipo;
+                    if (tipo === 'toda-empresa') {
+                        abrirDrawerAgregarCursos(tr);
+                        return;
+                    }
+                    if (tipo === 'por-colaborador' || tipo === 'por-grupos') {
+                        if (typeof abrirDrawerAgregarUsuarios === 'function') {
+                            abrirDrawerAgregarUsuarios({ editarAsignacion: true, item: rowItem, editTr: tr });
+                        }
+                        return;
+                    }
+                    abrirDrawerAgregarCursos(tr);
+                });
+                asignacionesContainer.addEventListener('keydown', function(e) {
+                    var bloqueado = e.target.closest('.js-asignacion-contenidos-csv-bloqueado');
+                    if (!bloqueado || !asignacionesContainer.contains(bloqueado)) return;
+                    if (e.key !== 'Enter' && e.key !== ' ') return;
+                    e.preventDefault();
+                    if (typeof showToast === 'function') {
+                        showToast('info', 'No se puede editar una asignación creada desde archivo');
+                    }
                 });
             }
 
@@ -1422,30 +1870,20 @@
 
             // ========== Drawer Agregar contenidos (ex cursos) ==========
             function getDrawerCursosBodyHtml() {
-                return '<div class="drawer-agregar-cursos drawer-agregar-cursos--two-cols">' +
-                    '<div class="drawer-agregar-cursos__left">' +
+                return '<div class="drawer-agregar-cursos drawer-agregar-cursos--single-col">' +
                     '  <span class="drawer-agregar-cursos__section-title ubits-body-sm-semibold">Buscar y agregar contenidos</span>' +
                     '  <div class="drawer-cursos-search-row">' +
                     '    <div id="drawer-cursos-search-container" class="drawer-cursos-search-input-wrap"></div>' +
                     '    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" id="drawer-cursos-filter-btn" aria-label="Filtrar por origen"><i class="far fa-filter"></i></button>' +
                     '  </div>' +
-                    '  <div class="drawer-cursos-resultados-bg drawer-cursos-resultados-bg--dos-columnas">' +
+                    '  <div class="drawer-cursos-action-bar" id="drawer-cursos-action-bar">' +
+                    '    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="drawer-cursos-ver-seleccionados">' +
+                    '      <i class="far fa-eye"></i><span>Ver seleccionados</span></button>' +
+                    '  </div>' +
+                    '  <div class="drawer-cursos-resultados-bg drawer-cursos-resultados-bg--paso2-full">' +
                     '    <div id="drawer-contenidos-empty-search" class="drawer-contenidos-empty-search-wrap" style="display:none;"></div>' +
                     '    <div class="drawer-cursos-cards-grid" id="drawer-cursos-cards-container"></div>' +
                     '  </div>' +
-                    '</div>' +
-                    '<div class="drawer-agregar-cursos__right drawer-cursos-agregados-section" id="drawer-cursos-agregados-section">' +
-                    '  <span class="drawer-agregar-cursos__section-title ubits-body-sm-semibold">Contenidos agregados</span>' +
-                    '  <div class="drawer-cursos-agregados-content">' +
-                    '    <div id="drawer-cursos-empty-state" class="drawer-cursos-empty-state-wrap"></div>' +
-                    '    <div class="ubits-table-wrapper" id="drawer-cursos-table-wrapper">' +
-                    '      <table class="ubits-table" id="drawer-cursos-table">' +
-                    '        <thead><tr><th data-col="contenido" class="ubits-body-sm-semibold">Contenido</th><th class="ubits-table__th--actions ubits-body-sm-semibold" data-col="acciones">Acciones</th></tr></thead>' +
-                    '        <tbody id="drawer-cursos-agregados-tbody"></tbody>' +
-                    '      </table>' +
-                    '    </div>' +
-                    '  </div>' +
-                    '</div>' +
                     '</div>';
             }
 
@@ -1462,7 +1900,7 @@
 
                 openDrawer({
                     overlayId: 'drawer-agregar-cursos',
-                    title: 'Agregar contenidos',
+                    title: 'Editar contenidos',
                     bodyHtml: getDrawerCursosBodyHtml(),
                     footerHtml: footerHtml,
                     size: 'lg',
@@ -1474,47 +1912,35 @@
                 var overlay = document.getElementById('drawer-agregar-cursos');
                 if (!overlay) return;
 
-                actualizarTabla();
+                overlay._drawerCursosSeleccionados = cursosSeleccionados;
+                overlay._drawerCursosViewOnly = false;
 
-                function actualizarTabla() {
-                    var agregadosSection = overlay.querySelector('#drawer-cursos-agregados-section');
-                    var tbody = overlay.querySelector('#drawer-cursos-agregados-tbody');
-                    var emptyStateContainer = overlay.querySelector('#drawer-cursos-empty-state');
-                    var tableWrapper = overlay.querySelector('#drawer-cursos-table-wrapper');
-                    if (!tbody) return;
-                    if (agregadosSection) agregadosSection.style.display = 'block';
-                    tbody.innerHTML = '';
-                    if (cursosSeleccionados.length === 0) {
-                        if (tableWrapper) tableWrapper.style.display = 'none';
-                        if (emptyStateContainer) {
-                            emptyStateContainer.style.display = 'block';
-                            if (typeof loadEmptyState === 'function') {
-                                loadEmptyState('drawer-cursos-empty-state', {
-                                    icon: 'fa-folder-open',
-                                    iconSize: 'lg',
-                                    title: 'No hay contenidos agregados',
-                                    description: 'Busca y agrega contenidos desde el buscador.',
-                                    buttons: {}
-                                });
-                            }
-                        }
-                    } else {
-                        if (emptyStateContainer) emptyStateContainer.style.display = 'none';
-                        if (tableWrapper) tableWrapper.style.display = 'block';
+                function updateDrawerCursosVerBar() {
+                    var bar = overlay.querySelector('#drawer-cursos-action-bar');
+                    var btn = overlay.querySelector('#drawer-cursos-ver-seleccionados');
+                    if (!bar || !btn) return;
+                    var sel = overlay._drawerCursosSeleccionados || [];
+                    var n = sel.length;
+                    var icon = btn.querySelector('i');
+                    var span = btn.querySelector('span');
+                    if (n === 0) {
+                        overlay._drawerCursosViewOnly = false;
+                        bar.classList.remove('is-visible');
+                        if (icon) icon.className = 'far fa-eye';
+                        if (span) span.textContent = 'Ver seleccionados';
+                        btn.classList.remove('active');
+                        return;
                     }
-                    cursosSeleccionados.forEach(function(c) {
-                        var tr = document.createElement('tr');
-                        tr.className = 'drawer-cursos-table-row';
-                        tr.innerHTML = '<td data-col="contenido"><span class="ubits-body-sm-regular">' + (c.title || '') + '</span></td>' +
-                            '<td data-col="acciones"><button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only js-drawer-cursos-delete" aria-label="Eliminar" title="Eliminar"><i class="far fa-trash"></i></button></td>';
-                        tr.dataset.courseId = c.id;
-                        tr.querySelector('.js-drawer-cursos-delete').addEventListener('click', function() {
-                            cursosSeleccionados = cursosSeleccionados.filter(function(x) { return x.id !== c.id; });
-                            actualizarTabla();
-                            filtrarYRenderizarCards();
-                        });
-                        tbody.appendChild(tr);
-                    });
+                    bar.classList.add('is-visible');
+                    if (overlay._drawerCursosViewOnly) {
+                        if (icon) icon.className = 'far fa-eye-slash';
+                        if (span) span.textContent = 'Dejar de ver seleccionados (' + n + ')';
+                        btn.classList.add('active');
+                    } else {
+                        if (icon) icon.className = 'far fa-eye';
+                        if (span) span.textContent = 'Ver seleccionados (' + n + ')';
+                        btn.classList.remove('active');
+                    }
                 }
 
                 if (typeof createInput === 'function') {
@@ -1544,9 +1970,23 @@
                     });
                 }
 
+                function getFiltradosParaGridDrawer() {
+                    var filtrados = getFiltradosDrawerCursos();
+                    var sel = overlay._drawerCursosSeleccionados || [];
+                    if (!overlay._drawerCursosViewOnly || !sel.length) return filtrados;
+                    var idSet = {};
+                    sel.forEach(function (c) {
+                        if (c && c.id != null) idSet[String(c.id)] = true;
+                    });
+                    return filtrados.filter(function (c) {
+                        return idSet[String(c.id)];
+                    });
+                }
+
                 function filtrarYRenderizarCards() {
                     if (!cardsContainer || typeof loadCardContentCompact !== 'function') return;
                     var filtrados = getFiltradosDrawerCursos();
+                    var paraGrid = getFiltradosParaGridDrawer();
                     var q = (searchInput && searchInput.value) ? searchInput.value.trim() : '';
                     if (q && filtrados.length === 0) {
                         if (emptySearchContainer) {
@@ -1574,6 +2014,25 @@
                             }
                         }
                         cardsContainer.style.display = 'none';
+                        updateDrawerCursosVerBar();
+                        return;
+                    }
+                    if (overlay._drawerCursosViewOnly && paraGrid.length === 0 && (overlay._drawerCursosSeleccionados || []).length > 0) {
+                        if (emptySearchContainer) {
+                            emptySearchContainer.style.display = 'block';
+                            emptySearchContainer.innerHTML = '';
+                            if (typeof loadEmptyState === 'function') {
+                                loadEmptyState('drawer-contenidos-empty-search', {
+                                    icon: 'fa-eye',
+                                    iconSize: 'lg',
+                                    title: 'Sin contenidos agregados en estos resultados',
+                                    description: 'Ninguno de los contenidos ya agregados coincide con la búsqueda o el filtro. Prueba otra búsqueda o deja de ver solo seleccionados.',
+                                    buttons: {}
+                                });
+                            }
+                        }
+                        cardsContainer.style.display = 'none';
+                        updateDrawerCursosVerBar();
                         return;
                     }
                     if (emptySearchContainer) {
@@ -1581,26 +2040,28 @@
                         emptySearchContainer.innerHTML = '';
                     }
                     cardsContainer.style.display = '';
-                    var aMostrar = filtrados.slice(0, drawerCursosVisibleCount);
+                    var aMostrar = paraGrid.slice(0, drawerCursosVisibleCount);
                     loadCardContentCompact('drawer-cursos-cards-container', aMostrar);
+                    var listSel = overlay._drawerCursosSeleccionados || [];
                     aMostrar.forEach(function(course, idx) {
                         var cards = cardsContainer.querySelectorAll('.course-card-compact');
                         var cardEl = cards[idx];
                         if (cardEl) {
                             cardEl.style.cursor = 'pointer';
                             cardEl.dataset.courseId = course.id;
-                            if (cursosSeleccionados.some(function(x) { return x.id === course.id; })) {
+                            if (listSel.some(function(x) { return x.id === course.id; })) {
                                 cardEl.classList.add('course-card-compact--selected');
                             } else {
                                 cardEl.classList.remove('course-card-compact--selected');
                             }
                         }
                     });
+                    updateDrawerCursosVerBar();
                 }
 
                 function maybeLoadMoreDrawerCursos() {
-                    var filtrados = getFiltradosDrawerCursos();
-                    if (drawerCursosVisibleCount >= filtrados.length) return;
+                    var paraGrid = getFiltradosParaGridDrawer();
+                    if (drawerCursosVisibleCount >= paraGrid.length) return;
                     drawerCursosVisibleCount += DRAWER_CURSOS_PAGE_SIZE;
                     filtrarYRenderizarCards();
                 }
@@ -1619,14 +2080,18 @@
                     if (!cardEl || !cardEl.dataset.courseId) return;
                     var course = catalogoCursos.find(function(c) { return c.id === cardEl.dataset.courseId; });
                     if (!course) return;
-                    if (cursosSeleccionados.some(function(x) { return x.id === course.id; })) return;
-                    cursosSeleccionados.push(course);
-                    actualizarTabla();
-                    filtrarYRenderizarCards();
-                    if (searchInput) {
-                        searchInput.value = '';
-                        searchInput.dispatchEvent(new Event('input'));
+                    var list = overlay._drawerCursosSeleccionados || [];
+                    var ix = list.findIndex(function(x) { return x.id === course.id; });
+                    if (ix !== -1) {
+                        list.splice(ix, 1);
+                    } else {
+                        list.push(course);
+                        if (searchInput) {
+                            searchInput.value = '';
+                            searchInput.dispatchEvent(new Event('input'));
+                        }
                     }
+                    filtrarYRenderizarCards();
                 });
 
                 if (searchInput) {
@@ -1654,9 +2119,9 @@
                             radioGroup: true,
                             radioName: filterOverlayId + '-radio',
                             options: [
-                                { text: 'Todos los cursos', value: 'all', selected: drawerCursosFilter === 'all' },
-                                { text: 'Solo cursos UBITS', value: 'ubits', selected: drawerCursosFilter === 'ubits' },
-                                { text: 'Solo cursos de mi empresa', value: 'empresa', selected: drawerCursosFilter === 'empresa' }
+                                { text: 'Todos', value: 'all', selected: drawerCursosFilter === 'all' },
+                                { text: 'Solo catálogo UBITS', value: 'ubits', selected: drawerCursosFilter === 'ubits' },
+                                { text: 'Solo catálogo propio', value: 'empresa', selected: drawerCursosFilter === 'empresa' }
                             ]
                         });
                         document.body.insertAdjacentHTML('beforeend', htmlDropdown);
@@ -1681,15 +2146,34 @@
                             });
                         }
                         openDropdownMenu(filterOverlayId, filterBtn, { alignRight: true });
+                        (function alignFilterDropdownToButtonRight() {
+                            var ov = document.getElementById(filterOverlayId);
+                            var cnt = ov ? ov.querySelector('.ubits-dropdown-menu__content') : null;
+                            if (!cnt || !filterBtn) return;
+                            var br = filterBtn.getBoundingClientRect();
+                            cnt.style.left = 'auto';
+                            cnt.style.right = (window.innerWidth - br.right) + 'px';
+                        })();
                         requestAnimationFrame(function() {
                             var ov = document.getElementById(filterOverlayId);
                             var cnt = ov ? ov.querySelector('.ubits-dropdown-menu__content') : null;
-                            if (cnt && filterBtn) {
-                                var br = filterBtn.getBoundingClientRect();
-                                cnt.style.left = (br.right - cnt.offsetWidth) + 'px';
-                            }
+                            if (!cnt || !filterBtn) return;
+                            var br = filterBtn.getBoundingClientRect();
+                            cnt.style.left = 'auto';
+                            cnt.style.right = (window.innerWidth - br.right) + 'px';
                         });
                     });
+                }
+
+                var btnVerDrawer = overlay.querySelector('#drawer-cursos-ver-seleccionados');
+                if (btnVerDrawer) {
+                    btnVerDrawer.onclick = function () {
+                        var sel = overlay._drawerCursosSeleccionados || [];
+                        if (!sel.length) return;
+                        overlay._drawerCursosViewOnly = !overlay._drawerCursosViewOnly;
+                        drawerCursosVisibleCount = DRAWER_CURSOS_PAGE_SIZE;
+                        filtrarYRenderizarCards();
+                    };
                 }
 
                 filtrarYRenderizarCards();
@@ -1703,17 +2187,7 @@
 
             function cerrarDrawerCursosYAplicar() {
                 var overlay = document.getElementById('drawer-agregar-cursos');
-                var tbody = overlay ? overlay.querySelector('#drawer-cursos-agregados-tbody') : null;
-                var cursosSeleccionados = [];
-                if (tbody) {
-                    tbody.querySelectorAll('tr').forEach(function(row) {
-                        var courseId = row.dataset.courseId;
-                        if (courseId) {
-                            var c = catalogoCursos.find(function(x) { return x.id === courseId; });
-                            if (c) cursosSeleccionados.push(c);
-                        }
-                    });
-                }
+                var cursosSeleccionados = (overlay && overlay._drawerCursosSeleccionados) ? overlay._drawerCursosSeleccionados.slice() : [];
                 if (typeof closeDrawer === 'function') closeDrawer('drawer-agregar-cursos');
                 if (pendingCursosRow) {
                     aplicarCursosAAsignacion(pendingCursosRow, cursosSeleccionados);

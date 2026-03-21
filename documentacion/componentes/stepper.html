@@ -151,7 +151,7 @@
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-arrows-alt-h"></i></div>
                                     <div class="ubits-body-sm-bold">Horizontal</div>
-                                    <div class="ubits-body-sm-regular">Número y nombre del paso en una fila; líneas entre pasos. En pantallas pequeñas la lista se apila.</div>
+                                    <div class="ubits-body-sm-regular">Número y nombre del paso en una fila; líneas entre pasos. En pantallas ≤1023px de ancho el stepper sigue en una fila: solo el paso actual muestra el título; los demás solo el número en el círculo.</div>
                                 </div>
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-compress-arrows-alt"></i></div>
@@ -171,7 +171,7 @@
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-arrows-alt-v"></i></div>
                                     <div class="ubits-body-sm-bold">Vertical colapsable</div>
-                                    <div class="ubits-body-sm-regular">Lista en columna con línea entre círculos; botón para ocultar los títulos y dejar solo números (o checks).</div>
+                                    <div class="ubits-body-sm-regular">Lista en columna con línea entre círculos; botón para ocultar los títulos y dejar solo números.</div>
                                 </div>
                             </div>
                         </div>
@@ -298,7 +298,7 @@
 &lt;/nav&gt;</code></pre>
                                     </div>
                                     <p class="ubits-body-sm-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
-                                        Modificadores en el <code>&lt;ol&gt;</code>: <code>ubits-stepper--horizontal-compact</code>, <code>ubits-stepper--horizontal-stacked</code> (combinables).
+                                        Modificadores en el <code>&lt;ol&gt;</code>: <code>ubits-stepper--horizontal-compact</code>, <code>ubits-stepper--horizontal-stacked</code> (combinables). Paso completado: el número permanece visible con estilo de éxito (el icono de check en el mark no se muestra). En horizontal, vista ≤1023px: solo el paso con <code>--active</code> muestra el texto del título.
                                     </p>
                                 </div>
                                 <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">

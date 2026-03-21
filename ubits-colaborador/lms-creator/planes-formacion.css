@@ -129,3 +129,17 @@ body[data-planes-vacios="true"] .widget-planes-formacion #planes-empty-state,
 .section-single--test-tabla .ubits-table thead th[data-col="progreso"] {
     min-width: 100px;
 }
+
+/* Menú "Crear plan": por encima del FAB del header-product y tab bar (móvil). */
+.page-planes-formacion #planes-formacion-crear-menu-overlay.ubits-dropdown-menu__overlay {
+    z-index: 1102;
+}
+
+.page-planes-formacion #planes-formacion-crear-menu-overlay .ubits-dropdown-menu__content {
+    z-index: 1103;
+}
+
+/* Dropdown items: nunca partir texto a 2 líneas */
+.page-planes-formacion .ubits-dropdown-menu__option-text {
+    white-space: nowrap;
+}
