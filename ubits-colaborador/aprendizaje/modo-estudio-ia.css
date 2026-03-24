@@ -278,12 +278,12 @@ body.modo-estudio-ia-page .modo-tutor-ia-canvas-panel.is-open .study-chat-canvas
 
 /* Chat actualmente abierto en el historial */
 .modo-estudio-ia-historial-item--active {
-    background: var(--ubits-feedback-bg-info-subtle);
+    background: var(--ubits-bg-2);
     color: var(--ubits-fg-1-high);
 }
 
 .modo-estudio-ia-historial-item--active:hover {
-    background: var(--ubits-feedback-bg-info-subtle);
+    background: var(--ubits-bg-2);
 }
 
 .modo-estudio-ia-historial-item__content {

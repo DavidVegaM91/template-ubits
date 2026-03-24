@@ -536,12 +536,12 @@ body.chat-ia-grupos-page[data-theme="dark"] .content-area {
 }
 
 .chat-ia-grupos-chat-section .group-creation-historial-item--active {
-    background: var(--ubits-feedback-bg-info-subtle);
+    background: var(--ubits-bg-2);
     color: var(--ubits-fg-1-high);
 }
 
 .chat-ia-grupos-chat-section .group-creation-historial-item--active:hover {
-    background: var(--ubits-feedback-bg-info-subtle);
+    background: var(--ubits-bg-2);
 }
 
 .chat-ia-grupos-chat-section .group-creation-historial-item__content {
