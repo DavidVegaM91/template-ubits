@@ -56,8 +56,8 @@
  * ```
  * 
  * VARIANTES DISPONIBLES:
- * - ubits-ia-button--primary (con gradiente radial azul)
- * - ubits-ia-button--secondary (outlined con borde azul)
+ * - ubits-ia-button--primary (gradiente lineal multicolor Creator v3)
+ * - ubits-ia-button--secondary (outlined: borde e icono con paleta Creator v3, fondo sólido)
  * 
  * TAMAÑOS DISPONIBLES:
  * - ubits-ia-button--sm (pequeño - padding 8px 12px)
@@ -76,7 +76,7 @@
  * - Border radius completo (pill shape - 1000px)
  * - Badge opcional (punto rojo en esquina superior derecha)
  * - Iconos opcionales a izquierda y derecha del texto
- * - Gradiente radial en variante Primary
+ * - Gradiente lineal en variante Primary (Figma Creator v3)
  * - Diseñado específicamente para casos de uso de IA
  * 
  * EJEMPLOS DE USO:
@@ -115,7 +115,7 @@
  * NOTAS IMPORTANTES:
  * - El badge es opcional (no siempre debe estar presente)
  * - Los iconos son opcionales pero recomendados para mantener consistencia visual
- * - El gradiente radial es específico de este componente y no debe modificarse
+ * - El gradiente primario se define en ia-button.css (--ubits-ia-button-gradient)
  * - El border radius completo (pill shape) es característico de este componente
  * - Usar preferiblemente el icono "fa-sparkles" para casos de IA
  * - Todos los colores usan tokens UBITS cuando es posible
@@ -123,7 +123,7 @@
  * 
  * DIFERENCIAS CON UBITS-BUTTON:
  * - Border radius completo (pill shape) vs 8px
- * - Gradiente radial en Primary vs color sólido
+ * - Gradiente lineal multicolor en Primary vs color sólido
  * - Badge siempre presente vs opcional
  * - Diseñado específicamente para casos de IA
  * - Estados Active con fondo rgba(12,91,239,0.15) y texto azul
