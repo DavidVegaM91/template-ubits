@@ -514,6 +514,12 @@
     color: #ffffff;
 }
 
+/* Disabled: --primary i va después del bloque :disabled y ganaba; forzar token de texto en icono */
+.ubits-ia-button--primary:disabled i,
+.ubits-ia-button--primary.ubits-ia-button--disabled i {
+    color: var(--ubits-fg-on-disabled-button) !important;
+}
+
 /* Icono: color tomado del mismo gradiente Creator v3 (texto con clip, sin cambiar el fondo del botón) */
 .ubits-ia-button--secondary i {
     background: var(--ubits-ia-button-gradient);
@@ -521,6 +527,16 @@
     background-clip: text;
     color: transparent;
     -webkit-text-fill-color: transparent;
+}
+
+/* Disabled: quitar clip/gradiente del icono secundario y usar mismo token que el botón */
+.ubits-ia-button--secondary:disabled i,
+.ubits-ia-button--secondary.ubits-ia-button--disabled i {
+    background: none !important;
+    -webkit-background-clip: border-box !important;
+    background-clip: border-box !important;
+    color: var(--ubits-fg-on-disabled-button) !important;
+    -webkit-text-fill-color: var(--ubits-fg-on-disabled-button) !important;
 }
 
 .ubits-ia-button--active i {
@@ -540,6 +556,12 @@
 /* Primary variant: texto blanco sobre gradiente multicolor */
 .ubits-ia-button--primary span {
     color: rgb(255, 255, 255);
+}
+
+/* Disabled: --primary span y .ubits-ia-button span van después; texto debe usar --ubits-fg-on-disabled-button */
+.ubits-ia-button:disabled span,
+.ubits-ia-button--disabled span {
+    color: var(--ubits-fg-on-disabled-button) !important;
 }
 
 /* ========================================
@@ -565,6 +587,15 @@
     background-clip: text;
     color: transparent;
     -webkit-text-fill-color: transparent;
+}
+
+[data-theme="dark"] .ubits-ia-button--secondary:disabled i,
+[data-theme="dark"] .ubits-ia-button--secondary.ubits-ia-button--disabled i {
+    background: none !important;
+    -webkit-background-clip: border-box !important;
+    background-clip: border-box !important;
+    color: var(--ubits-fg-on-disabled-button) !important;
+    -webkit-text-fill-color: var(--ubits-fg-on-disabled-button) !important;
 }
 
 [data-theme="dark"] .ubits-ia-button--active {

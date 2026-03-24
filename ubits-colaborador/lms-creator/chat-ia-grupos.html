@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="../../components/floating-menu.css">
     <link rel="stylesheet" href="../../components/profile-menu.css">
     <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/ia-button.css">
     <link rel="stylesheet" href="../../components/study-chat.css">
     <link rel="stylesheet" href="../../components/empty-state.css">
     <link rel="stylesheet" href="../../components/tooltip.css">
@@ -33,7 +34,7 @@
             <div class="content-area">
                 <div class="content-sections">
                     <div class="section-single chat-ia-grupos-chat-section">
-                        <div class="modo-estudio-ia-historial-panel is-open" id="group-creation-historial-panel" aria-label="Historial de chats">
+                        <div class="modo-estudio-ia-historial-panel is-open" id="group-creation-historial-panel" aria-label="Mis chats">
                             <div class="modo-estudio-ia-historial-panel__header">
                                 <div class="modo-estudio-ia-historial-panel__header-start">
                                     <button type="button"
@@ -42,9 +43,9 @@
                                         aria-label="Volver a grupos">
                                         <i class="far fa-arrow-left"></i>
                                     </button>
-                                    <span class="ubits-body-md-bold">Historial</span>
+                                    <span class="ubits-body-md-bold">Mis chats</span>
                                 </div>
-                                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="group-creation-historial-panel-close" data-tooltip="Cerrar" data-tooltip-delay="1000" aria-label="Cerrar panel historial">
+                                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="group-creation-historial-panel-close" data-tooltip="Cerrar" data-tooltip-delay="1000" aria-label="Cerrar panel Mis chats">
                                     <i class="far fa-times"></i>
                                 </button>
                             </div>
@@ -53,6 +54,16 @@
                                 <div id="group-creation-historial-empty" class="modo-estudio-ia-historial-panel__empty">
                                     <div id="group-creation-historial-empty-state-container"></div>
                                 </div>
+                            </div>
+                            <div class="modo-estudio-ia-historial-panel__footer">
+                                <button type="button"
+                                    class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--md"
+                                    id="group-creation-historial-panel-nuevo-chat"
+                                    disabled
+                                    aria-label="Iniciar nuevo chat">
+                                    <i class="far fa-plus"></i>
+                                    <span>Nuevo chat</span>
+                                </button>
                             </div>
                         </div>
                         <div class="chat-ia-grupos-chat-main study-chat-wrapper--welcome">

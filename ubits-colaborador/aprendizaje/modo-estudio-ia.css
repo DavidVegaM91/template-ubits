@@ -11,7 +11,7 @@ body.modo-estudio-ia-page {
 
 /* Burbujas de mensaje de usuario: mismo gradiente que el resto (variables en aprendizaje-ia-gradientes.css) */
 .modo-estudio-ia-page .ubits-study-chat__text-globe--user {
-    background: linear-gradient(135deg, var(--modo-ia-gradient-a) 0%, var(--modo-ia-gradient-b) 50%, var(--modo-ia-gradient-c) 100%);
+    background: linear-gradient(135deg, var(--modo-ia-gradient-a) 0%, var(--modo-ia-gradient-b) 35.59%, var(--modo-ia-gradient-c) 67.19%, var(--modo-ia-gradient-d) 100%);
 }
 
 body.modo-estudio-ia-page .dashboard-container {
@@ -253,6 +253,19 @@ body.modo-estudio-ia-page .modo-tutor-ia-canvas-panel.is-open .study-chat-canvas
     min-height: 0;
 }
 
+.modo-estudio-ia-historial-panel__footer {
+    flex-shrink: 0;
+    align-self: stretch;
+    box-sizing: border-box;
+    padding: var(--padding-md) var(--padding-sm) var(--padding-lg);
+    border-top: 1px solid var(--ubits-border-1);
+}
+
+.modo-estudio-ia-historial-panel__footer .ubits-ia-button {
+    width: 100%;
+    box-sizing: border-box;
+}
+
 .modo-estudio-ia-historial-item {
     display: flex;
     align-items: center;
@@ -336,7 +349,7 @@ body.modo-estudio-ia-page .modo-tutor-ia-canvas-panel.is-open .study-chat-canvas
     overflow: hidden;
 }
 
-/* Orbes decorativos: capa bajo .widget-chat (z-index 1). El fondo bg-1 va en .modo-tutor-ia-chat-main; widget + study-chat transparentes para no tapar el ::before. */
+/* Orbes decorativos (colores oficiales: aprendizaje-ia-gradientes.css --modo-ia-glow-orb-rgb-*; no hardcodear RGB aquí). */
 .modo-estudio-ia-page .modo-tutor-ia-chat-main::before {
     content: '';
     position: absolute;
@@ -357,7 +370,7 @@ body[data-theme="dark"] .modo-estudio-ia-page .modo-tutor-ia-chat-main::before {
         radial-gradient(ellipse 95% 75% at 90% calc(-5% - 70px), rgba(var(--modo-ia-glow-orb-rgb-3), 0.2) 0%, transparent 50%);
 }
 
-/* Barra de acciones dentro del chat: Historial y Nuevo chat (icon-only, alineados a la derecha; tooltip vía title) */
+/* Barra de acciones dentro del chat: Historial (icon-only; Nuevo chat en footer del panel de historial) */
 .modo-estudio-ia-chat-actions {
     display: flex;
     align-items: center;
@@ -652,9 +665,9 @@ body[data-theme="dark"] .modo-estudio-ia-page .modo-tutor-ia-chat-main::before {
     font-size: 1.25rem;
     animation: modo-estudio-ia-sparkles-float 2.5s ease-in-out infinite;
 }
-/* Icono sparkles: gradación azul oficial (variables) */
+/* Icono sparkles: gradiente Creator v3 (variables) */
 .modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__welcome-icon i {
-    background: linear-gradient(135deg, var(--modo-ia-gradient-a) 0%, var(--modo-ia-gradient-b) 50%, var(--modo-ia-gradient-c) 100%);
+    background: linear-gradient(135deg, var(--modo-ia-gradient-a) 0%, var(--modo-ia-gradient-b) 35.59%, var(--modo-ia-gradient-c) 67.19%, var(--modo-ia-gradient-d) 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -681,21 +694,13 @@ body[data-theme="dark"] .modo-estudio-ia-page .modo-tutor-ia-chat-main::before {
     min-width: 0;
 }
 
-/* "aprender hoy": gradación azul oficial */
+/* "aprender hoy": texto con gradiente Creator v3 (estático, sin animación) */
 .modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__welcome-prompt-accent {
     font-weight: var(--font-weight-semibold);
-    background: linear-gradient(90deg, var(--modo-ia-gradient-a), var(--modo-ia-gradient-b), var(--modo-ia-gradient-c), var(--modo-ia-gradient-a));
-    background-size: 300% 100%;
-    background-position: 0% 50%;
+    background: linear-gradient(90deg, var(--modo-ia-gradient-a), var(--modo-ia-gradient-b), var(--modo-ia-gradient-c), var(--modo-ia-gradient-d));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    animation: modo-estudio-ia-gradient-shift 5s ease-in-out infinite;
-}
-
-@keyframes modo-estudio-ia-gradient-shift {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
 }
 
 /* Mismo criterio de aire que .ubits-study-chat__body (padding xl): el root usa align-items:center y sin esto el área puede leerse a ancho completo sin márgenes laterales */
@@ -733,12 +738,12 @@ body[data-theme="dark"] .modo-estudio-ia-page .modo-tutor-ia-chat-main::before {
     margin-top: var(--gap-md);
 }
 
-/* Botones de recomendaciones: borde animado en gradación azul oficial (como el input de bienvenida) */
+/* Botones de recomendaciones: borde animado (paleta Creator v3, misma mecánica que antes) */
 .modo-estudio-ia-page .ubits-study-chat--welcome .ubits-study-chat__suggestions .ubits-button {
     border: 1px solid transparent;
     background: linear-gradient(var(--ubits-bg-1), var(--ubits-bg-1)) padding-box,
-        linear-gradient(90deg, var(--modo-ia-gradient-a), var(--modo-ia-gradient-b), var(--modo-ia-gradient-c), var(--modo-ia-gradient-a)) border-box;
-    background-size: 100% 100%, 300% 100%;
+        linear-gradient(90deg, var(--modo-ia-gradient-a), var(--modo-ia-gradient-b), var(--modo-ia-gradient-c), var(--modo-ia-gradient-d), var(--modo-ia-gradient-a)) border-box;
+    background-size: 100% 100%, 400% 100%;
     background-position: 0 0, 0% 50%;
     background-origin: padding-box, border-box;
     background-clip: padding-box, border-box;

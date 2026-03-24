@@ -1,29 +1,34 @@
 /* ========================================
-   Variables de gradiente IA - compartidas por Modo estudio IA, Resultados búsqueda y Catálogo
+   Variables de gradiente IA - compartidas por Modo estudio IA, Chat IA grupos, Resultados búsqueda y Catálogo
+   Paleta alineada con ia-button Creator v3 (mismos RGB que components/ia-button.css).
    Para cambiar la paleta: edita solo las variables en :root abajo.
 
-   CÓMO VOLVER A LAS GRADACIONES AZULES (paleta original):
+   CÓMO VOLVER A LAS GRADACIONES AZULES (paleta anterior):
    1. En este archivo, en el bloque :root, poner:
       --modo-ia-gradient-a: rgb(0, 215, 255);
       --modo-ia-gradient-b: rgb(0, 152, 253);
       --modo-ia-gradient-c: rgb(0, 89, 250);
+      (quitar o ignorar --modo-ia-gradient-d si no existe en tu copia antigua)
+      y orbes: 26,107,255 / 76,230,255 / 255,84,22
    2. Guardar. No hace falta cambiar ningún otro archivo.
    (Pasos detallados: Changelog-Estudio-IA.md, sección "Cómo volver a las gradaciones azules")
    ======================================== */
 
 :root {
-    /* Gradación azul oficial (Modo estudio IA, catálogo, resultados búsqueda) */
-    --modo-ia-gradient-a: rgb(0, 215, 255);
-    --modo-ia-gradient-b: rgb(0, 152, 253);
-    --modo-ia-gradient-c: rgb(0, 89, 250);
+    /* Cuatro paradas = mismo orden que ia-button Creator v3 (N→M→V→A). Catálogo/búsqueda: suelen usar a,b,c,a. */
+    --modo-ia-gradient-a: rgb(255, 84, 22);
+    --modo-ia-gradient-b: rgb(234, 6, 111);
+    --modo-ia-gradient-c: rgb(136, 35, 234);
+    --modo-ia-gradient-d: rgb(12, 91, 239);
 
     /*
-     * Orbes de fondo (glow superior) — Figma: izq #1A6BFF, centro #4CE6FF, der #FF5416 (opacidad en CSS).
-     * Valores RGB para usar con rgba(var(--…), opacidad).
+     * ORBES OFICIALES IA (solo estos RGB; no duplicar en otros CSS con valores fijos).
+     * Usar siempre rgba(var(--modo-ia-glow-orb-rgb-n), opacidad). Independientes de --modo-ia-gradient-*.
+     * Izquierda #1A6BFF | Centro #4CE6FF | Derecha #FF5416
      */
-    --modo-ia-glow-orb-rgb-1: 26, 107, 255; /* #1A6BFF izquierda */
+    --modo-ia-glow-orb-rgb-1: 26, 107, 255; /* #1A6BFF izq */
     --modo-ia-glow-orb-rgb-2: 76, 230, 255; /* #4CE6FF centro */
-    --modo-ia-glow-orb-rgb-3: 255, 84, 22; /* #FF5416 derecha */
+    --modo-ia-glow-orb-rgb-3: 255, 84, 22; /* #FF5416 der */
 }
 
 @keyframes aprendizaje-ia-gradient-border {

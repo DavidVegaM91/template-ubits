@@ -58,8 +58,6 @@ function createGroupCreationChatHTML(options) {
         '<div class="ubits-study-chat__header-actions">' +
         '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="group-creation-chat-btn-historial-header" data-tooltip="Historial" data-tooltip-position="bottom" aria-label="Abrir historial de chats">' +
         '<i class="far fa-clock-rotate-left"></i></button>' +
-        '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="group-creation-chat-btn-nuevo-header" data-tooltip="Nuevo chat" data-tooltip-position="bottom" aria-label="Iniciar nuevo chat">' +
-        '<i class="far fa-comment-plus"></i></button>' +
         '</div></div>';
     return '<div class="ubits-study-chat ubits-study-chat--welcome" id="group-creation-chat">' +
         headerBar +
@@ -71,8 +69,8 @@ function createGroupCreationChatHTML(options) {
         '<textarea class="ubits-study-chat__input" id="group-creation-chat-input" placeholder="Escribir mensaje..." rows="1"></textarea>' +
         '</div>' +
         '<div class="ubits-study-chat__input-actions">' +
-        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ubits-study-chat__input-attach" id="group-creation-chat-attach-btn" data-tooltip="Adjuntar" aria-label="Adjuntar"><i class="far fa-paperclip"></i></button>' +
-        '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm ubits-button--icon-only ubits-study-chat__input-send" id="group-creation-chat-send-btn" data-tooltip="Enviar" aria-label="Enviar"><i class="far fa-paper-plane"></i></button>' +
+        '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-study-chat__input-attach" id="group-creation-chat-attach-btn" data-tooltip="Adjuntar" aria-label="Adjuntar"><i class="far fa-paperclip"></i></button>' +
+        '<button type="button" class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--sm ubits-ia-button--icon-only ubits-study-chat__input-send" id="group-creation-chat-send-btn" data-tooltip="Enviar" aria-label="Enviar"><i class="far fa-paper-plane"></i></button>' +
         '</div></div>' +
         '<div class="ubits-study-chat__suggestions" id="group-creation-chat-suggestions">' + suggestionButtons + '</div>' +
         '</div>' +
@@ -269,6 +267,8 @@ function initGroupCreationChat(containerId, options) {
         var items = hasCurrent ? [cur].concat(saved) : saved;
         var sortTime = function (c) { return c.lastInteractedAt || c.createdAt || 0; };
         items.sort(function (a, b) { return sortTime(b) - sortTime(a); });
+        var footerNuevoChat = document.getElementById('group-creation-historial-panel-nuevo-chat');
+        if (footerNuevoChat) footerNuevoChat.disabled = items.length === 0;
         if (items.length === 0) {
             if (typeof loadEmptyState === 'function') {
                 loadEmptyState('group-creation-historial-empty-state-container', {
@@ -473,11 +473,11 @@ function initGroupCreationChat(containerId, options) {
     var btnHistorialWelcome = document.getElementById('group-creation-chat-btn-historial');
     var btnNuevoWelcome = document.getElementById('group-creation-chat-btn-nuevo');
     var btnHistorialHeader = document.getElementById('group-creation-chat-btn-historial-header');
-    var btnNuevoHeader = document.getElementById('group-creation-chat-btn-nuevo-header');
     if (btnHistorialWelcome) btnHistorialWelcome.addEventListener('click', onVerHistorial);
     if (btnNuevoWelcome) btnNuevoWelcome.addEventListener('click', onNuevoChat);
     if (btnHistorialHeader) btnHistorialHeader.addEventListener('click', onVerHistorial);
-    if (btnNuevoHeader) btnNuevoHeader.addEventListener('click', onNuevoChat);
+    var btnHistorialNuevoChat = document.getElementById('group-creation-historial-panel-nuevo-chat');
+    if (btnHistorialNuevoChat) btnHistorialNuevoChat.addEventListener('click', onNuevoChat);
 
     if (typeof window.initTooltip === 'function') {
         window.initTooltip('#group-creation-chat [data-tooltip]');

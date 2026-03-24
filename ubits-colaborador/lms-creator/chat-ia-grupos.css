@@ -59,7 +59,7 @@ body.chat-ia-grupos-page[data-theme="dark"] .content-area {
 
 /* Burbujas de mensaje de usuario: mismo gradiente que modo-estudio-ia */
 .chat-ia-grupos-page .ubits-study-chat__text-globe--user {
-    background: linear-gradient(135deg, var(--modo-ia-gradient-a) 0%, var(--modo-ia-gradient-b) 50%, var(--modo-ia-gradient-c) 100%);
+    background: linear-gradient(135deg, var(--modo-ia-gradient-a) 0%, var(--modo-ia-gradient-b) 35.59%, var(--modo-ia-gradient-c) 67.19%, var(--modo-ia-gradient-d) 100%);
 }
 
 /* ========== Layout sección y contenedor (réplica de modo-tutor-ia-chat-section / modo-tutor-ia-chat-main) ========== */
@@ -89,7 +89,7 @@ body.chat-ia-grupos-page[data-theme="dark"] .content-area {
     overflow: hidden;
 }
 
-/* Capa bajo el contenido del chat (widget z-index 1); no tapar con fondos opacos en .widget-chat */
+/* Orbes de fondo (oficiales: aprendizaje-ia-gradientes.css --modo-ia-glow-orb-rgb-*; no hardcodear RGB). */
 .chat-ia-grupos-page .chat-ia-grupos-chat-main::before {
     content: '';
     position: absolute;
@@ -229,7 +229,7 @@ body[data-theme="dark"] .chat-ia-grupos-page .chat-ia-grupos-chat-main::before {
 }
 
 .chat-ia-grupos-page .ubits-study-chat--welcome .ubits-study-chat__welcome-icon i {
-    background: linear-gradient(135deg, var(--modo-ia-gradient-a) 0%, var(--modo-ia-gradient-b) 50%, var(--modo-ia-gradient-c) 100%);
+    background: linear-gradient(135deg, var(--modo-ia-gradient-a) 0%, var(--modo-ia-gradient-b) 35.59%, var(--modo-ia-gradient-c) 67.19%, var(--modo-ia-gradient-d) 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -242,18 +242,10 @@ body[data-theme="dark"] .chat-ia-grupos-page .chat-ia-grupos-chat-main::before {
 
 .chat-ia-grupos-page .ubits-study-chat--welcome .ubits-study-chat__welcome-prompt-accent {
     font-weight: var(--font-weight-semibold);
-    background: linear-gradient(90deg, var(--modo-ia-gradient-a), var(--modo-ia-gradient-b), var(--modo-ia-gradient-c), var(--modo-ia-gradient-a));
-    background-size: 300% 100%;
-    background-position: 0% 50%;
+    background: linear-gradient(90deg, var(--modo-ia-gradient-a), var(--modo-ia-gradient-b), var(--modo-ia-gradient-c), var(--modo-ia-gradient-d));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    animation: chat-ia-grupos-gradient-shift 5s ease-in-out infinite;
-}
-
-@keyframes chat-ia-grupos-gradient-shift {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
 }
 
 .chat-ia-grupos-page .ubits-study-chat--welcome .ubits-study-chat__input-area {
@@ -322,8 +314,8 @@ body[data-theme="dark"] .chat-ia-grupos-page .chat-ia-grupos-chat-main::before {
 .chat-ia-grupos-page .ubits-study-chat--welcome .ubits-study-chat__suggestions .ubits-button {
     border: 1px solid transparent;
     background: linear-gradient(var(--ubits-bg-1), var(--ubits-bg-1)) padding-box,
-        linear-gradient(90deg, var(--modo-ia-gradient-a), var(--modo-ia-gradient-b), var(--modo-ia-gradient-c), var(--modo-ia-gradient-a)) border-box;
-    background-size: 100% 100%, 300% 100%;
+        linear-gradient(90deg, var(--modo-ia-gradient-a), var(--modo-ia-gradient-b), var(--modo-ia-gradient-c), var(--modo-ia-gradient-d), var(--modo-ia-gradient-a)) border-box;
+    background-size: 100% 100%, 400% 100%;
     background-position: 0 0, 0% 50%;
     background-origin: padding-box, border-box;
     background-clip: padding-box, border-box;
@@ -526,6 +518,19 @@ body[data-theme="dark"] .chat-ia-grupos-page .chat-ia-grupos-chat-main::before {
     flex: 1;
     min-width: 0;
     min-height: 0;
+}
+
+.chat-ia-grupos-chat-section .modo-estudio-ia-historial-panel__footer {
+    flex-shrink: 0;
+    align-self: stretch;
+    box-sizing: border-box;
+    padding: var(--padding-md) var(--padding-sm) var(--padding-lg);
+    border-top: 1px solid var(--ubits-border-1);
+}
+
+.chat-ia-grupos-chat-section .modo-estudio-ia-historial-panel__footer .ubits-ia-button {
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* Ítems del historial (mismo diseño que modo-estudio-ia, clases propias del chat de grupos) */

@@ -2137,7 +2137,7 @@ function commitChatHeaderTitle() {
 
 /**
  * Indica si ya existen conversaciones (chat actual con mensajes de usuario o chats guardados).
- * Usado por Modo estudio IA para mostrar/ocultar botones "Nuevo chat" e "Historial".
+ * Usado por Modo estudio IA para mostrar/ocultar botón "Historial" en el encabezado (Nuevo chat vive en el footer del panel de historial).
  */
 function hasAnyConversations() {
     var cur = chatState.currentChat;
@@ -2147,7 +2147,7 @@ function hasAnyConversations() {
 }
 
 /**
- * Notifica a la página (Modo estudio IA) que actualice la visibilidad de la barra de acciones (Nuevo chat / Historial).
+ * Notifica a la página (Modo estudio IA) que actualice la visibilidad de la barra de acciones (Historial en encabezado).
  */
 function notifyModoEstudioIaActionsVisibility() {
     if (typeof window.updateModoEstudioIaActionsVisibility === 'function') window.updateModoEstudioIaActionsVisibility();
@@ -2499,6 +2499,8 @@ function renderHistorialList() {
     var items = hasCurrent ? [cur].concat(saved) : saved;
     var sortTime = function (c) { return c.lastInteractedAt || c.createdAt || 0; };
     items.sort(function (a, b) { return sortTime(b) - sortTime(a); });
+    var footerNuevoChat = document.getElementById('historial-panel-nuevo-chat');
+    if (footerNuevoChat) footerNuevoChat.disabled = items.length === 0;
     if (items.length === 0) {
         if (typeof loadEmptyState === 'function') {
             loadEmptyState('historial-empty-state-container', {
@@ -2629,9 +2631,6 @@ function createStudyChatHTML(options = {}) {
                     <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="btn-historial" data-tooltip="Historial" data-tooltip-position="bottom" aria-label="Abrir historial de chats">
                         <i class="far fa-clock-rotate-left"></i>
                     </button>
-                    <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="btn-nuevo-chat" data-tooltip="Nuevo chat" data-tooltip-position="bottom" aria-label="Iniciar nuevo chat">
-                        <i class="far fa-comment-plus"></i>
-                        </button>
                     </div>
                 </div>
             ${welcomeTopBar}
@@ -2642,8 +2641,8 @@ function createStudyChatHTML(options = {}) {
                         <textarea class="ubits-study-chat__input" id="ubits-study-chat-input" placeholder="Escribir mensaje..." rows="1"></textarea>
                     </div>
                     <div class="ubits-study-chat__input-actions">
-                        <button class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ubits-study-chat__input-attach" id="ubits-study-chat-attach-btn" data-tooltip="Adjuntar"><i class="far fa-paperclip"></i></button>
-                        <button class="ubits-button ubits-button--primary ubits-button--sm ubits-button--icon-only ubits-study-chat__input-send" id="ubits-study-chat-send-btn" data-tooltip="Enviar"><i class="far fa-paper-plane"></i></button>
+                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-study-chat__input-attach" id="ubits-study-chat-attach-btn" data-tooltip="Adjuntar" aria-label="Adjuntar"><i class="far fa-paperclip"></i></button>
+                        <button type="button" class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--sm ubits-ia-button--icon-only ubits-study-chat__input-send" id="ubits-study-chat-send-btn" data-tooltip="Enviar" aria-label="Enviar"><i class="far fa-paper-plane"></i></button>
                     </div>
                 </div>
                 <div class="ubits-study-chat__suggestions" id="ubits-study-chat-suggestions">${suggestionButtons}</div>

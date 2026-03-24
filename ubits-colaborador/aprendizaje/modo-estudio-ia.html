@@ -61,7 +61,7 @@
                     <div class="section-single modo-tutor-ia-chat-section">
                         <!-- Panel historial (izquierda): siempre visible -->
                         <div class="modo-estudio-ia-historial-panel is-open" id="historial-panel"
-                            aria-label="Historial de chats">
+                            aria-label="Mis chats">
                             <div class="modo-estudio-ia-historial-panel__header">
                                 <div class="modo-estudio-ia-historial-panel__header-start">
                                     <button type="button"
@@ -70,12 +70,12 @@
                                         aria-label="Volver a la página anterior">
                                         <i class="far fa-arrow-left"></i>
                                     </button>
-                                    <span class="ubits-body-md-bold">Historial</span>
+                                    <span class="ubits-body-md-bold">Mis chats</span>
                                 </div>
                                 <button type="button"
                                     class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only"
                                     id="historial-panel-close" data-tooltip="Cerrar" data-tooltip-delay="1000"
-                                    aria-label="Cerrar panel historial">
+                                    aria-label="Cerrar panel Mis chats">
                                     <i class="far fa-times"></i>
                                 </button>
                             </div>
@@ -84,6 +84,16 @@
                                 <div id="historial-empty" class="modo-estudio-ia-historial-panel__empty">
                                     <div id="historial-empty-state-container"></div>
                                 </div>
+                            </div>
+                            <div class="modo-estudio-ia-historial-panel__footer">
+                                <button type="button"
+                                    class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--md"
+                                    id="historial-panel-nuevo-chat"
+                                    disabled
+                                    aria-label="Iniciar nuevo chat">
+                                    <i class="far fa-plus"></i>
+                                    <span>Nuevo chat</span>
+                                </button>
                             </div>
                         </div>
                         <div class="modo-tutor-ia-chat-main">
@@ -204,7 +214,7 @@
                 });
             }
 
-            // Los botones Historial y Nuevo chat están en el encabezado del chat (dentro del componente)
+            // Historial en encabezado; Nuevo chat en el footer del panel de historial (study-chat.js)
             window.updateModoEstudioIaActionsVisibility = function () { };
 
             // Inicializar chat de tutor (empty state con nombre + competencias, panel derecho)
@@ -275,10 +285,10 @@
             }
             window.openHistorialPanel = openHistorialPanel;
             var btnHistorial = document.getElementById('btn-historial');
-            var btnNuevoChat = document.getElementById('btn-nuevo-chat');
             var btnHistorialWelcome = document.getElementById('btn-historial-welcome');
             if (btnHistorial) btnHistorial.addEventListener('click', function () { if (typeof openHistorialPanel === 'function') openHistorialPanel(); });
-            if (btnNuevoChat) btnNuevoChat.addEventListener('click', function () { if (typeof startNewChat === 'function') startNewChat(); });
+            var btnHistorialNuevoChat = document.getElementById('historial-panel-nuevo-chat');
+            if (btnHistorialNuevoChat) btnHistorialNuevoChat.addEventListener('click', function () { if (typeof startNewChat === 'function') startNewChat(); });
             if (btnHistorialWelcome) btnHistorialWelcome.addEventListener('click', function () { if (typeof openHistorialPanel === 'function') openHistorialPanel(); });
 
             // Listeners modal eliminar chat
