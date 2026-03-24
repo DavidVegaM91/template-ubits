@@ -1,0 +1,1372 @@
+/* =============================================================================
+   modo-estudio-ia-tutor-panel.css — Panel lateral del tutor (Modo estudio IA)
+   =============================================================================
+   Solo para la experiencia que usa study-chat.js: quiz, flashcards, canvas,
+   plan de aprendizaje, podcast, etc. Chat IA grupos y otras vistas no cargan este
+   archivo; el shell compartido es ubits-ia-chat.css.
+   Cargar DESPUÉS de ../../general-styles/ubits-ia-chat.css
+   ============================================================================= */
+
+@keyframes ubits-ia-chat-side-panel-open {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Desktop: reparto cuando hay panel lateral abierto */
+@media (min-width: 1024px) {
+    .ubits-ia-chat:not(:has(.ubits-ia-chat__side.is-open)) .ubits-ia-chat__main {
+        flex: 1 1 0;
+        min-width: 0;
+        max-width: none;
+    }
+
+    .ubits-ia-chat:has(.ubits-ia-chat__side.is-open) .ubits-ia-chat-historial {
+        flex: 0 1 25%;
+        min-width: 0;
+        max-width: none;
+        width: auto;
+    }
+
+    .ubits-ia-chat:has(.ubits-ia-chat__side.is-open) .ubits-ia-chat__main {
+        flex: 0 1 25%;
+        min-width: 0;
+        max-width: none;
+        width: auto;
+    }
+
+    .ubits-ia-chat:has(.ubits-ia-chat__side.is-open) > .ubits-ia-chat__side.is-open {
+        flex: 0 1 50%;
+        min-width: 0;
+        max-width: none;
+        width: auto;
+    }
+}
+
+/* ---------------------------------------------------------------------------
+   Panel lateral (canvas / detalle / cualquier contenido complementario)
+   Estructura interna esperada: ubits-ia-chat-side__* (inyectado desde study-chat.js)
+   --------------------------------------------------------------------------- */
+.ubits-ia-chat > .ubits-ia-chat__side {
+    display: none !important;
+    flex-shrink: 0;
+}
+
+.ubits-ia-chat > .ubits-ia-chat__side.is-open {
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 1 0;
+    min-width: 0;
+    width: auto;
+    padding: var(--padding-none) !important;
+    overflow: hidden;
+    min-height: 0;
+    background: var(--ubits-bg-1) !important;
+    border: none;
+    border-radius: var(--border-radius-lg);
+    animation: ubits-ia-chat-side-panel-open 0.2s ease;
+}
+
+.ubits-ia-chat__side.is-open .ubits-ia-chat-side__content {
+    flex: 1 1 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.ubits-ia-chat__side.is-open .ubits-ia-chat-side__body {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.ubits-ia-chat__side.is-open .ubits-ia-chat-side__footer {
+    flex-shrink: 0;
+}
+
+.ubits-ia-chat > .ubits-ia-chat__side.is-open .ubits-ia-chat-side__placeholder {
+    display: flex;
+}
+
+.ubits-ia-chat > .ubits-ia-chat__side.has-content .ubits-ia-chat-side__placeholder {
+    display: none;
+}
+
+.ubits-ia-chat__side.is-open .ubits-ia-chat-side__body {
+    z-index: 0;
+    position: relative;
+}
+
+.ubits-ia-chat-side__placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap-md);
+    min-height: 200px;
+    text-align: center;
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-ia-chat-side__placeholder i {
+    font-size: var(--font-size-d3);
+    color: var(--ubits-fg-1-low);
+}
+
+@media (max-width: 1023px) {
+    .ubits-ia-chat > .ubits-ia-chat__side.is-open {
+        position: fixed;
+        inset: 0;
+        z-index: 1002;
+        width: 100%;
+        height: 100%;
+        max-height: none;
+        min-height: 0;
+        border-radius: 0;
+        box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.15);
+        animation: ubits-ia-chat-side-panel-open 0.2s ease;
+    }
+
+    [data-theme="dark"] .ubits-ia-chat > .ubits-ia-chat__side.is-open {
+        box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.4);
+    }
+}
+
+/* Ocultar tab bar cuando el panel lateral modal está abierto (requiere clase en body) */
+body.ia-chat-side-panel-open #tab-bar-container {
+    display: none !important;
+}
+
+/* ---------------------------------------------------------------------------
+   Panel lateral (quiz, flashcards, guía, etc.)
+   --------------------------------------------------------------------------- */
+/* ========== Panel derecho (Canvas): Quiz, Flashcards, Guía ========== */
+.ubits-ia-chat-side__content {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+/* Header, body y footer del panel (mismos estilos que componente modal UBITS) */
+.ubits-ia-chat-side__header {
+    padding: var(--padding-sm) var(--padding-xl);
+    border-bottom: 1px solid var(--ubits-border-1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ubits-ia-chat-side__header .ubits-body-md-bold {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-ia-chat-side__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    padding: var(--padding-xl);
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
+}
+
+/* ========== Canvas: pantalla de generación (usa componente ubits-loader) ========== */
+.ubits-ia-chat-side__body--generating {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap-lg);
+    min-height: 200px;
+}
+
+/* Revelado secuencial del contenido tras el loader: de arriba a abajo, ≤1s total */
+.ubits-ia-chat-side__content--reveal-stagger .ubits-ia-chat-side__header,
+.ubits-ia-chat-side__content--reveal-stagger .ubits-ia-chat-side__body>*,
+.ubits-ia-chat-side__content--reveal-stagger .ubits-ia-chat-side__footer {
+    opacity: 0;
+    animation: ubits-ia-chat-side-stagger-reveal 0.2s ease-out forwards;
+}
+
+.ubits-ia-chat-side__content--reveal-stagger .ubits-ia-chat-side__header {
+    animation-delay: 0s;
+}
+
+.ubits-ia-chat-side__content--reveal-stagger .ubits-ia-chat-side__body>*:nth-child(1) {
+    animation-delay: 0.06s;
+}
+
+.ubits-ia-chat-side__content--reveal-stagger .ubits-ia-chat-side__body>*:nth-child(2) {
+    animation-delay: 0.12s;
+}
+
+.ubits-ia-chat-side__content--reveal-stagger .ubits-ia-chat-side__body>*:nth-child(3) {
+    animation-delay: 0.18s;
+}
+
+.ubits-ia-chat-side__content--reveal-stagger .ubits-ia-chat-side__body>*:nth-child(4) {
+    animation-delay: 0.24s;
+}
+
+.ubits-ia-chat-side__content--reveal-stagger .ubits-ia-chat-side__body>*:nth-child(5) {
+    animation-delay: 0.30s;
+}
+
+.ubits-ia-chat-side__content--reveal-stagger .ubits-ia-chat-side__body>*:nth-child(6) {
+    animation-delay: 0.36s;
+}
+
+.ubits-ia-chat-side__content--reveal-stagger .ubits-ia-chat-side__body>*:nth-child(7) {
+    animation-delay: 0.42s;
+}
+
+.ubits-ia-chat-side__content--reveal-stagger .ubits-ia-chat-side__body>*:nth-child(8) {
+    animation-delay: 0.48s;
+}
+
+.ubits-ia-chat-side__content--reveal-stagger .ubits-ia-chat-side__body>*:nth-child(9) {
+    animation-delay: 0.54s;
+}
+
+.ubits-ia-chat-side__content--reveal-stagger .ubits-ia-chat-side__body>*:nth-child(10) {
+    animation-delay: 0.60s;
+}
+
+.ubits-ia-chat-side__content--reveal-stagger .ubits-ia-chat-side__body>*:nth-child(11) {
+    animation-delay: 0.66s;
+}
+
+.ubits-ia-chat-side__content--reveal-stagger .ubits-ia-chat-side__body>*:nth-child(12) {
+    animation-delay: 0.72s;
+}
+
+.ubits-ia-chat-side__content--reveal-stagger .ubits-ia-chat-side__body>*:nth-child(13) {
+    animation-delay: 0.78s;
+}
+
+.ubits-ia-chat-side__content--reveal-stagger .ubits-ia-chat-side__footer {
+    animation-delay: 0.78s;
+    /* cierra la secuencia en ≤1s (0.78 + 0.2 = 0.98s) */
+}
+
+@keyframes ubits-ia-chat-side-stagger-reveal {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.ubits-ia-chat-side__footer {
+    padding: var(--padding-lg) var(--padding-xl);
+    border-top: 1px solid var(--ubits-border-1);
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--gap-md);
+}
+
+/* Quiz resultados: el bloque de botones ocupa todo el ancho para Resetear izquierda y los otros derecha */
+.ubits-ia-chat-side__footer .ubits-ia-chat-side__quiz-actions:has(.ubits-ia-chat-side__quiz-result-actions) {
+    width: 100%;
+}
+
+/* ========== Canvas Podcast: reproductor + botón Ver transcripción + zona scrolleable ========== */
+.ubits-ia-chat-side__podcast .ubits-ia-chat-side__body {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.ubits-ia-chat-side__podcast-player {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    flex-shrink: 0;
+}
+
+.ubits-ia-chat-side__podcast-title {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-ia-chat-side__podcast-audio {
+    width: 100%;
+    height: 40px;
+}
+
+.ubits-ia-chat-side__podcast-transcription-btn {
+    flex-shrink: 0;
+}
+
+.ubits-ia-chat-side__podcast-transcription {
+    display: none;
+    flex: 1 1 0;
+    min-height: 0;
+    overflow: hidden;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    background: var(--ubits-bg-2);
+}
+
+.ubits-ia-chat-side__podcast-transcription.is-open {
+    display: flex;
+    flex-direction: column;
+    min-height: 240px;
+}
+
+.ubits-ia-chat-side__podcast-transcription-inner {
+    overflow-y: auto;
+    padding: var(--padding-lg);
+    white-space: pre-wrap;
+    color: var(--ubits-fg-1-medium);
+    flex: 1 1 0;
+    min-height: 0;
+}
+
+.ubits-ia-chat-side__podcast-seguir-title {
+    margin: 0;
+}
+
+.ubits-ia-chat-side__podcast-seguir {
+    margin: 0;
+}
+
+.ubits-ia-chat-side__quiz-questions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+}
+
+.ubits-ia-chat-side__quiz .ubits-ia-chat-side__quiz-q {
+    margin: 0;
+}
+
+.ubits-ia-chat-side__quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    margin-top: 8px;
+}
+
+/* Opciones tipo Gemini: sin borde, relleno bg-2, hover bg-3; feedback dentro de cada opción */
+.ubits-ia-chat-side__quiz-opt {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--gap-sm);
+    cursor: pointer;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    line-height: 20px;
+    color: var(--ubits-fg-1-medium);
+    padding: var(--padding-sm) var(--padding-md);
+    border-radius: var(--border-radius-sm);
+    border: none;
+    background: var(--ubits-bg-2);
+    transition: background-color 0.2s ease;
+}
+
+.ubits-ia-chat-side__quiz-opt:hover {
+    background: var(--ubits-bg-3);
+}
+
+.ubits-ia-chat-side__quiz-opt-row {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+    min-width: 0;
+}
+
+/* Cuando la fila usa el componente UBITS Radio Button */
+.ubits-ia-chat-side__quiz-opt-row.ubits-radio {
+    display: inline-flex;
+    align-items: center;
+    width: 100%;
+    min-width: 0;
+}
+
+.ubits-ia-chat-side__quiz-opt--correct {
+    background: var(--ubits-feedback-bg-success-subtle) !important;
+    border: none !important;
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-ia-chat-side__quiz-opt--wrong {
+    background: var(--ubits-feedback-bg-error-subtle) !important;
+    border: none !important;
+    color: var(--ubits-fg-1-high);
+}
+
+/* Feedback inline dentro de la opción (icono + texto + explicación) */
+.ubits-ia-chat-side__quiz-opt-inline-feedback {
+    margin-top: 2px;
+    padding-top: var(--gap-xs);
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+}
+
+.ubits-ia-chat-side__quiz-opt-inline-feedback-status {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-xs);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+}
+
+.ubits-ia-chat-side__quiz-opt-inline-feedback--correct .ubits-ia-chat-side__quiz-opt-inline-feedback-status {
+    color: var(--ubits-feedback-accent-success);
+}
+
+.ubits-ia-chat-side__quiz-opt-inline-feedback--correct .ubits-ia-chat-side__quiz-opt-inline-feedback-status i {
+    color: var(--ubits-feedback-accent-success);
+}
+
+.ubits-ia-chat-side__quiz-opt-inline-feedback--wrong .ubits-ia-chat-side__quiz-opt-inline-feedback-status {
+    color: var(--ubits-feedback-accent-error);
+}
+
+.ubits-ia-chat-side__quiz-opt-inline-feedback--wrong .ubits-ia-chat-side__quiz-opt-inline-feedback-status i {
+    color: var(--ubits-feedback-accent-error);
+}
+
+.ubits-ia-chat-side__quiz-opt-inline-feedback-explanation {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    line-height: 20px;
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-ia-chat-side__quiz-opt-letter {
+    flex-shrink: 0;
+    font-weight: var(--font-weight-semibold);
+    color: var(--ubits-fg-1-high);
+    min-width: 1.25em;
+}
+
+.ubits-ia-chat-side__quiz-opt input:disabled,
+.ubits-ia-chat-side__quiz-opt .ubits-radio__input:disabled {
+    cursor: default;
+}
+
+.ubits-ia-chat-side__quiz-opt--correct .ubits-ia-chat-side__quiz-opt-text,
+.ubits-ia-chat-side__quiz-opt--wrong .ubits-ia-chat-side__quiz-opt-text {
+    font-weight: var(--font-weight-regular);
+}
+
+.ubits-ia-chat-side__quiz-feedback {
+    margin-top: 12px;
+    padding: var(--padding-md) var(--padding-md);
+    border-radius: var(--border-radius-sm);
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    line-height: 20px;
+    color: var(--ubits-fg-1-medium);
+    background: var(--ubits-bg-2);
+    border: 1px solid var(--ubits-border-1);
+}
+
+.ubits-ia-chat-side__quiz-feedback strong {
+    font-weight: var(--font-weight-regular);
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-ia-chat-side__quiz-feedback-icon {
+    color: var(--ubits-feedback-accent-success);
+    margin-right: 4px;
+}
+
+.ubits-ia-chat-side__quiz-feedback-icon--wrong {
+    color: var(--ubits-feedback-accent-error);
+}
+
+.ubits-ia-chat-side__quiz-opt input,
+.ubits-ia-chat-side__quiz-opt .ubits-radio__input {
+    margin: 0;
+    accent-color: var(--ubits-accent-brand);
+}
+
+/* Barra de progreso del quiz (entre título y pregunta): barras | X/X | acertadas y erradas */
+.ubits-ia-chat-side__quiz-progress {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+    flex-wrap: nowrap;
+    min-width: 0;
+}
+
+/* Contenedor de barras (1–19 preguntas): aprovecha todo el ancho disponible */
+.ubits-ia-chat-side__quiz-progress-bars {
+    display: flex;
+    gap: var(--gap-xs);
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+}
+
+.ubits-ia-chat-side__quiz-progress-bar {
+    flex: 1;
+    min-width: 4px;
+    height: 6px;
+    border-radius: var(--border-radius-xs);
+    background: var(--ubits-bg-2);
+    transition: background 0.2s;
+}
+
+.ubits-ia-chat-side__quiz-progress-bar--filled {
+    background: var(--ubits-accent-brand);
+}
+
+/* Slider de progreso (20+ preguntas): una barra con puntito que marca el avance */
+.ubits-ia-chat-side__quiz-progress-slider {
+    flex: 1;
+    min-width: 0;
+}
+
+.ubits-ia-chat-side__quiz-progress-track {
+    position: relative;
+    width: 100%;
+    height: 8px;
+    border-radius: var(--border-radius-xs);
+    background: var(--ubits-bg-2);
+}
+
+.ubits-ia-chat-side__quiz-progress-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    border-radius: var(--border-radius-xs);
+    background: var(--ubits-accent-brand);
+    transition: width 0.2s ease;
+}
+
+.ubits-ia-chat-side__quiz-progress-thumb {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 14px;
+    height: 14px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: var(--ubits-accent-brand);
+    border: 2px solid var(--ubits-bg-1);
+    transition: left 0.2s ease;
+    pointer-events: none;
+}
+
+.ubits-ia-chat-side__quiz-progress-text {
+    flex-shrink: 0;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-ia-chat-side__quiz-progress-stats {
+    flex-shrink: 0;
+    display: flex;
+    gap: var(--gap-md);
+}
+
+.ubits-ia-chat-side__quiz-progress-stat-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    padding: var(--padding-xs) var(--padding-md);
+    border-radius: var(--border-radius-sm);
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+}
+
+.ubits-ia-chat-side__quiz-progress-stat-pill i {
+    font-size: var(--font-size-sm);
+}
+
+.ubits-ia-chat-side__quiz-progress-wrong {
+    color: var(--ubits-feedback-accent-error);
+    background: var(--ubits-feedback-bg-error-subtle);
+    border: none;
+}
+
+.ubits-ia-chat-side__quiz-progress-correct {
+    color: var(--ubits-feedback-accent-success);
+    background: var(--ubits-feedback-bg-success-subtle);
+    border: none;
+}
+
+.ubits-ia-chat-side__quiz-actions {
+    display: flex;
+    gap: var(--gap-md);
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.ubits-ia-chat-side__footer .ubits-ia-chat-side__quiz-actions {
+    margin-top: 0;
+}
+
+.ubits-ia-chat-side__quiz-actions #ubits-ia-chat-side__quiz-back {
+    margin-right: auto;
+}
+
+.ubits-ia-chat-side__quiz-result {
+    margin-top: 0;
+    padding: var(--padding-none);
+    background: transparent;
+    border: none;
+}
+
+/* Pantalla de resultados del quiz. Referencia: diseño tipo Gemini; bordes neutros (ubits-border-1). */
+.ubits-ia-chat-side__quiz-result-screen {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    padding: var(--padding-sm) 0;
+}
+
+.ubits-ia-chat-side__quiz-result-title {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-h2);
+    font-weight: var(--font-weight-regular);
+    line-height: 28px;
+    color: var(--ubits-fg-1-high);
+    margin: 0;
+}
+
+.ubits-ia-chat-side__quiz-result-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-md);
+}
+
+.ubits-ia-chat-side__quiz-result-card {
+    flex: 1;
+    min-width: 100px;
+    padding: var(--padding-lg) var(--padding-lg);
+    background: var(--ubits-bg-2);
+    border: none;
+    border-radius: var(--border-radius-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+}
+
+.ubits-ia-chat-side__quiz-result-card--breakdown {
+    min-width: 120px;
+}
+
+.ubits-ia-chat-side__quiz-result-card-label {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-ia-chat-side__quiz-result-card-value {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-h1);
+    font-weight: var(--font-weight-regular);
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-ia-chat-side__quiz-result-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    margin-top: 4px;
+}
+
+.ubits-ia-chat-side__quiz-result-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-ia-chat-side__quiz-result-row span:last-child {
+    font-weight: var(--font-weight-regular);
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-ia-chat-side__quiz-result-section-title {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-regular);
+    color: var(--ubits-fg-1-high);
+    margin: 0;
+}
+
+.ubits-ia-chat-side__quiz-result-learn {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+}
+
+.ubits-ia-chat-side__quiz-result-option {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--gap-sm);
+    padding: var(--padding-lg) var(--padding-lg);
+    background: var(--ubits-bg-2);
+    border: none;
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.2s;
+}
+
+.ubits-ia-chat-side__quiz-result-option:hover {
+    background: var(--ubits-bg-3);
+}
+
+/* Iconos "Seguir aprendiendo": fondo azul (accent), icono blanco; tokens oficiales, válido en light y dark */
+.ubits-ia-chat-side__quiz-result-option-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--border-radius-sm);
+    background: var(--ubits-accent-brand);
+    color: var(--ubits-fg-bold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-md);
+}
+
+.ubits-ia-chat-side__quiz-result-option-title {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-ia-chat-side__quiz-result-option-desc {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    line-height: 18px;
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-ia-chat-side__quiz-result-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: var(--gap-sm);
+}
+
+/* Revisar y Más preguntas pegados al extremo derecho; Resetear al extremo izquierdo */
+.ubits-ia-chat-side__quiz-result-actions-right {
+    display: flex;
+    gap: var(--gap-sm);
+    align-items: center;
+    margin-left: auto;
+}
+
+/* Cuando los botones de cierre van en el footer del panel: acciones a ancho completo */
+.ubits-ia-chat-side__quiz-actions .ubits-ia-chat-side__quiz-result-actions,
+.ubits-ia-chat-side__fc-actions .ubits-ia-chat-side__quiz-result-actions {
+    width: 100%;
+    min-width: 100%;
+}
+
+.ubits-ia-chat-side__quiz-actions:has(.ubits-ia-chat-side__quiz-result-actions) {
+    width: 100%;
+}
+
+/* Flashcards: contenedor principal (gap entre progreso, tarjeta e hint) */
+.ubits-ia-chat-side__fc-main {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+}
+
+/* Flashcards: barra de progreso (misma fórmula que quiz: progreso ocupa todo el ancho) */
+.ubits-ia-chat-side__fc-progress {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+    flex-wrap: nowrap;
+    min-width: 0;
+}
+
+.ubits-ia-chat-side__fc-progress-bars {
+    display: flex;
+    gap: var(--gap-xs);
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+}
+
+.ubits-ia-chat-side__fc-progress-bar {
+    flex: 1;
+    min-width: 4px;
+    height: 6px;
+    border-radius: var(--border-radius-xs);
+    background: var(--ubits-bg-2);
+    transition: background 0.2s;
+}
+
+.ubits-ia-chat-side__fc-progress-bar--filled {
+    background: var(--ubits-accent-brand);
+}
+
+.ubits-ia-chat-side__fc-progress-text {
+    flex-shrink: 0;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    color: var(--ubits-fg-1-high);
+}
+
+/* Flashcards: tarjeta con volteo al clic (estilo Gemini) */
+.ubits-ia-chat-side__fc-card {
+    position: relative;
+    min-height: 140px;
+    cursor: pointer;
+    perspective: 1000px;
+    outline: none;
+}
+
+.ubits-ia-chat-side__fc-card:focus-visible {
+    box-shadow: 0 0 0 2px var(--ubits-accent-brand);
+    border-radius: var(--border-radius-md);
+}
+
+.ubits-ia-chat-side__fc-card-inner {
+    position: relative;
+    width: 100%;
+    min-height: 140px;
+    transform-style: preserve-3d;
+    transition: transform 0.4s ease;
+}
+
+.ubits-ia-chat-side__fc-card--flipped .ubits-ia-chat-side__fc-card-inner {
+    transform: rotateY(180deg);
+}
+
+.ubits-ia-chat-side__fc-face {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--padding-xl);
+    border-radius: var(--border-radius-md);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+/* Cara frontal (estado default): bg-2, sin borde */
+.ubits-ia-chat-side__fc-front {
+    transform: rotateY(0deg);
+    background: var(--ubits-bg-2);
+    border: none;
+}
+
+/* Cara trasera (al voltear): bg-1, con borde */
+.ubits-ia-chat-side__fc-back {
+    transform: rotateY(180deg);
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+}
+
+.ubits-ia-chat-side__fc-face p {
+    margin: 0;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    line-height: 20px;
+    color: var(--ubits-fg-1-high);
+    text-align: center;
+}
+
+.ubits-ia-chat-side__fc-hint {
+    margin: 0;
+    color: var(--ubits-fg-2-medium);
+    text-align: center;
+}
+
+.ubits-ia-chat-side__fc-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    gap: var(--gap-md);
+}
+
+.ubits-ia-chat-side__fc-actions #ubits-ia-chat-side__fc-shuffle {
+    margin-right: auto;
+}
+
+.ubits-ia-chat-side__fc-actions .ubits-button {
+    flex-shrink: 0;
+}
+
+/* Header del panel (título + cerrar) */
+/* Títulos del panel: ubits-ia-chat-side__header + ubits-heading-h2 */
+
+.ubits-ia-chat-side__courses-container,
+.ubits-ia-chat-side__plan .ubits-ia-chat-thread__courses-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+}
+
+.ubits-ia-chat-side__plan .ubits-ia-chat-thread__plan-title {
+    margin: 0;
+}
+
+.ubits-ia-chat-side__plan .ubits-ia-chat-thread__plan-details {
+    margin: 0;
+}
+
+/* Guía de estudio */
+.ubits-ia-chat-side__guide-list {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.ubits-ia-chat-side__guide-list li {
+    margin-bottom: 8px;
+}
+
+/* Plan de estudio (propuesta: nombre, fechas, prioridad, tareas) */
+.ubits-ia-chat-side__learning-plan .ubits-ia-chat-thread__learning-plan-title {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+    color: var(--ubits-fg-1-high);
+    margin: 0;
+}
+
+.ubits-ia-chat-thread__learning-plan-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-md) var(--gap-xl);
+    margin: 0;
+}
+
+.ubits-ia-chat-thread__learning-plan-detail-item {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-ia-chat-thread__learning-plan-detail-item strong {
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-ia-chat-thread__learning-plan-tasks-label {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-ia-chat-thread__learning-plan-tasks {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.ubits-ia-chat-thread__learning-plan-task {
+    margin: 0 0 8px 0;
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-ia-chat-thread__learning-plan-task:last-child {
+    margin-bottom: 0;
+}
+
+.ubits-ia-chat-thread__learning-plan-task-num {
+    color: var(--ubits-fg-1-high);
+    margin-right: 4px;
+}
+
+/* Plan de estudio editable: filas, prioridad, fechas, cards de tareas (gap en body) */
+.ubits-ia-chat-side__learning-plan-editable .ubits-ia-chat-thread__learning-plan-edit-row {
+    margin: 0;
+}
+
+/* Prioridad y Fin en una sola línea */
+.ubits-ia-chat-thread__learning-plan-edit-row--dual {
+    display: flex;
+    gap: var(--gap-lg);
+    flex-wrap: wrap;
+}
+
+.ubits-ia-chat-thread__learning-plan-edit-row--dual .ubits-ia-chat-thread__learning-plan-edit-field {
+    flex: 1;
+    min-width: 120px;
+}
+
+.ubits-ia-chat-side__plan-edit-label {
+    display: block;
+    color: var(--ubits-fg-1-medium);
+    margin-bottom: 4px;
+}
+
+/* Contenedores de inputs UBITS (createInput) - tamaño sm; sin fondo para que solo el .ubits-input muestre disabled */
+.ubits-ia-chat-side__learning-plan-editable #ubits-ia-chat-side__plan-input-title,
+.ubits-ia-chat-side__learning-plan-editable #ubits-ia-chat-side__plan-input-priority,
+.ubits-ia-chat-side__learning-plan-editable #ubits-ia-chat-side__plan-input-date-fin {
+    width: 100%;
+    background: transparent;
+}
+
+.ubits-ia-chat-side__learning-plan-editable #ubits-ia-chat-side__plan-input-title>div,
+.ubits-ia-chat-side__learning-plan-editable #ubits-ia-chat-side__plan-input-priority>div,
+.ubits-ia-chat-side__learning-plan-editable #ubits-ia-chat-side__plan-input-date-fin>div {
+    background: transparent;
+}
+
+/* Título editable inline en tareas del plan */
+.ubits-ia-chat-side__plan-task-card-title.ubits-ia-chat-side__plan-task-title-editable {
+    cursor: text;
+}
+
+.ubits-ia-chat-side__plan-task-title-input {
+    width: 100%;
+    min-width: 0;
+    padding: var(--padding-xs) var(--padding-sm);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    background: var(--ubits-bg-1);
+    color: var(--ubits-fg-1-high);
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    line-height: 20px;
+    box-sizing: border-box;
+}
+
+.ubits-ia-chat-side__plan-task-title-input:focus {
+    outline: none;
+    border-color: var(--ubits-border-1);
+    box-shadow: none;
+}
+
+/* Prioridad: menú desplegable con iconos en cada opción (como seguimiento) */
+.ubits-ia-chat-side__plan-priority-dropdown-wrap {
+    position: relative;
+    display: inline-block;
+}
+
+.ubits-ia-chat-side__plan-priority-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.ubits-ia-chat-side__plan-priority-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 4px;
+    min-width: 160px;
+    padding: var(--padding-xs) 0;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.ubits-ia-chat-side__plan-priority-option {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+    width: 100%;
+    padding: var(--padding-sm) var(--padding-md);
+    border: none;
+    background: transparent;
+    color: var(--ubits-fg-1-high);
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.15s;
+}
+
+.ubits-ia-chat-side__plan-priority-option:hover {
+    background: var(--ubits-bg-2);
+}
+
+.ubits-ia-chat-side__plan-priority-option i {
+    font-size: var(--font-size-sm);
+    flex-shrink: 0;
+}
+
+.ubits-ia-chat-thread__learning-plan-tasks-cards {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+}
+
+.ubits-ia-chat-side__plan-add-task-wrap {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 12px;
+}
+
+.ubits-ia-chat-side__plan-add-task-wrap .ubits-button {
+    flex-shrink: 0;
+}
+
+.ubits-ia-chat-side__plan-task-card {
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    background: var(--ubits-bg-2);
+    overflow: hidden;
+}
+
+.ubits-ia-chat-side__plan-task-card-inner {
+    padding: var(--padding-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+}
+
+/* Fila imagen (curso) a la izquierda + título a la derecha para diferenciar tareas tipo curso */
+.ubits-ia-chat-side__plan-task-card-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--gap-md);
+    width: 100%;
+    min-width: 0;
+}
+
+.ubits-ia-chat-side__plan-task-card-thumb {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: var(--border-radius-sm);
+    overflow: hidden;
+    background: var(--ubits-bg-3);
+}
+
+.ubits-ia-chat-side__plan-task-card-thumb-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.ubits-ia-chat-side__plan-task-card-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-none);
+}
+
+.ubits-ia-chat-side__plan-task-card-meta {
+    color: var(--ubits-fg-1-medium);
+    font-family: 'Noto Sans', sans-serif;
+}
+
+/* Nivel y duración con iconos (mismo criterio que card-content-compact) */
+.ubits-ia-chat-side__plan-task-card-specs {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    flex-wrap: wrap;
+}
+
+.ubits-ia-chat-side__plan-task-card-spec {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-xs);
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-ia-chat-side__plan-task-card-spec i {
+    font-size: var(--font-size-sm);
+    color: var(--ubits-fg-1-medium);
+    flex-shrink: 0;
+}
+
+.ubits-ia-chat-side__plan-task-card-row .ubits-ia-chat-side__plan-task-card-title-wrap {
+    flex: 1;
+    min-width: 0;
+}
+
+.ubits-ia-chat-side__plan-task-card-title-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-sm);
+    flex-wrap: nowrap;
+}
+
+.ubits-ia-chat-side__plan-task-card-title,
+.ubits-ia-chat-side__plan-task-title-input {
+    flex: 1;
+    min-width: 0;
+}
+
+.ubits-ia-chat-side__plan-task-card-title {
+    color: var(--ubits-fg-1-high);
+}
+
+/* Todas las tareas del plan de estudio: título máximo 2 líneas, truncar con ellipsis */
+.ubits-ia-chat-side__plan-task-card .ubits-ia-chat-side__plan-task-card-title {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
+}
+
+.ubits-ia-chat-side__plan-task-card-actions {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: var(--gap-sm);
+    flex-shrink: 0;
+}
+
+.ubits-ia-chat-side__plan-task-card-actions .ubits-button {
+    margin: 0;
+}
+
+/* Canvas ficha de contenido (citas en definición - Changelog 9) */
+.ubits-ia-chat-side__body--content-preview {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    overflow-y: auto;
+}
+
+.ubits-ia-chat-side__content-preview-image-wrap {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--border-radius-sm);
+    overflow: hidden;
+    background: var(--ubits-bg-2);
+}
+
+.ubits-ia-chat-side__content-preview-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.ubits-ia-chat-side__content-preview-type {
+    align-self: flex-start;
+}
+
+.ubits-ia-chat-side__content-preview-title {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-ia-chat-side__content-preview-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-md);
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-ia-chat-side__content-preview-meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-xs);
+    font-size: var(--font-size-sm);
+}
+
+.ubits-ia-chat-side__content-preview-meta-item i {
+    color: var(--ubits-fg-1-low);
+}
+
+.ubits-ia-chat-side__content-preview-actions {
+    display: flex;
+    gap: var(--gap-sm);
+    flex-wrap: wrap;
+}
+
+/* Misma apariencia para Competencia, Habilidades, Aliado y Experto (color y peso) */
+.ubits-ia-chat-side__content-preview-label {
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-ia-chat-side__content-preview-comp {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    margin: 0;
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-ia-chat-side__content-preview-comp .ubits-avatar {
+    flex-shrink: 0;
+}
+
+.ubits-ia-chat-side__content-preview-skills {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--gap-xs);
+}
+
+.ubits-ia-chat-side__content-preview-skills .ubits-ia-chat-side__content-preview-label {
+    margin-right: var(--gap-xs);
+}
+
+/* Aliado y Experto: desktop uno al lado del otro, mobile uno arriba del otro */
+.ubits-ia-chat-side__content-preview-aliado-experto {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--gap-lg);
+}
+
+.ubits-ia-chat-side__content-preview-provider {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.ubits-ia-chat-side__content-preview-provider .ubits-avatar {
+    flex-shrink: 0;
+}
+
+.ubits-ia-chat-side__content-preview-expert {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.ubits-ia-chat-side__content-preview-expert .ubits-avatar {
+    flex-shrink: 0;
+}
+
+.ubits-ia-chat-side__citation-tag {
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+.ubits-ia-chat-side__citation-tag:hover {
+    opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+    .ubits-ia-chat-side__body {
+        padding: var(--padding-lg);
+    }
+
+    .ubits-ia-chat-side__content-preview-aliado-experto {
+        flex-direction: column;
+    }
+}

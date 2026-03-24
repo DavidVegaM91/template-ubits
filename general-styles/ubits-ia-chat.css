@@ -6,11 +6,13 @@
    -------------------
    Agrupa layout y apariencia comunes a cualquier módulo que use:
    - columna de lista de conversaciones (“Mis chats”),
-   - columna central con el componente study-chat (study-chat.css / study-chat.js),
-   - columna opcional lateral para contenido complementario (canvas, detalle, preview).
+   - columna central con el hilo de chat (mensajes, bienvenida, input).
+
+   El panel lateral del tutor (quiz, flashcards, canvas, plan, etc.) NO va aquí:
+   es solo de Modo estudio IA → ubits-colaborador/aprendizaje/modo-estudio-ia-tutor-panel.css
 
    NO incluye lógica de negocio ni qué responde el modelo; solo estructura, tokens,
-   orbes de fondo, burbujas, bienvenida, input y panel lateral.
+   orbes de fondo, burbujas, bienvenida e input del hilo.
 
    DEPENDENCIAS (cargar en el HTML ANTES que este archivo)
    --------------------------------------------------------
@@ -18,23 +20,23 @@
    - general-styles/styles.css (o al menos el layout base del dashboard)
    - ubits-colaborador/aprendizaje/aprendizaje-ia-gradientes.css
      (variables --modo-ia-gradient-*, --modo-ia-glow-orb-rgb-*; nombre histórico del token)
-   - components/study-chat.css
+   - Opcional: components/study-chat.css solo reexporta este archivo (compatibilidad con imports antiguos).
 
    CÓMO ADOPTARLO (cuando integres en páginas)
    -------------------------------------------
    1) En el <body> o contenedor raíz de la vista: añade la clase .ubits-ia-chat-page
       si quieres el “scaffold” de content-area / content-sections (opcional, ver abajo).
-   2) Envuelve [historial | chat | panel opcional] en un contenedor:
+   2) Envuelve [historial | chat] en un contenedor (y opcionalmente .ubits-ia-chat__side si
+      cargas también modo-estudio-ia-tutor-panel.css en esa página):
         <div class="ubits-ia-chat">
           <aside class="ubits-ia-chat-historial" …>…</aside>
-          <div class="ubits-ia-chat__main">… widget-chat / study-chat …</div>
-          <aside class="ubits-ia-chat__side">…</aside>  <!-- opcional -->
+          <div class="ubits-ia-chat__main">… widget-chat / hilo …</div>
+          <aside class="ubits-ia-chat__side">…</aside>  <!-- solo Modo estudio IA + CSS tutor -->
         </div>
-   3) Clases BEM de este archivo:
+   3) Clases BEM de este archivo (shell):
       - .ubits-ia-chat-historial (panel), __header, __body, __list, __empty, __footer
       - .ubits-ia-chat-historial-item (cada fila), __content, __title, __description, __date, __delete
       - .ubits-ia-chat__main (columna del chat; orbes en ::before)
-      - .ubits-ia-chat__side (panel derecho / canvas; .is-open, .has-content)
 
    ORDEN DE COLUMNAS (historial izquierda / derecha)
    -------------------------------------------------
@@ -65,10 +67,826 @@
     50% { background-position: 0 0, 100% 50%; }
 }
 
-@keyframes ubits-ia-chat-side-panel-open {
-    from { opacity: 0; }
-    to { opacity: 1; }
+
+/* ---------------------------------------------------------------------------
+   Bloque conversación (thread)
+   --------------------------------------------------------------------------- */
+/* ========================================
+   Hilo de conversación (thread) — chat IA
+   ======================================== */
+
+.ubits-ia-chat-thread {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-2xl);
+    height: 100%;
+    width: 100%;
+    background: transparent;
+    border-radius: var(--border-radius-none);
+    padding: var(--padding-none);
+    box-sizing: border-box;
+    min-height: 0;
+    /* Permitir que flexbox funcione correctamente */
+    flex: 1 1 0;
+    /* Ocupar todo el espacio disponible */
 }
+
+/* Encabezado del chat: igual que historial y canvas (texto izquierda, botones derecha) */
+.ubits-ia-chat-thread__header {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-md);
+    padding: var(--padding-sm) var(--padding-xl);
+    border-bottom: 1px solid var(--ubits-border-1);
+}
+
+.ubits-ia-chat-thread__header-title {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.4;
+    color: var(--ubits-fg-1-high);
+    outline: none;
+    box-sizing: border-box;
+}
+
+.ubits-ia-chat-thread__header-title::placeholder {
+    color: var(--ubits-fg-1-low);
+}
+
+.ubits-ia-chat-thread__header-title:hover {
+    background: var(--ubits-bg-2);
+    border-radius: var(--border-radius-xs);
+}
+
+.ubits-ia-chat-thread__header-title:focus {
+    background: var(--ubits-bg-2);
+    border-radius: var(--border-radius-xs);
+}
+
+.ubits-ia-chat-thread__header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    flex-shrink: 0;
+}
+
+/* Body del chat - mismo padding que canvas (ubits-ia-chat-side__body) */
+.ubits-ia-chat-thread__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-2xl);
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
+    padding: var(--padding-xl);
+}
+
+/* Scrollbar personalizado */
+.ubits-ia-chat-thread__body::-webkit-scrollbar {
+    width: 4px;
+}
+
+.ubits-ia-chat-thread__body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.ubits-ia-chat-thread__body::-webkit-scrollbar-thumb {
+    background: var(--ubits-scroll-bar-color-bg-default);
+    border-radius: var(--border-radius-xs);
+}
+
+.ubits-ia-chat-thread__body::-webkit-scrollbar-thumb:hover {
+    background: var(--ubits-scroll-bar-color-bg-default);
+}
+
+/* Contenedor que ocupa el espacio y centra el mensaje de bienvenida */
+.ubits-ia-chat-thread__welcome-wrapper {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--padding-2xl) 0;
+}
+
+.ubits-ia-chat-thread__welcome-wrapper.ubits-ia-chat-thread__welcome--hidden {
+    display: none !important;
+}
+
+/* Bloque de bienvenida centrado (estilo Gemini: no es mensaje del chat) */
+.ubits-ia-chat-thread__welcome {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: var(--gap-md);
+}
+
+.ubits-ia-chat-thread__welcome-icon {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--ubits-bg-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-h1);
+}
+
+/* Gradación en el icono (como botón IA), no en el círculo */
+.ubits-ia-chat-thread__welcome-icon i {
+    background: linear-gradient(135deg, rgb(0, 215, 255) 0%, rgb(0, 152, 253) 50%, rgb(0, 89, 250) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.ubits-ia-chat-thread__welcome-greeting {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-regular);
+    line-height: 24px;
+    color: var(--ubits-fg-1-high);
+    margin: 0;
+}
+
+.ubits-ia-chat-thread__welcome-prompt {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-h1);
+    font-weight: var(--font-weight-regular);
+    line-height: 28px;
+    color: var(--ubits-fg-1-high);
+    margin: 0;
+}
+
+/* Mensaje de IA con botones de elección de material (Quiz, Flashcards, Guía) debajo */
+.ubits-ia-chat-thread__message-with-choices {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    width: 100%;
+}
+
+.ubits-ia-chat-thread__material-choices {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--gap-sm);
+    align-items: center;
+}
+
+/* Botones de sugerencias dentro del globo del mensaje IA */
+.ubits-ia-chat-thread__text-globe--ai .ubits-ia-chat-thread__material-choices {
+    margin-top: var(--gap-md);
+}
+
+.ubits-ia-chat-thread__material-choice-btn {
+    flex-shrink: 0;
+}
+
+/* Estilos para cards compactos dentro del chat */
+.ubits-ia-chat-thread__courses-section {
+    margin-top: 16px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.ubits-ia-chat-thread__courses-container {
+    display: flex;
+    flex-direction: row;
+    gap: var(--gap-md);
+    margin-bottom: 16px;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+.ubits-ia-chat-thread__courses-container .course-card-compact {
+    flex: 1;
+    min-width: 280px;
+    max-width: calc(33.333% - 8px);
+}
+
+.ubits-ia-chat-thread__courses-prompt {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    line-height: 20px;
+    color: var(--ubits-fg-1-medium);
+    margin-top: 0;
+    width: 100%;
+}
+
+.ubits-ia-chat-thread__search-results-list {
+    background: var(--ubits-bg-2);
+    padding: var(--padding-md);
+    border-radius: var(--border-radius-sm);
+}
+
+/* Estilos para el plan de formación */
+.ubits-ia-chat-thread__plan-section {
+    margin-top: 12px;
+    width: 100%;
+}
+
+.ubits-ia-chat-thread__plan-title {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-regular);
+    line-height: 24px;
+    color: var(--ubits-fg-1-high);
+    margin-bottom: 12px;
+}
+
+.ubits-ia-chat-thread__plan-details {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    margin-bottom: 12px;
+}
+
+.ubits-ia-chat-thread__plan-detail-item {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    line-height: 20px;
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-ia-chat-thread__plan-detail-item strong {
+    font-weight: var(--font-weight-regular);
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-ia-chat-thread__plan-courses-title {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    line-height: 20px;
+    color: var(--ubits-fg-1-high);
+    margin-bottom: 12px;
+    margin-top: 12px;
+}
+
+.ubits-ia-chat-thread__plan-prompt {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    line-height: 20px;
+    color: var(--ubits-fg-1-medium);
+    margin-top: 12px;
+}
+
+/* Asegurar que los cards compactos se vean bien */
+.ubits-ia-chat-thread__text-globe .course-card-compact {
+    width: 100%;
+}
+
+/* Responsive para cards en el chat */
+@media (max-width: 768px) {
+    .ubits-ia-chat-thread__courses-container {
+        flex-direction: column;
+    }
+
+    .ubits-ia-chat-thread__courses-container .course-card-compact {
+        min-width: 100%;
+        max-width: 100%;
+    }
+}
+
+/* Asegurar que el texto del mensaje no tenga margin extra cuando hay cards */
+.ubits-ia-chat-thread__text-globe--ai .ubits-ia-chat-thread__message-text:last-child {
+    margin-bottom: 0;
+}
+
+/* Mensaje individual */
+.ubits-ia-chat-thread__message {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-none);
+    width: 100%;
+}
+
+.ubits-ia-chat-thread__message--ai {
+    align-items: flex-start;
+}
+
+.ubits-ia-chat-thread__message--user {
+    align-items: flex-end;
+}
+
+/* Text globe - burbuja de mensaje */
+.ubits-ia-chat-thread__text-globe {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--padding-md) var(--padding-lg);
+    word-wrap: break-word;
+    position: relative;
+}
+
+/* Mensaje de IA - ancho máximo */
+.ubits-ia-chat-thread__text-globe--ai {
+    max-width: 85%;
+    width: 100%;
+}
+
+/* Mensaje de usuario - abrazar contenido */
+.ubits-ia-chat-thread__text-globe--user {
+    max-width: 85%;
+    width: auto;
+}
+
+/* Mensaje de IA */
+.ubits-ia-chat-thread__text-globe--ai {
+    background: var(--ubits-bg-2);
+    color: var(--ubits-fg-1-high);
+    border-radius: var(--border-radius-sm);
+    border-bottom-left-radius: 0;
+    /* Sin radius en esquina inferior izquierda */
+}
+
+/* Mensaje de usuario: misma gradación que el icono de bienvenida del chat (sparkles) */
+.ubits-ia-chat-thread__text-globe--user {
+    background: linear-gradient(135deg, rgb(0, 215, 255) 0%, rgb(0, 152, 253) 50%, rgb(0, 89, 250) 100%);
+    color: var(--ubits-btn-primary-fg);
+    border-radius: var(--border-radius-sm);
+    border-bottom-right-radius: 0;
+    width: auto;
+    max-width: 85%;
+}
+
+/* Texto del mensaje */
+.ubits-ia-chat-thread__message-text {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-md);
+    line-height: 24px;
+    margin: 0 0 8px 0;
+    white-space: pre-wrap;
+}
+
+/* Texto en mensajes de IA - ancho completo */
+.ubits-ia-chat-thread__text-globe--ai .ubits-ia-chat-thread__message-text {
+    width: 100%;
+}
+
+/* Texto en mensajes de usuario - abrazar contenido */
+.ubits-ia-chat-thread__text-globe--user .ubits-ia-chat-thread__message-text {
+    width: auto;
+}
+
+.ubits-ia-chat-thread__message-text:last-child {
+    margin-bottom: 0;
+}
+
+/* Animación palabra por palabra en mensajes de IA (efecto typewriter rápido) */
+.ubits-ia-chat-thread__text-globe--ai .ubits-ia-chat-thread__word {
+    opacity: 0;
+    transition: opacity 0.06s ease-out;
+}
+
+.ubits-ia-chat-thread__text-globe--ai .ubits-ia-chat-thread__word--visible {
+    opacity: 1;
+}
+
+/* Reveal de arriba a abajo: timestamp, acciones, botones de recurso, card (--reveal / tras --typing-done) */
+@keyframes ubits-ia-chat-thread-reveal-down {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Estado TYPING: ocultar todo excepto el texto */
+.ubits-ia-chat-thread__message--typing .ubits-ia-chat-thread__message-actions,
+.ubits-ia-chat-thread__message--typing .ubits-ia-chat-thread__material-choices,
+.ubits-ia-chat-thread__message--typing+.ubits-ia-chat-thread__material-choices,
+.ubits-ia-chat-thread__message--typing .ubits-ia-chat-thread__courses-section,
+.ubits-ia-chat-thread__message--typing .ubits-ia-chat-thread__plan-section,
+.ubits-ia-chat-thread__message--typing .ubits-ia-chat-thread__resource-card,
+.ubits-ia-chat-thread__message--typing .ubits-ia-chat-thread__resource-msg,
+.ubits-ia-chat-thread__message--typing .ubits-ia-chat-thread__timestamp {
+    opacity: 0 !important;
+    transform: translateY(6px);
+    pointer-events: none;
+}
+
+/* Estado DONE: revelar elementos en cascada */
+.ubits-ia-chat-thread__message--typing-done .ubits-ia-chat-thread__message-actions {
+    opacity: 0;
+    animation: ubits-ia-chat-thread-reveal-down 0.3s ease-out 0s forwards;
+}
+
+.ubits-ia-chat-thread__message--typing-done .ubits-ia-chat-thread__timestamp {
+    opacity: 0;
+    animation: ubits-ia-chat-thread-reveal-down 0.3s ease-out 0s forwards;
+}
+
+.ubits-ia-chat-thread__message--typing-done .ubits-ia-chat-thread__material-choices,
+.ubits-ia-chat-thread__message--typing-done+.ubits-ia-chat-thread__material-choices {
+    opacity: 0;
+    animation: ubits-ia-chat-thread-reveal-down 0.3s ease-out 0.1s forwards;
+}
+
+.ubits-ia-chat-thread__message--typing-done .ubits-ia-chat-thread__courses-section {
+    opacity: 0;
+    animation: ubits-ia-chat-thread-reveal-down 0.3s ease-out 0.2s forwards;
+}
+
+.ubits-ia-chat-thread__message--typing-done .ubits-ia-chat-thread__plan-section {
+    opacity: 0;
+    animation: ubits-ia-chat-thread-reveal-down 0.3s ease-out 0.2s forwards;
+}
+
+.ubits-ia-chat-thread__message--typing-done .ubits-ia-chat-thread__resource-card,
+.ubits-ia-chat-thread__message--typing-done .ubits-ia-chat-thread__resource-msg {
+    opacity: 0;
+    animation: ubits-ia-chat-thread-reveal-down 0.3s ease-out 0.2s forwards;
+}
+
+.ubits-ia-chat-thread__message-with-choices--reveal .ubits-ia-chat-thread__timestamp {
+    opacity: 0;
+    animation: ubits-ia-chat-thread-reveal-down 0.22s ease-out 120ms forwards;
+}
+
+.ubits-ia-chat-thread__message-with-choices--reveal .ubits-ia-chat-thread__material-choices {
+    opacity: 0;
+    animation: ubits-ia-chat-thread-reveal-down 0.22s ease-out 220ms forwards;
+}
+
+.ubits-ia-chat-thread__resource-msg--reveal {
+    opacity: 0;
+    animation: ubits-ia-chat-thread-reveal-down 0.22s ease-out 120ms forwards;
+}
+
+/* Links dentro del mensaje */
+.ubits-ia-chat-thread__message-text a.ubits-ia-chat-thread__link {
+    color: var(--ubits-accent-brand-static);
+    text-decoration: underline;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+/* Indicador "Pensando..." */
+.ubits-ia-chat-thread__thinking {
+    font-size: 14px;
+    font-style: normal;
+    color: var(--ubits-neutral-500);
+    margin-bottom: 4px;
+    display: inline-block;
+    animation: ubits-shimmer 1.5s infinite ease-in-out;
+}
+
+.ubits-ia-chat-thread__thinking::after {
+    content: '';
+    display: inline-block;
+    width: 12px;
+    text-align: left;
+    animation: ubits-ellipsis 1.5s infinite steps(4, end);
+}
+
+@keyframes ubits-shimmer {
+
+    0%,
+    100% {
+        opacity: 0.6;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+@keyframes ubits-ellipsis {
+    0% {
+        content: '';
+    }
+
+    25% {
+        content: '.';
+    }
+
+    50% {
+        content: '..';
+    }
+
+    75% {
+        content: '...';
+    }
+}
+
+.ubits-ia-chat-thread__message-text a.ubits-ia-chat-thread__link:hover {
+    opacity: 0.8;
+}
+
+.ubits-ia-chat-thread__message-text a.ubits-ia-chat-thread__link:visited {
+    color: var(--ubits-accent-brand-static);
+}
+
+.ubits-ia-chat-thread__text-globe--ai .ubits-ia-chat-thread__message-text {
+    font-weight: var(--font-weight-regular);
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-ia-chat-thread__text-globe--user .ubits-ia-chat-thread__message-text {
+    font-weight: var(--font-weight-regular);
+    color: var(--ubits-btn-primary-fg);
+}
+
+/* Timestamp */
+.ubits-ia-chat-thread__timestamp {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-regular);
+    line-height: 19.5px;
+    color: var(--ubits-btn-tertiary-fg);
+    margin: 0;
+}
+
+.ubits-ia-chat-thread__message--ai .ubits-ia-chat-thread__timestamp {
+    text-align: left;
+}
+
+.ubits-ia-chat-thread__message--user .ubits-ia-chat-thread__timestamp {
+    text-align: right;
+    color: var(--ubits-btn-primary-fg);
+}
+
+/* Botones de acción en mensajes de IA */
+.ubits-ia-chat-thread__message-actions {
+    display: flex;
+    gap: var(--gap-none);
+    align-items: center;
+    margin-top: 4px;
+}
+
+/* Mensaje de IA en streaming: ocultar acciones hasta que termine de escribir */
+.ubits-ia-chat-thread__message--streaming .ubits-ia-chat-thread__message-actions {
+    visibility: hidden;
+    pointer-events: none;
+}
+
+/* Mensajes de recurso: card con icono, título, cantidad y botón Abrir (visible solo cuando el panel está cerrado) */
+.ubits-ia-chat-thread__resource-msg .ubits-ia-chat-thread__resource-open-wrap {
+    display: none;
+}
+
+.ubits-ia-chat-thread__resource-msg.open-btn-visible .ubits-ia-chat-thread__resource-open-wrap {
+    display: flex;
+    flex-shrink: 0;
+}
+
+.ubits-ia-chat-thread__resource-card {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+    margin-top: 8px;
+    padding: var(--padding-md);
+    background: var(--ubits-bg-2);
+    border: none;
+    border-radius: var(--border-radius-md);
+}
+
+.ubits-ia-chat-thread__resource-card-main {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+    flex: 1;
+    min-width: 0;
+}
+
+.ubits-ia-chat-thread__resource-card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border-radius: var(--border-radius-md);
+    background: var(--ubits-bg-1);
+    color: var(--ubits-accent-brand);
+}
+
+.ubits-ia-chat-thread__resource-card-icon i {
+    font-size: var(--font-size-h2);
+}
+
+.ubits-ia-chat-thread__resource-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-none);
+    min-width: 0;
+}
+
+.ubits-ia-chat-thread__resource-card-title {
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-ia-chat-thread__resource-card-meta {
+    color: var(--ubits-fg-2-medium);
+}
+
+.ubits-ia-chat-thread__resource-card-action {
+    flex-shrink: 0;
+}
+
+/* Mensaje de carga (typing): indicador mínimo */
+.ubits-ia-chat-thread__text-globe--typing {
+    display: flex;
+    gap: var(--gap-sm);
+    align-items: center;
+    height: 40px;
+    padding: 0 12px;
+}
+
+.ubits-ia-chat-thread__typing-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap-none);
+    padding: var(--padding-none);
+    border-radius: var(--border-radius-none);
+}
+
+.ubits-ia-chat-thread__typing-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ubits-fg-1-medium);
+    animation: ubits-ia-chat-thread-bounce 0.6s ease-in-out infinite;
+}
+
+.ubits-ia-chat-thread__typing-dot:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.ubits-ia-chat-thread__typing-dot:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+@keyframes ubits-ia-chat-thread-bounce {
+
+    0%,
+    100% {
+        opacity: 0.4;
+        transform: translateY(0);
+    }
+
+    50% {
+        opacity: 1;
+        transform: translateY(-2px);
+    }
+}
+
+.ubits-ia-chat-thread__typing-text {
+    font-family: 'Noto Sans', sans-serif;
+    font-style: normal;
+    font-size: var(--font-size-sm);
+    line-height: 20px;
+    color: var(--ubits-fg-1-high);
+    margin: 0;
+}
+
+/* Área de input y sugerencias */
+.ubits-ia-chat-thread__input-area {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    flex-shrink: 0;
+    padding: 0 var(--padding-xl) 0;
+}
+
+/* Chat ya iniciado: sin padding lateral en móvil */
+@media (max-width: 768px) {
+    .ubits-ia-chat-thread:not(.ubits-ia-chat-thread--welcome) .ubits-ia-chat-thread__input-area {
+        padding-left: 0;
+        padding-right: 0;
+    }
+}
+
+.ubits-ia-chat-thread__disclaimer {
+    margin: 0;
+    /* Espacio entre input y advertencia = 8px (token --gap-sm) */
+    margin-top: calc(var(--gap-sm) - var(--gap-2xl));
+    flex-shrink: 0;
+    padding: 0 var(--padding-xl);
+}
+
+/* Botones de sugerencias - usar componente UBITS button */
+.ubits-ia-chat-thread__suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-md);
+    align-items: center;
+}
+
+/* Ocultar sugerencias cuando el chat ha iniciado (primer mensaje o interacción) */
+.ubits-ia-chat-thread__suggestions--hidden {
+    display: none !important;
+}
+
+.ubits-ia-chat-thread__suggestions-label {
+    color: var(--ubits-fg-1-medium);
+    margin-right: 4px;
+}
+
+/* Los botones de sugerencias usan el componente UBITS button oficial */
+
+/* Input de chat */
+.ubits-ia-chat-thread__input-container {
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-md);
+    padding: var(--padding-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    width: 100%;
+}
+
+/* Chat iniciado: sin cambios extra, la columna ya ubica bien los elementos */
+.ubits-ia-chat-thread:not(.ubits-ia-chat-thread--welcome) .ubits-ia-chat-thread__input-container {
+    flex-direction: column;
+}
+
+.ubits-ia-chat-thread__input-wrapper {
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+    min-width: 0;
+    min-height: 28px;
+    gap: var(--gap-none);
+}
+
+/* Fila de botones: adjuntar izquierda, enviar derecha */
+.ubits-ia-chat-thread__input-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.ubits-ia-chat-thread__input-placeholder {
+    flex: 1;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-regular);
+    line-height: 28.8px;
+    color: var(--ubits-fg-1-medium);
+    cursor: text;
+}
+
+.ubits-ia-chat-thread__input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-regular);
+    line-height: 28.8px;
+    color: var(--ubits-fg-1-high);
+    width: 100%;
+    resize: none;
+    overflow-y: auto;
+    min-height: 28.8px;
+    max-height: 144px;
+    /* 5 líneas × 28.8px */
+}
+
+.ubits-ia-chat-thread__input::placeholder {
+    color: var(--ubits-fg-1-medium);
+}
+
+/* Botones adjuntar y enviar del input (orden: adjuntar | input | enviar cuando el chat está iniciado) */
+.ubits-ia-chat-thread__input-attach,
+.ubits-ia-chat-thread__input-send {
+    flex-shrink: 0;
+}
+
+/* Chips de competencias (Modo Tutor empty state) */
+.ubits-ia-chat-thread__competency-chip {
+    flex-shrink: 0;
+}
+
+
 
 /* ---------------------------------------------------------------------------
    Modificadores de layout — orden de columnas (LTR)
@@ -159,7 +977,9 @@
 .ubits-ia-chat-historial__body {
     flex: 1;
     min-height: 0;
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
     padding: var(--padding-sm);
 }
 
@@ -167,19 +987,28 @@
     display: flex;
     flex-direction: column;
     gap: var(--gap-xs);
+    flex: 1 1 0;
+    min-height: 0;
+    overflow-y: auto;
 }
 
+/* Vacío: centrado vertical y horizontal en el área del body (Mis chats) */
 .ubits-ia-chat-historial__empty {
-    display: flex;
-    flex: 1;
+    display: none;
+    flex: 1 1 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     min-height: 0;
+    width: 100%;
+    box-sizing: border-box;
     color: var(--ubits-fg-1-medium);
 }
 
 .ubits-ia-chat-historial__empty .ubits-empty-state {
-    flex: 1;
+    flex: 0 1 auto;
     min-width: 0;
-    min-height: 0;
+    max-width: 100%;
 }
 
 .ubits-ia-chat-historial__footer {
@@ -302,11 +1131,11 @@ body[data-theme="dark"] .ubits-ia-chat__main::before {
 }
 
 /* Shell con bienvenida: recorte de esquinas coherente */
-.ubits-ia-chat:has(.study-chat-wrapper--welcome) {
+.ubits-ia-chat:has(.ubits-ia-chat__main--welcome) {
     overflow: hidden !important;
 }
 
-.ubits-ia-chat > .ubits-ia-chat__main.study-chat-wrapper--welcome {
+.ubits-ia-chat > .ubits-ia-chat__main.ubits-ia-chat__main--welcome {
     background-color: var(--ubits-bg-1) !important;
     padding-top: 0 !important;
     padding-bottom: var(--padding-md) !important;
@@ -315,7 +1144,7 @@ body[data-theme="dark"] .ubits-ia-chat__main::before {
     overflow: hidden !important;
 }
 
-.ubits-ia-chat > .ubits-ia-chat__main:not(.study-chat-wrapper--welcome) {
+.ubits-ia-chat > .ubits-ia-chat__main:not(.ubits-ia-chat__main--welcome) {
     background-color: var(--ubits-bg-1) !important;
     padding-top: 0 !important;
     padding-bottom: var(--padding-md) !important;
@@ -323,7 +1152,7 @@ body[data-theme="dark"] .ubits-ia-chat__main::before {
     padding-right: 0 !important;
 }
 
-/* Widget + study-chat: transparentes sobre los orbes */
+/* Widget + hilo de chat: transparentes sobre los orbes */
 .ubits-ia-chat__main .widget-chat {
     background-color: transparent !important;
     padding: var(--padding-none) !important;
@@ -336,131 +1165,32 @@ body[data-theme="dark"] .ubits-ia-chat__main::before {
     flex-direction: column !important;
 }
 
-.ubits-ia-chat__main .widget-chat .ubits-study-chat {
+.ubits-ia-chat__main .widget-chat .ubits-ia-chat-thread {
     background-color: transparent !important;
 }
 
-.ubits-ia-chat__main .ubits-study-chat {
+.ubits-ia-chat__main .ubits-ia-chat-thread {
     flex: 1;
 }
 
-/* Desktop: reparto cuando hay panel lateral abierto */
-@media (min-width: 1024px) {
-    .ubits-ia-chat:not(:has(.ubits-ia-chat__side.is-open)) .ubits-ia-chat__main {
-        flex: 1 1 0;
-        min-width: 0;
-        max-width: none;
-    }
 
-    .ubits-ia-chat:has(.ubits-ia-chat__side.is-open) .ubits-ia-chat-historial {
-        flex: 0 1 25%;
-        min-width: 0;
-        max-width: none;
-        width: auto;
-    }
-
-    .ubits-ia-chat:has(.ubits-ia-chat__side.is-open) .ubits-ia-chat__main {
-        flex: 0 1 25%;
-        min-width: 0;
-        max-width: none;
-        width: auto;
-    }
-
-    .ubits-ia-chat:has(.ubits-ia-chat__side.is-open) > .ubits-ia-chat__side.is-open {
-        flex: 0 1 50%;
-        min-width: 0;
-        max-width: none;
-        width: auto;
-    }
-}
-
-/* ---------------------------------------------------------------------------
-   Panel lateral (canvas / detalle / cualquier contenido complementario)
-   Estructura interna esperada: study-chat-canvas-* (study-chat.js)
-   --------------------------------------------------------------------------- */
-.ubits-ia-chat > .ubits-ia-chat__side {
-    display: none !important;
-    flex-shrink: 0;
-}
-
-.ubits-ia-chat > .ubits-ia-chat__side.is-open {
-    display: flex !important;
-    flex-direction: column !important;
-    flex: 1 1 0;
-    min-width: 0;
-    width: auto;
-    padding: var(--padding-none) !important;
-    overflow: hidden;
-    min-height: 0;
-    background: var(--ubits-bg-1) !important;
-    border: none;
-    border-radius: var(--border-radius-lg);
-    animation: ubits-ia-chat-side-panel-open 0.2s ease;
-}
-
-.ubits-ia-chat__side.is-open .study-chat-canvas-content {
-    flex: 1 1 0;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-}
-
-.ubits-ia-chat__side.is-open .study-chat-canvas-body {
-    flex: 1;
-    overflow-y: auto;
-    min-height: 0;
-}
-
-.ubits-ia-chat__side.is-open .study-chat-canvas-footer {
-    flex-shrink: 0;
-}
-
-.ubits-ia-chat > .ubits-ia-chat__side.is-open .study-chat-canvas-placeholder {
-    display: flex;
-}
-
-.ubits-ia-chat > .ubits-ia-chat__side.has-content .study-chat-canvas-placeholder {
-    display: none;
-}
-
-.ubits-ia-chat__side.is-open .study-chat-canvas-body {
-    z-index: 0;
-    position: relative;
-}
-
-.study-chat-canvas-placeholder {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: var(--gap-md);
-    min-height: 200px;
-    text-align: center;
-    color: var(--ubits-fg-1-medium);
-}
-
-.study-chat-canvas-placeholder i {
-    font-size: var(--font-size-d3);
-    color: var(--ubits-fg-1-low);
-}
 
 /* ---------------------------------------------------------------------------
    Burbujas y mensajes (dentro de .ubits-ia-chat)
    --------------------------------------------------------------------------- */
-.ubits-ia-chat .ubits-study-chat__text-globe--user {
+.ubits-ia-chat .ubits-ia-chat-thread__text-globe--user {
     background: linear-gradient(135deg, var(--modo-ia-gradient-a) 0%, var(--modo-ia-gradient-b) 35.59%, var(--modo-ia-gradient-c) 67.19%, var(--modo-ia-gradient-d) 100%);
 }
 
-.ubits-ia-chat .ubits-study-chat__text-globe--ai {
+.ubits-ia-chat .ubits-ia-chat-thread__text-globe--ai {
     background: transparent !important;
     padding: var(--padding-none) !important;
 }
 
 /* ---------------------------------------------------------------------------
-   Pantalla de bienvenida (study-chat --welcome)
+   Pantalla de bienvenida (modificador --welcome en el thread)
    --------------------------------------------------------------------------- */
-.ubits-ia-chat .ubits-study-chat--welcome {
+.ubits-ia-chat .ubits-ia-chat-thread--welcome {
     flex: 1;
     min-height: 0;
     min-width: 0;
@@ -474,7 +1204,7 @@ body[data-theme="dark"] .ubits-ia-chat__main::before {
     padding-bottom: var(--padding-md);
 }
 
-.ubits-ia-chat .ubits-study-chat--welcome .ubits-study-chat__header {
+.ubits-ia-chat .ubits-ia-chat-thread--welcome .ubits-ia-chat-thread__header {
     align-self: stretch;
     width: 100%;
     box-sizing: border-box;
@@ -482,7 +1212,7 @@ body[data-theme="dark"] .ubits-ia-chat__main::before {
     min-height: 48px;
 }
 
-.ubits-ia-chat .ubits-study-chat--welcome .ubits-study-chat__body {
+.ubits-ia-chat .ubits-ia-chat-thread--welcome .ubits-ia-chat-thread__body {
     flex: 0 0 auto;
     justify-content: flex-start;
     align-self: center;
@@ -490,16 +1220,16 @@ body[data-theme="dark"] .ubits-ia-chat__main::before {
     max-width: 100%;
 }
 
-.ubits-ia-chat .ubits-study-chat--welcome .ubits-study-chat__welcome-wrapper {
+.ubits-ia-chat .ubits-ia-chat-thread--welcome .ubits-ia-chat-thread__welcome-wrapper {
     flex: 0 0 auto;
     padding-bottom: 0;
 }
 
-.ubits-ia-chat .ubits-study-chat--welcome .ubits-study-chat__welcome {
+.ubits-ia-chat .ubits-ia-chat-thread--welcome .ubits-ia-chat-thread__welcome {
     gap: var(--gap-lg);
 }
 
-.ubits-ia-chat .ubits-study-chat--welcome .ubits-study-chat__welcome-top {
+.ubits-ia-chat .ubits-ia-chat-thread--welcome .ubits-ia-chat-thread__welcome-top {
     display: flex;
     justify-content: flex-end;
     align-items: center;
@@ -511,11 +1241,11 @@ body[data-theme="dark"] .ubits-ia-chat__main::before {
     gap: var(--gap-sm);
 }
 
-.ubits-ia-chat .ubits-study-chat--welcome .ubits-study-chat__welcome-top .ubits-button {
+.ubits-ia-chat .ubits-ia-chat-thread--welcome .ubits-ia-chat-thread__welcome-top .ubits-button {
     min-width: 0;
 }
 
-.ubits-ia-chat .ubits-study-chat--welcome .ubits-study-chat__welcome-head {
+.ubits-ia-chat .ubits-ia-chat-thread--welcome .ubits-ia-chat-thread__welcome-head {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -523,7 +1253,7 @@ body[data-theme="dark"] .ubits-ia-chat__main::before {
     flex-shrink: 0;
 }
 
-.ubits-ia-chat .ubits-study-chat--welcome .ubits-study-chat__welcome-icon {
+.ubits-ia-chat .ubits-ia-chat-thread--welcome .ubits-ia-chat-thread__welcome-icon {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -536,14 +1266,14 @@ body[data-theme="dark"] .ubits-ia-chat__main::before {
     animation: ubits-ia-chat-sparkles-float 2.5s ease-in-out infinite;
 }
 
-.ubits-ia-chat .ubits-study-chat--welcome .ubits-study-chat__welcome-icon i {
+.ubits-ia-chat .ubits-ia-chat-thread--welcome .ubits-ia-chat-thread__welcome-icon i {
     background: linear-gradient(135deg, var(--modo-ia-gradient-a) 0%, var(--modo-ia-gradient-b) 35.59%, var(--modo-ia-gradient-c) 67.19%, var(--modo-ia-gradient-d) 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
 }
 
-.ubits-ia-chat .ubits-study-chat--welcome .ubits-study-chat__welcome-prompt-accent {
+.ubits-ia-chat .ubits-ia-chat-thread--welcome .ubits-ia-chat-thread__welcome-prompt-accent {
     font-weight: var(--font-weight-semibold);
     background: linear-gradient(90deg, var(--modo-ia-gradient-a), var(--modo-ia-gradient-b), var(--modo-ia-gradient-c), var(--modo-ia-gradient-d));
     -webkit-background-clip: text;
@@ -551,7 +1281,7 @@ body[data-theme="dark"] .ubits-ia-chat__main::before {
     color: transparent;
 }
 
-.ubits-ia-chat .ubits-study-chat--welcome .ubits-study-chat__input-area {
+.ubits-ia-chat .ubits-ia-chat-thread--welcome .ubits-ia-chat-thread__input-area {
     align-self: stretch;
     box-sizing: border-box;
     min-width: 0;
@@ -565,7 +1295,7 @@ body[data-theme="dark"] .ubits-ia-chat__main::before {
     padding-bottom: 0;
 }
 
-.ubits-ia-chat .ubits-study-chat--welcome .ubits-study-chat__input-container {
+.ubits-ia-chat .ubits-ia-chat-thread--welcome .ubits-ia-chat-thread__input-container {
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: auto auto;
@@ -582,39 +1312,39 @@ body[data-theme="dark"] .ubits-ia-chat__main::before {
     box-shadow: none;
 }
 
-.ubits-ia-chat .ubits-study-chat--welcome .ubits-study-chat__input-wrapper {
+.ubits-ia-chat .ubits-ia-chat-thread--welcome .ubits-ia-chat-thread__input-wrapper {
     grid-row: 1;
     grid-column: 1;
 }
 
-.ubits-ia-chat .ubits-study-chat--welcome .ubits-study-chat__input-attach {
+.ubits-ia-chat .ubits-ia-chat-thread--welcome .ubits-ia-chat-thread__input-attach {
     grid-row: 2;
     grid-column: 1;
     justify-self: start;
 }
 
-.ubits-ia-chat .ubits-study-chat--welcome .ubits-study-chat__input-send {
+.ubits-ia-chat .ubits-ia-chat-thread--welcome .ubits-ia-chat-thread__input-send {
     grid-row: 2;
     grid-column: 1;
     justify-self: end;
 }
 
-[data-theme="dark"] .ubits-ia-chat .ubits-study-chat--welcome .ubits-study-chat__input-container {
+[data-theme="dark"] .ubits-ia-chat .ubits-ia-chat-thread--welcome .ubits-ia-chat-thread__input-container {
     box-shadow: none;
 }
 
-.ubits-ia-chat .ubits-study-chat--welcome .ubits-study-chat__disclaimer {
+.ubits-ia-chat .ubits-ia-chat-thread--welcome .ubits-ia-chat-thread__disclaimer {
     display: none;
 }
 
-.ubits-ia-chat .ubits-study-chat--welcome .ubits-study-chat__suggestions {
+.ubits-ia-chat .ubits-ia-chat-thread--welcome .ubits-ia-chat-thread__suggestions {
     justify-content: center;
     flex-wrap: wrap;
     margin-top: var(--gap-md);
     gap: var(--gap-sm);
 }
 
-.ubits-ia-chat .ubits-study-chat--welcome .ubits-study-chat__suggestions .ubits-button {
+.ubits-ia-chat .ubits-ia-chat-thread--welcome .ubits-ia-chat-thread__suggestions .ubits-button {
     border: 1px solid transparent;
     background: linear-gradient(var(--ubits-bg-1), var(--ubits-bg-1)) padding-box,
         linear-gradient(90deg, var(--modo-ia-gradient-a), var(--modo-ia-gradient-b), var(--modo-ia-gradient-c), var(--modo-ia-gradient-d), var(--modo-ia-gradient-a)) border-box;
@@ -626,8 +1356,8 @@ body[data-theme="dark"] .ubits-ia-chat__main::before {
 }
 
 @media (max-width: 1023px) {
-    .ubits-ia-chat .ubits-study-chat--welcome .ubits-study-chat__body,
-    .ubits-ia-chat .ubits-study-chat--welcome .ubits-study-chat__input-area {
+    .ubits-ia-chat .ubits-ia-chat-thread--welcome .ubits-ia-chat-thread__body,
+    .ubits-ia-chat .ubits-ia-chat-thread--welcome .ubits-ia-chat-thread__input-area {
         max-width: 100% !important;
     }
 }
@@ -635,17 +1365,17 @@ body[data-theme="dark"] .ubits-ia-chat__main::before {
 /* ---------------------------------------------------------------------------
    Input compacto (solo chat iniciado; en bienvenida el contenedor es grid)
    --------------------------------------------------------------------------- */
-.ubits-ia-chat .ubits-study-chat:not(.ubits-study-chat--welcome) {
+.ubits-ia-chat .ubits-ia-chat-thread:not(.ubits-ia-chat-thread--welcome) {
     min-width: 0;
     max-width: 100%;
 }
 
-.ubits-ia-chat .ubits-study-chat:not(.ubits-study-chat--welcome) .ubits-study-chat__input-area {
+.ubits-ia-chat .ubits-ia-chat-thread:not(.ubits-ia-chat-thread--welcome) .ubits-ia-chat-thread__input-area {
     min-width: 0;
     max-width: 100%;
 }
 
-.ubits-ia-chat .ubits-study-chat:not(.ubits-study-chat--welcome) .ubits-study-chat__input-container {
+.ubits-ia-chat .ubits-ia-chat-thread:not(.ubits-ia-chat-thread--welcome) .ubits-ia-chat-thread__input-container {
     flex-direction: row;
     align-items: center;
     padding: var(--padding-sm) var(--padding-md);
@@ -658,19 +1388,19 @@ body[data-theme="dark"] .ubits-ia-chat__main::before {
     overflow: hidden;
 }
 
-.ubits-ia-chat .ubits-study-chat:not(.ubits-study-chat--welcome) .ubits-study-chat__input-wrapper {
+.ubits-ia-chat .ubits-ia-chat-thread:not(.ubits-ia-chat-thread--welcome) .ubits-ia-chat-thread__input-wrapper {
     min-width: 0;
     flex: 1 1 0;
     overflow: hidden;
 }
 
-.ubits-ia-chat .ubits-study-chat:not(.ubits-study-chat--welcome) .ubits-study-chat__input {
+.ubits-ia-chat .ubits-ia-chat-thread:not(.ubits-ia-chat-thread--welcome) .ubits-ia-chat-thread__input {
     min-width: 0;
     max-width: 100%;
     box-sizing: border-box;
 }
 
-.ubits-ia-chat .ubits-study-chat--welcome .ubits-study-chat__input-container {
+.ubits-ia-chat .ubits-ia-chat-thread--welcome .ubits-ia-chat-thread__input-container {
     min-width: 0;
     max-width: 100%;
     width: 100%;
@@ -678,21 +1408,21 @@ body[data-theme="dark"] .ubits-ia-chat__main::before {
     overflow: visible;
 }
 
-.ubits-ia-chat .ubits-study-chat__input-wrapper {
+.ubits-ia-chat .ubits-ia-chat-thread__input-wrapper {
     flex: 1;
     min-width: 0;
     align-self: center;
 }
 
-.ubits-ia-chat .ubits-study-chat__input {
+.ubits-ia-chat .ubits-ia-chat-thread__input {
     min-height: 24px;
     line-height: 24px;
     padding: 4px 0;
     font-size: var(--font-size-sm);
 }
 
-.ubits-ia-chat .ubits-study-chat__input-attach,
-.ubits-ia-chat .ubits-study-chat__input-send {
+.ubits-ia-chat .ubits-ia-chat-thread__input-attach,
+.ubits-ia-chat .ubits-ia-chat-thread__input-send {
     flex-shrink: 0;
 }
 
@@ -709,28 +1439,11 @@ body[data-theme="dark"] .ubits-ia-chat__main::before {
 }
 
 /* ---------------------------------------------------------------------------
-   Responsive: panel lateral a pantalla completa; lista de chats como franja
+   Responsive (≤1023px): lista de chats como franja; panel lateral tutor en su CSS
    --------------------------------------------------------------------------- */
 @media (max-width: 1023px) {
     .ubits-ia-chat {
         flex-direction: column !important;
-    }
-
-    .ubits-ia-chat > .ubits-ia-chat__side.is-open {
-        position: fixed;
-        inset: 0;
-        z-index: 1002;
-        width: 100%;
-        height: 100%;
-        max-height: none;
-        min-height: 0;
-        border-radius: 0;
-        box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.15);
-        animation: ubits-ia-chat-side-panel-open 0.2s ease;
-    }
-
-    [data-theme="dark"] .ubits-ia-chat > .ubits-ia-chat__side.is-open {
-        box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.4);
     }
 
     .ubits-ia-chat > .ubits-ia-chat-historial {
@@ -751,10 +1464,6 @@ body[data-theme="dark"] .ubits-ia-chat__main::before {
     }
 }
 
-/* Ocultar tab bar cuando el panel lateral modal está abierto (requiere clase en body) */
-body.ia-chat-side-panel-open #tab-bar-container {
-    display: none !important;
-}
 
 /* ---------------------------------------------------------------------------
    Scaffold opcional de página: añade .ubits-ia-chat-page al body
@@ -784,4 +1493,28 @@ body.ia-chat-side-panel-open #tab-bar-container {
     min-width: 0 !important;
     position: relative;
     z-index: 1;
+}
+
+
+
+/* Responsive */
+@media (max-width: 768px) {
+    .ubits-ia-chat-thread {
+        padding: var(--padding-md);
+        gap: var(--gap-lg);
+    }
+
+
+    .ubits-ia-chat-thread__text-globe {
+        max-width: 90%;
+    }
+
+    .ubits-ia-chat-thread__suggestions {
+        gap: var(--gap-sm);
+    }
+
+    .ubits-ia-chat-thread__suggestion-btn {
+        font-size: var(--font-size-sm);
+        padding: var(--padding-md) var(--padding-md);
+    }
 }

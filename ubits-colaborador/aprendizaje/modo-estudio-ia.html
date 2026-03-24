@@ -23,7 +23,8 @@
     <link rel="stylesheet" href="../../components/ia-button.css">
     <link rel="stylesheet" href="../../components/header-product.css">
     <link rel="stylesheet" href="../../components/loader.css">
-    <link rel="stylesheet" href="../../components/study-chat.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-ia-chat.css">
+    <link rel="stylesheet" href="./modo-estudio-ia-tutor-panel.css">
     <link rel="stylesheet" href="../../components/status-tag.css">
     <link rel="stylesheet" href="../../components/badge-tag.css">
     <link rel="stylesheet" href="../../components/avatar.css">
@@ -37,7 +38,7 @@
     <link rel="stylesheet" href="./modo-estudio-ia.css">
 </head>
 
-<body class="modo-estudio-ia-page modo-tutor-ia-page aprendizaje-ia-pages" data-theme="light">
+<body class="modo-estudio-ia-page modo-tutor-ia-page aprendizaje-ia-pages ubits-ia-chat-page" data-theme="light">
     <div class="dashboard-container">
         <div class="tooltip" id="tooltip"></div>
 
@@ -58,12 +59,12 @@
                     </div>
 
                     <!-- Sección chat + panel derecho (Canvas tipo Gemini) -->
-                    <div class="section-single modo-tutor-ia-chat-section">
+                    <div class="section-single ubits-ia-chat">
                         <!-- Panel historial (izquierda): siempre visible -->
-                        <div class="modo-estudio-ia-historial-panel is-open" id="historial-panel"
+                        <div class="ubits-ia-chat-historial is-open" id="historial-panel"
                             aria-label="Mis chats">
-                            <div class="modo-estudio-ia-historial-panel__header">
-                                <div class="modo-estudio-ia-historial-panel__header-start">
+                            <div class="ubits-ia-chat-historial__header">
+                                <div class="ubits-ia-chat-historial__header-start">
                                     <button type="button"
                                         class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only"
                                         id="historial-panel-back" data-tooltip="Volver" data-tooltip-delay="1000"
@@ -79,13 +80,13 @@
                                     <i class="far fa-times"></i>
                                 </button>
                             </div>
-                            <div class="modo-estudio-ia-historial-panel__body">
-                                <div id="historial-list" class="modo-estudio-ia-historial-panel__list"></div>
-                                <div id="historial-empty" class="modo-estudio-ia-historial-panel__empty">
+                            <div class="ubits-ia-chat-historial__body">
+                                <div id="historial-list" class="ubits-ia-chat-historial__list"></div>
+                                <div id="historial-empty" class="ubits-ia-chat-historial__empty">
                                     <div id="historial-empty-state-container"></div>
                                 </div>
                             </div>
-                            <div class="modo-estudio-ia-historial-panel__footer">
+                            <div class="ubits-ia-chat-historial__footer">
                                 <button type="button"
                                     class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--md"
                                     id="historial-panel-nuevo-chat"
@@ -96,13 +97,13 @@
                                 </button>
                             </div>
                         </div>
-                        <div class="modo-tutor-ia-chat-main">
-                            <div class="widget-chat" id="study-chat-container"></div>
+                        <div class="ubits-ia-chat__main">
+                            <div class="widget-chat" id="ubits-ia-chat-thread-container"></div>
                         </div>
-                        <div class="modo-tutor-ia-canvas-panel" id="tutor-canvas-panel"
+                        <div class="ubits-ia-chat__side" id="tutor-canvas-panel"
                             aria-label="Panel de materiales de estudio">
                             <!-- Quiz / Flashcards / Guía se inyectan aquí desde study-chat.js -->
-                            <div class="study-chat-canvas-placeholder" id="tutor-canvas-placeholder">
+                            <div class="ubits-ia-chat-side__placeholder" id="tutor-canvas-placeholder">
                                 <i class="far fa-lightbulb"></i>
                                 <p class="ubits-body-md-regular">Elige un tema y pide un quiz, flashcards o guía de
                                     estudio para verlo aquí.</p>
@@ -219,7 +220,7 @@
 
             // Inicializar chat de tutor (empty state con nombre + competencias, panel derecho)
             if (typeof initStudyChat === 'function') {
-                initStudyChat('study-chat-container', {
+                initStudyChat('ubits-ia-chat-thread-container', {
                     userFirstName: 'María Alejandra',
                     competencies: ['Liderazgo', 'Comunicación', 'Inglés'],
                     rightPanelId: 'tutor-canvas-panel',
@@ -239,8 +240,8 @@
                 var tema = params.get('tema');
                 var recurso = params.get('recurso');
                 var subtema = params.get('subtema');
-                var input = document.getElementById('ubits-study-chat-input');
-                var sendBtn = document.getElementById('ubits-study-chat-send-btn');
+                var input = document.getElementById('ubits-ia-chat-thread-input');
+                var sendBtn = document.getElementById('ubits-ia-chat-thread-send-btn');
                 if (!input || !sendBtn) return;
 
                 if (tema && recurso) {

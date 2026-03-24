@@ -1011,7 +1011,11 @@
                         '../../components/' + requirements.css.split('/').pop()
                     ];
                     
-                    const cssFound = cssPatterns.some(pattern => html.includes(pattern));
+                    let cssFound = cssPatterns.some(pattern => html.includes(pattern));
+                    /* Shell IA: basta general-styles/ubits-ia-chat.css; study-chat.css solo reexporta ese shell */
+                    if (component === 'loadStudyChat' && !cssFound) {
+                        cssFound = /general-styles\/ubits-ia-chat\.css|ubits-ia-chat\.css/.test(html);
+                    }
                     
                     if (!cssFound) {
                         missingFiles.push({

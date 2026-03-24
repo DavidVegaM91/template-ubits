@@ -18,13 +18,13 @@
     <link rel="stylesheet" href="../../components/profile-menu.css">
     <link rel="stylesheet" href="../../components/button.css">
     <link rel="stylesheet" href="../../components/ia-button.css">
-    <link rel="stylesheet" href="../../components/study-chat.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-ia-chat.css">
     <link rel="stylesheet" href="../../components/empty-state.css">
     <link rel="stylesheet" href="../../components/tooltip.css">
     <link rel="stylesheet" href="./lms-creator.css">
     <link rel="stylesheet" href="./chat-ia-grupos.css">
 </head>
-<body class="chat-ia-grupos-page aprendizaje-ia-pages" data-theme="light">
+<body class="chat-ia-grupos-page aprendizaje-ia-pages ubits-ia-chat-page" data-theme="light">
     <div class="dashboard-container">
         <div class="tooltip" id="tooltip"></div>
         <div id="sidebar-container"></div>
@@ -33,10 +33,10 @@
             <div id="top-nav-container"></div>
             <div class="content-area">
                 <div class="content-sections">
-                    <div class="section-single chat-ia-grupos-chat-section">
-                        <div class="modo-estudio-ia-historial-panel is-open" id="group-creation-historial-panel" aria-label="Mis chats">
-                            <div class="modo-estudio-ia-historial-panel__header">
-                                <div class="modo-estudio-ia-historial-panel__header-start">
+                    <div class="section-single ubits-ia-chat">
+                        <div class="ubits-ia-chat-historial is-open" id="group-creation-historial-panel" aria-label="Mis chats">
+                            <div class="ubits-ia-chat-historial__header">
+                                <div class="ubits-ia-chat-historial__header-start">
                                     <button type="button"
                                         class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only"
                                         id="group-creation-historial-panel-back" data-tooltip="Volver" data-tooltip-delay="1000"
@@ -49,13 +49,13 @@
                                     <i class="far fa-times"></i>
                                 </button>
                             </div>
-                            <div class="modo-estudio-ia-historial-panel__body">
-                                <div id="group-creation-historial-list" class="modo-estudio-ia-historial-panel__list"></div>
-                                <div id="group-creation-historial-empty" class="modo-estudio-ia-historial-panel__empty">
+                            <div class="ubits-ia-chat-historial__body">
+                                <div id="group-creation-historial-list" class="ubits-ia-chat-historial__list"></div>
+                                <div id="group-creation-historial-empty" class="ubits-ia-chat-historial__empty">
                                     <div id="group-creation-historial-empty-state-container"></div>
                                 </div>
                             </div>
-                            <div class="modo-estudio-ia-historial-panel__footer">
+                            <div class="ubits-ia-chat-historial__footer">
                                 <button type="button"
                                     class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--md"
                                     id="group-creation-historial-panel-nuevo-chat"
@@ -66,7 +66,7 @@
                                 </button>
                             </div>
                         </div>
-                        <div class="chat-ia-grupos-chat-main study-chat-wrapper--welcome">
+                        <div class="ubits-ia-chat__main ubits-ia-chat__main--welcome">
                             <div class="widget-chat" id="group-creation-chat-container"></div>
                         </div>
                     </div>
@@ -110,10 +110,10 @@
 
             setTimeout(function() {
                 var chatRoot = document.getElementById('group-creation-chat');
-                var chatMain = document.querySelector('.chat-ia-grupos-chat-main');
+                var chatMain = document.querySelector('.ubits-ia-chat__main');
                 if (chatRoot && chatMain) {
-                    chatRoot.classList.add('ubits-study-chat--welcome');
-                    chatMain.classList.add('study-chat-wrapper--welcome');
+                    chatRoot.classList.add('ubits-ia-chat-thread--welcome');
+                    chatMain.classList.add('ubits-ia-chat__main--welcome');
                 }
             }, 100);
         });

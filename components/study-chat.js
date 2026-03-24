@@ -697,7 +697,7 @@ function shuffleQuizOptions(questions) {
 }
 
 function setCanvasPanelOpen(open) {
-    document.body.classList.toggle('canvas-panel-open', !!open);
+    document.body.classList.toggle('ia-chat-side-panel-open', !!open);
 }
 
 /**
@@ -710,12 +710,12 @@ function getCanvasLoaderHTML(title, bodyText) {
     var loaderBody = (typeof getLoaderHTML === 'function')
         ? getLoaderHTML({ text: text, wrap: false })
         : '<span class="ubits-loader"></span><p class="ubits-loader-text ubits-body-md-regular">' + text + '</p>';
-    return '<div class="study-chat-canvas-content study-chat-canvas-content--generating">' +
-        '<div class="study-chat-canvas-header">' +
+    return '<div class="ubits-ia-chat-side__content ubits-ia-chat-side__content--generating">' +
+        '<div class="ubits-ia-chat-side__header">' +
         '<span class="ubits-body-md-bold">' + headerTitle + '</span>' +
-        '<button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only study-chat-canvas-close" data-tooltip="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>' +
+        '<button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-ia-chat-side__close" data-tooltip="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>' +
         '</div>' +
-        '<div class="study-chat-canvas-body study-chat-canvas-body--generating">' +
+        '<div class="ubits-ia-chat-side__body ubits-ia-chat-side__body--generating">' +
         loaderBody +
         '</div>' +
         '</div>';
@@ -751,38 +751,38 @@ function renderTutorPanel(type, topic, extraData) {
         const totalQuestions = questions.length;
         const useBars = totalQuestions >= 1 && totalQuestions <= 19;
         const progressBlock = useBars
-            ? '<div class="study-chat-quiz-progress-bars">' + Array.from({ length: totalQuestions }, (_, i) => '<span class="study-chat-quiz-progress-bar" data-bar-index="' + i + '"></span>').join('') + '</div>'
-            : '<div class="study-chat-quiz-progress-slider" role="presentation"><div class="study-chat-quiz-progress-track"><div class="study-chat-quiz-progress-fill"></div><div class="study-chat-quiz-progress-thumb"></div></div></div>';
-        html = `<div class="study-chat-canvas-content study-chat-canvas-quiz" data-topic="${topicKey}" data-quiz-total="${totalQuestions}">
-            <div class="study-chat-canvas-header">
+            ? '<div class="ubits-ia-chat-side__quiz-progress-bars">' + Array.from({ length: totalQuestions }, (_, i) => '<span class="ubits-ia-chat-side__quiz-progress-bar" data-bar-index="' + i + '"></span>').join('') + '</div>'
+            : '<div class="ubits-ia-chat-side__quiz-progress-slider" role="presentation"><div class="ubits-ia-chat-side__quiz-progress-track"><div class="ubits-ia-chat-side__quiz-progress-fill"></div><div class="ubits-ia-chat-side__quiz-progress-thumb"></div></div></div>';
+        html = `<div class="ubits-ia-chat-side__content ubits-ia-chat-side__quiz" data-topic="${topicKey}" data-quiz-total="${totalQuestions}">
+            <div class="ubits-ia-chat-side__header">
                 <span class="ubits-body-md-bold">Quiz</span>
-                <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only study-chat-canvas-close" data-tooltip="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>
+                <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-ia-chat-side__close" data-tooltip="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>
             </div>
-            <div class="study-chat-canvas-body">
-                <div class="study-chat-quiz-progress">
+            <div class="ubits-ia-chat-side__body">
+                <div class="ubits-ia-chat-side__quiz-progress">
                     ${progressBlock}
-                    <span class="study-chat-quiz-progress-text">1 / ${totalQuestions}</span>
-                    <span class="study-chat-quiz-progress-stats">
-                        <span class="study-chat-quiz-progress-stat-pill study-chat-quiz-progress-wrong" data-tooltip="Respuestas incorrectas" aria-label="Respuestas incorrectas"><i class="far fa-times"></i><span class="study-chat-quiz-progress-wrong-n">0</span></span>
-                        <span class="study-chat-quiz-progress-stat-pill study-chat-quiz-progress-correct" data-tooltip="Respuestas correctas" aria-label="Respuestas correctas"><i class="far fa-check"></i><span class="study-chat-quiz-progress-correct-n">0</span></span>
+                    <span class="ubits-ia-chat-side__quiz-progress-text">1 / ${totalQuestions}</span>
+                    <span class="ubits-ia-chat-side__quiz-progress-stats">
+                        <span class="ubits-ia-chat-side__quiz-progress-stat-pill ubits-ia-chat-side__quiz-progress-wrong" data-tooltip="Respuestas incorrectas" aria-label="Respuestas incorrectas"><i class="far fa-times"></i><span class="ubits-ia-chat-side__quiz-progress-wrong-n">0</span></span>
+                        <span class="ubits-ia-chat-side__quiz-progress-stat-pill ubits-ia-chat-side__quiz-progress-correct" data-tooltip="Respuestas correctas" aria-label="Respuestas correctas"><i class="far fa-check"></i><span class="ubits-ia-chat-side__quiz-progress-correct-n">0</span></span>
                     </span>
                 </div>
-                <div class="study-chat-quiz-questions">${questions.map((qu, i) => `
-                    <div class="study-chat-quiz-q" data-index="${i}" data-correct-index="${qu.correct}" data-explanation="${(qu.explanation || '').replace(/"/g, '&quot;')}" ${i > 0 ? 'style="display:none;"' : ''}>
-                        <p class="ubits-body-md-regular study-chat-quiz-question-text">${i + 1}. ${qu.q}</p>
-                        <div class="study-chat-quiz-options">${qu.options.map((opt, j) => {
+                <div class="ubits-ia-chat-side__quiz-questions">${questions.map((qu, i) => `
+                    <div class="ubits-ia-chat-side__quiz-q" data-index="${i}" data-correct-index="${qu.correct}" data-explanation="${(qu.explanation || '').replace(/"/g, '&quot;')}" ${i > 0 ? 'style="display:none;"' : ''}>
+                        <p class="ubits-body-md-regular ubits-ia-chat-side__quiz-question-text">${i + 1}. ${qu.q}</p>
+                        <div class="ubits-ia-chat-side__quiz-options">${qu.options.map((opt, j) => {
             const letter = String.fromCharCode(65 + j);
-            return `<label class="study-chat-quiz-opt" data-option-index="${j}"><div class="study-chat-quiz-opt-row ubits-radio ubits-radio--sm"><input type="radio" name="quiz-${i}" class="ubits-radio__input" value="${j}"><span class="ubits-radio__circle"></span><span class="ubits-radio__label"><span class="study-chat-quiz-opt-letter">${letter}</span> <span class="study-chat-quiz-opt-text">${opt}</span></span></div></label>`;
+            return `<label class="ubits-ia-chat-side__quiz-opt" data-option-index="${j}"><div class="ubits-ia-chat-side__quiz-opt-row ubits-radio ubits-radio--sm"><input type="radio" name="quiz-${i}" class="ubits-radio__input" value="${j}"><span class="ubits-radio__circle"></span><span class="ubits-radio__label"><span class="ubits-ia-chat-side__quiz-opt-letter">${letter}</span> <span class="ubits-ia-chat-side__quiz-opt-text">${opt}</span></span></div></label>`;
         }).join('')}</div>
-                        <div class="study-chat-quiz-feedback" style="display:none;" role="status" aria-hidden="true"></div>
+                        <div class="ubits-ia-chat-side__quiz-feedback" style="display:none;" role="status" aria-hidden="true"></div>
                     </div>`).join('')}</div>
-                <div class="study-chat-quiz-result" style="display:none;" role="region" aria-label="Resultados del quiz"></div>
+                <div class="ubits-ia-chat-side__quiz-result" style="display:none;" role="region" aria-label="Resultados del quiz"></div>
             </div>
-            <div class="study-chat-canvas-footer">
-                <div class="study-chat-quiz-actions">
-                    <button class="ubits-button ubits-button--secondary ubits-button--sm" id="study-chat-quiz-back" style="display:none;"><span>Anterior</span></button>
-                    <button class="ubits-button ubits-button--primary ubits-button--sm" id="study-chat-quiz-next" style="display:none;"><span>Siguiente</span></button>
-                    <button class="ubits-button ubits-button--primary ubits-button--sm" id="study-chat-quiz-submit" style="display:none;"><span>Hecho</span></button>
+            <div class="ubits-ia-chat-side__footer">
+                <div class="ubits-ia-chat-side__quiz-actions">
+                    <button class="ubits-button ubits-button--secondary ubits-button--sm" id="ubits-ia-chat-side__quiz-back" style="display:none;"><span>Anterior</span></button>
+                    <button class="ubits-button ubits-button--primary ubits-button--sm" id="ubits-ia-chat-side__quiz-next" style="display:none;"><span>Siguiente</span></button>
+                    <button class="ubits-button ubits-button--primary ubits-button--sm" id="ubits-ia-chat-side__quiz-submit" style="display:none;"><span>Hecho</span></button>
                 </div>
             </div>
         </div>`;
@@ -793,7 +793,7 @@ function renderTutorPanel(type, topic, extraData) {
             panel.classList.add('has-content');
             if (placeholder) placeholder.style.display = 'none';
             setTimeout(function () {
-                var contentHtml = html.replace(/class="study-chat-canvas-content study-chat-canvas-quiz"/, 'class="study-chat-canvas-content study-chat-canvas-quiz study-chat-canvas-content--reveal-stagger"');
+                var contentHtml = html.replace(/class="ubits-ia-chat-side__content ubits-ia-chat-side__quiz"/, 'class="ubits-ia-chat-side__content ubits-ia-chat-side__quiz ubits-ia-chat-side__content--reveal-stagger"');
                 panel.innerHTML = contentHtml;
                 panel.classList.add('has-content');
                 bindCanvasClose(panel);
@@ -817,22 +817,22 @@ function renderTutorPanel(type, topic, extraData) {
         var initialResults = mockResults.slice(0, 10);
         var remainingResults = mockResults.slice(10);
 
-        html = `<div class="study-chat-canvas-content study-chat-canvas-results" data-topic="${topicKey}">
-            <div class="study-chat-canvas-header">
+        html = `<div class="ubits-ia-chat-side__content ubits-ia-chat-side__results" data-topic="${topicKey}">
+            <div class="ubits-ia-chat-side__header">
                 <span class="ubits-body-md-bold">Sugerencias de contenido</span>
-                <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only study-chat-canvas-close" data-tooltip="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>
+                <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-ia-chat-side__close" data-tooltip="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>
             </div>
-            <div class="study-chat-canvas-body">
+            <div class="ubits-ia-chat-side__body">
                 <p class="ubits-body-sm-regular" style="margin-bottom: 16px; color: var(--ubits-fg-2-default);">
                     Resultados para <strong>${TOPIC_LABELS[topicKey] || topicKey}</strong>
                     ${filters.type ? ' • ' + filters.type : ''}
                     ${filters.level ? ' • ' + filters.level : ''}
                     ${filters.duration ? ' • ' + filters.duration : ''}
                 </p>
-                <div id="study-chat-search-results-list-${topicKey}" class="study-chat-search-results-list" style="display: flex; flex-direction: column; gap: 12px;"></div>
+                <div id="ubits-ia-chat-thread__search-results-list-${topicKey}" class="ubits-ia-chat-thread__search-results-list" style="display: flex; flex-direction: column; gap: 12px;"></div>
                 ${remainingResults.length > 0 ? `
-                <div class="study-chat-search-more-container" style="text-align: center; margin-top: 16px;">
-                    <button class="ubits-button ubits-button--secondary ubits-button--sm" id="study-chat-search-more-btn">
+                <div class="ubits-ia-chat-side__search-more-container" style="text-align: center; margin-top: 16px;">
+                    <button class="ubits-button ubits-button--secondary ubits-button--sm" id="ubits-ia-chat-side__search-more-btn">
                         <span>Ver más resultados</span>
                     </button>
                 </div>` : ''}
@@ -840,12 +840,12 @@ function renderTutorPanel(type, topic, extraData) {
         </div>`;
 
         setTimeout(function () {
-            var contentHtml = html.replace(/class="study-chat-canvas-content study-chat-canvas-results"/, 'class="study-chat-canvas-content study-chat-canvas-results study-chat-canvas-content--reveal-stagger"');
+            var contentHtml = html.replace(/class="ubits-ia-chat-side__content ubits-ia-chat-side__results"/, 'class="ubits-ia-chat-side__content ubits-ia-chat-side__results ubits-ia-chat-side__content--reveal-stagger"');
             panel.innerHTML = contentHtml;
             panel.classList.add('has-content');
             bindCanvasClose(panel);
 
-            var listId = `study-chat-search-results-list-${topicKey}`;
+            var listId = `ubits-ia-chat-thread__search-results-list-${topicKey}`;
             var container = document.getElementById(listId);
             if (typeof renderCardContentCompact === 'function' && container) {
                 // Render initial 10 cards manually to append
@@ -854,7 +854,7 @@ function renderTutorPanel(type, topic, extraData) {
                 });
             }
 
-            var moreBtn = panel.querySelector('#study-chat-search-more-btn');
+            var moreBtn = panel.querySelector('#ubits-ia-chat-side__search-more-btn');
             if (moreBtn) {
                 moreBtn.addEventListener('click', function () {
                     if (typeof renderCardContentCompact === 'function' && container) {
@@ -875,35 +875,35 @@ function renderTutorPanel(type, topic, extraData) {
         const cards = (sets[fcSetIndex][topicKey] || sets[fcSetIndex].liderazgo).slice();
         const fcSet = String(fcSetIndex);
         const fcTotal = cards.length;
-        const fcProgressBarsHtml = Array.from({ length: fcTotal }, (_, i) => '<span class="study-chat-fc-progress-bar" data-bar-index="' + i + '"></span>').join('');
-        html = `<div class="study-chat-canvas-content study-chat-canvas-flashcards" data-topic="${topicKey}" data-fc-set="${fcSet}">
-            <div class="study-chat-canvas-header">
+        const fcProgressBarsHtml = Array.from({ length: fcTotal }, (_, i) => '<span class="ubits-ia-chat-side__fc-progress-bar" data-bar-index="' + i + '"></span>').join('');
+        html = `<div class="ubits-ia-chat-side__content ubits-ia-chat-side__flashcards" data-topic="${topicKey}" data-fc-set="${fcSet}">
+            <div class="ubits-ia-chat-side__header">
                 <span class="ubits-body-md-bold">Flashcards</span>
-                <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only study-chat-canvas-close" data-tooltip="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>
+                <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-ia-chat-side__close" data-tooltip="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>
             </div>
-            <div class="study-chat-canvas-body">
-                <div class="study-chat-fc-main">
-                    <div class="study-chat-fc-progress">
-                        <div class="study-chat-fc-progress-bars">${fcProgressBarsHtml}</div>
-                        <span class="study-chat-fc-progress-text">1 / ${fcTotal}</span>
+            <div class="ubits-ia-chat-side__body">
+                <div class="ubits-ia-chat-side__fc-main">
+                    <div class="ubits-ia-chat-side__fc-progress">
+                        <div class="ubits-ia-chat-side__fc-progress-bars">${fcProgressBarsHtml}</div>
+                        <span class="ubits-ia-chat-side__fc-progress-text">1 / ${fcTotal}</span>
                     </div>
-                    <div class="study-chat-fc-card" data-index="0" role="button" tabindex="0" aria-label="Clic para voltear la tarjeta">
-                        <div class="study-chat-fc-card-inner">
-                            <div class="study-chat-fc-face study-chat-fc-front"><p class="ubits-body-md-regular">${cards[0].front}</p></div>
-                            <div class="study-chat-fc-face study-chat-fc-back"><p class="ubits-body-md-regular">${cards[0].back}</p></div>
+                    <div class="ubits-ia-chat-side__fc-card" data-index="0" role="button" tabindex="0" aria-label="Clic para voltear la tarjeta">
+                        <div class="ubits-ia-chat-side__fc-card-inner">
+                            <div class="ubits-ia-chat-side__fc-face ubits-ia-chat-side__fc-front"><p class="ubits-body-md-regular">${cards[0].front}</p></div>
+                            <div class="ubits-ia-chat-side__fc-face ubits-ia-chat-side__fc-back"><p class="ubits-body-md-regular">${cards[0].back}</p></div>
                         </div>
                     </div>
-                    <p class="study-chat-fc-hint ubits-body-sm-regular">Tocá la tarjeta para girarla y ver la respuesta.</p>
-                    <div class="study-chat-fc-deck" data-cards='${JSON.stringify(cards).replace(/'/g, "&#39;")}' style="display:none;"></div>
+                    <p class="ubits-ia-chat-side__fc-hint ubits-body-sm-regular">Tocá la tarjeta para girarla y ver la respuesta.</p>
+                    <div class="ubits-ia-chat-side__fc-deck" data-cards='${JSON.stringify(cards).replace(/'/g, "&#39;")}' style="display:none;"></div>
                 </div>
-                <div class="study-chat-fc-result" style="display:none;" role="region" aria-label="Seguir aprendiendo"></div>
+                <div class="ubits-ia-chat-side__fc-result" style="display:none;" role="region" aria-label="Seguir aprendiendo"></div>
             </div>
-            <div class="study-chat-canvas-footer">
-                <div class="study-chat-fc-actions">
-                    <button class="ubits-button ubits-button--tertiary ubits-button--sm" id="study-chat-fc-shuffle"><i class="far fa-shuffle"></i><span>Barajar</span></button>
-                    <button class="ubits-button ubits-button--secondary ubits-button--sm" id="study-chat-fc-prev" style="display:none;"><i class="far fa-chevron-left"></i><span>Anterior</span></button>
-                    <button class="ubits-button ubits-button--primary ubits-button--sm" id="study-chat-fc-next"><span>Siguiente</span><i class="far fa-chevron-right"></i></button>
-                    <button class="ubits-button ubits-button--primary ubits-button--sm" id="study-chat-fc-done" style="display:none;"><span>Hecho</span></button>
+            <div class="ubits-ia-chat-side__footer">
+                <div class="ubits-ia-chat-side__fc-actions">
+                    <button class="ubits-button ubits-button--tertiary ubits-button--sm" id="ubits-ia-chat-side__fc-shuffle"><i class="far fa-shuffle"></i><span>Barajar</span></button>
+                    <button class="ubits-button ubits-button--secondary ubits-button--sm" id="ubits-ia-chat-side__fc-prev" style="display:none;"><i class="far fa-chevron-left"></i><span>Anterior</span></button>
+                    <button class="ubits-button ubits-button--primary ubits-button--sm" id="ubits-ia-chat-side__fc-next"><span>Siguiente</span><i class="far fa-chevron-right"></i></button>
+                    <button class="ubits-button ubits-button--primary ubits-button--sm" id="ubits-ia-chat-side__fc-done" style="display:none;"><span>Hecho</span></button>
                 </div>
             </div>
         </div>`;
@@ -914,7 +914,7 @@ function renderTutorPanel(type, topic, extraData) {
             panel.classList.add('has-content');
             if (placeholder) placeholder.style.display = 'none';
             setTimeout(function () {
-                var contentHtml = html.replace(/class="study-chat-canvas-content study-chat-canvas-flashcards"/, 'class="study-chat-canvas-content study-chat-canvas-flashcards study-chat-canvas-content--reveal-stagger"');
+                var contentHtml = html.replace(/class="ubits-ia-chat-side__content ubits-ia-chat-side__flashcards"/, 'class="ubits-ia-chat-side__content ubits-ia-chat-side__flashcards ubits-ia-chat-side__content--reveal-stagger"');
                 panel.innerHTML = contentHtml;
                 panel.classList.add('has-content');
                 bindCanvasClose(panel);
@@ -926,13 +926,13 @@ function renderTutorPanel(type, topic, extraData) {
         }
     } else if (type === 'courses' && extraData && extraData.courses && extraData.courses.length > 0) {
         const containerId = 'tutor-panel-courses-' + Date.now();
-        html = `<div class="study-chat-canvas-content study-chat-canvas-courses">
-            <div class="study-chat-canvas-header">
+        html = `<div class="ubits-ia-chat-side__content ubits-ia-chat-side__courses">
+            <div class="ubits-ia-chat-side__header">
                 <span class="ubits-body-md-bold">Cursos sugeridos</span>
-                <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only study-chat-canvas-close" data-tooltip="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>
+                <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-ia-chat-side__close" data-tooltip="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>
             </div>
-            <div class="study-chat-canvas-body">
-                <div id="${containerId}" class="study-chat-canvas-courses-container"></div>
+            <div class="ubits-ia-chat-side__body">
+                <div id="${containerId}" class="ubits-ia-chat-side__courses-container"></div>
             </div>
         </div>`;
         panel.innerHTML = html;
@@ -943,19 +943,19 @@ function renderTutorPanel(type, topic, extraData) {
     } else if (type === 'plan' && extraData && extraData.plan) {
         const plan = extraData.plan;
         const planContainerId = 'tutor-panel-plan-' + Date.now();
-        html = `<div class="study-chat-canvas-content study-chat-canvas-plan">
-            <div class="study-chat-canvas-header">
+        html = `<div class="ubits-ia-chat-side__content ubits-ia-chat-side__plan">
+            <div class="ubits-ia-chat-side__header">
                 <span class="ubits-body-md-bold">Plan de formación</span>
-                <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only study-chat-canvas-close" data-tooltip="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>
+                <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-ia-chat-side__close" data-tooltip="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>
             </div>
-            <div class="study-chat-canvas-body">
-                <div class="study-chat-plan-title">${plan.title}</div>
-                <div class="study-chat-plan-details">
-                    <div class="study-chat-plan-detail-item"><strong>Cursos:</strong> ${plan.courses.length}</div>
-                    <div class="study-chat-plan-detail-item"><strong>Inicio:</strong> ${plan.startDate}</div>
-                    <div class="study-chat-plan-detail-item"><strong>Fin:</strong> ${plan.endDate}</div>
+            <div class="ubits-ia-chat-side__body">
+                <div class="ubits-ia-chat-thread__plan-title">${plan.title}</div>
+                <div class="ubits-ia-chat-thread__plan-details">
+                    <div class="ubits-ia-chat-thread__plan-detail-item"><strong>Cursos:</strong> ${plan.courses.length}</div>
+                    <div class="ubits-ia-chat-thread__plan-detail-item"><strong>Inicio:</strong> ${plan.startDate}</div>
+                    <div class="ubits-ia-chat-thread__plan-detail-item"><strong>Fin:</strong> ${plan.endDate}</div>
                 </div>
-                <div id="${planContainerId}" class="study-chat-courses-container"></div>
+                <div id="${planContainerId}" class="ubits-ia-chat-thread__courses-container"></div>
             </div>
         </div>`;
         panel.innerHTML = html;
@@ -972,24 +972,24 @@ function renderTutorPanel(type, topic, extraData) {
         const viewMode = !!sp.created;
         currentStudyPlanState = { plan: sp, topicKey: topicKey || '', planUiState: viewMode ? 'readonly' : 'unsaved' };
         var footerPrimaryLabel = viewMode ? 'Editar plan' : 'Crear plan';
-        html = '<div class="study-chat-canvas-content study-chat-canvas-study-plan study-chat-canvas-study-plan-editable" data-topic="' + (topicKey || '') + '">' +
-            '<div class="study-chat-canvas-header">' +
+        html = '<div class="ubits-ia-chat-side__content ubits-ia-chat-side__learning-plan ubits-ia-chat-side__learning-plan-editable" data-topic="' + (topicKey || '') + '">' +
+            '<div class="ubits-ia-chat-side__header">' +
             '<span class="ubits-body-md-bold">Plan de estudio</span>' +
-            '<button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only study-chat-canvas-close" data-tooltip="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>' +
+            '<button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-ia-chat-side__close" data-tooltip="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>' +
             '</div>' +
-            '<div class="study-chat-canvas-body">' +
-            '<div class="study-chat-study-plan-edit-row" id="study-chat-plan-input-title-wrap"><div id="study-chat-plan-input-title"></div></div>' +
-            '<div class="study-chat-study-plan-edit-row study-chat-study-plan-edit-row--dual">' +
-            '<div class="study-chat-study-plan-edit-field" id="study-chat-plan-input-priority-wrap"><div id="study-chat-plan-input-priority"></div></div>' +
-            '<div class="study-chat-study-plan-edit-field" id="study-chat-plan-input-date-fin-wrap"><div id="study-chat-plan-input-date-fin"></div></div>' +
+            '<div class="ubits-ia-chat-side__body">' +
+            '<div class="ubits-ia-chat-thread__learning-plan-edit-row" id="ubits-ia-chat-side__plan-input-title-wrap"><div id="ubits-ia-chat-side__plan-input-title"></div></div>' +
+            '<div class="ubits-ia-chat-thread__learning-plan-edit-row ubits-ia-chat-thread__learning-plan-edit-row--dual">' +
+            '<div class="ubits-ia-chat-thread__learning-plan-edit-field" id="ubits-ia-chat-side__plan-input-priority-wrap"><div id="ubits-ia-chat-side__plan-input-priority"></div></div>' +
+            '<div class="ubits-ia-chat-thread__learning-plan-edit-field" id="ubits-ia-chat-side__plan-input-date-fin-wrap"><div id="ubits-ia-chat-side__plan-input-date-fin"></div></div>' +
             '</div>' +
-            '<p class="study-chat-study-plan-tasks-label ubits-body-sm-bold">Tareas</p>' +
-            '<div class="study-chat-study-plan-tasks-cards" id="study-chat-plan-tasks-container"></div>' +
-            '<div class="study-chat-plan-add-task-wrap" id="study-chat-plan-add-task-wrap"><button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="study-chat-plan-add-task"><span>+ Agregar tarea</span></button></div>' +
+            '<p class="ubits-ia-chat-thread__learning-plan-tasks-label ubits-body-sm-bold">Tareas</p>' +
+            '<div class="ubits-ia-chat-thread__learning-plan-tasks-cards" id="ubits-ia-chat-side__plan-tasks-container"></div>' +
+            '<div class="ubits-ia-chat-side__plan-add-task-wrap" id="ubits-ia-chat-side__plan-add-task-wrap"><button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="ubits-ia-chat-side__plan-add-task"><span>+ Agregar tarea</span></button></div>' +
             '</div>' +
-            '<div class="study-chat-canvas-footer">' +
-            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="study-chat-plan-cancel"><span>Cancelar</span></button>' +
-            '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="study-chat-plan-primary-btn"><span>' + footerPrimaryLabel + '</span></button>' +
+            '<div class="ubits-ia-chat-side__footer">' +
+            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="ubits-ia-chat-side__plan-cancel"><span>Cancelar</span></button>' +
+            '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="ubits-ia-chat-side__plan-primary-btn"><span>' + footerPrimaryLabel + '</span></button>' +
             '</div></div>';
         var resourceKeySp = 'studyPlan:' + (topicKey || '');
         var needLoaderSp = !(chatState.canvasResourceGenerated && chatState.canvasResourceGenerated[resourceKeySp]);
@@ -997,11 +997,11 @@ function renderTutorPanel(type, topic, extraData) {
             panel.innerHTML = getCanvasLoaderHTML();
             panel.classList.add('has-content');
             setTimeout(function () {
-                var contentHtml = html.replace('study-chat-canvas-content study-chat-canvas-study-plan study-chat-canvas-study-plan-editable', 'study-chat-canvas-content study-chat-canvas-study-plan study-chat-canvas-study-plan-editable study-chat-canvas-content--reveal-stagger');
+                var contentHtml = html.replace('ubits-ia-chat-side__content ubits-ia-chat-side__learning-plan ubits-ia-chat-side__learning-plan-editable', 'ubits-ia-chat-side__content ubits-ia-chat-side__learning-plan ubits-ia-chat-side__learning-plan-editable ubits-ia-chat-side__content--reveal-stagger');
                 panel.innerHTML = contentHtml;
                 panel.classList.add('has-content');
                 bindCanvasClose(panel);
-                var tasksContainer = panel.querySelector('#study-chat-plan-tasks-container');
+                var tasksContainer = panel.querySelector('#ubits-ia-chat-side__plan-tasks-container');
                 var readonly = currentStudyPlanState.planUiState === 'readonly';
                 renderStudyPlanTaskCards(tasksContainer, sp, topicKey || '', { readonly: readonly });
                 sp._inputInstances = renderStudyPlanUbitsInputs(panel, sp, readonly);
@@ -1016,7 +1016,7 @@ function renderTutorPanel(type, topic, extraData) {
         panel.innerHTML = html;
         panel.classList.add('has-content');
         bindCanvasClose(panel);
-        var tasksContainer = panel.querySelector('#study-chat-plan-tasks-container');
+        var tasksContainer = panel.querySelector('#ubits-ia-chat-side__plan-tasks-container');
         var readonlyInitial = currentStudyPlanState.planUiState === 'readonly';
         renderStudyPlanTaskCards(tasksContainer, sp, topicKey || '', { readonly: readonlyInitial });
         sp._inputInstances = renderStudyPlanUbitsInputs(panel, sp, readonlyInitial);
@@ -1037,36 +1037,36 @@ function renderTutorPanel(type, topic, extraData) {
         const transcriptionRaw = (extraData && extraData.transcription) ? String(extraData.transcription) : 'La transcripción se mostrará aquí cuando el chat genere el podcast.';
         const transcription = transcriptionRaw.replace(/</g, '&lt;').replace(/"/g, '&quot;').replace(/\n/g, '<br>');
         const showPlanPodcast = STUDY_PLAN_TOPICS.indexOf(podTopic) >= 0;
-        html = '<div class="study-chat-canvas-content study-chat-canvas-podcast" data-topic="' + (podTopic.replace(/"/g, '&quot;')) + '">' +
-            '<div class="study-chat-canvas-header">' +
+        html = '<div class="ubits-ia-chat-side__content ubits-ia-chat-side__podcast" data-topic="' + (podTopic.replace(/"/g, '&quot;')) + '">' +
+            '<div class="ubits-ia-chat-side__header">' +
             '<span class="ubits-body-md-bold">Podcast</span>' +
-            '<button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only study-chat-canvas-close" data-tooltip="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>' +
+            '<button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-ia-chat-side__close" data-tooltip="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>' +
             '</div>' +
-            '<div class="study-chat-canvas-body">' +
-            '<div class="study-chat-podcast-player">' +
-            '<p class="study-chat-podcast-title ubits-body-md-bold">' + podTitle + '</p>' +
-            '<audio class="study-chat-podcast-audio" controls preload="metadata" ' + (audioUrl ? 'src="' + audioUrl.replace(/"/g, '&quot;') + '"' : '') + '></audio>' +
+            '<div class="ubits-ia-chat-side__body">' +
+            '<div class="ubits-ia-chat-side__podcast-player">' +
+            '<p class="ubits-ia-chat-side__podcast-title ubits-body-md-bold">' + podTitle + '</p>' +
+            '<audio class="ubits-ia-chat-side__podcast-audio" controls preload="metadata" ' + (audioUrl ? 'src="' + audioUrl.replace(/"/g, '&quot;') + '"' : '') + '></audio>' +
             '</div>' +
-            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm study-chat-podcast-transcription-btn" id="study-chat-podcast-toggle-transcription" aria-expanded="false">' +
+            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-ia-chat-side__podcast-transcription-btn" id="ubits-ia-chat-side__podcast-toggle-transcription" aria-expanded="false">' +
             '<i class="far fa-file-lines"></i><span>Ver transcripción del podcast</span>' +
             '</button>' +
-            '<div class="study-chat-podcast-transcription" id="study-chat-podcast-transcription" role="region" aria-label="Transcripción" hidden>' +
-            '<div class="study-chat-podcast-transcription-inner ubits-body-sm-regular">' + transcription + '</div>' +
+            '<div class="ubits-ia-chat-side__podcast-transcription" id="ubits-ia-chat-side__podcast-transcription" role="region" aria-label="Transcripción" hidden>' +
+            '<div class="ubits-ia-chat-side__podcast-transcription-inner ubits-body-sm-regular">' + transcription + '</div>' +
             '</div>' +
-            '<h3 class="study-chat-quiz-result-section-title study-chat-podcast-seguir-title">Seguir aprendiendo</h3>' +
-            '<div class="study-chat-quiz-result-learn study-chat-podcast-seguir">' +
-            '<button type="button" class="study-chat-quiz-result-option" data-action="quiz">' +
-            '<span class="study-chat-quiz-result-option-icon"><i class="far fa-circle-question"></i></span>' +
-            '<span class="study-chat-quiz-result-option-title">Quiz</span>' +
-            '<span class="study-chat-quiz-result-option-desc">Responde preguntas sobre el tema y recibe feedback inmediato.</span></button>' +
-            '<button type="button" class="study-chat-quiz-result-option" data-action="flashcards">' +
-            '<span class="study-chat-quiz-result-option-icon"><i class="far fa-bring-forward"></i></span>' +
-            '<span class="study-chat-quiz-result-option-title">Flashcards</span>' +
-            '<span class="study-chat-quiz-result-option-desc">Crea un set de flashcards para repasar y afianzar conceptos.</span></button>' +
-            (showPlanPodcast ? '<button type="button" class="study-chat-quiz-result-option study-chat-quiz-result-option-study-plan" data-action="studyPlan">' +
-                '<span class="study-chat-quiz-result-option-icon"><i class="far fa-layer-group"></i></span>' +
-                '<span class="study-chat-quiz-result-option-title">Plan de estudio</span>' +
-                '<span class="study-chat-quiz-result-option-desc">Organiza tu aprendizaje con un plan de tareas personalizado sobre este tema.</span></button>' : '') +
+            '<h3 class="ubits-ia-chat-side__quiz-result-section-title ubits-ia-chat-side__podcast-seguir-title">Seguir aprendiendo</h3>' +
+            '<div class="ubits-ia-chat-side__quiz-result-learn ubits-ia-chat-side__podcast-seguir">' +
+            '<button type="button" class="ubits-ia-chat-side__quiz-result-option" data-action="quiz">' +
+            '<span class="ubits-ia-chat-side__quiz-result-option-icon"><i class="far fa-circle-question"></i></span>' +
+            '<span class="ubits-ia-chat-side__quiz-result-option-title">Quiz</span>' +
+            '<span class="ubits-ia-chat-side__quiz-result-option-desc">Responde preguntas sobre el tema y recibe feedback inmediato.</span></button>' +
+            '<button type="button" class="ubits-ia-chat-side__quiz-result-option" data-action="flashcards">' +
+            '<span class="ubits-ia-chat-side__quiz-result-option-icon"><i class="far fa-bring-forward"></i></span>' +
+            '<span class="ubits-ia-chat-side__quiz-result-option-title">Flashcards</span>' +
+            '<span class="ubits-ia-chat-side__quiz-result-option-desc">Crea un set de flashcards para repasar y afianzar conceptos.</span></button>' +
+            (showPlanPodcast ? '<button type="button" class="ubits-ia-chat-side__quiz-result-option ubits-ia-chat-side__quiz-result-option-learning-plan" data-action="studyPlan">' +
+                '<span class="ubits-ia-chat-side__quiz-result-option-icon"><i class="far fa-layer-group"></i></span>' +
+                '<span class="ubits-ia-chat-side__quiz-result-option-title">Plan de estudio</span>' +
+                '<span class="ubits-ia-chat-side__quiz-result-option-desc">Organiza tu aprendizaje con un plan de tareas personalizado sobre este tema.</span></button>' : '') +
             '</div>' +
             '</div>' +
             '</div>';
@@ -1077,7 +1077,7 @@ function renderTutorPanel(type, topic, extraData) {
             panel.classList.add('has-content');
             if (placeholder) placeholder.style.display = 'none';
             setTimeout(function () {
-                var contentHtml = html.replace('class="study-chat-canvas-content study-chat-canvas-podcast"', 'class="study-chat-canvas-content study-chat-canvas-podcast study-chat-canvas-content--reveal-stagger"');
+                var contentHtml = html.replace('class="ubits-ia-chat-side__content ubits-ia-chat-side__podcast"', 'class="ubits-ia-chat-side__content ubits-ia-chat-side__podcast ubits-ia-chat-side__content--reveal-stagger"');
                 panel.innerHTML = contentHtml;
                 panel.classList.add('has-content');
                 bindCanvasClose(panel);
@@ -1113,46 +1113,46 @@ function renderTutorPanel(type, topic, extraData) {
         var providerName = (c.provider || 'UBITS').replace(/</g, '&lt;').replace(/"/g, '&quot;');
         var expertNameEsc = (c.expertName || 'Experto').replace(/</g, '&lt;').replace(/"/g, '&quot;');
         var expertImg = (c.expertImage || '').replace(/"/g, '&quot;');
-        html = '<div class="study-chat-canvas-content study-chat-canvas-content-preview">' +
-            '<div class="study-chat-canvas-header">' +
+        html = '<div class="ubits-ia-chat-side__content ubits-ia-chat-side__content-preview">' +
+            '<div class="ubits-ia-chat-side__header">' +
             '<span class="ubits-body-md-bold">Contenido</span>' +
-            '<button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only study-chat-canvas-close" data-tooltip="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>' +
+            '<button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-ia-chat-side__close" data-tooltip="Cerrar panel" aria-label="Cerrar panel"><i class="far fa-times"></i></button>' +
             '</div>' +
-            '<div class="study-chat-canvas-body study-chat-canvas-body--content-preview">' +
-            '<div class="study-chat-content-preview-image-wrap"><img class="study-chat-content-preview-image" src="' + imgSrc + '" alt=""></div>' +
-            '<span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--info ubits-badge-tag--sm study-chat-content-preview-type"><span class="ubits-badge-tag__indicator"></span><span class="ubits-badge-tag__text">' + typeLabel + '</span></span>' +
-            '<h2 class="study-chat-content-preview-title ubits-body-md-bold">' + titleEsc + '</h2>' +
-            '<div class="study-chat-content-preview-meta">' +
-            '<span class="study-chat-content-preview-meta-item"><i class="far fa-gauge"></i> ' + levelEsc + '</span>' +
-            '<span class="study-chat-content-preview-meta-item"><i class="far fa-clock"></i> ' + durationEsc + '</span>' +
-            '<span class="study-chat-content-preview-meta-item"><i class="far fa-globe"></i> ' + langEsc + '</span>' +
+            '<div class="ubits-ia-chat-side__body ubits-ia-chat-side__body--content-preview">' +
+            '<div class="ubits-ia-chat-side__content-preview-image-wrap"><img class="ubits-ia-chat-side__content-preview-image" src="' + imgSrc + '" alt=""></div>' +
+            '<span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--info ubits-badge-tag--sm ubits-ia-chat-side__content-preview-type"><span class="ubits-badge-tag__indicator"></span><span class="ubits-badge-tag__text">' + typeLabel + '</span></span>' +
+            '<h2 class="ubits-ia-chat-side__content-preview-title ubits-body-md-bold">' + titleEsc + '</h2>' +
+            '<div class="ubits-ia-chat-side__content-preview-meta">' +
+            '<span class="ubits-ia-chat-side__content-preview-meta-item"><i class="far fa-gauge"></i> ' + levelEsc + '</span>' +
+            '<span class="ubits-ia-chat-side__content-preview-meta-item"><i class="far fa-clock"></i> ' + durationEsc + '</span>' +
+            '<span class="ubits-ia-chat-side__content-preview-meta-item"><i class="far fa-globe"></i> ' + langEsc + '</span>' +
             '</div>' +
-            '<div class="study-chat-content-preview-actions">' +
-            '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="study-chat-content-preview-ver"><i class="far fa-play"></i><span>Ver contenido</span></button>' +
-            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="study-chat-content-preview-desc"><span>Ver descripción</span></button>' +
+            '<div class="ubits-ia-chat-side__content-preview-actions">' +
+            '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="ubits-ia-chat-side__content-preview-ver"><i class="far fa-play"></i><span>Ver contenido</span></button>' +
+            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="ubits-ia-chat-side__content-preview-desc"><span>Ver descripción</span></button>' +
             '</div>' +
-            '<div class="study-chat-content-preview-comp"><span class="ubits-body-sm-bold study-chat-content-preview-label">Competencia:</span> <div class="ubits-avatar ubits-avatar--sm"><img src="' + competencyImageSrc + '" alt="" class="ubits-avatar__img" onerror="this.style.display=\'none\'"></div><span class="ubits-body-sm-regular">' + compEsc + '</span></div>' +
-            (skillsHtml ? '<div class="study-chat-content-preview-skills"><span class="ubits-body-sm-bold study-chat-content-preview-label">Habilidades:</span> ' + skillsHtml + '</div>' : '') +
-            '<div class="study-chat-content-preview-aliado-experto">' +
-            '<div class="study-chat-content-preview-provider">' +
-            '<span class="ubits-body-sm-bold study-chat-content-preview-label">Aliado:</span> ' +
+            '<div class="ubits-ia-chat-side__content-preview-comp"><span class="ubits-body-sm-bold ubits-ia-chat-side__content-preview-label">Competencia:</span> <div class="ubits-avatar ubits-avatar--sm"><img src="' + competencyImageSrc + '" alt="" class="ubits-avatar__img" onerror="this.style.display=\'none\'"></div><span class="ubits-body-sm-regular">' + compEsc + '</span></div>' +
+            (skillsHtml ? '<div class="ubits-ia-chat-side__content-preview-skills"><span class="ubits-body-sm-bold ubits-ia-chat-side__content-preview-label">Habilidades:</span> ' + skillsHtml + '</div>' : '') +
+            '<div class="ubits-ia-chat-side__content-preview-aliado-experto">' +
+            '<div class="ubits-ia-chat-side__content-preview-provider">' +
+            '<span class="ubits-body-sm-bold ubits-ia-chat-side__content-preview-label">Aliado:</span> ' +
             '<div class="ubits-avatar ubits-avatar--sm"><img src="' + providerLogoSrc + '" alt="" class="ubits-avatar__img"></div>' +
             '<span class="ubits-body-sm-regular">' + providerName + '</span>' +
             '</div>' +
-            '<div class="study-chat-content-preview-expert">' +
-            '<span class="ubits-body-sm-bold study-chat-content-preview-label">Experto:</span> ' +
+            '<div class="ubits-ia-chat-side__content-preview-expert">' +
+            '<span class="ubits-body-sm-bold ubits-ia-chat-side__content-preview-label">Experto:</span> ' +
             (expertImg ? '<div class="ubits-avatar ubits-avatar--sm"><img src="' + expertImg + '" alt="" class="ubits-avatar__img"></div>' : '<div class="ubits-avatar ubits-avatar--sm"><span class="ubits-avatar__fallback"><i class="far fa-user"></i></span></div>') +
             '<span class="ubits-body-sm-regular">' + expertNameEsc + '</span>' +
             '</div></div>' +
             '</div>' +
-            '<div class="study-chat-canvas-footer">' +
-            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="study-chat-content-preview-save-task"><i class="far fa-bookmark"></i><span>Guardar como tarea</span></button>' +
+            '<div class="ubits-ia-chat-side__footer">' +
+            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="ubits-ia-chat-side__content-preview-save-task"><i class="far fa-bookmark"></i><span>Guardar como tarea</span></button>' +
             '</div></div>';
         panel.innerHTML = html;
         panel.classList.add('has-content');
         if (placeholder) placeholder.style.display = 'none';
         bindCanvasClose(panel);
-        var saveTaskBtn = panel.querySelector('#study-chat-content-preview-save-task');
+        var saveTaskBtn = panel.querySelector('#ubits-ia-chat-side__content-preview-save-task');
         if (saveTaskBtn) saveTaskBtn.addEventListener('click', function () { if (typeof showToast === 'function') showToast('info', 'Guardado como tarea (prototipo).'); });
         return;
     } else {
@@ -1161,14 +1161,14 @@ function renderTutorPanel(type, topic, extraData) {
     panel.innerHTML = html;
     panel.classList.add('has-content');
     if (placeholder) placeholder.style.display = 'none';
-    const closeBtn = panel.querySelector('.study-chat-canvas-close');
+    const closeBtn = panel.querySelector('.ubits-ia-chat-side__close');
     if (closeBtn) bindCanvasClose(panel);
     bindTutorPanelEvents(panel, type, topicKey);
 }
 
 function bindCanvasClose(panel) {
     if (panel && panel.id && typeof window.initTooltip === 'function') window.initTooltip('#' + panel.id + ' [data-tooltip]');
-    const btn = panel && panel.querySelector('.study-chat-canvas-close');
+    const btn = panel && panel.querySelector('.ubits-ia-chat-side__close');
     if (btn) btn.addEventListener('click', function () {
         panel.classList.remove('is-open', 'has-content');
         panel.innerHTML = '';
@@ -1179,8 +1179,8 @@ function bindCanvasClose(panel) {
 }
 
 function bindPodcastTranscriptionToggle(panel) {
-    const btn = panel && panel.querySelector('#study-chat-podcast-toggle-transcription');
-    const region = panel && panel.querySelector('#study-chat-podcast-transcription');
+    const btn = panel && panel.querySelector('#ubits-ia-chat-side__podcast-toggle-transcription');
+    const region = panel && panel.querySelector('#ubits-ia-chat-side__podcast-transcription');
     if (!btn || !region) return;
     btn.addEventListener('click', function () {
         const isOpen = region.classList.toggle('is-open');
@@ -1192,9 +1192,9 @@ function bindPodcastTranscriptionToggle(panel) {
 }
 
 function bindPodcastSeguirAprendiendo(panel) {
-    const content = panel && panel.querySelector('.study-chat-canvas-podcast');
+    const content = panel && panel.querySelector('.ubits-ia-chat-side__podcast');
     const topicKey = content && content.getAttribute('data-topic') ? content.getAttribute('data-topic') : (chatState.currentTopic || 'liderazgo');
-    const options = panel && panel.querySelectorAll('.study-chat-podcast-seguir .study-chat-quiz-result-option');
+    const options = panel && panel.querySelectorAll('.ubits-ia-chat-side__podcast-seguir .ubits-ia-chat-side__quiz-result-option');
     if (!options || !options.length) return;
     options.forEach(function (btn) {
         btn.addEventListener('click', function () {
@@ -1235,63 +1235,63 @@ function renderStudyPlanTaskCards(container, plan, topicKey, options) {
     var basePath = getImageBasePath();
     plan.tasks.forEach(function (task, idx) {
         var card = document.createElement('div');
-        card.className = 'study-chat-plan-task-card study-chat-plan-task-card--' + (task.type || 'course');
+        card.className = 'ubits-ia-chat-side__plan-task-card ubits-ia-chat-side__plan-task-card--' + (task.type || 'course');
         card.setAttribute('data-task-index', idx);
         var titleEsc = (task.title || '').replace(/</g, '&lt;').replace(/"/g, '&quot;');
         var actionsHtml = '';
         if (!readonly) {
             if (task.type === 'custom') {
-                actionsHtml = '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--xs ubits-button--icon-only study-chat-plan-task-delete" data-task-index="' + idx + '" data-tooltip="Eliminar" aria-label="Eliminar"><i class="far fa-trash"></i></button>';
+                actionsHtml = '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--xs ubits-button--icon-only ubits-ia-chat-side__plan-task-delete" data-task-index="' + idx + '" data-tooltip="Eliminar" aria-label="Eliminar"><i class="far fa-trash"></i></button>';
             } else if (task.type === 'activity') {
-                actionsHtml = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs ubits-button--icon-only study-chat-plan-task-rehacer" data-task-index="' + idx + '" data-tooltip="Rehacer (otra opción)" aria-label="Rehacer"><i class="far fa-rotate-right"></i></button>' +
-                    '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--xs ubits-button--icon-only study-chat-plan-task-delete" data-task-index="' + idx + '" data-tooltip="Eliminar" aria-label="Eliminar"><i class="far fa-trash"></i></button>';
+                actionsHtml = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs ubits-button--icon-only ubits-ia-chat-side__plan-task-rehacer" data-task-index="' + idx + '" data-tooltip="Rehacer (otra opción)" aria-label="Rehacer"><i class="far fa-rotate-right"></i></button>' +
+                    '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--xs ubits-button--icon-only ubits-ia-chat-side__plan-task-delete" data-task-index="' + idx + '" data-tooltip="Eliminar" aria-label="Eliminar"><i class="far fa-trash"></i></button>';
             } else {
-                actionsHtml = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs ubits-button--icon-only study-chat-plan-task-cambiar" data-task-index="' + idx + '" data-tooltip="Cambiar por otro curso" aria-label="Cambiar"><i class="far fa-arrows-rotate"></i></button>' +
-                    '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--xs ubits-button--icon-only study-chat-plan-task-delete" data-task-index="' + idx + '" data-tooltip="Eliminar" aria-label="Eliminar"><i class="far fa-trash"></i></button>';
+                actionsHtml = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs ubits-button--icon-only ubits-ia-chat-side__plan-task-cambiar" data-task-index="' + idx + '" data-tooltip="Cambiar por otro curso" aria-label="Cambiar"><i class="far fa-arrows-rotate"></i></button>' +
+                    '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--xs ubits-button--icon-only ubits-ia-chat-side__plan-task-delete" data-task-index="' + idx + '" data-tooltip="Eliminar" aria-label="Eliminar"><i class="far fa-trash"></i></button>';
             }
         }
-        var titleHtml = '<div class="study-chat-plan-task-card-title-wrap">' +
-            '<span class="study-chat-plan-task-card-title ubits-body-sm-regular study-chat-plan-task-title-editable" data-task-index="' + idx + '" data-tooltip="Clic para editar">' + (task.title || '') + '</span>' +
-            '<div class="study-chat-plan-task-card-actions">' + actionsHtml + '</div></div>';
+        var titleHtml = '<div class="ubits-ia-chat-side__plan-task-card-title-wrap">' +
+            '<span class="ubits-ia-chat-side__plan-task-card-title ubits-body-sm-regular ubits-ia-chat-side__plan-task-title-editable" data-task-index="' + idx + '" data-tooltip="Clic para editar">' + (task.title || '') + '</span>' +
+            '<div class="ubits-ia-chat-side__plan-task-card-actions">' + actionsHtml + '</div></div>';
         var metaHtml = '';
         if (task.type === 'course' && task.course) {
             var contentType = (task.course.type != null && task.course.type !== '') ? task.course.type : 'Curso';
             var contentLevel = (task.course.level && RECOMMENDED_CONTENT_LEVELS.indexOf(task.course.level) >= 0) ? task.course.level : RECOMMENDED_CONTENT_DEFAULT_LEVEL;
             var contentDuration = (task.course.duration != null && task.course.duration !== '') ? task.course.duration : RECOMMENDED_CONTENT_DEFAULT_DURATION;
             var levelIcon = RECOMMENDED_CONTENT_LEVEL_ICONS[contentLevel] || RECOMMENDED_CONTENT_LEVEL_ICONS['Intermedio'];
-            metaHtml = '<div class="study-chat-plan-task-card-meta study-chat-plan-task-card-specs">' +
-                '<span class="study-chat-plan-task-card-spec study-chat-plan-task-card-spec--type"><span class="ubits-body-xs-regular">' + (contentType.replace(/</g, '&lt;').replace(/"/g, '&quot;')) + '</span></span>' +
-                '<span class="study-chat-plan-task-card-spec"><i class="' + levelIcon + '"></i><span class="ubits-body-xs-regular">' + contentLevel + '</span></span>' +
-                '<span class="study-chat-plan-task-card-spec"><i class="far fa-clock"></i><span class="ubits-body-xs-regular">' + contentDuration + '</span></span>' +
+            metaHtml = '<div class="ubits-ia-chat-side__plan-task-card-meta ubits-ia-chat-side__plan-task-card-specs">' +
+                '<span class="ubits-ia-chat-side__plan-task-card-spec ubits-ia-chat-side__plan-task-card-spec--type"><span class="ubits-body-xs-regular">' + (contentType.replace(/</g, '&lt;').replace(/"/g, '&quot;')) + '</span></span>' +
+                '<span class="ubits-ia-chat-side__plan-task-card-spec"><i class="' + levelIcon + '"></i><span class="ubits-body-xs-regular">' + contentLevel + '</span></span>' +
+                '<span class="ubits-ia-chat-side__plan-task-card-spec"><i class="far fa-clock"></i><span class="ubits-body-xs-regular">' + contentDuration + '</span></span>' +
                 '</div>';
         }
         var thumbHtml = '';
         if (task.type === 'course' && task.course && task.course.imagePath) {
             var imgSrc = basePath + task.course.imagePath;
             var imgAlt = (task.title || task.course.title || 'Curso').replace(/"/g, '&quot;');
-            thumbHtml = '<div class="study-chat-plan-task-card-thumb"><img src="' + imgSrc + '" alt="' + imgAlt + '" class="study-chat-plan-task-card-thumb-img"></div>';
+            thumbHtml = '<div class="ubits-ia-chat-side__plan-task-card-thumb"><img src="' + imgSrc + '" alt="' + imgAlt + '" class="ubits-ia-chat-side__plan-task-card-thumb-img"></div>';
         }
         var bodyBlock = titleHtml + (metaHtml ? metaHtml : '');
         var innerContent;
         if (thumbHtml) {
-            innerContent = '<div class="study-chat-plan-task-card-row">' + thumbHtml + '<div class="study-chat-plan-task-card-body">' + bodyBlock + '</div></div>';
+            innerContent = '<div class="ubits-ia-chat-side__plan-task-card-row">' + thumbHtml + '<div class="ubits-ia-chat-side__plan-task-card-body">' + bodyBlock + '</div></div>';
         } else if (metaHtml) {
-            innerContent = '<div class="study-chat-plan-task-card-body">' + bodyBlock + '</div>';
+            innerContent = '<div class="ubits-ia-chat-side__plan-task-card-body">' + bodyBlock + '</div>';
         } else {
             innerContent = titleHtml;
         }
-        card.innerHTML = '<div class="study-chat-plan-task-card-inner">' + innerContent + '</div>';
+        card.innerHTML = '<div class="ubits-ia-chat-side__plan-task-card-inner">' + innerContent + '</div>';
         container.appendChild(card);
     });
     bindStudyPlanTaskCardEvents(container, plan, topicKey, options);
-    if (typeof window.initTooltip === 'function') window.initTooltip('#study-chat-plan-tasks-container [data-tooltip]');
+    if (typeof window.initTooltip === 'function') window.initTooltip('#ubits-ia-chat-side__plan-tasks-container [data-tooltip]');
 }
 
 function bindStudyPlanTaskCardEvents(container, plan, topicKey, options) {
     if (!container || !plan) return;
     var readonly = options && options.readonly;
     var tasksContainer = container;
-    var panel = container.closest('.study-chat-canvas-study-plan-editable');
+    var panel = container.closest('.ubits-ia-chat-side__learning-plan-editable');
     var priorityOpts = [
         { value: 'Alta', icon: 'far fa-chevrons-up', color: 'var(--ubits-feedback-accent-error)' },
         { value: 'Media', icon: 'far fa-chevron-up', color: 'var(--ubits-fg-1-medium)' },
@@ -1299,7 +1299,7 @@ function bindStudyPlanTaskCardEvents(container, plan, topicKey, options) {
     ];
     // Edición inline del nombre: clic en el título → input; blur/Enter → guardar (solo si no readonly)
     if (!readonly) {
-        tasksContainer.querySelectorAll('.study-chat-plan-task-title-editable').forEach(function (span) {
+        tasksContainer.querySelectorAll('.ubits-ia-chat-side__plan-task-title-editable').forEach(function (span) {
             span.addEventListener('click', function () {
                 var idx = parseInt(span.getAttribute('data-task-index'), 10);
                 var task = plan.tasks[idx];
@@ -1307,7 +1307,7 @@ function bindStudyPlanTaskCardEvents(container, plan, topicKey, options) {
                 var current = task.title || '';
                 var input = document.createElement('input');
                 input.type = 'text';
-                input.className = 'study-chat-plan-task-title-input ubits-body-sm-regular';
+                input.className = 'ubits-ia-chat-side__plan-task-title-input ubits-body-sm-regular';
                 input.value = current;
                 input.setAttribute('data-task-index', String(idx));
                 span.parentNode.replaceChild(input, span);
@@ -1327,13 +1327,13 @@ function bindStudyPlanTaskCardEvents(container, plan, topicKey, options) {
                         task.title = newTitle;
                     }
                     var newSpan = document.createElement('span');
-                    newSpan.className = 'study-chat-plan-task-card-title ubits-body-sm-regular study-chat-plan-task-title-editable';
+                    newSpan.className = 'ubits-ia-chat-side__plan-task-card-title ubits-body-sm-regular ubits-ia-chat-side__plan-task-title-editable';
                     newSpan.setAttribute('data-task-index', String(idx));
                     newSpan.setAttribute('data-tooltip', 'Clic para editar');
                     newSpan.textContent = task.title || '';
                     input.parentNode.replaceChild(newSpan, input);
                     bindStudyPlanTaskCardEvents(tasksContainer, plan, topicKey, options);
-                    if (typeof window.initTooltip === 'function') window.initTooltip('#ubits-study-chat [data-tooltip]');
+                    if (typeof window.initTooltip === 'function') window.initTooltip('#ubits-ia-chat-thread [data-tooltip]');
                 }
                 input.addEventListener('blur', saveAndRevert);
                 input.addEventListener('keydown', function (e) {
@@ -1346,26 +1346,26 @@ function bindStudyPlanTaskCardEvents(container, plan, topicKey, options) {
                             return;
                         }
                         var newSpan = document.createElement('span');
-                        newSpan.className = 'study-chat-plan-task-card-title ubits-body-sm-regular study-chat-plan-task-title-editable';
+                        newSpan.className = 'ubits-ia-chat-side__plan-task-card-title ubits-body-sm-regular ubits-ia-chat-side__plan-task-title-editable';
                         newSpan.setAttribute('data-task-index', String(idx));
                         newSpan.setAttribute('data-tooltip', 'Clic para editar');
                         newSpan.textContent = task.title || '';
                         input.parentNode.replaceChild(newSpan, input);
                         bindStudyPlanTaskCardEvents(tasksContainer, plan, topicKey, options);
-                        if (typeof window.initTooltip === 'function') window.initTooltip('#ubits-study-chat [data-tooltip]');
+                        if (typeof window.initTooltip === 'function') window.initTooltip('#ubits-ia-chat-thread [data-tooltip]');
                     }
                 });
             });
         });
     }
-    tasksContainer.querySelectorAll('.study-chat-plan-task-delete').forEach(function (btn) {
+    tasksContainer.querySelectorAll('.ubits-ia-chat-side__plan-task-delete').forEach(function (btn) {
         btn.addEventListener('click', function () {
             var idx = parseInt(btn.getAttribute('data-task-index'), 10);
             plan.tasks.splice(idx, 1);
             renderStudyPlanTaskCards(tasksContainer, plan, topicKey, options);
         });
     });
-    tasksContainer.querySelectorAll('.study-chat-plan-task-rehacer').forEach(function (btn) {
+    tasksContainer.querySelectorAll('.ubits-ia-chat-side__plan-task-rehacer').forEach(function (btn) {
         btn.addEventListener('click', function () {
             var idx = parseInt(btn.getAttribute('data-task-index'), 10);
             var task = plan.tasks[idx];
@@ -1389,11 +1389,11 @@ function bindStudyPlanTaskCardEvents(container, plan, topicKey, options) {
             if (nextTitle == null) return;
             task.currentIndex = nextIndex;
             task.title = nextTitle;
-            var titleEl = tasksContainer.querySelector('.study-chat-plan-task-card-title[data-task-index="' + idx + '"]');
+            var titleEl = tasksContainer.querySelector('.ubits-ia-chat-side__plan-task-card-title[data-task-index="' + idx + '"]');
             if (titleEl) titleEl.textContent = task.title;
         });
     });
-    tasksContainer.querySelectorAll('.study-chat-plan-task-cambiar').forEach(function (btn) {
+    tasksContainer.querySelectorAll('.ubits-ia-chat-side__plan-task-cambiar').forEach(function (btn) {
         btn.addEventListener('click', function () {
             var idx = parseInt(btn.getAttribute('data-task-index'), 10);
             var task = plan.tasks[idx];
@@ -1426,7 +1426,7 @@ function renderStudyPlanUbitsInputs(panel, sp, isReadonly) {
     if (!panel || !sp || typeof window.createInput !== 'function') return null;
     var inputState = isReadonly ? 'disabled' : 'default';
     var titleInput = window.createInput({
-        containerId: 'study-chat-plan-input-title',
+        containerId: 'ubits-ia-chat-side__plan-input-title',
         type: 'text',
         label: 'Título',
         placeholder: 'Nombre del plan',
@@ -1436,7 +1436,7 @@ function renderStudyPlanUbitsInputs(panel, sp, isReadonly) {
         onChange: function (v) { sp.title = v; }
     });
     var priorityInput = window.createInput({
-        containerId: 'study-chat-plan-input-priority',
+        containerId: 'ubits-ia-chat-side__plan-input-priority',
         type: 'select',
         label: 'Prioridad',
         placeholder: 'Selecciona prioridad',
@@ -1451,7 +1451,7 @@ function renderStudyPlanUbitsInputs(panel, sp, isReadonly) {
         onChange: function (v) { sp.priority = v; }
     });
     var dateInput = window.createInput({
-        containerId: 'study-chat-plan-input-date-fin',
+        containerId: 'ubits-ia-chat-side__plan-input-date-fin',
         type: 'calendar',
         label: 'Fin',
         placeholder: 'Selecciona una fecha...',
@@ -1471,9 +1471,9 @@ function renderStudyPlanUbitsInputs(panel, sp, isReadonly) {
 }
 
 function bindStudyPlanPriorityMenu(panel, sp, priorityOpts) {
-    var trigger = panel.querySelector('#study-chat-plan-priority-trigger');
-    var menu = panel.querySelector('#study-chat-plan-priority-menu');
-    var triggerText = panel.querySelector('.study-chat-plan-priority-trigger-text');
+    var trigger = panel.querySelector('#ubits-ia-chat-side__plan-priority-trigger');
+    var menu = panel.querySelector('#ubits-ia-chat-side__plan-priority-menu');
+    var triggerText = panel.querySelector('.ubits-ia-chat-side__plan-priority-trigger-text');
     if (!trigger || !menu || !triggerText) return;
     function closeMenu() {
         menu.style.display = 'none';
@@ -1485,7 +1485,7 @@ function bindStudyPlanPriorityMenu(panel, sp, priorityOpts) {
         menu.style.display = isOpen ? 'none' : 'block';
         trigger.setAttribute('aria-expanded', !isOpen ? 'true' : 'false');
     });
-    menu.querySelectorAll('.study-chat-plan-priority-option').forEach(function (btn) {
+    menu.querySelectorAll('.ubits-ia-chat-side__plan-priority-option').forEach(function (btn) {
         btn.addEventListener('click', function () {
             var val = btn.getAttribute('data-value');
             sp.priority = val;
@@ -1499,16 +1499,16 @@ function bindStudyPlanPriorityMenu(panel, sp, priorityOpts) {
 }
 
 function bindStudyPlanAddTaskButton(panel, sp, topicKey) {
-    var addBtn = panel.querySelector('#study-chat-plan-add-task');
-    var addWrap = panel.querySelector('#study-chat-plan-add-task-wrap');
-    var tasksContainer = panel.querySelector('#study-chat-plan-tasks-container');
+    var addBtn = panel.querySelector('#ubits-ia-chat-side__plan-add-task');
+    var addWrap = panel.querySelector('#ubits-ia-chat-side__plan-add-task-wrap');
+    var tasksContainer = panel.querySelector('#ubits-ia-chat-side__plan-tasks-container');
     if (!addBtn || !tasksContainer || !sp || !sp.tasks) return;
     addBtn.addEventListener('click', function () {
         sp.tasks.push({ type: 'custom', title: 'Nueva tarea', _isNew: true });
         renderStudyPlanTaskCards(tasksContainer, sp, topicKey);
         var lastIdx = sp.tasks.length - 1;
         setTimeout(function () {
-            var lastTitle = tasksContainer.querySelector('.study-chat-plan-task-title-editable[data-task-index="' + lastIdx + '"]');
+            var lastTitle = tasksContainer.querySelector('.ubits-ia-chat-side__plan-task-title-editable[data-task-index="' + lastIdx + '"]');
             if (lastTitle) lastTitle.click();
             if (addWrap) addWrap.scrollIntoView({ behavior: 'smooth', block: 'end' });
         }, 0);
@@ -1518,13 +1518,13 @@ function bindStudyPlanAddTaskButton(panel, sp, topicKey) {
 function applyStudyPlanUiState(panel, sp, topicKey) {
     if (!currentStudyPlanState || !panel || !sp) return;
     var state = currentStudyPlanState.planUiState;
-    var addWrap = panel.querySelector('#study-chat-plan-add-task-wrap');
-    var primaryBtn = panel.querySelector('#study-chat-plan-primary-btn');
+    var addWrap = panel.querySelector('#ubits-ia-chat-side__plan-add-task-wrap');
+    var primaryBtn = panel.querySelector('#ubits-ia-chat-side__plan-primary-btn');
     var primaryLabel = primaryBtn && primaryBtn.querySelector('span');
-    var tasksContainer = panel.querySelector('#study-chat-plan-tasks-container');
+    var tasksContainer = panel.querySelector('#ubits-ia-chat-side__plan-tasks-container');
     var inst = sp._inputInstances;
 
-    var planInputContainers = '#study-chat-plan-input-title, #study-chat-plan-input-priority, #study-chat-plan-input-date-fin';
+    var planInputContainers = '#ubits-ia-chat-side__plan-input-title, #ubits-ia-chat-side__plan-input-priority, #ubits-ia-chat-side__plan-input-date-fin';
     var planInputs = panel.querySelectorAll(planInputContainers + ' .ubits-input');
 
     function setPlanInputsDisabled(disabled) {
@@ -1573,8 +1573,8 @@ function applyStudyPlanUiState(panel, sp, topicKey) {
 }
 
 function bindStudyPlanFooter(panel, sp, topicKey) {
-    var cancelBtn = panel.querySelector('#study-chat-plan-cancel');
-    var primaryBtn = panel.querySelector('#study-chat-plan-primary-btn');
+    var cancelBtn = panel.querySelector('#ubits-ia-chat-side__plan-cancel');
+    var primaryBtn = panel.querySelector('#ubits-ia-chat-side__plan-primary-btn');
     if (cancelBtn) cancelBtn.addEventListener('click', function () {
         panel.classList.remove('is-open', 'has-content');
         panel.innerHTML = '';
@@ -1615,20 +1615,20 @@ function renderPlanCoursesInPanel(containerId, courses) {
 function bindTutorPanelEvents(panel, type, topicKey) {
     if (!panel) return;
     if (type === 'quiz') {
-        const questions = panel.querySelectorAll('.study-chat-quiz-q');
-        const progressWrap = panel.querySelector('.study-chat-quiz-progress');
-        const progressBars = panel.querySelectorAll('.study-chat-quiz-progress-bar');
-        const progressSliderFill = panel.querySelector('.study-chat-quiz-progress-fill');
-        const progressSliderThumb = panel.querySelector('.study-chat-quiz-progress-thumb');
-        const progressText = panel.querySelector('.study-chat-quiz-progress-text');
-        const progressWrongN = panel.querySelector('.study-chat-quiz-progress-wrong-n');
-        const progressCorrectN = panel.querySelector('.study-chat-quiz-progress-correct-n');
-        const backBtn = panel.querySelector('#study-chat-quiz-back');
-        const nextBtn = panel.querySelector('#study-chat-quiz-next');
-        const submitBtn = panel.querySelector('#study-chat-quiz-submit');
-        const resultDiv = panel.querySelector('.study-chat-quiz-result');
-        const questionsContainer = panel.querySelector('.study-chat-quiz-questions');
-        const actionsDiv = panel.querySelector('.study-chat-quiz-actions');
+        const questions = panel.querySelectorAll('.ubits-ia-chat-side__quiz-q');
+        const progressWrap = panel.querySelector('.ubits-ia-chat-side__quiz-progress');
+        const progressBars = panel.querySelectorAll('.ubits-ia-chat-side__quiz-progress-bar');
+        const progressSliderFill = panel.querySelector('.ubits-ia-chat-side__quiz-progress-fill');
+        const progressSliderThumb = panel.querySelector('.ubits-ia-chat-side__quiz-progress-thumb');
+        const progressText = panel.querySelector('.ubits-ia-chat-side__quiz-progress-text');
+        const progressWrongN = panel.querySelector('.ubits-ia-chat-side__quiz-progress-wrong-n');
+        const progressCorrectN = panel.querySelector('.ubits-ia-chat-side__quiz-progress-correct-n');
+        const backBtn = panel.querySelector('#ubits-ia-chat-side__quiz-back');
+        const nextBtn = panel.querySelector('#ubits-ia-chat-side__quiz-next');
+        const submitBtn = panel.querySelector('#ubits-ia-chat-side__quiz-submit');
+        const resultDiv = panel.querySelector('.ubits-ia-chat-side__quiz-result');
+        const questionsContainer = panel.querySelector('.ubits-ia-chat-side__quiz-questions');
+        const actionsDiv = panel.querySelector('.ubits-ia-chat-side__quiz-actions');
         const quizFooterOriginalHtml = actionsDiv ? actionsDiv.innerHTML : '';
         let currentIdx = 0;
         const total = questions.length;
@@ -1640,7 +1640,7 @@ function bindTutorPanelEvents(panel, type, topicKey) {
             if (!progressText) return;
             if (progressBars.length) {
                 progressBars.forEach(function (bar, i) {
-                    bar.classList.toggle('study-chat-quiz-progress-bar--filled', i <= currentIdx);
+                    bar.classList.toggle('ubits-ia-chat-side__quiz-progress-bar--filled', i <= currentIdx);
                 });
             } else if (progressSliderFill && progressSliderThumb && total > 0) {
                 var pct = total === 1 ? 100 : ((currentIdx + 1) / total) * 100;
@@ -1652,26 +1652,26 @@ function bindTutorPanelEvents(panel, type, topicKey) {
             if (progressCorrectN) progressCorrectN.textContent = correctCount;
         }
         function showImmediateFeedback(qEl, selectedValue, correctIdx, explanation) {
-            const opts = qEl.querySelectorAll('.study-chat-quiz-opt');
+            const opts = qEl.querySelectorAll('.ubits-ia-chat-side__quiz-opt');
             var explanationEsc = (explanation || '').replace(/</g, '&lt;').replace(/"/g, '&quot;');
             opts.forEach(function (label, j) {
-                var existing = label.querySelector('.study-chat-quiz-opt-inline-feedback');
+                var existing = label.querySelector('.ubits-ia-chat-side__quiz-opt-inline-feedback');
                 if (existing) existing.remove();
-                label.classList.remove('study-chat-quiz-opt--correct', 'study-chat-quiz-opt--wrong');
+                label.classList.remove('ubits-ia-chat-side__quiz-opt--correct', 'ubits-ia-chat-side__quiz-opt--wrong');
                 var input = label.querySelector('input');
                 if (input) input.disabled = true;
                 if (j === correctIdx) {
-                    label.classList.add('study-chat-quiz-opt--correct');
-                    var correctHtml = '<div class="study-chat-quiz-opt-inline-feedback study-chat-quiz-opt-inline-feedback--correct">' +
-                        '<span class="study-chat-quiz-opt-inline-feedback-status"><i class="far fa-check"></i> Respuesta correcta</span>' +
-                        (explanationEsc ? '<p class="study-chat-quiz-opt-inline-feedback-explanation">' + explanationEsc + '</p>' : '') +
+                    label.classList.add('ubits-ia-chat-side__quiz-opt--correct');
+                    var correctHtml = '<div class="ubits-ia-chat-side__quiz-opt-inline-feedback ubits-ia-chat-side__quiz-opt-inline-feedback--correct">' +
+                        '<span class="ubits-ia-chat-side__quiz-opt-inline-feedback-status"><i class="far fa-check"></i> Respuesta correcta</span>' +
+                        (explanationEsc ? '<p class="ubits-ia-chat-side__quiz-opt-inline-feedback-explanation">' + explanationEsc + '</p>' : '') +
                         '</div>';
                     label.insertAdjacentHTML('beforeend', correctHtml);
                 } else if (j === selectedValue && j !== correctIdx) {
-                    label.classList.add('study-chat-quiz-opt--wrong');
-                    var wrongHtml = '<div class="study-chat-quiz-opt-inline-feedback study-chat-quiz-opt-inline-feedback--wrong">' +
-                        '<span class="study-chat-quiz-opt-inline-feedback-status"><i class="far fa-times"></i> Respuesta incorrecta</span>' +
-                        (explanationEsc ? '<p class="study-chat-quiz-opt-inline-feedback-explanation">' + explanationEsc + '</p>' : '') +
+                    label.classList.add('ubits-ia-chat-side__quiz-opt--wrong');
+                    var wrongHtml = '<div class="ubits-ia-chat-side__quiz-opt-inline-feedback ubits-ia-chat-side__quiz-opt-inline-feedback--wrong">' +
+                        '<span class="ubits-ia-chat-side__quiz-opt-inline-feedback-status"><i class="far fa-times"></i> Respuesta incorrecta</span>' +
+                        (explanationEsc ? '<p class="ubits-ia-chat-side__quiz-opt-inline-feedback-explanation">' + explanationEsc + '</p>' : '') +
                         '</div>';
                     label.insertAdjacentHTML('beforeend', wrongHtml);
                 }
@@ -1693,79 +1693,79 @@ function bindTutorPanelEvents(panel, type, topicKey) {
                 userAnswers: answers.slice()
             };
             resultDiv.innerHTML = `
-                <div class="study-chat-quiz-result-screen">
-                    <h2 class="study-chat-quiz-result-title">Quiz completado</h2>
-                    <div class="study-chat-quiz-result-cards">
-                        <div class="study-chat-quiz-result-card">
-                            <span class="study-chat-quiz-result-card-label">Puntuación</span>
-                            <span class="study-chat-quiz-result-card-value">${correctCount}/${total}</span>
+                <div class="ubits-ia-chat-side__quiz-result-screen">
+                    <h2 class="ubits-ia-chat-side__quiz-result-title">Quiz completado</h2>
+                    <div class="ubits-ia-chat-side__quiz-result-cards">
+                        <div class="ubits-ia-chat-side__quiz-result-card">
+                            <span class="ubits-ia-chat-side__quiz-result-card-label">Puntuación</span>
+                            <span class="ubits-ia-chat-side__quiz-result-card-value">${correctCount}/${total}</span>
                         </div>
-                        <div class="study-chat-quiz-result-card">
-                            <span class="study-chat-quiz-result-card-label">Precisión</span>
-                            <span class="study-chat-quiz-result-card-value">${accuracy}%</span>
+                        <div class="ubits-ia-chat-side__quiz-result-card">
+                            <span class="ubits-ia-chat-side__quiz-result-card-label">Precisión</span>
+                            <span class="ubits-ia-chat-side__quiz-result-card-value">${accuracy}%</span>
                         </div>
-                        <div class="study-chat-quiz-result-card study-chat-quiz-result-card--breakdown">
-                            <div class="study-chat-quiz-result-breakdown">
-                                <div class="study-chat-quiz-result-row"><span>Correctas</span><span>${correctCount}</span></div>
-                                <div class="study-chat-quiz-result-row"><span>Incorrectas</span><span>${wrongCount}</span></div>
-                                <div class="study-chat-quiz-result-row"><span>Omitidas</span><span>${skipped}</span></div>
+                        <div class="ubits-ia-chat-side__quiz-result-card ubits-ia-chat-side__quiz-result-card--breakdown">
+                            <div class="ubits-ia-chat-side__quiz-result-breakdown">
+                                <div class="ubits-ia-chat-side__quiz-result-row"><span>Correctas</span><span>${correctCount}</span></div>
+                                <div class="ubits-ia-chat-side__quiz-result-row"><span>Incorrectas</span><span>${wrongCount}</span></div>
+                                <div class="ubits-ia-chat-side__quiz-result-row"><span>Omitidas</span><span>${skipped}</span></div>
                             </div>
                         </div>
                     </div>
-                    <h3 class="study-chat-quiz-result-section-title">Seguir aprendiendo</h3>
-                    <div class="study-chat-quiz-result-learn">
-                        <button type="button" class="study-chat-quiz-result-option" data-action="flashcards">
-                            <span class="study-chat-quiz-result-option-icon"><i class="far fa-bring-forward"></i></span>
-                            <span class="study-chat-quiz-result-option-title">Flashcards</span>
-                            <span class="study-chat-quiz-result-option-desc">Crea un set de flashcards con el material del quiz. Ideal para repasar y afianzar conceptos.</span>
+                    <h3 class="ubits-ia-chat-side__quiz-result-section-title">Seguir aprendiendo</h3>
+                    <div class="ubits-ia-chat-side__quiz-result-learn">
+                        <button type="button" class="ubits-ia-chat-side__quiz-result-option" data-action="flashcards">
+                            <span class="ubits-ia-chat-side__quiz-result-option-icon"><i class="far fa-bring-forward"></i></span>
+                            <span class="ubits-ia-chat-side__quiz-result-option-title">Flashcards</span>
+                            <span class="ubits-ia-chat-side__quiz-result-option-desc">Crea un set de flashcards con el material del quiz. Ideal para repasar y afianzar conceptos.</span>
                     </button>
-                        <button type="button" class="study-chat-quiz-result-option study-chat-quiz-result-option-study-plan" data-action="studyPlan" style="display:${STUDY_PLAN_TOPICS.indexOf(topicKey) >= 0 ? 'flex' : 'none'};">
-                            <span class="study-chat-quiz-result-option-icon"><i class="far fa-layer-group"></i></span>
-                            <span class="study-chat-quiz-result-option-title">Plan de estudio</span>
-                            <span class="study-chat-quiz-result-option-desc">Organiza tu aprendizaje con un plan de tareas personalizado sobre este tema.</span>
+                        <button type="button" class="ubits-ia-chat-side__quiz-result-option ubits-ia-chat-side__quiz-result-option-learning-plan" data-action="studyPlan" style="display:${STUDY_PLAN_TOPICS.indexOf(topicKey) >= 0 ? 'flex' : 'none'};">
+                            <span class="ubits-ia-chat-side__quiz-result-option-icon"><i class="far fa-layer-group"></i></span>
+                            <span class="ubits-ia-chat-side__quiz-result-option-title">Plan de estudio</span>
+                            <span class="ubits-ia-chat-side__quiz-result-option-desc">Organiza tu aprendizaje con un plan de tareas personalizado sobre este tema.</span>
                     </button>
-                        <button type="button" class="study-chat-quiz-result-option" data-action="podcast">
-                            <span class="study-chat-quiz-result-option-icon"><i class="far fa-podcast"></i></span>
-                            <span class="study-chat-quiz-result-option-title">Podcast</span>
-                            <span class="study-chat-quiz-result-option-desc">Escucha un podcast sobre este tema para aprender mientras haces otras cosas.</span>
+                        <button type="button" class="ubits-ia-chat-side__quiz-result-option" data-action="podcast">
+                            <span class="ubits-ia-chat-side__quiz-result-option-icon"><i class="far fa-podcast"></i></span>
+                            <span class="ubits-ia-chat-side__quiz-result-option-title">Podcast</span>
+                            <span class="ubits-ia-chat-side__quiz-result-option-desc">Escucha un podcast sobre este tema para aprender mientras haces otras cosas.</span>
                     </button>
                 </div>
                 </div>`;
             questionsContainer.style.display = 'none';
             if (progressWrap) progressWrap.style.display = 'none';
-            actionsDiv.innerHTML = '<div class="study-chat-quiz-result-actions">' +
-                '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm" id="study-chat-quiz-reset"><span>Resetear quiz</span></button>' +
-                '<div class="study-chat-quiz-result-actions-right">' +
-                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="study-chat-quiz-review"><span>Revisar quiz</span></button>' +
-                '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="study-chat-quiz-more"><span>Más preguntas</span></button>' +
+            actionsDiv.innerHTML = '<div class="ubits-ia-chat-side__quiz-result-actions">' +
+                '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm" id="ubits-ia-chat-side__quiz-reset"><span>Resetear quiz</span></button>' +
+                '<div class="ubits-ia-chat-side__quiz-result-actions-right">' +
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="ubits-ia-chat-side__quiz-review"><span>Revisar quiz</span></button>' +
+                '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="ubits-ia-chat-side__quiz-more"><span>Más preguntas</span></button>' +
                 '</div></div>';
             actionsDiv.style.display = 'flex';
             resultDiv.style.display = 'block';
-            panel.querySelector('#study-chat-quiz-review').addEventListener('click', function () {
+            panel.querySelector('#ubits-ia-chat-side__quiz-review').addEventListener('click', function () {
                 resultDiv.style.display = 'none';
                 if (progressWrap) progressWrap.style.display = 'flex';
                 questionsContainer.style.display = 'block';
-                actionsDiv.innerHTML = '<div class="study-chat-quiz-result-actions">' +
-                    '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="study-chat-quiz-review-prev"><span>Anterior</span></button>' +
-                    '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="study-chat-quiz-review-next"><span>Siguiente</span></button>' +
+                actionsDiv.innerHTML = '<div class="ubits-ia-chat-side__quiz-result-actions">' +
+                    '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="ubits-ia-chat-side__quiz-review-prev"><span>Anterior</span></button>' +
+                    '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="ubits-ia-chat-side__quiz-review-next"><span>Siguiente</span></button>' +
                     '</div>';
                 currentIdx = 0;
                 updateVisibility();
                 function goBackToResults() {
                     questionsContainer.style.display = 'none';
                     if (progressWrap) progressWrap.style.display = 'none';
-                    actionsDiv.innerHTML = '<div class="study-chat-quiz-result-actions">' +
-                        '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm" id="study-chat-quiz-reset"><span>Resetear quiz</span></button>' +
-                        '<div class="study-chat-quiz-result-actions-right">' +
-                        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="study-chat-quiz-review"><span>Revisar quiz</span></button>' +
-                        '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="study-chat-quiz-more"><span>Más preguntas</span></button>' +
+                    actionsDiv.innerHTML = '<div class="ubits-ia-chat-side__quiz-result-actions">' +
+                        '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm" id="ubits-ia-chat-side__quiz-reset"><span>Resetear quiz</span></button>' +
+                        '<div class="ubits-ia-chat-side__quiz-result-actions-right">' +
+                        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="ubits-ia-chat-side__quiz-review"><span>Revisar quiz</span></button>' +
+                        '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="ubits-ia-chat-side__quiz-more"><span>Más preguntas</span></button>' +
                         '</div></div>';
                     resultDiv.style.display = 'block';
                     bindQuizResultButtons();
                 }
                 function updateReviewNav() {
-                    var prev = panel.querySelector('#study-chat-quiz-review-prev');
-                    var next = panel.querySelector('#study-chat-quiz-review-next');
+                    var prev = panel.querySelector('#ubits-ia-chat-side__quiz-review-prev');
+                    var next = panel.querySelector('#ubits-ia-chat-side__quiz-review-next');
                     if (prev) prev.style.display = currentIdx > 0 ? 'inline-flex' : 'none';
                     if (next) {
                         next.style.display = 'inline-flex';
@@ -1774,42 +1774,42 @@ function bindTutorPanelEvents(panel, type, topicKey) {
                     }
                 }
                 updateReviewNav();
-                panel.querySelector('#study-chat-quiz-review-prev').addEventListener('click', function () { currentIdx--; updateVisibility(); updateReviewNav(); });
-                panel.querySelector('#study-chat-quiz-review-next').addEventListener('click', function () {
+                panel.querySelector('#ubits-ia-chat-side__quiz-review-prev').addEventListener('click', function () { currentIdx--; updateVisibility(); updateReviewNav(); });
+                panel.querySelector('#ubits-ia-chat-side__quiz-review-next').addEventListener('click', function () {
                     if (currentIdx < total - 1) { currentIdx++; updateVisibility(); updateReviewNav(); } else { goBackToResults(); }
                 });
             });
             function bindQuizResultButtons() {
-                panel.querySelector('#study-chat-quiz-more').addEventListener('click', function () {
+                panel.querySelector('#ubits-ia-chat-side__quiz-more').addEventListener('click', function () {
                     if (chatState.quizLastResultByTopic) delete chatState.quizLastResultByTopic[topicKey];
                     renderTutorPanel('quiz', topicKey);
                     if (typeof addResourceMessage === 'function') addResourceMessage('quiz', topicKey, true);
                 });
-                panel.querySelector('#study-chat-quiz-review').addEventListener('click', function () {
+                panel.querySelector('#ubits-ia-chat-side__quiz-review').addEventListener('click', function () {
                     resultDiv.style.display = 'none';
                     if (progressWrap) progressWrap.style.display = 'flex';
                     questionsContainer.style.display = 'block';
-                    actionsDiv.innerHTML = '<div class="study-chat-quiz-result-actions">' +
-                        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="study-chat-quiz-review-prev"><span>Anterior</span></button>' +
-                        '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="study-chat-quiz-review-next"><span>Siguiente</span></button>' +
+                    actionsDiv.innerHTML = '<div class="ubits-ia-chat-side__quiz-result-actions">' +
+                        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="ubits-ia-chat-side__quiz-review-prev"><span>Anterior</span></button>' +
+                        '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="ubits-ia-chat-side__quiz-review-next"><span>Siguiente</span></button>' +
                         '</div>';
                     currentIdx = 0;
                     updateVisibility();
                     function goBackToResults() {
                         questionsContainer.style.display = 'none';
                         if (progressWrap) progressWrap.style.display = 'none';
-                        actionsDiv.innerHTML = '<div class="study-chat-quiz-result-actions">' +
-                            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm" id="study-chat-quiz-reset"><span>Resetear quiz</span></button>' +
-                            '<div class="study-chat-quiz-result-actions-right">' +
-                            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="study-chat-quiz-review"><span>Revisar quiz</span></button>' +
-                            '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="study-chat-quiz-more"><span>Más preguntas</span></button>' +
+                        actionsDiv.innerHTML = '<div class="ubits-ia-chat-side__quiz-result-actions">' +
+                            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm" id="ubits-ia-chat-side__quiz-reset"><span>Resetear quiz</span></button>' +
+                            '<div class="ubits-ia-chat-side__quiz-result-actions-right">' +
+                            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="ubits-ia-chat-side__quiz-review"><span>Revisar quiz</span></button>' +
+                            '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="ubits-ia-chat-side__quiz-more"><span>Más preguntas</span></button>' +
                             '</div></div>';
                         resultDiv.style.display = 'block';
                         bindQuizResultButtons();
                     }
                     function updateReviewNav() {
-                        var prev = panel.querySelector('#study-chat-quiz-review-prev');
-                        var next = panel.querySelector('#study-chat-quiz-review-next');
+                        var prev = panel.querySelector('#ubits-ia-chat-side__quiz-review-prev');
+                        var next = panel.querySelector('#ubits-ia-chat-side__quiz-review-next');
                         if (prev) prev.style.display = currentIdx > 0 ? 'inline-flex' : 'none';
                         if (next) {
                             next.style.display = 'inline-flex';
@@ -1818,12 +1818,12 @@ function bindTutorPanelEvents(panel, type, topicKey) {
                         }
                     }
                     updateReviewNav();
-                    panel.querySelector('#study-chat-quiz-review-prev').addEventListener('click', function () { currentIdx--; updateVisibility(); updateReviewNav(); });
-                    panel.querySelector('#study-chat-quiz-review-next').addEventListener('click', function () {
+                    panel.querySelector('#ubits-ia-chat-side__quiz-review-prev').addEventListener('click', function () { currentIdx--; updateVisibility(); updateReviewNav(); });
+                    panel.querySelector('#ubits-ia-chat-side__quiz-review-next').addEventListener('click', function () {
                         if (currentIdx < total - 1) { currentIdx++; updateVisibility(); updateReviewNav(); } else { goBackToResults(); }
                     });
                 });
-                panel.querySelector('#study-chat-quiz-reset').addEventListener('click', function () {
+                panel.querySelector('#ubits-ia-chat-side__quiz-reset').addEventListener('click', function () {
                     if (chatState.quizLastResultByTopic) delete chatState.quizLastResultByTopic[topicKey];
                     chatState.shownQuizIndex[topicKey] = 0;
                     if (chatState.canvasResourceGenerated) delete chatState.canvasResourceGenerated['quiz:' + topicKey];
@@ -1831,7 +1831,7 @@ function bindTutorPanelEvents(panel, type, topicKey) {
                 });
             }
             bindQuizResultButtons();
-            panel.querySelectorAll('.study-chat-quiz-result-option').forEach(function (btn) {
+            panel.querySelectorAll('.ubits-ia-chat-side__quiz-result-option').forEach(function (btn) {
                 btn.addEventListener('click', function () {
                     const action = this.getAttribute('data-action');
                     panel.classList.remove('is-open', 'has-content');
@@ -1900,20 +1900,20 @@ function bindTutorPanelEvents(panel, type, topicKey) {
             showResultsScreen();
         }
     } else if (type === 'flashcards') {
-        const deck = panel.querySelector('.study-chat-fc-deck');
+        const deck = panel.querySelector('.ubits-ia-chat-side__fc-deck');
         const cards = JSON.parse(deck.getAttribute('data-cards').replace(/&#39;/g, "'"));
         let fcIndex = 0;
-        const cardEl = panel.querySelector('.study-chat-fc-card');
-        const cardInner = panel.querySelector('.study-chat-fc-card-inner');
-        const frontEl = panel.querySelector('.study-chat-fc-front');
-        const backEl = panel.querySelector('.study-chat-fc-back');
-        const progressBars = panel.querySelectorAll('.study-chat-fc-progress-bar');
-        const progressText = panel.querySelector('.study-chat-fc-progress-text');
-        const prevBtn = panel.querySelector('#study-chat-fc-prev');
-        const nextBtn = panel.querySelector('#study-chat-fc-next');
-        const doneBtn = panel.querySelector('#study-chat-fc-done');
+        const cardEl = panel.querySelector('.ubits-ia-chat-side__fc-card');
+        const cardInner = panel.querySelector('.ubits-ia-chat-side__fc-card-inner');
+        const frontEl = panel.querySelector('.ubits-ia-chat-side__fc-front');
+        const backEl = panel.querySelector('.ubits-ia-chat-side__fc-back');
+        const progressBars = panel.querySelectorAll('.ubits-ia-chat-side__fc-progress-bar');
+        const progressText = panel.querySelector('.ubits-ia-chat-side__fc-progress-text');
+        const prevBtn = panel.querySelector('#ubits-ia-chat-side__fc-prev');
+        const nextBtn = panel.querySelector('#ubits-ia-chat-side__fc-next');
+        const doneBtn = panel.querySelector('#ubits-ia-chat-side__fc-done');
         function updateFcProgress() {
-            if (progressBars.length) progressBars.forEach((bar, i) => bar.classList.toggle('study-chat-fc-progress-bar--filled', i <= fcIndex));
+            if (progressBars.length) progressBars.forEach((bar, i) => bar.classList.toggle('ubits-ia-chat-side__fc-progress-bar--filled', i <= fcIndex));
             if (progressText) progressText.textContent = (fcIndex + 1) + ' / ' + cards.length;
             var isFirst = fcIndex === 0;
             var isLast = fcIndex === cards.length - 1;
@@ -1924,16 +1924,16 @@ function bindTutorPanelEvents(panel, type, topicKey) {
         function showCard() {
             frontEl.innerHTML = '<p class="ubits-body-md-regular">' + cards[fcIndex].front + '</p>';
             backEl.innerHTML = '<p class="ubits-body-md-regular">' + cards[fcIndex].back + '</p>';
-            cardEl.classList.remove('study-chat-fc-card--flipped');
+            cardEl.classList.remove('ubits-ia-chat-side__fc-card--flipped');
             cardEl.setAttribute('data-index', fcIndex);
             updateFcProgress();
         }
         function flipCard() {
-            cardEl.classList.toggle('study-chat-fc-card--flipped');
+            cardEl.classList.toggle('ubits-ia-chat-side__fc-card--flipped');
         }
         if (cardEl) {
             cardEl.addEventListener('click', function (e) {
-                if (e.target.closest('button') || e.target.closest('.study-chat-fc-actions')) return;
+                if (e.target.closest('button') || e.target.closest('.ubits-ia-chat-side__fc-actions')) return;
                 flipCard();
             });
             cardEl.addEventListener('keydown', function (e) {
@@ -1942,46 +1942,46 @@ function bindTutorPanelEvents(panel, type, topicKey) {
         }
         if (prevBtn) prevBtn.addEventListener('click', function (e) { e.stopPropagation(); fcIndex = (fcIndex - 1 + cards.length) % cards.length; showCard(); });
         if (nextBtn) nextBtn.addEventListener('click', function (e) { e.stopPropagation(); fcIndex = Math.min(fcIndex + 1, cards.length - 1); showCard(); });
-        const fcMain = panel.querySelector('.study-chat-fc-main');
-        const resultDiv = panel.querySelector('.study-chat-fc-result');
-        const actionsDiv = panel.querySelector('.study-chat-fc-actions');
+        const fcMain = panel.querySelector('.ubits-ia-chat-side__fc-main');
+        const resultDiv = panel.querySelector('.ubits-ia-chat-side__fc-result');
+        const actionsDiv = panel.querySelector('.ubits-ia-chat-side__fc-actions');
         const fcFooterOriginalHtml = actionsDiv ? actionsDiv.innerHTML : '';
         const showFcResultScreen = function () {
-            var content = panel.querySelector('.study-chat-canvas-content');
+            var content = panel.querySelector('.ubits-ia-chat-side__content');
             var showPlan = STUDY_PLAN_TOPICS.indexOf(topicKey) >= 0;
-            resultDiv.innerHTML = '<div class="study-chat-quiz-result-screen">' +
-                '<h3 class="study-chat-quiz-result-section-title">Seguir aprendiendo</h3>' +
-                '<div class="study-chat-quiz-result-learn">' +
-                '<button type="button" class="study-chat-quiz-result-option" data-action="quiz">' +
-                '<span class="study-chat-quiz-result-option-icon"><i class="far fa-circle-question"></i></span>' +
-                '<span class="study-chat-quiz-result-option-title">Quiz</span>' +
-                '<span class="study-chat-quiz-result-option-desc">Responde preguntas sobre el tema y recibe feedback inmediato para afianzar conceptos.</span></button>' +
-                (showPlan ? '<button type="button" class="study-chat-quiz-result-option study-chat-quiz-result-option-study-plan" data-action="studyPlan">' +
-                    '<span class="study-chat-quiz-result-option-icon"><i class="far fa-layer-group"></i></span>' +
-                    '<span class="study-chat-quiz-result-option-title">Plan de estudio</span>' +
-                    '<span class="study-chat-quiz-result-option-desc">Organiza tu aprendizaje con un plan de tareas personalizado sobre este tema.</span></button>' : '') +
-                '<button type="button" class="study-chat-quiz-result-option" data-action="podcast">' +
-                '<span class="study-chat-quiz-result-option-icon"><i class="far fa-podcast"></i></span>' +
-                '<span class="study-chat-quiz-result-option-title">Podcast</span>' +
-                '<span class="study-chat-quiz-result-option-desc">Escucha un podcast sobre este tema para aprender mientras haces otras cosas.</span></button>' +
+            resultDiv.innerHTML = '<div class="ubits-ia-chat-side__quiz-result-screen">' +
+                '<h3 class="ubits-ia-chat-side__quiz-result-section-title">Seguir aprendiendo</h3>' +
+                '<div class="ubits-ia-chat-side__quiz-result-learn">' +
+                '<button type="button" class="ubits-ia-chat-side__quiz-result-option" data-action="quiz">' +
+                '<span class="ubits-ia-chat-side__quiz-result-option-icon"><i class="far fa-circle-question"></i></span>' +
+                '<span class="ubits-ia-chat-side__quiz-result-option-title">Quiz</span>' +
+                '<span class="ubits-ia-chat-side__quiz-result-option-desc">Responde preguntas sobre el tema y recibe feedback inmediato para afianzar conceptos.</span></button>' +
+                (showPlan ? '<button type="button" class="ubits-ia-chat-side__quiz-result-option ubits-ia-chat-side__quiz-result-option-learning-plan" data-action="studyPlan">' +
+                    '<span class="ubits-ia-chat-side__quiz-result-option-icon"><i class="far fa-layer-group"></i></span>' +
+                    '<span class="ubits-ia-chat-side__quiz-result-option-title">Plan de estudio</span>' +
+                    '<span class="ubits-ia-chat-side__quiz-result-option-desc">Organiza tu aprendizaje con un plan de tareas personalizado sobre este tema.</span></button>' : '') +
+                '<button type="button" class="ubits-ia-chat-side__quiz-result-option" data-action="podcast">' +
+                '<span class="ubits-ia-chat-side__quiz-result-option-icon"><i class="far fa-podcast"></i></span>' +
+                '<span class="ubits-ia-chat-side__quiz-result-option-title">Podcast</span>' +
+                '<span class="ubits-ia-chat-side__quiz-result-option-desc">Escucha un podcast sobre este tema para aprender mientras haces otras cosas.</span></button>' +
                 '</div></div>';
             if (fcMain) fcMain.style.display = 'none';
             if (actionsDiv) {
-                actionsDiv.innerHTML = '<div class="study-chat-quiz-result-actions"><button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm" id="study-chat-fc-review"><span>Revisar flashcards</span></button><button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="study-chat-fc-more"><span>Más flashcards</span></button></div>';
+                actionsDiv.innerHTML = '<div class="ubits-ia-chat-side__quiz-result-actions"><button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm" id="ubits-ia-chat-side__fc-review"><span>Revisar flashcards</span></button><button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="ubits-ia-chat-side__fc-more"><span>Más flashcards</span></button></div>';
                 actionsDiv.style.display = 'flex';
             }
             resultDiv.style.display = 'block';
-            panel.querySelector('#study-chat-fc-review').addEventListener('click', function () {
+            panel.querySelector('#ubits-ia-chat-side__fc-review').addEventListener('click', function () {
                 resultDiv.style.display = 'none';
                 resultDiv.innerHTML = '';
                 if (fcMain) fcMain.style.display = '';
                 if (actionsDiv) {
                     actionsDiv.innerHTML = fcFooterOriginalHtml;
                     actionsDiv.style.display = 'flex';
-                    const prevBtnNew = panel.querySelector('#study-chat-fc-prev');
-                    const nextBtnNew = panel.querySelector('#study-chat-fc-next');
-                    const doneBtnNew = panel.querySelector('#study-chat-fc-done');
-                    const shuffleBtnNew = panel.querySelector('#study-chat-fc-shuffle');
+                    const prevBtnNew = panel.querySelector('#ubits-ia-chat-side__fc-prev');
+                    const nextBtnNew = panel.querySelector('#ubits-ia-chat-side__fc-next');
+                    const doneBtnNew = panel.querySelector('#ubits-ia-chat-side__fc-done');
+                    const shuffleBtnNew = panel.querySelector('#ubits-ia-chat-side__fc-shuffle');
                     if (prevBtnNew) prevBtnNew.addEventListener('click', function (e) { e.stopPropagation(); fcIndex = (fcIndex - 1 + cards.length) % cards.length; showCard(); });
                     if (nextBtnNew) nextBtnNew.addEventListener('click', function (e) { e.stopPropagation(); fcIndex = Math.min(fcIndex + 1, cards.length - 1); showCard(); });
                     if (doneBtnNew) doneBtnNew.addEventListener('click', function (e) { e.stopPropagation(); showFcResultScreen(); });
@@ -1999,13 +1999,13 @@ function bindTutorPanelEvents(panel, type, topicKey) {
                 fcIndex = 0;
                 showCard();
             });
-            panel.querySelector('#study-chat-fc-more').addEventListener('click', function () {
+            panel.querySelector('#ubits-ia-chat-side__fc-more').addEventListener('click', function () {
                 var currentSet = parseInt(content.getAttribute('data-fc-set') || '0', 10);
                 var nextSet = (currentSet + 1) % 3;
                 renderTutorPanel('flashcards', topicKey, { fcSetIndex: nextSet });
                 if (typeof addResourceMessage === 'function') addResourceMessage('flashcards', topicKey, true);
             });
-            panel.querySelectorAll('.study-chat-fc-result .study-chat-quiz-result-option').forEach(function (btn) {
+            panel.querySelectorAll('.ubits-ia-chat-side__fc-result .ubits-ia-chat-side__quiz-result-option').forEach(function (btn) {
                 btn.addEventListener('click', function () {
                     var action = this.getAttribute('data-action');
                     panel.classList.remove('is-open', 'has-content');
@@ -2031,7 +2031,7 @@ function bindTutorPanelEvents(panel, type, topicKey) {
             e.stopPropagation();
             showFcResultScreen();
         });
-        panel.querySelector('#study-chat-fc-shuffle').addEventListener('click', function (e) {
+        panel.querySelector('#ubits-ia-chat-side__fc-shuffle').addEventListener('click', function (e) {
             e.stopPropagation();
             for (let i = cards.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[cards[i], cards[j]] = [cards[j], cards[i]]; }
             fcIndex = 0; showCard();
@@ -2101,7 +2101,7 @@ function pushCurrentChatMessage(typeOrMsg, text) {
         chatState.currentChat.createdAt = Date.now();
         if (chatState.currentChat.id == null) chatState.currentChat.id = 'chat-' + Date.now();
         if (chatState.currentTopic) chatState.currentChat.topic = chatState.currentTopic;
-        var headerTitleEl = document.getElementById('ubits-study-chat-header-title');
+        var headerTitleEl = document.getElementById('ubits-ia-chat-thread-header-title');
         if (headerTitleEl) headerTitleEl.value = chatState.currentChat.title || '';
     }
     refreshHistorialIfOpen();
@@ -2120,7 +2120,7 @@ function refreshHistorialIfOpen() {
  * Aplica el título editado en el encabezado del chat: actualiza currentChat y la entrada en chats, re-renderiza historial.
  */
 function commitChatHeaderTitle() {
-    var headerTitle = document.getElementById('ubits-study-chat-header-title');
+    var headerTitle = document.getElementById('ubits-ia-chat-thread-header-title');
     if (!headerTitle) return;
     var raw = (headerTitle.value || '').trim();
     var title = raw.length > 0 ? (raw.length > 80 ? raw.substring(0, 80) : raw) : 'Nuevo chat';
@@ -2176,9 +2176,9 @@ function startNewChat() {
     chatState.currentTopicForSubtopic = null;
     chatState.currentSubtopicIndex = null;
 
-    var body = document.getElementById('ubits-study-chat-body');
+    var body = document.getElementById('ubits-ia-chat-thread-body');
     if (body) {
-        var welcome = document.getElementById('ubits-study-chat-welcome');
+        var welcome = document.getElementById('ubits-ia-chat-thread-welcome');
         var toRemove = [];
         for (var i = 0; i < body.children.length; i++) {
             if (body.children[i] !== welcome) toRemove.push(body.children[i]);
@@ -2195,9 +2195,9 @@ function startNewChat() {
  * Soporta mensajes simples, recursos (quiz/flashcards/plan/podcast) y mensajes con botones (material/tema).
  */
 function renderChatMessages() {
-    var body = document.getElementById('ubits-study-chat-body');
+    var body = document.getElementById('ubits-ia-chat-thread-body');
     if (!body) return;
-    var welcome = document.getElementById('ubits-study-chat-welcome');
+    var welcome = document.getElementById('ubits-ia-chat-thread-welcome');
     var toRemove = [];
     for (var i = 0; i < body.children.length; i++) {
         if (body.children[i] !== welcome) toRemove.push(body.children[i]);
@@ -2216,7 +2216,7 @@ function renderChatMessages() {
             if (resHtml) {
                 body.insertAdjacentHTML('beforeend', resHtml);
                 var lastMsg = body.lastElementChild;
-                var btn = lastMsg ? lastMsg.querySelector('.study-chat-resource-open-btn') : null;
+                var btn = lastMsg ? lastMsg.querySelector('.ubits-ia-chat-thread__resource-open-btn') : null;
                 if (btn) btn.addEventListener('click', function () {
                     var t = this.getAttribute('data-type');
                     var top = this.getAttribute('data-topic');
@@ -2235,20 +2235,20 @@ function renderChatMessages() {
         }
         if (msg.quickReplies === 'material' && msg.topic) {
             var showPlan = STUDY_PLAN_TOPICS.indexOf(msg.topic) >= 0;
-            var planBtnHtml = showPlan ? '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-choice="studyPlan"><span>Plan de estudio</span></button>' : '';
+            var planBtnHtml = showPlan ? '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-ia-chat-thread__material-choice-btn" data-choice="studyPlan"><span>Plan de estudio</span></button>' : '';
             var choicesId = 'material-choices-restore-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
-            var choicesDivHtml = '<div class="ubits-study-chat__material-choices" id="' + choicesId + '">' +
-                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-choice="quiz"><span>Quiz</span></button>' +
+            var choicesDivHtml = '<div class="ubits-ia-chat-thread__material-choices" id="' + choicesId + '">' +
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-ia-chat-thread__material-choice-btn" data-choice="quiz"><span>Quiz</span></button>' +
                 planBtnHtml +
-                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-choice="flashcards"><span>Flashcards</span></button>' +
-                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-choice="podcast"><span>Podcast</span></button>' +
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-ia-chat-thread__material-choice-btn" data-choice="flashcards"><span>Flashcards</span></button>' +
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-ia-chat-thread__material-choice-btn" data-choice="podcast"><span>Podcast</span></button>' +
                 '</div>';
             var messageHTML = createMessageHTML('ai', msg.text, '', false, false, undefined, choicesDivHtml);
-            var choicesHTML = '<div class="ubits-study-chat__message-with-choices">' + messageHTML + '</div>';
+            var choicesHTML = '<div class="ubits-ia-chat-thread__message-with-choices">' + messageHTML + '</div>';
             body.insertAdjacentHTML('beforeend', choicesHTML);
             var choicesEl = document.getElementById(choicesId);
             if (choicesEl) {
-                choicesEl.querySelectorAll('.ubits-study-chat__material-choice-btn').forEach(function (btn) {
+                choicesEl.querySelectorAll('.ubits-ia-chat-thread__material-choice-btn').forEach(function (btn) {
                     btn.addEventListener('click', function () {
                         var choice = this.getAttribute('data-choice');
                         if (!choice) return;
@@ -2285,19 +2285,19 @@ function renderChatMessages() {
             var subContentHTML = null;
             if (compKey !== 'japones' && def && CITATION_CONTENTS && CITATION_CONTENTS[compKey] && DEFINITION_CITATIONS && DEFINITION_CITATIONS[compKey]) {
                 subContentHTML = buildDefinitionWithCitationTags(compKey, def) +
-                    '<p class="ubits-study-chat__message-text"> ¿Te interesa alguno de estos temas de <strong>' + escapeHTML(compLabel) + '</strong>: ' + escapeHTML(subs.slice(0, 8).join(', ')) + ', o prefieres ver recursos en general?</p>';
+                    '<p class="ubits-ia-chat-thread__message-text"> ¿Te interesa alguno de estos temas de <strong>' + escapeHTML(compLabel) + '</strong>: ' + escapeHTML(subs.slice(0, 8).join(', ')) + ', o prefieres ver recursos en general?</p>';
             }
             var subBtns = subs.slice(0, 6).map(function (s, i) {
                 var esc = s.replace(/"/g, '&quot;').replace(/</g, '&lt;');
-                return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-subtopic="' + esc + '" data-subtopic-index="' + i + '"><span>' + s + '</span></button>';
+                return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-ia-chat-thread__material-choice-btn" data-subtopic="' + esc + '" data-subtopic-index="' + i + '"><span>' + s + '</span></button>';
             }).join('');
-            subBtns += '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-study-chat__material-choice-btn" data-choice="general"><span>Ver recursos en general</span></button>';
-            var subChoicesDivHtml = '<div class="ubits-study-chat__material-choices" id="' + subChoicesId + '">' + subBtns + '</div>';
+            subBtns += '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-ia-chat-thread__material-choice-btn" data-choice="general"><span>Ver recursos en general</span></button>';
+            var subChoicesDivHtml = '<div class="ubits-ia-chat-thread__material-choices" id="' + subChoicesId + '">' + subBtns + '</div>';
             var subMsgHTML = createMessageHTML('ai', restoreText, '', false, false, subContentHTML, subChoicesDivHtml);
-            var subChoicesHTML = '<div class="ubits-study-chat__message-with-choices">' + subMsgHTML + '</div>';
+            var subChoicesHTML = '<div class="ubits-ia-chat-thread__message-with-choices">' + subMsgHTML + '</div>';
             body.insertAdjacentHTML('beforeend', subChoicesHTML);
             var subWrapperEl = body.lastElementChild;
-            subWrapperEl.querySelectorAll('.study-chat-citation-tag').forEach(function (tag) {
+            subWrapperEl.querySelectorAll('.ubits-ia-chat-side__citation-tag').forEach(function (tag) {
                 function openContentPreview() {
                     var comp = tag.getAttribute('data-competency');
                     var idx = parseInt(tag.getAttribute('data-content-index'), 10);
@@ -2311,7 +2311,7 @@ function renderChatMessages() {
             });
             var subChoicesEl = document.getElementById(subChoicesId);
             if (subChoicesEl) {
-                subChoicesEl.querySelectorAll('.ubits-study-chat__material-choice-btn').forEach(function (btn) {
+                subChoicesEl.querySelectorAll('.ubits-ia-chat-thread__material-choice-btn').forEach(function (btn) {
                     btn.addEventListener('click', function () {
                         var isGeneral = btn.getAttribute('data-choice') === 'general';
                         if (isGeneral) {
@@ -2335,15 +2335,15 @@ function renderChatMessages() {
             var topicText = msg.text || '';
             var topicChoicesId = 'topic-choices-restore-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
             var topicButtonsHTML = SUGGESTED_TOPIC_BUTTONS.map(function (t) {
-                return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-topic-key="' + (t.key.replace(/"/g, '&quot;')) + '" data-topic-label="' + (t.label.replace(/"/g, '&quot;')) + '"><span>' + t.label + '</span></button>';
+                return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-ia-chat-thread__material-choice-btn" data-topic-key="' + (t.key.replace(/"/g, '&quot;')) + '" data-topic-label="' + (t.label.replace(/"/g, '&quot;')) + '"><span>' + t.label + '</span></button>';
             }).join('');
-            var topicChoicesDivHtml = '<div class="ubits-study-chat__material-choices" id="' + topicChoicesId + '">' + topicButtonsHTML + '</div>';
+            var topicChoicesDivHtml = '<div class="ubits-ia-chat-thread__material-choices" id="' + topicChoicesId + '">' + topicButtonsHTML + '</div>';
             var topicMessageHTML = createMessageHTML('ai', topicText, '', false, false, undefined, topicChoicesDivHtml);
-            var topicChoicesHTML = '<div class="ubits-study-chat__message-with-choices">' + topicMessageHTML + '</div>';
+            var topicChoicesHTML = '<div class="ubits-ia-chat-thread__message-with-choices">' + topicMessageHTML + '</div>';
             body.insertAdjacentHTML('beforeend', topicChoicesHTML);
             var topicChoicesEl = document.getElementById(topicChoicesId);
             if (topicChoicesEl) {
-                topicChoicesEl.querySelectorAll('.ubits-study-chat__material-choice-btn').forEach(function (btn) {
+                topicChoicesEl.querySelectorAll('.ubits-ia-chat-thread__material-choice-btn').forEach(function (btn) {
                     btn.addEventListener('click', function () {
                         var topicKey = this.getAttribute('data-topic-key');
                         var topicLabel = this.getAttribute('data-topic-label');
@@ -2388,8 +2388,8 @@ function renderChatMessages() {
 
     if (messages.length > 0) hideWelcomeBlock();
     /* Al restaurar desde historial, mostrar todo el texto de IA sin animación palabra por palabra */
-    body.querySelectorAll('.ubits-study-chat__word').forEach(function (w) {
-        w.classList.add('ubits-study-chat__word--visible');
+    body.querySelectorAll('.ubits-ia-chat-thread__word').forEach(function (w) {
+        w.classList.add('ubits-ia-chat-thread__word--visible');
     });
     body.scrollTop = body.scrollHeight;
 }
@@ -2446,9 +2446,9 @@ function confirmDeleteChat() {
     if (wasCurrentChat) {
         chatState.currentChat = { id: null, title: '', createdAt: 0, messages: [] };
         chatState.hasOpenedWelcomeContentCanvas = false;
-        var body = document.getElementById('ubits-study-chat-body');
+        var body = document.getElementById('ubits-ia-chat-thread-body');
         if (body) {
-            var welcome = document.getElementById('ubits-study-chat-welcome');
+            var welcome = document.getElementById('ubits-ia-chat-thread-welcome');
             var toRemove = [];
             for (var i = 0; i < body.children.length; i++) {
                 if (body.children[i] !== welcome) toRemove.push(body.children[i]);
@@ -2521,27 +2521,27 @@ function renderHistorialList() {
         var id = chat.id || '';
         var title = (chat.title || 'Nuevo chat').replace(/</g, '&lt;').replace(/"/g, '&quot;');
         var isActive = id && currentId === id;
-        var activeClass = isActive ? ' modo-estudio-ia-historial-item--active' : '';
+        var activeClass = isActive ? ' ubits-ia-chat-historial-item--active' : '';
         var dateLabel = formatHistorialDate(chat.createdAt || chat.lastInteractedAt || 0);
         var dateEscaped = dateLabel.replace(/</g, '&lt;').replace(/"/g, '&quot;');
         var topicKey = chat.topic || (id && id === currentId ? chatState.currentTopic : null);
         var topicLabel = (topicKey && TOPIC_LABELS[topicKey]) ? TOPIC_LABELS[topicKey] : null;
         var descriptionText = topicLabel ? ('Sesión de estudio sobre ' + topicLabel) : 'Sesión de estudio con IA';
         var descriptionEscaped = descriptionText.replace(/</g, '&lt;').replace(/"/g, '&quot;');
-        html += '<div class="modo-estudio-ia-historial-item' + activeClass + '" data-chat-id="' + id + '" role="button" tabindex="0"' + (isActive ? ' aria-current="true"' : '') + '>' +
-            '<div class="modo-estudio-ia-historial-item__content">' +
-            '<span class="ubits-body-sm-regular modo-estudio-ia-historial-item__title">' + title + '</span>' +
-            '<span class="ubits-body-sm-regular modo-estudio-ia-historial-item__description">' + descriptionEscaped + '</span>' +
-            (dateEscaped ? '<span class="ubits-body-sm-regular modo-estudio-ia-historial-item__date">' + dateEscaped + '</span>' : '') +
+        html += '<div class="ubits-ia-chat-historial-item' + activeClass + '" data-chat-id="' + id + '" role="button" tabindex="0"' + (isActive ? ' aria-current="true"' : '') + '>' +
+            '<div class="ubits-ia-chat-historial-item__content">' +
+            '<span class="ubits-body-sm-regular ubits-ia-chat-historial-item__title">' + title + '</span>' +
+            '<span class="ubits-body-sm-regular ubits-ia-chat-historial-item__description">' + descriptionEscaped + '</span>' +
+            (dateEscaped ? '<span class="ubits-body-sm-regular ubits-ia-chat-historial-item__date">' + dateEscaped + '</span>' : '') +
             '</div>' +
-            '<button type="button" class="ubits-button ubits-button--error-tertiary ubits-button--xs ubits-button--icon-only modo-estudio-ia-historial-item__delete" data-delete-chat-id="' + id + '" aria-label="Eliminar chat" data-tooltip="Eliminar"><i class="far fa-trash"></i></button>' +
+            '<button type="button" class="ubits-button ubits-button--error-tertiary ubits-button--xs ubits-button--icon-only ubits-ia-chat-historial-item__delete" data-delete-chat-id="' + id + '" aria-label="Eliminar chat" data-tooltip="Eliminar"><i class="far fa-trash"></i></button>' +
             '</div>';
     });
     listEl.innerHTML = html;
 
-    listEl.querySelectorAll('.modo-estudio-ia-historial-item').forEach(function (item) {
+    listEl.querySelectorAll('.ubits-ia-chat-historial-item').forEach(function (item) {
         item.addEventListener('click', function (e) {
-            if (e.target.closest('.modo-estudio-ia-historial-item__delete')) return;
+            if (e.target.closest('.ubits-ia-chat-historial-item__delete')) return;
             var chatId = this.getAttribute('data-chat-id');
             if (!chatId) return;
             if (chatId === currentId) {
@@ -2569,7 +2569,7 @@ function renderHistorialList() {
             notifyModoEstudioIaActionsVisibility();
         });
     });
-    listEl.querySelectorAll('.modo-estudio-ia-historial-item__delete').forEach(function (btn) {
+    listEl.querySelectorAll('.ubits-ia-chat-historial-item__delete').forEach(function (btn) {
         btn.addEventListener('click', function (e) {
             e.preventDefault();
             e.stopPropagation();
@@ -2601,53 +2601,53 @@ function createStudyChatHTML(options = {}) {
     const headerInlineStyle = options.welcomeLayout === true ? '' : 'display: none;';
     const userFirstName = options.userFirstName || 'Usuario';
     const suggestionButtons = isTutorMode
-        ? `<span class="ubits-study-chat__suggestions-label ubits-body-xs-regular">Recomendado para ti:</span>` + competencies.map(c => `<button class="ubits-button ubits-button--secondary ubits-button--xs ubits-study-chat__competency-chip" data-competency="${COMPETENCY_TO_TOPIC[c] || c.toLowerCase().replace(/\s/g, '')}" data-label="${c}"><span>${c}</span></button>`).join('\n')
+        ? `<span class="ubits-ia-chat-thread__suggestions-label ubits-body-xs-regular">Recomendado para ti:</span>` + competencies.map(c => `<button class="ubits-button ubits-button--secondary ubits-button--xs ubits-ia-chat-thread__competency-chip" data-competency="${COMPETENCY_TO_TOPIC[c] || c.toLowerCase().replace(/\s/g, '')}" data-label="${c}"><span>${c}</span></button>`).join('\n')
         : `
                     <button class="ubits-button ubits-button--secondary ubits-button--sm" data-suggestion="contenidos"><span>Sugerencias de contenidos</span></button>
                     <button class="ubits-button ubits-button--secondary ubits-button--sm" data-suggestion="plan"><span>Crear plan de formación</span></button>
                     <button class="ubits-button ubits-button--secondary ubits-button--sm" data-suggestion="tutor"><span>Sé mi tutor</span></button>`;
     const welcomeBlock = isTutorMode ? `
-            <div class="ubits-study-chat__welcome-wrapper" id="ubits-study-chat-welcome">
-                <div class="ubits-study-chat__welcome">
-                    <div class="ubits-study-chat__welcome-head">
-                        <div class="ubits-study-chat__welcome-icon"><i class="far fa-sparkles"></i></div>
-                        <p class="ubits-study-chat__welcome-greeting">Hola, ${userFirstName}</p>
+            <div class="ubits-ia-chat-thread__welcome-wrapper" id="ubits-ia-chat-thread-welcome">
+                <div class="ubits-ia-chat-thread__welcome">
+                    <div class="ubits-ia-chat-thread__welcome-head">
+                        <div class="ubits-ia-chat-thread__welcome-icon"><i class="far fa-sparkles"></i></div>
+                        <p class="ubits-ia-chat-thread__welcome-greeting">Hola, ${userFirstName}</p>
                     </div>
-                    <p class="ubits-study-chat__welcome-prompt">¿Qué quieres <span class="ubits-study-chat__welcome-prompt-accent">aprender hoy</span>?</p>
+                    <p class="ubits-ia-chat-thread__welcome-prompt">¿Qué quieres <span class="ubits-ia-chat-thread__welcome-prompt-accent">aprender hoy</span>?</p>
                 </div>
             </div>` : '';
     const welcomeTopBar = isTutorMode ? `
-            <div class="ubits-study-chat__welcome-top" id="ubits-study-chat-welcome-top" style="display: none;">
+            <div class="ubits-ia-chat-thread__welcome-top" id="ubits-ia-chat-thread-welcome-top" style="display: none;">
                 <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="btn-historial-welcome" aria-label="Ver historial de chats">
                     <i class="far fa-clock-rotate-left"></i>
                     <span>Ver historial</span>
                         </button>
             </div>` : '';
     return `
-        <div class="ubits-study-chat" id="ubits-study-chat">
-            <div class="ubits-study-chat__header" id="ubits-study-chat-header" style="${headerInlineStyle}" aria-label="Encabezado del chat">
-                <input type="text" class="ubits-study-chat__header-title" id="ubits-study-chat-header-title" value="" placeholder="Nuevo chat" maxlength="80" aria-label="Nombre del chat editable" />
-                <div class="ubits-study-chat__header-actions">
+        <div class="ubits-ia-chat-thread" id="ubits-ia-chat-thread">
+            <div class="ubits-ia-chat-thread__header" id="ubits-ia-chat-thread-header" style="${headerInlineStyle}" aria-label="Encabezado del chat">
+                <input type="text" class="ubits-ia-chat-thread__header-title" id="ubits-ia-chat-thread-header-title" value="" placeholder="Nuevo chat" maxlength="80" aria-label="Nombre del chat editable" />
+                <div class="ubits-ia-chat-thread__header-actions">
                     <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="btn-historial" data-tooltip="Historial" data-tooltip-position="bottom" aria-label="Abrir historial de chats">
                         <i class="far fa-clock-rotate-left"></i>
                     </button>
                     </div>
                 </div>
             ${welcomeTopBar}
-            <div class="ubits-study-chat__body" id="ubits-study-chat-body">${welcomeBlock}</div>
-            <div class="ubits-study-chat__input-area">
-                <div class="ubits-study-chat__input-container">
-                    <div class="ubits-study-chat__input-wrapper">
-                        <textarea class="ubits-study-chat__input" id="ubits-study-chat-input" placeholder="Escribir mensaje..." rows="1"></textarea>
+            <div class="ubits-ia-chat-thread__body" id="ubits-ia-chat-thread-body">${welcomeBlock}</div>
+            <div class="ubits-ia-chat-thread__input-area">
+                <div class="ubits-ia-chat-thread__input-container">
+                    <div class="ubits-ia-chat-thread__input-wrapper">
+                        <textarea class="ubits-ia-chat-thread__input" id="ubits-ia-chat-thread-input" placeholder="Escribir mensaje..." rows="1"></textarea>
                     </div>
-                    <div class="ubits-study-chat__input-actions">
-                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-study-chat__input-attach" id="ubits-study-chat-attach-btn" data-tooltip="Adjuntar" aria-label="Adjuntar"><i class="far fa-paperclip"></i></button>
-                        <button type="button" class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--sm ubits-ia-button--icon-only ubits-study-chat__input-send" id="ubits-study-chat-send-btn" data-tooltip="Enviar" aria-label="Enviar"><i class="far fa-paper-plane"></i></button>
+                    <div class="ubits-ia-chat-thread__input-actions">
+                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-ia-chat-thread__input-attach" id="ubits-ia-chat-thread-attach-btn" data-tooltip="Adjuntar" aria-label="Adjuntar"><i class="far fa-paperclip"></i></button>
+                        <button type="button" class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--sm ubits-ia-button--icon-only ubits-ia-chat-thread__input-send" id="ubits-ia-chat-thread-send-btn" data-tooltip="Enviar" aria-label="Enviar"><i class="far fa-paper-plane"></i></button>
                     </div>
                 </div>
-                <div class="ubits-study-chat__suggestions" id="ubits-study-chat-suggestions">${suggestionButtons}</div>
+                <div class="ubits-ia-chat-thread__suggestions" id="ubits-ia-chat-thread-suggestions">${suggestionButtons}</div>
             </div>
-            <p class="ubits-study-chat__disclaimer ubits-body-xs-regular">El chat de modo estudio IA puede cometer errores; verifica sus respuestas.</p>
+            <p class="ubits-ia-chat-thread__disclaimer ubits-body-xs-regular">El chat de modo estudio IA puede cometer errores; verifica sus respuestas.</p>
         </div>
     `;
 }
@@ -2673,7 +2673,7 @@ function formatTime() {
 function wrapWordsInSpans(html) {
     if (!html || !html.trim()) return html;
     var tokens = html.split(/\s+/).filter(function (t) { return t.length > 0; });
-    return tokens.map(function (t) { return '<span class="ubits-study-chat__word">' + t + '</span>'; }).join(' ');
+    return tokens.map(function (t) { return '<span class="ubits-ia-chat-thread__word">' + t + '</span>'; }).join(' ');
 }
 
 /**
@@ -2688,20 +2688,20 @@ function wrapWordsInSpans(html) {
  * @returns {string} HTML del mensaje
  */
 function createMessageHTML(type, text, timestamp, showActions = false, isTyping = false, contentHTML, innerGlobeSuffixHTML) {
-    const messageClass = type === 'ai' ? 'ubits-study-chat__message--ai' : 'ubits-study-chat__message--user';
+    const messageClass = type === 'ai' ? 'ubits-ia-chat-thread__message--ai' : 'ubits-ia-chat-thread__message--user';
     const globeClass = type === 'ai'
-        ? (isTyping ? 'ubits-study-chat__text-globe--ai ubits-study-chat__text-globe--typing' : 'ubits-study-chat__text-globe--ai')
-        : 'ubits-study-chat__text-globe--user';
+        ? (isTyping ? 'ubits-ia-chat-thread__text-globe--ai ubits-ia-chat-thread__text-globe--typing' : 'ubits-ia-chat-thread__text-globe--ai')
+        : 'ubits-ia-chat-thread__text-globe--user';
 
     let textHTML = '';
     if (contentHTML && typeof contentHTML === 'string' && contentHTML.trim()) {
         textHTML = contentHTML;
     } else if (isTyping) {
         textHTML = `
-            <div class="ubits-study-chat__typing-icon" aria-hidden="true">
-                <span class="ubits-study-chat__typing-dot"></span>
-                <span class="ubits-study-chat__typing-dot"></span>
-                <span class="ubits-study-chat__typing-dot"></span>
+            <div class="ubits-ia-chat-thread__typing-icon" aria-hidden="true">
+                <span class="ubits-ia-chat-thread__typing-dot"></span>
+                <span class="ubits-ia-chat-thread__typing-dot"></span>
+                <span class="ubits-ia-chat-thread__typing-dot"></span>
             </div>
         `;
     } else {
@@ -2723,9 +2723,9 @@ function createMessageHTML(type, text, timestamp, showActions = false, isTyping 
                     processedText += line;
                 } else if (trimmedLine.length > 0) {
                     // Es texto plano, convertir URLs y envolver en párrafo
-                    const textWithLinks = trimmedLine.replace(linkRegex, '<a href="$1" class="ubits-study-chat__link" target="_blank" rel="noopener noreferrer">$1</a>');
+                    const textWithLinks = trimmedLine.replace(linkRegex, '<a href="$1" class="ubits-ia-chat-thread__link" target="_blank" rel="noopener noreferrer">$1</a>');
                     const content = type === 'ai' ? wrapWordsInSpans(textWithLinks) : textWithLinks;
-                    processedText += '<p class="ubits-study-chat__message-text">' + content + '</p>';
+                    processedText += '<p class="ubits-ia-chat-thread__message-text">' + content + '</p>';
                 }
             });
 
@@ -2733,18 +2733,18 @@ function createMessageHTML(type, text, timestamp, showActions = false, isTyping 
         } else {
             // Convertir URLs en links con estilo
             const linkRegex = /(https?:\/\/[^\s]+)/g;
-            const textWithLinks = text.replace(linkRegex, '<a href="$1" class="ubits-study-chat__link" target="_blank" rel="noopener noreferrer">$1</a>');
+            const textWithLinks = text.replace(linkRegex, '<a href="$1" class="ubits-ia-chat-thread__link" target="_blank" rel="noopener noreferrer">$1</a>');
             // Dividir por saltos de línea y crear párrafos
             const lines = textWithLinks.split('\n').filter(function (line) { return line.trim(); });
             textHTML = lines.map(function (line) {
                 var content = type === 'ai' ? wrapWordsInSpans(line) : line;
-                return '<p class="ubits-study-chat__message-text">' + content + '</p>';
+                return '<p class="ubits-ia-chat-thread__message-text">' + content + '</p>';
             }).join('');
         }
     }
 
     const actionsHTML = (type === 'ai' && showActions && !isTyping) ? `
-        <div class="ubits-study-chat__message-actions">
+        <div class="ubits-ia-chat-thread__message-actions">
             <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-tooltip="Copiar">
                 <i class="far fa-copy"></i>
             </button>
@@ -2756,8 +2756,8 @@ function createMessageHTML(type, text, timestamp, showActions = false, isTyping 
 
     const globeSuffix = (innerGlobeSuffixHTML && typeof innerGlobeSuffixHTML === 'string' && innerGlobeSuffixHTML.trim()) ? innerGlobeSuffixHTML : '';
     return `
-        <div class="ubits-study-chat__message ${messageClass}">
-            <div class="ubits-study-chat__text-globe ${globeClass}">
+        <div class="ubits-ia-chat-thread__message ${messageClass}">
+            <div class="ubits-ia-chat-thread__text-globe ${globeClass}">
                 ${textHTML}
                 ${globeSuffix}
             </div>
@@ -2789,7 +2789,7 @@ function formatCoursesHTML(courses, isAddingMore = false) {
         introText = '';
     }
 
-    return `<div class="study-chat-courses-section"><div id="${containerId}" class="study-chat-courses-container"></div><div class="study-chat-courses-prompt">¿Te gustaría que agregue otros 3 cursos? Solo dime "agrégame otros 3" o "agrega más".</div></div>`;
+    return `<div class="ubits-ia-chat-thread__courses-section"><div id="${containerId}" class="ubits-ia-chat-thread__courses-container"></div><div class="ubits-ia-chat-thread__courses-prompt">¿Te gustaría que agregue otros 3 cursos? Solo dime "agrégame otros 3" o "agrega más".</div></div>`;
 }
 
 /**
@@ -2845,19 +2845,19 @@ function formatPlanHTML(plan) {
         plan: plan
     };
 
-    let text = `<div class="study-chat-plan-section">`;
-    text += `<div class="study-chat-plan-title">Plan de Formación</div>`;
-    text += `<div class="study-chat-plan-details">`;
-    text += `<div class="study-chat-plan-detail-item"><strong>Título:</strong> ${plan.title}</div>`;
-    text += `<div class="study-chat-plan-detail-item"><strong>Cursos incluidos:</strong> ${plan.courses.length}</div>`;
+    let text = `<div class="ubits-ia-chat-thread__plan-section">`;
+    text += `<div class="ubits-ia-chat-thread__plan-title">Plan de Formación</div>`;
+    text += `<div class="ubits-ia-chat-thread__plan-details">`;
+    text += `<div class="ubits-ia-chat-thread__plan-detail-item"><strong>Título:</strong> ${plan.title}</div>`;
+    text += `<div class="ubits-ia-chat-thread__plan-detail-item"><strong>Cursos incluidos:</strong> ${plan.courses.length}</div>`;
     text += `</div>`;
-    text += `<div class="study-chat-plan-courses-title">Cursos del plan</div>`;
-    text += `<div id="${containerId}" class="study-chat-courses-container"></div>`;
-    text += `<div class="study-chat-plan-details" style="margin-top: 16px;">`;
-    text += `<div class="study-chat-plan-detail-item"><strong>Fecha de inicio:</strong> ${plan.startDate}</div>`;
-    text += `<div class="study-chat-plan-detail-item"><strong>Fecha de fin:</strong> ${plan.endDate}</div>`;
+    text += `<div class="ubits-ia-chat-thread__plan-courses-title">Cursos del plan</div>`;
+    text += `<div id="${containerId}" class="ubits-ia-chat-thread__courses-container"></div>`;
+    text += `<div class="ubits-ia-chat-thread__plan-details" style="margin-top: 16px;">`;
+    text += `<div class="ubits-ia-chat-thread__plan-detail-item"><strong>Fecha de inicio:</strong> ${plan.startDate}</div>`;
+    text += `<div class="ubits-ia-chat-thread__plan-detail-item"><strong>Fecha de fin:</strong> ${plan.endDate}</div>`;
     text += `</div>`;
-    text += `<div class="study-chat-plan-prompt">¿Deseas aceptar este plan o modificar el listado de cursos? Responde "acepto" o "modificar".</div>`;
+    text += `<div class="ubits-ia-chat-thread__plan-prompt">¿Deseas aceptar este plan o modificar el listado de cursos? Responde "acepto" o "modificar".</div>`;
     text += `</div>`;
 
     return text;
@@ -2969,8 +2969,8 @@ function getMessageLinesAsHTML(text) {
     return lines.filter(l => l.trim().length > 0).map(line => {
         const trimmed = line.trim();
         if (trimmed.startsWith('<div')) return trimmed;
-        const withLinks = trimmed.replace(linkRegex, '<a href="$1" class="ubits-study-chat__link" target="_blank" rel="noopener noreferrer">$1</a>');
-        return '<p class="ubits-study-chat__message-text">' + withLinks + '</p>';
+        const withLinks = trimmed.replace(linkRegex, '<a href="$1" class="ubits-ia-chat-thread__link" target="_blank" rel="noopener noreferrer">$1</a>');
+        return '<p class="ubits-ia-chat-thread__message-text">' + withLinks + '</p>';
     });
 }
 
@@ -2979,14 +2979,14 @@ var AI_WORD_REVEAL_DELAY_MS = 35;
 
 /**
  * Anima la aparición palabra por palabra en un mensaje de IA (text-globe--ai).
- * @param {HTMLElement} messageEl - Elemento .ubits-study-chat__message
+ * @param {HTMLElement} messageEl - Elemento .ubits-ia-chat-thread__message
  */
 function animateWordsInMessage(messageEl, onComplete) {
     if (!messageEl) {
         if (onComplete) onComplete();
         return;
     }
-    var words = messageEl.querySelectorAll('.ubits-study-chat__text-globe--ai .ubits-study-chat__word');
+    var words = messageEl.querySelectorAll('.ubits-ia-chat-thread__text-globe--ai .ubits-ia-chat-thread__word');
     if (words.length === 0) {
         if (onComplete) onComplete();
         return;
@@ -2994,7 +2994,7 @@ function animateWordsInMessage(messageEl, onComplete) {
     var delay = AI_WORD_REVEAL_DELAY_MS;
     words.forEach(function (word, i) {
         setTimeout(function () {
-            word.classList.add('ubits-study-chat__word--visible');
+            word.classList.add('ubits-ia-chat-thread__word--visible');
         }, i * delay);
     });
     if (onComplete) {
@@ -3006,7 +3006,7 @@ function animateWordsInMessage(messageEl, onComplete) {
  * Añade mensaje de IA con efecto typewriter línea a línea (estilo Gemini).
  */
 function addMessageAIWithStreaming(text, showActions, regenerateFunction) {
-    const body = document.getElementById('ubits-study-chat-body');
+    const body = document.getElementById('ubits-ia-chat-thread-body');
     if (!body) return;
     pushCurrentChatMessage('ai', text);
     removeTypingMessage();
@@ -3019,18 +3019,18 @@ function addMessageAIWithStreaming(text, showActions, regenerateFunction) {
     const shellHTML = createMessageHTML('ai', '', timestamp, showActions, false);
     body.insertAdjacentHTML('beforeend', shellHTML);
     const messageEl = body.lastElementChild;
-    const globeEl = messageEl.querySelector('.ubits-study-chat__text-globe');
+    const globeEl = messageEl.querySelector('.ubits-ia-chat-thread__text-globe');
     if (!globeEl) return;
-    messageEl.classList.add('ubits-study-chat__message--streaming');
+    messageEl.classList.add('ubits-ia-chat-thread__message--streaming');
     let index = 0;
     function appendNext() {
         if (index >= linesHTML.length) {
-            messageEl.classList.remove('ubits-study-chat__message--streaming');
+            messageEl.classList.remove('ubits-ia-chat-thread__message--streaming');
             chatState.lastAIMessageElement = messageEl;
             chatState.lastAIMessageText = text;
             chatState.lastRegenerateFunction = regenerateFunction;
             attachAIMessageActions(messageEl, text, regenerateFunction);
-            if (typeof window.initTooltip === 'function') window.initTooltip('#ubits-study-chat-body [data-tooltip]');
+            if (typeof window.initTooltip === 'function') window.initTooltip('#ubits-ia-chat-thread-body [data-tooltip]');
             runPendingCardsRender(messageEl);
             body.scrollTop = body.scrollHeight;
             return;
@@ -3104,22 +3104,22 @@ function attachAIMessageActions(messageElement, text, regenerateFunction) {
 }
 
 function hideWelcomeBlock() {
-    const welcome = document.getElementById('ubits-study-chat-welcome');
-    if (welcome) welcome.classList.add('ubits-study-chat__welcome--hidden');
-    const suggestions = document.getElementById('ubits-study-chat-suggestions');
-    if (suggestions) suggestions.classList.add('ubits-study-chat__suggestions--hidden');
-    var welcomeTop = document.getElementById('ubits-study-chat-welcome-top');
+    const welcome = document.getElementById('ubits-ia-chat-thread-welcome');
+    if (welcome) welcome.classList.add('ubits-ia-chat-thread__welcome--hidden');
+    const suggestions = document.getElementById('ubits-ia-chat-thread-suggestions');
+    if (suggestions) suggestions.classList.add('ubits-ia-chat-thread__suggestions--hidden');
+    var welcomeTop = document.getElementById('ubits-ia-chat-thread-welcome-top');
     if (welcomeTop) welcomeTop.style.display = 'none';
     if (chatState.welcomeLayout) {
-        const root = document.getElementById('ubits-study-chat');
+        const root = document.getElementById('ubits-ia-chat-thread');
         if (root) {
-            root.classList.remove('ubits-study-chat--welcome');
-            const wrapper = root.closest('.modo-tutor-ia-chat-main');
-            if (wrapper) wrapper.classList.remove('study-chat-wrapper--welcome');
+            root.classList.remove('ubits-ia-chat-thread--welcome');
+            const wrapper = root.closest('.ubits-ia-chat__main');
+            if (wrapper) wrapper.classList.remove('ubits-ia-chat__main--welcome');
         }
     }
-    var header = document.getElementById('ubits-study-chat-header');
-    var headerTitle = document.getElementById('ubits-study-chat-header-title');
+    var header = document.getElementById('ubits-ia-chat-thread-header');
+    var headerTitle = document.getElementById('ubits-ia-chat-thread-header-title');
     if (header && headerTitle) {
         header.style.display = '';
         headerTitle.value = (chatState.currentChat && chatState.currentChat.title) ? chatState.currentChat.title : '';
@@ -3131,25 +3131,25 @@ function hideWelcomeBlock() {
  * Usado al iniciar un nuevo chat o al resetear la vista.
  */
 function showWelcomeBlock() {
-    const welcome = document.getElementById('ubits-study-chat-welcome');
-    if (welcome) welcome.classList.remove('ubits-study-chat__welcome--hidden');
-    const suggestions = document.getElementById('ubits-study-chat-suggestions');
-    if (suggestions) suggestions.classList.remove('ubits-study-chat__suggestions--hidden');
+    const welcome = document.getElementById('ubits-ia-chat-thread-welcome');
+    if (welcome) welcome.classList.remove('ubits-ia-chat-thread__welcome--hidden');
+    const suggestions = document.getElementById('ubits-ia-chat-thread-suggestions');
+    if (suggestions) suggestions.classList.remove('ubits-ia-chat-thread__suggestions--hidden');
     if (chatState.welcomeLayout) {
-        const root = document.getElementById('ubits-study-chat');
+        const root = document.getElementById('ubits-ia-chat-thread');
         if (root) {
-            root.classList.add('ubits-study-chat--welcome');
-            const wrapper = root.closest('.modo-tutor-ia-chat-main');
-            if (wrapper) wrapper.classList.add('study-chat-wrapper--welcome');
+            root.classList.add('ubits-ia-chat-thread--welcome');
+            const wrapper = root.closest('.ubits-ia-chat__main');
+            if (wrapper) wrapper.classList.add('ubits-ia-chat__main--welcome');
         }
     }
-    var header = document.getElementById('ubits-study-chat-header');
-    var headerTitle = document.getElementById('ubits-study-chat-header-title');
+    var header = document.getElementById('ubits-ia-chat-thread-header');
+    var headerTitle = document.getElementById('ubits-ia-chat-thread-header-title');
     if (header) header.style.display = '';
     if (headerTitle) {
         headerTitle.value = (chatState.currentChat && chatState.currentChat.title) ? chatState.currentChat.title : '';
     }
-    var welcomeTop = document.getElementById('ubits-study-chat-welcome-top');
+    var welcomeTop = document.getElementById('ubits-ia-chat-thread-welcome-top');
     if (welcomeTop) welcomeTop.style.display = hasAnyConversations() ? '' : 'none';
 }
 
@@ -3303,7 +3303,7 @@ var JAPONES_GENERIC_SUBTOPICS = ['Escritura y alfabeto', 'Saludos y cortesía', 
 function buildDefinitionWithCitationTags(competencyKey, definition) {
     var citations = DEFINITION_CITATIONS && DEFINITION_CITATIONS[competencyKey];
     if (!citations || !citations.length) {
-        return '<p class="ubits-study-chat__message-text">' + wrapWordsInSpans(escapeHTML(definition)) + '</p>';
+        return '<p class="ubits-ia-chat-thread__message-text">' + wrapWordsInSpans(escapeHTML(definition)) + '</p>';
     }
     var parts = [];
     var rest = definition;
@@ -3314,12 +3314,12 @@ function buildDefinitionWithCitationTags(competencyKey, definition) {
         pos = rest.indexOf(phrase);
         if (pos === -1) continue;
         parts.push(wrapWordsInSpans(escapeHTML(rest.substring(0, pos + phrase.length))));
-        tagHtml = '<span class="ubits-status-tag ubits-status-tag--neutral ubits-status-tag--xs ubits-status-tag--icon-left study-chat-citation-tag" role="button" tabindex="0" data-competency="' + escapeHTML(competencyKey) + '" data-content-index="' + contentIndex + '" data-tooltip="Ver contenido"><i class="far fa-book-open"></i><span class="ubits-status-tag__text">Contenido</span></span>';
-        parts.push('<span class="ubits-study-chat__word">' + tagHtml + '</span>');
+        tagHtml = '<span class="ubits-status-tag ubits-status-tag--neutral ubits-status-tag--xs ubits-status-tag--icon-left ubits-ia-chat-side__citation-tag" role="button" tabindex="0" data-competency="' + escapeHTML(competencyKey) + '" data-content-index="' + contentIndex + '" data-tooltip="Ver contenido"><i class="far fa-book-open"></i><span class="ubits-status-tag__text">Contenido</span></span>';
+        parts.push('<span class="ubits-ia-chat-thread__word">' + tagHtml + '</span>');
         rest = rest.substring(pos + phrase.length);
     }
     parts.push(wrapWordsInSpans(escapeHTML(rest)));
-    return '<p class="ubits-study-chat__message-text">' + parts.join(' ') + '</p>';
+    return '<p class="ubits-ia-chat-thread__message-text">' + parts.join(' ') + '</p>';
 }
 
 function escapeHTML(s) {
@@ -3362,11 +3362,11 @@ function getResourceCount(type, topicKey) {
 }
 
 function hideOpenButtonsInChat() {
-    document.querySelectorAll('.study-chat-resource-msg').forEach(function (el) { el.classList.remove('open-btn-visible'); });
+    document.querySelectorAll('.ubits-ia-chat-thread__resource-msg').forEach(function (el) { el.classList.remove('open-btn-visible'); });
 }
 
 function showOpenButtonsInChat() {
-    document.querySelectorAll('.study-chat-resource-msg').forEach(function (el) { el.classList.add('open-btn-visible'); });
+    document.querySelectorAll('.ubits-ia-chat-thread__resource-msg').forEach(function (el) { el.classList.add('open-btn-visible'); });
 }
 
 /**
@@ -3400,18 +3400,18 @@ function getResourceMessageHTML(type, topicKey, isNew, showOpenButton) {
     var countText = countInfo.count + ' ' + countInfo.label;
     var iconClass = getResourceIcon(type);
     var openVisibleClass = showOpenButton ? ' open-btn-visible' : '';
-    return '<div class="ubits-study-chat__message ubits-study-chat__message--ai study-chat-resource-msg' + openVisibleClass + '" data-resource-type="' + type + '" data-resource-topic="' + topicKey + '">' +
-        '<div class="ubits-study-chat__text-globe ubits-study-chat__text-globe--ai">' +
-        '<p class="ubits-study-chat__message-text">' + intro + '</p>' +
-        '<div class="study-chat-resource-card">' +
-        '<div class="study-chat-resource-card__main">' +
-        '<span class="study-chat-resource-card__icon"><i class="' + iconClass + '"></i></span>' +
-        '<div class="study-chat-resource-card__content">' +
-        '<span class="study-chat-resource-card__title ubits-body-sm-bold">' + (title.replace(/</g, '&lt;').replace(/"/g, '&quot;')) + '</span>' +
-        '<span class="study-chat-resource-card__meta ubits-body-xs-regular">' + countText + '</span>' +
+    return '<div class="ubits-ia-chat-thread__message ubits-ia-chat-thread__message--ai ubits-ia-chat-thread__resource-msg' + openVisibleClass + '" data-resource-type="' + type + '" data-resource-topic="' + topicKey + '">' +
+        '<div class="ubits-ia-chat-thread__text-globe ubits-ia-chat-thread__text-globe--ai">' +
+        '<p class="ubits-ia-chat-thread__message-text">' + intro + '</p>' +
+        '<div class="ubits-ia-chat-thread__resource-card">' +
+        '<div class="ubits-ia-chat-thread__resource-card-main">' +
+        '<span class="ubits-ia-chat-thread__resource-card-icon"><i class="' + iconClass + '"></i></span>' +
+        '<div class="ubits-ia-chat-thread__resource-card-content">' +
+        '<span class="ubits-ia-chat-thread__resource-card-title ubits-body-sm-bold">' + (title.replace(/</g, '&lt;').replace(/"/g, '&quot;')) + '</span>' +
+        '<span class="ubits-ia-chat-thread__resource-card-meta ubits-body-xs-regular">' + countText + '</span>' +
         '</div></div>' +
-        '<div class="study-chat-resource-card__action study-chat-resource-open-wrap">' +
-        '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm study-chat-resource-open-btn" data-type="' + type + '" data-topic="' + topicKey + '"><span>Abrir</span></button>' +
+        '<div class="ubits-ia-chat-thread__resource-card-action ubits-ia-chat-thread__resource-open-wrap">' +
+        '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm ubits-ia-chat-thread__resource-open-btn" data-type="' + type + '" data-topic="' + topicKey + '"><span>Abrir</span></button>' +
         '</div></div></div></div>';
 }
 
@@ -3423,7 +3423,7 @@ function getResourceMessageHTML(type, topicKey, isNew, showOpenButton) {
  * @param {boolean} isNew - true para "He creado un nuevo..."
  */
 function addResourceMessage(type, topicKey, isNew) {
-    var body = document.getElementById('ubits-study-chat-body');
+    var body = document.getElementById('ubits-ia-chat-thread-body');
     if (!body) return;
     var panel = chatState.rightPanelId ? document.getElementById(chatState.rightPanelId) : null;
     var panelIsOpen = panel && panel.classList.contains('is-open');
@@ -3432,12 +3432,12 @@ function addResourceMessage(type, topicKey, isNew) {
     body.insertAdjacentHTML('beforeend', html);
     var lastMsg = body.lastElementChild;
     if (lastMsg) {
-        lastMsg.classList.add('study-chat-resource-msg--reveal');
-        setTimeout(function () { lastMsg.classList.remove('study-chat-resource-msg--reveal'); }, 520);
+        lastMsg.classList.add('ubits-ia-chat-thread__resource-msg--reveal');
+        setTimeout(function () { lastMsg.classList.remove('ubits-ia-chat-thread__resource-msg--reveal'); }, 520);
     }
     body.scrollTop = body.scrollHeight;
     pushCurrentChatMessage({ type: 'ai', resource: { type: type, topicKey: topicKey, isNew: isNew } });
-    var btn = lastMsg ? lastMsg.querySelector('.study-chat-resource-open-btn') : null;
+    var btn = lastMsg ? lastMsg.querySelector('.ubits-ia-chat-thread__resource-open-btn') : null;
     if (btn) btn.addEventListener('click', function () {
         var t = this.getAttribute('data-type');
         var top = this.getAttribute('data-topic');
@@ -3459,7 +3459,7 @@ function addResourceMessage(type, topicKey, isNew) {
  * @param {string} topic - Id del tema (ej: "liderazgo") para renderTutorPanel
  */
 function addMessageWithMaterialChoiceButtons(label, topic) {
-    const body = document.getElementById('ubits-study-chat-body');
+    const body = document.getElementById('ubits-ia-chat-thread-body');
     if (!body) return;
     const showPlan = STUDY_PLAN_TOPICS.indexOf(topic) >= 0;
     var text;
@@ -3472,27 +3472,27 @@ function addMessageWithMaterialChoiceButtons(label, topic) {
     }
     const timestamp = formatTime();
     const choicesId = 'material-choices-' + Date.now();
-    const planBtnHtml = showPlan ? '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-choice="studyPlan"><span>Plan de estudio</span></button>' : '';
-    const choicesDivHtml = '<div class="ubits-study-chat__material-choices" id="' + choicesId + '">' +
-        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-choice="quiz"><span>Quiz</span></button>' +
+    const planBtnHtml = showPlan ? '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-ia-chat-thread__material-choice-btn" data-choice="studyPlan"><span>Plan de estudio</span></button>' : '';
+    const choicesDivHtml = '<div class="ubits-ia-chat-thread__material-choices" id="' + choicesId + '">' +
+        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-ia-chat-thread__material-choice-btn" data-choice="quiz"><span>Quiz</span></button>' +
         planBtnHtml +
-        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-choice="flashcards"><span>Flashcards</span></button>' +
-        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-choice="podcast"><span>Podcast</span></button>' +
+        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-ia-chat-thread__material-choice-btn" data-choice="flashcards"><span>Flashcards</span></button>' +
+        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-ia-chat-thread__material-choice-btn" data-choice="podcast"><span>Podcast</span></button>' +
         '</div>';
     const messageHTML = createMessageHTML('ai', text, timestamp, false, false, undefined, choicesDivHtml);
-    const choicesHTML = '<div class="ubits-study-chat__message-with-choices">' + messageHTML + '</div>';
+    const choicesHTML = '<div class="ubits-ia-chat-thread__message-with-choices">' + messageHTML + '</div>';
     body.insertAdjacentHTML('beforeend', choicesHTML);
     var wrapperEl = body.lastElementChild;
-    var messageEl = wrapperEl.querySelector('.ubits-study-chat__message');
+    var messageEl = wrapperEl.querySelector('.ubits-ia-chat-thread__message');
     if (messageEl) {
-        messageEl.classList.add('ubits-study-chat__message--typing');
+        messageEl.classList.add('ubits-ia-chat-thread__message--typing');
         animateWordsInMessage(messageEl, function () {
-            messageEl.classList.remove('ubits-study-chat__message--typing');
-            messageEl.classList.add('ubits-study-chat__message--typing-done');
+            messageEl.classList.remove('ubits-ia-chat-thread__message--typing');
+            messageEl.classList.add('ubits-ia-chat-thread__message--typing-done');
         });
     }
-    wrapperEl.classList.add('ubits-study-chat__message-with-choices--reveal');
-    setTimeout(function () { wrapperEl.classList.remove('ubits-study-chat__message-with-choices--reveal'); }, 520);
+    wrapperEl.classList.add('ubits-ia-chat-thread__message-with-choices--reveal');
+    setTimeout(function () { wrapperEl.classList.remove('ubits-ia-chat-thread__message-with-choices--reveal'); }, 520);
     body.scrollTop = body.scrollHeight;
     pushCurrentChatMessage({ type: 'ai', text: text, quickReplies: 'material', topic: topic });
     chatState.lastAIMessageElement = messageEl;
@@ -3501,7 +3501,7 @@ function addMessageWithMaterialChoiceButtons(label, topic) {
 
     const choicesEl = document.getElementById(choicesId);
     if (!choicesEl) return;
-    choicesEl.querySelectorAll('.ubits-study-chat__material-choice-btn').forEach(function (btn) {
+    choicesEl.querySelectorAll('.ubits-ia-chat-thread__material-choice-btn').forEach(function (btn) {
         btn.addEventListener('click', function () {
             const choice = this.getAttribute('data-choice');
             if (!choice) return;
@@ -3530,7 +3530,7 @@ function addMessageWithMaterialChoiceButtons(label, topic) {
  * @param {string[]} subtopics - Lista de habilidades o temas (ej: ['Empoderamiento', 'Motivación', ...])
  */
 function addMessageWithDefinitionAndSubtopics(competencyKey, label, definition, subtopics) {
-    var body = document.getElementById('ubits-study-chat-body');
+    var body = document.getElementById('ubits-ia-chat-thread-body');
     if (!body) return;
     var listText = subtopics.length > 0 ? subtopics.slice(0, 8).join(', ') + (subtopics.length > 8 ? '…' : '') : '';
 
@@ -3546,29 +3546,29 @@ function addMessageWithDefinitionAndSubtopics(competencyKey, label, definition, 
     var contentHTML = null;
     if (CITATION_CONTENTS && CITATION_CONTENTS[competencyKey] && DEFINITION_CITATIONS && DEFINITION_CITATIONS[competencyKey]) {
         contentHTML = buildDefinitionWithCitationTags(competencyKey, definition) +
-            '<p class="ubits-study-chat__message-text">' + questionTextHTML + '</p>';
+            '<p class="ubits-ia-chat-thread__message-text">' + questionTextHTML + '</p>';
     }
     var choicesId = 'subtopic-choices-' + Date.now();
     var buttonsHtml = subtopics.slice(0, 6).map(function (s, i) {
         var esc = s.replace(/"/g, '&quot;').replace(/</g, '&lt;');
-        return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-subtopic="' + esc + '" data-subtopic-index="' + i + '"><span>' + s + '</span></button>';
+        return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-ia-chat-thread__material-choice-btn" data-subtopic="' + esc + '" data-subtopic-index="' + i + '"><span>' + s + '</span></button>';
     }).join('');
-    buttonsHtml += '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-study-chat__material-choice-btn" data-choice="general"><span>Ver recursos en general</span></button>';
-    var choicesDivHtml = '<div class="ubits-study-chat__material-choices" id="' + choicesId + '">' + buttonsHtml + '</div>';
+    buttonsHtml += '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-ia-chat-thread__material-choice-btn" data-choice="general"><span>Ver recursos en general</span></button>';
+    var choicesDivHtml = '<div class="ubits-ia-chat-thread__material-choices" id="' + choicesId + '">' + buttonsHtml + '</div>';
     var messageHTML = createMessageHTML('ai', text, timestamp, false, false, contentHTML, choicesDivHtml);
-    var choicesHTML = '<div class="ubits-study-chat__message-with-choices">' + messageHTML + '</div>';
+    var choicesHTML = '<div class="ubits-ia-chat-thread__message-with-choices">' + messageHTML + '</div>';
     body.insertAdjacentHTML('beforeend', choicesHTML);
     var wrapperEl = body.lastElementChild;
-    var messageEl = wrapperEl.querySelector('.ubits-study-chat__message');
+    var messageEl = wrapperEl.querySelector('.ubits-ia-chat-thread__message');
     if (messageEl) {
-        messageEl.classList.add('ubits-study-chat__message--typing');
+        messageEl.classList.add('ubits-ia-chat-thread__message--typing');
         animateWordsInMessage(messageEl, function () {
-            messageEl.classList.remove('ubits-study-chat__message--typing');
-            messageEl.classList.add('ubits-study-chat__message--typing-done');
+            messageEl.classList.remove('ubits-ia-chat-thread__message--typing');
+            messageEl.classList.add('ubits-ia-chat-thread__message--typing-done');
         });
     }
-    wrapperEl.classList.add('ubits-study-chat__message-with-choices--reveal');
-    setTimeout(function () { wrapperEl.classList.remove('ubits-study-chat__message-with-choices--reveal'); }, 520);
+    wrapperEl.classList.add('ubits-ia-chat-thread__message-with-choices--reveal');
+    setTimeout(function () { wrapperEl.classList.remove('ubits-ia-chat-thread__message-with-choices--reveal'); }, 520);
     body.scrollTop = body.scrollHeight;
     pushCurrentChatMessage({ type: 'ai', text: text, quickReplies: 'subtopics', topic: competencyKey });
     chatState.waitingForSubtopicChoice = true;
@@ -3576,7 +3576,7 @@ function addMessageWithDefinitionAndSubtopics(competencyKey, label, definition, 
     chatState.lastAIMessageElement = messageEl;
     chatState.lastRegenerateFunction = null;
 
-    wrapperEl.querySelectorAll('.study-chat-citation-tag').forEach(function (tag) {
+    wrapperEl.querySelectorAll('.ubits-ia-chat-side__citation-tag').forEach(function (tag) {
         function openContentPreview() {
             var comp = tag.getAttribute('data-competency');
             var idx = parseInt(tag.getAttribute('data-content-index'), 10);
@@ -3591,7 +3591,7 @@ function addMessageWithDefinitionAndSubtopics(competencyKey, label, definition, 
 
     var choicesEl = document.getElementById(choicesId);
     if (!choicesEl) return;
-    choicesEl.querySelectorAll('.ubits-study-chat__material-choice-btn').forEach(function (btn) {
+    choicesEl.querySelectorAll('.ubits-ia-chat-thread__material-choice-btn').forEach(function (btn) {
         btn.addEventListener('click', function () {
             chatState.waitingForSubtopicChoice = false;
             var isGeneral = btn.getAttribute('data-choice') === 'general';
@@ -3627,34 +3627,34 @@ var SUGGESTED_TOPIC_BUTTONS = [
  * @param {string} text - Texto del mensaje (ej: "¿Sobre qué tema quieres el quiz?...")
  */
 function addMessageWithTopicChoiceButtons(resourceType, text) {
-    var body = document.getElementById('ubits-study-chat-body');
+    var body = document.getElementById('ubits-ia-chat-thread-body');
     if (!body) return;
     var timestamp = formatTime();
     var choicesId = 'topic-choices-' + Date.now();
     var buttonsHTML = SUGGESTED_TOPIC_BUTTONS.map(function (t) {
-        return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-topic-key="' + (t.key.replace(/"/g, '&quot;')) + '" data-topic-label="' + (t.label.replace(/"/g, '&quot;')) + '"><span>' + t.label + '</span></button>';
+        return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-ia-chat-thread__material-choice-btn" data-topic-key="' + (t.key.replace(/"/g, '&quot;')) + '" data-topic-label="' + (t.label.replace(/"/g, '&quot;')) + '"><span>' + t.label + '</span></button>';
     }).join('');
-    var choicesDivHtml = '<div class="ubits-study-chat__material-choices" id="' + choicesId + '">' + buttonsHTML + '</div>';
+    var choicesDivHtml = '<div class="ubits-ia-chat-thread__material-choices" id="' + choicesId + '">' + buttonsHTML + '</div>';
     var messageHTML = createMessageHTML('ai', text, timestamp, false, false, undefined, choicesDivHtml);
-    var choicesHTML = '<div class="ubits-study-chat__message-with-choices">' + messageHTML + '</div>';
+    var choicesHTML = '<div class="ubits-ia-chat-thread__message-with-choices">' + messageHTML + '</div>';
     body.insertAdjacentHTML('beforeend', choicesHTML);
     var wrapperEl = body.lastElementChild;
-    var messageEl = wrapperEl.querySelector('.ubits-study-chat__message');
+    var messageEl = wrapperEl.querySelector('.ubits-ia-chat-thread__message');
     if (messageEl) {
-        messageEl.classList.add('ubits-study-chat__message--typing');
+        messageEl.classList.add('ubits-ia-chat-thread__message--typing');
         animateWordsInMessage(messageEl, function () {
-            messageEl.classList.remove('ubits-study-chat__message--typing');
-            messageEl.classList.add('ubits-study-chat__message--typing-done');
+            messageEl.classList.remove('ubits-ia-chat-thread__message--typing');
+            messageEl.classList.add('ubits-ia-chat-thread__message--typing-done');
         });
     }
-    wrapperEl.classList.add('ubits-study-chat__message-with-choices--reveal');
-    setTimeout(function () { wrapperEl.classList.remove('ubits-study-chat__message-with-choices--reveal'); }, 520);
+    wrapperEl.classList.add('ubits-ia-chat-thread__message-with-choices--reveal');
+    setTimeout(function () { wrapperEl.classList.remove('ubits-ia-chat-thread__message-with-choices--reveal'); }, 520);
     body.scrollTop = body.scrollHeight;
     pushCurrentChatMessage({ type: 'ai', text: text, quickReplies: 'topic', waitingForTopicForResource: resourceType });
 
     var choicesEl = document.getElementById(choicesId);
     if (!choicesEl) return;
-    choicesEl.querySelectorAll('.ubits-study-chat__material-choice-btn').forEach(function (btn) {
+    choicesEl.querySelectorAll('.ubits-ia-chat-thread__material-choice-btn').forEach(function (btn) {
         btn.addEventListener('click', function () {
             var topicKey = this.getAttribute('data-topic-key');
             var topicLabel = this.getAttribute('data-topic-label');
@@ -3699,7 +3699,7 @@ var VALID_TOPICS_FOR_RESOURCE = ['liderazgo', 'comunicacion', 'ingles', 'japones
  * @param {string} text - Texto del mensaje (ej: "Estos son los recursos que tienes disponibles:")
  */
 function addMessageWithResourceTypeButtons(text) {
-    var body = document.getElementById('ubits-study-chat-body');
+    var body = document.getElementById('ubits-ia-chat-thread-body');
     if (!body) return;
     var timestamp = formatTime();
     var choicesId = 'resource-type-choices-' + Date.now();
@@ -3710,29 +3710,29 @@ function addMessageWithResourceTypeButtons(text) {
         { type: 'podcast', label: 'Podcast', icon: 'fa-podcast' }
     ];
     var buttonsHTML = resourceButtons.map(function (r) {
-        return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-study-chat__material-choice-btn" data-resource-type="' + (r.type.replace(/"/g, '&quot;')) + '"><span>' + r.label + '</span></button>';
+        return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-ia-chat-thread__material-choice-btn" data-resource-type="' + (r.type.replace(/"/g, '&quot;')) + '"><span>' + r.label + '</span></button>';
     }).join('');
-    var choicesDivHtml = '<div class="ubits-study-chat__material-choices" id="' + choicesId + '">' + buttonsHTML + '</div>';
+    var choicesDivHtml = '<div class="ubits-ia-chat-thread__material-choices" id="' + choicesId + '">' + buttonsHTML + '</div>';
     var messageHTML = createMessageHTML('ai', text, timestamp, false, false, undefined, choicesDivHtml);
-    var choicesHTML = '<div class="ubits-study-chat__message-with-choices">' + messageHTML + '</div>';
+    var choicesHTML = '<div class="ubits-ia-chat-thread__message-with-choices">' + messageHTML + '</div>';
     body.insertAdjacentHTML('beforeend', choicesHTML);
     var wrapperEl = body.lastElementChild;
-    var messageEl = wrapperEl.querySelector('.ubits-study-chat__message');
+    var messageEl = wrapperEl.querySelector('.ubits-ia-chat-thread__message');
     if (messageEl) {
-        messageEl.classList.add('ubits-study-chat__message--typing');
+        messageEl.classList.add('ubits-ia-chat-thread__message--typing');
         animateWordsInMessage(messageEl, function () {
-            messageEl.classList.remove('ubits-study-chat__message--typing');
-            messageEl.classList.add('ubits-study-chat__message--typing-done');
+            messageEl.classList.remove('ubits-ia-chat-thread__message--typing');
+            messageEl.classList.add('ubits-ia-chat-thread__message--typing-done');
         });
     }
-    wrapperEl.classList.add('ubits-study-chat__message-with-choices--reveal');
-    setTimeout(function () { wrapperEl.classList.remove('ubits-study-chat__message-with-choices--reveal'); }, 520);
+    wrapperEl.classList.add('ubits-ia-chat-thread__message-with-choices--reveal');
+    setTimeout(function () { wrapperEl.classList.remove('ubits-ia-chat-thread__message-with-choices--reveal'); }, 520);
     body.scrollTop = body.scrollHeight;
     pushCurrentChatMessage({ type: 'ai', text: text, quickReplies: 'resourceTypes' });
 
     var choicesEl = document.getElementById(choicesId);
     if (!choicesEl) return;
-    choicesEl.querySelectorAll('.ubits-study-chat__material-choice-btn').forEach(function (btn) {
+    choicesEl.querySelectorAll('.ubits-ia-chat-thread__material-choice-btn').forEach(function (btn) {
         btn.addEventListener('click', function () {
             var resourceType = this.getAttribute('data-resource-type');
             if (!resourceType) return;
@@ -3780,7 +3780,7 @@ function addMessageWithResourceTypeButtons(text) {
 }
 
 function addMessage(type, text, showActions = false, regenerateFunction = null) {
-    const body = document.getElementById('ubits-study-chat-body');
+    const body = document.getElementById('ubits-ia-chat-thread-body');
     if (!body) return;
 
     if (type === 'user') {
@@ -3800,18 +3800,18 @@ function addMessage(type, text, showActions = false, regenerateFunction = null) 
         chatState.lastAIMessageText = text;
         chatState.lastRegenerateFunction = regenerateFunction;
         if (messageEl) {
-            messageEl.classList.add('ubits-study-chat__message--reveal');
-            setTimeout(function () { messageEl.classList.remove('ubits-study-chat__message--reveal'); }, 520);
+            messageEl.classList.add('ubits-ia-chat-thread__message--reveal');
+            setTimeout(function () { messageEl.classList.remove('ubits-ia-chat-thread__message--reveal'); }, 520);
 
-            messageEl.classList.add('ubits-study-chat__message--typing');
+            messageEl.classList.add('ubits-ia-chat-thread__message--typing');
             animateWordsInMessage(messageEl, function () {
-                messageEl.classList.remove('ubits-study-chat__message--typing');
-                messageEl.classList.add('ubits-study-chat__message--typing-done');
+                messageEl.classList.remove('ubits-ia-chat-thread__message--typing');
+                messageEl.classList.add('ubits-ia-chat-thread__message--typing-done');
             });
 
             attachAIMessageActions(messageEl, text, regenerateFunction);
         }
-        if (typeof window.initTooltip === 'function') window.initTooltip('#ubits-study-chat-body [data-tooltip]');
+        if (typeof window.initTooltip === 'function') window.initTooltip('#ubits-ia-chat-thread-body [data-tooltip]');
         runPendingCardsRender(messageEl);
         body.scrollTop = body.scrollHeight;
         return;
@@ -3827,7 +3827,7 @@ function addMessage(type, text, showActions = false, regenerateFunction = null) 
  * Muestra un mensaje de typing (carga)
  */
 function showTypingMessage() {
-    const body = document.getElementById('ubits-study-chat-body');
+    const body = document.getElementById('ubits-ia-chat-thread-body');
     if (!body) return;
 
     const timestamp = formatTime();
@@ -3845,12 +3845,12 @@ function showTypingMessage() {
  * Remueve el mensaje de typing
  */
 function removeTypingMessage() {
-    const body = document.getElementById('ubits-study-chat-body');
+    const body = document.getElementById('ubits-ia-chat-thread-body');
     if (!body) return;
 
-    const typingMessage = body.querySelector('.ubits-study-chat__text-globe--typing');
+    const typingMessage = body.querySelector('.ubits-ia-chat-thread__text-globe--typing');
     if (typingMessage) {
-        typingMessage.closest('.ubits-study-chat__message').remove();
+        typingMessage.closest('.ubits-ia-chat-thread__message').remove();
     }
 }
 
@@ -3858,14 +3858,14 @@ function removeTypingMessage() {
  * Muestra el indicador "Pensando..."
  */
 function showThinkingIndicator() {
-    const body = document.getElementById('ubits-study-chat-body');
+    const body = document.getElementById('ubits-ia-chat-thread-body');
     if (!body) return null;
 
     // Usamos el globo de texto normal pero le inyectamos la clase y contenido especial
     const messageHTML = `
-        <div class="ubits-study-chat__message ubits-study-chat__message--ai">
-            <div class="ubits-study-chat__text-globe ubits-study-chat__text-globe--ai">
-                <span class="ubits-study-chat__thinking">Pensando</span>
+        <div class="ubits-ia-chat-thread__message ubits-ia-chat-thread__message--ai">
+            <div class="ubits-ia-chat-thread__text-globe ubits-ia-chat-thread__text-globe--ai">
+                <span class="ubits-ia-chat-thread__thinking">Pensando</span>
             </div>
         </div>
     `;
@@ -3897,22 +3897,22 @@ function initStudyChat(containerId, options = {}) {
 
     container.innerHTML = createStudyChatHTML(options);
     if (typeof window.initTooltip === 'function') {
-        window.initTooltip('#ubits-study-chat [data-tooltip]');
+        window.initTooltip('#ubits-ia-chat-thread [data-tooltip]');
     }
     if (chatState.welcomeLayout) {
-        const root = document.getElementById('ubits-study-chat');
+        const root = document.getElementById('ubits-ia-chat-thread');
         if (root) {
-            root.classList.add('ubits-study-chat--welcome');
-            const wrapper = root.closest('.modo-tutor-ia-chat-main');
-            if (wrapper) wrapper.classList.add('study-chat-wrapper--welcome');
+            root.classList.add('ubits-ia-chat-thread--welcome');
+            const wrapper = root.closest('.ubits-ia-chat__main');
+            if (wrapper) wrapper.classList.add('ubits-ia-chat__main--welcome');
         }
-        var headerInit = document.getElementById('ubits-study-chat-header');
-        var headerTitleInit = document.getElementById('ubits-study-chat-header-title');
+        var headerInit = document.getElementById('ubits-ia-chat-thread-header');
+        var headerTitleInit = document.getElementById('ubits-ia-chat-thread-header-title');
         if (headerInit) headerInit.style.display = '';
         if (headerTitleInit) headerTitleInit.value = '';
     }
 
-    var headerTitleInput = document.getElementById('ubits-study-chat-header-title');
+    var headerTitleInput = document.getElementById('ubits-ia-chat-thread-header-title');
     if (headerTitleInput) {
         headerTitleInput.addEventListener('blur', commitChatHeaderTitle);
         headerTitleInput.addEventListener('keydown', function (e) {
@@ -3927,11 +3927,11 @@ function initStudyChat(containerId, options = {}) {
         addMessage('ai', '¡Hola! ¿En qué puedo ayudarte?', true);
     }
 
-    const input = document.getElementById('ubits-study-chat-input');
-    const sendBtn = document.getElementById('ubits-study-chat-send-btn');
-    const attachBtn = document.getElementById('ubits-study-chat-attach-btn');
-    const suggestionBtns = document.querySelectorAll('.ubits-study-chat__suggestions .ubits-button');
-    const competencyChips = document.querySelectorAll('.ubits-study-chat__competency-chip');
+    const input = document.getElementById('ubits-ia-chat-thread-input');
+    const sendBtn = document.getElementById('ubits-ia-chat-thread-send-btn');
+    const attachBtn = document.getElementById('ubits-ia-chat-thread-attach-btn');
+    const suggestionBtns = document.querySelectorAll('.ubits-ia-chat-thread__suggestions .ubits-button');
+    const competencyChips = document.querySelectorAll('.ubits-ia-chat-thread__competency-chip');
 
     // Auto-resize del textarea (máx 5 líneas = 144px; luego scroll interno)
     var MAX_INPUT_HEIGHT = 144;
@@ -4000,7 +4000,7 @@ function initStudyChat(containerId, options = {}) {
 
     // Botones de sugerencias (modo clásico cuando no hay competencias)
     suggestionBtns.forEach(btn => {
-        if (btn.classList.contains('ubits-study-chat__competency-chip')) return;
+        if (btn.classList.contains('ubits-ia-chat-thread__competency-chip')) return;
         btn.addEventListener('click', function () {
             const suggestion = this.getAttribute('data-suggestion');
             let message = '';

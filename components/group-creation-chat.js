@@ -1,7 +1,8 @@
 /* ========================================
    UBITS GROUP CREATION CHAT
    Chat para creación/edición/consulta de grupos (IA).
-   Misma estructura visual que study-chat; reutiliza study-chat.css.
+   Misma estructura visual que el hilo en study-chat.js; estilos en general-styles/ubits-ia-chat.css
+   (components/study-chat.css reexporta ese shell por compatibilidad).
    ======================================== */
 
 function escapeHtml(str) {
@@ -12,18 +13,18 @@ function escapeHtml(str) {
 }
 
 /**
- * Genera el HTML de un mensaje (misma estructura que study-chat para reutilizar CSS).
+ * Genera el HTML de un mensaje (misma estructura que el hilo de chat IA para reutilizar CSS).
  */
 function createGroupChatMessageHTML(type, text) {
-    var messageClass = type === 'ai' ? 'ubits-study-chat__message--ai' : 'ubits-study-chat__message--user';
-    var globeClass = type === 'ai' ? 'ubits-study-chat__text-globe--ai' : 'ubits-study-chat__text-globe--user';
+    var messageClass = type === 'ai' ? 'ubits-ia-chat-thread__message--ai' : 'ubits-ia-chat-thread__message--user';
+    var globeClass = type === 'ai' ? 'ubits-ia-chat-thread__text-globe--ai' : 'ubits-ia-chat-thread__text-globe--user';
     var safeText = escapeHtml(text).replace(/\n/g, '<br>');
     var lines = text.split('\n').filter(function (l) { return l.trim(); });
     var textHTML = lines.length ? lines.map(function (line) {
-        return '<p class="ubits-study-chat__message-text">' + escapeHtml(line) + '</p>';
-    }).join('') : '<p class="ubits-study-chat__message-text">' + safeText + '</p>';
-    return '<div class="ubits-study-chat__message ' + messageClass + '">' +
-        '<div class="ubits-study-chat__text-globe ' + globeClass + '">' + textHTML + '</div></div>';
+        return '<p class="ubits-ia-chat-thread__message-text">' + escapeHtml(line) + '</p>';
+    }).join('') : '<p class="ubits-ia-chat-thread__message-text">' + safeText + '</p>';
+    return '<div class="ubits-ia-chat-thread__message ' + messageClass + '">' +
+        '<div class="ubits-ia-chat-thread__text-globe ' + globeClass + '">' + textHTML + '</div></div>';
 }
 
 /**
@@ -34,47 +35,47 @@ function createGroupCreationChatHTML(options) {
     options = options || {};
     var headerStyle = (options.welcomeLayout !== false) ? '' : 'display: none;';
     var userFirstName = escapeHtml(options.userFirstName || 'María Alejandra');
-    var suggestionButtons = '<span class="ubits-study-chat__suggestions-label ubits-body-xs-regular">Puedo ayudarte a:</span>' +
+    var suggestionButtons = '<span class="ubits-ia-chat-thread__suggestions-label ubits-body-xs-regular">Puedo ayudarte a:</span>' +
         '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" data-suggestion="crear"><span>Crear grupos</span></button>' +
         '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" data-suggestion="editar"><span>Editar grupos</span></button>' +
         '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" data-suggestion="consultar"><span>Consultar grupos</span></button>';
-    var welcomeBlock = '<div class="ubits-study-chat__welcome-wrapper" id="group-creation-chat-welcome">' +
-        '<div class="ubits-study-chat__welcome">' +
-        '<div class="ubits-study-chat__welcome-head">' +
-        '<div class="ubits-study-chat__welcome-icon"><i class="far fa-sparkles"></i></div>' +
-        '<p class="ubits-study-chat__welcome-greeting">Hola, ' + userFirstName + '</p>' +
+    var welcomeBlock = '<div class="ubits-ia-chat-thread__welcome-wrapper" id="group-creation-chat-welcome">' +
+        '<div class="ubits-ia-chat-thread__welcome">' +
+        '<div class="ubits-ia-chat-thread__welcome-head">' +
+        '<div class="ubits-ia-chat-thread__welcome-icon"><i class="far fa-sparkles"></i></div>' +
+        '<p class="ubits-ia-chat-thread__welcome-greeting">Hola, ' + userFirstName + '</p>' +
         '</div>' +
-        '<p class="ubits-study-chat__welcome-prompt">¿En qué puedo ayudarte con <span class="ubits-study-chat__welcome-prompt-accent">grupos</span>?</p>' +
+        '<p class="ubits-ia-chat-thread__welcome-prompt">¿En qué puedo ayudarte con <span class="ubits-ia-chat-thread__welcome-prompt-accent">grupos</span>?</p>' +
         '</div></div>';
     /* En bienvenida no se muestran Ver historial ni Nuevo chat (como modo-estudio-ia cuando no hay conversaciones) */
-    var welcomeTopBar = '<div class="ubits-study-chat__welcome-top" id="group-creation-chat-welcome-top" style="display: none;">' +
+    var welcomeTopBar = '<div class="ubits-ia-chat-thread__welcome-top" id="group-creation-chat-welcome-top" style="display: none;">' +
         '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="group-creation-chat-btn-historial" aria-label="Ver historial de chats">' +
         '<i class="far fa-clock-rotate-left"></i><span>Ver historial</span></button>' +
         '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="group-creation-chat-btn-nuevo" aria-label="Iniciar nuevo chat">' +
         '<i class="far fa-comment-plus"></i><span>Nuevo chat</span></button>' +
         '</div>';
-    var headerBar = '<div class="ubits-study-chat__header" id="group-creation-chat-header" style="' + headerStyle + '" aria-label="Encabezado del chat">' +
-        '<input type="text" class="ubits-study-chat__header-title" id="group-creation-chat-header-title" value="" placeholder="Nuevo chat" maxlength="80" aria-label="Nombre del chat" />' +
-        '<div class="ubits-study-chat__header-actions">' +
+    var headerBar = '<div class="ubits-ia-chat-thread__header" id="group-creation-chat-header" style="' + headerStyle + '" aria-label="Encabezado del chat">' +
+        '<input type="text" class="ubits-ia-chat-thread__header-title" id="group-creation-chat-header-title" value="" placeholder="Nuevo chat" maxlength="80" aria-label="Nombre del chat" />' +
+        '<div class="ubits-ia-chat-thread__header-actions">' +
         '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="group-creation-chat-btn-historial-header" data-tooltip="Historial" data-tooltip-position="bottom" aria-label="Abrir historial de chats">' +
         '<i class="far fa-clock-rotate-left"></i></button>' +
         '</div></div>';
-    return '<div class="ubits-study-chat ubits-study-chat--welcome" id="group-creation-chat">' +
+    return '<div class="ubits-ia-chat-thread ubits-ia-chat-thread--welcome" id="group-creation-chat">' +
         headerBar +
         welcomeTopBar +
-        '<div class="ubits-study-chat__body" id="group-creation-chat-body">' + welcomeBlock + '</div>' +
-        '<div class="ubits-study-chat__input-area">' +
-        '<div class="ubits-study-chat__input-container">' +
-        '<div class="ubits-study-chat__input-wrapper">' +
-        '<textarea class="ubits-study-chat__input" id="group-creation-chat-input" placeholder="Escribir mensaje..." rows="1"></textarea>' +
+        '<div class="ubits-ia-chat-thread__body" id="group-creation-chat-body">' + welcomeBlock + '</div>' +
+        '<div class="ubits-ia-chat-thread__input-area">' +
+        '<div class="ubits-ia-chat-thread__input-container">' +
+        '<div class="ubits-ia-chat-thread__input-wrapper">' +
+        '<textarea class="ubits-ia-chat-thread__input" id="group-creation-chat-input" placeholder="Escribir mensaje..." rows="1"></textarea>' +
         '</div>' +
-        '<div class="ubits-study-chat__input-actions">' +
-        '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-study-chat__input-attach" id="group-creation-chat-attach-btn" data-tooltip="Adjuntar" aria-label="Adjuntar"><i class="far fa-paperclip"></i></button>' +
-        '<button type="button" class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--sm ubits-ia-button--icon-only ubits-study-chat__input-send" id="group-creation-chat-send-btn" data-tooltip="Enviar" aria-label="Enviar"><i class="far fa-paper-plane"></i></button>' +
+        '<div class="ubits-ia-chat-thread__input-actions">' +
+        '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-ia-chat-thread__input-attach" id="group-creation-chat-attach-btn" data-tooltip="Adjuntar" aria-label="Adjuntar"><i class="far fa-paperclip"></i></button>' +
+        '<button type="button" class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--sm ubits-ia-button--icon-only ubits-ia-chat-thread__input-send" id="group-creation-chat-send-btn" data-tooltip="Enviar" aria-label="Enviar"><i class="far fa-paper-plane"></i></button>' +
         '</div></div>' +
-        '<div class="ubits-study-chat__suggestions" id="group-creation-chat-suggestions">' + suggestionButtons + '</div>' +
+        '<div class="ubits-ia-chat-thread__suggestions" id="group-creation-chat-suggestions">' + suggestionButtons + '</div>' +
         '</div>' +
-        '<p class="ubits-study-chat__disclaimer ubits-body-xs-regular">El chat puede cometer errores; verifica la información.</p>' +
+        '<p class="ubits-ia-chat-thread__disclaimer ubits-body-xs-regular">El chat puede cometer errores; verifica la información.</p>' +
         '</div>';
 }
 
@@ -157,21 +158,21 @@ function initGroupCreationChat(containerId, options) {
     var sendBtn = document.getElementById('group-creation-chat-send-btn');
     var suggestionsEl = document.getElementById('group-creation-chat-suggestions');
 
-    var wrapper = root && (root.closest('.modo-tutor-ia-chat-main') || root.closest('.study-chat-wrapper--welcome') || root.parentElement);
+    var wrapper = root && (root.closest('.ubits-ia-chat__main') || root.closest('.ubits-ia-chat__main--welcome') || root.parentElement);
 
     if (options.welcomeLayout !== false && root) {
-        root.classList.add('ubits-study-chat--welcome');
-        if (wrapper && wrapper.classList) wrapper.classList.add('study-chat-wrapper--welcome');
+        root.classList.add('ubits-ia-chat-thread--welcome');
+        if (wrapper && wrapper.classList) wrapper.classList.add('ubits-ia-chat__main--welcome');
     }
 
     function hideWelcome() {
-        if (welcome) welcome.classList.add('ubits-study-chat__welcome--hidden');
-        if (suggestionsEl) suggestionsEl.classList.add('ubits-study-chat__suggestions--hidden');
+        if (welcome) welcome.classList.add('ubits-ia-chat-thread__welcome--hidden');
+        if (suggestionsEl) suggestionsEl.classList.add('ubits-ia-chat-thread__suggestions--hidden');
         if (welcomeTop) welcomeTop.style.display = 'none';
         if (headerEl) headerEl.style.display = '';
         if (root) {
-            root.classList.remove('ubits-study-chat--welcome');
-            if (wrapper && wrapper.classList) wrapper.classList.remove('study-chat-wrapper--welcome');
+            root.classList.remove('ubits-ia-chat-thread--welcome');
+            if (wrapper && wrapper.classList) wrapper.classList.remove('ubits-ia-chat__main--welcome');
         }
     }
 
@@ -183,9 +184,9 @@ function initGroupCreationChat(containerId, options) {
         }
         if (welcomeTop) welcomeTop.style.display = 'none'; /* En bienvenida no se muestran Ver historial / Nuevo chat */
         if (welcome) {
-            welcome.classList.remove('ubits-study-chat__welcome--hidden');
+            welcome.classList.remove('ubits-ia-chat-thread__welcome--hidden');
         }
-        if (suggestionsEl) suggestionsEl.classList.remove('ubits-study-chat__suggestions--hidden');
+        if (suggestionsEl) suggestionsEl.classList.remove('ubits-ia-chat-thread__suggestions--hidden');
         if (body) {
             var children = Array.prototype.slice.call(body.children);
             children.forEach(function (el) {
@@ -193,8 +194,8 @@ function initGroupCreationChat(containerId, options) {
             });
         }
         if (root) {
-            root.classList.add('ubits-study-chat--welcome');
-            if (wrapper && wrapper.classList) wrapper.classList.add('study-chat-wrapper--welcome');
+            root.classList.add('ubits-ia-chat-thread--welcome');
+            if (wrapper && wrapper.classList) wrapper.classList.add('ubits-ia-chat__main--welcome');
         }
     }
 
@@ -289,25 +290,25 @@ function initGroupCreationChat(containerId, options) {
             var id = chat.id || '';
             var title = (chat.title || 'Nuevo chat').replace(/</g, '&lt;').replace(/"/g, '&quot;');
             var isActive = id && currentId === id;
-            var activeClass = isActive ? ' group-creation-historial-item--active' : '';
+            var activeClass = isActive ? ' ubits-ia-chat-historial-item--active' : '';
             var dateLabel = formatGroupCreationHistorialDate(chat.createdAt || chat.lastInteractedAt || 0);
             var dateEscaped = dateLabel.replace(/</g, '&lt;').replace(/"/g, '&quot;');
             var descriptionEscaped = 'Chat sobre grupos'.replace(/</g, '&lt;').replace(/"/g, '&quot;');
-            html += '<div class="group-creation-historial-item' + activeClass + '" data-chat-id="' + id + '" role="button" tabindex="0"' + (isActive ? ' aria-current="true"' : '') + '>' +
-                '<div class="group-creation-historial-item__content">' +
-                '<span class="ubits-body-sm-regular group-creation-historial-item__title">' + title + '</span>' +
-                '<span class="ubits-body-sm-regular group-creation-historial-item__description">' + descriptionEscaped + '</span>' +
-                (dateEscaped ? '<span class="ubits-body-sm-regular group-creation-historial-item__date">' + dateEscaped + '</span>' : '') +
+            html += '<div class="ubits-ia-chat-historial-item' + activeClass + '" data-chat-id="' + id + '" role="button" tabindex="0"' + (isActive ? ' aria-current="true"' : '') + '>' +
+                '<div class="ubits-ia-chat-historial-item__content">' +
+                '<span class="ubits-body-sm-regular ubits-ia-chat-historial-item__title">' + title + '</span>' +
+                '<span class="ubits-body-sm-regular ubits-ia-chat-historial-item__description">' + descriptionEscaped + '</span>' +
+                (dateEscaped ? '<span class="ubits-body-sm-regular ubits-ia-chat-historial-item__date">' + dateEscaped + '</span>' : '') +
                 '</div>' +
-                '<button type="button" class="ubits-button ubits-button--error-tertiary ubits-button--xs ubits-button--icon-only group-creation-historial-item__delete" data-delete-chat-id="' + id + '" aria-label="Eliminar chat" data-tooltip="Eliminar">' +
+                '<button type="button" class="ubits-button ubits-button--error-tertiary ubits-button--xs ubits-button--icon-only ubits-ia-chat-historial-item__delete" data-delete-chat-id="' + id + '" aria-label="Eliminar chat" data-tooltip="Eliminar">' +
                 '<i class="far fa-trash"></i></button>' +
                 '</div>';
         });
         listEl.innerHTML = html;
 
-        listEl.querySelectorAll('.group-creation-historial-item').forEach(function (item) {
+        listEl.querySelectorAll('.ubits-ia-chat-historial-item').forEach(function (item) {
             item.addEventListener('click', function (e) {
-                if (e.target.closest('.group-creation-historial-item__delete')) return;
+                if (e.target.closest('.ubits-ia-chat-historial-item__delete')) return;
                 var chatId = this.getAttribute('data-chat-id');
                 if (!chatId) return;
                 if (chatId === currentId) {
@@ -335,7 +336,7 @@ function initGroupCreationChat(containerId, options) {
                 renderGroupCreationHistorialList();
             });
         });
-        listEl.querySelectorAll('.group-creation-historial-item__delete').forEach(function (btn) {
+        listEl.querySelectorAll('.ubits-ia-chat-historial-item__delete').forEach(function (btn) {
             btn.addEventListener('click', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
@@ -392,14 +393,14 @@ function initGroupCreationChat(containerId, options) {
 
     function appendSubOptionsBlock(subOptions) {
         if (!body || !subOptions || !subOptions.length) return;
-        var aiMessages = body.querySelectorAll('.ubits-study-chat__message--ai');
+        var aiMessages = body.querySelectorAll('.ubits-ia-chat-thread__message--ai');
         var lastAiMessage = aiMessages.length ? aiMessages[aiMessages.length - 1] : null;
-        var globe = lastAiMessage ? lastAiMessage.querySelector('.ubits-study-chat__text-globe') : null;
+        var globe = lastAiMessage ? lastAiMessage.querySelector('.ubits-ia-chat-thread__text-globe') : null;
         if (!globe) return;
         var wrap = document.createElement('div');
-        wrap.className = 'group-creation-chat__sub-options-wrap';
+        wrap.className = 'ubits-ia-chat-thread__sub-options-wrap';
         var inner = document.createElement('div');
-        inner.className = 'group-creation-chat__sub-options';
+        inner.className = 'ubits-ia-chat-thread__sub-options';
         subOptions.forEach(function (opt) {
             var btn = document.createElement('button');
             btn.type = 'button';
@@ -411,7 +412,7 @@ function initGroupCreationChat(containerId, options) {
                 var label = (this.querySelector('span') && this.querySelector('span').textContent) || this.textContent.trim();
                 appendMessage('user', label);
                 appendMessage('ai', getSubOptionResponse(key));
-                wrap.classList.add('group-creation-chat__sub-options-wrap--used');
+                wrap.classList.add('ubits-ia-chat-thread__sub-options-wrap--used');
             });
             inner.appendChild(btn);
         });
