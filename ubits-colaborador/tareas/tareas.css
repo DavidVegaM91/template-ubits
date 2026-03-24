@@ -34,7 +34,7 @@
 
 .content-sections::after {
     content: '';
-    height: var(--space-0, 0);
+    height: var(--space-0);
     flex-shrink: 0;
 }
 
@@ -200,7 +200,7 @@ body.page-tareas .dashboard-container {
     flex-direction: column !important;
     height: auto !important;
     /* Permitir que el margen ocupe espacio */
-    margin-bottom: var(--gap-lg, 16px) !important;
+    margin-bottom: var(--gap-lg) !important;
     /* Token oficial */
 }
 
@@ -234,7 +234,7 @@ body.page-tareas .dashboard-container {
 .widget-vista-tareas {
     background-color: var(--ubits-bg-1) !important;
     border-radius: var(--border-radius-md) !important;
-    padding: var(--padding-xl, 20px) !important;
+    padding: var(--padding-xl) !important;
     display: flex !important;
     flex-direction: column !important;
     flex: 1 !important;
@@ -249,7 +249,7 @@ body.page-tareas .dashboard-container {
 .calendar-module {
     flex-shrink: 0 !important;
     margin-bottom: 0 !important;
-    padding-bottom: var(--gap-lg, 16px) !important;
+    padding-bottom: var(--gap-lg) !important;
     border-bottom: 1px solid var(--ubits-border-1);
     background: var(--ubits-bg-1);
 }
@@ -258,7 +258,7 @@ body.page-tareas .dashboard-container {
 .calendar-header {
     display: flex !important;
     flex-direction: column !important;
-    gap: var(--gap-lg, 16px) !important;
+    gap: var(--gap-lg) !important;
     width: 100% !important;
     max-width: 100% !important;
     box-sizing: border-box !important;
@@ -275,7 +275,7 @@ body.page-tareas .dashboard-container {
     flex-wrap: nowrap !important;
     align-items: center !important;
     justify-content: flex-start !important;
-    gap: var(--gap-md, 12px) !important;
+    gap: var(--gap-md) !important;
     width: 100% !important;
     max-width: 100% !important;
     overflow: visible !important;
@@ -299,7 +299,9 @@ body.page-tareas .dashboard-container {
     display: flex !important;
     flex-direction: row !important;
     flex-wrap: nowrap !important;
-    gap: var(--gap-sm, 8px) !important;
+    /* Sin stretch: cada día usa su altura natural; centrados en vertical respecto al más alto */
+    align-items: center !important;
+    gap: var(--gap-lg) !important;
     overflow-x: hidden !important;
     overflow-y: hidden !important;
     flex: 1 1 0% !important;
@@ -309,7 +311,7 @@ body.page-tareas .dashboard-container {
     min-width: 0 !important;
     max-width: none !important;
     width: auto !important;
-    padding: var(--padding-xs, 4px) 0 !important;
+    padding: var(--padding-xs) 0 !important;
     white-space: nowrap !important;
     justify-content: stretch !important;
 }
@@ -319,19 +321,20 @@ body.page-tareas .dashboard-container {
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: var(--gap-xs, 4px);
-    padding: var(--padding-sm, 8px) var(--padding-md, 12px);
+    gap: var(--gap-xs);
+    /* Solo el activo lleva padding 12px + línea; el resto queda más compacto */
+    padding: var(--padding-sm) var(--padding-md);
     flex: 1 1 0% !important;
     flex-grow: 1 !important;
     flex-shrink: 1 !important;
     flex-basis: 0% !important;
     min-width: 0 !important;
     background: transparent;
-    border: none;
-    border-radius: var(--border-radius-sm, 8px);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-md);
     cursor: pointer;
     transition: all 0.2s ease;
-    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-family: 'Noto Sans', sans-serif;
     position: relative;
     white-space: nowrap;
     box-sizing: border-box;
@@ -343,38 +346,64 @@ body.page-tareas .dashboard-container {
 
 .calendar-horizontal__day:hover .calendar-horizontal__weekday,
 .calendar-horizontal__day:hover .calendar-horizontal__day-number {
-    color: var(--ubits-fg-1-high);
+    color: var(--ubits-fg-1-medium);
 }
 
 .calendar-horizontal__day--selected:hover {
-    background: var(--ubits-accent-brand);
+    background: var(--ubits-bg-1);
 }
 
 .calendar-horizontal__day--selected:hover .calendar-horizontal__weekday,
 .calendar-horizontal__day--selected:hover .calendar-horizontal__day-number {
-    color: var(--ubits-btn-primary-fg);
+    color: var(--ubits-fg-1-high);
 }
 
 .calendar-horizontal__day--selected {
-    background: var(--ubits-accent-brand);
-    color: var(--ubits-btn-primary-fg);
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    box-shadow: none;
+    /* Más alto que el resto: espacio bajo la línea (12px) + línea (3px) + aire sobre la línea (12px) */
+    padding: var(--padding-md) var(--padding-md) calc(var(--padding-md) + 3px + var(--padding-md)) var(--padding-md);
 }
 
-.calendar-horizontal__day--selected .calendar-horizontal__weekday,
+/* Línea de acento estrecha bajo el día activo (centrada, no ancho completo) */
+.calendar-horizontal__day--selected::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: var(--size-xl);
+    bottom: var(--padding-md);
+    height: 3px;
+    background: var(--ubits-accent-brand);
+    border-radius: var(--border-radius-full);
+    pointer-events: none;
+}
+
+.calendar-horizontal__day--selected .calendar-horizontal__weekday {
+    color: var(--ubits-fg-1-high);
+    font-weight: var(--font-weight-regular);
+}
+
 .calendar-horizontal__day--selected .calendar-horizontal__day-number {
-    color: var(--ubits-btn-primary-fg);
+    color: var(--ubits-fg-1-high);
     font-weight: var(--font-weight-bold);
 }
 
-/* Cuando el día de hoy está seleccionado, debe verse azul igual que los demás días seleccionados */
+/* Hoy + seleccionado: mismo fondo activo (bg-1) y línea inferior */
 .calendar-horizontal__day--selected.calendar-horizontal__day--today {
-    background: var(--ubits-accent-brand);
-    color: var(--ubits-btn-primary-fg);
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    box-shadow: none;
 }
 
-.calendar-horizontal__day--selected.calendar-horizontal__day--today .calendar-horizontal__weekday,
+.calendar-horizontal__day--selected.calendar-horizontal__day--today .calendar-horizontal__weekday {
+    color: var(--ubits-fg-1-high);
+    font-weight: var(--font-weight-regular);
+}
+
 .calendar-horizontal__day--selected.calendar-horizontal__day--today .calendar-horizontal__day-number {
-    color: var(--ubits-btn-primary-fg);
+    color: var(--ubits-fg-1-high);
     font-weight: var(--font-weight-bold);
 }
 
@@ -387,16 +416,16 @@ body.page-tareas .dashboard-container {
 }
 
 .calendar-horizontal__weekday {
-    font-size: var(--font-size-xs, 11px);
-    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-regular);
     color: var(--ubits-fg-1-medium);
-    text-transform: lowercase;
+    text-transform: capitalize;
 }
 
 .calendar-horizontal__day-number {
-    font-size: var(--font-size-md, 16px);
+    font-size: var(--font-size-md);
     font-weight: var(--font-weight-semibold);
-    color: var(--ubits-fg-1-high);
+    color: var(--ubits-fg-1-medium);
 }
 
 /* Contenedor: controles del carrusel (Hoy + flechas) + Filtros; siempre juntos como en desktop */
@@ -404,7 +433,7 @@ body.page-tareas .dashboard-container {
     display: flex !important;
     flex-wrap: nowrap !important;
     align-items: center !important;
-    gap: var(--gap-sm, 8px) !important;
+    gap: var(--gap-sm) !important;
     flex-shrink: 0 !important;
 }
 
@@ -412,7 +441,7 @@ body.page-tareas .dashboard-container {
 .calendar-today-nav {
     display: flex !important;
     align-items: center !important;
-    gap: var(--gap-sm, 8px) !important;
+    gap: var(--gap-sm) !important;
     flex-shrink: 0 !important;
     flex-grow: 0 !important;
     white-space: nowrap !important;
@@ -431,13 +460,13 @@ body.page-tareas .dashboard-container {
     left: 0;
     top: 100%;
     z-index: 1000;
-    margin-top: var(--gap-sm, 8px);
+    margin-top: var(--gap-sm);
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
-    border-radius: var(--border-radius-sm, 8px);
+    border-radius: var(--border-radius-sm);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
     /* sin token */
-    padding: var(--padding-lg, 16px);
+    padding: var(--padding-lg);
     min-width: 240px;
     /* sin token */
 }
@@ -446,11 +475,11 @@ body.page-tareas .dashboard-container {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: var(--gap-md, 12px);
+    margin-bottom: var(--gap-md);
 }
 
 .calendar-month-picker__year {
-    font-size: var(--font-size-md, 16px);
+    font-size: var(--font-size-md);
     font-weight: var(--font-weight-bold);
     color: var(--ubits-fg-1-high);
 }
@@ -458,7 +487,7 @@ body.page-tareas .dashboard-container {
 .calendar-month-picker__grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: var(--gap-sm, 8px);
+    gap: var(--gap-sm);
     /* 6px → superior en escala */
 }
 
@@ -475,7 +504,7 @@ body.page-tareas .dashboard-container {
     min-height: 0;
     overflow-y: auto;
     overflow-x: hidden;
-    padding-right: var(--padding-sm, 8px);
+    padding-right: var(--padding-sm);
     scrollbar-width: thin;
     scrollbar-color: var(--ubits-border-1) transparent;
 }
@@ -491,7 +520,7 @@ body.page-tareas .dashboard-container {
 
 .tareas-scroll-container::-webkit-scrollbar-thumb {
     background: var(--ubits-border-1);
-    border-radius: var(--border-radius-xs, 4px);
+    border-radius: var(--border-radius-xs);
     /* 3px → superior */
 }
 
@@ -502,15 +531,15 @@ body.page-tareas .dashboard-container {
 /* Contenedor de tareas vencidas (PRIMERO) */
 .tareas-overdue-container {
     /* Un poco más de aire respecto a la línea del calendario sin romper el layout */
-    padding-top: var(--gap-xl, 20px);
-    margin-bottom: var(--space-8, 32px);
+    padding-top: var(--gap-xl);
+    margin-bottom: var(--space-8);
 }
 
 .tareas-overdue-header {
     display: flex;
     align-items: center;
-    gap: var(--gap-md, 12px);
-    margin-bottom: var(--gap-lg, 16px);
+    gap: var(--gap-md);
+    margin-bottom: var(--gap-lg);
 }
 
 .tareas-overdue-header .ubits-button--icon-only i {
@@ -533,7 +562,7 @@ body.page-tareas .dashboard-container {
     border-radius: 10px;
     background: var(--ubits-button-badge);
     color: var(--ubits-btn-primary-fg);
-    font-size: 12px;
+    font-size: var(--font-size-xs);
     font-weight: var(--font-weight-semibold);
     line-height: 1;
 }
@@ -549,17 +578,17 @@ body.page-tareas .dashboard-container {
 .tareas-overdue-content {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-sm, 8px);
+    gap: var(--gap-sm);
 }
 
 /* Contenedores de días del calendario */
 .tareas-day-container {
-    margin-bottom: var(--space-8, 32px);
+    margin-bottom: var(--space-8);
     min-width: 0;
 }
 
 .tareas-day-header {
-    margin-bottom: var(--gap-lg, 16px);
+    margin-bottom: var(--gap-lg);
 }
 
 .tareas-day-header h2 {
@@ -570,7 +599,7 @@ body.page-tareas .dashboard-container {
 .tareas-day-content {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-sm, 8px);
+    gap: var(--gap-sm);
     min-width: 0;
 }
 
@@ -578,12 +607,12 @@ body.page-tareas .dashboard-container {
 
 .tarea-add-btn {
     width: 100%;
-    margin-top: var(--gap-lg, 16px);
+    margin-top: var(--gap-lg);
 }
 
 /* Formulario añadir tarea inline */
 .tarea-add-form {
-    margin-top: var(--gap-lg, 16px);
+    margin-top: var(--gap-lg);
     width: 100%;
     min-width: 0;
     max-width: 100%;
@@ -594,10 +623,10 @@ body.page-tareas .dashboard-container {
     flex-direction: row;
     flex-wrap: nowrap;
     align-items: center;
-    gap: var(--gap-md, 12px);
-    padding: var(--padding-sm, 8px) var(--padding-md, 12px);
+    gap: var(--gap-md);
+    padding: var(--padding-sm) var(--padding-md);
     border: 1px solid var(--ubits-accent-brand);
-    border-radius: var(--border-radius-sm, 8px);
+    border-radius: var(--border-radius-sm);
     background: var(--ubits-bg-1);
     width: 100%;
     min-width: 0;
@@ -618,7 +647,7 @@ body.page-tareas .dashboard-container {
 }
 
 .tarea-add-icon i {
-    font-size: var(--font-size-xs, 11px);
+    font-size: var(--font-size-xs);
 }
 
 .tarea-add-input-wrapper .tarea-add-input {
@@ -652,7 +681,7 @@ body.page-tareas .dashboard-container {
 @media (max-width: 1279px) {
     .main-content:has(.widget-vista-tareas) {
         /* Viewport - tab-bar(60px) - gap(16px) */
-        max-height: calc(100vh - 60px - var(--gap-lg, 16px)) !important;
+        max-height: calc(100vh - 60px - var(--gap-lg)) !important;
         overflow: visible !important;
     }
 }
@@ -678,14 +707,14 @@ body.page-tareas .dashboard-container {
 
     .main-content:has(.widget-vista-tareas) {
         /* Ajuste para mobile: viewport - tab-bar(60px) - gap(16px) */
-        max-height: calc(100vh - 60px - var(--gap-lg, 16px)) !important;
+        max-height: calc(100vh - 60px - var(--gap-lg)) !important;
         overflow: visible !important;
     }
 
     .widget-vista-tareas {
         min-height: 0 !important;
         height: auto !important;
-        padding: var(--padding-lg, 16px) !important;
+        padding: var(--padding-lg) !important;
         margin-bottom: 0 !important;
     }
 
@@ -720,7 +749,7 @@ body.page-tareas .dashboard-container {
         display: grid !important;
         grid-template-columns: 1fr auto;
         grid-template-rows: auto auto;
-        gap: var(--gap-sm, 8px) !important;
+        gap: var(--gap-sm) !important;
         align-items: center;
     }
 
@@ -747,11 +776,15 @@ body.page-tareas .dashboard-container {
         flex: 1 1 0% !important;
         min-width: 0 !important;
         max-width: none !important;
-        padding: var(--padding-xs, 4px) var(--padding-sm, 8px) !important;
+        padding: var(--padding-sm) var(--padding-md) !important;
+    }
+
+    .calendar-header__controls>.calendar-horizontal .calendar-horizontal__day--selected {
+        padding: var(--padding-md) var(--padding-md) calc(var(--padding-md) + 3px + var(--padding-md)) var(--padding-md) !important;
     }
 
     .calendar-header__controls>.calendar-horizontal .calendar-horizontal__day-number {
-        font-size: var(--font-size-sm, 13px) !important;
+        font-size: var(--font-size-sm) !important;
     }
 }
 
@@ -766,7 +799,7 @@ body.page-tareas .dashboard-container {
     }
 
     .widget-vista-tareas {
-        padding: var(--padding-md, 12px) !important;
+        padding: var(--padding-md) !important;
     }
 
     /* Botón Filtros: icon-only oficial (sm = 32x32) en celulares */
