@@ -1718,17 +1718,22 @@
                 if (btnDescargarPlantilla) {
                     btnDescargarPlantilla.addEventListener('click', function() {
                         var usernameEj = 'pateleber@fiqsha.demo';
-                        var idContEj = 'u001';
+                        var idsContEj = 'u001,u002,u003';
                         if (typeof window.BD_MASTER_COLABORADORES !== 'undefined' && window.BD_MASTER_COLABORADORES.colaboradores && window.BD_MASTER_COLABORADORES.colaboradores.length) {
                             var c0 = window.BD_MASTER_COLABORADORES.colaboradores[0];
                             if (c0 && c0.username) usernameEj = String(c0.username).trim();
                         }
                         if (typeof window.BDS_CONTENIDOS_UBITS !== 'undefined' && window.BDS_CONTENIDOS_UBITS.contents && window.BDS_CONTENIDOS_UBITS.contents.length) {
-                            var u0 = window.BDS_CONTENIDOS_UBITS.contents[0];
-                            if (u0 && u0.id != null) idContEj = String(u0.id);
+                            var idsTomados = [];
+                            for (var i = 0; i < window.BDS_CONTENIDOS_UBITS.contents.length && idsTomados.length < 3; i++) {
+                                var item = window.BDS_CONTENIDOS_UBITS.contents[i];
+                                if (!item || item.id == null) continue;
+                                idsTomados.push(String(item.id));
+                            }
+                            if (idsTomados.length > 0) idsContEj = idsTomados.join(',');
                         }
                         var headers = ['username', 'IDContenidos'];
-                        var filaDatos = [usernameEj, idContEj].map(escapeCsvCell).join(',');
+                        var filaDatos = [usernameEj, idsContEj].map(escapeCsvCell).join(',');
                         var contenido = headers.map(escapeCsvCell).join(',') + '\r\n' + filaDatos;
                         descargarCsv('plantilla-importacion-asignaciones.csv', contenido);
                     });

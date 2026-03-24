@@ -1716,15 +1716,21 @@
                 if (btnDescargarPlantilla) {
                     btnDescargarPlantilla.addEventListener('click', function() {
                         var usernameEj = 'pateleber@fiqsha.demo';
-                        var idCompEj = '';
+                        var idsCompEj = '';
                         if (typeof window.BD_MASTER_COLABORADORES !== 'undefined' && window.BD_MASTER_COLABORADORES.colaboradores && window.BD_MASTER_COLABORADORES.colaboradores.length) {
                             var c0 = window.BD_MASTER_COLABORADORES.colaboradores[0];
                             if (c0 && c0.username) usernameEj = String(c0.username).trim();
                         }
                         var comps = (window.BD_MASTER_COMPETENCIAS && window.BD_MASTER_COMPETENCIAS.competencias) || catalogoCompetencias || [];
-                        if (comps.length && comps[0] && comps[0].id != null) idCompEj = String(comps[0].id);
+                        var idsTomados = [];
+                        for (var i = 0; i < comps.length && idsTomados.length < 3; i++) {
+                            var comp = comps[i];
+                            if (!comp || comp.id == null) continue;
+                            idsTomados.push(String(comp.id));
+                        }
+                        if (idsTomados.length > 0) idsCompEj = idsTomados.join(',');
                         var headers = ['username', 'IDCompetencias'];
-                        var filaDatos = [usernameEj, idCompEj].map(escapeCsvCell).join(',');
+                        var filaDatos = [usernameEj, idsCompEj].map(escapeCsvCell).join(',');
                         var contenido = headers.map(escapeCsvCell).join(',') + '\r\n' + filaDatos;
                         descargarCsv('plantilla-importacion-asignaciones-competencias.csv', contenido);
                     });
