@@ -1030,4 +1030,12 @@ body {
     color: var(--ubits-sidebar-button-fg-hover);
 }
 
+/* Widgets en layout modular (content-sections): radio de caja unificado en lg.
+   Evita mezclas sm/md por página y mantiene esquinas coherentes con el sistema. */
+.content-sections > .section-single > div,
+.content-sections .section-dual > div,
+.content-sections .section-triple > div,
+.content-sections .section-quad > div {
+    border-radius: var(--border-radius-lg) !important;
+}
 

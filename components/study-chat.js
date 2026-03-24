@@ -2113,7 +2113,7 @@ function pushCurrentChatMessage(typeOrMsg, text) {
  */
 function refreshHistorialIfOpen() {
     var panel = document.getElementById('historial-panel');
-    if (panel && panel.classList.contains('is-open')) renderHistorialList();
+    if (panel) renderHistorialList();
 }
 
 /**
@@ -2123,7 +2123,7 @@ function commitChatHeaderTitle() {
     var headerTitle = document.getElementById('ubits-study-chat-header-title');
     if (!headerTitle) return;
     var raw = (headerTitle.value || '').trim();
-    var title = raw.length > 0 ? (raw.length > 80 ? raw.substring(0, 80) : raw) : 'Sin título';
+    var title = raw.length > 0 ? (raw.length > 80 ? raw.substring(0, 80) : raw) : 'Nuevo chat';
     var cur = chatState.currentChat;
     if (!cur) return;
     cur.title = title;
@@ -2404,7 +2404,7 @@ function saveCurrentChatIfHasMessages() {
     var now = Date.now();
     var chatCopy = {
         id: cur.id,
-        title: cur.title || 'Sin título',
+        title: cur.title || 'Nuevo chat',
         topic: chatState.currentTopic || cur.topic || null,
         createdAt: cur.createdAt || now,
         lastInteractedAt: cur.lastInteractedAt || now,
@@ -2517,7 +2517,7 @@ function renderHistorialList() {
     var html = '';
     items.forEach(function (chat) {
         var id = chat.id || '';
-        var title = (chat.title || 'Sin título').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+        var title = (chat.title || 'Nuevo chat').replace(/</g, '&lt;').replace(/"/g, '&quot;');
         var isActive = id && currentId === id;
         var activeClass = isActive ? ' modo-estudio-ia-historial-item--active' : '';
         var dateLabel = formatHistorialDate(chat.createdAt || chat.lastInteractedAt || 0);
@@ -2596,6 +2596,7 @@ const COMPETENCY_TO_TOPIC = {
 function createStudyChatHTML(options = {}) {
     const competencies = options.competencies || [];
     const isTutorMode = competencies.length > 0;
+    const headerInlineStyle = options.welcomeLayout === true ? '' : 'display: none;';
     const userFirstName = options.userFirstName || 'Usuario';
     const suggestionButtons = isTutorMode
         ? `<span class="ubits-study-chat__suggestions-label ubits-body-xs-regular">Recomendado para ti:</span>` + competencies.map(c => `<button class="ubits-button ubits-button--secondary ubits-button--xs ubits-study-chat__competency-chip" data-competency="${COMPETENCY_TO_TOPIC[c] || c.toLowerCase().replace(/\s/g, '')}" data-label="${c}"><span>${c}</span></button>`).join('\n')
@@ -2622,8 +2623,8 @@ function createStudyChatHTML(options = {}) {
             </div>` : '';
     return `
         <div class="ubits-study-chat" id="ubits-study-chat">
-            <div class="ubits-study-chat__header" id="ubits-study-chat-header" style="display: none;" aria-label="Encabezado del chat">
-                <input type="text" class="ubits-study-chat__header-title" id="ubits-study-chat-header-title" value="" placeholder="Sin título" maxlength="80" aria-label="Nombre del chat editable" />
+            <div class="ubits-study-chat__header" id="ubits-study-chat-header" style="${headerInlineStyle}" aria-label="Encabezado del chat">
+                <input type="text" class="ubits-study-chat__header-title" id="ubits-study-chat-header-title" value="" placeholder="Nuevo chat" maxlength="80" aria-label="Nombre del chat editable" />
                 <div class="ubits-study-chat__header-actions">
                     <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="btn-historial" data-tooltip="Historial" data-tooltip-position="bottom" aria-label="Abrir historial de chats">
                         <i class="far fa-clock-rotate-left"></i>
@@ -2641,8 +2642,8 @@ function createStudyChatHTML(options = {}) {
                         <textarea class="ubits-study-chat__input" id="ubits-study-chat-input" placeholder="Escribir mensaje..." rows="1"></textarea>
                     </div>
                     <div class="ubits-study-chat__input-actions">
-                        <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-study-chat__input-attach" id="ubits-study-chat-attach-btn" data-tooltip="Adjuntar"><i class="far fa-paperclip"></i></button>
-                        <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-study-chat__input-send" id="ubits-study-chat-send-btn" data-tooltip="Enviar"><i class="far fa-paper-plane"></i></button>
+                        <button class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ubits-study-chat__input-attach" id="ubits-study-chat-attach-btn" data-tooltip="Adjuntar"><i class="far fa-paperclip"></i></button>
+                        <button class="ubits-button ubits-button--primary ubits-button--sm ubits-button--icon-only ubits-study-chat__input-send" id="ubits-study-chat-send-btn" data-tooltip="Enviar"><i class="far fa-paper-plane"></i></button>
                     </div>
                 </div>
                 <div class="ubits-study-chat__suggestions" id="ubits-study-chat-suggestions">${suggestionButtons}</div>
@@ -3145,28 +3146,12 @@ function showWelcomeBlock() {
     }
     var header = document.getElementById('ubits-study-chat-header');
     var headerTitle = document.getElementById('ubits-study-chat-header-title');
-    if (header) header.style.display = 'none';
-    if (headerTitle) headerTitle.value = '';
+    if (header) header.style.display = '';
+    if (headerTitle) {
+        headerTitle.value = (chatState.currentChat && chatState.currentChat.title) ? chatState.currentChat.title : '';
+    }
     var welcomeTop = document.getElementById('ubits-study-chat-welcome-top');
     if (welcomeTop) welcomeTop.style.display = hasAnyConversations() ? '' : 'none';
-}
-
-/**
- * Guarda el título editado en el encabezado: actualiza currentChat y el chat en historial, re-renderiza la lista.
- */
-function commitChatHeaderTitle() {
-    var headerTitle = document.getElementById('ubits-study-chat-header-title');
-    var cur = chatState.currentChat;
-    if (!headerTitle || !cur || !cur.id) return;
-    var raw = (headerTitle.value || '').trim();
-    var title = raw.length > 0 ? (raw.length > 80 ? raw.substring(0, 80) : raw) : 'Sin título';
-    headerTitle.value = title;
-    cur.title = title;
-    if (chatState.chats) {
-        var idx = chatState.chats.findIndex(function (c) { return c.id === cur.id; });
-        if (idx >= 0) chatState.chats[idx].title = title;
-    }
-    renderHistorialList();
 }
 
 var TOPIC_LABELS = { liderazgo: 'Liderazgo', comunicacion: 'Comunicación', ingles: 'Inglés', japones: 'Japonés', hiragana: 'Maratón Hiragana' };
@@ -3922,6 +3907,10 @@ function initStudyChat(containerId, options = {}) {
             const wrapper = root.closest('.modo-tutor-ia-chat-main');
             if (wrapper) wrapper.classList.add('study-chat-wrapper--welcome');
         }
+        var headerInit = document.getElementById('ubits-study-chat-header');
+        var headerTitleInit = document.getElementById('ubits-study-chat-header-title');
+        if (headerInit) headerInit.style.display = '';
+        if (headerTitleInit) headerTitleInit.value = '';
     }
 
     var headerTitleInput = document.getElementById('ubits-study-chat-header-title');

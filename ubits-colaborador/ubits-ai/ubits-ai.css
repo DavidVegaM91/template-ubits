@@ -60,7 +60,7 @@
 .section-quad > div {
     background-color: var(--ubits-bg-1);
     border: none;
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-lg);
     padding: var(--padding-md) !important;
     width: 100%;
     box-sizing: border-box;

@@ -71,7 +71,7 @@
 .section-dual>div {
     background-color: var(--ubits-bg-1);
     border: none;
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-lg);
     padding: var(--padding-md) !important;
     width: 100%;
     box-sizing: border-box;
@@ -800,7 +800,7 @@
     padding: var(--padding-md) var(--padding-md);
     background: transparent;
     border: none;
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-lg);
     cursor: pointer;
     transition: background-color 0.15s ease;
     width: 100%;
@@ -893,7 +893,7 @@
     padding: var(--padding-md) var(--padding-md);
     background: transparent;
     border: none;
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-lg);
     cursor: pointer;
     transition: background-color 0.15s ease;
     width: 100%;
@@ -984,7 +984,7 @@
     padding: var(--padding-md) var(--padding-md);
     background: transparent;
     border: none;
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-lg);
     cursor: pointer;
     transition: background-color 0.15s ease;
     width: 100%;

@@ -28,10 +28,11 @@ function createGroupChatMessageHTML(type, text) {
 
 /**
  * Crea el HTML del chat de creación de grupos.
- * Misma estructura que study-chat: header (oculto en bienvenida), barra welcome-top oculta en bienvenida (como modo-estudio-ia), body, input, sugerencias.
+ * Misma estructura que study-chat: header visible también en bienvenida; barra welcome-top oculta en bienvenida por defecto.
  */
 function createGroupCreationChatHTML(options) {
     options = options || {};
+    var headerStyle = (options.welcomeLayout !== false) ? '' : 'display: none;';
     var userFirstName = escapeHtml(options.userFirstName || 'María Alejandra');
     var suggestionButtons = '<span class="ubits-study-chat__suggestions-label ubits-body-xs-regular">Puedo ayudarte a:</span>' +
         '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" data-suggestion="crear"><span>Crear grupos</span></button>' +
@@ -52,8 +53,8 @@ function createGroupCreationChatHTML(options) {
         '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="group-creation-chat-btn-nuevo" aria-label="Iniciar nuevo chat">' +
         '<i class="far fa-comment-plus"></i><span>Nuevo chat</span></button>' +
         '</div>';
-    var headerBar = '<div class="ubits-study-chat__header" id="group-creation-chat-header" style="display: none;" aria-label="Encabezado del chat">' +
-        '<input type="text" class="ubits-study-chat__header-title" id="group-creation-chat-header-title" value="" placeholder="Sin título" maxlength="80" aria-label="Nombre del chat" />' +
+    var headerBar = '<div class="ubits-study-chat__header" id="group-creation-chat-header" style="' + headerStyle + '" aria-label="Encabezado del chat">' +
+        '<input type="text" class="ubits-study-chat__header-title" id="group-creation-chat-header-title" value="" placeholder="Nuevo chat" maxlength="80" aria-label="Nombre del chat" />' +
         '<div class="ubits-study-chat__header-actions">' +
         '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="group-creation-chat-btn-historial-header" data-tooltip="Historial" data-tooltip-position="bottom" aria-label="Abrir historial de chats">' +
         '<i class="far fa-clock-rotate-left"></i></button>' +
@@ -70,8 +71,8 @@ function createGroupCreationChatHTML(options) {
         '<textarea class="ubits-study-chat__input" id="group-creation-chat-input" placeholder="Escribir mensaje..." rows="1"></textarea>' +
         '</div>' +
         '<div class="ubits-study-chat__input-actions">' +
-        '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-study-chat__input-attach" id="group-creation-chat-attach-btn" data-tooltip="Adjuntar" aria-label="Adjuntar"><i class="far fa-paperclip"></i></button>' +
-        '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-study-chat__input-send" id="group-creation-chat-send-btn" data-tooltip="Enviar" aria-label="Enviar"><i class="far fa-paper-plane"></i></button>' +
+        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ubits-study-chat__input-attach" id="group-creation-chat-attach-btn" data-tooltip="Adjuntar" aria-label="Adjuntar"><i class="far fa-paperclip"></i></button>' +
+        '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm ubits-button--icon-only ubits-study-chat__input-send" id="group-creation-chat-send-btn" data-tooltip="Enviar" aria-label="Enviar"><i class="far fa-paper-plane"></i></button>' +
         '</div></div>' +
         '<div class="ubits-study-chat__suggestions" id="group-creation-chat-suggestions">' + suggestionButtons + '</div>' +
         '</div>' +
@@ -177,7 +178,11 @@ function initGroupCreationChat(containerId, options) {
     }
 
     function showWelcome() {
-        if (headerEl) headerEl.style.display = 'none';
+        if (headerEl) {
+            headerEl.style.display = '';
+            var ht = document.getElementById('group-creation-chat-header-title');
+            if (ht) ht.value = '';
+        }
         if (welcomeTop) welcomeTop.style.display = 'none'; /* En bienvenida no se muestran Ver historial / Nuevo chat */
         if (welcome) {
             welcome.classList.remove('ubits-study-chat__welcome--hidden');
@@ -219,7 +224,7 @@ function initGroupCreationChat(containerId, options) {
         var now = Date.now();
         var chatCopy = {
             id: cur.id,
-            title: cur.title || 'Sin título',
+            title: cur.title || 'Nuevo chat',
             createdAt: cur.createdAt || now,
             lastInteractedAt: cur.lastInteractedAt || now,
             messages: cur.messages.slice()
@@ -231,7 +236,7 @@ function initGroupCreationChat(containerId, options) {
 
     function refreshGroupCreationHistorialIfOpen() {
         var panel = document.getElementById('group-creation-historial-panel');
-        if (panel && panel.classList.contains('is-open')) renderGroupCreationHistorialList();
+        if (panel) renderGroupCreationHistorialList();
     }
 
     function renderGroupCreationChatMessages(messages) {
@@ -282,7 +287,7 @@ function initGroupCreationChat(containerId, options) {
         var html = '';
         items.forEach(function (chat) {
             var id = chat.id || '';
-            var title = (chat.title || 'Sin título').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+            var title = (chat.title || 'Nuevo chat').replace(/</g, '&lt;').replace(/"/g, '&quot;');
             var isActive = id && currentId === id;
             var activeClass = isActive ? ' group-creation-historial-item--active' : '';
             var dateLabel = formatGroupCreationHistorialDate(chat.createdAt || chat.lastInteractedAt || 0);
@@ -354,7 +359,7 @@ function initGroupCreationChat(containerId, options) {
         var cur = groupCreationState.currentChat;
         if (!headerTitle || !cur || !cur.id) return;
         var raw = (headerTitle.value || '').trim();
-        var title = raw.length > 0 ? (raw.length > 80 ? raw.substring(0, 80) : raw) : 'Sin título';
+        var title = raw.length > 0 ? (raw.length > 80 ? raw.substring(0, 80) : raw) : 'Nuevo chat';
         headerTitle.value = title;
         cur.title = title;
         if (groupCreationState.chats) {
@@ -461,7 +466,6 @@ function initGroupCreationChat(containerId, options) {
         var panel = document.getElementById('group-creation-historial-panel');
         if (panel) {
             panel.classList.add('is-open');
-            document.body.classList.add('historial-panel-open');
             renderGroupCreationHistorialList();
         }
     }
@@ -489,6 +493,8 @@ function initGroupCreationChat(containerId, options) {
             }
         });
     }
+
+    renderGroupCreationHistorialList();
 }
 
 window.createGroupCreationChatHTML = createGroupCreationChatHTML;

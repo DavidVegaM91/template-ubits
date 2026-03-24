@@ -16,6 +16,14 @@
     --modo-ia-gradient-a: rgb(0, 215, 255);
     --modo-ia-gradient-b: rgb(0, 152, 253);
     --modo-ia-gradient-c: rgb(0, 89, 250);
+
+    /*
+     * Orbes de fondo (glow superior) — Figma: izq #1A6BFF, centro #4CE6FF, der #FF5416 (opacidad en CSS).
+     * Valores RGB para usar con rgba(var(--…), opacidad).
+     */
+    --modo-ia-glow-orb-rgb-1: 26, 107, 255; /* #1A6BFF izquierda */
+    --modo-ia-glow-orb-rgb-2: 76, 230, 255; /* #4CE6FF centro */
+    --modo-ia-glow-orb-rgb-3: 255, 84, 22; /* #FF5416 derecha */
 }
 
 @keyframes aprendizaje-ia-gradient-border {

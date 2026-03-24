@@ -1,13 +1,8 @@
 /* ========================================
    CHAT IA GRUPOS - Chat para crear/editar/consultar grupos
-   Orbes de fondo y fondos transparentes propios de esta página (body.chat-ia-grupos-page).
+   Orbes IA solo en .chat-ia-grupos-chat-main (::before); fondos transparentes en dashboard/content.
    Especificidad alta para ganar a styles.css (body[data-theme="light"] .dashboard-container !important).
    ======================================== */
-
-@keyframes chat-ia-grupos-glow-breathe {
-    0%, 100% { opacity: 0.88; }
-    50% { opacity: 1; }
-}
 
 /* Body: ganar a body[data-theme="light"] en styles.css */
 body.chat-ia-grupos-page,
@@ -15,25 +10,6 @@ body.chat-ia-grupos-page[data-theme="light"],
 body.chat-ia-grupos-page[data-theme="dark"] {
     min-height: 100vh;
     background-color: var(--ubits-bg-2) !important;
-}
-
-/* Orbes en el fondo (solo para esta página) */
-body.chat-ia-grupos-page::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    background:
-        radial-gradient(ellipse 100% 80% at 10% -5%, rgba(0, 89, 250, 0.12) 0%, transparent 50%),
-        radial-gradient(ellipse 95% 75% at 90% -5%, rgba(0, 152, 253, 0.08) 0%, transparent 50%);
-    animation: chat-ia-grupos-glow-breathe 10s ease-in-out infinite;
-}
-
-body.chat-ia-grupos-page[data-theme="dark"]::before {
-    background:
-        radial-gradient(ellipse 100% 80% at 10% -5%, rgba(0, 89, 250, 0.22) 0%, transparent 50%),
-        radial-gradient(ellipse 95% 75% at 90% -5%, rgba(0, 152, 253, 0.15) 0%, transparent 50%);
 }
 
 /* Dashboard y contenido: especificidad mayor que body[data-theme="light"] .dashboard-container en styles.css */
@@ -55,35 +31,30 @@ body.chat-ia-grupos-page[data-theme="dark"] .content-area {
     background-color: transparent !important;
 }
 
-/* Contenedor del chat: transparente para que se vean los orbes */
-.chat-ia-grupos-chat-main {
-    background-color: transparent;
-}
-
-/* Pantalla de bienvenida: sin fondo en la caja del chat */
+/* Pantalla de bienvenida: mismo recorte de esquinas que con chat activo (overflow hidden en la caja) */
 .chat-ia-grupos-page .chat-ia-grupos-chat-section > .chat-ia-grupos-chat-main.study-chat-wrapper--welcome {
-    background-color: transparent !important;
-    padding: var(--padding-none) !important;
+    background-color: var(--ubits-bg-1) !important;
+    padding-top: 0 !important;
+    padding-bottom: var(--padding-md) !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    overflow: hidden !important;
 }
 
 .chat-ia-grupos-page .chat-ia-grupos-chat-section:has(.study-chat-wrapper--welcome) {
-    overflow: visible !important;
+    overflow: hidden !important;
 }
 
-/* Anular fondo de .section-single > div (lms-creator.css) en header y sección chat */
-.chat-ia-grupos-page .section-single > .widget-header-product,
-.chat-ia-grupos-page .chat-ia-grupos-chat-section > .chat-ia-grupos-chat-main {
-    background-color: transparent !important;
-}
-
-/* Mostrar título del producto en el header (el componente lo oculta por defecto salvo en .modo-estudio-ia-page) */
-.chat-ia-grupos-page .ubits-header-product__product-title h2 {
-    display: block !important;
-}
-
+/* Fondo bg-1 en .chat-ia-grupos-chat-main; transparente aquí para que se vean los orbes del ::before */
 .chat-ia-grupos-page .chat-ia-grupos-chat-main .widget-chat {
     background-color: transparent !important;
     padding: var(--padding-none) !important;
+    position: relative;
+    z-index: 1;
+}
+
+.chat-ia-grupos-page .chat-ia-grupos-chat-main .widget-chat .ubits-study-chat {
+    background-color: transparent !important;
 }
 
 /* Burbujas de mensaje de usuario: mismo gradiente que modo-estudio-ia */
@@ -112,7 +83,31 @@ body.chat-ia-grupos-page[data-theme="dark"] .content-area {
     display: flex;
     flex-direction: column;
     background-color: transparent;
-    border-radius: var(--border-radius-md);
+    border-radius: var(--border-radius-lg);
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+}
+
+/* Capa bajo el contenido del chat (widget z-index 1); no tapar con fondos opacos en .widget-chat */
+.chat-ia-grupos-page .chat-ia-grupos-chat-main::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    background:
+        radial-gradient(ellipse 100% 80% at 10% calc(-5% - 70px), rgba(var(--modo-ia-glow-orb-rgb-1), 0.2) 0%, transparent 50%),
+        radial-gradient(ellipse 95% 78% at 50% calc(-8% - 25px), rgba(var(--modo-ia-glow-orb-rgb-2), 0.2) 0%, transparent 48%),
+        radial-gradient(ellipse 95% 75% at 90% calc(-5% - 70px), rgba(var(--modo-ia-glow-orb-rgb-3), 0.2) 0%, transparent 50%);
+}
+
+body[data-theme="dark"] .chat-ia-grupos-page .chat-ia-grupos-chat-main::before {
+    background:
+        radial-gradient(ellipse 100% 80% at 10% calc(-5% - 70px), rgba(var(--modo-ia-glow-orb-rgb-1), 0.2) 0%, transparent 50%),
+        radial-gradient(ellipse 95% 78% at 50% calc(-8% - 25px), rgba(var(--modo-ia-glow-orb-rgb-2), 0.2) 0%, transparent 48%),
+        radial-gradient(ellipse 95% 75% at 90% calc(-5% - 70px), rgba(var(--modo-ia-glow-orb-rgb-3), 0.2) 0%, transparent 50%);
 }
 
 /* Cuando ya inició el chat: fondo y padding (como modo-estudio-ia) */
@@ -124,15 +119,7 @@ body.chat-ia-grupos-page[data-theme="dark"] .content-area {
     padding-right: 0 !important;
 }
 
-/* Solo chat (sin historial/canvas): centrado, max 800px en desktop */
-@media (min-width: 1024px) {
-    .chat-ia-grupos-chat-section:not(:has(.modo-tutor-ia-canvas-panel.is-open)):not(:has(.modo-estudio-ia-historial-panel.is-open)) .chat-ia-grupos-chat-main {
-        max-width: 800px;
-        width: 100%;
-        margin-left: auto;
-        margin-right: auto;
-    }
-}
+/* Con historial siempre visible el chat ocupa la columna central (sin max-width centrado) */
 
 .chat-ia-grupos-chat-main .widget-chat {
     flex: 1 1 0;
@@ -155,7 +142,7 @@ body.chat-ia-grupos-page[data-theme="dark"] .content-area {
 }
 
 #group-creation-chat-container:has(.ubits-study-chat--welcome) {
-    overflow: visible !important;
+    min-height: 0 !important;
 }
 
 .chat-ia-grupos-page .ubits-study-chat__text-globe--ai {
@@ -163,7 +150,7 @@ body.chat-ia-grupos-page[data-theme="dark"] .content-area {
     padding: var(--padding-none) !important;
 }
 
-/* ========== Pantalla de bienvenida: mismo look que modo-estudio-ia ========== */
+/* ========== Pantalla de bienvenida (mismo criterio que modo-estudio-ia) ========== */
 .chat-ia-grupos-page .ubits-study-chat--welcome {
     flex: 1;
     min-height: 0;
@@ -172,10 +159,18 @@ body.chat-ia-grupos-page[data-theme="dark"] .content-area {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: var(--gap-3xl);
-    padding-top: 12vh;
-    padding-bottom: 38vh;
+    justify-content: flex-start;
+    gap: var(--gap-2xl);
+    padding-top: 0;
+    padding-bottom: var(--padding-md);
+}
+
+.chat-ia-grupos-page .ubits-study-chat--welcome .ubits-study-chat__header {
+    align-self: stretch;
+    width: 100%;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    min-height: 48px;
 }
 
 .chat-ia-grupos-page .ubits-study-chat--welcome .ubits-study-chat__body {
@@ -228,7 +223,7 @@ body.chat-ia-grupos-page[data-theme="dark"] .content-area {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: var(--ubits-bg-2);
+    background: transparent;
     font-size: 1.25rem;
     animation: chat-ia-grupos-sparkles-float 2.5s ease-in-out infinite;
 }
@@ -262,12 +257,17 @@ body.chat-ia-grupos-page[data-theme="dark"] .content-area {
 }
 
 .chat-ia-grupos-page .ubits-study-chat--welcome .ubits-study-chat__input-area {
-    gap: var(--gap-lg);
-    align-self: center;
+    align-self: stretch;
+    box-sizing: border-box;
     min-width: 0;
     max-width: 100%;
     width: 100%;
     flex-shrink: 0;
+    gap: var(--gap-lg);
+    padding-left: var(--padding-xl) !important;
+    padding-right: var(--padding-xl) !important;
+    padding-top: 0;
+    padding-bottom: 0;
 }
 
 .chat-ia-grupos-page .ubits-study-chat--welcome .ubits-study-chat__input-container {
@@ -282,14 +282,8 @@ body.chat-ia-grupos-page[data-theme="dark"] .content-area {
     width: 100%;
     box-sizing: border-box;
     overflow: visible;
-    border: 1px solid transparent;
-    background: linear-gradient(var(--ubits-bg-1), var(--ubits-bg-1)) padding-box,
-        linear-gradient(90deg, var(--modo-ia-gradient-a), var(--modo-ia-gradient-b), var(--modo-ia-gradient-c), var(--modo-ia-gradient-a)) border-box;
-    background-size: 100% 100%, 300% 100%;
-    background-position: 0 0, 0% 50%;
-    background-origin: padding-box, border-box;
-    background-clip: padding-box, border-box;
-    animation: chat-ia-grupos-gradient-shift-border 5s ease-in-out infinite;
+    border: 1px solid var(--ubits-border-1);
+    background: var(--ubits-bg-1);
     box-shadow: none;
 }
 
@@ -442,29 +436,19 @@ body.chat-ia-grupos-page[data-theme="dark"] .content-area {
     height: 100% !important;
 }
 
-.chat-ia-grupos-page .section-single:first-child {
-    flex: 0 0 auto;
-}
-
-.chat-ia-grupos-page .section-single:last-child {
+/* Una sola sección (chat + historial): debe crecer y permitir scroll interno */
+.chat-ia-grupos-page .content-sections > .section-single {
     flex: 1 1 0;
     min-height: 0;
 }
 
-/* ========== Panel historial (misma apariencia que modo-estudio-ia, solo en esta página) ========== */
-.chat-ia-grupos-chat-section .modo-estudio-ia-historial-panel {
-    display: none !important;
-    visibility: hidden !important;
-    flex: 0 0 0 !important;
-    width: 0 !important;
-    min-width: 0 !important;
-    overflow: hidden !important;
+/* ========== Panel historial: sin padding de .section-single > div (lms-creator.css) ni borde extra ========== */
+.chat-ia-grupos-chat-section > .modo-estudio-ia-historial-panel {
     padding: 0 !important;
-    margin: 0 !important;
-    border: none !important;
 }
 
-.chat-ia-grupos-chat-section .modo-estudio-ia-historial-panel.is-open {
+/* ========== Panel historial: siempre visible (misma apariencia que modo-estudio-ia / widget chat) ========== */
+.chat-ia-grupos-chat-section .modo-estudio-ia-historial-panel {
     display: flex !important;
     visibility: visible !important;
     flex-direction: column;
@@ -476,8 +460,17 @@ body.chat-ia-grupos-page[data-theme="dark"] .content-area {
     padding: 0;
     margin: 0;
     background: var(--ubits-bg-1);
-    border: 1px solid var(--ubits-border-1);
-    border-radius: var(--border-radius-md);
+    border: none;
+    border-radius: var(--border-radius-lg);
+}
+
+.chat-ia-grupos-page #group-creation-historial-panel-close {
+    display: none !important;
+}
+
+.chat-ia-grupos-page #group-creation-chat-btn-historial,
+.chat-ia-grupos-page #group-creation-chat-btn-historial-header {
+    display: none !important;
 }
 
 .chat-ia-grupos-chat-section .modo-estudio-ia-historial-panel__header {
@@ -485,13 +478,28 @@ body.chat-ia-grupos-page[data-theme="dark"] .content-area {
     align-items: center;
     justify-content: space-between;
     flex-shrink: 0;
+    align-self: stretch;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 48px;
     padding: var(--padding-sm) var(--padding-xl);
     border-bottom: 1px solid var(--ubits-border-1);
 }
 
-.chat-ia-grupos-chat-section .modo-estudio-ia-historial-panel__header .ubits-body-md-bold {
+.chat-ia-grupos-chat-section .modo-estudio-ia-historial-panel__header-start {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    min-width: 0;
+    flex: 1;
+}
+
+.chat-ia-grupos-chat-section .modo-estudio-ia-historial-panel__header-start .ubits-body-md-bold {
     margin: 0;
     color: var(--ubits-fg-1-high);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .chat-ia-grupos-chat-section .modo-estudio-ia-historial-panel__body {
@@ -589,8 +597,22 @@ body.chat-ia-grupos-page[data-theme="dark"] .content-area {
     }
 }
 
+/* Móvil: historial como franja superior siempre visible (la sección ya es columna en layouts responsive) */
 @media (max-width: 1023px) {
-    body.historial-panel-open .chat-ia-grupos-page #tab-bar-container {
-        display: none !important;
+    .chat-ia-grupos-chat-section {
+        flex-direction: column !important;
+    }
+
+    .chat-ia-grupos-chat-section > .modo-estudio-ia-historial-panel {
+        position: relative !important;
+        width: 100% !important;
+        max-height: min(40vh, 280px);
+        min-height: 120px;
+        flex: 0 0 auto !important;
+    }
+
+    .chat-ia-grupos-chat-section > .chat-ia-grupos-chat-main {
+        flex: 1 1 0 !important;
+        min-height: 0 !important;
     }
 }
