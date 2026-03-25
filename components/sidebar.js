@@ -246,7 +246,7 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
                     <button class="nav-button" data-section="reclutamiento" data-tooltip="Reclutamiento" onclick="window.location.href='${basePath}ubits-colaborador/reclutamiento/reclutamiento.html'" style="cursor: pointer;">
                         <i class="far fa-users"></i>
                     </button>
-                    <button class="nav-button" data-section="tareas" data-tooltip="Tareas" onclick="window.location.href='${basePath}ubits-colaborador/tareas/planes.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="tareas" data-tooltip="Tareas" onclick="window.location.href='${basePath}ubits-colaborador/tareas/tareas.html'" style="cursor: pointer;">
                         <i class="far fa-layer-group"></i>
                     </button>
                     <button class="nav-button" data-section="ubits-ai" data-tooltip="UBITS AI" onclick="window.location.href='${basePath}ubits-colaborador/ubits-ai/ubits-ai.html'" style="cursor: pointer;">

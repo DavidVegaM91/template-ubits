@@ -924,7 +924,6 @@
         activities.forEach(function (a) {
             if (isNotFuture(a.time)) allItems.push({ type: 'activity', time: a.time, data: a });
         });
-        var total = allItems.filter(function (i) { return i.type === 'comment'; }).length;
         allItems.sort(function (a, b) { return new Date(a.time) - new Date(b.time); });
 
         /* Aplicar filtro de feed (todo / solo comentarios / solo historial de eventos) */
@@ -932,6 +931,8 @@
         var filteredItems = filterVal === 'all' ? allItems : allItems.filter(function (i) {
             return filterVal === 'comments' ? i.type === 'comment' : i.type === 'activity';
         });
+        /* Contador del módulo: total de ítems visibles según filtro (comentarios + eventos en «Todo») */
+        var badgeCount = filteredItems.length;
 
         /* ── Renderizar items con separadores de fecha al cambiar de día ── */
         var feed = [];
@@ -995,8 +996,8 @@
         var html =
             '<div class="task-detail-comments-header">' +
             '<div class="task-detail-comments-header-left">' +
-            '<h2 class="ubits-body-md-bold task-detail-comments-header-title"><i class="far fa-comments"></i> Comentarios</h2>' +
-            '<span class="ubits-body-xs-semibold task-detail-comments-badge' + (total < 10 ? ' task-detail-comments-badge--circle' : '') + '">' + total + '</span>' +
+            '<h2 class="ubits-body-md-bold task-detail-comments-header-title"><i class="far fa-clock-rotate-left"></i> Historial</h2>' +
+            '<span class="ubits-body-xs-semibold task-detail-comments-badge' + (badgeCount < 10 ? ' task-detail-comments-badge--circle' : '') + '">' + badgeCount + '</span>' +
             '</div>' +
             '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs" id="task-detail-comments-filter-btn" aria-label="Filtrar"><i class="far fa-filter"></i><span>Filtrar</span></button>' +
             '</div>' +
