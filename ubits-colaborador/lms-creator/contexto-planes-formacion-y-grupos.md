@@ -61,7 +61,7 @@ En **planes de competencias**, al hacer **clic en una fila** de `planes-formacio
 | **Planeado** | `editar-plan-competencias.html?id=<id>` |
 | **Vigente**, **No vigente** | `detalle-plan-competencias.html?id=<id>` |
 
-- En el prototipo, **`c0`** (Procesando) y **`c1`** (Planeado) abren **edición**; **`c2`** (Vigente) y **`c3`** (No vigente) abren **detalle** (consulta de progreso).
+- En el prototipo, la tabla **Planes de competencias** en **`planes-formacion.html`** solo incluye **tres filas de ejemplo** (**`c1`** Planeado, **`c2`** Vigente, **`c3`** No vigente); no hay plan en **Procesando** en esa lista. Si existiera un plan en Procesando (datos reales), el criterio de fila sería el de la tabla: **edición**; **Planeado** → **edición**; **Vigente** / **No vigente** → **detalle**.
 
 ### 2.2 Progreso: estudio, no carga
 
@@ -112,7 +112,7 @@ Vista de edición del plan de contenidos **antes de salir de Procesando** (misma
 ### 3.3 Detalle del plan – Tabla y drawer
 
 - La página **`detalle-plan.html`** aplica a planes **Vigente**, **No vigente** y también puede mostrar un plan **Planeado** (misma UI; progreso 0 %). **Desde la lista** (`planes-formacion`), el **clic en fila** para **Planeado** abre **edición**, no el detalle (**§ 4.4**). **Procesando** desde la lista va a **editar**.
-- **Vista de solo consulta:** no hay botón **Guardar** en el header product ni botón primario **«Agregar asignación»** en la tabla; el nombre del plan, fechas de vigencia y demás datos del card se muestran como **texto** (no textarea ni calendar). Para editar el plan o añadir asignaciones desde cero se usa **`editar-plan-contenidos.html`**.
+- **Vista de solo consulta:** no hay botón **Guardar** en el header product ni botón primario **«Agregar asignación»** en la tabla; el nombre del plan, fechas de vigencia y demás datos del card se muestran como **texto** (no textarea ni calendar). Para editar el plan o añadir asignaciones desde cero se usa **`editar-plan-contenidos.html`**. El **botón «Opciones»** en la card del plan (junto al status tag) ofrece acciones por estado (**§ 6.2.2**).
 - Cada fila = un **estudiante** asignado.
 - Columnas: usuario, último acceso, **contenidos**, **progreso**. Si el plan es Planeado, el progreso del plan y el de cada fila se muestran en 0 %.
 - **Búsqueda en la tabla de asignaciones:** la barra de búsqueda del componente **`ubits-data-table`** filtra por el texto visible en las columnas (nombre de usuario, fechas, «N contenidos», porcentaje, etc.). El texto del **nombre** se obtiene de la celda usuario (avatar + nombre) con la lógica documentada en **§ 6.6** (evita depender solo del primer `span` vacío del avatar).
@@ -197,7 +197,7 @@ Pantalla de **edición** para planes en **Planeado**, **Procesando** o **Vigente
 
 | Archivo | Uso |
 |---------|-----|
-| `editar-plan-competencias.html` | Marcado, tabla, drawers y scripts inline (catálogo ids **`c0`–`c3`**, query **`?id=`**). JS: **`getEstadoTagEstableVisual`**, **`iniciarAnimacionEstadoProcesandoAsignacion`** (mismo criterio que **editar-plan-contenidos** / lista **planes-formacion**). |
+| `editar-plan-competencias.html` | Marcado, tabla, drawers y scripts inline (catálogo local con ids **`c0`–`c3`** para demos; la lista en **planes-formacion** solo muestra **`c1`–`c3`**). Query **`?id=`**. JS: **`getEstadoTagEstableVisual`**, **`iniciarAnimacionEstadoProcesandoAsignacion`**, menú **Opciones** del plan (**§ 6.2.2**). |
 | `editar-plan-competencias.css` | Estilos propios mínimos + **fila título + status tag** (ver **§ 6.2.1**); el layout reutiliza **`crear-plan-competencias.css`** y **`crear-plan-contenidos.css`**. |
 | `catalogo-competencias-drawer.js` | Catálogo global `CATALOGO_COMPETENCIAS_DRAWER` (+ imágenes / iconos de habilidades vía globales del drawer). |
 | `bd-master-competencias.js`, `bd-master-habilidades.js` | Datos maestros de competencias y habilidades. |
@@ -218,6 +218,7 @@ Pantalla de **edición** para planes en **Planeado**, **Procesando** o **Vigente
 ### 4.5 Detalle del plan de competencias (detalle-plan-competencias.html)
 
 - **Detalle (consulta de progreso):** **`detalle-plan-competencias.html`** para planes **Vigente** o **No vigente** (p. ej. clic en fila desde la lista o **⋮ → Ver progreso**). **Procesando** y **Planeado** entran por **`editar-plan-competencias.html`** desde la lista (§ 4.4); § 4.3.2 describe la edición mientras está en Procesando.
+- **Botón «Opciones»** en la card del plan (junto al status tag): menú contextual por estado (**Editar plan** en Vigente, envío de recordatorio, certificados, eliminar, etc.). Detalle completo en **§ 6.2.2** (mismo patrón que **`detalle-plan.html`**).
 - **Vista de solo consulta:** igual que **`detalle-plan.html`**: sin **Guardar** en el header, sin botón primario **«Agregar asignación»** en la tabla; nombre del plan (**`h1`**), fechas y **horas de estudio por competencia** como **texto** (no inputs). Edición en **`editar-plan-competencias.html`**.
 - Card de progreso: nombre del plan, fechas de vigencia (inicio y fin como texto), horas por competencia como texto, barra de progreso del plan.
 - Tabla de asignaciones: columnas usuario, último acceso, competencias asignadas, progreso. Botón "Agregar competencias" / "X competencias" por fila. Clic en fila o en el botón abre el **drawer "Agregar competencias"** (mismo comportamiento que en crear-plan: cards de competencia, expansión con habilidades y checkboxes, tabla derecha con dos líneas por competencia).
@@ -276,6 +277,40 @@ Resumen de decisiones de UI y comportamiento implementado en el prototipo, para 
 - **`editar-plan-contenidos.html`** y **`editar-plan-competencias.html`** repiten ese patrón: **`#asignacion-nombre`** + **`#plan-estado-container`** dentro del campo de nombre, clase adicional **`editar-plan-nombre-row`**. Componente **`status-tag.css`**. En **ambas** pantallas de edición, el estado **Procesando** del catálogo se **muestra como Planeado** en el tag en reposo (ver **§ 3.2.2** y **§ 4.3.2**). Tras **agregar asignación** nueva (wizard 2 pasos), en **ambas** páginas la animación es la misma: texto **`Procesando N%`** dentro del **`ubits-status-tag`** durante 4 s, como en **`planes-formacion.html`**.
 - **Por qué hace falta CSS extra:** en **`crear-plan-contenidos.css`** y **`crear-plan-competencias.css`**, **`.…-form__field--nombre-plan`** define **`flex-direction: column`** (apila hijos). Si solo se añadiera el tag como segundo hijo **sin** sobrescribir la dirección, el tag quedaría **debajo** del título. Los archivos **`editar-plan-contenidos.css`** y **`editar-plan-competencias.css`** declaran selectores **más específicos** — p. ej. **`.crear-plan-contenidos-form__field--nombre-plan.editar-plan-nombre-row`** / **`.crear-plan-competencias-form__field--nombre-plan.editar-plan-nombre-row`** — con **`flex-direction: row`**, **`align-items: center`**, **`justify-content: space-between`**, **`gap`**, y el textarea con **`flex: 1`** y **`min-width: 0`**, equivalentes a **`.detalle-plan-progress-card__header`** en **`detalle-plan.css`**.
 
+#### 6.2.2 Botón «Opciones» del plan (card) — menú por estado
+
+En la **card de progreso del plan** (junto al **status tag**), hay un botón **tertiary** **icon-only** con icono **ellipsis vertical** (`far fa-ellipsis-vertical`), **`aria-label`** y tooltip **«Opciones»**. Abre un **dropdown** (`components/dropdown-menu.css` / `.js`: **`getDropdownMenuHtml`**, **`openDropdownMenu`**, **`closeDropdownMenu`**) con **`alignRight: true`**; tras abrir, se ajusta la posición del panel para alinearlo al **borde derecho** del botón (evitar que quede fuera de pantalla).
+
+**Páginas que lo implementan**
+
+| Página | Contenedor del tag + botón | Destino «Editar plan» (solo detalle, Vigente) |
+|--------|----------------------------|-----------------------------------------------|
+| `detalle-plan.html` | `.detalle-plan-header-actions` (#`plan-estado-container` + #`plan-actions-btn`) | `editar-plan-contenidos.html?id=` |
+| `detalle-plan-competencias.html` | Igual patrón | `editar-plan-competencias.html?id=` |
+| `editar-plan-contenidos.html` | `.editar-plan-header-actions` dentro de `.editar-plan-nombre-row` | — (no aplica; ver tabla abajo) |
+| `editar-plan-competencias.html` | Igual que contenidos | — |
+
+**Opciones mostradas según el estado del plan** (misma lógica en contenidos y competencias; en **edición** se usa el **estado visual estable** del tag: **`getEstadoTagEstableVisual()`** — p. ej. catálogo **Procesando** se muestra como **Planeado** en el tag, y el menú sigue las reglas de ese estado visual).
+
+| Estado | Opciones del menú (orden) | Comportamiento |
+|--------|---------------------------|----------------|
+| **Vigente** | **Solo en vistas de detalle** (`detalle-plan.html`, `detalle-plan-competencias.html`): **1.** **Editar plan** → navega a **`editar-plan-contenidos.html?id=`** o **`editar-plan-competencias.html?id=`** según el tipo. **2.** **Enviar recordatorio** → **modal** de confirmación (texto: correo a quienes no completaron el plan, avance y fecha de vencimiento); **Confirmar** → toast **«Recordatorio enviado»**; **Cancelar** / cierre → sin enviar. **3.** **Eliminar** → modal de eliminación. | En **edición** (`editar-plan-*.html`), en Vigente **no** se muestra «Editar plan» (el usuario ya está en la pantalla de edición): solo **Enviar recordatorio** (en prototipo: toast **«Recordatorio enviado»** directo) y **Eliminar**. |
+| **No vigente** | **Descargar certificados** → toast de éxito (prototipo). **Eliminar** → modal. | Mismo menú en detalle y en edición (si se llegara a una edición con ese estado; el flujo normal redirige al detalle). |
+| **Planeado**, **Procesando** u otro (rama `else` en código) | Solo **Eliminar** → modal. | Sin envío de recordatorio ni certificados en esta rama. |
+
+**Modal de eliminar plan** (desde el menú **Eliminar**)
+
+- **Texto base:** aviso de que se pierde la data asociada (asignaciones, avances, historial).
+- Si el estado usado para el modal es **Planeado** (incluido el caso «visual Planeado» cuando el backend era Procesando): título **«Eliminar plan planeado»**, un solo botón de acción **Eliminar plan** (sin campo de confirmación por texto).
+- Si el estado es **Vigente** o **No vigente** (u otro no planeado): título **«Confirmar eliminación»**, texto de irreversibilidad, campo para escribir **`eliminar`**, botones **Cancelar** y **Eliminar plan** (este último deshabilitado hasta escribir la palabra correctamente).
+- Tras confirmar: cierre del modal, **`sessionStorage`** con toast pendiente de éxito («Plan eliminado correctamente.») y redirección a **`planes-formacion.html`**.
+
+**Implementación (referencia)**
+
+- Funciones típicas en el script inline: **`getPlanActionOptionsByStatus(estado)`**, **`getDeletePlanModalConfig(estado)`**, **`openDeletePlanModal(...)`**, **`initPlanActions()`** (listener en `#plan-actions-btn`).
+- Los modales se apilan en **`#asignaciones-modals-container`** (`innerHTML +=` para no pisar otros modales de la misma página).
+- IDs de overlay del dropdown y del modal pueden variar por archivo (p. ej. `detalle-plan-actions-overlay` vs `detalle-plan-comp-actions-overlay`, `editar-plan-actions-overlay` vs `editar-plan-comp-actions-overlay`) para evitar colisiones si se reutilizan patrones.
+
 ### 6.3 Habilidades (filas arrastrables)
 
 - El icono de **drag** (grip vertical) en las filas de habilidades usa el color **`--ubits-fg-1-medium-inverted`** en `crear-plan-competencias` y `detalle-plan-competencias`.
@@ -287,12 +322,12 @@ Resumen de decisiones de UI y comportamiento implementado en el prototipo, para 
 | `planes-formacion.html` | Lista de planes (tabs Contenidos / Competencias). Clic en fila: **Procesando** o **Planeado** → **editar-plan-***; **Vigente** o **No vigente** → **detalle-plan-***. Menú **⋮:** Ver progreso, **Editar** (Planeado/Procesando/Vigente), Eliminar (**§ 4.4**). Animación en tabla: tag **Procesando N%** en planes en proceso (**§ 2.1** / lista). |
 | `crear-plan-contenidos.html` | Creación de plan de contenidos: nombre, vigencia, tabla de asignaciones, drawer Agregar contenidos. |
 | `crear-plan-competencias.html` | Creación de plan de competencias: nombre, vigencia, horas por competencia, tabla de asignaciones, drawer Agregar competencias (cards + habilidades). |
-| `editar-plan-contenidos.html` | Edición con **`?id=`** (Planeado / Procesando / Vigente). Tabla una fila por usuario; «Agregar asignación» = wizard 2 pasos (participantes → contenidos); por fila, drawer catálogo (`drawer-editplan`). Tag: **Planeado** en reposo si catálogo Procesando; animación **Procesando N%** en el tag al **agregar** asignación (**§ 3.2.2**). Título + tag en fila (**§ 6.2.1**). |
-| `editar-plan-contenidos.css` | Fila título + tag: sobrescribe **`flex-direction: column`** del bloque nombre en crear-plan-contenidos (alineado a `detalle-plan`). |
-| `editar-plan-competencias.html` | Misma idea que la fila anterior con competencias y **horas por competencia**; wizard 2 pasos, `attachWizardCompetenciasPaso2`, drawer fila `#drawer-agregar-competencias`. Mismo criterio de **tag en reposo** y **animación al agregar asignación** que contenidos (**§ 4.3.2**, **§ 6.2.1**). |
+| `editar-plan-contenidos.html` | Edición con **`?id=`** (Planeado / Procesando / Vigente). Tabla una fila por usuario; «Agregar asignación» = wizard 2 pasos (participantes → contenidos); por fila, drawer catálogo (`drawer-editplan`). Tag: **Planeado** en reposo si catálogo Procesando; animación **Procesando N%** en el tag al **agregar** asignación (**§ 3.2.2**). Título + tag + **Opciones** en fila (**§ 6.2.1**, **§ 6.2.2**). |
+| `editar-plan-contenidos.css` | Fila título + tag + acciones: sobrescribe **`flex-direction: column`** del bloque nombre en crear-plan-contenidos (alineado a `detalle-plan`); **`.editar-plan-header-actions`** (**§ 6.2.2**). |
+| `editar-plan-competencias.html` | Misma idea que la fila anterior con competencias y **horas por competencia**; wizard 2 pasos, `attachWizardCompetenciasPaso2`, drawer fila `#drawer-agregar-competencias`. Mismo criterio de **tag en reposo**, **animación al agregar asignación** y menú **Opciones** (**§ 4.3.2**, **§ 6.2.1**, **§ 6.2.2**). |
 | `editar-plan-competencias.css` | Incluye la misma lógica de fila título + tag que `editar-plan-contenidos.css` + estilos mínimos propios. |
-| `detalle-plan.html` | Detalle de plan de **contenidos** (solo consulta de progreso: sin Guardar ni «Agregar asignación» en tabla; card en texto). Drawers y barra de acciones según estado. Búsqueda de tabla: **§ 6.6**. |
-| `detalle-plan-competencias.html` | Detalle de plan de **competencias** (mismo criterio de solo lectura en card). Tabla, drawers y **§ 6.6**. |
+| `detalle-plan.html` | Detalle de plan de **contenidos** (solo consulta de progreso: sin Guardar ni «Agregar asignación» en tabla; card en texto). Drawers, barra de acciones de tabla y **botón Opciones** del plan en card (**§ 6.2.2**). Búsqueda de tabla: **§ 6.6**. |
+| `detalle-plan-competencias.html` | Detalle de plan de **competencias** (mismo criterio). Tabla, drawers, **§ 6.2.2**, **§ 6.6**. |
 | `grupos.html`, `detalle-grupo.html`, `crear-grupo.html` | Gestión de grupos. |
 | `contenidos.html`, `categorias.html`, `chat-ia-grupos.html` | Contenidos, categorías y chat IA (otros flujos del LMS Creator). |
 
@@ -377,4 +412,4 @@ En páginas que usen `createUbitsDataTable` con orden o filtros en columnas: **d
 
 ---
 
-*Última actualización: marzo 2026. Prototipo: LMS Creator. **Lista `planes-formacion.html` (§ 4.4):** menú ⋮ (**Ver progreso**, **Editar**, **Eliminar**), plantillas **`?id=`**, redirección edición si No vigente. **Crear contenidos / detalle:** § 3.2.1, 3.3. **Editar plan contenidos y competencias (`editar-plan-*.html`):** § 3.2.2 y § 4.3.2 — catálogo **`?id=`**; tag en reposo **Planeado** si backend **Procesando**; al **agregar asignación** (wizard 2 pasos): texto **«Procesando 0%»…«100%»** **dentro** del **status tag** en 4 s (como la lista en `planes-formacion.html`); vuelta a **Planeado** o **Vigente**; toast solo si hubo filas nuevas. Competencias: horas por competencia, `attachWizardCompetenciasPaso2`, prefijos `drawer-wiz` / `drawer-editplan`, planes semilla **§ 2.1.2**. **§ 6.2.1** título + tag en fila; **§ 6.4** tabla de archivos; **§ 6.5** wizard 2 vs 3 pasos y filtros; **§ 6.6** búsqueda en `ubits-data-table` (texto de celda por columnas usuario/avatar).*
+*Última actualización: marzo 2026. Prototipo: LMS Creator. **Lista `planes-formacion.html` (§ 4.4):** menú ⋮ (**Ver progreso**, **Editar**, **Eliminar**), plantillas **`?id=`**, redirección edición si No vigente; tab **Competencias:** tres planes de ejemplo (Planeado / Vigente / No vigente), sin fila Procesando. **Card del plan (`detalle-plan-*` / `editar-plan-*`):** botón **Opciones** y menú por estado (**§ 6.2.2**). **Crear contenidos / detalle:** § 3.2.1, 3.3. **Editar plan contenidos y competencias (`editar-plan-*.html`):** § 3.2.2 y § 4.3.2 — catálogo **`?id=`**; tag en reposo **Planeado** si backend **Procesando**; al **agregar asignación** (wizard 2 pasos): texto **«Procesando 0%»…«100%»** **dentro** del **status tag** en 4 s (como la lista en `planes-formacion.html`); vuelta a **Planeado** o **Vigente**; toast solo si hubo filas nuevas. Competencias: horas por competencia, `attachWizardCompetenciasPaso2`, prefijos `drawer-wiz` / `drawer-editplan`, navegación lista **§ 2.1.2**. **§ 6.2.1** título + tag en fila; **§ 6.2.2** menú Opciones; **§ 6.4** tabla de archivos; **§ 6.5** wizard 2 vs 3 pasos y filtros; **§ 6.6** búsqueda en `ubits-data-table` (texto de celda por columnas usuario/avatar).*

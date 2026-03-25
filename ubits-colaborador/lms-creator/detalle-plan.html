@@ -163,7 +163,7 @@
                 if (estado === 'Vigente') {
                     return [
                         { text: 'Editar plan', value: 'editar', leftIcon: 'pen' },
-                        { text: 'Enviar recordatorios', value: 'send-reminders', leftIcon: 'bell' },
+                        { text: 'Enviar recordatorio', value: 'send-reminders', leftIcon: 'bell' },
                         { text: 'Eliminar', value: 'delete-plan', leftIcon: 'trash' }
                     ];
                 }
@@ -247,6 +247,42 @@
                 }
             }
 
+            function openRemindersConfirmModal() {
+                if (typeof getModalHtml !== 'function' || typeof showModal !== 'function') return;
+                var overlayId = 'detalle-plan-reminders-overlay';
+                var closeButtonId = 'detalle-plan-reminders-close';
+                var bodyHtml = '<p class="ubits-body-md-regular">Se enviará un recordatorio por correo a todos los estudiantes que no hayan completado su plan de formación, informándoles su avance hasta el momento y la fecha de vencimiento del plan.</p>';
+                var footerHtml = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="plan-reminders-cancel"><span>Cancelar</span></button><button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="plan-reminders-confirm"><span>Confirmar</span></button>';
+                var modalsContainer = document.getElementById('asignaciones-modals-container');
+                if (!modalsContainer) return;
+                modalsContainer.innerHTML += getModalHtml({
+                    overlayId: overlayId,
+                    title: 'Enviar recordatorio',
+                    bodyHtml: bodyHtml,
+                    footerHtml: footerHtml,
+                    size: 'sm',
+                    closeButtonId: closeButtonId
+                });
+                showModal(overlayId);
+                var overlay = document.getElementById(overlayId);
+                var closeBtn = document.getElementById(closeButtonId);
+                var cancelBtn = document.getElementById('plan-reminders-cancel');
+                var confirmBtn = document.getElementById('plan-reminders-confirm');
+                function closeRemindersModal() {
+                    if (typeof closeModal === 'function') closeModal(overlayId);
+                    if (overlay && overlay.parentNode) overlay.remove();
+                }
+                if (closeBtn) closeBtn.addEventListener('click', closeRemindersModal);
+                if (cancelBtn) cancelBtn.addEventListener('click', closeRemindersModal);
+                if (overlay) overlay.addEventListener('click', function(e) { if (e.target === overlay) closeRemindersModal(); });
+                if (confirmBtn) {
+                    confirmBtn.addEventListener('click', function() {
+                        closeRemindersModal();
+                        if (typeof showToast === 'function') showToast('success', 'Recordatorio enviado');
+                    });
+                }
+            }
+
             function initPlanActions() {
                 var actionsBtn = document.getElementById('plan-actions-btn');
                 if (!actionsBtn || typeof window.getDropdownMenuHtml !== 'function' || typeof window.openDropdownMenu !== 'function' || typeof window.closeDropdownMenu !== 'function') return;
@@ -271,7 +307,7 @@
                                 return;
                             }
                             if (value === 'send-reminders') {
-                                if (typeof showToast === 'function') showToast('success', 'Se enviaron recordatorios por correo a los estudiantes pendientes por finalizar el plan.');
+                                openRemindersConfirmModal();
                                 return;
                             }
                             if (value === 'download-certificates') {

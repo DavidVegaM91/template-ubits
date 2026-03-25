@@ -224,7 +224,7 @@
             function getPlanActionOptionsByStatus(estado) {
                 if (estado === 'Vigente') {
                     return [
-                        { text: 'Enviar recordatorios', value: 'send-reminders', leftIcon: 'bell' },
+                        { text: 'Enviar recordatorio', value: 'send-reminders', leftIcon: 'bell' },
                         { text: 'Eliminar', value: 'delete-plan', leftIcon: 'trash' }
                     ];
                 }
@@ -328,7 +328,7 @@
                             window.closeDropdownMenu(overlayId);
                             if (overlay && overlay.parentNode) overlay.remove();
                             if (value === 'send-reminders') {
-                                if (typeof showToast === 'function') showToast('success', 'Se enviaron recordatorios por correo a los estudiantes pendientes por finalizar el plan.');
+                                if (typeof showToast === 'function') showToast('success', 'Recordatorio enviado');
                                 return;
                             }
                             if (value === 'download-certificates') {
