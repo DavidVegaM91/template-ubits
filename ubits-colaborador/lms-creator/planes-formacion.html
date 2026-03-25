@@ -103,8 +103,14 @@
                     var val = opt.getAttribute('data-value');
                     if (val === null || val === '') return;
                     if (typeof window.closeDropdownMenu === 'function') window.closeDropdownMenu(CREAR_MENU_OVERLAY_ID);
-                    if (val === 'contenidos') window.location.href = 'crear-plan-contenidos.html';
-                    if (val === 'competencias') window.location.href = 'crear-plan-competencias.html';
+                    if (val === 'contenidos') {
+                        try { sessionStorage.removeItem('ubits-planes-formacion-return-hash'); } catch (e2) {}
+                        window.location.href = 'crear-plan-contenidos.html';
+                    }
+                    if (val === 'competencias') {
+                        try { sessionStorage.setItem('ubits-planes-formacion-return-hash', '#competencias'); } catch (e2) {}
+                        window.location.href = 'crear-plan-competencias.html';
+                    }
                 });
             }
             overlay.addEventListener('click', function (e) {
@@ -174,8 +180,10 @@
                     var clean = u.pathname + u.search;
                     if (tab === 'competencias') {
                         history.replaceState(null, '', clean + '#competencias');
+                        try { sessionStorage.setItem('ubits-planes-formacion-return-hash', '#competencias'); } catch (err) {}
                     } else {
                         history.replaceState(null, '', clean);
+                        try { sessionStorage.removeItem('ubits-planes-formacion-return-hash'); } catch (err) {}
                     }
                 } catch (e) {}
             }
@@ -194,6 +202,7 @@
                 tabActivo = tabId;
                 if (planesTablaRef && typeof planesTablaRef.refresh === 'function') planesTablaRef.refresh();
                 syncHeaderTabsFromPlanesTab();
+                updatePlanesFormacionUrl();
                 setTimeout(function() { if (typeof initTooltip === 'function') initTooltip('#planes-data-table-container [data-tooltip]'); }, 50);
             }
 

@@ -196,7 +196,7 @@
                 try {
                     sessionStorage.setItem('ubits-toast-pending', JSON.stringify({ type: 'success', message: 'Plan eliminado correctamente.' }));
                 } catch (err) {}
-                window.location.href = 'planes-formacion.html';
+                window.location.href = typeof getPlanesFormacionBackUrl === 'function' ? getPlanesFormacionBackUrl() : 'planes-formacion.html';
             }
 
             function openDeletePlanModal(estado) {
@@ -343,7 +343,7 @@
                     productName: 'Detalle del plan de competencias',
                     breadcrumbItems: [],
                     backButton: {
-                        onClick: function() { window.location.href = 'planes-formacion.html'; }
+                        onClick: function() { window.location.href = typeof getPlanesFormacionBackUrl === 'function' ? getPlanesFormacionBackUrl() : 'planes-formacion.html'; }
                     }
                 };
                 loadHeaderProduct('header-product-container', headerOpts);

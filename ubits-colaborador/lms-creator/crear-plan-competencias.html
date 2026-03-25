@@ -134,7 +134,7 @@
                     breadcrumbItems: [],
                     backButton: {
                         onClick: function() {
-                            window.location.href = 'planes-formacion.html';
+                            window.location.href = typeof getPlanesFormacionBackUrl === 'function' ? getPlanesFormacionBackUrl() : 'planes-formacion.html';
                         }
                     },
                     secondaryButtons: [
@@ -147,7 +147,7 @@
                                     showToast('error', 'Todas las asignaciones deben tener al menos una competencia. Agrega competencias a las que faltan antes de guardar.');
                                     return;
                                 }
-                                window.location.href = 'planes-formacion.html';
+                                window.location.href = typeof getPlanesFormacionBackUrl === 'function' ? getPlanesFormacionBackUrl() : 'planes-formacion.html';
                             }
                         }
                     ]

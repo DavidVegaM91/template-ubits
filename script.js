@@ -127,6 +127,21 @@ function loadSavedTheme() {
     }
 }
 
+// ===== LMS CREATOR — PLANES DE FORMACIÓN (vuelta con pestaña #competencias) =====
+
+/**
+ * URL para volver a planes-formacion.html respetando la última pestaña activa.
+ * planes-formacion.html guarda en sessionStorage al cambiar de tab o al cargar con hash.
+ * @returns {string} p. ej. "planes-formacion.html" o "planes-formacion.html#competencias"
+ */
+function getPlanesFormacionBackUrl() {
+    try {
+        var h = sessionStorage.getItem('ubits-planes-formacion-return-hash');
+        if (h === '#competencias') return 'planes-formacion.html#competencias';
+    } catch (e) { /* sessionStorage no disponible */ }
+    return 'planes-formacion.html';
+}
+
 // ===== INICIALIZACIÓN =====
 
 document.addEventListener('DOMContentLoaded', function() {
