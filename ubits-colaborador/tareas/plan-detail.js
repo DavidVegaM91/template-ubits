@@ -122,6 +122,9 @@ let planDetailLastTapForEdit = null;
 let planDetailFilterByAssigneeKey = null;
 // Lista de asignados del plan actual (para popover +N y marcar activo)
 let planDetailAssigneesList = [];
+/** Mismo flujo que tareas.html: botón «Agregar tarea» se expande a input; cierre si vacío (blur / clic fuera). */
+let planDetailAddingTask = false;
+let planDetailIsCreatingTask = false;
 
 function getTasksForPlan(planId) {
     if (!planId) return [];
@@ -177,6 +180,58 @@ function resizePlanDesc() {
     if (!ta) return;
     ta.style.height = '0';
     ta.style.height = ta.scrollHeight + 'px';
+}
+
+/** HTML del botón o del formulario inline (paridad con tareas.js / renderDaySection). */
+function renderPlanDetailAddTaskControl(planId) {
+    if (!planId) return '';
+    if (planDetailAddingTask) {
+        return (
+            '<form class="tarea-add-form" id="plan-detail-add-task-form" data-plan-id="' + escapeHtml(String(planId)) + '" ' +
+            'onsubmit="event.preventDefault(); return false;">' +
+            '<div class="tarea-add-input-wrapper">' +
+            '<div class="tarea-add-icon"><i class="far fa-plus"></i></div>' +
+            '<input type="text" class="ubits-input ubits-input--sm tarea-add-input" placeholder="Agregar una tarea" autocomplete="off" />' +
+            '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm tarea-add-form-btn" data-plan-id="' + escapeHtml(String(planId)) + '">' +
+            '<span>Añadir</span></button>' +
+            '</div></form>'
+        );
+    }
+    return (
+        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm tarea-add-btn" id="plan-detail-add-task-btn" data-plan-id="' + escapeHtml(String(planId)) + '">' +
+        '<i class="far fa-plus"></i><span>Agregar tarea</span></button>'
+    );
+}
+
+function handlePlanDetailCreateTaskInline(planId, nombreTarea) {
+    if (!nombreTarea || !String(nombreTarea).trim() || planDetailIsCreatingTask) return;
+    planDetailIsCreatingTask = true;
+    setTimeout(function () {
+        loadPlanAndTasks(planId);
+        let tasks = window.planDetailTasksCache[planId];
+        if (!tasks) {
+            tasks = [];
+            window.planDetailTasksCache[planId] = tasks;
+        }
+        const newId = 9000 + Date.now() % 100000;
+        const plan = window.planDetailPlanCache && window.planDetailPlanCache[planId];
+        tasks.unshift({
+            id: newId,
+            name: String(nombreTarea).trim(),
+            done: false,
+            status: 'Activo',
+            endDate: null,
+            priority: 'media',
+            assignee_email: null,
+            etiqueta: null,
+            planId: planId,
+            planNombre: plan ? (plan.name || '') : ''
+        });
+        planDetailAddingTask = false;
+        planDetailIsCreatingTask = false;
+        renderPlanDetail(planId);
+        if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
+    }, 300);
 }
 
 function renderPlanDetail(planId) {
@@ -328,6 +383,9 @@ function renderPlanDetail(planId) {
         }
     }
 
+    const addWrap = document.getElementById('plan-detail-add-task-wrap');
+    if (addWrap) addWrap.innerHTML = renderPlanDetailAddTaskControl(planId);
+
     if (filteredTasks.length === 0) {
         if (tasksListEl) tasksListEl.innerHTML = '';
         if (emptyEl) emptyEl.style.display = 'flex';
@@ -342,6 +400,37 @@ function renderPlanDetail(planId) {
         if (tasksListEl) tasksListEl.innerHTML = html;
         attachTaskListeners();
         if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
+    }
+
+    /* Cerrar formulario al clic fuera / blur si vacío (mismo patrón que tareas.js) */
+    if (planDetailAddingTask) {
+        setTimeout(function () {
+            var inputFocus = document.querySelector('#plan-detail-add-task-form .tarea-add-input');
+            if (inputFocus) inputFocus.focus();
+            var form = document.getElementById('plan-detail-add-task-form');
+            var wrapper = form && form.querySelector('.tarea-add-input-wrapper');
+            var inputEl = form && form.querySelector('.tarea-add-input');
+            if (!form || !wrapper || !inputEl) return;
+            function closeIfEmptyAndOutside(ev) {
+                if (!form.isConnected) {
+                    document.removeEventListener('click', closeIfEmptyAndOutside, true);
+                    return;
+                }
+                if (wrapper.contains(ev.target)) return;
+                if (!inputEl.value.trim()) {
+                    planDetailAddingTask = false;
+                    renderPlanDetail(planId);
+                    document.removeEventListener('click', closeIfEmptyAndOutside, true);
+                }
+            }
+            document.addEventListener('click', closeIfEmptyAndOutside, true);
+            inputEl.addEventListener('blur', function () {
+                if (!this.value.trim()) {
+                    planDetailAddingTask = false;
+                    renderPlanDetail(planId);
+                }
+            }, { once: true });
+        }, 0);
     }
 }
 
@@ -596,6 +685,38 @@ function initPlanDetail() {
         return;
     }
 
+    /* Agregar tarea: mismo patrón que tareas.html (expandir a input, Añadir, Enter, clic fuera vacío). */
+    if (!window._planDetailAddTaskUiBound) {
+        window._planDetailAddTaskUiBound = true;
+        document.addEventListener('click', function (e) {
+            var pid = getPlanIdFromUrl();
+            if (!pid) return;
+            if (e.target.closest('#plan-detail-add-task-btn')) {
+                e.preventDefault();
+                planDetailAddingTask = true;
+                renderPlanDetail(pid);
+                return;
+            }
+            var formBtn = e.target.closest('#plan-detail-add-task-form .tarea-add-form-btn');
+            if (formBtn) {
+                e.preventDefault();
+                var form = document.getElementById('plan-detail-add-task-form');
+                var input = form && form.querySelector('.tarea-add-input');
+                if (form && input && input.value.trim() && !planDetailIsCreatingTask) {
+                    handlePlanDetailCreateTaskInline(pid, input.value.trim());
+                }
+            }
+        });
+        document.addEventListener('keydown', function (e) {
+            var inp = e.target && e.target.closest && e.target.closest('#plan-detail-add-task-form .tarea-add-input');
+            if (!inp || e.key !== 'Enter') return;
+            if (!inp.value.trim() || planDetailIsCreatingTask) return;
+            e.preventDefault();
+            var pid = getPlanIdFromUrl();
+            if (pid) handlePlanDetailCreateTaskInline(pid, inp.value.trim());
+        });
+    }
+
     // Enlazar clics de la lista de tareas ANTES de renderizar (así funciona al llegar desde seguimiento)
     attachTaskListeners();
 
@@ -821,19 +942,6 @@ function initPlanDetail() {
         finalizarBtn.addEventListener('click', () => {
             const plan = (window.planDetailPlanCache && window.planDetailPlanCache[planId]) || loadPlanAndTasks(planId).plan;
             if (plan) { plan.status = 'Finalizado'; renderPlanDetail(planId); }
-        });
-    }
-
-    const addTaskBtn = document.getElementById('plan-detail-add-task-btn');
-    if (addTaskBtn) {
-        addTaskBtn.addEventListener('click', () => {
-            const tasks = getTasksForPlan(planId);
-            if (tasks) {
-                const name = prompt('Nombre de la tarea:', 'Nueva tarea') || 'Nueva tarea';
-                const newId = 9000 + Date.now() % 1000;
-                tasks.push({ id: newId, name: name.trim() || 'Nueva tarea', done: false, status: 'Activo', endDate: null, priority: 'media', assignee_email: null, etiqueta: null });
-                renderPlanDetail(planId);
-            }
         });
     }
 

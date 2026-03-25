@@ -532,7 +532,8 @@
     margin-bottom: var(--gap-lg, 16px);
 }
 
-.plan-detail-tasks-card__add .ubits-button {
+/* Solo el botón colapsado «Agregar tarea» a ancho completo; no el «Añadir» dentro de .tarea-add-form (rompe el flex). */
+.plan-detail-tasks-card__add > .tarea-add-btn {
     width: 100%;
 }
 
