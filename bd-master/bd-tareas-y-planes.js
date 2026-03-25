@@ -277,6 +277,75 @@
         'Validar con responsable', 'Enviar para aprobación', 'Completar checklist', 'Archivar evidencia'
     ];
 
+    function isoToMs(iso) {
+        if (!iso) return NaN;
+        const t = new Date(iso).getTime();
+        return isNaN(t) ? NaN : t;
+    }
+
+    /**
+     * Límite superior para tiempos del historial: no después de "ahora" ni del fin del día de la fecha límite.
+     * Los comentarios no pueden estar fechados en el futuro ni confundirse con el día de vencimiento si aún no llega.
+     */
+    function getDetalleTimelineCapMs(endDateStr) {
+        const nowMs = Date.now();
+        if (!endDateStr) return nowMs;
+        const p = String(endDateStr).split('-').map(Number);
+        if (p.length !== 3) return nowMs;
+        const endDayMs = new Date(p[0], p[1] - 1, p[2], 23, 59, 59, 999).getTime();
+        return Math.min(nowMs, endDayMs);
+    }
+
+    /**
+     * Reordena y recorta tiempos sintéticos: creación primero; comentarios y actividades solo entre creación y cap (hoy / fin de tarea).
+     */
+    function sanitizeDetalleTimeline(subtasks, comments, activities, fechaCreacion, endDateStr) {
+        const capMs = getDetalleTimelineCapMs(endDateStr);
+        let fcMs = fechaCreacion instanceof Date ? fechaCreacion.getTime() : new Date(fechaCreacion).getTime();
+        if (isNaN(fcMs)) fcMs = capMs - 3600000;
+        if (fcMs > capMs) fcMs = capMs - 3600000;
+        if (fcMs > capMs) fcMs = capMs - 86400000;
+
+        const creacionAct = activities.find(function (a) {
+            return a && a.text && /creó la tarea/i.test(String(a.text));
+        });
+        if (creacionAct) {
+            creacionAct.time = new Date(fcMs).toISOString();
+        }
+
+        const creacionMs = creacionAct ? isoToMs(creacionAct.time) : fcMs;
+        let cursor = creacionMs + 5000;
+
+        activities.forEach(function (a, i) {
+            if (creacionAct && a === creacionAct) return;
+            let m = isoToMs(a.time);
+            if (isNaN(m)) m = cursor;
+            if (m <= creacionMs) m = creacionMs + 2000 + i * 1500;
+            if (m > capMs) m = Math.min(capMs - (activities.length - i) * 800, capMs);
+            if (m <= creacionMs) m = creacionMs + 1000 + i * 1000;
+            a.time = new Date(m).toISOString();
+            cursor = Math.max(cursor, m);
+        });
+
+        comments.forEach(function (c, i) {
+            let m = isoToMs(c.time);
+            if (isNaN(m)) m = cursor + i * 2000;
+            if (m <= creacionMs) m = creacionMs + 3000 + i * 2000;
+            if (m > capMs) m = capMs - (comments.length - i) * 1500;
+            if (m <= creacionMs) m = creacionMs + 4000 + i * 2000;
+            c.time = new Date(Math.min(m, capMs)).toISOString();
+            cursor = Math.max(cursor, isoToMs(c.time));
+        });
+
+        subtasks.forEach(function (s, i) {
+            let m = isoToMs(s.created_at);
+            if (isNaN(m)) m = creacionMs + 60000 + i * 30000;
+            if (m <= creacionMs) m = creacionMs + 10000 + i * 5000;
+            if (m > capMs) m = Math.min(creacionMs + (i + 2) * 60000, capMs);
+            s.created_at = new Date(m).toISOString();
+        });
+    }
+
     /**
      * Genera subtareas, comentarios y actividades para una tarea (detalle usado por task-detail).
      * Lógica: 80% de tareas tienen subtareas; si la creadora es la usuaria y el asignado es de su equipo, 100%.
@@ -371,6 +440,8 @@
                 pushAct('fa-calendar-pen', asignadoNombre, 'cambió la fecha límite al ' + d + ' ' + (meses[(m || 1) - 1]) + ' ' + (y || new Date().getFullYear()) + '.', addHours(fechaCreacion, 7));
             }
         }
+
+        sanitizeDetalleTimeline(subtasks, comments, activities, fechaCreacion, endDateStr);
 
         return { subtasks, comments, activities };
     }
@@ -475,7 +546,14 @@
                     }
                     const [ey, em, ed] = endDateStr.split('-').map(Number);
                     const endDate = new Date(ey, em - 1, ed);
-                    const fechaCreacion = new Date(ey, em - 1, Math.max(1, ed - 2));
+                    let fechaCreacion = new Date(ey, em - 1, Math.max(1, ed - 2));
+                    if (endDateStr >= todayStr) {
+                        const tp = todayStr.split('-').map(Number);
+                        const todayMidnight = new Date(tp[0], tp[1] - 1, tp[2]);
+                        if (fechaCreacion.getTime() > todayMidnight.getTime()) {
+                            fechaCreacion = new Date(todayMidnight);
+                        }
+                    }
                     const prioridades = ['Alta', 'Media', 'Baja'];
                     const prioridad = prioridades[Math.floor(seeder(seed, baseIdx + i + 200) * 3)];
                     const nombreTarea = TITULOS_TAREAS[(baseIdx + i) % TITULOS_TAREAS.length];
@@ -698,7 +776,14 @@
                     const day = toWeekdayInMonth(year, m, 15); // día 15 o el laborable más cercano
                     const endDateStr = year + '-' + pad(m) + '-' + pad(day);
                     const endDate = new Date(year, m - 1, day);
-                    const fechaCreacion = new Date(year, m - 1, Math.max(1, day - 2));
+                    let fechaCreacion = new Date(year, m - 1, Math.max(1, day - 2));
+                    if (endDateStr >= todayStr) {
+                        const tp = todayStr.split('-').map(Number);
+                        const todayMidnight = new Date(tp[0], tp[1] - 1, tp[2]);
+                        if (fechaCreacion.getTime() > todayMidnight.getTime()) {
+                            fechaCreacion = new Date(todayMidnight);
+                        }
+                    }
                     const esFechaFutura = endDateStr > todayStr;
                     asignadosCompania.forEach(function (empAsig, idxCompania) {
                         const asignado = { nombre: empAsig.nombre, avatar: empAsig.avatar || '', username: empAsig.username || generarUsername(empAsig.nombre) };

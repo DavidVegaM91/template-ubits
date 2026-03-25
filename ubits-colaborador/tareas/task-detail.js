@@ -40,17 +40,8 @@
             .replace(/"/g, '&quot;');
     }
 
-    /** Tiempo relativo: "Hace Xh", "Hace X días" (máx 2), o "DD MMM YYYY - H:MM am/pm" */
-    function formatCommentTime(dateStr) {
-        const d = new Date(dateStr);
-        const now = new Date();
-        const diffMs = now - d;
-        const diffMins = Math.floor(diffMs / 60000);
-        const diffHours = Math.floor(diffMs / 3600000);
-        const diffDays = Math.floor(diffMs / 86400000);
-        if (diffMins < 60) return 'Hace ' + (diffMins <= 1 ? 'un momento' : diffMins + ' min');
-        if (diffHours < 24) return 'Hace ' + (diffHours === 1 ? '1 h' : diffHours + ' h');
-        if (diffDays <= 2) return 'Hace ' + (diffDays === 1 ? '1 día' : diffDays + ' días');
+    /** Formato absoluto compartido (evita "Hace un momento" con fechas futuras por diff negativo). */
+    function formatCommentTimeAbsolute(d) {
         const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
         const dia = d.getDate();
         const mes = meses[d.getMonth()];
@@ -61,6 +52,21 @@
         if (h === 0) h = 12; else if (h > 12) h -= 12;
         const hora = h + ':' + pad(m) + ' ' + (am ? 'a.m.' : 'p.m.');
         return dia + ' ' + mes + ' ' + anio + ' - ' + hora;
+    }
+
+    /** Tiempo relativo: "Hace Xh", "Hace X días" (máx 2), o absoluto. Fechas futuras: solo absoluto (nunca relativo). */
+    function formatCommentTime(dateStr) {
+        const d = new Date(dateStr);
+        const now = new Date();
+        const diffMs = now - d;
+        if (diffMs < 0) return formatCommentTimeAbsolute(d);
+        const diffMins = Math.floor(diffMs / 60000);
+        const diffHours = Math.floor(diffMs / 3600000);
+        const diffDays = Math.floor(diffMs / 86400000);
+        if (diffMins < 60) return 'Hace ' + (diffMins <= 1 ? 'un momento' : diffMins + ' min');
+        if (diffHours < 24) return 'Hace ' + (diffHours === 1 ? '1 h' : diffHours + ' h');
+        if (diffDays <= 2) return 'Hace ' + (diffDays === 1 ? '1 día' : diffDays + ' días');
+        return formatCommentTimeAbsolute(d);
     }
 
     const today = getTodayString();
@@ -163,6 +169,209 @@
             author: author,
             text: text
         });
+    }
+
+    function parseIsoMs(iso) {
+        if (!iso) return NaN;
+        var d = new Date(iso);
+        return isNaN(d.getTime()) ? NaN : d.getTime();
+    }
+
+    /**
+     * Garantiza historial mínimo (evento de creación de tarea y de cada subtarea) y que ningún
+     * comentario quede con fecha anterior al evento de creación de la tarea.
+     */
+    function ensureTaskDetailHistoryAndOrder() {
+        var task = estado.task;
+        if (!task) return;
+        var comments = estado.comments;
+        var activities = estado.activities;
+        var subtasks = estado.subtasks || [];
+
+        var msCreated = parseIsoMs(task.created_at);
+        var minCommentMs = Infinity;
+        comments.forEach(function (c) {
+            var m = parseIsoMs(c.time);
+            if (!isNaN(m)) minCommentMs = Math.min(minCommentMs, m);
+        });
+        var minActMs = Infinity;
+        activities.forEach(function (a) {
+            var m = parseIsoMs(a.time);
+            if (!isNaN(m)) minActMs = Math.min(minActMs, m);
+        });
+        var minSubMs = Infinity;
+        subtasks.forEach(function (s) {
+            var m = parseIsoMs(s.created_at);
+            if (!isNaN(m)) minSubMs = Math.min(minSubMs, m);
+        });
+        var minContentMs = Math.min(minCommentMs, minActMs, minSubMs);
+
+        var anchorMs;
+        if (!isNaN(msCreated)) {
+            anchorMs = msCreated;
+            if (!isNaN(minContentMs) && minContentMs < anchorMs) {
+                comments.forEach(function (c, i) {
+                    var m = parseIsoMs(c.time);
+                    if (!isNaN(m) && m < anchorMs) {
+                        c.time = new Date(anchorMs + 1000 + i * 1000).toISOString();
+                    }
+                });
+            }
+        } else {
+            if (minContentMs === Infinity) {
+                anchorMs = Date.now() - 86400000;
+            } else {
+                anchorMs = minContentMs - 60000;
+            }
+            task.created_at = new Date(anchorMs).toISOString();
+        }
+
+        var hasCreacion = activities.some(function (a) {
+            return a.text && /creó la tarea/i.test(String(a.text));
+        });
+        if (!hasCreacion) {
+            var authorCreacion = task.created_by || 'Usuario';
+            activities.push({
+                id: 'act-seed-creacion-' + (task.id != null ? String(task.id) : 't'),
+                time: new Date(anchorMs).toISOString(),
+                icon: 'fa-circle-plus',
+                author: authorCreacion,
+                text: 'creó la tarea.'
+            });
+        }
+
+        var hasBatchSubtasksEvent = activities.some(function (a) {
+            return a && a.text && /subtareas en lote/i.test(String(a.text));
+        });
+        subtasks.forEach(function (st, idx) {
+            if (hasBatchSubtasksEvent) return;
+            var name = (st && st.name) ? String(st.name) : 'Subtarea';
+            var hasSubEv = activities.some(function (a) {
+                if (!a || !a.text) return false;
+                var t = String(a.text);
+                if (t.indexOf(name) === -1) return false;
+                return /añadió la subtarea/i.test(t);
+            });
+            if (hasSubEv) return;
+            var subMs = parseIsoMs(st.created_at);
+            if (isNaN(subMs)) subMs = anchorMs + (idx + 1) * 60000;
+            if (subMs <= anchorMs) subMs = anchorMs + (idx + 1) * 60000;
+            var subAuthor = st.assignee_name || task.created_by || task.assignee_name || 'Usuario';
+            activities.push({
+                id: 'act-seed-sub-' + String(st.id) + '-' + (task.id != null ? String(task.id) : ''),
+                time: new Date(subMs).toISOString(),
+                icon: 'fa-plus-circle',
+                author: subAuthor,
+                text: 'añadió la subtarea \u201c' + name + '\u201d.'
+            });
+        });
+
+        /* Si ya había evento "creó la tarea" pero con fecha >= al primer comentario, retroceder el evento */
+        var creacionEvent = activities.find(function (a) {
+            return a.text && /creó la tarea/i.test(String(a.text));
+        });
+        if (creacionEvent) {
+            var minCommForCreacion = Infinity;
+            comments.forEach(function (c) {
+                var m = parseIsoMs(c.time);
+                if (!isNaN(m)) minCommForCreacion = Math.min(minCommForCreacion, m);
+            });
+            var tEv = parseIsoMs(creacionEvent.time);
+            if (!isNaN(minCommForCreacion) && !isNaN(tEv) && tEv >= minCommForCreacion) {
+                creacionEvent.time = new Date(minCommForCreacion - 60000).toISOString();
+            }
+        }
+
+        /* Comentarios posteriores al evento de creación */
+        creacionEvent = activities.find(function (a) {
+            return a.text && /creó la tarea/i.test(String(a.text));
+        });
+        var creacionMs = creacionEvent ? parseIsoMs(creacionEvent.time) : anchorMs;
+        comments.forEach(function (c, i) {
+            var m = parseIsoMs(c.time);
+            if (!isNaN(m) && !isNaN(creacionMs) && m < creacionMs) {
+                c.time = new Date(creacionMs + 1000 + i * 1000).toISOString();
+            }
+        });
+
+        /* Comentarios no pueden quedar fechados después de «ahora» ni después del fin del día de la fecha límite (no confundir con vencimiento). */
+        (function clampCommentsToReality() {
+            var nowMs = Date.now();
+            var endCap = task.endDate ? (function () {
+                var p = String(task.endDate).split('-').map(Number);
+                if (p.length !== 3) return nowMs;
+                return new Date(p[0], p[1] - 1, p[2], 23, 59, 59, 999).getTime();
+            })() : nowMs;
+            var capMs = Math.min(nowMs, endCap);
+            creacionMs = creacionEvent ? parseIsoMs(creacionEvent.time) : anchorMs;
+            if (isNaN(creacionMs)) creacionMs = capMs - 3600000;
+            comments.forEach(function (c, i) {
+                var m = parseIsoMs(c.time);
+                if (isNaN(m)) return;
+                if (m > capMs) m = capMs - (comments.length - i) * 2000;
+                if (m <= creacionMs) m = creacionMs + 2000 + i * 1500;
+                if (m > capMs) m = capMs;
+                c.time = new Date(m).toISOString();
+            });
+        })();
+    }
+
+    function getFeedSortKey(item) {
+        var t = new Date(item.time).getTime();
+        if (isNaN(t)) return 0;
+        var tie = 0;
+        if (item.type === 'activity' && item.data && item.data.text && /creó la tarea/i.test(String(item.data.text))) tie = 0;
+        else if (item.type === 'activity') tie = 1;
+        else tie = 2;
+        return t * 100000 + tie;
+    }
+
+    /**
+     * Modal UBITS de confirmación antes de enviar recordatorio por correo (tarea principal o subtarea).
+     */
+    function openTaskRecordatorioConfirmModal(onConfirm) {
+        if (typeof onConfirm !== 'function') return;
+        if (typeof getModalHtml !== 'function' || typeof showModal !== 'function') {
+            onConfirm();
+            return;
+        }
+        var overlayId = 'task-detail-recordatorio-confirm-overlay';
+        var existing = document.getElementById(overlayId);
+        if (existing) existing.remove();
+        var modalsContainer = document.getElementById('task-detail-modals-container');
+        if (!modalsContainer) {
+            onConfirm();
+            return;
+        }
+        var closeButtonId = 'task-detail-recordatorio-confirm-close';
+        var bodyHtml = '<p class="ubits-body-md-regular">Se enviará un correo al asignado con un recordatorio sobre esta tarea.</p>';
+        var footerHtml = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="task-detail-recordatorio-cancel"><span>Cancelar</span></button><button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="task-detail-recordatorio-confirm"><span>Confirmar</span></button>';
+        modalsContainer.innerHTML += getModalHtml({
+            overlayId: overlayId,
+            title: 'Enviar recordatorio',
+            bodyHtml: bodyHtml,
+            footerHtml: footerHtml,
+            size: 'sm',
+            closeButtonId: closeButtonId
+        });
+        showModal(overlayId);
+        var overlay = document.getElementById(overlayId);
+        var closeBtn = document.getElementById(closeButtonId);
+        var cancelBtn = document.getElementById('task-detail-recordatorio-cancel');
+        var confirmBtn = document.getElementById('task-detail-recordatorio-confirm');
+        function closeRecordatorioModal() {
+            if (typeof closeModal === 'function') closeModal(overlayId);
+            if (overlay && overlay.parentNode) overlay.remove();
+        }
+        if (closeBtn) closeBtn.addEventListener('click', closeRecordatorioModal);
+        if (cancelBtn) cancelBtn.addEventListener('click', closeRecordatorioModal);
+        if (overlay) overlay.addEventListener('click', function (e) { if (e.target === overlay) closeRecordatorioModal(); });
+        if (confirmBtn) {
+            confirmBtn.addEventListener('click', function () {
+                closeRecordatorioModal();
+                onConfirm();
+            });
+        }
     }
 
     function getTaskStripOpts() {
@@ -541,10 +750,12 @@
                             if (overlayEl.parentNode) overlayEl.remove();
                             if (val === 'recordatorio') {
                                 var taskName = estado.task && estado.task.name ? estado.task.name : 'esta tarea';
-                                pushActivity('fa-bell', currentUserName, 'envió al asignado un recordatorio sobre "' + taskName + '".');
-                                renderCommentsBlock();
-                                triggerFakeSave();
-                                if (typeof showToast === 'function') showToast('success', 'Recordatorio enviado');
+                                openTaskRecordatorioConfirmModal(function () {
+                                    pushActivity('fa-bell', currentUserName, 'envió al asignado un recordatorio sobre "' + taskName + '".');
+                                    renderCommentsBlock();
+                                    triggerFakeSave();
+                                    if (typeof showToast === 'function') showToast('success', 'Recordatorio enviado');
+                                });
                             } else if (val === 'eliminar') {
                                 if (typeof showModal === 'function') showModal('task-detail-delete-task-modal-overlay');
                             }
@@ -564,10 +775,12 @@
                 e.preventDefault();
                 e.stopPropagation();
                 var taskName = estado.task && estado.task.name ? estado.task.name : 'esta tarea';
-                pushActivity('fa-bell', currentUserName, 'envió al asignado un recordatorio sobre "' + taskName + '".');
-                renderCommentsBlock();
-                triggerFakeSave();
-                if (typeof showToast === 'function') showToast('success', 'Recordatorio enviado');
+                openTaskRecordatorioConfirmModal(function () {
+                    pushActivity('fa-bell', currentUserName, 'envió al asignado un recordatorio sobre "' + taskName + '".');
+                    renderCommentsBlock();
+                    triggerFakeSave();
+                    if (typeof showToast === 'function') showToast('success', 'Recordatorio enviado');
+                });
             });
         }
         var deleteTaskBtn = document.getElementById('task-detail-title-delete-btn');
@@ -908,23 +1121,35 @@
             })
             : comments;
 
-        /* No mostrar comentarios ni actividades con fecha futura (datos de BD o mocks mal fechados) */
-        var now = new Date();
-        function isNotFuture(isoStr) {
+        /* Comentarios: un mensaje no puede estar «escrito en el futuro»; si el backend/manda ISO
+         * posterior a ahora, usamos la hora actual para agrupar y etiquetar (alineado con “lo acabo de escribir”). */
+        var nowMs = Date.now();
+        function hasValidFeedTime(isoStr) {
             if (!isoStr) return false;
             var d = new Date(isoStr);
-            return !isNaN(d.getTime()) && d.getTime() <= now.getTime();
+            return !isNaN(d.getTime());
+        }
+        function clampCommentTimeToNow(isoStr) {
+            if (!isoStr) return isoStr;
+            var t = new Date(isoStr).getTime();
+            if (isNaN(t)) return isoStr;
+            if (t > nowMs) return new Date(nowMs).toISOString();
+            return isoStr;
         }
 
+        /* Actividades (creación tarea, subtareas, etc.): pueden ordenarse con fechas de planificación;
+         * no aplicamos el mismo criterio que a comentarios. */
         /* ── Mezclar comentarios y actividades en timeline cronológico único ── */
         var allItems = [];
         commentsToShow.forEach(function (c) {
-            if (isNotFuture(c.time)) allItems.push({ type: 'comment', time: c.time, data: c });
+            if (hasValidFeedTime(c.time)) {
+                allItems.push({ type: 'comment', time: clampCommentTimeToNow(c.time), data: c });
+            }
         });
         activities.forEach(function (a) {
-            if (isNotFuture(a.time)) allItems.push({ type: 'activity', time: a.time, data: a });
+            if (hasValidFeedTime(a.time)) allItems.push({ type: 'activity', time: a.time, data: a });
         });
-        allItems.sort(function (a, b) { return new Date(a.time) - new Date(b.time); });
+        allItems.sort(function (a, b) { return getFeedSortKey(a) - getFeedSortKey(b); });
 
         /* Aplicar filtro de feed (todo / solo comentarios / solo historial de eventos) */
         var filterVal = estado.commentsFeedFilter || 'all';
@@ -1408,6 +1633,8 @@
             estado.activities = getMockActivities();
         }
 
+        ensureTaskDetailHistoryAndOrder();
+
         /* Modales: eliminar subtarea y eliminar tarea (opciones del título) */
         var modalsContainer = document.getElementById('task-detail-modals-container');
         if (modalsContainer && typeof getModalHtml === 'function' && !document.getElementById('task-detail-delete-subtask-modal-overlay')) {
@@ -1528,10 +1755,12 @@
                             }
                         } else if (val === 'recordatorio') {
                             var subtaskName = subtask && subtask.name ? subtask.name : 'esta subtarea';
-                            pushActivity('fa-bell', currentUserName, 'envió al asignado un recordatorio sobre "' + subtaskName + '".');
-                            renderCommentsBlock();
-                            triggerFakeSave();
-                            if (typeof showToast === 'function') showToast('success', 'Recordatorio enviado');
+                            openTaskRecordatorioConfirmModal(function () {
+                                pushActivity('fa-bell', currentUserName, 'envió al asignado un recordatorio sobre "' + subtaskName + '".');
+                                renderCommentsBlock();
+                                triggerFakeSave();
+                                if (typeof showToast === 'function') showToast('success', 'Recordatorio enviado');
+                            });
                         } else if (val === 'eliminar') {
                             subtaskIdToDelete = id;
                             if (typeof showModal === 'function') showModal('task-detail-delete-subtask-modal-overlay');
