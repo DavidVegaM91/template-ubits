@@ -1691,7 +1691,8 @@ function handleCreateTaskInline(fechaKey, nombreTarea) {
             description: '',
             done: false,
             status: 'Activo',
-            endDate: null,
+            /* Fecha de vencimiento = día de la columna donde se pulsó «Añadir tarea» */
+            endDate: fechaKey,
             priority: 'media',
             assignee_name: TAREA_INLINE_CREATED_BY,
             assignee_email: null,

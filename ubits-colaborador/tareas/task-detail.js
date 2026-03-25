@@ -828,6 +828,13 @@
             '<label class="ubits-checkbox ubits-checkbox--sm task-detail-add-subtask-multi-check"><input type="checkbox" class="ubits-checkbox__input" id="task-detail-add-multi-checkbox" data-subtask-multi><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label">Agregar múltiples subtareas a partir de lista</span></label>' +
             '</div></form>'
             : '';
+        /* Mientras el formulario de nueva subtarea está abierto, no mostrar de nuevo «Añadir subtarea» */
+        var addSubtaskBtnRow = estado.addingSubtask
+            ? ''
+            : '<div class="task-detail-add-row">' +
+            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="task-detail-add-subtask-btn">' +
+            '<i class="far fa-plus"></i><span class="ubits-body-sm-regular">Añadir subtarea</span></button>' +
+            '</div>';
         var barPercent = total > 0 ? (100 * completed / total) : 0;
         var html =
             '<div class="task-detail-subtasks-header">' +
@@ -836,10 +843,7 @@
             '<span class="ubits-body-sm-regular task-detail-subtasks-counter">' + completed + ' de ' + total + ' completadas</span></div>' +
             '<div class="task-detail-subtasks-list" id="task-detail-subtasks-list">' + listHtml + '</div>' +
             addFormHtml +
-            '<div class="task-detail-add-row">' +
-            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="task-detail-add-subtask-btn">' +
-            '<i class="far fa-plus"></i><span class="ubits-body-sm-regular">Añadir subtarea</span></button>' +
-            '</div>';
+            addSubtaskBtnRow;
         var el = document.getElementById('task-detail-subtasks-block');
         if (el) el.innerHTML = html;
 
@@ -939,12 +943,14 @@
         }
 
         function closeSubtaskFormIfEmpty() {
-            var form = document.getElementById('task-detail-add-subtask-form');
-            var inp = form && form.querySelector('[data-subtask-add]');
-            if (form && inp && !inp.value.trim()) {
+            var formEl = document.getElementById('task-detail-add-subtask-form');
+            var inp = formEl && formEl.querySelector('[data-subtask-add]');
+            if (formEl && inp && !inp.value.trim()) {
                 estado.addingSubtask = false;
                 renderSubtasksBlock();
+                return true;
             }
+            return false;
         }
 
         var addSubtaskBtn = document.getElementById('task-detail-add-subtask-btn');
@@ -966,8 +972,14 @@
                                     document.removeEventListener('click', closeIfEmptyAndOutside, true);
                                     return;
                                 }
-                                closeSubtaskFormIfEmpty();
-                                document.removeEventListener('click', closeIfEmptyAndOutside, true);
+                                var inp = form.querySelector('[data-subtask-add]');
+                                if (inp && inp.value.trim()) {
+                                    /* Hay texto: no cerrar; no quitar el listener (si se quita, al borrar todo y clic fuera ya no cierra). */
+                                    return;
+                                }
+                                if (closeSubtaskFormIfEmpty()) {
+                                    document.removeEventListener('click', closeIfEmptyAndOutside, true);
+                                }
                             }
                             document.addEventListener('click', closeIfEmptyAndOutside, true);
                         }, 0);
