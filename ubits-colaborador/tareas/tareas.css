@@ -607,12 +607,12 @@ body.page-tareas .dashboard-container {
 
 .tarea-add-btn {
     width: 100%;
-    margin-top: var(--gap-lg);
+    margin-bottom: var(--gap-lg);
 }
 
 /* Formulario añadir tarea inline */
 .tarea-add-form {
-    margin-top: var(--gap-lg);
+    margin-bottom: var(--gap-lg);
     width: 100%;
     min-width: 0;
     max-width: 100%;

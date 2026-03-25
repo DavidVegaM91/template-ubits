@@ -841,9 +841,9 @@
             '<h2 class="ubits-body-md-bold task-detail-subtasks-title"><i class="far fa-list-check"></i> Subtareas</h2>' +
             '<div class="task-detail-subtasks-bar"><div class="task-detail-subtasks-bar-fill" style="width:' + barPercent + '%"></div></div>' +
             '<span class="ubits-body-sm-regular task-detail-subtasks-counter">' + completed + ' de ' + total + ' completadas</span></div>' +
-            '<div class="task-detail-subtasks-list" id="task-detail-subtasks-list">' + listHtml + '</div>' +
             addFormHtml +
-            addSubtaskBtnRow;
+            addSubtaskBtnRow +
+            '<div class="task-detail-subtasks-list" id="task-detail-subtasks-list">' + listHtml + '</div>';
         var el = document.getElementById('task-detail-subtasks-block');
         if (el) el.innerHTML = html;
 
@@ -918,10 +918,11 @@
             if (names.length === 0) return;
             var parentEndDate = estado.task ? estado.task.endDate : today;
             var parentPriority = estado.task ? estado.task.priority : 'media';
-            names.forEach(function (nombre) {
-                estado.subtasks.push({
+            /* unshift en orden inverso para que la primera línea quede arriba y la última recién añadida también arriba en lote */
+            for (var ni = names.length - 1; ni >= 0; ni--) {
+                estado.subtasks.unshift({
                     id: Date.now() + Math.random(),
-                    name: nombre,
+                    name: names[ni],
                     done: false,
                     status: 'Activo',
                     endDate: parentEndDate,
@@ -930,7 +931,7 @@
                     assignee_email: estado.task ? estado.task.assignee_email : null,
                     assignee_avatar_url: estado.task ? estado.task.assignee_avatar_url : null
                 });
-            });
+            }
             if (names.length === 1) {
                 pushActivity('fa-plus-circle', currentUserName, 'añadió la subtarea "' + names[0] + '".');
             } else {

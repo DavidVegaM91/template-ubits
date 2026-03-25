@@ -390,4 +390,16 @@ Registro de cambios realizados en los archivos del módulo de Tareas y Planes (P
 
 ---
 
-*Última actualización: ítems 1–20 (11 feb), 21–26 (19 feb), 27 (Cargar más), 28–30 (20 feb), 31 (21 feb), 32 (23 feb), 33 (nueva versión task-detail), 34 (dropdowns Estado y Prioridad en task-detail), 35 (panel de comentarios: adjuntar imágenes y archivos), 36 (implementación de subtask-detail), 37 (homologación encabezados plan-detail con task-detail), 38 (scroll-spy calendario horizontal, 10 mar), 39 (doble clic para cambio de nombre en tirillas y opción Cambiar nombre en subtareas), 40 (recordatorio registrado en historial en task-detail), 41 (plan-detail: asignados, filtro por persona, filtros aplicados y UI, 11 mar), 42 (task-detail: vencimiento sm, progress bar subtareas, botón Filtrar, Historial de cambios, nueva versión formulario subtareas, 12 mar), 43 (marca "- editado" en comentarios editados, 12 mar), 44 (filtro Asignado específico en tareas, 18 mar), 45 (estilos tirilla en celulares, 18 mar), 46 (Añadir colaborador seguimiento, 20 mar), 47 (resumen multiselect dropdown, 20 mar) implementados.*
+## 25 de marzo de 2026
+
+48. [x] **Mi lista de tareas y detalle de tarea: controles "Añadir" encima de la lista; nuevas tareas y subtareas arriba**
+
+    - **tareas.html (`tareas.js`, `tareas.css`):** En cada bloque de día, el botón **«Añadir tarea»** y el formulario inline de creación se muestran **encima** de la lista de tirillas de ese día. Las **tareas nuevas** se insertan al **inicio** del array del día (`unshift`), de modo que aparecen **por encima** del resto (respetando el orden existente entre pendientes y finalizadas).
+
+    - **Detalle de tarea (`task-detail.js`):** En el bloque **Subtareas**, el botón **«Añadir subtarea»** y el formulario de alta quedan **encima** de la lista de subtareas. Al **añadir** una o varias subtareas (incluido el modo varias líneas), las nuevas se insertan al **inicio** de la lista pendiente (`unshift` en orden inverso para lotes multilínea), de modo que la recién creada queda **arriba**.
+
+    Archivos: `tareas.js`, `tareas.css`, `task-detail.js`.
+
+---
+
+*Última actualización: ítems 1–20 (11 feb), 21–26 (19 feb), 27 (Cargar más), 28–30 (20 feb), 31 (21 feb), 32 (23 feb), 33 (nueva versión task-detail), 34 (dropdowns Estado y Prioridad en task-detail), 35 (panel de comentarios: adjuntar imágenes y archivos), 36 (implementación de subtask-detail), 37 (homologación encabezados plan-detail con task-detail), 38 (scroll-spy calendario horizontal, 10 mar), 39 (doble clic para cambio de nombre en tirillas y opción Cambiar nombre en subtareas), 40 (recordatorio registrado en historial en task-detail), 41 (plan-detail: asignados, filtro por persona, filtros aplicados y UI, 11 mar), 42 (task-detail: vencimiento sm, progress bar subtareas, botón Filtrar, Historial de cambios, nueva versión formulario subtareas, 12 mar), 43 (marca "- editado" en comentarios editados, 12 mar), 44 (filtro Asignado específico en tareas, 18 mar), 45 (estilos tirilla en celulares, 18 mar), 46 (Añadir colaborador seguimiento, 20 mar), 47 (resumen multiselect dropdown, 20 mar), 48 (añadir tarea/subtarea encima de listas y orden nuevo arriba, 25 mar) implementados.*

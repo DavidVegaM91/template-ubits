@@ -688,7 +688,6 @@ function renderDaySection(fecha) {
                 <h2 class="ubits-body-md-bold">${headerText}</h2>
             </div>
             <div class="tareas-day-content">
-                ${tareasDelDia.length > 0 ? tareasDelDia.map(tarea => window.renderTaskStrip(tarea, getTaskStripOpts(false))).join('') : ''}
                 ${!esPasado ? (estadoTareas.addingTaskForDate === fechaKey ? `
                     <form class="tarea-add-form" data-date="${fechaKey}" onsubmit="event.preventDefault(); var inp = this.querySelector('.tarea-add-input'); if (inp && inp.value.trim()) handleCreateTaskInline(this.dataset.date, inp.value.trim()); return false;">
                         <div class="tarea-add-input-wrapper">
@@ -713,6 +712,7 @@ function renderDaySection(fecha) {
                         <span>Añadir tarea</span>
                     </button>
                 `) : ''}
+                ${tareasDelDia.length > 0 ? tareasDelDia.map(tarea => window.renderTaskStrip(tarea, getTaskStripOpts(false))).join('') : ''}
             </div>
         </div>
     `;
@@ -1708,7 +1708,7 @@ function handleCreateTaskInline(fechaKey, nombreTarea) {
         if (!tareasEjemplo.porDia[fechaKey]) {
             tareasEjemplo.porDia[fechaKey] = [];
         }
-        tareasEjemplo.porDia[fechaKey].push(nuevaTarea);
+        tareasEjemplo.porDia[fechaKey].unshift(nuevaTarea);
 
         // Limpiar estado
         estadoTareas.addingTaskForDate = null;
