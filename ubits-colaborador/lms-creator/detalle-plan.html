@@ -53,7 +53,12 @@
                         <div class="detalle-plan-progress-card">
                             <div class="detalle-plan-progress-card__header">
                                 <h1 class="ubits-heading-h1 detalle-plan-title-display" id="plan-nombre"></h1>
-                                <span id="plan-estado-container"></span>
+                                <div class="detalle-plan-header-actions">
+                                    <span id="plan-estado-container"></span>
+                                    <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="plan-actions-btn" aria-label="Opciones" data-tooltip="Opciones" data-tooltip-delay="1000">
+                                        <i class="far fa-ellipsis-vertical"></i>
+                                    </button>
+                                </div>
                             </div>
                             <div class="detalle-plan-progress-card__fechas">
                                 <span class="detalle-plan-fechas-label-wrap"><span class="ubits-body-xs-regular detalle-plan-card__meta-label">Fecha de inicio:</span> <span id="plan-fecha-inicio" class="ubits-body-xs-regular">1 ene 2025</span></span>
@@ -153,6 +158,152 @@
                 estadoEl.innerHTML = tooltipText ? '<span data-tooltip="' + (tooltipText || '').replace(/"/g, '&quot;') + '">' + tagHtml + '</span>' : tagHtml;
                 if (typeof initTooltip === 'function') setTimeout(function() { initTooltip('#plan-estado-container [data-tooltip]'); }, 50);
             }
+
+            function getPlanActionOptionsByStatus(estado) {
+                if (estado === 'Vigente') {
+                    return [
+                        { text: 'Editar plan', value: 'editar', leftIcon: 'pen' },
+                        { text: 'Enviar recordatorios', value: 'send-reminders', leftIcon: 'bell' },
+                        { text: 'Eliminar', value: 'delete-plan', leftIcon: 'trash' }
+                    ];
+                }
+                if (estado === 'No vigente') {
+                    return [
+                        { text: 'Descargar certificados', value: 'download-certificates', leftIcon: 'download' },
+                        { text: 'Eliminar', value: 'delete-plan', leftIcon: 'trash' }
+                    ];
+                }
+                return [
+                    { text: 'Eliminar', value: 'delete-plan', leftIcon: 'trash' }
+                ];
+            }
+
+            function getDeletePlanModalConfig(estado) {
+                var body = '<p class="ubits-body-md-regular">Si eliminas este plan, se perderá toda la data asociada (asignaciones, avances e historial).</p>';
+                var typeConfirmBlock = '<div style="margin-top: var(--gap-lg);"><label class="ubits-body-sm-regular" for="plan-delete-type-input">Escriba <strong>eliminar</strong> para habilitar el botón:</label><input type="text" id="plan-delete-type-input" class="ubits-input" placeholder="Escriba la palabra de confirmación" autocomplete="off" style="margin-top: var(--gap-sm); width: 100%; padding: var(--padding-sm) var(--padding-md); border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-sm); font-size: var(--font-size-sm); color: var(--ubits-fg-1-high); box-sizing: border-box;"></div>';
+                if (estado === 'Planeado') {
+                    return {
+                        title: 'Eliminar plan planeado',
+                        bodyHtml: body,
+                        footerHtml: '<button type="button" class="ubits-button ubits-button--error ubits-button--md" id="plan-delete-confirm"><span>Eliminar plan</span></button>'
+                    };
+                }
+                return {
+                    title: 'Confirmar eliminación',
+                    bodyHtml: body + '<p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Esta acción no se puede deshacer.</p>' + typeConfirmBlock,
+                    footerHtml: '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="plan-delete-cancel"><span>Cancelar</span></button><button type="button" class="ubits-button ubits-button--error ubits-button--md" id="plan-delete-confirm" disabled><span>Eliminar plan</span></button>'
+                };
+            }
+
+            function redirectAfterPlanDelete() {
+                try {
+                    sessionStorage.setItem('ubits-toast-pending', JSON.stringify({ type: 'success', message: 'Plan eliminado correctamente.' }));
+                } catch (err) {}
+                window.location.href = 'planes-formacion.html';
+            }
+
+            function openDeletePlanModal(estado) {
+                if (typeof getModalHtml !== 'function' || typeof showModal !== 'function') return;
+                var modalConfig = getDeletePlanModalConfig(estado);
+                var overlayId = 'detalle-plan-delete-overlay';
+                var closeButtonId = 'detalle-plan-delete-close';
+                var modalsContainer = document.getElementById('asignaciones-modals-container');
+                if (!modalsContainer) return;
+                modalsContainer.innerHTML += getModalHtml({
+                    overlayId: overlayId,
+                    title: modalConfig.title,
+                    bodyHtml: modalConfig.bodyHtml,
+                    footerHtml: modalConfig.footerHtml,
+                    size: 'sm',
+                    closeButtonId: closeButtonId
+                });
+                showModal(overlayId);
+
+                var overlay = document.getElementById(overlayId);
+                var closeBtn = document.getElementById(closeButtonId);
+                var cancelBtn = document.getElementById('plan-delete-cancel');
+                var confirmBtn = document.getElementById('plan-delete-confirm');
+                function closeDeleteModal() {
+                    if (typeof closeModal === 'function') closeModal(overlayId);
+                    if (overlay && overlay.parentNode) overlay.remove();
+                }
+                if (closeBtn) closeBtn.addEventListener('click', closeDeleteModal);
+                if (cancelBtn) cancelBtn.addEventListener('click', closeDeleteModal);
+                if (overlay) overlay.addEventListener('click', function(e) { if (e.target === overlay) closeDeleteModal(); });
+                var typeInput = document.getElementById('plan-delete-type-input');
+                if (typeInput && confirmBtn && estado !== 'Planeado') {
+                    confirmBtn.disabled = true;
+                    typeInput.value = '';
+                    typeInput.addEventListener('input', function() {
+                        confirmBtn.disabled = typeInput.value.trim().toLowerCase() !== 'eliminar';
+                    });
+                    setTimeout(function() { typeInput.focus(); }, 0);
+                }
+                if (confirmBtn) {
+                    confirmBtn.addEventListener('click', function() {
+                        closeDeleteModal();
+                        redirectAfterPlanDelete();
+                    });
+                }
+            }
+
+            function initPlanActions() {
+                var actionsBtn = document.getElementById('plan-actions-btn');
+                if (!actionsBtn || typeof window.getDropdownMenuHtml !== 'function' || typeof window.openDropdownMenu !== 'function' || typeof window.closeDropdownMenu !== 'function') return;
+                actionsBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var overlayId = 'detalle-plan-actions-overlay';
+                    var existingOverlay = document.getElementById(overlayId);
+                    if (existingOverlay) existingOverlay.remove();
+                    var options = getPlanActionOptionsByStatus(plan.estado);
+                    document.body.insertAdjacentHTML('beforeend', window.getDropdownMenuHtml({ overlayId: overlayId, options: options }));
+                    var overlay = document.getElementById(overlayId);
+                    if (!overlay) return;
+                    overlay.style.zIndex = '10100';
+                    overlay.querySelectorAll('.ubits-dropdown-menu__option').forEach(function(opt) {
+                        opt.addEventListener('click', function() {
+                            var value = this.getAttribute('data-value');
+                            window.closeDropdownMenu(overlayId);
+                            if (overlay && overlay.parentNode) overlay.remove();
+                            if (value === 'editar') {
+                                window.location.href = 'editar-plan-contenidos.html?id=' + encodeURIComponent(planId);
+                                return;
+                            }
+                            if (value === 'send-reminders') {
+                                if (typeof showToast === 'function') showToast('success', 'Se enviaron recordatorios por correo a los estudiantes pendientes por finalizar el plan.');
+                                return;
+                            }
+                            if (value === 'download-certificates') {
+                                if (typeof showToast === 'function') showToast('success', 'Se descargaron los certificados de los estudiantes que finalizaron el plan.');
+                                return;
+                            }
+                            if (value === 'delete-plan') {
+                                openDeletePlanModal(plan.estado);
+                            }
+                        });
+                    });
+                    overlay.addEventListener('click', function(ev) {
+                        if (ev.target === overlay) {
+                            window.closeDropdownMenu(overlayId);
+                            if (overlay.parentNode) overlay.remove();
+                        }
+                    });
+                    window.openDropdownMenu(overlayId, actionsBtn, { alignRight: true });
+                    setTimeout(function() {
+                        var ov = document.getElementById(overlayId);
+                        var cnt = ov ? ov.querySelector('.ubits-dropdown-menu__content') : null;
+                        if (cnt && actionsBtn) {
+                            var br = actionsBtn.getBoundingClientRect();
+                            var left = Math.max(12, br.right - cnt.offsetWidth);
+                            cnt.style.left = left + 'px';
+                            cnt.style.right = 'auto';
+                        }
+                    }, 0);
+                });
+                if (typeof initTooltip === 'function') setTimeout(function() { initTooltip('#plan-actions-btn'); }, 50);
+            }
+            initPlanActions();
 
             if (typeof loadHeaderProduct === 'function') {
                 var headerOpts = {

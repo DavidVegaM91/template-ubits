@@ -21,3 +21,10 @@
 .crear-plan-competencias-form__field--nombre-plan.editar-plan-nombre-row #plan-estado-container.editar-plan-estado-tag {
     flex-shrink: 0;
 }
+
+.crear-plan-competencias-form__field--nombre-plan.editar-plan-nombre-row .editar-plan-header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    flex-shrink: 0;
+}
