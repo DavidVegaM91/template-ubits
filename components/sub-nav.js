@@ -292,7 +292,26 @@ function loadSubNav(containerId, variant = 'template', customTabs = []) {
     });
 }
 
-// Mapeo simple: página -> tab ID
+/**
+ * Nombre de archivo actual para marcar el tab activo (minúsculas, sin ? ni #).
+ * Evita que páginas como chat-ia-grupos.html activen el primer tab por no coincidir la clave.
+ */
+function getCurrentPageFilenameForSubNav() {
+    let path = (window.location.pathname || '').replace(/\\/g, '/');
+    const segments = path.split('/').filter(function (s) { return s.length > 0; });
+    let last = segments.length ? segments[segments.length - 1] : '';
+    if (!last && window.location.href) {
+        const m = window.location.href.match(/\/([^/?#]+\.html)(?:[?#]|$)/i);
+        if (m) last = m[1];
+    }
+    try {
+        last = decodeURIComponent(last);
+    } catch (e) { /* ignore */ }
+    last = String(last).split('?')[0].split('#')[0];
+    return last.toLowerCase();
+}
+
+// Mapeo simple: página -> tab ID (claves en minúsculas; usar getCurrentPageFilenameForSubNav al buscar)
 const PAGE_TO_TAB = {
     // Aprendizaje
     'home-learn.html': 'home',
@@ -388,7 +407,7 @@ const PAGE_TO_TAB = {
 };
 
 function activateCurrentPageTab(container, variant) {
-    const currentPage = (window.location.pathname.split('/').pop() || '').split('?')[0];
+    const currentPage = getCurrentPageFilenameForSubNav();
     const tabId = PAGE_TO_TAB[currentPage];
     
     if (tabId) {
@@ -633,7 +652,7 @@ function restoreOriginalTabs(container, variant, customTabs = []) {
     const tabs = variant === 'template' && customTabs.length > 0 ? customTabs : config.tabs;
     
     // Obtener el tab activo basado en la página actual (sin query ?id=...)
-    const currentPage = (window.location.pathname.split('/').pop() || '').split('?')[0];
+    const currentPage = getCurrentPageFilenameForSubNav();
     const activeTabId = PAGE_TO_TAB[currentPage] || null;
 
     // Regenerar HTML de los tabs originales
@@ -681,7 +700,7 @@ function activateSelector(container, variant, customTabs = []) {
     const tabs = variant === 'template' && customTabs.length > 0 ? customTabs : config.tabs;
     
     // Obtener el tab activo basado en la página actual (sin query ?id=...)
-    const currentPage = (window.location.pathname.split('/').pop() || '').split('?')[0];
+    const currentPage = getCurrentPageFilenameForSubNav();
     let activeTabId = PAGE_TO_TAB[currentPage] || null;
     let activeTabLabel = '';
     

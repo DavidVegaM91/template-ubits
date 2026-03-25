@@ -108,6 +108,41 @@
                 initGroupCreationChat('group-creation-chat-container', { welcomeLayout: true, userFirstName: 'María Alejandra' });
             }
 
+            /* Mismo patrón que editar-plan-contenidos.html (tab Planes de formación): esta vista pertenece al submódulo Grupos. */
+            function forceCreatorSubnavGruposActive() {
+                var wrap = document.getElementById('top-nav-container');
+                if (!wrap) return;
+                var tab = wrap.querySelector('.nav-tab[data-tab="grupos"]');
+                if (tab) {
+                    wrap.querySelectorAll('.nav-tab, .hamburger-item').forEach(function (item) { item.classList.remove('active'); });
+                    tab.classList.add('active');
+                }
+                var selItem = wrap.querySelector('.module-selector-item[data-tab="grupos"]');
+                if (selItem) {
+                    wrap.querySelectorAll('.module-selector-item').forEach(function (item) { item.classList.remove('active'); });
+                    selItem.classList.add('active');
+                    var labelBtn = wrap.querySelector('.module-selector-button-text');
+                    if (labelBtn) labelBtn.textContent = 'Grupos';
+                }
+            }
+            setTimeout(function () {
+                forceCreatorSubnavGruposActive();
+                var sidebarBtn = document.querySelector('.nav-button[data-section="creator"]');
+                if (sidebarBtn) {
+                    document.querySelectorAll('.nav-button').forEach(function (btn) { btn.classList.remove('active'); });
+                    sidebarBtn.classList.add('active');
+                }
+                var modulosTab = document.querySelector('.tab-bar-item[data-tab="modulos"]');
+                if (modulosTab) {
+                    document.querySelectorAll('.tab-bar-item').forEach(function (item) { item.classList.remove('active'); });
+                    modulosTab.classList.add('active');
+                }
+                if (typeof setActiveAccordionLink === 'function') {
+                    setActiveAccordionLink('grupos');
+                }
+            }, 200);
+            setTimeout(forceCreatorSubnavGruposActive, 550);
+
             setTimeout(function() {
                 var chatRoot = document.getElementById('group-creation-chat');
                 var chatMain = document.querySelector('.ubits-ia-chat__main');

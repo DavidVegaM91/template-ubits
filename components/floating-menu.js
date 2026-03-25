@@ -275,6 +275,7 @@ function setActiveItemByCurrentPage() {
         'categorias.html': 'categorias',
         'grupos.html': 'grupos',
         'crear-grupo.html': 'grupos',
+        'chat-ia-grupos.html': 'grupos',
         'detalle-plan.html': 'planes-formacion',
         'planes-formacion.html': 'planes-formacion',
         'crear-plan-contenidos.html': 'contenidos'
