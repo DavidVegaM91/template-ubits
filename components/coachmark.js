@@ -17,7 +17,7 @@
  *     onDismiss: function (reason) {}, // 'close' | 'escape' | 'missing-target' | 'dismiss' (no se llama con 'restart')
  *     onStepChange: function (index, step) {},
  *     showProgress: true, // pie izquierdo "N de M"; icon-only X en cabecera (salvo último paso)
- *     padding: 8,
+ *     padding: 0, // default exacto al target (sin margen extra)
  *     zIndexLayer: 10050,
  *     zIndexPopover: 10060
  *   });
@@ -58,7 +58,7 @@
         if (!active) return;
         var step = active.steps[active.index];
         var anchor = resolveStepTarget(step);
-        var pad = typeof active.padding === 'number' ? active.padding : 8;
+        var pad = typeof active.padding === 'number' ? active.padding : 0;
 
         if (anchor && active.spotlightEl && shouldShowSpotlight(step)) {
             try {
@@ -384,7 +384,7 @@
             steps: steps,
             index: 0,
             popoverId: popoverId,
-            padding: typeof options.padding === 'number' ? options.padding : 8,
+            padding: typeof options.padding === 'number' ? options.padding : 0,
             zIndexLayer: typeof options.zIndexLayer === 'number' ? options.zIndexLayer : 10050,
             zIndexPopover: typeof options.zIndexPopover === 'number' ? options.zIndexPopover : 10060,
             showProgress: options.showProgress === true,
